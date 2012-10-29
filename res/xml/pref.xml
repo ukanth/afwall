@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:summary="AFWall+ Options"
+        android:title="AFWall+ Preferences" >
+        <CheckBoxPreference
+            android:key="notifyAppInstall"
+            android:summary="Enable will notify to open AFWall+ on new installtions"
+            android:title="Notify on new installs" />
+        <CheckBoxPreference
+            android:key="showToast"
+            android:title="Disable Toast Messages" />
+         
+         <net.margaritov.preference.colorpicker.ColorPickerPreference 
+			android:key="sysColor"
+			android:title="System Apps Highlight" 
+			android:summary="Highlight system applications"
+			android:defaultValue="0xff000000" 
+		/>
+         
+    </PreferenceCategory>
+
+</PreferenceScreen>

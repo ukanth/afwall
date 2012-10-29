@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:baselineAligned="true"
+        android:orientation="horizontal"
+        android:paddingBottom="2dip"
+        android:paddingTop="2dip" >
+
+        <ImageView
+            android:id="@+id/itemicon"
+            android:layout_width="34dip"
+            android:layout_height="34dip">
+        </ImageView>
+
+        <CheckBox
+            android:id="@+id/itemcheck_wifi"
+            android:layout_width="34dip"
+            android:layout_height="34dip"
+            android:padding="0px" >
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_3g"
+            android:layout_width="34dip"
+            android:layout_height="34dip"
+            android:padding="0px" >
+        </CheckBox>
+        
+          <CheckBox
+            android:id="@+id/itemcheck_roam"
+            android:layout_width="34dip"
+            android:layout_height="34dip"
+            android:padding="0px" >
+        </CheckBox>
+
+        <TextView
+            android:id="@+id/itemtext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dip"
+            android:text="@string/empty" >
+        </TextView>
+    </LinearLayout>

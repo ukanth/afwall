@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AFWall+</string>
+    <string name="title_enabled">AFWall+ </string>
+    <string name="title_disabled">AFWall+ (Disabled)</string>
+    <string name="showrules">Show rules</string>
+    <string name="applyrules">Apply rules</string>
+    <string name="saverules">Save rules</string>
+    <string name="purgerules">Purge rules</string>
+    <string name="setpwd">Set password</string>
+    <string name="help">Help</string>
+    <string name="close">Close</string>
+    <string name="exit">Exit</string>
+    <string name="fw_enabled">Enabled</string>
+    <string name="fw_disabled">Disabled</string>
+    <string name="log_enabled">Log enabled</string>
+    <string name="log_disabled">Log disabled</string>
+    <string name="log_was_enabled">Log has been enabled</string>
+    <string name="log_was_disabled">Log has been disabled</string>
+    <string name="log_cleared">Log cleared</string>
+    <string name="flushed">Rules flushed</string>
+    <string name="show_log">Show log</string>
+    <string name="clear_log">Clear log</string>
+    <string name="applying_rules">Applying iptables rules.</string>
+    <string name="saving_rules">Saving iptables rules.</string>
+    <string name="deleting_rules">Deleting iptables rules.</string>
+    <string name="rules_applied">Rules applied with success</string>
+    <string name="rules_saved">Rules saved with success</string>
+    <string name="rules_deleted">Rules deleted with success</string>
+    <string name="pass_titleset">Set password lock</string>
+    <string name="pass_titleget">Password required</string>
+    <string name="enterpass">Enter the password:</string>
+    <string name="enternewpass">Enter the new password (leave blank to remove):</string>
+    <string name="passdefined">Password lock defined</string>
+    <string name="passremoved">Password lock removed</string>
+    <string name="passerror">Error changing password lock</string>
+    <string name="working">Working...</string>
+    <string name="reading_apps">Reading installed applications</string>
+    <string name="please_wait">Please wait</string>
+    <string name="mode_header">Mode: %s</string>
+    <string name="mode_whitelist">White list (allow selected)</string>
+    <string name="mode_blacklist">Black list (block selected)</string>
+    <string name="toast_bin_installed">AFWall+: Binary files installed!</string>
+    <string name="toast_enabled">AFWall+: Firewall enabled!</string>
+    <string name="toast_error_enabling">AFWall+: Error enabling firewall!</string>
+    <string name="toast_disabled">AFWall+: Firewall disabled!</string>
+    <string name="toast_error_disabling">AFWall+: Error disabling firewall!</string>
+    <string name="set_custom_script">Set custom script</string>
+    <string name="preferences">Preferences</string>
+    <string name="reload">Reload Applications</string>
+    <string name="flush">Flush Rules</string>
+    <string name="custom_script_defined">Custom script defined</string>
+    <string name="custom_script_removed">Custom script removed</string>
+    <string name="custom_script_error">Error saving custom script</string>
+    <string name="custom_script_info"><b>Enter your custom script bellow.</b>
+		\n<i>(Leave it blank to remove)</i>
+		\nFor information about custom scripts, click <a href="http://code.google.com/p/droidwall/wiki/CustomScripts">here</a>.
+	</string>
+    <string name="custom_script2_info">
+    	\n<b>Custom shutdown script</b>
+    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
+    <string name="unsaved_changes">Unsaved changes</string>
+    <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
+    <string name="apply">Apply</string>
+    <string name="discard">Discard</string>
+	<string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
+	    \n<i>Contact me - cumakt@gmail.com (@ukanth- Twitter)</i>
+		\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
+		\n
+		\n<i>AFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b> Linux firewall.
+		It allows you to restrict which applications are permitted to access your data networks.
+		\nThis is the perfect solution if you don\'t have an unlimited data plan, or just wants to see your battery lasting longer.
+		\n
+		\n<b>Using AFWall+:</b>
+		\n<b>1.</b> Click on <b>Mode</b> to switch between <i>White List</i> and <i>Black List</i> modes.
+		\n<b>2.</b> Mark the applications that you want to block or allow (depending on the selected mode), for each interface.
+		\n<b>3.</b> Open the menu and enable the firewall. If the firewall is already enabled, just select <b>Apply rules</b>.
+		\nThe rules will be saved and automatically restored when you restart your phone.
+		\nIf you want to check all current iptables rules, select <b>Show rules</b> in the menu.
+		\n
+		\n<b>Widget:</b>
+		\nTo quickly enable or disable the firewall, add the AFWall+ widget to your home screen.
+		\n
+		\n<b>Firewall logs:</b>
+		\nIf you want to see which applications have been blocked by AFWall+, open the menu and enable the Log.
+		\nAFWall+ will then log each application blocked. You can check the log by opening the menu and selecting <b>More -> Show log</b>.
+		\n
+		\n<b>Password lock:</b>
+		\nYou can set a password lock for AFWall+ by using the <b>Set password</b> menu option.
+		\nTo remove the password protection, just reset it to blank.
+	</string>
+	<string name="empty"></string>
+	<string name="mode">Mode: </string>
+</resources>

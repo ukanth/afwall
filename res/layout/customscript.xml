@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+	<LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content">
+	    <TextView android:id="@+id/customscript_link" android:text="@string/custom_script_info" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:textSize="22px"/>
+	    <EditText android:id="@+id/customscript" android:layout_width="fill_parent" android:inputType="textMultiLine" android:layout_height="wrap_content" android:minLines="4" android:maxLines="4" android:gravity="top" android:scrollbars="horizontal|vertical">
+	        <requestFocus></requestFocus>
+	    </EditText>
+	    <TextView android:text="@string/custom_script2_info" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:textSize="22px"/>
+	    <EditText android:id="@+id/customscript2" android:layout_width="fill_parent" android:inputType="textMultiLine" android:layout_height="wrap_content" android:minLines="4" android:maxLines="4" android:gravity="top" android:scrollbars="horizontal|vertical">
+	    </EditText>
+	    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center_horizontal">
+	        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/customscript_ok" android:text="@android:string/ok" android:minWidth="100px"></Button>
+	        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/customscript_cancel" android:text="@android:string/cancel" android:minWidth="100px"></Button>
+	    </LinearLayout>
+	</LinearLayout>
+</ScrollView>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:duplicateParentState="false">
+<TextView android:layout_height="wrap_content" android:id="@+id/pass_message" android:layout_width="fill_parent" android:gravity="center_horizontal|center" android:textSize="25px" android:text="@string/enternewpass" android:paddingLeft="5px" android:paddingRight="5px"></TextView>
+<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="15px">
+<EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/pass_input" android:inputType="textPassword"></EditText>
+</LinearLayout>
+<LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center_horizontal">
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/pass_ok" android:text="@android:string/ok" android:minWidth="70px"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@android:string/cancel" android:minWidth="70px" android:id="@+id/pass_cancel"></Button>
+</LinearLayout>
+</LinearLayout>
