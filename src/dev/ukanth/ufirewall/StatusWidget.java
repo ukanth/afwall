@@ -22,7 +22,6 @@
 
 package dev.ukanth.ufirewall;
 
-import dev.ukanth.ufirewall.R;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -43,7 +42,6 @@ public class StatusWidget extends AppWidgetProvider {
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-        super.onReceive(context, intent);
         if (Api.STATUS_CHANGED_MSG.equals(intent.getAction())) {
         	// Broadcast sent when the DroidWall status has changed
             final Bundle extras = intent.getExtras();
@@ -95,13 +93,14 @@ public class StatusWidget extends AppWidgetProvider {
 				}
 			}.start();
         }
+        super.onReceive(context, intent);
 	}
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] ints) {
-        super.onUpdate(context, appWidgetManager, ints);
         final SharedPreferences prefs = context.getSharedPreferences(Api.PREFS_NAME, 0);
         boolean enabled = prefs.getBoolean(Api.PREF_ENABLED, false);
         showWidget(context, appWidgetManager, ints, enabled);
+        super.onUpdate(context, appWidgetManager, ints);
     }
 
     private void showWidget(Context context, AppWidgetManager manager, int[] widgetIds, boolean enabled) {
@@ -109,7 +108,7 @@ public class StatusWidget extends AppWidgetProvider {
         final int iconId = enabled ? R.drawable.widget_on : R.drawable.widget_off;
         views.setImageViewResource(R.id.widgetCanvas, iconId);
         final Intent msg = new Intent(Api.TOGGLE_REQUEST_MSG);
-        final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, 0);
         views.setOnClickPendingIntent(R.id.widgetCanvas, intent);
         manager.updateAppWidget(widgetIds, views);
     }

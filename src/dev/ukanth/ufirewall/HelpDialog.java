@@ -35,7 +35,7 @@ public class HelpDialog extends AlertDialog {
 		final View view = getLayoutInflater().inflate(R.layout.help_dialog, null);
 		setButton(context.getText(R.string.close), (OnClickListener)null);
 		setIcon(R.drawable.icon);
-		setTitle("AFWall+ " + Api.VERSION);
+		setTitle("AFWall+ " + context.getString(R.string.app_version));
 		setView(view);
 	}
 }

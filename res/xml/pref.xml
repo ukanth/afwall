@@ -17,7 +17,11 @@
 			android:title="System Apps Highlight" 
 			android:summary="Highlight system applications"
 			android:defaultValue="0xff000000" 
-		/>
+		  />
+         <CheckBoxPreference
+            android:key="disableUSB3gRule"
+            android:summary="Prevent AFWall to apply 3g rules when using wired USB Connection"
+            android:title="Disable 3G rules on Wired USB" />
          
     </PreferenceCategory>
 

@@ -30,6 +30,7 @@ import java.util.Comparator;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,9 +41,11 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -132,6 +135,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			
 			Api.assertBinaries(this, true);
+			/*new BroadcastReceiver() {
+			    public void onReceive(Context context, Intent intent) {
+			        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+			        if (plugged == BatteryManager.BATTERY_PLUGGED_USB) {
+			            Api.isUSBEnable 
+			        } 
+			    }
+			};*/
+
 		//} else {
 			//replaceFragment(R.id.main, MainFragment.getInstance());
 		//}
@@ -203,7 +215,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				res.getString(resid)));
 		resid = (Api.isEnabled(this) ? R.string.title_enabled
 				: R.string.title_disabled);
-		setTitle(res.getString(resid, Api.VERSION));
+		setTitle(res.getString(resid, R.string.app_version));
 	}
 
 	/**
@@ -387,22 +399,32 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					entry.icon = (ImageView) convertView
 							.findViewById(R.id.itemicon);
 					
-					if(checkWifi && !entry.box_wifi.isChecked()) {
+					if(checkWifi) {
 						entry.box_wifi.setChecked(true);
+						if(entry.app != null) entry.app.selected_wifi = true;
 					}
 					
-					if(check3G && !entry.box_3g.isChecked()) {
+					if(check3G) {
 						entry.box_3g.setChecked(true);
+						if(entry.app != null) entry.app.selected_3g = true;
 					}
 					
-					if(checkRoam && !entry.box_roam.isChecked()) {
+					if(checkRoam) {
 						entry.box_roam.setChecked(true);
+						if(entry.app != null)  entry.app.selected_roam = true;
 					}
 
 					
 					if(resetAll) {
 						entry.box_wifi.setChecked(false);
 						entry.box_3g.setChecked(false);
+						entry.box_roam.setChecked(false);
+						if(entry.app != null) {
+							entry.app.selected_wifi = false;
+							entry.app.selected_3g = false;
+							entry.app.selected_roam = false;	
+						}
+						
 					}
 					entry.box_wifi
 							.setOnCheckedChangeListener(MainActivity.this);
@@ -418,24 +440,31 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 							.findViewById(R.id.itemcheck_3g);
 					entry.box_roam = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_roam);
-					if(checkWifi && !entry.box_wifi.isChecked()) {
+					if(checkWifi) {
 						entry.box_wifi.setChecked(true);
+						if(entry.app != null) entry.app.selected_wifi = true;
 					}
 					
-					if(check3G && !entry.box_3g.isChecked()) {
+					if(check3G) {
 						entry.box_3g.setChecked(true);
+						if(entry.app != null) entry.app.selected_3g = true;
 					}
 					
-					if(checkRoam && !entry.box_roam.isChecked()) {
+					if(checkRoam) {
 						entry.box_roam.setChecked(true);
+						if(entry.app != null) entry.app.selected_roam = true;
 					}
+
+					
 					if(resetAll) {
 						entry.box_wifi.setChecked(false);
 						entry.box_3g.setChecked(false);
 						entry.box_roam.setChecked(false);
-						entry.box_wifi.setOnCheckedChangeListener(MainActivity.this);
-						entry.box_3g.setOnCheckedChangeListener(MainActivity.this);
-						entry.box_roam.setOnCheckedChangeListener(MainActivity.this);
+						if(entry.app != null) {
+							entry.app.selected_wifi = false;
+							entry.app.selected_3g = false;
+							entry.app.selected_roam = false;	
+						}						
 					}
 				}
 				final DroidApp app = apps[position];
@@ -491,7 +520,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		sub.add(0, MENU_SETCUSTOM, 0, R.string.set_custom_script).setIcon(R.drawable.script);
 		sub.add(0, MENU_PREFERENCES, 0, R.string.preferences).setIcon(R.drawable.preferences);
 		sub.add(0, MENU_RELOAD_APPS, 0, R.string.reload).setIcon(R.drawable.reload);
-		//sub.add(0, MENU_FLUSH, 0, R.string.flush).setIcon(R.drawable.clearlog);
+		sub.add(0, MENU_FLUSH, 0, R.string.flush).setIcon(R.drawable.clearlog);
 		sub.add(0, MENU_HELP, 0, R.string.help).setIcon(R.drawable.help);
 		sub.add(0, MENU_EXIT, 0, R.string.exit).setIcon(R.drawable.exit);
 		
@@ -572,6 +601,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			return true;
 		case MENU_RELOAD_APPS:
 			Api.applications = null;
+			showOrLoadApplications();
 			return true;
 		case MENU_FLUSH:
 			clearRules();
@@ -588,7 +618,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						Toast.LENGTH_SHORT);
 			}	
 		}catch(IOException e) {
-			Api.alert(MainActivity.this, "Error flushing iptables");
+			Api.alert(MainActivity.this, getString(R.string.error_flush));
 		}
 		
 	}
@@ -890,8 +920,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						// Propagate the event back to perform the desired
 						// action
 						MainActivity.this.dirty = false;
-						//force reload rules.
 						Api.applications = null;
+						finish();
+						System.exit(0);
+						//force reload rules.
 						MainActivity.super.onKeyDown(keyCode, event);
 						break;
 					}
