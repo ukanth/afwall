@@ -37,10 +37,10 @@ Version 1.0.0a
 
 Backlog
 * TAB interface to separate system apps & user apps 
-* Roaming option ( like avast firewall )
+* ~~Roaming option ( like avast firewall )~~ <i>(since 1.0.2a)</i>
 * Support for XHDPI
 * Support for only within LAN 
-* Flush/Reset iptables rules from UI
+* ~~Flush/Reset iptables rules from UI~~ <i>(since 1.0.2a)</i>
 * View iptables rules in a clear view 
 * View logs in a clear view
 * Bug fixes from DroidWall
