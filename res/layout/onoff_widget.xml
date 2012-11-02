@@ -4,7 +4,6 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:updatePeriodMillis="86400000"
-        <!-- Text view -->
         android:gravity="center">
         
         <ImageButton
