@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="72dip"
-    android:minHeight="72dip"
-    android:updatePeriodMillis="0"
+    <!-- Since 4.0 it is 40x40 for 1x1 screen size -->
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    <!-- Here we set our Update Period in ms 1 day -->
+    android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/onoff_widget">
+    <!-- If we would like to resize the widget -->
+     android:resizeMode="horizontal|vertical">
 </appwidget-provider>
