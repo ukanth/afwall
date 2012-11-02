@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"
-        android:layout_width="40dip"
-        android:layout_height="40dip"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:updatePeriodMillis="86400000"
+        <!-- Text view -->
         android:gravity="center">
         
         <ImageButton
             android:id="@+id/widgetCanvas"
-            android:layout_width="40dip"
-            android:layout_height="40dip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/widget_bg"
             android:layout_gravity="center_horizontal"
         />	
