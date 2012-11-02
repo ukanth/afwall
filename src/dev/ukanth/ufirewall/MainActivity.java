@@ -30,7 +30,6 @@ import java.util.Comparator;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,11 +40,9 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -470,7 +467,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				final DroidApp app = apps[position];
 				entry.app = app;
 				entry.text.setText(app.toString());
-        		entry.icon.setImageDrawable(app.cached_icon);
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+				boolean disableIcons = prefs.getBoolean("disableIcons", false);
+				if(!disableIcons) {
+					entry.icon.setImageDrawable(app.cached_icon);	
+				}
 				ApplicationInfo info = app.appinfo;
 				if(info != null){
 					if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
@@ -479,11 +480,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						entry.text.setTextColor(defaultColor);
 					}
 				} 
+				if(!disableIcons) {
 				if (!app.icon_loaded && app.appinfo != null) {
 					// this icon has not been loaded yet - load it on a
 					// separated thread
 					new LoadIconTask().execute(app, getPackageManager(),
 							convertView);
+				}
 				}
 				final CheckBox box_wifi = entry.box_wifi;
 				box_wifi.setTag(app);

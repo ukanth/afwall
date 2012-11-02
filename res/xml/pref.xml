@@ -22,7 +22,11 @@
             android:key="disableUSB3gRule"
             android:summary="Prevent AFWall to apply 3g rules when using wired USB Connection"
             android:title="Disable 3G rules on Wired USB" />
-         
+
+         <CheckBoxPreference
+            android:key="disableIcons"
+            android:summary="Hide icons"
+            android:title="Hide application icons" />
     </PreferenceCategory>
 
 </PreferenceScreen>
