@@ -1,4 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Contains shared programming interfaces.
+ * All iptables "communication" is handled by this class.
+ *
+ * Copyright (C) 2012 Umakanthan Chandran
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Umakanthan Chandran
+ * @version 1.0
+ */
+  -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 <resources>
     <string name="app_name">AFWall+</string>
     <string name="app_version">1.0.2a</string>
@@ -19,9 +46,9 @@
 				"You need a rooted phone to run AFWall+.\n\n" +
 				"If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n" +
 				"Error message: </string>
-	<string name="error_common">Error : </string>
-	<string name="all_item">(Any application) - Same as selecting all applications</string>		
-	<string name="root_item">(root) - Applications running as root</string>
+    <string name="error_common">Error : </string>
+    <string name="all_item">(Any application) - Same as selecting all applications</string>		
+    <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed-out</string>
     <string name="fw_enabled">Enabled</string>
     <string name="fw_disabled">Disabled</string>
@@ -75,7 +102,7 @@
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
-	<string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
+    <string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
 	    \n<i>Contact me - cumakt@gmail.com (@ukanth- Twitter)</i>
 		\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
 		\n
