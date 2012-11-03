@@ -1,29 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:duplicateParentState="false">
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
-	<ListView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@android:id/list"
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:drawSelectorOnTop="false"
-    android:scrollbarAlwaysDrawVerticalTrack="true"
-    />
-	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6px">
-		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/label_mode" android:text="@string/mode" android:textSize="22px" android:clickable="true"></TextView>
-		<ImageView
-            android:src="@drawable/spinner"
-            android:layout_width="12dip"
-            android:layout_height="18dip">
-        </ImageView>
-	</LinearLayout>
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
-	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="0px">
-		<View android:layout_width="34dip" android:layout_height="fill_parent"/>
-		<ImageView android:layout_width="34dip" android:layout_height="wrap_content" android:id="@+id/img_wifi" android:src="@drawable/eth_wifi" android:clickable="true"></ImageView>
-		<ImageView android:layout_width="34dip" android:layout_height="wrap_content" android:id="@+id/img_3g" android:src="@drawable/eth_3g" android:clickable="true"></ImageView>
-		<ImageView android:layout_width="34dip" android:layout_height="wrap_content" android:id="@+id/img_roam" android:src="@drawable/roam" android:clickable="true"></ImageView>
-		<ImageView android:layout_width="34dip" android:layout_height="wrap_content" android:id="@+id/img_reset" android:src="@drawable/clear" android:clickable="true"></ImageView>
+<!--
+/**
+ * Contains shared programming interfaces.
+ * All iptables "communication" is handled by this class.
+ *
+ * Copyright (C) 2012 Umakanthan Chandran
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Umakanthan Chandran
+ * @version 1.0
+ */
+  -->
+  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent" 
+              android:layout_height="fill_parent"  
+              android:orientation="vertical" 
+              android:duplicateParentState="false">
+              
+        <View android:layout_width="fill_parent" 
+	      android:layout_height="1px" 
+	      android:background="#FFFFFFFF" />
+	      
+	<ListView xmlns:android="http://schemas.android.com/apk/res/android" 
+	          android:id="@android:id/list"
+                  android:layout_width="wrap_content" 
+                  android:layout_height="wrap_content"
+                  android:drawSelectorOnTop="false"
+                  android:scrollbarAlwaysDrawVerticalTrack="true" />
+                  
+	<LinearLayout android:layout_width="fill_parent" 
+	              android:layout_height="wrap_content"
+	              android:padding="6px">
+	              
+		<TextView android:layout_width="wrap_content" 
+		          android:layout_height="wrap_content" 
+		          android:id="@+id/label_mode" 
+		          android:text="@string/mode" 
+		          android:textSize="22px" 
+		          android:clickable="true">
+		          </TextView>
+		          
+		<ImageView android:src="@drawable/spinner"
+                           android:layout_width="12dp"
+                           android:layout_height="18dp">
+                           </ImageView>
 	</LinearLayout>
 	
-	<ListView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/listview"></ListView>
+	<View android:layout_width="fill_parent" 
+	      android:layout_height="1px"
+	      android:background="#FFFFFFFF" />
+	              
+	<LinearLayout android:layout_width="fill_parent" 
+	              android:layout_height="wrap_content" 
+	              android:padding="0px">
+	              
+		<View android:layout_width="34dp" 
+		      android:layout_height="fill_parent" />
+		      
+		<ImageView android:layout_width="34dp" 
+		           android:layout_height="wrap_content" 
+		           android:id="@+id/img_wifi" 
+		           android:src="@drawable/eth_wifi" 
+		           android:clickable="true">
+		           </ImageView>
+		           
+		<ImageView android:layout_width="34dp" 
+		           android:layout_height="wrap_content"
+		           android:id="@+id/img_3g"
+		           android:src="@drawable/eth_3g"
+		           android:clickable="true">
+		           </ImageView>
+		           
+		<ImageView android:layout_width="34dp"
+		           android:layout_height="wrap_content"
+		           android:id="@+id/img_roam" 
+		           android:src="@drawable/roam" 
+		           android:clickable="true">
+		           </ImageView>
+		           
+		<ImageView android:layout_width="34dp"
+		           android:layout_height="wrap_content" 
+		           android:id="@+id/img_reset"
+		           android:src="@drawable/clear"
+		           android:clickable="true">
+		           </ImageView>
+		          
+	  </LinearLayout>
+	
+	<ListView android:layout_width="wrap_content" 
+	          android:layout_height="wrap_content" 
+	          android:id="@+id/listview"
+	          </ListView>
 	
 </LinearLayout>
