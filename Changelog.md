@@ -1,7 +1,7 @@
 Changelog
 ======
 
-Version 1.0.2a
+Version 1.0.2a ( Please note, if you upgrade from 1.0.1a, rules will be reset!)
 * Roaming Option ( not tested !)
 * Added Shutdown broadcast and applied rule to block all the connections ( this should solve the leakage 
   when phone is rebooted/started before afwall can start !!!) - Not tested !
