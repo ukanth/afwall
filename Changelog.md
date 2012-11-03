@@ -12,14 +12,14 @@ Version 1.0.2a
 * Fixed bug in reload applications
 * Fixed bug in applying rules in clear/select all
 * Fixed the issue with save/discard rules when press back button.
-* [Download](http://forum.xda-developers.com/attachment.php?attachmentid=1450085&d=1351827052)
+* [Download](https://github.com/downloads/ukanth/afwall/AFWall+%201.0.2a.apk)
 
 
 Version 1.0.1a
 * Improved install notification( only notify when app has internet permission )
 * Select All Wifi / 3G or Clean All option ! ( HUGE FIX ) - No Invert select this time. just click on the 3g/wifi icons will do the trick !
 * Fixed dangerous file permissions issues ( reported in original droidwall issue )
-* [Download](http://forum.xda-developers.com/attachment.php?attachmentid=1435715&d=1351366366)
+* [Download](https://github.com/downloads/ukanth/afwall/AFWall%201.0.1a.apk)
 
 
 Version 1.0.0a
