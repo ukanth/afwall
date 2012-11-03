@@ -1,32 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Contains shared programming interfaces.
+ * All iptables "communication" is handled by this class.
+ *
+ * Copyright (C) 2012 Umakanthan Chandran
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Umakanthan Chandran
+ * @version 1.0
+ */
+  -->
+  
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:summary="AFWall+ Options"
+                        android:title="AFWall+ Preferences" >
+                        
+       <CheckBoxPreference android:key="notifyAppInstall"
+                           android:summary="Enable will notify to open AFWall+ on new installtions"
+                           android:title="Notify on new installs" />
 
-    <PreferenceCategory
-        android:summary="AFWall+ Options"
-        android:title="AFWall+ Preferences" >
-        <CheckBoxPreference
-            android:key="notifyAppInstall"
-            android:summary="Enable will notify to open AFWall+ on new installtions"
-            android:title="Notify on new installs" />
-        <CheckBoxPreference
-            android:key="showToast"
-            android:title="Disable Toast Messages" />
-         
-         <net.margaritov.preference.colorpicker.ColorPickerPreference 
+       <CheckBoxPreference android:key="showToast"
+                           android:title="Disable Toast Messages" />
+       
+       <!-- Colorpicker -->
+       <net.margaritov.preference.colorpicker.ColorPickerPreference 
 			android:key="sysColor"
 			android:title="System Apps Highlight" 
 			android:summary="Highlight system applications"
-			android:defaultValue="0xff000000" 
-		  />
-         <CheckBoxPreference
-            android:key="disableUSB3gRule"
-            android:summary="Prevent AFWall to apply 3g rules when using wired USB Connection"
-            android:title="Disable 3G rules on Wired USB" />
+			android:defaultValue="0xff000000" />
+			
+       <CheckBoxPreference android:key="disableUSB3gRule"
+                           android:summary="Prevent AFWall to apply 3g rules when using wired USB Connection"
+                           android:title="Disable 3G rules on Wired USB" />
 
-         <CheckBoxPreference
-            android:key="disableIcons"
-            android:summary="Hide icons"
-            android:title="Hide application icons" />
+       <CheckBoxPreference android:title="Hide application icons"
+                           android:key="disableIcons"
+                           android:summary="Hide icons" />
     </PreferenceCategory>
 
 </PreferenceScreen>
