@@ -5,20 +5,32 @@
     android:versionName="1.0.0" >
 
     <uses-sdk
-        android:minSdkVersion="7"
+        <!-- min sdk is now 8 and max 16 all other are outdated -->
+        android:minSdkVersion="8"
         android:targetSdkVersion="16" />
-    
+        
+    <!-- permissions -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.DEVICE_POWER" />
     
+    
+     <supports-screens
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+    
 
     <application
+        android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock" >
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +40,8 @@
         </activity>
         <activity
             android:name="dev.ukanth.ufirewall.PrefsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
         <activity android:name=".CustomScriptActivity" />
@@ -73,11 +87,5 @@
             </intent-filter>
         </receiver>
     </application>
-
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:smallScreens="true" />
 
 </manifest>
