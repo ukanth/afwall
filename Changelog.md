@@ -7,7 +7,7 @@ Download links are right here on the ["Downloads" front page](https://github.com
 Version 1.0.3a
 * Fix for some apps can "bypass" the firewall by just using UDP port 53. Disable port 53
 * Added 3g ifaces to support more devices ( should solve issues with firewall for some devices )
-* Fixed Widget on/off issue 
+* Fixed Widget on/off issue ( First enable firewall and then add the widget will do the trick !)
 * Fixed Widget size for 4.0+ devices
 * Prepared for i18n Support
 * Prepared support for XHDPI devices
