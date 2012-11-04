@@ -3,6 +3,7 @@
  * This is the screen displayed when you open the application
  * 
  * Copyright (C) 2009-2011  Rodrigo Zechin Rosauro
+ * Copyright (C) 2011-2012  Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @author Rodrigo Zechin Rosauro
- * @version 1.0
+ * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
+ * @version 1.1
  */
 
 package dev.ukanth.ufirewall;

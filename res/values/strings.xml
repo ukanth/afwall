@@ -4,6 +4,8 @@
     <string name="app_version">1.0.2a</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
+    <string name="whitelist_array_item">White list (allow selected)</string>
+    <string name="blacklist_array_item">Black list (block selected)</string>
     <string name="showrules">Show rules</string>
     <string name="applyrules">Apply rules</string>
     <string name="saverules">Save rules</string>
@@ -23,8 +25,8 @@
 	<string name="all_item">(Any application) - Same as selecting all applications</string>		
 	<string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed-out</string>
-    <string name="fw_enabled">Enabled</string>
-    <string name="fw_disabled">Disabled</string>
+    <string name="fw_enabled">Firewall Enabled</string>
+    <string name="fw_disabled">Firewall Disabled</string>
     <string name="log_enabled">Log enabled</string>
     <string name="log_disabled">Log disabled</string>
     <string name="log_was_enabled">Log has been enabled</string>
@@ -61,6 +63,13 @@
     <string name="preferences">Preferences</string>
     <string name="reload">Reload Applications</string>
     <string name="flush">Flush Rules</string>
+    <string name="notify_pref_summary">Enable will notify to open AFWall+ on new installations</string>
+    <string name="notify_pref_title">Notify on new installs</string>
+    <string name="toast_pref_title">Disable Toast Messages</string>
+    <string name="syscolor_pref_title">Highlight System apps</string>
+    <string name="usb3g_pref_summary">Prevent AFWall to apply 3g rules when using wired USB Connection</string>
+    <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
+    <string name="hideicons_pref_title">Hide application icons</string>
     <string name="custom_script_defined">Custom script defined</string>
     <string name="custom_script_removed">Custom script removed</string>
     <string name="custom_script_error">Error saving custom script</string>

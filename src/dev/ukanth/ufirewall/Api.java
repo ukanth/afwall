@@ -1,8 +1,9 @@
 /**
- * Contains shared programming interfaces.
+ * 
  * All iptables "communication" is handled by this class.
  * 
  * Copyright (C) 2009-2011  Rodrigo Zechin Rosauro
+ * Copyright (C) 2011-2012  Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +18,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @author Rodrigo Zechin Rosauro
- * @version 1.0
+ * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
+ * @version 1.1
  */
+
 
 package dev.ukanth.ufirewall;
 
@@ -32,7 +34,6 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -160,10 +161,9 @@ public final class Api {
 			"fi\n" +
 			"# Try to find iptables\n" +
 			"# Added if iptables binary already in system then use it, if not use implemented one\n" + 
-			"if ! command -v iptables &> /dev/null; then\n" +
 			"if " + myiptables + " --version >/dev/null 2>/dev/null ; then\n" +
 			"	IPTABLES="+myiptables+"\n" +
-			"fi\nfi\n" +
+			"fi\n" +
 			"";
 	}
 	/**
@@ -203,12 +203,13 @@ public final class Api {
 			return false;
 		}
 		assertBinaries(ctx, showErrors);
-		final String ITFS_WIFI[] = {"eth+", "wlan+", "tiwlan+", "athwlan+", "ra+"};
+		final String ITFS_WIFI[] = {"eth+", "wlan+", "tiwlan+", "athwlan+", "ra+","wlan0+"};
 		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean disableUSB3gRule = appprefs.getBoolean("disableUSB3gRule", false);
 		ArrayList<String> ITFS_3G = new ArrayList<String>();
 		ITFS_3G.add("rmnet+");ITFS_3G.add("ppp+");ITFS_3G.add("pdp+");ITFS_3G.add("pnp+");
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
+		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio0+");
 		if(!disableUSB3gRule) {
 			ITFS_3G.add("usb+");
 		}
@@ -232,6 +233,7 @@ public final class Api {
 				"$IPTABLES -L afwall-reject >/dev/null 2>/dev/null || $IPTABLES --new afwall-reject || exit 5\n" +
 				"# Add afwall chain to OUTPUT chain if necessary\n" +
 				"$IPTABLES -L OUTPUT | $GREP -q afwall || $IPTABLES -A OUTPUT -j afwall || exit 6\n" +
+				"$IPTABLES -A afwall -p udp --dport 53 -j RETURN || exit 11\n" +	
 				"# Flush existing rules\n" +
 				"$IPTABLES -F afwall || exit 7\n" +
 				"$IPTABLES -F afwall-3g || exit 8\n" +
@@ -256,10 +258,10 @@ public final class Api {
 				script.append(customScript);
 				script.append("\n# END OF CUSTOM SCRIPT (user-defined)\n\n");
 			}
-			if (whitelist && logenabled) {
+			/*if (whitelist && logenabled) {
 				script.append("# Allow DNS lookups on white-list for a better logging (ignore errors)\n");
 				script.append("$IPTABLES -A afwall -p udp --dport 53 -j RETURN\n");
-			}
+			}*/
 			script.append("# Main rules (per interface)\n");
 			for (final String itf : ITFS_3G) {
 				script.append("$IPTABLES -A afwall -o ").append(itf).append(" -j afwall-3g || exit\n");
@@ -741,6 +743,51 @@ public final class Api {
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(0);
+			/*
+			 
+			 	File dir = new File("/proc/uid_stat/");
+				String[] children = dir.list();
+				List<integer> uids = new ArrayList<integer>();
+				if (children != null) {
+  					for (int i = 0; i < children.length; i++) {
+    					int uid = Integer.parseInt(children[i]);
+    					if ((uid >= 0 && uid < 2000) || (uid >= 10000)) {
+      						uids.add(uid);
+    					}
+  					}
+				}
+				
+				0 - Root
+				1000 - System
+				1001 - Radio
+				1002 - Bluetooth
+				1003 - Graphics
+				1004 - Input
+				1005 - Audio
+				1006 - Camera
+				1007 - Log
+				1008 - Compass
+				1009 - Mount
+				1010 - Wi-Fi
+				1011 - ADB
+				1012 - Install
+				1013 - Media
+				1014 - DHCP
+				1015 - External Storage
+				1016 - VPN
+				1017 - Keystore
+				1018 - USB Devices
+				1019 - DRM
+				1020 - Available
+				1021 - GPS
+				1022 - deprecated
+				1023 - Internal Media Storage
+				1024 - MTP USB
+				1025 - NFC
+				1026 - DRM RPC
+
+			 
+			 */
 			final HashMap<Integer, DroidApp> map = new HashMap<Integer, DroidApp>();
 			final Editor edit = prefs.edit();
 			boolean changed = false;

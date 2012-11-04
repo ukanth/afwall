@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="modes">
-        <item>White list (allow selected)</item>
-        <item>Black list (block selected)</item>
+        <item>@string/whitelist_array_item</item>
+        <item>@string/blacklist_array_item</item>
     </string-array>
 </resources>

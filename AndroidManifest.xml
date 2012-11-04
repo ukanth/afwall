@@ -1,24 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Contains shared programming interfaces.
+ * All iptables "communication" is handled by this class.
+ *
+ * Copyright (C) 2007-2008 The Android Open Source Project
+ * Copyright (C) 2009-2011 Rodrigo Zechin Rosauro
+ * Copyright (C) 2011-2012 Umakanthan Chandran
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
+ * @version 1.1
+ */
+-->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.ukanth.ufirewall"
     android:versionCode="100"
     android:versionName="1.0.0" >
 
+    <!-- Android 2.2 up to 4.x -->
     <uses-sdk
-        android:minSdkVersion="7"
+        android:minSdkVersion="8"
         android:targetSdkVersion="16" />
     
+    <!-- Permissions -->
+    <!-- Allows ufwall to receive the ACTION_BOOT_COMPLETED that is broadcast 
+         after the system finishes booting. If you don't request this permission, 
+         you will not receive the broadcast at that time. Though holding this 
+         permission does not have any security implications, it can have 
+         a negative impact on the user experience by increasing the amount 
+         of time it takes the system to start and allowing applications 
+         to have themselves running without the user being aware of them. 
+         As such, you must explicitly declare your use of this facility to make
+         that visible to the user. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Allows ufwall to access information about networks -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.DEVICE_POWER" />
+    <!-- Allows ufwall to change network connectivity state -->
+    <!-- <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> -->
+    <!-- Allows low-level access to power management -->
+    <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> -->
+    <!-- Allows ufwall to write to external storage  -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> -->
     
+    <!-- Screen support -->
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true" />
 
     <application
+        android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock" >
+        
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,11 +80,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="dev.ukanth.ufirewall.PrefsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:hardwareAccelerated="true"
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
+        
         <activity android:name=".CustomScriptActivity" />
+
+    <!-- ToDo: Show changelog inside the application -->
+    <activity
+      android:name=".activities.ChangeLogActivity"
+      android:label="@string/app_name"
+      android:uiOptions="none"
+      android:theme="@style/Theme.Sherlock"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+      </intent-filter>
+    </activity>
 
         <receiver
             android:name="BootBroadcast"
@@ -47,11 +117,11 @@
                 <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />
             </intent-filter>
          </receiver> 
+         
         <receiver android:name="PackageBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
-
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
@@ -61,23 +131,18 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+        
         <receiver android:name="StatusWidget" >
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
-
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.googlecode.droidwall.intent.action.STATUS_CHANGED" />
-                <action android:name="com.googlecode.droidwall.intent.action.TOGGLE_REQUEST" />
+                <action android:name="android.ufwall.intent.action.STATUS_CHANGED" />
+                <action android:name="android.ufwall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
+        
     </application>
-
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:smallScreens="true" />
 
 </manifest>
