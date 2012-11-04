@@ -109,7 +109,7 @@
     </activity>
 
         <receiver
-            android:name="BootBroadcast"
+            android:name="BootBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" >
                 </action>
