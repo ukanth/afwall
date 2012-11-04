@@ -22,7 +22,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
- * @version 1.1
+ * @version 1.2
  */
 -->
 
@@ -64,19 +64,25 @@
         android:smallScreens="true" />
 
     <application
+        android:name=".AFWall+"
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock" >
-        
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:hardwareAccelerated="true"
             android:label="@string/app_name" >
             <intent-filter>
+                <!-- MAIN action is a main entry point 
+                    and the LAUNCHER category says that 
+                    this entry point should be listed in 
+                    the application launcher -->
                 <action android:name="android.intent.action.MAIN" />
+                <!-- Does we need android.intent.category.DEFAULT? -->
                 <category android:name="android.intent.category.DEFAULT" />
+                <!-- Should be displayed in the top-level launcher. -->
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -104,7 +110,6 @@
 
         <receiver
             android:name="BootBroadcast"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" >
                 </action>
@@ -138,9 +143,10 @@
                 android:resource="@xml/onoff_widget" />
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.ufwall.intent.action.STATUS_CHANGED" />
-                <action android:name="android.ufwall.intent.action.TOGGLE_REQUEST" />
+                <action android:name="android.ufirewall.intent.action.STATUS_CHANGED" />
+                <action android:name="android.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
+
         </receiver>
         
     </application>
