@@ -358,12 +358,12 @@ public final class Api {
 				if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 					msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 				}
-				alert(ctx, "Error applying iptables rules. Exit code: " + code + "\n\n" + msg.trim());
+				alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim());
 			} else {
 				return true;
 			}
 		} catch (Exception e) {
-			if (showErrors) alert(ctx, "error refreshing iptables: " + e);
+			if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
 		}
 		return false;
     }
@@ -744,19 +744,6 @@ public final class Api {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(0);
 			/*
-			 
-			 	File dir = new File("/proc/uid_stat/");
-				String[] children = dir.list();
-				List<integer> uids = new ArrayList<integer>();
-				if (children != null) {
-  					for (int i = 0; i < children.length; i++) {
-    					int uid = Integer.parseInt(children[i]);
-    					if ((uid >= 0 && uid < 2000) || (uid >= 10000)) {
-      						uids.add(uid);
-    					}
-  					}
-				}
-				
 				0 - Root
 				1000 - System
 				1001 - Radio

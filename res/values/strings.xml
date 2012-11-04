@@ -17,6 +17,8 @@
     <string name="error_flush">Error flushing iptables</string>
     <string name="error_purge">Error purging iptables. exit code:</string>
     <string name="error_binary">Error installing binary files:</string>
+    <string name="error_refresh">Error refreshing iptables: </string>
+    <string name="error_apply">Error applying iptables rules. Exit code: </string>
     <string name="error_su">Could not acquire root access.\n" +
 				"You need a rooted phone to run AFWall+.\n\n" +
 				"If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n" +
