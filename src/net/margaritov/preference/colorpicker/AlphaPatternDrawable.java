@@ -12,12 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
+ *
+ * @author John Doe
+ * @version 1.0
  */
 
 package net.margaritov.preference.colorpicker;
 
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
+/* Removed the Bitmap support to implementing drawing directly on Canvas
+ * import android.graphics.Bitmap;
+ * import android.graphics.Bitmap.Config;
+*/ 
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -34,17 +41,18 @@ public class AlphaPatternDrawable extends Drawable {
 
 	private int mRectangleSize = 10;
 
-	private Paint mPaint = new Paint();
+	// private Paint mPaint = new Paint();
 	private Paint mPaintWhite = new Paint();
 	private Paint mPaintGray = new Paint();
 
 	private int numRectanglesHorizontal;
 	private int numRectanglesVertical;
 
-	/**
-	 * Bitmap in which the pattern will be cahched.
-	 */
-	private Bitmap		mBitmap;
+      /**
+	* Bitmap in which the pattern will be cached.
+	* 
+	* private Bitmap		mBitmap;
+	*/
 
 	public AlphaPatternDrawable(int rectangleSize) {
 		mRectangleSize = rectangleSize;
@@ -54,7 +62,30 @@ public class AlphaPatternDrawable extends Drawable {
 
 	@Override
 	public void draw(Canvas canvas) {
-		canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
+	//	canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
+		Rect bounds = getBounds();
+		
+		Rect r = new Rect();
+		boolean verticalStartWhite = true;
+		for (int i = 0; i <= numRectanglesVertical; i++) {
+
+			boolean isWhite = verticalStartWhite;
+			for (int j = 0; j <= numRectanglesHorizontal; j++) {
+
+				r.top = i * mRectangleSize + bounds.top;
+				r.left = j * mRectangleSize + bounds.left;
+				r.bottom = Math.min(r.top + mRectangleSize, bounds.bottom);
+				r.right = Math.min(r.left + mRectangleSize, bounds.right);
+				
+				canvas.drawRect(r, isWhite ? mPaintWhite : mPaintGray);
+
+				isWhite = !isWhite;
+			}
+
+			verticalStartWhite = !verticalStartWhite;
+
+		}
+
 	}
 
 	@Override
@@ -82,7 +113,7 @@ public class AlphaPatternDrawable extends Drawable {
 		numRectanglesHorizontal = (int) Math.ceil((width / mRectangleSize));
 		numRectanglesVertical = (int) Math.ceil(height / mRectangleSize);
 
-		generatePatternBitmap();
+	//	generatePatternBitmap();
 
 	}
 
@@ -92,7 +123,7 @@ public class AlphaPatternDrawable extends Drawable {
 	 * We do this to chache the bitmap so we don't need to
 	 * recreate it each time draw() is called since it
 	 * takes a few milliseconds.
-	 */
+	 
 	private void generatePatternBitmap(){
 
 		if(getBounds().width() <= 0 || getBounds().height() <= 0){
@@ -123,6 +154,6 @@ public class AlphaPatternDrawable extends Drawable {
 
 		}
 
-	}
+	} */
 
 }
