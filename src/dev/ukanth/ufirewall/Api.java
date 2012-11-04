@@ -3,6 +3,7 @@
  * All iptables "communication" is handled by this class.
  * 
  * Copyright (C) 2009-2011  Rodrigo Zechin Rosauro
+ * Copyright (C) 2011-2012  Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @author Rodrigo Zechin Rosauro
- * @version 1.0
+ * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
+ * @version 1.1
  */
 
 package dev.ukanth.ufirewall;
@@ -67,33 +68,35 @@ public final class Api {
 	/** root script filename */
 	private static final String SCRIPT_FILE = "afwall.sh";
 	
-	// Preferences
+	/* Preferences */
 	public static final String PREFS_NAME 			= "AFWallPrefs";
 	public static final String PREF_3G_UIDS			= "AllowedUids3G";
+        public static final String PREF_VPN_UIDS		= "AllowedUidsVPN";
 	public static final String PREF_WIFI_UIDS		= "AllowedUidsWifi";
-	public static final String PREF_ROAMING_UIDS	= "AllowedUidsRoaming";
+	public static final String PREF_ROAMING_UIDS	        = "AllowedUidsRoaming";
 	public static final String PREF_PASSWORD 		= "Password";
-	public static final String PREF_CUSTOMSCRIPT 	= "CustomScript";
-	public static final String PREF_CUSTOMSCRIPT2 	= "CustomScript2"; // Executed on shutdown
+	public static final String PREF_CUSTOMSCRIPT 	        = "CustomScript";
+	public static final String PREF_CUSTOMSCRIPT2 	        = "CustomScript2"; // Executed on shutdown
 	public static final String PREF_MODE 			= "BlockMode";
 	public static final String PREF_ENABLED			= "Enabled";
 	public static final String PREF_LOGENABLED		= "LogEnabled";
-	// Modes
+	/* Modes */
 	public static final String MODE_WHITELIST = "whitelist";
 	public static final String MODE_BLACKLIST = "blacklist";
-	// Messages
-	
+
+	/* Messages */	
 	public static final String STATUS_CHANGED_MSG 	= "android.appwidget.action.APPWIDGET_ADDED";
 	public static final String TOGGLE_REQUEST_MSG	= "dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST";
 	public static final String CUSTOM_SCRIPT_MSG	= "dev.ukanth.ufirewall.intent.action.CUSTOM_SCRIPT";
-	// Message extras (parameters)
+
+	/* Message extras (parameters) */
 	public static final String STATUS_EXTRA			= "dev.ukanth.ufirewall.intent.extra.STATUS";
 	public static final String SCRIPT_EXTRA			= "dev.ukanth.ufirewall.intent.extra.SCRIPT";
 	public static final String SCRIPT2_EXTRA		= "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
 	
-	// Cached applications
+	/* Cached applications */
 	public static DroidApp applications[] = null;
-	// Do we have root access?
+	/* Do we have root access? */
 	private static boolean hasroot = false;
 	
 	public static boolean isUSBEnable = false;
@@ -196,23 +199,26 @@ public final class Api {
      * @param ctx application context (mandatory)
      * @param uidsWifi list of selected UIDs for WIFI to allow or disallow (depending on the working mode)
      * @param uids3g list of selected UIDs for 2G/3G to allow or disallow (depending on the working mode)
+     * @param uidsVPN list of selected UIDs for VPN to allow or disallow (depending on the working mode)
      * @param showErrors indicates if errors should be alerted
      */
-	private static boolean applyIptablesRulesImpl(Context ctx, List<Integer> uidsWifi, List<Integer> uids3g, List<Integer> uidsRoam, boolean showErrors) {
-		if (ctx == null) {
-			return false;
+	private static boolean applyIptablesRulesImpl(Context ctx, List<Integer> uidsWifi, List<Integer> uids3g, List<Integer> uidsVPN, boolean showErrors) {
+               if (ctx == null) {
+		   return false;
 		}
 		assertBinaries(ctx, showErrors);
 		final String ITFS_WIFI[] = {"eth+", "wlan+", "tiwlan+", "athwlan+", "ra+"};
+		final String ITFS_3G[] = {"rmnet+","pdp+","uwbr+","wimax+","vsnet+","ccmni+","usb+"};
+		final String ITFS_VPN[] = {"ppp+","tap+","tun+"};
 		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean disableUSB3gRule = appprefs.getBoolean("disableUSB3gRule", false);
-		ArrayList<String> ITFS_3G = new ArrayList<String>();
+		/* ArrayList<String> ITFS_3G = new ArrayList<String>();
 		ITFS_3G.add("rmnet+");ITFS_3G.add("ppp+");ITFS_3G.add("pdp+");ITFS_3G.add("pnp+");
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
 		if(!disableUSB3gRule) {
 			ITFS_3G.add("usb+");
-		}
-		
+		} 
+		*/	
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 		final boolean blacklist = !whitelist;
@@ -229,16 +235,19 @@ public final class Api {
 				"$IPTABLES -L afwall >/dev/null 2>/dev/null || $IPTABLES --new afwall || exit 2\n" +
 				"$IPTABLES -L afwall-3g >/dev/null 2>/dev/null || $IPTABLES --new afwall-3g || exit 3\n" +
 				"$IPTABLES -L afwall-wifi >/dev/null 2>/dev/null || $IPTABLES --new afwall-wifi || exit 4\n" +
-				"$IPTABLES -L afwall-reject >/dev/null 2>/dev/null || $IPTABLES --new afwall-reject || exit 5\n" +
+			     // "$IPTABLES -L afwall-reject >/dev/null 2>/dev/null || $IPTABLES --new afwall-reject || exit 5\n" + 
+				"$IPTABLES -L afwall-vpn >/dev/null 2>/dev/null || $IPTABLES --new afwall-vpn || exit 5\n" +
+				"$IPTABLES -L afwall-reject >/dev/null 2>/dev/null || $IPTABLES --new afwall-reject || exit 6\n" +
 				"# Add afwall chain to OUTPUT chain if necessary\n" +
-				"$IPTABLES -L OUTPUT | $GREP -q afwall || $IPTABLES -A OUTPUT -j afwall || exit 6\n" +
+				"$IPTABLES -L OUTPUT | $GREP -q afwall || $IPTABLES -A OUTPUT -j afwall || exit 7\n" +
 				"# Flush existing rules\n" +
-				"$IPTABLES -F afwall || exit 7\n" +
-				"$IPTABLES -F afwall-3g || exit 8\n" +
-				"$IPTABLES -F afwall-wifi || exit 9\n" +
-				"$IPTABLES -F afwall-reject || exit 10\n" +
+				"$IPTABLES -F afwall || exit 8\n" +
+				"$IPTABLES -F afwall-3g || exit 9\n" +
+				"$IPTABLES -F afwall-wifi || exit 10\n" +
+				"$IPTABLES -F afwall-vpn || exit 11\n" +
+				"$IPTABLES -F afwall-reject || exit 12\n" +
 			"");
-			// Check if logging is enabled
+			/* Check if logging is enabled */
 			if (logenabled) {
 				script.append("" +
 					"# Create the log and reject rules (ignore errors on the LOG target just in case it is not available)\n" +
@@ -267,13 +276,17 @@ public final class Api {
 			for (final String itf : ITFS_WIFI) {
 				script.append("$IPTABLES -A afwall -o ").append(itf).append(" -j afwall-wifi || exit\n");
 			}
+			for (final String itf : ITFS_VPN) {
+				script.append("$IPTABLES -A afwall -o ").append(itf).append(" -j afwall-vpn || exit\n");
+			}
 			
 			script.append("# Filtering rules\n");
 			final String targetRule = (whitelist ? "RETURN" : "afwall-reject");
 			final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
 			final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
+			final boolean any_vpn = uidsVPN.indexOf(SPECIAL_UID_ANY) >= 0;
 			if (whitelist && !any_wifi) {
-				// When "white listing" wifi, we need to ensure that the dhcp and wifi users are allowed
+				/* When "white listing" wifi, we need to ensure that the dhcp and wifi users are allowed */
 				int uid = android.os.Process.getUidForName("dhcp");
 				if (uid != -1) {
 					script.append("# dhcp user\n");
@@ -287,7 +300,7 @@ public final class Api {
 			}
 			if (any_3g) {
 				if (blacklist) {
-					/* block any application on this interface */
+					/* Block any application on this interface */
 					script.append("$IPTABLES -A afwall-3g -j ").append(targetRule).append(" || exit\n");
 				}
 			} else {
@@ -300,9 +313,9 @@ public final class Api {
 				} else {
 					for (final Integer uid : uids3g) {
 						if (uid >= 0) script.append("$IPTABLES -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
-						//Roaming
+						/* Roaming */
 						if(isRoaming(ctx)){
-							//iptables -A OUTPUT -o pdp0 -j REJECT
+							/* iptables -A OUTPUT -o pdp0 -j REJECT */
 						}
 					}
 				}
@@ -318,6 +331,18 @@ public final class Api {
 					if (uid >= 0) script.append("$IPTABLES -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
 				}
 			}
+			if (any_vpn) {
+				if (blacklist) {
+					/* block any application on this interface */
+					script.append("$IPTABLES -A afwall-vpn -j ").append(targetRule).append(" || exit\n");
+				}
+			} else {
+				/* release/block individual applications on this interface */
+				for (final Integer uid : uidsVPN) {
+					if (uid >= 0) script.append("$IPTABLES -A afwall-vpn -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+				}
+			}
+
 			if (whitelist) {
 				if (!any_3g) {
 					if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
@@ -346,13 +371,19 @@ public final class Api {
 					script.append("$IPTABLES -A afwall-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit\n");
 					script.append("$IPTABLES -A afwall-wifi -j afwall-reject || exit\n");
 				}
+				if (uidsVPN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
+					script.append("# hack to BLOCK kernel packets on black-list\n");
+					script.append("$IPTABLES -A afwall-vpn -m owner --uid-owner 0:999999999 -j RETURN || exit\n");
+					script.append("$IPTABLES -A afwall-vpn -j afwall-reject || exit\n");
+				}
+
 			}
 	    	final StringBuilder res = new StringBuilder();
 			code = runScriptAsRoot(ctx, script.toString(), res);
 			if (showErrors && code != 0) {
 				String msg = res.toString();
 				Log.e("AFWall+", msg);
-				// Remove unnecessary help message from output
+				/* Remove unnecessary help message from output */
 				if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 					msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 				}
@@ -378,10 +409,11 @@ public final class Api {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
 		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
+		final String savedUids_vpn = prefs.getString(PREF_VPN_UIDS, "");
 		final String savedUids_roam = prefs.getString(PREF_ROAMING_UIDS, "");
 		final List<Integer> uids_wifi = new LinkedList<Integer>();
 		if (savedUids_wifi.length() > 0) {
-			// Check which applications are allowed on wifi
+			/* Check which applications are allowed on wifi */
 			final StringTokenizer tok = new StringTokenizer(savedUids_wifi, "|");
 			while (tok.hasMoreTokens()) {
 				final String uid = tok.nextToken();
@@ -421,7 +453,22 @@ public final class Api {
 				}
 			}
 		}
-		return applyIptablesRulesImpl(ctx, uids_wifi, uids_3g, uids_roam, showErrors);
+		final List<Integer> uids_vpn = new LinkedList<Integer>();
+		if (savedUids_vpn.length() > 0) {
+			/* Check which applications are allowed on VPN */
+			final StringTokenizer tok = new StringTokenizer(savedUids_vpn, "|");
+			while (tok.hasMoreTokens()) {
+				final String uid = tok.nextToken();
+				if (!uid.equals("")) {
+					try {
+						uids_vpn.add(Integer.parseInt(uid));
+					} catch (Exception ex) {
+					}
+				}
+			}
+		}
+
+		return applyIptablesRulesImpl(ctx, uids_wifi, uids_3g, uids_vpn, uids_roam, showErrors);
 	}
 	
     /**
@@ -444,9 +491,10 @@ public final class Api {
 	public static void saveRules(Context ctx) {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		final DroidApp[] apps = getApps(ctx);
-		// Builds a pipe-separated list of names
+		/* Builds a pipe-separated list of names */
 		final StringBuilder newuids_wifi = new StringBuilder();
 		final StringBuilder newuids_3g = new StringBuilder();
+		final StringBuilder newuids_vpn = new StringBuilder();
 		final StringBuilder newuids_roam = new StringBuilder();
 		for (int i=0; i<apps.length; i++) {
 			if (apps[i].selected_wifi) {
@@ -457,16 +505,21 @@ public final class Api {
 				if (newuids_3g.length() != 0) newuids_3g.append('|');
 				newuids_3g.append(apps[i].uid);
 			}
+			if (apps[i].selected_vpn) {
+				if (newuids_vpn.length() != 0) newuids_vpn.append('|');
+				newuids_vpn.append(apps[i].uid);
+			}
 			if (apps[i].selected_roam) {
 				if (newuids_roam.length() != 0) newuids_roam.append('|');
 				newuids_roam.append(apps[i].uid);
 			}
 
 		}
-		// save the new list of UIDs
+		/* save the new list of UIDs */
 		final Editor edit = prefs.edit();
 		edit.putString(PREF_WIFI_UIDS, newuids_wifi.toString());
 		edit.putString(PREF_3G_UIDS, newuids_3g.toString());
+		edit.putString(PREF_VPN_UIDS, newuids_vpn.toString());
 		edit.putString(PREF_ROAMING_UIDS, newuids_roam.toString());
 		edit.commit();
     }
@@ -481,7 +534,7 @@ public final class Api {
     	final StringBuilder res = new StringBuilder();
 		try {
 			assertBinaries(ctx, showErrors);
-			// Custom "shutdown" script
+			/* Custom "shutdown2" script */
 			final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT2, "");
 	    	final StringBuilder script = new StringBuilder();
 	    	script.append(scriptHeader(ctx));
@@ -490,6 +543,7 @@ public final class Api {
 					"$IPTABLES -F afwall-reject\n" +
 					"$IPTABLES -F afwall-3g\n" +
 					"$IPTABLES -F afwall-wifi\n" +
+					"$IPTABLES -F afwall-vpn\n" +
 	    			"");
 	    	if (customScript.length() > 0) {
 				script.append("\n# BEGIN OF CUSTOM SCRIPT (user-defined)\n");
@@ -527,7 +581,7 @@ public final class Api {
 	/**
 	 * Display logs
 	 * @param ctx application context
-     * @return true if the clogs were cleared
+         * @return true if the clogs were cleared
 	 */
 	public static boolean clearLog(Context ctx) {
 		try {
@@ -682,9 +736,11 @@ public final class Api {
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
 		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
+		final String savedUids_vpn = prefs.getString(PREF_VPN_UIDS, "");
 		final String savedUids_roam = prefs.getString(PREF_ROAMING_UIDS, "");
 		int selected_wifi[] = new int[0];
 		int selected_3g[] = new int[0];
+		int selected_vpn[] = new int[0];
 		int selected_roam[] = new int[0];
 		if (savedUids_wifi.length() > 0) {
 			// Check which applications are allowed
@@ -700,8 +756,25 @@ public final class Api {
 					}
 				}
 			}
-			// Sort the array to allow using "Arrays.binarySearch" later
+			/* Sort the array to allow using "Arrays.binarySearch" later */
 			Arrays.sort(selected_wifi);
+		}
+		if (savedUids_vpn.length() > 0) {
+			/* Check which applications are allowed */
+			final StringTokenizer tok = new StringTokenizer(savedUids_vpn, "|");
+			selected_vpn = new int[tok.countTokens()];
+			for (int i=0; i<selected_vpn.length; i++) {
+				final String uid = tok.nextToken();
+				if (!uid.equals("")) {
+					try {
+						selected_vpn[i] = Integer.parseInt(uid);
+					} catch (Exception ex) {
+						selected_vpn[i] = -1;
+					}
+				}
+			}
+			/* Sort the array to allow using "Arrays.binarySearch" later */
+			Arrays.sort(selected_vpn);
 		}
 		if (savedUids_3g.length() > 0) {
 			// Check which applications are allowed
@@ -717,12 +790,11 @@ public final class Api {
 					}
 				}
 			}
-			// Sort the array to allow using "Arrays.binarySearch" later
+			/* Sort the array to allow using "Arrays.binarySearch" later */
 			Arrays.sort(selected_3g);
-		}
-		
+		}	
 		if (savedUids_roam.length() > 0) {
-			// Check which applications are allowed
+			/* Check which applications are allowed */
 			final StringTokenizer tok = new StringTokenizer(savedUids_roam, "|");
 			selected_roam = new int[tok.countTokens()];
 			for (int i=0; i<selected_roam.length; i++) {
@@ -785,6 +857,9 @@ public final class Api {
 				if (!app.selected_3g && Arrays.binarySearch(selected_3g, app.uid) >= 0) {
 					app.selected_3g = true;
 				}
+				if (!app.selected_vpn && Arrays.binarySearch(selected_vpn, app.uid) >= 0) {
+					app.selected_vpn = true;
+				}
 				if (!app.selected_roam && Arrays.binarySearch(selected_roam, app.uid) >= 0) {
 					app.selected_roam = true;
 				}
@@ -794,13 +869,14 @@ public final class Api {
 			}
 			/* add special applications to the list */
 			final DroidApp special[] = {
-				new DroidApp(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), false, false,false),
-				new DroidApp(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false),
-				new DroidApp(android.os.Process.getUidForName("media"), "Media server", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("gps"), "GPS", false, false,false),
+				new DroidApp(SPECIAL_UID_ANY,"(Any application) - Same as selecting all applications", false, false, changed),
+				new DroidApp(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false, changed),
+				new DroidApp(android.os.Process.getUidForName("root"), "(root) - Applications running as root", false, false, changed),
+				new DroidApp(android.os.Process.getUidForName("media"), "Media server", false, false, changed),
+				new DroidApp(android.os.Process.getUidForName("vpn"), "VPN networking", false, false, changed),	
+				new DroidApp(android.os.Process.getUidForName("roam"), "Roaming networking", false, false, changed),
+				new DroidApp(android.os.Process.getUidForName("shell"), "Linux shell", false, false, changed),
+				new DroidApp(android.os.Process.getUidForName("gps"), "GPS", false, false, changed),
 			};
 			for (int i=0; i<special.length; i++) {
 				app = special[i];
@@ -811,6 +887,9 @@ public final class Api {
 					}
 					if (Arrays.binarySearch(selected_3g, app.uid) >= 0) {
 						app.selected_3g = true;
+					}
+					if (Arrays.binarySearch(selected_vpn, app.uid) >= 0) {
+						app.selected_vpn = true;
 					}
 					if (Arrays.binarySearch(selected_roam, app.uid) >= 0) {
 						app.selected_roam = true;
@@ -829,14 +908,14 @@ public final class Api {
 	/**
 	 * Check if we have root access
 	 * @param ctx mandatory context
-     * @param showErrors indicates if errors should be alerted
+         * @param showErrors indicates if errors should be alerted
 	 * @return boolean true if we have root
 	 */
 	public static boolean hasRootAccess(final Context ctx, boolean showErrors) {
 		if (hasroot) return true;
 		final StringBuilder res = new StringBuilder();
 		try {
-			// Run an empty script just to check root access
+			/* Run an empty script just to check root access */
 			if (runScriptAsRoot(ctx, "exit 0", res) == 0) {
 				hasroot = true;
 				return true;
@@ -850,7 +929,7 @@ public final class Api {
 	}
     /**
      * Runs a script, wither as root or as a regular user (multiple commands separated by "\n").
-	 * @param ctx mandatory context
+     * @param ctx mandatory context
      * @param script the script to be executed
      * @param res the script output response (stdout + stderr)
      * @param timeout timeout in milliseconds (-1 for none)
@@ -990,13 +1069,14 @@ public final class Api {
 	public static void applicationRemoved(Context ctx, int uid) {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		final Editor editor = prefs.edit();
-		// allowed application names separated by pipe '|' (persisted)
+		/* allowed application names separated by pipe '|' (persisted) */
 		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
 		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
+		final String savedUids_vpn = prefs.getString(PREF_VPN_UIDS, "");
 		final String savedUids_roam = prefs.getString(PREF_ROAMING_UIDS, "");
 		final String uid_str = uid + "";
 		boolean changed = false;
-		// look for the removed application in the "wi-fi" list
+		/* look for the removed application in the "wi-fi" list */
 		if (savedUids_wifi.length() > 0) {
 			final StringBuilder newuids = new StringBuilder();
 			final StringTokenizer tok = new StringTokenizer(savedUids_wifi, "|");
@@ -1032,16 +1112,32 @@ public final class Api {
 				editor.putString(PREF_3G_UIDS, newuids.toString());
 			}
 		}
-
-		// look for the removed application in roaming list
-		
+		/* Look for the removed application in the "vpn" list */
+		if (savedUids_vpn.length() > 0) {
+			final StringBuilder newuids = new StringBuilder();
+			final StringTokenizer tok = new StringTokenizer(savedUids_vpn, "|");
+			while (tok.hasMoreTokens()) {
+				final String token = tok.nextToken();
+				if (uid_str.equals(token)) {
+					Log.d("afwall", "Removing UID " + token + " from the VPN list (package removed)!");
+					changed = true;
+				} else {
+					if (newuids.length() > 0) newuids.append('|');
+					newuids.append(token);
+				}
+			}
+			if (changed) {
+				editor.putString(PREF_VPN_UIDS, newuids.toString());
+			}
+		}
+		/* Look for the removed application in roaming list */	
 		if (savedUids_roam.length() > 0) {
 			final StringBuilder newuids = new StringBuilder();
 			final StringTokenizer tok = new StringTokenizer(savedUids_roam, "|");
 			while (tok.hasMoreTokens()) {
 				final String token = tok.nextToken();
 				if (uid_str.equals(token)) {
-					Log.d("AFWall", "Removing UID " + token + " from the Roaming list (package removed)!");
+					Log.d("afwall", "Removing UID " + token + " from the Roaming list (package removed)!");
 					changed = true;
 				} else {
 					if (newuids.length() > 0) newuids.append('|');
@@ -1052,11 +1148,11 @@ public final class Api {
 				editor.putString(PREF_ROAMING_UIDS, newuids.toString());
 			}
 		}
-		// if anything has changed, save the new prefs...
+		/* if anything has changed, save the new preferences */
 		if (changed) {
 			editor.commit();
 			if (isEnabled(ctx)) {
-				// .. and also re-apply the rules if the firewall is enabled
+				/* Also re-apply the rules if afwall+ is enabled */
 				applySavedIptablesRules(ctx, false);
 			}
 		}
@@ -1066,7 +1162,7 @@ public final class Api {
      * Small structure to hold an application info
      */
 	public static final class DroidApp {
-		/** linux user id */
+	/** linux user id */
     	int uid;
     	/** application names belonging to this user id */
     	String names[];
@@ -1076,8 +1172,10 @@ public final class Api {
     	boolean selected_wifi;
     	/** indicates if this application is selected for 3g */
     	boolean selected_3g;
-    	/** indicates if this application is selected for 3g */
+    	/** indicates if this application is selected for roaming */
     	boolean selected_roam;
+	/** indicates if this application is selected for vpn */
+    	boolean selected_vpn;
     	/** toString cache */
     	String tostr;
     	/** application info */
@@ -1091,11 +1189,12 @@ public final class Api {
     	
     	public DroidApp() {
     	}
-    	public DroidApp(int uid, String name, boolean selected_wifi, boolean selected_3g,boolean selected_roam) {
+    	public DroidApp(int uid, String name, boolean selected_wifi, boolean selected_3g,boolean selected_roam, boolean selected_vpn) {
     		this.uid = uid;
     		this.names = new String[] {name};
     		this.selected_wifi = selected_wifi;
     		this.selected_3g = selected_3g;
+		this.selected_vpn = selected_vpn;
     		this.selected_roam = selected_roam;
     	}
     	/**
@@ -1156,9 +1255,9 @@ public final class Api {
 			try {
 				file.createNewFile();
 				final String abspath = file.getAbsolutePath();
-				// make sure we have execution permission on the script file
+				/* Make sure we have execution permission on the script file */
 				Runtime.getRuntime().exec("chmod 700 "+abspath).waitFor();
-				// Write the script to be executed
+				/* Write the script to be executed */
 				final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file));
 				if (new File("/system/bin/sh").exists()) {
 					out.write("#!/system/bin/sh\n");
@@ -1169,10 +1268,10 @@ public final class Api {
 				out.flush();
 				out.close();
 				if (this.asroot) {
-					// Create the "su" request to run the script
+					/* Create the "su" request to run the script */
 					exec = Runtime.getRuntime().exec("su -c "+abspath);
 				} else {
-					// Create the "sh" request to run the script
+					/* Create the "sh" request to run the script */
 					exec = Runtime.getRuntime().exec("sh "+abspath);
 				}
 				final InputStream stdout = exec.getInputStream();
@@ -1183,17 +1282,17 @@ public final class Api {
 					final Process localexec = exec;
 					if (localexec == null) break;
 					try {
-						// get the process exit code - will raise IllegalThreadStateException if still running
+						/* get the process exit code - will raise IllegalThreadStateException if still running */
 						this.exitcode = localexec.exitValue();
 					} catch (IllegalThreadStateException ex) {
-						// The process is still running
+						/* The process is still running */
 					}
 					// Read stdout
 					if (stdout.available() > 0) {
 						read = stdout.read(buf);
 						if (res != null) res.append(new String(buf, 0, read));
 					}
-					// Read stderr
+					/* Read stderr */
 					if (stderr.available() > 0) {
 						read = stderr.read(buf);
 						if (res != null) res.append(new String(buf, 0, read));
@@ -1202,7 +1301,7 @@ public final class Api {
 						// finished
 						break;
 					}
-					// Sleep for the next round
+					/* Sleep for the next round */
 					Thread.sleep(50);
 				}
 			} catch (InterruptedException ex) {
