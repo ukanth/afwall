@@ -4,6 +4,14 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.0.3a
+* Fix for some apps can "bypass" the firewall by just using UDP port 53. Disable port 53
+* Fixed Widget on/off issue 
+* Fixed Widget size for 4.0+ devices
+* Prepared for i18n Support
+* Prepared support for XHDPI devices
+
+Note: If you have any issue, please clean the rules via menu and apply again.
 
 Version 1.0.2a ( Please note, if you upgrade from 1.0.1a, rules will be reset!)
 * Roaming Option ( not tested !)
