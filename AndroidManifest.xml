@@ -64,7 +64,6 @@
         android:smallScreens="true" />
 
     <application
-        android:name=".AFWall+"
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
@@ -109,7 +108,7 @@
     </activity>
 
         <receiver
-            android:name="BootBroadcast" >
+            android:name="BootBroadcast">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" >
                 </action>
