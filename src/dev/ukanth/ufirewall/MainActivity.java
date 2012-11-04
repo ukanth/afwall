@@ -3,6 +3,7 @@
  * This is the screen displayed when you open the application
  * 
  * Copyright (C) 2009-2011  Rodrigo Zechin Rosauro
+ * Copyright (C) 2012 Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @author Rodrigo Zechin Rosauro
- * @version 1.0
+ * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
+ * @version 1.1
  */
 
 package dev.ukanth.ufirewall;
@@ -72,12 +73,13 @@ import dev.ukanth.ufirewall.Api.DroidApp;
  * application
  */
 
-//@Holo(forceThemeApply = true, layout = R.layout.main)
-//public class MainActivity extends SActivity implements OnCheckedChangeListener,
+/* @Holo(forceThemeApply = true, layout = R.layout.main)
+ * public class MainActivity extends SActivity implements OnCheckedChangeListener,
+ */
 public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
 		OnClickListener {
 
-	// Menu options
+	/* Menu options */
 	private static final int MENU_DISABLE = 0;
 	private static final int MENU_TOGGLELOG = 1;
 	private static final int MENU_APPLY = 2;
@@ -102,20 +104,22 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
-	//	if (isABSSupport()) {
+	/*	if (isABSSupport()) { */
 		
 			super.onCreate(savedInstanceState);
 		
-			/*getSupportActionBar().setDisplayShowTitleEnabled(false);
+			/*
+			getSupportActionBar().setDisplayShowTitleEnabled(false);
 			getSupportActionBar().setDisplayShowHomeEnabled(false);
 			getSupportActionBar().setNavigationMode(
 					ActionBar.NAVIGATION_MODE_TABS);
 			addTab(MainFragment.class, "MainPage");
-			addTab(PreferenceFragment.class, "Actions");*/
+			addTab(PreferenceFragment.class, "Actions");
+			*/
 			
 			
 			try {
-				/* enable hardware acceleration on Android >= 3.0 */
+				/* Enable hardware acceleration on Android >= 3.0 */
 				final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
 						.getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
 				getWindow().setFlags(FLAG_HARDWARE_ACCELERATED,
@@ -124,26 +128,28 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 			checkPreferences();
 			setContentView(R.layout.main);
-			//set onclick listeners
+			/* Set onclick listeners */
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
+			this.findViewById(R.id.img_vpn).setOnClickListener(this);
 			this.findViewById(R.id.img_roam).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			
 			Api.assertBinaries(this, true);
-			/*new BroadcastReceiver() {
+			/* new BroadcastReceiver() {
 			    public void onReceive(Context context, Intent intent) {
 			        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
 			        if (plugged == BatteryManager.BATTERY_PLUGGED_USB) {
 			            Api.isUSBEnable 
 			        } 
 			    }
-			};*/
+			};
 
-		//} else {
-			//replaceFragment(R.id.main, MainFragment.getInstance());
-		//}
+		} else {
+			replaceFragment(R.id.main, MainFragment.getInstance());
+		}
+		*/
 	}
 
 	@Override
@@ -159,10 +165,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		final String pwd = getSharedPreferences(Api.PREFS_NAME, 0).getString(
 				Api.PREF_PASSWORD, "");
 		if (pwd.length() == 0) {
-			// No password lock
+			/* No password lock */
 			showOrLoadApplications();
 		} else {
-			// Check the password
+			/* Check the password */
 			requestPassword(pwd);
 		}
 	}
@@ -284,7 +290,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					requestPassword(pwd);
 					return false;
 				}
-				// Password correct
+				/* Password correct? */
 				showOrLoadApplications();
 				return false;
 			}
@@ -313,8 +319,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private void showOrLoadApplications() {
 		final Resources res = getResources();
 		if (Api.applications == null) {
-			// The applications are not cached.. so lets display the progress
-			// dialog
+			/* The applications are not cached.. 
+			 * so lets display the progress dialog
+			 */
 			final ProgressDialog progress = ProgressDialog.show(this,
 					res.getString(R.string.working),
 					res.getString(R.string.reading_apps), true);
@@ -335,7 +342,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 			}.execute();
 		} else {
-			// the applications are cached, just show the list
+			/* The applications are cached, just show the list */
 			showApplications(false,false,false,false);
 		}
 	}
@@ -345,10 +352,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	/**
 	 * Show the list of applications
 	 */
-	private void showApplications(final boolean checkWifi,final boolean check3G,final boolean checkRoam ,final boolean resetAll) {
+	private void showApplications(final boolean checkWifi,final boolean check3G,final boolean checkRoam ,final boolean checkvpn, final boolean resetAll) {
 		this.dirty = false;
 		final DroidApp[] apps = Api.getApps(this);
-		// Sort applications - selected first, then alphabetically
+		/* Sort applications - selected first, then alphabetically */
 		if(!checkWifi && !check3G && !resetAll){
 		Arrays.sort(apps, new Comparator<DroidApp>() {
 			@Override
@@ -356,11 +363,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				if (o1.firstseem != o2.firstseem) {
 					return (o1.firstseem ? -1 : 1);
 				}
-				if ((o1.selected_wifi | o1.selected_3g) == (o2.selected_wifi | o2.selected_3g)) {
+				if ((o1.selected_wifi|o1.selected_3g|o1.selected_vpn|o1.selected_roam) == (o2.selected_wifi|o2.selected_3g|o2.selected_vpn|o2.selected_roam)) {
 					return String.CASE_INSENSITIVE_ORDER.compare(o1.names[0],
 							o2.names[0]);
 				}
-				if (o1.selected_wifi || o1.selected_3g)
+				if (o1.selected_wifi || o1.selected_3g || o1.selected_vpn || o1.seltected_roam)
 					return -1;
 				return 1;
 			}
@@ -379,7 +386,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					ViewGroup parent) {
 				ListEntry entry;
 				if (convertView == null) {
-					// Inflate a new view
+					/* Inflate a new view */
 					convertView = inflater.inflate(R.layout.listitem, parent,
 							false);
 					Log.d("AFWall+", ">> inflate(" + convertView + ")");
@@ -388,6 +395,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 							.findViewById(R.id.itemcheck_wifi);
 					entry.box_3g = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_3g);
+					entry.box_vpn = (CheckBox) convertView
+							.findViewById(R.id.itemcheck_vpn);
 					entry.box_roam = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_roam);
 					
@@ -405,6 +414,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						entry.box_3g.setChecked(true);
 						if(entry.app != null) entry.app.selected_3g = true;
 					}
+					if(checkvpn) {
+						entry.box_3g.setChecked(true);
+						if(entry.app != null) entry.app.selected_3g = true;
+					}
 					
 					if(checkRoam) {
 						entry.box_roam.setChecked(true);
@@ -415,26 +428,30 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					if(resetAll) {
 						entry.box_wifi.setChecked(false);
 						entry.box_3g.setChecked(false);
+						entry.box_vpn.setChecked(false);
 						entry.box_roam.setChecked(false);
 						if(entry.app != null) {
 							entry.app.selected_wifi = false;
 							entry.app.selected_3g = false;
+							entry.app.selected_vpn = false;
 							entry.app.selected_roam = false;	
 						}
 						
 					}
-					entry.box_wifi
-							.setOnCheckedChangeListener(MainActivity.this);
+					entry.box_wifi.setOnCheckedChangeListener(MainActivity.this);
 					entry.box_3g.setOnCheckedChangeListener(MainActivity.this);
+					entry.box_vpn.setOnCheckedChangeListener(MainActivity.this);
 					entry.box_roam.setOnCheckedChangeListener(MainActivity.this);
 					convertView.setTag(entry);
 				} else {
-					// Convert an existing view
+					/* Convert an existing view */
 					entry = (ListEntry) convertView.getTag();
 					entry.box_wifi = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_wifi);
 					entry.box_3g = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_3g);
+					entry.box_vpn = (CheckBox) convertView
+							.findViewById(R.id.itemcheck_vpn);
 					entry.box_roam = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_roam);
 					if(checkWifi) {
@@ -447,6 +464,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						if(entry.app != null) entry.app.selected_3g = true;
 					}
 					
+					if(checkvpn) {
+						entry.box_vpn.setChecked(true);
+						if(entry.app != null) entry.app.selected_vpn = true;
+					}
+					
 					if(checkRoam) {
 						entry.box_roam.setChecked(true);
 						if(entry.app != null) entry.app.selected_roam = true;
@@ -456,10 +478,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					if(resetAll) {
 						entry.box_wifi.setChecked(false);
 						entry.box_3g.setChecked(false);
+						entry.box_vpn.setChecked(false);
 						entry.box_roam.setChecked(false);
 						if(entry.app != null) {
 							entry.app.selected_wifi = false;
 							entry.app.selected_3g = false;
+							entry.app.selected_vpn = false;
 							entry.app.selected_roam = false;	
 						}						
 					}
@@ -482,8 +506,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				} 
 				if(!disableIcons) {
 				if (!app.icon_loaded && app.appinfo != null) {
-					// this icon has not been loaded yet - load it on a
-					// separated thread
+					/* This icon has not been loaded yet - load it on a
+					 * separated thread
+					 */
 					new LoadIconTask().execute(app, getPackageManager(),
 							convertView);
 				}
@@ -494,7 +519,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				final CheckBox box_3g = entry.box_3g;
 				box_3g.setTag(app);
 				box_3g.setChecked(app.selected_3g);
-				
+		     		final CheckBox box_vpn = entry.box_vpn;
+        			box_vpn.setTag(app);
+        			box_vpn.setChecked(app.selected_vpn);				
 				final CheckBox box_roam = entry.box_roam;
 				box_roam.setTag(app);
 				box_roam.setChecked(app.selected_roam);
@@ -507,9 +534,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
-		//menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
-		//menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
-		//menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
+	       /* menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
+		* menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
+		* menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
+		*/
 		menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
 		menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(R.drawable.on);
 		menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
@@ -530,11 +558,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         
-       // SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
-       // searchView.setQueryHint("Search for countries…");
-
-       // menu.add("Search").setActionView(searchView).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		
+       /* SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
+        * searchView.setQueryHint("Search for countries…");
+	*
+        * menu.add("Search").setActionView(searchView).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+	*/	
 	    return super.onCreateOptionsMenu(menu);
 	}
 
@@ -688,7 +716,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	private void setCustomScript(String script, String script2) {
 		final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
-		// Remove unnecessary white-spaces, also replace '\r\n' if necessary
+		/* Remove unnecessary white-spaces, also replace '\r\n' if necessary */
 		script = script.trim().replace("\r\n", "\n");
 		script2 = script2.trim().replace("\r\n", "\n");
 		editor.putString(Api.PREF_CUSTOMSCRIPT, script);
@@ -705,7 +733,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		displayToasts(MainActivity.this, msgid, Toast.LENGTH_SHORT);
 		if (Api.isEnabled(this)) {
-			// If the firewall is enabled, re-apply the rules
+			/* If the firewall is enabled, re-apply the rules */
 			applyOrSaveRules();
 		}
 	}
@@ -860,6 +888,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					this.dirty = true;
 				}
 				break;
+				case R.id.itemcheck_vpn:
+				if (app.selected_vpn != isChecked) {
+					app.selected_vpn = isChecked;
+					this.dirty = true;
+				}
+				break;
 			case R.id.itemcheck_roam:
 				if (app.selected_roam != isChecked) {
 					app.selected_roam = isChecked;
@@ -882,6 +916,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case R.id.img_3g:
 			selectAll3G();
 			break;
+		case R.id.img_vpn:
+			selectAllVPN();
+			break;
 		case R.id.img_roam:
 			clearAllRoam();
 			break;
@@ -902,6 +939,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private void selectAll3G() {
 		showApplications(false,true,false,false);
 	}
+	
+	private void selectAllVPN() {
+		showApplications(false,true,false,false);
+	}
 
 	private void selectAllWifi() {
 		showApplications(true,false,false,false);
@@ -910,7 +951,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-		// Handle the back button when dirty
+		/* Handle the back button when dirty */
 		if (this.dirty && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 				@Override
@@ -920,13 +961,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						applyOrSaveRules();
 						break;
 					case DialogInterface.BUTTON_NEGATIVE:
-						// Propagate the event back to perform the desired
-						// action
+						/* Propagate the event back to perform the desired
+						 * action
+						 */
 						MainActivity.this.dirty = false;
 						Api.applications = null;
 						finish();
 						System.exit(0);
-						//force reload rules.
+						/* Force reload rules */
 						MainActivity.super.onKeyDown(keyCode, event);
 						break;
 					}
@@ -938,7 +980,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					.setPositiveButton(R.string.apply, dialogClickListener)
 					.setNegativeButton(R.string.discard, dialogClickListener)
 					.show();
-			// Say that we've consumed the event
+			/* Say that we've consumed the event */
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -958,9 +1000,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					app.cached_icon = pkgMgr.getApplicationIcon(app.appinfo);
 					app.icon_loaded = true;
 				}
-				// Return the view to update at "onPostExecute"
-				// Note that we cannot be sure that this view still references
-				// "app"
+				/* Return the view to update at "onPostExecute"
+				 * Note that we cannot be sure that this view still references
+				 *"app" 
+				 */
 				return viewToUpdate;
 			} catch (Exception e) {
 				Log.e("AFWall+", "Error loading icon", e);
@@ -970,9 +1013,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		protected void onPostExecute(View viewToUpdate) {
 			try {
-				// This is executed in the UI thread, so it is safe to use
-				// viewToUpdate.getTag()
-				// and modify the UI
+				/* This is executed in the UI thread, so it is safe to use
+				 * viewToUpdate.getTag()
+				 * and modify the UI
+				 */
 				final ListEntry entryToUpdate = (ListEntry) viewToUpdate
 						.getTag();
 				entryToUpdate.icon
@@ -997,6 +1041,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private static class ListEntry {
 		private CheckBox box_wifi;
 		private CheckBox box_3g;
+		private CheckBox box_vpn;
 		private CheckBox box_roam;
 		private TextView text;
 		private ImageView icon;
