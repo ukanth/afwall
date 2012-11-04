@@ -84,7 +84,7 @@ public final class Api {
 	public static final String MODE_BLACKLIST = "blacklist";
 	// Messages
 	
-	public static final String STATUS_CHANGED_MSG 	= "android.appwidget.action.APPWIDGET_ADDED";
+	public static final String STATUS_CHANGED_MSG 	= "dev.ukanth.ufirewall.intent.action.STATUS_CHANGED";
 	public static final String TOGGLE_REQUEST_MSG	= "dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST";
 	public static final String CUSTOM_SCRIPT_MSG	= "dev.ukanth.ufirewall.intent.action.CUSTOM_SCRIPT";
 	// Message extras (parameters)
@@ -1007,7 +1007,7 @@ public final class Api {
 		final Editor edit = prefs.edit();
 		edit.putBoolean(PREF_ENABLED, enabled);
 		if (!edit.commit()) {
-			alert(ctx, "Error writing to preferences");
+			alert(ctx, ctx.getString(R.string.error_write_pref));
 			return;
 		}
 		/* notify */

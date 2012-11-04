@@ -142,8 +142,8 @@
                 android:resource="@xml/onoff_widget" />
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.ufirewall.intent.action.STATUS_CHANGED" />
-                <action android:name="android.ufirewall.intent.action.TOGGLE_REQUEST" />
+                <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
+                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
 
         </receiver>
