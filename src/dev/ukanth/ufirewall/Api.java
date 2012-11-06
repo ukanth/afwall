@@ -19,17 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
- * @version 1.1
+ * @version 1.2
  */
-
 
 package dev.ukanth.ufirewall;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -72,18 +73,19 @@ public final class Api {
 	public static final String PREFS_NAME 			= "AFWallPrefs";
 	public static final String PREF_3G_UIDS			= "AllowedUids3G";
 	public static final String PREF_WIFI_UIDS		= "AllowedUidsWifi";
-	public static final String PREF_ROAMING_UIDS	= "AllowedUidsRoaming";
+	public static final String PREF_ROAMING_UIDS		= "AllowedUidsRoaming";
 	public static final String PREF_PASSWORD 		= "Password";
-	public static final String PREF_CUSTOMSCRIPT 	= "CustomScript";
-	public static final String PREF_CUSTOMSCRIPT2 	= "CustomScript2"; // Executed on shutdown
+	public static final String PREF_CUSTOMSCRIPT 		= "CustomScript";
+	public static final String PREF_CUSTOMSCRIPT2 		= "CustomScript2"; // Executed on shutdown
 	public static final String PREF_MODE 			= "BlockMode";
 	public static final String PREF_ENABLED			= "Enabled";
 	public static final String PREF_LOGENABLED		= "LogEnabled";
+
 	// Modes
 	public static final String MODE_WHITELIST = "whitelist";
 	public static final String MODE_BLACKLIST = "blacklist";
+
 	// Messages
-	
 	public static final String STATUS_CHANGED_MSG 	= "dev.ukanth.ufirewall.intent.action.STATUS_CHANGED";
 	public static final String TOGGLE_REQUEST_MSG	= "dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST";
 	public static final String CUSTOM_SCRIPT_MSG	= "dev.ukanth.ufirewall.intent.action.CUSTOM_SCRIPT";
@@ -96,8 +98,10 @@ public final class Api {
 	public static DroidApp applications[] = null;
 	// Do we have root access?
 	private static boolean hasroot = false;
-	
+	// USB enabled?
 	public static boolean isUSBEnable = false;
+	// Flag indicating if this is an ARMv6 device (-1: unknown, 0: no,  1: yes)
+	private static int isARMv6 = -1;
 
     /**
      * Display a simple alert box
@@ -112,16 +116,37 @@ public final class Api {
         	.show();
     	}
     }
+	/**
+	 * Check if this is an ARMv6 device
+	 * @return true if this is ARMv6
+	 */
+	private static boolean isARMv6() {
+		if (isARMv6 == -1) {
+			BufferedReader r = null;
+			try {
+				isARMv6 = 0;
+				r = new BufferedReader(new FileReader("/proc/cpuinfo"));
+				for (String line = r.readLine(); line != null; line = r.readLine()) {
+					if (line.startsWith("Processor") && line.contains("ARMv6")) {
+						isARMv6 = 1;
+						break;
+					} else if (line.startsWith("CPU architecture") && (line.contains("6TE") || line.contains("5TE"))) {
+						isARMv6 = 1;
+						break;
+					}
+				}
 
 	public static boolean isRoaming(Context context) {
 		TelephonyManager localTelephonyManager = (TelephonyManager) context
 				.getSystemService("phone");
 		try {
 			return localTelephonyManager.isNetworkRoaming();
-		} catch (Exception i) {
-			while (true) {
+			} catch (Exception ex) {
+			} finally {
+				if (r != null) try {r.close();} catch (Exception ex) {}
 			}
 		}
+		return (isARMv6 == 1);
 	}
 	/**
 	 * Create the generic shell script header used to determine which iptables binary to use.
@@ -130,7 +155,7 @@ public final class Api {
 	 */
 	private static String scriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		final String myiptables = dir + "/iptables_armv5";
+		final String myiptables = dir + (isARMv6() ? "/iptables_armv5";
 		return "" +
 			"IPTABLES=iptables\n" +
 			"BUSYBOX=busybox\n" +
@@ -174,6 +199,19 @@ public final class Api {
 	 * @param mode file permissions (E.g.: "755")
 	 * @throws IOException on error
 	 * @throws InterruptedException when interrupted
+	 *
+	 *
+ 	 *  7       5     5
+ 	 * user   group  world
+ 	 * r+w+x  r+x    r+x
+ 	 * 4+2+1  4+0+1  4+0+1  
+	 * ~~~~~~~~~~~~~~~~~~~
+	 *         755
+	 *
+	 * 
+	 * (R)ead 4 - Allowed to read files
+    	 * (W)rite 2 - Allowed to write/modify files
+    	 * (e)Xecute1 - Read/write/delete/modify/directory 
 	 */
 	private static void copyRawFile(Context ctx, int resid, File file, String mode) throws IOException, InterruptedException
 	{
@@ -293,7 +331,7 @@ public final class Api {
 					script.append("$IPTABLES -A afwall-3g -j ").append(targetRule).append(" || exit\n");
 				}
 			} else {
-				/* release/block individual applications on this interface */
+				/* Release/block individual applications on this interface */
 				if(isRoaming(ctx)) {
 					for (final Integer uid : uidsRoam) {
 						if (uid >= 0) script.append("$IPTABLES -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
@@ -302,7 +340,7 @@ public final class Api {
 				} else {
 					for (final Integer uid : uids3g) {
 						if (uid >= 0) script.append("$IPTABLES -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
-						//Roaming
+						// Roaming
 						if(isRoaming(ctx)){
 							//iptables -A OUTPUT -o pdp0 -j REJECT
 						}
@@ -956,14 +994,15 @@ public final class Api {
 		try {
 			// Check iptables_armv5
 			File file = new File(ctx.getDir("bin",0), "iptables_armv5");
+			if ((!file.exists()) && isARMv6()) {
 			if (!file.exists() || file.length()!=198652) {
-				copyRawFile(ctx, R.raw.iptables_armv5, file, "700");
+				copyRawFile(ctx, R.raw.iptables_armv5, file, "755");
 				changed = true;
 			}
 			// Check busybox
 			file = new File(ctx.getDir("bin",0), "busybox_g1");
 			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.busybox_g1, file, "700");
+				copyRawFile(ctx, R.raw.busybox_g1, file, "755");
 				changed = true;
 			}
 			if (changed) {
@@ -1191,7 +1230,7 @@ public final class Api {
 				file.createNewFile();
 				final String abspath = file.getAbsolutePath();
 				// make sure we have execution permission on the script file
-				Runtime.getRuntime().exec("chmod 700 "+abspath).waitFor();
+				Runtime.getRuntime().exec("chmod 755 "+abspath).waitFor();
 				// Write the script to be executed
 				final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file));
 				if (new File("/system/bin/sh").exists()) {
@@ -1239,6 +1278,14 @@ public final class Api {
 					// Sleep for the next round
 					Thread.sleep(50);
 				}
+				// stderr
+				r = new InputStreamReader(exec.getErrorStream());
+				read=0;
+				while ((read=r.read(buf)) != -1) {
+					if (res != null) res.append(buf, 0, read);
+				}
+				// get the process exit code
+				if (exec != null) this.exitcode = exec.waitFor();
 			} catch (InterruptedException ex) {
 				if (res != null) res.append("\n" + R.string.operation_timeout);
 			} catch (Exception ex) {
