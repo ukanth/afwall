@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
- * @version 1.1
+ * @version 1.2
  */
 
 
@@ -96,7 +96,7 @@ public final class Api {
 	public static DroidApp applications[] = null;
 	// Do we have root access?
 	private static boolean hasroot = false;
-	
+	// USB enabled?
 	public static boolean isUSBEnable = false;
 
     /**
@@ -209,7 +209,7 @@ public final class Api {
 		ArrayList<String> ITFS_3G = new ArrayList<String>();
 		ITFS_3G.add("rmnet+");ITFS_3G.add("ppp+");ITFS_3G.add("pdp+");ITFS_3G.add("pnp+");
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
-		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio0+");
+		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio1+");ITFS_3G.add("qmi+")ITFS_3G("wwan0+");ITFS_3G("svnet0+");ITFS_3G.add("rmnet_sdio0+");
 		if(!disableUSB3gRule) {
 			ITFS_3G.add("usb+");
 		}
@@ -1110,7 +1110,7 @@ public final class Api {
     	boolean selected_wifi;
     	/** indicates if this application is selected for 3g */
     	boolean selected_3g;
-    	/** indicates if this application is selected for 3g */
+    	/** indicates if this application is selected for Roam */
     	boolean selected_roam;
     	/** toString cache */
     	String tostr;
