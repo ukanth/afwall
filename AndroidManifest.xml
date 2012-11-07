@@ -47,14 +47,16 @@
          As such, you must explicitly declare your use of this facility to make
          that visible to the user. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!-- Allows ufwall to access information about networks -->
+    <!-- Allows ufwall to access information about networks analytics -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Allows ufwall to change network connectivity state -->
     <!-- <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> -->
     <!-- Allows low-level access to power management -->
     <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> -->
-    <!-- Allows ufwall to write to external storage  -->
+    <!-- Allows ufwall to write to external storage required for writing dump file  -->
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> -->
+    <!-- needed to read logcat -->
+    <!--   <uses-permission android:name="android.permission.READ_LOGS" /> -->
     
     <!-- Screen support -->
     <supports-screens
@@ -107,6 +109,38 @@
       </intent-filter>
     </activity>
 
+        <activity
+            android:name="dev.ukanth.ufirewall.localeplugin.ui.EditActivity"
+            android:exported="true"
+            android:icon="@drawable/icon_notext"
+            android:label="@string/plugin_name"
+            android:theme="@style/Theme.Locale.Dark"
+            android:uiOptions="splitActionBarWhenNarrow" >
+
+            <!-- this Intent filter allows the plug-in to be discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+        <!--
+            This is the "fire" BroadcastReceiver. Note that Locale will reject plug-in BroadcastReceivers 
+            for the following reasons:
+                - The BroadcastReceiver isn't exported (e.g. android:exported="false")
+                - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
+                - The BroadcastReceiver requires permissions not available to Locale
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+        -->
+        <receiver
+            android:name="dev.ukanth.ufirewall.localeplugin.receiver.FireReceiver"
+            android:exported="true"
+            android:process=":background" >
+
+            <!-- this Intent filter allows the plug-in to discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name="BootBroadcast">
             <intent-filter>
@@ -145,7 +179,6 @@
                 <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
                 <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
-
         </receiver>
         
     </application>
