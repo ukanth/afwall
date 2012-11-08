@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
- * @version 1.1
+ * @version 1.2
  */
 
 
@@ -27,9 +27,13 @@ package dev.ukanth.ufirewall;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import android.Manifest;
@@ -47,7 +53,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -70,9 +78,15 @@ public final class Api {
 	
 	// Preferences
 	public static final String PREFS_NAME 			= "AFWallPrefs";
-	public static final String PREF_3G_UIDS			= "AllowedUids3G";
-	public static final String PREF_WIFI_UIDS		= "AllowedUidsWifi";
-	public static final String PREF_ROAMING_UIDS	= "AllowedUidsRoaming";
+	//public static final String PREF_3G_UIDS		= "AllowedUids3G";
+	//public static final String PREF_WIFI_UIDS		= "AllowedUidsWifi";
+	//public static final String PREF_ROAMING_UIDS	= "AllowedUidsRoaming";
+	
+	//for import/export rules
+	public static final String PREF_3G_PKG			= "AllowedPKG3G";
+	public static final String PREF_WIFI_PKG		= "AllowedPKGWifi";
+	public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
+	
 	public static final String PREF_PASSWORD 		= "Password";
 	public static final String PREF_CUSTOMSCRIPT 	= "CustomScript";
 	public static final String PREF_CUSTOMSCRIPT2 	= "CustomScript2"; // Executed on shutdown
@@ -97,7 +111,9 @@ public final class Api {
 	// Do we have root access?
 	private static boolean hasroot = false;
 	
-	public static boolean isUSBEnable = false;
+	private static Map<String,Integer> specialApps = new HashMap<String, Integer>();
+	
+	//public static boolean isUSBEnable = false;
 
     /**
      * Display a simple alert box
@@ -209,7 +225,8 @@ public final class Api {
 		ArrayList<String> ITFS_3G = new ArrayList<String>();
 		ITFS_3G.add("rmnet+");ITFS_3G.add("ppp+");ITFS_3G.add("pdp+");ITFS_3G.add("pnp+");
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
-		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio0+");
+		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio1+");ITFS_3G.add("qmi+");ITFS_3G.add("wwan0+");ITFS_3G.add("svnet0+");ITFS_3G.add("rmnet_sdio0+");
+
 		if(!disableUSB3gRule) {
 			ITFS_3G.add("usb+");
 		}
@@ -367,6 +384,70 @@ public final class Api {
 		}
 		return false;
     }
+	
+	private static List<Integer> getUidListFromPref(Context ctx,String pks) {
+		final PackageManager pm = ctx.getPackageManager();
+		ApplicationInfo ai;
+		final List<Integer> uids = new LinkedList<Integer>();
+		if (pks.length() > 0) {
+			// Check which applications are allowed on wifi
+			final StringTokenizer tok = new StringTokenizer(pks, "|");
+			while (tok.hasMoreTokens()) {
+				final String pkgName = tok.nextToken();
+				if (!pkgName.equals("")) {
+					try {
+						// add logic here
+						ai = pm.getApplicationInfo(pkgName, 0);
+						if(ai != null) {
+							uids.add(ai.uid);
+						}
+					} catch (NameNotFoundException ex) {
+						Log.d("AFWALL", "missing pkg::::" + pkgName);
+					}  
+					catch (Exception ex) {
+						Log.d("AFWALL+++", "missing pkg" + pkgName);
+					} 
+				}
+			}
+		}
+		return uids;
+		
+	}
+	
+	private static int[] getUidArraysFromPref(Context ctx,String pks) {
+		final PackageManager pm = ctx.getPackageManager();
+		ApplicationInfo ai;
+		int uids[] = new int[0];
+		if (pks.length() > 0) {
+			// Check which applications are allowed on wifi
+			final StringTokenizer tok = new StringTokenizer(pks, "|");
+			
+			Log.d("AFWALL", "---" + pks);
+			uids = new int[tok.countTokens()];
+			for (int i=0; i<uids.length; i++) {
+				final String pkgName = tok.nextToken();
+				if(pkgName.startsWith("dev.afwall.special")){
+					uids[i] = specialApps.get(pkgName);
+				}
+				try {
+					ai = pm.getApplicationInfo( pkgName, 0);
+					if(ai != null) {
+						try {
+							uids[i] = ai.uid;
+						} catch (Exception ex) {
+							//selected_wifi[i] = -1;
+						}
+					}
+				} catch (NameNotFoundException e) {
+					Log.d("AFWALL", "missing pkg" + pkgName);
+				}
+				
+			}
+			Arrays.sort(uids);
+		}
+		return uids;
+		
+	}
     /**
      * Purge and re-add all saved rules (not in-memory ones).
      * This is much faster than just calling "applyIptablesRules", since it don't need to read installed applications.
@@ -378,52 +459,11 @@ public final class Api {
 			return false;
 		}
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
-		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
-		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
-		final String savedUids_roam = prefs.getString(PREF_ROAMING_UIDS, "");
-		final List<Integer> uids_wifi = new LinkedList<Integer>();
-		if (savedUids_wifi.length() > 0) {
-			// Check which applications are allowed on wifi
-			final StringTokenizer tok = new StringTokenizer(savedUids_wifi, "|");
-			while (tok.hasMoreTokens()) {
-				final String uid = tok.nextToken();
-				if (!uid.equals("")) {
-					try {
-						uids_wifi.add(Integer.parseInt(uid));
-					} catch (Exception ex) {
-					}
-				}
-			}
-		}
-		final List<Integer> uids_3g = new LinkedList<Integer>();
-		if (savedUids_3g.length() > 0) {
-			// Check which applications are allowed on 2G/3G
-			final StringTokenizer tok = new StringTokenizer(savedUids_3g, "|");
-			while (tok.hasMoreTokens()) {
-				final String uid = tok.nextToken();
-				if (!uid.equals("")) {
-					try {
-						uids_3g.add(Integer.parseInt(uid));
-					} catch (Exception ex) {
-					}
-				}
-			}
-		}
-		final List<Integer> uids_roam = new LinkedList<Integer>();
-		if (savedUids_roam.length() > 0) {
-			// Check which applications are allowed on 2G/3G
-			final StringTokenizer tok = new StringTokenizer(savedUids_roam, "|");
-			while (tok.hasMoreTokens()) {
-				final String uid = tok.nextToken();
-				if (!uid.equals("")) {
-					try {
-						uids_3g.add(Integer.parseInt(uid));
-					} catch (Exception ex) {
-					}
-				}
-			}
-		}
-		return applyIptablesRulesImpl(ctx, uids_wifi, uids_3g, uids_roam, showErrors);
+		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
+		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
+		final String savedPkg_roam = prefs.getString(PREF_ROAMING_PKG, "");
+		
+		return applyIptablesRulesImpl(ctx, getUidListFromPref(ctx,savedPkg_wifi), getUidListFromPref(ctx,savedPkg_3g),  getUidListFromPref(ctx,savedPkg_roam), showErrors);
 	}
 	
     /**
@@ -447,29 +487,36 @@ public final class Api {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		final DroidApp[] apps = getApps(ctx);
 		// Builds a pipe-separated list of names
-		final StringBuilder newuids_wifi = new StringBuilder();
-		final StringBuilder newuids_3g = new StringBuilder();
-		final StringBuilder newuids_roam = new StringBuilder();
+		//final StringBuilder newuids_wifi = new StringBuilder();
+		//final StringBuilder newuids_3g = new StringBuilder();
+		//final StringBuilder newuids_roam = new StringBuilder();
+		
+		final StringBuilder newpkg_wifi = new StringBuilder();
+		final StringBuilder newpkg_3g = new StringBuilder();
+		final StringBuilder newpkg_roam = new StringBuilder();
+		
 		for (int i=0; i<apps.length; i++) {
 			if (apps[i].selected_wifi) {
-				if (newuids_wifi.length() != 0) newuids_wifi.append('|');
-				newuids_wifi.append(apps[i].uid);
+				if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
+				newpkg_wifi.append(apps[i].pkgName);
+				
 			}
 			if (apps[i].selected_3g) {
-				if (newuids_3g.length() != 0) newuids_3g.append('|');
-				newuids_3g.append(apps[i].uid);
+				if (newpkg_3g.length() != 0) newpkg_3g.append('|');
+				newpkg_3g.append(apps[i].pkgName);
 			}
 			if (apps[i].selected_roam) {
-				if (newuids_roam.length() != 0) newuids_roam.append('|');
-				newuids_roam.append(apps[i].uid);
+				if (newpkg_roam.length() != 0) newpkg_roam.append('|');
+				newpkg_roam.append(apps[i].pkgName);
 			}
 
 		}
 		// save the new list of UIDs
 		final Editor edit = prefs.edit();
-		edit.putString(PREF_WIFI_UIDS, newuids_wifi.toString());
-		edit.putString(PREF_3G_UIDS, newuids_3g.toString());
-		edit.putString(PREF_ROAMING_UIDS, newuids_roam.toString());
+		edit.putString(PREF_WIFI_PKG, newpkg_wifi.toString());
+		edit.putString(PREF_3G_PKG, newpkg_3g.toString());
+		edit.putString(PREF_ROAMING_PKG, newpkg_roam.toString());
+		
 		edit.commit();
     }
     
@@ -514,16 +561,17 @@ public final class Api {
 	 * Display iptables rules output
 	 * @param ctx application context
 	 */
-	public static void showIptablesRules(Context ctx) {
+	public static String showIptablesRules(Context ctx) {
 		try {
     		final StringBuilder res = new StringBuilder();
 			runScriptAsRoot(ctx, scriptHeader(ctx) +
 								 "$ECHO $IPTABLES\n" +
 								 "$IPTABLES -L -v -n\n", res);
-			alert(ctx, res);
+			return res.toString();
 		} catch (Exception e) {
 			alert(ctx, "error: " + e);
 		}
+		return "";
 	}
 
 	/**
@@ -549,7 +597,7 @@ public final class Api {
 	 * Display logs
 	 * @param ctx application context
 	 */
-	public static void showLog(Context ctx) {
+	public static String showLog(Context ctx) {
 		try {
     		StringBuilder res = new StringBuilder();
 			int code = runScriptAsRoot(ctx, scriptHeader(ctx) +
@@ -558,8 +606,8 @@ public final class Api {
 				if (res.length() == 0) {
 					res.append("Log is empty");
 				}
-				alert(ctx, res);
-				return;
+				//alert(ctx, res);
+				return res.toString();
 			}
 			final BufferedReader r = new BufferedReader(new StringReader(res.toString()));
 			final Integer unknownUID = -99;
@@ -626,49 +674,16 @@ public final class Api {
 						res.append(")");
 					}
 					res.append("\n\n");
-				   
 				}
-			/*for (Integer id : map.keySet()) {
-				res.append("App ID ");
-				if (id != unknownUID) {
-					res.append(id);
-					for (DroidApp app : apps) {
-						if (app.uid == id) {
-							res.append(" (").append(app.names[0]);
-							if (app.names.length > 1) {
-								res.append(", ...)");
-							} else {
-								res.append(")");
-							}
-							break;
-						}
-					}
-				} else {
-					res.append("(kernel)");
-				}
-				loginfo = map.get(id);
-				res.append(" - Blocked ").append(loginfo.totalBlocked).append(" packets");
-				if (loginfo.dstBlocked.size() > 0) {
-					res.append(" (");
-					boolean first = true;
-					for (String dst : loginfo.dstBlocked.keySet()) {
-						if (!first) {
-							res.append(", ");
-						}
-						res.append(loginfo.dstBlocked.get(dst)).append(" packets for ").append(dst);
-						first = false;
-					}
-					res.append(")");
-				}
-				res.append("\n\n");
-			}*/
 			if (res.length() == 0) {
 				res.append("Log is empty");
 			}
-			alert(ctx, res);
+			return res.toString();
+			//alert(ctx, res);
 		} catch (Exception e) {
 			alert(ctx, "error: " + e);
 		}
+		return "";
 	}
 
     /**
@@ -676,70 +691,24 @@ public final class Api {
      * @return a list of applications
      */
 	public static DroidApp[] getApps(Context ctx) {
+		initSpecial();
 		if (applications != null) {
 			// return cached instance
 			return applications;
 		}
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		// allowed application names separated by pipe '|' (persisted)
-		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
-		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
-		final String savedUids_roam = prefs.getString(PREF_ROAMING_UIDS, "");
+		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
+		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
+		final String savedPkg_roam = prefs.getString(PREF_ROAMING_PKG, "");
 		int selected_wifi[] = new int[0];
 		int selected_3g[] = new int[0];
 		int selected_roam[] = new int[0];
-		if (savedUids_wifi.length() > 0) {
-			// Check which applications are allowed
-			final StringTokenizer tok = new StringTokenizer(savedUids_wifi, "|");
-			selected_wifi = new int[tok.countTokens()];
-			for (int i=0; i<selected_wifi.length; i++) {
-				final String uid = tok.nextToken();
-				if (!uid.equals("")) {
-					try {
-						selected_wifi[i] = Integer.parseInt(uid);
-					} catch (Exception ex) {
-						selected_wifi[i] = -1;
-					}
-				}
-			}
-			// Sort the array to allow using "Arrays.binarySearch" later
-			Arrays.sort(selected_wifi);
-		}
-		if (savedUids_3g.length() > 0) {
-			// Check which applications are allowed
-			final StringTokenizer tok = new StringTokenizer(savedUids_3g, "|");
-			selected_3g = new int[tok.countTokens()];
-			for (int i=0; i<selected_3g.length; i++) {
-				final String uid = tok.nextToken();
-				if (!uid.equals("")) {
-					try {
-						selected_3g[i] = Integer.parseInt(uid);
-					} catch (Exception ex) {
-						selected_3g[i] = -1;
-					}
-				}
-			}
-			// Sort the array to allow using "Arrays.binarySearch" later
-			Arrays.sort(selected_3g);
-		}
 		
-		if (savedUids_roam.length() > 0) {
-			// Check which applications are allowed
-			final StringTokenizer tok = new StringTokenizer(savedUids_roam, "|");
-			selected_roam = new int[tok.countTokens()];
-			for (int i=0; i<selected_roam.length; i++) {
-				final String uid = tok.nextToken();
-				if (!uid.equals("")) {
-					try {
-						selected_roam[i] = Integer.parseInt(uid);
-					} catch (Exception ex) {
-						selected_roam[i] = -1;
-					}
-				}
-			}
-			// Sort the array to allow using "Arrays.binarySearch" later
-			Arrays.sort(selected_roam);
-		}
+		selected_wifi = getUidArraysFromPref(ctx,savedPkg_wifi);
+		selected_3g = getUidArraysFromPref(ctx,savedPkg_3g);
+		selected_roam = getUidArraysFromPref(ctx,savedPkg_roam);
+
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(0);
@@ -828,16 +797,18 @@ public final class Api {
 			}
 			/* add special applications to the list */
 			final DroidApp special[] = {
-				new DroidApp(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), false, false,false),
-				new DroidApp(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false),
-				new DroidApp(android.os.Process.getUidForName("media"), "Media server", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false),
-				new DroidApp(android.os.Process.getUidForName("gps"), "GPS", false, false,false),
+				new DroidApp(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,"dev.afwall.special.any"),
+				new DroidApp(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,"dev.afwall.special.kernel"),
+				new DroidApp(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,"dev.afwall.special.root"),
+				new DroidApp(android.os.Process.getUidForName("media"), "Media server", false, false,false,"dev.afwall.special.media"),
+				new DroidApp(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,"dev.afwall.special.vpn"),
+				new DroidApp(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,"dev.afwall.special.shell"),
+				new DroidApp(android.os.Process.getUidForName("gps"), "GPS", false, false,false,"dev.afwall.special.gps")
 			};
 			for (int i=0; i<special.length; i++) {
 				app = special[i];
+				specialApps = new HashMap<String, Integer>();
+				specialApps.put(app.pkgName, app.uid);
 				if (app.uid != -1 && !map.containsKey(app.uid)) {
 					// check if this application is allowed
 					if (Arrays.binarySearch(selected_wifi, app.uid) >= 0) {
@@ -860,6 +831,16 @@ public final class Api {
 		}
 		return null;
 	}
+	private static void initSpecial() {
+		specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
+		specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
+		specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
+		specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
+		specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
+		specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
+		specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
+	}
+
 	/**
 	 * Check if we have root access
 	 * @param ctx mandatory context
@@ -1015,6 +996,37 @@ public final class Api {
         message.putExtra(Api.STATUS_EXTRA, enabled);
         ctx.sendBroadcast(message);
 	}
+	
+	
+	private static void removePackageRef(Context ctx, String pkg, String removedUid,Editor editor, String store){
+		PackageManager pm = ctx.getPackageManager();
+		ApplicationInfo ai = null;
+		String aUid = "";
+		final StringBuilder newuids = new StringBuilder();
+		final StringTokenizer tok = new StringTokenizer(pkg, "|");
+		boolean changed = false;
+		while (tok.hasMoreTokens()) {
+			final String token = tok.nextToken();
+			try {
+				ai = pm.getApplicationInfo( token, 0);
+			} catch (NameNotFoundException e) {
+			}
+			
+			if(ai != null) {
+				aUid = ai.uid + "";
+			}
+			if (removedUid.equals(aUid)) {
+				Log.d("AFWall", "Removing UID " + token + " from the rules list (package removed)!");
+				changed = true;
+			} else {
+				if (newuids.length() > 0) newuids.append('|');
+				newuids.append(token);
+			}
+		}
+		if(changed) {
+			editor.putString(store, newuids.toString());
+		}
+	}
 	/**
 	 * Called when an application in removed (un-installed) from the system.
 	 * This will look for that application in the selected list and update the persisted values if necessary
@@ -1025,67 +1037,18 @@ public final class Api {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		final Editor editor = prefs.edit();
 		// allowed application names separated by pipe '|' (persisted)
-		final String savedUids_wifi = prefs.getString(PREF_WIFI_UIDS, "");
-		final String savedUids_3g = prefs.getString(PREF_3G_UIDS, "");
-		final String savedUids_roam = prefs.getString(PREF_ROAMING_UIDS, "");
-		final String uid_str = uid + "";
+		final String savedPks_wifi = prefs.getString(PREF_WIFI_PKG, "");
+		final String savedPks_3g = prefs.getString(PREF_3G_PKG, "");
+		final String savedPks_roam = prefs.getString(PREF_ROAMING_PKG, "");
+		final String removedUid= uid + "";
 		boolean changed = false;
 		// look for the removed application in the "wi-fi" list
-		if (savedUids_wifi.length() > 0) {
-			final StringBuilder newuids = new StringBuilder();
-			final StringTokenizer tok = new StringTokenizer(savedUids_wifi, "|");
-			while (tok.hasMoreTokens()) {
-				final String token = tok.nextToken();
-				if (uid_str.equals(token)) {
-					Log.d("AFWall", "Removing UID " + token + " from the wi-fi list (package removed)!");
-					changed = true;
-				} else {
-					if (newuids.length() > 0) newuids.append('|');
-					newuids.append(token);
-				}
-			}
-			if (changed) {
-				editor.putString(PREF_WIFI_UIDS, newuids.toString());
-			}
-		}
+		removePackageRef(ctx,savedPks_wifi,removedUid,editor,PREF_WIFI_PKG); 
 		// look for the removed application in the "3g" list
-		if (savedUids_3g.length() > 0) {
-			final StringBuilder newuids = new StringBuilder();
-			final StringTokenizer tok = new StringTokenizer(savedUids_3g, "|");
-			while (tok.hasMoreTokens()) {
-				final String token = tok.nextToken();
-				if (uid_str.equals(token)) {
-					Log.d("AFWall", "Removing UID " + token + " from the 3G list (package removed)!");
-					changed = true;
-				} else {
-					if (newuids.length() > 0) newuids.append('|');
-					newuids.append(token);
-				}
-			}
-			if (changed) {
-				editor.putString(PREF_3G_UIDS, newuids.toString());
-			}
-		}
-
+		removePackageRef(ctx,savedPks_3g,removedUid,editor,PREF_3G_PKG);
 		// look for the removed application in roaming list
+		removePackageRef(ctx,savedPks_roam,removedUid,editor,PREF_ROAMING_PKG);
 		
-		if (savedUids_roam.length() > 0) {
-			final StringBuilder newuids = new StringBuilder();
-			final StringTokenizer tok = new StringTokenizer(savedUids_roam, "|");
-			while (tok.hasMoreTokens()) {
-				final String token = tok.nextToken();
-				if (uid_str.equals(token)) {
-					Log.d("AFWall", "Removing UID " + token + " from the Roaming list (package removed)!");
-					changed = true;
-				} else {
-					if (newuids.length() > 0) newuids.append('|');
-					newuids.append(token);
-				}
-			}
-			if (changed) {
-				editor.putString(PREF_ROAMING_UIDS, newuids.toString());
-			}
-		}
 		// if anything has changed, save the new prefs...
 		if (changed) {
 			editor.commit();
@@ -1110,7 +1073,7 @@ public final class Api {
     	boolean selected_wifi;
     	/** indicates if this application is selected for 3g */
     	boolean selected_3g;
-    	/** indicates if this application is selected for 3g */
+    	/** indicates if this application is selected for roam */
     	boolean selected_roam;
     	/** toString cache */
     	String tostr;
@@ -1125,12 +1088,13 @@ public final class Api {
     	
     	public DroidApp() {
     	}
-    	public DroidApp(int uid, String name, boolean selected_wifi, boolean selected_3g,boolean selected_roam) {
+    	public DroidApp(int uid, String name, boolean selected_wifi, boolean selected_3g,boolean selected_roam, String pkgNameStr) {
     		this.uid = uid;
     		this.names = new String[] {name};
     		this.selected_wifi = selected_wifi;
     		this.selected_3g = selected_3g;
     		this.selected_roam = selected_roam;
+    		this.pkgName = pkgNameStr;
     	}
     	/**
     	 * Screen representation of this application
@@ -1285,6 +1249,88 @@ public final class Api {
 		} catch (IOException e) {
 		}
 		return true;
+	}
+	
+	public static boolean saveSharedPreferencesToFile(Context ctx) {
+		
+		
+	    boolean res = false;
+	    File sdCard = Environment.getExternalStorageDirectory();
+	    File dir = new File (sdCard.getAbsolutePath() + "/afwall/");
+	    dir.mkdirs();
+	    File file = new File(dir, "backup.rules");
+	    
+	    
+	    ObjectOutputStream output = null;
+	    try {
+	        output = new ObjectOutputStream(new FileOutputStream(file));
+	        saveRules(ctx);
+	        SharedPreferences pref = ctx.getSharedPreferences(PREFS_NAME, 0);
+	        output.writeObject(pref.getAll());
+	        res = true;
+	    } catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }finally {
+	        try {
+	            if (output != null) {
+	                output.flush();
+	                output.close();
+	            }
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	    return res;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static boolean loadSharedPreferencesFromFile(Context ctx) {
+		boolean res = false;
+		File sdCard = Environment.getExternalStorageDirectory();
+		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+		dir.mkdirs();
+		File file = new File(dir, "backup.rules");
+
+		ObjectInputStream input = null;
+		try {
+			input = new ObjectInputStream(new FileInputStream(file));
+			Editor prefEdit = ctx.getSharedPreferences(PREFS_NAME, 0).edit();
+			prefEdit.clear();
+			Map<String, ?> entries = (Map<String, ?>) input.readObject();
+			for (Entry<String, ?> entry : entries.entrySet()) {
+				Object v = entry.getValue();
+				String key = entry.getKey();
+				if (v instanceof Boolean)
+					prefEdit.putBoolean(key, ((Boolean) v).booleanValue());
+				else if (v instanceof Float)
+					prefEdit.putFloat(key, ((Float) v).floatValue());
+				else if (v instanceof Integer)
+					prefEdit.putInt(key, ((Integer) v).intValue());
+				else if (v instanceof Long)
+					prefEdit.putLong(key, ((Long) v).longValue());
+				else if (v instanceof String)
+					prefEdit.putString(key, ((String) v));
+			}
+			prefEdit.commit();
+			res = true;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (input != null) {
+					input.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return res;
 	}
 	
 }

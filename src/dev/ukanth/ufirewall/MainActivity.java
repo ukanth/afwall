@@ -25,8 +25,11 @@
 package dev.ukanth.ufirewall;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -42,9 +45,12 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -55,6 +61,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -92,29 +99,36 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private static final int MENU_PREFERENCES = 10;
 	private static final int MENU_RELOAD_APPS = 11;
 	private static final int MENU_FLUSH = 12;
+	private static final int MENU_SAVE = 13;
+	private static final int MENU_LOAD = 14;	
 	private static final int MENU_TOGGLE = -1;
+	
+	private static final int MENU_SEARCH = 15;
+	
+	private String currentPassword = "";
+
+	public String getCurrentPassword() {
+		return currentPassword;
+	}
+
+	public void setCurrentPassword(String currentPassword) {
+		this.currentPassword = currentPassword;
+	}
 
 	/** progress dialog instance */
 	private ListView listview = null;
 	/** indicates if the view has been modified and not yet saved */
 	private boolean dirty = false;
+	
+	public final static String IPTABLE_RULES = "dev.ukanth.ufirewall.text.RULES";
+	public final static String VIEW_TITLE = "dev.ukanth.ufirewall.text.TITLE";
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
-	//	if (isABSSupport()) {
-		
 			super.onCreate(savedInstanceState);
 		
-			/*getSupportActionBar().setDisplayShowTitleEnabled(false);
-			getSupportActionBar().setDisplayShowHomeEnabled(false);
-			getSupportActionBar().setNavigationMode(
-					ActionBar.NAVIGATION_MODE_TABS);
-			addTab(MainFragment.class, "MainPage");
-			addTab(PreferenceFragment.class, "Actions");*/
-			
-			
 			try {
 				/* enable hardware acceleration on Android >= 3.0 */
 				final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -131,22 +145,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_roam).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
-			
+		    
 			Api.assertBinaries(this, true);
-			/*new BroadcastReceiver() {
-			    public void onReceive(Context context, Intent intent) {
-			        int plugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-			        if (plugged == BatteryManager.BATTERY_PLUGGED_USB) {
-			            Api.isUSBEnable 
-			        } 
-			    }
-			};*/
-
-		//} else {
-			//replaceFragment(R.id.main, MainFragment.getInstance());
-		//}
 	}
 
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -332,12 +335,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						progress.dismiss();
 					} catch (Exception ex) {
 					}
-					showApplications(false,false,false,false);
+					showApplications(false,false,false,false,"");
 				}
 			}.execute();
 		} else {
 			// the applications are cached, just show the list
-			showApplications(false,false,false,false);
+			showApplications(false,false,false,false,"");
 		}
 	}
 	
@@ -346,12 +349,24 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	/**
 	 * Show the list of applications
 	 */
-	private void showApplications(final boolean checkWifi,final boolean check3G,final boolean checkRoam ,final boolean resetAll) {
+	private void showApplications(final boolean checkWifi,final boolean check3G,final boolean checkRoam ,final boolean resetAll,final String searchStr) {
 		this.dirty = false;
+		List<DroidApp> searchApp = new ArrayList<DroidApp>();
 		final DroidApp[] apps = Api.getApps(this);
+		if(!searchStr.equals("")) {
+			for(DroidApp app:apps) {
+				for(String str: app.names) {
+					if(str.toLowerCase().contains(searchStr)) {
+						searchApp.add(app);
+					}
+				}
+			}
+		}
+		
+		final DroidApp[] apps2 =  searchApp.size() > 0 ? searchApp.toArray(new DroidApp[searchApp.size()]) : apps; 
 		// Sort applications - selected first, then alphabetically
 		if(!checkWifi && !check3G && !resetAll){
-		Arrays.sort(apps, new Comparator<DroidApp>() {
+		Arrays.sort(apps2, new Comparator<DroidApp>() {
 			@Override
 			public int compare(DroidApp o1, DroidApp o2) {
 				if (o1.firstseem != o2.firstseem) {
@@ -375,7 +390,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		final android.view.LayoutInflater inflater = getLayoutInflater();
 		final ListAdapter adapter = new ArrayAdapter<DroidApp>(this,
-				R.layout.listitem, R.id.itemtext, apps) {
+				R.layout.listitem, R.id.itemtext, apps2) {
 			public View getView(final int position, View convertView,
 					ViewGroup parent) {
 				ListEntry entry;
@@ -465,7 +480,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						}						
 					}
 				}
-				final DroidApp app = apps[position];
+				final DroidApp app = apps2[position];
 				entry.app = app;
 				entry.text.setText(app.toString());
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -485,9 +500,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				if (!app.icon_loaded && app.appinfo != null) {
 					// this icon has not been loaded yet - load it on a
 					// separated thread
-					new LoadIconTask().execute(app, getPackageManager(),
-							convertView);
-				}
+					try {
+						new LoadIconTask().execute(app, getPackageManager(),
+								convertView);
+					}catch (RejectedExecutionException r){
+						Log.d("Exception","Caught RejectedExecutionException");
+					}
+				  }
 				}
 				final CheckBox box_wifi = entry.box_wifi;
 				box_wifi.setTag(app);
@@ -511,10 +530,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		//menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
 		//menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
 		//menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
+		
 		menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
 		menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(R.drawable.on);
 		menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
-				
+		
+   	    menu.add(0,MENU_SEARCH,0,"Search")
+         .setIcon(R.drawable.abs__ic_search)
+         .setActionView(R.layout.searchbar)
+         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		
+		
+			
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
 		
 		sub.add(0, MENU_SHOWLOG, 0, R.string.show_log).setIcon(R.drawable.show);
@@ -525,6 +552,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		sub.add(0, MENU_PREFERENCES, 0, R.string.preferences).setIcon(R.drawable.preferences);
 		sub.add(0, MENU_RELOAD_APPS, 0, R.string.reload).setIcon(R.drawable.reload);
 		sub.add(0, MENU_FLUSH, 0, R.string.flush).setIcon(R.drawable.clearlog);
+		sub.add(0, MENU_SAVE, 0, "Export Rules").setIcon(R.drawable.show);
+		sub.add(0, MENU_LOAD, 0, "Import Rules").setIcon(R.drawable.show);
 		sub.add(0, MENU_HELP, 0, R.string.help).setIcon(R.drawable.help);
 		sub.add(0, MENU_EXIT, 0, R.string.exit).setIcon(R.drawable.exit);
 		
@@ -537,6 +566,28 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
        // menu.add("Search").setActionView(searchView).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		
 	    return super.onCreateOptionsMenu(menu);
+	}
+
+	private void searchApps(View ref1) {
+		final EditText textMessage = (EditText) ref1.findViewById(R.id.searchApps);
+		if (textMessage != null) {
+			textMessage.addTextChangedListener(new TextWatcher() {
+				public void afterTextChanged(Editable s) {
+
+				}
+
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+				}
+
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+					showApplications(false, false, false, false, textMessage
+							.getText().toString());
+				}
+			}); 
+		}
+		
 	}
 
 	@Override
@@ -610,10 +661,63 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case MENU_FLUSH:
 			clearRules();
 			return true;
+		case MENU_SEARCH:	
+			item.setActionView(R.layout.searchbar);
+			EditText filterText = (EditText) item.getActionView().findViewById(
+					R.id.searchApps);
+			filterText.addTextChangedListener(filterTextWatcher);
+			return true;
+		case MENU_SAVE:
+			if(Api.saveSharedPreferencesToFile(MainActivity.this)){
+				Api.alert(MainActivity.this, getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+			} else {
+				Api.alert(MainActivity.this, getString(R.string.export_rules_fail) );
+			}
+			return true;
+		case MENU_LOAD:
+			if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
+				Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+			} else {
+				Api.alert(MainActivity.this, getString(R.string.import_rules_fail) );
+			}
+			return true;
 		default:
 	        return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	/*@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+
+		case MENU_SEARCH:
+			item.setActionView(R.layout.collapsible_edittext);
+			EditText filterText = (EditText) item.getActionView().findViewById(
+					R.id.searchApps);
+			filterText.addTextChangedListener(filterTextWatcher);
+			break;
+
+		}
+		return super.onOptionsItemSelected(item);
+	}*/
+
+	private TextWatcher filterTextWatcher = new TextWatcher() {
+
+		public void afterTextChanged(Editable s) {
+			showApplications(false, false, false, false, s.toString());
+		}
+
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+		}
+
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			showApplications(false, false, false, false, s.toString().toLowerCase());
+		}
+
+	};
 
 	private void clearRules() {
 		try {
@@ -638,11 +742,33 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		Log.d("AFWall+", "Changing enabled status to: " + enabled);
 		Api.setEnabled(this, enabled);
 		if (enabled) {
+			try {
+				Api.clearRules(MainActivity.this);
+			} catch (IOException e) {
+				Log.d("AFWall+", e.getLocalizedMessage());
+			}
 			applyOrSaveRules();
 		} else {
 			purgeRules();
 		}
 		refreshHeader();
+	}
+	
+	private void confirmPassword(){
+		TextView txtView =  (TextView)findViewById(R.id.pass_message);
+		txtView.setText(R.string.reenternewpass);
+		new PassDialog(this, true, new android.os.Handler.Callback() {
+			public boolean handleMessage(Message msg) {
+				if (msg.obj != null) {
+					if(getCurrentPassword().equals((String) msg.obj)) {
+						setPassword((String) msg.obj);	
+					} else{
+						Api.alert(MainActivity.this,getString(R.string.settings_pwd_not_equal));
+					}
+				}
+				return false;
+			}
+		}).show();
 	}
 
 	/**
@@ -652,7 +778,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		new PassDialog(this, true, new android.os.Handler.Callback() {
 			public boolean handleMessage(Message msg) {
 				if (msg.obj != null) {
-					setPassword((String) msg.obj);
+					String getPass = (String) msg.obj;
+					if(getPass.length() > 0) {
+						setCurrentPassword(getPass);
+						confirmPassword();
+					} else {
+						setPassword(getPass);
+					}
+			
+					
 				}
 				return false;
 			}
@@ -727,11 +861,21 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 				if (!Api.hasRootAccess(MainActivity.this, true))
 					return;
-				Api.showIptablesRules(MainActivity.this);
+				String rules = Api.showIptablesRules(MainActivity.this);
+				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,rules,getString(R.string.showrules_title)));
 			}
-		};
+		};        
 		handler.sendEmptyMessageDelayed(0, 100);
 	}
+	
+	protected Intent activityIntent(MainActivity mainActivity, Class<Rules> class1,String message,String titleText) {
+        Intent result = new Intent();
+        result.setClass(mainActivity, class1);
+        result.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        result.putExtra(IPTABLE_RULES, message);
+        result.putExtra(VIEW_TITLE, titleText);
+        return result;
+    }
 
 	/**
 	 * Show logs on a dialog
@@ -747,7 +891,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
-				Api.showLog(MainActivity.this);
+				String logText = Api.showLog(MainActivity.this);
+				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,logText,getString(R.string.showlog_title)));
 			}
 		};
 		handler.sendEmptyMessageDelayed(0, 100);
@@ -893,19 +1038,19 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void clearAllRoam(){
-		showApplications(false,false,true,false);
+		showApplications(false,false,true,false,"");
 	}
 	
 	private void clearAll(){
-		showApplications(false,false,false,true);
+		showApplications(false,false,false,true,"");
 	}
 
 	private void selectAll3G() {
-		showApplications(false,true,false,false);
+		showApplications(false,true,false,false,"");
 	}
 
 	private void selectAllWifi() {
-		showApplications(true,false,false,false);
+		showApplications(true,false,false,false,"");
 	}
  	
 

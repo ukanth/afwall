@@ -48,6 +48,7 @@
     <string name="enterpass">Enter the password:</string>
     <string name="error_write_pref">Error writing to preferences</string>
     <string name="enternewpass">Enter the new password (leave blank to remove):</string>
+    <string name="reenternewpass">Re-Enter the password :</string>
     <string name="passdefined">Password lock defined</string>
     <string name="passremoved">Password lock removed</string>
     <string name="passerror">Error changing password lock</string>
@@ -115,4 +116,16 @@
 	</string>
 	<string name="empty"></string>
 	<string name="mode">Mode: </string>
+	
+	<string name="showrules_title">IPtables Rules</string>
+	<string name="showlog_title">Firewall Logs</string>
+	<string name="settings_password">Enter Password</string>
+	<string name="settings_password2">Enter Password again</string>
+	<string name="settings_pwd_not_equal">Password doesn\'t match</string>
+	<string name="settings_pwd_equal">Password matches</string>
+	
+	<string name="export_rules_success">Exported succesfully to </string>
+	<string name="export_rules_fail">Export Rules failed!</string>
+	<string name="import_rules_success">Imported succesfully from </string>
+	<string name="import_rules_fail">Import Rules failed!</string>
 </resources>
