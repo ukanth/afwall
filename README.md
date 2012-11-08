@@ -31,8 +31,10 @@ For instructions how to compile AFWall+ please take a look at the [Wiki | Howto 
 * View iptables rules and logging in a clear view 
 * Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/) 
 * i18n support
-* Save & Load Profiles/Rules* Integrate with Network Log ? 
+* Save & Load Profiles/Rules
+* Integrate with Network Log ? 
 * Uninstall application from list window ( or open manage application from list)
+* Better password dialog ie("Type your new password again") implementation 
 
 
 ## Contributing
