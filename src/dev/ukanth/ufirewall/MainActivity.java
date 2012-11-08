@@ -677,6 +677,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case MENU_LOAD:
 			if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
 				Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+				Api.applications = null;
+				showOrLoadApplications();
 			} else {
 				Api.alert(MainActivity.this, getString(R.string.import_rules_fail) );
 			}
