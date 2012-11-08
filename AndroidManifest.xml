@@ -54,7 +54,7 @@
     <!-- Allows low-level access to power management -->
     <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> -->
     <!-- Allows ufwall to write to external storage  -->
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     
     <!-- Screen support -->
     <supports-screens
