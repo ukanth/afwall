@@ -4,6 +4,17 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.0.4a
+* Import/Export Rules ( for now it's just a single import&export to External storage)
+* Integrated search bar ( application search )
+* Revamped Log & IPTables rules view ( you can now view the logs and rules in a clear view and copy them !)
+* Added reenter password confirmation dialog.
+* Added additional ifaces to support more devices ( working on another solution which will identity interfaces on the particular device)
+* Fixed force close when scrolling for some devices
+* and many. 
+
+
+
 Version 1.0.3a
 * Fix for some apps can "bypass" the firewall by just using UDP port 53. Disable port 53
 * Added 3g ifaces to support more devices ( should solve issues with firewall for some devices )
