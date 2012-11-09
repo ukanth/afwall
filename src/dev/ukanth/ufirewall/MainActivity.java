@@ -757,8 +757,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void confirmPassword(){
-		TextView txtView =  (TextView)findViewById(R.id.pass_message);
-		txtView.setText(R.string.reenternewpass);
 		new PassDialog(this, true, new android.os.Handler.Callback() {
 			public boolean handleMessage(Message msg) {
 				if (msg.obj != null) {

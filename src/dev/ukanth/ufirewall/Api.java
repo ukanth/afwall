@@ -1228,7 +1228,7 @@ public final class Api {
 		script.append("$IPTABLES -X\n");
 		int code = runScriptAsRoot(ctx, script.toString(), res);
 		if (code == -1) {
-			alert(ctx, R.string.error_purge + code + "\n" + res);
+			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
 			return false;
 		}
 		return true;
