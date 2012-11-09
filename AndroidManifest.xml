@@ -93,6 +93,13 @@
             android:theme="@android:style/Theme.Black.NoTitleBar" >
         </activity>
         
+        <activity android:label="@string/showrules_title" android:name=".Rules">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+        
+        
         <activity android:name=".CustomScriptActivity" />
 
     <!-- ToDo: Show changelog inside the application -->
