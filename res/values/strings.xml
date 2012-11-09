@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Contains shared programming interfaces.
+ * All iptables "communication" is handled by this class.
+ *
+ * Copyright (C) 2012 Umakanthan Chandran
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Umakanthan Chandran
+ * @version 1.0
+ */
+  -->
+
 <resources>
     <string name="app_name">AFWall+</string>
     <string name="app_version">1.0.4.2a</string>
@@ -23,9 +48,9 @@
 				"You need a rooted phone to run AFWall+.\n\n" +
 				"If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n" +
 				"Error message: </string>
-	<string name="error_common">Error : </string>
-	<string name="all_item">(Any application) - Same as selecting all applications</string>		
-	<string name="root_item">(root) - Applications running as root</string>
+    <string name="error_common">Error : </string>
+    <string name="all_item">(Any application) - Same as selecting all applications</string>		
+    <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed-out</string>
     <string name="fw_enabled">Firewall Enabled</string>
     <string name="fw_disabled">Firewall Disabled</string>
@@ -71,7 +96,7 @@
     <string name="notify_pref_title">Notify on new installs</string>
     <string name="toast_pref_title">Disable Toast Messages</string>
     <string name="syscolor_pref_title">Highlight System apps</string>
-    <string name="usb3g_pref_summary">Prevent AFWall to apply 3g rules when using wired USB Connection</string>
+    <string name="usb3g_pref_summary">Prevent AFWall+ to apply 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
     <string name="hideicons_pref_title">Hide application icons</string>
     <string name="custom_script_defined">Custom script defined</string>
@@ -80,7 +105,7 @@
     <string name="custom_script_info"><b>Enter your custom script bellow.</b>
 		\n<i>(Leave it blank to remove)</i>
 		\nFor information about custom scripts, click <a href="http://code.google.com/p/droidwall/wiki/CustomScripts">here</a>.
-	</string>
+    </string>
     <string name="custom_script2_info">
     	\n<b>Custom shutdown script</b>
     	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
@@ -88,7 +113,7 @@
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
-	<string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
+    <string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
 	    \n<i>Contact me - cumakt@gmail.com (@ukanth- Twitter)</i>
 		\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
 		\n
