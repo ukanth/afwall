@@ -4,6 +4,10 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+
+Version 1.0.4.1a
+* Fixed force close on viewlog and view rules pages.
+
 Version 1.0.4a
 * Import/Export Rules ( for now it's just a single import&export to External storage)
 * Integrated search bar ( application search )
@@ -12,8 +16,6 @@ Version 1.0.4a
 * Added additional ifaces to support more devices ( working on another solution which will identity interfaces on the particular device)
 * Fixed force close when scrolling for some devices
 * and many. 
-
-
 
 Version 1.0.3a
 * Fix for some apps can "bypass" the firewall by just using UDP port 53. Disable port 53
@@ -37,12 +39,10 @@ Version 1.0.2a ( Please note, if you upgrade from 1.0.1a, rules will be reset!)
 * Fixed bug in applying rules in clear/select all
 * Fixed the issue with save/discard rules when press back button.
 
-
 Version 1.0.1a
 * Improved install notification ( only notify when app has internet permission )
 * Select All Wifi / 3G or Clean All option ! ( HUGE FIX ) - No Invert select this time. just click on the 3g/wifi icons will do the trick !
 * Fixed dangerous file permissions issues ( reported in original Droidwall issue )
-
 
 Version 1.0.0a
 * Initial version
