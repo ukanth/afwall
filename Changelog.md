@@ -3,6 +3,8 @@ Changelog AFWall+
 
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
+
+
 Version 1.0.4.1a
 * Fixed force close on viewlog and view rules pages.
 
