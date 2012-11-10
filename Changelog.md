@@ -4,6 +4,13 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.0.5a
+
+* Enhanced Rules view with additional actions like copy, flush, export to sdcard and network interfaces.
+* Moved flush rules from main menu to enhanced rules view
+* Enhanced Log view with additional copy & clear action
+* Moved clear log from main menu to enhanced log view
+* Fixed FC issues from 1.0.4.x
 
 Version 1.0.4.1a
 * Fixed force close on viewlog and view rules pages.
