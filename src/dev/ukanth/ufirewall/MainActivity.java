@@ -93,12 +93,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private static final int MENU_HELP = 4;
 	private static final int MENU_SHOWLOG = 5;
 	private static final int MENU_SHOWRULES = 6;
-	private static final int MENU_CLEARLOG = 7;
+	//private static final int MENU_CLEARLOG = 7;
 	private static final int MENU_SETPWD = 8;
 	private static final int MENU_SETCUSTOM = 9;
 	private static final int MENU_PREFERENCES = 10;
 	private static final int MENU_RELOAD_APPS = 11;
-	private static final int MENU_FLUSH = 12;
+	//private static final int MENU_FLUSH = 12;
 	private static final int MENU_SAVE = 13;
 	private static final int MENU_LOAD = 14;	
 	private static final int MENU_TOGGLE = -1;
@@ -535,25 +535,27 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(R.drawable.on);
 		menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
 		
-   	    menu.add(0,MENU_SEARCH,0,"Search")
-         .setIcon(R.drawable.abs__ic_search)
-         .setActionView(R.layout.searchbar)
-         .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		//menu.add(0, MENU_APPLY, 0,  R.string.applyrules).setIcon(R.drawable.apply).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		
-		
-			
+		menu.add(0, MENU_SEARCH, 0, R.string.Search)
+				.setIcon(R.drawable.abs__ic_search)
+				.setActionView(R.layout.searchbar)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_ALWAYS
+								| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
 		
 		sub.add(0, MENU_SHOWLOG, 0, R.string.show_log).setIcon(R.drawable.show);
 		sub.add(0, MENU_SHOWRULES, 0, R.string.showrules).setIcon(R.drawable.show);
-		sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
+		//sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
 		sub.add(0, MENU_SETPWD, 0, R.string.setpwd).setIcon(R.drawable.lock);
 		sub.add(0, MENU_SETCUSTOM, 0, R.string.set_custom_script).setIcon(R.drawable.script);
 		sub.add(0, MENU_PREFERENCES, 0, R.string.preferences).setIcon(R.drawable.preferences);
 		sub.add(0, MENU_RELOAD_APPS, 0, R.string.reload).setIcon(R.drawable.reload);
-		sub.add(0, MENU_FLUSH, 0, R.string.flush).setIcon(R.drawable.clearlog);
-		sub.add(0, MENU_SAVE, 0, "Export Rules").setIcon(R.drawable.show);
-		sub.add(0, MENU_LOAD, 0, "Import Rules").setIcon(R.drawable.show);
+		//sub.add(0, MENU_FLUSH, 0, R.string.flush).setIcon(R.drawable.clearlog);
+		sub.add(0, MENU_SAVE, 0, R.string.export_rules).setIcon(R.drawable.exportr);
+		sub.add(0, MENU_LOAD, 0, R.string.import_rules).setIcon(R.drawable.importr);
 		sub.add(0, MENU_HELP, 0, R.string.help).setIcon(R.drawable.help);
 		sub.add(0, MENU_EXIT, 0, R.string.exit).setIcon(R.drawable.exit);
 		
@@ -645,9 +647,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case MENU_SHOWRULES:
 			showRules();
 			return true;
-		case MENU_CLEARLOG:
+		/*case MENU_CLEARLOG:
 			clearLog();
-			return true;
+			return true;*/
 		case MENU_SETCUSTOM:
 			setCustomScript();
 			return true;
@@ -658,9 +660,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			Api.applications = null;
 			showOrLoadApplications();
 			return true;
-		case MENU_FLUSH:
+	/*	case MENU_FLUSH:
 			clearRules();
-			return true;
+			return true;*/
 		case MENU_SEARCH:	
 			item.setActionView(R.layout.searchbar);
 			EditText filterText = (EditText) item.getActionView().findViewById(
@@ -721,7 +723,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	};
 
-	private void clearRules() {
+	/*private void clearRules() {
 		try {
 			if (Api.clearRules(MainActivity.this)) {
 				displayToasts(MainActivity.this, R.string.flushed,
@@ -731,7 +733,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			Api.alert(MainActivity.this, getString(R.string.error_flush));
 		}
 		
-	}
+	}*/
 	private void showPreferences() {
 		startActivity(new Intent(this, PrefsActivity.class));
 	}
@@ -901,7 +903,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	/**
 	 * Clear logs
 	 */
-	private void clearLog() {
+	/*private void clearLog() {
 		final Resources res = getResources();
 		final ProgressDialog progress = ProgressDialog.show(this,
 				res.getString(R.string.working),
@@ -921,7 +923,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 		};
 		handler.sendEmptyMessageDelayed(0, 100);
-	}
+	}*/
 
 	/**
 	 * Apply or save iptable rules, showing a visual indication
@@ -1129,9 +1131,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		};
 	}
 
-	private void displayToasts(Context context, int resId, int duration) {
+	public static void displayToasts(Context context, int resId, int duration) {
 		SharedPreferences prefs =PreferenceManager
-				.getDefaultSharedPreferences(MainActivity.this) ;
+				.getDefaultSharedPreferences(context) ;
 		boolean showToast = prefs.getBoolean("showToast", true);
 		if (showToast)
 			Toast.makeText(context, resId, duration).show();

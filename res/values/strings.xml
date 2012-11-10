@@ -124,8 +124,14 @@
 	<string name="settings_pwd_not_equal">Password doesn\'t match</string>
 	<string name="settings_pwd_equal">Password matches</string>
 	
+	<string name="export_rules">Export Rules</string>
+	<string name="import_rules">Import Rules</string>
 	<string name="export_rules_success">Exported succesfully to </string>
 	<string name="export_rules_fail">Export Rules failed!</string>
 	<string name="import_rules_success">Imported succesfully from </string>
 	<string name="import_rules_fail">Import Rules failed!</string>
+	<string name="no_log">Log is Empty</string>
+	<string name="copy">Copy</string>
+	<string name="copied">Copied</string>
+	<string name="Search">Search</string>
 </resources>
