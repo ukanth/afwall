@@ -26,6 +26,7 @@
 package dev.ukanth.ufirewall;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,8 +56,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.SparseArray;
@@ -105,6 +109,7 @@ public final class Api {
 	public static final String STATUS_EXTRA			= "dev.ukanth.ufirewall.intent.extra.STATUS";
 	public static final String SCRIPT_EXTRA			= "dev.ukanth.ufirewall.intent.extra.SCRIPT";
 	public static final String SCRIPT2_EXTRA		= "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
+	private static final int BUFF_LEN = 0;
 	
 	// Cached applications
 	public static DroidApp applications[] = null;
@@ -1333,4 +1338,50 @@ public final class Api {
 		return res;
 	}
 	
+	public static String showIfaces() {
+		Process p;
+		StringBuffer inputLine = new StringBuffer();
+		try {
+
+			p = Runtime.getRuntime().exec(
+					new String[] { "su", "-c", "ls /sys/class/net" });
+			DataInputStream stdout = new DataInputStream(p.getInputStream());
+			String tmp;
+			while ((tmp = stdout.readLine()) != null) {
+				inputLine.append(tmp);
+				inputLine.append(",");
+			}
+			// use inputLine.toString(); here it would have whole source
+			stdout.close();
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return inputLine.toString();
+	}
+	
+	public static void showInstalledAppDetails(Context context, String packageName) {
+		final String SCHEME = "package";
+		final String APP_PKG_NAME_21 = "com.android.settings.ApplicationPkgName";
+		final String APP_PKG_NAME_22 = "pkg";
+		final String APP_DETAILS_PACKAGE_NAME = "com.android.settings";
+		final String APP_DETAILS_CLASS_NAME = "com.android.settings.InstalledAppDetails";
+
+	    Intent intent = new Intent();
+	    final int apiLevel = Build.VERSION.SDK_INT;
+	    if (apiLevel >= 9) { // above 2.3
+	        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+	        Uri uri = Uri.fromParts(SCHEME, packageName, null);
+	        intent.setData(uri);
+	    } else { // below 2.3
+	        final String appPkgName = (apiLevel == 8 ? APP_PKG_NAME_22
+	                : APP_PKG_NAME_21);
+	        intent.setAction(Intent.ACTION_VIEW);
+	        intent.setClassName(APP_DETAILS_PACKAGE_NAME,
+	                APP_DETAILS_CLASS_NAME);
+	        intent.putExtra(appPkgName, packageName);
+	    }
+	    context.startActivity(intent);
+	}
 }

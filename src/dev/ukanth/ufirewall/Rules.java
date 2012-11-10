@@ -1,13 +1,20 @@
 package dev.ukanth.ufirewall;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -25,7 +32,9 @@ public class Rules extends SherlockActivity {
 	private static final int MENU_TOGGLE = -3;
 	private static final int MENU_CLEARLOG = 7;
 	private static final int MENU_FLUSH_RULES = 12;
-	private static final int MENU_COPY = 15;
+	private static final int MENU_COPY = 16;
+	private static final int MENU_EXPORT_LOG = 17;
+	private static final int MENU_INTERFACES = 18;
 	
 	private int viewMode;
 	
@@ -76,16 +85,16 @@ public class Rules extends SherlockActivity {
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
-		if(getViewMode() == MENU_CLEARLOG) sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
-		if(getViewMode() == MENU_FLUSH_RULES) sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
 		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
+		if(getViewMode() == MENU_CLEARLOG) {
+			sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
+		}
+		if(getViewMode() == MENU_FLUSH_RULES) {
+			sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
+			sub.add(0, MENU_INTERFACES, 0, R.string.ifaces).setIcon(R.drawable.show);
+			sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
+		}
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        
-       // SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
-       // searchView.setQueryHint("Search for countries…");
-
-       // menu.add("Search").setActionView(searchView).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		
 	    return super.onCreateOptionsMenu(menu);
 	}
     
@@ -102,10 +111,67 @@ public class Rules extends SherlockActivity {
 			return true;	
     	case MENU_COPY:
     		copy();
+    		return true;
+    	case MENU_INTERFACES:
+    		String[] ifaces = Api.showIfaces().split(",");
+    		if(ifaces != null && ifaces.length > 0 ){
+    			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    			builder.setTitle(R.string.ifaces);
+    			builder.setItems(ifaces, new DialogInterface.OnClickListener() {
+    			    public void onClick(DialogInterface dialog, int item) {
+    			         // Do something with the selection
+    			    }
+    			});
+    			AlertDialog alert = builder.create();
+    			alert.show();
+    		}
+    		return true;
+    	case MENU_EXPORT_LOG:
+    		if(exportToSD()){
+    			 MainActivity.displayToasts(Rules.this, R.string.export_rules_success,
+    						Toast.LENGTH_LONG);
+    				
+    		}else{
+    			 MainActivity.displayToasts(Rules.this, R.string.export_logs_fail,
+    						Toast.LENGTH_LONG);
+    		}
+    		return true;
     	default:
 	        return super.onOptionsItemSelected(item);
 		}
     }
+    
+   
+    private boolean exportToSD() {
+	    File sdCard = Environment.getExternalStorageDirectory();
+	    File dir = new File (sdCard.getAbsolutePath() + "/afwall/");
+	    dir.mkdirs();
+	    boolean res = false;
+	    File file = new File(dir, "rules.log");
+	    
+	    
+	    ObjectOutputStream output = null;
+	    try {
+	        output = new ObjectOutputStream(new FileOutputStream(file));
+	        EditText rulesText = (EditText) findViewById(R.id.rules);
+	        output.writeObject(rulesText.getText().toString());
+	        res = true;
+	    } catch (FileNotFoundException e) {
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }finally {
+	        try {
+	            if (output != null) {
+	                output.flush();
+	                output.close();
+	            }
+	        } catch (IOException ex) {
+	            ex.printStackTrace();
+	        }
+	    }
+	    return res;
+	}
     
 	@SuppressLint({ "NewApi", "NewApi", "NewApi", "NewApi" })
 	private void copy() {
@@ -125,7 +191,8 @@ public class Rules extends SherlockActivity {
 		} catch(Exception e ){
 			Log.d("AFWall+", "Exception in Clipboard" + e);
 		}
-		
+		MainActivity.displayToasts(Rules.this, R.string.copied,
+				Toast.LENGTH_SHORT);
 		
 	}
 

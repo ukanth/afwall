@@ -53,6 +53,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -106,6 +108,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private static final int MENU_SEARCH = 15;
 	
 	private String currentPassword = "";
+	
+	//private LayoutInflater inflater;
 
 	public String getCurrentPassword() {
 		return currentPassword;
@@ -122,6 +126,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	public final static String IPTABLE_RULES = "dev.ukanth.ufirewall.text.RULES";
 	public final static String VIEW_TITLE = "dev.ukanth.ufirewall.text.TITLE";
+	
+	ActionBarSherlock mSherlock = ActionBarSherlock.wrap(this);
 
 	/** Called when the activity is first created. */
 	@Override
@@ -145,7 +151,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_roam).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
-		    
+			
+	        /*inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	        View itemview = inflater.inflate(R.layout.listitem, listview);
+	        ImageView img = (ImageView) itemview.findViewById(R.id.itemicon);
+	        img.setOnClickListener(new OnClickListener() {
+	            public void onClick(View v) {
+	                TextView tv=(TextView) v.findViewById(R.id.itemtext);
+	                CharSequence pkgName = tv.getHint();
+	                Api.showInstalledAppDetails(MainActivity.this, pkgName.toString());
+	            }
+	        });*/
+			
 			Api.assertBinaries(this, true);
 	}
 
@@ -495,6 +512,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					} else {
 						entry.text.setTextColor(defaultColor);
 					}
+					entry.text.setHint(app.pkgName);
 				} 
 				if(!disableIcons) {
 				if (!app.icon_loaded && app.appinfo != null) {
@@ -569,6 +587,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
 	    return super.onCreateOptionsMenu(menu);
 	}
+	
 
 	private void searchApps(View ref1) {
 		final EditText textMessage = (EditText) ref1.findViewById(R.id.searchApps);
@@ -1013,7 +1032,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					app.selected_roam = isChecked;
 					this.dirty = true;
 				}
-				break;	
+				break;
 			}
 		}
 	}
@@ -1150,4 +1169,5 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		private ImageView icon;
 		private DroidApp app;
 	}
+	
 }
