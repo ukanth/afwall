@@ -71,12 +71,11 @@ import android.widget.Toast;
  * All iptables "communication" is handled by this class.
  */
 public final class Api {
-	/** application version string */
 	
 	/** special application UID used to indicate "any application" */
 	public static final int SPECIAL_UID_ANY	= -10;
 	/** special application UID used to indicate the Linux Kernel */
-	public static final int SPECIAL_UID_KERNEL	= -11;
+	public static final int SPECIAL_UID_KERNEL = -11;
 	/** root script filename */
 	private static final String SCRIPT_FILE = "afwall.sh";
 	
@@ -84,7 +83,7 @@ public final class Api {
 	public static final String PREFS_NAME 			= "AFWallPrefs";
 	//public static final String PREF_3G_UIDS		= "AllowedUids3G";
 	//public static final String PREF_WIFI_UIDS		= "AllowedUidsWifi";
-	//public static final String PREF_ROAMING_UIDS	= "AllowedUidsRoaming";
+	//public static final String PREF_ROAMING_UIDS	        = "AllowedUidsRoaming";
 	
 	//for import/export rules
 	public static final String PREF_3G_PKG			= "AllowedPKG3G";
@@ -92,19 +91,21 @@ public final class Api {
 	public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
 	
 	public static final String PREF_PASSWORD 		= "Password";
-	public static final String PREF_CUSTOMSCRIPT 	= "CustomScript";
-	public static final String PREF_CUSTOMSCRIPT2 	= "CustomScript2"; // Executed on shutdown
+	public static final String PREF_CUSTOMSCRIPT 	        = "CustomScript";
+	public static final String PREF_CUSTOMSCRIPT2 	        = "CustomScript2"; // Executed on shutdown
 	public static final String PREF_MODE 			= "BlockMode";
 	public static final String PREF_ENABLED			= "Enabled";
 	public static final String PREF_LOGENABLED		= "LogEnabled";
+	
 	// Modes
 	public static final String MODE_WHITELIST = "whitelist";
 	public static final String MODE_BLACKLIST = "blacklist";
-	// Messages
 	
+	// Messages	
 	public static final String STATUS_CHANGED_MSG 	= "dev.ukanth.ufirewall.intent.action.STATUS_CHANGED";
 	public static final String TOGGLE_REQUEST_MSG	= "dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST";
 	public static final String CUSTOM_SCRIPT_MSG	= "dev.ukanth.ufirewall.intent.action.CUSTOM_SCRIPT";
+	
 	// Message extras (parameters)
 	public static final String STATUS_EXTRA			= "dev.ukanth.ufirewall.intent.extra.STATUS";
 	public static final String SCRIPT_EXTRA			= "dev.ukanth.ufirewall.intent.extra.SCRIPT";
@@ -255,7 +256,8 @@ public final class Api {
 				"$IPTABLES -L afwall-reject >/dev/null 2>/dev/null || $IPTABLES --new afwall-reject || exit 5\n" +
 				"# Add afwall chain to OUTPUT chain if necessary\n" +
 				"$IPTABLES -L OUTPUT | $GREP -q afwall || $IPTABLES -A OUTPUT -j afwall || exit 6\n" +
-				"$IPTABLES -A afwall -p udp --dport 53 -j RETURN || exit 11\n" +	
+				"$IPTABLES -A afwall -p udp --dport 53 -j RETURN || exit 11\n" +
+				"$IPTABLES -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 11\n" +
 				"# Flush existing rules\n" +
 				"$IPTABLES -F afwall || exit 7\n" +
 				"$IPTABLES -F afwall-3g || exit 8\n" +
