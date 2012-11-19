@@ -1,0 +1,12 @@
+#!/bin/sh
+echo ""
+for i in $1; do
+	echo "extern void lib${i}_init(void);";
+done;
+echo "void init_extensions(void);"
+echo "void init_extensions(void) {"
+for i in $1; do
+	echo "	lib${i}_init();";
+done
+echo "}"
+
