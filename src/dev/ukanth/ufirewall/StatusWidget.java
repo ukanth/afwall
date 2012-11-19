@@ -26,6 +26,7 @@ package dev.ukanth.ufirewall;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.text.format.DateUtils;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+import android.util.Log;
 
 /**
  * ON/OFF Widget implementation
@@ -45,7 +47,7 @@ public class StatusWidget extends AppWidgetProvider {
 	public void onReceive(final Context context, final Intent intent) {
         super.onReceive(context, intent);
         if (Api.STATUS_CHANGED_MSG.equals(intent.getAction())) {
-        	// Broadcast sent when the DroidWall status has changed
+        	/* Broadcast sent when the AFWall+ status has changed */
             final Bundle extras = intent.getExtras();
             if (extras != null && extras.containsKey(Api.STATUS_EXTRA)) {
                 final boolean firewallEnabled = extras.getBoolean(Api.STATUS_EXTRA);
@@ -54,7 +56,7 @@ public class StatusWidget extends AppWidgetProvider {
                 showWidget(context, manager, widgetIds, firewallEnabled);
             }
         } else if (Api.TOGGLE_REQUEST_MSG.equals(intent.getAction())) {
-        	// Broadcast sent to request toggling DroidWall's status
+        	/* Broadcast sent to request toggling AFWall+ status */
             final SharedPreferences prefs = context.getSharedPreferences(Api.PREFS_NAME, 0);
             final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
     		final String pwd = prefs.getString(Api.PREF_PASSWORD, "");
@@ -67,7 +69,7 @@ public class StatusWidget extends AppWidgetProvider {
         			if (msg.arg1 != 0) Toast.makeText(context, msg.arg1, Toast.LENGTH_SHORT).show();
         		}
         	};
-			// Start a new thread to change the firewall - this prevents ANR
+			/* Start a new thread to change the firewall - this prevents ANR */
 			new Thread() {
 				@Override
 				public void run() {
@@ -96,13 +98,66 @@ public class StatusWidget extends AppWidgetProvider {
 			}.start();
         }
 	}
-    @Override
+   /* @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] ints) {
         super.onUpdate(context, appWidgetManager, ints);
         final SharedPreferences prefs = context.getSharedPreferences(Api.PREFS_NAME, 0);
         boolean enabled = prefs.getBoolean(Api.PREF_ENABLED, true);
         showWidget(context, appWidgetManager, ints, enabled);
-    }
+    } */
+	@Override
+        public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
+        {
+
+	    	Log.i(TAG, "onUpdate method called, starting service and setting alarm");
+
+	   	 /* Update the widgets via the service */
+	   	 startService(context, this.getClass(), appWidgetManager, StatusWidget.class);
+
+	   	 setAlarm(context);
+
+           	 super.onUpdate(context, appWidgetManager, appWidgetIds);
+
+     	}
+     	@Override
+	public void onReceive(Context context, Intent intent)
+	{
+	super.onReceive(context, intent);
+		/* Get the current Date and Time */
+		Log.i(TAG, "onReceive method called, action = '" + intent.getAction() + "' at " + DateUtils.now());
+
+	if ( (WIDGET_UPDATE.equals(intent.getAction())) ||
+		intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE") ||
+		// intent.getAction().equals("dev.sec.android.widgetapp.APPWIDGET_RESIZE") ||  not implementet jet
+		intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")
+	)
+	{
+	if (AppWidgetProvider.WIDGET_UPDATE.equals(intent.getAction()))
+	{
+		Log.d(TAG, "Alarm called: updating");
+		/* GenericLogger.i(WIDGET_LOG, TAG, "LargeWidgetProvider: Alarm to refresh widget was called"); */
+	}
+	else
+	{
+	Log.d(TAG, "APPWIDGET_UPDATE called: updating");
+	}
+
+	AppWidgetManager appWidgetManager = AppWidgetManager
+		.getInstance(context);
+	ComponentName thisAppWidget = new ComponentName(
+		context.getPackageName(),
+		this.getClass().getName());
+	int[] appWidgetIds = appWidgetManager
+		.getAppWidgetIds(thisAppWidget);
+
+	if (appWidgetIds.length > 0)
+	{
+		onUpdate(context, appWidgetManager, appWidgetIds);
+	}
+	else
+	{
+		Log.i(TAG, "No widget found to update");
+	}
 
     private void showWidget(Context context, AppWidgetManager manager, int[] widgetIds, boolean enabled) {
         final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.onoff_widget);
