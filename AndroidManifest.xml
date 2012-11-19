@@ -34,7 +34,7 @@
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
     
     <!-- Permissions -->
     <!-- Allows ufwall to receive the ACTION_BOOT_COMPLETED that is broadcast 
