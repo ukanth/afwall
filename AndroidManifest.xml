@@ -28,7 +28,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.ukanth.ufirewall"
-    android:versionCode="103"
+    android:versionCode="105"
     android:versionName="@string/app_version" >
 
     <!-- Android 2.2 up to 4.x -->
