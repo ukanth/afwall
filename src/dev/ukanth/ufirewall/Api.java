@@ -1160,7 +1160,7 @@ public final class Api {
 				file.createNewFile();
 				final String abspath = file.getAbsolutePath();
 				// make sure we have execution permission on the script file
-				Runtime.getRuntime().exec("chmod 700 "+abspath).waitFor();
+				Runtime.getRuntime().exec("chmod 777 "+abspath).waitFor();
 				// Write the script to be executed
 				final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file));
 				if (new File("/system/bin/sh").exists()) {
