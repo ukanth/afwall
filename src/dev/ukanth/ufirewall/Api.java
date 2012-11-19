@@ -943,13 +943,13 @@ public final class Api {
 			// Check iptables_armv5
 			File file = new File(ctx.getDir("bin",0), "iptables_armv5");
 			if (!file.exists() || file.length()!=198652) {
-				copyRawFile(ctx, R.raw.iptables_armv5, file, "700");
+				copyRawFile(ctx, R.raw.iptables_armv5, file, "755");
 				changed = true;
 			}
 			// Check busybox
 			file = new File(ctx.getDir("bin",0), "busybox_g1");
 			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.busybox_g1, file, "700");
+				copyRawFile(ctx, R.raw.busybox_g1, file, "755");
 				changed = true;
 			}
 			if (changed) {
