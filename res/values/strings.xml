@@ -23,9 +23,9 @@
 				"You need a rooted phone to run AFWall+.\n\n" +
 				"If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n" +
 				"Error message: </string>
-	<string name="error_common">Error : </string>
-	<string name="all_item">(Any application) - Same as selecting all applications</string>		
-	<string name="root_item">(root) - Applications running as root</string>
+    <string name="error_common">Error : </string>
+    <string name="all_item">(Any application) - Same as selecting all applications</string>		
+    <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed-out</string>
     <string name="fw_enabled">Firewall Enabled</string>
     <string name="fw_disabled">Firewall Disabled</string>
@@ -79,7 +79,7 @@
     <string name="custom_script_error">Error saving custom script</string>
     <string name="custom_script_info"><b>Enter your custom script bellow.</b>
 		\n<i>(Leave it blank to remove)</i>
-		\nFor information about custom scripts, click <a href="http://code.google.com/p/droidwall/wiki/CustomScripts">here</a>.
+		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
 	</string>
     <string name="custom_script2_info">
     	\n<b>Custom shutdown script</b>
@@ -88,7 +88,7 @@
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
-	<string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
+    <string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
 	    \n<i>Contact me - cumakt@gmail.com (@ukanth- Twitter)</i>
 		\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
 		\n
@@ -116,14 +116,12 @@
 	</string>
 	<string name="empty"></string>
 	<string name="mode">Mode: </string>
-	
 	<string name="showrules_title">IPtables Rules</string>
 	<string name="showlog_title">Firewall Logs</string>
 	<string name="settings_password">Enter Password</string>
 	<string name="settings_password2">Enter Password again</string>
 	<string name="settings_pwd_not_equal">Password doesn\'t match</string>
 	<string name="settings_pwd_equal">Password matches</string>
-	
 	<string name="export_rules">Export Rules</string>
 	<string name="export_to_sd">Export to SDCard</string>
 	<string name="import_rules">Import Rules</string>
