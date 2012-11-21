@@ -43,7 +43,7 @@ This project also uses many other open source libraries such as:
 
 
 ## How to compile
-For instructions how to compile AFWall+ please take a look at the [Wiki | Howto compile AFWall](https://github.com/ukanth/afwall/wiki/Howto-compile-AFWall-).
+For instructions how to compile AFWall+ please take a look at the [Wiki | HOWTO-Compile-AFWall ](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
 
 ## Contributing
 
