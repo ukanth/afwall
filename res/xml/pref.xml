@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Contains shared programming interfaces.
+ * All iptables "communication" is handled by this class.
+ *
+ * Copyright (C) 2012 Umakanthan Chandran
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Umakanthan Chandran
+ * @version 1.0
+ */
+  -->
+  
+<!--
+Make sure to add android:persistent="false" to all preferences to disable saving
+the preference values to SharedPreferences. Afwall use own storage mechanis for preferences.
+
+Also note that every sub-PreferenceScreen needs an "android:key" parameter so the correct screen
+can be displayed after the device has been rotated.
+-->  
+  
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <PreferenceScreen
+        android:title="@string/display_preferences"
+        android:key="display_preferences">
+        
     <PreferenceCategory
         android:summary="AFWall+ Options"
         android:title="AFWall+ Preferences" >
@@ -12,11 +49,28 @@
             android:key="showToast"
             android:title="@string/toast_pref_title" />
          
+         <!-- mColorPicker -->
          <net.margaritov.preference.colorpicker.ColorPickerPreference 
 			android:key="sysColor"
 			android:title="@string/syscolor_pref_title" 
-			android:defaultValue="0xff000000" 
-		  />
+			android:defaultValue="0xff000000" />
+			
+            <ListPreference
+                android:persistent="false"
+                android:key="language"
+                android:title="@string/settings_language_label"
+                android:entries="@array/settings_language_entries"
+                android:entryValues="@array/settings_language_values"
+                android:dialogTitle="@string/settings_language_label" />
+
+            <ListPreference
+                android:persistent="false"
+                android:key="theme"
+                android:title="@string/settings_theme_label"
+                android:entries="@array/settings_theme_entries"
+                android:entryValues="@array/settings_theme_values"
+                android:dialogTitle="@string/settings_theme_label" />
+                
          <CheckBoxPreference
             android:key="disableUSB3gRule"
             android:summary="@string/usb3g_pref_summary"
