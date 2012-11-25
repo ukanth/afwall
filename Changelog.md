@@ -4,6 +4,18 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version: 1.0.6a
+* Now uses Chainfire's SU library, This will get rid of old shell script approach. I feel it's faster and better approach and helps to enable profiles !
+  Please Note: If you use afwall.sh outside, starting this version it will not work !
+* Improved menubar and confirmation dialogs
+* Fixed bug with logging 
+* Fixed bug on some ICS/JB devices
+* Added new EXPERIMENTAL option for ICS/JB devices ( uses extra rules )
+* Enabled fast scrolling on lists ( main list )
+* German Translation ( Thanks to CHEF !)
+* Support for 4.2 JB
+
+
 Version 1.0.5a
 
 * Enhanced Rules view with additional actions like copy, flush, export to sdcard and network interfaces.

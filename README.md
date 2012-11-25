@@ -20,13 +20,14 @@ report any bugs or feature requests and to see the list of known issues.
 * TAB interface to separate system apps & user apps 
 * ~~Roaming option ( like avast firewall )~~ <i>(since 1.0.2a)</i>
 * Support for XHDPI and other resolutions
-* Support for only within LAN 
+* Support for only within LAN  
 * Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/) 
 * ~~Flush/Reset iptables rules from UI~~ <i>(since 1.0.2a)</i>
 * ~~View iptables rules and logging in a clear view~~ <i>(since 1.0.4a)</i>
 * Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/)
 * Full i18n support
-* Save & Load Profiles/Rules* Integrate with Network Log ? 
+* Save & Load Profiles/Rules
+* Integrate with Network Log 
 * Uninstall application from list window ( or open manage application from list)
 
 

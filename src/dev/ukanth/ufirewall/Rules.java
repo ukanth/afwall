@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -107,7 +108,7 @@ public class Rules extends SherlockActivity {
 			rulesText.setText(getString(R.string.no_log));
 			return true;
     	case MENU_FLUSH_RULES:
-			clearRules();
+			clearRules(Rules.this);
 			return true;	
     	case MENU_COPY:
     		copy();
@@ -196,17 +197,39 @@ public class Rules extends SherlockActivity {
 		
 	}
 
-	private void clearRules() {
-		try {
-			if (!Api.hasRootAccess(Rules.this, true))
-				return;
-			if (Api.clearRules(Rules.this)) {
-				MainActivity.displayToasts(Rules.this, R.string.flushed,
-						Toast.LENGTH_SHORT);
-			}
-		} catch (IOException e) {
-			Api.alert(Rules.this, getString(R.string.error_flush));
-		}
+	private void clearRules(final Context ctx) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+			builder.setMessage(getString(R.string.flushRulesConfirm))
+			       .setCancelable(false)
+			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	final StringBuilder res = new StringBuilder();
+			   			StringBuilder script = new StringBuilder();
+			   			if(Api.getIpPath() == null) {
+			   				Api.setIpTablePath(ctx);
+			   			}
+			   			script.append(Api.getIpPath() +" -F\n");
+			   			script.append(Api.getIpPath() +" -X\n");
+			   			int code = -1;
+						try {
+							code = Api.runScriptAsRoot(ctx, script.toString(), res);
+						} catch (IOException e) {
+							Api.alert(Rules.this, getString(R.string.error_flush));
+						}
+			   			if (code == -1) {
+			   				Api.alert(ctx, getString(R.string.error_purge) + code + "\n" + res);
+			   			}else {
+			   				Api.displayToasts(ctx, R.string.flushed, Toast.LENGTH_SHORT);
+			   			}
+			           }
+			       })
+			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
 
 	}
     
@@ -224,8 +247,6 @@ public class Rules extends SherlockActivity {
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
-				if (!Api.hasRootAccess(Rules.this, true))
-					return;
 				if (Api.clearLog(Rules.this)) {
 					MainActivity.displayToasts(Rules.this, R.string.log_cleared,
 							Toast.LENGTH_SHORT);

@@ -53,7 +53,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -545,15 +544,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
-		//menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
-		//menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(android.R.drawable.button_onoff_indicator_on);
-		//menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
-		
 		menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
-		menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(R.drawable.on);
-		menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
-		
-		//menu.add(0, MENU_APPLY, 0,  R.string.applyrules).setIcon(R.drawable.apply).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled);
+		menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.abs__ic_cab_done_holo_dark);
 		
 		menu.add(0, MENU_SEARCH, 0, R.string.Search)
 				.setIcon(R.drawable.abs__ic_search)
@@ -564,7 +557,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
 		
+		//sub.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
+		//sub.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(R.drawable.on);
+		//sub.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
 		sub.add(0, MENU_SHOWLOG, 0, R.string.show_log).setIcon(R.drawable.show);
+		
 		sub.add(0, MENU_SHOWRULES, 0, R.string.showrules).setIcon(R.drawable.show);
 		//sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
 		sub.add(0, MENU_SETPWD, 0, R.string.setpwd).setIcon(R.drawable.lock);
@@ -577,44 +574,16 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		sub.add(0, MENU_HELP, 0, R.string.help).setIcon(R.drawable.help);
 		sub.add(0, MENU_EXIT, 0, R.string.exit).setIcon(R.drawable.exit);
 		
-		
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         
-       // SearchView searchView = new SearchView(getSupportActionBar().getThemedContext());
-       // searchView.setQueryHint("Search for countries…");
-
-       // menu.add("Search").setActionView(searchView).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		
 	    return super.onCreateOptionsMenu(menu);
 	}
 	
 
-	private void searchApps(View ref1) {
-		final EditText textMessage = (EditText) ref1.findViewById(R.id.searchApps);
-		if (textMessage != null) {
-			textMessage.addTextChangedListener(new TextWatcher() {
-				public void afterTextChanged(Editable s) {
-
-				}
-
-				public void beforeTextChanged(CharSequence s, int start,
-						int count, int after) {
-				}
-
-				public void onTextChanged(CharSequence s, int start,
-						int before, int count) {
-					showApplications(false, false, false, false, textMessage
-							.getText().toString());
-				}
-			}); 
-		}
-		
-	}
-
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		final MenuItem item_onoff = menu.getItem(MENU_DISABLE);
-		final MenuItem item_apply = menu.getItem(MENU_APPLY);
+		final MenuItem item_onoff = menu.findItem(MENU_DISABLE);
+		final MenuItem item_apply = menu.findItem(MENU_APPLY);
 		final boolean enabled = Api.isEnabled(this);
 		if (enabled) {
 			item_onoff.setIcon(R.drawable.on);
@@ -625,16 +594,17 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			item_onoff.setTitle(R.string.fw_disabled);
 			item_apply.setTitle(R.string.saverules);
 		}
-		final MenuItem item_log = menu.getItem(MENU_TOGGLELOG);
+		final MenuItem item_log = menu.findItem(MENU_TOGGLELOG);
 		final boolean logenabled = getSharedPreferences(Api.PREFS_NAME, 0)
 				.getBoolean(Api.PREF_LOGENABLED, false);
 		if (logenabled) {
-			item_log.setIcon(R.drawable.on);
+			//item_log.setIcon(R.drawable.on);
 			item_log.setTitle(R.string.log_enabled);
 		} else {
-			item_log.setIcon(R.drawable.off);
+			//item_log.setIcon(R.drawable.off);
 			item_log.setTitle(R.string.log_disabled);
 		}
+		
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -679,9 +649,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			Api.applications = null;
 			showOrLoadApplications();
 			return true;
-	/*	case MENU_FLUSH:
-			clearRules();
-			return true;*/
 		case MENU_SEARCH:	
 			item.setActionView(R.layout.searchbar);
 			EditText filterText = (EditText) item.getActionView().findViewById(
@@ -689,42 +656,37 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			filterText.addTextChangedListener(filterTextWatcher);
 			return true;
 		case MENU_SAVE:
-			if(Api.saveSharedPreferencesToFile(MainActivity.this)){
-				Api.alert(MainActivity.this, getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-			} else {
-				Api.alert(MainActivity.this, getString(R.string.export_rules_fail) );
-			}
+			Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
 			return true;
 		case MENU_LOAD:
-			if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
-				Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-				Api.applications = null;
-				showOrLoadApplications();
-			} else {
-				Api.alert(MainActivity.this, getString(R.string.import_rules_fail) );
-			}
+			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+			builder.setMessage(getString(R.string.overrideRules))
+			       .setCancelable(false)
+			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
+			        		   Api.applications = null;
+			        		   showOrLoadApplications();
+			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+			        	   } else {
+			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail) );
+			   					
+			   				}
+			           }
+			       })
+			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
 			return true;
 		default:
 	        return super.onOptionsItemSelected(item);
 		}
 	}
 	
-	/*@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-
-		switch (item.getItemId()) {
-
-		case MENU_SEARCH:
-			item.setActionView(R.layout.collapsible_edittext);
-			EditText filterText = (EditText) item.getActionView().findViewById(
-					R.id.searchApps);
-			filterText.addTextChangedListener(filterTextWatcher);
-			break;
-
-		}
-		return super.onOptionsItemSelected(item);
-	}*/
-
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
@@ -880,8 +842,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
-				if (!Api.hasRootAccess(MainActivity.this, true))
-					return;
 				String rules = Api.showIptablesRules(MainActivity.this);
 				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,rules,getString(R.string.showrules_title)));
 			}
@@ -962,8 +922,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 				if (enabled) {
 					Log.d("AFWall+", "Applying rules.");
-					if (Api.hasRootAccess(MainActivity.this, true)
-							&& Api.applyIptablesRules(MainActivity.this, true)) {
+					if (Api.applyIptablesRules(MainActivity.this, true)) {
 						displayToasts(MainActivity.this,
 								R.string.rules_applied, Toast.LENGTH_SHORT);
 					} else {
@@ -996,8 +955,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
-				if (!Api.hasRootAccess(MainActivity.this, true))
-					return;
 				if (Api.purgeIptables(MainActivity.this, true)) {
 					displayToasts(MainActivity.this, R.string.rules_deleted,
 							Toast.LENGTH_SHORT);

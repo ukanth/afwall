@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.0.5a</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
     <string name="blacklist_array_item">Black list (block selected)</string>
-    <string name="showrules">Show rules</string>
+    <string name="showrules">Firewall Rules</string>
     <string name="applyrules">Apply rules</string>
     <string name="saverules">Save rules</string>
     <string name="purgerules">Purge rules</string>
@@ -29,13 +28,13 @@
     <string name="operation_timeout">Operation timed-out</string>
     <string name="fw_enabled">Firewall Enabled</string>
     <string name="fw_disabled">Firewall Disabled</string>
-    <string name="log_enabled">Log enabled</string>
-    <string name="log_disabled">Log disabled</string>
+    <string name="log_enabled">Log Enabled</string>
+    <string name="log_disabled">Log Disabled</string>
     <string name="log_was_enabled">Log has been enabled</string>
     <string name="log_was_disabled">Log has been disabled</string>
     <string name="log_cleared">Log cleared</string>
     <string name="flushed">Rules flushed</string>
-    <string name="show_log">Show log</string>
+    <string name="show_log">Firewall Logs</string>
     <string name="clear_log">Clear log</string>
     <string name="applying_rules">Applying iptables rules.</string>
     <string name="saving_rules">Saving iptables rules.</string>
@@ -70,7 +69,7 @@
     <string name="notify_pref_summary">Enable will notify to open AFWall+ on new installations</string>
     <string name="notify_pref_title">Notify on new installs</string>
     <string name="toast_pref_title">Disable Toast Messages</string>
-    <string name="syscolor_pref_title">Highlight System apps</string>
+    <string name="syscolor_pref_title">Highlight color for System applications</string>
     <string name="usb3g_pref_summary">Prevent AFWall to apply 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
     <string name="hideicons_pref_title">Hide application icons</string>
@@ -101,7 +100,7 @@
 		\n<b>2.</b> Mark the applications that you want to block or allow (depending on the selected mode), for each interface.
 		\n<b>3.</b> Open the menu and enable the firewall. If the firewall is already enabled, just select <b>Apply rules</b>.
 		\nThe rules will be saved and automatically restored when you restart your phone.
-		\nIf you want to check all current iptables rules, select <b>Show rules</b> in the menu.
+		\nIf you want to check all current iptables rules, select <b>Firewall Rules</b> in the menu.
 		\n
 		\n<b>Widget:</b>
 		\nTo quickly enable or disable the firewall, add the AFWall+ widget to your home screen.
@@ -135,4 +134,11 @@
 	<string name="copied">Copied</string>
 	<string name="Search">Search</string>
 	<string name="ifaces">Network Interfaces</string>
+	
+	<string name="flushRulesConfirm">This will flush all the iptables rules ! Do you want to continue ?</string>
+	<string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. Its only for ICS/JB devices</string>
+	<string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
+	<string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(ssh)</string>
+	<string name="prefExperimentICSJB">EXPERIMENT! Enable ONLY if firewall is not working on your ICS/JB devices !</string>
+	<string name="prefExperimentICSJB_title">Alternate rules for ICS/JB devices</string>
 </resources>

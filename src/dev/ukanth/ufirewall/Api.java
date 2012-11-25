@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +48,7 @@ import java.util.StringTokenizer;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -65,6 +65,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
+import eu.chainfire.libsuperuser.Shell;
 
 /**
  * Contains shared programming interfaces.
@@ -78,13 +79,10 @@ public final class Api {
 	/** special application UID used to indicate the Linux Kernel */
 	public static final int SPECIAL_UID_KERNEL	= -11;
 	/** root script filename */
-	private static final String SCRIPT_FILE = "afwall.sh";
+	//private static final String SCRIPT_FILE = "afwall.sh";
 	
 	// Preferences
 	public static final String PREFS_NAME 			= "AFWallPrefs";
-	//public static final String PREF_3G_UIDS		= "AllowedUids3G";
-	//public static final String PREF_WIFI_UIDS		= "AllowedUidsWifi";
-	//public static final String PREF_ROAMING_UIDS	= "AllowedUidsRoaming";
 	
 	//for import/export rules
 	public static final String PREF_3G_PKG			= "AllowedPKG3G";
@@ -109,18 +107,26 @@ public final class Api {
 	public static final String STATUS_EXTRA			= "dev.ukanth.ufirewall.intent.extra.STATUS";
 	public static final String SCRIPT_EXTRA			= "dev.ukanth.ufirewall.intent.extra.SCRIPT";
 	public static final String SCRIPT2_EXTRA		= "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
-	private static final int BUFF_LEN = 0;
+	//private static final int BUFF_LEN = 0;
 	
 	// Cached applications
 	public static DroidApp applications[] = null;
-	// Do we have root access?
-	private static boolean hasroot = false;
 	
-	private static Map<String,Integer> specialApps = new HashMap<String, Integer>();
+	public static String ipPath = null;
+	// Do we have root access?
+	//private static boolean hasroot = false;
 	
 	//public static boolean isUSBEnable = false;
 
-    /**
+    public static String getIpPath() {
+		return ipPath;
+	}
+
+	public static void setIpPath(String ipPath) {
+		Api.ipPath = ipPath;
+	}
+
+	/**
      * Display a simple alert box
      * @param ctx context
      * @param msg message
@@ -144,12 +150,7 @@ public final class Api {
 			}
 		}
 	}
-	/**
-	 * Create the generic shell script header used to determine which iptables binary to use.
-	 * @param ctx context
-	 * @return script header
-	 */
-	private static String scriptHeader(Context ctx) {
+	/*static String scriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
 		final String myiptables = dir + "/iptables_armv5";
 		return "" +
@@ -181,11 +182,36 @@ public final class Api {
 			"	fi\n" +
 			"fi\n" +
 			"# Try to find iptables\n" +
-			"# Added if iptables binary already in system then use it, if not use implemented one\n" + 
 			"if " + myiptables + " --version >/dev/null 2>/dev/null ; then\n" +
 			"	IPTABLES="+myiptables+"\n" +
 			"fi\n" +
 			"";
+	}*/
+	
+	static void setIpTablePath(Context ctx) {
+		if(ipPath == null) {
+			SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+			final String dir = ctx.getDir("bin",0).getAbsolutePath();
+			boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
+			final String myiptables = dir + "/iptables_armv5 ";
+			setIpPath(myiptables);
+			
+			int sdk = android.os.Build.VERSION.SDK_INT;
+			if(isaltICSJBenabled) {
+				if(sdk > android.os.Build.VERSION_CODES.HONEYCOMB) {
+					String icsJBIptablePath = "/system/bin/iptables ";
+					setIpPath(icsJBIptablePath);
+				} else {
+					Api.displayToasts(ctx,R.string.icsJBOnly,Toast.LENGTH_LONG);
+				}
+			} 	
+		}
+	}
+	
+	static String getBusyBoxPath(Context ctx) {
+		final String dir = ctx.getDir("bin",0).getAbsolutePath();
+		final String busybox = dir + "/busybox_g1 ";
+		return busybox;
 	}
 	/**
 	 * Copies a raw resource file, given its ID to the given location
@@ -224,11 +250,14 @@ public final class Api {
 			return false;
 		}
 		assertBinaries(ctx, showErrors);
-		final String ITFS_WIFI[] = {"eth+", "wlan+", "tiwlan+", "athwlan+", "ra+","wlan0+"};
+		final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "eth0+", "ra+", "wlan0+" };
 		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean disableUSB3gRule = appprefs.getBoolean("disableUSB3gRule", false);
 		ArrayList<String> ITFS_3G = new ArrayList<String>();
-		ITFS_3G.add("rmnet+");ITFS_3G.add("ppp+");ITFS_3G.add("pdp+");ITFS_3G.add("pnp+");
+		//{"ppp+","tap+","tun+"
+		ITFS_3G.add("rmnet+");
+		ITFS_3G.add("ppp+");
+		ITFS_3G.add("pdp+");//ITFS_3G.add("pnp+");
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
 		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio1+");ITFS_3G.add("qmi+");ITFS_3G.add("wwan0+");ITFS_3G.add("svnet0+");ITFS_3G.add("rmnet_sdio0+");
 
@@ -240,137 +269,155 @@ public final class Api {
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 		final boolean blacklist = !whitelist;
 		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, 0).getBoolean(PREF_LOGENABLED, false);
-		final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT, "");
-
+		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT, "");
+		boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
     	final StringBuilder script = new StringBuilder();
+    	
 		try {
 			int code;
-			script.append(scriptHeader(ctx));
+			setIpTablePath(ctx);
+			
+			String busybox = getBusyBoxPath(ctx);
+			String grep = busybox + " grep";
 			script.append("" +
-				"$IPTABLES --version || exit 1\n" +
-				"# Create the afwall chains if necessary\n" +
-				"$IPTABLES -L afwall >/dev/null 2>/dev/null || $IPTABLES --new afwall || exit 2\n" +
-				"$IPTABLES -L afwall-3g >/dev/null 2>/dev/null || $IPTABLES --new afwall-3g || exit 3\n" +
-				"$IPTABLES -L afwall-wifi >/dev/null 2>/dev/null || $IPTABLES --new afwall-wifi || exit 4\n" +
-				"$IPTABLES -L afwall-reject >/dev/null 2>/dev/null || $IPTABLES --new afwall-reject || exit 5\n" +
-				"# Add afwall chain to OUTPUT chain if necessary\n" +
-				"$IPTABLES -L OUTPUT | $GREP -q afwall || $IPTABLES -A OUTPUT -j afwall || exit 6\n" +
-				"$IPTABLES -A afwall -p udp --dport 53 -j RETURN || exit 11\n" +	
-				"# Flush existing rules\n" +
-				"$IPTABLES -F afwall || exit 7\n" +
-				"$IPTABLES -F afwall-3g || exit 8\n" +
-				"$IPTABLES -F afwall-wifi || exit 9\n" +
-				"$IPTABLES -F afwall-reject || exit 10\n" +
+				ipPath + " -L afwall >/dev/null 2>/dev/null || " + ipPath +  " --new afwall || exit 2\n" +
+				ipPath + " -L afwall-3g >/dev/null 2>/dev/null ||" + ipPath +  "--new afwall-3g || exit 3\n" +
+				ipPath + " -L afwall-wifi >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-wifi || exit 4\n" +
+				ipPath + " -L afwall-reject >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-reject || exit 5\n" +
+				ipPath + " -L OUTPUT | " + grep + " -q afwall || " + ipPath +  " -A OUTPUT -j afwall || exit 6\n" +
+				ipPath + " -F afwall || exit 7\n" +
+				ipPath + " -F afwall-3g || exit 8\n" +
+				ipPath + " -F afwall-wifi || exit 9\n" +
+				ipPath + " -F afwall-reject || exit 10\n" +
+				ipPath + " -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 11\n" +
 			"");
+			
 			// Check if logging is enabled
 			if (logenabled) {
 				script.append("" +
-					"# Create the log and reject rules (ignore errors on the LOG target just in case it is not available)\n" +
-					"$IPTABLES -A afwall-reject -j LOG --log-prefix \"[AFWALL] \" --log-uid\n" +
-					"$IPTABLES -A afwall-reject -j REJECT || exit 11\n" +
+					ipPath + " -A afwall-reject -j LOG --log-prefix \"[AFWALL] \" --log-uid\n" +
+					ipPath + " -A afwall-reject -j REJECT || exit 11\n" +
 				"");
 			} else {
 				script.append("" +
-					"# Create the reject rule (log disabled)\n" +
-					"$IPTABLES -A afwall-reject -j REJECT || exit 11\n" +
+					ipPath + " -A afwall-reject -j REJECT || exit 11\n" +
 				"");
 			}
 			if (customScript.length() > 0) {
-				script.append("\n# BEGIN OF CUSTOM SCRIPT (user-defined)\n");
+				customScript = customScript.replace("$IPTABLES", " "+ ipPath );
 				script.append(customScript);
-				script.append("\n# END OF CUSTOM SCRIPT (user-defined)\n\n");
-			}
-			/*if (whitelist && logenabled) {
-				script.append("# Allow DNS lookups on white-list for a better logging (ignore errors)\n");
-				script.append("$IPTABLES -A afwall -p udp --dport 53 -j RETURN\n");
-			}*/
-			script.append("# Main rules (per interface)\n");
-			for (final String itf : ITFS_3G) {
-				script.append("$IPTABLES -A afwall -o ").append(itf).append(" -j afwall-3g || exit\n");
-			}
-			for (final String itf : ITFS_WIFI) {
-				script.append("$IPTABLES -A afwall -o ").append(itf).append(" -j afwall-wifi || exit\n");
+				script.append("\n");
 			}
 			
-			script.append("# Filtering rules\n");
-			final String targetRule = (whitelist ? "RETURN" : "afwall-reject");
-			final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
-			final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
-			if (whitelist && !any_wifi) {
-				// When "white listing" wifi, we need to ensure that the dhcp and wifi users are allowed
-				int uid = android.os.Process.getUidForName("dhcp");
-				if (uid != -1) {
-					script.append("# dhcp user\n");
-					script.append("$IPTABLES -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j RETURN || exit\n");
-				}
-				uid = android.os.Process.getUidForName("wifi");
-				if (uid != -1) {
-					script.append("# wifi user\n");
-					script.append("$IPTABLES -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j RETURN || exit\n");
-				}
+			//workaround for some ICS/JB devices 
+			 
+			if(isaltICSJBenabled) {
+				script.append("" +
+						ipPath + " -D OUTPUT -j afwall\n" +
+						ipPath + " -I OUTPUT 2 -j afwall\n" +
+					"");
 			}
-			if (any_3g) {
-				if (blacklist) {
-					/* block any application on this interface */
-					script.append("$IPTABLES -A afwall-3g -j ").append(targetRule).append(" || exit\n");
+			
+			/*boolean isLocalhost = appprefs.getBoolean("allowOnlyLocalhost",false);
+			if(isLocalhost) {
+				
+				script.append("" +
+						ipPath + " -P INPUT DROP\n" +
+						ipPath + " -P OUTPUT ACCEPT\n" +
+						ipPath + " -P FORWARD DROP\n" +
+						ipPath + " -A INPUT -i lo -j ACCEPT\n" +
+						ipPath + " -A OUTPUT -o lo -j ACCEPT\n" +
+						ipPath + " -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT\n" +
+						ipPath + " -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT\n" +
+						
+					"");
+				
+			} else {*/
+				for (final String itf : ITFS_3G) {
+					script.append(ipPath + " -A afwall -o ").append(itf).append(" -j afwall-3g || exit\n");
 				}
-			} else {
-				/* release/block individual applications on this interface */
-				if(isRoaming(ctx)) {
-					for (final Integer uid : uidsRoam) {
-						if (uid >= 0) script.append("$IPTABLES -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+				for (final String itf : ITFS_WIFI) {
+					script.append(ipPath + " -A afwall -o ").append(itf).append(" -j afwall-wifi || exit\n");
+				}
+				
+				final String targetRule = (whitelist ? "RETURN" : "afwall-reject");
+				final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
+				final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
+				if (whitelist && !any_wifi) {
+					// When "white listing" wifi, we need to ensure that the dhcp and wifi users are allowed
+					int uid = android.os.Process.getUidForName("dhcp");
+					if (uid != -1) {
+						script.append(ipPath + " -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j RETURN || exit\n");
 					}
-					
+					uid = android.os.Process.getUidForName("wifi");
+					if (uid != -1) {
+						script.append(ipPath + " -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j RETURN || exit\n");
+					}
+				}
+				if (any_3g) {
+					if (blacklist) {
+						/* block any application on this interface */
+						script.append(ipPath + " -A afwall-3g -j ").append(targetRule).append(" || exit\n");
+					}
 				} else {
-					for (final Integer uid : uids3g) {
-						if (uid >= 0) script.append("$IPTABLES -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
-						//Roaming
-						if(isRoaming(ctx)){
-							//iptables -A OUTPUT -o pdp0 -j REJECT
+					/* release/block individual applications on this interface */
+					if(isRoaming(ctx)) {
+						for (final Integer uid : uidsRoam) {
+							if (uid >= 0) script.append(ipPath + " -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+						}
+						
+					} else {
+						for (final Integer uid : uids3g) {
+							if (uid >= 0) script.append(ipPath + " -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+							//Roaming
+							if(isRoaming(ctx)){
+								//iptables -A OUTPUT -o pdp0 -j REJECT
+							}
 						}
 					}
 				}
-			}
-			if (any_wifi) {
-				if (blacklist) {
-					/* block any application on this interface */
-					script.append("$IPTABLES -A afwall-wifi -j ").append(targetRule).append(" || exit\n");
+				if (any_wifi) {
+					if (blacklist) {
+						/* block any application on this interface */
+						script.append(ipPath + " -A afwall-wifi -j ").append(targetRule).append(" || exit\n");
+					}
+				} else {
+					/* release/block individual applications on this interface */
+					for (final Integer uid : uidsWifi) {
+						if (uid >= 0) script.append(ipPath + " -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+					}
 				}
-			} else {
-				/* release/block individual applications on this interface */
-				for (final Integer uid : uidsWifi) {
-					if (uid >= 0) script.append("$IPTABLES -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
-				}
-			}
-			if (whitelist) {
-				if (!any_3g) {
+				if (whitelist) {
+					if (!any_3g) {
+						if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
+							script.append(ipPath + " -A afwall-3g -m owner --uid-owner 0:999999999 -j afwall-reject || exit\n");
+						} else {
+							script.append(ipPath + " -A afwall-3g -j afwall-reject || exit\n");
+						}
+					}
+					if (!any_wifi) {
+						if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
+							script.append(ipPath + " -A afwall-wifi -m owner --uid-owner 0:999999999 -j afwall-reject || exit\n");
+						} else {
+							script.append(ipPath + " -A afwall-wifi -j afwall-reject || exit\n");
+						}
+					}
+				} else {
 					if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						script.append("# hack to allow kernel packets on white-list\n");
-						script.append("$IPTABLES -A afwall-3g -m owner --uid-owner 0:999999999 -j afwall-reject || exit\n");
-					} else {
-						script.append("$IPTABLES -A afwall-3g -j afwall-reject || exit\n");
+						script.append(ipPath + " -A afwall-3g -m owner --uid-owner 0:999999999 -j RETURN || exit\n");
+						script.append(ipPath + " -A afwall-3g -j afwall-reject || exit\n");
 					}
-				}
-				if (!any_wifi) {
 					if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						script.append("# hack to allow kernel packets on white-list\n");
-						script.append("$IPTABLES -A afwall-wifi -m owner --uid-owner 0:999999999 -j afwall-reject || exit\n");
-					} else {
-						script.append("$IPTABLES -A afwall-wifi -j afwall-reject || exit\n");
+						script.append(ipPath + " -A afwall-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit\n");
+						script.append(ipPath + " -A afwall-wifi -j afwall-reject || exit\n");
 					}
 				}
-			} else {
-				if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-					script.append("# hack to BLOCK kernel packets on black-list\n");
-					script.append("$IPTABLES -A afwall-3g -m owner --uid-owner 0:999999999 -j RETURN || exit\n");
-					script.append("$IPTABLES -A afwall-3g -j afwall-reject || exit\n");
-				}
-				if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-					script.append("# hack to BLOCK kernel packets on black-list\n");
-					script.append("$IPTABLES -A afwall-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit\n");
-					script.append("$IPTABLES -A afwall-wifi -j afwall-reject || exit\n");
-				}
-			}
+			
+			/*if (whitelist && logenabled) {
+				script.append("# Allow DNS lookups on white-list for a better logging (ignore errors)\n");
+				script.append(ipPath + " -A afwall -p udp --dport 53 -j RETURN\n");
+			}*/
+			
 	    	final StringBuilder res = new StringBuilder();
 			code = runScriptAsRoot(ctx, script.toString(), res);
 			if (showErrors && code != 0) {
@@ -390,33 +437,28 @@ public final class Api {
 		return false;
     }
 	
-	private static List<Integer> getUidListFromPref(Context ctx,String pks) {
+	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
 		final PackageManager pm = ctx.getPackageManager();
-		ApplicationInfo ai;
 		final List<Integer> uids = new LinkedList<Integer>();
 		if (pks.length() > 0) {
-			// Check which applications are allowed on wifi
-			final StringTokenizer tok = new StringTokenizer(pks, "|");
-			while (tok.hasMoreTokens()) {
-				final String pkgName = tok.nextToken();
+			for (String token : pks.split("\\|")) {
+				final String pkgName = token;
 				if (!pkgName.equals("")) {
 					try {
 						// add logic here
-						ai = pm.getApplicationInfo(pkgName, 0);
-						if(ai != null) {
+						ApplicationInfo ai = pm.getApplicationInfo(pkgName, 0);
+						if (ai != null) {
 							uids.add(ai.uid);
 						}
 					} catch (NameNotFoundException ex) {
-						Log.d("AFWALL", "missing pkg::::" + pkgName);
-					}  
-					catch (Exception ex) {
-						Log.d("AFWALL+++", "missing pkg" + pkgName);
-					} 
+						Log.d("AFWALL+", "Missing pkg:" + pkgName);
+					} catch (Exception ex) {
+						Log.d("AFWALL+", "Exception:" + ex);
+					}
 				}
 			}
 		}
 		return uids;
-		
 	}
 	
 	private static int[] getUidArraysFromPref(Context ctx,String pks) {
@@ -425,15 +467,10 @@ public final class Api {
 		int uids[] = new int[0];
 		if (pks.length() > 0) {
 			// Check which applications are allowed on wifi
-			final StringTokenizer tok = new StringTokenizer(pks, "|");
-			
-			Log.d("AFWALL", "---" + pks);
+			final StringTokenizer tok = new StringTokenizer(pks, "\\|");
 			uids = new int[tok.countTokens()];
 			for (int i=0; i<uids.length; i++) {
 				final String pkgName = tok.nextToken();
-				if(pkgName.startsWith("dev.afwall.special")){
-					uids[i] = specialApps.get(pkgName);
-				}
 				try {
 					ai = pm.getApplicationInfo( pkgName, 0);
 					if(ai != null) {
@@ -444,7 +481,7 @@ public final class Api {
 						}
 					}
 				} catch (NameNotFoundException e) {
-					Log.d("AFWALL", "missing pkg" + pkgName);
+					Log.d("AFWALL", "missing pkg:::" + pkgName);
 				}
 				
 			}
@@ -492,10 +529,6 @@ public final class Api {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
 		final DroidApp[] apps = getApps(ctx);
 		// Builds a pipe-separated list of names
-		//final StringBuilder newuids_wifi = new StringBuilder();
-		//final StringBuilder newuids_3g = new StringBuilder();
-		//final StringBuilder newuids_roam = new StringBuilder();
-		
 		final StringBuilder newpkg_wifi = new StringBuilder();
 		final StringBuilder newpkg_3g = new StringBuilder();
 		final StringBuilder newpkg_roam = new StringBuilder();
@@ -538,26 +571,24 @@ public final class Api {
 			// Custom "shutdown" script
 			final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT2, "");
 	    	final StringBuilder script = new StringBuilder();
-	    	script.append(scriptHeader(ctx));
-	    	script.append("" +
-					"$IPTABLES -F afwall\n" +
-					"$IPTABLES -F afwall-reject\n" +
-					"$IPTABLES -F afwall-3g\n" +
-					"$IPTABLES -F afwall-wifi\n" +
-	    			"");
+	    	setIpTablePath(ctx);
+	    	script.append(
+					ipPath + " -F afwall\n" +
+					ipPath + " -F afwall-reject\n" +
+					ipPath + " -F afwall-3g\n" +
+					ipPath + " -F afwall-wifi\n" 
+	    			);
 	    	if (customScript.length() > 0) {
-				script.append("\n# BEGIN OF CUSTOM SCRIPT (user-defined)\n");
 				script.append(customScript);
-				script.append("\n# END OF CUSTOM SCRIPT (user-defined)\n\n");
 	    	}
 			int code = runScriptAsRoot(ctx, script.toString(), res);
 			if (code == -1) {
-				if (showErrors) alert(ctx, "Error purging iptables. exit code: " + code + "\n" + res);
+				if (showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
 				return false;
 			}
 			return true;
 		} catch (Exception e) {
-			if (showErrors) alert(ctx, "Error purging iptables: " + e);
+			if (showErrors) alert(ctx, ctx.getString(R.string.error_purge) + e);
 			return false;
 		}
     }
@@ -569,9 +600,8 @@ public final class Api {
 	public static String showIptablesRules(Context ctx) {
 		try {
     		final StringBuilder res = new StringBuilder();
-			runScriptAsRoot(ctx, scriptHeader(ctx) +
-								 "$ECHO $IPTABLES\n" +
-								 "$IPTABLES -L -v -n\n", res);
+    		setIpTablePath(ctx);
+			runScriptAsRoot(ctx, ipPath + " -L -v -n\n", res);
 			return res.toString();
 		} catch (Exception e) {
 			alert(ctx, "error: " + e);
@@ -605,11 +635,13 @@ public final class Api {
 	public static String showLog(Context ctx) {
 		try {
     		StringBuilder res = new StringBuilder();
-			int code = runScriptAsRoot(ctx, scriptHeader(ctx) +
-					"dmesg | $GREP AFWALL\n", res);
+    		String busybox = getBusyBoxPath(ctx);
+			String grep = busybox + " grep";
+    		
+			int code = runScriptAsRoot(ctx, "dmesg | " + grep +" AFWALL\n", res);
 			if (code != 0) {
 				if (res.length() == 0) {
-					res.append("Log is empty");
+					res.append(ctx.getString(R.string.no_log));
 				}
 				//alert(ctx, res);
 				return res.toString();
@@ -681,7 +713,7 @@ public final class Api {
 					res.append("\n\n");
 				}
 			if (res.length() == 0) {
-				res.append("Log is empty");
+				res.append(ctx.getString(R.string.no_log));
 			}
 			return res.toString();
 			//alert(ctx, res);
@@ -696,7 +728,6 @@ public final class Api {
      * @return a list of applications
      */
 	public static DroidApp[] getApps(Context ctx) {
-		initSpecial();
 		if (applications != null) {
 			// return cached instance
 			return applications;
@@ -812,8 +843,6 @@ public final class Api {
 			};
 			for (int i=0; i<special.length; i++) {
 				app = special[i];
-				specialApps = new HashMap<String, Integer>();
-				specialApps.put(app.pkgName, app.uid);
 				if (app.uid != -1 && !map.containsKey(app.uid)) {
 					// check if this application is allowed
 					if (Arrays.binarySearch(selected_wifi, app.uid) >= 0) {
@@ -836,15 +865,6 @@ public final class Api {
 		}
 		return null;
 	}
-	private static void initSpecial() {
-		specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
-		specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
-		specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
-		specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
-		specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
-		specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
-		specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
-	}
 
 	/**
 	 * Check if we have root access
@@ -852,7 +872,7 @@ public final class Api {
      * @param showErrors indicates if errors should be alerted
 	 * @return boolean true if we have root
 	 */
-	public static boolean hasRootAccess(final Context ctx, boolean showErrors) {
+	/*public static boolean hasRootAccess(final Context ctx, boolean showErrors) {
 		if (hasroot) return true;
 		final StringBuilder res = new StringBuilder();
 		try {
@@ -867,7 +887,7 @@ public final class Api {
 			alert(ctx, ctx.getString(R.string.error_su) + res.toString());
 		}
 		return false;
-	}
+	}*/
     /**
      * Runs a script, wither as root or as a regular user (multiple commands separated by "\n").
 	 * @param ctx mandatory context
@@ -877,8 +897,8 @@ public final class Api {
      * @return the script exit code
      */
 	public static int runScript(Context ctx, String script, StringBuilder res, long timeout, boolean asroot) {
-		final File file = new File(ctx.getDir("bin",0), SCRIPT_FILE);
-		final ScriptRunner runner = new ScriptRunner(file, script, res, asroot);
+		//final File file = new File(ctx.getDir("bin",0), SCRIPT_FILE);
+		final ScriptRunner runner = new ScriptRunner(script, res, asroot);
 		runner.start();
 		try {
 			if (timeout > 0) {
@@ -962,7 +982,7 @@ public final class Api {
 		return true;
 	}
 	
-	private static void displayToasts(Context context, int id, int length) {
+	public static void displayToasts(Context context, int id, int length) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		boolean showToast = prefs.getBoolean("showToast", true);
 		if (showToast)
@@ -1130,11 +1150,11 @@ public final class Api {
 			this.dstBlocked = new HashMap<String, Integer>();
 		}
 	}
+	
 	/**
 	 * Internal thread used to execute scripts (as root or not).
 	 */
 	private static final class ScriptRunner extends Thread {
-		private final File file;
 		private final String script;
 		private final StringBuilder res;
 		private final boolean asroot;
@@ -1148,8 +1168,7 @@ public final class Api {
 		 * @param res response output
 		 * @param asroot if true, executes the script as root
 		 */
-		public ScriptRunner(File file, String script, StringBuilder res, boolean asroot) {
-			this.file = file;
+		public ScriptRunner(String script, StringBuilder res, boolean asroot) {
 			this.script = script;
 			this.res = res;
 			this.asroot = asroot;
@@ -1157,80 +1176,47 @@ public final class Api {
 		@Override
 		public void run() {
 			try {
-				file.createNewFile();
-				final String abspath = file.getAbsolutePath();
+				//file.createNewFile();
+				//final String abspath = file.getAbsolutePath();
 				// make sure we have execution permission on the script file
-				Runtime.getRuntime().exec("chmod 777 "+abspath).waitFor();
+				//Runtime.getRuntime().exec("chmod 777 "+abspath).waitFor();
 				// Write the script to be executed
-				final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file));
-				if (new File("/system/bin/sh").exists()) {
-					out.write("#!/system/bin/sh\n");
-				}
-				out.write(script);
-				if (!script.endsWith("\n")) out.write("\n");
-				out.write("exit\n");
-				out.flush();
-				out.close();
-				if (this.asroot) {
-					// Create the "su" request to run the script
-					exec = Runtime.getRuntime().exec("su -c "+abspath);
+				//final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file));
+				//if (new File("/system/bin/sh").exists()) {
+				//	out.write("#!/system/bin/sh\n");
+				//}
+				//out.write(script);
+				//if (!script.endsWith("\n")) out.write("\n");
+				//out.write("exit\n");
+				//out.flush();
+				//out.close();
+				
+				List<String> commands = Arrays.asList(script.split("\n"));
+				List<String> output = null;
+				if(Shell.SU.available()){
+					output = Shell.SU.run(commands);
 				} else {
-					// Create the "sh" request to run the script
-					exec = Runtime.getRuntime().exec("sh "+abspath);
+					Log.i("Missing SU","Missed");
 				}
-				final InputStream stdout = exec.getInputStream();
-				final InputStream stderr = exec.getErrorStream();
-				final byte buf[] = new byte[8192];
-				int read = 0;
-				while (true) {
-					final Process localexec = exec;
-					if (localexec == null) break;
-					try {
-						// get the process exit code - will raise IllegalThreadStateException if still running
-						this.exitcode = localexec.exitValue();
-					} catch (IllegalThreadStateException ex) {
-						// The process is still running
+				if(output !=null && output.size() > 0) {
+					for(String str:output) {
+						res.append(str);
+						res.append("\n");
 					}
-					// Read stdout
-					if (stdout.available() > 0) {
-						read = stdout.read(buf);
-						if (res != null) res.append(new String(buf, 0, read));
-					}
-					// Read stderr
-					if (stderr.available() > 0) {
-						read = stderr.read(buf);
-						if (res != null) res.append(new String(buf, 0, read));
-					}
-					if (this.exitcode != -1) {
-						// finished
-						break;
-					}
-					// Sleep for the next round
-					Thread.sleep(50);
 				}
-			} catch (InterruptedException ex) {
-				if (res != null) res.append("\n" + R.string.operation_timeout);
+				exitcode = 0;
 			} catch (Exception ex) {
 				if (res != null) res.append("\n" + ex);
-			} finally {
-				destroy();
-			}
-		}
-		/**
-		 * Destroy this script runner
-		 */
-		public synchronized void destroy() {
-			if (exec != null) exec.destroy();
-			exec = null;
+			} 
 		}
 	}
 	
 	public static boolean clearRules(Context ctx) throws IOException{
 		final StringBuilder res = new StringBuilder();
 		StringBuilder script = new StringBuilder();
-		script.append(scriptHeader(ctx));
-		script.append("$IPTABLES -F\n");
-		script.append("$IPTABLES -X\n");
+		setIpTablePath(ctx);
+		script.append(ipPath + " -F\n");
+		script.append(ipPath + " -X\n");
 		int code = runScriptAsRoot(ctx, script.toString(), res);
 		if (code == -1) {
 			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
@@ -1242,12 +1228,12 @@ public final class Api {
 	public static boolean applyRulesBeforeShutdown(Context ctx) {
 		final StringBuilder res = new StringBuilder();
 		StringBuilder script = new StringBuilder();
-		script.append(scriptHeader(ctx));
-		script.append("$IPTABLES -F\n");
-		script.append("$IPTABLES -X\n");
-		script.append("$IPTABLES -P INPUT DROP\n");
-		script.append("$IPTABLES -P OUTPUT DROP\n");
-		script.append("$IPTABLES -P FORWARD DROP\n");
+		setIpTablePath(ctx);
+		script.append(ipPath + " -F\n");
+		script.append(ipPath + " -X\n");
+		script.append(ipPath + " -P INPUT DROP\n");
+		script.append(ipPath + " -P OUTPUT DROP\n");
+		script.append(ipPath + " -P FORWARD DROP\n");
 		int code;
 		try {
 			code = runScriptAsRoot(ctx, script.toString(), res);
@@ -1256,9 +1242,30 @@ public final class Api {
 		return true;
 	}
 	
+	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setMessage("Do you want to export rules to sdcard ?")
+		       .setCancelable(false)
+		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   if(saveSharedPreferencesToFile(ctx)){
+		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+		       			} else {
+		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
+		        	   }
+		           }
+		       })
+		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
+		
+	}
+	
 	public static boolean saveSharedPreferencesToFile(Context ctx) {
-		
-		
 	    boolean res = false;
 	    File sdCard = Environment.getExternalStorageDirectory();
 	    File dir = new File (sdCard.getAbsolutePath() + "/afwall/");
@@ -1289,6 +1296,30 @@ public final class Api {
 	    }
 	    return res;
 	}
+	
+/*	public static void loadSharedPreferencesToFileConfirm(final Context ctx) {
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setMessage("This will override the existing rules ! Do you want to import the rules ? ")
+		       .setCancelable(false)
+		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   if(loadSharedPreferencesFromFile(ctx)){
+		        		   alert(ctx, ctx.getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+		        	   } else {
+		   					Api.alert(ctx, ctx.getString(R.string.import_rules_fail) );
+		   				}
+		           }
+		       })
+		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
+	}*/
+	
 
 	@SuppressWarnings("unchecked")
 	public static boolean loadSharedPreferencesFromFile(Context ctx) {
@@ -1384,4 +1415,5 @@ public final class Api {
 	    }
 	    context.startActivity(intent);
 	}
+	
 }
