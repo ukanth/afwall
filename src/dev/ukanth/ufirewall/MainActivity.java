@@ -68,7 +68,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.ActionBarSherlock;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -85,7 +84,13 @@ import dev.ukanth.ufirewall.Api.DroidApp;
 //public class MainActivity extends SActivity implements OnCheckedChangeListener,
 public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
 		OnClickListener {
+		//ActionBar.OnNavigationListener,OnCreateOptionsMenuListener {
 
+	//private TextView mSelected;
+    //private String[] mLocations;
+    
+    //private Menu mainMenu; 
+    
 	// Menu options
 	private static final int MENU_DISABLE = 0;
 	private static final int MENU_TOGGLELOG = 1;
@@ -126,8 +131,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	public final static String IPTABLE_RULES = "dev.ukanth.ufirewall.text.RULES";
 	public final static String VIEW_TITLE = "dev.ukanth.ufirewall.text.TITLE";
 	
-	ActionBarSherlock mSherlock = ActionBarSherlock.wrap(this);
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -162,7 +165,16 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	            }
 	        });*/
 			
-			Api.assertBinaries(this, true);
+		/*mSelected = (TextView)findViewById(R.id.text);
+	    mLocations = getResources().getStringArray(R.array.locations);	
+	    Context context = getSupportActionBar().getThemedContext();
+		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
+				context, R.array.locations, R.layout.sherlock_spinner_item);
+		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		getSupportActionBar().setListNavigationCallbacks(list, this);*/
+		Api.assertBinaries(this, true);
 	}
 
 	
@@ -540,13 +552,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		};
 		this.listview.setAdapter(adapter);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
 		menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
 		menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled);
 		menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.abs__ic_cab_done_holo_dark);
+		
+		
+		/*MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_bar, menu);
+		mainMenu = menu;*/
 		
 		menu.add(0, MENU_SEARCH, 0, R.string.Search)
 				.setIcon(R.drawable.abs__ic_search)
@@ -557,9 +574,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
 		
-		//sub.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
-		//sub.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled).setIcon(R.drawable.on);
-		//sub.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);
+		/*sub.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
+		sub.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled);
+		sub.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);*/
 		sub.add(0, MENU_SHOWLOG, 0, R.string.show_log).setIcon(R.drawable.show);
 		
 		sub.add(0, MENU_SHOWRULES, 0, R.string.showrules).setIcon(R.drawable.show);
@@ -574,8 +591,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		sub.add(0, MENU_HELP, 0, R.string.help).setIcon(R.drawable.help);
 		sub.add(0, MENU_EXIT, 0, R.string.exit).setIcon(R.drawable.exit);
 		
-        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-        
+		sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        //
 	    return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -1034,6 +1051,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+		
+		/*if (event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+			switch (keyCode) {
+			case KeyEvent.KEYCODE_MENU:
+				SubMenu subMenu = mainMenu.getItem(1).getSubMenu();
+				mainMenu.performIdentifierAction(subMenu.getItem().getItemId(),
+						0);
+				return true;
+			}
+        }*/
+		
 		// Handle the back button when dirty
 		if (this.dirty && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -1126,5 +1155,39 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		private ImageView icon;
 		private DroidApp app;
 	}
+
+	/*@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		 switch(itemPosition){
+		 case 0:
+			 Api.PREFS_NAME = "AFWallPrefs";
+			 Api.applications = null;
+			 showOrLoadApplications();
+			 Api.applySavedIptablesRules(getApplicationContext(), true);
+			 break;
+		 case 1:
+			 Api.PREFS_NAME = "AFWallProfile1";
+			 Api.applications = null;
+			 showOrLoadApplications();
+			 Api.applySavedIptablesRules(getApplicationContext(), true);
+			 break;
+		 case 2:
+			 Api.PREFS_NAME = "AFWallProfile2";
+			 Api.applications = null;
+			 showOrLoadApplications();
+			 Api.applySavedIptablesRules(getApplicationContext(), true);
+			 break;
+		 case 3:
+			 Api.PREFS_NAME = "AFWallProfile3";
+			 Api.applications = null;
+			 showOrLoadApplications();
+			 Api.applySavedIptablesRules(getApplicationContext(), true);
+			 break;
+		default:
+			break;
+		 }
+		 mSelected.setText("Profile : " + mLocations[itemPosition]);
+		 return true;
+	}*/
 	
 }

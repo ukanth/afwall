@@ -82,7 +82,9 @@ public final class Api {
 	//private static final String SCRIPT_FILE = "afwall.sh";
 	
 	// Preferences
-	public static final String PREFS_NAME 			= "AFWallPrefs";
+	public static String PREFS_NAME 			= "AFWallPrefs";
+	public static String PREF_FIREWALL_STATUS 			= "AFWallStaus";
+	public static final String DEFAULT_PREFS_NAME 			= "AFWallPrefs";
 	
 	//for import/export rules
 	public static final String PREF_3G_PKG			= "AllowedPKG3G";
@@ -113,6 +115,9 @@ public final class Api {
 	public static DroidApp applications[] = null;
 	
 	public static String ipPath = null;
+	
+	private static Map<String,Integer> specialApps = new HashMap<String, Integer>();
+	
 	// Do we have root access?
 	//private static boolean hasroot = false;
 	
@@ -265,11 +270,11 @@ public final class Api {
 			ITFS_3G.add("usb+");
 		}
 		
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 		final boolean blacklist = !whitelist;
-		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, 0).getBoolean(PREF_LOGENABLED, false);
-		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT, "");
+		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(PREF_LOGENABLED, false);
+		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, "");
 		boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
     	final StringBuilder script = new StringBuilder();
     	
@@ -445,6 +450,9 @@ public final class Api {
 				final String pkgName = token;
 				if (!pkgName.equals("")) {
 					try {
+						if(pkgName.startsWith("dev.afwall.special")){
+							uids.add(specialApps.get(pkgName));
+						}
 						// add logic here
 						ApplicationInfo ai = pm.getApplicationInfo(pkgName, 0);
 						if (ai != null) {
@@ -472,6 +480,9 @@ public final class Api {
 			for (int i=0; i<uids.length; i++) {
 				final String pkgName = tok.nextToken();
 				try {
+					if(pkgName.startsWith("dev.afwall.special")){
+						uids[i] = specialApps.get(pkgName);
+					}
 					ai = pm.getApplicationInfo( pkgName, 0);
 					if(ai != null) {
 						try {
@@ -500,7 +511,8 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		initSpecial();
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
 		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
 		final String savedPkg_roam = prefs.getString(PREF_ROAMING_PKG, "");
@@ -517,6 +529,7 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
+		initSpecial();
 		saveRules(ctx);
 		return applySavedIptablesRules(ctx, showErrors);
     }
@@ -526,7 +539,7 @@ public final class Api {
 	 * @param ctx application context (mandatory)
 	 */
 	public static void saveRules(Context ctx) {
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final DroidApp[] apps = getApps(ctx);
 		// Builds a pipe-separated list of names
 		final StringBuilder newpkg_wifi = new StringBuilder();
@@ -569,7 +582,7 @@ public final class Api {
 		try {
 			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
-			final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT2, "");
+			final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, "");
 	    	final StringBuilder script = new StringBuilder();
 	    	setIpTablePath(ctx);
 	    	script.append(
@@ -732,7 +745,8 @@ public final class Api {
 			// return cached instance
 			return applications;
 		}
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		initSpecial();
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
 		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
@@ -843,6 +857,8 @@ public final class Api {
 			};
 			for (int i=0; i<special.length; i++) {
 				app = special[i];
+				specialApps = new HashMap<String, Integer>();
+				specialApps.put(app.pkgName, app.uid);
 				if (app.uid != -1 && !map.containsKey(app.uid)) {
 					// check if this application is allowed
 					if (Arrays.binarySearch(selected_wifi, app.uid) >= 0) {
@@ -864,6 +880,17 @@ public final class Api {
 			alert(ctx, ctx.getString(R.string.error_common) + e);
 		}
 		return null;
+	}
+	
+	private static void initSpecial() {
+		specialApps = new HashMap<String, Integer>();
+		specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
+		specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
+		specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
+		specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
+		specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
+		specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
+		specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
 	}
 
 	/**
@@ -996,7 +1023,7 @@ public final class Api {
 	 */
 	public static boolean isEnabled(Context ctx) {
 		if (ctx == null) return false;
-		return ctx.getSharedPreferences(PREFS_NAME, 0).getBoolean(PREF_ENABLED, false);
+		return ctx.getSharedPreferences(PREF_FIREWALL_STATUS, Context.MODE_PRIVATE).getBoolean(PREF_ENABLED, false);
 	}
 	
 	/**
@@ -1006,7 +1033,7 @@ public final class Api {
 	 */
 	public static void setEnabled(Context ctx, boolean enabled) {
 		if (ctx == null) return;
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREF_FIREWALL_STATUS,Context.MODE_PRIVATE);
 		if (prefs.getBoolean(PREF_ENABLED, false) == enabled) {
 			return;
 		}
@@ -1059,7 +1086,7 @@ public final class Api {
 	 * @param uid UID of the application that has been removed
 	 */
 	public static void applicationRemoved(Context ctx, int uid) {
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final Editor editor = prefs.edit();
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedPks_wifi = prefs.getString(PREF_WIFI_PKG, "");
@@ -1277,7 +1304,7 @@ public final class Api {
 	    try {
 	        output = new ObjectOutputStream(new FileOutputStream(file));
 	        saveRules(ctx);
-	        SharedPreferences pref = ctx.getSharedPreferences(PREFS_NAME, 0);
+	        SharedPreferences pref = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 	        output.writeObject(pref.getAll());
 	        res = true;
 	    } catch (FileNotFoundException e) {
@@ -1332,7 +1359,7 @@ public final class Api {
 		ObjectInputStream input = null;
 		try {
 			input = new ObjectInputStream(new FileInputStream(file));
-			Editor prefEdit = ctx.getSharedPreferences(PREFS_NAME, 0).edit();
+			Editor prefEdit = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
 			prefEdit.clear();
 			Map<String, ?> entries = (Map<String, ?>) input.readObject();
 			for (Entry<String, ?> entry : entries.entrySet()) {
