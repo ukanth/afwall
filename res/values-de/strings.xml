@@ -27,7 +27,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.0.5a</string>
+    <string name="app_version">1.0.6a</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Deaktiviert)</string>
     <string name="whitelist_array_item">Whitelist(erlaube ausgewählte)</string>
@@ -38,7 +38,7 @@
     <string name="purgerules">Regeln säubern</string>
     <string name="setpwd">Passwort setzen</string>
     <string name="help">Hilfe</string>
-    <string name="close">Schliessen</string>
+    <string name="close">Schließen</string>
     <string name="exit">Beenden</string>
     <string name="error_flush">Fehler beim säubern der iptables</string>
     <string name="error_purge">Fehler beim säubern der iptables. Fehlercode:</string>
@@ -158,4 +158,14 @@
     <string name="copy">Kopiere</string>
     <string name="copied">Kopiert</string>
     <string name="Search">Suche</string>
+    
+    <string name="ifaces">Network Interfaces</string>
+	<string name="export_logs_fail">Export To SD failed!</string>
+	<string name="export_to_sd">Export to SDCard</string>
+	<string name="flushRulesConfirm">This will flush all the iptables rules ! Do you want to continue ?</string>
+	<string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. Its only for ICS/JB devices</string>
+	<string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
+	<string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(ssh)</string>
+	<string name="prefExperimentICSJB">EXPERIMENT! Enable ONLY if firewall is not working on your ICS/JB devices !</string>
+	<string name="prefExperimentICSJB_title">Alternate rules for ICS/JB devices</string>
 </resources>

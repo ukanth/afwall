@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AFWall+</string>
+    <string name="app_version">1.0.6a</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
@@ -122,11 +123,11 @@
 	<string name="settings_pwd_not_equal">Password doesn\'t match</string>
 	<string name="settings_pwd_equal">Password matches</string>
 	<string name="export_rules">Export Rules</string>
-	<string name="export_to_sd">Export to SDCard</string>
+	
 	<string name="import_rules">Import Rules</string>
 	<string name="export_rules_success">Exported succesfully to </string>
 	<string name="export_rules_fail">Export Rules failed!</string>
-	<string name="export_logs_fail">Export To SD failed!</string>
+	
 	<string name="import_rules_success">Imported succesfully from </string>
 	<string name="import_rules_fail">Import Rules failed!</string>
 	<string name="no_log">Log is Empty</string>
@@ -134,7 +135,8 @@
 	<string name="copied">Copied</string>
 	<string name="Search">Search</string>
 	<string name="ifaces">Network Interfaces</string>
-	
+	<string name="export_logs_fail">Export To SD failed!</string>
+	<string name="export_to_sd">Export to SDCard</string>
 	<string name="flushRulesConfirm">This will flush all the iptables rules ! Do you want to continue ?</string>
 	<string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. Its only for ICS/JB devices</string>
 	<string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>

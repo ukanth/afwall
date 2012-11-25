@@ -26,7 +26,7 @@ report any bugs or feature requests and to see the list of known issues.
 * ~~View iptables rules and logging in a clear view~~ <i>(since 1.0.4a)</i>
 * Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/)
 * Full i18n support
-* Save & Load Profiles/Rules
+* Save & Load Profiles/Rules~~ <i>(since 1.0.3a)</i>
 * Integrate with Network Log 
 * Uninstall application from list window ( or open manage application from list)
 
