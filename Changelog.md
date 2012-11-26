@@ -4,6 +4,9 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version: 1.0.6.1a
+* Bug Fix : Rules for spcial application were not applied after application restart.
+
 Version: 1.0.6a
 * Now uses Chainfire's SU library, This will get rid of old shell script approach. I feel it's faster and better approach and helps to enable profiles !
   Please Note: If you use afwall.sh outside, starting this version it will not work !
