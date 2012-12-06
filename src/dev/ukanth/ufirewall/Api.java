@@ -96,7 +96,6 @@ public final class Api {
 	public static final String PREF_CUSTOMSCRIPT2 	= "CustomScript2"; // Executed on shutdown
 	public static final String PREF_MODE 			= "BlockMode";
 	public static final String PREF_ENABLED			= "Enabled";
-	public static final String PREF_LOGENABLED		= "LogEnabled";
 	// Modes
 	public static final String MODE_WHITELIST = "whitelist";
 	public static final String MODE_BLACKLIST = "blacklist";
@@ -278,8 +277,7 @@ public final class Api {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 		final boolean blacklist = !whitelist;
-		//final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(PREF_LOGENABLED, false);
-		final boolean logenabled = prefs.getBoolean("enableLog",false);
+		final boolean logenabled = appprefs.getBoolean("enableFirewallLog",false);
 		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, "");
 		boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
     	final StringBuilder script = new StringBuilder();
@@ -306,7 +304,7 @@ public final class Api {
 			// Check if logging is enabled
 			if (logenabled) {
 				script.append(
-					ipPath + " -A afwall-reject -j LOG --log-prefix \"[AFWALL] \" --log-uid --log-level 7\n" +
+					ipPath + " -A afwall-reject -j LOG --log-prefix \"[AFWALL] \" --log-uid \n" +
 					ipPath + " -A afwall-reject -j REJECT || exit 11\n"
 				);
 			} else {
