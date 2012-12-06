@@ -72,9 +72,7 @@ import com.actionbarsherlock.ActionBarSherlock.OnCreateOptionsMenuListener;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 
 import dev.ukanth.ufirewall.Api.DroidApp;
  
@@ -90,31 +88,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	private TextView mSelected;
     private String[] mLocations;
-    
-    //private Menu mainMenu; 
-    
-	// Menu options
-	//private static final int MENU_DISABLE = 0;
-	//private static final int MENU_TOGGLELOG = 1;
-	//private static final int MENU_APPLY = 2;
-	private static final int MENU_EXIT = 3;
-	private static final int MENU_HELP = 4;
-	private static final int MENU_SHOWLOG = 5;
-	private static final int MENU_SHOWRULES = 6;
-	//private static final int MENU_CLEARLOG = 7;
-	private static final int MENU_SETPWD = 8;
-	private static final int MENU_SETCUSTOM = 9;
-	private static final int MENU_PREFERENCES = 10;
-	private static final int MENU_RELOAD_APPS = 11;
-	//private static final int MENU_FLUSH = 12;
-	private static final int MENU_SAVE = 13;
-	private static final int MENU_LOAD = 14;	
-	private static final int MENU_TOGGLE = -1;
-	
-	//private static final int MENU_SEARCH = 15;
-	
 	private Menu mainMenu;
-	
 	private String currentPassword = "";
 	
 	//private LayoutInflater inflater;
@@ -180,7 +154,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				
 				int position = prefs.getInt("storedPosition", -1);
 				if(position > -1) {
-					getSupportActionBar().setSelectedNavigationItem(position);	
+					getSupportActionBar().setSelectedNavigationItem(position);
+					getSupportActionBar().setDisplayShowTitleEnabled(false);
 				}
 				getSupportActionBar().setDisplayUseLogoEnabled(true);
 			}
