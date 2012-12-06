@@ -4,10 +4,10 @@
         <item>@string/whitelist_array_item</item>
         <item>@string/blacklist_array_item</item>
     </string-array>
-    <string-array name="locations">
-        <item>Default</item>
-        <item>Profile1</item>
-        <item>Profile2</item>
-        <item>Profile3</item>
+    <string-array name="profiles">
+        <item>@string/defaultProfile</item>
+        <item>@string/profile1</item>
+        <item>@string/profile1</item>
+        <item>@string/profile2</item>
     </string-array>
 </resources>

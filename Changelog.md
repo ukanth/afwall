@@ -4,6 +4,18 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+
+Version 1.0.7
+* New Icon for AFWall ( Thanks for hush66 !)
+* Multiple Profiles ( Currently limited to 4 )
+* Added support for Epic 4g Touch( Thanks to JoshMiers !)
+* Unified Preferences 
+* Translations added (french/german)
+* Fixed multiple menu on ActionBar with staticbar ( no more two menu items on some devices )
+* Enable/Disable logs now moved to preferences and log menu will be hidden if disabled
+* Bug Fix : Update of application packages will not be notified with AFwall.
+* Bug Fix : Uninstalling app will reset rule for root application to default.
+
 Version: 1.0.6.1a
 * Bug Fix : Rules for spcial application were not applied after application restart.
 

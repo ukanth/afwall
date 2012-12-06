@@ -83,7 +83,7 @@ public final class Api {
 	
 	// Preferences
 	public static String PREFS_NAME 			= "AFWallPrefs";
-	public static String PREF_FIREWALL_STATUS 			= "AFWallStaus";
+	public static String PREF_FIREWALL_STATUS 	= "AFWallStaus";
 	public static final String DEFAULT_PREFS_NAME 			= "AFWallPrefs";
 	
 	//for import/export rules
@@ -117,6 +117,10 @@ public final class Api {
 	public static String ipPath = null;
 	
 	private static Map<String,Integer> specialApps = new HashMap<String, Integer>();
+	
+	//static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
+    //static ArrayList<LogEntry> logEntriesList = new ArrayList<LogEntry>();
+
 	
 	// Do we have root access?
 	//private static boolean hasroot = false;
@@ -155,7 +159,7 @@ public final class Api {
 			}
 		}
 	}
-	/*static String scriptHeader(Context ctx) {
+	static String scriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
 		final String myiptables = dir + "/iptables_armv5";
 		return "" +
@@ -191,7 +195,7 @@ public final class Api {
 			"	IPTABLES="+myiptables+"\n" +
 			"fi\n" +
 			"";
-	}*/
+	}
 	
 	static void setIpTablePath(Context ctx) {
 		if(ipPath == null) {
@@ -265,6 +269,7 @@ public final class Api {
 		ITFS_3G.add("pdp+");//ITFS_3G.add("pnp+");
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
 		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio1+");ITFS_3G.add("qmi+");ITFS_3G.add("wwan0+");ITFS_3G.add("svnet0+");ITFS_3G.add("rmnet_sdio0+");
+		ITFS_3G.add("cdma_rmnet+"); ITFS_3G.add("rmnet0+");
 
 		if(!disableUSB3gRule) {
 			ITFS_3G.add("usb+");
@@ -273,7 +278,8 @@ public final class Api {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 		final boolean blacklist = !whitelist;
-		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(PREF_LOGENABLED, false);
+		//final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getBoolean(PREF_LOGENABLED, false);
+		final boolean logenabled = prefs.getBoolean("enableLog",false);
 		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, "");
 		boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
     	final StringBuilder script = new StringBuilder();
@@ -284,7 +290,7 @@ public final class Api {
 			
 			String busybox = getBusyBoxPath(ctx);
 			String grep = busybox + " grep";
-			script.append("" +
+			script.append(
 				ipPath + " -L afwall >/dev/null 2>/dev/null || " + ipPath +  " --new afwall || exit 2\n" +
 				ipPath + " -L afwall-3g >/dev/null 2>/dev/null ||" + ipPath +  "--new afwall-3g || exit 3\n" +
 				ipPath + " -L afwall-wifi >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-wifi || exit 4\n" +
@@ -294,48 +300,45 @@ public final class Api {
 				ipPath + " -F afwall-3g || exit 8\n" +
 				ipPath + " -F afwall-wifi || exit 9\n" +
 				ipPath + " -F afwall-reject || exit 10\n" +
-				ipPath + " -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 11\n" +
-			"");
+				ipPath + " -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit 11\n"
+			);
 			
 			// Check if logging is enabled
 			if (logenabled) {
-				script.append("" +
-					ipPath + " -A afwall-reject -j LOG --log-prefix \"[AFWALL] \" --log-uid\n" +
-					ipPath + " -A afwall-reject -j REJECT || exit 11\n" +
-				"");
+				script.append(
+					ipPath + " -A afwall-reject -j LOG --log-prefix \"[AFWALL] \" --log-uid --log-level 7\n" +
+					ipPath + " -A afwall-reject -j REJECT || exit 11\n"
+				);
 			} else {
-				script.append("" +
-					ipPath + " -A afwall-reject -j REJECT || exit 11\n" +
-				"");
+				script.append(
+					ipPath + " -A afwall-reject -j REJECT || exit 11\n"
+				);
 			}
 			if (customScript.length() > 0) {
 				customScript = customScript.replace("$IPTABLES", " "+ ipPath );
-				script.append(customScript);
-				script.append("\n");
+				script.append(customScript + "\n");
 			}
 			
 			//workaround for some ICS/JB devices 
 			 
 			if(isaltICSJBenabled) {
-				script.append("" +
+				script.append(
 						ipPath + " -D OUTPUT -j afwall\n" +
-						ipPath + " -I OUTPUT 2 -j afwall\n" +
-					"");
+						ipPath + " -I OUTPUT 2 -j afwall\n"
+					);
 			}
 			
 			/*boolean isLocalhost = appprefs.getBoolean("allowOnlyLocalhost",false);
 			if(isLocalhost) {
 				
-				script.append("" +
+				script.append(
 						ipPath + " -P INPUT DROP\n" +
 						ipPath + " -P OUTPUT ACCEPT\n" +
 						ipPath + " -P FORWARD DROP\n" +
 						ipPath + " -A INPUT -i lo -j ACCEPT\n" +
 						ipPath + " -A OUTPUT -o lo -j ACCEPT\n" +
 						ipPath + " -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT\n" +
-						ipPath + " -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT\n" +
-						
-					"");
+						ipPath + " -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT\n");
 				
 			} else {*/
 				for (final String itf : ITFS_3G) {
@@ -614,7 +617,7 @@ public final class Api {
 		try {
     		final StringBuilder res = new StringBuilder();
     		setIpTablePath(ctx);
-			runScriptAsRoot(ctx, ipPath + " -L -v -n\n", res);
+			runScriptAsRoot(ctx, ipPath + " -L -n\n", res);
 			return res.toString();
 		} catch (Exception e) {
 			alert(ctx, "error: " + e);
@@ -641,6 +644,23 @@ public final class Api {
 		}
 		return false;
 	}
+	
+	/* public static class LogEntry {
+		    String uid;
+		    String src;
+		    String dst;
+		    int len;
+		    int spt;
+		    int dpt;
+		    int packets;
+		    int bytes;
+		    
+		    @Override
+		    public String toString() {
+				return dst + ":" + src+ ":" + len + ":"+ packets;
+		    	
+		    }
+	}*/
 	/**
 	 * Display logs
 	 * @param ctx application context
@@ -652,6 +672,7 @@ public final class Api {
 			String grep = busybox + " grep";
     		
 			int code = runScriptAsRoot(ctx, "dmesg | " + grep +" AFWALL\n", res);
+			//int code = runScriptAsRoot(ctx, "cat /proc/kmsg", res);
 			if (code != 0) {
 				if (res.length() == 0) {
 					res.append(ctx.getString(R.string.no_log));
@@ -659,6 +680,19 @@ public final class Api {
 				//alert(ctx, res);
 				return res.toString();
 			}
+			/*parseResult(res.toString());
+			res= new StringBuilder();
+			
+			if(logEntriesHash.size() > 0){
+				Iterator<Entry<String, LogEntry>> it = logEntriesHash.entrySet().iterator();
+
+				while (it.hasNext()) {
+				  Entry<String, LogEntry> entry = it.next();
+				  res.append("UID:" + entry.getKey() + "\n");
+				  res.append("LogEntry:" + entry.getValue().toString() + "\n");
+				}
+			}*/
+			
 			final BufferedReader r = new BufferedReader(new StringReader(res.toString()));
 			final Integer unknownUID = -99;
 			res = new StringBuilder();
@@ -735,7 +769,69 @@ public final class Api {
 		}
 		return "";
 	}
+	
+	/*public static void parseResult(String result) {
+	    int pos = 0;
+	    String src, dst, len, spt, dpt, uid;
 
+	    while((pos = result.indexOf("[AFWALL]", pos)) > -1) {
+	      int newline = result.indexOf("\n", pos);
+
+
+	      pos = result.indexOf("SRC=", pos);
+	      if(pos == -1) continue;
+	      int space = result.indexOf(" ", pos);
+	      if(space == -1) continue;
+	      src = result.substring(pos + 4, space);
+
+	      pos = result.indexOf("DST=", pos);
+	      if(pos == -1) continue;
+	      space = result.indexOf(" ", pos);
+	      if(space == -1) continue;
+	      dst = result.substring(pos + 4, space);
+	      
+	      pos = result.indexOf("LEN=", pos);
+	      if(pos == -1) continue;
+	      space = result.indexOf(" ", pos);
+	      if(space == -1) continue;
+	      len = result.substring(pos + 4, space);
+	     
+	      pos = result.indexOf("SPT=", pos);
+	      if(pos == -1) continue;
+	      space = result.indexOf(" ", pos);
+	      if(space == -1) continue;
+	      spt = result.substring(pos + 4, space);
+	    
+	      pos = result.indexOf("DPT=", pos);
+	      if(pos == -1) continue;
+	      space = result.indexOf(" ", pos);
+	      if(space == -1) continue;
+	      dpt = result.substring(pos + 4, space);
+
+	      pos = result.indexOf("UID=", pos);
+	      if(pos == -1) continue;
+	      space = result.indexOf(" ", pos);
+	      if(space == -1) continue;
+	      uid = result.substring(pos + 4, space);
+	      LogEntry entry = logEntriesHash.get(uid);
+
+	      if(entry == null)
+	        entry = new LogEntry();
+
+	      entry.uid = uid;
+	      entry.src = src;
+	      entry.dst = dst;
+	      entry.spt = new Integer(spt).intValue();
+	      entry.dpt = new Integer(dpt).intValue();
+	      entry.len = new Integer(len).intValue();
+	      entry.packets++;
+	      entry.bytes += entry.len * 8;
+
+	      logEntriesHash.put(uid, entry);
+	      logEntriesList.add(entry);
+	    }
+	  }
+*/
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
@@ -1050,34 +1146,26 @@ public final class Api {
 	}
 	
 	
-	private static void removePackageRef(Context ctx, String pkg, String removedUid,Editor editor, String store){
-		PackageManager pm = ctx.getPackageManager();
-		ApplicationInfo ai = null;
-		String aUid = "";
+	private static boolean removePackageRef(Context ctx, String pkg, String pkgRemoved,Editor editor, String store){
 		final StringBuilder newuids = new StringBuilder();
-		final StringTokenizer tok = new StringTokenizer(pkg, "|");
+		final StringTokenizer tok = new StringTokenizer(pkg, "\\|");
 		boolean changed = false;
 		while (tok.hasMoreTokens()) {
 			final String token = tok.nextToken();
-			try {
-				ai = pm.getApplicationInfo( token, 0);
-			} catch (NameNotFoundException e) {
-			}
-			
-			if(ai != null) {
-				aUid = ai.uid + "";
-			}
-			if (removedUid.equals(aUid)) {
-				Log.d("AFWall", "Removing UID " + token + " from the rules list (package removed)!");
+			if (pkgRemoved.equals(token)) {
+				Log.d("AFWall", "Removing UID " + token
+						+ " from the rules list (package removed)!");
 				changed = true;
 			} else {
-				if (newuids.length() > 0) newuids.append('|');
+				if (newuids.length() > 0)
+					newuids.append('|');
 				newuids.append(token);
 			}
 		}
-		if(changed) {
+		if (changed) {
 			editor.putString(store, newuids.toString());
 		}
+		return changed;
 	}
 	/**
 	 * Called when an application in removed (un-installed) from the system.
@@ -1085,30 +1173,29 @@ public final class Api {
 	 * @param ctx mandatory app context
 	 * @param uid UID of the application that has been removed
 	 */
-	public static void applicationRemoved(Context ctx, int uid) {
+	public static void applicationRemoved(Context ctx, String pkgRemoved) {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final Editor editor = prefs.edit();
 		// allowed application names separated by pipe '|' (persisted)
-		final String savedPks_wifi = prefs.getString(PREF_WIFI_PKG, "");
-		final String savedPks_3g = prefs.getString(PREF_3G_PKG, "");
-		final String savedPks_roam = prefs.getString(PREF_ROAMING_PKG, "");
-		final String removedUid= uid + "";
-		boolean changed = false;
+		String savedPks_wifi = prefs.getString(PREF_WIFI_PKG, "");
+		String savedPks_3g = prefs.getString(PREF_3G_PKG, "");
+		String savedPks_roam = prefs.getString(PREF_ROAMING_PKG, "");
+		boolean wChanged,rChanged,gChanged = false;
 		// look for the removed application in the "wi-fi" list
-		removePackageRef(ctx,savedPks_wifi,removedUid,editor,PREF_WIFI_PKG); 
+		wChanged = removePackageRef(ctx,savedPks_wifi,pkgRemoved, editor,PREF_WIFI_PKG); 
 		// look for the removed application in the "3g" list
-		removePackageRef(ctx,savedPks_3g,removedUid,editor,PREF_3G_PKG);
-		// look for the removed application in roaming list
-		removePackageRef(ctx,savedPks_roam,removedUid,editor,PREF_ROAMING_PKG);
+		gChanged = removePackageRef(ctx,savedPks_3g,pkgRemoved, editor,PREF_3G_PKG);
+		//// look for the removed application in roaming list
+		rChanged = removePackageRef(ctx,savedPks_roam,pkgRemoved, editor,PREF_ROAMING_PKG);
 		
-		// if anything has changed, save the new prefs...
-		if (changed) {
+		if(wChanged || gChanged || rChanged) {
 			editor.commit();
 			if (isEnabled(ctx)) {
 				// .. and also re-apply the rules if the firewall is enabled
 				applySavedIptablesRules(ctx, false);
 			}
 		}
+		
 	}
 
     /**
@@ -1219,6 +1306,7 @@ public final class Api {
 				//out.close();
 				
 				List<String> commands = Arrays.asList(script.split("\n"));
+				
 				List<String> output = null;
 				if(Shell.SU.available()){
 					output = Shell.SU.run(commands);
@@ -1400,7 +1488,9 @@ public final class Api {
 		Process p;
 		StringBuffer inputLine = new StringBuffer();
 		try {
-
+			//if(Shell.SU.available()) {
+			//	Shell.SU.run("ls /sys/class/net");
+			//}
 			p = Runtime.getRuntime().exec(
 					new String[] { "su", "-c", "ls /sys/class/net" });
 			DataInputStream stdout = new DataInputStream(p.getInputStream());
@@ -1413,8 +1503,7 @@ public final class Api {
 			stdout.close();
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.d("Exception" ,e.toString());
 		}
 		return inputLine.toString();
 	}

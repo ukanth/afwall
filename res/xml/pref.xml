@@ -1,39 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-        <PreferenceCategory
-            android:summary=""
-            android:title="Application Specific" >
-            <CheckBoxPreference
-                android:key="notifyAppInstall"
-                android:summary="@string/notify_pref_summary"
-                android:title="Notify on new installs" />
-            <CheckBoxPreference
-                android:key="showToast"
-                android:title="@string/toast_pref_title" />
-            <CheckBoxPreference
-                android:key="disableIcons"
-                android:title="@string/hideicons_pref_title" />
-             <net.margaritov.preference.colorpicker.ColorPickerPreference
-                android:defaultValue="0xff000000"
-                android:key="sysColor"
-                android:title="@string/syscolor_pref_title" />
-            
-        </PreferenceCategory>
-        <PreferenceCategory
-            android:summary=""
-            android:title="Firewall Specific" >
-            <CheckBoxPreference
-                android:key="disableUSB3gRule"
-                android:summary="@string/usb3g_pref_summary"
-                android:title="@string/usb3g_pref_title" />
-             <CheckBoxPreference
-                android:key="altICSJB"
-                android:summary="@string/prefExperimentICSJB"
-                android:title="@string/prefExperimentICSJB_title"/>
-            <!--  <CheckBoxPreference
-                android:key="allowOnlyLocalhost"
-                android:summary="@string/prefLocalmode"
-                android:enabled="false"
-                android:title="Localhost Mode" />  -->
-        </PreferenceCategory>
+        <CheckBoxPreference
+            android:key="notifyAppInstall"
+            android:summary="@string/notify_pref_summary"
+            android:title="@string/notify_pref_title" />
+        <CheckBoxPreference
+            android:key="showToast"
+            android:title="@string/toast_pref_title" />
+        <CheckBoxPreference
+            android:key="disableIcons"
+            android:title="@string/hideicons_pref_title" />
+
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="0xff000000"
+            android:key="sysColor"
+            android:title="@string/syscolor_pref_title" />
+
 </PreferenceScreen>
+

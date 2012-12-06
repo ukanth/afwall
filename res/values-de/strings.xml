@@ -27,14 +27,14 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.0.6a</string>
+    <string name="app_version">1.0.7a</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Deaktiviert)</string>
     <string name="whitelist_array_item">Whitelist(erlaube ausgewählte)</string>
     <string name="blacklist_array_item">Blacklist(blockiere ausgewählte)</string>
     <string name="showrules">Zeige Regeln</string>
-    <string name="applyrules">Regeln anwenden</string>
-    <string name="saverules">Speichere Regeln</string>
+    <string name="applyrules">Anwenden</string>
+    <string name="saverules">Speichere</string>
     <string name="purgerules">Regeln säubern</string>
     <string name="setpwd">Passwort setzen</string>
     <string name="help">Hilfe</string>
@@ -168,4 +168,13 @@
 	<string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(ssh)</string>
 	<string name="prefExperimentICSJB">EXPERIMENT! Enable ONLY if firewall is not working on your ICS/JB devices !</string>
 	<string name="prefExperimentICSJB_title">Alternate rules for ICS/JB devices</string>
+	
+	
+	<string name="multipleProfiles">Enable Multiple Profiles</string>
+	<string name="defaultProfile">Default</string>
+	<string name="profile1">Profile1</string>
+	<string name="profile2">Profile2</string>
+	<string name="profile3">Profile3</string>
+	
+	 <string name="enable_firewall_log">Enable Firewall Logs</string>
 </resources>

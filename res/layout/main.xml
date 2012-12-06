@@ -7,14 +7,10 @@
     android:drawSelectorOnTop="false"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     />
-	<!-- <TextView android:id="@+id/text" android:layout_width="fill_parent" android:layout_height="wrap_content" /> -->
+	
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6px">
-		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/label_mode" android:text="@string/mode" android:textSize="22px" android:clickable="true"></TextView>
-		<ImageView
-            android:src="@drawable/spinner"
-            android:layout_width="12dp"
-            android:layout_height="18dp">
-        </ImageView>
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/label_mode" android:text="@string/mode" android:clickable="true"></TextView>
+        <TextView android:id="@+id/text" android:layout_width="wrap_content" android:layout_height="wrap_content" />
 	</LinearLayout>
 	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="0px">

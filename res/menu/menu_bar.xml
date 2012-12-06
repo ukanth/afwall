@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_toggle"
+        android:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/menu_apply"
+        android:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/abs__ic_search"
+        android:showAsAction="always|collapseActionView"/>
+
+</menu>

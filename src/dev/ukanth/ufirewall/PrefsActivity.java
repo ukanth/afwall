@@ -23,17 +23,22 @@
 
 package dev.ukanth.ufirewall;
 
+import net.saik0.android.unifiedpreference.UnifiedPreferenceFragment;
+import net.saik0.android.unifiedpreference.UnifiedSherlockPreferenceActivity;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 
-public class PrefsActivity extends PreferenceActivity {
+public class PrefsActivity extends UnifiedSherlockPreferenceActivity {
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		setHeaderRes(R.xml.pref_headers);
+		// Set desired preference file and mode (optional)
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.pref);
-
 	}
+
+
+	public static class GeneralPreferenceFragment extends UnifiedPreferenceFragment {}
+
+	public static class FirewallPreferenceFragment extends UnifiedPreferenceFragment {}
 
 }

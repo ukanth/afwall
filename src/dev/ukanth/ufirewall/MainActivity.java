@@ -68,8 +68,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.ActionBarSherlock.OnCreateOptionsMenuListener;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 
@@ -83,18 +86,17 @@ import dev.ukanth.ufirewall.Api.DroidApp;
 //@Holo(forceThemeApply = true, layout = R.layout.main)
 //public class MainActivity extends SActivity implements OnCheckedChangeListener,
 public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
-		OnClickListener {
-		//ActionBar.OnNavigationListener,OnCreateOptionsMenuListener {
+		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener {
 
-	//private TextView mSelected;
-    //private String[] mLocations;
+	private TextView mSelected;
+    private String[] mLocations;
     
     //private Menu mainMenu; 
     
 	// Menu options
-	private static final int MENU_DISABLE = 0;
-	private static final int MENU_TOGGLELOG = 1;
-	private static final int MENU_APPLY = 2;
+	//private static final int MENU_DISABLE = 0;
+	//private static final int MENU_TOGGLELOG = 1;
+	//private static final int MENU_APPLY = 2;
 	private static final int MENU_EXIT = 3;
 	private static final int MENU_HELP = 4;
 	private static final int MENU_SHOWLOG = 5;
@@ -109,7 +111,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private static final int MENU_LOAD = 14;	
 	private static final int MENU_TOGGLE = -1;
 	
-	private static final int MENU_SEARCH = 15;
+	//private static final int MENU_SEARCH = 15;
+	
+	private Menu mainMenu;
 	
 	private String currentPassword = "";
 	
@@ -154,27 +158,33 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_roam).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			
-	        /*inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	        View itemview = inflater.inflate(R.layout.listitem, listview);
-	        ImageView img = (ImageView) itemview.findViewById(R.id.itemicon);
-	        img.setOnClickListener(new OnClickListener() {
-	            public void onClick(View v) {
-	                TextView tv=(TextView) v.findViewById(R.id.itemtext);
-	                CharSequence pkgName = tv.getHint();
-	                Api.showInstalledAppDetails(MainActivity.this, pkgName.toString());
-	            }
-	        });*/
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			final boolean multimode = prefs.getBoolean("enableMultiProfile",false);
 			
-		/*mSelected = (TextView)findViewById(R.id.text);
-	    mLocations = getResources().getStringArray(R.array.locations);	
-	    Context context = getSupportActionBar().getThemedContext();
-		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
-				context, R.array.locations, R.layout.sherlock_spinner_item);
-		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-
-		getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		getSupportActionBar().setListNavigationCallbacks(list, this);*/
-		Api.assertBinaries(this, true);
+			if(Api.isEnabled(getApplicationContext())) {
+				getSupportActionBar().setIcon(R.drawable.widget_on);
+			} else {
+				getSupportActionBar().setIcon(R.drawable.widget_off);
+			}
+			
+			if(multimode) {
+				mSelected = (TextView)findViewById(R.id.text);
+			    mLocations = getResources().getStringArray(R.array.profiles);	
+			    Context context = getSupportActionBar().getThemedContext();
+				ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
+						context, R.array.profiles, R.layout.sherlock_spinner_item);
+				list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+		
+				getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+				getSupportActionBar().setListNavigationCallbacks(list, this);
+				
+				int position = prefs.getInt("storedPosition", -1);
+				if(position > -1) {
+					getSupportActionBar().setSelectedNavigationItem(position);	
+				}
+				getSupportActionBar().setDisplayUseLogoEnabled(true);
+			}
+		    Api.assertBinaries(this, true);
 	}
 
 	
@@ -325,9 +335,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	/**
 	 * Toggle iptables log enabled/disabled
-	 */
+	 *//*
 	private void toggleLogEnabled() {
-		final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
+		final SharedPreferences prefs = get
 		final boolean enabled = !prefs.getBoolean(Api.PREF_LOGENABLED, false);
 		final Editor editor = prefs.edit();
 		editor.putBoolean(Api.PREF_LOGENABLED, enabled);
@@ -337,7 +347,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		displayToasts(MainActivity.this, (enabled ? R.string.log_was_enabled
 				: R.string.log_was_disabled), Toast.LENGTH_SHORT);
-	}
+	}*/
 
 	/**
 	 * If the applications are cached, just show them, otherwise load and show
@@ -556,29 +566,32 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		
-		menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
-		menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled);
-		menu.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.abs__ic_cab_done_holo_dark);
-		
+		//menu.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		//menu.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled);
+		//menu.add(0, MENU_APPLY, 0, R.string.applyrules).setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 		
 		/*MenuInflater inflater = getSupportMenuInflater();
 		inflater.inflate(R.menu.menu_bar, menu);
 		mainMenu = menu;*/
 		
-		menu.add(0, MENU_SEARCH, 0, R.string.Search)
+		/*menu.add(0, MENU_SEARCH, 0, R.string.Search)
 				.setIcon(R.drawable.abs__ic_search)
 				.setActionView(R.layout.searchbar)
 				.setShowAsAction(
 						MenuItem.SHOW_AS_ACTION_ALWAYS
-								| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-
+								| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);*/
+		final MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.menu_bar, menu);
+		
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
 		
-		/*sub.add(0, MENU_DISABLE, 0, R.string.fw_enabled).setIcon(R.drawable.on);
-		sub.add(0, MENU_TOGGLELOG, 0, R.string.log_enabled);
-		sub.add(0, MENU_APPLY, 0, R.string.applyrules).setIcon(R.drawable.apply);*/
-		sub.add(0, MENU_SHOWLOG, 0, R.string.show_log).setIcon(R.drawable.show);
-		
+		/*sub.add(0, MENU_DISABLE, 0, R.string.fw_enabled);
+		sub.add(0, MENU_APPLY, 0, R.string.applyrules);*/
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		final boolean logenabled = prefs.getBoolean("enableLog",false);
+		if(logenabled) {
+			sub.add(0, MENU_SHOWLOG, 0, R.string.show_log).setIcon(R.drawable.show);
+		}
 		sub.add(0, MENU_SHOWRULES, 0, R.string.showrules).setIcon(R.drawable.show);
 		//sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
 		sub.add(0, MENU_SETPWD, 0, R.string.setpwd).setIcon(R.drawable.lock);
@@ -591,7 +604,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		sub.add(0, MENU_HELP, 0, R.string.help).setIcon(R.drawable.help);
 		sub.add(0, MENU_EXIT, 0, R.string.exit).setIcon(R.drawable.exit);
 		
-		sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		mainMenu = menu;
         //
 	    return super.onCreateOptionsMenu(menu);
 	}
@@ -599,28 +613,24 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		final MenuItem item_onoff = menu.findItem(MENU_DISABLE);
-		final MenuItem item_apply = menu.findItem(MENU_APPLY);
+		final MenuItem item_onoff = menu.findItem(R.id.menu_toggle);
+		final MenuItem item_apply = menu.findItem(R.id.menu_apply);
 		final boolean enabled = Api.isEnabled(this);
 		if (enabled) {
-			item_onoff.setIcon(R.drawable.on);
 			item_onoff.setTitle(R.string.fw_enabled);
 			item_apply.setTitle(R.string.applyrules);
 		} else {
-			item_onoff.setIcon(R.drawable.off);
 			item_onoff.setTitle(R.string.fw_disabled);
 			item_apply.setTitle(R.string.saverules);
 		}
-		final MenuItem item_log = menu.findItem(MENU_TOGGLELOG);
+		/*final MenuItem item_log = menu.findItem(MENU_TOGGLELOG);
 		final boolean logenabled = getSharedPreferences(Api.PREFS_NAME, 0)
 				.getBoolean(Api.PREF_LOGENABLED, false);
 		if (logenabled) {
-			//item_log.setIcon(R.drawable.on);
 			item_log.setTitle(R.string.log_enabled);
 		} else {
-			//item_log.setIcon(R.drawable.off);
 			item_log.setTitle(R.string.log_disabled);
-		}
+		}*/
 		
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -628,13 +638,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
-		case MENU_DISABLE:
+		
+		case android.R.id.home:
+			disableOrEnable();
+	        return true;
+		case R.id.menu_toggle:
 			disableOrEnable();
 			return true;
-		case MENU_TOGGLELOG:
-			toggleLogEnabled();
-			return true;
-		case MENU_APPLY:
+		case R.id.menu_apply:
 			applyOrSaveRules();
 			return true;
 		case MENU_EXIT:
@@ -666,7 +677,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			Api.applications = null;
 			showOrLoadApplications();
 			return true;
-		case MENU_SEARCH:	
+		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
 			EditText filterText = (EditText) item.getActionView().findViewById(
 					R.id.searchApps);
@@ -750,8 +761,22 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				Log.d("AFWall+", e.getLocalizedMessage());
 			}
 			applyOrSaveRules();
+			getSupportActionBar().setIcon(R.drawable.widget_on);
+			if(mainMenu !=null) {
+				final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
+				final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
+				item_apply.setTitle(R.string.applyrules);
+				item_onoff.setTitle(R.string.fw_enabled);
+			}
 		} else {
 			purgeRules();
+			if(mainMenu !=null) {
+				final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
+				item_onoff.setTitle(R.string.fw_disabled);
+				final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
+				item_apply.setTitle(R.string.saverules);
+			}
+			getSupportActionBar().setIcon(R.drawable.widget_off);
 		}
 		refreshHeader();
 	}
@@ -1052,16 +1077,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 		
-		/*if (event.getAction() == KeyEvent.ACTION_DOWN)
+		if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_MENU:
-				SubMenu subMenu = mainMenu.getItem(1).getSubMenu();
-				mainMenu.performIdentifierAction(subMenu.getItem().getItemId(),
-						0);
+				/*if(mainMenu != null){
+					SubMenu subMenu = mainMenu.getItem(1).getSubMenu();
+					mainMenu.performIdentifierAction(subMenu.getItem().getItemId(),
+							0);	
+				}*/
 				return true;
 			}
-        }*/
+        }
 		
 		// Handle the back button when dirty
 		if (this.dirty && (keyCode == KeyEvent.KEYCODE_BACK)) {
@@ -1156,38 +1183,41 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		private DroidApp app;
 	}
 
-	/*@Override
+	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		 switch(itemPosition){
-		 case 0:
-			 Api.PREFS_NAME = "AFWallPrefs";
-			 Api.applications = null;
-			 showOrLoadApplications();
-			 Api.applySavedIptablesRules(getApplicationContext(), true);
-			 break;
-		 case 1:
-			 Api.PREFS_NAME = "AFWallProfile1";
-			 Api.applications = null;
-			 showOrLoadApplications();
-			 Api.applySavedIptablesRules(getApplicationContext(), true);
-			 break;
-		 case 2:
-			 Api.PREFS_NAME = "AFWallProfile2";
-			 Api.applications = null;
-			 showOrLoadApplications();
-			 Api.applySavedIptablesRules(getApplicationContext(), true);
-			 break;
-		 case 3:
-			 Api.PREFS_NAME = "AFWallProfile3";
-			 Api.applications = null;
-			 showOrLoadApplications();
-			 Api.applySavedIptablesRules(getApplicationContext(), true);
-			 break;
-		default:
-			break;
-		 }
-		 mSelected.setText("Profile : " + mLocations[itemPosition]);
-		 return true;
-	}*/
-	
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
+		SharedPreferences.Editor editor = prefs.edit();
+		if (multimode) {
+			editor.putInt("storedPosition", itemPosition);
+			editor.commit();
+			switch (itemPosition) {
+			case 0:
+				Api.PREFS_NAME = "AFWallPrefs";
+				break;
+			case 1:
+				Api.PREFS_NAME = "AFWallProfile1";
+				break;
+			case 2:
+				Api.PREFS_NAME = "AFWallProfile2";
+				break;
+			case 3:
+				Api.PREFS_NAME = "AFWallProfile3";
+				break;
+			default:
+				break;
+			}
+			Api.applications = null;
+			showOrLoadApplications();
+			if (Api.isEnabled(getApplicationContext())) {
+				Api.applyIptablesRules(getApplicationContext(), true);
+			} else {
+				Api.saveRules(getApplicationContext());
+			}
+			mSelected.setText("  |  " + mLocations[itemPosition]);
+		}
+		return true;
+	}
+
 }

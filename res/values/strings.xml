@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.0.6.1a</string>
+    <string name="app_version">1.0.7a</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
     <string name="blacklist_array_item">Black list (block selected)</string>
     <string name="showrules">Firewall Rules</string>
-    <string name="applyrules">Apply rules</string>
-    <string name="saverules">Save rules</string>
+    <string name="applyrules">Apply</string>
+    <string name="saverules">Save</string>
     <string name="purgerules">Purge rules</string>
     <string name="setpwd">Set password</string>
     <string name="help">Help</string>
@@ -27,8 +27,8 @@
     <string name="all_item">(Any application) - Same as selecting all applications</string>		
     <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed-out</string>
-    <string name="fw_enabled">Firewall Enabled</string>
-    <string name="fw_disabled">Firewall Disabled</string>
+    <string name="fw_enabled">Enabled</string>
+    <string name="fw_disabled">Disabled</string>
     <string name="log_enabled">Log Enabled</string>
     <string name="log_disabled">Log Disabled</string>
     <string name="log_was_enabled">Log has been enabled</string>
@@ -91,6 +91,7 @@
     <string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
 	    \n<i>Contact me - cumakt@gmail.com (@ukanth- Twitter)</i>
 		\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
+		\n<i>Thanks to hush66 for icons (http://hush66.deviantart.com/)</i>
 		\n
 		\n<i>AFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b> Linux firewall.
 		It allows you to restrict which applications are permitted to access your data networks.
@@ -143,4 +144,13 @@
 	<string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(ssh)</string>
 	<string name="prefExperimentICSJB">EXPERIMENT! Enable ONLY if firewall is not working on your ICS/JB devices !</string>
 	<string name="prefExperimentICSJB_title">Alternate rules for ICS/JB devices</string>
+	<string name="notification_new">New Application Installed.</string>
+	
+	<string name="multipleProfiles">Enable Multiple Profiles</string>
+	<string name="defaultProfile">Default</string>
+	<string name="profile1">Profile1</string>
+	<string name="profile2">Profile2</string>
+	<string name="profile3">Profile3</string>
+	
+	 <string name="enable_firewall_log">Enable Firewall Logs</string>
 </resources>

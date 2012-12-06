@@ -31,6 +31,7 @@ import android.view.View;
  * Dialog displayed when the "Help" menu option is selected
  */
 public class HelpDialog extends AlertDialog {
+	@SuppressWarnings("deprecation")
 	protected HelpDialog(Context context) {
 		super(context);
 		final View view = getLayoutInflater().inflate(R.layout.help_dialog, null);
