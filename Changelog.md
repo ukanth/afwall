@@ -9,7 +9,7 @@ Version 1.0.7
 * New Icon for AFWall ( Thanks for hush66 !)
 * Multiple Profiles ( Currently limited to 4 )
 * Added support for Epic 4g Touch( Thanks to JoshMiers !)
-* Unified Preferences 
+* Unified Preferences (https://github.com/saik0/UnifiedPreference/)
 * Translations added (french/german)
 * Fixed multiple menu on ActionBar with staticbar ( no more two menu items on some devices )
 * Enable/Disable logs now moved to preferences and log menu will be hidden if disabled

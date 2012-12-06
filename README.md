@@ -39,6 +39,8 @@ report any bugs or feature requests and to see the list of known issues.
 
 This project also uses many other open source libraries such as:
 * [ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock)  [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Unified Preferences] (https://github.com/saik0/UnifiedPreference/)  [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Libsuperuser] (https://github.com/Chainfire/libsuperuser)
 * [Android Color Picker](https://code.google.com/p/android-color-picker) [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
