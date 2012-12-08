@@ -28,8 +28,8 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.ukanth.ufirewall"
-    android:versionCode="107"
-    android:versionName="1.0.7a" >
+    android:versionCode="110"
+    android:versionName="1.1.0" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk

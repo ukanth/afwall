@@ -1031,7 +1031,6 @@ public final class Api {
 				// Timed-out
 				runner.interrupt();
 				runner.join(150);
-				runner.destroy();
 				runner.join(50);
 			}
 		} catch (InterruptedException ex) {}
@@ -1269,9 +1268,7 @@ public final class Api {
 	private static final class ScriptRunner extends Thread {
 		private final String script;
 		private final StringBuilder res;
-		private final boolean asroot;
 		public int exitcode = -1;
-		private Process exec;
 		
 		/**
 		 * Creates a new script runner.
@@ -1283,7 +1280,6 @@ public final class Api {
 		public ScriptRunner(String script, StringBuilder res, boolean asroot) {
 			this.script = script;
 			this.res = res;
-			this.asroot = asroot;
 		}
 		@Override
 		public void run() {
