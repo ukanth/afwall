@@ -4,8 +4,25 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.1.1
+* Feature : Tasker/Locate Plugin! (Only for donate version for now)
+* Feature : Now allow customize names for profiles.(from preferences)
+* Feature : Replace alert/toasts with appmsg(displays within the app) - enable it in preference
+* Feature : Initial simple improvements for view logs. It will be improved further!
+* Preference : Added new preference to enable confirmbox on firewall disable
+* FC : Replaced old style deprecated Thread implementation with AsyncTask.(faster and safer)
+* FC : NullPointer exception while reading preferences.
+* Bug Fix : Shutdown Custom Rule doesn't work.
+* Bug Fix : Refresh issue of mode on the multiple profiles switching.
+* Bug Fix : Fixed two identical profile names on multiple profiles.
+* i18n : Completed french/Germen translations.
+* i18n : Added russian language support(Thanks : Google translator toolkit )
+* and many small fixes
 
-Version 1.0.7
+Version 1.1.0
+* Initial Version (Playstore)
+
+Version 1.0.7a
 * New Icon for AFWall ( Thanks for hush66 !)
 * Multiple Profiles ( Currently limited to 4 )
 * Added support for Epic 4g Touch( Thanks to JoshMiers !)

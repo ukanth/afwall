@@ -26,26 +26,30 @@
 package dev.ukanth.ufirewall;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RejectedExecutionException;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -57,6 +61,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -64,7 +69,11 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.widget.Toast;
+
+import com.devspark.appmsg.AppMsg;
+
 import eu.chainfire.libsuperuser.Shell;
 
 /**
@@ -112,17 +121,21 @@ public final class Api {
 	
 	// Cached applications
 	public static DroidApp applications[] = null;
+
+	static enum TOASTTYPE {
+		ERROR, INFO, MESSAGE
+	}
+	//for custom scripts
+	//private static final String SCRIPT_FILE = "afwall_custom.sh";
+	static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
+    static ArrayList<LogEntry> logEntriesList = new ArrayList<LogEntry>();
+
 	
 	public static String ipPath = null;
 	
 	private static Map<String,Integer> specialApps = new HashMap<String, Integer>();
 	
-	//static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
-    //static ArrayList<LogEntry> logEntriesList = new ArrayList<LogEntry>();
-
-	
-	// Do we have root access?
-	//private static boolean hasroot = false;
+	private static boolean isRooted = false;
 	
 	//public static boolean isUSBEnable = false;
 
@@ -139,13 +152,40 @@ public final class Api {
      * @param ctx context
      * @param msg message
      */
-	public static void alert(Context ctx, CharSequence msg) {
-    	if (ctx != null) {
-        	new AlertDialog.Builder(ctx)
-        	.setNeutralButton(android.R.string.ok, null)
-        	.setMessage(msg)
-        	.show();
-    	}
+	public static void alert(Context ctx, CharSequence msgText, TOASTTYPE error) {
+		
+		if (ctx != null) {
+			final AppMsg.Style style;
+			switch (error) {
+			case ERROR:
+				style = AppMsg.STYLE_ALERT;
+				break;
+			case MESSAGE:
+				style = AppMsg.STYLE_CONFIRM;
+				break;
+			case INFO:
+				style = AppMsg.STYLE_INFO;
+				break;
+			default:
+				return;
+			}
+			AppMsg msg = AppMsg.makeText((Activity) ctx, msgText,
+					style);
+			msg.setLayoutGravity(Gravity.BOTTOM);
+			msg.setDuration(AppMsg.LENGTH_SHORT);
+			
+			SharedPreferences prefs =PreferenceManager
+					.getDefaultSharedPreferences(ctx) ;
+			boolean showToast = prefs.getBoolean("showToast", true);
+			if(showToast){
+				msg.show();
+			} else{
+				new AlertDialog.Builder(ctx)
+	        	.setNeutralButton(android.R.string.ok, null)
+	        	.setMessage(msgText)
+	        	.show();
+			}
+		}
     }
 
 	public static boolean isRoaming(Context context) {
@@ -158,12 +198,23 @@ public final class Api {
 			}
 		}
 	}
+	
+	static String customScriptHeader(Context ctx) {
+		final String dir = ctx.getDir("bin",0).getAbsolutePath();
+		final String myiptables = dir + "/iptables_armv5";
+		final String mybusybox = dir + "/busybox_g1";
+		return "" +
+			"IPTABLES="+ myiptables + "\n" +
+			"BUSYBOX="+mybusybox+"\n" +
+			"";
+	}
 	static String scriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
 		final String myiptables = dir + "/iptables_armv5";
+		final String mybusybox = dir + "/busybox_g1";
 		return "" +
-			"IPTABLES=iptables\n" +
-			"BUSYBOX=busybox\n" +
+			"IPTABLES="+ myiptables + "\n" +
+			"BUSYBOX="+mybusybox+"\n" +
 			"GREP=grep\n" +
 			"ECHO=echo\n" +
 			"# Try to find busybox\n" +
@@ -281,6 +332,7 @@ public final class Api {
 		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, "");
 		boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
     	final StringBuilder script = new StringBuilder();
+    	final StringBuilder customScriptBuilder = new StringBuilder();
     	
 		try {
 			int code;
@@ -314,7 +366,7 @@ public final class Api {
 			}
 			if (customScript.length() > 0) {
 				customScript = customScript.replace("$IPTABLES", " "+ ipPath );
-				script.append(customScript + "\n");
+				customScriptBuilder.append(customScript);
 			}
 			
 			//workaround for some ICS/JB devices 
@@ -369,16 +421,16 @@ public final class Api {
 					/* release/block individual applications on this interface */
 					if(isRoaming(ctx)) {
 						for (final Integer uid : uidsRoam) {
-							if (uid >= 0) script.append(ipPath + " -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+							if (uid !=null && uid >= 0) script.append(ipPath + " -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
 						}
 						
 					} else {
 						for (final Integer uid : uids3g) {
-							if (uid >= 0) script.append(ipPath + " -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+							if (uid !=null && uid >= 0) script.append(ipPath + " -A afwall-3g -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
 							//Roaming
-							if(isRoaming(ctx)){
+							//if(isRoaming(ctx)){
 								//iptables -A OUTPUT -o pdp0 -j REJECT
-							}
+							//}
 						}
 					}
 				}
@@ -390,7 +442,7 @@ public final class Api {
 				} else {
 					/* release/block individual applications on this interface */
 					for (final Integer uid : uidsWifi) {
-						if (uid >= 0) script.append(ipPath + " -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
+						if (uid !=null && uid >= 0) script.append(ipPath + " -A afwall-wifi -m owner --uid-owner ").append(uid).append(" -j ").append(targetRule).append(" || exit\n");
 					}
 				}
 				if (whitelist) {
@@ -425,7 +477,7 @@ public final class Api {
 			}*/
 			
 	    	final StringBuilder res = new StringBuilder();
-			code = runScriptAsRoot(ctx, script.toString(), res);
+			code = runScriptAsRoot(ctx, script.toString(), customScriptBuilder.toString(), res);
 			if (showErrors && code != 0) {
 				String msg = res.toString();
 				Log.e("AFWall+", msg);
@@ -433,12 +485,12 @@ public final class Api {
 				if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 					msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 				}
-				alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim());
+				alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() , TOASTTYPE.ERROR);
 			} else {
 				return true;
 			}
 		} catch (Exception e) {
-			if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
+			if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e, TOASTTYPE.ERROR);
 		}
 		return false;
     }
@@ -449,9 +501,10 @@ public final class Api {
 		if (pks.length() > 0) {
 			for (String token : pks.split("\\|")) {
 				final String pkgName = token;
-				if (!pkgName.equals("")) {
+				if(pkgName != null && pkgName.length() > 0){
 					try {
 						if(pkgName.startsWith("dev.afwall.special")){
+							if(specialApps == null) initSpecial();
 							uids.add(specialApps.get(pkgName));
 						}
 						// add logic here
@@ -481,15 +534,18 @@ public final class Api {
 			for (int i=0; i<uids.length; i++) {
 				final String pkgName = tok.nextToken();
 				try {
-					if(pkgName.startsWith("dev.afwall.special")){
-						uids[i] = specialApps.get(pkgName);
-					}
-					ai = pm.getApplicationInfo( pkgName, 0);
-					if(ai != null) {
-						try {
-							uids[i] = ai.uid;
-						} catch (Exception ex) {
-							//selected_wifi[i] = -1;
+					if(pkgName != null && pkgName.length() > 0){
+						if(pkgName.startsWith("dev.afwall.special")){
+							if(specialApps == null) initSpecial();
+							uids[i] = specialApps.get(pkgName);
+						}
+						ai = pm.getApplicationInfo( pkgName, 0);
+						if(ai != null) {
+							try {
+								uids[i] = ai.uid;
+							} catch (Exception ex) {
+								//selected_wifi[i] = -1;
+							}
 						}
 					}
 				} catch (NameNotFoundException e) {
@@ -583,7 +639,8 @@ public final class Api {
 		try {
 			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
-			final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, "");
+			String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, "");
+			final StringBuilder customScriptBuilder = new StringBuilder();
 	    	final StringBuilder script = new StringBuilder();
 	    	setIpTablePath(ctx);
 	    	script.append(
@@ -593,16 +650,16 @@ public final class Api {
 					ipPath + " -F afwall-wifi\n" 
 	    			);
 	    	if (customScript.length() > 0) {
-				script.append(customScript);
+	    		customScript = customScript.replace("$IPTABLES", " "+ ipPath );
+	    		customScriptBuilder.append(customScript);
 	    	}
-			int code = runScriptAsRoot(ctx, script.toString(), res);
+			int code = runScriptAsRoot(ctx, script.toString(), customScript, res);
 			if (code == -1) {
-				if (showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
+				alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res, TOASTTYPE.ERROR);
 				return false;
 			}
 			return true;
 		} catch (Exception e) {
-			if (showErrors) alert(ctx, ctx.getString(R.string.error_purge) + e);
 			return false;
 		}
     }
@@ -615,10 +672,10 @@ public final class Api {
 		try {
     		final StringBuilder res = new StringBuilder();
     		setIpTablePath(ctx);
-			runScriptAsRoot(ctx, ipPath + " -L -n\n", res);
+			runScriptAsRoot(ctx, ipPath + " -L -n\n", null,  res);
 			return res.toString();
 		} catch (Exception e) {
-			alert(ctx, "error: " + e);
+			alert(ctx, "error: " + e, TOASTTYPE.ERROR);
 		}
 		return "";
 	}
@@ -631,19 +688,19 @@ public final class Api {
 	public static boolean clearLog(Context ctx) {
 		try {
 			final StringBuilder res = new StringBuilder();
-			int code = runScriptAsRoot(ctx, "dmesg -c >/dev/null || exit\n", res);
+			int code = runScriptAsRoot(ctx, "dmesg -c >/dev/null || exit\n", null, res);
 			if (code != 0) {
-				alert(ctx, res);
+				alert(ctx, res,TOASTTYPE.INFO);
 				return false;
 			}
 			return true;
 		} catch (Exception e) {
-			alert(ctx, "error: " + e);
+			alert(ctx, "error: " + e,TOASTTYPE.ERROR);
 		}
 		return false;
 	}
 	
-	/* public static class LogEntry {
+	public static class LogEntry {
 		    String uid;
 		    String src;
 		    String dst;
@@ -658,7 +715,7 @@ public final class Api {
 				return dst + ":" + src+ ":" + len + ":"+ packets;
 		    	
 		    }
-	}*/
+	}
 	/**
 	 * Display logs
 	 * @param ctx application context
@@ -666,31 +723,19 @@ public final class Api {
 	public static String showLog(Context ctx) {
 		try {
     		StringBuilder res = new StringBuilder();
+    		StringBuilder output = new StringBuilder();
     		String busybox = getBusyBoxPath(ctx);
 			String grep = busybox + " grep";
     		
-			int code = runScriptAsRoot(ctx, "dmesg | " + grep +" AFWALL\n", res);
+			int code = runScriptAsRoot(ctx, "dmesg | " + grep +" AFWALL\n", null,  res);
 			//int code = runScriptAsRoot(ctx, "cat /proc/kmsg", res);
 			if (code != 0) {
 				if (res.length() == 0) {
-					res.append(ctx.getString(R.string.no_log));
+					output.append(ctx.getString(R.string.no_log));
 				}
-				//alert(ctx, res);
-				return res.toString();
+				return output.toString();
 			}
-			/*parseResult(res.toString());
-			res= new StringBuilder();
-			
-			if(logEntriesHash.size() > 0){
-				Iterator<Entry<String, LogEntry>> it = logEntriesHash.entrySet().iterator();
-
-				while (it.hasNext()) {
-				  Entry<String, LogEntry> entry = it.next();
-				  res.append("UID:" + entry.getKey() + "\n");
-				  res.append("LogEntry:" + entry.getValue().toString() + "\n");
-				}
-			}*/
-			
+						
 			final BufferedReader r = new BufferedReader(new StringReader(res.toString()));
 			final Integer unknownUID = -99;
 			res = new StringBuilder();
@@ -722,124 +767,109 @@ public final class Api {
 			}
 			final DroidApp[] apps = getApps(ctx);
 			Integer id;
+			String appName = "";
+			int appId = -1;
+			int totalBlocked;
 			for(int i = 0; i < map.size(); i++) {
+				StringBuilder address = new StringBuilder();
 				   id = map.keyAt(i);
-				   res.append("App ID ");
 				   if (id != unknownUID) {
-						res.append(id);
 						for (DroidApp app : apps) {
 							if (app.uid == id) {
-								res.append(" (").append(app.names[0]);
-								if (app.names.length > 1) {
-									res.append(", ...)");
-								} else {
-									res.append(")");
-								}
+								appId = id;
+								appName = app.names[0];
 								break;
 							}
 						}
 					} else {
-						res.append("(kernel)");
+						appName = "Kernel";
 					}
 				   loginfo = map.valueAt(i);
-				   res.append(" - Blocked ").append(loginfo.totalBlocked).append(" packets");
+				   totalBlocked = loginfo.totalBlocked;
 					if (loginfo.dstBlocked.size() > 0) {
-						res.append(" (");
-						boolean first = true;
 						for (String dst : loginfo.dstBlocked.keySet()) {
-							if (!first) {
-								res.append(", ");
-							}
-							res.append(loginfo.dstBlocked.get(dst)).append(" packets for ").append(dst);
-							first = false;
+							address.append( dst + "(" + loginfo.dstBlocked.get(dst) + ")");
+							address.append("\n");
 						}
-						res.append(")");
 					}
-					res.append("\n\n");
+					res.append("AppID :\t" +  appId + "\n"  + "Application Name:\t" + appName + "\n" + "Total Packets Blocked:\t" +  totalBlocked + "\n");
+					res.append(address.toString());
+					res.append("\n\t---------\n");
 				}
 			if (res.length() == 0) {
 				res.append(ctx.getString(R.string.no_log));
 			}
 			return res.toString();
+			//return output.toString();
 			//alert(ctx, res);
 		} catch (Exception e) {
-			alert(ctx, "error: " + e);
+			alert(ctx, "error: " + e,TOASTTYPE.ERROR);
 		}
 		return "";
 	}
 	
-	/*public static void parseResult(String result) {
+	public static void parseResult(String result) {
 	    int pos = 0;
-	    String src, dst, len, spt, dpt, uid;
+	    String src, dst, len, uid;
+	    final BufferedReader r = new BufferedReader(new StringReader(result.toString()));
+	    String line;
+	    try {
+			while ((line = r.readLine()) != null) {
+			  int newline = result.indexOf("\n", pos);
 
-	    while((pos = result.indexOf("[AFWALL]", pos)) > -1) {
-	      int newline = result.indexOf("\n", pos);
+			  pos = line.indexOf("SRC=", pos);
+			  //if(pos == -1) continue;
+			  int space = line.indexOf(" ", pos);
+			  //if(space == -1) continue;
+			  src = line.substring(pos + 4, space);
 
+			  pos = line.indexOf("DST=", pos);
+			  //if(pos == -1) continue;
+			  space = line.indexOf(" ", pos);
+			 // if(space == -1) continue;
+			  dst = line.substring(pos + 4, space);
+			  
+			  pos = line.indexOf("LEN=", pos);
+			  //if(pos == -1) continue;
+			  space = line.indexOf(" ", pos);
+			  //if(space == -1) continue;
+			  len = line.substring(pos + 4, space);
+			 
+			  pos = line.indexOf("UID=", pos);
+			  //if(pos == -1) continue;
+			  space = line.indexOf(" ", pos);
+			  //if(space == -1) continue;
+			  uid = line.substring(pos + 4, space);
+			  LogEntry entry = logEntriesHash.get(uid);
 
-	      pos = result.indexOf("SRC=", pos);
-	      if(pos == -1) continue;
-	      int space = result.indexOf(" ", pos);
-	      if(space == -1) continue;
-	      src = result.substring(pos + 4, space);
+			  if(entry == null)
+			    entry = new LogEntry();
 
-	      pos = result.indexOf("DST=", pos);
-	      if(pos == -1) continue;
-	      space = result.indexOf(" ", pos);
-	      if(space == -1) continue;
-	      dst = result.substring(pos + 4, space);
-	      
-	      pos = result.indexOf("LEN=", pos);
-	      if(pos == -1) continue;
-	      space = result.indexOf(" ", pos);
-	      if(space == -1) continue;
-	      len = result.substring(pos + 4, space);
-	     
-	      pos = result.indexOf("SPT=", pos);
-	      if(pos == -1) continue;
-	      space = result.indexOf(" ", pos);
-	      if(space == -1) continue;
-	      spt = result.substring(pos + 4, space);
-	    
-	      pos = result.indexOf("DPT=", pos);
-	      if(pos == -1) continue;
-	      space = result.indexOf(" ", pos);
-	      if(space == -1) continue;
-	      dpt = result.substring(pos + 4, space);
+			  entry.uid = uid;
+			  entry.src = src;
+			  entry.dst = dst;
+			  entry.len = new Integer(len).intValue();
+			  entry.packets++;
+			  entry.bytes += entry.len * 8;
 
-	      pos = result.indexOf("UID=", pos);
-	      if(pos == -1) continue;
-	      space = result.indexOf(" ", pos);
-	      if(space == -1) continue;
-	      uid = result.substring(pos + 4, space);
-	      LogEntry entry = logEntriesHash.get(uid);
-
-	      if(entry == null)
-	        entry = new LogEntry();
-
-	      entry.uid = uid;
-	      entry.src = src;
-	      entry.dst = dst;
-	      entry.spt = new Integer(spt).intValue();
-	      entry.dpt = new Integer(dpt).intValue();
-	      entry.len = new Integer(len).intValue();
-	      entry.packets++;
-	      entry.bytes += entry.len * 8;
-
-	      logEntriesHash.put(uid, entry);
-	      logEntriesList.add(entry);
-	    }
+			  logEntriesHash.put(uid, entry);
+			  logEntriesList.add(entry);
+			}
+		} catch (NumberFormatException e) {
+		} catch (IOException e) {
+		}
 	  }
-*/
+
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
      */
 	public static DroidApp[] getApps(Context ctx) {
+		initSpecial();
 		if (applications != null) {
 			// return cached instance
 			return applications;
 		}
-		initSpecial();
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
@@ -947,7 +977,8 @@ public final class Api {
 				new DroidApp(android.os.Process.getUidForName("media"), "Media server", false, false,false,"dev.afwall.special.media"),
 				new DroidApp(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,"dev.afwall.special.vpn"),
 				new DroidApp(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,"dev.afwall.special.shell"),
-				new DroidApp(android.os.Process.getUidForName("gps"), "GPS", false, false,false,"dev.afwall.special.gps")
+				new DroidApp(android.os.Process.getUidForName("gps"), "GPS", false, false,false,"dev.afwall.special.gps"),
+				new DroidApp(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,"dev.afwall.special.adb")
 			};
 			for (int i=0; i<special.length; i++) {
 				app = special[i];
@@ -971,44 +1002,66 @@ public final class Api {
 			applications = map.values().toArray(new DroidApp[map.size()]);;
 			return applications;
 		} catch (Exception e) {
-			alert(ctx, ctx.getString(R.string.error_common) + e);
+			alert(ctx, ctx.getString(R.string.error_common) + e, TOASTTYPE.ERROR);
 		}
 		return null;
 	}
 	
 	private static void initSpecial() {
-		specialApps = new HashMap<String, Integer>();
-		specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
-		specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
-		specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
-		specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
-		specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
-		specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
-		specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
+			specialApps = new HashMap<String, Integer>();
+			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
+			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
+			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
+			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
+			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
+			specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
+			specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
+			specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));	
 	}
 
-	/**
-	 * Check if we have root access
-	 * @param ctx mandatory context
-     * @param showErrors indicates if errors should be alerted
-	 * @return boolean true if we have root
-	 */
-	/*public static boolean hasRootAccess(final Context ctx, boolean showErrors) {
-		if (hasroot) return true;
-		final StringBuilder res = new StringBuilder();
-		try {
-			// Run an empty script just to check root access
-			if (runScriptAsRoot(ctx, "exit 0", res) == 0) {
-				hasroot = true;
-				return true;
+	
+	private static class RunCommand extends AsyncTask<Object, String, Integer> {
+
+		private int exitCode = -1;
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Integer doInBackground(Object... params) {
+			final String script = (String) params[0];
+			final StringBuilder res = (StringBuilder) params[1];
+			String customScript = (String) params[2];
+
+			try {
+				if(!Shell.SU.available()) return exitCode;
+				if (script != null && script.length() > 0) {
+					List<String> commands = Arrays.asList(script.split("\n"));
+					List<String> output = null;
+					output = Shell.SU.run(commands);
+					if (output != null && output.size() > 0) {
+						for (String str : output) {
+							res.append(str);
+							res.append("\n");
+						}
+					}
+					Log.i("output:::" , res.toString());
+					exitCode = 0;
+					if (customScript != null && customScript.length() > 0) {
+						commands = Arrays.asList(customScript.split("\n"));
+						Shell.SU.run(commands);
+					}
+				}
+			} catch (Exception ex) {
+				if (res != null)
+					res.append("\n" + ex);
 			}
-		} catch (Exception e) {
+			return exitCode;
 		}
-		if (showErrors) {
-			alert(ctx, ctx.getString(R.string.error_su) + res.toString());
-		}
-		return false;
-	}*/
+		
+	}
     /**
      * Runs a script, wither as root or as a regular user (multiple commands separated by "\n").
 	 * @param ctx mandatory context
@@ -1017,24 +1070,18 @@ public final class Api {
      * @param timeout timeout in milliseconds (-1 for none)
      * @return the script exit code
      */
-	public static int runScript(Context ctx, String script, StringBuilder res, long timeout, boolean asroot) {
-		//final File file = new File(ctx.getDir("bin",0), SCRIPT_FILE);
-		final ScriptRunner runner = new ScriptRunner(script, res, asroot);
-		runner.start();
+	public static int runScript(Context ctx, String script, String customScript, StringBuilder res, long timeout, boolean asroot) {
+		int returnCode = -1;
 		try {
-			if (timeout > 0) {
-				runner.join(timeout);
-			} else {
-				runner.join();
-			}
-			if (runner.isAlive()) {
-				// Timed-out
-				runner.interrupt();
-				runner.join(150);
-				runner.join(50);
-			}
-		} catch (InterruptedException ex) {}
-		return runner.exitcode;
+			returnCode = new RunCommand().execute(script, res, customScript)
+					.get();
+		} catch (RejectedExecutionException r) {
+			Log.d("Exception", "Caught RejectedExecutionException");
+		} catch (InterruptedException e) {
+		} catch (ExecutionException e) {
+			Log.d("Exception", "Caught RejectedExecutionException");
+		}
+		return returnCode;
 	}
     /**
      * Runs a script as root (multiple commands separated by "\n").
@@ -1044,8 +1091,8 @@ public final class Api {
      * @param timeout timeout in milliseconds (-1 for none)
      * @return the script exit code
      */
-	public static int runScriptAsRoot(Context ctx, String script, StringBuilder res, long timeout) {
-		return runScript(ctx, script, res, timeout, true);
+	public static int runScriptAsRoot(Context ctx, String script, String customScript,StringBuilder res, long timeout) {
+		return runScript(ctx, script, customScript, res, timeout, true);
     }
     /**
      * Runs a script as root (multiple commands separated by "\n") with a default timeout of 20 seconds.
@@ -1056,8 +1103,8 @@ public final class Api {
      * @return the script exit code
      * @throws IOException on any error executing the script, or writing it to disk
      */
-	public static int runScriptAsRoot(Context ctx, String script, StringBuilder res) throws IOException {
-		return runScriptAsRoot(ctx, script, res, 40000);
+	public static int runScriptAsRoot(Context ctx, String script,  String customScript, StringBuilder res) throws IOException {
+		return runScriptAsRoot(ctx, script,customScript, res, 40000);
 	}
     /**
      * Runs a script as a regular user (multiple commands separated by "\n") with a default timeout of 20 seconds.
@@ -1068,8 +1115,8 @@ public final class Api {
      * @return the script exit code
      * @throws IOException on any error executing the script, or writing it to disk
      */
-	public static int runScript(Context ctx, String script, StringBuilder res) throws IOException {
-		return runScript(ctx, script, res, 40000, false);
+	public static int runScript(Context ctx, String script,String customScript, StringBuilder res) throws IOException {
+		return runScript(ctx, script, customScript, res, 40000, false);
 	}
 	/**
 	 * Asserts that the binary files are installed in the cache directory.
@@ -1096,7 +1143,7 @@ public final class Api {
 				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
 			}
 		} catch (Exception e) {
-			if (showErrors) alert(ctx, ctx.getString(R.string.error_binary) + e);
+			if (showErrors) alert(ctx, ctx.getString(R.string.error_binary) + e,TOASTTYPE.ERROR);
 			return false;
 		}
 		return true;
@@ -1104,9 +1151,15 @@ public final class Api {
 	
 	public static void displayToasts(Context context, int id, int length) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		boolean showToast = prefs.getBoolean("showToast", true);
-		if (showToast)
+		boolean showToast = prefs.getBoolean("showToast", false);
+		if (showToast){
+			AppMsg msg = AppMsg.makeText((Activity)context,id,AppMsg.STYLE_INFO);
+			msg.setLayoutGravity(Gravity.BOTTOM);
+			msg.setDuration(AppMsg.LENGTH_SHORT);
+			msg.show();
+		} else {
 			Toast.makeText(context, id, length).show();
+		}
 	}
 	
 	/**
@@ -1133,7 +1186,7 @@ public final class Api {
 		final Editor edit = prefs.edit();
 		edit.putBoolean(PREF_ENABLED, enabled);
 		if (!edit.commit()) {
-			alert(ctx, ctx.getString(R.string.error_write_pref));
+			alert(ctx, ctx.getString(R.string.error_write_pref),TOASTTYPE.ERROR);
 			return;
 		}
 		/* notify */
@@ -1262,63 +1315,67 @@ public final class Api {
 		}
 	}
 	
+	
 	/**
 	 * Internal thread used to execute scripts (as root or not).
 	 */
-	private static final class ScriptRunner extends Thread {
+	/*private static final class ScriptRunner extends Thread {
 		private final String script;
+		private String customScript;
 		private final StringBuilder res;
 		public int exitcode = -1;
 		
-		/**
-		 * Creates a new script runner.
-		 * @param file temporary script file
-		 * @param script script to run
-		 * @param res response output
-		 * @param asroot if true, executes the script as root
-		 */
-		public ScriptRunner(String script, StringBuilder res, boolean asroot) {
+		public ScriptRunner(String script, String customScript, StringBuilder res, boolean asroot) {
 			this.script = script;
+			this.customScript = customScript;
 			this.res = res;
 		}
 		@Override
 		public void run() {
 			try {
-				//file.createNewFile();
-				//final String abspath = file.getAbsolutePath();
-				// make sure we have execution permission on the script file
-				//Runtime.getRuntime().exec("chmod 777 "+abspath).waitFor();
-				// Write the script to be executed
-				//final OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file));
-				//if (new File("/system/bin/sh").exists()) {
-				//	out.write("#!/system/bin/sh\n");
-				//}
-				//out.write(script);
-				//if (!script.endsWith("\n")) out.write("\n");
-				//out.write("exit\n");
-				//out.flush();
-				//out.close();
-				
-				List<String> commands = Arrays.asList(script.split("\n"));
-				
-				List<String> output = null;
-				if(Shell.SU.available()){
+				if(script != null && script.length() > 0) {
+					List<String> commands = Arrays.asList(script.split("\n"));
+					List<String> output = null;
 					output = Shell.SU.run(commands);
-				} else {
-					Log.i("Missing SU","Missed");
-				}
-				if(output !=null && output.size() > 0) {
-					for(String str:output) {
-						res.append(str);
-						res.append("\n");
+					if(output !=null && output.size() > 0) {
+						for(String str:output) {
+							res.append(str);
+							res.append("\n");
+						}
+					}
+					exitcode = 0;
+					if(customScript != null && customScript.length() > 0){
+						customScript = customScript.trim();
+						//treat as a script file
+						File file = new File(customScript);
+						if(file.exists()){
+							StringBuffer fileContent = new StringBuffer("");
+							try {
+								FileInputStream in = new FileInputStream(file);
+								int len = 0;
+								byte[] data1 = new byte[1024];
+								while (-1 != (len = in.read(data1))) {
+									 fileContent.append(new String(data1, 0, len)+"\n");
+								}
+								String fileCommands = fileContent.toString();
+								customScript = fileCommands.replace("$IPTABLES", " "+ ipPath );
+								commands = Arrays.asList(customScript.split("\n"));
+								Shell.SU.run(commands);
+							} catch (FileNotFoundException e) {
+								
+							}
+						} else {
+							customScript = customScript.replace("$IPTABLES", " "+ ipPath );
+							commands = Arrays.asList(customScript.split("\n"));
+							Shell.SU.run(commands);
+						}
 					}
 				}
-				exitcode = 0;
 			} catch (Exception ex) {
 				if (res != null) res.append("\n" + ex);
 			} 
 		}
-	}
+	}*/
 	
 	public static boolean clearRules(Context ctx) throws IOException{
 		final StringBuilder res = new StringBuilder();
@@ -1326,9 +1383,9 @@ public final class Api {
 		setIpTablePath(ctx);
 		script.append(ipPath + " -F\n");
 		script.append(ipPath + " -X\n");
-		int code = runScriptAsRoot(ctx, script.toString(), res);
+		int code = runScriptAsRoot(ctx, script.toString(), null,  res);
 		if (code == -1) {
-			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
+			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res, TOASTTYPE.ERROR);
 			return false;
 		}
 		return true;
@@ -1343,9 +1400,8 @@ public final class Api {
 		script.append(ipPath + " -P INPUT DROP\n");
 		script.append(ipPath + " -P OUTPUT DROP\n");
 		script.append(ipPath + " -P FORWARD DROP\n");
-		int code;
 		try {
-			code = runScriptAsRoot(ctx, script.toString(), res);
+			runScriptAsRoot(ctx, script.toString(),null, res);
 		} catch (IOException e) {
 		}
 		return true;
@@ -1358,9 +1414,9 @@ public final class Api {
 		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   if(saveSharedPreferencesToFile(ctx)){
-		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/", TOASTTYPE.INFO);
 		       			} else {
-		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
+		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail),TOASTTYPE.ERROR );
 		        	   }
 		           }
 		       })
@@ -1487,7 +1543,7 @@ public final class Api {
 			//}
 			p = Runtime.getRuntime().exec(
 					new String[] { "su", "-c", "ls /sys/class/net" });
-			DataInputStream stdout = new DataInputStream(p.getInputStream());
+			BufferedReader stdout = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String tmp;
 			while ((tmp = stdout.readLine()) != null) {
 				inputLine.append(tmp);
@@ -1524,6 +1580,23 @@ public final class Api {
 	        intent.putExtra(appPkgName, packageName);
 	    }
 	    context.startActivity(intent);
+	}
+	
+	public static boolean hasRootAccess(Context ctx, boolean showErrors) {
+		if (isRooted) return true;
+		final StringBuilder res = new StringBuilder();
+		try {
+			// Run an empty script just to check root access
+			if (runScriptAsRoot(ctx, "exit 0\n", null, res) == 0) {
+				isRooted = true;
+				return true;
+			}
+		} catch (Exception e) {
+		}
+		if (showErrors) {
+			alert(ctx, ctx.getString(R.string.error_su),TOASTTYPE.ERROR);
+		}
+		return false;
 	}
 	
 }

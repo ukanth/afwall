@@ -27,9 +27,10 @@
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="110"
-    android:versionName="1.1.0" >
+    android:versionCode="111"
+    android:versionName="1.1.1" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -69,7 +70,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock" >
         <activity
-            android:name=".MainActivity"
+            android:name="dev.ukanth.ufirewall.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:hardwareAccelerated="true"
             android:label="@string/app_name" >
@@ -100,36 +101,24 @@
         </activity>
         
         
-        <activity android:name=".CustomScriptActivity" />
-
-    <!-- ToDo: Show changelog inside the application -->
-    <activity
-      android:name=".activities.ChangeLogActivity"
-      android:label="@string/app_name"
-      android:uiOptions="none"
-      android:theme="@style/Theme.Sherlock"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-      </intent-filter>
-    </activity>
+        <activity android:name="dev.ukanth.ufirewall.CustomScriptActivity" />
 
         <receiver
-            android:name="BootBroadcast">
+            android:name="dev.ukanth.ufirewall.BootBroadcast">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" >
                 </action>
             </intent-filter>
         </receiver>
         
-        <receiver android:name=".ShutdownReceiver"> 
+        <receiver android:name="dev.ukanth.ufirewall.ShutdownReceiver"> 
             <intent-filter> 
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" /> 
                 <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />
             </intent-filter>
          </receiver> 
          
-        <receiver android:name="PackageBroadcast" >
+        <receiver android:name="dev.ukanth.ufirewall.PackageBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -137,13 +126,13 @@
             </intent-filter>
         </receiver>
         
-        <receiver android:name="ConnectivityChangeReceiver" >
+        <receiver android:name="dev.ukanth.ufirewall.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
         
-        <receiver android:name="StatusWidget" >
+        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" >
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />

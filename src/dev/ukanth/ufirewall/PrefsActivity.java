@@ -40,5 +40,7 @@ public class PrefsActivity extends UnifiedSherlockPreferenceActivity {
 	public static class GeneralPreferenceFragment extends UnifiedPreferenceFragment {}
 
 	public static class FirewallPreferenceFragment extends UnifiedPreferenceFragment {}
+	
+	public static class MultiProfilePreferenceFragment extends UnifiedPreferenceFragment {}
 
 }

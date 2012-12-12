@@ -8,4 +8,8 @@
         unified:fragment="dev.ukanth.ufirewall.PrefsActivity$FirewallPreferenceFragment"
         unified:title="Advance Preferences"
         unified:preferenceRes="@xml/pref_fw" />
+     <header
+        unified:fragment="dev.ukanth.ufirewall.PrefsActivity$MultiProfilePreferenceFragment"
+        unified:title="Multiple Profile Preferences"
+        unified:preferenceRes="@xml/pref_mp" />
 </preference-headers>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.1.0</string>
+    <string name="app_version">1.1.1</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (désactivé)</string>
     <string name="whitelist_array_item">Liste blanche (sélection permise)</string>
@@ -19,10 +19,7 @@
     <string name="error_binary">Erreur d\'installation des fichiers binaires:</string>
     <string name="error_refresh">Erreur lors du rafraichissement: </string>
     <string name="error_apply">Erreur lors de l\'application des règles iptables. Code de sortie: </string>
-    <string name="error_su">Erreur d\'obtention d\'accès root.\n" +
-"Vous avez besoin d\'un téléphone rooté pour que AFWall+ fonctionne.\n\n" +
-"Si le téléphone est déja rooté, assurez vous que AFWall+ a les permissions suffisantes pour exécuter la commande \"su\".\n" +
-"Message d\'erreur:\n" </string>
+    <string name="error_su">Erreur d\'obtention d\'accès root.\n Vous avez besoin d\'un téléphone rooté pour que AFWall+ fonctionne.\n\n Si le téléphone est déja rooté, assurez vous que AFWall+ a les permissions suffisantes pour exécuter la commande \"su\".\n</string>
     <string name="error_common">Erreur : </string>
     <string name="all_item">(Toutes les applications) C\'est l\'équivalent de sélectioner toutes les applications</string>	
     <string name="root_item">(root) - Applications qui fonctionnent en tant que root</string>
@@ -69,7 +66,7 @@
     <string name="flush">Effacer les règles</string>
     <string name="notify_pref_summary">AFWall+ vous notifiera pour l\'ouvrir pour les nouvelles installations</string>
     <string name="notify_pref_title">Notifier pour les nouvelles installations</string>
-    <string name="toast_pref_title">Désactiver les messages Toast</string>
+    <string name="toast_pref_title">Activer les notifications toasts autres</string>
     <string name="syscolor_pref_title">Couleur de surlignage des applications du système</string>
     <string name="usb3g_pref_summary">Prévenir AFWall d\'appliquer les règles 3g lorsque vous utiliser une connection USB</string>
     <string name="usb3g_pref_title">Désactiver les règles 3G sur USB</string>
@@ -144,11 +141,21 @@ Il vous permet de choisir quelles applications ont accès à vos réseaux intern
 <string name="prefExperimentICSJB">EXPERIMENTAL! Activer SEULEMENT si le pare-feu ne fonctionne pas sur votre téléphone ICS/JB devices !</string>
 <string name="prefExperimentICSJB_title">Règles alternatives pour les appareils ICS/JB</string>
 
-<string name="multipleProfiles">Enable Multiple Profiles</string>
+<string name="multipleProfiles">Activer les profils multiples</string>
 	<string name="defaultProfile">Défaut</string>
 	<string name="profile1">Profil1</string>
 	<string name="profile2">Profil2</string>
 	<string name="profile3">Profil3</string>
 	
-	 <string name="enable_firewall_log">Enable Firewall Logs</string>
+	<string name="defaultProfileSummary">Nom personnalisé pour Défaut Profil</string>
+	<string name="customProfile1Summary">Nom personnalisé pour profil1</string>
+	<string name="customProfile2Summary">Nom personnalisé pour profil2</string>
+	<string name="customProfile3Summary">Nom personnalisé pour profil3</string>
+	
+	
+	
+	 <string name="enable_firewall_log">Activer les journaux du pare-feu</string>
+	 
+	 <string name="confirmMsg">Cela va désactiver pare-feu! Voulez-vous continuer?</string>
+	 <string name="enableConfirmTitle">Confirmbox sur le firewall désactiver</string>
 </resources>

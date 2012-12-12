@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.1.0</string>
+    <string name="app_version">1.1.1</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
@@ -19,10 +19,7 @@
     <string name="error_binary">Error installing binary files:</string>
     <string name="error_refresh">Error refreshing iptables: </string>
     <string name="error_apply">Error applying iptables rules. Exit code: </string>
-    <string name="error_su">Could not acquire root access.\n" +
-				"You need a rooted phone to run AFWall+.\n\n" +
-				"If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n" +
-				"Error message: </string>
+    <string name="error_su">Could not acquire root access.\n You need a rooted phone to run AFWall+.\n\n If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
     <string name="error_common">Error : </string>
     <string name="all_item">(Any application) - Same as selecting all applications</string>		
     <string name="root_item">(root) - Applications running as root</string>
@@ -69,7 +66,7 @@
     <string name="flush">Flush Rules</string>
     <string name="notify_pref_summary">Enable will notify to open AFWall+ on new installations</string>
     <string name="notify_pref_title">Notify on new installs</string>
-    <string name="toast_pref_title">Disable Toast Messages</string>
+    <string name="toast_pref_title">Enable alternate toast notifications</string>
     <string name="syscolor_pref_title">Highlight color for System applications</string>
     <string name="usb3g_pref_summary">Prevent AFWall to apply 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
@@ -135,6 +132,7 @@
 	<string name="copy">Copy</string>
 	<string name="copied">Copied</string>
 	<string name="Search">Search</string>
+	
 	<string name="ifaces">Network Interfaces</string>
 	<string name="export_logs_fail">Export To SD failed!</string>
 	<string name="export_to_sd">Export to SDCard</string>
@@ -152,5 +150,14 @@
 	<string name="profile2">Profile2</string>
 	<string name="profile3">Profile3</string>
 	
+	<string name="defaultProfileSummary">Custom name for Default Profile</string>
+	<string name="customProfile1Summary">Custom name for profile1</string>
+	<string name="customProfile2Summary">Custom name for profile2</string>
+	<string name="customProfile3Summary">Custom name for profile3</string>
+	
+	
 	 <string name="enable_firewall_log">Enable Firewall Logs</string>
+	
+	 <string name="confirmMsg">This will disable firewall! Do you want to continue ?</string>
+	 <string name="enableConfirmTitle">Confirmbox on firewall disable</string>
 </resources>

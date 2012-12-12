@@ -174,6 +174,7 @@ public class Rules extends SherlockActivity {
 	    return res;
 	}
     
+	@SuppressWarnings("deprecation")
 	@SuppressLint({ "NewApi", "NewApi", "NewApi", "NewApi" })
 	private void copy() {
 		try {
@@ -212,12 +213,12 @@ public class Rules extends SherlockActivity {
 			   			script.append(Api.getIpPath() +" -X\n");
 			   			int code = -1;
 						try {
-							code = Api.runScriptAsRoot(ctx, script.toString(), res);
+							code = Api.runScriptAsRoot(ctx, script.toString(), null, res);
 						} catch (IOException e) {
-							Api.alert(Rules.this, getString(R.string.error_flush));
+							Api.alert(Rules.this, getString(R.string.error_flush),Api.TOASTTYPE.ERROR);
 						}
 			   			if (code == -1) {
-			   				Api.alert(ctx, getString(R.string.error_purge) + code + "\n" + res);
+			   				Api.alert(ctx, getString(R.string.error_purge) + code + "\n" + res,Api.TOASTTYPE.ERROR);
 			   			}else {
 			   				Api.displayToasts(ctx, R.string.flushed, Toast.LENGTH_SHORT);
 			   			}

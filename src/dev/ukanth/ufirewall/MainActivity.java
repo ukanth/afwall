@@ -24,13 +24,13 @@
 
 package dev.ukanth.ufirewall;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -52,6 +52,7 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -73,8 +74,10 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.devspark.appmsg.AppMsg;
 
 import dev.ukanth.ufirewall.Api.DroidApp;
+import dev.ukanth.ufirewall.Api.TOASTTYPE;
  
 /**
  * Main application activity. This is the screen displayed when you open the
@@ -143,14 +146,25 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			
 			if(multimode) {
 				mSelected = (TextView)findViewById(R.id.text);
-			    mLocations = getResources().getStringArray(R.array.profiles);	
-			    Context context = getSupportActionBar().getThemedContext();
-				ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
-						context, R.array.profiles, R.layout.sherlock_spinner_item);
-				list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+				final List<String> mlocalList = new ArrayList<String>(); 
+				mlocalList.add(prefs.getString("default", getString(R.string.defaultProfile)));
+				mlocalList.add(prefs.getString("profile1", getString(R.string.profile1)));
+				mlocalList.add(prefs.getString("profile2", getString(R.string.profile2)));
+				mlocalList.add(prefs.getString("profile3", getString(R.string.profile3)));
+				mLocations = mlocalList.toArray(new String[mlocalList.size()]);
+				
+				
+			    //mLocations = getResources().getStringArray(R.array.profiles);	
+			    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
+			    	    this,
+			    	    R.layout.sherlock_spinner_item,
+			    	    mLocations);
+				/*ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
+						context, R.array.profiles, R.layout.sherlock_spinner_item);*/
+			    adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 		
 				getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-				getSupportActionBar().setListNavigationCallbacks(list, this);
+				getSupportActionBar().setListNavigationCallbacks(adapter, this);
 				
 				int position = prefs.getInt("storedPosition", -1);
 				if(position > -1) {
@@ -227,9 +241,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				: R.string.mode_blacklist);
 		labelmode.setText(res.getString(R.string.mode_header,
 				res.getString(resid)));
-		resid = (Api.isEnabled(this) ? R.string.title_enabled
+	/*	resid = (Api.isEnabled(this) ? R.string.title_enabled
 				: R.string.title_disabled);
-		setTitle(res.getString(resid, R.string.app_version));
+		setTitle(res.getString(resid, R.string.app_version));*/
 	}
 
 	/**
@@ -278,12 +292,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		displayToasts(MainActivity.this, msg, Toast.LENGTH_SHORT);
 	}
 
-	private void displayToasts(MainActivity context, String msg, int lengthShort) {
+	private void displayToasts(MainActivity context, String msgText, int lengthShort) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(MainActivity.this);
-		boolean showToast = prefs.getBoolean("showToast", true);
-		if (showToast)
-			Toast.makeText(context, msg, lengthShort).show();
+		boolean showToast = prefs.getBoolean("showToast", false);
+		if (showToast){
+			AppMsg msg = AppMsg.makeText((Activity)context,msgText,AppMsg.STYLE_INFO);
+			msg.setLayoutGravity(Gravity.BOTTOM);
+			msg.setDuration(AppMsg.LENGTH_SHORT);
+			msg.show();
+		} else {
+			Toast.makeText(context, msgText, lengthShort).show();
+		}
 	}
 
 	/**
@@ -608,10 +628,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
 			        		   Api.applications = null;
 			        		   showOrLoadApplications();
-			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/", Api.TOASTTYPE.INFO);
 			        	   } else {
-			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail) );
-			   					
+			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail),Api.TOASTTYPE.ERROR);
 			   				}
 			           }
 			       })
@@ -667,38 +686,50 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		final boolean enabled = !Api.isEnabled(this);
 		Log.d("AFWall+", "Changing enabled status to: " + enabled);
 		Api.setEnabled(this, enabled);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		if (enabled) {
-			try {
-				Api.clearRules(MainActivity.this);
-			} catch (IOException e) {
-				Log.d("AFWall+", e.getLocalizedMessage());
+			final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
+			if(multimode) {
+				try {
+					if (!Api.hasRootAccess(MainActivity.this, true)) return;
+					Api.clearRules(MainActivity.this);
+				} catch (Exception e) {
+					Log.d("AFWall+", e.getLocalizedMessage());
+				}
 			}
 			applyOrSaveRules();
-			getSupportActionBar().setIcon(R.drawable.widget_on);
-			if(mainMenu !=null) {
-				final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-				item_onoff.setIcon(R.drawable.widget_on);
-				item_onoff.setTitle(R.string.fw_enabled);
-				
-				final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-				item_apply.setTitle(R.string.applyrules);
-				
-			}
 		} else {
-			purgeRules();
-			if(mainMenu !=null) {
-				final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-				item_onoff.setTitle(R.string.fw_disabled);
-				item_onoff.setIcon(R.drawable.widget_off);
-				
-				final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-				item_apply.setTitle(R.string.saverules);
+			final boolean confirmBox = prefs.getBoolean("enableConfirm", false);
+			if(confirmBox){
+				confirmDisable();
+			} else {
+				purgeRules();
 			}
-			getSupportActionBar().setIcon(R.drawable.widget_off);
 		}
 		refreshHeader();
 	}
 	
+
+	public void confirmDisable(){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setTitle("Info");
+	    builder.setMessage(R.string.confirmMsg)
+	           .setCancelable(false)
+	           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	               public void onClick(DialogInterface dialog, int id) {
+	            	   	purgeRules();
+	               }
+	           })
+	           .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	               public void onClick(DialogInterface dialog, int id) {
+	            	   //cancel. reset to the default enable state
+	            	   Api.setEnabled(getApplicationContext(), true);
+	                   return;
+	               }
+	           }).show();
+	}
+
 	private void confirmPassword(){
 		new PassDialog(this, true, new android.os.Handler.Callback() {
 			public boolean handleMessage(Message msg) {
@@ -706,7 +737,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					if(getCurrentPassword().equals((String) msg.obj)) {
 						setPassword((String) msg.obj);	
 					} else{
-						Api.alert(MainActivity.this,getString(R.string.settings_pwd_not_equal));
+						Api.alert(MainActivity.this,getString(R.string.settings_pwd_not_equal),TOASTTYPE.ERROR);
 					}
 				}
 				return false;
@@ -802,6 +833,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
+				if (!Api.hasRootAccess(MainActivity.this, true)) return;
 				String rules = Api.showIptablesRules(MainActivity.this);
 				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,rules,getString(R.string.showrules_title)));
 			}
@@ -840,31 +872,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	/**
-	 * Clear logs
-	 */
-	/*private void clearLog() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(this,
-				res.getString(R.string.working),
-				res.getString(R.string.please_wait), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				if (!Api.hasRootAccess(MainActivity.this, true))
-					return;
-				if (Api.clearLog(MainActivity.this)) {
-					displayToasts(MainActivity.this, R.string.log_cleared,
-							Toast.LENGTH_SHORT);
-				}
-			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
-	}*/
-
-	/**
 	 * Apply or save iptable rules, showing a visual indication
 	 */
 	private void applyOrSaveRules() {
@@ -882,12 +889,29 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 				if (enabled) {
 					Log.d("AFWall+", "Applying rules.");
-					if (Api.applyIptablesRules(MainActivity.this, true)) {
+					if (Api.hasRootAccess(MainActivity.this, true) && Api.applyIptablesRules(MainActivity.this, true)) {
 						displayToasts(MainActivity.this,
 								R.string.rules_applied, Toast.LENGTH_SHORT);
+						getSupportActionBar().setIcon(R.drawable.widget_on);
+						if(mainMenu !=null) {
+							final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
+							item_onoff.setIcon(R.drawable.widget_on);
+							item_onoff.setTitle(R.string.fw_enabled);
+							
+							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
+							item_apply.setTitle(R.string.applyrules);
+						}
 					} else {
 						Log.d("AFWall+", "Failed - Disabling firewall.");
 						Api.setEnabled(MainActivity.this, false);
+						getSupportActionBar().setIcon(R.drawable.widget_off);
+						if(mainMenu !=null) {
+							final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
+							item_onoff.setIcon(R.drawable.widget_off);
+							item_onoff.setTitle(R.string.fw_disabled);
+							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
+							item_apply.setTitle(R.string.saverules);
+						}
 					}
 				} else {
 					Log.d("AFWall+", "Saving rules.");
@@ -915,9 +939,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
+				if (!Api.hasRootAccess(MainActivity.this, true)) return;
 				if (Api.purgeIptables(MainActivity.this, true)) {
 					displayToasts(MainActivity.this, R.string.rules_deleted,
 							Toast.LENGTH_SHORT);
+					getSupportActionBar().setIcon(R.drawable.widget_off);
+					if(mainMenu !=null) {
+						final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
+						item_onoff.setIcon(R.drawable.widget_off);
+						item_onoff.setTitle(R.string.fw_disabled);
+						final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
+						item_apply.setTitle(R.string.saverules);
+					}
 				}
 			}
 		};
@@ -1097,9 +1130,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	public static void displayToasts(Context context, int resId, int duration) {
 		SharedPreferences prefs =PreferenceManager
 				.getDefaultSharedPreferences(context) ;
-		boolean showToast = prefs.getBoolean("showToast", true);
-		if (showToast)
+		boolean showToast = prefs.getBoolean("showToast", false);
+		if (showToast){
+			AppMsg msg = AppMsg.makeText((Activity)context,resId,AppMsg.STYLE_INFO);
+			msg.setLayoutGravity(Gravity.BOTTOM);
+			msg.setDuration(AppMsg.LENGTH_SHORT);
+			msg.show();
+		} else {
 			Toast.makeText(context, resId, duration).show();
+		}
 	}
 
 	/**
@@ -1141,6 +1180,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 			Api.applications = null;
 			showOrLoadApplications();
+			refreshHeader();
 			if (Api.isEnabled(getApplicationContext())) {
 				Api.applyIptablesRules(getApplicationContext(), true);
 			} else {
@@ -1150,5 +1190,5 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		return true;
 	}
-
 }
+
