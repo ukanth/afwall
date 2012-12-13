@@ -155,30 +155,36 @@ public final class Api {
 	public static void alert(Context ctx, CharSequence msgText, TOASTTYPE error) {
 		
 		if (ctx != null) {
-			final AppMsg.Style style;
-			switch (error) {
-			case ERROR:
-				style = AppMsg.STYLE_ALERT;
-				break;
-			case MESSAGE:
-				style = AppMsg.STYLE_CONFIRM;
-				break;
-			case INFO:
-				style = AppMsg.STYLE_INFO;
-				break;
-			default:
-				return;
-			}
-			AppMsg msg = AppMsg.makeText((Activity) ctx, msgText,
-					style);
-			msg.setLayoutGravity(Gravity.BOTTOM);
-			msg.setDuration(AppMsg.LENGTH_SHORT);
-			
 			SharedPreferences prefs =PreferenceManager
 					.getDefaultSharedPreferences(ctx) ;
-			boolean showToast = prefs.getBoolean("showToast", true);
+			boolean showToast = prefs.getBoolean("showToast", false);
 			if(showToast){
-				msg.show();
+				final AppMsg.Style style;
+				switch (error) {
+				case ERROR:
+					style = AppMsg.STYLE_ALERT;
+					break;
+				case MESSAGE:
+					style = AppMsg.STYLE_CONFIRM;
+					break;
+				case INFO:
+					style = AppMsg.STYLE_INFO;
+					break;
+				default:
+					return;
+				}
+				if(ctx instanceof Activity){
+					AppMsg msg = AppMsg.makeText((Activity) ctx, msgText,
+							style);
+					msg.setLayoutGravity(Gravity.BOTTOM);
+					msg.setDuration(AppMsg.LENGTH_SHORT);
+					msg.show();	
+				} else {
+					new AlertDialog.Builder(ctx)
+		        	.setNeutralButton(android.R.string.ok, null)
+		        	.setMessage(msgText)
+		        	.show();
+				}
 			} else{
 				new AlertDialog.Builder(ctx)
 	        	.setNeutralButton(android.R.string.ok, null)
