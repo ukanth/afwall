@@ -4,6 +4,13 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.1.3
+* Critical bugfix : Rules were not applied after every system reboot !
+
+Version 1.1.2
+* Minor bug fix for Forceclose on alerts !
+
+
 Version 1.1.1
 * Feature : Tasker/Locate Plugin! (Only for donate version for now)
 * Feature : Now allow customize names for profiles.(from preferences)
