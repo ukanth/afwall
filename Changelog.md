@@ -4,6 +4,19 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.1.4
+* Replace su library with RootTools, much faster and stable!
+* Improved detection logic for iptables for ICS/JS devices and removed EXPERIMENTAL option from preferences.	
+* Now disable icons will free up space on the main view
+* Added option to show UID for applications ( like DroidWall )
+* Fixed Issue with tf201 devices with su permisssions.
+* Fixed constant force close on some devices while applying rules.
+* Fixes issue with packages reset to root when importing.
+* Improved Russian Translations - Many thanks to Kirhe@xda!
+* Fixed issue with custom script not applying properly after uid (github issue #89)
+* Removed Disable 3G when USB connected preference because of some bugs.I'll put that back after fixing it.
+
+
 Version 1.1.3
 * Critical bugfix : Rules were not applied after every system reboot !
 

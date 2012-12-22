@@ -32,7 +32,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
@@ -47,6 +46,9 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.Manifest;
 import android.app.Activity;
@@ -73,8 +75,10 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.devspark.appmsg.AppMsg;
-
-import eu.chainfire.libsuperuser.Shell;
+import com.stericson.RootTools.Command;
+import com.stericson.RootTools.CommandCapture;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.Shell;
 
 /**
  * Contains shared programming interfaces.
@@ -133,18 +137,15 @@ public final class Api {
 	
 	public static String ipPath = null;
 	
-	private static Map<String,Integer> specialApps = new HashMap<String, Integer>();
-	
 	private static boolean isRooted = false;
+	
+	
+	private static Map<String,Integer> specialApps = null;
 	
 	//public static boolean isUSBEnable = false;
 
     public static String getIpPath() {
 		return ipPath;
-	}
-
-	public static void setIpPath(String ipPath) {
-		Api.ipPath = ipPath;
 	}
 
 	/**
@@ -255,21 +256,15 @@ public final class Api {
 	
 	static void setIpTablePath(Context ctx) {
 		if(ipPath == null) {
-			SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+			int version = getIptablesVersion();
 			final String dir = ctx.getDir("bin",0).getAbsolutePath();
-			boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
+			final String defaultPath = "iptables ";
 			final String myiptables = dir + "/iptables_armv5 ";
-			setIpPath(myiptables);
-			
-			int sdk = android.os.Build.VERSION.SDK_INT;
-			if(isaltICSJBenabled) {
-				if(sdk > android.os.Build.VERSION_CODES.HONEYCOMB) {
-					String icsJBIptablePath = "/system/bin/iptables ";
-					setIpPath(icsJBIptablePath);
-				} else {
-					Api.displayToasts(ctx,R.string.icsJBOnly,Toast.LENGTH_LONG);
-				}
-			} 	
+			if(version > 1410) {
+				Api.ipPath = defaultPath;
+			} else {
+				Api.ipPath = myiptables;
+			}
 		}
 	}
 	
@@ -317,7 +312,6 @@ public final class Api {
 		assertBinaries(ctx, showErrors);
 		final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "eth0+", "ra+", "wlan0+" };
 		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		boolean disableUSB3gRule = appprefs.getBoolean("disableUSB3gRule", false);
 		ArrayList<String> ITFS_3G = new ArrayList<String>();
 		//{"ppp+","tap+","tun+"
 		ITFS_3G.add("rmnet+");
@@ -326,19 +320,14 @@ public final class Api {
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
 		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio1+");ITFS_3G.add("qmi+");ITFS_3G.add("wwan0+");ITFS_3G.add("svnet0+");ITFS_3G.add("rmnet_sdio0+");
 		ITFS_3G.add("cdma_rmnet+"); ITFS_3G.add("rmnet0+");
+		ITFS_3G.add("usb+");
 
-		if(!disableUSB3gRule) {
-			ITFS_3G.add("usb+");
-		}
-		
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 		final boolean blacklist = !whitelist;
 		final boolean logenabled = appprefs.getBoolean("enableFirewallLog",false);
 		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, "");
-		boolean isaltICSJBenabled =  appprefs.getBoolean("altICSJB", false);
     	final StringBuilder script = new StringBuilder();
-    	final StringBuilder customScriptBuilder = new StringBuilder();
     	
 		try {
 			int code;
@@ -372,12 +361,11 @@ public final class Api {
 			}
 			if (customScript.length() > 0) {
 				customScript = customScript.replace("$IPTABLES", " "+ ipPath );
-				customScriptBuilder.append(customScript);
+				script.append(customScript);
 			}
 			
 			//workaround for some ICS/JB devices 
-			 
-			if(isaltICSJBenabled) {
+			if(getIptablesVersion() > 1410) {
 				script.append(
 						ipPath + " -D OUTPUT -j afwall\n" +
 						ipPath + " -I OUTPUT 2 -j afwall\n"
@@ -483,8 +471,8 @@ public final class Api {
 			}*/
 			
 	    	final StringBuilder res = new StringBuilder();
-			code = runScriptAsRoot(ctx, script.toString(), customScriptBuilder.toString(), res);
-			if (showErrors && code != 0) {
+			code = runScriptAsRoot(ctx, script.toString(), res);
+			if (showErrors && code == -1) {
 				String msg = res.toString();
 				Log.e("AFWall+", msg);
 				// Remove unnecessary help message from output
@@ -504,20 +492,24 @@ public final class Api {
 	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
 		final PackageManager pm = ctx.getPackageManager();
 		final List<Integer> uids = new LinkedList<Integer>();
+		if(specialApps == null) {
+			initSpecial();
+		} 
 		if (pks.length() > 0) {
 			for (String token : pks.split("\\|")) {
 				final String pkgName = token;
 				if(pkgName != null && pkgName.length() > 0){
 					try {
 						if(pkgName.startsWith("dev.afwall.special")){
-							if(specialApps == null) initSpecial();
 							uids.add(specialApps.get(pkgName));
+						} else {
+							ApplicationInfo ai = pm.getApplicationInfo(pkgName, 0);
+							if (ai != null) {
+								uids.add(ai.uid);
+							}
 						}
 						// add logic here
-						ApplicationInfo ai = pm.getApplicationInfo(pkgName, 0);
-						if (ai != null) {
-							uids.add(ai.uid);
-						}
+						
 					} catch (NameNotFoundException ex) {
 						Log.d("AFWALL+", "Missing pkg:" + pkgName);
 					} catch (Exception ex) {
@@ -533,6 +525,9 @@ public final class Api {
 		final PackageManager pm = ctx.getPackageManager();
 		ApplicationInfo ai;
 		int uids[] = new int[0];
+		if(specialApps == null) {
+			initSpecial();
+		} 
 		if (pks.length() > 0) {
 			// Check which applications are allowed on wifi
 			final StringTokenizer tok = new StringTokenizer(pks, "\\|");
@@ -542,22 +537,24 @@ public final class Api {
 				try {
 					if(pkgName != null && pkgName.length() > 0){
 						if(pkgName.startsWith("dev.afwall.special")){
-							if(specialApps == null) initSpecial();
 							uids[i] = specialApps.get(pkgName);
-						}
-						ai = pm.getApplicationInfo( pkgName, 0);
-						if(ai != null) {
-							try {
-								uids[i] = ai.uid;
-							} catch (Exception ex) {
-								//selected_wifi[i] = -1;
+						} else {
+							ai = pm.getApplicationInfo( pkgName, 0);
+							if(ai != null) {
+								try {
+									uids[i] = ai.uid;
+								} catch (Exception ex) {
+									//selected_wifi[i] = -1;
+								}
+							} else {
+								uids[i] = -1000;
 							}
 						}
 					}
 				} catch (NameNotFoundException e) {
+					uids[i] = -1000;
 					Log.d("AFWALL", "missing pkg:::" + pkgName);
 				}
-				
 			}
 			Arrays.sort(uids);
 		}
@@ -646,7 +643,6 @@ public final class Api {
 			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
 			String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, "");
-			final StringBuilder customScriptBuilder = new StringBuilder();
 	    	final StringBuilder script = new StringBuilder();
 	    	setIpTablePath(ctx);
 	    	script.append(
@@ -657,9 +653,9 @@ public final class Api {
 	    			);
 	    	if (customScript.length() > 0) {
 	    		customScript = customScript.replace("$IPTABLES", " "+ ipPath );
-	    		customScriptBuilder.append(customScript);
+	    		script.append(customScript);
 	    	}
-			int code = runScriptAsRoot(ctx, script.toString(), customScript, res);
+			int code = runScriptAsRoot(ctx, script.toString(), res);
 			if (code == -1) {
 				alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res, TOASTTYPE.ERROR);
 				return false;
@@ -678,7 +674,7 @@ public final class Api {
 		try {
     		final StringBuilder res = new StringBuilder();
     		setIpTablePath(ctx);
-			runScriptAsRoot(ctx, ipPath + " -L -n\n", null,  res);
+			runScriptAsRoot(ctx, ipPath + " -L -n\n",  res);
 			return res.toString();
 		} catch (Exception e) {
 			alert(ctx, "error: " + e, TOASTTYPE.ERROR);
@@ -694,7 +690,7 @@ public final class Api {
 	public static boolean clearLog(Context ctx) {
 		try {
 			final StringBuilder res = new StringBuilder();
-			int code = runScriptAsRoot(ctx, "dmesg -c >/dev/null || exit\n", null, res);
+			int code = runScriptAsRoot(ctx, "dmesg -c >/dev/null || exit\n", res);
 			if (code != 0) {
 				alert(ctx, res,TOASTTYPE.INFO);
 				return false;
@@ -733,7 +729,7 @@ public final class Api {
     		String busybox = getBusyBoxPath(ctx);
 			String grep = busybox + " grep";
     		
-			int code = runScriptAsRoot(ctx, "dmesg | " + grep +" AFWALL\n", null,  res);
+			int code = runScriptAsRoot(ctx, "dmesg | " + grep +" AFWALL\n",  res);
 			//int code = runScriptAsRoot(ctx, "cat /proc/kmsg", res);
 			if (code != 0) {
 				if (res.length() == 0) {
@@ -814,7 +810,7 @@ public final class Api {
 		return "";
 	}
 	
-	public static void parseResult(String result) {
+	/*public static void parseResult(String result) {
 	    int pos = 0;
 	    String src, dst, len, uid;
 	    final BufferedReader r = new BufferedReader(new StringReader(result.toString()));
@@ -864,7 +860,7 @@ public final class Api {
 		} catch (NumberFormatException e) {
 		} catch (IOException e) {
 		}
-	  }
+	  }*/
 
     /**
      * @param ctx application context (mandatory)
@@ -1039,26 +1035,32 @@ public final class Api {
 		protected Integer doInBackground(Object... params) {
 			final String script = (String) params[0];
 			final StringBuilder res = (StringBuilder) params[1];
-			String customScript = (String) params[2];
-
 			try {
-				if(!Shell.SU.available()) return exitCode;
+				if(!RootTools.isAccessGiven()) return exitCode;
 				if (script != null && script.length() > 0) {
 					List<String> commands = Arrays.asList(script.split("\n"));
-					List<String> output = null;
-					output = Shell.SU.run(commands);
-					if (output != null && output.size() > 0) {
-						for (String str : output) {
-							res.append(str);
-							res.append("\n");
+					Shell shell = RootTools.getShell(true);
+					CommandCapture command;
+					Command rootcommend;
+					if (commands.size() == 1) {
+						rootcommend = new Command(0, commands.get(0)) {
+							@Override
+							public void output(int id, String line) {
+								res.append(line);	
+								res.append("\n");
+							}
+						};
+						RootTools.getShell(true).add(rootcommend).waitForFinish();
+					} else {
+						for (String cmdStr : commands) {
+							if(cmdStr != null && cmdStr.length() > 0){
+								command = new CommandCapture(0, cmdStr);
+								shell.add(command);	
+							}
 						}
+						Shell.startRootShell();
 					}
-					Log.i("output:::" , res.toString());
 					exitCode = 0;
-					if (customScript != null && customScript.length() > 0) {
-						commands = Arrays.asList(customScript.split("\n"));
-						Shell.SU.run(commands);
-					}
 				}
 			} catch (Exception ex) {
 				if (res != null)
@@ -1076,10 +1078,10 @@ public final class Api {
      * @param timeout timeout in milliseconds (-1 for none)
      * @return the script exit code
      */
-	public static int runScript(Context ctx, String script, String customScript, StringBuilder res, long timeout, boolean asroot) {
+	public static int runScript(Context ctx, String script, StringBuilder res, long timeout, boolean asroot) {
 		int returnCode = -1;
 		try {
-			returnCode = new RunCommand().execute(script, res, customScript)
+			returnCode = new RunCommand().execute(script, res)
 					.get();
 		} catch (RejectedExecutionException r) {
 			Log.d("Exception", "Caught RejectedExecutionException");
@@ -1097,8 +1099,8 @@ public final class Api {
      * @param timeout timeout in milliseconds (-1 for none)
      * @return the script exit code
      */
-	public static int runScriptAsRoot(Context ctx, String script, String customScript,StringBuilder res, long timeout) {
-		return runScript(ctx, script, customScript, res, timeout, true);
+	public static int runScriptAsRoot(Context ctx, String script, StringBuilder res, long timeout) {
+		return runScript(ctx, script, res, timeout, true);
     }
     /**
      * Runs a script as root (multiple commands separated by "\n") with a default timeout of 20 seconds.
@@ -1109,8 +1111,8 @@ public final class Api {
      * @return the script exit code
      * @throws IOException on any error executing the script, or writing it to disk
      */
-	public static int runScriptAsRoot(Context ctx, String script,  String customScript, StringBuilder res) throws IOException {
-		return runScriptAsRoot(ctx, script,customScript, res, 40000);
+	public static int runScriptAsRoot(Context ctx, String script, StringBuilder res) throws IOException {
+		return runScriptAsRoot(ctx, script, res, 40000);
 	}
     /**
      * Runs a script as a regular user (multiple commands separated by "\n") with a default timeout of 20 seconds.
@@ -1121,8 +1123,8 @@ public final class Api {
      * @return the script exit code
      * @throws IOException on any error executing the script, or writing it to disk
      */
-	public static int runScript(Context ctx, String script,String customScript, StringBuilder res) throws IOException {
-		return runScript(ctx, script, customScript, res, 40000, false);
+	public static int runScript(Context ctx, String script, StringBuilder res) throws IOException {
+		return runScript(ctx, script, res, 40000, false);
 	}
 	/**
 	 * Asserts that the binary files are installed in the cache directory.
@@ -1309,6 +1311,20 @@ public final class Api {
     		return tostr;
     	}
     	
+    	public String toStringWithUID() {
+    		if (tostr == null) {
+        		final StringBuilder s = new StringBuilder();
+        		if (uid > 0) s.append(uid + ": ");
+        		for (int i=0; i<names.length; i++) {
+        			if (i != 0) s.append(", ");
+        			s.append(names[i]);
+        		}
+        		s.append("\n");
+        		tostr = s.toString();
+    		}
+    		return tostr;
+    	}
+    	
     }
     /**
      * Small internal structure used to hold log information
@@ -1389,7 +1405,7 @@ public final class Api {
 		setIpTablePath(ctx);
 		script.append(ipPath + " -F\n");
 		script.append(ipPath + " -X\n");
-		int code = runScriptAsRoot(ctx, script.toString(), null,  res);
+		int code = runScriptAsRoot(ctx, script.toString(),  res);
 		if (code == -1) {
 			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res, TOASTTYPE.ERROR);
 			return false;
@@ -1407,7 +1423,7 @@ public final class Api {
 		script.append(ipPath + " -P OUTPUT DROP\n");
 		script.append(ipPath + " -P FORWARD DROP\n");
 		try {
-			runScriptAsRoot(ctx, script.toString(),null, res);
+			runScriptAsRoot(ctx, script.toString(),res);
 		} catch (IOException e) {
 		}
 		return true;
@@ -1523,45 +1539,79 @@ public final class Api {
 			prefEdit.commit();
 			res = true;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			//alert(ctx, "Missing back.rules file", TOASTTYPE.ERROR);
+			Log.d("Exception", e.getLocalizedMessage());
 		} catch (IOException e) {
-			e.printStackTrace();
+			//alert(ctx, "Error reading the backup file", TOASTTYPE.ERROR);
+			Log.d("Exception", e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			Log.d("Exception", e.getLocalizedMessage());
 		} finally {
 			try {
 				if (input != null) {
 					input.close();
 				}
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				Log.d("Exception", ex.getLocalizedMessage());
 			}
 		}
 		return res;
 	}
 	
-	public static String showIfaces() {
-		Process p;
-		StringBuffer inputLine = new StringBuffer();
+	public static int getIptablesVersion(){
+		final StringBuffer inputLine = new StringBuffer();
+		int number = 0;
+		Command command = new Command(0, "iptables --version") {
+			@Override
+			public void output(int id, String line) {
+				inputLine.append(line);
+			}
+		};
 		try {
-			//if(Shell.SU.available()) {
-			//	Shell.SU.run("ls /sys/class/net");
-			//}
-			p = Runtime.getRuntime().exec(
-					new String[] { "su", "-c", "ls /sys/class/net" });
-			BufferedReader stdout = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			String tmp;
-			while ((tmp = stdout.readLine()) != null) {
-				inputLine.append(tmp);
+			RootTools.getShell(true).add(command).waitForFinish();
+			Pattern pattern = Pattern.compile("[0-9]+(\\.[0-9]+)+$");
+			Matcher matcher = pattern.matcher(inputLine.toString());
+			String numberStr = null;
+			while (matcher.find()) {
+				numberStr = matcher.group();
+			}
+			if (numberStr != null) {
+				number = Integer.parseInt(numberStr.replace(".", ""));
+			}
+		} catch (InterruptedException e1) {
+			Log.d("InterruptedException", e1.getLocalizedMessage());
+		} catch (IOException e1) {
+			Log.d("IOException", e1.getLocalizedMessage());
+		} catch (TimeoutException e1) {
+			Log.d("TimeoutException", e1.getLocalizedMessage());
+		} catch (Exception e){
+			Log.d("Exception", e.getLocalizedMessage());
+		}
+		
+		return number;
+	}
+	
+	public static String showIfaces() {
+		
+		final StringBuffer inputLine = new StringBuffer();
+		Command command = new Command(0, "ls /sys/class/net") {
+			@Override
+			public void output(int id, String line) {
+				inputLine.append(line);
 				inputLine.append(",");
 			}
-			// use inputLine.toString(); here it would have whole source
-			stdout.close();
-
-		} catch (Exception e) {
-			Log.d("Exception" ,e.toString());
+		};
+		try {
+			RootTools.getShell(true).add(command).waitForFinish();
+		} catch (InterruptedException e1) {
+		} catch (IOException e1) {
+		} catch (TimeoutException e1) {
 		}
-		return inputLine.toString();
+		String output = inputLine.toString();
+		if(output !=null) {
+			output = output.replace(" ", ",");
+		}
+		return output;
 	}
 	
 	public static void showInstalledAppDetails(Context context, String packageName) {
@@ -1589,20 +1639,20 @@ public final class Api {
 	}
 	
 	public static boolean hasRootAccess(Context ctx, boolean showErrors) {
-		if (isRooted) return true;
-		final StringBuilder res = new StringBuilder();
+		if (isRooted)
+			return true;
 		try {
 			// Run an empty script just to check root access
-			if (runScriptAsRoot(ctx, "exit 0\n", null, res) == 0) {
+			if (RootTools.isAccessGiven()) {
 				isRooted = true;
 				return true;
 			}
 		} catch (Exception e) {
+			alert(ctx, ctx.getString(R.string.error_su), TOASTTYPE.ERROR);
 		}
 		if (showErrors) {
-			alert(ctx, ctx.getString(R.string.error_su),TOASTTYPE.ERROR);
+			alert(ctx, ctx.getString(R.string.error_su), TOASTTYPE.ERROR);
 		}
 		return false;
 	}
-	
 }

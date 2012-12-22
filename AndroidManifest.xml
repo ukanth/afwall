@@ -29,8 +29,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="113"
-    android:versionName="1.1.3" >
+    android:versionCode="114"
+    android:versionName="1.1.4" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -144,6 +144,6 @@
 
         </receiver>
         
-    </application>
+        </application>
 
 </manifest>

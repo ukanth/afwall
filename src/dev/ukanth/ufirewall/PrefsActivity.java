@@ -25,22 +25,51 @@ package dev.ukanth.ufirewall;
 
 import net.saik0.android.unifiedpreference.UnifiedPreferenceFragment;
 import net.saik0.android.unifiedpreference.UnifiedSherlockPreferenceActivity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
-public class PrefsActivity extends UnifiedSherlockPreferenceActivity {
-
+public class PrefsActivity extends UnifiedSherlockPreferenceActivity implements OnSharedPreferenceChangeListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setHeaderRes(R.xml.pref_headers);
-		// Set desired preference file and mode (optional)
 		super.onCreate(savedInstanceState);
 	}
-
-
-	public static class GeneralPreferenceFragment extends UnifiedPreferenceFragment {}
-
-	public static class FirewallPreferenceFragment extends UnifiedPreferenceFragment {}
 	
-	public static class MultiProfilePreferenceFragment extends UnifiedPreferenceFragment {}
+	@Override 
+    protected void onResume(){
+        super.onResume();
+        // Set up a listener whenever a key changes             
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+	
+	  @Override 
+      protected void onPause() { 
+          super.onPause();
+          // Unregister the listener whenever a key changes             
+          PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);     
+      } 
+
+	public static class GeneralPreferenceFragment extends
+			UnifiedPreferenceFragment {
+	}
+
+	public static class FirewallPreferenceFragment extends
+			UnifiedPreferenceFragment {
+	}
+
+	public static class MultiProfilePreferenceFragment extends
+			UnifiedPreferenceFragment {
+	}
+	
+	@Override
+	 public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		if (key.equals("showUid") || key.equals("enableMultiProfile")
+				|| key.equals("altICSJB")) {
+			Api.applications = null;
+		}
+     }
+
 
 }

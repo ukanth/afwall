@@ -6,12 +6,4 @@
     <CheckBoxPreference
         android:key="enableMultiProfile"
         android:title="@string/multipleProfiles" />
-    <CheckBoxPreference
-        android:key="disableUSB3gRule"
-        android:summary="@string/usb3g_pref_summary"
-        android:title="@string/usb3g_pref_title" />
-    <CheckBoxPreference
-        android:key="altICSJB"
-        android:summary="@string/prefExperimentICSJB"
-        android:title="@string/prefExperimentICSJB_title" />
 </PreferenceScreen>

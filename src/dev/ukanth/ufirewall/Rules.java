@@ -213,7 +213,7 @@ public class Rules extends SherlockActivity {
 			   			script.append(Api.getIpPath() +" -X\n");
 			   			int code = -1;
 						try {
-							code = Api.runScriptAsRoot(ctx, script.toString(), null, res);
+							code = Api.runScriptAsRoot(ctx, script.toString(), res);
 						} catch (IOException e) {
 							Api.alert(Rules.this, getString(R.string.error_flush),Api.TOASTTYPE.ERROR);
 						}

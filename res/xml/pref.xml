@@ -18,6 +18,10 @@
         <CheckBoxPreference
             android:key="enableConfirm"
             android:title="@string/enableConfirmTitle" />
+        
+        <CheckBoxPreference
+            android:key="showUid"
+            android:title="Show UID for apps" />
 
 </PreferenceScreen>
 

@@ -1,150 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AFWall+ </string>
+    <string name="abs__action_bar_home_description">Navigate home</string>
+    <string name="abs__action_bar_up_description">Navigate up</string>
+    <string name="abs__action_menu_overflow_description">Дополнительные настройки</string>
+    <string name="abs__action_mode_done">Готово</string>
+    <string name="abs__activity_chooser_view_see_all">See all...</string>
+    <string name="abs__activity_chooser_view_dialog_title_default">Select activity</string>
+    <string name="abs__share_action_provider_share_with">Share with...</string>
+    <string name="abs__activitychooserview_choose_application">Choose an application</string>
+    <string name="abs__shareactionprovider_share_with">Share with</string>
+    <string name="abs__shareactionprovider_share_with_application">Share with %s</string>
+    <string name="abs__searchview_description_search">Поиск</string>
+    <string name="abs__searchview_description_query">Поисковый запрос</string>
+    <string name="abs__searchview_description_clear">Очистить запрос</string>
+    <string name="abs__searchview_description_submit">Выполнить запрос</string>
+    <string name="abs__searchview_description_voice">Голосовой поиск</string>
+    <string name="ringtone_silent">Silent</string>
+    <string name="app_name">AFWall+</string>
     <string name="app_version">1.1.3</string>
-    <string name="title_enabled">AFWall + </string>
-    <string name="title_disabled">AFWall + (Отключено)</string>
-    <string name="whitelist_array_item">Белый список (разрешить выбран)</string>
-    <string name="blacklist_array_item">Черный список (блок выбран)</string>
-    <string name="showrules">Правила брандмауэра</string>
-    <string name="applyrules">Применить</string>
-    <string name="saverules">Сохранить</string>
-    <string name="purgerules">Purge правил</string>
-    <string name="setpwd">Установите пароль:</string>
+    <string name="title_enabled">AFWall+</string>
+    <string name="title_disabled">AFWall+ (отключено)</string>
+    <string name="whitelist_array_item">Белый список (разрешить выбранные)</string>
+    <string name="blacklist_array_item">Черный список (блокировать выбранные)</string>
+    <string name="showrules">Правила iptables</string>
+    <string name="applyrules">Применить правила</string>
+    <string name="saverules">Сохранить правила</string>
+    <string name="purgerules">Удалить правила</string>
+    <string name="setpwd">Установить пароль</string>
     <string name="help">Справка</string>
     <string name="close">Закрыть</string>
-    <string name="exit">конец</string>
-    <string name="error_flush">Ошибка промывки Iptables</string>
-    <string name="error_purge">Ошибка очистки Iptables. Код выхода:</string>
-    <string name="error_binary">Ошибка при установке двоичных файлов:</string>
-    <string name="error_refresh">Ошибка при обновлении Iptables: </string>
-    <string name="error_apply">Ошибка применения Iptables правила. Выход код: </string>
-    <string name="error_su">Невозможно получить доступ с правами администратора.\n Вам нужно корнями телефона для запуска AFWall+ \n\n Если этот телефон уже укоренились, пожалуйста, убедитесь, что AFWall+ имеет достаточно прав для выполнения \"su\" команды.\n</string>
-    <string name="error_common">Ошибка </string>
-    <string name="all_item">(Любое приложение) - то же, выбрав все приложения</string>		
-    <string name="root_item">(Корень) - Приложения, работающие в качестве корневой</string>
-    <string name="operation_timeout">Операция по тайм-ауту</string>
-    <string name="fw_enabled">Enabled</string>
-    <string name="fw_disabled">Выключить</string>
-    <string name="log_enabled">Вход Доступно</string>
-    <string name="log_disabled">Вход инвалидов</string>
-    <string name="log_was_enabled">Вход был включен</string>
-    <string name="log_was_disabled">Вход был отключен</string>
-    <string name="log_cleared">Вход очищен</string>
-    <string name="flushed">Правила покраснел</string>
-    <string name="show_log">Брандмауэр журналы</string>
-    <string name="clear_log">Очистить журнал </string>
-    <string name="applying_rules">Применение Iptables правила.</string>
-    <string name="saving_rules">Сохранение Iptables правила.</string>
-    <string name="deleting_rules">Удаление Iptables правила.</string>
-    <string name="rules_applied">Правила применяются с успехом</string>
-    <string name="rules_saved">Правила сохраняется с успехом</string>
-    <string name="rules_deleted">Правила удален с успехом</string>
+    <string name="exit">Выход</string>
+    <string name="error_flush">Ошибка применения iptables</string>
+    <string name="error_purge">Ошибка удаления iptables. Код выхода:</string>
+    <string name="error_binary">Ошибка установки бинарных файлов:</string>
+    <string name="error_refresh">Ошибка обновления правил iptables:</string>
+    <string name="error_apply">Ошибка применения правил iptables. Код выхода:</string>
+    <string name="error_su">"Ошибка получения root доступа.
+ Для запуска AFWall+ необходимо получить root права на устройстве.
+
+ Если root права уже были получены, убедитесь что для AFWall+ установленные достаточные разрешения на выполение команды \"su\".
+"</string>
+    <string name="error_common">Ошибка :</string>
+    <string name="all_item">(все) - Все приложения</string>
+    <string name="root_item">(root) - Все приложения с root правами</string>
+    <string name="operation_timeout">Тайм-аут операции</string>
+    <string name="fw_enabled">Брандмауэр включен</string>
+    <string name="fw_disabled">Брандмауэр выключен</string>
+    <string name="log_enabled">Ведение лога включено</string>
+    <string name="log_disabled">Ведение лога выключено</string>
+    <string name="log_was_enabled">Ведение лога успешно включено</string>
+    <string name="log_was_disabled">Ведение лога успешно выключено</string>
+    <string name="log_cleared">Лог удален</string>
+    <string name="flushed">Правила удалены</string>
+    <string name="show_log">Логи брандмауэра</string>
+    <string name="clear_log">Удалить лог</string>
+    <string name="applying_rules">Применяются правила iptables...</string>
+    <string name="saving_rules">Сохраняются правила iptables...</string>
+    <string name="deleting_rules">Удаляются правила iptables...</string>
+    <string name="rules_applied">Правила iptables успешно применены</string>
+    <string name="rules_saved">Правила iptables успешно сохранены</string>
+    <string name="rules_deleted">Правила iptables успешно удалены</string>
     <string name="pass_titleset">Установить пароль блокировки</string>
     <string name="pass_titleget">Требуется пароль</string>
     <string name="enterpass">Введите пароль:</string>
-    <string name="error_write_pref">Ошибка записи в предпочтениях</string>
-    <string name="enternewpass">Введите новый пароль (оставьте пустым, чтобы удалить):</string>
-    <string name="reenternewpass">Повторно введите пароль:</string>
-    <string name="passdefined">Пароль блокировки определенной</string>
-    <string name="passremoved">Пароль блокировки удалено</string>
-    <string name="passerror">Ошибка при смене пароля блокировки</string>
-    <string name="working">Работая</string>
-    <string name="reading_apps">Чтение установленных приложений</string>
-    <string name="please_wait">Пожалуйста подождите чуть-чуть (немного), Доктор Огасавара</string>
+    <string name="error_write_pref">Ошибка сохранения ностроек</string>
+    <string name="enternewpass">Введите новый пароль (оставьте пустым для удаления):</string>
+    <string name="reenternewpass">Подтвердите пароль:</string>
+    <string name="passdefined">Блокировка паролем установлена</string>
+    <string name="passremoved">Блокировка паролем удалена</string>
+    <string name="passerror">Ошибка изменения пароля блокировки</string>
+    <string name="working">Подождите...</string>
+    <string name="reading_apps">Поиск установленных приложений</string>
+    <string name="please_wait">Пожалуйста подождите</string>
     <string name="mode_header">Режим: %s</string>
-    <string name="mode_whitelist">Белый список (разрешить выбран)</string>
-    <string name="mode_blacklist">Черный список (блок выбран)</string>
-    <string name="toast_bin_installed">AFWall +: Двоичные файлы установлен!</string>
-    <string name="toast_enabled">AFWall +: брандмауэр включен!</string>
-    <string name="toast_error_enabling">AFWall +: ошибка позволяет брандмауэр!</string>
-    <string name="toast_disabled">AFWall +: брандмауэр отключен!</string>
-    <string name="toast_error_disabling">AFWall +: ошибка отключения брандмауэра!</string>
-    <string name="set_custom_script">Установите специальный сценарий</string>
-    <string name="preferences">Опции</string>
-    <string name="reload">Перезагрузить приложений</string>
-    <string name="flush">Флеш правил</string>
-    <string name="notify_pref_summary">Включить сообщит, чтобы открыть AFWall + на новых установках</string>
-    <string name="notify_pref_title">Уведомлять о новых установок</string>
-    <string name="toast_pref_title">Включить альтернативные уведомления тосты</string>
-    <string name="syscolor_pref_title">Выделить цветом для системы приложений</string>
-    <string name="usb3g_pref_summary">Предотвращение AFWall применять 3g правил при использовании проводного подключения USB</string>
-    <string name="usb3g_pref_title">Отключение 3G правил по проводной USB</string>
-    <string name="hideicons_pref_title">Скрыть значки приложений</string>
-    <string name="custom_script_defined">Пользовательский сценарий определен</string>
-    <string name="custom_script_removed">Пользовательский сценарий удалено</string>
-    <string name="custom_script_error">Ошибка при сохранении пользовательских сценариев</string>
-    <string name="custom_script_info"><b> Введите ваш пользовательский ниже сценарий. </b> \n <i>Ф (оставьте это поле пустым, чтобы убрать) </i> \nДля информацию о пользовательских сценариев, нажмите кнопку <a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> здесь </a>.
-	</string>
-    <string name="custom_script2_info">
-    	\n <b> пользовательских сценариев завершения работы </b> \nВы также можете определить пользовательский сценарий, который будет выполняться, когда брандмауэр отключен <b> </b>:</string>
-    <string name="unsaved_changes">Несохраненные изменения</string>
-    <string name="unsaved_changes_message">У вас есть несохраненные изменения. \nВы хотите применить или отменить их?</string>
+    <string name="mode_whitelist">Белый список (разрешить выбранные)</string>
+    <string name="mode_blacklist">Черный список (блокировать выбранные)</string>
+    <string name="toast_bin_installed">AFWall+: бинарные файлы установлены!</string>
+    <string name="toast_enabled">AFWall+: Брандмауэр включен!</string>
+    <string name="toast_error_enabling">AFWall+: Ошибка включения брандмауэра!</string>
+    <string name="toast_disabled">AFWall+: Брандмауэр отключен!</string>
+    <string name="toast_error_disabling">AFWall+: Ошибка отключения брандмауэра!</string>
+    <string name="set_custom_script">Пользовательские скрипты</string>
+    <string name="preferences">Настройки</string>
+    <string name="reload">Обновить список приложений</string>
+    <string name="flush">Удалить правила</string>
+    <string name="notify_pref_summary">Открывать AFWall+ при установке новых приложений</string>
+    <string name="notify_pref_title">Оповещать при установке</string>
+    <string name="toast_pref_title">Альтернативные уведомления</string>
+    <string name="syscolor_pref_title">Цвет для системных приложений</string>
+    <string name="usb3g_pref_summary">Отключить выполнение 3G правил при подключении по USB</string>
+    <string name="usb3g_pref_title">Отключить 3G правила</string>
+    <string name="hideicons_pref_title">Скрыть иконки приложений</string>
+    <string name="custom_script_defined">Пользовательский скрипт задан</string>
+    <string name="custom_script_removed">Пользовательский скрипт удален</string>
+    <string name="custom_script_error">Ошибка сохранения пользовательского скрипта</string>
+    <string name="custom_script_info"><b>Введите пользовательский скрипт.</b>" 
+"<i>(оставьте пустым для удаления)</i>" 
+Чтобы получить справку по пользовательским скриптам, нажмите "<a href="https://github.com/ukanth/afwall/wiki/CustomScripts">здесь</a>". "</string>
+    <string name="custom_script2_info">" 
+"<b>Пользовательские скрипты выключения</b>" 
+Вы можете написать пользовательские скрипты, которые будут выполняться при "<b>отключении</b> брандмауэра:</string>
+    <string name="unsaved_changes">Изменения не сохранены</string>
+    <string name="unsaved_changes_message">"Обнаружены несохраненные изменения
+Вы хотите их применить или отменить?"</string>
     <string name="apply">Применить</string>
     <string name="discard">Отменить</string>
-    <string name="help_dialog_text">
-        <i> Разработчик: Umakanthan Chandran (Original Автор: Родриго Zechin Rosauro (DroidWall)) </i>
-        \n<i> Свяжитесь со мной, - cumakt@gmail.com (@ ukanth-Twitter) </i>
-        \n<i> <a href="https://github.com/ukanth/afwall/"> https://github.com/ukanth/afwall/</a></i>
-        \n<i> Благодаря hush66 для икон ( http://hush66.deviantart.com/)</i>\n\n
-        <i> AFWall + - Android Firewall </i>
-        это веб-приложение для мощных Iptables<b></b>Linux брандмауэр. Это позволяет ограничить, какие приложения разрешено для доступа к сетям передачи данных. 
-        \nЭто является идеальным решением, если у вас нет безлимитный тарифный план, или просто хочет видеть ваши батареи длится дольше.\n\n
-        <b>Использование AFWall +:. </b> \n <b> 1 </b> Нажмите на <b> Mode </b> для переключения между <i> белый список </i> и <i> Черный список </i> режимы. \n 
-        <b> 2. </b> Все приложения, которые вы хотите заблокировать или разрешить (в зависимости от выбранного режима), для каждого интерфейса. \n 
-        <b> 3. </b> Откройте меню и включить брандмауэр. Если брандмауэр уже включен, просто выберите <b> Применить правила </b>. 
-        \nВ правила будут сохранены и автоматически восстанавливаются после перезагрузки телефона. 
-        \nЕсли вы хотите, чтобы проверить все действующие правила Iptables, выберите Правила <b> Firewall </b> в меню. \n \n 
-        <b> Widget: </b> \nЧтобы быстро включить или выключить брандмауэр, добавьте AFWall + виджета на главном экране. \n \n 
-        <b> Firewall журналов: </b> \nЕсли вы хотите увидеть, какие приложения были заблокированы AFWall +, откройте меню и включить журнал.
-         \nAFWall + затем войти каждого приложения их. Вы можете проверить журнал, открыть меню и выбрать <b> Подробнее -> Показать журнал </b>. 
-         \n \n <b> Пароль замок: </b> \nВы можете установить пароль для блокировки + AFWall с помощью пароля 
-         <b> Set </b> меню. \nЧтобы удалить защиту паролем, просто сбросить ее пустой.
-	</string>
-	<string name="empty"></string>
-	<string name="mode">модуляции </string>
-	<string name="showrules_title">IPtables правил</string>
-	<string name="showlog_title">Брандмауэр журналы</string>
-	<string name="settings_password">Введите Пароль</string>
-	<string name="settings_password2">Введите пароль еще раз</string>
-	<string name="settings_pwd_not_equal">Пароль не совпадает!</string>
-	<string name="settings_pwd_equal">Пароль матчей</string>
-	<string name="export_rules">Экспорт правил</string>
-	
-	<string name="import_rules">Импорт правил</string>
-	<string name="export_rules_success">Экспортируемые успешно в </string>
-	<string name="export_rules_fail">Экспорт правил не удалось!</string>
-	
-	<string name="import_rules_success">Импортные успешно с </string>
-	<string name="import_rules_fail">Импорт правил не удалось!</string>
-	<string name="no_log">Вход Пусто</string>
-	<string name="copy">Копия</string>
-	<string name="copied">Скопированный</string>
-	<string name="Search">Поиск</string>
-	
-	<string name="ifaces">Сетевые интерфейсы</string>
-	<string name="export_logs_fail">Экспорт в SD не удалось!</string>
-	<string name="export_to_sd">Экспорт в SDCard</string>
-	<string name="flushRulesConfirm">Это позволит очистить все Iptables правила! Вы хотите продолжить?</string>
-	<string name="icsJBOnly">Пожалуйста, отмените опцию \"Эксперимент правила для ICS/JB устройств. Его только для ICS/JB устройств</string>
-	<string name="overrideRules">Это позволит изменить существующие правила! Вы хотите, чтобы импортировать правила?</string>
-	<string name="prefLocalmode">Разрешить входящие / исходящие соединения только с локального хоста и порт 22 (SSH)</string>
-	<string name="prefExperimentICSJB">ЭКСПЕРИМЕНТ! Включить только если брандмауэр не работает на ICS / JB устройств!</string>
-	<string name="prefExperimentICSJB_title">Альтернативные правила для ICS / JB устройств</string>
-	<string name="notification_new">Новое приложение установлено.</string>
-	
-	<string name="multipleProfiles">Включение нескольких профилей</string>
-	<string name="defaultProfile">Нарушение Соглашения</string>
-	<string name="profile1">Профиль1</string>
-	<string name="profile2">Профиль2</string>
-	<string name="profile3">Профиль3</string>
-	
-	<string name="defaultProfileSummary">Пользовательское имя для профиля по умолчанию</string>
-	<string name="customProfile1Summary">Пользовательское имя для Профиль1</string>
-	<string name="customProfile2Summary">Пользовательское имя для Профиль2</string>
-	<string name="customProfile3Summary">Пользовательское имя для Профиль3</string>
-	
-	
-	 <string name="enable_firewall_log">Включите брандмауэр Журналы</string>
-	 <string name="confirmMsg">Это будет отключить брандмауэр! Вы хотите продолжить?</string>
-	 <string name="enableConfirmTitle">Подтвердите Box на брандмауэре отключить</string>
+    <string name="help_dialog_text"><i>Разработчик: Umakanthan Chandran (Автор оригинальной программы: Rodrigo Zechin Rosauro (DroidWall))</i>" 
+"<i>Связь - cumakt@gmail.com (@ukanth - Твиттер)</i>" 
+"<a href="https://github.com/ukanth/afwall/"><i>https://github.com/ukanth/afwall/</i></a>" 
+"<i>Спасибо hush66 за иконки (http://hush66.deviantart.com/)</i>" 
+ 
+"<i>AFWall+</i> - это мощное приложение-брандмауэр для Linux, позволяющее задать правила для разрешения или запрета приложениям доступа к сети. 
+Отличное решение для пользователей у которых нет безлимитного тарифного плана для доступа к сети, или тех, кто хочет продлить срок жизни устройства от батареи. 
+ 
+"<b>Использование AFWall+:</b>"
+"<b>1.</b> Нажмите <b>Режим</b> для переключения между режимами <i>Белого</i> и <i>Черного</i> списков".
+"<b>2.</b>" Выделите приложения которым вы хотите запретить/разрешить (в завиимости от выбранного режима), доступ к сети для каждого интерфейса. 
+"<b>3.</b> В меню включите брандмауэр. Если брандмауэр уже включен, выберите <b>Применить</b>". 
+Правила будут сохранены и автоматически восстановлены после перезагрузки устройства. 
+Для просмотра действующих правил iptables, выберите в меню "<b>Правила</b>". 
+ 
+"<b>Виджет:</b>" 
+Для быстрого включения/выключения брандмауэра, добавьте виджет AFWall+ на экран. 
+ 
+"<b>Логи брандмауэра:</b>" 
+AFWall+ записывает в лог все заблокированные приложения пытавшиеся установить интернет соединение. 
+Для просмотра приложений заблокированных AFWall+, выберите в меню <b>Логи брандмауэра</b>. 
+ 
+"<b>Блокировка паролем:</b>" 
+Для включения блокировки AFWall+ паролем, выберите пункт меню "<b>Установить пароль</b>". 
+Для отключения блокировки оставьте поле ввода пароля пустым."</string>
+    <string name="empty" />
+    <string name="mode">Режим:</string>
+    <string name="showrules_title">Правила iptables</string>
+    <string name="showlog_title">Логи брандмауэра</string>
+    <string name="settings_password">Введите пароль</string>
+    <string name="settings_password2">Введите пароль еще раз</string>
+    <string name="settings_pwd_not_equal">"Пароль не совпадает"</string>
+    <string name="settings_pwd_equal">Пароль совпадает</string>
+    <string name="export_rules">Экспортировать правила</string>
+    <string name="import_rules">Импортировать правила</string>
+    <string name="export_rules_success">Правила успешно экспортированы в</string>
+    <string name="export_rules_fail">Ошибка экспорта правил!</string>
+    <string name="import_rules_success">Правила успешно импортированы из</string>
+    <string name="import_rules_fail">Ошибка импорта правил!</string>
+    <string name="no_log">Лог пуст</string>
+    <string name="copy">Копировать</string>
+    <string name="copied">Скопировано</string>
+    <string name="Search">Поиск</string>
+    <string name="ifaces">Сетевые интерфейсы</string>
+    <string name="export_logs_fail">Ошибка экспорта на карту памяти!</string>
+    <string name="export_to_sd">Экспорт на карту памяти</string>
+    <string name="flushRulesConfirm">Будут применены заданные правила iptables! Продолжить?</string>
+    <string name="icsJBOnly">"Пожалуйста, выберите опцию 'Альтернативные правила для ICS/JB устройств'. Только для ICS/JB устройств"</string>
+    <string name="overrideRules">При импорте существующие правила буду перезаписаны! Продолжить?</string>
+    <string name="prefLocalmode">Разрешить входящие/исходящие подключения только с порта 22 (ssh) от localhost</string>
+    <string name="prefExperimentICSJB">ЭКСПЕРИМЕНТАЛЬНО! Включайте только если брандмауэр некорректно работает на ICS/JB устройствах!</string>
+    <string name="prefExperimentICSJB_title">Альтернативные правила</string>
+    <string name="notification_new">Установлено новое приложение.</string>
+    <string name="multipleProfiles">Мультипрофильный режим</string>
+    <string name="defaultProfile">Профиль по умолчанию</string>
+    <string name="profile1">Профиль 1</string>
+    <string name="profile2">Профиль 2</string>
+    <string name="profile3">Профиль 3</string>
+    <string name="defaultProfileSummary">Задать имя для профиля по умолчанию</string>
+    <string name="customProfile1Summary">Задать имя для профиля 1</string>
+    <string name="customProfile2Summary">Задать имя для профиля 2</string>
+    <string name="customProfile3Summary">Задать имя для профиля 3</string>
+    <string name="enable_firewall_log">Включить ведение лога</string>
+    <string name="confirmMsg">Вы действительно хотите отключить брандмауэр?</string>
+    <string name="enableConfirmTitle">Подтверждать отключение</string>
 </resources>
