@@ -102,7 +102,7 @@ public class StatusWidget extends AppWidgetProvider {
 							return;
 						}
 					}
-					Api.setEnabled(context, enabled);
+					Api.setEnabled(context, enabled, false);
 				}
 			}.start();
 		}

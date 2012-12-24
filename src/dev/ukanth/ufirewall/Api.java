@@ -180,12 +180,7 @@ public final class Api {
 					msg.setLayoutGravity(Gravity.BOTTOM);
 					msg.setDuration(AppMsg.LENGTH_SHORT);
 					msg.show();	
-				} else {
-					new AlertDialog.Builder(ctx)
-		        	.setNeutralButton(android.R.string.ok, null)
-		        	.setMessage(msgText)
-		        	.show();
-				}
+				} 
 			} else{
 				new AlertDialog.Builder(ctx)
 	        	.setNeutralButton(android.R.string.ok, null)
@@ -363,6 +358,7 @@ public final class Api {
 				customScript = customScript.replace("$IPTABLES", " "+ ipPath );
 				script.append(customScript);
 			}
+			
 			
 			//workaround for some ICS/JB devices 
 			if(getIptablesVersion() > 1410) {
@@ -657,7 +653,7 @@ public final class Api {
 	    	}
 			int code = runScriptAsRoot(ctx, script.toString(), res);
 			if (code == -1) {
-				alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res, TOASTTYPE.ERROR);
+				if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res, TOASTTYPE.ERROR);
 				return false;
 			}
 			return true;
@@ -690,7 +686,7 @@ public final class Api {
 	public static boolean clearLog(Context ctx) {
 		try {
 			final StringBuilder res = new StringBuilder();
-			int code = runScriptAsRoot(ctx, "dmesg -c >/dev/null || exit\n", res);
+			int code = runScriptAsRoot(ctx, getBusyBoxPath(ctx) + " dmesg -c >/dev/null || exit\n", res);
 			if (code != 0) {
 				alert(ctx, res,TOASTTYPE.INFO);
 				return false;
@@ -729,7 +725,7 @@ public final class Api {
     		String busybox = getBusyBoxPath(ctx);
 			String grep = busybox + " grep";
     		
-			int code = runScriptAsRoot(ctx, "dmesg | " + grep +" AFWALL\n",  res);
+			int code = runScriptAsRoot(ctx, getBusyBoxPath(ctx) + "dmesg | " + grep +" AFWALL\n",  res);
 			//int code = runScriptAsRoot(ctx, "cat /proc/kmsg", res);
 			if (code != 0) {
 				if (res.length() == 0) {
@@ -1086,8 +1082,9 @@ public final class Api {
 		} catch (RejectedExecutionException r) {
 			Log.d("Exception", "Caught RejectedExecutionException");
 		} catch (InterruptedException e) {
+			Log.d("Exception", "Caught InterruptedException");
 		} catch (ExecutionException e) {
-			Log.d("Exception", "Caught RejectedExecutionException");
+			Log.d("Exception", "Caught ExecutionException");
 		}
 		return returnCode;
 	}
@@ -1147,7 +1144,7 @@ public final class Api {
 				copyRawFile(ctx, R.raw.busybox_g1, file, "755");
 				changed = true;
 			}
-			if (changed) {
+			if (changed && showErrors) {
 				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
 			}
 		} catch (Exception e) {
@@ -1185,7 +1182,7 @@ public final class Api {
 	 * @param ctx mandatory context
 	 * @param enabled enabled flag
 	 */
-	public static void setEnabled(Context ctx, boolean enabled) {
+	public static void setEnabled(Context ctx, boolean enabled, boolean showErrors) {
 		if (ctx == null) return;
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREF_FIREWALL_STATUS,Context.MODE_PRIVATE);
 		if (prefs.getBoolean(PREF_ENABLED, false) == enabled) {
@@ -1194,7 +1191,7 @@ public final class Api {
 		final Editor edit = prefs.edit();
 		edit.putBoolean(PREF_ENABLED, enabled);
 		if (!edit.commit()) {
-			alert(ctx, ctx.getString(R.string.error_write_pref),TOASTTYPE.ERROR);
+			if(showErrors)alert(ctx, ctx.getString(R.string.error_write_pref),TOASTTYPE.ERROR);
 			return;
 		}
 		/* notify */

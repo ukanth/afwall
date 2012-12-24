@@ -39,7 +39,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -709,7 +708,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(this);
 		Log.d("AFWall+", "Changing enabled status to: " + enabled);
-		Api.setEnabled(this, enabled);
+		Api.setEnabled(this, enabled,true);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		if (enabled) {
 			final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
@@ -749,7 +748,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	           .setNegativeButton("No", new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   //cancel. reset to the default enable state
-	            	   Api.setEnabled(getApplicationContext(), true);
+	            	   Api.setEnabled(getApplicationContext(), true, true);
 	                   return;
 	               }
 	           }).show();
@@ -925,10 +924,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
 							item_apply.setTitle(R.string.applyrules);
 						}
-						Api.setEnabled(getApplicationContext(), true);
+						Api.setEnabled(getApplicationContext(), true, true);
 					} else {
 						Log.d("AFWall+", "Failed - Disabling firewall.");
-						Api.setEnabled(MainActivity.this, false);
+						Api.setEnabled(MainActivity.this, false, true);
 						getSupportActionBar().setIcon(R.drawable.widget_off);
 						if(mainMenu !=null) {
 							final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
@@ -941,7 +940,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				} else {
 					Log.d("AFWall+", "Saving rules.");
 					Api.saveRules(MainActivity.this);
-					Api.setEnabled(getApplicationContext(), false);
+					Api.setEnabled(getApplicationContext(), false, true);
 					displayToasts(MainActivity.this, R.string.rules_saved,
 							Toast.LENGTH_SHORT);
 				}
@@ -967,7 +966,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 				if (!Api.hasRootAccess(MainActivity.this,true)) return;
 				if (Api.purgeIptables(MainActivity.this, true)) {
-					Api.setEnabled(getApplicationContext(), false);
+					Api.setEnabled(getApplicationContext(), false, true);
 					displayToasts(MainActivity.this, R.string.rules_deleted,
 							Toast.LENGTH_SHORT);
 					getSupportActionBar().setIcon(R.drawable.widget_off);
@@ -1217,7 +1216,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		return true;
 	}
-	
 
 }
 

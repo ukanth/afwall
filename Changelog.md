@@ -4,6 +4,13 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.1.5
+* New Busybox binary (atleast I feel little faster loading on logs ) compiled from latest busybox source . This is packed with handpicked additional and useful busybox commands which will be used in the future versions of AFWall+ to build more advance features ! Stay tuned 
+* Fixed issue with widget size 1x1 on newer devices
+* Fixed issue with firewall rules not applying before shutdown to prevent leak.
+* Fixed Force close on many devices while opening application.
+* Fixed Force close on some devices when alert message is displayed.
+
 Version 1.1.4
 * Replace su library with RootTools, much faster and stable!
 * Improved detection logic for iptables for ICS/JS devices and removed EXPERIMENTAL option from preferences.	
