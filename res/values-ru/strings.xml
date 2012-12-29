@@ -17,7 +17,7 @@
     <string name="abs__searchview_description_voice">Голосовой поиск</string>
     <string name="ringtone_silent">Silent</string>
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.1.3</string>
+    <string name="app_version">1.1.5</string>
     <string name="title_enabled">AFWall+</string>
     <string name="title_disabled">AFWall+ (отключено)</string>
     <string name="whitelist_array_item">Белый список (разрешить выбранные)</string>

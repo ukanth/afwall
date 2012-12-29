@@ -40,7 +40,6 @@ import android.widget.Toast;
  * ON/OFF Widget implementation
  */
 public class StatusWidget extends AppWidgetProvider {
-
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		super.onReceive(context, intent);
@@ -78,7 +77,7 @@ public class StatusWidget extends AppWidgetProvider {
 								.show();
 				}
 			};
-			// Start a new thread to change the firewall - this prevents ANR
+			// prevents ANR
 			new Thread() {
 				@Override
 				public void run() {
@@ -90,7 +89,6 @@ public class StatusWidget extends AppWidgetProvider {
 						} else {
 							msg.arg1 = R.string.toast_error_enabling;
 							toaster.sendMessage(msg);
-							return;
 						}
 					} else {
 						if (Api.purgeIptables(context, false)) {
@@ -99,12 +97,12 @@ public class StatusWidget extends AppWidgetProvider {
 						} else {
 							msg.arg1 = R.string.toast_error_disabling;
 							toaster.sendMessage(msg);
-							return;
 						}
 					}
 					Api.setEnabled(context, enabled, false);
 				}
 			}.start();
+
 		}
 	}
 

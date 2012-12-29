@@ -26,12 +26,14 @@
 package dev.ukanth.ufirewall;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
@@ -46,7 +48,6 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,10 +76,8 @@ import android.view.Gravity;
 import android.widget.Toast;
 
 import com.devspark.appmsg.AppMsg;
-import com.stericson.RootTools.Command;
-import com.stericson.RootTools.CommandCapture;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.Shell;
+
+import eu.chainfire.libsuperuser.Shell;
 
 /**
  * Contains shared programming interfaces.
@@ -210,52 +209,13 @@ public final class Api {
 			"BUSYBOX="+mybusybox+"\n" +
 			"";
 	}
-	static String scriptHeader(Context ctx) {
-		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		final String myiptables = dir + "/iptables_armv5";
-		final String mybusybox = dir + "/busybox_g1";
-		return "" +
-			"IPTABLES="+ myiptables + "\n" +
-			"BUSYBOX="+mybusybox+"\n" +
-			"GREP=grep\n" +
-			"ECHO=echo\n" +
-			"# Try to find busybox\n" +
-			"if " + dir + "/busybox_g1 --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX="+dir+"/busybox_g1\n" +
-			"	GREP=\"$BUSYBOX grep\"\n" +
-			"	ECHO=\"$BUSYBOX echo\"\n" +
-			"elif busybox --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX=busybox\n" +
-			"elif /system/xbin/busybox --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX=/system/xbin/busybox\n" +
-			"elif /system/bin/busybox --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX=/system/bin/busybox\n" +
-			"fi\n" +
-			"# Try to find grep\n" +
-			"if ! $ECHO 1 | $GREP -q 1 >/dev/null 2>/dev/null ; then\n" +
-			"	if $ECHO 1 | $BUSYBOX grep -q 1 >/dev/null 2>/dev/null ; then\n" +
-			"		GREP=\"$BUSYBOX grep\"\n" +
-			"	fi\n" +
-			"	# Grep is absolutely required\n" +
-			"	if ! $ECHO 1 | $GREP -q 1 >/dev/null 2>/dev/null ; then\n" +
-			"		$ECHO The grep command is required. AFWall+ will not work.\n" +
-			"		exit 1\n" +
-			"	fi\n" +
-			"fi\n" +
-			"# Try to find iptables\n" +
-			"if " + myiptables + " --version >/dev/null 2>/dev/null ; then\n" +
-			"	IPTABLES="+myiptables+"\n" +
-			"fi\n" +
-			"";
-	}
-	
 	static void setIpTablePath(Context ctx) {
 		if(ipPath == null) {
-			int version = getIptablesVersion();
+			int	ipVersion = getIptablesVersion(ctx);
 			final String dir = ctx.getDir("bin",0).getAbsolutePath();
 			final String defaultPath = "iptables ";
 			final String myiptables = dir + "/iptables_armv5 ";
-			if(version > 1410) {
+			if(ipVersion > 1410) {
 				Api.ipPath = defaultPath;
 			} else {
 				Api.ipPath = myiptables;
@@ -300,7 +260,7 @@ public final class Api {
      * @param uids3g list of selected UIDs for 2G/3G to allow or disallow (depending on the working mode)
      * @param showErrors indicates if errors should be alerted
      */
-	private static boolean applyIptablesRulesImpl(Context ctx, List<Integer> uidsWifi, List<Integer> uids3g, List<Integer> uidsRoam, boolean showErrors) {
+	private static boolean applyIptablesRulesImpl(final Context ctx, List<Integer> uidsWifi, List<Integer> uids3g, List<Integer> uidsRoam, final boolean showErrors) {
 		if (ctx == null) {
 			return false;
 		}
@@ -314,8 +274,7 @@ public final class Api {
 		ITFS_3G.add("pdp+");//ITFS_3G.add("pnp+");
 		ITFS_3G.add("rmnet_sdio+");ITFS_3G.add("uwbr+");ITFS_3G.add("wimax+");ITFS_3G.add("vsnet+");ITFS_3G.add("ccmni+");
 		ITFS_3G.add("rmnet1+");ITFS_3G.add("rmnet_sdio1+");ITFS_3G.add("qmi+");ITFS_3G.add("wwan0+");ITFS_3G.add("svnet0+");ITFS_3G.add("rmnet_sdio0+");
-		ITFS_3G.add("cdma_rmnet+"); ITFS_3G.add("rmnet0+");
-		ITFS_3G.add("usb+");
+		ITFS_3G.add("cdma_rmnet+"); ITFS_3G.add("rmnet0+");ITFS_3G.add("usb+");ITFS_3G.add("usb0+");
 
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
@@ -355,13 +314,12 @@ public final class Api {
 				);
 			}
 			if (customScript.length() > 0) {
-				customScript = customScript.replace("$IPTABLES", " "+ ipPath );
-				script.append(customScript);
+				customScript = customScript.replace("$IPTABLES", " "+ ipPath ).replace("\\", "");
+				script.append(customScript + "\n");
 			}
 			
-			
 			//workaround for some ICS/JB devices 
-			if(getIptablesVersion() > 1410) {
+			if(getIptablesVersion(ctx) > 1410) {
 				script.append(
 						ipPath + " -D OUTPUT -j afwall\n" +
 						ipPath + " -I OUTPUT 2 -j afwall\n"
@@ -371,7 +329,7 @@ public final class Api {
 			/*boolean isLocalhost = appprefs.getBoolean("allowOnlyLocalhost",false);
 			if(isLocalhost) {
 				
-				script.append(
+				script.add(
 						ipPath + " -P INPUT DROP\n" +
 						ipPath + " -P OUTPUT ACCEPT\n" +
 						ipPath + " -P FORWARD DROP\n" +
@@ -465,10 +423,9 @@ public final class Api {
 				script.append("# Allow DNS lookups on white-list for a better logging (ignore errors)\n");
 				script.append(ipPath + " -A afwall -p udp --dport 53 -j RETURN\n");
 			}*/
-			
 	    	final StringBuilder res = new StringBuilder();
 			code = runScriptAsRoot(ctx, script.toString(), res);
-			if (showErrors && code == -1) {
+			if (showErrors && code != 0) {
 				String msg = res.toString();
 				Log.e("AFWall+", msg);
 				// Remove unnecessary help message from output
@@ -480,6 +437,7 @@ public final class Api {
 				return true;
 			}
 		} catch (Exception e) {
+			Log.d("Exception while applying rules in dev.ukath.ufirewall" , e.getMessage());
 			if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e, TOASTTYPE.ERROR);
 		}
 		return false;
@@ -505,7 +463,6 @@ public final class Api {
 							}
 						}
 						// add logic here
-						
 					} catch (NameNotFoundException ex) {
 						Log.d("AFWALL+", "Missing pkg:" + pkgName);
 					} catch (Exception ex) {
@@ -567,6 +524,7 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
+		Log.d("in applySavedIptablesRules AFWall+", "Context:" + ctx);
 		initSpecial();
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
@@ -648,8 +606,8 @@ public final class Api {
 					ipPath + " -F afwall-wifi\n" 
 	    			);
 	    	if (customScript.length() > 0) {
-	    		customScript = customScript.replace("$IPTABLES", " "+ ipPath );
-	    		script.append(customScript);
+	    		customScript = customScript.replace("$IPTABLES", " "+ ipPath ).replace("\\", "");
+	    		script.append(customScript + "\n");
 	    	}
 			int code = runScriptAsRoot(ctx, script.toString(), res);
 			if (code == -1) {
@@ -1031,30 +989,16 @@ public final class Api {
 		protected Integer doInBackground(Object... params) {
 			final String script = (String) params[0];
 			final StringBuilder res = (StringBuilder) params[1];
+
 			try {
-				if(!RootTools.isAccessGiven()) return exitCode;
+				if(!Shell.SU.available()) return exitCode;
 				if (script != null && script.length() > 0) {
-					List<String> commands = Arrays.asList(script.split("\n"));
-					Shell shell = RootTools.getShell(true);
-					CommandCapture command;
-					Command rootcommend;
-					if (commands.size() == 1) {
-						rootcommend = new Command(0, commands.get(0)) {
-							@Override
-							public void output(int id, String line) {
-								res.append(line);	
-								res.append("\n");
-							}
-						};
-						RootTools.getShell(true).add(rootcommend).waitForFinish();
-					} else {
-						for (String cmdStr : commands) {
-							if(cmdStr != null && cmdStr.length() > 0){
-								command = new CommandCapture(0, cmdStr);
-								shell.add(command);	
-							}
+					List<String> output = Shell.SU.run(script.split("\n"));
+					if (output != null && output.size() > 0) {
+						for (String str : output) {
+							res.append(str);
+							res.append("\n");
 						}
-						Shell.startRootShell();
 					}
 					exitCode = 0;
 				}
@@ -1076,6 +1020,7 @@ public final class Api {
      */
 	public static int runScript(Context ctx, String script, StringBuilder res, long timeout, boolean asroot) {
 		int returnCode = -1;
+		Log.d("In the runScript mode", "Message-None");
 		try {
 			returnCode = new RunCommand().execute(script, res)
 					.get();
@@ -1174,7 +1119,9 @@ public final class Api {
 	 */
 	public static boolean isEnabled(Context ctx) {
 		if (ctx == null) return false;
-		return ctx.getSharedPreferences(PREF_FIREWALL_STATUS, Context.MODE_PRIVATE).getBoolean(PREF_ENABLED, false);
+		boolean flag = ctx.getSharedPreferences(PREF_FIREWALL_STATUS, Context.MODE_PRIVATE).getBoolean(PREF_ENABLED, false);
+		Log.d("Checking for IsEnabled in AFWall+", "Flag:" + flag);
+		return flag;
 	}
 	
 	/**
@@ -1335,66 +1282,6 @@ public final class Api {
 	}
 	
 	
-	/**
-	 * Internal thread used to execute scripts (as root or not).
-	 */
-	/*private static final class ScriptRunner extends Thread {
-		private final String script;
-		private String customScript;
-		private final StringBuilder res;
-		public int exitcode = -1;
-		
-		public ScriptRunner(String script, String customScript, StringBuilder res, boolean asroot) {
-			this.script = script;
-			this.customScript = customScript;
-			this.res = res;
-		}
-		@Override
-		public void run() {
-			try {
-				if(script != null && script.length() > 0) {
-					List<String> commands = Arrays.asList(script.split("\n"));
-					List<String> output = null;
-					output = Shell.SU.run(commands);
-					if(output !=null && output.size() > 0) {
-						for(String str:output) {
-							res.append(str);
-							res.append("\n");
-						}
-					}
-					exitcode = 0;
-					if(customScript != null && customScript.length() > 0){
-						customScript = customScript.trim();
-						//treat as a script file
-						File file = new File(customScript);
-						if(file.exists()){
-							StringBuffer fileContent = new StringBuffer("");
-							try {
-								FileInputStream in = new FileInputStream(file);
-								int len = 0;
-								byte[] data1 = new byte[1024];
-								while (-1 != (len = in.read(data1))) {
-									 fileContent.append(new String(data1, 0, len)+"\n");
-								}
-								String fileCommands = fileContent.toString();
-								customScript = fileCommands.replace("$IPTABLES", " "+ ipPath );
-								commands = Arrays.asList(customScript.split("\n"));
-								Shell.SU.run(commands);
-							} catch (FileNotFoundException e) {
-								
-							}
-						} else {
-							customScript = customScript.replace("$IPTABLES", " "+ ipPath );
-							commands = Arrays.asList(customScript.split("\n"));
-							Shell.SU.run(commands);
-						}
-					}
-				}
-			} catch (Exception ex) {
-				if (res != null) res.append("\n" + ex);
-			} 
-		}
-	}*/
 	
 	public static boolean clearRules(Context ctx) throws IOException{
 		final StringBuilder res = new StringBuilder();
@@ -1410,17 +1297,44 @@ public final class Api {
 		return true;
 	}
 	
+	public void RunAsRoot(List<String> cmds) throws IOException{
+        Process p = Runtime.getRuntime().exec("su");
+        DataOutputStream os = new DataOutputStream(p.getOutputStream());            
+        for (String tmpCmd : cmds) {
+                os.writeBytes(tmpCmd+"\n");
+        }           
+        os.writeBytes("exit\n");  
+        os.flush();
+	}
+	
+	
+	public static String runSUCommand(String cmd) throws IOException {
+		final StringBuilder res = new StringBuilder();
+		Process p  = Runtime.getRuntime().exec(
+				new String[] { "su", "-c", cmd });
+		BufferedReader stdout = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String tmp;
+		while ((tmp = stdout.readLine()) != null) {
+			res.append(tmp);
+			res.append(",");
+		}
+		// use inputLine.toString(); here it would have whole source
+		stdout.close();
+		return res.toString();
+	}
+	
 	public static boolean applyRulesBeforeShutdown(Context ctx) {
 		final StringBuilder res = new StringBuilder();
-		StringBuilder script = new StringBuilder();
-		setIpTablePath(ctx);
-		script.append(ipPath + " -F\n");
-		script.append(ipPath + " -X\n");
-		script.append(ipPath + " -P INPUT DROP\n");
-		script.append(ipPath + " -P OUTPUT DROP\n");
-		script.append(ipPath + " -P FORWARD DROP\n");
+		final StringBuilder script = new StringBuilder();
+		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
+		final String myiptables = dir + "/iptables_armv5 ";
+		script.append(myiptables + " -F\n");
+		script.append(myiptables + " -X\n");
+		script.append(myiptables + " -P INPUT DROP\n");
+		script.append(myiptables + " -P OUTPUT DROP\n");
+		script.append(myiptables + " -P FORWARD DROP\n");
 		try {
-			runScriptAsRoot(ctx, script.toString(),res);
+			runScriptAsRoot(ctx, script.toString(), res);
 		} catch (IOException e) {
 		}
 		return true;
@@ -1480,30 +1394,7 @@ public final class Api {
 	    }
 	    return res;
 	}
-	
-/*	public static void loadSharedPreferencesToFileConfirm(final Context ctx) {
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-		builder.setMessage("This will override the existing rules ! Do you want to import the rules ? ")
-		       .setCancelable(false)
-		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		        	   if(loadSharedPreferencesFromFile(ctx)){
-		        		   alert(ctx, ctx.getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-		        	   } else {
-		   					Api.alert(ctx, ctx.getString(R.string.import_rules_fail) );
-		   				}
-		           }
-		       })
-		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                dialog.cancel();
-		           }
-		       });
-		AlertDialog alert = builder.create();
-		alert.show();
-	}*/
-	
+
 
 	@SuppressWarnings("unchecked")
 	public static boolean loadSharedPreferencesFromFile(Context ctx) {
@@ -1555,57 +1446,42 @@ public final class Api {
 		return res;
 	}
 	
-	public static int getIptablesVersion(){
-		final StringBuffer inputLine = new StringBuffer();
-		int number = 0;
-		Command command = new Command(0, "iptables --version") {
-			@Override
-			public void output(int id, String line) {
-				inputLine.append(line);
-			}
-		};
+	public static int getIptablesVersion(Context ctx){
 		try {
-			RootTools.getShell(true).add(command).waitForFinish();
-			Pattern pattern = Pattern.compile("[0-9]+(\\.[0-9]+)+$");
-			Matcher matcher = pattern.matcher(inputLine.toString());
-			String numberStr = null;
-			while (matcher.find()) {
-				numberStr = matcher.group();
+			final StringBuilder res = new StringBuilder();
+			runScriptAsRoot(ctx, "iptables --version\n", res);
+			int number = 0;
+			try {
+				String inputLine = res.toString();
+				Pattern pattern = Pattern.compile("[0-9]+(\\.[0-9]+)+$");
+				Matcher matcher = pattern.matcher(inputLine.toString());
+				String numberStr = null;
+				while (matcher.find()) {
+					numberStr = matcher.group();
+				}
+				if (numberStr != null) {
+					number = Integer.parseInt(numberStr.replace(".", ""));
+				}
+				return number;
+			} catch (Exception e) {
+				Log.d("Exception", e.getLocalizedMessage());
 			}
-			if (numberStr != null) {
-				number = Integer.parseInt(numberStr.replace(".", ""));
-			}
-		} catch (InterruptedException e1) {
-			Log.d("InterruptedException", e1.getLocalizedMessage());
-		} catch (IOException e1) {
-			Log.d("IOException", e1.getLocalizedMessage());
-		} catch (TimeoutException e1) {
-			Log.d("TimeoutException", e1.getLocalizedMessage());
-		} catch (Exception e){
-			Log.d("Exception", e.getLocalizedMessage());
+
+		} catch (Exception e) {
+			alert(ctx, "error: " + e, TOASTTYPE.ERROR);
 		}
+		return 0;
 		
-		return number;
 	}
 	
 	public static String showIfaces() {
-		
-		final StringBuffer inputLine = new StringBuffer();
-		Command command = new Command(0, "ls /sys/class/net") {
-			@Override
-			public void output(int id, String line) {
-				inputLine.append(line);
-				inputLine.append(",");
-			}
-		};
+		String output = null;
 		try {
-			RootTools.getShell(true).add(command).waitForFinish();
-		} catch (InterruptedException e1) {
+			output = runSUCommand("ls /sys/class/net");
 		} catch (IOException e1) {
-		} catch (TimeoutException e1) {
+			Log.d("IOException", e1.getLocalizedMessage());
 		}
-		String output = inputLine.toString();
-		if(output !=null) {
+		if (output != null) {
 			output = output.replace(" ", ",");
 		}
 		return output;
@@ -1638,14 +1514,14 @@ public final class Api {
 	public static boolean hasRootAccess(Context ctx, boolean showErrors) {
 		if (isRooted)
 			return true;
+		final StringBuilder res = new StringBuilder();
 		try {
 			// Run an empty script just to check root access
-			if (RootTools.isAccessGiven()) {
+			if (runScriptAsRoot(ctx, "exit 0\n", res) == 0) {
 				isRooted = true;
 				return true;
 			}
 		} catch (Exception e) {
-			alert(ctx, ctx.getString(R.string.error_su), TOASTTYPE.ERROR);
 		}
 		if (showErrors) {
 			alert(ctx, ctx.getString(R.string.error_su), TOASTTYPE.ERROR);

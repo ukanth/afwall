@@ -94,7 +94,7 @@
             android:theme="@style/Theme.Sherlock"  >
         </activity>
         
-        <activity android:label="@string/showrules_title" android:name=".Rules">
+        <activity android:label="@string/showrules_title" android:name="dev.ukanth.ufirewall.Rules">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
@@ -106,8 +106,8 @@
         <receiver
             android:name="dev.ukanth.ufirewall.BootBroadcast">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" >
-                </action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
         
@@ -143,6 +143,8 @@
             </intent-filter>
 
         </receiver>
+        
+         <service android:name="dev.ukanth.ufirewall.BackgroundIntentService"></service>
         
         </application>
 

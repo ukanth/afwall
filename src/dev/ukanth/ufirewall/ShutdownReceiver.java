@@ -31,8 +31,7 @@ public class ShutdownReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, Intent intent) {
 		if (Intent.ACTION_SHUTDOWN.equals(intent.getAction())) {
-			Api.applyRulesBeforeShutdown(context);
+			Api.applyRulesBeforeShutdown(context.getApplicationContext());
 		}
-
 	}
 }

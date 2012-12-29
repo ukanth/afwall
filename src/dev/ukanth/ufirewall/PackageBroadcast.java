@@ -103,7 +103,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(ns);
 
-		int icon = R.drawable.icon;
+		int icon = R.drawable.notification_icon;
 		CharSequence tickerText = "Open AFWall+";
 		long when = System.currentTimeMillis();
 

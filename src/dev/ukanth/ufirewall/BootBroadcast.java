@@ -26,42 +26,23 @@ package dev.ukanth.ufirewall;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.Toast;
 
 /**
  * Broadcast receiver that set iptables rules on system startup. This is
  * necessary because the rules are not persistent.
  */
 public class BootBroadcast extends BroadcastReceiver {
+	// private Handler mHandler = new Handler(Looper.getMainLooper());
+
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-			if (Api.isEnabled(context)) {
-	        	final Handler toaster = new Handler() {
-	        		public void handleMessage(Message msg) {
-	        			if (msg.arg1 != 0) Toast.makeText(context, msg.arg1, Toast.LENGTH_SHORT).show();
-	        		}
-	        	};
-	        	new AsyncTask<Void, Void, Void>() {
-					@Override
-					protected Void doInBackground(Void... params) {
-						if (!Api.applySavedIptablesRules(context, false)) {
-							// Error enabling firewall on boot
-		        			final Message msg = new Message();
-		        			msg.arg1 = R.string.toast_error_enabling;
-		        			toaster.sendMessage(msg);
-							Api.setEnabled(context, false,false);
-						}
-						return null;
-					}
-
-				}.execute();
-				// Start a new thread to enable the firewall - this prevents ANR
-			}
-		}
+			/*if (Api.isEnabled(context.getApplicationContext())) {
+				if (!Api.applySavedIptablesRules(
+						context.getApplicationContext(), false)) {
+					Api.setEnabled(context.getApplicationContext(), false,
+							false);
+				}
+			}*/
+			BackgroundIntentService.performAction(context, BackgroundIntentService.ACTION_BOOT_COMPLETE);
 	}
-
 }

@@ -22,5 +22,6 @@
 	</LinearLayout>
 	
 	<ListView android:layout_width="wrap_content" android:fastScrollEnabled="true" android:layout_height="wrap_content" android:id="@+id/listview"></ListView>
+	<ListView android:layout_width="wrap_content" android:fastScrollEnabled="true" android:layout_height="wrap_content" android:id="@+id/listview2"></ListView>
 	
 </LinearLayout>

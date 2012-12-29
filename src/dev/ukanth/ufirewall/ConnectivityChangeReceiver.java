@@ -26,22 +26,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
 	@Override
-	public void onReceive(Context context, Intent intent) {
-		ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo[] ni = cm.getAllNetworkInfo();
-		for(NetworkInfo info: ni) {
-			if ( ni != null )
-			{
-			    if (info.getType() == ConnectivityManager.TYPE_MOBILE)
-			        if (info.isConnectedOrConnecting() && info.isRoaming()) {
-			        	Api.applyIptablesRules(context, false);        	
-			        }
-			            
-			}	
+	public void onReceive(final Context context, Intent intent) {
+		try {
+
+			ConnectivityManager cm = (ConnectivityManager) context
+					.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo[] ni = cm.getAllNetworkInfo();
+			for (NetworkInfo info : ni) {
+				if (ni != null) {
+					if (info.getType() == ConnectivityManager.TYPE_MOBILE)
+						if (info.isConnectedOrConnecting() && info.isRoaming()) {
+							Api.applyIptablesRules(context, false);
+						}
+				}
+			}
+		} catch (Exception e) {
+			Log.d("Exception in ConnectivityChangeReceiver",
+					e.getLocalizedMessage());
 		}
 	}
 }

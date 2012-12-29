@@ -134,6 +134,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_roam).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
+			//this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			
@@ -369,8 +370,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 	}
 	
-
-
 	/**
 	 * Show the list of applications
 	 */
@@ -1031,6 +1030,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case R.id.img_reset:
 			clearAll();
 			break;
+		//case R.id.img_invert:
+		//	revertApplications();
+		//	break;
 		}
 	}
 	
