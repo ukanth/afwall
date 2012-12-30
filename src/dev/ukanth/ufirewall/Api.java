@@ -123,7 +123,7 @@ public final class Api {
 	//private static final int BUFF_LEN = 0;
 	
 	// Cached applications
-	public static DroidApp applications[] = null;
+	public static PackageInfoData applications[] = null;
 
 	static enum TOASTTYPE {
 		ERROR, INFO, MESSAGE
@@ -554,7 +554,7 @@ public final class Api {
 	 */
 	public static void saveRules(Context ctx) {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		final DroidApp[] apps = getApps(ctx);
+		final PackageInfoData[] apps = getApps(ctx);
 		// Builds a pipe-separated list of names
 		final StringBuilder newpkg_wifi = new StringBuilder();
 		final StringBuilder newpkg_3g = new StringBuilder();
@@ -721,7 +721,7 @@ public final class Api {
 					}
 				}
 			}
-			final DroidApp[] apps = getApps(ctx);
+			final PackageInfoData[] apps = getApps(ctx);
 			Integer id;
 			String appName = "";
 			int appId = -1;
@@ -730,7 +730,7 @@ public final class Api {
 				StringBuilder address = new StringBuilder();
 				   id = map.keyAt(i);
 				   if (id != unknownUID) {
-						for (DroidApp app : apps) {
+						for (PackageInfoData app : apps) {
 							if (app.uid == id) {
 								appId = id;
 								appName = app.names[0];
@@ -816,14 +816,24 @@ public final class Api {
 		}
 	  }*/
 
+	static <T> List<List<T>> splitListForPerformance(List<T> list, final int L) {
+	    List<List<T>> parts = new ArrayList<List<T>>();
+	    final int N = list.size();
+	    for (int i = 0; i < N; i += L) {
+	        parts.add(new ArrayList<T>(
+	            list.subList(i, Math.min(N, i + L)))
+	        );
+	    }
+	    return parts;
+	}
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
      */
-	public static DroidApp[] getApps(Context ctx) {
-		initSpecial();
+	public static PackageInfoData[] getApps(Context ctx) {
 		if (applications != null) {
 			// return cached instance
+			initSpecial();
 			return applications;
 		}
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -842,6 +852,8 @@ public final class Api {
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(0);
+			
+			List<List<ApplicationInfo>> parts = splitListForPerformance(installed, 5);
 			/*
 				0 - Root
 				1000 - System
@@ -874,12 +886,12 @@ public final class Api {
 
 			 
 			 */
-			final HashMap<Integer, DroidApp> map = new HashMap<Integer, DroidApp>();
+			final HashMap<Integer, PackageInfoData> map = new HashMap<Integer, PackageInfoData>();
 			final Editor edit = prefs.edit();
 			boolean changed = false;
 			String name = null;
 			String cachekey = null;
-			DroidApp app = null;
+			PackageInfoData app = null;
 			for (final ApplicationInfo apinfo : installed) {
 				boolean firstseem = false;
 				app = map.get(apinfo.uid);
@@ -898,7 +910,7 @@ public final class Api {
 					firstseem = true;
 				}
 				if (app == null) {
-					app = new DroidApp();
+					app = new PackageInfoData();
 					app.uid = apinfo.uid;
 					app.names = new String[] { name };
 					app.appinfo = apinfo;
@@ -922,19 +934,20 @@ public final class Api {
 					app.selected_roam = true;
 				}
 			}
+			
 			if (changed) {
 				edit.commit();
 			}
 			/* add special applications to the list */
-			final DroidApp special[] = {
-				new DroidApp(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,"dev.afwall.special.any"),
-				new DroidApp(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,"dev.afwall.special.kernel"),
-				new DroidApp(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,"dev.afwall.special.root"),
-				new DroidApp(android.os.Process.getUidForName("media"), "Media server", false, false,false,"dev.afwall.special.media"),
-				new DroidApp(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,"dev.afwall.special.vpn"),
-				new DroidApp(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,"dev.afwall.special.shell"),
-				new DroidApp(android.os.Process.getUidForName("gps"), "GPS", false, false,false,"dev.afwall.special.gps"),
-				new DroidApp(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,"dev.afwall.special.adb")
+			final PackageInfoData special[] = {
+				new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,"dev.afwall.special.any"),
+				new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,"dev.afwall.special.kernel"),
+				new PackageInfoData(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,"dev.afwall.special.root"),
+				new PackageInfoData(android.os.Process.getUidForName("media"), "Media server", false, false,false,"dev.afwall.special.media"),
+				new PackageInfoData(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,"dev.afwall.special.vpn"),
+				new PackageInfoData(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,"dev.afwall.special.shell"),
+				new PackageInfoData(android.os.Process.getUidForName("gps"), "GPS", false, false,false,"dev.afwall.special.gps"),
+				new PackageInfoData(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,"dev.afwall.special.adb")
 			};
 			for (int i=0; i<special.length; i++) {
 				app = special[i];
@@ -955,7 +968,7 @@ public final class Api {
 				}
 			}
 			/* convert the map into an array */
-			applications = map.values().toArray(new DroidApp[map.size()]);;
+			applications = map.values().toArray(new PackageInfoData[map.size()]);;
 			return applications;
 		} catch (Exception e) {
 			alert(ctx, ctx.getString(R.string.error_common) + e, TOASTTYPE.ERROR);
@@ -1203,7 +1216,7 @@ public final class Api {
     /**
      * Small structure to hold an application info
      */
-	public static final class DroidApp {
+	public static final class PackageInfoData {
 		/** linux user id */
     	int uid;
     	/** application names belonging to this user id */
@@ -1227,9 +1240,9 @@ public final class Api {
     	/** first time seem? */
     	boolean firstseem;
     	
-    	public DroidApp() {
+    	public PackageInfoData() {
     	}
-    	public DroidApp(int uid, String name, boolean selected_wifi, boolean selected_3g,boolean selected_roam, String pkgNameStr) {
+    	public PackageInfoData(int uid, String name, boolean selected_wifi, boolean selected_3g,boolean selected_roam, String pkgNameStr) {
     		this.uid = uid;
     		this.names = new String[] {name};
     		this.selected_wifi = selected_wifi;
@@ -1528,4 +1541,14 @@ public final class Api {
 		}
 		return false;
 	}
+	
+	public static boolean isNetfilterSupported() {
+        if ((new File("/proc/config.gz")).exists() == false) {
+                if ((new File("/proc/net/netfilter")).exists() == false)
+                        return false;
+                if ((new File("/proc/net/ip_tables_targets")).exists() == false) 
+                        return false;
+        }
+        return true;
+    }
 }

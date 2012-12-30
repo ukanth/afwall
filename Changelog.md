@@ -4,6 +4,14 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.1.6
+* Back to Chainfire's SU library. More stable but little slower compare to RootTools. Performance will be improved going forward.
+  I'm planning to rewrite the entire code to make it faster and stable. But for now, it will be continue as it is.
+* Fixed issue with rules were not applied after system reboot for couple of devices.
+* Fixed issue with custom rules were broken completely.
+* Fixed issue with Notification icon size is huge.
+* Fixed Force Close of some devices when alert message is displayed.
+
 Version 1.1.5
 * New Busybox binary (atleast I feel little faster loading on logs ) compiled from latest busybox source . This is packed with handpicked additional and useful busybox commands which will be used in the future versions of AFWall+ to build more advance features ! Stay tuned 
 * Fixed issue with widget size 1x1 on newer devices

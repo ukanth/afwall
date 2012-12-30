@@ -76,7 +76,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.devspark.appmsg.AppMsg;
 
-import dev.ukanth.ufirewall.Api.DroidApp;
+import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.Api.TOASTTYPE;
  
 /**
@@ -354,6 +354,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					Api.getApps(MainActivity.this);
 					return null;
 				}
+				
+				protected void onProgressUpdate(final Integer... values) {
+			    }
 
 				@Override
 				protected void onPostExecute(Void result) {
@@ -375,10 +378,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	private void showApplications(final boolean checkWifi,final boolean check3G,final boolean checkRoam ,final boolean resetAll,final String searchStr) {
 		this.dirty = false;
-		List<DroidApp> searchApp = new ArrayList<DroidApp>();
-		final DroidApp[] apps = Api.getApps(this);
+		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
+		final PackageInfoData[] apps = Api.getApps(this);
 		if(!searchStr.equals("")) {
-			for(DroidApp app:apps) {
+			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
 					if(str.toLowerCase().contains(searchStr)) {
 						searchApp.add(app);
@@ -387,12 +390,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 		}
 		
-		final DroidApp[] apps2 =  searchApp.size() > 0 ? searchApp.toArray(new DroidApp[searchApp.size()]) : apps; 
+		final PackageInfoData[] apps2 =  searchApp.size() > 0 ? searchApp.toArray(new PackageInfoData[searchApp.size()]) : apps; 
 		// Sort applications - selected first, then alphabetically
 		if(!checkWifi && !check3G && !resetAll){
-		Arrays.sort(apps2, new Comparator<DroidApp>() {
+		Arrays.sort(apps2, new Comparator<PackageInfoData>() {
 			@Override
-			public int compare(DroidApp o1, DroidApp o2) {
+			public int compare(PackageInfoData o1, PackageInfoData o2) {
 				if (o1.firstseem != o2.firstseem) {
 					return (o1.firstseem ? -1 : 1);
 				}
@@ -413,7 +416,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		final int defaultColor = Color.WHITE;
 
 		final android.view.LayoutInflater inflater = getLayoutInflater();
-		final ListAdapter adapter = new ArrayAdapter<DroidApp>(this,
+		final ListAdapter adapter = new ArrayAdapter<PackageInfoData>(this,
 				R.layout.listitem, R.id.itemtext, apps2) {
 			public View getView(final int position, View convertView,
 					ViewGroup parent) {
@@ -511,7 +514,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						}						
 					}
 				}
-				final DroidApp app = apps2[position];
+				final PackageInfoData app = apps2[position];
 				entry.app = app;
 				
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
@@ -911,6 +914,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				if (enabled) {
 					Log.d("AFWall+", "Applying rules.");
 					if(!Api.hasRootAccess(MainActivity.this,true)) return;
+					//if(!Api.isNetfilterSupported())return;
 					if (Api.applyIptablesRules(MainActivity.this, true)) {
 						displayToasts(MainActivity.this,
 								R.string.rules_applied, Toast.LENGTH_SHORT);
@@ -926,6 +930,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						Api.setEnabled(getApplicationContext(), true, true);
 					} else {
 						Log.d("AFWall+", "Failed - Disabling firewall.");
+						displayToasts(MainActivity.this,
+								R.string.error_apply, Toast.LENGTH_SHORT);
 						Api.setEnabled(MainActivity.this, false, true);
 						getSupportActionBar().setIcon(R.drawable.widget_off);
 						if(mainMenu !=null) {
@@ -987,7 +993,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		final DroidApp app = (DroidApp) buttonView.getTag();
+		final PackageInfoData app = (PackageInfoData) buttonView.getTag();
 		if (app != null) {
 			switch (buttonView.getId()) {
 			case R.id.itemcheck_wifi:
@@ -1123,7 +1129,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		@Override
 		protected View doInBackground(Object... params) {
 			try {
-				final DroidApp app = (DroidApp) params[0];
+				final PackageInfoData app = (PackageInfoData) params[0];
 				final PackageManager pkgMgr = (PackageManager) params[1];
 				final View viewToUpdate = (View) params[2];
 				if (!app.icon_loaded) {
@@ -1178,7 +1184,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		private CheckBox box_roam;
 		private TextView text;
 		private ImageView icon;
-		private DroidApp app;
+		private PackageInfoData app;
 	}
 
 	@Override
