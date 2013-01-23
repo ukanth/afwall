@@ -61,7 +61,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -446,67 +445,42 @@ public final class Api {
 	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
 		final PackageManager pm = ctx.getPackageManager();
 		final List<Integer> uids = new LinkedList<Integer>();
-		if(specialApps == null) {
-			initSpecial();
-		} 
-		if (pks.length() > 0) {
-			for (String token : pks.split("\\|")) {
-				final String pkgName = token;
-				if(pkgName != null && pkgName.length() > 0){
-					try {
-						if(pkgName.startsWith("dev.afwall.special")){
-							uids.add(specialApps.get(pkgName));
-						} else {
-							ApplicationInfo ai = pm.getApplicationInfo(pkgName, 0);
-							if (ai != null) {
-								uids.add(ai.uid);
-							}
-						}
-						// add logic here
-					} catch (NameNotFoundException ex) {
-						Log.d("AFWALL+", "Missing pkg:" + pkgName);
-					} catch (Exception ex) {
-						Log.d("AFWALL+", "Exception:" + ex);
+		final StringTokenizer tok = new StringTokenizer(pks, "|");
+		while (tok.hasMoreTokens()) {
+			final String pkg = tok.nextToken();
+			if (!pkg.equals("")) {
+				try {
+					if (pkg.startsWith("dev.afwall.special")) {
+						uids.add(specialApps.get(pkg));
+					} else {
+						uids.add(pm.getApplicationInfo(pkg, 0).uid);
 					}
+				} catch (Exception ex) {
 				}
 			}
+
 		}
 		return uids;
 	}
 	
 	private static int[] getUidArraysFromPref(Context ctx,String pks) {
 		final PackageManager pm = ctx.getPackageManager();
-		ApplicationInfo ai;
 		int uids[] = new int[0];
-		if(specialApps == null) {
-			initSpecial();
-		} 
+		String pkgName;
 		if (pks.length() > 0) {
 			// Check which applications are allowed on wifi
-			final StringTokenizer tok = new StringTokenizer(pks, "\\|");
+			final StringTokenizer tok = new StringTokenizer(pks, "|");
 			uids = new int[tok.countTokens()];
 			for (int i=0; i<uids.length; i++) {
-				final String pkgName = tok.nextToken();
+				pkgName = tok.nextToken();
 				try {
-					if(pkgName != null && pkgName.length() > 0){
-						if(pkgName.startsWith("dev.afwall.special")){
-							uids[i] = specialApps.get(pkgName);
-						} else {
-							ai = pm.getApplicationInfo( pkgName, 0);
-							if(ai != null) {
-								try {
-									uids[i] = ai.uid;
-								} catch (Exception ex) {
-									//selected_wifi[i] = -1;
-								}
-							} else {
-								uids[i] = -1000;
-							}
-						}
+					if(pkgName.startsWith("dev.afwall.special")){
+						uids[i] = specialApps.get(pkgName);
+					} else {
+						uids[i] = pm.getApplicationInfo(pkgName, 0).uid; 
 					}
-				} catch (NameNotFoundException e) {
-					uids[i] = -1000;
-					Log.d("AFWALL", "missing pkg:::" + pkgName);
+				} catch (Exception e) {
+					uids[i] = -1;
 				}
 			}
 			Arrays.sort(uids);
@@ -514,6 +488,7 @@ public final class Api {
 		return uids;
 		
 	}
+
     /**
      * Purge and re-add all saved rules (not in-memory ones).
      * This is much faster than just calling "applyIptablesRules", since it don't need to read installed applications.
@@ -748,7 +723,8 @@ public final class Api {
 							address.append("\n");
 						}
 					}
-					res.append("AppID :\t" +  appId + "\n"  + "Application Name:\t" + appName + "\n" + "Total Packets Blocked:\t" +  totalBlocked + "\n");
+					res.append("AppID :\t" +  appId + "\n"  + ctx.getString(R.string.LogAppName) +":\t" + appName + "\n" 
+					+ ctx.getString(R.string.LogPackBlock) + ":\t" +  totalBlocked + "\n");
 					res.append(address.toString());
 					res.append("\n\t---------\n");
 				}
@@ -852,8 +828,6 @@ public final class Api {
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(0);
-			
-			List<List<ApplicationInfo>> parts = splitListForPerformance(installed, 5);
 			/*
 				0 - Root
 				1000 - System
@@ -1355,9 +1329,9 @@ public final class Api {
 	
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-		builder.setMessage("Do you want to export rules to sdcard ?")
+		builder.setMessage(ctx.getString(R.string.exportConfirm))
 		       .setCancelable(false)
-		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		       .setPositiveButton(ctx.getString(R.string.Yes), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		        	   if(saveSharedPreferencesToFile(ctx)){
 		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/", TOASTTYPE.INFO);
@@ -1366,7 +1340,7 @@ public final class Api {
 		        	   }
 		           }
 		       })
-		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		       .setNegativeButton(ctx.getString(R.string.No), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
 		                dialog.cancel();
 		           }

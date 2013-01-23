@@ -24,6 +24,8 @@
 
 package dev.ukanth.ufirewall;
 
+import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -58,7 +60,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -74,6 +78,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 import com.devspark.appmsg.AppMsg;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
@@ -111,6 +116,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	public final static String IPTABLE_RULES = "dev.ukanth.ufirewall.text.RULES";
 	public final static String VIEW_TITLE = "dev.ukanth.ufirewall.text.TITLE";
+	
+	private static final int _ReqCreatePattern = 0;
+	private static final int _ReqSignIn = 1;
+	private static boolean isPassVerify = false;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -195,15 +204,33 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
-		final String pwd = getSharedPreferences(Api.PREFS_NAME, 0).getString(
-				Api.PREF_PASSWORD, "");
-		if (pwd.length() == 0) {
-			// No password lock
-			showOrLoadApplications();
-		} else {
-			// Check the password
-			requestPassword(pwd);
+		
+		if(isUsePattern()){
+			if(isPassVerify){
+				final String pwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString(
+						"LockPassword", "");
+				if (pwd.length() == 0) {
+					showOrLoadApplications();
+				} else {
+					// Check the password
+					requestPassword(pwd);
+				}
+			}else {
+				showOrLoadApplications();
+			}	
+		} else{
+			final String oldpwd = getSharedPreferences(Api.PREFS_NAME, 0).getString(
+					Api.PREF_PASSWORD, "");
+			if (oldpwd.length() == 0) {
+				// No password lock
+				showOrLoadApplications();
+			} else {
+				// Check the password
+				requestPassword(oldpwd);
+			}	
 		}
+
+		
 	}
 
 	@Override
@@ -297,20 +324,20 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		} else {
 			msg = res.getString(R.string.passerror);
 		}
-		displayToasts(MainActivity.this, msg, Toast.LENGTH_SHORT);
+		displayToasts(msg, Toast.LENGTH_SHORT);
 	}
 
-	private void displayToasts(MainActivity context, String msgText, int lengthShort) {
+	private void displayToasts(String msgText, int lengthShort) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(MainActivity.this);
 		boolean showToast = prefs.getBoolean("showToast", false);
 		if (showToast){
-			AppMsg msg = AppMsg.makeText((Activity)context,msgText,AppMsg.STYLE_INFO);
+			AppMsg msg = AppMsg.makeText((Activity)MainActivity.this,msgText,AppMsg.STYLE_INFO);
 			msg.setLayoutGravity(Gravity.BOTTOM);
 			msg.setDuration(AppMsg.LENGTH_SHORT);
 			msg.show();
 		} else {
-			Toast.makeText(context, msgText, lengthShort).show();
+			Toast.makeText(getApplicationContext(), msgText, lengthShort).show();
 		}
 	}
 
@@ -318,22 +345,33 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * Request the password lock before displayed the main screen.
 	 */
 	private void requestPassword(final String pwd) {
-		new PassDialog(this, false, new android.os.Handler.Callback() {
-			public boolean handleMessage(Message msg) {
-				if (msg.obj == null) {
-					MainActivity.this.finish();
-					android.os.Process.killProcess(android.os.Process.myPid());
+		if(isUsePattern()){
+			Intent intent = new Intent(getApplicationContext(), LockPatternActivity.class);
+			intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.ComparePattern);
+			intent.putExtra(LockPatternActivity._MaxRetry, "3");
+			intent.putExtra(LockPatternActivity._Pattern, pwd);
+			startActivityForResult(intent, _ReqSignIn);	
+		}
+		else{
+			new PassDialog(this, false, new android.os.Handler.Callback() {
+				public boolean handleMessage(Message msg) {
+					if (msg.obj == null) {
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						return false;
+					}
+					if (!pwd.equals(msg.obj)) {
+						requestPassword(pwd);
+						return false;
+					}
+					// Password correct
+					showOrLoadApplications();
 					return false;
 				}
-				if (!pwd.equals(msg.obj)) {
-					requestPassword(pwd);
-					return false;
-				}
-				// Password correct
-				showOrLoadApplications();
-				return false;
-			}
-		}).show();
+			}).show();
+				
+		}
+		
 	}
 
 
@@ -355,35 +393,32 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					return null;
 				}
 				
-				protected void onProgressUpdate(final Integer... values) {
-			    }
-
 				@Override
 				protected void onPostExecute(Void result) {
 					try {
 						progress.dismiss();
 					} catch (Exception ex) {
 					}
-					showApplications(false,false,false,false,"");
+					showApplications("");
 				}
 			}.execute();
 		} else {
 			// the applications are cached, just show the list
-			showApplications(false,false,false,false,"");
+			showApplications("");
 		}
 	}
 	
 	/**
 	 * Show the list of applications
 	 */
-	private void showApplications(final boolean checkWifi,final boolean check3G,final boolean checkRoam ,final boolean resetAll,final String searchStr) {
+	private void showApplications(final String searchStr) {
 		this.dirty = false;
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final PackageInfoData[] apps = Api.getApps(this);
-		if(!searchStr.equals("")) {
+		if(!searchStr.equals("") && searchStr.length() > 0) {
 			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
-					if(str.toLowerCase().contains(searchStr)) {
+					if(str.contains(searchStr) || str.toLowerCase().contains(searchStr)) {
 						searchApp.add(app);
 					}
 				}
@@ -392,7 +427,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
 		final PackageInfoData[] apps2 =  searchApp.size() > 0 ? searchApp.toArray(new PackageInfoData[searchApp.size()]) : apps; 
 		// Sort applications - selected first, then alphabetically
-		if(!checkWifi && !check3G && !resetAll){
 		Arrays.sort(apps2, new Comparator<PackageInfoData>() {
 			@Override
 			public int compare(PackageInfoData o1, PackageInfoData o2) {
@@ -408,7 +442,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				return 1;
 			}
 		});
-		}
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(MainActivity.this);
 		
@@ -439,33 +472,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					entry.icon = (ImageView) convertView
 							.findViewById(R.id.itemicon);
 					
-					if(checkWifi) {
-						entry.box_wifi.setChecked(true);
-						if(entry.app != null) entry.app.selected_wifi = true;
-					}
-					
-					if(check3G) {
-						entry.box_3g.setChecked(true);
-						if(entry.app != null) entry.app.selected_3g = true;
-					}
-					
-					if(checkRoam) {
-						entry.box_roam.setChecked(true);
-						if(entry.app != null)  entry.app.selected_roam = true;
-					}
-
-					
-					if(resetAll) {
-						entry.box_wifi.setChecked(false);
-						entry.box_3g.setChecked(false);
-						entry.box_roam.setChecked(false);
-						if(entry.app != null) {
-							entry.app.selected_wifi = false;
-							entry.app.selected_3g = false;
-							entry.app.selected_roam = false;	
-						}
-						
-					}
 					entry.box_wifi
 							.setOnCheckedChangeListener(MainActivity.this);
 					entry.box_3g.setOnCheckedChangeListener(MainActivity.this);
@@ -487,32 +493,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 							.findViewById(R.id.itemcheck_3g);
 					entry.box_roam = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_roam);
-					if(checkWifi) {
-						entry.box_wifi.setChecked(true);
-						if(entry.app != null) entry.app.selected_wifi = true;
-					}
-					
-					if(check3G) {
-						entry.box_3g.setChecked(true);
-						if(entry.app != null) entry.app.selected_3g = true;
-					}
-					
-					if(checkRoam) {
-						entry.box_roam.setChecked(true);
-						if(entry.app != null) entry.app.selected_roam = true;
-					}
-
-					
-					if(resetAll) {
-						entry.box_wifi.setChecked(false);
-						entry.box_3g.setChecked(false);
-						entry.box_roam.setChecked(false);
-						if(entry.app != null) {
-							entry.app.selected_wifi = false;
-							entry.app.selected_3g = false;
-							entry.app.selected_roam = false;	
-						}						
-					}
 				}
 				final PackageInfoData app = apps2[position];
 				entry.app = app;
@@ -637,9 +617,31 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			return true;
 		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
-			EditText filterText = (EditText) item.getActionView().findViewById(
+			final EditText filterText = (EditText) item.getActionView().findViewById(
 					R.id.searchApps);
 			filterText.addTextChangedListener(filterTextWatcher);
+			
+			item.setOnActionExpandListener(new OnActionExpandListener() {
+			    @Override
+			    public boolean onMenuItemActionCollapse(MenuItem item) {
+			        // Do something when collapsed
+			        return true;  // Return true to collapse action view
+			    }
+
+			    @Override
+			    public boolean onMenuItemActionExpand(MenuItem item) {
+			    	filterText.post(new Runnable() {
+			            @Override
+			            public void run() {
+			            	filterText.requestFocus();
+			                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			                imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
+			            }
+			        });
+			        return true;  // Return true to expand action view
+			    }
+			});
+			
 			return true;
 		case R.id.menu_export:
 			Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
@@ -675,7 +677,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
-			showApplications(false, false, false, false, s.toString());
+			showApplications(s.toString());
 		}
 
 		public void beforeTextChanged(CharSequence s, int start, int count,
@@ -684,22 +686,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
-			showApplications(false, false, false, false, s.toString().toLowerCase());
+			showApplications(s.toString());
 		}
 
 	};
 
-	/*private void clearRules() {
-		try {
-			if (Api.clearRules(MainActivity.this)) {
-				displayToasts(MainActivity.this, R.string.flushed,
-						Toast.LENGTH_SHORT);
-			}	
-		}catch(IOException e) {
-			Api.alert(MainActivity.this, getString(R.string.error_flush));
-		}
-		
-	}*/
+
 	private void showPreferences() {
 		startActivity(new Intent(this, PrefsActivity.class));
 	}
@@ -770,25 +762,62 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 		}).show();
 	}
+	
+	private AlertDialog resetPassword()
+	 {
+		AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this) 
+        //set message, title, and icon
+        .setTitle(getString(R.string.delete)) 
+        .setMessage(getString(R.string.resetPattern)) 
+        .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+ 	            final SharedPreferences prefs = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
+ 	    		final Editor editor = prefs.edit();
+     			editor.putString("LockPassword", "");
+     			editor.commit();
+            }   
+        })
+
+        .setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        })
+        .create();
+        return myQuittingDialogBox;
+	 }
 
 	/**
 	 * Set a new lock password
 	 */
 	private void setPassword() {
-		new PassDialog(this, true, new android.os.Handler.Callback() {
-			public boolean handleMessage(Message msg) {
-				if (msg.obj != null) {
-					String getPass = (String) msg.obj;
-					if(getPass.length() > 0) {
-						setCurrentPassword(getPass);
-						confirmPassword();
-					} else {
-						setPassword(getPass);
+		if(isUsePattern()){
+			final String pwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString(
+					"LockPassword", "");
+			if (pwd.length() != 0) {
+				AlertDialog diaBox = resetPassword();
+				diaBox.show();
+			} else {
+				Intent intent = new Intent(MainActivity.this, LockPatternActivity.class);
+				intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.CreatePattern);
+				startActivityForResult(intent, _ReqCreatePattern);
+			}	
+		}  else {
+			new PassDialog(this, true, new android.os.Handler.Callback() {
+				public boolean handleMessage(Message msg) {
+					if (msg.obj != null) {
+						String getPass = (String) msg.obj;
+						if(getPass.length() > 0) {
+							setCurrentPassword(getPass);
+							confirmPassword();
+						} else {
+							setPassword(getPass);
+						}
 					}
+					return false;
 				}
-				return false;
-			}
-		}).show();
+			}).show();
+		}
 	}
 
 	/**
@@ -803,12 +832,36 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == RESULT_OK
-				&& Api.CUSTOM_SCRIPT_MSG.equals(data.getAction())) {
+		if(isUsePattern()) {
+			switch (requestCode) {
+			case _ReqCreatePattern:
+				if (resultCode == RESULT_OK) {
+		            String pattern = data.getStringExtra(LockPatternActivity._Pattern);
+		            final SharedPreferences prefs = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
+		    		final Editor editor = prefs.edit();
+	    			editor.putString("LockPassword", pattern);
+	    			editor.commit();
+				}
+				break;
+			case _ReqSignIn:
+				if (resultCode == RESULT_OK) {
+					isPassVerify= true;
+					showOrLoadApplications();
+				} else {
+					MainActivity.this.finish();
+					android.os.Process.killProcess(android.os.Process.myPid());
+				}
+				break;
+			}
+		}
+		
+	    if (resultCode == RESULT_OK
+				&& data != null && Api.CUSTOM_SCRIPT_MSG.equals(data.getAction())) {
 			final String script = data.getStringExtra(Api.SCRIPT_EXTRA);
 			final String script2 = data.getStringExtra(Api.SCRIPT2_EXTRA);
 			setCustomScript(script, script2);
 		}
+	
 	}
 
 	/**
@@ -1031,7 +1084,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			selectAll3G();
 			break;
 		case R.id.img_roam:
-			clearAllRoam();
+			selectAllRoam();
 			break;
 		case R.id.img_reset:
 			clearAll();
@@ -1042,20 +1095,51 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 	}
 	
-	private void clearAllRoam(){
-		showApplications(false,false,true,false,"");
+	private void selectAllRoam(){
+		ListAdapter adapter = listview.getAdapter();
+		int count = adapter.getCount(), item;
+		for (item = 0; item < count; item++) {
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+			data.selected_roam = true;
+			this.dirty = true;
+		}
+		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 	
 	private void clearAll(){
-		showApplications(false,false,false,true,"");
+		ListAdapter adapter = listview.getAdapter();
+		int count = adapter.getCount(), item;
+		for (item = 0; item < count; item++) {
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+			data.selected_wifi = false;
+			data.selected_3g = false;
+			data.selected_roam = false;
+			this.dirty = true;
+		}
+		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 
 	private void selectAll3G() {
-		showApplications(false,true,false,false,"");
+		ListAdapter adapter = listview.getAdapter();
+		int count = adapter.getCount(), item;
+		for (item = 0; item < count; item++) {
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+			data.selected_3g = true;
+			this.dirty = true;
+		}
+		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 
+
 	private void selectAllWifi() {
-		showApplications(true,false,false,false,"");
+		ListAdapter adapter = listview.getAdapter();
+		int count = adapter.getCount(), item;
+		for (item = 0; item < count; item++) {
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+			data.selected_wifi = true;
+			this.dirty = true;
+		}
+		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
  	
 	@Override
@@ -1223,6 +1307,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			mSelected.setText("  |  " + mLocations[itemPosition]);
 		}
 		return true;
+	}
+	
+	private boolean isUsePattern(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		return prefs.getBoolean("usePatterns", false);
 	}
 
 }

@@ -81,7 +81,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 				SharedPreferences prefs = PreferenceManager
 						.getDefaultSharedPreferences(context);
 				boolean isNotify = prefs.getBoolean("notifyAppInstall", false);
-				if (isNotify) {
+				if (isNotify && Api.isEnabled(context)) {
 					String added_package = intent.getData()
 							.getSchemeSpecificPart();
 					if (PackageManager.PERMISSION_GRANTED == context

@@ -21,7 +21,11 @@
         
         <CheckBoxPreference
             android:key="showUid"
-            android:title="Show UID for apps" />
+            android:title="@string/showUid" />
+        
+        <CheckBoxPreference
+            android:key="usePatterns"
+            android:title="@string/usePattern" />
 
 </PreferenceScreen>
 

@@ -4,6 +4,22 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.1.8
+* Fixed FC on new lockpattern
+
+Version 1.1.7
+* Added lockpattern ( you can still use the old style password protection ) with SHA1 protection
+* Fixed force close issue while adding system apps.
+* Fixed issue with select All/none. it wroks properly and doesn't require scroll. Thanks to Pragma !
+* Significant improvements while loading applications( hope not a placebo ?)  
+* Fixed issue with search case sensitive and expand search will show the keyboard ( no more two press !)
+* Disable notification when the firewall is disabled.
+* Added new language translations
+  - Spanish translations by spezzino@crowdin
+  - Dutch translations by DutchWaG@crowdin
+  - Japanese translation by nnnn@crowdin
+  - Ukrainian translation by andriykopanytsia@crowdin
+
 Version 1.1.6
 * Back to Chainfire's SU library. More stable but little slower compare to RootTools. Performance will be improved going forward.
   I'm planning to rewrite the entire code to make it faster and stable. But for now, it will be continue as it is.

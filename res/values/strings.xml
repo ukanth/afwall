@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.1.6</string>
+    <string name="app_version">1.1.9</string>
     <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
@@ -135,7 +135,7 @@
 	
 	<string name="ifaces">Network Interfaces</string>
 	<string name="export_logs_fail">Export To SD failed!</string>
-	<string name="export_to_sd">Export to SDCard</string>
+	<string name="export_to_sd">Export to SD Card</string>
 	<string name="flushRulesConfirm">This will flush all the iptables rules ! Do you want to continue ?</string>
 	<string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. Its only for ICS/JB devices</string>
 	<string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
@@ -160,4 +160,18 @@
 	
 	 <string name="confirmMsg">This will disable firewall! Do you want to continue ?</string>
 	 <string name="enableConfirmTitle">Confirmbox on firewall disable</string>
+	 
+	 
+	 <string name="usePattern">Use lockpattern instead of password</string>
+	 <string name="showUid">Show UID for apps</string>
+	 
+	 <string name="resetPattern">Do you want to reset the lockpattern ?</string>
+	 <string name="delete">Delete</string>
+	 <string name="Yes">Yes</string>
+	 <string name="No">No</string>
+	 <string name="Cancel">Cancel</string>
+	 <string name="exportConfirm">Do you want to export rules to SD Card ?</string>
+	 
+	 <string name="LogAppName">Application Name</string>
+	 <string name="LogPackBlock">Total Packets Blocked</string>
 </resources>

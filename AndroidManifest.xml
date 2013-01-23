@@ -29,8 +29,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="116"
-    android:versionName="1.1.6" >
+    android:versionCode="119"
+    android:versionName="1.1.9" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -145,6 +145,10 @@
         </receiver>
         
          <service android:name="dev.ukanth.ufirewall.BackgroundIntentService"></service>
+         
+          <activity
+            android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"/>
         
         </application>
 
