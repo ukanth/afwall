@@ -22,9 +22,9 @@
  */
 package dev.ukanth.ufirewall;
 
-import dev.ukanth.ufirewall.R;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.view.View;
 
 /**
@@ -37,7 +37,13 @@ public class HelpDialog extends AlertDialog {
 		final View view = getLayoutInflater().inflate(R.layout.help_dialog, null);
 		setButton(context.getText(R.string.close), (OnClickListener)null);
 		setIcon(R.drawable.icon);
-		setTitle("AFWall+ " + context.getString(R.string.app_version));
+		String versionName ="";
+		try {
+			versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+		} catch(NameNotFoundException e){
+			
+		}
+		setTitle("AFWall+ " + versionName);
 		setView(view);
 	}
 }

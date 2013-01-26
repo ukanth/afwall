@@ -97,6 +97,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private TextView mSelected;
     private String[] mLocations;
 	private Menu mainMenu;
+	
+	/** progress dialog instance */
+	private ListView listview = null;
+	/** indicates if the view has been modified and not yet saved */
+	private boolean dirty = false;
 	private String currentPassword = "";
 	
 	//private LayoutInflater inflater;
@@ -108,25 +113,21 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	public void setCurrentPassword(String currentPassword) {
 		this.currentPassword = currentPassword;
 	}
-
-	/** progress dialog instance */
-	private ListView listview = null;
-	/** indicates if the view has been modified and not yet saved */
-	private boolean dirty = false;
 	
 	public final static String IPTABLE_RULES = "dev.ukanth.ufirewall.text.RULES";
 	public final static String VIEW_TITLE = "dev.ukanth.ufirewall.text.TITLE";
 	
-	private static final int _ReqCreatePattern = 0;
-	private static final int _ReqSignIn = 1;
-	private static boolean isPassVerify = false;
+	private final int _ReqCreatePattern = 0;
+	private final int _ReqSignIn = 1;
+	private boolean isPassVerify = false;
+
 	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		
 			super.onCreate(savedInstanceState);
-		
+			
 			try {
 				/* enable hardware acceleration on Android >= 3.0 */
 				final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -142,6 +143,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_roam).setOnClickListener(this);
+			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			//this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
@@ -205,8 +207,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
 		
+		passCheck();
+		
+	}
+	
+	private void passCheck(){
 		if(isUsePattern()){
-			if(isPassVerify){
+			if(!isPassVerify){
 				final String pwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString(
 						"LockPassword", "");
 				if (pwd.length() == 0) {
@@ -230,7 +237,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}	
 		}
 
-		
 	}
 
 	@Override
@@ -303,7 +309,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 							}
 						}).setTitle("Select mode:").show();
 	}
-
+	
 	/**
 	 * Set a new password lock
 	 * 
@@ -327,6 +333,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		displayToasts(msg, Toast.LENGTH_SHORT);
 	}
 
+
 	private void displayToasts(String msgText, int lengthShort) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(MainActivity.this);
@@ -345,6 +352,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * Request the password lock before displayed the main screen.
 	 */
 	private void requestPassword(final String pwd) {
+
 		if(isUsePattern()){
 			Intent intent = new Intent(getApplicationContext(), LockPatternActivity.class);
 			intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.ComparePattern);
@@ -392,7 +400,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					Api.getApps(MainActivity.this);
 					return null;
 				}
-				
+
 				@Override
 				protected void onPostExecute(Void result) {
 					try {
@@ -493,6 +501,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 							.findViewById(R.id.itemcheck_3g);
 					entry.box_roam = (CheckBox) convertView
 							.findViewById(R.id.itemcheck_roam);
+					
 				}
 				final PackageInfoData app = apps2[position];
 				entry.app = app;
@@ -552,7 +561,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		
 		super.onCreateOptionsMenu(menu);
 		getSupportMenuInflater().inflate(R.menu.menu_bar, menu);
 		mainMenu = menu;
@@ -674,6 +682,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 	}
 	
+	
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
@@ -690,7 +699,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 
 	};
-
 
 	private void showPreferences() {
 		startActivity(new Intent(this, PrefsActivity.class));
@@ -765,27 +773,26 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	private AlertDialog resetPassword()
 	 {
-		AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this) 
-        //set message, title, and icon
-        .setTitle(getString(R.string.delete)) 
-        .setMessage(getString(R.string.resetPattern)) 
-        .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
- 	            final SharedPreferences prefs = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
- 	    		final Editor editor = prefs.edit();
-     			editor.putString("LockPassword", "");
-     			editor.commit();
-            }   
-        })
-
-        .setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        })
-        .create();
-        return myQuittingDialogBox;
-	 }
+	    AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this) 
+	        //set message, title, and icon
+	        .setTitle(getString(R.string.delete))
+	        .setMessage(getString(R.string.resetPattern)) 
+	        .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int whichButton) {
+	 	            final SharedPreferences prefs = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
+	 	    		final Editor editor = prefs.edit();
+	     			editor.putString("LockPassword", "");
+	     			editor.commit();
+	            }   
+	        })
+	        .setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int which) {
+	                dialog.dismiss();
+	            }
+	        })
+	        .create();
+	        return myQuittingDialogBox;
+	    }
 
 	/**
 	 * Set a new lock password
@@ -819,7 +826,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}).show();
 		}
 	}
-
 	/**
 	 * Set a new init script
 	 */
@@ -832,7 +838,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(isUsePattern()) {
+	
+		if(isUsePattern()){
 			switch (requestCode) {
 			case _ReqCreatePattern:
 				if (resultCode == RESULT_OK) {
@@ -852,7 +859,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					android.os.Process.killProcess(android.os.Process.myPid());
 				}
 				break;
-			}
+			}	
 		}
 		
 	    if (resultCode == RESULT_OK
@@ -861,7 +868,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			final String script2 = data.getStringExtra(Api.SCRIPT2_EXTRA);
 			setCustomScript(script, script2);
 		}
-	
+		
 	}
 
 	/**
@@ -1086,6 +1093,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case R.id.img_roam:
 			selectAllRoam();
 			break;
+		case R.id.img_invert:
+			selectRevert();
+			break;
 		case R.id.img_reset:
 			clearAll();
 			break;
@@ -1093,6 +1103,19 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		//	revertApplications();
 		//	break;
 		}
+	}
+	
+	private void selectRevert(){
+		ListAdapter adapter = listview.getAdapter();
+		int count = adapter.getCount(), item;
+		for (item = 0; item < count; item++) {
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+			data.selected_wifi = !data.selected_wifi;
+			data.selected_3g = !data.selected_3g;
+			data.selected_roam = !data.selected_roam;
+			this.dirty = true;
+		}
+		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 	
 	private void selectAllRoam(){
@@ -1129,7 +1152,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
-
 
 	private void selectAllWifi() {
 		ListAdapter adapter = listview.getAdapter();

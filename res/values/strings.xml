@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AFWall+</string>
-    <string name="app_version">1.1.9</string>
-    <string name="title_enabled">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
     <string name="blacklist_array_item">Black list (block selected)</string>
@@ -174,4 +172,10 @@
 	 
 	 <string name="LogAppName">Application Name</string>
 	 <string name="LogPackBlock">Total Packets Blocked</string>
+	 
+	 <string name="mode_tether">Wifi/USB Tether Mode</string>
+	 <string name="select_all_header">Select All</string>
+	 <string name="select_all">This will select all! Continue?</string>
+	 <string name="clear_all_header">Clear All</string>
+	 <string name="clear_all">This will clear all! Continue?</string>
 </resources>

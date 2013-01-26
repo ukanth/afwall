@@ -4,6 +4,13 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.1.9
+* Added invert selection for apps ( useful when switching whitelist <-> blacklist )
+* Fixed issue with special apps (root/shell/media server) not applying 
+* Fixed issue with new lockpattern not working properly.
+* Added MDPI images for icons.
+* Code cleanup, mainly strings.xml ( removed version from strings.xml etc.,)
+
 Version 1.1.8
 * Fixed FC on new lockpattern
 

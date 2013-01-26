@@ -95,7 +95,7 @@ public final class Api {
 	// Preferences
 	public static String PREFS_NAME 			= "AFWallPrefs";
 	public static String PREF_FIREWALL_STATUS 	= "AFWallStaus";
-	public static final String DEFAULT_PREFS_NAME 			= "AFWallPrefs";
+	public static final String DEFAULT_PREFS_NAME 	= "AFWallPrefs";
 	
 	//for import/export rules
 	public static final String PREF_3G_PKG			= "AllowedPKG3G";
@@ -480,7 +480,7 @@ public final class Api {
 						uids[i] = pm.getApplicationInfo(pkgName, 0).uid; 
 					}
 				} catch (Exception e) {
-					uids[i] = -1;
+					uids[i] = -1000;
 				}
 			}
 			Arrays.sort(uids);
@@ -500,7 +500,6 @@ public final class Api {
 			return false;
 		}
 		Log.d("in applySavedIptablesRules AFWall+", "Context:" + ctx);
-		initSpecial();
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
 		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
@@ -518,7 +517,6 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
-		initSpecial();
 		saveRules(ctx);
 		return applySavedIptablesRules(ctx, showErrors);
     }
@@ -807,9 +805,9 @@ public final class Api {
      * @return a list of applications
      */
 	public static PackageInfoData[] getApps(Context ctx) {
+		initSpecial();
 		if (applications != null) {
 			// return cached instance
-			initSpecial();
 			return applications;
 		}
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -865,6 +863,7 @@ public final class Api {
 			boolean changed = false;
 			String name = null;
 			String cachekey = null;
+			final String cacheLabel = "cache.label.";
 			PackageInfoData app = null;
 			for (final ApplicationInfo apinfo : installed) {
 				boolean firstseem = false;
@@ -874,7 +873,7 @@ public final class Api {
 					continue;
 				}
 				// try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
-				cachekey = "cache.label."+apinfo.packageName;
+				cachekey = cacheLabel + apinfo.packageName;
 				name = prefs.getString(cachekey, "");
 				if (name.length() == 0) {
 					// get label and put on cache
@@ -884,6 +883,9 @@ public final class Api {
 					firstseem = true;
 				}
 				if (app == null) {
+				    //ContentValues values = new ContentValues();
+		            //values.put(COLUMN_NAME, "Diana");
+		           //dataBase.insert(TABLE_NAME, values);
 					app = new PackageInfoData();
 					app.uid = apinfo.uid;
 					app.names = new String[] { name };
@@ -914,18 +916,21 @@ public final class Api {
 			}
 			/* add special applications to the list */
 			final PackageInfoData special[] = {
-				new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,"dev.afwall.special.any"),
-				new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,"dev.afwall.special.kernel"),
-				new PackageInfoData(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,"dev.afwall.special.root"),
-				new PackageInfoData(android.os.Process.getUidForName("media"), "Media server", false, false,false,"dev.afwall.special.media"),
-				new PackageInfoData(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,"dev.afwall.special.vpn"),
-				new PackageInfoData(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,"dev.afwall.special.shell"),
-				new PackageInfoData(android.os.Process.getUidForName("gps"), "GPS", false, false,false,"dev.afwall.special.gps"),
-				new PackageInfoData(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,"dev.afwall.special.adb")
-			};
+					new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,"dev.afwall.special.any"),
+					new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,"dev.afwall.special.kernel"),
+					new PackageInfoData(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,"dev.afwall.special.root"),
+					new PackageInfoData(android.os.Process.getUidForName("media"), "Media server", false, false,false,"dev.afwall.special.media"),
+					new PackageInfoData(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,"dev.afwall.special.vpn"),
+					new PackageInfoData(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,"dev.afwall.special.shell"),
+					new PackageInfoData(android.os.Process.getUidForName("gps"), "GPS", false, false,false,"dev.afwall.special.gps"),
+					new PackageInfoData(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,"dev.afwall.special.adb")
+				};
+
+			if(specialApps == null) {
+				specialApps = new HashMap<String, Integer>();
+			}
 			for (int i=0; i<special.length; i++) {
 				app = special[i];
-				specialApps = new HashMap<String, Integer>();
 				specialApps.put(app.pkgName, app.uid);
 				if (app.uid != -1 && !map.containsKey(app.uid)) {
 					// check if this application is allowed
@@ -950,18 +955,6 @@ public final class Api {
 		return null;
 	}
 	
-	private static void initSpecial() {
-			specialApps = new HashMap<String, Integer>();
-			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
-			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
-			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
-			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
-			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
-			specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
-			specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
-			specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));	
-	}
-
 	
 	private static class RunCommand extends AsyncTask<Object, String, Integer> {
 
@@ -976,11 +969,11 @@ public final class Api {
 		protected Integer doInBackground(Object... params) {
 			final String script = (String) params[0];
 			final StringBuilder res = (StringBuilder) params[1];
-
+			final String[] commands = script.split("\n");
 			try {
 				if(!Shell.SU.available()) return exitCode;
 				if (script != null && script.length() > 0) {
-					List<String> output = Shell.SU.run(script.split("\n"));
+					List<String> output = Shell.SU.run(commands);
 					if (output != null && output.size() > 0) {
 						for (String str : output) {
 							res.append(str);
@@ -1012,12 +1005,15 @@ public final class Api {
 			returnCode = new RunCommand().execute(script, res)
 					.get();
 		} catch (RejectedExecutionException r) {
-			Log.d("Exception", "Caught RejectedExecutionException");
+			Log.d("Exception", r.getLocalizedMessage());
 		} catch (InterruptedException e) {
 			Log.d("Exception", "Caught InterruptedException");
 		} catch (ExecutionException e) {
-			Log.d("Exception", "Caught ExecutionException");
+			Log.d("Exception", e.getLocalizedMessage());
+		} catch (Exception e) {
+			Log.d("Exception", e.getLocalizedMessage());
 		}
+		
 		return returnCode;
 	}
     /**
@@ -1525,4 +1521,16 @@ public final class Api {
         }
         return true;
     }
+	
+	private static void initSpecial() {
+		specialApps = new HashMap<String, Integer>();
+		specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
+		specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
+		specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
+		specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
+		specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
+		specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
+		specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
+		specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));	
+}
 }
