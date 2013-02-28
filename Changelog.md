@@ -4,38 +4,44 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.3.0 
+Version 1.2.0 
 
 * [Feature]
-	- Added change app language from the preferences.
-	- Added device admin feature - Extra protection to AFWall+, so that it can't be uninstalled from any other app.
-	- Added more revamped about page with help/FAQ's
-	- Added Tasker/Locale plugin (from donate version) with bug fixes.
-	- Added new widget with quick toggle window ( enable/disable/profiles )
+- Added change app language from the preferences (default is system lang)
+- Added device admin feature - Extra protection to AFWall+, so that it can't be uninstalled from any other app.
+- Added Tasker/Locale plugin (from donate version) with bug fixes.
+- Added VPN Support (enable/disable it preferences) - Tested with DroidVPN and works fine !
+- Added new widget with quick toggle (enable/disable/profiles)
+- Added option to import from DroidWall (only for Donate version for now !)
+- Added Active defense ( Make sure only AFWall+ able to control to internet) - Not an optional !
+- Added new super user permission ( koush's superuser permission)
+- Added ability to enable/disable roaming feature
 
-* [ Enhancements]
-	- New logic to apply rules - completely uses RootTools - Performance improvement ( Might ask SU Request again! )
-	- Removed deprecated API's for Notification. Going forward this will be improved for ICS/JB 
-	- Improved preferences - Added summary for each preferences and rearranged order
-	- New menu icons ( white icons !)
-	- Removed all inline style alert messages and alert boxes. Now it just display toast messages.
-	- Fixed data leak on boot for devices REQUIRES init.d support/S-OFF (enable it in preferences - EXPERIMENTAL !)
-	   ( to enable init.d support use this app -> https://play.google.com/store/apps/details?id=com.broodplank.initdtoggler)
-	- New log rule to get the logs from dmesg and enable logs by default   
-	- Enable/Disable logs now from "Firewall Logs" menu.
+* [Enhancements]
+- New logic to apply rules - Performance improvement 
+- Removed deprecated API's for Notification. Going forward this will be improved for ICS/JB 
+- Improved preferences - Added summary for each preferences and rearranged order
+- New menu icons ( white icons !)
+- Removed all inline style alert messages and alert boxes. Now it just display toast messages.
+- Fixed data leak on boot for devices REQUIRES init.d support/S-OFF (enable it in preferences - EXPERIMENTAL !)
+( to enable init.d support use this app -> https://play.google.com/store/apps/d...k.initdtoggler)
+- New log rule to get the logs from dmesg and enable logs by default 
+- Enable/Disable logs now from "Firewall Logs" menu.
 
 * [BUG Fix]
-	- Fixed issue with iptable rules are not applied after reboot, mainly CM 10.1 devices (Enable it in preferences - EXPERIMENTAL !)
-	- Various UI glitches in multi profiles/icons & UID - App restarts for this preferences!
-	- Fixed issue with Rules are not working when Mobile Data Limit is ON ( enable it in preferences - EXPERIMENTAL !)
-	- Fixed hang/rules issue on startup 
-	- Fixed issue with profiles where the default profile is applied after restart instead of selected one.
-	
+- Fixed issue with iptable rules are not applying after reboot, mainly CM 10.1 devices (Enable it in preferences - EXPERIMENTAL !)
+- Various UI glitches in multi profiles/icons & UID
+- Fixed hang/rules issue on startup 
+- Fixed issue with profiles where the default profile is applied after restart instead of selected one.
+- FC issue when using app menu (ActionBarSherlock - NPE)
+- Fixed issue with Media Server/VPN not applying properly.	
+
+
 * [Translations]
-	- Simplified Chinese
-	- Czech Translations - Thanks to syk3s@Crowdin
-	- Turkish Translations 
-	
+- Simplified Chinese - Thanks to wufei0513 & tianchaoren@Crowdin
+- Czech Translations - Thanks to syk3s@Crowdin
+- Turkish Translations - Many Thanks to metah@Crowdin
+- Ukrainian Translations - Many Thanks to andriykopanytsia,igor@Crowdin	
 
 Version 1.1.9
 * Added invert selection for apps ( useful when switching whitelist <-> blacklist )
