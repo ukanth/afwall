@@ -16,18 +16,16 @@ report any bugs or feature requests and to see the list of known issues.
 
 
 ## ToDo:
-* TAB interface to separate system apps & user apps 
-* ~~Roaming option ( like avast firewall )~~ <i>(since 1.0.2a)</i>
-* Support for XHDPI and other resolutions
-* Support for only within LAN  
-* Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/) 
-* ~~Flush/Reset iptables rules from UI~~ <i>(since 1.0.2a)</i>
-* ~~View iptables rules and logging in a clear view~~ <i>(since 1.0.4a)</i>
 * Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/)
-* Full i18n support
-* ~~Save & Load Profiles/Rules~~ <i>(since 1.0.3a)</i>
+* Support for only within LAN  
 * Integrate with Network Log 
 * Uninstall application from list window ( or open manage application from list)
+* ~~Roaming option ( like avast firewall )~~ <i>(since 1.0.2a)</i>
+* ~~Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)~~
+* ~~Flush/Reset iptables rules from UI~~ <i>(since 1.0.2a)</i>
+* ~~View iptables rules and logging in a clear view~~ <i>(since 1.0.4a)</i>
+* ~~Full i18n support~~
+* ~~Save & Load Profiles/Rules~~ <i>(since 1.0.3a)</i>
 * ~~Multiple Profiles~~ <i> (Since 1.0.7a) </i>
 
 ## License
@@ -38,11 +36,10 @@ report any bugs or feature requests and to see the list of known issues.
 ## Acknowledgements
 
 This project also uses many other open source libraries such as:
-* [ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock)  [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Unified Preferences] (https://github.com/saik0/UnifiedPreference/)  [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Libsuperuser] (https://github.com/Chainfire/libsuperuser) [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Android Color Picker](https://code.google.com/p/android-color-picker) [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Crouton](https://github.com/johnkil/Android-AppMsg) [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Unified Preferences] (https://github.com/saik0/UnifiedPreference/) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Android Color Picker](https://github.com/attenzione/android-ColorPickerPreference) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Root Tools] (https://code.google.com/p/roottools/) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
 ## How to compile

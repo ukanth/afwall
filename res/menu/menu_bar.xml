@@ -21,12 +21,12 @@
                 android:showAsAction="always|withText"/>
             <item
                 android:id="@+id/menu_log"
-                android:icon="@drawable/show"
+                android:icon="@drawable/logs"
                 android:showAsAction="always"
                 android:title="@string/show_log"/>
             <item
                 android:id="@+id/menu_rules"
-                android:icon="@drawable/show"
+                android:icon="@drawable/rules"
                 android:showAsAction="always"
                 android:title="@string/showrules"/>
             <item

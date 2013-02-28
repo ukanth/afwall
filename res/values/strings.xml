@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">AFWall+</string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
@@ -19,7 +20,7 @@
     <string name="error_apply">Error applying iptables rules. Exit code: </string>
     <string name="error_su">Could not acquire root access.\n You need a rooted phone to run AFWall+.\n\n If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
     <string name="error_common">Error : </string>
-    <string name="all_item">(Any application) - Same as selecting all applications</string>		
+    <string name="all_item">(Any application) - Same as selecting all applications</string>
     <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed-out</string>
     <string name="fw_enabled">Enabled</string>
@@ -62,120 +63,139 @@
     <string name="preferences">Preferences</string>
     <string name="reload">Reload Applications</string>
     <string name="flush">Flush Rules</string>
-    <string name="notify_pref_summary">Enable will notify to open AFWall+ on new installations</string>
-    <string name="notify_pref_title">Notify on new installs</string>
-    <string name="toast_pref_title">Enable alternate toast notifications</string>
-    <string name="syscolor_pref_title">Highlight color for System applications</string>
+    <string name="notify_pref_summary_on">Notification will be sent on the new installation</string>
+    <string name="notify_pref_summary_off">No notification will be sent</string>
+    <string name="notify_pref_title">Enable Notification</string>
+    <string name="syscolor_pref_title">System Apps Color</string>
+    <string name="syscolor_pref_summary_on">Selected color will be shown for the system applications</string>
+    <string name="syscolor_pref_summary_off">Default Color</string>
     <string name="usb3g_pref_summary">Prevent AFWall to apply 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
     <string name="hideicons_pref_title">Hide application icons</string>
+    <string name="hideicons_pref_summary_on">This will improve the performance by disabling application icons on the main view</string>
+    <string name="hideicons_pref_summary_off">It will show the application icons on the main view</string>
     <string name="custom_script_defined">Custom script defined</string>
     <string name="custom_script_removed">Custom script removed</string>
     <string name="custom_script_error">Error saving custom script</string>
-    <string name="custom_script_info"><b>Enter your custom script bellow.</b>
-		\n<i>(Leave it blank to remove)</i>
-		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
-	</string>
-    <string name="custom_script2_info">
-    	\n<b>Custom shutdown script</b>
-    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
+    <string name="custom_script_info"><b>Enter your custom script bellow.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
+</string>
+    <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
-    <string name="help_dialog_text"><i>Developer: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
-	    \n<i>Contact me - cumakt@gmail.com (@ukanth- Twitter)</i>
-		\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
-		\n<i>Thanks to hush66 for icons (http://hush66.deviantart.com/)</i>
-		\n
-		\n<i>AFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b> Linux firewall.
+    <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b>Linux firewall.
 		It allows you to restrict which applications are permitted to access your data networks.
-		\nThis is the perfect solution if you don\'t have an unlimited data plan, or just wants to see your battery lasting longer.
-		\n
-		\n<b>Using AFWall+:</b>
-		\n<b>1.</b> Click on <b>Mode</b> to switch between <i>White List</i> and <i>Black List</i> modes.
-		\n<b>2.</b> Mark the applications that you want to block or allow (depending on the selected mode), for each interface.
-		\n<b>3.</b> Open the menu and enable the firewall. If the firewall is already enabled, just select <b>Apply rules</b>.
-		\nThe rules will be saved and automatically restored when you restart your phone.
-		\nIf you want to check all current iptables rules, select <b>Firewall Rules</b> in the menu.
-		\n
-		\n<b>Widget:</b>
-		\nTo quickly enable or disable the firewall, add the AFWall+ widget to your home screen.
-		\n
-		\n<b>Firewall logs:</b>
-		\nIf you want to see which applications have been blocked by AFWall+, open the menu and enable the Log.
-		\nAFWall+ will then log each application blocked. You can check the log by opening the menu and selecting <b>More -> Show log</b>.
-		\n
-		\n<b>Password lock:</b>
-		\nYou can set a password lock for AFWall+ by using the <b>Set password</b> menu option.
-		\nTo remove the password protection, just reset it to blank.
-	</string>
-	<string name="empty"></string>
-	<string name="mode">Mode: </string>
-	<string name="showrules_title">IPtables Rules</string>
-	<string name="showlog_title">Firewall Logs</string>
-	<string name="settings_password">Enter Password</string>
-	<string name="settings_password2">Enter Password again</string>
-	<string name="settings_pwd_not_equal">Password doesn\'t match</string>
-	<string name="settings_pwd_equal">Password matches</string>
-	<string name="export_rules">Export Rules</string>
-	
-	<string name="import_rules">Import Rules</string>
-	<string name="export_rules_success">Exported succesfully to </string>
-	<string name="export_rules_fail">Export Rules failed!</string>
-	
-	<string name="import_rules_success">Imported succesfully from </string>
-	<string name="import_rules_fail">Import Rules failed!</string>
-	<string name="no_log">Log is Empty</string>
-	<string name="copy">Copy</string>
-	<string name="copied">Copied</string>
-	<string name="Search">Search</string>
-	
-	<string name="ifaces">Network Interfaces</string>
-	<string name="export_logs_fail">Export To SD failed!</string>
-	<string name="export_to_sd">Export to SD Card</string>
-	<string name="flushRulesConfirm">This will flush all the iptables rules ! Do you want to continue ?</string>
-	<string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. Its only for ICS/JB devices</string>
-	<string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
-	<string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(ssh)</string>
-	<string name="prefExperimentICSJB">EXPERIMENT! Enable ONLY if firewall is not working on your ICS/JB devices !</string>
-	<string name="prefExperimentICSJB_title">Alternate rules for ICS/JB devices</string>
-	<string name="notification_new">New Application Installed.</string>
-	
-	<string name="multipleProfiles">Enable Multiple Profiles</string>
-	<string name="defaultProfile">Default</string>
-	<string name="profile1">Profile1</string>
-	<string name="profile2">Profile2</string>
-	<string name="profile3">Profile3</string>
-	
-	<string name="defaultProfileSummary">Custom name for Default Profile</string>
-	<string name="customProfile1Summary">Custom name for profile1</string>
-	<string name="customProfile2Summary">Custom name for profile2</string>
-	<string name="customProfile3Summary">Custom name for profile3</string>
-	
-	
-	 <string name="enable_firewall_log">Enable Firewall Logs</string>
-	
-	 <string name="confirmMsg">This will disable firewall! Do you want to continue ?</string>
-	 <string name="enableConfirmTitle">Confirmbox on firewall disable</string>
-	 
-	 
-	 <string name="usePattern">Use lockpattern instead of password</string>
-	 <string name="showUid">Show UID for apps</string>
-	 
-	 <string name="resetPattern">Do you want to reset the lockpattern ?</string>
-	 <string name="delete">Delete</string>
-	 <string name="Yes">Yes</string>
-	 <string name="No">No</string>
-	 <string name="Cancel">Cancel</string>
-	 <string name="exportConfirm">Do you want to export rules to SD Card ?</string>
-	 
-	 <string name="LogAppName">Application Name</string>
-	 <string name="LogPackBlock">Total Packets Blocked</string>
-	 
-	 <string name="mode_tether">Wifi/USB Tether Mode</string>
-	 <string name="select_all_header">Select All</string>
-	 <string name="select_all">This will select all! Continue?</string>
-	 <string name="clear_all_header">Clear All</string>
-	 <string name="clear_all">This will clear all! Continue?</string>
+		This is the perfect solution if you don\'t have an unlimited data plan, or just wants to see your battery lasting longer.\n\n\n
+<b> Help - </b> http://github.com/ukanth/afwall/wiki/Help \n
+<b>Frequently Asked Questions</b>  -https://github.com/ukanth/afwall/wiki/Help \n
+<b>Developer </b> - Umakanthan Chandran \n
+<a href="mailto:cumakt+afwall@gmail.com">Contact me</a>\n 
+<b>Twitter </b>- @ukanth \n
+<b>Project Homepage</b> - https://github.com/ukanth/afwall/\n
+<b>Credits \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
+<b>Icons  </b> - hush66 (http://hush66.deviantart.com/)\n
+</string>
+    <string name="mode">Mode: </string>
+    <string name="showrules_title">IPtables Rules</string>
+    <string name="showlog_title">Firewall Logs</string>
+    <string name="settings_password">Enter Password</string>
+    <string name="settings_password2">Enter Password again</string>
+    <string name="settings_pwd_not_equal">Password doesn\'t match</string>
+    <string name="settings_pwd_equal">Password matches</string>
+    <string name="export_rules">Export Rules</string>
+    <string name="import_rules">Import Rules</string>
+    <string name="export_rules_success">Exported succesfully to </string>
+    <string name="export_rules_fail">Export Rules failed!</string>
+    <string name="import_rules_success">Imported succesfully from </string>
+    <string name="import_rules_fail">Import Rules failed!</string>
+    <string name="no_log">Log is Empty</string>
+    <string name="copy">Copy</string>
+    <string name="copied">Copied</string>
+    <string name="Search">Search</string>
+    <string name="ifaces">Network Interfaces</string>
+    <string name="export_logs_fail">Export To SD failed!</string>
+    <string name="export_to_sd">Export to SD Card</string>
+    <string name="flushRulesConfirm">This will flush all the iptables rules ! Do you want to continue ?</string>
+    <string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. Its only for ICS/JB devices</string>
+    <string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
+    <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(ssh)</string>
+    <string name="prefExperimentICSJB">EXPERIMENT! Enable ONLY if firewall is not working on your ICS/JB devices !</string>
+    <string name="prefExperimentICSJB_title">Alternate rules for ICS/JB devices</string>
+    <string name="notification_new">New Application Installed.</string>
+    <string name="multipleProfiles">Enable Multiple Profiles</string>
+    <string name="defaultProfile">Default</string>
+    <string name="profile1">Profile1</string>
+    <string name="profile2">Profile2</string>
+    <string name="profile3">Profile3</string>
+    <string name="defaultProfileSummary">Custom name for Default Profile</string>
+    <string name="customProfile1Summary">Custom name for profile1</string>
+    <string name="customProfile2Summary">Custom name for profile2</string>
+    <string name="customProfile3Summary">Custom name for profile3</string>
+    <string name="enable_firewall_log">Enable Firewall Logs</string>
+    <string name="confirmMsg">This will disable firewall! Do you want to continue ?</string>
+    <string name="enableConfirmTitle">Confirmbox on AFWall+ disable</string>
+    <string name="enableConfirm_summary_on">Firewall will be ask for confirmation before disable</string>
+    <string name="enableConfirm_summary_off">Firewall will be disabled without confirmation</string>
+    <string name="usePattern">Use lockpattern instead of password</string>
+    <string name="showUid">Show UID for apps</string>
+    <string name="showuid_summary_on">Disable will hide UID\'s for each application in main view</string>
+    <string name="showuid_summary_off">Enable will show UID\'s for each application (useful to track logs)</string>
+    <string name="resetPattern">Do you want to reset the lockpattern ?</string>
+    <string name="delete">Delete</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="Cancel">Cancel</string>
+    <string name="exportConfirm">Do you want to export rules to SD Card ?</string>
+    <string name="LogAppName">Application Name</string>
+    <string name="LogPackBlock">Total Packets Blocked</string>
+    <string name="notification_title">Open AFWall+</string>
+    <string name="enable_log">Enable Log</string>
+    <string name="disable_log">Disable Log</string>
+    <string name="ui_prefs_title">UI Preferences</string>
+    <string name="sec_prefs_title">Security Preferences</string>
+    <string name="exp_prefs_title">Experimental Preferences</string>
+    <string name="mp_prefs_title">Multiple Profile Preferences</string>
+    <string name="custom_title1">Custom name for Default Profile</string>
+    <string name="custom_title2">Custom name for Profile1</string>
+    <string name="custom_title3">Custom name for Profile2</string>
+    <string name="custom_title4">Custom name for Profile3</string>
+    <string name="fixleakTitle">Fix Startup Data Leak</string>
+    <string name="fixleakSummary">This will fix data leak before afwall starts\n Requires Init.d Support and S-OFF(HTC)!</string>
+    <string name="fixmobileLimit">Fix Mobile Data Limit Leak</string>
+    <string name="fixmobileLimitSummary">This will fix AFWall+ not work when \"Set mobile data limit\" option is enabled in Android. Also reapply after reboot and installation of any app</string>
+    <string name="success_initd">Succesfully copied script on startup</string>
+    <string name="remove_initd">Please delete afwallstart from /system/etc/init.d folder before uninstall afwall+</string>
+    <string name="unable_initd">Unable to find init.d directory. Please verify whether your ROM supports init.d</string>
+    <string name="enable_device_admin">Enable Device Admin</string>
+    <string name="device_admin_enabled">AFWall+ Device Admin Enabled</string>
+    <string name="device_admin_disabled">AFWall+ Device Admin Disabled</string>
+    <string name="device_admin_on_disable">Please goto device administrator settings to deactivate AFWall+</string>
+    <string name="status_running">Running</string>
+    <string name="alternateStartTitle">Fix Device Start Rules</string>
+    <string name="alternateStartSummary">This will fix AFWall+ will not apply rules on some devices (CM10.1) after device startup</string>
+    <string name="widget_disable_fail">Cannot disable firewall - password defined!</string>
+    <string name="import_rules_droidwall">Import DW Rules</string>
+    <string name="userAFWOnly">Activate Control Defense</string>
+    <string name="userAFWSummary">Enable this will make sure only AFWAll+ controls your outgoing traffic and no other firewalls!</string>
+    <string name="color_pick">Press on Color to apply</string>
+    <string name="toggle_enable">Enable Firewall</string>
+    <string name="toggle_disable">Disable Firewall</string>
+    <string name="toggle_default">Activate Default Profile</string>
+    <string name="toggle_profile1">Activate Profile 1</string>
+    <string name="toggle_profile2">Activate Profile 2</string>
+    <string name="toggle_profile3">Activate Profile 3</string>
+    
+    <string name="languages">Languages</string>
+    <string name="roaming">Enable Roaming Control</string>
+    <string name="roamingSummary">Enable this will add additional feature of able to control internet while on roaming</string>
+    <string name="vpn_profile">Enable VPN Control</string>
+    <string name="vpnSummary">Enable this will add additional feature of able to control internet with VPN</string>
+    <string name="disable_toaster">Disable Tasker Toasts</string>
+    <string name="disableTasterSummary">This will disable toast messages on tasker plugin</string>
+    
+    <string name="tasker_apply">Applying firewall rules</string>
+    <string name="tasker_disabled">Tasker: AFWall+ disabled!</string>
+    <string name="tasker_muliprofile">AFWall+ Tasker: multiprofile is disabled!</string>
+    <string name="startup_service">Applying Rules...Please wait!</string>
 </resources>

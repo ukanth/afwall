@@ -23,7 +23,6 @@
  */
 package dev.ukanth.ufirewall;
 
-import dev.ukanth.ufirewall.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

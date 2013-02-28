@@ -3,7 +3,10 @@ package dev.ukanth.ufirewall;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class BackgroundIntentService extends IntentService {
@@ -53,13 +56,44 @@ public class BackgroundIntentService extends IntentService {
 	
 	protected void onBootComplete() {
 		if(context == null) return;
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
+		
 		if (Api.isEnabled(context.getApplicationContext())) {
-			if (!Api.applySavedIptablesRules(
-					context.getApplicationContext(), false)) {
-				Log.d("Unable to apply the rules in AFWall+","");
-				Api.setEnabled(context.getApplicationContext(), false,
-						false);
-			} 
-		}		
+			if(multimode){
+				int itemPosition = prefs.getInt("storedPosition", 0);
+				switch (itemPosition) {
+				case 0:
+					Api.PREFS_NAME = "AFWallPrefs";
+					break;
+				case 1:
+					Api.PREFS_NAME = "AFWallProfile1";
+					break;
+				case 2:
+					Api.PREFS_NAME = "AFWallProfile2";
+					break;
+				case 3:
+					Api.PREFS_NAME = "AFWallProfile3";
+					break;
+				default:
+					break;
+				}
+			}
+			//potential fix for rules are not applying
+			new Thread() {
+				public void run() {
+					Looper.prepare();
+
+					boolean isApplied = Api.applySavedIptablesRules(
+							context.getApplicationContext(), false);
+					if (!isApplied) {
+						Log.d("Unable to apply the rules in AFWall+", "");
+						Api.setEnabled(context.getApplicationContext(), false,
+								false);
+					}
+				}
+			}.start();
+		}
 	}	
 }

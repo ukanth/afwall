@@ -22,13 +22,12 @@
  */
 package dev.ukanth.ufirewall;
 
-import dev.ukanth.ufirewall.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.os.Message;
 import android.os.Handler.Callback;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;

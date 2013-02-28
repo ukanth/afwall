@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -12,32 +13,37 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.actionbarsherlock.ActionBarSherlock.OnCreateOptionsMenuListener;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 import com.actionbarsherlock.view.Window;
 
-public class Rules extends SherlockActivity {
+public class Rules extends SherlockActivity implements OnCreateOptionsMenuListener {
 	
 	private static final int MENU_TOGGLE = -3;
 	private static final int MENU_CLEARLOG = 7;
+	private static final int MENU_TOGGLE_LOG = 27;
 	private static final int MENU_FLUSH_RULES = 12;
 	private static final int MENU_COPY = 16;
 	private static final int MENU_EXPORT_LOG = 17;
 	private static final int MENU_INTERFACES = 18;
-	
 	private int viewMode;
+	private Menu mainMenu;
 	
 	public int getViewMode() {
 		return viewMode;
@@ -79,6 +85,10 @@ public class Rules extends SherlockActivity {
         rulesText.setClickable(false);
         rulesText.setText(message);
         
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String lang = prefs.getString("locale", "en");
+		Api.updateLanguage(getApplicationContext(), lang);
+		
         // Set the text view as the activity layout
         
     }
@@ -86,22 +96,53 @@ public class Rules extends SherlockActivity {
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
-		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
+		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		final boolean logenabled = appprefs.getBoolean("enableFirewallLog",true);
+
 		if(getViewMode() == MENU_CLEARLOG) {
+			if(logenabled){
+				sub.add(0,MENU_TOGGLE_LOG,0, R.string.disable_log).setIcon(R.drawable.off);	
+			} else {
+				sub.add(0,MENU_TOGGLE_LOG,0, R.string.enable_log).setIcon(R.drawable.on);
+			}
 			sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
 		}
+		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
 		if(getViewMode() == MENU_FLUSH_RULES) {
 			sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
-			sub.add(0, MENU_INTERFACES, 0, R.string.ifaces).setIcon(R.drawable.show);
+			sub.add(0, MENU_INTERFACES, 0, R.string.ifaces).setIcon(R.drawable.rules);
 			sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
 		}
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-	    return super.onCreateOptionsMenu(menu);
+        super.onCreateOptionsMenu(menu);
+		mainMenu = menu;
+	    return true;
 	}
     
     @Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
     	switch (item.getItemId()) {
+    	case MENU_TOGGLE_LOG:
+    		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    		boolean logenabled = appprefs.getBoolean("enableFirewallLog",true);
+    		Editor editor = appprefs.edit();
+    		logenabled = !logenabled;
+			editor.putBoolean("enableFirewallLog", logenabled);
+						if(mainMenu != null) {
+				final MenuItem item_onoff = mainMenu.findItem(MENU_TOGGLE_LOG);
+				if(item_onoff != null ){
+					if (logenabled) {
+						item_onoff.setTitle(R.string.disable_log);
+						item_onoff.setIcon(R.drawable.disable_log);
+					} else {
+						item_onoff.setTitle(R.string.enable_log);
+						item_onoff.setIcon(R.drawable.enable_log);
+					}	
+				}
+				
+			}
+			editor.commit();
+			return true;
     	case MENU_CLEARLOG:
 			clearLog();
 			EditText rulesText = (EditText) findViewById(R.id.rules);
@@ -129,11 +170,11 @@ public class Rules extends SherlockActivity {
     		return true;
     	case MENU_EXPORT_LOG:
     		if(exportToSD()){
-    			 MainActivity.displayToasts(Rules.this, R.string.export_rules_success,
+    			 Api.displayToasts(Rules.this, R.string.export_rules_success,
     						Toast.LENGTH_LONG);
     				
     		}else{
-    			 MainActivity.displayToasts(Rules.this, R.string.export_logs_fail,
+    			 Api.displayToasts(Rules.this, R.string.export_logs_fail,
     						Toast.LENGTH_LONG);
     		}
     		return true;
@@ -188,12 +229,12 @@ public class Rules extends SherlockActivity {
 			    android.content.ClipData clip = android.content.ClipData.newPlainText("", rulesText.getText().toString());
 			    clipboard.setPrimaryClip(clip);
 			}	
-			MainActivity.displayToasts(Rules.this, R.string.copied,
+			Api.displayToasts(Rules.this, R.string.copied,
 					Toast.LENGTH_SHORT);
 		} catch(Exception e ){
 			Log.d("AFWall+", "Exception in Clipboard" + e);
 		}
-		MainActivity.displayToasts(Rules.this, R.string.copied,
+		Api.displayToasts(Rules.this, R.string.copied,
 				Toast.LENGTH_SHORT);
 		
 	}
@@ -205,20 +246,21 @@ public class Rules extends SherlockActivity {
 			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
 			        	final StringBuilder res = new StringBuilder();
-			   			StringBuilder script = new StringBuilder();
 			   			if(Api.getIpPath() == null) {
 			   				Api.setIpTablePath(ctx);
 			   			}
-			   			script.append(Api.getIpPath() +" -F\n");
-			   			script.append(Api.getIpPath() +" -X\n");
+			   			ArrayList<String> listCommands = new ArrayList<String>();
+			   			listCommands.add((Api.getIpPath() +" -F"));
+			   			listCommands.add((Api.getIpPath() +" -X"));
 			   			int code = -1;
+			   			
 						try {
-							code = Api.runScriptAsRoot(ctx, script.toString(), res);
+							code = Api.runScriptAsRoot(ctx, listCommands, res);
 						} catch (IOException e) {
-							Api.alert(Rules.this, getString(R.string.error_flush),Api.TOASTTYPE.ERROR);
+							Api.alert(Rules.this, getString(R.string.error_flush));
 						}
 			   			if (code == -1) {
-			   				Api.alert(ctx, getString(R.string.error_purge) + code + "\n" + res,Api.TOASTTYPE.ERROR);
+			   				Api.alert(ctx, getString(R.string.error_purge) + code + "\n" + res);
 			   			}else {
 			   				Api.displayToasts(ctx, R.string.flushed, Toast.LENGTH_SHORT);
 			   			}
@@ -249,7 +291,7 @@ public class Rules extends SherlockActivity {
 				} catch (Exception ex) {
 				}
 				if (Api.clearLog(Rules.this)) {
-					MainActivity.displayToasts(Rules.this, R.string.log_cleared,
+					Api.displayToasts(Rules.this, R.string.log_cleared,
 							Toast.LENGTH_SHORT);
 					final EditText rulesText = (EditText)findViewById(R.id.rules);
 					rulesText.setText("");
@@ -257,6 +299,25 @@ public class Rules extends SherlockActivity {
 			}
 		};
 		handler.sendEmptyMessageDelayed(0, 100);
+	}
+	
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		final MenuItem item_onoff = menu.findItem(MENU_TOGGLE_LOG);
+		if(item_onoff != null) {
+			SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			final boolean logenabled = appprefs.getBoolean("enableFirewallLog",false);
+			if (logenabled) {
+				item_onoff.setTitle(R.string.disable_log);
+				item_onoff.setIcon(R.drawable.disable_log);
+			} else {
+				item_onoff.setTitle(R.string.enable_log);
+				item_onoff.setIcon(R.drawable.enable_log);
+			}
+		}
+		return super.onPrepareOptionsMenu(menu);
+ 		
 	}
 
 }

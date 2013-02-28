@@ -23,7 +23,6 @@
 package dev.ukanth.ufirewall;
 
 import android.Manifest;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -33,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -96,7 +96,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	//@SuppressWarnings("deprecation")
 	public void notifyApp(Context context, Intent intent2, String addedPackage) {
 		String ns = Context.NOTIFICATION_SERVICE;
 
@@ -104,22 +104,38 @@ public class PackageBroadcast extends BroadcastReceiver {
 				.getSystemService(ns);
 
 		int icon = R.drawable.notification_icon;
-		CharSequence tickerText = "Open AFWall+";
-		long when = System.currentTimeMillis();
+		
+		final int HELLO_ID = 24556;
 
 		Intent appIntent = new Intent(context, MainActivity.class);
+		PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
+		
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-		Notification notification = new Notification(icon, tickerText, when);
+		builder.setSmallIcon(icon)
+		            .setWhen(System.currentTimeMillis())
+		            .setAutoCancel(true)
+		            .addAction(R.drawable.on, "Enable", in)
+		            .addAction(R.drawable.off, "disable", in)
+		            .setContentTitle(context.getString(R.string.notification_title))
+		            .setContentText(context.getString(R.string.notification_new));
+		
+		//Notification n = builder.build();
+
+		//Notification notification = new Notification(icon, tickerText, when);
+		
+		builder.setContentIntent(in);
+		
+		/*notification.flags |= Notification.FLAG_AUTO_CANCEL
+				| Notification.FLAG_SHOW_LIGHTS;
 
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
 				appIntent, 0);
 
 		notification.setLatestEventInfo(context, tickerText,
-				context.getString(R.string.notification_new), contentIntent);
+				context.getString(R.string.notification_new), contentIntent);*/
 
-		final int HELLO_ID = 24556;
-
-		mNotificationManager.notify(HELLO_ID, notification);
+		mNotificationManager.notify(HELLO_ID, builder.build());
 
 	}
 

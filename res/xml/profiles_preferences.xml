@@ -1,0 +1,39 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    	<CheckBoxPreference
+        	android:key="enableMultiProfile"
+        	android:title="@string/multipleProfiles" />
+    
+    	<EditTextPreference
+                android:summary="@string/custom_title1"
+                android:title="@string/defaultProfile"
+                android:key="default"
+                android:dependency="enableMultiProfile" 
+                />
+    	<EditTextPreference
+                android:summary="@string/custom_title2"
+                android:title="@string/profile1"
+                android:key="profile1"
+                android:dependency="enableMultiProfile" />
+    	<EditTextPreference
+                android:summary="@string/custom_title3"
+                android:title="@string/profile2"
+                android:key="profile2"
+               android:dependency="enableMultiProfile" />
+    	<EditTextPreference
+                android:summary="@string/custom_title4"
+                android:title="@string/profile3"
+                android:key="profile3" 
+                android:dependency="enableMultiProfile"/>
+    	
+    	<!-- <CheckBoxPreference
+        	android:key="enableVPNProfile"
+        	android:title="@string/enable_vpn_profile"
+        	android:dependency="enableMultiProfile" />
+    	
+    	<EditTextPreference
+                android:summary="@string/vpn_profile"
+                android:title="@string/vpn_profile"
+                android:key="vpnProfile"
+                android:dependency="enableVPNProfile" /> -->
+    </PreferenceScreen>

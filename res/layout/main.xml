@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:duplicateParentState="false">
+<LinearLayout android:id="@+id/mainlayout" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:duplicateParentState="false">
 	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
 	<ListView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@android:id/list"
     android:layout_width="wrap_content" 
@@ -10,14 +10,15 @@
 	
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6px">
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/label_mode" android:text="@string/mode" android:clickable="true"></TextView>
-        <TextView android:id="@+id/text" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textIsSelectable="false"/>
 	</LinearLayout>
 	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
-	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="0px">
+	<LinearLayout android:id="@+id/dynamicColumns" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="0px">
 		<View android:layout_width="34dp" android:layout_height="fill_parent" android:id="@+id/imageHolder"/>
 		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_wifi" android:src="@drawable/eth_wifi" android:clickable="true"></ImageView>
 		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_3g" android:src="@drawable/eth_3g" android:clickable="true"></ImageView>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_roam" android:src="@drawable/roam" android:clickable="true"></ImageView>
+		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_roam" android:src="@drawable/roam" android:clickable="true" android:visibility="gone"></ImageView>
+		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_vpn" android:src="@drawable/img_vpn" android:clickable="true" android:visibility="gone"></ImageView>
 		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_invert" android:src="@drawable/invertmini" android:clickable="true"></ImageView>
 		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_reset" android:src="@drawable/clear" android:clickable="true"></ImageView>
 	</LinearLayout>

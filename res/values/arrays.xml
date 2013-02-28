@@ -11,4 +11,35 @@
         <item>@string/profile2</item>
         <item>@string/profile3</item>
     </string-array>
+    
+    <string-array name="supported_languages">
+        <item>English</item>
+        <item>German</item>
+        <item>French</item>
+        <item>Spanish</item>
+        <item>Dutch</item>
+        <item>Japanese</item>
+        <item>Ukrainian</item>
+        <item>Russian</item>
+        <item>Czech</item>
+        <item>Polish</item>
+        <item>Slovenian</item>
+        <item>Simplifed Chinese</item>
+    </string-array>
+    
+    <string-array name="supported_languages_code">
+        <item>en</item>
+        <item>de</item>
+        <item>fr</item>
+        <item>es</item>
+        <item>nl</item>
+        <item>jp</item>
+        <item>uk</item>
+        <item>ru</item>
+        <item>cs</item>
+        <item>pl</item>
+        <item>sl</item>
+        <item>zh_CN</item>
+    </string-array>
+
 </resources>

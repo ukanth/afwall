@@ -1,0 +1,72 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+        <CheckBoxPreference
+            android:key="notifyAppInstall"
+            android:summaryOn="@string/notify_pref_summary_on"
+            android:summaryOff="@string/notify_pref_summary_off"
+            android:title="@string/notify_pref_title" 
+            />
+      <!--   <CheckBoxPreference
+            android:key="showToast"
+            android:title="@string/toast_pref_title" 
+            android:summaryOn="@string/toast_pref_title_summary_on"
+            android:summaryOff="@string/toast_pref_title_summary_off"/> -->
+        
+        <CheckBoxPreference
+            android:key="disableIcons"
+            android:title="@string/hideicons_pref_title" 
+            android:summaryOn="@string/hideicons_pref_summary_on"
+            android:summaryOff="@string/hideicons_pref_summary_off"
+           />
+
+        
+        <CheckBoxPreference
+            android:key="enableConfirm"
+            android:title="@string/enableConfirmTitle" 
+            android:summaryOn="@string/enableConfirm_summary_on"
+            android:summaryOff="@string/enableConfirm_summary_off"
+            />
+        
+        <CheckBoxPreference
+            android:key="showUid"
+            android:title="@string/showUid"
+            android:summaryOn="@string/showuid_summary_on"
+            android:summaryOff="@string/showuid_summary_off"
+         />
+        
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="0xff000000"
+            android:key="sysColor"
+            android:title="@string/syscolor_pref_title"
+            android:summaryOn="@string/syscolor_pref_summary_on"
+            android:summaryOff="@string/syscolor_pref_summary_off" 
+          />
+        
+        <ListPreference 
+            android:entries="@array/supported_languages" 
+            android:entryValues="@array/supported_languages_code" 
+            android:title="@string/languages" 
+            android:key="locale"></ListPreference>
+        
+        <CheckBoxPreference
+            android:key="enableRoam"
+            android:title="@string/roaming"
+            android:summary="@string/roamingSummary"
+            android:defaultValue="true"
+         />
+        
+        <CheckBoxPreference
+            android:key="enableVPN"
+            android:title="@string/vpn_profile"
+            android:summary="@string/vpnSummary"
+            android:defaultValue="false"
+         />
+        
+        <CheckBoxPreference
+            android:key="disableTaskerToast"
+            android:title="@string/disable_toaster"
+            android:summary="@string/disableTasterSummary"
+            android:defaultValue="false"
+         />
+
+</PreferenceScreen>
+

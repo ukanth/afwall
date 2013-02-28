@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+** Copyright 2012 two forty four a.m. LLC <http://www.twofortyfouram.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at <http://www.apache.org/licenses/LICENSE-2.0>
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+-->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+
+    <!-- Menu item to cancel the result. This should set the Activity result to RESULT_CANCELED and immediately finish the Activity. -->
+
+    <item
+        android:id="@id/twofortyfouram_locale_menu_dontsave"
+        android:icon="@drawable/twofortyfouram_locale_ic_menu_dontsave"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/twofortyfouram_locale_menu_dontsave"/>
+
+    <!--
+         Menu item to save the result. This should set the Activity result to RESULT_OK, with proper blurb and bundle extras, 
+        and immediately finish the Activity.
+    -->
+
+    <item
+        android:id="@id/twofortyfouram_locale_menu_save"
+        android:icon="@drawable/twofortyfouram_locale_ic_menu_save"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/twofortyfouram_locale_menu_save"/>
+
+    <!-- Menu item to launch the Help. It should launch the web browser using ACTION_VIEW with the data set to a URL. -->
+
+    <item
+        android:id="@id/twofortyfouram_locale_menu_help"
+        android:icon="@drawable/twofortyfouram_locale_ic_menu_help"
+        android:showAsAction="never"
+        android:title="@string/twofortyfouram_locale_menu_help"/>
+
+</menu>

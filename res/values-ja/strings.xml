@@ -63,54 +63,39 @@
   <string name="preferences">設定</string>
   <string name="reload">アプリの再読み込み</string>
   <string name="flush">ルールをフラッシュ</string>
-  <string name="notify_pref_summary">有効にすると AFWall+ はアプリの新規インストールを監視し通知します</string>
-  <string name="notify_pref_title">アプリの新着を検知する</string>
-  <string name="toast_pref_title">代替通知機能を有効にする</string>
-  <string name="syscolor_pref_title">システムアプリの文字色</string>
+  <string name="notify_pref_summary_on">Notification will be sent on the new installation</string>
+  <string name="notify_pref_summary_off">No notification will be sent</string>
+  <string name="notify_pref_title">Enable Notification</string>
+  <string name="syscolor_pref_title">System Apps Color</string>
+  <string name="syscolor_pref_summary_on">Selected color will be shown for the system applications</string>
+  <string name="syscolor_pref_summary_off">Default Color</string>
   <string name="usb3g_pref_summary">USB 接続中は 3G 回線ルール適用の防止</string>
   <string name="usb3g_pref_title">USB 接続中の 3G 回線ルールの無効化</string>
   <string name="hideicons_pref_title">アプリのアイコンを隠す</string>
+  <string name="hideicons_pref_summary_on">This will improve the performance by disabling application icons on the main view</string>
+  <string name="hideicons_pref_summary_off">It will show the application icons on the main view</string>
   <string name="custom_script_defined">カスタムスクリプトは定義されました</string>
   <string name="custom_script_removed">カスタムスクリプトは削除されました</string>
   <string name="custom_script_error">カスタムスクリプトの保存に失敗しました</string>
-  <string name="custom_script_info"><b>下記にカスタムスクリプトを記入してください。</b>
-\n<i>(削除する場合は空白のまま)</i>
-\nカスタムスクリプトについての情報は <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">こちら</a>。</string>
-  <string name="custom_script2_info">\n<b>Firewall 停止時カスタムスクリプト</b>
-\nFirewall <b>停止時</b>に実行するカスタムスクリプトも定義できます。</string>
+  <string name="custom_script_info"><b>Enter your custom script bellow.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
+</string>
+  <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
   <string name="unsaved_changes">未保存の変更</string>
   <string name="unsaved_changes_message">未保存の変更があります。\n 変更を適用またはキャンセルしますか？</string>
   <string name="apply">適用</string>
   <string name="discard">キャンセル</string>
-  <string name="help_dialog_text"><i>開発者: Umakanthan Chandran (Original Author: Rodrigo Zechin Rosauro(DroidWall))</i>
-    \n<i>連絡先 - cumakt@gmail.com (@ukanth- Twitter)</i>
-\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
-\n<i>アイコン製作: hush66 (http://hush66.deviantart.com/)</i>
-\n
-\n<i>AFWall+ - Android Firewall</i> は、強力な Linux Firewall <i>iptables</i> を使用したフロントエンドアプリケーションです。
-AFWall+ は、あなたがインストールしたアプリケーションの通信制限を自由に設定できます。
-\nもしあなたの端末がデータ通信定額プランでは無い場合、または通信によるバッテリー消費を抑えたい場合などに最適です。
-\n
-\n<b>AFWall+ の使い方:</b>
-\n<b>1.</b> <b>モード</b>をタッチすることでホワイトリストまたはブラックリストのモード切替ができます。
-\n<b>2.</b> アプリをチェックすることにより、通信の許可または拒否を設定できます。
-\n<b>3.</b> メニューを開いて、 Firewall をオンにできます。既に Firewall がオンになっている場合は<b>ルールを適用</b>を選択してください。
-\n端末を再起動してもルールは保存されており、自動で復元されます。
-\n現在適用している iptables ルールの詳細を確認したい場合は、メニューを開いて<b>ルールを表示</b>を選択してください。
-\n
-\n<b>ウィジェット:</b>
-\nホーム画面に AFWall+ ウィジェットと置くことで、簡単に Firewall を 実行/停止 することができます。
-\n
-\n<b>Firewall 通信ログ</b>
-\nAFWall+ で設定したアプリによる通信を監視したい場合は、通信ログをオンにしてください。
-\n通信ログを確認したい場合はメニューを開いて<b>通信ログを表示する</b>を選択して下さい。
-\n
-\n<b>パスワードロック設定:</b>
-\nアプリケーションをパスワードでロックしたい場合はメニューにある<b>パスワード設定</b>を選択してください。
-\nパスワードの入力フォームを空白に設定することでパスワードを解除できます。
-\n
-\n日本語訳には意訳も含まれています。誤訳やtypoなどありましたら、公式の翻訳ツールで簡単に修正を提出できます。
-\nJapanese Translation by nnnn (Droidwall by Hiroki Ogawa)</string>
+  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b>Linux firewall.
+		It allows you to restrict which applications are permitted to access your data networks.
+		This is the perfect solution if you don\'t have an unlimited data plan, or just wants to see your battery lasting longer.\n\n\n
+<b> Help - </b> http://github.com/ukanth/afwall/wiki/Help \n
+<b>Frequently Asked Questions</b>  -https://github.com/ukanth/afwall/wiki/Help \n
+<b>Developer </b> - Umakanthan Chandran \n
+<a href="mailto:cumakt+afwall@gmail.com">Contact me</a>\n 
+<b>Twitter </b>- @ukanth \n
+<b>Project Homepage</b> - https://github.com/ukanth/afwall/\n
+<b>Credits \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
+<b>Icons  </b> - hush66 (http://hush66.deviantart.com/)\n
+</string>
   <string name="mode">モード:</string>
   <string name="showrules_title">iptables ルール</string>
   <string name="showlog_title">通信ログ</string>
@@ -130,7 +115,7 @@ AFWall+ は、あなたがインストールしたアプリケーションの通
   <string name="Search">検索</string>
   <string name="ifaces">ネットワーク・インタフェース</string>
   <string name="export_logs_fail">SD カードへのエクスポートに失敗!</string>
-  <string name="export_to_sd">SD カードへエクスポート</string>
+  <string name="export_to_sd">Export to SD Card</string>
   <string name="flushRulesConfirm">これは全てのルールをフラッシュします! 本当に実行しますか?</string>
   <string name="icsJBOnly">\"実験中! ICS/JB 端末用のルール \" の設定を解除してください。これは ICS/JB 端末専用です</string>
   <string name="overrideRules">これは既存のルールを上書きします! 本当にインポートしますか?</string>
@@ -138,7 +123,7 @@ AFWall+ は、あなたがインストールしたアプリケーションの通
   <string name="prefExperimentICSJB">実験中! Firewall が ICS/JB で動かない場合\"のみ\"有効にしてください!</string>
   <string name="prefExperimentICSJB_title">ICS/JB 端末用の代替ルール</string>
   <string name="notification_new">新しいアプリのインストールを検知しました</string>
-  <string name="multipleProfiles">マルチプロファイルを使用する</string>
+  <string name="multipleProfiles">Multi Profile を使用する</string>
   <string name="defaultProfile">デフォルト</string>
   <string name="profile1">プロファイル1</string>
   <string name="profile2">プロファイル2</string>
@@ -149,15 +134,66 @@ AFWall+ は、あなたがインストールしたアプリケーションの通
   <string name="customProfile3Summary">プロファイル3の名前を変更</string>
   <string name="enable_firewall_log">通信ログを有効にする</string>
   <string name="confirmMsg">これは Firewall を停止します! 本当に実行しますか?</string>
-  <string name="enableConfirmTitle">Firewall を停止するときは確認する</string>
-  <string name="usePattern">ロックにパターン入力を使用する</string>
-  <string name="showUid">アプリの UID を表示する</string>
+  <string name="enableConfirmTitle">Confirmbox on AFWall+ disable</string>
+  <string name="enableConfirm_summary_on">Firewall will be ask for confirmation before disable</string>
+  <string name="enableConfirm_summary_off">Firewall will be disabled without confirmation</string>
+  <string name="usePattern">パターンロックを使う</string>
+  <string name="showUid">アプリの UID を表示</string>
+  <string name="showuid_summary_on">Disable will hide UID\'s for each application in main view</string>
+  <string name="showuid_summary_off">Enable will show UID\'s for each application (useful to track logs)</string>
   <string name="resetPattern">ロックパターンを変更しますか？</string>
   <string name="delete">削除</string>
   <string name="Yes">はい</string>
   <string name="No">いいえ</string>
   <string name="Cancel">キャンセル</string>
-  <string name="exportConfirm">ルールを SD カードへ書き出しますか？</string>
+  <string name="exportConfirm">Do you want to export rules to SD Card ?</string>
   <string name="LogAppName">アプリ名</string>
   <string name="LogPackBlock">拒否した総通信量(パケット)</string>
+  <string name="notification_title">Open AFWall+</string>
+  <string name="enable_log">Enable Log</string>
+  <string name="disable_log">Disable Log</string>
+  <string name="ui_prefs_title">UI Preferences</string>
+  <string name="sec_prefs_title">Security Preferences</string>
+  <string name="exp_prefs_title">Experimental Preferences</string>
+  <string name="mp_prefs_title">Multiple Profile Preferences</string>
+  <string name="custom_title1">Custom name for Default Profile</string>
+  <string name="custom_title2">Custom name for Profile1</string>
+  <string name="custom_title3">Custom name for Profile2</string>
+  <string name="custom_title4">Custom name for Profile3</string>
+  <string name="fixleakTitle">Fix Startup Data Leak</string>
+  <string name="fixleakSummary">This will fix data leak before afwall starts\n Requires Init.d Support and S-OFF(HTC)!</string>
+  <string name="fixmobileLimit">Fix Mobile Data Limit Leak</string>
+  <string name="fixmobileLimitSummary">This will fix AFWall+ not work when \"Set mobile data limit\" option is enabled in Android. Also reapply after reboot and installation of any app</string>
+  <string name="success_initd">Succesfully copied script on startup</string>
+  <string name="remove_initd">Please delete afwallstart from /system/etc/init.d folder before uninstall afwall+</string>
+  <string name="unable_initd">Unable to find init.d directory. Please verify whether your ROM supports init.d</string>
+  <string name="enable_device_admin">Enable Device Admin</string>
+  <string name="device_admin_enabled">AFWall+ Device Admin Enabled</string>
+  <string name="device_admin_disabled">AFWall+ Device Admin Disabled</string>
+  <string name="device_admin_on_disable">Please goto device administrator settings to deactivate AFWall+</string>
+  <string name="status_running">Running</string>
+  <string name="alternateStartTitle">Fix Device Start Rules</string>
+  <string name="alternateStartSummary">This will fix AFWall+ will not apply rules on some devices (CM10.1) after device startup</string>
+  <string name="widget_disable_fail">Cannot disable firewall - password defined!</string>
+  <string name="import_rules_droidwall">Import DW Rules</string>
+  <string name="userAFWOnly">Activate Control Defense</string>
+  <string name="userAFWSummary">Enable this will make sure only AFWAll+ controls your outgoing traffic and no other firewalls!</string>
+  <string name="color_pick">Press on Color to apply</string>
+  <string name="toggle_enable">Enable Firewall</string>
+  <string name="toggle_disable">Disable Firewall</string>
+  <string name="toggle_default">Activate Default Profile</string>
+  <string name="toggle_profile1">Activate Profile 1</string>
+  <string name="toggle_profile2">Activate Profile 2</string>
+  <string name="toggle_profile3">Activate Profile 3</string>
+  <string name="languages">Languages</string>
+  <string name="roaming">Enable Roaming Control</string>
+  <string name="roamingSummary">Enable this will add additional feature of able to control internet while on roaming</string>
+  <string name="vpn_profile">Enable VPN Control</string>
+  <string name="vpnSummary">Enable this will add additional feature of able to control internet with VPN</string>
+  <string name="disable_toaster">Disable Tasker Toasts</string>
+  <string name="disableTasterSummary">This will disable toast messages on tasker plugin</string>
+  <string name="tasker_apply">Applying firewall rules</string>
+  <string name="tasker_disabled">Tasker: AFWall+ disabled!</string>
+  <string name="tasker_muliprofile">AFWall+ Tasker: multiprofile is disabled!</string>
+  <string name="startup_service">Applying Rules...Please wait!</string>
 </resources>

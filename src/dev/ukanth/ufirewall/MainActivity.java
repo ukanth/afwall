@@ -27,12 +27,12 @@ package dev.ukanth.ufirewall;
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.RejectedExecutionException;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -54,7 +54,6 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -79,10 +78,9 @@ import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
-import com.devspark.appmsg.AppMsg;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
-import dev.ukanth.ufirewall.Api.TOASTTYPE;
+import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  
 /**
  * Main application activity. This is the screen displayed when you open the
@@ -103,7 +101,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	/** indicates if the view has been modified and not yet saved */
 	private boolean dirty = false;
 	private String currentPassword = "";
-	
 	//private LayoutInflater inflater;
 
 	public String getCurrentPassword() {
@@ -125,7 +122,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
 			super.onCreate(savedInstanceState);
 			
 			try {
@@ -142,20 +138,31 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
-			this.findViewById(R.id.img_roam).setOnClickListener(this);
 			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			//this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			
-
+			
 			boolean disableIcons = prefs.getBoolean("disableIcons", false);
+			boolean enableVPN = prefs.getBoolean("enableVPN", false);
+			boolean enableRoam = prefs.getBoolean("enableRoam", true);
+			
 			if(disableIcons){
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
 			}
+			
+			if(enableRoam){
+				addColumns(R.id.img_roam);
+			}
+			
+			if(enableVPN){
+				addColumns(R.id.img_vpn);
+			}
+			
 
-			final boolean multimode = prefs.getBoolean("enableMultiProfile",false);
+			setupMultiProfile(prefs);
 			
 			if(Api.isEnabled(getApplicationContext())) {
 				getSupportActionBar().setIcon(R.drawable.widget_on);
@@ -163,38 +170,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				getSupportActionBar().setIcon(R.drawable.widget_off);
 			}
 			
-			if(multimode) {
-				mSelected = (TextView)findViewById(R.id.text);
-				final List<String> mlocalList = new ArrayList<String>(); 
-				mlocalList.add(prefs.getString("default", getString(R.string.defaultProfile)));
-				mlocalList.add(prefs.getString("profile1", getString(R.string.profile1)));
-				mlocalList.add(prefs.getString("profile2", getString(R.string.profile2)));
-				mlocalList.add(prefs.getString("profile3", getString(R.string.profile3)));
-				mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-				
-				
-			    //mLocations = getResources().getStringArray(R.array.profiles);	
-			    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
-			    	    this,
-			    	    R.layout.sherlock_spinner_item,
-			    	    mLocations);
-				/*ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
-						context, R.array.profiles, R.layout.sherlock_spinner_item);*/
-			    adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-		
-				getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-				getSupportActionBar().setListNavigationCallbacks(adapter, this);
-				
-				int position = prefs.getInt("storedPosition", -1);
-				if(position > -1) {
-					getSupportActionBar().setSelectedNavigationItem(position);
-					getSupportActionBar().setDisplayShowTitleEnabled(false);
-				}
-				getSupportActionBar().setDisplayUseLogoEnabled(true);
-			}
+			//language
+			String lang = prefs.getString("locale", Locale.getDefault().getDisplayLanguage());
+			Api.updateLanguage(getApplicationContext(), lang);
+			
 		    Api.assertBinaries(this, true);
 	}
 
+	private void addColumns(int id) {
+		ImageView view = (ImageView)this.findViewById(id);
+		view.setVisibility(View.VISIBLE);
+		view.setOnClickListener(this);
+	}
 	
 	@Override
 	protected void onResume() {
@@ -207,8 +194,45 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
 		
+		/*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		setupMultiProfile(prefs);*/
 		passCheck();
 		
+	}
+	
+	private void setupMultiProfile(SharedPreferences prefs){
+		final boolean multimode = prefs.getBoolean("enableMultiProfile",false);
+		
+		if(multimode) {
+			mSelected = (TextView)findViewById(R.id.text);
+			final List<String> mlocalList = new ArrayList<String>(); 
+			mlocalList.add(prefs.getString("default", getString(R.string.defaultProfile)));
+			mlocalList.add(prefs.getString("profile1", getString(R.string.profile1)));
+			mlocalList.add(prefs.getString("profile2", getString(R.string.profile2)));
+			mlocalList.add(prefs.getString("profile3", getString(R.string.profile3)));
+			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
+			
+			
+		    //mLocations = getResources().getStringArray(R.array.profiles);	
+		    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
+		    	    this,
+		    	    R.layout.sherlock_spinner_item,
+		    	    mLocations);
+			/*ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
+					context, R.array.profiles, R.layout.sherlock_spinner_item);*/
+		    adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+	
+			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			getSupportActionBar().setListNavigationCallbacks(adapter, this);
+			
+			int position = prefs.getInt("storedPosition", -1);
+			if(position > -1) {
+				getSupportActionBar().setSelectedNavigationItem(position);
+				getSupportActionBar().setDisplayShowTitleEnabled(false);
+			}
+			getSupportActionBar().setDisplayUseLogoEnabled(true);
+		
+		}
 	}
 	
 	private void passCheck(){
@@ -330,23 +354,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		} else {
 			msg = res.getString(R.string.passerror);
 		}
-		displayToasts(msg, Toast.LENGTH_SHORT);
+		Api.displayToasts(getApplicationContext(), msg, Toast.LENGTH_SHORT);
 	}
 
 
-	private void displayToasts(String msgText, int lengthShort) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(MainActivity.this);
-		boolean showToast = prefs.getBoolean("showToast", false);
-		if (showToast){
-			AppMsg msg = AppMsg.makeText((Activity)MainActivity.this,msgText,AppMsg.STYLE_INFO);
-			msg.setLayoutGravity(Gravity.BOTTOM);
-			msg.setDuration(AppMsg.LENGTH_SHORT);
-			msg.show();
-		} else {
-			Toast.makeText(getApplicationContext(), msgText, lengthShort).show();
-		}
-	}
 
 	/**
 	 * Request the password lock before displayed the main screen.
@@ -387,6 +398,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * If the applications are cached, just show them, otherwise load and show
 	 */
 	private void showOrLoadApplications() {
+		
 		final Resources res = getResources();
 		if (Api.applications == null) {
 			// The applications are not cached.. so lets display the progress
@@ -397,6 +409,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			new AsyncTask<Void, Void, Void>() {
 				@Override
 				protected Void doInBackground(Void... params) {
+					
 					Api.getApps(MainActivity.this);
 					return null;
 				}
@@ -416,13 +429,40 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 	}
 	
+	
+	class PackageComparator implements Comparator<PackageInfoData> {
+
+		@Override
+		public int compare(PackageInfoData o1, PackageInfoData o2) {
+			if (o1.firstseem != o2.firstseem) {
+				return (o1.firstseem ? -1 : 1);
+			}
+			if ((o1.selected_wifi | o1.selected_3g) == (o2.selected_wifi | o2.selected_3g)) {
+				return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());
+			}
+			if (o1.selected_wifi || o1.selected_3g)
+				return -1;
+			return 1;
+		}
+	}
+	
+	static class ViewHolder { 
+		private CheckBox box_wifi;
+		private CheckBox box_3g;
+		private CheckBox box_roam;
+		private CheckBox box_vpn;
+		private TextView text;
+		private ImageView icon;
+		private PackageInfoData app;
+	}
+	
 	/**
 	 * Show the list of applications
 	 */
 	private void showApplications(final String searchStr) {
 		this.dirty = false;
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
-		final PackageInfoData[] apps = Api.getApps(this);
+		final List<PackageInfoData> apps = Api.getApps(this);
 		if(!searchStr.equals("") && searchStr.length() > 0) {
 			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
@@ -432,133 +472,155 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 			}
 		}
+		final List<PackageInfoData> apps2 = searchApp.size() > 0 ? searchApp : apps;
 		
-		final PackageInfoData[] apps2 =  searchApp.size() > 0 ? searchApp.toArray(new PackageInfoData[searchApp.size()]) : apps; 
+		Collections.sort(apps2, new PackageComparator());
 		// Sort applications - selected first, then alphabetically
-		Arrays.sort(apps2, new Comparator<PackageInfoData>() {
-			@Override
-			public int compare(PackageInfoData o1, PackageInfoData o2) {
-				if (o1.firstseem != o2.firstseem) {
-					return (o1.firstseem ? -1 : 1);
-				}
-				if ((o1.selected_wifi | o1.selected_3g) == (o2.selected_wifi | o2.selected_3g)) {
-					return String.CASE_INSENSITIVE_ORDER.compare(o1.names[0],
-							o2.names[0]);
-				}
-				if (o1.selected_wifi || o1.selected_3g)
-					return -1;
-				return 1;
-			}
-		});
-		SharedPreferences prefs = PreferenceManager
+	
+		final SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(MainActivity.this);
+		
+		final boolean disableIcons = prefs.getBoolean("disableIcons", false);
+		final boolean showUid = prefs.getBoolean("showUid", false);
+		final boolean enableVPN = prefs.getBoolean("enableVPN", false);
+		final boolean enableRoam = prefs.getBoolean("enableRoam", true);
 		
 		final int color = (int)prefs.getInt("sysColor", Color.RED);
 		final int defaultColor = Color.WHITE;
 
 		final android.view.LayoutInflater inflater = getLayoutInflater();
-		final ListAdapter adapter = new ArrayAdapter<PackageInfoData>(this,
-				R.layout.listitem, R.id.itemtext, apps2) {
+		
+		final ListAdapter adapter = new ArrayAdapter<PackageInfoData>(this,R.layout.main_list,  R.id.itemtext, apps2) {
+			ApplicationInfo info;
+			
 			public View getView(final int position, View convertView,
 					ViewGroup parent) {
-				ListEntry entry;
+				ViewHolder holder;
 				if (convertView == null) {
 					// Inflate a new view
-					convertView = inflater.inflate(R.layout.listitem, parent,
+					convertView = inflater.inflate(R.layout.main_list, parent,
 							false);
-					Log.d("AFWall+", ">> inflate(" + convertView + ")");
-					entry = new ListEntry();
-					entry.box_wifi = (CheckBox) convertView
-							.findViewById(R.id.itemcheck_wifi);
-					entry.box_3g = (CheckBox) convertView
-							.findViewById(R.id.itemcheck_3g);
-					entry.box_roam = (CheckBox) convertView
-							.findViewById(R.id.itemcheck_roam);
+					//Log.d("AFWall+", ">> inflate(" + convertView + ")");
+					holder = new ViewHolder();
+					holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
+					holder.box_3g = (CheckBox) convertView.findViewById(R.id.itemcheck_3g);
 					
-					entry.text = (TextView) convertView
-							.findViewById(R.id.itemtext);
-					entry.icon = (ImageView) convertView
-							.findViewById(R.id.itemicon);
+					holder.box_wifi.setOnCheckedChangeListener(MainActivity.this);
+					holder.box_3g.setOnCheckedChangeListener(MainActivity.this);
 					
-					entry.box_wifi
-							.setOnCheckedChangeListener(MainActivity.this);
-					entry.box_3g.setOnCheckedChangeListener(MainActivity.this);
-					entry.box_roam.setOnCheckedChangeListener(MainActivity.this);
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-					boolean disableIcons = prefs.getBoolean("disableIcons", false);
+					if(enableRoam){
+						holder.box_roam = addSupport(holder.box_roam,convertView, true, R.id.itemcheck_roam);
+					}
+					if(enableVPN) {
+						holder.box_vpn = addSupport(holder.box_vpn,convertView, true, R.id.itemcheck_vpn);						
+					}
+					
+					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
+					holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
+					
 					if(disableIcons){
-						entry.icon.setVisibility(View.GONE);
+						holder.icon.setVisibility(View.GONE);
 						findViewById(R.id.imageHolder).setVisibility(View.GONE);
 					}
-					convertView.setTag(entry);
-					
+					convertView.setTag(holder);
 				} else {
 					// Convert an existing view
-					entry = (ListEntry) convertView.getTag();
-					entry.box_wifi = (CheckBox) convertView
-							.findViewById(R.id.itemcheck_wifi);
-					entry.box_3g = (CheckBox) convertView
-							.findViewById(R.id.itemcheck_3g);
-					entry.box_roam = (CheckBox) convertView
-							.findViewById(R.id.itemcheck_roam);
+					holder = (ViewHolder) convertView.getTag();
+					holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
+					holder.box_3g = (CheckBox) convertView.findViewById(R.id.itemcheck_3g);
 					
+					if(enableRoam){
+						addSupport(holder.box_roam,convertView,false, R.id.itemcheck_roam);
+					}
+					if(enableVPN) {
+						addSupport(holder.box_vpn,convertView,false, R.id.itemcheck_vpn);				
+					}
+					
+					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
+					holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
+					if(disableIcons){
+						holder.icon.setVisibility(View.GONE);
+						findViewById(R.id.imageHolder).setVisibility(View.GONE);
+					}
 				}
-				final PackageInfoData app = apps2[position];
-				entry.app = app;
 				
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-				boolean disableIcons = prefs.getBoolean("disableIcons", false);
-				boolean showUid = prefs.getBoolean("showUid", false);
+				holder.app = apps2.get(position);
 				
 				if(showUid){
-					entry.text.setText(app.toStringWithUID());
+					holder.text.setText(holder.app.toStringWithUID());
 				} else {
-					entry.text.setText(app.toString());
+					holder.text.setText(holder.app.toString());
 				}
 			
 				if(!disableIcons) {
-					entry.icon.setImageDrawable(app.cached_icon);	
+					holder.icon.setImageDrawable(holder.app.cached_icon);	
 				} else {
-					entry.icon.setVisibility(View.GONE);
+					holder.icon.setVisibility(View.GONE);
 					findViewById(R.id.imageHolder).setVisibility(View.GONE);	
 				}
-				ApplicationInfo info = app.appinfo;
+				
+				info = holder.app.appinfo;
 				if(info != null){
-					if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0 || app.pkgName.startsWith("dev.afwall")) {
-						entry.text.setTextColor(color);
+					if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+						holder.text.setTextColor(color);
 					} else {
-						entry.text.setTextColor(defaultColor);
+						holder.text.setTextColor(defaultColor);
 					}
-					entry.text.setHint(app.pkgName);
+					//entry.text.setHint(app.pkgName);
 				} 
+				
 				if(!disableIcons) {
-				if (!app.icon_loaded && app.appinfo != null) {
+				if (!holder.app.icon_loaded && holder.app.appinfo != null) {
 					// this icon has not been loaded yet - load it on a
 					// separated thread
 					try {
-						new LoadIconTask().execute(app, getPackageManager(),
+						new LoadIconTask().execute(holder.app, getPackageManager(),
 								convertView);
 					}catch (RejectedExecutionException r){
-						Log.d("Exception","Caught RejectedExecutionException");
 					}
 				  }
 				}
-				final CheckBox box_wifi = entry.box_wifi;
-				box_wifi.setTag(app);
-				box_wifi.setChecked(app.selected_wifi);
-				final CheckBox box_3g = entry.box_3g;
-				box_3g.setTag(app);
-				box_3g.setChecked(app.selected_3g);
+				holder.box_wifi.setTag(holder.app);
+				holder.box_wifi.setChecked(holder.app.selected_wifi);
+
+				holder.box_3g.setTag(holder.app);
+				holder.box_3g.setChecked(holder.app.selected_3g);
 				
-				final CheckBox box_roam = entry.box_roam;
-				box_roam.setTag(app);
-				box_roam.setChecked(app.selected_roam);
+				if(enableRoam){
+					holder.box_roam = addSupport(holder.box_roam,holder, holder.app, 0);
+				}
+				if(enableVPN) {
+					holder.box_vpn = addSupport(holder.box_vpn,holder, holder.app, 1);	
+				}
+				
 				return convertView;
 			}
+			
+			private CheckBox addSupport(CheckBox check,ViewHolder entry,PackageInfoData app, int flag ) {
+				check.setTag(app);
+				if(flag == 0) {
+					check.setChecked(app.selected_roam);	
+				} else {
+					check.setChecked(app.selected_vpn);
+				}
+				return check;
+			}
+			private CheckBox addSupport(CheckBox check, View convertView, boolean action, int id) {
+				check = (CheckBox) convertView.findViewById(id);
+				check.setVisibility(View.VISIBLE);
+				if(action){
+					check.setOnCheckedChangeListener(MainActivity.this);
+				}
+				return check;
+			}
 		};
+		
+		//change color
+		this.listview.setScrollingCacheEnabled(false);
 		this.listview.setAdapter(adapter);
 	}
 	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -572,14 +634,16 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		final MenuItem item_onoff = menu.findItem(R.id.menu_toggle);
 		final MenuItem item_apply = menu.findItem(R.id.menu_apply);
-		if (Api.isEnabled(this)) {
-			item_onoff.setTitle(R.string.fw_enabled);
-			item_onoff.setIcon(R.drawable.widget_on);
-			item_apply.setTitle(R.string.applyrules);
-		} else {
-			item_onoff.setTitle(R.string.fw_disabled);
-			item_onoff.setIcon(R.drawable.widget_off);
-			item_apply.setTitle(R.string.saverules);
+		if(item_onoff != null && item_apply != null){
+			if (Api.isEnabled(this)) {
+				item_onoff.setTitle(R.string.fw_enabled);
+				item_onoff.setIcon(R.drawable.widget_on);
+				item_apply.setTitle(R.string.applyrules);
+			} else {
+				item_onoff.setTitle(R.string.fw_disabled);
+				item_onoff.setIcon(R.drawable.widget_off);
+				item_apply.setTitle(R.string.saverules);
+			}
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -602,7 +666,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			System.exit(0);
 			return false;
 		case R.id.menu_help:
-			new HelpDialog(this).show();
+			showAbout();
 			return true;
 		case R.id.menu_setpwd:
 			setPassword();
@@ -663,9 +727,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
 			        		   Api.applications = null;
 			        		   showOrLoadApplications();
-			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/", Api.TOASTTYPE.INFO);
+			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 			        	   } else {
-			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail),Api.TOASTTYPE.ERROR);
+			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
 			   				}
 			           }
 			       })
@@ -677,12 +741,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			AlertDialog alert2 = builder.create();
 			alert2.show();
 			return true;
+			
 		default:
 	        return super.onOptionsItemSelected(item);
 		}
 	}
 	
 	
+
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
@@ -701,7 +767,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	};
 
 	private void showPreferences() {
-		startActivity(new Intent(this, PrefsActivity.class));
+		Intent i = new Intent(this, PreferencesActivity.class);
+		startActivityForResult(i, 2);
+		//startActivity(new Intent(this, PrefsActivity.class));
+	}
+	
+	private void showAbout() {
+		startActivity(new Intent(this, HelpActivity.class));
 	}
 
 	/**
@@ -709,14 +781,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(this);
-		Log.d("AFWall+", "Changing enabled status to: " + enabled);
+		//Log.d("AFWall+", "Changing enabled status to: " + enabled);
 		Api.setEnabled(this, enabled,true);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		if (enabled) {
 			final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
 			if(multimode) {
 				try {
-					if (!Api.hasRootAccess(MainActivity.this, true)) return;
 					Api.clearRules(MainActivity.this);
 				} catch (Exception e) {
 					Log.d("AFWall+", e.getLocalizedMessage());
@@ -763,7 +834,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					if(getCurrentPassword().equals((String) msg.obj)) {
 						setPassword((String) msg.obj);	
 					} else{
-						Api.alert(MainActivity.this,getString(R.string.settings_pwd_not_equal),TOASTTYPE.ERROR);
+						Api.alert(MainActivity.this,getString(R.string.settings_pwd_not_equal));
 					}
 				}
 				return false;
@@ -837,8 +908,24 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-	
+		
+		if (requestCode == 2) {
+			if(resultCode == RESULT_OK){
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+				Intent intent = getIntent();
+				/*if(data != null && data.getBooleanExtra("reset",false)){
+					final Editor edit = prefs.edit();
+					edit.putString(Api.PREF_VPN_PKG, "");
+					edit.commit();
+					Api.purgeVPNRules(getApplicationContext(), false);
+				}*/
+			    finish();
+			    String lang = prefs.getString("locale", Locale.getDefault().getDisplayLanguage());
+				Api.updateLanguage(getApplicationContext(), lang);
+			    startActivity(intent);
+			}
+		}
+		
 		if(isUsePattern()){
 			switch (requestCode) {
 			case _ReqCreatePattern:
@@ -868,7 +955,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			final String script2 = data.getStringExtra(Api.SCRIPT2_EXTRA);
 			setCustomScript(script, script2);
 		}
-		
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	/**
@@ -896,7 +983,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		} else {
 			msgid = R.string.custom_script_error;
 		}
-		displayToasts(MainActivity.this, msgid, Toast.LENGTH_SHORT);
+		Api.displayToasts(MainActivity.this, msgid, Toast.LENGTH_SHORT);
 		if (Api.isEnabled(this)) {
 			// If the firewall is enabled, re-apply the rules
 			applyOrSaveRules();
@@ -972,11 +1059,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				} catch (Exception ex) {
 				}
 				if (enabled) {
-					Log.d("AFWall+", "Applying rules.");
-					if(!Api.hasRootAccess(MainActivity.this,true)) return;
-					//if(!Api.isNetfilterSupported())return;
-					if (Api.applyIptablesRules(MainActivity.this, true)) {
-						displayToasts(MainActivity.this,
+					//Log.d("AFWall+", "Applying rules.");
+					if(Api.hasRootAccess(MainActivity.this,true) && Api.applyIptablesRules(MainActivity.this, true)){
+						Api.displayToasts(MainActivity.this,
 								R.string.rules_applied, Toast.LENGTH_SHORT);
 						getSupportActionBar().setIcon(R.drawable.widget_on);
 						if(mainMenu !=null) {
@@ -986,11 +1071,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 							
 							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
 							item_apply.setTitle(R.string.applyrules);
-						}
-						Api.setEnabled(getApplicationContext(), true, true);
-					} else {
-						Log.d("AFWall+", "Failed - Disabling firewall.");
-						displayToasts(MainActivity.this,
+						}	
+					}
+					 else {
+						//Log.d("AFWall+", "Failed - Disabling firewall.");
+						Api.displayToasts(MainActivity.this,
 								R.string.error_apply, Toast.LENGTH_SHORT);
 						Api.setEnabled(MainActivity.this, false, true);
 						getSupportActionBar().setIcon(R.drawable.widget_off);
@@ -1003,10 +1088,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						}
 					}
 				} else {
-					Log.d("AFWall+", "Saving rules.");
+					//Log.d("AFWall+", "Saving rules.");
 					Api.saveRules(MainActivity.this);
 					Api.setEnabled(getApplicationContext(), false, true);
-					displayToasts(MainActivity.this, R.string.rules_saved,
+					Api.displayToasts(MainActivity.this, R.string.rules_saved,
 							Toast.LENGTH_SHORT);
 				}
 				MainActivity.this.dirty = false;
@@ -1032,7 +1117,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				if (!Api.hasRootAccess(MainActivity.this,true)) return;
 				if (Api.purgeIptables(MainActivity.this, true)) {
 					Api.setEnabled(getApplicationContext(), false, true);
-					displayToasts(MainActivity.this, R.string.rules_deleted,
+					Api.displayToasts(MainActivity.this, R.string.rules_deleted,
 							Toast.LENGTH_SHORT);
 					getSupportActionBar().setIcon(R.drawable.widget_off);
 					if(mainMenu !=null) {
@@ -1074,12 +1159,19 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					this.dirty = true;
 				}
 				break;
+			case R.id.itemcheck_vpn:
+				if (app.selected_vpn != isChecked) {
+					app.selected_vpn = isChecked;
+					this.dirty = true;
+				}
+				break;
 			}
 		}
 	}
 
 	@Override
 	public void onClick(View v) {
+		
 		switch (v.getId()) {
 		case R.id.label_mode:
 			selectMode();
@@ -1096,6 +1188,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case R.id.img_invert:
 			selectRevert();
 			break;
+		case R.id.img_vpn:
+			selectAllVPN();
+			break;
 		case R.id.img_reset:
 			clearAll();
 			break;
@@ -1105,6 +1200,17 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 	}
 	
+	private void selectAllVPN() {
+		ListAdapter adapter = listview.getAdapter();
+		int count = adapter.getCount(), item;
+		for (item = 0; item < count; item++) {
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+			data.selected_vpn = true;
+			this.dirty = true;
+		}
+		((BaseAdapter) adapter).notifyDataSetChanged();
+	}
+
 	private void selectRevert(){
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
@@ -1113,6 +1219,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			data.selected_wifi = !data.selected_wifi;
 			data.selected_3g = !data.selected_3g;
 			data.selected_roam = !data.selected_roam;
+			data.selected_vpn = !data.selected_vpn;
 			this.dirty = true;
 		}
 		((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1137,6 +1244,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			data.selected_wifi = false;
 			data.selected_3g = false;
 			data.selected_roam = false;
+			data.selected_vpn = false;
 			this.dirty = true;
 		}
 		((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1183,6 +1291,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 		
+		/*if (keyCode == KeyEvent.KEYCODE_SEARCH && event.getRepeatCount() == 0) {
+			mainMenu.getItem(R.id.searchApps).expandActionView();
+            return true;
+	     }*/
 		/*if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
 			switch (keyCode) {
@@ -1257,7 +1369,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				// This is executed in the UI thread, so it is safe to use
 				// viewToUpdate.getTag()
 				// and modify the UI
-				final ListEntry entryToUpdate = (ListEntry) viewToUpdate
+				final ViewHolder entryToUpdate = (ViewHolder) viewToUpdate
 						.getTag();
 				entryToUpdate.icon
 						.setImageDrawable(entryToUpdate.app.cached_icon);
@@ -1265,32 +1377,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				Log.e("AFWall+", "Error showing icon", e);
 			}
 		};
-	}
-
-	public static void displayToasts(Context context, int resId, int duration) {
-		SharedPreferences prefs =PreferenceManager
-				.getDefaultSharedPreferences(context) ;
-		boolean showToast = prefs.getBoolean("showToast", false);
-		if (showToast){
-			AppMsg msg = AppMsg.makeText((Activity)context,resId,AppMsg.STYLE_INFO);
-			msg.setLayoutGravity(Gravity.BOTTOM);
-			msg.setDuration(AppMsg.LENGTH_SHORT);
-			msg.show();
-		} else {
-			Toast.makeText(context, resId, duration).show();
-		}
-	}
-
-	/**
-	 * Entry representing an application in the screen
-	 */
-	private static class ListEntry {
-		private CheckBox box_wifi;
-		private CheckBox box_3g;
-		private CheckBox box_roam;
-		private TextView text;
-		private ImageView icon;
-		private PackageInfoData app;
 	}
 
 	@Override
@@ -1335,6 +1421,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		return prefs.getBoolean("usePatterns", false);
 	}
+	
 
 }
 

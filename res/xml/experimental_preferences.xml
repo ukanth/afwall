@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+        <CheckBoxPreference
+            android:key="fixLeak"
+            android:title="@string/fixleakTitle"
+            android:summary="@string/fixleakSummary" />
+       <!--  <CheckBoxPreference
+            android:key="mobiledataLimit"
+            android:title="@string/fixmobileLimit"
+            android:summary="@string/fixmobileLimitSummary" /> -->
+         <CheckBoxPreference
+            android:key="alternateStart"
+            android:title="@string/alternateStartTitle"
+            android:summary="@string/alternateStartSummary" />
+        
+</PreferenceScreen>

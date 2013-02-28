@@ -7,22 +7,22 @@
   <string name="blacklist_array_item">Blacklist(blockiere ausgewählte)</string>
   <string name="showrules">Zeige Regeln</string>
   <string name="applyrules">Anwenden</string>
-  <string name="saverules">Speichere</string>
+  <string name="saverules">Speichern</string>
   <string name="purgerules">Regeln säubern</string>
   <string name="setpwd">Passwort setzen</string>
   <string name="help">Hilfe</string>
   <string name="close">Schließen</string>
   <string name="exit">Beenden</string>
-  <string name="error_flush">Fehler beim säubern der iptables</string>
-  <string name="error_purge">Fehler beim säubern der iptables. Fehlercode:</string>
-  <string name="error_binary">Fehler beim installieren der Binärdateien:</string>
-  <string name="error_refresh">Fehler beim erneuern der iptables: </string>
-  <string name="error_apply">Fehler beim Anwenden der iptables Regeln. Fehlercode: </string>
-  <string name="error_su">Konnte keine Rootrechte erwerben.\n Sie benötigen ein gerootetes Handy um AFWall+ laufen zu lassen.\n\n Wenn das Handy bereits gerootet ist, stellen sie bitte sicher das AFWall+ ausreichen Rechte besitzt um \"su\" ausführen zu können.\n</string>
+  <string name="error_flush">Fehler beim Säubern der IPTtables</string>
+  <string name="error_purge">Fehler beim Säubern der IPTtables. Fehlercode:</string>
+  <string name="error_binary">Fehler beim Installieren der Binärdateien:</string>
+  <string name="error_refresh">Fehler beim Erneuern der IPTables: </string>
+  <string name="error_apply">Fehler beim Anwenden der IPTables-Regeln. Fehlercode: </string>
+  <string name="error_su">Konnte keine Rootrechte erwerben.\n Sie benötigen ein gerootetes Gerät um AFWall+ zu nutzen.\n\n Wenn das Gerät bereits gerootet ist, stellen Sie bitte sicher, das AFWall+ ausreichend Rechte besitzt, um \"su\" ausführen zu können.\n</string>
   <string name="error_common">Fehler: </string>
-  <string name="all_item">(Alle Apps) - Gleiche wie markiere alle Apps</string>
-  <string name="root_item">(Root) - Apps die Root-rechte benötigen</string>
-  <string name="operation_timeout">Anwendungs Time-Out</string>
+  <string name="all_item">(Alle Apps) - Gleiche wie alle Apps markieren</string>
+  <string name="root_item">(Root) - Apps die Root-Rechte benötigen</string>
+  <string name="operation_timeout">Zeitüberschreitung des Vorgangs</string>
   <string name="fw_enabled">Aktiviert</string>
   <string name="fw_disabled">Deaktiviert</string>
   <string name="log_enabled">Logging aktiviert</string>
@@ -33,21 +33,21 @@
   <string name="flushed">Regeln gesäubert</string>
   <string name="show_log">Zeige Log</string>
   <string name="clear_log">Lösche Log</string>
-  <string name="applying_rules">Iptables Regel(n) angewendet.</string>
-  <string name="saving_rules">Iptables Regel(n) gespeichert.</string>
-  <string name="deleting_rules">Iptables Regel(n) gelöscht.</string>
+  <string name="applying_rules">IPTables Regel(n) anwenden.</string>
+  <string name="saving_rules">Speichere IPtables Regel(n).</string>
+  <string name="deleting_rules">IPTables Regel(n) löschen.</string>
   <string name="rules_applied">Regeln wurden erfolgreich angewendet</string>
   <string name="rules_saved">Regeln wurden erfolgreich gespeichert</string>
   <string name="rules_deleted">Regeln wurden erfolgreich gelöscht</string>
   <string name="pass_titleset">Setze Passwortsperre</string>
   <string name="pass_titleget">Passwort benötigt</string>
   <string name="enterpass">Passwort eingeben:</string>
-  <string name="error_write_pref">Fehler beim schreiben der Einstellungen</string>
-  <string name="enternewpass">Neues Passwort eingeben (Leer lassen für Reset):</string>
+  <string name="error_write_pref">Fehler beim Schreiben der Einstellungen</string>
+  <string name="enternewpass">Neues Passwort eingeben (Leer lassen für Löschen):</string>
   <string name="reenternewpass">Bitte Passwort erneut eingeben :</string>
   <string name="passdefined">Passwortsperre definiert</string>
   <string name="passremoved">Passwortsperre entfernt</string>
-  <string name="passerror">Fehler beim ändern der Passwortsperre</string>
+  <string name="passerror">Fehler beim Ändern der Passwortsperre</string>
   <string name="working">Verarbeite...</string>
   <string name="reading_apps">Lese installierte Apps ein</string>
   <string name="please_wait">Bitte warten</string>
@@ -56,61 +56,36 @@
   <string name="mode_blacklist">Blacklist(blockiere ausgewählte)</string>
   <string name="toast_bin_installed">AFWall+: Binärdatein installiert!</string>
   <string name="toast_enabled">AFWall+: Firewall aktiviert!</string>
-  <string name="toast_error_enabling">AFWall+: Fehler beim aktivieren der Firewall!</string>
-  <string name="toast_disabled">AFWall+: Firewall deaktiviert!</string>
-  <string name="toast_error_disabling">AFWall+: Fehler beim deaktivieren der Firewall!</string>
+  <string name="toast_error_enabling">AFWall+: Fehler beim Aktivieren der Firewall!</string>
+  <string name="toast_disabled">AFWall+: Firewall Deaktiviert!</string>
+  <string name="toast_error_disabling">AFWall+: Fehler beim Deaktivieren der Firewall!</string>
   <string name="set_custom_script">Setze eigenes Skript</string>
   <string name="preferences">Eigenschaften</string>
   <string name="reload">Apps erneut laden</string>
   <string name="flush">Regeln erneuern</string>
-  <string name="notify_pref_summary">Die Aktivierung erlaubt es AFWall+ sie bei neuen Installationen zu benachrichtigen</string>
-  <string name="notify_pref_title">Benachrichtung bei neuen Installationen</string>
-  <string name="toast_pref_title">Aktivieren alternative Toast Meldungen</string>
-  <string name="syscolor_pref_title">Hebe System-Apps hervor</string>
+  <string name="notify_pref_summary_on">Die Benachrichtigung wird zur neuen Installation gesendet</string>
+  <string name="notify_pref_summary_off">Keine Benachrichtigung wird gesendet</string>
+  <string name="notify_pref_title">Benachrichtigung aktivieren</string>
+  <string name="syscolor_pref_title">System-Apps Farbe</string>
+  <string name="syscolor_pref_summary_on">Ausgewählte Farbe wird für System-Anwendungen angezeigt</string>
+  <string name="syscolor_pref_summary_off">Standardfarbe</string>
   <string name="usb3g_pref_summary">Verhindert das AFWall+ 3G-Regeln anwendet wenn USB-Thethering verwendet wird</string>
   <string name="usb3g_pref_title">Deaktiviere 3G-Regeln falls USB-Thethering verwendet wird</string>
-  <string name="hideicons_pref_title">Verstecke App-Icons</string>
+  <string name="hideicons_pref_title">Verstecke App-Symbole</string>
+  <string name="hideicons_pref_summary_on">Indem Sie die Programmsymbole in der Hauptansicht deaktivieren, wird die Leistung verbessert</string>
+  <string name="hideicons_pref_summary_off">Es werden die Programmsymbole in der Hauptansicht angezeigt</string>
   <string name="custom_script_defined">Eigenes Skript definiert</string>
   <string name="custom_script_removed">Eigenes Script entfernt</string>
-  <string name="custom_script_error">Fehler beim speichern des eigenen Skript</string>
-  <string name="custom_script_info"><b>Gebe dein eigenes Skript unten ein.</b>
-		\n<i>(Leer lassen für Reset)</i>
-		\nFür mehr Informationen über eigene Skripte, klicke <a href="http://code.google.com/p/droidwall/wiki/CustomScripts">hier</a>.
-    	</string>
-  <string name="custom_script2_info">
-    	\n<b>Eigenes Shutdown Skript</b>
-    	\nDu kannst eigene Skripte ausführen wenn die Firewall <b>deaktiviert</b> ist:</string>
+  <string name="custom_script_error">Fehler beim Speichern des eigenen Skripts</string>
+  <string name="custom_script_info"><b>Geben Sie Ihr benutzerdefiniertes Skript ein.</b>\n<i>(Leer für entfernen)</i>\nFür Informationen über benutzerdefinierte Skripts, klicken Sie  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">hier</a>.
+</string>
+  <string name="custom_script2_info">     \n<b>Benutzerdefiniertes Shutdown-Skript</b>\nSie können auch ein benutzerdefiniertes Skript festlegen, das ausgeführt wird, wenn die Firewall <b>deaktiviert</b> ist:</string>
   <string name="unsaved_changes">Ungespeicherte Änderungen</string>
-  <string name="unsaved_changes_message">Du hast ungespeicherte Änderungen.\nWillst du sie speichern oder verwerfen?</string>
+  <string name="unsaved_changes_message">Sie haben ungesicherte Änderungen.\nMöchten Sie diese speichern oder verwerfen?</string>
   <string name="apply">Anwenden</string>
   <string name="discard">Verwerfen</string>
-  <string name="help_dialog_text"><i>Entwickler: Umakanthan Chandran (Original Author: Rodrigo Zechin  Rosauro(DroidWall)</i>
-		\n<i>Kontaktiert mich unter - cumakt@gmail.com (@ukanth- Twitter)</i>
-		\n<i><a href="https://github.com/ukanth/afwall/">https://github.com/ukanth/afwall/</a></i>
-		\n
-		\n<i>AFWall+ - Android Firewall</i> ist eine Front-End Anwendung die <b>Iptables</b> basierend auf der Linux Firewall regelt.
-		Es ermöglicht dir, Datenverkehr zu beschränken, erlauben oder zu verbieten.
-		\nDas ist die ideale Lösung falls du keine Datenflatrate hast, oder deine Batterie schonen möchtest indem du Hintergrundsycronisierungen blockierst.
-		\n
-		\n<b>AFWall+ Nutzungshinweise:</b>
-		\n<b>1.</b> Klicke auf <b>Modus</b> um zwischen dem <i>Whitelist-Modus</i> oder <i>Blacklist-Modus</i> zu wechseln.
-		\n<b>2.</b> Wähle üder das Interface die App aus die du blockieren oder erlauben möchtest(je nachdem welcher Modus aktiviert ist).
-		\n<b>3.</b> Öffne das menü und aktiviere die Firewall. Wenn die Firewall bereits aktiviert wurde klicke auf <b>Regeln anwenden</b>.
-		\nDie Regeln werden gespeichert und automatisch wiederhergestellt wenn du dein Handy neustartest.
-		\nWenn du alle Iptables-Regeln überprüfen möchtest, klicke auf <b>Zeige Regeln</b> im oberen Menü.
-		\n
-		\n<b>Widget:</b>
-		\nUm die Firewall schnell zu aktivieren oder deaktivieren, füge das AFWall+ Widget zu deinem Homescreen hinzu.
-		\n
-		\n<b>Firewall Logs:</b>
-		\nWenn du sehen möchtest welche Apps AFWall+ geblockt hat, öffne das Menü und aktiviere die Logging-Funktion.
-		\nAFWall+ wird dann alle blockierten Apps aufzeichnen. Du kannst die Log kontrollieren indem du du das obere menü öffnest und auf <b>Mehr -&gt; Zeige Log</b> klickst.
-		\n
-		\n<b>Passwortsperre:</b>
-		\nDu kannst eine Passwortsperre für AFWall+ aktivieren indem du <b>Setze Passwort</b> im oberen Menü aktivierst.
-		\nUm die Passwortsperre zu entfernen, lasse das Eingabefeld leer und bestätige anschließend mit OK.
-	</string>
-  <string name="empty"> </string>
+  <string name="help_dialog_text"><i>\n\nAFWall+ - Android-Firewall</i> ist eine Front-End-Anwendung für die leistungsfähige <b>IPTables</b> Linux-Firewall. Es erlaubt Ihnen den Zugriff auf Ihre Datennetzte durch Programme zuverlässig zu beschränken. Dies ist die perfekte Lösung, wenn Sie keinen unbegrenzten Datentarif haben oder einfach nur Ihre Batterie schonen möchten.\n\n\n <b>Hilfe</b> - http://github.com/ukanth/afwall/wiki/Help\n<b>FAQ</b> - https://github.com/ukanth/afwall/wiki/Help\n<b>Entwickler</b> - Umakanthan Chandran\n<b>Kontakt</b> - <a href="mailto:cumakt+afwall@gmail.com">cumakt+afwall@gmail.com</a>\n<b>Twitter</b> - @ukanth\n<b>Webseite</b> - https://github.com/ukanth/afwall/\n <b>Credits\n\n</b><b>DroidWall</b> - Rodrigo Zechin Rosauro\n<b>Symbole</b> - hush66 (http://hush66.deviantart.com/)\n
+</string>
   <string name="mode">Modus: </string>
   <string name="showrules_title">IPtables Regeln</string>
   <string name="showlog_title">Zeige Log</string>
@@ -121,43 +96,94 @@
   <string name="export_rules">Exportiere Regeln</string>
   <string name="import_rules">Importiere Regeln</string>
   <string name="export_rules_success">Regeln erfolgreich exportiert unter </string>
-  <string name="export_rules_fail">Fehler beim Regeln exportieren!</string>
-  <string name="import_rules_success">Regeln erfolgreich importiert unter </string>
-  <string name="import_rules_fail">Fehler beim import der Regeln!</string>
+  <string name="export_rules_fail">Fehler beim Exportieren der Regeln!</string>
+  <string name="import_rules_success">Regeln erfolgreich importiert von</string>
+  <string name="import_rules_fail">Fehler beim Import der Regeln!</string>
   <string name="no_log">Log ist leer</string>
-  <string name="copy">Kopiere</string>
+  <string name="copy">Kopieren</string>
   <string name="copied">Kopiert</string>
-  <string name="Search">Suche</string>
+  <string name="Search">Suchen</string>
   <string name="ifaces">Netzwerkschnittstellen</string>
-  <string name="export_logs_fail">Exportieren Um SD fehlgeschlagen!</string>
-  <string name="export_to_sd">Exportieren SDCard</string>
-  <string name="flushRulesConfirm">Dies wird bündig alle iptables rules! Möchten Sie den Vorgang fortsetzen?</string>
-  <string name="icsJBOnly">Bitte deaktivieren Sie die Option \'Experiment Regeln für ICS/JB-Geräte \'. Seine nur für ICS/JB-Geräte</string>
-  <string name="overrideRules">Dies überschreibt die bestehenden Regeln! Wollen Sie die Regeln zu importieren?</string>
-  <string name="prefLocalmode">Lassen Inbound / Outbound Verbindungen nur von localhost und Port 22 (ssh)</string>
-  <string name="prefExperimentICSJB">EXPERIMENT! Nur aktivieren, wenn Firewall funktioniert nicht auf Ihrem ICS / JB-Geräte!</string>
-  <string name="prefExperimentICSJB_title">Alternate Regeln für ICS / JB-Geräte</string>
+  <string name="export_logs_fail">Export zu SD fehlgeschlagen!</string>
+  <string name="export_to_sd">Auf SD-Karte exportieren</string>
+  <string name="flushRulesConfirm">Dies leert alle IPTables-Regeln! Möchten Sie fortfahren?</string>
+  <string name="icsJBOnly">Bitte deaktivieren Sie die Option \'Experimentelle Regeln für ICS/JB-Geräte \'. Nur für ICS/JB-Geräte</string>
+  <string name="overrideRules">Dies überschreibt die vorhandenen Regeln! Möchten Sie die Regeln importieren?</string>
+  <string name="prefLocalmode">Eingehende/ausgehende Verbindungen nur von Localhost und Port 22 (ssh) zulassen</string>
+  <string name="prefExperimentICSJB">EXPERIMENTELL! Nur aktivieren wenn die Firewall nicht auf Ihrem ICS/JB-Gerät funktioniert!</string>
+  <string name="prefExperimentICSJB_title">Alternative Regeln für ICS/JB-Geräte</string>
   <string name="notification_new">Neue Anwendung installiert.</string>
-  <string name="multipleProfiles">Aktivieren Multiple Profile</string>
+  <string name="multipleProfiles">Mehrere Profile aktivieren</string>
   <string name="defaultProfile">Standard</string>
-  <string name="profile1">Profile1</string>
-  <string name="profile2">Profile2</string>
-  <string name="profile3">Profile3</string>
-  <string name="defaultProfileSummary">Benutzerdefinierte Namen für Default Profile</string>
-  <string name="customProfile1Summary">Benutzerdefinierte Namen für profile1</string>
-  <string name="customProfile2Summary">Benutzerdefinierte Namen für profile2</string>
-  <string name="customProfile3Summary">Benutzerdefinierte Namen für profile3</string>
-  <string name="enable_firewall_log">Firewall aktivieren Logs</string>
-  <string name="confirmMsg">Dies wird Firewall deaktivieren! Möchten Sie den Vorgang fortsetzen?</string>
-  <string name="enableConfirmTitle">Confirmbox auf Firewall deaktivieren</string>
-  <string name="usePattern">Verwenden Sie Lockpattern anstelle von Passwort</string>
-  <string name="showUid">UID für apps anzeigen</string>
-  <string name="resetPattern">Möchten Sie die Lockpattern zurücksetzen?</string>
+  <string name="profile1">Profil1</string>
+  <string name="profile2">Profil2</string>
+  <string name="profile3">Profil3</string>
+  <string name="defaultProfileSummary">Benutzerdefinierter Name für Standard-Profil</string>
+  <string name="customProfile1Summary">Benutzerdefinierter Name für Profil1</string>
+  <string name="customProfile2Summary">Benutzerdefinierter Name für Profil2</string>
+  <string name="customProfile3Summary">Benutzerdefinierter Name für Profil3</string>
+  <string name="enable_firewall_log">Aktivieren der Firewall-Logs</string>
+  <string name="confirmMsg">Dadurch wird die Firewall deaktiviert! Möchten Sie fortfahren?</string>
+  <string name="enableConfirmTitle">Confirmbox auf AFWall+ deaktivieren</string>
+  <string name="enableConfirm_summary_on">Firewall fragt vor Deaktivierung nach Bestätigung</string>
+  <string name="enableConfirm_summary_off">Firewall wird ohne Bestätigung deaktiviert</string>
+  <string name="usePattern">Sperrmuster anstelle eines Passworts verwenden</string>
+  <string name="showUid">UID für Apps anzeigen</string>
+  <string name="showuid_summary_on">Ausgeschaltet werden UIDs für jede Anwendung in der Hauptansicht ausgeblendet</string>
+  <string name="showuid_summary_off">Eingeschaltet werden UIDs für jede Anwendung in der Hauptansicht eingeblendet (nützlich, um Protokolle zu verfolgen)</string>
+  <string name="resetPattern">Möchten Sie das Sperrmuster zurücksetzen?</string>
   <string name="delete">Löschen</string>
   <string name="Yes">Ja</string>
-  <string name="No">Nr</string>
+  <string name="No">Nein</string>
   <string name="Cancel">Abbrechen</string>
-  <string name="exportConfirm">Möchten Sie die Richtlinien in SD card zu exportieren?</string>
-  <string name="LogAppName">Name der Anwendung</string>
-  <string name="LogPackBlock">Pakete insgesamt blockiert</string>
+  <string name="exportConfirm">Möchten Sie die Regeln auf die SD-Karte exportieren?</string>
+  <string name="LogAppName">Anwendungsname</string>
+  <string name="LogPackBlock">Gesamt blockierte Pakete</string>
+  <string name="notification_title">AFWall+ öffnen</string>
+  <string name="enable_log">Protokoll aktivieren</string>
+  <string name="disable_log">Protokoll deaktivieren</string>
+  <string name="ui_prefs_title">UI-Einstellungen</string>
+  <string name="sec_prefs_title">Sicherheitseinstellungen</string>
+  <string name="exp_prefs_title">Experimentelle Einstellungen</string>
+  <string name="mp_prefs_title">Mehr-Profil Einstellungen</string>
+  <string name="custom_title1">Benutzerdefinierter Name für Standard-Profil</string>
+  <string name="custom_title2">Benutzerdefinierter Name für Profil1</string>
+  <string name="custom_title3">Benutzerdefinierter Name für Profil2</string>
+  <string name="custom_title4">Benutzerdefinierter Name für Profil3</string>
+  <string name="fixleakTitle">Start - Datenleck Fix</string>
+  <string name="fixleakSummary">Datenleck Fix bevor Afwall+ startet\n Erfordert Init.d-Unterstützung und S-OFF (HTC)!</string>
+  <string name="fixmobileLimit">Mobiles Daten-Limit-Leck Fix</string>
+  <string name="fixmobileLimitSummary">Dies behebt AFWall + nicht funktioniert wenn \"Mobile Daten-Limit setzen\" Option in Android aktiviert ist. Auch nach Neustart und Installation von jeder app erneut anwenden</string>
+  <string name="success_initd">Start-Skript erfolgreich kopiert</string>
+  <string name="remove_initd">Bitte löschen Sie die Datei afwallstart aus dem Ordner /system/etc/init.d bevor Sie Afwall+ deinstallieren</string>
+  <string name="unable_initd">Verzeichnis init.d nicht gefunden! Überprüfen Sie, ob Ihr ROM init.d unterstützt</string>
+  <string name="enable_device_admin">Geräte-Admin aktivieren</string>
+  <string name="device_admin_enabled">AFWall+ Geräte-Admin aktiviert</string>
+  <string name="device_admin_disabled">AFWall + Gerät Admin deaktiviert</string>
+  <string name="device_admin_on_disable">Bitte in die Geräte-Administrator Einstellungen gehen, um AFWall+ zu deaktivieren</string>
+  <string name="status_running">Aktiv</string>
+  <string name="alternateStartTitle">Gerätestart Regel Fix</string>
+  <string name="alternateStartSummary">Dies behebt bei manchen Geräten (CM10.1) das Problem beim Anwenden der Regeln nach einem Start</string>
+  <string name="widget_disable_fail">Firewall kann nicht deaktiviert werden - Passwort festgelegt!</string>
+  <string name="import_rules_droidwall">DW Regeln importieren</string>
+  <string name="userAFWOnly">Kontroll-Verteidigung aktivieren</string>
+  <string name="userAFWSummary">Aktiviert stellt dies sicher das nur AFWall+ Ihren ausgehenden Verkehr kontrolliert und keine andere Firewall!</string>
+  <string name="color_pick">Auf Farbe tippen zum Anwenden</string>
+  <string name="toggle_enable">Firewall aktivieren</string>
+  <string name="toggle_disable">Firewall deaktivieren</string>
+  <string name="toggle_default">Standard-Profil aktivieren</string>
+  <string name="toggle_profile1">Profil 1 aktivieren</string>
+  <string name="toggle_profile2">Profil 2 aktivieren</string>
+  <string name="toggle_profile3">Profil 3 aktivieren</string>
+  <string name="languages">Sprachen</string>
+  <string name="roaming">Roaming-Steuerung aktivieren</string>
+  <string name="roamingSummary">Aktiviert ermöglicht dies zusätzliche Funktionen zur Steuerung während Roaming</string>
+  <string name="vpn_profile">VPN-Steuerung aktivieren</string>
+  <string name="vpnSummary">Aktiviert ermöglicht dies zusätzliche Funktionen zur Steuerung von VPN</string>
+  <string name="disable_toaster">Tasker-Popup ausschalten</string>
+  <string name="disableTasterSummary">Dadurch werden Popup-Nachrichten des Tasker-Plugin deaktiviert</string>
+  <string name="tasker_apply">Firewall-Regeln anwenden</string>
+  <string name="tasker_disabled">Tasker: AFWall+ deaktiviert!</string>
+  <string name="tasker_muliprofile">AFWall+ Tasker: Multiprofil ist deaktiviert!</string>
+  <string name="startup_service">Regeln werden angewendet! Bitte warten...</string>
 </resources>
