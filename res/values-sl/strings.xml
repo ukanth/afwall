@@ -5,8 +5,8 @@
   <string name="title_disabled">AFWall+ (onemogočen)</string>
   <string name="whitelist_array_item">Beli seznam (dovoli izbrano)</string>
   <string name="blacklist_array_item">Črni seznam (blokiraj izbrano)</string>
-  <string name="showrules">Pravila požarnega zidu</string>
-  <string name="applyrules">Uporabi</string>
+  <string name="showrules">Pravila AFWall+</string>
+  <string name="applyrules">Uveljavi</string>
   <string name="saverules">Shrani</string>
   <string name="purgerules">Počisti pravila</string>
   <string name="setpwd">Nastavi geslo</string>
@@ -23,16 +23,16 @@
   <string name="all_item">(Katerakoli aplikacija) - Enako kot če izberete vse aplikacije</string>
   <string name="root_item">(korenski dostop) - Aplikacije s korenskim dostopom</string>
   <string name="operation_timeout">Čas je potekel</string>
-  <string name="fw_enabled">Omogočeno</string>
-  <string name="fw_disabled">Onemogočeno</string>
+  <string name="fw_enabled">V uporabi</string>
+  <string name="fw_disabled">Izklopljen</string>
   <string name="log_enabled">Dnevnik aktivnosti omogočen</string>
   <string name="log_disabled">Dnevnik aktivnosti onemogočen</string>
   <string name="log_was_enabled">Dnevnik aktivnosti je bil omogočen</string>
   <string name="log_was_disabled">Dnevnik aktivnosti je bil onemogočen</string>
   <string name="log_cleared">Dnevnik aktivnosti pobrisan</string>
   <string name="flushed">Pravila uveljavljena</string>
-  <string name="show_log">Dnevnik aktivnosti požarnega zidu</string>
-  <string name="clear_log">Pobriši dnevnik aktivnosti</string>
+  <string name="show_log">Dnevnik aktivnosti</string>
+  <string name="clear_log">Pobriši</string>
   <string name="applying_rules">Uveljavljam pravila iptables</string>
   <string name="saving_rules">Shranjujem pravila iptables</string>
   <string name="deleting_rules">Brišem pravila iptables</string>
@@ -63,9 +63,9 @@
   <string name="preferences">Nastavitve</string>
   <string name="reload">Osveži aplikacije</string>
   <string name="flush">Uveljavi pravila</string>
-  <string name="notify_pref_summary_on">Ob novi namestitvi bo poslano obvestilo</string>
-  <string name="notify_pref_summary_off">Brez obvestila</string>
-  <string name="notify_pref_title">Omogoči obvestila</string>
+  <string name="notify_pref_summary_on">Ob namestitvi nove aplikacije bo prikazano obvestilo</string>
+  <string name="notify_pref_summary_off">Brez obvestil</string>
+  <string name="notify_pref_title">Vklopi obvestila</string>
   <string name="syscolor_pref_title">Barva sistemskih aplikacij</string>
   <string name="syscolor_pref_summary_on">Izbrana barva za sistemske aplikacije</string>
   <string name="syscolor_pref_summary_off">Privzeta barva</string>
@@ -73,16 +73,16 @@
   <string name="usb3g_pref_title">Onemogoči 3G pravila pri žični USB povezavi</string>
   <string name="hideicons_pref_title">Skrij ikone aplikacij</string>
   <string name="hideicons_pref_summary_on">Umik ikon aplikacij z glavnega seznama bo izboljšal delovanje</string>
-  <string name="hideicons_pref_summary_off">Ikone aplikacij bodo prikazane na glavnem seznamu</string>
+  <string name="hideicons_pref_summary_off">Ikone aplikacij ne bodo prikazane na glavnem seznamu</string>
   <string name="custom_script_defined">Skripta nastavljena</string>
   <string name="custom_script_removed">Skripta odstranjena</string>
   <string name="custom_script_error">Napaka pri shranjevanju skripte</string>
-  <string name="custom_script_info"><b>Vnesite skripto.</b> \n <i>(za odstranitev skripte pustite prazno)</i> \nFor Za informacije o skriptah kliknite <a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> tukaj</a>.
+  <string name="custom_script_info"><b>Vnesite skripto.</b> \n <i>(za odstranitev skripte pustite prazno)</i> \nZa informacije o skriptah kliknite <a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> tukaj</a>.
 </string>
-  <string name="custom_script2_info">     \n \nYou <b>Skripta za zaustavitev sistema</b>\nLahko določite tudi skripto, ki se izvrši ko je požarni zid <b>onemogočen</b>:</string>
+  <string name="custom_script2_info">     \n \n <b>Skripta za zaustavitev sistema</b>\nLahko določite tudi skripto, ki se izvrši ko je požarni zid <b>onemogočen</b>:</string>
   <string name="unsaved_changes">Spremembe niso shranjene</string>
   <string name="unsaved_changes_message">Spremembe niso shranjene. \nJih želite uporabiti ali zavreči?</string>
-  <string name="apply">Uporabi</string>
+  <string name="apply">Uveljavi</string>
   <string name="discard">Zavrzi</string>
   <string name="help_dialog_text"><i>\n\nAFWall+ - požarni zid za android</i> je uporabniški vmesnik za Linux požarni zid <b>iptables</b>.
 Omogoča vam, da izberete, katerim aplikacijam boste omejili dostop do podatkovnih omrežij.
@@ -133,13 +133,13 @@ Prav vam bo prišel, če nimate zakupljene neomejene porabe podatkov, ali če bi
   <string name="customProfile3Summary">Ime po meri za Profil 3</string>
   <string name="enable_firewall_log">Vklopi dnevnik aktivnosti</string>
   <string name="confirmMsg">To bo izkopilo požarni zid! Želite nadaljevati?</string>
-  <string name="enableConfirmTitle">Zahtevaj potrditev ob izklopu AFWall+</string>
-  <string name="enableConfirm_summary_on">Požarni zid bo ob izklopu zahteval potrditev</string>
+  <string name="enableConfirmTitle">Zahtevaj potrditev ob izklopu</string>
+  <string name="enableConfirm_summary_on">AFWall+ bo ob izklopu zahteval potrditev</string>
   <string name="enableConfirm_summary_off">Požarni zid bo izklopljen brez potrditve</string>
-  <string name="usePattern">Uporabi vzorec za odklepanje namesto gesla</string>
+  <string name="usePattern">Uporabi vzorec za odklepanje</string>
   <string name="showUid">Pokaži UID za aplikacije</string>
-  <string name="showuid_summary_on">Skrije UID aplikacij na glevnem seznamu</string>
-  <string name="showuid_summary_off">Prikaže UID aplikacij (uporabno za beleženje aktivnosti)</string>
+  <string name="showuid_summary_on">UID aplikacij na glevnem seznamu ni prikazan</string>
+  <string name="showuid_summary_off">Ob aplikaciji se prikaže UID (uporabno za beleženje aktivnosti)</string>
   <string name="resetPattern">Želite ponastaviti vzorec za odklepanje?</string>
   <string name="delete">Izbriši</string>
   <string name="Yes">Da</string>
@@ -185,9 +185,9 @@ Prav vam bo prišel, če nimate zakupljene neomejene porabe podatkov, ali če bi
   <string name="toggle_profile2">Aktiviraj profil 2</string>
   <string name="toggle_profile3">Aktiviraj profil 3</string>
   <string name="languages">Jeziki</string>
-  <string name="roaming">Omogoči kontrolo ob gostovanju</string>
+  <string name="roaming">Kontrola ob gostovanju</string>
   <string name="roamingSummary">Omogoči dodatno funkcijo za kontrolo interneta med gostovanjem</string>
-  <string name="vpn_profile">Omogoči kontrolo VPN</string>
+  <string name="vpn_profile">Kontrola VPN</string>
   <string name="vpnSummary">Omogoči dodatno funkcijo za kontrolo interneta prek VPN</string>
   <string name="disable_toaster">Izklopi \"Tasker Toasts\"</string>
   <string name="disableTasterSummary">Onemogoči sporočila \"toast\" za vtičnik \"tasker\"</string>

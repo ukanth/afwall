@@ -24,6 +24,7 @@
         <item>Czech</item>
         <item>Polish</item>
         <item>Slovenian</item>
+		<item>Swedish</item>        
         <item>Simplifed Chinese</item>
     </string-array>
     
@@ -39,7 +40,8 @@
         <item>cs</item>
         <item>pl</item>
         <item>sl</item>
-        <item>zh_CN</item>
+        <item>sv</item>
+        <item>zh</item>
     </string-array>
 
 </resources>

@@ -4,44 +4,51 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+
+Version 1.2.1
+* Minor issue fixed for "Media Server" not apply properly after reboot
+* Fixed iptables rules which breaks wifi/Mobile data limit.
+* Updated translations for German/Chineese
+* Added Swedish Translation - Many Thanks to CreepyLinguist@Crowdin
+
 Version 1.2.0 
 
 * [Feature]
-- Added change app language from the preferences (default is system lang)
-- Added device admin feature - Extra protection to AFWall+, so that it can't be uninstalled from any other app.
-- Added Tasker/Locale plugin (from donate version) with bug fixes.
-- Added VPN Support (enable/disable it preferences) - Tested with DroidVPN and works fine !
-- Added new widget with quick toggle (enable/disable/profiles)
-- Added option to import from DroidWall (only for Donate version for now !)
-- Added Active defense ( Make sure only AFWall+ able to control to internet) - Not an optional !
-- Added new super user permission ( koush's superuser permission)
-- Added ability to enable/disable roaming feature
+* Added change app language from the preferences (default is system lang)
+* Added device admin feature - Extra protection to AFWall+, so that it can't be uninstalled from any other app.
+* Added Tasker/Locale plugin (from donate version) with bug fixes.
+* Added VPN Support (enable/disable it preferences) - Tested with DroidVPN and works fine !
+* Added new widget with quick toggle (enable/disable/profiles)
+* Added option to import from DroidWall (only for Donate version for now !)
+* Added Active defense ( Make sure only AFWall+ able to control to internet) - Not an optional !
+* Added new super user permission ( koush's superuser permission)
+* Added ability to enable/disable roaming feature
 
 * [Enhancements]
-- New logic to apply rules - Performance improvement 
-- Removed deprecated API's for Notification. Going forward this will be improved for ICS/JB 
-- Improved preferences - Added summary for each preferences and rearranged order
-- New menu icons ( white icons !)
-- Removed all inline style alert messages and alert boxes. Now it just display toast messages.
-- Fixed data leak on boot for devices REQUIRES init.d support/S-OFF (enable it in preferences - EXPERIMENTAL !)
+* New logic to apply rules - Performance improvement 
+* Removed deprecated API's for Notification. Going forward this will be improved for ICS/JB 
+* Improved preferences - Added summary for each preferences and rearranged order
+* New menu icons ( white icons !)
+* Removed all inline style alert messages and alert boxes. Now it just display toast messages.
+* Fixed data leak on boot for devices REQUIRES init.d support/S-OFF (enable it in preferences - EXPERIMENTAL !)
 ( to enable init.d support use this app -> https://play.google.com/store/apps/d...k.initdtoggler)
-- New log rule to get the logs from dmesg and enable logs by default 
-- Enable/Disable logs now from "Firewall Logs" menu.
+* New log rule to get the logs from dmesg and enable logs by default 
+* Enable/Disable logs now from "Firewall Logs" menu.
 
 * [BUG Fix]
-- Fixed issue with iptable rules are not applying after reboot, mainly CM 10.1 devices (Enable it in preferences - EXPERIMENTAL !)
-- Various UI glitches in multi profiles/icons & UID
-- Fixed hang/rules issue on startup 
-- Fixed issue with profiles where the default profile is applied after restart instead of selected one.
-- FC issue when using app menu (ActionBarSherlock - NPE)
-- Fixed issue with Media Server/VPN not applying properly.	
+* Fixed issue with iptable rules are not applying after reboot, mainly CM 10.1 devices (Enable it in preferences - EXPERIMENTAL !)
+* Various UI glitches in multi profiles/icons & UID
+* Fixed hang/rules issue on startup 
+* Fixed issue with profiles where the default profile is applied after restart instead of selected one.
+* FC issue when using app menu (ActionBarSherlock - NPE)
+* Fixed issue with Media Server/VPN not applying properly.	
 
 
 * [Translations]
-- Simplified Chinese - Thanks to wufei0513 & tianchaoren@Crowdin
-- Czech Translations - Thanks to syk3s@Crowdin
-- Turkish Translations - Many Thanks to metah@Crowdin
-- Ukrainian Translations - Many Thanks to andriykopanytsia,igor@Crowdin	
+* Simplified Chinese - Thanks to wufei0513 & tianchaoren@Crowdin
+* Czech Translations - Thanks to syk3s@Crowdin
+* Turkish Translations - Many Thanks to metah@Crowdin
+* Ukrainian Translations - Many Thanks to andriykopanytsia,igor@Crowdin	
 
 Version 1.1.9
 * Added invert selection for apps ( useful when switching whitelist <-> blacklist )
@@ -200,3 +207,20 @@ Version 1.0.0a
 * New preferences options
 * Force reload Applications
 * Highlight System applications using custom color from preferences
+
+-------------------------------------
+
+
+TODO :
+
+-> kernel logs and mysterious behind it !
+-> SSH/Local host support
+-> UI hangs on < ICS devices 
+-> Hardware search key.
+-> Store logs in DB for a details reports. This will surely help.
+-> iptables builder ( like blocking websites/ipaddress etc.,)
+-> ipv6 support
+-> and outstanding issues reported in the github page
+-> Application size < 1MB 
+-> Rewrite the import/export logic
+-> Timer for re enable firewall after disable.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">AFWall+</string>
+    <string name="app_name">AFWall+ </string>
     <string name="title_disabled">AFWall+ (Disabled)</string>
     <string name="whitelist_array_item">White list (allow selected)</string>
     <string name="blacklist_array_item">Black list (block selected)</string>
@@ -66,10 +66,10 @@
     <string name="notify_pref_summary_on">Notification will be sent on the new installation</string>
     <string name="notify_pref_summary_off">No notification will be sent</string>
     <string name="notify_pref_title">Enable Notification</string>
-    <string name="syscolor_pref_title">System Apps Color</string>
+    <string name="syscolor_pref_title">System applications color</string>
     <string name="syscolor_pref_summary_on">Selected color will be shown for the system applications</string>
     <string name="syscolor_pref_summary_off">Default Color</string>
-    <string name="usb3g_pref_summary">Prevent AFWall to apply 3g rules when using wired USB Connection</string>
+    <string name="usb3g_pref_summary">Prevent AFWall+ to apply 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
     <string name="hideicons_pref_title">Hide application icons</string>
     <string name="hideicons_pref_summary_on">This will improve the performance by disabling application icons on the main view</string>
@@ -120,9 +120,7 @@
     <string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. Its only for ICS/JB devices</string>
     <string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
     <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(ssh)</string>
-    <string name="prefExperimentICSJB">EXPERIMENT! Enable ONLY if firewall is not working on your ICS/JB devices !</string>
-    <string name="prefExperimentICSJB_title">Alternate rules for ICS/JB devices</string>
-    <string name="notification_new">New Application Installed.</string>
+    <string name="notification_new">New application installed.</string>
     <string name="multipleProfiles">Enable Multiple Profiles</string>
     <string name="defaultProfile">Default</string>
     <string name="profile1">Profile1</string>
@@ -161,11 +159,9 @@
     <string name="custom_title3">Custom name for Profile2</string>
     <string name="custom_title4">Custom name for Profile3</string>
     <string name="fixleakTitle">Fix Startup Data Leak</string>
-    <string name="fixleakSummary">This will fix data leak before afwall starts\n Requires Init.d Support and S-OFF(HTC)!</string>
-    <string name="fixmobileLimit">Fix Mobile Data Limit Leak</string>
-    <string name="fixmobileLimitSummary">This will fix AFWall+ not work when \"Set mobile data limit\" option is enabled in Android. Also reapply after reboot and installation of any app</string>
+    <string name="fixleakSummary">This will fix data leak before AFWall+ starts\n Requires Init.d Support and S-OFF(HTC)!</string>
     <string name="success_initd">Succesfully copied script on startup</string>
-    <string name="remove_initd">Please delete afwallstart from /system/etc/init.d folder before uninstall afwall+</string>
+    <string name="remove_initd">Please delete afwallstart from /system/etc/init.d folder before uninstall AFWall+</string>
     <string name="unable_initd">Unable to find init.d directory. Please verify whether your ROM supports init.d</string>
     <string name="enable_device_admin">Enable Device Admin</string>
     <string name="device_admin_enabled">AFWall+ Device Admin Enabled</string>

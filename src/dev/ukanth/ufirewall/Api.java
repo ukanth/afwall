@@ -126,6 +126,8 @@ public final class Api {
 	
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
+	
+	public static boolean isFirstRuleApply = false;
 
 	//for custom scripts
 	//private static final String SCRIPT_FILE = "afwall_custom.sh";
@@ -263,11 +265,10 @@ public final class Api {
 			listCommands.add(ipPath + " -F afwall-vpn || exit ");
 			listCommands.add(ipPath + " -F afwall-reject || exit 10");
 			listCommands.add(ipPath + " -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit");
-			
+			listCommands.add((ipPath + " -D OUTPUT -g afwall"));
+			listCommands.add((ipPath + " -I OUTPUT 1 -g afwall"));
 			//this will make sure the only afwall will be able to control the OUTPUT chain, regardless of any firewall installed!
-			listCommands.add((ipPath + " --flush OUTPUT || exit"));
-			listCommands.add((ipPath + " -D OUTPUT -j afwall"));
-			listCommands.add((ipPath + " -I OUTPUT 1 -g afwall"));	
+			//listCommands.add((ipPath + " --flush OUTPUT || exit"));
 			
 			// Check if logging is enabled
 			if (logenabled) {
@@ -409,8 +410,11 @@ public final class Api {
 						listCommands.add((ipPath + " -A afwall-vpn -j afwall-reject || exit"));
 					}
 				}
+				
+			//active defence
 			
-	    	final StringBuilder res = new StringBuilder();
+			
+			final StringBuilder res = new StringBuilder();
 			code = runScriptAsRoot(ctx, listCommands, res);
 			if (showErrors && code != 0) {
 				String msg = res.toString();
@@ -432,6 +436,7 @@ public final class Api {
     }
 	
 	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
+		initSpecial();
 		final PackageManager pm = ctx.getPackageManager();
 		final List<Integer> uids = new LinkedList<Integer>();
 		final StringTokenizer tok = new StringTokenizer(pks, "|");
@@ -464,6 +469,7 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
+		initSpecial();
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
 		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
@@ -1600,15 +1606,17 @@ public final class Api {
     }
 	
 	private static void initSpecial() {
-		specialApps = new HashMap<String, Integer>();
-		specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
-		specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
-		specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
-		specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
-		specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
-		specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
-		specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
-		specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));	
+		if(specialApps == null || specialApps.size() == 0){
+			specialApps = new HashMap<String, Integer>();
+			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
+			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
+			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
+			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
+			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
+			specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
+			specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
+			specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));	
+		}
 	}
 	
 	public static void sendNotification(Context context,String title, String message) {
