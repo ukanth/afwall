@@ -1,20 +1,14 @@
 #!/system/bin/sh
 
-if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables_armv5 ]
-  then
-    /data/data/dev.ukanth.ufirewall/app_bin/iptables_armv5 -P INPUT DROP
-	/data/data/dev.ukanth.ufirewall/app_bin/iptables_armv5 -P OUTPUT DROP
-	/data/data/dev.ukanth.ufirewall/app_bin/iptables_armv5 -P FORWARD DROP
+if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables_armv5 ]; then
+    path="dev.ukanth.ufirewall"
+elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables_armv5 ]; then
+    path="dev.ukanth.ufirewall.donate"
+else
+    log -p i -t afwall "AFWall doesn't seem to be installed."
+    exit
 fi;
 
-# this is for donate users
-
-if [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables_armv5 ]
-  then
-    /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables_armv5 -P INPUT DROP
-	/data/data/dev.ukanth.ufirewall.donate/app_bin/iptables_armv5 -P OUTPUT DROP
-	/data/data/dev.ukanth.ufirewall.donate/app_bin/iptables_armv5 -P FORWARD DROP
-fi;
-
-
-
+/data/data/$path/app_bin/iptables_armv5 -P INPUT DROP
+/data/data/$path/app_bin/iptables_armv5 -P OUTPUT DROP
+/data/data/$path/app_bin/iptables_armv5 -P FORWARD DROP
