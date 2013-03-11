@@ -73,7 +73,7 @@
     <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
     <string name="hideicons_pref_title">Hide applications\' icons</string>
     <string name="hideicons_pref_summary_on">This will improve the performance by disabling application icons on the main view</string>
-    <string name="hideicons_pref_summary_off">Applications' icons will be shown on the main view</string>
+    <string name="hideicons_pref_summary_off">Application\'s icons will be shown on the main view</string>
     <string name="custom_script_defined">Custom script defined</string>
     <string name="custom_script_removed">Custom script removed</string>
     <string name="custom_script_error">Error saving custom script</string>
