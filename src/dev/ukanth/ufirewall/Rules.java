@@ -42,6 +42,8 @@ public class Rules extends SherlockActivity implements OnCreateOptionsMenuListen
 	private static final int MENU_COPY = 16;
 	private static final int MENU_EXPORT_LOG = 17;
 	private static final int MENU_INTERFACES = 18;
+	private static final int MENU_IPV6_RULES = 19;
+	private static final int MENU_IPV4_RULES = 20;
 	private int viewMode;
 	private Menu mainMenu;
 	
@@ -98,7 +100,7 @@ public class Rules extends SherlockActivity implements OnCreateOptionsMenuListen
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
 		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		final boolean logenabled = appprefs.getBoolean("enableFirewallLog",true);
-
+		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
 		if(getViewMode() == MENU_CLEARLOG) {
 			if(logenabled){
 				sub.add(0,MENU_TOGGLE_LOG,0, R.string.disable_log).setIcon(R.drawable.off);	
@@ -109,6 +111,10 @@ public class Rules extends SherlockActivity implements OnCreateOptionsMenuListen
 		}
 		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
 		if(getViewMode() == MENU_FLUSH_RULES) {
+			if(enableIPv6) {
+				sub.add(0, MENU_IPV6_RULES, 0, R.string.switch_ipv6).setIcon(R.drawable.rules);
+				sub.add(0, MENU_IPV4_RULES, 0, R.string.switch_ipv4).setIcon(R.drawable.rules);
+			}
 			sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
 			sub.add(0, MENU_INTERFACES, 0, R.string.ifaces).setIcon(R.drawable.rules);
 			sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
@@ -121,6 +127,7 @@ public class Rules extends SherlockActivity implements OnCreateOptionsMenuListen
     
     @Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    	EditText rulesText = (EditText) findViewById(R.id.rules);
     	switch (item.getItemId()) {
     	case MENU_TOGGLE_LOG:
     		SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -145,7 +152,6 @@ public class Rules extends SherlockActivity implements OnCreateOptionsMenuListen
 			return true;
     	case MENU_CLEARLOG:
 			clearLog();
-			EditText rulesText = (EditText) findViewById(R.id.rules);
 			rulesText.setText(getString(R.string.no_log));
 			return true;
     	case MENU_FLUSH_RULES:
@@ -177,6 +183,14 @@ public class Rules extends SherlockActivity implements OnCreateOptionsMenuListen
     			 Api.displayToasts(Rules.this, R.string.export_logs_fail,
     						Toast.LENGTH_LONG);
     		}
+    		return true;
+    	case MENU_IPV6_RULES:
+    		rulesText.setText("");
+    		rulesText.setText(Api.showIp6tablesRules(getApplicationContext()));
+    		return true;
+    	case MENU_IPV4_RULES:
+    		rulesText.setText("");
+    		rulesText.setText(Api.showIptablesRules(getApplicationContext()));
     		return true;
     	default:
 	        return super.onOptionsItemSelected(item);
@@ -247,7 +261,7 @@ public class Rules extends SherlockActivity implements OnCreateOptionsMenuListen
 			           public void onClick(DialogInterface dialog, int id) {
 			        	final StringBuilder res = new StringBuilder();
 			   			if(Api.getIpPath() == null) {
-			   				Api.setIpTablePath(ctx);
+			   				Api.setIpTablePath(ctx,false);
 			   			}
 			   			ArrayList<String> listCommands = new ArrayList<String>();
 			   			listCommands.add((Api.getIpPath() +" -F"));

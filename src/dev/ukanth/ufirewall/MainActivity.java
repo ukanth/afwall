@@ -117,6 +117,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private final int _ReqCreatePattern = 0;
 	private final int _ReqSignIn = 1;
 	private boolean isPassVerify = false;
+	
+	ProgressDialog plsWait;
 
 	
 	/** Called when the activity is first created. */
@@ -173,6 +175,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			//language
 			String lang = prefs.getString("locale", Locale.getDefault().getDisplayLanguage());
 			Api.updateLanguage(getApplicationContext(), lang);
+			plsWait = new ProgressDialog(this);
+	        plsWait.setCancelable(false);
 			
 		    Api.assertBinaries(this, true);
 	}
@@ -257,7 +261,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				showOrLoadApplications();
 			} else {
 				// Check the password
-				requestPassword(oldpwd);
+				requestPassword(oldpwd);	
+
 			}	
 		}
 
@@ -278,15 +283,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		boolean changed = false;
 		if (prefs.getString(Api.PREF_MODE, "").length() == 0) {
 			editor.putString(Api.PREF_MODE, Api.MODE_WHITELIST);
-			changed = true;
-		}
-		/* delete the old preference names */
-		if (prefs.contains("AllowedUids")) {
-			editor.remove("AllowedUids");
-			changed = true;
-		}
-		if (prefs.contains("Interfaces")) {
-			editor.remove("Interfaces");
 			changed = true;
 		}
 		if (changed)
@@ -382,10 +378,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					if (!pwd.equals(msg.obj)) {
 						requestPassword(pwd);
 						return false;
-					}
+					} 
 					// Password correct
 					showOrLoadApplications();
-					return false;
+					return true;
 				}
 			}).show();
 				
@@ -398,36 +394,61 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * If the applications are cached, just show them, otherwise load and show
 	 */
 	private void showOrLoadApplications() {
-		
-		final Resources res = getResources();
 		if (Api.applications == null) {
 			// The applications are not cached.. so lets display the progress
 			// dialog
-			final ProgressDialog progress = ProgressDialog.show(this,
-					res.getString(R.string.working),
-					res.getString(R.string.reading_apps), true);
-			new AsyncTask<Void, Void, Void>() {
-				@Override
-				protected Void doInBackground(Void... params) {
-					
-					Api.getApps(MainActivity.this);
-					return null;
-				}
-
-				@Override
-				protected void onPostExecute(Void result) {
-					try {
-						progress.dismiss();
-					} catch (Exception ex) {
-					}
-					showApplications("");
-				}
-			}.execute();
+			new GetAppList().execute(); 
 		} else {
 			// the applications are cached, just show the list
 			showApplications("");
 		}
 	}
+	
+
+	public class GetAppList extends AsyncTask<Void, Integer, Void> {
+
+		boolean ready = false;
+
+		@Override
+		protected void onPreExecute() {
+			publishProgress(0);
+		}
+
+		public void doProgress(int value) {
+			publishProgress(value);
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			Api.getApps(MainActivity.this, this);
+			if( isCancelled() )
+                return null;
+            publishProgress(-1);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			showApplications("");
+			publishProgress(-1);
+			plsWait.dismiss();
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress) {
+
+			if (progress[0] == 0) {
+				plsWait.setMax(getPackageManager().getInstalledApplications(0)
+						.size());
+				plsWait.setMessage(getString(R.string.reading_apps));
+				plsWait.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				plsWait.show();
+			}  else {
+				plsWait.setProgress(progress[0]);
+			}
+		}
+	};
+
 	
 	
 	class PackageComparator implements Comparator<PackageInfoData> {
@@ -462,21 +483,21 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private void showApplications(final String searchStr) {
 		this.dirty = false;
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
-		final List<PackageInfoData> apps = Api.getApps(this);
-		if(!searchStr.equals("") && searchStr.length() > 0) {
+		final List<PackageInfoData> apps = Api.getApps(this,null);
+		if(searchStr !=null && searchStr.length() > 1) {
 			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
-					if(str.contains(searchStr) || str.toLowerCase().contains(searchStr)) {
+					if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())) {
 						searchApp.add(app);
 					}
 				}
 			}
 		}
 		final List<PackageInfoData> apps2 = searchApp.size() > 0 ? searchApp : apps;
-		
-		Collections.sort(apps2, new PackageComparator());
+
 		// Sort applications - selected first, then alphabetically
-	
+		Collections.sort(apps2, new PackageComparator());
+
 		final SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(MainActivity.this);
 		
@@ -1291,21 +1312,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 		
+		
 		/*if (keyCode == KeyEvent.KEYCODE_SEARCH && event.getRepeatCount() == 0) {
 			mainMenu.getItem(R.id.searchApps).expandActionView();
             return true;
 	     }*/
-		/*if (event.getAction() == KeyEvent.ACTION_DOWN)
-        {
-			switch (keyCode) {
-			case KeyEvent.KEYCODE_MENU:
-				if(mainMenu != null){
-					mainMenu.performIdentifierAction(R.id.menu_list_item, 0);
-					return true;
-				}
-			}
-        }
-		*/
+		
 		// Handle the back button when dirty
 		if (this.dirty && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -1338,6 +1350,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+		
 	}
 
 	/**
@@ -1405,14 +1418,16 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				break;
 			}
 			Api.applications = null;
-			showOrLoadApplications();
+			new GetAppList().execute();
+			mSelected.setText("  |  " + mLocations[itemPosition]);
 			refreshHeader();
-			if (Api.isEnabled(getApplicationContext())) {
+			//applyOrSaveRules();
+			/*if (Api.isEnabled(getApplicationContext())) {
 				Api.applyIptablesRules(getApplicationContext(), true);
 			} else {
 				Api.saveRules(getApplicationContext());
-			}
-			mSelected.setText("  |  " + mLocations[itemPosition]);
+			}*/
+			
 		}
 		return true;
 	}

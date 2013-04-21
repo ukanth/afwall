@@ -18,13 +18,13 @@ package net.saik0.android.unifiedpreference;
 
 import java.util.List;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceActivity.Header;
 import android.preference.PreferenceFragment;
+
+import com.actionbarsherlock.app.SherlockPreferenceActivity;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

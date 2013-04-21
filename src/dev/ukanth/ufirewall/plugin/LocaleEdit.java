@@ -31,6 +31,8 @@ public class LocaleEdit extends Activity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		//final int currentPosition = prefs.getInt("storedPosition", 0);
 		
+		RadioButton tasker_enable = (RadioButton) findViewById(R.id.tasker_enable);
+		RadioButton tasker_disable = (RadioButton) findViewById(R.id.tasker_disable);
 		RadioButton button1 = (RadioButton) findViewById(R.id.defaultProfile);
 		RadioButton button2 = (RadioButton) findViewById(R.id.profile1);
 		RadioButton button3 = (RadioButton) findViewById(R.id.profile2);
@@ -58,10 +60,12 @@ public class LocaleEdit extends Activity {
 				if(index != null ){
 					int id = Integer.parseInt(index);
 					switch(id){
-					case 0: button1.setChecked(true); break;
-					case 1: button2.setChecked(true); break;
-					case 2: button3.setChecked(true); break;
-					case 3: button4.setChecked(true); break;
+					case 0: tasker_enable.setChecked(true);break;
+					case 1: tasker_disable.setChecked(true);break;
+					case 2: button1.setChecked(true); break;
+					case 3: button2.setChecked(true); break;
+					case 4: button3.setChecked(true); break;
+					case 5: button4.setChecked(true); break;
 					}
 
 				}

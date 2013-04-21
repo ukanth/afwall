@@ -61,10 +61,12 @@ public class PackageBroadcast extends BroadcastReceiver {
 					Intent.EXTRA_REPLACING, false);
 			if (!replacing) {
 				// Update the Firewall if necessary
-				Api.applicationRemoved(context,
-						inputUri.getSchemeSpecificPart());
-				// Force app list reload next time
-				Api.applications = null;
+				 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -123);
+                 Api.applicationRemoved(context, uid);
+                 /*Api.applicationRemoved(context,
+						inputUri.getSchemeSpecificPart());*/
+                 // Force app list reload next time
+                 Api.applications = null;
 			}
 		} else if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
 
@@ -113,11 +115,12 @@ public class PackageBroadcast extends BroadcastReceiver {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 		builder.setSmallIcon(icon)
-		            .setWhen(System.currentTimeMillis())
+		            //.setWhen(System.currentTimeMillis())
 		            .setAutoCancel(true)
-		            .addAction(R.drawable.on, "Enable", in)
-		            .addAction(R.drawable.off, "disable", in)
+		            //.addAction(R.drawable.on, "Enable", in)
+		            //.addAction(R.drawable.off, "disable", in)
 		            .setContentTitle(context.getString(R.string.notification_title))
+		            .setTicker(context.getString(R.string.notification_title))
 		            .setContentText(context.getString(R.string.notification_new));
 		
 		//Notification n = builder.build();

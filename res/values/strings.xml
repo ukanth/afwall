@@ -49,7 +49,7 @@
     <string name="passremoved">Password lock removed</string>
     <string name="passerror">Error changing password lock</string>
     <string name="working">Working...</string>
-    <string name="reading_apps">Reading installed applications</string>
+    <string name="reading_apps">Retrieving installed applications...</string>
     <string name="please_wait">Please wait</string>
     <string name="mode_header">Mode: %s</string>
     <string name="mode_whitelist">White list (allow selected)</string>
@@ -194,4 +194,14 @@
     <string name="tasker_disabled">Tasker: AFWall+ disabled!</string>
     <string name="tasker_muliprofile">AFWall+ Tasker: multiprofile is disabled!</string>
     <string name="startup_service">Applying Rules...Please wait!</string>
+    
+    <string name="ipv6_title">Enable IPv6 Support</string>
+    <string name="ipv6_summary">This will enable support for ipv6</string>
+    <string name="OK">OK</string>
+    <string name="ip6unavailable">Error: IPv6 requires \"/system/bin/ip6tables\".</string>
+    <string name="enable_tasker">Enable AFWall+</string>
+    <string name="disable_tasker">Disable AFWall+</string>
+    
+    <string name="switch_ipv6">Switch IPV6 Rules</string>
+    <string name="switch_ipv4">Switch IPV4 Rules</string>
 </resources>

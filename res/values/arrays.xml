@@ -18,13 +18,17 @@
         <item>French</item>
         <item>Spanish</item>
         <item>Dutch</item>
+        
         <item>Japanese</item>
         <item>Ukrainian</item>
         <item>Russian</item>
         <item>Czech</item>
         <item>Polish</item>
+        
         <item>Slovenian</item>
 		<item>Swedish</item>        
+		<item>Greek</item>
+		<item>Portuguese</item>        
         <item>Simplifed Chinese</item>
     </string-array>
     
@@ -41,6 +45,8 @@
         <item>pl</item>
         <item>sl</item>
         <item>sv</item>
+        <item>el</item>
+        <item>pt</item>
         <item>zh</item>
     </string-array>
 

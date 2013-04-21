@@ -62,6 +62,14 @@
          />
         
         <CheckBoxPreference
+            android:key="enableIPv6"
+            
+            android:title="@string/ipv6_title"
+            android:summary="@string/ipv6_summary"
+            android:defaultValue="false"
+         />
+        
+        <CheckBoxPreference
             android:key="disableTaskerToast"
             android:title="@string/disable_toaster"
             android:summary="@string/disableTasterSummary"

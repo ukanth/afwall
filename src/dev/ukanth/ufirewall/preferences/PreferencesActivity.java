@@ -69,6 +69,8 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 			editor.putBoolean("enableAdmin", true);
 			editor.commit();
 		}
+		
+		
 		//language
 		String lang = prefs.getString("locale", "en");
 		Api.updateLanguage(getApplicationContext(), lang);
@@ -114,6 +116,17 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
+		
+		if(key.equals("enableIPv6")){
+			File defaultIP6TablesPath = new File("/system/bin/ip6tables");
+			if(!defaultIP6TablesPath.exists()) {
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+				SharedPreferences.Editor editor = prefs.edit();
+				editor.putBoolean("enableIPv6", false);
+				editor.commit();
+				Api.alert(getApplicationContext(), getString(R.string.ip6unavailable));
+			}
+		}
 		if (key.equals("showUid") || key.equals("enableMultiProfile")
 				|| key.equals("disableIcons") || key.equals("enableVPN") || key.equals("enableRoam") || key.equals("locale") ) {
 			Api.applications = null;

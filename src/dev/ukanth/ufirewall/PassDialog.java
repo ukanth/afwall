@@ -30,6 +30,7 @@ import android.os.Handler.Callback;
 import android.os.Message;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -46,10 +47,11 @@ public class PassDialog extends Dialog implements android.view.View.OnClickListe
 	 * @param setting if true, indicates that we are setting a new password instead of requesting it.
 	 * @param callback callback to receive the password entered (null if canceled)
 	 */
-	public PassDialog(Context context, boolean setting, Callback callback) {
+	public PassDialog(final Context context, boolean setting, Callback callback) {
 		super(context);
 		final View view = getLayoutInflater().inflate(R.layout.pass_dialog, null);
-		((TextView)view.findViewById(R.id.pass_message)).setText(setting ? R.string.enternewpass : R.string.enterpass);
+		final TextView passText = (TextView)view.findViewById(R.id.pass_message);
+		passText.setText(setting ? R.string.enternewpass : R.string.enterpass);
 		((Button)view.findViewById(R.id.pass_ok)).setOnClickListener(this);
 		((Button)view.findViewById(R.id.pass_cancel)).setOnClickListener(this);
 		this.callback = callback;
@@ -58,6 +60,15 @@ public class PassDialog extends Dialog implements android.view.View.OnClickListe
 		setTitle(setting ? R.string.pass_titleset : R.string.pass_titleget);
 		setOnCancelListener(this);
 		setContentView(view);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+		/*passText.post(new Runnable() {
+            @Override
+            public void run() {
+            	passText.requestFocus();
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(passText, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });*/
 	}
 	@Override
 	public void onClick(View v) {

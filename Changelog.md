@@ -4,6 +4,20 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.4(bump version to match Donate version)
+* Support IPv6 (Enable it in preference)
+* Tasker support enable/disable of AFWall+
+* Improved performance of applying rules and application list.
+* Improved application loading progress dialog.
+* Show keyboard automatically on password protected dialogs
+* Fixed issue with custom script hangs.
+* Improved translations strings.
+* Fixed issue with multiple password request (in beta testing)
+* Improved detection logic for data leak prevention script (Thanks GermainZ)
+* Improved multiple profile performance while loading applications. It will no longer apply rules on switching
+ profiles. You need to manually apply rules after profile switch.
+* Added translations for Greek,Produguese languages. 
+
 
 Version 1.2.1
 * Minor issue fixed for "Media Server" not apply properly after reboot

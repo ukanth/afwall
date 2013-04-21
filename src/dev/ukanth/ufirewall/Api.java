@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -74,6 +73,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
+import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 /**
@@ -101,6 +101,13 @@ public final class Api {
 	public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
 	public static final String PREF_VPN_PKG			= "AllowedPKGVPN";
 	
+	//revertback to old approach for performance
+	public static final String PREF_3G_PKG_UIDS			= "AllowedPKG3G_UIDS";
+	public static final String PREF_WIFI_PKG_UIDS		= "AllowedPKGWifi_UIDS";
+	public static final String PREF_ROAMING_PKG_UIDS	= "AllowedPKGRoaming_UIDS";
+	public static final String PREF_VPN_PKG_UIDS		= "AllowedPKGVPN_UIDS";
+	
+	
 	public static final String PREF_PASSWORD 		= "Password";
 	public static final String PREF_CUSTOMSCRIPT 	= "CustomScript";
 	public static final String PREF_CUSTOMSCRIPT2 	= "CustomScript2"; // Executed on shutdown
@@ -119,23 +126,23 @@ public final class Api {
 	public static final String SCRIPT_EXTRA			= "dev.ukanth.ufirewall.intent.extra.SCRIPT";
 	public static final String SCRIPT2_EXTRA		= "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
 	private static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "eth0+", "ra+", "wlan0+" };
-	private static final String ITFS_3G[] = { "rmnet+", "pdp+", "rmnet_sdio+", "uwbr+","wimax+", "vsnet+", "ccmni+", "ccmni0+", "rmnet1+",
-				"rmnet_sdio1+", "qmi+", "svnet0+", "wwan0+", "rmnet_sdio0+","cdma_rmnet+", "rmnet0+" ,"usb+", "usb0+"};
+	private static final String ITFS_3G[] = { 
+				"rmnet+","rmnet0+","rmnet1+", "rmnet2+", "pdp+","rmnet_sdio+","rmnet_sdio0+", "rmnet_sdio1+",
+				"uwbr+","wimax+", "vsnet+", "ccmni+","ccmni0+", 
+				"qmi+", "svnet0+", "wwan+", "wwan0+","cdma_rmnet+", 
+				"usb+", "usb0+", "pdp0+"};
 	private static final String ITFS_VPN[] = { "tun+", "tun0+", "ppp+", "ppp0+", "tap+" };
 	//private static final int BUFF_LEN = 0;
 	
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
 	
-	public static boolean isFirstRuleApply = false;
-
 	//for custom scripts
 	//private static final String SCRIPT_FILE = "afwall_custom.sh";
 	static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
-    static ArrayList<LogEntry> logEntriesList = new ArrayList<LogEntry>();
+    static List<LogEntry> logEntriesList = new ArrayList<LogEntry>();
 	public static String ipPath = null;
 	private static Map<String,Integer> specialApps = null;
-	private static List<PackageInfoData> specialData = null;
 	
 	//public static boolean isUSBEnable = false;
 
@@ -151,6 +158,21 @@ public final class Api {
 	public static void alert(Context ctx, CharSequence msgText) {
 		if (ctx != null) {
 			Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public static void alertDialog(final Context ctx, String msgText) {
+		if (ctx != null) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+			builder.setMessage(msgText)
+			       .setCancelable(false)
+			       .setPositiveButton(ctx.getString(R.string.OK), new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   dialog.cancel();
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 	}
 
@@ -175,16 +197,21 @@ public final class Api {
 			"";
 	}
 	
-	static void setIpTablePath(Context ctx) {
-		if (ipPath == null) {
-			final String dir = ctx.getDir("bin", 0).getAbsolutePath();
-			final String defaultPath = "iptables ";
-			final String myiptables = dir + "/iptables_armv5 ";
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-				Api.ipPath = defaultPath;
-			} else {
-				Api.ipPath = myiptables;
-			}
+	static void setIpTablePath(Context ctx,boolean setv6) {
+		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
+		final String defaultPath = "iptables ";
+		final String defaultIPv6Path = "ip6tables ";
+		final String myiptables = dir + "/iptables_armv5 ";
+		final SharedPreferences appprefs = PreferenceManager
+				.getDefaultSharedPreferences(ctx);
+		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			Api.ipPath = defaultPath;
+		} else {
+			Api.ipPath = myiptables;
+		}
+		if (setv6 && enableIPv6) {
+			Api.ipPath = defaultIPv6Path;
 		}
 	}
 	
@@ -218,6 +245,17 @@ public final class Api {
 		// Change the permissions
 		Runtime.getRuntime().exec("chmod "+mode+" "+abspath).waitFor();
 	}
+	
+	public static void replaceAll(StringBuilder builder, String from, String to ) {
+		int index = builder.indexOf(from);
+	    while (index != -1)
+	    {
+	        builder.replace(index, index + from.length(), to);
+	        index += to.length(); // Move to the end of the replacement
+	        index = builder.indexOf(from, index);
+	    }
+	}
+	
     /**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
@@ -245,14 +283,14 @@ public final class Api {
 		//final boolean isVPNEnabled = appprefs.getBoolean("enableVPNProfile",false);
 		
 
-		String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, "");
+		StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, ""));
+		
 		try {
 			int code;
-			setIpTablePath(ctx);
 			
 			String busybox = getBusyBoxPath(ctx);
 			String grep = busybox + " grep";
-			final ArrayList<String> listCommands = new ArrayList<String>();
+			final List<String> listCommands = new ArrayList<String>();
 			listCommands.add(ipPath + " -L afwall >/dev/null 2>/dev/null || " + ipPath +  " --new afwall || exit" );
 			listCommands.add(ipPath + " -L afwall-3g >/dev/null 2>/dev/null ||" + ipPath +  "--new afwall-3g || exit" );
 			listCommands.add(ipPath + " -L afwall-wifi >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-wifi || exit" );
@@ -265,8 +303,8 @@ public final class Api {
 			listCommands.add(ipPath + " -F afwall-vpn || exit ");
 			listCommands.add(ipPath + " -F afwall-reject || exit 10");
 			listCommands.add(ipPath + " -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit");
-			listCommands.add((ipPath + " -D OUTPUT -g afwall"));
-			listCommands.add((ipPath + " -I OUTPUT 1 -g afwall"));
+			listCommands.add((ipPath + " -D OUTPUT -j afwall"));
+			listCommands.add((ipPath + " -I OUTPUT 1 -j afwall"));
 			//this will make sure the only afwall will be able to control the OUTPUT chain, regardless of any firewall installed!
 			//listCommands.add((ipPath + " --flush OUTPUT || exit"));
 			
@@ -293,8 +331,8 @@ public final class Api {
 			
 			
 			if (customScript.length() > 0) {
-				customScript = customScript.replace("$IPTABLES", " "+ ipPath ).replace("\\", "");
-				listCommands.add((customScript));
+				replaceAll(customScript, "$IPTABLES", " " +ipPath );
+				listCommands.add(customScript.toString());
 			}
 			
 			
@@ -438,7 +476,7 @@ public final class Api {
 	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
 		initSpecial();
 		final PackageManager pm = ctx.getPackageManager();
-		final List<Integer> uids = new LinkedList<Integer>();
+		final List<Integer> uids = new ArrayList<Integer>();
 		final StringTokenizer tok = new StringTokenizer(pks, "|");
 		while (tok.hasMoreTokens()) {
 			final String pkg = tok.nextToken();
@@ -470,14 +508,32 @@ public final class Api {
 			return false;
 		}
 		initSpecial();
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
-		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
-		final String savedPkg_roam = prefs.getString(PREF_ROAMING_PKG, "");
-		final String savedPkg_vpn = prefs.getString(PREF_VPN_PKG, "");
 		
-		return applyIptablesRulesImpl(ctx, getUidListFromPref(ctx,savedPkg_wifi), getUidListFromPref(ctx,savedPkg_3g),  getUidListFromPref(ctx,savedPkg_roam), 
-				getUidListFromPref(ctx, savedPkg_vpn), showErrors);
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+
+		final String savedPkg_wifi_uid = prefs.getString(PREF_WIFI_PKG_UIDS, "");
+		final String savedPkg_3g_uid = prefs.getString(PREF_3G_PKG_UIDS, "");
+		final String savedPkg_roam_uid = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
+		final String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
+		
+		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
+		boolean returnValue = false;
+		setIpTablePath(ctx,false);
+		returnValue = applyIptablesRulesImpl(ctx,
+					getListFromPref(savedPkg_wifi_uid),
+					getListFromPref(savedPkg_3g_uid),
+					getListFromPref(savedPkg_roam_uid),
+					getListFromPref(savedPkg_vpn_uid), showErrors);
+		if (enableIPv6) {
+			setIpTablePath(ctx,true);
+			returnValue = applyIptablesRulesImpl(ctx,
+					getListFromPref(savedPkg_wifi_uid),
+					getListFromPref(savedPkg_3g_uid),
+					getListFromPref(savedPkg_roam_uid),
+					getListFromPref(savedPkg_vpn_uid), showErrors);
+		}
+		return returnValue;
 	}
 	
     /**
@@ -503,7 +559,7 @@ public final class Api {
 		
 		final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		final List<PackageInfoData> apps = getApps(ctx);
+		final List<PackageInfoData> apps = getApps(ctx,null);
 		// Builds a pipe-separated list of names
 		final StringBuilder newpkg_wifi = new StringBuilder();
 		final StringBuilder newpkg_3g = new StringBuilder();
@@ -514,31 +570,31 @@ public final class Api {
 			
 			if (apps.get(i).selected_wifi) {
 				if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
-				newpkg_wifi.append(apps.get(i).pkgName);
+				newpkg_wifi.append(apps.get(i).uid);
 				
 			}
 			if (apps.get(i).selected_3g) {
 				if (newpkg_3g.length() != 0) newpkg_3g.append('|');
-				newpkg_3g.append(apps.get(i).pkgName);
+				newpkg_3g.append(apps.get(i).uid);
 			}
 			if (enableRoam && apps.get(i).selected_roam) {
 				if (newpkg_roam.length() != 0) newpkg_roam.append('|');
-				newpkg_roam.append(apps.get(i).pkgName);
+				newpkg_roam.append(apps.get(i).uid);
 			}
 			
 			if (enableVPN && apps.get(i).selected_vpn) {
 				if (newpkg_vpn.length() != 0) newpkg_vpn.append('|');
-				newpkg_vpn.append(apps.get(i).pkgName);
+				newpkg_vpn.append(apps.get(i).uid);
 			}
 
 
 		}
 		// save the new list of UIDs
 		final Editor edit = prefs.edit();
-		edit.putString(PREF_WIFI_PKG, newpkg_wifi.toString());
-		edit.putString(PREF_3G_PKG, newpkg_3g.toString());
-		edit.putString(PREF_ROAMING_PKG, newpkg_roam.toString());
-		edit.putString(PREF_VPN_PKG, newpkg_vpn.toString());
+		edit.putString(PREF_WIFI_PKG_UIDS, newpkg_wifi.toString());
+		edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
+		edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
+		edit.putString(PREF_VPN_PKG_UIDS, newpkg_vpn.toString());
 		
 		edit.commit();
     }
@@ -555,13 +611,28 @@ public final class Api {
 		try {
 			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
-	    	setIpTablePath(ctx);
-	    	ArrayList<String> listCommands = new ArrayList<String>();
+	    	setIpTablePath(ctx,false);
+	    	List<String> listCommands = new ArrayList<String>();
 	    	listCommands.add((ipPath + " -F afwall-vpn"));
 			int code = runScriptAsRoot(ctx, listCommands, res);
 			if (code == -1) {
 				if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
 				return false;
+			}
+			final SharedPreferences appprefs = PreferenceManager
+					.getDefaultSharedPreferences(ctx);
+			final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
+			if (enableIPv6) {
+				setIpTablePath(ctx, true);
+				listCommands.clear();
+				listCommands.add((ipPath + " -F afwall-vpn"));
+				code = runScriptAsRoot(ctx, listCommands, res);
+				if (code == -1) {
+					if (showErrors)
+						alert(ctx, ctx.getString(R.string.error_purge) + code
+								+ "\n" + res);
+					return false;
+				}
 			}
 			return true;
 		} catch (Exception e) {
@@ -576,36 +647,48 @@ public final class Api {
      * @return true if the rules were purged
      */
 	public static boolean purgeIptables(Context ctx, boolean showErrors) {
-    	final StringBuilder res = new StringBuilder();
+    	
 		try {
 			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
-			String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, "");
-	    	setIpTablePath(ctx);
-	    	ArrayList<String> listCommands = new ArrayList<String>();
-	    	listCommands.add((ipPath + " -F afwall"));
-	    	listCommands.add((ipPath + " -F afwall-reject"));
-	    	listCommands.add((ipPath + " -F afwall-3g"));
-	    	listCommands.add((ipPath + " -F afwall-wifi"));
-	    	final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-			final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
-	    	if(enableVPN) {
-	    		listCommands.add((ipPath + " -F afwall-vpn"));
-	    	}
-	    	if (customScript.length() > 0) {
-	    		customScript = customScript.replace("$IPTABLES", " "+ ipPath ).replace("\\", "");
-	    		listCommands.add((customScript));
-	    	}
-			int code = runScriptAsRoot(ctx, listCommands, res);
-			if (code == -1) {
-				if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-				return false;
+	    	setIpTablePath(ctx,false);
+			final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+			final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
+			if(enableIPv6) {
+				setIpTablePath(ctx,true);
+				purgeRules(ctx,showErrors);
 			}
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
     }
+	
+	private static boolean purgeRules(Context ctx,boolean showErrors) throws IOException {
+		boolean returnVal = true;
+		final StringBuilder res = new StringBuilder();
+		List<String> listCommands = new ArrayList<String>();
+    	listCommands.add((ipPath + " -F afwall"));
+    	listCommands.add((ipPath + " -F afwall-reject"));
+    	listCommands.add((ipPath + " -F afwall-3g"));
+    	listCommands.add((ipPath + " -F afwall-wifi"));
+    	final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+    	StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, ""));
+		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
+    	if(enableVPN) {
+    		listCommands.add((ipPath + " -F afwall-vpn"));
+    	}
+    	if (customScript.length() > 0) {
+    		replaceAll(customScript, "$IPTABLES", " " +ipPath );
+    		listCommands.add(customScript.toString());
+    	}
+		int code = runScriptAsRoot(ctx, listCommands, res);
+		if (code == -1) {
+			if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
+			returnVal = false;
+		}
+		return returnVal;
+	}
 	
 	/**
 	 * Display iptables rules output
@@ -614,8 +697,26 @@ public final class Api {
 	public static String showIptablesRules(Context ctx) {
 		try {
     		final StringBuilder res = new StringBuilder();
-    		setIpTablePath(ctx);
-    		ArrayList<String> listCommands = new ArrayList<String>();
+    		setIpTablePath(ctx,false);
+    		List<String> listCommands = new ArrayList<String>();
+    		listCommands.add((ipPath + " -L -n"));
+			runScriptAsRoot(ctx, listCommands,  res);
+			return res.toString();
+		} catch (Exception e) {
+			alert(ctx, "error: " + e);
+		}
+		return "";
+	}
+	
+	/**
+	 * Display iptables rules output
+	 * @param ctx application context
+	 */
+	public static String showIp6tablesRules(Context ctx) {
+		try {
+    		final StringBuilder res = new StringBuilder();
+    		setIpTablePath(ctx,true);
+    		List<String> listCommands = new ArrayList<String>();
     		listCommands.add((ipPath + " -L -n"));
 			runScriptAsRoot(ctx, listCommands,  res);
 			return res.toString();
@@ -633,7 +734,7 @@ public final class Api {
 	public static boolean clearLog(Context ctx) {
 		try {
 			final StringBuilder res = new StringBuilder();
-			ArrayList<String> listCommands = new ArrayList<String>();
+			List<String> listCommands = new ArrayList<String>();
 			listCommands.add((getBusyBoxPath(ctx) + " dmesg -c >/dev/null || exit"));
 			int code = runScriptAsRoot(ctx, listCommands, res);
 			if (code != 0) {
@@ -674,7 +775,7 @@ public final class Api {
     		String busybox = getBusyBoxPath(ctx);
 			String grep = busybox + " grep";
     		
-			ArrayList<String> listCommands = new ArrayList<String>();
+			List<String> listCommands = new ArrayList<String>();
 			listCommands.add(getBusyBoxPath(ctx) + "dmesg | " + grep +" {AFL}");
 			
 			int code = runScriptAsRoot(ctx, listCommands,  res);
@@ -715,7 +816,7 @@ public final class Api {
 					}
 				}
 			}
-			final List<PackageInfoData> apps = getApps(ctx);
+			final List<PackageInfoData> apps = getApps(ctx,null);
 			Integer id;
 			String appName = "";
 			int appId = -1;
@@ -811,21 +912,12 @@ public final class Api {
 		}
 	  }*/
 
-	static <T> List<List<T>> splitListForPerformance(List<T> list, final int L) {
-	    List<List<T>> parts = new ArrayList<List<T>>();
-	    final int N = list.size();
-	    for (int i = 0; i < N; i += L) {
-	        parts.add(new ArrayList<T>(
-	            list.subList(i, Math.min(N, i + L)))
-	        );
-	    }
-	    return parts;
-	}
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
      */
-	public static List<PackageInfoData> getApps(Context ctx) {
+	public static List<PackageInfoData> getApps(Context ctx, GetAppList appList) {
+		
 		initSpecial();
 		if (applications != null && applications.size() > 0) {
 			// return cached instance
@@ -836,6 +928,12 @@ public final class Api {
 		final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
 		
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		
+		final String savedPkg_wifi_uid = prefs.getString(PREF_WIFI_PKG_UIDS, "");
+		final String savedPkg_3g_uid = prefs.getString(PREF_3G_PKG_UIDS, "");
+		final String savedPkg_roam_uid = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
+		final String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
+		
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
 		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
@@ -847,20 +945,39 @@ public final class Api {
 		List<Integer> selected_roam = new ArrayList<Integer>();
 		List<Integer> selected_vpn = new ArrayList<Integer>();
 		
-		selected_wifi = getUidListFromPref(ctx,savedPkg_wifi);
-		selected_3g = getUidListFromPref(ctx,savedPkg_3g);
-		if(enableRoam) {
-			selected_roam = getUidListFromPref(ctx,savedPkg_roam);	
-		}
-		if(enableVPN) {
-			selected_vpn = getUidListFromPref(ctx,savedPkg_vpn);
-		}
 		
-		
+		if (savedPkg_wifi_uid.equals("")) {
+			selected_wifi = getUidListFromPref(ctx, savedPkg_wifi);
+		} else {
+			selected_wifi = getListFromPref(savedPkg_wifi_uid);
+		}
 
+		if (savedPkg_3g_uid.equals("")) {
+			selected_3g = getUidListFromPref(ctx, savedPkg_3g);
+		} else {
+			selected_3g = getListFromPref(savedPkg_3g_uid);
+		}
+		if (enableRoam) {
+			if (savedPkg_roam_uid.equals("")) {
+				selected_roam = getUidListFromPref(ctx, savedPkg_roam);
+			} else {
+				selected_roam = getListFromPref(savedPkg_roam_uid);
+			}
+		}
+		if (enableVPN) {
+			if (savedPkg_vpn_uid.equals("")) {
+				selected_vpn = getUidListFromPref(ctx, savedPkg_vpn);
+			} else {
+				selected_vpn = getListFromPref(savedPkg_vpn_uid);
+			}
+		}
+		
+		//revert back to old approach
+
+		int count = 0;
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
-			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(0);
+			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
 			/*
 				0 - Root
 				1000 - System
@@ -906,6 +1023,10 @@ public final class Api {
 			}*/
 			
 			for (final ApplicationInfo apinfo : installed) {
+				count = count+1;
+				if(appList != null ){
+					appList.doProgress(count);
+				}
 				
 				boolean firstseem = false;
 				app = syncMap.get(apinfo.uid);
@@ -959,9 +1080,18 @@ public final class Api {
 			}
 			/* add special applications to the list */
 
-			if(specialData == null) {
-				specialData = getSpecialDataSet(ctx);
-			}
+			//initiate special Apps
+			
+			List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
+			specialData.add(new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,false,"dev.afwall.special.any"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,false,"dev.afwall.special.kernel"));
+			specialData.add(new PackageInfoData(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,false,"dev.afwall.special.root"));
+			specialData.add(new PackageInfoData(android.os.Process.getUidForName("media"), "Media server", false, false,false,false,"dev.afwall.special.media"));
+			specialData.add(new PackageInfoData(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,false,"dev.afwall.special.vpn"));
+			specialData.add(new PackageInfoData(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,false,"dev.afwall.special.shell"));
+			specialData.add(new PackageInfoData(android.os.Process.getUidForName("gps"), "GPS", false, false,false,false,"dev.afwall.special.gps"));
+			specialData.add(new PackageInfoData(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,false,"dev.afwall.special.adb"));
+			
 			if(specialApps == null) {
 				specialApps = new HashMap<String, Integer>(); 
 			}
@@ -999,18 +1129,26 @@ public final class Api {
 	}
 	
 	
-	private static List<PackageInfoData> getSpecialDataSet(Context ctx) {
-		final List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
-		specialData.add(new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,false,"dev.afwall.special.any"));
-		specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,false,"dev.afwall.special.kernel"));
-		specialData.add(new PackageInfoData(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,false,"dev.afwall.special.root"));
-		specialData.add(new PackageInfoData(android.os.Process.getUidForName("media"), "Media server", false, false,false,false,"dev.afwall.special.media"));
-		specialData.add(new PackageInfoData(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,false,"dev.afwall.special.vpn"));
-		specialData.add(new PackageInfoData(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,false,"dev.afwall.special.shell"));
-		specialData.add(new PackageInfoData(android.os.Process.getUidForName("gps"), "GPS", false, false,false,false,"dev.afwall.special.gps"));
-		specialData.add(new PackageInfoData(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,false,"dev.afwall.special.adb"));
-		return specialData;
+	private static List<Integer> getListFromPref(String savedPkg_uid) {
+
+		final StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
+		List<Integer> listUids = new ArrayList<Integer>();
+		while(tok.hasMoreTokens()){
+			final String uid = tok.nextToken();
+			if (!uid.equals("")) {
+				try {
+					listUids.add(Integer.parseInt(uid));
+				} catch (Exception ex) {
+
+				}
+			}
+		}
+		// Sort the array to allow using "Arrays.binarySearch" later
+		Collections.sort(listUids);
+		return listUids;
 	}
+
+	
 
 
 	private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
@@ -1133,7 +1271,7 @@ public final class Api {
 			// check script
 			file = new File(ctx.getDir("bin",0), "afwallstart");
 			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.afwallstart, file, "750");
+				copyRawFile(ctx, R.raw.afwallstart, file, "755");
 				changed = true;
 			}
 			if (changed && showErrors) {
@@ -1191,13 +1329,14 @@ public final class Api {
 	}
 	
 	
-	private static boolean removePackageRef(Context ctx, String pkg, String pkgRemoved,Editor editor, String store){
+	private static boolean removePackageRef(Context ctx, String pkg, int pkgRemoved,Editor editor, String store){
 		final StringBuilder newuids = new StringBuilder();
-		final StringTokenizer tok = new StringTokenizer(pkg, "\\|");
+		final StringTokenizer tok = new StringTokenizer(pkg, "|");
 		boolean changed = false;
+		final String uid_str = pkgRemoved + "";
 		while (tok.hasMoreTokens()) {
 			final String token = tok.nextToken();
-			if (pkgRemoved.equals(token)) {
+			if (uid_str.equals(token)) {
 				//Log.d("AFWall", "Removing UID " + token + " from the rules list (package removed)!");
 				changed = true;
 			} else {
@@ -1217,23 +1356,23 @@ public final class Api {
 	 * @param ctx mandatory app context
 	 * @param uid UID of the application that has been removed
 	 */
-	public static void applicationRemoved(Context ctx, String pkgRemoved) {
+	public static void applicationRemoved(Context ctx, int pkgRemoved) {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final Editor editor = prefs.edit();
 		// allowed application names separated by pipe '|' (persisted)
-		String savedPks_wifi = prefs.getString(PREF_WIFI_PKG, "");
-		String savedPks_3g = prefs.getString(PREF_3G_PKG, "");
-		String savedPks_roam = prefs.getString(PREF_ROAMING_PKG, "");
-		String savedPks_vpn = prefs.getString(PREF_VPN_PKG, "");
+		String savedPks_wifi = prefs.getString(PREF_WIFI_PKG_UIDS, "");
+		String savedPks_3g = prefs.getString(PREF_3G_PKG_UIDS, "");
+		String savedPks_roam = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
+		String savedPks_vpn = prefs.getString(PREF_VPN_PKG_UIDS, "");
 		boolean wChanged,rChanged,gChanged,vChanged = false;
 		// look for the removed application in the "wi-fi" list
-		wChanged = removePackageRef(ctx,savedPks_wifi,pkgRemoved, editor,PREF_WIFI_PKG); 
+		wChanged = removePackageRef(ctx,savedPks_wifi,pkgRemoved, editor,PREF_WIFI_PKG_UIDS); 
 		// look for the removed application in the "3g" list
-		gChanged = removePackageRef(ctx,savedPks_3g,pkgRemoved, editor,PREF_3G_PKG);
+		gChanged = removePackageRef(ctx,savedPks_3g,pkgRemoved, editor,PREF_3G_PKG_UIDS);
 		// look for the removed application in roaming list
-		rChanged = removePackageRef(ctx,savedPks_roam,pkgRemoved, editor,PREF_ROAMING_PKG);
+		rChanged = removePackageRef(ctx,savedPks_roam,pkgRemoved, editor,PREF_ROAMING_PKG_UIDS);
 		//  look for the removed application in vpn list
-		vChanged = removePackageRef(ctx,savedPks_vpn,pkgRemoved, editor,PREF_VPN_PKG);
+		vChanged = removePackageRef(ctx,savedPks_vpn,pkgRemoved, editor,PREF_VPN_PKG_UIDS);
 		
 		if(wChanged || gChanged || rChanged || vChanged) {
 			editor.commit();
@@ -1334,8 +1473,22 @@ public final class Api {
 	
 	public static boolean clearRules(Context ctx) throws IOException{
 		final StringBuilder res = new StringBuilder();
-		setIpTablePath(ctx);
-		ArrayList<String> listCommands = new ArrayList<String>();
+		setIpTablePath(ctx,false);
+		List<String> listCommands = new ArrayList<String>();
+		listCommands.add((ipPath + " -F"));
+		listCommands.add((ipPath + " -X"));
+		int code = runScriptAsRoot(ctx, listCommands,  res);
+		if (code == -1) {
+			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean clearipv6Rules(Context ctx) throws IOException{
+		final StringBuilder res = new StringBuilder();
+		setIpTablePath(ctx,true);
+		List<String> listCommands = new ArrayList<String>();
 		listCommands.add((ipPath + " -F"));
 		listCommands.add((ipPath + " -X"));
 		int code = runScriptAsRoot(ctx, listCommands,  res);
@@ -1376,7 +1529,7 @@ public final class Api {
 		final StringBuilder res = new StringBuilder();
 		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
 		final String myiptables = dir + "/iptables_armv5 ";
-		ArrayList<String> listCommands = new ArrayList<String>();
+		List<String> listCommands = new ArrayList<String>();
 		listCommands.add((myiptables + " -F"));
 		listCommands.add((myiptables + " -X"));
 		listCommands.add((myiptables + " -P INPUT DROP"));
