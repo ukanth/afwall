@@ -652,6 +652,7 @@ public final class Api {
 			assertBinaries(ctx, showErrors);
 			// Custom "shutdown" script
 	    	setIpTablePath(ctx,false);
+	    	purgeRules(ctx,showErrors);
 			final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 			final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
 			if(enableIPv6) {
@@ -672,6 +673,7 @@ public final class Api {
     	listCommands.add((ipPath + " -F afwall-reject"));
     	listCommands.add((ipPath + " -F afwall-3g"));
     	listCommands.add((ipPath + " -F afwall-wifi"));
+    	listCommands.add((ipPath + " -D OUTPUT -j afwall || exit"));
     	final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
     	StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, ""));
 		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);

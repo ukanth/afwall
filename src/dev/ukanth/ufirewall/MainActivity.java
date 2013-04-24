@@ -806,14 +806,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		Api.setEnabled(this, enabled,true);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		if (enabled) {
-			final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
-			if(multimode) {
-				try {
-					Api.clearRules(MainActivity.this);
-				} catch (Exception e) {
-					Log.d("AFWall+", e.getLocalizedMessage());
-				}
-			}
 			applyOrSaveRules();
 		} else {
 			final boolean confirmBox = prefs.getBoolean("enableConfirm", false);

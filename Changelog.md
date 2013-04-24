@@ -4,6 +4,10 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.4.1
+* Fixed issue with cleanup afwall rules on disable
+* Fixed issue with OUTPUT chain not removed for afwall on disable
+
 Version 1.2.4(bump version to match Donate version)
 * Support IPv6 (Enable it in preference)
 * Tasker support enable/disable of AFWall+
