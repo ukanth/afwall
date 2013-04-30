@@ -13,11 +13,11 @@
   <string name="help">Aiuto</string>
   <string name="close">Chiudi</string>
   <string name="exit">Esci</string>
-  <string name="error_flush">Error flushing iptables</string>
-  <string name="error_purge">Errore durante lo svuotamento di iptables. exit code:</string>
+  <string name="error_flush">Errore nel salvataggio di iptables</string>
+  <string name="error_purge">Errore durante lo svuotamento di iptables. Codice:</string>
   <string name="error_binary">Errore durante l\'installazione dei file binari:</string>
-  <string name="error_refresh">Error refreshing iptables: </string>
-  <string name="error_apply">Error applying iptables rules. Exit code: </string>
+  <string name="error_refresh">Errore nell\'aggiornamento di iptables: </string>
+  <string name="error_apply">Errore nell'\applicazione delle regole iptables. Codice: </string>
   <string name="error_su">Impossibile acquisire accesso di root. \n hai bisogno di un telefono con permessi di root per eseguire AFWall+.\n\n se su questo telefono sono già presenti questi permessi, si prega di assicurarsi che AFWall+ abbia l\'autorizzazione per eseguire il comando \"su\". \n</string>
   <string name="error_common">Errore: </string>
   <string name="all_item">(Qualsiasi applicazione) - come se fossero selezionate tutte le applicazioni</string>
@@ -30,12 +30,12 @@
   <string name="log_was_enabled">È stato attivato il Registro</string>
   <string name="log_was_disabled">È stato disattivato il Registro</string>
   <string name="log_cleared">Registro eliminato</string>
-  <string name="flushed">Rules flushed</string>
+  <string name="flushed">Regole applicate</string>
   <string name="show_log">Log del Firewall</string>
   <string name="clear_log">Svuota registro</string>
-  <string name="applying_rules">Applicando le regole iptables.</string>
-  <string name="saving_rules">Salvando le regole iptables.</string>
-  <string name="deleting_rules">Eliminando regole iptables.</string>
+  <string name="applying_rules">Applicazione delle regole iptables.</string>
+  <string name="saving_rules">Salvataggio delle regole iptables.</string>
+  <string name="deleting_rules">Eliminazione regole iptables.</string>
   <string name="rules_applied">Regole applicate con successo</string>
   <string name="rules_saved">Regole salvate con successo</string>
   <string name="rules_deleted">Regole cancellate con successo</string>
@@ -49,7 +49,7 @@
   <string name="passremoved">Password di blocco rimossa</string>
   <string name="passerror">Errore durante il cambio Password di blocco</string>
   <string name="working">Elaborando...</string>
-  <string name="reading_apps">Retrieving installed applications...</string>
+  <string name="reading_apps">Recupero applicazioni installate...</string>
   <string name="please_wait">Attendere prego</string>
   <string name="mode_header">Modalità: %s</string>
   <string name="mode_whitelist">White list (consenti selezionati)</string>
@@ -62,18 +62,18 @@
   <string name="set_custom_script">Imposta uno script personalizzato</string>
   <string name="preferences">Preferenze</string>
   <string name="reload">Ricaricare le applicazioni</string>
-  <string name="flush">Flush Rules</string>
-  <string name="notify_pref_summary_on">A notification will be sent when a new application is installed</string>
-  <string name="notify_pref_summary_off">No notifications will be sent when a new application is installed</string>
-  <string name="notify_pref_title">Enable Notifications</string>
-  <string name="syscolor_pref_title">System applications\' color</string>
-  <string name="syscolor_pref_summary_on">Selected color will be shown for system applications</string>
+  <string name="flush">Applica regole</string>
+  <string name="notify_pref_summary_on">Riceverai una notifica all\'installazione di una nuova applicazione</string>
+  <string name="notify_pref_summary_off">Non riceverai notifiche all\'installazione di una nuova applicazione</string>
+  <string name="notify_pref_title">Abilita Notifiche</string>
+  <string name="syscolor_pref_title">Colore applicazioni di sistema</string>
+  <string name="syscolor_pref_summary_on">Il colore verrò mostrato per le applicazioni di sistema</string>
   <string name="syscolor_pref_summary_off">Colore predefinito</string>
-  <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
-  <string name="usb3g_pref_title">Disable 3G rules on Wired USB</string>
-  <string name="hideicons_pref_title">Hide applications\' icons</string>
+  <string name="usb3g_pref_summary">Impedisci ad AFWall+ di applicare regole 3G quando è in uso la connessione USB</string>
+  <string name="usb3g_pref_title">Disabilita regole 3G su USB</string>
+  <string name="hideicons_pref_title">Nascondi icone applicazioni</string>
   <string name="hideicons_pref_summary_on">Questo migliorerà le prestazioni disattivando le icone delle applicazioni sulla vista principale</string>
-  <string name="hideicons_pref_summary_off">Application\'s icons will be shown on the main view</string>
+  <string name="hideicons_pref_summary_off">Le icone delle applicazioni saranno mostrate nella schermata principale</string>
   <string name="custom_script_defined">Script personalizzato definito</string>
   <string name="custom_script_removed">Script personalizzato rimosso</string>
   <string name="custom_script_error">Errore durante il salvataggio di uno script personalizzato</string>
@@ -83,24 +83,24 @@
   <string name="unsaved_changes_message">Sono presenti modifiche non salvate.\nVuoi applicarle o scartarle?</string>
   <string name="apply">Applica</string>
   <string name="discard">Scarta</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b>Linux firewall.
-It allows you to restrict which applications are permitted to access your data networks.
-This is the perfect solution if you don\'t have an unlimited data plan, or just wants to see your battery lasting longer.\n\n\n
+  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> è un\'interfaccia grafica per il potente firewall <b>iptables</b> per Linux.
+Permette di impedire ad alcune applicazioni di accedere alla rete.
+La soluzione perfetta se non hai una tariffa dati illimitata o hai solo voglia di veder sopravvivere la batteria più a lungo.\n\n\n
 <b>Aiuto - </b> http://github.com/ukanth/afwall/wiki/Help \n
 <b>Domande Frequenti</b> -https://github.com/ukanth/afwall/wiki/Help \n
 <b>Sviluppatore </b> - Umakanthan Chandran \n
-<a href="mailto:cumakt+afwall@gmail.com">Contact me</a>\n
+<a href="mailto:cumakt+afwall@gmail.com">Contattami</a>\n
 <b>Twitter </b>- @ukanth \n
-<b>Project Homepage</b> - https://github.com/ukanth/afwall/\n
-<b>Credits \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>Icons </b> - hush66 (http://hush66.deviantart.com/)\n</string>
+<b>Homepage</b> - https://github.com/ukanth/afwall/\n
+<b>Ringraziamenti \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
+<b>Icone </b> - hush66 (http://hush66.deviantart.com/)\n</string>
   <string name="mode">Modalità: </string>
   <string name="showrules_title">Regole IPtables</string>
   <string name="showlog_title">Registri del Firewall</string>
   <string name="settings_password">Inserire la Password</string>
   <string name="settings_password2">Inserire nuovamente la Password</string>
-  <string name="settings_pwd_not_equal">Passwords don\'t match</string>
-  <string name="settings_pwd_equal">Passwords match</string>
+  <string name="settings_pwd_not_equal">Le password non corrispondono</string>
+  <string name="settings_pwd_equal">Le password corrispondono</string>
   <string name="export_rules">Esporta regole</string>
   <string name="import_rules">Importa regole</string>
   <string name="export_rules_success">Esportazione avvenuta in</string>
@@ -114,11 +114,11 @@ This is the perfect solution if you don\'t have an unlimited data plan, or just 
   <string name="ifaces">Interfacce di Rete</string>
   <string name="export_logs_fail">Esportazione su scheda SD fallita!</string>
   <string name="export_to_sd">Esporta su scheda SD</string>
-  <string name="flushRulesConfirm">This will flush all the iptables rules ! Do you want to continue ?</string>
-  <string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. It\'s only for ICS/JB devices</string>
+  <string name="flushRulesConfirm">Questo applicherà tutte le regole iptables! Continuare?</string>
+  <string name="icsJBOnly">Per favore deseleziona l\'opzione \'Opzioni sperimentali\'. Questa è solo per dispositivi ICS/JB</string>
   <string name="overrideRules">Questo sovrascriverà le regole esistenti! Si desidera importare le regole?</string>
   <string name="prefLocalmode">Consentire le connessioni in ingresso e in uscita solo da localhost e la porta 22(ssh)</string>
-  <string name="notification_new">New application installed.</string>
+  <string name="notification_new">Nuova applicazione installata.</string>
   <string name="multipleProfiles">Attivare Profili multipli</string>
   <string name="defaultProfile">Predefinito</string>
   <string name="profile1">Profilo1</string>
@@ -130,20 +130,20 @@ This is the perfect solution if you don\'t have an unlimited data plan, or just 
   <string name="customProfile3Summary">Nome personalizzato per Profilo3</string>
   <string name="enable_firewall_log">Abilitare i registri Firewall</string>
   <string name="confirmMsg">Questo disabiliterà il firewall! Si desidera continuare?</string>
-  <string name="enableConfirmTitle">Confirmbox on AFWall+ disable</string>
-  <string name="enableConfirm_summary_on">Firewall will be ask for confirmation before being disabled</string>
+  <string name="enableConfirmTitle">Conferma la disabilitazione di AFWall+</string>
+  <string name="enableConfirm_summary_on">Il Firewall chiederà la conferma prima della sua disabilitazione</string>
   <string name="enableConfirm_summary_off">Il Firewall verrà disabilitato senza conferma</string>
-  <string name="usePattern">Use lockpattern instead of password</string>
+  <string name="usePattern">Usa una combinazione al posto della password</string>
   <string name="showUid">Mostra UID applicazioni</string>
-  <string name="showuid_summary_on">Applications\' UID will be shown in the main view.</string>
-  <string name="showuid_summary_off">Applications\' UID is hidden. Enabling can be useful to track logs</string>
-  <string name="resetPattern">Si desidera reimpostare la lockpattern?</string>
+  <string name="showuid_summary_on">Lo UID delle applicazioni sarà mostrato nella schermata principale.</string>
+  <string name="showuid_summary_off">Lo UID delle applicazioni non sarà mostrato nella schermata principale. Abilitarlo aiuta la lettura dei log</string>
+  <string name="resetPattern">Si desidera reimpostare la combinazione?</string>
   <string name="delete">Elimina</string>
   <string name="Yes">Si</string>
   <string name="No">No</string>
   <string name="Cancel">Annulla</string>
   <string name="exportConfirm">Vuoi esportare le regole nella SD Card?</string>
-  <string name="LogAppName">Application\'s Name</string>
+  <string name="LogAppName">Nome applicazione</string>
   <string name="LogPackBlock">Totale pacchetti bloccati</string>
   <string name="notification_title">Apri AFWall+</string>
   <string name="enable_log">Attivare Log</string>
@@ -156,22 +156,22 @@ This is the perfect solution if you don\'t have an unlimited data plan, or just 
   <string name="custom_title2">Nome personalizzato per Profilo1</string>
   <string name="custom_title3">Nome personalizzato per Profilo2</string>
   <string name="custom_title4">Nome personalizzato per Profilo3</string>
-  <string name="fixleakTitle">Fix Startup Data Leak</string>
-  <string name="fixleakSummary">This will fix data leak before AFWall+ starts\n Requires Init.d Support and S-OFF(HTC)!</string>
+  <string name="fixleakTitle">Impedisci la fuga di dati all\'avvio</string>
+  <string name="fixleakSummary">Questo previene il traffico dati prima che AFWall+ si avvii con il sistema.\n Richiede che Android supporti init.d e S-OFF (per HTC)!</string>
   <string name="success_initd">Script copiato con successo all\'avvio</string>
-  <string name="remove_initd">Please delete afwallstart from /system/etc/init.d folder before uninstalling AFWall+</string>
-  <string name="unable_initd">Unable to find init.d directory. Please verify that your ROM supports init.d</string>
+  <string name="remove_initd">Per favore elimina \'afwallstart\' da \'/system/etc/init.d\' prima di disinstallare AFWall+</string>
+  <string name="unable_initd">Directory init.d non trovata. Verifica che la tua ROM supporti init.d</string>
   <string name="enable_device_admin">Abilitare Admin dispositivo</string>
-  <string name="device_admin_enabled">AFWall+ Admin dispositivo abilitato</string>
-  <string name="device_admin_disabled">AFWall+ Admin dispositivo disabilitato</string>
-  <string name="device_admin_on_disable">Si prega di andare in impostazioni amministratore dispositivo per disattivare AFWall+</string>
+  <string name="device_admin_enabled">Admin dispositivo AFWall+ abilitato</string>
+  <string name="device_admin_disabled">Admin dispositivo AFWall+ disabilitato</string>
+  <string name="device_admin_on_disable">Vai in impostazioni amministratore dispositivo per disattivare AFWall+</string>
   <string name="status_running">In esecuzione</string>
-  <string name="alternateStartTitle">Fix Device Start Rules</string>
-  <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
+  <string name="alternateStartTitle">Correggi regole di avvio</string>
+  <string name="alternateStartSummary">Questo aiuta ad applicare le regole AFWall+ all'avvio di alcuni dispositivi (CM10.1)</string>
   <string name="widget_disable_fail">Impossibile disabilitare il firewall - password necessaria!</string>
   <string name="import_rules_droidwall">Importare le regole DW</string>
   <string name="userAFWOnly">Attivare Control Defense</string>
-  <string name="userAFWSummary">Enable this to make sure only AFWAll+ controls your outgoing traffic and not other firewalls!</string>
+  <string name="userAFWSummary">Questa opzione impedisce ad altri firewall di interferire con AFWall+ o controllare il traffico dati!</string>
   <string name="color_pick">Premere sul colore per applicare</string>
   <string name="toggle_enable">Abilita Firewall</string>
   <string name="toggle_disable">Disabilita Firewall</string>
@@ -181,21 +181,21 @@ This is the perfect solution if you don\'t have an unlimited data plan, or just 
   <string name="toggle_profile3">Attiva Profilo 3</string>
   <string name="languages">Lingue</string>
   <string name="roaming">Abilita controllo Roaming</string>
-  <string name="roamingSummary">Enable this to add additional feature to control internet while roaming</string>
+  <string name="roamingSummary">Abilita questa opzione per controllare le regole durante il roaming dati</string>
   <string name="vpn_profile">Abilita controllo VPN</string>
-  <string name="vpnSummary">Enable this to add additional feature to control internet with VPN</string>
-  <string name="disable_toaster">Disable Tasker Toasts</string>
-  <string name="disableTasterSummary">This will disable toast messages for Tasker\'s plugin</string>
-  <string name="tasker_apply">Applicando le regole del Firewall</string>
-  <string name="tasker_disabled">Tasker: AFWall+ disabled!</string>
-  <string name="tasker_muliprofile">AFWall+ Tasker: multiprofile is disabled!</string>
-  <string name="startup_service">Applicando le regole... Si prega di attendere!</string>
-  <string name="ipv6_title">Enable IPv6 Support</string>
-  <string name="ipv6_summary">This will enable support for ipv6</string>
+  <string name="vpnSummary">Abilita questa opzione per controllare l'uso di internet quando si usa una VPN</string>
+  <string name="disable_toaster">Disabilita notifiche Tasker</string>
+  <string name="disableTasterSummary">Questo disabilita le notifiche Toast del plugin Tasker</string>
+  <string name="tasker_apply">Applicazione delle regole del Firewall</string>
+  <string name="tasker_disabled">Tasker: AFWall+ disabilitato!</string>
+  <string name="tasker_muliprofile">AFWall+ Tasker: multiprofilo disattivato!</string>
+  <string name="startup_service">Applicazione delle regole... Attendi...</string>
+  <string name="ipv6_title">Abilita IPv6</string>
+  <string name="ipv6_summary">Abilita il supporto alla rete IPv6</string>
   <string name="OK">OK</string>
-  <string name="ip6unavailable">Error: IPv6 requires \"/system/bin/ip6tables\".</string>
-  <string name="enable_tasker">Enable AFWall+</string>
-  <string name="disable_tasker">Disable AFWall+</string>
-  <string name="switch_ipv6">Switch IPV6 Rules</string>
-  <string name="switch_ipv4">Switch IPV4 Rules</string>
+  <string name="ip6unavailable">Errore: IPv6 richiede \"/system/bin/ip6tables\".</string>
+  <string name="enable_tasker">Abilita AFWall+</string>
+  <string name="disable_tasker">Disabilita AFWall+</string>
+  <string name="switch_ipv6">Cambia a regole IPv6</string>
+  <string name="switch_ipv4">Cambia a regole IPv4</string>
 </resources>
