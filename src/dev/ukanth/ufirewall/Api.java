@@ -372,14 +372,8 @@ public final class Api {
 				final boolean any_vpn = uidsVPN.indexOf(SPECIAL_UID_ANY) >=0;
 				if (whitelist && !any_wifi) {
 					// When "white listing" wifi, we need to ensure that the dhcp and wifi users are allowed
-					int uid = android.os.Process.getUidForName("dhcp");
-					if (uid != -1) {
-						listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner " +  uid  + " -j RETURN || exit"));
-					}
-					uid = android.os.Process.getUidForName("wifi");
-					if (uid != -1) {
-						listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner " + (uid) + (" -j RETURN || exit")));
-					}
+					addRuleForUsers(listCommands, new String[]{"dhcp","wifi"},
+						ipPath + " -A afwall-wifi", "-j RETURN || exit");
 				}
 				//now 3g rules!
 				if (any_3g) {
