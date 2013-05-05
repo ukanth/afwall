@@ -87,6 +87,8 @@ public final class Api {
 	public static final int SPECIAL_UID_ANY	= -10;
 	/** special application UID used to indicate the Linux Kernel */
 	public static final int SPECIAL_UID_KERNEL	= -11;
+	/** special application UID used for dnsmasq DHCP/DNS */
+	public static final int SPECIAL_UID_TETHER	= -12;
 	/** root script filename */
 	//private static final String SCRIPT_FILE = "afwall.sh";
 	
@@ -255,7 +257,22 @@ public final class Api {
 	        index = builder.indexOf(from, index);
 	    }
 	}
-	
+
+	/**
+	 * Look up uid for each user by name, and if he exists, append an iptables rule.
+	 * @param listCommands current list of iptables commands to execute
+	 * @param users list of users to whom the rule applies
+	 * @param prefix "iptables" command and the portion of the rule preceding "-m owner --uid-owner X"
+	 * @param suffix the remainder of the iptables rule, following "-m owner --uid-owner X"
+	 */
+	private static void addRuleForUsers(List<String> listCommands, String users[], String prefix, String suffix) {
+		for (String user : users) {
+			int uid = android.os.Process.getUidForName(user);
+			if (uid != -1)
+				listCommands.add(prefix + " -m owner --uid-owner " + uid + " " + suffix);
+		}
+	}
+
     /**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
@@ -409,6 +426,30 @@ public final class Api {
 							if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-vpn -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
 						}
 					}
+				}
+
+				// note that this can only blacklist DNS/DHCP services, not all tethered traffic
+				if ((blacklist && (any_wifi || any_3g)) ||
+				    (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0)) {
+
+					String users[] = { "root", "nobody" };
+					String action = " -j " + targetRule + " || exit";
+
+					// DHCP replies to client
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi",
+						"-p udp --sport=67 --dport=68" + action);
+
+					// DNS replies to client
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi",
+						"-p udp --sport=53" + action);
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi",
+						"-p tcp --sport=53" + action);
+
+					// DNS requests to upstream servers
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g",
+						"-p udp --dport=53" + action);
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g",
+						"-p tcp --dport=53" + action);
 				}
 				
 				if (whitelist) {
@@ -1087,6 +1128,7 @@ public final class Api {
 			List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
 			specialData.add(new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,false,"dev.afwall.special.any"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,false,"dev.afwall.special.kernel"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER,"(Tethering) - DHCP+DNS services", false, false,false,false,"dev.afwall.special.tether"));
 			specialData.add(new PackageInfoData(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,false,"dev.afwall.special.root"));
 			specialData.add(new PackageInfoData(android.os.Process.getUidForName("media"), "Media server", false, false,false,false,"dev.afwall.special.media"));
 			specialData.add(new PackageInfoData(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,false,"dev.afwall.special.vpn"));
@@ -1765,6 +1807,7 @@ public final class Api {
 			specialApps = new HashMap<String, Integer>();
 			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
 			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
+			specialApps.put("dev.afwall.special.tether",SPECIAL_UID_TETHER);
 			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
 			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
 			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
