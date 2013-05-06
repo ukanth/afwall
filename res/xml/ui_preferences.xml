@@ -37,8 +37,7 @@
             android:defaultValue="#ffff0000"
             android:key="sysColor"
             android:title="@string/syscolor_pref_title"
-            android:summaryOn="@string/syscolor_pref_summary_on"
-            android:summaryOff="@string/syscolor_pref_summary_off" 
+            android:summary="@string/syscolor_pref_summary_on"
           />
         
         <ListPreference 
