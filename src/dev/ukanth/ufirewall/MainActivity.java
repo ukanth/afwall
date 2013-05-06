@@ -150,6 +150,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			boolean disableIcons = prefs.getBoolean("disableIcons", false);
 			boolean enableVPN = prefs.getBoolean("enableVPN", false);
 			boolean enableRoam = prefs.getBoolean("enableRoam", true);
+			boolean enableLAN = prefs.getBoolean("enableLAN", false);
 			
 			if(disableIcons){
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
@@ -162,7 +163,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			if(enableVPN){
 				addColumns(R.id.img_vpn);
 			}
-			
+
+			if(enableLAN){
+				addColumns(R.id.img_lan);
+			}
+
 
 			setupMultiProfile(prefs);
 			
@@ -468,6 +473,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	static class ViewHolder { 
+		private CheckBox box_lan;
 		private CheckBox box_wifi;
 		private CheckBox box_3g;
 		private CheckBox box_roam;
@@ -505,6 +511,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		final boolean showUid = prefs.getBoolean("showUid", false);
 		final boolean enableVPN = prefs.getBoolean("enableVPN", false);
 		final boolean enableRoam = prefs.getBoolean("enableRoam", true);
+		final boolean enableLAN = prefs.getBoolean("enableLAN", false);
 		
 		final int color = (int)prefs.getInt("sysColor", Color.RED);
 		final int defaultColor = Color.WHITE;
@@ -532,7 +539,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						holder.box_roam = addSupport(holder.box_roam,convertView, true, R.id.itemcheck_roam);
 					}
 					if(enableVPN) {
-						holder.box_vpn = addSupport(holder.box_vpn,convertView, true, R.id.itemcheck_vpn);						
+						holder.box_vpn = addSupport(holder.box_vpn,convertView, true, R.id.itemcheck_vpn);
+					}
+					if(enableLAN) {
+						holder.box_lan = addSupport(holder.box_lan,convertView, true, R.id.itemcheck_lan);
 					}
 					
 					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
@@ -553,7 +563,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						addSupport(holder.box_roam,convertView,false, R.id.itemcheck_roam);
 					}
 					if(enableVPN) {
-						addSupport(holder.box_vpn,convertView,false, R.id.itemcheck_vpn);				
+						addSupport(holder.box_vpn,convertView,false, R.id.itemcheck_vpn);
+					}
+					if(enableLAN) {
+						addSupport(holder.box_lan,convertView,false, R.id.itemcheck_lan);
 					}
 					
 					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
@@ -605,7 +618,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					holder.box_roam = addSupport(holder.box_roam,holder, holder.app, 0);
 				}
 				if(enableVPN) {
-					holder.box_vpn = addSupport(holder.box_vpn,holder, holder.app, 1);	
+					holder.box_vpn = addSupport(holder.box_vpn,holder, holder.app, 1);
+				}
+				if(enableLAN) {
+					holder.box_lan = addSupport(holder.box_lan,holder, holder.app, 2);
 				}
 				
 				return convertView;
@@ -613,10 +629,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			
 			private CheckBox addSupport(CheckBox check,ViewHolder entry,PackageInfoData app, int flag ) {
 				check.setTag(app);
-				if(flag == 0) {
-					check.setChecked(app.selected_roam);	
-				} else {
-					check.setChecked(app.selected_vpn);
+				switch (flag) {
+					case 0: check.setChecked(app.selected_roam); break;
+					case 1: check.setChecked(app.selected_vpn); break;
+					case 2: check.setChecked(app.selected_lan); break;
 				}
 				return check;
 			}
@@ -1172,6 +1188,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					this.dirty = true;
 				}
 				break;
+			case R.id.itemcheck_lan:
+				if (app.selected_lan != isChecked) {
+					app.selected_lan = isChecked;
+					this.dirty = true;
+				}
+				break;
 			}
 		}
 	}
@@ -1198,6 +1220,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case R.id.img_vpn:
 			selectAllVPN();
 			break;
+		case R.id.img_lan:
+			selectAllLAN();
+			break;
 		case R.id.img_reset:
 			clearAll();
 			break;
@@ -1206,7 +1231,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		//	break;
 		}
 	}
-	
+
+	private void selectAllLAN() {
+		ListAdapter adapter = listview.getAdapter();
+		int count = adapter.getCount(), item;
+		for (item = 0; item < count; item++) {
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+			data.selected_lan = true;
+			this.dirty = true;
+		}
+		((BaseAdapter) adapter).notifyDataSetChanged();
+	}
+
 	private void selectAllVPN() {
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
@@ -1227,6 +1263,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			data.selected_3g = !data.selected_3g;
 			data.selected_roam = !data.selected_roam;
 			data.selected_vpn = !data.selected_vpn;
+			data.selected_lan = !data.selected_lan;
 			this.dirty = true;
 		}
 		((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1252,6 +1289,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			data.selected_3g = false;
 			data.selected_roam = false;
 			data.selected_vpn = false;
+			data.selected_lan = false;
 			this.dirty = true;
 		}
 		((BaseAdapter) adapter).notifyDataSetChanged();

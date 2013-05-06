@@ -102,12 +102,14 @@ public final class Api {
 	public static final String PREF_WIFI_PKG		= "AllowedPKGWifi";
 	public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
 	public static final String PREF_VPN_PKG			= "AllowedPKGVPN";
+	public static final String PREF_LAN_PKG			= "AllowedPKGLAN";
 	
 	//revertback to old approach for performance
 	public static final String PREF_3G_PKG_UIDS			= "AllowedPKG3G_UIDS";
 	public static final String PREF_WIFI_PKG_UIDS		= "AllowedPKGWifi_UIDS";
 	public static final String PREF_ROAMING_PKG_UIDS	= "AllowedPKGRoaming_UIDS";
 	public static final String PREF_VPN_PKG_UIDS		= "AllowedPKGVPN_UIDS";
+	public static final String PREF_LAN_PKG_UIDS		= "AllowedPKGLAN_UIDS";
 	
 	
 	public static final String PREF_PASSWORD 		= "Password";
@@ -590,9 +592,11 @@ public final class Api {
 	 */
 	public static void saveRules(Context ctx) {
 		final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+
 		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
-		
+		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
 		final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
+
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final List<PackageInfoData> apps = getApps(ctx,null);
 		// Builds a pipe-separated list of names
@@ -600,6 +604,7 @@ public final class Api {
 		final StringBuilder newpkg_3g = new StringBuilder();
 		final StringBuilder newpkg_roam = new StringBuilder();
 		final StringBuilder newpkg_vpn = new StringBuilder();
+		final StringBuilder newpkg_lan = new StringBuilder();
 		
 		for (int i=0; i<apps.size(); i++) {
 			
@@ -622,7 +627,10 @@ public final class Api {
 				newpkg_vpn.append(apps.get(i).uid);
 			}
 
-
+			if (enableLAN && apps.get(i).selected_lan) {
+				if (newpkg_lan.length() != 0) newpkg_lan.append('|');
+				newpkg_lan.append(apps.get(i).uid);
+			}
 		}
 		// save the new list of UIDs
 		final Editor edit = prefs.edit();
@@ -630,6 +638,7 @@ public final class Api {
 		edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
 		edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
 		edit.putString(PREF_VPN_PKG_UIDS, newpkg_vpn.toString());
+		edit.putString(PREF_LAN_PKG_UIDS, newpkg_lan.toString());
 		
 		edit.commit();
     }
@@ -962,6 +971,7 @@ public final class Api {
 		}
 		final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
+		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
 		final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
 		
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -970,17 +980,20 @@ public final class Api {
 		final String savedPkg_3g_uid = prefs.getString(PREF_3G_PKG_UIDS, "");
 		final String savedPkg_roam_uid = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
 		final String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
+		final String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
 		
 		// allowed application names separated by pipe '|' (persisted)
 		final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
 		final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
 		final String savedPkg_roam = prefs.getString(PREF_ROAMING_PKG, "");
 		final String savedPkg_vpn = prefs.getString(PREF_VPN_PKG, "");
+		final String savedPkg_lan = prefs.getString(PREF_LAN_PKG, "");
 		
 		List<Integer> selected_wifi = new ArrayList<Integer>();
 		List<Integer> selected_3g = new ArrayList<Integer>();
 		List<Integer> selected_roam = new ArrayList<Integer>();
 		List<Integer> selected_vpn = new ArrayList<Integer>();
+		List<Integer> selected_lan = new ArrayList<Integer>();
 		
 		
 		if (savedPkg_wifi_uid.equals("")) {
@@ -1006,6 +1019,13 @@ public final class Api {
 				selected_vpn = getUidListFromPref(ctx, savedPkg_vpn);
 			} else {
 				selected_vpn = getListFromPref(savedPkg_vpn_uid);
+			}
+		}
+		if (enableLAN) {
+			if (savedPkg_lan_uid.equals("")) {
+				selected_lan = getUidListFromPref(ctx, savedPkg_lan);
+			} else {
+				selected_lan = getListFromPref(savedPkg_lan_uid);
 			}
 		}
 		
@@ -1110,6 +1130,9 @@ public final class Api {
 				if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
 					app.selected_vpn = true;
 				}
+				if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+					app.selected_lan = true;
+				}
 				
 			}
 			if (changed) {
@@ -1120,15 +1143,15 @@ public final class Api {
 			//initiate special Apps
 			
 			List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
-			specialData.add(new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), false, false,false,false,"dev.afwall.special.any"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", false, false,false,false,"dev.afwall.special.kernel"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER,"(Tethering) - DHCP+DNS services", false, false,false,false,"dev.afwall.special.tether"));
-			specialData.add(new PackageInfoData(android.os.Process.getUidForName("root"), ctx.getString(R.string.root_item), false, false,false,false,"dev.afwall.special.root"));
-			specialData.add(new PackageInfoData(android.os.Process.getUidForName("media"), "Media server", false, false,false,false,"dev.afwall.special.media"));
-			specialData.add(new PackageInfoData(android.os.Process.getUidForName("vpn"), "VPN networking", false, false,false,false,"dev.afwall.special.vpn"));
-			specialData.add(new PackageInfoData(android.os.Process.getUidForName("shell"), "Linux shell", false, false,false,false,"dev.afwall.special.shell"));
-			specialData.add(new PackageInfoData(android.os.Process.getUidForName("gps"), "GPS", false, false,false,false,"dev.afwall.special.gps"));
-			specialData.add(new PackageInfoData(android.os.Process.getUidForName("adb"), "ADB(Android Debug Bridge)", false, false,false,false,"dev.afwall.special.adb"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), "dev.afwall.special.any"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", "dev.afwall.special.kernel"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER,"(Tethering) - DHCP+DNS services", "dev.afwall.special.tether"));
+			specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
+			specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
+			specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
+			specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
+			specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
+			specialData.add(new PackageInfoData("adb", "ADB(Android Debug Bridge)", "dev.afwall.special.adb"));
 			
 			if(specialApps == null) {
 				specialApps = new HashMap<String, Integer>(); 
@@ -1149,6 +1172,9 @@ public final class Api {
 					}
 					if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
 						app.selected_vpn = true;
+					}
+					if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+						app.selected_lan = true;
 					}
 					syncMap.put(app.uid, app);
 				}
@@ -1406,6 +1432,7 @@ public final class Api {
 		String savedPks_3g = prefs.getString(PREF_3G_PKG_UIDS, "");
 		String savedPks_roam = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
 		String savedPks_vpn = prefs.getString(PREF_VPN_PKG_UIDS, "");
+		String savedPks_lan = prefs.getString(PREF_LAN_PKG_UIDS, "");
 		boolean wChanged,rChanged,gChanged,vChanged = false;
 		// look for the removed application in the "wi-fi" list
 		wChanged = removePackageRef(ctx,savedPks_wifi,pkgRemoved, editor,PREF_WIFI_PKG_UIDS); 
@@ -1415,6 +1442,8 @@ public final class Api {
 		rChanged = removePackageRef(ctx,savedPks_roam,pkgRemoved, editor,PREF_ROAMING_PKG_UIDS);
 		//  look for the removed application in vpn list
 		vChanged = removePackageRef(ctx,savedPks_vpn,pkgRemoved, editor,PREF_VPN_PKG_UIDS);
+		//  look for the removed application in lan list
+		vChanged = removePackageRef(ctx,savedPks_lan,pkgRemoved, editor,PREF_LAN_PKG_UIDS);
 		
 		if(wChanged || gChanged || rChanged || vChanged) {
 			editor.commit();
@@ -1444,6 +1473,8 @@ public final class Api {
     	boolean selected_roam;
     	/** indicates if this application is selected for vpn */
     	boolean selected_vpn;
+    	/** indicates if this application is selected for lan */
+    	boolean selected_lan;
     	/** toString cache */
     	String tostr;
     	/** application info */
@@ -1457,15 +1488,14 @@ public final class Api {
     	
     	public PackageInfoData() {
     	}
-    	public PackageInfoData(int uid, String name, boolean selected_wifi, boolean selected_3g,boolean selected_roam,boolean selected_vpn, String pkgNameStr) {
+    	public PackageInfoData(int uid, String name, String pkgNameStr) {
     		this.uid = uid;
     		this.names = new ArrayList<String>();
     		this.names.add(name);
-    		this.selected_wifi = selected_wifi;
-    		this.selected_3g = selected_3g;
-    		this.selected_roam = selected_roam;
-    		this.selected_vpn = selected_vpn;
     		this.pkgName = pkgNameStr;
+    	}
+    	public PackageInfoData(String user, String name, String pkgNameStr) {
+    		this(android.os.Process.getUidForName(user), name, pkgNameStr);
     	}
     	/**
     	 * Screen representation of this application
