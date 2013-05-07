@@ -512,7 +512,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		final android.view.LayoutInflater inflater = getLayoutInflater();
 		
 		final ListAdapter adapter = new ArrayAdapter<PackageInfoData>(this,R.layout.main_list,  R.id.itemtext, apps2) {
-			ApplicationInfo info;
 			
 			public View getView(final int position, View convertView,
 					ViewGroup parent) {
@@ -573,34 +572,29 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					holder.text.setText(holder.app.toString());
 				}
 			
+				ApplicationInfo info = holder.app.appinfo;
+				if(info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+					holder.text.setTextColor(defaultColor);
+				} else {
+					holder.text.setTextColor(color);
+				}
+
 				if(!disableIcons) {
 					holder.icon.setImageDrawable(holder.app.cached_icon);	
+					if (!holder.app.icon_loaded && info != null) {
+						// this icon has not been loaded yet - load it on a
+						// separated thread
+						try {
+							new LoadIconTask().execute(holder.app, getPackageManager(),
+									convertView);
+						} catch (RejectedExecutionException r) {
+						}
+					  }
 				} else {
 					holder.icon.setVisibility(View.GONE);
 					findViewById(R.id.imageHolder).setVisibility(View.GONE);	
 				}
-				
-				info = holder.app.appinfo;
-				if(info != null){
-					if ((info.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-						holder.text.setTextColor(color);
-					} else {
-						holder.text.setTextColor(defaultColor);
-					}
-					//entry.text.setHint(app.pkgName);
-				} 
-				
-				if(!disableIcons) {
-				if (!holder.app.icon_loaded && holder.app.appinfo != null) {
-					// this icon has not been loaded yet - load it on a
-					// separated thread
-					try {
-						new LoadIconTask().execute(holder.app, getPackageManager(),
-								convertView);
-					}catch (RejectedExecutionException r){
-					}
-				  }
-				}
+
 				holder.box_wifi.setTag(holder.app);
 				holder.box_wifi.setChecked(holder.app.selected_wifi);
 
