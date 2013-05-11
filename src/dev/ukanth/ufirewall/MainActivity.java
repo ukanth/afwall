@@ -1083,6 +1083,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 				if (enabled) {
 					//Log.d("AFWall+", "Applying rules.");
+					InterfaceTracker.checkForNewCfg(getApplicationContext());
 					if(Api.hasRootAccess(MainActivity.this,true) && Api.applyIptablesRules(MainActivity.this, true)){
 						Api.displayToasts(MainActivity.this,
 								R.string.rules_applied, Toast.LENGTH_SHORT);

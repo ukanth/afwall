@@ -57,7 +57,11 @@
     <!-- Allows ufwall to write to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     
-     <!-- Will be default in CyanogenMod  Superuser App -->
+    <!-- Allows access to IP configuration and tethering state -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <!-- Will be default in CyanogenMod Superuser App -->
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
 
     <!-- Screen support -->
