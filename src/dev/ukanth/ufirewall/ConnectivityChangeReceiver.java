@@ -1,5 +1,5 @@
 /**
- * Detect the connectivity changes ( for roaming changes)
+ * Detect the connectivity changes (for roaming and LAN subnet changes)
  * 
  * Copyright (C) 2011-2012  Umakanthan Chandran
  *
@@ -24,30 +24,12 @@ package dev.ukanth.ufirewall;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.util.Log;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, Intent intent) {
-		try {
-
-			ConnectivityManager cm = (ConnectivityManager) context
-					.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo[] ni = cm.getAllNetworkInfo();
-			for (NetworkInfo info : ni) {
-				if (ni != null) {
-					if (info.getType() == ConnectivityManager.TYPE_MOBILE)
-						if (info.isConnectedOrConnecting() && info.isRoaming()) {
-							Api.applyIptablesRules(context, false);
-						}
-				}
-			}
-		} catch (Exception e) {
-			Log.d("Exception in ConnectivityChangeReceiver",
-					e.getLocalizedMessage());
-		}
+		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
+		BackgroundIntentService.performAction(context, BackgroundIntentService.ACTION_CONNECTIVITY_CHANGED);
 	}
 }

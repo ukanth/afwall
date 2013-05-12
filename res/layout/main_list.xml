@@ -15,6 +15,14 @@
         </ImageView>
 
         <CheckBox
+            android:id="@+id/itemcheck_lan"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="0px"
+            android:visibility="gone">
+        </CheckBox>
+
+        <CheckBox
             android:id="@+id/itemcheck_wifi"
             android:layout_width="34dp"
             android:layout_height="34dp"

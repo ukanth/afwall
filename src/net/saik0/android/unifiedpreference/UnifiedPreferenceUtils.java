@@ -29,6 +29,7 @@ import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.preference.TwoStatePreference;
 import android.text.TextUtils;
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
 import dev.ukanth.ufirewall.R;
 
 public final class UnifiedPreferenceUtils {
@@ -46,6 +47,7 @@ public final class UnifiedPreferenceUtils {
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			// Do not bind toggles.
 			if (preference instanceof CheckBoxPreference
+					|| preference instanceof ColorPickerPreference
 					|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
 						&& preference instanceof TwoStatePreference)) {
 				return true;

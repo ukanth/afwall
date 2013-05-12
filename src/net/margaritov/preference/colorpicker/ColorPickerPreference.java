@@ -104,6 +104,7 @@ public class ColorPickerPreference extends Preference implements
 		setPreviewColor();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void setPreviewColor() {
 		if (mView == null)
 			return;

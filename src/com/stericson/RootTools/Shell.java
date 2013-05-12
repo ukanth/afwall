@@ -265,6 +265,7 @@ public class Shell {
 		}
 	};
 
+	@SuppressWarnings("deprecation")
 	private void readOutput() throws IOException, InterruptedException {
 		Command command = null;
 		int read = 0;
@@ -371,6 +372,7 @@ public class Shell {
 			this.out = out;
 		}
 		
+		@SuppressWarnings("deprecation")
 		public void run() 
 		{
 			try {

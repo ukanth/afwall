@@ -17,7 +17,6 @@ report any bugs or feature requests and to see the list of known issues.
 
 ## ToDo:
 * Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/)
-* Support for only within LAN  
 * Integrate with Network Log 
 * Uninstall application from list window ( or open manage application from list)
 * ~~Roaming option ( like avast firewall )~~ <i>(since 1.0.2a)</i>
@@ -27,6 +26,7 @@ report any bugs or feature requests and to see the list of known issues.
 * ~~Full i18n support~~
 * ~~Save & Load Profiles/Rules~~ <i>(since 1.0.3a)</i>
 * ~~Multiple Profiles~~ <i> (Since 1.0.7a) </i>
+* ~~Support for only within LAN~~ <i>(Since 1.2.5)</i>
 
 ## License
 
