@@ -129,13 +129,9 @@ public final class Api {
 	public static final String STATUS_EXTRA			= "dev.ukanth.ufirewall.intent.extra.STATUS";
 	public static final String SCRIPT_EXTRA			= "dev.ukanth.ufirewall.intent.extra.SCRIPT";
 	public static final String SCRIPT2_EXTRA		= "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
-	private static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "eth0+", "ra+", "wlan0+" };
-	private static final String ITFS_3G[] = { 
-				"rmnet+","rmnet0+","rmnet1+", "rmnet2+", "pdp+","rmnet_sdio+","rmnet_sdio0+", "rmnet_sdio1+",
-				"uwbr+","wimax+", "vsnet+", "ccmni+","ccmni0+", 
-				"qmi+", "svnet0+", "wwan+", "wwan0+","cdma_rmnet+", 
-				"usb+", "usb0+", "pdp0+"};
-	private static final String ITFS_VPN[] = { "tun+", "tun0+", "ppp+", "ppp0+", "tap+" };
+	private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
+	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
+	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
 	//private static final int BUFF_LEN = 0;
 	
 	// Cached applications
