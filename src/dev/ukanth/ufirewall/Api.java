@@ -81,7 +81,8 @@ import eu.chainfire.libsuperuser.Shell.SU;
  * All iptables "communication" is handled by this class.
  */
 public final class Api {
-	/** application version string */
+	/** application logcat tag */
+	public static final String TAG = "AFWall";
 	
 	/** special application UID used to indicate "any application" */
 	public static final int SPECIAL_UID_ANY	= -10;
@@ -498,7 +499,7 @@ public final class Api {
 				return true;
 			}
 		} catch (Exception e) {
-			Log.d("Exception while applying rules in dev.ukath.ufirewall" , e.getMessage());
+			Log.e(TAG, "Exception while applying rules: " + e.getMessage());
 			if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
 		}
 		
@@ -1261,17 +1262,17 @@ public final class Api {
      */
 	public static int runScript(Context ctx, List<String> script, StringBuilder res, long timeout, boolean asroot) {
 		int returnCode = -1;
-		//Log.d("In the runScript mode", "Message-None");
+		//Log.d(TAG, "In the runScript mode");
 		try {
 			returnCode = new RunCommand().execute(script, res, ctx).get();
 		} catch (RejectedExecutionException r) {
-			Log.d("Exception", r.getLocalizedMessage());
+			Log.e(TAG, "runScript failed: " + r.getLocalizedMessage());
 		} catch (InterruptedException e) {
-			Log.d("Exception", "Caught InterruptedException");
+			Log.e(TAG, "Caught InterruptedException");
 		} catch (ExecutionException e) {
-			Log.d("Exception", e.getLocalizedMessage());
+			Log.e(TAG, "runScript failed: " + e.getLocalizedMessage());
 		} catch (Exception e) {
-			Log.d("Exception", e.getLocalizedMessage());
+			Log.e(TAG, "runScript failed: " + e.getLocalizedMessage());
 		}
 		
 		return returnCode;
@@ -1365,7 +1366,7 @@ public final class Api {
 	public static boolean isEnabled(Context ctx) {
 		if (ctx == null) return false;
 		boolean flag = ctx.getSharedPreferences(PREF_FIREWALL_STATUS, Context.MODE_PRIVATE).getBoolean(PREF_ENABLED, false);
-		//Log.d("Checking for IsEnabled in AFWall+", "Flag:" + flag);
+		//Log.d(TAG, "Checking for IsEnabled, Flag:" + flag);
 		return flag;
 	}
 	
@@ -1401,7 +1402,7 @@ public final class Api {
 		while (tok.hasMoreTokens()) {
 			final String token = tok.nextToken();
 			if (uid_str.equals(token)) {
-				//Log.d("AFWall", "Removing UID " + token + " from the rules list (package removed)!");
+				//Log.d(TAG, "Removing UID " + token + " from the rules list (package removed)!");
 				changed = true;
 			} else {
 				if (newuids.length() > 0)
@@ -1698,19 +1699,19 @@ public final class Api {
 			res = true;
 		} catch (FileNotFoundException e) {
 			//alert(ctx, "Missing back.rules file");
-			Log.d("Exception", e.getLocalizedMessage());
+			Log.e(TAG, e.getLocalizedMessage());
 		} catch (IOException e) {
 			//alert(ctx, "Error reading the backup file");
-			Log.d("Exception", e.getLocalizedMessage());
+			Log.e(TAG, e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
-			Log.d("Exception", e.getLocalizedMessage());
+			Log.e(TAG, e.getLocalizedMessage());
 		} finally {
 			try {
 				if (input != null) {
 					input.close();
 				}
 			} catch (IOException ex) {
-				Log.d("Exception", ex.getLocalizedMessage());
+				Log.e(TAG, ex.getLocalizedMessage());
 			}
 		}
 		return res;
@@ -1742,11 +1743,11 @@ public final class Api {
 					edit.putInt("iptablesv", number);
 					edit.commit();
 				} catch (Exception e) {
-					Log.d("Exception", e.getLocalizedMessage());
+					Log.e(TAG, e.getLocalizedMessage());
 				}
 
 			} catch (Exception e) {
-				Log.d("Exception", e.getLocalizedMessage());
+				Log.e(TAG, e.getLocalizedMessage());
 			}
 		}
 		return number;
@@ -1757,7 +1758,7 @@ public final class Api {
 		try {
 			output = runSUCommand("ls /sys/class/net");
 		} catch (IOException e1) {
-			Log.d("IOException", e1.getLocalizedMessage());
+			Log.e(TAG, "IOException: " + e1.getLocalizedMessage());
 		}
 		if (output != null) {
 			output = output.replace(" ", ",");
