@@ -105,7 +105,8 @@ public class Shell {
 			STDERR.join();
 			
 			// in case of su, 255 usually indicates access denied
-			if (shell.equals("su") && (process.exitValue() == 255)) {
+			//if (shell.equals("su") && (process.exitValue() == 255)) {
+			if (process.exitValue() != 0) { // HACK to inform caller of error exit
 				res = null;
 			}			
 		} catch (IOException e) {
