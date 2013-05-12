@@ -1208,13 +1208,17 @@ public final class Api {
 					return exitCode;
 				if (commands != null && commands.size() > 0) {
 					List<String> output = SU.run(commands);
-					if (output != null && output.size() > 0) {
-						for (String str : output) {
-							res.append(str);
-							res.append("\n");
+					if (output != null) {
+						exitCode = 0;
+						if (output.size() > 0) {
+							for (String str : output) {
+								res.append(str);
+								res.append("\n");
+							}
 						}
+					} else {
+						exitCode = 1;
 					}
-					exitCode = 0;
 				}
 			} catch (Exception ex) {
 				if (res != null)
