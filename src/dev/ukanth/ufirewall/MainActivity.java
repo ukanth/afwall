@@ -455,8 +455,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		@Override
 		public int compare(PackageInfoData o1, PackageInfoData o2) {
-			if (o1.firstseem != o2.firstseem) {
-				return (o1.firstseem ? -1 : 1);
+			if (o1.firstseen != o2.firstseen) {
+				return (o1.firstseen ? -1 : 1);
 			}
 			if ((o1.selected_wifi | o1.selected_3g) == (o2.selected_wifi | o2.selected_3g)) {
 				return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());

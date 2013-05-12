@@ -1065,7 +1065,7 @@ public final class Api {
 					appList.doProgress(count);
 				}
 				
-				boolean firstseem = false;
+				boolean firstseen = false;
 				app = syncMap.get(apinfo.uid);
 				// filter applications which are not allowed to access the Internet
 				if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
@@ -1079,7 +1079,7 @@ public final class Api {
 					name = pkgmanager.getApplicationLabel(apinfo).toString();
 					edit.putString(cachekey, name);
 					changed = true;
-					firstseem = true;
+					firstseen = true;
 				}
 				if (app == null) {
 					app = new PackageInfoData();
@@ -1096,7 +1096,7 @@ public final class Api {
 					newnames[app.names.length] = name;
 					app.names = newnames;*/
 				}
-				app.firstseem = firstseem;
+				app.firstseen = firstseen;
 				// check if this application is selected
 				if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
 					app.selected_wifi = true;
@@ -1452,8 +1452,8 @@ public final class Api {
     	Drawable cached_icon;
     	/** indicates if the icon has been loaded already */
     	boolean icon_loaded;
-    	/** first time seem? */
-    	boolean firstseem;
+    	/** first time seen? */
+    	boolean firstseen;
     	
     	public PackageInfoData() {
     	}
