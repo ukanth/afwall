@@ -30,7 +30,6 @@ package com.stericson.RootTools;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.concurrent.TimeoutException;
 
 public abstract class Command {
 	final String command[];
