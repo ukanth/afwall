@@ -80,9 +80,11 @@ public class ImportApi {
 			
 			if(wifi != null) {
 				prefEdit.putString(Api.PREF_WIFI_PKG, getPackageListFromUID(ctx,wifi));
+				prefEdit.putString(Api.PREF_WIFI_PKG_UIDS, wifi);
 			}
 			if(g != null ){
 				prefEdit.putString(Api.PREF_3G_PKG, getPackageListFromUID(ctx,g));
+				prefEdit.putString(Api.PREF_3G_PKG_UIDS, g);
 			}
 			prefEdit.commit();
 			res = true;

@@ -406,7 +406,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			new GetAppList().execute(); 
 		} else {
 			// the applications are cached, just show the list
-			showApplications("");
+			//showApplications("");
+			new GetAppList().execute();
 		}
 	}
 	
