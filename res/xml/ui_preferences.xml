@@ -34,18 +34,17 @@
          />
         
         <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:defaultValue="0xff000000"
+            android:defaultValue="#ffff0000"
             android:key="sysColor"
             android:title="@string/syscolor_pref_title"
-            android:summaryOn="@string/syscolor_pref_summary_on"
-            android:summaryOff="@string/syscolor_pref_summary_off" 
+            android:summary="@string/syscolor_pref_summary_on"
           />
         
         <ListPreference 
             android:entries="@array/supported_languages" 
             android:entryValues="@array/supported_languages_code" 
             android:title="@string/languages" 
-            android:key="locale"></ListPreference>
+            android:key="locale" android:defaultValue="en"></ListPreference>
         
         <CheckBoxPreference
             android:key="enableRoam"
@@ -62,13 +61,19 @@
          />
         
         <CheckBoxPreference
+            android:key="enableLAN"
+            android:title="@string/lan_title"
+            android:summary="@string/lan_summary"
+            android:defaultValue="false"
+         />
+
+        <CheckBoxPreference
             android:key="enableIPv6"
-            
             android:title="@string/ipv6_title"
             android:summary="@string/ipv6_summary"
             android:defaultValue="false"
          />
-        
+
         <CheckBoxPreference
             android:key="disableTaskerToast"
             android:title="@string/disable_toaster"

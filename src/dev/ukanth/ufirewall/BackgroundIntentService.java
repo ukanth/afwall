@@ -4,64 +4,31 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class BackgroundIntentService extends IntentService {
-	// you could provide more options here, should you need them
+
+	public static final String TAG = "AFWall";
+	
 	public static final String ACTION_BOOT_COMPLETE = "boot_complete";
+	public static final String ACTION_CONNECTIVITY_CHANGED = "connectivity_changed";
 	
-	private static Context context;
-	
-	public Context getContext() {
-		return context;
-	}
+	private static boolean initDone = false;
+	private static Context mContext;
+	private static SharedPreferences prefs;
 
-	public static void setContext(Context context) {
-		BackgroundIntentService.context = context;
-	}
-
-	public static void performAction(Context context, String action) {
-		performAction(context, action, null);		
-	}
-
-	public static void performAction(Context context, String action, Bundle extras) {
-		if ((context == null) || (action == null) || action.equals("")) return;
-		Intent svc = new Intent(context, BackgroundIntentService.class);
-		svc.setAction(action);
-		setContext(context.getApplicationContext());
-		if (extras != null)	svc.putExtras(extras);
-		context.startService(svc);
-		
-	}
-					
 	public BackgroundIntentService() {
 		// If you forget this one, the app will crash
 		super("BackgroundIntentService");
-	}
+    }
 
-	@Override
-	protected void onHandleIntent(Intent intent) {
-		String action = intent.getAction();		
-		
-		if ((action == null) || (action.equals(""))) return;
-		
-		if (action.equals(ACTION_BOOT_COMPLETE)) {
-			onBootComplete();
-		}
-		// you can define more options here... pass parameters through the "extra" values
-	}
-	
-	protected void onBootComplete() {
-		if(context == null) return;
-		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+	private static void setupPrefs() {
+		prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 		final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
-		
-		if (Api.isEnabled(context.getApplicationContext())) {
-			if(multimode){
+
+		if (Api.isEnabled(mContext)) {
+			if (multimode) {
 				int itemPosition = prefs.getInt("storedPosition", 0);
 				switch (itemPosition) {
 				case 0:
@@ -80,20 +47,48 @@ public class BackgroundIntentService extends IntentService {
 					break;
 				}
 			}
-			//potential fix for rules are not applying
-			new Thread() {
-				public void run() {
-					Looper.prepare();
+		}
+	}
 
-					boolean isApplied = Api.applySavedIptablesRules(
-							context.getApplicationContext(), false);
-					if (!isApplied) {
-						Log.d("Unable to apply the rules in AFWall+", "");
-						Api.setEnabled(context.getApplicationContext(), false,
-								false);
-					}
-				}
-			}.start();
+	protected static void firstRun(Context context) {
+		if (!initDone) {
+			mContext = context.getApplicationContext();
+			setupPrefs();
+			initDone = true;
+		}
+	}
+
+	public static boolean applyRules(Context context, boolean showErrors) {
+		boolean ret;
+
+		firstRun(context);
+		if (!Api.isEnabled(mContext)) {
+			Log.d(TAG, "applyRules: firewall is disabled, skipping");
+			return true;
+		}
+
+		ret = Api.applySavedIptablesRules(mContext, showErrors); 
+		Log.d(TAG, "applyRules: " + (ret ? "success" : "failed"));
+		return ret;
+	}
+
+	public static void performAction(Context context, String action) {
+		Intent svc = new Intent(context, BackgroundIntentService.class);
+		svc.setAction(action);
+		firstRun(context);
+		context.startService(svc);
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		String action = intent.getAction();
+
+		Log.d(TAG, "received " + action + " intent");
+		if (InterfaceTracker.checkForNewCfg(mContext)) {
+			if (applyRules(mContext, false) == false) {
+				Log.e(TAG, "Unable to apply firewall rules");
+				Api.setEnabled(mContext, false, false);
+			}
 		}
 	}	
 }

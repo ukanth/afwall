@@ -17,7 +17,7 @@
   <string name="error_purge">Errore durante lo svuotamento di iptables. Codice:</string>
   <string name="error_binary">Errore durante l\'installazione dei file binari:</string>
   <string name="error_refresh">Errore nell\'aggiornamento di iptables: </string>
-  <string name="error_apply">Errore nell'\applicazione delle regole iptables. Codice: </string>
+  <string name="error_apply">Errore nell\'applicazione delle regole iptables. Codice: </string>
   <string name="error_su">Impossibile acquisire accesso di root. \n hai bisogno di un telefono con permessi di root per eseguire AFWall+.\n\n se su questo telefono sono già presenti questi permessi, si prega di assicurarsi che AFWall+ abbia l\'autorizzazione per eseguire il comando \"su\". \n</string>
   <string name="error_common">Errore: </string>
   <string name="all_item">(Qualsiasi applicazione) - come se fossero selezionate tutte le applicazioni</string>
@@ -167,7 +167,7 @@ La soluzione perfetta se non hai una tariffa dati illimitata o hai solo voglia d
   <string name="device_admin_on_disable">Vai in impostazioni amministratore dispositivo per disattivare AFWall+</string>
   <string name="status_running">In esecuzione</string>
   <string name="alternateStartTitle">Correggi regole di avvio</string>
-  <string name="alternateStartSummary">Questo aiuta ad applicare le regole AFWall+ all'avvio di alcuni dispositivi (CM10.1)</string>
+  <string name="alternateStartSummary">Questo aiuta ad applicare le regole AFWall+ all\'avvio di alcuni dispositivi (CM10.1)</string>
   <string name="widget_disable_fail">Impossibile disabilitare il firewall - password necessaria!</string>
   <string name="import_rules_droidwall">Importare le regole DW</string>
   <string name="userAFWOnly">Attivare Control Defense</string>
@@ -183,7 +183,7 @@ La soluzione perfetta se non hai una tariffa dati illimitata o hai solo voglia d
   <string name="roaming">Abilita controllo Roaming</string>
   <string name="roamingSummary">Abilita questa opzione per controllare le regole durante il roaming dati</string>
   <string name="vpn_profile">Abilita controllo VPN</string>
-  <string name="vpnSummary">Abilita questa opzione per controllare l'uso di internet quando si usa una VPN</string>
+  <string name="vpnSummary">Abilita questa opzione per controllare l\'uso di internet quando si usa una VPN</string>
   <string name="disable_toaster">Disabilita notifiche Tasker</string>
   <string name="disableTasterSummary">Questo disabilita le notifiche Toast del plugin Tasker</string>
   <string name="tasker_apply">Applicazione delle regole del Firewall</string>

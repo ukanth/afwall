@@ -21,7 +21,6 @@ import java.util.List;
 import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceActivity.Header;
 import android.preference.PreferenceFragment;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;

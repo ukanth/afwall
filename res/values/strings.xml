@@ -187,6 +187,8 @@
     <string name="roamingSummary">Enable this to add additional feature to control internet while roaming</string>
     <string name="vpn_profile">Enable VPN Control</string>
     <string name="vpnSummary">Enable this to add additional feature to control internet with VPN</string>
+    <string name="lan_title">Enable LAN Control</string>
+    <string name="lan_summary">Enable this to control LAN permissions separately from WiFi permissions</string>
     <string name="disable_toaster">Disable Tasker Toasts</string>
     <string name="disableTasterSummary">This will disable toast messages for Tasker\'s plugin</string>
     
