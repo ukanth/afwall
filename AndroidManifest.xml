@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="125"
-    android:versionName="1.2.4.1" >
+    android:versionCode="126"
+    android:versionName="1.2.5" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -71,7 +71,8 @@
         android:normalScreens="true"
         android:smallScreens="true" />
 
-    <application
+    <application 
+        android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
@@ -170,6 +171,7 @@
         
         
 
+        <service android:name="dev.ukanth.ufirewall.StartupService" ></service>
         <service android:name="dev.ukanth.ufirewall.BackgroundIntentService"></service>
 
         <activity

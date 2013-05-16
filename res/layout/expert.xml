@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" android:gravity="right">
+   
+    
+     <TableLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        android:id="@+id/MultiSelectView" >
+        
+        <TableRow>
+     	
+
+     		<Button style="?android:attr/buttonStyleSmall" 
+     		        android:enabled="true"
+     		        android:id="@+id/blocapp"
+     		        android:text="@string/block"/>
+     		
+     		<Button style="?android:attr/buttonStyleSmall" 
+     		        android:enabled="true"
+     		        android:id="@+id/selecfall"
+     		        android:text="@string/selall"/>
+     		
+     		<Button style="?android:attr/buttonStyleSmall" 
+     		        android:enabled="true"
+     		        android:id="@+id/deselecfall"
+     		        android:text="@string/desel"/>
+     		<Button style="?android:attr/buttonStyleSmall" 
+     		        android:enabled="true"
+     		        android:id="@+id/update"
+     		        android:text="@string/update"/>
+        </TableRow>
+        </TableLayout>
+    
+         <TableLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:stretchColumns="2" >
+       
+        
+        <TableRow>
+			<TextView android:layout_width="wrap_content" 
+					  android:layout_height="wrap_content"
+					  android:gravity="left"
+					  android:paddingRight="3dip" 					   
+					  android:width="60sp" 
+					  android:text="@string/uid"
+					 
+					  android:textStyle="bold"/>
+
+			<TextView android:gravity="left"
+            		  android:layout_column="2"
+					  android:paddingLeft="3dip"
+					  android:text="@string/app" 
+					  
+					  android:textStyle="bold"/>
+
+			<TextView android:layout_width="wrap_content" 
+					  android:layout_height="wrap_content"
+					  android:gravity="left"
+					  android:paddingRight="3dip" 					   
+					  android:width="50sp" 
+					  android:text="@string/block" 
+					  
+					  android:textStyle="bold"/>
+
+            <TextView android:padding="3dip" android:width="20dip"/>
+
+		</TableRow>
+	
+            
+            
+     <FrameLayout
+        android:layout_width="fill_parent" 
+        android:layout_height="0dip"
+        android:layout_weight="1" >
+        
+		
+        <ListView android:id="@+id/applist"
+            android:layout_width="fill_parent" 
+            android:layout_height="fill_parent"
+            android:drawSelectorOnTop="false"/>
+        
+      
+        
+   
+    </FrameLayout>
+    	</TableLayout>
+	
+     
+      <ListView android:id="@android:id/list"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="false"/>  
+</LinearLayout>

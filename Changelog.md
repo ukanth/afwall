@@ -4,6 +4,18 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.5 (Development)
+
+* Added Tether support. (Thanks to cernekee)
+* Added LAN/WAN support. (Thanks to cernekee)
+* Added Import from DroidWall (from Donate Version !)
+* Fixed issue with special applications not showing in different color(system apps) (Thanks to cernekee)
+* Fixed issue with preferences for defauly system application picker (Thanks to cernekee)
+* Fixed issue with Language preferences default(Thanks to cernekee)
+* Lots of code refactor/bug fixes (Thanks to cernekee!)
+* Fixed issue with multiline in search text.
+* Minor UI changes on the application list.
+
 Version 1.2.4.1
 * Fixed issue with cleanup afwall rules on disable
 * Fixed issue with OUTPUT chain not removed for afwall on disable
@@ -229,16 +241,13 @@ Version 1.0.0a
 -------------------------------------
 
 
+
 TODO :
 
 -> kernel logs and mysterious behind it !
--> SSH/Local host support
--> UI hangs on < ICS devices 
 -> Hardware search key.
 -> Store logs in DB for a details reports. This will surely help.
 -> iptables builder ( like blocking websites/ipaddress etc.,)
--> ipv6 support
--> and outstanding issues reported in the github page
 -> Application size < 1MB 
 -> Rewrite the import/export logic
 -> Timer for re enable firewall after disable.

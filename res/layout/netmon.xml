@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    
+ <TableLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent" 
+        android:layout_height="wrap_content"
+        android:stretchColumns="2" >
+       <Button style="?android:attr/buttonStyleSmall" 
+     		        android:enabled="true"
+     		        android:id="@+id/update"
+     		        android:text="@string/update"/>
+        
+        <TableRow>
+			<TextView android:layout_width="wrap_content" 
+					  android:layout_height="wrap_content"
+					  android:gravity="left"
+					  android:paddingRight="3dip" 					   
+					  android:width="116sp" 
+					  android:text="@string/ip"
+					 
+					  android:textStyle="bold"/>
+
+			<TextView android:gravity="left"
+            		  android:layout_column="2"
+					  android:paddingLeft="3dip"
+					  android:text="@string/pname" 
+					   android:width="80sp" 
+					  android:textStyle="bold"/>
+
+			
+			<TextView android:layout_width="wrap_content" 
+					  android:layout_height="wrap_content"
+					  android:gravity="left"
+					  android:paddingRight="3dip" 					   
+					  android:width="50sp" 
+					  android:text="@string/st" 
+					  
+					  android:textStyle="bold"/>
+
+            <TextView android:padding="3dip" android:width="20dip"/>
+
+		</TableRow>
+	
+            
+            
+     <FrameLayout
+        android:layout_width="fill_parent" 
+        android:layout_height="0dip"
+        android:layout_weight="1" >
+        
+		
+        <ListView android:id="@+id/networklist"
+            android:layout_width="fill_parent" 
+            android:layout_height="fill_parent"
+            android:drawSelectorOnTop="false"/>
+        
+      
+        
+   
+    </FrameLayout>
+    	</TableLayout>
+	
+     
+      <ListView android:id="@android:id/list"
+            android:layout_width="wrap_content" 
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="false"/>  
+</LinearLayout>

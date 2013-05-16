@@ -60,6 +60,11 @@
                 android:showAsAction="always"
                 android:title="@string/import_rules"/>
             <item
+                android:id="@+id/menu_import_dw"
+                android:icon="@drawable/importr"
+                android:showAsAction="always"
+                android:title="@string/import_rules_droidwall"/>
+            <item
                 android:id="@+id/menu_help"
                 android:icon="@drawable/help"
                 android:showAsAction="always"

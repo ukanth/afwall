@@ -129,6 +129,7 @@ public final class Api {
 	public static final String STATUS_EXTRA			= "dev.ukanth.ufirewall.intent.extra.STATUS";
 	public static final String SCRIPT_EXTRA			= "dev.ukanth.ufirewall.intent.extra.SCRIPT";
 	public static final String SCRIPT2_EXTRA		= "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
+	
 	private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
@@ -1975,6 +1976,24 @@ public final class Api {
 		}
 
 	}
+	
+	public static String getTargets(Context context) {
+		
+		String busybox = getBusyBoxPath(context);
+		String grep = busybox + " grep";
+		
+		final StringBuilder res = new StringBuilder();
+		List<String> listCommands = new ArrayList<String>();
+		listCommands.add(grep + " \\.\\* /proc/net/ip_tables_targets");
+		int code = -1;
+		try {
+			code = runScriptAsRoot(context, listCommands,  res);
+		}catch(Exception e){
+			Log.d("getTargets: " , e.getLocalizedMessage());
+		}
+		return res.toString();
+	  }
+
 	
 	
 	/*@SuppressWarnings("unchecked")

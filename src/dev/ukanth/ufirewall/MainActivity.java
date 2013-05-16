@@ -52,6 +52,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -728,6 +729,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			final EditText filterText = (EditText) item.getActionView().findViewById(
 					R.id.searchApps);
 			filterText.addTextChangedListener(filterTextWatcher);
+			filterText.setEllipsize(TruncateAt.END);
+			filterText.setSingleLine();
 			
 			item.setOnActionExpandListener(new OnActionExpandListener() {
 			    @Override
@@ -777,6 +780,30 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			AlertDialog alert2 = builder.create();
 			alert2.show();
 			return true;
+			
+		case R.id.menu_import_dw:
+			AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
+			builder2.setMessage(getString(R.string.overrideRules))
+			       .setCancelable(false)
+			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   if(ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)){
+			        		   Api.applications = null;
+			        		   showOrLoadApplications();
+			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+			        	   } else {
+			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+			   				}
+			           }
+			       })
+			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();
+			           }
+			       });
+			AlertDialog alert3 = builder2.create();
+			alert3.show();
+			return true;	
 			
 		default:
 	        return super.onOptionsItemSelected(item);
