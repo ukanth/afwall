@@ -73,7 +73,7 @@
             android:summary="@string/ipv6_summary"
             android:defaultValue="false"
          />
-
+        
         <CheckBoxPreference
             android:key="disableTaskerToast"
             android:title="@string/disable_toaster"

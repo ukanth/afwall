@@ -204,4 +204,13 @@
     
     <string name="switch_ipv6">Switch IPV6 Rules</string>
     <string name="switch_ipv4">Switch IPV4 Rules</string>
+    
+    
+    <string name="iptables_pref">IPtables Binary</string>
+    <string name="busybox_pref">Busybox Binary</string>
+    <string name="system_bb">System busybox</string>
+    <string name="builtin_bb">Built-In busybox</string>
+    
+    <string name="system_ipt">System iptables</string>
+    <string name="builtin_ipt">Built-In iptables</string>
 </resources>

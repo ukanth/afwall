@@ -109,6 +109,10 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 	public static class MultiProfilePreferenceFragment extends
 			UnifiedPreferenceFragment {
 	}
+	
+	public static class CustomBinaryPreferenceFragment extends
+	UnifiedPreferenceFragment {
+}
 
 	public static class ExpPreferenceFragment extends UnifiedPreferenceFragment {
 	}

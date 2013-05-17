@@ -196,10 +196,15 @@ public final class Api {
 		final SharedPreferences appprefs = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
+		final String ip_preference = appprefs.getString("ip_path", "2");
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			Api.ipPath = defaultPath;
 		} else {
-			Api.ipPath = myiptables;
+			if(ip_preference.equals("2")) {
+				Api.ipPath = myiptables;	
+			} else {
+				Api.ipPath = defaultPath;
+			}
 		}
 		if (setv6 && enableIPv6) {
 			Api.setv6 = true;
@@ -211,7 +216,12 @@ public final class Api {
 	
 	static String getBusyBoxPath(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		final String busybox = dir + "/busybox_g1 ";
+		String busybox = "busybox ";
+		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+		final String busybox_preference = appprefs.getString("bb_path", "2");
+		if(busybox_preference.equals("2")) {
+			busybox = dir + "/busybox_g1 ";
+		}
 		return busybox;
 	}
 	/**

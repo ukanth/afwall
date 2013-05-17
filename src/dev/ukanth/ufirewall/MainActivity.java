@@ -406,8 +406,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			new GetAppList().execute(); 
 		} else {
 			// the applications are cached, just show the list
-			//showApplications("");
-			new GetAppList().execute();
+			showApplications("");
+			//new GetAppList().execute();
 		}
 	}
 	
@@ -430,7 +430,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			Api.getApps(MainActivity.this, this);
 			if( isCancelled() )
                 return null;
-            publishProgress(-1);
+            //publishProgress(-1);
 			return null;
 		}
 
@@ -450,8 +450,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				plsWait.setMessage(getString(R.string.reading_apps));
 				plsWait.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 				plsWait.show();
-			}  else {
-				plsWait.setProgress(progress[0]);
+			}  else if( progress[0] == -1 ){
+			} else {
+				 plsWait.setProgress(progress[0]);
 			}
 		}
 	};
