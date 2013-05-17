@@ -29,25 +29,35 @@
 		<item>Swedish</item>        
 		<item>Greek</item>
 		<item>Portuguese</item>        
+		<item>Italian</item>
+		
         <item>Simplifed Chinese</item>
+        <item>Traditional Chinese</item>
+        
     </string-array>
     
     <string-array name="supported_languages_code">
+        
         <item>en</item>
         <item>de</item>
         <item>fr</item>
         <item>es</item>
         <item>nl</item>
+        
         <item>jp</item>
         <item>uk</item>
         <item>ru</item>
         <item>cs</item>
         <item>pl</item>
+        
         <item>sl</item>
         <item>sv</item>
         <item>el</item>
         <item>pt</item>
-        <item>zh</item>
+        <item>it</item>
+        
+        <item>zh_CN</item>
+        <item>zh_TW</item>
     </string-array>
     
     <string-array name="iptables_binary">
