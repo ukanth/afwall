@@ -4,7 +4,7 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.5 (Development)
+Version 1.2.5 
 
 * Added Tether support. (Thanks to cernekee)
 * Added LAN/WAN support. (Thanks to cernekee)
@@ -16,7 +16,8 @@ Version 1.2.5 (Development)
 * Fixed issue with multiline in search text.
 * Minor UI changes on the application list.
 * Added selectable iptables/busybox binary
-* Added new translations (chineese/greek etc.,)
+* Added new translations (chinese/greek etc.,)
+
 
 Version 1.2.4.1
 * Fixed issue with cleanup afwall rules on disable
