@@ -400,15 +400,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * If the applications are cached, just show them, otherwise load and show
 	 */
 	private void showOrLoadApplications() {
-		if (Api.applications == null) {
-			// The applications are not cached.. so lets display the progress
-			// dialog
-			new GetAppList().execute(); 
-		} else {
-			// the applications are cached, just show the list
-			showApplications("");
-			//new GetAppList().execute();
-		}
+		new GetAppList().execute();
 	}
 	
 
