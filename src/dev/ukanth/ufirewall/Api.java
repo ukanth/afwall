@@ -305,6 +305,8 @@ public final class Api {
 
 		//final boolean isVPNEnabled = appprefs.getBoolean("enableVPNProfile",false);
 		
+		//String iptargets = getTargets(ctx);
+		
 
 		StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, ""));
 		
@@ -335,9 +337,14 @@ public final class Api {
 			
 			// Check if logging is enabled
 			if (logenabled) {
-				listCommands.add((ipPath + " -A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid "));
+				listCommands.add((ipPath + " -A afwall-reject -j REJECT || exit"));
+				//if(iptargets.toString().contains("NFLOG")) {
+				//	listCommands.add(ipPath + "iptables -A afwall-reject -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 10 || exit");
+				//} else {
+					listCommands.add((ipPath + " -A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid "));
+				//}
 			}
-			listCommands.add((ipPath + " -A afwall-reject -j REJECT || exit"));
+			
 			//cleanup ifaces and rules if data limit is enabled			
 			/*if(appprefs.getBoolean("fixmobileLimit", false)){
 				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -348,7 +355,8 @@ public final class Api {
 				listCommands.add(addCommand(ipPath + " -F costly_shared || exit"));
 				listCommands.add(addCommand(ipPath + " -F penalty_box || exit"));	
 			}*/
-
+			
+			
 			//now reenable everything after restart
 			listCommands.add((ipPath + " -P INPUT ACCEPT"));
 			listCommands.add((ipPath + " -P OUTPUT ACCEPT"));
@@ -1995,9 +2003,8 @@ public final class Api {
 		final StringBuilder res = new StringBuilder();
 		List<String> listCommands = new ArrayList<String>();
 		listCommands.add(grep + " \\.\\* /proc/net/ip_tables_targets");
-		int code = -1;
 		try {
-			code = runScriptAsRoot(context, listCommands,  res);
+			runScriptAsRoot(context, listCommands,  res);
 		}catch(Exception e){
 			Log.d("getTargets: " , e.getLocalizedMessage());
 		}

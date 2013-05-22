@@ -44,7 +44,7 @@
         <item>es</item>
         <item>nl</item>
         
-        <item>jp</item>
+        <item>ja</item>
         <item>uk</item>
         <item>ru</item>
         <item>cs</item>
@@ -56,8 +56,8 @@
         <item>pt</item>
         <item>it</item>
         
-        <item>zh_CN</item>
-        <item>zh_TW</item>
+        <item>zh_CN</item>  
+        <item>zh_TW</item>  
     </string-array>
     
     <string-array name="iptables_binary">

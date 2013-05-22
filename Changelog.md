@@ -15,6 +15,8 @@ Version 1.2.5 (Development)
 * Lots of code refactor/bug fixes (Thanks to cernekee!)
 * Fixed issue with multiline in search text.
 * Minor UI changes on the application list.
+* Added selectable iptables/busybox binary
+* Added new translations (chineese/greek etc.,)
 
 Version 1.2.4.1
 * Fixed issue with cleanup afwall rules on disable

@@ -22,7 +22,7 @@ public class HelpActivity extends SherlockActivity {
 		} catch (NameNotFoundException e) {
 
 		}
-		setTitle("AFWall+ (Donate) " + versionName);
+		setTitle("AFWall+" + versionName);
 		mSelected.setText(getString(R.string.help_dialog_text));
 	}
 

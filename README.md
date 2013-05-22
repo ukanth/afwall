@@ -12,21 +12,32 @@ Android Firewall+ is a advance iptables editor (GUI) for Android. It's an improv
 
 ## Bug Report
 Please see the [issues](https://github.com/ukanth/afwall/issues) section to
-report any bugs or feature requests and to see the list of known issues.
+report any bugs or feature requests and to see the list of known issues. Before you report an bug, take a look [here](https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug).  
+
+
+## FAQ
+You have problems with AFWall+? Check out the [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) before reporting a bug or problem that maybe already known.
 
 
 ## ToDo:
-* Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/)
+* All Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/)
 * Integrate with Network Log 
 * Uninstall application from list window ( or open manage application from list)
+* All Bugs [you reporting](https://github.com/ukanth/afwall/issues)
+
+
+## Already done
+* ~~New GUI~~ <i>(since 1.0.1a)</i>
 * ~~Roaming option ( like avast firewall )~~ <i>(since 1.0.2a)</i>
-* ~~Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)~~
 * ~~Flush/Reset iptables rules from UI~~ <i>(since 1.0.2a)</i>
-* ~~View iptables rules and logging in a clear view~~ <i>(since 1.0.4a)</i>
-* ~~Full i18n support~~
 * ~~Save & Load Profiles/Rules~~ <i>(since 1.0.3a)</i>
+* ~~Full i18n support~~ <i>(since 1.0.3a)</i>
+* ~~View iptables rules and logging in a clear view~~ <i>(since 1.0.4a)</i>
+* ~~Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)~~ <i>(since 1.0.4a)</i>
+* ~~Support for only within LAN/WAN~~ <i> (Since 1.2.5) </i> 
 * ~~Multiple Profiles~~ <i> (Since 1.0.7a) </i>
-* ~~Support for only within LAN~~ <i>(Since 1.2.5)</i>
+
+
 
 ## License
 
@@ -40,9 +51,10 @@ This project also uses many other open source libraries such as:
 * [Unified Preferences] (https://github.com/saik0/UnifiedPreference/) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 * [Android Color Picker](https://github.com/attenzione/android-ColorPickerPreference) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 * [Root Tools] (https://code.google.com/p/roottools/) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* [Libsuperuser] (https://github.com/Chainfire/libsuperuser) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
-## How to compile
+## How to compile AFWall+
 For instructions how to compile AFWall+ please take a look at the [Wiki | HOWTO-Compile-AFWall ](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
 
 ## Contributing
