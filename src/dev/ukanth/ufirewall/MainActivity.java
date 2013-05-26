@@ -104,9 +104,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private boolean dirty = false;
 	private String currentPassword = "";
 	
-	private GetAppList getApps;
-	//private LayoutInflater inflater;
-
 	public String getCurrentPassword() {
 		return currentPassword;
 	}
@@ -534,16 +531,19 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		this.dirty = false;
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
+		boolean isResultsFound = false;
 		if(searchStr !=null && searchStr.length() > 1) {
 			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
 					if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())) {
 						searchApp.add(app);
-					}
+						isResultsFound = true;
+					} 
 				}
 			}
 		}
-		final List<PackageInfoData> apps2 = searchApp.size() > 0 ? searchApp : apps;
+		
+		final List<PackageInfoData> apps2 = isResultsFound ? searchApp : searchStr.equals("") ? apps : new ArrayList<Api.PackageInfoData>();
 
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());
