@@ -73,10 +73,15 @@ public class BackgroundIntentService extends IntentService {
 	}
 
 	public static void performAction(Context context, String action) {
-		Intent svc = new Intent(context, BackgroundIntentService.class);
-		svc.setAction(action);
-		firstRun(context);
-		context.startService(svc);
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(context);
+		final boolean enableLAN = prefs.getBoolean("enableLAN", false) && !cfg.isTethered;
+		final boolean enableRoam = prefs.getBoolean("enableRoam", true);
+		if((cfg.isRoaming && enableRoam)|| enableLAN) {
+			Intent svc = new Intent(context, BackgroundIntentService.class);
+			svc.setAction(action);
+			firstRun(context);
+			context.startService(svc);
+		}
 	}
 
 	@Override

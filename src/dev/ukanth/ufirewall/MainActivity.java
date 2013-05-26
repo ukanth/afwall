@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.RejectedExecutionException;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -102,6 +103,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	/** indicates if the view has been modified and not yet saved */
 	private boolean dirty = false;
 	private String currentPassword = "";
+	
+	private GetAppList getApps;
 	//private LayoutInflater inflater;
 
 	public String getCurrentPassword() {
@@ -400,13 +403,17 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * If the applications are cached, just show them, otherwise load and show
 	 */
 	private void showOrLoadApplications() {
+		//nocache!!
 		new GetAppList().execute();
+		 
 	}
 	
 
 	public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
 		boolean ready = false;
+		Activity mContext = null;
+		AsyncTask<Void,Integer,Void> myAsyncTaskInstance = null; 
 
 		@Override
 		protected void onPreExecute() {
@@ -415,6 +422,43 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		public void doProgress(int value) {
 			publishProgress(value);
+		}
+		
+		public AsyncTask<Void, Integer, Void> getInstance() {
+			// if the current async task is already running, return null: no new
+			// async task
+			// shall be created if an instance is already running
+			if ((myAsyncTaskInstance != null)
+					&& myAsyncTaskInstance.getStatus() == Status.RUNNING) {
+				// it can be running but cancelled, in that case, return a new
+				// instance
+				if (myAsyncTaskInstance.isCancelled()) {
+					myAsyncTaskInstance = new GetAppList();
+				} else {
+					return null;
+				}
+			}
+
+			// if the current async task is pending, it can be executed return
+			// this instance
+			if ((myAsyncTaskInstance != null)
+					&& myAsyncTaskInstance.getStatus() == Status.PENDING) {
+				return myAsyncTaskInstance;
+			}
+
+			// if the current async task is finished, it can't be executed
+			// another time, so return a new instance
+			if ((myAsyncTaskInstance != null)
+					&& myAsyncTaskInstance.getStatus() == Status.FINISHED) {
+				myAsyncTaskInstance = new GetAppList();
+			}
+
+			// if the current async task is null, create a new instance
+			if (myAsyncTaskInstance == null) {
+				myAsyncTaskInstance = new GetAppList();
+			}
+			// return the current instance
+			return myAsyncTaskInstance;
 		}
 
 		@Override

@@ -337,62 +337,44 @@ public final class Api {
 			
 			// Check if logging is enabled
 			if (logenabled) {
-				listCommands.add((ipPath + " -A afwall-reject -j REJECT || exit"));
-				//if(iptargets.toString().contains("NFLOG")) {
-				//	listCommands.add(ipPath + "iptables -A afwall-reject -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 10 || exit");
-				//} else {
 					listCommands.add((ipPath + " -A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid "));
-				//}
 			}
-			
-			//cleanup ifaces and rules if data limit is enabled			
-			/*if(appprefs.getBoolean("fixmobileLimit", false)){
-				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-					listCommands.add(addCommand(ipPath + " -F bw_INPUT || exit"));
-					listCommands.add(addCommand(ipPath + " -F bw_OUTPUT || exit"));
-					listCommands.add(addCommand(ipPath + " -F bw_FORWARD || exit"));
-				}
-				listCommands.add(addCommand(ipPath + " -F costly_shared || exit"));
-				listCommands.add(addCommand(ipPath + " -F penalty_box || exit"));	
-			}*/
-			
+			listCommands.add((ipPath + " -A afwall-reject -j REJECT || exit"));
 			
 			//now reenable everything after restart
 			listCommands.add((ipPath + " -P INPUT ACCEPT"));
 			listCommands.add((ipPath + " -P OUTPUT ACCEPT"));
 			listCommands.add((ipPath + " -P FORWARD ACCEPT"));
 			
-			
-			if (customScript.length() > 0) {
-				replaceAll(customScript, "$IPTABLES", " " +ipPath );
-				listCommands.add(customScript.toString());
-			}
-			
-			
+				
+				if (customScript.length() > 0) {
+					replaceAll(customScript, "$IPTABLES", " " +ipPath );
+					listCommands.add(customScript.toString());
+				}
+				
 				for (final String itf : ITFS_3G) {
 					listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-3g || exit")));
 				}
 				for (final String itf : ITFS_WIFI) {
-					if (enableLAN && !setv6 && !cfg.lanMaskV4.equals("")) {
-						listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV4 +
-								" -o " + itf + " -j afwall-lan || exit");
-						listCommands.add(ipPath + " -A afwall '!' -d " + cfg.lanMaskV4 +
-								" -o " + itf + " -j afwall-wifi || exit");
-					} else if (enableLAN && setv6 && !cfg.lanMaskV6.equals("")) {
-						listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV6 +
-								" -o " + itf + " -j afwall-lan || exit");
-						listCommands.add(ipPath + " -A afwall '!' -d " + cfg.lanMaskV6 +
-								" -o " + itf + " -j afwall-wifi || exit");
+					if(enableLAN) {
+						if(setv6 && !cfg.lanMaskV6.equals("")) {
+							listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV6 + " -o " + itf + " -j afwall-lan || exit");
+							listCommands.add(ipPath + " -A afwall '!' -d " + cfg.lanMaskV6 + " -o " + itf+ " -j afwall-wifi || exit");
+						}
+						if(!setv6 && !cfg.lanMaskV4.equals("")) {
+							listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV4 + " -o " + itf + " -j afwall-lan || exit");
+							listCommands.add(ipPath + " -A afwall '!' -d "+ cfg.lanMaskV4 + " -o " + itf + " -j afwall-wifi || exit");
+						}
 					} else {
 						listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-wifi || exit")));
 					}
 				}
-				
+					
 				if(enableVPN) {
 					for (final String itf : ITFS_VPN) {
 						listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-vpn || exit")));
 					}
-				}
+				}	
 				
 				final String targetRule = (whitelist ? "RETURN" : "afwall-reject");
 				final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
@@ -400,9 +382,7 @@ public final class Api {
 				final boolean any_lan = uidsLAN.indexOf(SPECIAL_UID_ANY) >= 0;
 				final boolean any_vpn = uidsVPN.indexOf(SPECIAL_UID_ANY) >= 0;
 				if (whitelist && !any_wifi) {
-					// When "white listing" wifi, we need to ensure that the dhcp and wifi users are allowed
-					addRuleForUsers(listCommands, new String[]{"dhcp","wifi"},
-						ipPath + " -A afwall-wifi", "-j RETURN || exit");
+					addRuleForUsers(listCommands, new String[]{"dhcp","wifi"}, ipPath + " -A afwall-wifi", "-j RETURN || exit");
 				}
 				//now 3g rules!
 				if (any_3g) {
@@ -425,7 +405,6 @@ public final class Api {
 				}
 
 				//now wifi rules!
-
 				// if the wifi interface is down, reject all outbound packets without logging them
 				if (!cfg.allowWifi) {
 					listCommands.add(ipPath + " -A afwall-wifi -j REJECT || exit");
@@ -490,20 +469,15 @@ public final class Api {
 					String action = " -j " + targetRule + " || exit";
 
 					// DHCP replies to client
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi",
-						"-p udp --sport=67 --dport=68" + action);
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p udp --sport=67 --dport=68" + action);
 
 					// DNS replies to client
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi",
-						"-p udp --sport=53" + action);
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi",
-						"-p tcp --sport=53" + action);
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p udp --sport=53" + action);
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p tcp --sport=53" + action);
 
 					// DNS requests to upstream servers
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g",
-						"-p udp --dport=53" + action);
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g",
-						"-p tcp --dport=53" + action);
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g","-p udp --dport=53" + action);
+					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g","-p tcp --dport=53" + action);
 				}
 				
 				if (whitelist) {
