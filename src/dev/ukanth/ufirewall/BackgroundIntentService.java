@@ -74,6 +74,7 @@ public class BackgroundIntentService extends IntentService {
 
 	public static void performAction(Context context, String action) {
 		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(context);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		final boolean enableLAN = prefs.getBoolean("enableLAN", false) && !cfg.isTethered;
 		final boolean enableRoam = prefs.getBoolean("enableRoam", true);
 		if((cfg.isRoaming && enableRoam)|| enableLAN) {
