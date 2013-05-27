@@ -4,6 +4,15 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.5.1
+* On Connectivity change rules will now work only on roaming/lan(if enabled). This should reduce lag/superuser prompts.
+* Improved search functionality.
+* Fixed issue with application list not showing.
+* Fixed issue with logs where it used to work before.
+* Fixed issue with default language (default is set to English, please change it in preference)
+* Added translations.
+
+
 Version 1.2.5 
 
 * Added Tether support. (Thanks to cernekee)

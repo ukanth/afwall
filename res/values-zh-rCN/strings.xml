@@ -70,7 +70,7 @@
   <string name="syscolor_pref_title">系统应用程序颜色</string>
   <string name="syscolor_pref_summary_on">选定的颜色将应用于系统应用程序</string>
   <string name="syscolor_pref_summary_off">默认颜色</string>
-  <string name="usb3g_pref_summary">当使用有线 USB 连接时，防止AFWall+ 应用3g规则</string>
+  <string name="usb3g_pref_summary">当使用 USB 连接时阻止 AFWall 应用 3g 规则</string>
   <string name="usb3g_pref_title">连接 USB 时禁用 3G 规则</string>
   <string name="hideicons_pref_title">隐藏应用程序图标</string>
   <string name="hideicons_pref_summary_on">取消应用图标显示可以提升流畅程度.</string>

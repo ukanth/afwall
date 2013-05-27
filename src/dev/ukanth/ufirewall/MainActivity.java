@@ -179,7 +179,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 			
 			//language
-			String lang = prefs.getString("locale", Locale.getDefault().getDisplayLanguage());
+			String lang = prefs.getString("locale", "en");
 			Api.updateLanguage(getApplicationContext(), lang);
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
@@ -1013,7 +1013,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					Api.purgeVPNRules(getApplicationContext(), false);
 				}*/
 			    finish();
-			    String lang = prefs.getString("locale", Locale.getDefault().getDisplayLanguage());
+			    String lang = prefs.getString("locale","en");
 				Api.updateLanguage(getApplicationContext(), lang);
 			    startActivity(intent);
 			}
