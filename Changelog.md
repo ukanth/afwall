@@ -4,6 +4,9 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.5.2
+* Fixed issue with Wifi blocked on whitelist for couple of devices
+
 Version 1.2.5.1
 * Improved search functionality.
 * Frequent connectivity change rules will now work only on roaming/lan. this should reduce the number of 
@@ -15,7 +18,6 @@ Version 1.2.5.1
 
 
 Version 1.2.5 
-
 * Added Tether support. (Thanks to cernekee)
 * Added LAN/WAN support. (Thanks to cernekee)
 * Added Import from DroidWall (from Donate Version !)
