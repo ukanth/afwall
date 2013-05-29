@@ -405,10 +405,9 @@ public final class Api {
 				}
 
 				//now wifi rules!
-				// if the wifi interface is down, reject all outbound packets without logging them
-				if (!cfg.allowWifi) {
-					listCommands.add(ipPath + " -A afwall-wifi -j REJECT || exit");
-				} else if (any_wifi) {
+				//--if the wifi interface is down, reject all outbound packets without logging them--
+				//revert back to old approach
+				if (any_wifi) {
 					if (blacklist) {
 						/* block any application on this interface */
 						listCommands.add((ipPath + " -A afwall-wifi -j "+(targetRule)+(" || exit")));

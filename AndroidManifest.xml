@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="128"
-    android:versionName="1.2.5.1" >
+    android:versionCode="129"
+    android:versionName="1.2.5.2" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -125,7 +125,7 @@
         <receiver android:name="dev.ukanth.ufirewall.BootBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-
+				<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
