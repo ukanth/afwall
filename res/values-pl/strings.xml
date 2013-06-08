@@ -83,9 +83,9 @@
   <string name="unsaved_changes_message">Nie zapisałeś zmian.\nChcesz je zastosować, czy odrzucić?</string>
   <string name="apply">Zastosuj</string>
   <string name="discard">Odrzuć</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> to nakładka graficzna na <b>iptables</b>zaporę internetową systemu Linux.
-Pozwala on na określenie, które z aplikacji mogą korzystać z połączenia z internetem.
-Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lub gdy chcesz uzyskać mniejsze użycie baterii\n\n\n
+  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> to nakładka graficzna na <b>iptables</b> - zaporę internetową systemu Linux.
+Pozwala na określenie, które z aplikacji mogą korzystać z połączenia z Internetem.
+Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lub gdy chcesz uzyskać mniejsze użycie baterii.\n\n\n
 <b> Pomoc - </b> http://github.com/ukanth/afwall/wiki/Help \n
 <b>Najczęściej zadawane pytania</b> -https://github.com/ukanth/afwall/wiki/Help \n
 <b>Autor </b> - Umakanthan Chandran \n
