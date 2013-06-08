@@ -15,8 +15,8 @@ public class BackgroundIntentService extends IntentService {
 	public static final String ACTION_CONNECTIVITY_CHANGED = "connectivity_changed";
 	
 	private static boolean initDone = false;
-	private static Context mContext;
-	private static SharedPreferences prefs;
+	private static Context mContext = null;
+	private static SharedPreferences prefs = null;
 
 	public BackgroundIntentService() {
 		// If you forget this one, the app will crash
@@ -60,8 +60,6 @@ public class BackgroundIntentService extends IntentService {
 
 	public static boolean applyRules(Context context, boolean showErrors) {
 		boolean ret;
-
-		firstRun(context);
 		if (!Api.isEnabled(mContext)) {
 			Log.d(TAG, "applyRules: firewall is disabled, skipping");
 			return true;
@@ -73,22 +71,15 @@ public class BackgroundIntentService extends IntentService {
 	}
 
 	public static void performAction(Context context, String action) {
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(context);
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		final boolean enableLAN = prefs.getBoolean("enableLAN", false) && !cfg.isTethered;
-		final boolean enableRoam = prefs.getBoolean("enableRoam", false);
-		if((cfg.isRoaming && enableRoam) || enableLAN || action.equals( BackgroundIntentService.ACTION_BOOT_COMPLETE)) {
-			Intent svc = new Intent(context, BackgroundIntentService.class);
-			svc.setAction(action);
-			firstRun(context);
-			context.startService(svc);
-		}
+		Intent svc = new Intent(context, BackgroundIntentService.class);
+		svc.setAction(action);
+		firstRun(context);
+		context.startService(svc);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		String action = intent.getAction();
-
 		Log.d(TAG, "received " + action + " intent");
 		if (InterfaceTracker.checkForNewCfg(mContext)) {
 			if (applyRules(mContext, false) == false) {
@@ -96,5 +87,6 @@ public class BackgroundIntentService extends IntentService {
 				Api.setEnabled(mContext, false, false);
 			}
 		}
+
 	}	
 }

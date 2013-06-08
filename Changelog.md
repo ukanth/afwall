@@ -4,6 +4,11 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.6
+* Bug Fix: MDPI list screen.
+* Bug Fix: Startup rules apply issue.
+* 
+
 Version 1.2.5.2
 * Fixed issue with Wifi blocked on whitelist for couple of devices
 

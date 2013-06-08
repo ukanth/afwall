@@ -30,6 +30,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, Intent intent) {
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
-		BackgroundIntentService.performAction(context, BackgroundIntentService.ACTION_CONNECTIVITY_CHANGED);
+		ConnectivityIntentService.performAction(context, ConnectivityIntentService.ACTION_CONNECTIVITY_CHANGED);
 	}
 }

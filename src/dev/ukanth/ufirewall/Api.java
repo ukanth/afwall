@@ -1984,7 +1984,18 @@ public final class Api {
 		return res.toString();
 	  }
 
-	
+	public static String getMobileInterfaces(Context context){
+		
+		final StringBuilder res = new StringBuilder();
+		List<String> listCommands = new ArrayList<String>();
+		listCommands.add("getprop");
+		try {
+			runScriptAsRoot(context, listCommands,  res);
+		}catch(Exception e){
+			Log.d("getTargets: " , e.getLocalizedMessage());
+		}
+		return res.toString();
+	}
 	
 	/*@SuppressWarnings("unchecked")
 	private static Map<Integer, PackageInfoData> getObjectFromFile(Context ctx) {
