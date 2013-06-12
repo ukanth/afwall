@@ -56,13 +56,13 @@
     <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> -->
     <!-- Allows ufwall to write to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
     <!-- Allows access to IP configuration and tethering state -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-
     <!-- Will be default in CyanogenMod Superuser App -->
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <!-- Allows to retrieve state dump information from system services -->
+    <uses-permission android:name="android.permission.DUMP" />
 
     <!-- Screen support -->
     <supports-screens
@@ -121,11 +121,13 @@
             </intent-filter>
         </activity>
         <activity android:name="dev.ukanth.ufirewall.CustomScriptActivity" />
-
         <receiver android:name="dev.ukanth.ufirewall.BootBroadcast" >
+                <service android:name=".receiver.BootCompletedService" android:exported="false" />
+        	<receiver android:name=".receiver.BootCompletedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-				<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+		<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
@@ -146,7 +148,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
-
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
@@ -228,5 +229,4 @@
         </receiver>
         
     </application>
-
 </manifest>
