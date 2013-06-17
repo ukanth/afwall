@@ -47,11 +47,40 @@ You have problems with AFWall+? Check out the [FAQ](https://github.com/ukanth/af
 ## Acknowledgements
 
 This project also uses many other open source libraries such as:
-* [ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Unified Preferences] (https://github.com/saik0/UnifiedPreference/) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Android Color Picker](https://github.com/attenzione/android-ColorPickerPreference) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Root Tools] (https://code.google.com/p/roottools/) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-* [Libsuperuser] (https://github.com/Chainfire/libsuperuser) - [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+<table>
+    <tr>
+        <td><strong>Project</strong></td>
+        <td><strong>License</strong></td>
+        <td><strong>Website</strong></td>
+    </tr>
+    <tr>
+        <td>ActionBarSherlock</td>
+        <td>Apache License 2.0</td>
+        <td>http://actionbarsherlock.com/</td>
+    </tr>
+    <tr>
+        <td>Unified Preferences</td>
+        <td>Apache License 2.0</td>
+        <td>https://github.com/saik0/UnifiedPreference/</td>
+    </tr>
+    <tr>
+        <td>Android Color Picker</td>
+        <td>Apache License 2.0</td>
+        <td>https://github.com/attenzione/android-ColorPickerPreference</td>
+    </tr>
+    <tr>
+        <td>Root Tools</td>
+        <td>Apache License 2.0</td>
+        <td>https://code.google.com/p/roottools/</td>
+    </tr>
+    <tr>
+        <td>Libsuperuser</td>
+        <td>Apache License 2.0</td>
+        <td>https://github.com/Chainfire/libsuperuser</td>
+    </tr>
+</table>
+
 
 
 ## How to compile AFWall+
