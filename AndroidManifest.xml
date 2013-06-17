@@ -179,10 +179,13 @@
             android:theme="@android:style/Theme.Dialog" />
 
         <!-- device admin -->
+        <!-- This is required this receiver to become device admin component. -->
 
         <receiver
             android:name="dev.ukanth.ufirewall.admin.AdminDeviceReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data android:name="android.app.device_admin" 
+            android:resource="@xml/device_admin"/>
             <intent-filter>
 
                 <!-- This action is required -->
@@ -190,11 +193,6 @@
                 <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLE_REQUESTED" />
                 <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLED" />
             </intent-filter>
-
-            <!-- This is required this receiver to become device admin component. -->
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/device_admin" />
         </receiver>
         
         
