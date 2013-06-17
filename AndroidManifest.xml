@@ -28,7 +28,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
     android:versionCode="129"
-    android:versionName="1.2.5.2" >
+    android:versionName="1.2.5.2"
+    android:installLocation="auto">
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
