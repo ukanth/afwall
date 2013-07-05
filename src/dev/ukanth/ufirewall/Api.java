@@ -1154,16 +1154,16 @@ public final class Api {
 		
 	}
     /**
-     * Runs a script, wither as root or as a regular user (multiple commands separated by "\n").
+     * Runs a script as root (multiple commands separated by "\n")
 	 * @param ctx mandatory context
      * @param script the script to be executed
      * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
      * @return the script exit code
+     * @throws IOException on any error executing the script, or writing it to disk
      */
-	public static int runScript(Context ctx, List<String> script, StringBuilder res, long timeout, boolean asroot) {
+	public static int runScriptAsRoot(Context ctx, List<String> script, StringBuilder res) throws IOException {
 		int returnCode = -1;
-		//Log.d(TAG, "In the runScript mode");
+
 		try {
 			returnCode = new RunCommand().execute(script, res, ctx).get();
 		} catch (RejectedExecutionException r) {
@@ -1177,41 +1177,6 @@ public final class Api {
 		}
 		
 		return returnCode;
-	}
-    /**
-     * Runs a script as root (multiple commands separated by "\n").
-	 * @param ctx mandatory context
-     * @param script the script to be executed
-     * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
-     * @return the script exit code
-     */
-	public static int runScriptAsRoot(Context ctx, List<String> script, StringBuilder res, long timeout) {
-		return runScript(ctx, script, res, timeout, true);
-    }
-    /**
-     * Runs a script as root (multiple commands separated by "\n") with a default timeout of 20 seconds.
-	 * @param ctx mandatory context
-     * @param script the script to be executed
-     * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
-     * @return the script exit code
-     * @throws IOException on any error executing the script, or writing it to disk
-     */
-	public static int runScriptAsRoot(Context ctx, List<String> script, StringBuilder res) throws IOException {
-		return runScriptAsRoot(ctx, script, res, 40000);
-	}
-    /**
-     * Runs a script as a regular user (multiple commands separated by "\n") with a default timeout of 20 seconds.
-	 * @param ctx mandatory context
-     * @param script the script to be executed
-     * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
-     * @return the script exit code
-     * @throws IOException on any error executing the script, or writing it to disk
-     */
-	public static int runScript(Context ctx, List<String> script, StringBuilder res) throws IOException {
-		return runScript(ctx, script, res, 40000, false);
 	}
 	/**
 	 * Asserts that the binary files are installed in the cache directory.
