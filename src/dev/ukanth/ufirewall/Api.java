@@ -73,6 +73,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 /**
@@ -131,7 +132,9 @@ public final class Api {
 	private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
-	
+
+	private static final String allChains[] = { "afwall", "afwall-3g", "afwall-wifi", "afwall-lan", "afwall-vpn", "afwall-reject" };
+
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
 	
@@ -269,6 +272,58 @@ public final class Api {
 		}
 	}
 
+	private static void addRulesForUidlist(List<String> cmds, List<Integer> uids, String chain, boolean whitelist) {
+		String action = whitelist ? " -j RETURN" : " -j afwall-reject";
+
+		if (uids.indexOf(SPECIAL_UID_ANY) >= 0) {
+			if (!whitelist) {
+				cmds.add("-A " + chain + action);
+			}
+			// FIXME: in whitelist mode this blocks everything
+		} else {
+			for (Integer uid : uids) {
+				if (uid != null && uid >= 0) {
+					cmds.add("-A " + chain + " -m owner --uid-owner " + uid + action);
+				}
+			}
+
+			boolean kernel_checked = uids.indexOf(SPECIAL_UID_KERNEL) >= 0;
+			if (whitelist) {
+				if (kernel_checked) {
+					// reject any other UIDs, but allow the kernel through
+					cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j afwall-reject");
+				} else {
+					// kernel is blocked so reject everything
+					cmds.add("-A " + chain + " -j afwall-reject");
+				}
+			} else {
+				if (kernel_checked) {
+					// allow any other UIDs, but block the kernel
+					cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
+					cmds.add("-A " + chain + " -j afwall-reject");
+				}
+			}
+		}
+	}
+
+	private static void addRejectRules(List<String> cmds) {
+		// set up reject chain to log or not log
+		// this can be changed dynamically through the Firewall Logs activity
+		if (G.enableFirewallLog()) {
+			cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid ");
+		}
+		cmds.add("-A afwall-reject -j REJECT");
+	}
+
+	private static void addCustomRules(Context ctx, String prefName, List<String> cmds) {
+		String[] customRules = G.pPrefs.getString(prefName, "").split("[\\r\\n]+");
+		for (String s : customRules) {
+			if (s.matches(".*\\S.*")) {
+				cmds.add("#LITERAL# " + s);
+			}
+		}
+	}
+
     /**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
@@ -277,276 +332,136 @@ public final class Api {
      * @param showErrors indicates if errors should be alerted
      */
 	private static boolean applyIptablesRulesImpl(final Context ctx, List<Integer> uidsWifi, List<Integer> uids3g,
-			List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN, final boolean showErrors) {
+			List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN, final boolean showErrors,
+			List<String> out) {
 		if (ctx == null) {
 			return false;
 		}
 		
 		assertBinaries(ctx, showErrors);
 
-		
-		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
-		final boolean enableVPN = appprefs.getBoolean("enableVPN", false);
-		final boolean enableLAN = appprefs.getBoolean("enableLAN", false) && !cfg.isTethered;
-		final boolean enableRoam = appprefs.getBoolean("enableRoam", true);
-
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
-		final boolean blacklist = !whitelist;
-		final boolean logenabled = appprefs.getBoolean("enableFirewallLog",true);
-
-		//final boolean isVPNEnabled = appprefs.getBoolean("enableVPNProfile",false);
-		
-		//String iptargets = getTargets(ctx);
-		
-
-		StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, ""));
-		
-		try {
-			int code;
-			
-			String busybox = getBusyBoxPath(ctx);
-			String grep = busybox + " grep";
-			final List<String> listCommands = new ArrayList<String>();
-			listCommands.add(ipPath + " -L afwall >/dev/null 2>/dev/null || " + ipPath +  " --new afwall || exit" );
-			listCommands.add(ipPath + " -L afwall-3g >/dev/null 2>/dev/null ||" + ipPath +  "--new afwall-3g || exit" );
-			listCommands.add(ipPath + " -L afwall-wifi >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-wifi || exit" );
-			listCommands.add(ipPath + " -L afwall-lan >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-lan || exit" );
-			listCommands.add(ipPath + " -L afwall-vpn >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-vpn || exit" );
-			listCommands.add(ipPath + " -L afwall-reject >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-reject || exit" );
-			listCommands.add(ipPath + " -L OUTPUT | " + grep + " -q afwall || " + ipPath +  " -A OUTPUT -j afwall || exit");
-			listCommands.add(ipPath + " -F afwall || exit " );
-			listCommands.add(ipPath + " -F afwall-3g || exit ");
-			listCommands.add(ipPath + " -F afwall-wifi || exit ");
-			listCommands.add(ipPath + " -F afwall-lan || exit ");
-			listCommands.add(ipPath + " -F afwall-vpn || exit ");
-			listCommands.add(ipPath + " -F afwall-reject || exit 10");
-			listCommands.add(ipPath + " -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit");
-			listCommands.add((ipPath + " -D OUTPUT -j afwall"));
-			listCommands.add((ipPath + " -I OUTPUT 1 -j afwall"));
-			//this will make sure the only afwall will be able to control the OUTPUT chain, regardless of any firewall installed!
-			//listCommands.add((ipPath + " --flush OUTPUT || exit"));
-			
-			// Check if logging is enabled
-			if (logenabled) {
-					listCommands.add((ipPath + " -A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid "));
-			}
-			listCommands.add((ipPath + " -A afwall-reject -j REJECT || exit"));
-			
-			//now reenable everything after restart
-			listCommands.add((ipPath + " -P INPUT ACCEPT"));
-			listCommands.add((ipPath + " -P OUTPUT ACCEPT"));
-			listCommands.add((ipPath + " -P FORWARD ACCEPT"));
-			
-				
-				if (customScript.length() > 0) {
-					replaceAll(customScript, "$IPTABLES", " " +ipPath );
-					listCommands.add(customScript.toString());
-				}
-				
-				for (final String itf : ITFS_3G) {
-					listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-3g || exit")));
-				}
-				for (final String itf : ITFS_WIFI) {
-					if(enableLAN) {
-						if(setv6 && !cfg.lanMaskV6.equals("")) {
-							listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV6 + " -o " + itf + " -j afwall-lan || exit");
-							listCommands.add(ipPath + " -A afwall '!' -d " + cfg.lanMaskV6 + " -o " + itf+ " -j afwall-wifi || exit");
-						}
-						if(!setv6 && !cfg.lanMaskV4.equals("")) {
-							listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV4 + " -o " + itf + " -j afwall-lan || exit");
-							listCommands.add(ipPath + " -A afwall '!' -d "+ cfg.lanMaskV4 + " -o " + itf + " -j afwall-wifi || exit");
-						}
-					} else {
-						listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-wifi || exit")));
-					}
-				}
-					
-				if(enableVPN) {
-					for (final String itf : ITFS_VPN) {
-						listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-vpn || exit")));
-					}
-				}	
-				
-				final String targetRule = (whitelist ? "RETURN" : "afwall-reject");
-				final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
-				final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
-				final boolean any_lan = uidsLAN.indexOf(SPECIAL_UID_ANY) >= 0;
-				final boolean any_vpn = uidsVPN.indexOf(SPECIAL_UID_ANY) >= 0;
-				if (whitelist && !any_wifi) {
-					addRuleForUsers(listCommands, new String[]{"dhcp","wifi"}, ipPath + " -A afwall-wifi", "-j RETURN || exit");
-				}
-				//now 3g rules!
-				if (any_3g) {
-					if (blacklist) {
-						/* block any application on this interface */
-						listCommands.add((ipPath + " -A afwall-3g -j "+(targetRule)+(" || exit")));
-					}
-				} else {
-					/* release/block individual applications on this interface */
-					if(cfg.isRoaming && enableRoam) {
-						for (final Integer uid : uidsRoam) {
-							if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-						}
-						
-					} else {
-						for (final Integer uid : uids3g) {
-							if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-						}
-					}
-				}
-
-				//now wifi rules!
-				//--if the wifi interface is down, reject all outbound packets without logging them--
-				//revert back to old approach
-				if (any_wifi) {
-					if (blacklist) {
-						/* block any application on this interface */
-						listCommands.add((ipPath + " -A afwall-wifi -j "+(targetRule)+(" || exit")));
-					}
-				} else {
-					/* release/block individual applications on this interface */
-					for (final Integer uid : uidsWifi) {
-						if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-					}
-				}
-				
-				//now LAN rules!
-				if (enableLAN) {
-					if (!cfg.allowWifi) {
-						listCommands.add(ipPath + " -A afwall-lan -j REJECT || exit");
-					} else if (any_lan) {
-						if (blacklist) {
-							/* block any application on this interface */
-							listCommands.add((ipPath + " -A afwall-lan -j "+(targetRule)+(" || exit")));
-						}
-					} else {
-						/* release/block individual applications on this interface */
-						for (final Integer uid : uidsLAN) {
-							if (uid != null && uid >= 0)
-								listCommands.add((ipPath + " -A afwall-lan -m owner --uid-owner " + uid +
-										" -j " + targetRule + " || exit"));
-						}
-
-						// NOTE: we still need to open a hole for DNS lookups
-						// This falls through to the wifi rules if the app is not whitelisted for LAN access
-						if (whitelist) {
-							listCommands.add(ipPath + " -A afwall-lan -p udp --dport 53 -j RETURN || exit");
-						}
-					}
-				}
-
-				//now vpn rules!
-				if(enableVPN) {
-					if (any_vpn) {
-						if (blacklist) {
-							/* block any application on this interface */
-							listCommands.add((ipPath + " -A afwall-vpn -j "+(targetRule)+(" || exit")));
-						}
-					} else {
-						/* release/block individual applications on this interface */
-						for (final Integer uid : uidsVPN) {
-							if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-vpn -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-						}
-					}
-				}
-
-				// note that this can only blacklist DNS/DHCP services, not all tethered traffic
-				if (cfg.isTethered &&
-					((blacklist && (any_wifi || any_3g)) ||
-				     (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
-
-					String users[] = { "root", "nobody" };
-					String action = " -j " + targetRule + " || exit";
-
-					// DHCP replies to client
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p udp --sport=67 --dport=68" + action);
-
-					// DNS replies to client
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p udp --sport=53" + action);
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p tcp --sport=53" + action);
-
-					// DNS requests to upstream servers
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g","-p udp --dport=53" + action);
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g","-p tcp --dport=53" + action);
-				}
-				
-				if (whitelist) {
-					if (!any_3g) {
-						if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-3g -j afwall-reject || exit"));
-						}
-					}
-					if (!any_wifi) {
-						if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-wifi -j afwall-reject || exit"));
-						}
-					}
-					if (enableVPN && !any_vpn) {
-						if (uidsVPN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-vpn -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-vpn -j afwall-reject || exit"));
-
-						}
-					} 
-					if (enableLAN && !any_lan) {
-						if (uidsLAN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-lan -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-lan -j afwall-reject || exit"));
-
-						}
-					}
-				} else {
-					if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-3g -j afwall-reject || exit"));
-					}
-					if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-wifi -j afwall-reject || exit"));
-					}
-					if (enableVPN && uidsVPN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-vpn -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-vpn -j afwall-reject || exit"));
-					}
-					if (enableLAN && uidsLAN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-lan -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-lan -j afwall-reject || exit"));
-					}
-				}
-				
-			//active defence
-			
-			
-			final StringBuilder res = new StringBuilder();
-			code = runScriptAsRoot(ctx, listCommands, res);
-			if (showErrors && code != 0) {
-				String msg = res.toString();
-				// Remove unnecessary help message from output
-				if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
-					msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
-				}
-				alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
-			} else {
-				return true;
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Exception while applying rules: " + e.getMessage());
-			if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P INPUT ACCEPT");
+		cmds.add("-P OUTPUT ACCEPT");
+		cmds.add("-P FORWARD ACCEPT");
+		for (String s : allChains) {
+			cmds.add("#NOCHK# -N " + s);
+			cmds.add("-F " + s);
 		}
-		
-		
-		return false;
+		cmds.add("#NOCHK# -D OUTPUT -j afwall");
+		cmds.add("-I OUTPUT 1 -j afwall");
+		addRejectRules(cmds);
+
+		// add custom rules before the afwall* chains are populated
+		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
+
+		// send 3G, wifi, LAN, VPN packets to the appropriate afwall-* chain
+		for (final String itf : ITFS_3G) {
+			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
+		}
+		for (final String itf : ITFS_WIFI) {
+			if (G.enableLAN() && !cfg.isTethered) {
+				if(setv6 && !cfg.lanMaskV6.equals("")) {
+					cmds.add("-A afwall -d " + cfg.lanMaskV6 + " -o " + itf + " -j afwall-lan");
+					cmds.add("-A afwall '!' -d " + cfg.lanMaskV6 + " -o " + itf+ " -j afwall-wifi");
+				}
+				if(!setv6 && !cfg.lanMaskV4.equals("")) {
+					cmds.add("-A afwall -d " + cfg.lanMaskV4 + " -o " + itf + " -j afwall-lan");
+					cmds.add("-A afwall '!' -d "+ cfg.lanMaskV4 + " -o " + itf + " -j afwall-wifi");
+				}
+			} else {
+				cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
+			}
+		}
+		if (G.enableVPN()) {
+			for (final String itf : ITFS_VPN) {
+				cmds.add("-A afwall -o " + itf + " -j afwall-vpn");
+			}
+		}
+
+		final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
+		final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
+
+		// special rule to allow DHCP requests out on wifi
+		if (whitelist && !any_wifi) {
+			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi", "-j RETURN");
+		}
+
+		// special rules to allow 3G<->wifi tethering
+		// note that this can only blacklist DNS/DHCP services, not all tethered traffic
+		if (cfg.isTethered &&
+			((!whitelist && (any_wifi || any_3g)) ||
+		     (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
+
+			String users[] = { "root", "nobody" };
+			String action = " -j " + (whitelist ? "RETURN" : "afwall-reject");
+
+			// DHCP replies to client
+			addRuleForUsers(cmds, users, "-A afwall-wifi","-p udp --sport=67 --dport=68" + action);
+
+			// DNS replies to client
+			addRuleForUsers(cmds, users, "-A afwall-wifi", "-p udp --sport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-wifi", "-p tcp --sport=53" + action);
+
+			// DNS requests to upstream servers
+			addRuleForUsers(cmds, users, "-A afwall-3g", "-p udp --dport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-3g", "-p tcp --dport=53" + action);
+		}
+
+		// now add the per-uid rules for each interface type
+		addRulesForUidlist(cmds, cfg.isRoaming && G.enableRoam() ? uidsRoam : uids3g, "afwall-3g", whitelist);
+		addRulesForUidlist(cmds, uidsWifi, "afwall-wifi", whitelist);
+		addRulesForUidlist(cmds, uidsVPN, "afwall-vpn", whitelist);
+
+		if (cfg.allowWifi) {
+			// NOTE: we still need to open a hole for DNS lookups
+			// This falls through to the wifi rules if the app is not whitelisted for LAN access
+			if (whitelist) {
+				cmds.add("-A afwall-lan -p udp --dport 53 -j RETURN");
+			}
+			addRulesForUidlist(cmds, uidsLAN, "afwall-lan", whitelist);
+		} else {
+			// no LAN IP -> block everything
+			cmds.add("-A afwall-lan -j afwall-reject");
+		}
+
+		iptablesCommands(cmds, out);
+		return true;
     }
-	
+
+	/**
+	 * Add the repetitive parts (ipPath and such) to an iptables command list
+	 * 
+	 * @param in Commands in the format: "-A foo ...", "#NOCHK# -A foo ...", or "#LITERAL# <UNIX command>"
+	 * @param out A list of UNIX commands to execute
+	 */
+	private static void iptablesCommands(List<String> in, List<String> out) {
+		for (String s : in) {
+			if (s.matches("#LITERAL# .*")) {
+				out.add(s.replaceFirst("^#LITERAL# ", "").replaceAll("\\$IPTABLES", ipPath));
+			} else if (s.matches("#NOCHK# .*")) {
+					out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath));
+			} else {
+				out.add(ipPath + " " + s);
+			}
+		}
+	}
+
+	private static void fixupLegacyCmds(List<String> cmds) {
+		for (int i = 0; i < cmds.size(); i++) {
+			String s = cmds.get(i);
+			if (s.matches("#NOCHK# .*")) {
+				s = s.replaceFirst("^#NOCHK# ", "");
+			} else {
+				s += " || exit";
+			}
+			cmds.set(i, s);
+		}
+	}
+
 	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
 		initSpecial();
 		final PackageManager pm = ctx.getPackageManager();
@@ -576,24 +491,23 @@ public final class Api {
      * This is much faster than just calling "applyIptablesRules", since it don't need to read installed applications.
      * @param ctx application context (mandatory)
      * @param showErrors indicates if errors should be alerted
+     * @param callback If non-null, use a callback instead of blocking the current thread
      */
-	public static boolean applySavedIptablesRules(Context ctx, boolean showErrors) {
+	public static boolean applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
 		if (ctx == null) {
 			return false;
 		}
 		initSpecial();
 		
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+		final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
+		final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+		final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
+		final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
 
-		final String savedPkg_wifi_uid = prefs.getString(PREF_WIFI_PKG_UIDS, "");
-		final String savedPkg_3g_uid = prefs.getString(PREF_3G_PKG_UIDS, "");
-		final String savedPkg_roam_uid = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
-		final String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
-		final String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
-		
-		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
 		boolean returnValue = false;
+		List<String> cmds = new ArrayList<String>();
+
 		setIpTablePath(ctx,false);
 		returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
@@ -601,8 +515,13 @@ public final class Api {
 					getListFromPref(savedPkg_roam_uid),
 					getListFromPref(savedPkg_vpn_uid),
 					getListFromPref(savedPkg_lan_uid),
-					showErrors);
-		if (enableIPv6) {
+					showErrors,
+					cmds);
+		if (returnValue == false) {
+			return false;
+		}
+
+		if (G.enableIPv6()) {
 			setIpTablePath(ctx,true);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
@@ -610,11 +529,44 @@ public final class Api {
 					getListFromPref(savedPkg_roam_uid),
 					getListFromPref(savedPkg_vpn_uid),
 					getListFromPref(savedPkg_lan_uid),
-					showErrors);
+					showErrors,
+					cmds);
+			if (returnValue == false) {
+				return false;
+			}
 		}
-		return returnValue;
+
+		if (callback != null) {
+			callback.run(ctx, cmds);
+			return true;
+		} else {
+			fixupLegacyCmds(cmds);
+			try {
+				final StringBuilder res = new StringBuilder();
+				int code = runScriptAsRoot(ctx, cmds, res);
+				if (showErrors && code != 0) {
+					String msg = res.toString();
+					// Remove unnecessary help message from output
+					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
+						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
+					}
+					alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
+				} else {
+					return true;
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "Exception while applying rules: " + e.getMessage());
+				if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
+			}
+			return false;
+		}
 	}
-	
+
+	@Deprecated
+	public static boolean applySavedIptablesRules(Context ctx, boolean showErrors) {
+		return applySavedIptablesRules(ctx, showErrors, null);
+	}
+
 	/**
 	 * Save current rules using the preferences storage.
 	 * @param ctx application context (mandatory)
