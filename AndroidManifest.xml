@@ -75,7 +75,8 @@
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock" >
+        android:theme="@style/Theme.Sherlock"
+        android:name="dev.ukanth.ufirewall.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale"
