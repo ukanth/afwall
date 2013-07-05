@@ -973,7 +973,7 @@ public final class Api {
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
-			Map<Integer, PackageInfoData> syncMap = new HashMap<Integer, PackageInfoData>();
+			SparseArray<PackageInfoData> syncMap = new SparseArray<PackageInfoData>();
 			final Editor edit = prefs.edit();
 			boolean changed = false;
 			String name = null;
@@ -1057,7 +1057,7 @@ public final class Api {
 			for (int i=0; i<specialData.size(); i++) {
 				app = specialData.get(i);
 				specialApps.put(app.pkgName, app.uid);
-				if (app.uid != -1 && !syncMap.containsKey(app.uid)) {
+				if (app.uid != -1 && syncMap.get(app.uid) == null) {
 					// check if this application is allowed
 					if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
 						app.selected_wifi = true;
@@ -1077,12 +1077,12 @@ public final class Api {
 					syncMap.put(app.uid, app);
 				}
 			}
+
 			/* convert the map into an array */
-			applications = new ArrayList<PackageInfoData>(syncMap.values());
-			/*if(!file.exists())	{
-				writeObjectToFile(ctx,syncMap);
-			}*/
-			
+			applications = new ArrayList<PackageInfoData>();
+			for (int i = 0; i < syncMap.size(); i++) {
+				applications.add(syncMap.valueAt(i));
+			}
 			return applications;
 		} catch (Exception e) {
 			alert(ctx, ctx.getString(R.string.error_common) + e);
