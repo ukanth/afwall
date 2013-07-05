@@ -81,6 +81,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  
 /**
@@ -1127,63 +1128,49 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	/**
-	 * Apply or save iptable rules, showing a visual indication
+	 * Apply or save iptables rules, showing a visual indication
 	 */
 	private void applyOrSaveRules() {
 		final Resources res = getResources();
 		final boolean enabled = Api.isEnabled(this);
+		final Context ctx = getApplicationContext();
+
+		Api.saveRules(ctx);
+		if (!enabled) {
+			Api.setEnabled(ctx, false, true);
+			Api.displayToasts(ctx, R.string.rules_saved, Toast.LENGTH_SHORT);
+			MainActivity.this.dirty = false;
+			return;
+		}
+
 		final ProgressDialog progress = ProgressDialog.show(this, res
 				.getString(R.string.working), res
 				.getString(enabled ? R.string.applying_rules
 						: R.string.saving_rules), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
+
+		Api.applySavedIptablesRules(ctx, true, new RootCommand()
+					.setSuccessToast(R.string.rules_applied)
+					.setFailureToast(R.string.error_apply)
+					.setReopenShell(true)
+					.setCallback(new RootCommand.Callback() {
+
+			public void cbFunc(RootCommand state) {
 				try {
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
-				if (enabled) {
-					//Log.d("AFWall+", "Applying rules.");
-					Api.saveRules(getApplicationContext());
-					if(Api.hasRootAccess(MainActivity.this,true) &&
-						BackgroundIntentService.applyRules(getApplicationContext(), true)) {
-						Api.displayToasts(MainActivity.this,
-								R.string.rules_applied, Toast.LENGTH_SHORT);
-						getSupportActionBar().setIcon(R.drawable.widget_on);
-						if(mainMenu !=null) {
-							final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-							item_onoff.setIcon(R.drawable.widget_on);
-							item_onoff.setTitle(R.string.fw_enabled);
-							
-							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-							item_apply.setTitle(R.string.applyrules);
-						}	
-					}
-					 else {
-						//Log.d("AFWall+", "Failed - Disabling firewall.");
-						Api.displayToasts(MainActivity.this,
-								R.string.error_apply, Toast.LENGTH_SHORT);
-						Api.setEnabled(MainActivity.this, false, true);
-						getSupportActionBar().setIcon(R.drawable.widget_off);
-						if(mainMenu !=null) {
-							final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-							item_onoff.setIcon(R.drawable.widget_off);
-							item_onoff.setTitle(R.string.fw_disabled);
-							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-							item_apply.setTitle(R.string.saverules);
-						}
-					}
+
+				boolean result = enabled;
+
+				if (state.exitCode == 0) {
+					MainActivity.this.dirty = false;
 				} else {
-					//Log.d("AFWall+", "Saving rules.");
-					Api.saveRules(MainActivity.this);
-					Api.setEnabled(getApplicationContext(), false, true);
-					Api.displayToasts(MainActivity.this, R.string.rules_saved,
-							Toast.LENGTH_SHORT);
+					result = false;
 				}
-				MainActivity.this.dirty = false;
+				menuSetApplyOrSave(MainActivity.this.mainMenu, result);
+				Api.setEnabled(ctx, result, true);
 			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
+		}));
 	}
 
 	/**
