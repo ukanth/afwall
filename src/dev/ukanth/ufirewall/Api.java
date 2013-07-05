@@ -89,8 +89,6 @@ public final class Api {
 	public static final int SPECIAL_UID_KERNEL	= -11;
 	/** special application UID used for dnsmasq DHCP/DNS */
 	public static final int SPECIAL_UID_TETHER	= -12;
-	/** root script filename */
-	//private static final String SCRIPT_FILE = "afwall.sh";
 	
 	// Preferences
 	public static String PREFS_NAME 				= "AFWallPrefs";
@@ -133,20 +131,16 @@ public final class Api {
 	private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
-	//private static final int BUFF_LEN = 0;
 	
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
 	
 	//for custom scripts
-	//private static final String SCRIPT_FILE = "afwall_custom.sh";
 	static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
     static List<LogEntry> logEntriesList = new ArrayList<LogEntry>();
 	public static String ipPath = null;
 	public static boolean setv6 = false;
 	private static Map<String,Integer> specialApps = null;
-	
-	//public static boolean isUSBEnable = false;
 
     public static String getIpPath() {
 		return ipPath;
@@ -621,19 +615,6 @@ public final class Api {
 		return returnValue;
 	}
 	
-    /**
-     * Purge and re-add all rules.
-     * @param ctx application context (mandatory)
-     * @param showErrors indicates if errors should be alerted
-     */
-	public static boolean applyIptablesRules(Context ctx, boolean showErrors) {
-		if (ctx == null) {
-			return false;
-		}
-		saveRules(ctx);
-		return applySavedIptablesRules(ctx, showErrors);
-    }
-	
 	/**
 	 * Save current rules using the preferences storage.
 	 * @param ctx application context (mandatory)
@@ -691,47 +672,6 @@ public final class Api {
 		edit.commit();
     }
 	
-	
-	 /**
-     * Purge all iptables rules.
-     * @param ctx mandatory context
-     * @param showErrors indicates if errors should be alerted
-     * @return true if the rules were purged
-     */
-	public static boolean purgeVPNRules(Context ctx, boolean showErrors) {
-    	final StringBuilder res = new StringBuilder();
-		try {
-			assertBinaries(ctx, showErrors);
-			// Custom "shutdown" script
-	    	setIpTablePath(ctx,false);
-	    	List<String> listCommands = new ArrayList<String>();
-	    	listCommands.add((ipPath + " -F afwall-vpn"));
-			int code = runScriptAsRoot(ctx, listCommands, res);
-			if (code == -1) {
-				if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-				return false;
-			}
-			final SharedPreferences appprefs = PreferenceManager
-					.getDefaultSharedPreferences(ctx);
-			final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
-			if (enableIPv6) {
-				setIpTablePath(ctx, true);
-				listCommands.clear();
-				listCommands.add((ipPath + " -F afwall-vpn"));
-				code = runScriptAsRoot(ctx, listCommands, res);
-				if (code == -1) {
-					if (showErrors)
-						alert(ctx, ctx.getString(R.string.error_purge) + code
-								+ "\n" + res);
-					return false;
-				}
-			}
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-    }
-    
     /**
      * Purge all iptables rules.
      * @param ctx mandatory context
@@ -878,7 +818,6 @@ public final class Api {
 			listCommands.add(getBusyBoxPath(ctx) + "dmesg | " + grep +" {AFL}");
 			
 			int code = runScriptAsRoot(ctx, listCommands,  res);
-			//int code = runScriptAsRoot(ctx, "cat /proc/kmsg", res);
 			if (code != 0) {
 				if (res.length() == 0) {
 					output.append(ctx.getString(R.string.no_log));
@@ -951,66 +890,12 @@ public final class Api {
 				res.append(ctx.getString(R.string.no_log));
 			}
 			return res.toString();
-			//return output.toString();
-			//alert(ctx, res);
 		} catch (Exception e) {
 			alert(ctx, "error: " + e);
 		}
 		return "";
 	}
 	
-	/*public static void parseResult(String result) {
-	    int pos = 0;
-	    String src, dst, len, uid;
-	    final BufferedReader r = new BufferedReader(new StringReader(result.toString()));
-	    String line;
-	    try {
-			while ((line = r.readLine()) != null) {
-			  int newline = result.indexOf("\n", pos);
-
-			  pos = line.indexOf("SRC=", pos);
-			  //if(pos == -1) continue;
-			  int space = line.indexOf(" ", pos);
-			  //if(space == -1) continue;
-			  src = line.substring(pos + 4, space);
-
-			  pos = line.indexOf("DST=", pos);
-			  //if(pos == -1) continue;
-			  space = line.indexOf(" ", pos);
-			 // if(space == -1) continue;
-			  dst = line.substring(pos + 4, space);
-			  
-			  pos = line.indexOf("LEN=", pos);
-			  //if(pos == -1) continue;
-			  space = line.indexOf(" ", pos);
-			  //if(space == -1) continue;
-			  len = line.substring(pos + 4, space);
-			 
-			  pos = line.indexOf("UID=", pos);
-			  //if(pos == -1) continue;
-			  space = line.indexOf(" ", pos);
-			  //if(space == -1) continue;
-			  uid = line.substring(pos + 4, space);
-			  LogEntry entry = logEntriesHash.get(uid);
-
-			  if(entry == null)
-			    entry = new LogEntry();
-
-			  entry.uid = uid;
-			  entry.src = src;
-			  entry.dst = dst;
-			  entry.len = new Integer(len).intValue();
-			  entry.packets++;
-			  entry.bytes += entry.len * 8;
-
-			  logEntriesHash.put(uid, entry);
-			  logEntriesList.add(entry);
-			}
-		} catch (NumberFormatException e) {
-		} catch (IOException e) {
-		}
-	  }*/
-
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
@@ -1088,38 +973,6 @@ public final class Api {
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
-			/*
-				0 - Root
-				1000 - System
-				1001 - Radio
-				1002 - Bluetooth
-				1003 - Graphics
-				1004 - Input
-				1005 - Audio
-				1006 - Camera
-				1007 - Log
-				1008 - Compass
-				1009 - Mount
-				1010 - Wi-Fi
-				1011 - ADB
-				1012 - Install
-				1013 - Media
-				1014 - DHCP
-				1015 - External Storage
-				1016 - VPN
-				1017 - Keystore
-				1018 - USB Devices
-				1019 - DRM
-				1020 - Available
-				1021 - GPS
-				1022 - deprecated
-				1023 - Internal Media Storage
-				1024 - MTP USB
-				1025 - NFC
-				1026 - DRM RPC
-
-			 
-			 */
 			Map<Integer, PackageInfoData> syncMap = new HashMap<Integer, PackageInfoData>();
 			final Editor edit = prefs.edit();
 			boolean changed = false;
@@ -1127,10 +980,6 @@ public final class Api {
 			String cachekey = null;
 			final String cacheLabel = "cache.label.";
 			PackageInfoData app = null;
-			/*File file = new File(ctx.getDir("data", Context.MODE_PRIVATE), "packageInfo"); 
-			if(file.exists()){
-				syncMap = getObjectFromFile(ctx);
-			}*/
 			
 			for (final ApplicationInfo apinfo : installed) {
 				count = count+1;
@@ -1164,10 +1013,6 @@ public final class Api {
 					syncMap.put(apinfo.uid, app);
 				} else {
 					app.names.add(name);
-					/*final String newnames[] = new String[app.names.length + 1];
-					System.arraycopy(app.names, 0, newnames, 0, app.names.length);
-					newnames[app.names.length] = name;
-					app.names = newnames;*/
 				}
 				app.firstseen = firstseen;
 				// check if this application is selected
@@ -1594,47 +1439,6 @@ public final class Api {
 		}
 	}
 	
-	
-	
-	public static boolean clearRules(Context ctx) throws IOException{
-		final StringBuilder res = new StringBuilder();
-		setIpTablePath(ctx,false);
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add((ipPath + " -F"));
-		listCommands.add((ipPath + " -X"));
-		int code = runScriptAsRoot(ctx, listCommands,  res);
-		if (code == -1) {
-			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-			return false;
-		}
-		return true;
-	}
-	
-	public static boolean clearipv6Rules(Context ctx) throws IOException{
-		final StringBuilder res = new StringBuilder();
-		setIpTablePath(ctx,true);
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add((ipPath + " -F"));
-		listCommands.add((ipPath + " -X"));
-		int code = runScriptAsRoot(ctx, listCommands,  res);
-		if (code == -1) {
-			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-			return false;
-		}
-		return true;
-	}
-	
-	/*public void RunAsRoot(List<String> cmds) throws IOException{
-        Process p = Runtime.getRuntime().exec("su");
-        DataOutputStream os = new DataOutputStream(p.getOutputStream());            
-        for (String tmpCmd : cmds) {
-                os.writeBytes(tmpCmd+""));
-        }           
-        os.writeBytes("exit"));  
-        os.flush();
-	}*/
-	
-	
 	public static String runSUCommand(String cmd) throws IOException {
 		final StringBuilder res = new StringBuilder();
 		Process p  = Runtime.getRuntime().exec(
@@ -1648,23 +1452,6 @@ public final class Api {
 		// use inputLine.toString(); here it would have whole source
 		stdout.close();
 		return res.toString();
-	}
-	
-	public static boolean applyRulesBeforeShutdown(Context ctx) {
-		final StringBuilder res = new StringBuilder();
-		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
-		final String myiptables = dir + "/iptables_armv5 ";
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add((myiptables + " -F"));
-		listCommands.add((myiptables + " -X"));
-		listCommands.add((myiptables + " -P INPUT DROP"));
-		listCommands.add((myiptables + " -P OUTPUT DROP"));
-		listCommands.add((myiptables + " -P FORWARD DROP"));
-		try {
-			runScriptAsRoot(ctx, listCommands, res);
-		} catch (IOException e) {
-		}
-		return true;
 	}
 	
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
@@ -1772,42 +1559,6 @@ public final class Api {
 		}
 		return res;
 	}
-	
-	/*public static int getIptablesVersion(Context ctx){
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
-		int number = prefs.getInt("iptablesv", 0);
-		if (number == 0) {
-			try {
-				final StringBuilder res = new StringBuilder();
-				ArrayList<CommandCapture> listCommands = new ArrayList<CommandCapture>();
-				listCommands.add(("iptables --version"));
-				runScriptAsRoot(ctx, listCommands, res);
-				try {
-					String inputLine = res.toString();
-					Pattern pattern = Pattern.compile("[0-9]+(\\.[0-9]+)+$");
-					Matcher matcher = pattern.matcher(inputLine.toString());
-					String numberStr = null;
-					while (matcher.find()) {
-						numberStr = matcher.group();
-					}
-					if (numberStr != null) {
-						number = Integer.parseInt(numberStr.replace(".", ""));
-					}
-
-					final Editor edit = prefs.edit();
-					edit.putInt("iptablesv", number);
-					edit.commit();
-				} catch (Exception e) {
-					Log.e(TAG, e.getLocalizedMessage());
-				}
-
-			} catch (Exception e) {
-				Log.e(TAG, e.getLocalizedMessage());
-			}
-		}
-		return number;
-	}*/
 	
 	public static String showIfaces() {
 		String output = null;
@@ -1918,21 +1669,8 @@ public final class Api {
 		            .setContentTitle(title)
 		            .setContentText(message);
 		
-		//Notification n = builder.build();
-
-		//Notification notification = new Notification(icon, tickerText, when);
-		
 		builder.setContentIntent(in);
 		
-		/*notification.flags |= Notification.FLAG_AUTO_CANCEL
-				| Notification.FLAG_SHOW_LIGHTS;
-
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-				appIntent, 0);
-
-		notification.setLatestEventInfo(context, tickerText,
-				context.getString(R.string.notification_new), contentIntent);*/
-
 		mNotificationManager.notify(HELLO_ID, builder.build());
 
 	}
@@ -1967,57 +1705,4 @@ public final class Api {
 		}
 
 	}
-	
-	public static String getTargets(Context context) {
-		
-		String busybox = getBusyBoxPath(context);
-		String grep = busybox + " grep";
-		
-		final StringBuilder res = new StringBuilder();
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add(grep + " \\.\\* /proc/net/ip_tables_targets");
-		try {
-			runScriptAsRoot(context, listCommands,  res);
-		}catch(Exception e){
-			Log.d("getTargets: " , e.getLocalizedMessage());
-		}
-		return res.toString();
-	  }
-
-	
-	
-	/*@SuppressWarnings("unchecked")
-	private static Map<Integer, PackageInfoData> getObjectFromFile(Context ctx) {
-		Map<Integer, PackageInfoData> entries = new HashMap<Integer, PackageInfoData>();
-		Looper.prepare();
-		// now new caching technique to improve the performance
-		File file = new File(ctx.getDir("data", Context.MODE_PRIVATE),
-				"packageInfo");
-		ObjectInputStream input;
-		try {
-			input = new ObjectInputStream(new FileInputStream(file));
-			entries = (Map) input.readObject();
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return entries;
-	}
-
-	private static void writeObjectToFile(Context ctx, Map<Integer, PackageInfoData> syncMap) {
-		Looper.prepare();
-		// now new caching technique to improve the performance
-		File file = new File(ctx.getDir("data", Context.MODE_PRIVATE), "packageInfo");    
-		ObjectOutputStream outputStream;
-		try {
-			outputStream = new ObjectOutputStream(new FileOutputStream(file));
-			outputStream.writeObject(syncMap);
-			outputStream.flush();
-			outputStream.close();
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		}
-		
-	}*/
 }

@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.RejectedExecutionException;
 
 import android.app.Activity;
@@ -204,8 +203,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
 		
-		/*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		setupMultiProfile(prefs);*/
 		passCheck();
 		
 	}
@@ -223,13 +220,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 			
 			
-		    //mLocations = getResources().getStringArray(R.array.profiles);	
 		    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
 		    	    this,
 		    	    R.layout.sherlock_spinner_item,
 		    	    mLocations);
-			/*ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
-					context, R.array.profiles, R.layout.sherlock_spinner_item);*/
 		    adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 	
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -308,9 +302,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				: R.string.mode_blacklist);
 		labelmode.setText(res.getString(R.string.mode_header,
 				res.getString(resid)));
-	/*	resid = (Api.isEnabled(this) ? R.string.title_enabled
-				: R.string.title_disabled);
-		setTitle(res.getString(resid, R.string.app_version));*/
 	}
 
 	/**
@@ -1006,12 +997,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			if(resultCode == RESULT_OK){
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 				Intent intent = getIntent();
-				/*if(data != null && data.getBooleanExtra("reset",false)){
-					final Editor edit = prefs.edit();
-					edit.putString(Api.PREF_VPN_PKG, "");
-					edit.commit();
-					Api.purgeVPNRules(getApplicationContext(), false);
-				}*/
 			    finish();
 			    String lang = prefs.getString("locale","en");
 				Api.updateLanguage(getApplicationContext(), lang);
@@ -1408,12 +1393,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 		
-		
-		/*if (keyCode == KeyEvent.KEYCODE_SEARCH && event.getRepeatCount() == 0) {
-			mainMenu.getItem(R.id.searchApps).expandActionView();
-            return true;
-	     }*/
-		
 		// Handle the back button when dirty
 		if (this.dirty && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -1517,13 +1496,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			new GetAppList().execute();
 			mSelected.setText("  |  " + mLocations[itemPosition]);
 			refreshHeader();
-			//applyOrSaveRules();
-			/*if (Api.isEnabled(getApplicationContext())) {
-				Api.applyIptablesRules(getApplicationContext(), true);
-			} else {
-				Api.saveRules(getApplicationContext());
-			}*/
-			
 		}
 		return true;
 	}
