@@ -695,22 +695,28 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	    return true;
 	}
 	
+	public void menuSetApplyOrSave(Menu menu, boolean isEnabled) {
+		if (menu == null) {
+			return;
+		}
+
+		MenuItem onoff = menu.findItem(R.id.menu_toggle);
+		MenuItem apply = menu.findItem(R.id.menu_apply);
+
+		if (isEnabled) {
+			apply.setTitle(R.string.applyrules);
+			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
+			getSupportActionBar().setIcon(R.drawable.widget_on);
+		} else {
+			apply.setTitle(R.string.saverules);
+			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
+			getSupportActionBar().setIcon(R.drawable.widget_off);
+		}
+	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		final MenuItem item_onoff = menu.findItem(R.id.menu_toggle);
-		final MenuItem item_apply = menu.findItem(R.id.menu_apply);
-		if(item_onoff != null && item_apply != null){
-			if (Api.isEnabled(this)) {
-				item_onoff.setTitle(R.string.fw_enabled);
-				item_onoff.setIcon(R.drawable.widget_on);
-				item_apply.setTitle(R.string.applyrules);
-			} else {
-				item_onoff.setTitle(R.string.fw_disabled);
-				item_onoff.setIcon(R.drawable.widget_off);
-				item_apply.setTitle(R.string.saverules);
-			}
-		}
+		menuSetApplyOrSave(menu, Api.isEnabled(this));
 		return super.onPrepareOptionsMenu(menu);
 	}
 
