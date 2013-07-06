@@ -66,6 +66,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
@@ -1132,6 +1133,13 @@ public final class Api {
      */
 	public static int runScriptAsRoot(Context ctx, List<String> script, StringBuilder res) throws IOException {
 		int returnCode = -1;
+
+		if ((Looper.myLooper() != null) && (Looper.myLooper() == Looper.getMainLooper())) {
+			Log.e(TAG, "runScriptAsRoot should not be called from the main thread\nCall Trace:\n");
+			for (StackTraceElement e : new Throwable().getStackTrace()) {
+				Log.e(TAG, e.toString());
+			}
+		}
 
 		try {
 			returnCode = new RunCommand().execute(script, res, ctx).get();
