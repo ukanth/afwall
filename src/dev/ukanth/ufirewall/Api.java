@@ -628,59 +628,55 @@ public final class Api {
      * Purge all iptables rules.
      * @param ctx mandatory context
      * @param showErrors indicates if errors should be alerted
+     * @param callback If non-null, use a callback instead of blocking the current thread
      * @return true if the rules were purged
      */
-	public static boolean purgeIptables(Context ctx, boolean showErrors) {
-    	
+	public static boolean purgeIptables(Context ctx, boolean showErrors, RootCommand callback) {
+
+		List<String> cmds = new ArrayList<String>();
+		List<String> out = new ArrayList<String>();
+
+		for (String s : allChains) {
+			cmds.add("-F " + s);
+		}
+		cmds.add("-D OUTPUT -j afwall");
+		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT2, cmds);
+
 		try {
 			assertBinaries(ctx, showErrors);
-			// Custom "shutdown" script
-	    	setIpTablePath(ctx,false);
-	    	purgeRules(ctx,showErrors);
-			final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-			final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
-			if(enableIPv6) {
+
+			// IPv4
+			setIpTablePath(ctx, false);
+			iptablesCommands(cmds, out);
+
+			// IPv6
+			if(G.enableIPv6()) {
 				setIpTablePath(ctx,true);
-				purgeRules(ctx,showErrors);
+				iptablesCommands(cmds, out);
 			}
+
+			if (callback != null) {
+				callback.run(ctx, out);
+			} else {
+				fixupLegacyCmds(out);
+				if (runScriptAsRoot(ctx, out, new StringBuilder()) == -1) {
+					if(showErrors) alert(ctx, ctx.getString(R.string.error_purge));
+					return false;
+				}
+			}
+
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
     }
-	
-	private static boolean purgeRules(Context ctx,boolean showErrors) throws IOException {
-		boolean returnVal = true;
-		final StringBuilder res = new StringBuilder();
-		List<String> listCommands = new ArrayList<String>();
-    	listCommands.add((ipPath + " -F afwall"));
-    	listCommands.add((ipPath + " -F afwall-reject"));
-    	listCommands.add((ipPath + " -F afwall-3g"));
-    	listCommands.add((ipPath + " -F afwall-wifi"));
-    	listCommands.add((ipPath + " -D OUTPUT -j afwall || exit"));
-    	final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-    	StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, ""));
-		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
-		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
 
-    	if(enableVPN) {
-    		listCommands.add((ipPath + " -F afwall-vpn"));
-    	}
-    	if(enableLAN) {
-    		listCommands.add((ipPath + " -F afwall-lan"));
-    	}
-    	if (customScript.length() > 0) {
-    		replaceAll(customScript, "$IPTABLES", " " +ipPath );
-    		listCommands.add(customScript.toString());
-    	}
-		int code = runScriptAsRoot(ctx, listCommands, res);
-		if (code == -1) {
-			if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-			returnVal = false;
-		}
-		return returnVal;
+	@Deprecated
+	public static boolean purgeIptables(Context ctx, boolean showErrors) {
+		// warning: this is a blocking call
+		return purgeIptables(ctx, showErrors, null);
 	}
-	
+
 	/**
 	 * Display iptables rules output
 	 * @param ctx application context
