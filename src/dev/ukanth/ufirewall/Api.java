@@ -678,42 +678,6 @@ public final class Api {
 	}
 
 	/**
-	 * Display iptables rules output
-	 * @param ctx application context
-	 */
-	public static String showIptablesRules(Context ctx) {
-		try {
-    		final StringBuilder res = new StringBuilder();
-    		setIpTablePath(ctx,false);
-    		List<String> listCommands = new ArrayList<String>();
-    		listCommands.add((ipPath + " -L -n"));
-			runScriptAsRoot(ctx, listCommands,  res);
-			return res.toString();
-		} catch (Exception e) {
-			alert(ctx, "error: " + e);
-		}
-		return "";
-	}
-	
-	/**
-	 * Display iptables rules output
-	 * @param ctx application context
-	 */
-	public static String showIp6tablesRules(Context ctx) {
-		try {
-    		final StringBuilder res = new StringBuilder();
-    		setIpTablePath(ctx,true);
-    		List<String> listCommands = new ArrayList<String>();
-    		listCommands.add((ipPath + " -L -n"));
-			runScriptAsRoot(ctx, listCommands,  res);
-			return res.toString();
-		} catch (Exception e) {
-			alert(ctx, "error: " + e);
-		}
-		return "";
-	}
-
-	/**
 	 * Retrieve the current set of IPv4 or IPv6 rules and pass it to a callback
 	 * 
 	 * @param ctx application context
@@ -810,24 +774,6 @@ public final class Api {
 	public static void runIfconfig(Context ctx, RootCommand callback) {
 		callback.run(ctx, getBusyBoxPath(ctx) + " ifconfig -a");
 	}
-
-	@Deprecated
-	public static boolean clearLog(Context ctx) {
-		try {
-			final StringBuilder res = new StringBuilder();
-			List<String> listCommands = new ArrayList<String>();
-			listCommands.add((getBusyBoxPath(ctx) + " dmesg -c >/dev/null || exit"));
-			int code = runScriptAsRoot(ctx, listCommands, res);
-			if (code != 0) {
-				alert(ctx, res);
-				return false;
-			}
-			return true;
-		} catch (Exception e) {
-			alert(ctx, "error: " + e);
-		}
-		return false;
-	}
 	
 	public static class LogEntry {
 		    String uid;
@@ -917,35 +863,6 @@ public final class Api {
 			res.append(ctx.getString(R.string.no_log));
 		}
 		return res.toString();
-	}
-
-	/**
-	 * Display logs
-	 * @param ctx application context
-	 */
-	public static String showLog(Context ctx) {
-		StringBuilder res = new StringBuilder();
-		String busybox = getBusyBoxPath(ctx);
-		String grep = busybox + " grep";
-
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add(getBusyBoxPath(ctx) + "dmesg | " + grep +" {AFL}");
-
-		int code = -1;
-		try {
-			code = runScriptAsRoot(ctx, listCommands,  res);
-		} catch (IOException e) {
-		}
-		if (code != 0) {
-			return ctx.getString(R.string.log_fetch_error);
-		}
-
-		String output = parseLog(ctx, res.toString());
-		if (output == null) {
-			return ctx.getString(R.string.log_parse_error);
-		} else {
-			return output;
-		}
 	}
 	
     /**
