@@ -220,4 +220,28 @@ public final class InterfaceTracker {
 		}
 		return currentCfg;
 	}
+
+	public static String matchName(String[] patterns, String name) {
+		for (String p : patterns) {
+			int minLen = Math.min(p.length(), name.length());
+
+			for (int i = 0; ; i++) {
+				if (i == minLen) {
+					if (name.length() == p.length()) {
+						// exact match
+						return p;
+					}
+					break;
+				}
+				if (name.charAt(i) != p.charAt(i)) {
+					if (p.charAt(i) == '+') {
+						// wildcard match
+						return p;
+					}
+					break;
+				}
+			}
+		}
+		return null;
+	}
 }

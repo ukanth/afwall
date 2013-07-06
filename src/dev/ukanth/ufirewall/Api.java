@@ -1567,6 +1567,33 @@ public final class Api {
 		return res;
 	}
 	
+	public static List<String> interfaceInfo(boolean showMatches) {
+		List<String> ret = new ArrayList<String>();
+
+		try {
+			for (File f : new File("/sys/class/net").listFiles()) {
+				String name = f.getName();
+
+				if (!showMatches) {
+					ret.add(name);
+				} else {
+					if (InterfaceTracker.matchName(InterfaceTracker.ITFS_WIFI, name) != null) {
+						ret.add(name + ": wifi");
+					} else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_3G, name) != null) {
+						ret.add(name + ": 3G");
+					} else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_VPN, name) != null) {
+						ret.add(name + ": VPN");
+					} else {
+						ret.add(name + ": unknown");
+					}
+				}
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "can't list network interfaces: " + e.getLocalizedMessage());
+		}
+		return ret;
+	}
+
 	public static String showIfaces() {
 		String output = null;
 		try {
