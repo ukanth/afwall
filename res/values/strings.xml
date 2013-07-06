@@ -17,7 +17,8 @@
     <string name="error_purge">Error purging iptables. exit code:</string>
     <string name="error_binary">Error installing binary files:</string>
     <string name="error_refresh">Error refreshing iptables: </string>
-    <string name="error_apply">Error applying iptables rules. Exit code: </string>
+    <string name="error_apply">Error applying iptables rules</string>
+    <string name="error_fetch">Error fetching iptables rules</string>
     <string name="error_su">Could not acquire root access.\n You need a rooted phone to run AFWall+.\n\n If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
     <string name="error_common">Error : </string>
     <string name="all_item">(Any application) - Same as selecting all applications</string>
@@ -135,10 +136,13 @@
     <string name="log_disabled">Log Disabled</string>
     <string name="log_was_enabled">Log has been enabled</string>
     <string name="log_was_disabled">Log has been disabled</string>
+    <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_cleared">Log cleared</string>
+    <string name="log_clear_error">Error clearing log</string>
     <string name="no_log">Log is Empty</string>
     <string name="LogAppName">Application\'s Name</string>
     <string name="LogPackBlock">Total Packets Blocked</string>
+    <string name="refresh">Refresh</string>
 
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Multiple Profile Preferences</string>
