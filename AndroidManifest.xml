@@ -167,7 +167,6 @@
         
 
         <service android:name="dev.ukanth.ufirewall.StartupService" ></service>
-        <service android:name="dev.ukanth.ufirewall.BackgroundIntentService"></service>
 
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
