@@ -109,13 +109,8 @@
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.Sherlock" >
         </activity>
-        <activity
-            android:name="dev.ukanth.ufirewall.Rules"
-            android:label="@string/showrules_title" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+        <activity android:name="dev.ukanth.ufirewall.RulesActivity"></activity>
+        <activity android:name="dev.ukanth.ufirewall.LogActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity" android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

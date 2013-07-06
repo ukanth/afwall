@@ -48,7 +48,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -111,9 +110,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	public void setCurrentPassword(String currentPassword) {
 		this.currentPassword = currentPassword;
 	}
-	
-	public final static String IPTABLE_RULES = "dev.ukanth.ufirewall.text.RULES";
-	public final static String VIEW_TITLE = "dev.ukanth.ufirewall.text.TITLE";
 	
 	private final int _ReqCreatePattern = 0;
 	private final int _ReqSignIn = 1;
@@ -1091,55 +1087,17 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	/**
-	 * Show iptable rules on a dialog
+	 * Show iptables rules on a dialog
 	 */
 	private void showRules() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(this,
-				res.getString(R.string.working),
-				res.getString(R.string.please_wait), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				if (!Api.hasRootAccess(MainActivity.this,true)) return;
-				String rules = Api.showIptablesRules(MainActivity.this);
-				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,rules,getString(R.string.showrules_title)));
-			}
-		};        
-		handler.sendEmptyMessageDelayed(0, 100);
+		startActivity(new Intent(this, RulesActivity.class));
 	}
 	
-	protected Intent activityIntent(MainActivity mainActivity, Class<Rules> class1,String message,String titleText) {
-        Intent result = new Intent();
-        result.setClass(mainActivity, class1);
-        result.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        result.putExtra(IPTABLE_RULES, message);
-        result.putExtra(VIEW_TITLE, titleText);
-        return result;
-    }
-
 	/**
 	 * Show logs on a dialog
 	 */
 	private void showLog() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(this,
-				res.getString(R.string.working),
-				res.getString(R.string.please_wait), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				String logText = Api.showLog(MainActivity.this);
-				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,logText,getString(R.string.showlog_title)));
-			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
+		startActivity(new Intent(this, LogActivity.class));
 	}
 
 	/**
