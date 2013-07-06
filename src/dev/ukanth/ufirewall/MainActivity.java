@@ -187,6 +187,21 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		    Api.assertBinaries(this, true);
 	}
 
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		// to improve responsiveness, try to open a root shell in the background on launch
+		// (if this fails we'll try again later)
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("true");
+
+		new RootCommand()
+			.setFailureToast(R.string.error_su)
+			.setReopenShell(true)
+			.run(getApplicationContext(), cmds);
+	}
+
 	private void addColumns(int id) {
 		ImageView view = (ImageView)this.findViewById(id);
 		view.setVisibility(View.VISIBLE);
