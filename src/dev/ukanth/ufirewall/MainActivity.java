@@ -1174,36 +1174,27 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	/**
-	 * Purge iptable rules, showing a visual indication
+	 * Purge iptables rules, showing a visual indication
 	 */
 	private void purgeRules() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(this,
-				res.getString(R.string.working),
-				res.getString(R.string.deleting_rules), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				if (!Api.hasRootAccess(MainActivity.this,true)) return;
-				if (Api.purgeIptables(MainActivity.this, true)) {
-					Api.setEnabled(getApplicationContext(), false, true);
-					Api.displayToasts(MainActivity.this, R.string.rules_deleted,
-							Toast.LENGTH_SHORT);
-					getSupportActionBar().setIcon(R.drawable.widget_off);
-					if(mainMenu !=null) {
-						final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-						item_onoff.setIcon(R.drawable.widget_off);
-						item_onoff.setTitle(R.string.fw_disabled);
-						final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-						item_apply.setTitle(R.string.saverules);
-					}
-				}
+		final Context ctx = getApplicationContext();
+
+		Api.purgeIptables(ctx, true, new RootCommand()
+				.setSuccessToast(R.string.rules_deleted)
+				.setFailureToast(R.string.error_purge)
+				.setReopenShell(true)
+				.setCallback(new RootCommand.Callback() {
+
+			public void cbFunc(RootCommand state) {
+				// error exit -> assume the rules are still enabled
+				// we shouldn't wind up in this situation, but if we do, the user's
+				// best bet is to click Apply then toggle Enabled again
+				boolean nowEnabled = state.exitCode != 0;
+
+				Api.setEnabled(ctx, nowEnabled, true);
+				menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
 			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
+		}));
 	}
 
 	/**
