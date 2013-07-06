@@ -845,36 +845,18 @@ public final class Api {
 		    	
 		    }
 	}
-	/**
-	 * Display logs
-	 * @param ctx application context
-	 */
-	public static String showLog(Context ctx) {
+
+	public static String parseLog(Context ctx, String dmesg) {
+		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
+		final Integer unknownUID = -99;
+		StringBuilder res = new StringBuilder();
+		String line;
+		int start, end;
+		Integer appid;
+		final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
+		LogInfo loginfo = null;
+
 		try {
-    		StringBuilder res = new StringBuilder();
-    		StringBuilder output = new StringBuilder();
-    		String busybox = getBusyBoxPath(ctx);
-			String grep = busybox + " grep";
-    		
-			List<String> listCommands = new ArrayList<String>();
-			listCommands.add(getBusyBoxPath(ctx) + "dmesg | " + grep +" {AFL}");
-			
-			int code = runScriptAsRoot(ctx, listCommands,  res);
-			if (code != 0) {
-				if (res.length() == 0) {
-					output.append(ctx.getString(R.string.no_log));
-				}
-				return output.toString();
-			}
-						
-			final BufferedReader r = new BufferedReader(new StringReader(res.toString()));
-			final Integer unknownUID = -99;
-			res = new StringBuilder();
-			String line;
-			int start, end;
-			Integer appid;
-			final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
-			LogInfo loginfo = null;
 			while ((line = r.readLine()) != null) {
 				if (line.indexOf("{AFL}") == -1) continue;
 				appid = unknownUID;
@@ -928,14 +910,42 @@ public final class Api {
 					res.append(address.toString());
 					res.append("\n\t---------\n");
 				}
-			if (res.length() == 0) {
-				res.append(ctx.getString(R.string.no_log));
-			}
-			return res.toString();
 		} catch (Exception e) {
-			alert(ctx, "error: " + e);
+			return null;
 		}
-		return "";
+		if (res.length() == 0) {
+			res.append(ctx.getString(R.string.no_log));
+		}
+		return res.toString();
+	}
+
+	/**
+	 * Display logs
+	 * @param ctx application context
+	 */
+	public static String showLog(Context ctx) {
+		StringBuilder res = new StringBuilder();
+		String busybox = getBusyBoxPath(ctx);
+		String grep = busybox + " grep";
+
+		List<String> listCommands = new ArrayList<String>();
+		listCommands.add(getBusyBoxPath(ctx) + "dmesg | " + grep +" {AFL}");
+
+		int code = -1;
+		try {
+			code = runScriptAsRoot(ctx, listCommands,  res);
+		} catch (IOException e) {
+		}
+		if (code != 0) {
+			return ctx.getString(R.string.log_fetch_error);
+		}
+
+		String output = parseLog(ctx, res.toString());
+		if (output == null) {
+			return ctx.getString(R.string.log_parse_error);
+		} else {
+			return output;
+		}
 	}
 	
     /**

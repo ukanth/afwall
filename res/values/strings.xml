@@ -139,6 +139,8 @@
     <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_cleared">Log cleared</string>
     <string name="log_clear_error">Error clearing log</string>
+    <string name="log_fetch_error">Error fetching log</string>
+    <string name="log_parse_error">Error parsing log</string>
     <string name="no_log">Log is Empty</string>
     <string name="LogAppName">Application\'s Name</string>
     <string name="LogPackBlock">Total Packets Blocked</string>
