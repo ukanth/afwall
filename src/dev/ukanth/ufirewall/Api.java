@@ -714,10 +714,104 @@ public final class Api {
 	}
 
 	/**
-	 * Display logs
+	 * Retrieve the current set of IPv4 or IPv6 rules and pass it to a callback
+	 * 
 	 * @param ctx application context
-     * @return true if the clogs were cleared
+	 * @param callback callback to receive rule list
+	 * @param useIPV6 true to list IPv6 rules, false to list IPv4 rules
 	 */
+	public static void fetchIptablesRules(Context ctx, boolean useIPV6, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		List<String> out = new ArrayList<String>();
+		cmds.add("-n -v -L");
+		if (useIPV6) {
+			setIpTablePath(ctx, true);
+		} else {
+			setIpTablePath(ctx, false);
+		}
+		iptablesCommands(cmds, out);
+		callback.run(ctx, out);
+	}
+
+	/**
+	 * Run a list of commands with both iptables and ip6tables
+	 * 
+	 * @param ctx application context
+	 * @param cmds list of commands to run
+	 * @param callback callback for completion
+	 */
+	public static void apply46(Context ctx, List<String> cmds, RootCommand callback) {
+		List<String> out = new ArrayList<String>();
+
+		setIpTablePath(ctx, false);
+		iptablesCommands(cmds, out);
+
+		if (G.enableIPv6()) {
+			setIpTablePath(ctx, true);
+			iptablesCommands(cmds, out);
+		}
+		callback.run(ctx, out);
+	}
+
+	/**
+	 * Delete all firewall rules.  For diagnostic purposes only.
+	 * 
+	 * @param ctx application context
+	 * @param callback callback for completion
+	 */
+	public static void flushAllRules(Context ctx, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-F");
+		cmds.add("-X");
+		apply46(ctx, cmds, callback);
+	}
+
+	/**
+	 * Enable or disable logging by rewriting the afwall-reject chain.  Logging
+	 * will be enabled or disabled based on the preference setting.
+	 * 
+	 * @param ctx application context
+	 * @param callback callback for completion
+	 */
+	public static void updateLogRules(Context ctx, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-F afwall-reject");
+		addRejectRules(cmds);
+		apply46(ctx, cmds, callback);
+	}
+
+	/**
+	 * Clear firewall logs by purging dmesg
+	 * 
+	 * @param ctx application context
+	 * @param callback Callback for completion status
+	 */
+	public static void clearLog(Context ctx, RootCommand callback) {
+		callback.run(ctx, getBusyBoxPath(ctx) + " dmesg -c");
+	}
+
+	/**
+	 * Fetch kernel logs via busybox dmesg.  This will include {AFL} lines from
+	 * logging rejected packets.
+	 * 
+	 * @param ctx application context
+	 * @param callback Callback for completion status
+	 */
+	public static void fetchDmesg(Context ctx, RootCommand callback) {
+		callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
+	}
+
+	/**
+	 * List all interfaces via "ifconfig -a"
+	 * 
+	 * @param ctx application context
+	 * @param callback Callback for completion status
+	 */
+	public static void runIfconfig(Context ctx, RootCommand callback) {
+		callback.run(ctx, getBusyBoxPath(ctx) + " ifconfig -a");
+	}
+
+	@Deprecated
 	public static boolean clearLog(Context ctx) {
 		try {
 			final StringBuilder res = new StringBuilder();
