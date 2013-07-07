@@ -415,12 +415,12 @@ public final class Api {
 
 		addInterfaceRouting(ctx, false, cmds);
 
-		// send 3G, wifi, VPN packets to the appropriate dynamic chain based on interface
-		for (final String itf : ITFS_3G) {
-			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
-		}
+		// send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
 		for (final String itf : ITFS_WIFI) {
 			cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
+		}
+		for (final String itf : ITFS_3G) {
+			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
 		}
 		if (G.enableVPN()) {
 			// if !enableVPN then we ignore those interfaces (pass all traffic)
