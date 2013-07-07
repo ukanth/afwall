@@ -340,10 +340,17 @@ public final class Api {
 	 */
 	private static void addInterfaceRouting(Context ctx, List<String> cmds) {
 		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		for (String s : dynChains) {
 			cmds.add("-F " + s);
 		}
+
+		if (whitelist) {
+			// always allow the DHCP client full wifi access
+			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi", "-j RETURN");
+		}
+
 		if (cfg.isTethered) {
 			cmds.add("-A afwall-wifi -j afwall-wifi-tether");
 			cmds.add("-A afwall-3g -j afwall-3g-tether");
@@ -359,6 +366,12 @@ public final class Api {
 			} else if(!setv6 && !cfg.lanMaskV4.equals("")) {
 				cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
 				cmds.add("-A afwall-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j afwall-wifi-wan");
+			} else {
+				// No IP address -> no traffic.  This prevents a data leak between the time
+				// the interface gets an IP address, and the time we process the intent
+				// (which could be 5+ seconds).  This is likely to catch a little bit of
+				// legitimate traffic from time to time, so we won't log the failures.
+				cmds.add("-A afwall-wifi-fork -j REJECT");
 			}
 		} else {
 			cmds.add("-A afwall-wifi-fork -j afwall-wifi-wan");
@@ -442,11 +455,6 @@ public final class Api {
 
 		final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
 		final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
-
-		// special rule to allow DHCP requests out on wifi
-		if (whitelist && !any_wifi) {
-			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi-wan", "-j RETURN");
-		}
 
 		// special rules to allow 3G<->wifi tethering
 		// note that this can only blacklist DNS/DHCP services, not all tethered traffic
