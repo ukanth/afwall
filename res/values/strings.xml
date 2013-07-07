@@ -14,12 +14,12 @@
     <string name="close">Close</string>
     <string name="exit">Exit</string>
     <string name="error_flush">Error flushing iptables</string>
-    <string name="error_purge">Error purging iptables. exit code:</string>
-    <string name="error_binary">Error installing binary files:</string>
-    <string name="error_refresh">Error refreshing iptables: </string>
+    <string name="error_purge">Error purging iptables</string>
+    <string name="error_binary">Error installing binary files</string>
+    <string name="error_refresh">Error refreshing iptables</string>
     <string name="error_apply">Error applying iptables rules</string>
     <string name="error_fetch">Error fetching iptables rules</string>
-    <string name="error_su">Could not acquire root access.\n You need a rooted phone to run AFWall+.\n\n If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
+    <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
     <string name="error_common">Error : </string>
     <string name="all_item">(Any application) - Same as selecting all applications</string>
     <string name="root_item">(root) - Applications running as root</string>
