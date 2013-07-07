@@ -178,7 +178,7 @@ public final class Api {
 	static String customScriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
 		final String myiptables = dir + "/iptables_armv5";
-		final String mybusybox = dir + "/busybox_g1";
+		final String mybusybox = dir + "/busybox_g2";
 		return "" +
 			"IPTABLES="+ myiptables + "\n" +
 			"BUSYBOX="+mybusybox+"\n" +
@@ -217,7 +217,7 @@ public final class Api {
 		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final String busybox_preference = appprefs.getString("bb_path", "2");
 		if(busybox_preference.equals("2")) {
-			busybox = dir + "/busybox_g1 ";
+			busybox = dir + "/busybox_g2 ";
 		}
 		return busybox;
 	}
@@ -1246,9 +1246,9 @@ public final class Api {
 				changed = true;
 			}	
 			// Check busybox
-			file = new File(ctx.getDir("bin",0), "busybox_g1");
+			file = new File(ctx.getDir("bin",0), "busybox_g2");
 			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.busybox_g1, file, "755");
+				copyRawFile(ctx, R.raw.busybox_g2, file, "755");
 				changed = true;
 			}
 			// check script
