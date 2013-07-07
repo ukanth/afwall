@@ -148,6 +148,8 @@ public final class Api {
 	public static boolean setv6 = false;
 	private static Map<String,Integer> specialApps = null;
 
+	private static boolean rulesUpToDate = false;
+
     public static String getIpPath() {
 		return ipPath;
 	}
@@ -582,6 +584,8 @@ public final class Api {
 			}
 		}
 
+		rulesUpToDate = true;
+
 		if (callback != null) {
 			callback.run(ctx, cmds);
 			return true;
@@ -613,12 +617,37 @@ public final class Api {
 		return applySavedIptablesRules(ctx, showErrors, null);
 	}
 
+	public static boolean fastApply(Context ctx, RootCommand callback) {
+		if (!rulesUpToDate) {
+			return applySavedIptablesRules(ctx, true, callback);
+		}
+
+		List<String> out = new ArrayList<String>();
+		List<String> cmds;
+
+		cmds = new ArrayList<String>();
+		setIpTablePath(ctx, false);
+		addInterfaceRouting(ctx, true, cmds);
+		iptablesCommands(cmds, out);
+
+		if (G.enableIPv6()) {
+			setIpTablePath(ctx, true);
+			cmds = new ArrayList<String>();
+			addInterfaceRouting(ctx, true, cmds);
+			iptablesCommands(cmds, out);
+		}
+		callback.run(ctx, out);
+		return true;
+	}
+
 	/**
 	 * Save current rules using the preferences storage.
 	 * @param ctx application context (mandatory)
 	 */
 	public static void saveRules(Context ctx) {
 		final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+
+		rulesUpToDate = false;
 
 		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
 		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
@@ -1272,6 +1301,8 @@ public final class Api {
 		if (prefs.getBoolean(PREF_ENABLED, false) == enabled) {
 			return;
 		}
+		rulesUpToDate = false;
+
 		final Editor edit = prefs.edit();
 		edit.putBoolean(PREF_ENABLED, enabled);
 		if (!edit.commit()) {
