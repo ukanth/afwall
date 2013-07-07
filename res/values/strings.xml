@@ -98,7 +98,10 @@
     <string name="OK">OK</string>
     <string name="Cancel">Cancel</string>
     <string name="notification_title">Open AFWall+</string>
-    <string name="status_running">Running</string>
+
+    <string name="error_notification_title">AFWall+ error</string>
+    <string name="error_notification_text">Error applying firewall rules. Click here to open settings.</string>
+    <string name="error_notification_ticker">AFWall+ could not apply rules</string>
 
 
     <!-- Advanced Settings 
