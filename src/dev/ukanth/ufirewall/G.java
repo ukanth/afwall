@@ -61,6 +61,9 @@ public class G extends android.app.Application {
 	public static boolean enableIPv6() { return gPrefs.getBoolean("enableIPv6", false); }
 	public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean("enableIPv6", val).commit(); return val; }
 
+	public static boolean enableInbound() { return gPrefs.getBoolean("enableInbound", false); }
+	public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean("enableInbound", val).commit(); return val; }
+
 	public static boolean enableFirewallLog() { return gPrefs.getBoolean("enableFirewallLog", true); }
 	public static boolean enableFirewallLog(boolean val) { gPrefs.edit().putBoolean("enableFirewallLog", val).commit(); return val; }
 

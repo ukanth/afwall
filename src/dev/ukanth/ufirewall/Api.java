@@ -359,6 +359,12 @@ public final class Api {
 		// add custom rules before the afwall* chains are populated
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
 
+		if (G.enableInbound()) {
+			// we don't have any rules in the INPUT chain prohibiting inbound traffic, but
+			// local processes can't reply to half-open connections without this rule
+			cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
+		}
+
 		// send 3G, wifi, LAN, VPN packets to the appropriate afwall-* chain
 		for (final String itf : ITFS_3G) {
 			cmds.add("-A afwall -o " + itf + " -j afwall-3g");

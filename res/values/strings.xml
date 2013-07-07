@@ -231,11 +231,12 @@
 	
     <!-- Startup -->
     <string name="startup_service">Applying Rules. Please wait!</string>
-    <string name="alternateStartTitle">Fix Device Start Rules</string>
-    <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
     <string name="fixleakTitle">Fix Startup Data Leak</string>
     <string name="fixleakSummary">This will fix data leak before AFWall+ starts\n Requires Init.d Support and S-OFF(HTC)!</string>
-    <string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. It\'s only for ICS/JB devices</string>
+    <string name="alternateStartTitle">Fix Device Start Rules</string>
+    <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
+    <string name="enableInboundTitle">Enable inbound connections</string>
+    <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
 	
     <!-- UI Preferences -->
     <string name="ui_prefs_title">UI Preferences</string>
