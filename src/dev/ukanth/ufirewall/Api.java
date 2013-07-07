@@ -134,7 +134,9 @@ public final class Api {
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
 
-	private static final String allChains[] = { "afwall", "afwall-3g", "afwall-wifi", "afwall-lan", "afwall-vpn", "afwall-reject" };
+	private static final String dynChains[] = { "afwall-3g", "afwall-3g-fork", "afwall-wifi", "afwall-wifi-fork" };
+	private static final String staticChains[] = { "afwall", "afwall-reject", "afwall-vpn",
+		"afwall-3g-tether", "afwall-3g-home", "afwall-3g-roam", "afwall-wifi-tether", "afwall-wifi-wan", "afwall-wifi-lan" };
 
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
@@ -325,6 +327,51 @@ public final class Api {
 		}
 	}
 
+	/**
+	 * Reconfigure the firewall rules based on interface changes seen at runtime: tethering
+	 * enabled/disabled, IP address changes, etc.  This should only affect a small number of
+	 * rules; we want to avoid calling applyIptablesRulesImpl() too often since applying
+	 * 100+ rules is expensive.
+	 *
+	 * @param ctx application context
+	 * @param cmds command list
+	 */
+	private static void addInterfaceRouting(Context ctx, boolean fastApply, List<String> cmds) {
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+
+		for (String s : dynChains) {
+			if (!fastApply) {
+				cmds.add("#NOCHK# -N " + s);
+			}
+			cmds.add("-F " + s);
+		}
+		if (cfg.isTethered) {
+			cmds.add("-A afwall-wifi -j afwall-wifi-tether");
+			cmds.add("-A afwall-3g -j afwall-3g-tether");
+		} else {
+			cmds.add("-A afwall-wifi -j afwall-wifi-fork");
+			cmds.add("-A afwall-3g -j afwall-3g-fork");
+		}
+
+		if (G.enableLAN() && !cfg.isTethered) {
+			if(setv6 && !cfg.lanMaskV6.equals("")) {
+				cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
+				cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
+			} else if(!setv6 && !cfg.lanMaskV4.equals("")) {
+				cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
+				cmds.add("-A afwall-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j afwall-wifi-wan");
+			}
+		} else {
+			cmds.add("-A afwall-wifi-fork -j afwall-wifi-wan");
+		}
+
+		if (G.enableRoam() && cfg.isRoaming) {
+			cmds.add("-A afwall-3g-fork -j afwall-3g-roam");
+		} else {
+			cmds.add("-A afwall-3g-fork -j afwall-3g-home");
+		}
+	}
+
     /**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
@@ -341,14 +388,13 @@ public final class Api {
 		
 		assertBinaries(ctx, showErrors);
 
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P OUTPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
-		for (String s : allChains) {
+		for (String s : staticChains) {
 			cmds.add("#NOCHK# -N " + s);
 			cmds.add("-F " + s);
 		}
@@ -365,25 +411,17 @@ public final class Api {
 			cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
 		}
 
-		// send 3G, wifi, LAN, VPN packets to the appropriate afwall-* chain
+		addInterfaceRouting(ctx, false, cmds);
+
+		// send 3G, wifi, VPN packets to the appropriate dynamic chain based on interface
 		for (final String itf : ITFS_3G) {
 			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
 		}
 		for (final String itf : ITFS_WIFI) {
-			if (G.enableLAN() && !cfg.isTethered) {
-				if(setv6 && !cfg.lanMaskV6.equals("")) {
-					cmds.add("-A afwall -d " + cfg.lanMaskV6 + " -o " + itf + " -j afwall-lan");
-					cmds.add("-A afwall '!' -d " + cfg.lanMaskV6 + " -o " + itf+ " -j afwall-wifi");
-				}
-				if(!setv6 && !cfg.lanMaskV4.equals("")) {
-					cmds.add("-A afwall -d " + cfg.lanMaskV4 + " -o " + itf + " -j afwall-lan");
-					cmds.add("-A afwall '!' -d "+ cfg.lanMaskV4 + " -o " + itf + " -j afwall-wifi");
-				}
-			} else {
-				cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
-			}
+			cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
 		}
 		if (G.enableVPN()) {
+			// if !enableVPN then we ignore those interfaces (pass all traffic)
 			for (final String itf : ITFS_VPN) {
 				cmds.add("-A afwall -o " + itf + " -j afwall-vpn");
 			}
@@ -394,46 +432,47 @@ public final class Api {
 
 		// special rule to allow DHCP requests out on wifi
 		if (whitelist && !any_wifi) {
-			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi", "-j RETURN");
+			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi-wan", "-j RETURN");
 		}
 
 		// special rules to allow 3G<->wifi tethering
 		// note that this can only blacklist DNS/DHCP services, not all tethered traffic
-		if (cfg.isTethered &&
-			((!whitelist && (any_wifi || any_3g)) ||
+		if (((!whitelist && (any_wifi || any_3g)) ||
 		     (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
 
 			String users[] = { "root", "nobody" };
 			String action = " -j " + (whitelist ? "RETURN" : "afwall-reject");
 
 			// DHCP replies to client
-			addRuleForUsers(cmds, users, "-A afwall-wifi","-p udp --sport=67 --dport=68" + action);
+			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p udp --sport=67 --dport=68" + action);
 
 			// DNS replies to client
-			addRuleForUsers(cmds, users, "-A afwall-wifi", "-p udp --sport=53" + action);
-			addRuleForUsers(cmds, users, "-A afwall-wifi", "-p tcp --sport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p udp --sport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p tcp --sport=53" + action);
 
 			// DNS requests to upstream servers
-			addRuleForUsers(cmds, users, "-A afwall-3g", "-p udp --dport=53" + action);
-			addRuleForUsers(cmds, users, "-A afwall-3g", "-p tcp --dport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-3g-tether", "-p udp --dport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-3g-tether", "-p tcp --dport=53" + action);
 		}
 
-		// now add the per-uid rules for each interface type
-		addRulesForUidlist(cmds, cfg.isRoaming && G.enableRoam() ? uidsRoam : uids3g, "afwall-3g", whitelist);
-		addRulesForUidlist(cmds, uidsWifi, "afwall-wifi", whitelist);
+		// if tethered, try to match the above rules (if enabled).  no match -> fall through to the
+		// normal 3G/wifi rules
+		cmds.add("-A afwall-wifi-tether -j afwall-wifi-fork");
+		cmds.add("-A afwall-3g-tether -j afwall-3g-fork");
+
+		// NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
+		// on the LAN
+		if (whitelist) {
+			cmds.add("-A afwall-wifi-lan -p udp --dport 53 -j RETURN");
+		}
+
+		// now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
+		// in whitelist mode the last rule in the list routes everything else to afwall-reject
+		addRulesForUidlist(cmds, uids3g, "afwall-3g-home", whitelist);
+		addRulesForUidlist(cmds, uidsRoam, "afwall-3g-roam", whitelist);
+		addRulesForUidlist(cmds, uidsWifi, "afwall-wifi-wan", whitelist);
+		addRulesForUidlist(cmds, uidsLAN, "afwall-wifi-lan", whitelist);
 		addRulesForUidlist(cmds, uidsVPN, "afwall-vpn", whitelist);
-
-		if (cfg.allowWifi) {
-			// NOTE: we still need to open a hole for DNS lookups
-			// This falls through to the wifi rules if the app is not whitelisted for LAN access
-			if (whitelist) {
-				cmds.add("-A afwall-lan -p udp --dport 53 -j RETURN");
-			}
-			addRulesForUidlist(cmds, uidsLAN, "afwall-lan", whitelist);
-		} else {
-			// no LAN IP -> block everything
-			cmds.add("-A afwall-lan -j afwall-reject");
-		}
 
 		iptablesCommands(cmds, out);
 		return true;
@@ -643,7 +682,10 @@ public final class Api {
 		List<String> cmds = new ArrayList<String>();
 		List<String> out = new ArrayList<String>();
 
-		for (String s : allChains) {
+		for (String s : staticChains) {
+			cmds.add("-F " + s);
+		}
+		for (String s : dynChains) {
 			cmds.add("-F " + s);
 		}
 		cmds.add("-D OUTPUT -j afwall");
