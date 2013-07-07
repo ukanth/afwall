@@ -338,13 +338,10 @@ public final class Api {
 	 * @param ctx application context
 	 * @param cmds command list
 	 */
-	private static void addInterfaceRouting(Context ctx, boolean fastApply, List<String> cmds) {
+	private static void addInterfaceRouting(Context ctx, List<String> cmds) {
 		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
 
 		for (String s : dynChains) {
-			if (!fastApply) {
-				cmds.add("#NOCHK# -N " + s);
-			}
 			cmds.add("-F " + s);
 		}
 		if (cfg.isTethered) {
@@ -374,6 +371,12 @@ public final class Api {
 		}
 	}
 
+	private static void applyShortRules(Context ctx, List<String> cmds) {
+		cmds.add("-P OUTPUT DROP");
+		addInterfaceRouting(ctx, cmds);
+		cmds.add("-P OUTPUT ACCEPT");
+	}
+
     /**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
@@ -394,12 +397,20 @@ public final class Api {
 
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-P INPUT ACCEPT");
-		cmds.add("-P OUTPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
+
+		// prevent data leaks due to incomplete rules
+		cmds.add("-P OUTPUT DROP");
+
 		for (String s : staticChains) {
 			cmds.add("#NOCHK# -N " + s);
 			cmds.add("-F " + s);
 		}
+		for (String s : dynChains) {
+			cmds.add("#NOCHK# -N " + s);
+			// addInterfaceRouting() will flush these chains, but not create them
+		}
+
 		cmds.add("#NOCHK# -D OUTPUT -j afwall");
 		cmds.add("-I OUTPUT 1 -j afwall");
 		addRejectRules(cmds);
@@ -413,7 +424,7 @@ public final class Api {
 			cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
 		}
 
-		addInterfaceRouting(ctx, false, cmds);
+		addInterfaceRouting(ctx, cmds);
 
 		// send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
 		for (final String itf : ITFS_WIFI) {
@@ -475,6 +486,8 @@ public final class Api {
 		addRulesForUidlist(cmds, uidsWifi, "afwall-wifi-wan", whitelist);
 		addRulesForUidlist(cmds, uidsLAN, "afwall-wifi-lan", whitelist);
 		addRulesForUidlist(cmds, uidsVPN, "afwall-vpn", whitelist);
+
+		cmds.add("-P OUTPUT ACCEPT");
 
 		iptablesCommands(cmds, out);
 		return true;
@@ -627,13 +640,13 @@ public final class Api {
 
 		cmds = new ArrayList<String>();
 		setIpTablePath(ctx, false);
-		addInterfaceRouting(ctx, true, cmds);
+		applyShortRules(ctx, cmds);
 		iptablesCommands(cmds, out);
 
 		if (G.enableIPv6()) {
 			setIpTablePath(ctx, true);
 			cmds = new ArrayList<String>();
-			addInterfaceRouting(ctx, true, cmds);
+			applyShortRules(ctx, cmds);
 			iptablesCommands(cmds, out);
 		}
 		callback.run(ctx, out);
