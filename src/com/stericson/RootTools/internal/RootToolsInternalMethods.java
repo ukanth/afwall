@@ -266,7 +266,7 @@ public final class RootToolsInternalMethods
      */
     public boolean copyFile(String source, String destination, boolean remountAsRw,
             boolean preserveFileAttributes) {
-        boolean result = true;
+        int exitCode = -1;
 
         try {
             // mount destination as rw before writing to it
@@ -280,10 +280,11 @@ public final class RootToolsInternalMethods
 
                 if (preserveFileAttributes) {
                 	CommandCapture command = new CommandCapture(0, "cp -fp " + source + " " + destination);
-                	Shell.startRootShell().add(command).waitForFinish();
+                	exitCode = Shell.startRootShell().add(command).exitCode();
                 } else {
                 	CommandCapture command = new CommandCapture(0, "cp -f " + source + " " + destination);
                 	Shell.startRootShell().add(command).waitForFinish();
+                	exitCode = Shell.startRootShell().add(command).exitCode();
                 }
             } else {
                 if (checkUtil("busybox") && hasUtil("cp", "busybox")) {
@@ -291,10 +292,10 @@ public final class RootToolsInternalMethods
 
                     if (preserveFileAttributes) {
                     	CommandCapture command = new CommandCapture(0, "busybox cp -fp " + source + " " + destination);
-                    	Shell.startRootShell().add(command).waitForFinish();
+                    	exitCode = Shell.startRootShell().add(command).exitCode();
                     } else {
                     	CommandCapture command = new CommandCapture(0, "busybox cp -f " + source + " " + destination);
-                    	Shell.startRootShell().add(command).waitForFinish();
+                    	exitCode = Shell.startRootShell().add(command).exitCode();
                     }
                 } else { // if cp is not available use cat
                     // if cat is available and has appropriate permissions
@@ -311,15 +312,13 @@ public final class RootToolsInternalMethods
                         CommandCapture command;
                         // copy with cat
                     	command = new CommandCapture(0, "cat " + source + " > " + destination);
-                    	Shell.startRootShell().add(command).waitForFinish();
+                    	exitCode = Shell.startRootShell().add(command).exitCode();
                         
                         if (preserveFileAttributes) {
                             // set premissions of source to destination
                         	command = new CommandCapture(0, "chmod " + filePermission + " " + destination);
-                        	Shell.startRootShell().add(command).waitForFinish();
+                        	exitCode = Shell.startRootShell().add(command).exitCode();
                         }
-                    } else {
-                        result = false;
                     }
                 }
             }
@@ -330,10 +329,9 @@ public final class RootToolsInternalMethods
             }
         } catch (Exception e) {
             e.printStackTrace();
-            result = false;
         }
 
-        return result;
+        return exitCode == 0;
     }
 
 	/**
