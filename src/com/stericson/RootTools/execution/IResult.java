@@ -20,24 +20,27 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.execution;
 
-import java.io.File;
+import java.io.Serializable;
 
-public class Symlink {
-    protected final File file;
-    protected final File symlinkPath;
+/**
+ * Implement this interface and inject the resulting object
+ * when invoking <code>sendShell</code>.
+ * <code>RootTools</code> comes with a reference implementation:
+ * <code>RootTools.Result</code>
+ */
+public interface IResult {
+    public abstract void process(String line) throws Exception;
+    public abstract void processError(String line) throws Exception;
+    public abstract void onFailure(Exception ex);
+    public abstract void onComplete(int diag);
 
-    Symlink(File file, File path) {
-        this.file = file;
-        symlinkPath = path;
-    }
+    public IResult      setProcess(Process process);
+    public Process      getProcess();
+    public IResult      setData(Serializable data);
+    public Serializable getData();
+    public IResult      setError(int error);
+    public int          getError();
 
-    public File getFile() {
-        return this.file;
-    }
-
-    public File getSymlinkPath() {
-        return symlinkPath;
-    }
 }

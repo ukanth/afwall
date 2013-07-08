@@ -20,7 +20,7 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.containers;
 
 public class Permissions {
 	String type;
@@ -89,4 +89,36 @@ public class Permissions {
     {
     	this.other = other;
     }
+
+	public String getUser()
+	{
+		return user;
+	}
+
+	public void setUser(String user)
+	{
+		this.user = user;
+	}
+
+	public String getGroup()
+	{
+		return group;
+	}
+
+	public void setGroup(String group)
+	{
+		this.group = group;
+	}
+
+	public String getOther()
+	{
+		return other;
+	}
+
+	public void setOther(String other)
+	{
+		this.other = other;
+	}
+    
+    
 }

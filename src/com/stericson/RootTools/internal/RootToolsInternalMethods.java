@@ -20,7 +20,7 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,17 +43,33 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.StatFs;
 
+import com.stericson.RootTools.Constants;
+import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.RootTools.Result;
+import com.stericson.RootTools.containers.Mount;
+import com.stericson.RootTools.containers.Permissions;
+import com.stericson.RootTools.containers.Symlink;
+import com.stericson.RootTools.execution.Command;
+import com.stericson.RootTools.execution.CommandCapture;
+import com.stericson.RootTools.execution.Shell;
 
-//no modifier, this is package-private which means that no one but the library can access it.
-class InternalMethods
+public final class RootToolsInternalMethods
 {
 
 	// --------------------
 	// # Internal methods #
 	// --------------------
-
-	protected boolean returnPath() throws TimeoutException
+	boolean instantiated = false;
+	
+	protected RootToolsInternalMethods() {}
+	
+	public static void getInstance() {
+		//this will allow RootTools to be the only one to get an instance of this class.
+		RootTools.setRim(new RootToolsInternalMethods());
+	}
+	
+	
+	public boolean returnPath() throws TimeoutException
 	{
 
 		CommandCapture command = null;
@@ -111,7 +127,7 @@ class InternalMethods
 		}
 	}
 
-	protected ArrayList<Symlink> getSymLinks() throws FileNotFoundException,
+	public ArrayList<Symlink> getSymLinks() throws FileNotFoundException,
 			IOException
 	{
 		LineNumberReader lnr = null;
@@ -139,7 +155,7 @@ class InternalMethods
 		}
 	}
 
-	protected Permissions getPermissions(String line)
+	public Permissions getPermissions(String line)
 	{
 
 		String[] lineArray = line.split(" ");
@@ -186,7 +202,7 @@ class InternalMethods
 		return null;
 	}
 
-	protected int parsePermissions(String permission)
+	public int parsePermissions(String permission)
 	{
 		int tmp;
 		if(permission.charAt(0) == 'r')
@@ -216,7 +232,7 @@ class InternalMethods
 		return tmp;
 	}
 	
-	protected int parseSpecialPermissions(String permission)
+	public int parseSpecialPermissions(String permission)
 	{
 		int tmp = 0;
 		if(permission.charAt(2) == 's')
@@ -248,7 +264,7 @@ class InternalMethods
      *            only permissions are preserved
      * @return true if it was successfully copied
      */
-    public static boolean copyFile(String source, String destination, boolean remountAsRw,
+    public boolean copyFile(String source, String destination, boolean remountAsRw,
             boolean preserveFileAttributes) {
         boolean result = true;
 
@@ -289,7 +305,7 @@ class InternalMethods
                         if (preserveFileAttributes) {
                             // get permissions of source before overwriting
                             Permissions permissions = getFilePermissionsSymlinks(source);
-                            filePermission = permissions.permissions;
+                            filePermission = permissions.getPermissions();
                         }
 
                         CommandCapture command;
@@ -325,13 +341,13 @@ class InternalMethods
 	 * it has either the permissions 755, 775, or 777.
 	 * 
 	 * 
-	 * @param String
+	 * @param util
 	 *            Name of the utility to check.
 	 * 
 	 * @return boolean to indicate whether the binary is installed and has
 	 *         appropriate permissions.
 	 */
-	static boolean checkUtil(String util)
+	public boolean checkUtil(String util)
 	{
 		if(RootTools.findBinary(util))
 		{
@@ -367,6 +383,58 @@ class InternalMethods
 
 	}
 
+    /**
+     * Deletes a file or directory
+     *
+     * @param target
+     *          example: /data/data/org.adaway/files/hosts
+     * @param remountAsRw
+     *          remounts the destination as read/write before writing to it
+     * @return true if it was successfully deleted
+     */
+    public boolean deleteFileOrDirectory(String target, boolean remountAsRw) {
+        boolean result = true;
+
+        try {
+            // mount destination as rw before writing to it
+            if (remountAsRw) {
+                RootTools.remount(target, "RW");
+            }
+
+            if (hasUtil("rm", "toolbox")) {
+                RootTools.log("rm command is available!");
+
+                CommandCapture command = new CommandCapture(0, "rm -r " + target);
+                Shell.startRootShell().add(command).waitForFinish();
+                if (command.exitCode() != 0) {
+                    RootTools.log("target not exist or unable to delete file");
+                    result = false;
+                }
+            } else {
+                if (checkUtil("busybox") && hasUtil("rm", "busybox")) {
+                    RootTools.log("busybox cp command is available!");
+
+                    CommandCapture command = new CommandCapture(0, "busybox rm -rf " + target);
+                    Shell.startRootShell().add(command).waitForFinish();
+                    if (command.exitCode() != 0) {
+                        RootTools.log("target not exist or unable to delete file");
+                        result = false;
+                    }
+                }
+            }
+
+            // mount destination back to ro
+            if (remountAsRw) {
+                RootTools.remount(target, "RO");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
+        }
+
+        return result;
+   	}
+
 	/**
 	 * Use this to check whether or not a file exists on the filesystem.
 	 * 
@@ -377,7 +445,7 @@ class InternalMethods
 	 * @return a boolean that will indicate whether or not the file exists.
 	 * 
 	 */
-	public static boolean exists(final String file)
+	public boolean exists(final String file)
 	{
 		final List<String> result = new ArrayList<String>();
 		
@@ -448,14 +516,14 @@ class InternalMethods
      * "fix", I mean it will try and symlink the binary from either toolbox or Busybox and fix the
      * permissions if the permissions are not correct.
      * 
-     * @param String
+     * @param util
      *            Name of the utility to fix.
-     * @param String
+     * @param utilPath
      *            path to the toolbox that provides ln, rm, and chmod. This can be a blank string, a
      *            path to a binary that will provide these, or you can use
      *            RootTools.getWorkingToolbox()
      */
-    public static void fixUtil(String util, String utilPath) {
+    public void fixUtil(String util, String utilPath) {
         try {
             RootTools.remount("/system", "rw");
 
@@ -481,7 +549,7 @@ class InternalMethods
      * either the permissions 755, 775, or 777. If an applet is not setup correctly it will try and
      * fix it. (This is for Busybox applets or Toolbox applets)
      * 
-     * @param String
+     * @param utils
      *            Name of the utility to check.
      * 
      * @throws Exception
@@ -491,7 +559,7 @@ class InternalMethods
      *         of whether the problem was fixed, just that the method did not encounter any
      *         exceptions.
      */
-    static boolean fixUtils(String[] utils) throws Exception {
+    public boolean fixUtils(String[] utils) throws Exception {
 
         for (String util : utils) {
             if (!checkUtil(util)) {
@@ -524,7 +592,7 @@ class InternalMethods
      *         found in more than one location this will contain all of these locations.
      * 
      */
-    static boolean findBinary(String binaryName) {
+    public boolean findBinary(String binaryName) {
         boolean found = false;
         RootTools.lastFoundBinaryPaths.clear();
 
@@ -595,23 +663,25 @@ class InternalMethods
      *         
      * @return <code>null</code> If we cannot return the list of applets.
      */
-    static List<String> getBusyBoxApplets(String path) throws Exception {
+    public List<String> getBusyBoxApplets(String path) throws Exception {
     	
-    	if (path != null && !path.endsWith("/"))
+    	if (path != null && !path.endsWith("/") && !path.equals("")) {
     		path += "/";
-    	
+        } else if (path == null) {
+            //Don't know what the user wants to do...what am I pshycic?
+            throw new Exception("Path is null, please specifiy a path");
+        }
+
     	final List<String> results = new ArrayList<String>();
     	
-    	Command command = new Command(InternalVariables.BBA, path + "busybox --list")
-    	{
+    	Command command = new Command(Constants.BBA, path + "busybox --list") {
 
 			@Override
-			public void output(int id, String line)
-			{
-				if (id == InternalVariables.BBA)
-				{
-					if (!line.trim().equals("") && !line.trim().contains("not found"))
+			public void output(int id, String line) {
+				if (id == Constants.BBA) {
+					if (!line.trim().equals("") && !line.trim().contains("not found")) {
 						results.add(line);
+                    }
 				}				
 			}    		
     	};
@@ -625,8 +695,8 @@ class InternalMethods
     /**
      * @return BusyBox version is found, "" if not found.
      */
-    static String getBusyBoxVersion(String path) {
-    	
+    public String getBusyBoxVersion(String path) {
+
     	if (!path.equals("") && !path.endsWith("/"))
     	{
     		path += "/";
@@ -635,14 +705,14 @@ class InternalMethods
         RootTools.log("Getting BusyBox Version");
         InternalVariables.busyboxVersion = "";
         try {
-        	Command command = new Command(InternalVariables.BBV, path + "busybox")
+        	Command command = new Command(Constants.BBV, path + "busybox")
         	{
 				@Override
 				public void output(int id, String line)
 				{
-					if (id == InternalVariables.BBV)
+					if (id == Constants.BBV)
 					{
-		                if (line.startsWith("BusyBox")) {
+		                if (line.startsWith("BusyBox") && InternalVariables.busyboxVersion.equals("")) {
 		                    String[] temp = line.split(" ");
 		                    InternalVariables.busyboxVersion = temp[1];
 		                }
@@ -664,7 +734,7 @@ class InternalMethods
 	/**
 	 * @return long Size, converted to kilobytes (from xxx or xxxm or xxxk etc.)
 	 */
-	protected long getConvertedSpace(String spaceStr)
+	public long getConvertedSpace(String spaceStr)
 	{
 		try
 		{
@@ -700,21 +770,21 @@ class InternalMethods
      * This method will return the inode number of a file. This method is dependent on having a version of
      * ls that supports the -i parameter. 
      * 
-     *  @param String path to the file that you wish to return the inode number
+     *  @param file path to the file that you wish to return the inode number
      *  
      *  @return String The inode number for this file or "" if the inode number could not be found.
      */
-    static String getInode(String file)
+    public String getInode(String file)
     {
     	try
     	{
-    		Command command = new Command(InternalVariables.GI, "/data/local/ls -i " + file)
+    		Command command = new Command(Constants.GI, "/data/local/ls -i " + file)
     		{
 
 				@Override
 				public void output(int id, String line)
 				{
-					if (id == InternalVariables.GI)
+					if (id == Constants.GI)
 					{
 			    		if (!line.trim().equals("") && Character.isDigit((char) line.trim().substring(0, 1).toCharArray()[0]))
 			    		{
@@ -739,17 +809,17 @@ class InternalMethods
      * @throws TimeoutException
      *             if this operation times out. (cannot determine if access is given)
      */
-    static boolean isAccessGiven() {
+    public boolean isAccessGiven() {
         try {
             RootTools.log("Checking for Root access");
             InternalVariables.accessGiven = false;
             
-        	Command command = new Command(InternalVariables.IAG, "id")
+        	Command command = new Command(Constants.IAG, "id")
         	{
 				@Override
 				public void output(int id, String line)
 				{
-					if (id == InternalVariables.IAG)
+					if (id == Constants.IAG)
 					{
 						Set<String> ID = new HashSet<String>(Arrays.asList(line.split(" ")));
 		                for (String userid : ID) {
@@ -786,7 +856,7 @@ class InternalMethods
         }
     }
 
-    static boolean isNativeToolsReady(int nativeToolsId, Context context) {
+    public boolean isNativeToolsReady(int nativeToolsId, Context context) {
         RootTools.log("Preparing Native Tools");
         InternalVariables.nativeToolsReady = false;
 
@@ -820,7 +890,7 @@ class InternalMethods
 	 *         permissions couldn't be determined then permissions will be null.
 	 * 
 	 */
-	static Permissions getFilePermissionsSymlinks(String file)
+	public Permissions getFilePermissionsSymlinks(String file)
 	{
 		RootTools.log("Checking permissions for " + file);
 		if(RootTools.exists(file))
@@ -830,7 +900,7 @@ class InternalMethods
 			{
 
 				Command command = new Command(
-						InternalVariables.FPS, "ls -l " + file,
+						Constants.FPS, "ls -l " + file,
 						"busybox ls -l " + file,
 						"/system/bin/failsafe/toolbox ls -l " + file,
 						"toolbox ls -l " + file)
@@ -838,7 +908,7 @@ class InternalMethods
 					@Override
 					public void output(int id, String line)
 					{
-						if(id == InternalVariables.FPS)
+						if(id == Constants.FPS)
 						{
 							String symlink_final = "";
 
@@ -865,7 +935,7 @@ class InternalMethods
 
 							try
 							{
-								InternalVariables.permissions = new InternalMethods().getPermissions(line);
+								InternalVariables.permissions = getPermissions(line);
 								if(InternalVariables.permissions != null)
 								{
 									InternalVariables.permissions.setSymlink(symlink_final);
@@ -905,7 +975,7 @@ class InternalMethods
      * @throws Exception
      *             if we cannot return the mount points.
      */
-	protected static ArrayList<Mount> getMounts() throws Exception
+	public ArrayList<Mount> getMounts() throws Exception
 	{
 		LineNumberReader lnr = null;
 		lnr = new LineNumberReader(new FileReader("/proc/mounts"));
@@ -935,13 +1005,13 @@ class InternalMethods
     /**
      * This will tell you how the specified mount is mounted. rw, ro, etc...
      * <p/>
-     * @param The mount you want to check
+     * @param path mount you want to check
      * 
      * @return <code>String</code> What the mount is mounted as.
      * @throws Exception
      *             if we cannot determine how the mount is mounted.
      */
-    static String getMountedAs(String path) throws Exception {
+    public String getMountedAs(String path) throws Exception {
         InternalVariables.mounts = getMounts();
         if (InternalVariables.mounts != null) {
         	for (Mount mount : InternalVariables.mounts)
@@ -968,11 +1038,11 @@ class InternalMethods
      * @throws Exception
      *             if we cannot return the $PATH variable
      */
-    static Set<String> getPath() throws Exception {
+    public Set<String> getPath() throws Exception {
         if (InternalVariables.path != null) {
             return InternalVariables.path;
         } else {
-            if (new InternalMethods().returnPath()) {
+            if (returnPath()) {
                 return InternalVariables.path;
             } else {
                 throw new Exception();
@@ -989,20 +1059,20 @@ class InternalMethods
      *         then the value is -1
      * @throws TimeoutException
      */
-    static long getSpace(String path) {
+    public long getSpace(String path) {
         InternalVariables.getSpaceFor = path;
         boolean found = false;
         RootTools.log("Looking for Space");
         try {
-            Command command = new Command(InternalVariables.GS, "df " + path)
+            final Command command = new Command(Constants.GS, "df " + path)
             {
 
 				@Override
 				public void output(int id, String line)
 				{
-					if (id == InternalVariables.GS)
+					if (id == Constants.GS)
 					{
-						if (line.contains(command[0].substring(2, command[0].length()).trim())) {
+						if (line.contains(InternalVariables.getSpaceFor.trim())) {
 		                    InternalVariables.space = line.split(" ");
 		                }
 					}					
@@ -1021,7 +1091,7 @@ class InternalMethods
                 RootTools.log(spaceSearch);
 
                 if (found) {
-                    return new InternalMethods().getConvertedSpace(spaceSearch);
+                    return getConvertedSpace(spaceSearch);
                 } else if (spaceSearch.equals("used,")) {
                     found = true;
                 }
@@ -1042,7 +1112,7 @@ class InternalMethods
                 if (spaceSearch.length() > 0) {
                     RootTools.log(spaceSearch + ("Valid"));
                     if (count == targetCount) {
-                        return new InternalMethods().getConvertedSpace(spaceSearch);
+                        return getConvertedSpace(spaceSearch);
                     }
                     count++;
                 }
@@ -1056,25 +1126,25 @@ class InternalMethods
      * This will return a String that represent the symlink for a specified file.
      * <p/>
      * 
-     * @param The
+     * @param file
      *            file to get the Symlink for. (must have absolute path)
      * 
      * @return <code>String</code> a String that represent the symlink for a specified file or an
      *         empty string if no symlink exists.
      */
-    static String getSymlink(String file) {
+    public String getSymlink(String file) {
         RootTools.log("Looking for Symlink for " + file);
 
         try {
         	final List<String> results = new ArrayList<String>();
 
-        	Command command = new Command(InternalVariables.GSYM, "ls -l " + file)
+        	Command command = new Command(Constants.GSYM, "ls -l " + file)
         	{
 
 				@Override
 				public void output(int id, String line)
 				{
-					if (id == InternalVariables.GSYM)
+					if (id == Constants.GSYM)
 					{
 						if (!line.trim().equals(""))
 						{
@@ -1129,14 +1199,14 @@ class InternalMethods
      * <p/>
      * These will provide you with any Symlinks in the given path.
      * 
-     * @param The
+     * @param path
      *            path to search for Symlinks.
      * 
      * @return <code>ArrayList<Symlink></code> an ArrayList of the class Symlink.
      * @throws Exception
      *             if we cannot return the Symlinks.
      */
-    static ArrayList<Symlink> getSymlinks(String path) throws Exception {
+    public ArrayList<Symlink> getSymlinks(String path) throws Exception {
 
         // this command needs find
         if (!checkUtil("find")) {
@@ -1147,7 +1217,7 @@ class InternalMethods
         Shell.startRootShell().add(command);
         command.waitForFinish();
         
-        InternalVariables.symlinks = new InternalMethods().getSymLinks();
+        InternalVariables.symlinks = getSymLinks();
         if (InternalVariables.symlinks != null) {
             return InternalVariables.symlinks;
         } else {
@@ -1162,7 +1232,7 @@ class InternalMethods
      * 
      * @return String that indicates the available toolbox to use for accessing applets.
      */
-    static String getWorkingToolbox() {
+    public String getWorkingToolbox() {
         if (RootTools.checkUtil("busybox")) {
             return "busybox";
         } else if (RootTools.checkUtil("toolbox")) {
@@ -1181,7 +1251,7 @@ class InternalMethods
      *         space on SDCard. Will also return <code>false</code>, if the SDCard is not mounted as
      *         read/write
      */
-    public static boolean hasEnoughSpaceOnSdCard(long updateSize) {
+    public boolean hasEnoughSpaceOnSdCard(long updateSize) {
         RootTools.log("Checking SDcard size and that it is mounted as RW");
         String status = Environment.getExternalStorageState();
         if (!status.equals(Environment.MEDIA_MOUNTED)) {
@@ -1202,7 +1272,7 @@ class InternalMethods
      *            Should contain "toolbox" or "busybox"
      * @return true if it contains this util
      */
-    public static boolean hasUtil(final String util, final String box) {
+    public boolean hasUtil(final String util, final String box) {
     	
     	InternalVariables.found = false;
     	
@@ -1263,7 +1333,7 @@ class InternalMethods
      * @return a <code>boolean</code> which indicates whether or not we were able to create the new
      *         file.
      */
-    static boolean installBinary(Context context, int sourceId, String destName, String mode) {
+    public boolean installBinary(Context context, int sourceId, String destName, String mode) {
         Installer installer;
 
         try {
@@ -1282,14 +1352,14 @@ class InternalMethods
      * This will let you know if an applet is available from BusyBox
      * <p/>
      * 
-     * @param <code>String</code> The applet to check for.
+     * @param applet The applet to check for.
      * 
      * @return <code>true</code> if applet is available, false otherwise.
      */
-    public static boolean isAppletAvailable(String Applet, String binaryPath) {
+    public boolean isAppletAvailable(String applet, String binaryPath) {
         try {
-            for (String applet : getBusyBoxApplets(binaryPath)) {
-                if (applet.equals(Applet)) {
+            for (String aplet : getBusyBoxApplets(binaryPath)) {
+                if (aplet.equals(applet)) {
                     return true;
                 }
             }
@@ -1309,7 +1379,7 @@ class InternalMethods
      * @throws TimeoutException
      *             (Could not determine if the process is running)
      */
-    static boolean isProcessRunning(final String processName) {
+    public boolean isProcessRunning(final String processName) {
         RootTools.log("Checks if process is running: " + processName);
 
         boolean processRunning = false;
@@ -1358,7 +1428,7 @@ class InternalMethods
 	 *            name of process to kill
 	 * @return <code>true</code> if process was found and killed successfully
 	 */
-	static boolean killProcess(final String processName)
+	public boolean killProcess(final String processName)
 	{
 		RootTools.log("Killing process " + processName);
 
@@ -1458,7 +1528,7 @@ class InternalMethods
      * @param activity
      *            pass in your Activity
      */
-    static void offerBusyBox(Activity activity) {
+    public void offerBusyBox(Activity activity) {
         RootTools.log("Launching Market for BusyBox");
         Intent i = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("market://details?id=stericson.busybox"));
@@ -1475,7 +1545,7 @@ class InternalMethods
      *            pass in the request code
      * @return intent fired
      */
-    static Intent offerBusyBox(Activity activity, int requestCode) {
+    public Intent offerBusyBox(Activity activity, int requestCode) {
         RootTools.log("Launching Market for BusyBox");
         Intent i = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("market://details?id=stericson.busybox"));
@@ -1489,7 +1559,7 @@ class InternalMethods
      * @param activity
      *            pass in your Activity
      */
-    static void offerSuperUser(Activity activity) {
+    public void offerSuperUser(Activity activity) {
         RootTools.log("Launching Market for SuperUser");
         Intent i = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("market://details?id=com.noshufou.android.su"));
@@ -1506,7 +1576,7 @@ class InternalMethods
      *            pass in the request code
      * @return intent fired
      */
-    static Intent offerSuperUser(Activity activity, int requestCode) {
+    public Intent offerSuperUser(Activity activity, int requestCode) {
         RootTools.log("Launching Market for SuperUser");
         Intent i = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("market://details?id=com.noshufou.android.su"));

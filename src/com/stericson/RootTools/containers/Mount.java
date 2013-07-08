@@ -20,27 +20,45 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.containers;
 
-import java.io.Serializable;
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-/**
- * Implement this interface and inject the resulting object
- * when invoking <code>sendShell</code>.
- * <code>RootTools</code> comes with a reference implementation:
- * <code>RootTools.Result</code>
- */
-public interface IResult {
-    public abstract void process(String line) throws Exception;
-    public abstract void processError(String line) throws Exception;
-    public abstract void onFailure(Exception ex);
-    public abstract void onComplete(int diag);
+public class Mount {
+    final File mDevice;
+    final File mMountPoint;
+    final String mType;
+    final Set<String> mFlags;
 
-    public IResult      setProcess(Process process);
-    public Process      getProcess();
-    public IResult      setData(Serializable data);
-    public Serializable getData();
-    public IResult      setError(int error);
-    public int          getError();
+    public Mount(File device, File path, String type, String flagsStr) {
+        mDevice = device;
+        mMountPoint = path;
+        mType = type;
+        mFlags = new LinkedHashSet<String>(Arrays.asList(flagsStr.split(",")));
+    }
 
+    public File getDevice() {
+        return mDevice;
+    }
+
+    public File getMountPoint() {
+        return mMountPoint;
+    }
+
+    public String getType() {
+        return mType;
+    }
+
+    public Set<String> getFlags() {
+        return mFlags;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s on %s type %s %s", mDevice, mMountPoint, mType, mFlags);
+    }
 }
