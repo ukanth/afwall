@@ -138,7 +138,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" >
+        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
@@ -151,7 +151,7 @@
         </receiver>
         
         
-         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" >
+         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" android:label="@string/widget_label_settings">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
