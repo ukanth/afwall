@@ -201,7 +201,7 @@ public final class RootTools {
      *          remounts the destination as read/write before writing to it
      * @return true if it was successfully deleted
      */
-    public boolean deleteFileOrDirectory(String target, boolean remountAsRw) {
+    public static boolean deleteFileOrDirectory(String target, boolean remountAsRw) {
         return getInternals().deleteFileOrDirectory(target, remountAsRw);
     }
 
