@@ -1117,7 +1117,7 @@ public final class Api {
 			specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
 			specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
 			specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
-			specialData.add(new PackageInfoData("adb", "ADB(Android Debug Bridge)", "dev.afwall.special.adb"));
+			specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
 			
 			if(specialApps == null) {
 				specialApps = new HashMap<String, Integer>(); 
