@@ -107,9 +107,10 @@
     <!-- Advanced Settings 
     
         init.d -->
-    <string name="success_initd">Successfully copied script on startup</string>
-    <string name="remove_initd">Please delete afwallstart from /system/etc/init.d folder before uninstalling AFWall+</string>
-    <string name="unable_initd">Unable to find init.d directory. Please verify that your ROM/Kernel supports init.d</string>
+    <string name="success_initd">Successfully installed startup script</string>
+    <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d</string>
+    <string name="remove_initd">Successfully removed startup script</string>
+    <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
 
 
     <!-- Widget -->
@@ -234,7 +235,7 @@
     <!-- Startup -->
     <string name="startup_service">Applying Rules. Please wait!</string>
     <string name="fixleakTitle">Fix Startup Data Leak</string>
-    <string name="fixleakSummary">This will fix data leak before AFWall+ starts\n Requires Init.d Support and S-OFF(HTC)!</string>
+    <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
     <string name="enableInboundTitle">Enable inbound connections</string>
