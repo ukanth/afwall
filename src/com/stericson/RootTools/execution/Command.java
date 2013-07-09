@@ -26,17 +26,19 @@
  *Stephen
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.execution;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
+import com.stericson.RootTools.RootTools;
 
 public abstract class Command {
-	final String command[];
+	final String[] command;
 	boolean finished = false;
 	int exitCode;
 	int id = 0;
-	int timeout = InternalVariables.timeout;
+	int timeout = 5000;
 
 	public Command(int id, String... command) {
 		this.command = command;
@@ -59,8 +61,8 @@ public abstract class Command {
 		return sb.toString();
 	}
 
-	public void writeCommand(OutputStream out) throws IOException {
-		out.write(getCommand().getBytes());
+	public void writeCommand(OutputStreamWriter out) throws IOException {
+		out.write(getCommand());
 	}
 
 	public abstract void output(int id, String line);

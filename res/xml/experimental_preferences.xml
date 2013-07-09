@@ -12,5 +12,9 @@
             android:key="alternateStart"
             android:title="@string/alternateStartTitle"
             android:summary="@string/alternateStartSummary" />
+         <CheckBoxPreference
+            android:key="enableInbound"
+            android:title="@string/enableInboundTitle"
+            android:summary="@string/enableInboundSummary" />
         
 </PreferenceScreen>

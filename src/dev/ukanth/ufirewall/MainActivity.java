@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.RejectedExecutionException;
 
 import android.app.Activity;
@@ -49,7 +48,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -82,6 +80,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  
 /**
@@ -111,9 +110,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	public void setCurrentPassword(String currentPassword) {
 		this.currentPassword = currentPassword;
 	}
-	
-	public final static String IPTABLE_RULES = "dev.ukanth.ufirewall.text.RULES";
-	public final static String VIEW_TITLE = "dev.ukanth.ufirewall.text.TITLE";
 	
 	private final int _ReqCreatePattern = 0;
 	private final int _ReqSignIn = 1;
@@ -187,6 +183,21 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		    Api.assertBinaries(this, true);
 	}
 
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		// to improve responsiveness, try to open a root shell in the background on launch
+		// (if this fails we'll try again later)
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("true");
+
+		new RootCommand()
+			.setFailureToast(R.string.error_su)
+			.setReopenShell(true)
+			.run(getApplicationContext(), cmds);
+	}
+
 	private void addColumns(int id) {
 		ImageView view = (ImageView)this.findViewById(id);
 		view.setVisibility(View.VISIBLE);
@@ -204,8 +215,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
 		
-		/*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		setupMultiProfile(prefs);*/
 		passCheck();
 		
 	}
@@ -223,13 +232,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 			
 			
-		    //mLocations = getResources().getStringArray(R.array.profiles);	
 		    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
 		    	    this,
 		    	    R.layout.sherlock_spinner_item,
 		    	    mLocations);
-			/*ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(
-					context, R.array.profiles, R.layout.sherlock_spinner_item);*/
 		    adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 	
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -308,9 +314,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				: R.string.mode_blacklist);
 		labelmode.setText(res.getString(R.string.mode_header,
 				res.getString(resid)));
-	/*	resid = (Api.isEnabled(this) ? R.string.title_enabled
-				: R.string.title_disabled);
-		setTitle(res.getString(resid, R.string.app_version));*/
 	}
 
 	/**
@@ -704,22 +707,28 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	    return true;
 	}
 	
+	public void menuSetApplyOrSave(Menu menu, boolean isEnabled) {
+		if (menu == null) {
+			return;
+		}
+
+		MenuItem onoff = menu.findItem(R.id.menu_toggle);
+		MenuItem apply = menu.findItem(R.id.menu_apply);
+
+		if (isEnabled) {
+			apply.setTitle(R.string.applyrules);
+			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
+			getSupportActionBar().setIcon(R.drawable.widget_on);
+		} else {
+			apply.setTitle(R.string.saverules);
+			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
+			getSupportActionBar().setIcon(R.drawable.widget_off);
+		}
+	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		final MenuItem item_onoff = menu.findItem(R.id.menu_toggle);
-		final MenuItem item_apply = menu.findItem(R.id.menu_apply);
-		if(item_onoff != null && item_apply != null){
-			if (Api.isEnabled(this)) {
-				item_onoff.setTitle(R.string.fw_enabled);
-				item_onoff.setIcon(R.drawable.widget_on);
-				item_apply.setTitle(R.string.applyrules);
-			} else {
-				item_onoff.setTitle(R.string.fw_disabled);
-				item_onoff.setIcon(R.drawable.widget_off);
-				item_apply.setTitle(R.string.saverules);
-			}
-		}
+		menuSetApplyOrSave(menu, Api.isEnabled(this));
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -1006,12 +1015,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			if(resultCode == RESULT_OK){
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 				Intent intent = getIntent();
-				/*if(data != null && data.getBooleanExtra("reset",false)){
-					final Editor edit = prefs.edit();
-					edit.putString(Api.PREF_VPN_PKG, "");
-					edit.commit();
-					Api.purgeVPNRules(getApplicationContext(), false);
-				}*/
 			    finish();
 			    String lang = prefs.getString("locale","en");
 				Api.updateLanguage(getApplicationContext(), lang);
@@ -1084,148 +1087,87 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	/**
-	 * Show iptable rules on a dialog
+	 * Show iptables rules on a dialog
 	 */
 	private void showRules() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(this,
-				res.getString(R.string.working),
-				res.getString(R.string.please_wait), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				if (!Api.hasRootAccess(MainActivity.this,true)) return;
-				String rules = Api.showIptablesRules(MainActivity.this);
-				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,rules,getString(R.string.showrules_title)));
-			}
-		};        
-		handler.sendEmptyMessageDelayed(0, 100);
+		startActivity(new Intent(this, RulesActivity.class));
 	}
 	
-	protected Intent activityIntent(MainActivity mainActivity, Class<Rules> class1,String message,String titleText) {
-        Intent result = new Intent();
-        result.setClass(mainActivity, class1);
-        result.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        result.putExtra(IPTABLE_RULES, message);
-        result.putExtra(VIEW_TITLE, titleText);
-        return result;
-    }
-
 	/**
 	 * Show logs on a dialog
 	 */
 	private void showLog() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(this,
-				res.getString(R.string.working),
-				res.getString(R.string.please_wait), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				String logText = Api.showLog(MainActivity.this);
-				getBaseContext().startActivity(activityIntent(MainActivity.this, Rules.class,logText,getString(R.string.showlog_title)));
-			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
+		startActivity(new Intent(this, LogActivity.class));
 	}
 
 	/**
-	 * Apply or save iptable rules, showing a visual indication
+	 * Apply or save iptables rules, showing a visual indication
 	 */
 	private void applyOrSaveRules() {
 		final Resources res = getResources();
 		final boolean enabled = Api.isEnabled(this);
+		final Context ctx = getApplicationContext();
+
+		Api.saveRules(ctx);
+		if (!enabled) {
+			Api.setEnabled(ctx, false, true);
+			Api.displayToasts(ctx, R.string.rules_saved, Toast.LENGTH_SHORT);
+			MainActivity.this.dirty = false;
+			return;
+		}
+
 		final ProgressDialog progress = ProgressDialog.show(this, res
 				.getString(R.string.working), res
 				.getString(enabled ? R.string.applying_rules
 						: R.string.saving_rules), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
+
+		Api.applySavedIptablesRules(ctx, true, new RootCommand()
+					.setSuccessToast(R.string.rules_applied)
+					.setFailureToast(R.string.error_apply)
+					.setReopenShell(true)
+					.setCallback(new RootCommand.Callback() {
+
+			public void cbFunc(RootCommand state) {
 				try {
 					progress.dismiss();
 				} catch (Exception ex) {
 				}
-				if (enabled) {
-					//Log.d("AFWall+", "Applying rules.");
-					Api.saveRules(getApplicationContext());
-					if(Api.hasRootAccess(MainActivity.this,true) &&
-						BackgroundIntentService.applyRules(getApplicationContext(), true)) {
-						Api.displayToasts(MainActivity.this,
-								R.string.rules_applied, Toast.LENGTH_SHORT);
-						getSupportActionBar().setIcon(R.drawable.widget_on);
-						if(mainMenu !=null) {
-							final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-							item_onoff.setIcon(R.drawable.widget_on);
-							item_onoff.setTitle(R.string.fw_enabled);
-							
-							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-							item_apply.setTitle(R.string.applyrules);
-						}	
-					}
-					 else {
-						//Log.d("AFWall+", "Failed - Disabling firewall.");
-						Api.displayToasts(MainActivity.this,
-								R.string.error_apply, Toast.LENGTH_SHORT);
-						Api.setEnabled(MainActivity.this, false, true);
-						getSupportActionBar().setIcon(R.drawable.widget_off);
-						if(mainMenu !=null) {
-							final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-							item_onoff.setIcon(R.drawable.widget_off);
-							item_onoff.setTitle(R.string.fw_disabled);
-							final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-							item_apply.setTitle(R.string.saverules);
-						}
-					}
+
+				boolean result = enabled;
+
+				if (state.exitCode == 0) {
+					MainActivity.this.dirty = false;
 				} else {
-					//Log.d("AFWall+", "Saving rules.");
-					Api.saveRules(MainActivity.this);
-					Api.setEnabled(getApplicationContext(), false, true);
-					Api.displayToasts(MainActivity.this, R.string.rules_saved,
-							Toast.LENGTH_SHORT);
+					result = false;
 				}
-				MainActivity.this.dirty = false;
+				menuSetApplyOrSave(MainActivity.this.mainMenu, result);
+				Api.setEnabled(ctx, result, true);
 			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
+		}));
 	}
 
 	/**
-	 * Purge iptable rules, showing a visual indication
+	 * Purge iptables rules, showing a visual indication
 	 */
 	private void purgeRules() {
-		final Resources res = getResources();
-		final ProgressDialog progress = ProgressDialog.show(this,
-				res.getString(R.string.working),
-				res.getString(R.string.deleting_rules), true);
-		final Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
-				if (!Api.hasRootAccess(MainActivity.this,true)) return;
-				if (Api.purgeIptables(MainActivity.this, true)) {
-					Api.setEnabled(getApplicationContext(), false, true);
-					Api.displayToasts(MainActivity.this, R.string.rules_deleted,
-							Toast.LENGTH_SHORT);
-					getSupportActionBar().setIcon(R.drawable.widget_off);
-					if(mainMenu !=null) {
-						final MenuItem item_onoff = mainMenu.findItem(R.id.menu_toggle);
-						item_onoff.setIcon(R.drawable.widget_off);
-						item_onoff.setTitle(R.string.fw_disabled);
-						final MenuItem item_apply = mainMenu.findItem(R.id.menu_apply);
-						item_apply.setTitle(R.string.saverules);
-					}
-				}
+		final Context ctx = getApplicationContext();
+
+		Api.purgeIptables(ctx, true, new RootCommand()
+				.setSuccessToast(R.string.rules_deleted)
+				.setFailureToast(R.string.error_purge)
+				.setReopenShell(true)
+				.setCallback(new RootCommand.Callback() {
+
+			public void cbFunc(RootCommand state) {
+				// error exit -> assume the rules are still enabled
+				// we shouldn't wind up in this situation, but if we do, the user's
+				// best bet is to click Apply then toggle Enabled again
+				boolean nowEnabled = state.exitCode != 0;
+
+				Api.setEnabled(ctx, nowEnabled, true);
+				menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
 			}
-		};
-		handler.sendEmptyMessageDelayed(0, 100);
+		}));
 	}
 
 	/**
@@ -1408,12 +1350,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 		
-		
-		/*if (keyCode == KeyEvent.KEYCODE_SEARCH && event.getRepeatCount() == 0) {
-			mainMenu.getItem(R.id.searchApps).expandActionView();
-            return true;
-	     }*/
-		
 		// Handle the back button when dirty
 		if (this.dirty && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -1517,13 +1453,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			new GetAppList().execute();
 			mSelected.setText("  |  " + mLocations[itemPosition]);
 			refreshHeader();
-			//applyOrSaveRules();
-			/*if (Api.isEnabled(getApplicationContext())) {
-				Api.applyIptablesRules(getApplicationContext(), true);
-			} else {
-				Api.saveRules(getApplicationContext());
-			}*/
-			
 		}
 		return true;
 	}

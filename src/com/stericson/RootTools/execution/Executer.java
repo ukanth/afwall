@@ -20,7 +20,7 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.execution;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -30,9 +30,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.RootTools.Result;
+import com.stericson.RootTools.exceptions.RootToolsException;
 
-class Executer {
+public class Executer {
 
 	protected Process process = null;
 	protected Result result = null;
@@ -43,6 +45,8 @@ class Executer {
 	
 	/**
 	 * Sends several shell command as su (attempts to)
+	 * 
+	 * @deprecated
 	 * 
 	 * @param commands
 	 *            array of commands to send to the shell
@@ -62,9 +66,10 @@ class Executer {
 	 * @throws InterruptedException
 	 * 
 	 * @throws IOException
-	 * @throws TimeoutException 
+	 * @throws TimeoutException
+	 * 
 	 */
-	synchronized List<String> sendShell(String[] commands, int sleepTime,
+	public synchronized List<String> sendShell(String[] commands, int sleepTime,
 			Result result, boolean useRoot, int timeout) throws IOException,
 			RootToolsException, TimeoutException {
 
@@ -99,7 +104,7 @@ class Executer {
 
 	}
 
-    protected static class Worker extends Thread 
+    private static class Worker extends Thread 
     {
     	private String[] commands;
     	private int sleepTime;
@@ -266,7 +271,7 @@ class Executer {
 		}
     }
     
-	public void closeShell()
+	private void closeShell()
 	{
 		if (this.process != null)
     	{
