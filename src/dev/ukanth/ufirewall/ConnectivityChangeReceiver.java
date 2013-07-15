@@ -30,6 +30,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, Intent intent) {
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
-		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+
+		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
+		if(G.activeRules()){
+			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+		}
 	}
 }

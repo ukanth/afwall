@@ -100,6 +100,10 @@ public class G extends android.app.Application {
 	public static int sysColor() { return gPrefs.getInt("sysColor", Color.RED); }
 	public static int sysColor(int val) { gPrefs.edit().putInt("sysColor", val).commit(); return val; }
 
+	
+	public static boolean activeRules() { return gPrefs.getBoolean("activeRules", true); }
+	
+	
 	public void onCreate() {
 		super.onCreate();
 		ctx = this.getApplicationContext();

@@ -55,8 +55,10 @@ public final class InterfaceTracker {
 	public static final String TAG = "AFWall";
 
 	public static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "ra+", "bnep+" };
-	public static final String ITFS_3G[] = { "rmnet+", "pdp+", "uwbr+","wimax+", "vsnet+", "ccmni+",
-				"qmi+", "svnet0+", "wwan+", "cdma_rmnet+", "usb+" };
+	public static final String ITFS_3G[] = { "rmnet+", "pdp+", "uwbr+","wimax+", "vsnet+", 
+											 "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", 
+											 "wwan+", "cdma_rmnet+", "usb+", "rment_usb+" };
+	
 	public static final String ITFS_VPN[] = { "tun+", "ppp+", "tap+" };
 
 	public static final String BOOT_COMPLETED = "BOOT_COMPLETED";
@@ -266,7 +268,7 @@ public final class InterfaceTracker {
 		// update Api.PREFS_NAME so we pick up the right profile
 		// REVISIT: this can be removed once we're confident that G is in sync with profile changes
 		G.reloadPrefs();
-
+		
 		boolean ret = Api.fastApply(ctx, new RootCommand()
 					.setFailureToast(R.string.error_apply)
 					.setCallback(new RootCommand.Callback() {

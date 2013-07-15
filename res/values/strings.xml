@@ -257,4 +257,25 @@
     <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
     <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
     <string name="languages">Languages</string>
+    
+    
+     <!-- 1.2.6 -->
+    <string name="active_rules">Active Rules</string>
+    <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+    
+    <string name="profile_management">Profile Management</string>
+    <string name="profile_add">Add Profile</string>
+    <string name="profile_remove">Remove Profile</string>
+    <string name="profile_switch">Switch Profile</string>
+    <string name="profile_modify">Modify Profile</string>
+    
+    <string name="email_to_dev">Send E-Mail to Developer</string>
+    <string name="Donate">Donate</string>
+    
+    <string name="rules_management">Rules Management</string>
+    
+    <string name="sort_app">Sort By</string>
+    <string name="sort_application">Application</string>
+    <string name="sort_uid">UID</string>
+    
 </resources>

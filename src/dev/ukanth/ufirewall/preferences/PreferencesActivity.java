@@ -27,6 +27,7 @@ import java.io.File;
 
 import net.saik0.android.unifiedpreference.UnifiedPreferenceFragment;
 import net.saik0.android.unifiedpreference.UnifiedSherlockPreferenceActivity;
+import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -130,6 +131,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 	}
 
 	public static class SecPreferenceFragment extends UnifiedPreferenceFragment {
+		@SuppressLint("NewApi")
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
@@ -150,6 +152,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 }
 
 	public static class ExpPreferenceFragment extends UnifiedPreferenceFragment {
+		@SuppressLint("NewApi")
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
@@ -202,6 +205,13 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
+		
+		if(key.equals("activeRules")){
+			if(!G.activeRules()){
+				G.enableRoam(false);
+				G.enableLAN(false);
+			}
+		}
 		
 		if(key.equals("enableIPv6")){
 			File defaultIP6TablesPath = new File("/system/bin/ip6tables");

@@ -97,6 +97,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
     private String[] mLocations;
 	private Menu mainMenu;
 	
+	
 	/** progress dialog instance */
 	private ListView listview = null;
 	/** indicates if the view has been modified and not yet saved */
@@ -142,8 +143,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			//this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			
-			
+
 			boolean disableIcons = prefs.getBoolean("disableIcons", false);
 			boolean enableVPN = prefs.getBoolean("enableVPN", false);
 			boolean enableRoam = prefs.getBoolean("enableRoam", true);
