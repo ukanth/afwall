@@ -33,26 +33,36 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Locale;
 
+import dev.ukanth.ufirewall.RootShell.RootCommand;
+
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public final class InterfaceTracker {
 
 	public static final String TAG = "AFWall";
 
-	public static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "eth0+", "ra+", "wlan0+" };
-	public static final String ITFS_3G[] = {
-				"rmnet+","rmnet0+","rmnet1+", "rmnet2+", "pdp+","rmnet_sdio+","rmnet_sdio0+", "rmnet_sdio1+",
-				"uwbr+","wimax+", "vsnet+", "ccmni+","ccmni0+",
-				"qmi+", "svnet0+", "wwan+", "wwan0+","cdma_rmnet+",
-				"usb+", "usb0+", "pdp0+"};
-	public static final String ITFS_VPN[] = { "tun+", "tun0+", "ppp+", "ppp0+", "tap+" };
+	public static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "ra+", "bnep+" };
+	public static final String ITFS_3G[] = { "rmnet+", "pdp+", "uwbr+","wimax+", "vsnet+", "ccmni+",
+				"qmi+", "svnet0+", "wwan+", "cdma_rmnet+", "usb+" };
+	public static final String ITFS_VPN[] = { "tun+", "ppp+", "tap+" };
+
+	public static final String BOOT_COMPLETED = "BOOT_COMPLETED";
+	public static final String CONNECTIVITY_CHANGE = "CONNECTIVITY_CHANGE";
+
+	public static final int ERROR_NOTIFICATION_ID = 1;
 
 	private static InterfaceDetails currentCfg = null;
 
@@ -219,5 +229,85 @@ public final class InterfaceTracker {
 			currentCfg = getInterfaceDetails(context);
 		}
 		return currentCfg;
+	}
+
+	private static void errorNotification(Context ctx) {
+		NotificationManager mNotificationManager =
+				(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Artificial stack so that navigating backward leads back to the Home screen
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx)
+				.addParentStack(MainActivity.class)
+				.addNextIntent(new Intent(ctx, MainActivity.class));
+
+		Notification notification = new NotificationCompat.Builder(ctx)
+			.setContentTitle(ctx.getString(R.string.error_notification_title))
+			.setContentText(ctx.getString(R.string.error_notification_text))
+			.setTicker(ctx.getString(R.string.error_notification_ticker))
+			.setSmallIcon(R.drawable.widget_on)
+			.setAutoCancel(true)
+			.setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+			.build();
+
+		mNotificationManager.notify(ERROR_NOTIFICATION_ID, notification);
+	}
+
+	public static void applyRulesOnChange(Context context, final String reason) {
+		final Context ctx = context.getApplicationContext();
+
+		if (!checkForNewCfg(ctx)) {
+			Log.d(TAG, reason + ": interface state has not changed, ignoring");
+			return;
+		} else if (!Api.isEnabled(ctx)) {
+			Log.d(TAG, reason + ": firewall is disabled, ignoring");
+			return;
+		}
+
+		// update Api.PREFS_NAME so we pick up the right profile
+		// REVISIT: this can be removed once we're confident that G is in sync with profile changes
+		G.reloadPrefs();
+
+		boolean ret = Api.fastApply(ctx, new RootCommand()
+					.setFailureToast(R.string.error_apply)
+					.setCallback(new RootCommand.Callback() {
+						@Override
+						public void cbFunc(RootCommand state) {
+							if (state.exitCode == 0) {
+								Log.i(TAG, reason + ": applied rules");
+							} else {
+								// error details are already in logcat
+								Api.setEnabled(ctx,  false,  false);
+								errorNotification(ctx);
+							}
+						}
+					}));
+		if (!ret) {
+			Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
+			errorNotification(ctx);
+		}
+	}
+
+	public static String matchName(String[] patterns, String name) {
+		for (String p : patterns) {
+			int minLen = Math.min(p.length(), name.length());
+
+			for (int i = 0; ; i++) {
+				if (i == minLen) {
+					if (name.length() == p.length()) {
+						// exact match
+						return p;
+					}
+					break;
+				}
+				if (name.charAt(i) != p.charAt(i)) {
+					if (p.charAt(i) == '+') {
+						// wildcard match
+						return p;
+					}
+					break;
+				}
+			}
+		}
+		return null;
 	}
 }

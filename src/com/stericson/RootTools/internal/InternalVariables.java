@@ -20,32 +20,23 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-//no modifier, this is package-private which means that no one but the library can access it.
-//If we need public variables just create the class for it.
-class InternalVariables {
+import com.stericson.RootTools.containers.Mount;
+import com.stericson.RootTools.containers.Permissions;
+import com.stericson.RootTools.containers.Symlink;
+
+public class InternalVariables {
 
     // ----------------------
     // # Internal Variables #
     // ----------------------
 
-	//Constants
-    // Version numbers should be maintained here.
-    protected static String TAG = "RootTools v2.4";
-    protected static int timeout = 5000;
-    protected static int FPS = 1;
-    protected static int IAG = 2;
-    protected static int BBA = 3;
-    protected static int BBV = 4;
-    protected static int GI = 5;
-    protected static int GS = 6;
-    protected static int GSYM = 7;
     
     protected static boolean accessGiven = false;
     protected static boolean nativeToolsReady = false;

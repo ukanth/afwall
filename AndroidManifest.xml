@@ -75,7 +75,8 @@
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock" >
+        android:theme="@style/Theme.Sherlock"
+        android:name="dev.ukanth.ufirewall.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale"
@@ -108,13 +109,8 @@
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.Sherlock" >
         </activity>
-        <activity
-            android:name="dev.ukanth.ufirewall.Rules"
-            android:label="@string/showrules_title" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+        <activity android:name="dev.ukanth.ufirewall.RulesActivity"></activity>
+        <activity android:name="dev.ukanth.ufirewall.LogActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity" android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -142,7 +138,7 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" >
+        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
@@ -155,7 +151,7 @@
         </receiver>
         
         
-         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" >
+         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" android:label="@string/widget_label_settings">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
@@ -171,7 +167,6 @@
         
 
         <service android:name="dev.ukanth.ufirewall.StartupService" ></service>
-        <service android:name="dev.ukanth.ufirewall.BackgroundIntentService"></service>
 
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"

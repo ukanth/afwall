@@ -26,7 +26,9 @@
  *Stephen
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.execution;
+
+import com.stericson.RootTools.RootTools;
 
 public class CommandCapture extends Command {
 	private StringBuilder sb = new StringBuilder();

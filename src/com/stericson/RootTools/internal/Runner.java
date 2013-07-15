@@ -20,14 +20,18 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
+package com.stericson.RootTools.internal;
 
 import java.io.IOException;
+
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.CommandCapture;
+import com.stericson.RootTools.execution.Shell;
 
 import android.content.Context;
 import android.util.Log;
 
-class Runner extends Thread {
+public class Runner extends Thread {
 
     private static final String LOG_TAG = "RootTools::Runner";
 
