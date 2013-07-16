@@ -35,6 +35,7 @@ public class G extends android.app.Application {
 	public static SharedPreferences gPrefs;
 	public static SharedPreferences pPrefs;
 	public static SharedPreferences sPrefs;
+	public static String[] profiles = { "AFWallPrefs", "AFWallProfile1", "AFWallProfile2", "AFWallProfile3" };
 
 	/* global preferences */
 	public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }
@@ -103,6 +104,8 @@ public class G extends android.app.Application {
 	
 	public static boolean activeRules() { return gPrefs.getBoolean("activeRules", true); }
 	
+	public static boolean usePatterns() { return gPrefs.getBoolean("usePatterns", false); }
+	
 	
 	public void onCreate() {
 		super.onCreate();
@@ -113,7 +116,6 @@ public class G extends android.app.Application {
 	public static void reloadPrefs() {
 		gPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 
-		final String[] profiles = { "AFWallPrefs", "AFWallProfile1", "AFWallProfile2", "AFWallProfile3" };
 		String profileName;
 		int pos = storedPosition();
 		if (enableMultiProfile() && pos >= 0 && pos <= 3) {
@@ -126,4 +128,5 @@ public class G extends android.app.Application {
 		pPrefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
 		sPrefs = ctx.getSharedPreferences("AFWallStaus" /* sic */, Context.MODE_PRIVATE);
 	}
+	
 }

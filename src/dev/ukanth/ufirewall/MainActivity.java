@@ -39,7 +39,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -49,7 +48,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -142,31 +140,31 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			//this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-			boolean disableIcons = prefs.getBoolean("disableIcons", false);
-			boolean enableVPN = prefs.getBoolean("enableVPN", false);
-			boolean enableRoam = prefs.getBoolean("enableRoam", true);
-			boolean enableLAN = prefs.getBoolean("enableLAN", false);
+			//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			
-			if(disableIcons){
+			//boolean disableIcons = prefs.getBoolean("disableIcons", false);
+			//boolean enableVPN = prefs.getBoolean("enableVPN", false);
+			//boolean enableRoam = prefs.getBoolean("enableRoam", true);
+			//boolean enableLAN = prefs.getBoolean("enableLAN", false);
+			
+			if(G.disableIcons()){
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
 			}
 			
-			if(enableRoam){
+			if(G.enableRoam()){
 				addColumns(R.id.img_roam);
 			}
 			
-			if(enableVPN){
+			if(G.enableVPN()){
 				addColumns(R.id.img_vpn);
 			}
 
-			if(enableLAN){
+			if(G.enableLAN()){
 				addColumns(R.id.img_lan);
 			}
 
 
-			setupMultiProfile(prefs);
+			setupMultiProfile();
 			
 			if(Api.isEnabled(getApplicationContext())) {
 				getSupportActionBar().setIcon(R.drawable.widget_on);
@@ -175,7 +173,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 			
 			//language
-			String lang = prefs.getString("locale", "en");
+			String lang = G.locale();
 			Api.updateLanguage(getApplicationContext(), lang);
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
@@ -219,18 +217,16 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
 	}
 	
-	private void setupMultiProfile(SharedPreferences prefs){
-		final boolean multimode = prefs.getBoolean("enableMultiProfile",false);
-		
-		if(multimode) {
+	private void setupMultiProfile(){
+		if(G.enableMultiProfile()) {
 			mSelected = (TextView)findViewById(R.id.text);
-			final List<String> mlocalList = new ArrayList<String>(); 
-			mlocalList.add(prefs.getString("default", getString(R.string.defaultProfile)));
-			mlocalList.add(prefs.getString("profile1", getString(R.string.profile1)));
-			mlocalList.add(prefs.getString("profile2", getString(R.string.profile2)));
-			mlocalList.add(prefs.getString("profile3", getString(R.string.profile3)));
-			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
+			final List<String> mlocalList = new ArrayList<String>();
 			
+			mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
+			mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
+			mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
+			mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
+			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 			
 		    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
 		    	    this,
@@ -241,7 +237,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getSupportActionBar().setListNavigationCallbacks(adapter, this);
 			
-			int position = prefs.getInt("storedPosition", -1);
+			int position = G.gPrefs.getInt("storedPosition", -1);
 			if(position > -1) {
 				getSupportActionBar().setSelectedNavigationItem(position);
 				getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -252,10 +248,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void passCheck(){
-		if(isUsePattern()){
+		if(G.usePatterns()){
 			if(!isPassVerify){
-				final String pwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString(
-						"LockPassword", "");
+				final String pwd = G.sPrefs.getString("LockPassword", "");
 				if (pwd.length() == 0) {
 					showOrLoadApplications();
 				} else {
@@ -266,8 +261,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				showOrLoadApplications();
 			}	
 		} else{
-			final String oldpwd = getSharedPreferences(Api.PREFS_NAME, 0).getString(
-					Api.PREF_PASSWORD, "");
+			final String oldpwd = G.pPrefs.getString(Api.PREF_PASSWORD, "");
 			if (oldpwd.length() == 0) {
 				// No password lock
 				showOrLoadApplications();
@@ -290,10 +284,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * Check if the stored preferences are OK
 	 */
 	private void checkPreferences() {
-		final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
-		final Editor editor = prefs.edit();
+		final Editor editor = G.pPrefs.edit();
 		boolean changed = false;
-		if (prefs.getString(Api.PREF_MODE, "").length() == 0) {
+		if (G.pPrefs.getString(Api.PREF_MODE, "").length() == 0) {
 			editor.putString(Api.PREF_MODE, Api.MODE_WHITELIST);
 			changed = true;
 		}
@@ -305,8 +298,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * Refresh informative header
 	 */
 	private void refreshHeader() {
-		final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
-		final String mode = prefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+		final String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
 		final TextView labelmode = (TextView) this
 				.findViewById(R.id.label_mode);
 		final Resources res = getResources();
@@ -347,7 +339,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	private void setPassword(String pwd) {
 		final Resources res = getResources();
-		final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
+		final Editor editor = G.pPrefs.edit();
 		editor.putString(Api.PREF_PASSWORD, pwd);
 		String msg;
 		if (editor.commit()) {
@@ -369,7 +361,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	private void requestPassword(final String pwd) {
 
-		if(isUsePattern()){
+		if(G.usePatterns()){
 			Intent intent = new Intent(getApplicationContext(), LockPatternActivity.class);
 			intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.ComparePattern);
 			intent.putExtra(LockPatternActivity._MaxRetry, "3");
@@ -551,16 +543,16 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());
 
-		final SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(MainActivity.this);
+		//final SharedPreferences prefs = PreferenceManager
+			//	.getDefaultSharedPreferences(MainActivity.this);
 		
-		final boolean disableIcons = prefs.getBoolean("disableIcons", false);
-		final boolean showUid = prefs.getBoolean("showUid", false);
-		final boolean enableVPN = prefs.getBoolean("enableVPN", false);
-		final boolean enableRoam = prefs.getBoolean("enableRoam", true);
-		final boolean enableLAN = prefs.getBoolean("enableLAN", false);
+	//	final boolean disableIcons = prefs.getBoolean("disableIcons", false);
+	//	final boolean showUid = prefs.getBoolean("showUid", false);
+	//	final boolean enableVPN = prefs.getBoolean("enableVPN", false);
+	//	final boolean enableRoam = prefs.getBoolean("enableRoam", true);
+	//	final boolean enableLAN = prefs.getBoolean("enableLAN", false);
 		
-		final int color = (int)prefs.getInt("sysColor", Color.RED);
+		final int color = G.sysColor();
 		final int defaultColor = Color.WHITE;
 
 		final android.view.LayoutInflater inflater = getLayoutInflater();
@@ -582,20 +574,20 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					holder.box_wifi.setOnCheckedChangeListener(MainActivity.this);
 					holder.box_3g.setOnCheckedChangeListener(MainActivity.this);
 					
-					if(enableRoam){
+					if(G.enableRoam()){
 						holder.box_roam = addSupport(holder.box_roam,convertView, true, R.id.itemcheck_roam);
 					}
-					if(enableVPN) {
+					if(G.enableVPN()) {
 						holder.box_vpn = addSupport(holder.box_vpn,convertView, true, R.id.itemcheck_vpn);
 					}
-					if(enableLAN) {
+					if(G.enableLAN()) {
 						holder.box_lan = addSupport(holder.box_lan,convertView, true, R.id.itemcheck_lan);
 					}
 					
 					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
 					holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
 					
-					if(disableIcons){
+					if(G.disableIcons()){
 						holder.icon.setVisibility(View.GONE);
 						findViewById(R.id.imageHolder).setVisibility(View.GONE);
 					}
@@ -606,19 +598,19 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
 					holder.box_3g = (CheckBox) convertView.findViewById(R.id.itemcheck_3g);
 					
-					if(enableRoam){
+					if(G.enableRoam()){
 						addSupport(holder.box_roam,convertView,false, R.id.itemcheck_roam);
 					}
-					if(enableVPN) {
+					if(G.enableVPN()) {
 						addSupport(holder.box_vpn,convertView,false, R.id.itemcheck_vpn);
 					}
-					if(enableLAN) {
+					if(G.enableLAN()) {
 						addSupport(holder.box_lan,convertView,false, R.id.itemcheck_lan);
 					}
 					
 					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
 					holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
-					if(disableIcons){
+					if(G.disableIcons()){
 						holder.icon.setVisibility(View.GONE);
 						findViewById(R.id.imageHolder).setVisibility(View.GONE);
 					}
@@ -626,7 +618,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				
 				holder.app = apps2.get(position);
 				
-				if(showUid){
+				if(G.showUid()){
 					holder.text.setText(holder.app.toStringWithUID());
 				} else {
 					holder.text.setText(holder.app.toString());
@@ -639,7 +631,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					holder.text.setTextColor(color);
 				}
 
-				if(!disableIcons) {
+				if(!G.disableIcons()) {
 					holder.icon.setImageDrawable(holder.app.cached_icon);	
 					if (!holder.app.icon_loaded && info != null) {
 						// this icon has not been loaded yet - load it on a
@@ -661,13 +653,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				holder.box_3g.setTag(holder.app);
 				holder.box_3g.setChecked(holder.app.selected_3g);
 				
-				if(enableRoam){
+				if(G.enableRoam()){
 					holder.box_roam = addSupport(holder.box_roam,holder, holder.app, 0);
 				}
-				if(enableVPN) {
+				if(G.enableVPN()) {
 					holder.box_vpn = addSupport(holder.box_vpn,holder, holder.app, 1);
 				}
-				if(enableLAN) {
+				if(G.enableLAN()) {
 					holder.box_lan = addSupport(holder.box_lan,holder, holder.app, 2);
 				}
 				
@@ -893,12 +885,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		final boolean enabled = !Api.isEnabled(this);
 		//Log.d("AFWall+", "Changing enabled status to: " + enabled);
 		Api.setEnabled(this, enabled,true);
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		if (enabled) {
 			applyOrSaveRules();
 		} else {
-			final boolean confirmBox = prefs.getBoolean("enableConfirm", false);
-			if(confirmBox){
+			if(G.enableConfirm()){
 				confirmDisable();
 			} else {
 				purgeRules();
@@ -952,8 +942,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	        .setMessage(getString(R.string.resetPattern)) 
 	        .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
 	            public void onClick(DialogInterface dialog, int whichButton) {
-	 	            final SharedPreferences prefs = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
-	 	    		final Editor editor = prefs.edit();
+	 	    		final Editor editor = G.sPrefs.edit();
 	     			editor.putString("LockPassword", "");
 	     			editor.commit();
 	            }   
@@ -971,8 +960,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 * Set a new lock password
 	 */
 	private void setPassword() {
-		if(isUsePattern()){
-			final String pwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString(
+		if(G.usePatterns()){
+			final String pwd = G.sPrefs.getString(
 					"LockPassword", "");
 			if (pwd.length() != 0) {
 				AlertDialog diaBox = resetPassword();
@@ -1013,22 +1002,20 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
 		if (requestCode == 2) {
 			if(resultCode == RESULT_OK){
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 				Intent intent = getIntent();
 			    finish();
-			    String lang = prefs.getString("locale","en");
+			    String lang = G.locale();
 				Api.updateLanguage(getApplicationContext(), lang);
 			    startActivity(intent);
 			}
 		}
 		
-		if(isUsePattern()){
+		if(G.usePatterns()){
 			switch (requestCode) {
 			case _ReqCreatePattern:
 				if (resultCode == RESULT_OK) {
 		            String pattern = data.getStringExtra(LockPatternActivity._Pattern);
-		            final SharedPreferences prefs = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
-		    		final Editor editor = prefs.edit();
+		    		final Editor editor = G.sPrefs.edit();
 	    			editor.putString("LockPassword", pattern);
 	    			editor.commit();
 				}
@@ -1427,28 +1414,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
-		SharedPreferences.Editor editor = prefs.edit();
-		if (multimode) {
-			editor.putInt("storedPosition", itemPosition);
-			editor.commit();
-			switch (itemPosition) {
-			case 0:
-				Api.PREFS_NAME = "AFWallPrefs";
-				break;
-			case 1:
-				Api.PREFS_NAME = "AFWallProfile1";
-				break;
-			case 2:
-				Api.PREFS_NAME = "AFWallProfile2";
-				break;
-			case 3:
-				Api.PREFS_NAME = "AFWallProfile3";
-				break;
-			default:
-				break;
-			}
+		if (G.enableMultiProfile()) {
+			G.storedPosition(itemPosition);
+			Api.PREFS_NAME = G.profiles[itemPosition];
 			Api.applications = null;
 			new GetAppList().execute();
 			mSelected.setText("  |  " + mLocations[itemPosition]);
@@ -1456,12 +1424,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		return true;
 	}
-	
-	private boolean isUsePattern(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		return prefs.getBoolean("usePatterns", false);
-	}
-	
 
 }
 
