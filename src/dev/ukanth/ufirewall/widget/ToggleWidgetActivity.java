@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
 
 public class ToggleWidgetActivity extends Activity implements OnClickListener {
@@ -53,16 +54,14 @@ public class ToggleWidgetActivity extends Activity implements OnClickListener {
 		profButton2.setOnClickListener(this);
 		profButton3.setOnClickListener(this);
 		
-		final SharedPreferences defaultRefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		final boolean multimode = defaultRefs.getBoolean("enableMultiProfile", false);
-		if(!multimode) {
+		if(!G.enableMultiProfile()) {
 			profButton1.setEnabled(false);
 			profButton2.setEnabled(false);
 			profButton3.setEnabled(false);
 		} else {
-			if(Api.isEnabled(getApplicationContext())){
-				int position = getProfilePosition();
-				if(position == 0){
+			if(Api.isEnabled(getApplicationContext())) {
+				int position = G.storedPosition();
+				if (position == 0) {
 					disableDefault();
 				} else {
 					disableCustom(position);	
@@ -139,25 +138,25 @@ public class ToggleWidgetActivity extends Activity implements OnClickListener {
 					
 					break;
 				case 3:
-					setProfilePosition(0);
+					G.setProfile(G.enableMultiProfile(), 0);
 					if(applyProfileRules(context,msg,toaster)) {
 						disableDefault();
 					}
 					break;
 				case 4:
-					setProfilePosition(1);
+					G.setProfile(true, 1);
 					if(applyProfileRules(context,msg,toaster)){
 						disableCustom(1);
 					}
 					break;
 				case 5:
-					setProfilePosition(2);
+					G.setProfile(true, 2);
 					if(applyProfileRules(context,msg,toaster)){
 						disableCustom(2);
 					}
 					break;
 				case 6:
-					setProfilePosition(3);
+					G.setProfile(true, 3);
 					if(applyProfileRules(context,msg,toaster)){
 						disableCustom(3);
 					}
@@ -168,15 +167,12 @@ public class ToggleWidgetActivity extends Activity implements OnClickListener {
 	}
 	
 	private void enableOthers() {
-		final SharedPreferences defaultRefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		final boolean multimode = defaultRefs.getBoolean("enableMultiProfile", false);
-		
 		runOnUiThread(new Runnable() {
 			public void run() {
 				enableButton.setEnabled(false);
 				disableButton.setEnabled(true);
 				defaultButton.setEnabled(true);
-				if(multimode){
+				if (G.enableMultiProfile()){
 					profButton1.setEnabled(true);
 					profButton2.setEnabled(true);
 					profButton3.setEnabled(true);
@@ -200,12 +196,10 @@ public class ToggleWidgetActivity extends Activity implements OnClickListener {
 	}
 	
 	private void disableDefault() {
-		final SharedPreferences defaultRefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		final boolean multimode = defaultRefs.getBoolean("enableMultiProfile", false);
 		runOnUiThread(new Runnable() {
 			public void run() {
 				defaultButton.setEnabled(false);
-				if(multimode){
+				if (G.enableMultiProfile()) {
 					profButton1.setEnabled(true);
 					profButton2.setEnabled(true);
 					profButton3.setEnabled(true);
@@ -266,38 +260,6 @@ public class ToggleWidgetActivity extends Activity implements OnClickListener {
 			toaster.sendMessage(msg);
 		}
 		return success;
-	}
-	
-	private void setProfilePosition(int position){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
-		Editor editor = prefs.edit();
-		if(multimode){
-			switch (position) {
-			case 0:
-				Api.PREFS_NAME = "AFWallPrefs";			
-				break;
-			case 1:
-				Api.PREFS_NAME = "AFWallProfile1";
-				break;
-			case 2:
-				Api.PREFS_NAME = "AFWallProfile2";
-				break;
-			case 3:
-				Api.PREFS_NAME = "AFWallProfile3";
-				break;
-			default:
-				break;
-			}
-		}
-		editor.putInt("storedPosition", position);
-		editor.commit();
-		
-	}
-	
-	private int getProfilePosition(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		return prefs.getInt("storedPosition", 0);
 	}
 }
 
