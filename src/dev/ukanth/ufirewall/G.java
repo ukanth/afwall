@@ -128,5 +128,19 @@ public class G extends android.app.Application {
 		pPrefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
 		sPrefs = ctx.getSharedPreferences("AFWallStaus" /* sic */, Context.MODE_PRIVATE);
 	}
-	
+
+	public static void reloadProfile() {
+		reloadPrefs();
+		Api.applications = null;
+	}
+
+	public static boolean setProfile(boolean newEnableMultiProfile, int newStoredPosition) {
+		if (newEnableMultiProfile == enableMultiProfile() && newStoredPosition == storedPosition()) {
+			return false;
+		}
+		enableMultiProfile(newEnableMultiProfile);
+		storedPosition(newEnableMultiProfile ? newStoredPosition : 0);
+		reloadProfile();
+		return true;
+	}
 }

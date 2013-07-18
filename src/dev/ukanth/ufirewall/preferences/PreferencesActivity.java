@@ -226,23 +226,13 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		if (key.equals("showUid") || key.equals("enableMultiProfile")
 				|| key.equals("disableIcons") || key.equals("enableVPN") || key.equals("enableLAN")
 				|| key.equals("enableRoam") || key.equals("locale") ) {
-			Api.applications = null;
-			Intent returnIntent = new Intent();
-			boolean value = sharedPreferences.getBoolean("enableMultiProfile", false);
-			if(!value){
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putInt("storedPosition", 0);
-				editor.commit();
+			// revert back to Default profile when disabling multi-profile support
+			if (!G.enableMultiProfile()) {
+				G.storedPosition(0);
 			}
-			//reset values of vpn profile
-			/*boolean vpnStatus = sharedPreferences.getBoolean("enableVPN", false);
-			if(!vpnStatus) {
-				
-				returnIntent.putExtra("reset", true);
-			}*/
-			
-			setResult(RESULT_OK, returnIntent);
+			G.reloadProfile();
+
+			setResult(RESULT_OK, new Intent());
 		}
 
 		if (key.equals("fixLeak")) {
