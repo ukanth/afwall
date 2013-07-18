@@ -22,6 +22,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
 
 /**
@@ -104,16 +105,16 @@ public final class FireReceiver extends BroadcastReceiver
 					}
         			break;
         		case 2:
-    				Api.PREFS_NAME = "AFWallPrefs";
+    				G.setProfile(multimode, 0);
     				break;
     			case 3:
-    				Api.PREFS_NAME = "AFWallProfile1";
+    				G.setProfile(multimode, 1);
     				break;
     			case 4:
-    				Api.PREFS_NAME = "AFWallProfile2";
+    				G.setProfile(multimode, 2);
     				break;
     			case 5:
-    				Api.PREFS_NAME = "AFWallProfile3";
+    				G.setProfile(multimode, 3);
     				break;
     			default:
     				break;

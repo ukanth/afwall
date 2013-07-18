@@ -1413,11 +1413,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		
-		if (G.enableMultiProfile()) {
-			G.storedPosition(itemPosition);
-			Api.PREFS_NAME = G.profiles[itemPosition];
-			Api.applications = null;
+		if (G.enableMultiProfile() && G.setProfile(true, itemPosition)) {
 			new GetAppList().execute();
 			mSelected.setText("  |  " + mLocations[itemPosition]);
 			refreshHeader();
