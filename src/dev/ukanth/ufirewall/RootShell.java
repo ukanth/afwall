@@ -209,6 +209,7 @@ public class RootShell {
 				complete(state, EXIT_NO_ROOT_ACCESS);
 				continue;
 			} else if (rootState == STATE_READY) {
+				rootState = STATE_BUSY;
 				submitNextCommand(state);
 			}
 		} while (false);
