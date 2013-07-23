@@ -22,6 +22,10 @@
 
 package dev.ukanth.ufirewall;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -36,7 +40,7 @@ public class G extends android.app.Application {
 	public static SharedPreferences pPrefs;
 	public static SharedPreferences sPrefs;
 	public static String[] profiles = { "AFWallPrefs", "AFWallProfile1", "AFWallProfile2", "AFWallProfile3" };
-
+	
 	/* global preferences */
 	public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }
 	public static boolean alternateStart(boolean val) { gPrefs.edit().putBoolean("alternateStart", val).commit(); return val; }
@@ -106,6 +110,8 @@ public class G extends android.app.Application {
 	
 	public static boolean usePatterns() { return gPrefs.getBoolean("usePatterns", false); }
 	
+	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean("applyOnSwitchProfiles", false); }
+	public static boolean applyOnSwitchProfiles(boolean val) { gPrefs.edit().putBoolean("applyOnSwitchProfiles", val).commit(); return val; }
 	
 	public void onCreate() {
 		super.onCreate();
@@ -116,13 +122,20 @@ public class G extends android.app.Application {
 	public static void reloadPrefs() {
 		gPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 
-		String profileName;
+		String profileName = Api.DEFAULT_PREFS_NAME;
 		int pos = storedPosition();
-		if (enableMultiProfile() && pos >= 0 && pos <= 3) {
-			profileName = profiles[pos];
-		} else {
-			profileName = profiles[0];
+		//int profileCount = getProfileCount();
+		if (enableMultiProfile() && (pos >= 0 && pos <= 3)) {
+			profileName = profiles[pos];	
+			/*if(pos <= 3) {
+				profileName = profiles[pos];	
+			} else if(pos > 3 && pos <= (profileCount + 3)) {
+				profileName = "AFWallPrefsCustom" + pos;
+			} */
 		}
+		else {
+			profileName = profiles[0];
+		} 
 		Api.PREFS_NAME = profileName;
 
 		pPrefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
@@ -133,6 +146,10 @@ public class G extends android.app.Application {
 		reloadPrefs();
 		Api.applications = null;
 	}
+	
+	public Integer getCurrentProfile(){
+		return storedPosition();
+	}
 
 	public static boolean setProfile(boolean newEnableMultiProfile, int newStoredPosition) {
 		if (newEnableMultiProfile == enableMultiProfile() && newStoredPosition == storedPosition()) {
@@ -142,5 +159,58 @@ public class G extends android.app.Application {
 		storedPosition(newEnableMultiProfile ? newStoredPosition : 0);
 		reloadProfile();
 		return true;
+	}
+	
+	public static void addProfile(String profile) {
+		String previousProfiles = gPrefs.getString("profiles", "");
+		int profileCount = previousProfiles.split(",").length; 
+		StringBuilder builder = new StringBuilder();
+		if(previousProfiles.equals("")){
+			builder.append(profile);
+		} else {
+			builder.append(previousProfiles);
+			builder.append(",");
+			builder.append(profile + ":" + profileCount);
+		}
+		gPrefs.edit().putString("profiles", builder.toString()).commit(); 
+	}
+	
+	public static void removeProfile(int itemPosition,String profileName) {
+		if(itemPosition > 4) {
+			
+		} else {
+			String previousProfiles = gPrefs.getString("profiles", "");
+			
+			StringBuilder builder = new StringBuilder();
+			if(!previousProfiles.equals("")){
+				for(String profile:previousProfiles.split(",")) {
+					if(!profile.equals(profileName)) {
+						builder.append(profile);
+						builder.append(",");
+					}
+				}
+			}
+			gPrefs.edit().putString("profiles", builder.toString()).commit();	
+		}
+		 
+	}
+	
+
+	public static int getProfileCount() {
+		int count = 0;
+		String previousProfiles = gPrefs.getString("profiles", "");
+		if(!previousProfiles.equals("")){
+			count = previousProfiles.split(",").length;
+		} 
+		return count;
+	}
+	
+	public static List<String> getProfiles() {
+		String previousProfiles = gPrefs.getString("profiles", "");
+		List<String> profileList = new ArrayList<String>();
+		if(!previousProfiles.equals("")){
+			profileList = Arrays.asList(previousProfiles.split(","));
+		} 
+		return profileList;
 	}
 }

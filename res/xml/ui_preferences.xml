@@ -1,10 +1,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <CheckBoxPreference
+     <CheckBoxPreference
         android:key="notifyAppInstall"
         android:summaryOff="@string/notify_pref_summary_off"
         android:summaryOn="@string/notify_pref_summary_on"
         android:title="@string/notify_pref_title" />
+    
+        
+    <CheckBoxPreference
+        android:key="enableFirewallLog"
+        android:summary="@string/showlog_title"
+        android:title="@string/enable_firewall_log" />
 
     <CheckBoxPreference
         android:key="disableIcons"

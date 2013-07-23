@@ -63,7 +63,7 @@
 
     <!-- Will be default in CyanogenMod Superuser App -->
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
-
+    
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"
@@ -121,6 +121,7 @@
         <receiver android:name="dev.ukanth.ufirewall.BootBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
 				<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
@@ -133,6 +134,8 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+        
+        
         <receiver android:name="dev.ukanth.ufirewall.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -163,9 +166,6 @@
             </intent-filter>
         </receiver>
         
-        
-        
-
         <service android:name="dev.ukanth.ufirewall.StartupService" ></service>
 
         <activity

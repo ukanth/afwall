@@ -266,8 +266,8 @@
     <string name="profile_management">Profile Management</string>
     <string name="profile_add">Add Profile</string>
     <string name="profile_remove">Remove Profile</string>
-    <string name="profile_switch">Switch Profile</string>
-    <string name="profile_modify">Modify Profile</string>
+    <string name="profile_reset">Reset Profile</string>
+    <string name="profile_rename">Rename Profile</string>
     
     <string name="email_to_dev">Send E-Mail to Developer</string>
     <string name="Donate">Donate</string>
@@ -278,4 +278,8 @@
     <string name="sort_application">Application</string>
     <string name="sort_uid">UID</string>
     
+    
+     <string name="multi_apply_rules">Apply rules on profile switch</string>
+     <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+     
 </resources>

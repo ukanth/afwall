@@ -226,6 +226,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
 			mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
 			mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
+			
+			/*List<String> profilesList = G.getProfiles();
+			for(String profiles : profilesList) {
+				mlocalList.add(profiles);
+			}
+			
+			mlocalList.add(getString(R.string.profile_add));
+			mlocalList.add(getString(R.string.profile_remove));
+			*/
 			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 			
 		    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
@@ -1413,12 +1422,51 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		if (G.enableMultiProfile() && G.setProfile(true, itemPosition)) {
-			new GetAppList().execute();
-			mSelected.setText("  |  " + mLocations[itemPosition]);
-			refreshHeader();
+		
+		if(G.enableMultiProfile()){
+			//user clicked add  
+			/*if(itemPosition == mLocations.length - 2){
+				showProfileDialog();
+			}
+			//user clicked remove
+			else if(itemPosition == mLocations.length - 1){
+				G.removeProfile(itemPosition, mSelected.getText().toString());
+			} else {*/
+				if(G.setProfile(true, itemPosition)) {
+					new GetAppList().execute();
+					mSelected.setText("  |  " + mLocations[itemPosition]);
+					if(G.applyOnSwitchProfiles()){
+						applyOrSaveRules();
+					}
+					refreshHeader();
+				}
+			//}
 		}
 		return true;
+	}
+	
+	public void showProfileDialog() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle(getString(R.string.profile_add));
+
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		alert.setView(input);
+
+		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+			String value = input.getText().toString();
+	  		G.addProfile(value);
+		  }
+		});
+
+		alert.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int whichButton) {
+		    // Canceled.
+		  }
+		});
+		alert.show();	
 	}
 
 }
