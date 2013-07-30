@@ -311,11 +311,11 @@ public final class Api {
 		}
 	}
 
-	private static void addRejectRules(List<String> cmds) {
+	private static void addRejectRules(List<String> cmds, Context ctx) {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
-		if (G.enableFirewallLog()) {
-			cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid ");
+		if (G.enableFirewallLog() && hasTarget(ctx, "LOG")) {
+			cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
 		}
 		cmds.add("-A afwall-reject -j REJECT");
 	}
@@ -426,7 +426,7 @@ public final class Api {
 
 		cmds.add("#NOCHK# -D OUTPUT -j afwall");
 		cmds.add("-I OUTPUT 1 -j afwall");
-		addRejectRules(cmds);
+		addRejectRules(cmds,ctx);
 
 		// add custom rules before the afwall* chains are populated
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
@@ -839,7 +839,7 @@ public final class Api {
 	public static void updateLogRules(Context ctx, RootCommand callback) {
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-F afwall-reject");
-		addRejectRules(cmds);
+		addRejectRules(cmds,ctx);
 		apply46(ctx, cmds, callback);
 	}
 
@@ -1274,6 +1274,7 @@ public final class Api {
 				copyRawFile(ctx, R.raw.busybox_g2, file, "755");
 				changed = true;
 			}
+			
 			// check script
 			file = new File(ctx.getDir("bin",0), "afwallstart");
 			if (!file.exists()) {
@@ -1642,6 +1643,37 @@ public final class Api {
 		return output;
 	}
 	
+	
+	private static String getTargets(Context context) {
+		String output = null;
+		String busybox = getBusyBoxPath(context);
+		String grep = busybox + " grep";
+		try {
+			output = runSUCommand(grep + " \\.\\* /proc/net/ip_tables_targets");
+		} catch (IOException e1) {
+			Log.e(TAG, "IOException: " + e1.getLocalizedMessage());
+		}
+		if (output != null) {
+			output = output.replace(" ", ",");
+		}
+		return output;
+	}		
+	
+	public static boolean hasTarget(Context ctx, String target){
+		boolean result = false;
+		String targets = getTargets(ctx);
+		if(targets !=null) {
+			for(String str: targets.split(",")) {
+				if(target.equals(str)){
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
+	
 	@SuppressLint("InlinedApi")
 	public static void showInstalledAppDetails(Context context, String packageName) {
 		final String SCHEME = "package";
@@ -1668,8 +1700,7 @@ public final class Api {
 	}
 	
 	public static boolean hasRootAccess(Context ctx, boolean showErrors) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean isRoot = prefs.getBoolean("isRootAvail", false);
 
 		if (!isRoot) {
@@ -1689,7 +1720,6 @@ public final class Api {
 			} catch (Exception e) {
 			}
 		}
-
 		return isRoot;
 	}
 	
