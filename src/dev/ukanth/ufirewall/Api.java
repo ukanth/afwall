@@ -226,6 +226,10 @@ public final class Api {
 		}
 		return busybox;
 	}
+	
+	static String getNflogPath(Context ctx) {
+		return ctx.getDir("bin",0).getAbsolutePath() + "/nflog ";
+	}
 	/**
 	 * Copies a raw resource file, given its ID to the given location
 	 * @param ctx context
@@ -314,9 +318,14 @@ public final class Api {
 	private static void addRejectRules(List<String> cmds, Context ctx) {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
-		if (G.enableFirewallLog() && hasTarget(ctx, "LOG")) {
-			cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
-		}
+		if (G.enableFirewallLog()) {
+			if(hasTarget(ctx, "LOG")) {
+				cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");	
+			} else if(hasTarget(ctx, "NFLOG")){
+				cmds.add("-A afwall-reject -j NFLOG --nflog-prefix \"{AFL}\" ");
+			}
+			
+		} 
 		cmds.add("-A afwall-reject -j REJECT");
 	}
 
@@ -861,7 +870,11 @@ public final class Api {
 	 * @param callback Callback for completion status
 	 */
 	public static void fetchDmesg(Context ctx, RootCommand callback) {
-		callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
+		if(hasTarget(ctx, "LOG")) {
+			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");	
+		} else if(hasTarget(ctx, "NFLOG")){
+			callback.run(ctx, getNflogPath(ctx) + " 0");
+		}
 	}
 
 	/**
@@ -1274,6 +1287,14 @@ public final class Api {
 				copyRawFile(ctx, R.raw.busybox_g2, file, "755");
 				changed = true;
 			}
+			
+			// Check nflog
+			file = new File(ctx.getDir("bin",0), "nflog");
+			if (!file.exists()) {
+				copyRawFile(ctx, R.raw.nflog, file, "755");
+				changed = true;
+			}
+
 			
 			// check script
 			file = new File(ctx.getDir("bin",0), "afwallstart");
