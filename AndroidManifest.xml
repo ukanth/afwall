@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="130"
-    android:versionName="1.2.6" >
+    android:versionCode="131"
+    android:versionName="1.2.6-BETA-300713" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -63,7 +63,7 @@
 
     <!-- Will be default in CyanogenMod Superuser App -->
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
-
+    
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"
@@ -75,7 +75,8 @@
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock" >
+        android:theme="@style/Theme.Sherlock"
+        android:name="dev.ukanth.ufirewall.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale"
@@ -108,13 +109,8 @@
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.Sherlock" >
         </activity>
-        <activity
-            android:name="dev.ukanth.ufirewall.Rules"
-            android:label="@string/showrules_title" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
+        <activity android:name="dev.ukanth.ufirewall.RulesActivity"></activity>
+        <activity android:name="dev.ukanth.ufirewall.LogActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity" android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -125,6 +121,7 @@
         <receiver android:name="dev.ukanth.ufirewall.BootBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
 				<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
@@ -137,12 +134,14 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
+        
+        
         <receiver android:name="dev.ukanth.ufirewall.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" >
+        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
@@ -155,7 +154,7 @@
         </receiver>
         
         
-         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" >
+         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" android:label="@string/widget_label_settings">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
@@ -167,12 +166,7 @@
             </intent-filter>
         </receiver>
         
-        
-        
-
         <service android:name="dev.ukanth.ufirewall.StartupService" ></service>
-        <service android:name="dev.ukanth.ufirewall.BackgroundIntentService"></service>
-        <service android:name="dev.ukanth.ufirewall.ConnectivityIntentService"></service>
 
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
@@ -180,10 +174,13 @@
             android:theme="@android:style/Theme.Dialog" />
 
         <!-- device admin -->
+        <!-- This is required this receiver to become device admin component. -->
 
         <receiver
             android:name="dev.ukanth.ufirewall.admin.AdminDeviceReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN" >
+            <meta-data android:name="android.app.device_admin" 
+            android:resource="@xml/device_admin"/>
             <intent-filter>
 
                 <!-- This action is required -->
@@ -191,11 +188,6 @@
                 <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLE_REQUESTED" />
                 <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLED" />
             </intent-filter>
-
-            <!-- This is required this receiver to become device admin component. -->
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/device_admin" />
         </receiver>
         
         

@@ -14,11 +14,12 @@
     <string name="close">Close</string>
     <string name="exit">Exit</string>
     <string name="error_flush">Error flushing iptables</string>
-    <string name="error_purge">Error purging iptables. exit code:</string>
-    <string name="error_binary">Error installing binary files:</string>
-    <string name="error_refresh">Error refreshing iptables: </string>
-    <string name="error_apply">Error applying iptables rules. Exit code: </string>
-    <string name="error_su">Could not acquire root access.\n You need a rooted phone to run AFWall+.\n\n If this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
+    <string name="error_purge">Error purging iptables</string>
+    <string name="error_binary">Error installing binary files</string>
+    <string name="error_refresh">Error refreshing iptables</string>
+    <string name="error_apply">Error applying iptables rules</string>
+    <string name="error_fetch">Error fetching iptables rules</string>
+    <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
     <string name="error_common">Error : </string>
     <string name="all_item">(Any application) - Same as selecting all applications</string>
     <string name="root_item">(root) - Applications running as root</string>
@@ -97,19 +98,25 @@
     <string name="OK">OK</string>
     <string name="Cancel">Cancel</string>
     <string name="notification_title">Open AFWall+</string>
-    <string name="status_running">Running</string>
+
+    <string name="error_notification_title">AFWall+ error</string>
+    <string name="error_notification_text">Error applying firewall rules. Click here to open settings.</string>
+    <string name="error_notification_ticker">AFWall+ could not apply rules</string>
 
 
     <!-- Advanced Settings 
     
         init.d -->
-    <string name="success_initd">Successfully copied script on startup</string>
-    <string name="remove_initd">Please delete afwallstart from /system/etc/init.d folder before uninstalling AFWall+</string>
-    <string name="unable_initd">Unable to find init.d directory. Please verify that your ROM/Kernel supports init.d</string>
+    <string name="success_initd">Successfully installed startup script</string>
+    <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d</string>
+    <string name="remove_initd">Successfully removed startup script</string>
+    <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
 
 
     <!-- Widget -->
     <string name="widget_disable_fail">Cannot disable firewall - password defined!</string>
+    <string name="widget_label_status">AFWall+ Toggle/Status</string>
+    <string name="widget_label_settings">AFWall+ Settings</string>
 
     <!-- Color Picker -->
     <string name="color_pick">Press on Color to apply</string>
@@ -135,10 +142,15 @@
     <string name="log_disabled">Log Disabled</string>
     <string name="log_was_enabled">Log has been enabled</string>
     <string name="log_was_disabled">Log has been disabled</string>
+    <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_cleared">Log cleared</string>
+    <string name="log_clear_error">Error clearing log</string>
+    <string name="log_fetch_error">Error fetching log</string>
+    <string name="log_parse_error">Error parsing log</string>
     <string name="no_log">Log is Empty</string>
     <string name="LogAppName">Application\'s Name</string>
     <string name="LogPackBlock">Total Packets Blocked</string>
+    <string name="refresh">Refresh</string>
 
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Multiple Profile Preferences</string>
@@ -222,11 +234,12 @@
 	
     <!-- Startup -->
     <string name="startup_service">Applying Rules. Please wait!</string>
+    <string name="fixleakTitle">Fix Startup Data Leak</string>
+    <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
-    <string name="fixleakTitle">Fix Startup Data Leak</string>
-    <string name="fixleakSummary">This will fix data leak before AFWall+ starts\n Requires Init.d Support and S-OFF(HTC)!</string>
-    <string name="icsJBOnly">Please unselect the option \'Experiment rules for ICS/JB devices\'. It\'s only for ICS/JB devices</string>
+    <string name="enableInboundTitle">Enable inbound connections</string>
+    <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
 	
     <!-- UI Preferences -->
     <string name="ui_prefs_title">UI Preferences</string>
@@ -244,4 +257,29 @@
     <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
     <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
     <string name="languages">Languages</string>
+    
+    
+     <!-- 1.2.6 -->
+    <string name="active_rules">Active Rules</string>
+    <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+    
+    <string name="profile_management">Profile Management</string>
+    <string name="profile_add">Add Profile</string>
+    <string name="profile_remove">Remove Profile</string>
+    <string name="profile_reset">Reset Profile</string>
+    <string name="profile_rename">Rename Profile</string>
+    
+    <string name="email_to_dev">Send E-Mail to Developer</string>
+    <string name="Donate">Donate</string>
+    
+    <string name="rules_management">Rules Management</string>
+    
+    <string name="sort_app">Sort By</string>
+    <string name="sort_application">Application</string>
+    <string name="sort_uid">UID</string>
+    
+    
+     <string name="multi_apply_rules">Apply rules on profile switch</string>
+     <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+     
 </resources>

@@ -23,6 +23,7 @@
 
 package dev.ukanth.ufirewall;
 
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -31,9 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -63,38 +61,29 @@ public class StatusWidget extends AppWidgetProvider {
 				Toast.makeText(context,R.string.widget_disable_fail,Toast.LENGTH_SHORT).show();
 				return;
 			}
-			final Handler toaster = new Handler() {
-				public void handleMessage(Message msg) {
-					if (msg.arg1 != 0)Toast.makeText(context, msg.arg1, Toast.LENGTH_SHORT).show();
-				}
-			};
-			// prevents ANR
-			new Thread() {
-				@Override
-				public void run() {
-					Looper.prepare();
-					final Message msg = new Message();
-					if (enabled) {
-						if (Api.applySavedIptablesRules(context, false)) {
-							msg.arg1 = R.string.toast_enabled;
-							toaster.sendMessage(msg);
-						} else {
-							msg.arg1 = R.string.toast_error_enabling;
-							toaster.sendMessage(msg);
-						}
-					} else {
-						if (Api.purgeIptables(context, false)) {
-							msg.arg1 = R.string.toast_disabled;
-							toaster.sendMessage(msg);
-						} else {
-							msg.arg1 = R.string.toast_error_disabling;
-							toaster.sendMessage(msg);
-						}
-					}
-					Api.setEnabled(context, enabled, false);
-				}
-			}.start();
 
+			if (enabled) {
+				Api.applySavedIptablesRules(context, true, new RootCommand()
+					.setSuccessToast(R.string.toast_enabled)
+					.setFailureToast(R.string.toast_error_enabling)
+					.setReopenShell(true)
+					.setCallback(new RootCommand.Callback() {
+						public void cbFunc(RootCommand state) {
+							// setEnabled always sends us a STATUS_CHANGED_MSG intent to update the icon
+							Api.setEnabled(context, state.exitCode == 0, true);
+						}
+					}));
+			} else {
+				Api.purgeIptables(context, true, new RootCommand()
+					.setSuccessToast(R.string.toast_disabled)
+					.setFailureToast(R.string.toast_error_disabling)
+					.setReopenShell(true)
+					.setCallback(new RootCommand.Callback() {
+						public void cbFunc(RootCommand state) {
+							Api.setEnabled(context, state.exitCode != 0, true);
+						}
+				}));
+			}
 		}
 	}
 

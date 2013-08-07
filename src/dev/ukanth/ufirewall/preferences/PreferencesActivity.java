@@ -27,14 +27,17 @@ import java.io.File;
 
 import net.saik0.android.unifiedpreference.UnifiedPreferenceFragment;
 import net.saik0.android.unifiedpreference.UnifiedSherlockPreferenceActivity;
+import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -42,41 +45,69 @@ import android.widget.Toast;
 import com.stericson.RootTools.RootTools;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
 
 public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		implements OnSharedPreferenceChangeListener {
 
-	private static final int REQUEST_CODE_ENABLE_ADMIN = 10237; // identifies
-																// our request
-																// id
-	private ComponentName deviceAdmin;
-	private DevicePolicyManager mDPM;
+	private static final int REQUEST_CODE_ENABLE_ADMIN = 10237; // identifies our request ID
+
+	private static final String initDirs[] = { "/system/etc/init.d", "/etc/init.d" };
+	private static final String initScript = "afwallstart";
+
+	private static CheckBoxPreference fixLeakPref;
+	private static CheckBoxPreference enableAdminPref;
+
+	private static ComponentName deviceAdmin;
+	private static DevicePolicyManager mDPM;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		setHeaderRes(R.xml.unified_preferences_headers);
+
+		// set language
+		Api.updateLanguage(getApplicationContext(), G.locale());
+
+		super.onCreate(savedInstanceState);
+
+		// update settings with actual device admin setting
 		mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 		deviceAdmin = new ComponentName(getApplicationContext(),
 				AdminDeviceReceiver.class);
-		setHeaderRes(R.xml.unified_preferences_headers);
-		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		final Editor editor = prefs.edit();
-		if (!mDPM.isAdminActive(deviceAdmin)) {
-			editor.putBoolean("enableAdmin", false);
-			editor.commit();
-		} else {
-			editor.putBoolean("enableAdmin", true);
-			editor.commit();
-		}
-		
-		
-		//language
-		String lang = prefs.getString("locale", "en");
-		Api.updateLanguage(getApplicationContext(), lang);
-		
-		super.onCreate(savedInstanceState);
+	}
 
+	public static void setupFixLeak(Preference pref) {
+		if (pref == null) {
+			return;
+		}
+		fixLeakPref = (CheckBoxPreference)pref;
+
+		// gray out the fixLeak preference if the ROM doesn't support init.d
+		fixLeakPref.setChecked(isFixLeakInstalled());
+		fixLeakPref.setEnabled(getFixLeakPath() != null);
+	}
+
+	public static void setupEnableAdmin(Preference pref) {
+		if (pref == null) {
+			return;
+		}
+		enableAdminPref = (CheckBoxPreference)pref;
+
+		// query the actual device admin status from the system
+		enableAdminPref.setChecked(mDPM.isAdminActive(deviceAdmin));
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+
+		// these return non-null in the single pane view
+		// the PreferenceFragment callbacks need to be used on Honeycomb+ with large screens 
+		setupFixLeak(findPreference("fixLeak"));
+		setupEnableAdmin(findPreference("enableAdmin"));
 	}
 
 	@Override
@@ -100,6 +131,12 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 	}
 
 	public static class SecPreferenceFragment extends UnifiedPreferenceFragment {
+		@SuppressLint("NewApi")
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setupEnableAdmin(findPreference("enableAdmin"));
+		}
 	}
 
 	public static class FirewallPreferenceFragment extends
@@ -115,11 +152,66 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 }
 
 	public static class ExpPreferenceFragment extends UnifiedPreferenceFragment {
+		@SuppressLint("NewApi")
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setupFixLeak(findPreference("fixLeak"));
+		}
+	}
+
+	private static String getFixLeakPath() {
+		for (String s : initDirs) {
+			File f = new File(s);
+			if (f.exists() && f.isDirectory()) {
+				return s + "/" + initScript;
+			}
+		}
+		return null;
+	}
+
+	private static boolean isFixLeakInstalled() {
+		String path = getFixLeakPath();
+		return path != null && new File(path).exists();
+	}
+
+	private void updateFixLeakScript(final boolean enabled) {
+		final Context ctx = getApplicationContext();
+		final String srcPath = new File(ctx.getDir("bin", 0), initScript).getAbsolutePath();
+
+		new AsyncTask<Void, Void, Boolean>() {
+			@Override
+			public Boolean doInBackground(Void... args) {
+				return enabled ?
+						RootTools.copyFile(srcPath, getFixLeakPath(), true, false) :
+						RootTools.deleteFileOrDirectory(getFixLeakPath(), true);
+			}
+
+			@Override
+			public void onPostExecute(Boolean success) {
+				int msgid;
+
+				if (success) {
+					msgid = enabled ? R.string.success_initd : R.string.remove_initd;
+				} else {
+					msgid = enabled ? R.string.unable_initd : R.string.unable_remove_initd;
+					fixLeakPref.setChecked(isFixLeakInstalled());
+				}
+				Api.displayToasts(ctx, msgid, Toast.LENGTH_SHORT);
+			}
+		}.execute();
 	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
+		
+		if(key.equals("activeRules")){
+			if(!G.activeRules()){
+				G.enableRoam(false);
+				G.enableLAN(false);
+			}
+		}
 		
 		if(key.equals("enableIPv6")){
 			File defaultIP6TablesPath = new File("/system/bin/ip6tables");
@@ -134,55 +226,20 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		if (key.equals("showUid") || key.equals("enableMultiProfile")
 				|| key.equals("disableIcons") || key.equals("enableVPN") || key.equals("enableLAN")
 				|| key.equals("enableRoam") || key.equals("locale") ) {
-			Api.applications = null;
-			Intent returnIntent = new Intent();
-			boolean value = sharedPreferences.getBoolean("enableMultiProfile", false);
-			if(!value){
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putInt("storedPosition", 0);
-				editor.commit();
+			// revert back to Default profile when disabling multi-profile support
+			if (!G.enableMultiProfile()) {
+				G.storedPosition(0);
 			}
-			//reset values of vpn profile
-			/*boolean vpnStatus = sharedPreferences.getBoolean("enableVPN", false);
-			if(!vpnStatus) {
-				
-				returnIntent.putExtra("reset", true);
-			}*/
-			
-			setResult(RESULT_OK, returnIntent);
+			G.reloadProfile();
+
+			setResult(RESULT_OK, new Intent());
 		}
 
 		if (key.equals("fixLeak")) {
-			boolean value = sharedPreferences.getBoolean("fixLeak", false);
-			File file = new File(getApplicationContext().getDir("bin", 0),
-					"afwallstart");
-			if (value) {
-				if (file.exists()) {
-					// hard coded init.d paths
-					File initPath = new File("/system/etc/init.d");
-					File initPath2 = new File("/etc/init.d");
-					if (initPath.exists() && initPath.isDirectory()) {
-						RootTools.copyFile(file.getAbsolutePath(),
-								initPath.getAbsolutePath(), true, false);
-						Toast.makeText(getApplicationContext(),
-								R.string.success_initd, Toast.LENGTH_SHORT)
-								.show();
-					} else if (initPath2.exists() && initPath2.isDirectory()) {
-						RootTools.copyFile(file.getAbsolutePath(),
-								initPath2.getAbsolutePath(), true, false);
-						Toast.makeText(getApplicationContext(),
-								R.string.success_initd, Toast.LENGTH_SHORT)
-								.show();
-					} else {
-						Toast.makeText(getApplicationContext(),
-								R.string.unable_initd, Toast.LENGTH_SHORT)
-								.show();
-					}
-				}
-			} else {
-				Toast.makeText(getApplicationContext(), R.string.remove_initd,
-						Toast.LENGTH_LONG).show();
+			boolean enabled = G.fixLeak();
+
+			if (enabled != isFixLeakInstalled()) {
+				updateFixLeakScript(enabled);
 			}
 		}
 
