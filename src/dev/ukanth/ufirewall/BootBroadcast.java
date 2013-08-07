@@ -26,8 +26,6 @@ package dev.ukanth.ufirewall;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 /**
  * Broadcast receiver that set iptables rules on system startup. This is
@@ -38,13 +36,10 @@ public class BootBroadcast extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		final boolean alternate = prefs.getBoolean("alternateStart", false);
-		if(alternate) {
-			 Intent i = new Intent(context, StartupService.class);
-	         context.startService(i);
+		if(G.alternateStart()) {
+	         context.startService(new Intent(context, StartupService.class));
 		} else {
-			BackgroundIntentService.performAction(context, BackgroundIntentService.ACTION_BOOT_COMPLETE);			
+			 InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 		}
 	}
 }

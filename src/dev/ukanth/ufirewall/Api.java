@@ -66,6 +66,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
@@ -73,6 +74,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 /**
@@ -89,8 +91,6 @@ public final class Api {
 	public static final int SPECIAL_UID_KERNEL	= -11;
 	/** special application UID used for dnsmasq DHCP/DNS */
 	public static final int SPECIAL_UID_TETHER	= -12;
-	/** root script filename */
-	//private static final String SCRIPT_FILE = "afwall.sh";
 	
 	// Preferences
 	public static String PREFS_NAME 				= "AFWallPrefs";
@@ -133,20 +133,22 @@ public final class Api {
 	private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
-	//private static final int BUFF_LEN = 0;
-	
+
+	private static final String dynChains[] = { "afwall-3g", "afwall-3g-fork", "afwall-wifi", "afwall-wifi-fork" };
+	private static final String staticChains[] = { "afwall", "afwall-reject", "afwall-vpn",
+		"afwall-3g-tether", "afwall-3g-home", "afwall-3g-roam", "afwall-wifi-tether", "afwall-wifi-wan", "afwall-wifi-lan" };
+
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
 	
 	//for custom scripts
-	//private static final String SCRIPT_FILE = "afwall_custom.sh";
 	static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
     static List<LogEntry> logEntriesList = new ArrayList<LogEntry>();
 	public static String ipPath = null;
 	public static boolean setv6 = false;
 	private static Map<String,Integer> specialApps = null;
-	
-	//public static boolean isUSBEnable = false;
+
+	private static boolean rulesUpToDate = false;
 
     public static String getIpPath() {
 		return ipPath;
@@ -181,7 +183,7 @@ public final class Api {
 	static String customScriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
 		final String myiptables = dir + "/iptables_armv5";
-		final String mybusybox = dir + "/busybox_g1";
+		final String mybusybox = dir + "/busybox_g2";
 		return "" +
 			"IPTABLES="+ myiptables + "\n" +
 			"BUSYBOX="+mybusybox+"\n" +
@@ -220,9 +222,13 @@ public final class Api {
 		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final String busybox_preference = appprefs.getString("bb_path", "2");
 		if(busybox_preference.equals("2")) {
-			busybox = dir + "/busybox_g1 ";
+			busybox = dir + "/busybox_g2 ";
 		}
 		return busybox;
+	}
+	
+	static String getNflogPath(Context ctx) {
+		return ctx.getDir("bin",0).getAbsolutePath() + "/nflog ";
 	}
 	/**
 	 * Copies a raw resource file, given its ID to the given location
@@ -275,6 +281,124 @@ public final class Api {
 		}
 	}
 
+	private static void addRulesForUidlist(List<String> cmds, List<Integer> uids, String chain, boolean whitelist) {
+		String action = whitelist ? " -j RETURN" : " -j afwall-reject";
+
+		if (uids.indexOf(SPECIAL_UID_ANY) >= 0) {
+			if (!whitelist) {
+				cmds.add("-A " + chain + action);
+			}
+			// FIXME: in whitelist mode this blocks everything
+		} else {
+			for (Integer uid : uids) {
+				if (uid != null && uid >= 0) {
+					cmds.add("-A " + chain + " -m owner --uid-owner " + uid + action);
+				}
+			}
+
+			boolean kernel_checked = uids.indexOf(SPECIAL_UID_KERNEL) >= 0;
+			if (whitelist) {
+				if (kernel_checked) {
+					// reject any other UIDs, but allow the kernel through
+					cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j afwall-reject");
+				} else {
+					// kernel is blocked so reject everything
+					cmds.add("-A " + chain + " -j afwall-reject");
+				}
+			} else {
+				if (kernel_checked) {
+					// allow any other UIDs, but block the kernel
+					cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
+					cmds.add("-A " + chain + " -j afwall-reject");
+				}
+			}
+		}
+	}
+
+	private static void addRejectRules(List<String> cmds, Context ctx) {
+		// set up reject chain to log or not log
+		// this can be changed dynamically through the Firewall Logs activity
+		if (G.enableFirewallLog()) {
+			if(hasTarget(ctx, "LOG")) {
+				cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");	
+			} else if(hasTarget(ctx, "NFLOG")){
+				cmds.add("-A afwall-reject -j NFLOG --nflog-prefix \"{AFL}\" ");
+			}
+			
+		} 
+		cmds.add("-A afwall-reject -j REJECT");
+	}
+
+	private static void addCustomRules(Context ctx, String prefName, List<String> cmds) {
+		String[] customRules = G.pPrefs.getString(prefName, "").split("[\\r\\n]+");
+		for (String s : customRules) {
+			if (s.matches(".*\\S.*")) {
+				cmds.add("#LITERAL# " + s);
+			}
+		}
+	}
+
+	/**
+	 * Reconfigure the firewall rules based on interface changes seen at runtime: tethering
+	 * enabled/disabled, IP address changes, etc.  This should only affect a small number of
+	 * rules; we want to avoid calling applyIptablesRulesImpl() too often since applying
+	 * 100+ rules is expensive.
+	 *
+	 * @param ctx application context
+	 * @param cmds command list
+	 */
+	private static void addInterfaceRouting(Context ctx, List<String> cmds) {
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
+
+		for (String s : dynChains) {
+			cmds.add("-F " + s);
+		}
+
+		if (whitelist) {
+			// always allow the DHCP client full wifi access
+			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi", "-j RETURN");
+		}
+
+		if (cfg.isTethered) {
+			cmds.add("-A afwall-wifi -j afwall-wifi-tether");
+			cmds.add("-A afwall-3g -j afwall-3g-tether");
+		} else {
+			cmds.add("-A afwall-wifi -j afwall-wifi-fork");
+			cmds.add("-A afwall-3g -j afwall-3g-fork");
+		}
+
+		if (G.enableLAN() && !cfg.isTethered) {
+			if(setv6 && !cfg.lanMaskV6.equals("")) {
+				cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
+				cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
+			} else if(!setv6 && !cfg.lanMaskV4.equals("")) {
+				cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
+				cmds.add("-A afwall-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j afwall-wifi-wan");
+			} else {
+				// No IP address -> no traffic.  This prevents a data leak between the time
+				// the interface gets an IP address, and the time we process the intent
+				// (which could be 5+ seconds).  This is likely to catch a little bit of
+				// legitimate traffic from time to time, so we won't log the failures.
+				cmds.add("-A afwall-wifi-fork -j REJECT");
+			}
+		} else {
+			cmds.add("-A afwall-wifi-fork -j afwall-wifi-wan");
+		}
+
+		if (G.enableRoam() && cfg.isRoaming) {
+			cmds.add("-A afwall-3g-fork -j afwall-3g-roam");
+		} else {
+			cmds.add("-A afwall-3g-fork -j afwall-3g-home");
+		}
+	}
+
+	private static void applyShortRules(Context ctx, List<String> cmds) {
+		cmds.add("-P OUTPUT DROP");
+		addInterfaceRouting(ctx, cmds);
+		cmds.add("-P OUTPUT ACCEPT");
+	}
+
     /**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
@@ -283,276 +407,139 @@ public final class Api {
      * @param showErrors indicates if errors should be alerted
      */
 	private static boolean applyIptablesRulesImpl(final Context ctx, List<Integer> uidsWifi, List<Integer> uids3g,
-			List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN, final boolean showErrors) {
+			List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN, final boolean showErrors,
+			List<String> out) {
 		if (ctx == null) {
 			return false;
 		}
 		
 		assertBinaries(ctx, showErrors);
 
-		
-		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
-		final boolean enableVPN = appprefs.getBoolean("enableVPN", false);
-		final boolean enableLAN = appprefs.getBoolean("enableLAN", false) && !cfg.isTethered;
-		final boolean enableRoam = appprefs.getBoolean("enableRoam", true);
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P INPUT ACCEPT");
+		cmds.add("-P FORWARD ACCEPT");
 
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
-		final boolean blacklist = !whitelist;
-		final boolean logenabled = appprefs.getBoolean("enableFirewallLog",true);
+		// prevent data leaks due to incomplete rules
+		cmds.add("-P OUTPUT DROP");
 
-		//final boolean isVPNEnabled = appprefs.getBoolean("enableVPNProfile",false);
-		
-		//String iptargets = getTargets(ctx);
-		
-
-		StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT, ""));
-		
-		try {
-			int code;
-			
-			String busybox = getBusyBoxPath(ctx);
-			String grep = busybox + " grep";
-			final List<String> listCommands = new ArrayList<String>();
-			listCommands.add(ipPath + " -L afwall >/dev/null 2>/dev/null || " + ipPath +  " --new afwall || exit" );
-			listCommands.add(ipPath + " -L afwall-3g >/dev/null 2>/dev/null ||" + ipPath +  "--new afwall-3g || exit" );
-			listCommands.add(ipPath + " -L afwall-wifi >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-wifi || exit" );
-			listCommands.add(ipPath + " -L afwall-lan >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-lan || exit" );
-			listCommands.add(ipPath + " -L afwall-vpn >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-vpn || exit" );
-			listCommands.add(ipPath + " -L afwall-reject >/dev/null 2>/dev/null || " + ipPath +  " --new afwall-reject || exit" );
-			listCommands.add(ipPath + " -L OUTPUT | " + grep + " -q afwall || " + ipPath +  " -A OUTPUT -j afwall || exit");
-			listCommands.add(ipPath + " -F afwall || exit " );
-			listCommands.add(ipPath + " -F afwall-3g || exit ");
-			listCommands.add(ipPath + " -F afwall-wifi || exit ");
-			listCommands.add(ipPath + " -F afwall-lan || exit ");
-			listCommands.add(ipPath + " -F afwall-vpn || exit ");
-			listCommands.add(ipPath + " -F afwall-reject || exit 10");
-			listCommands.add(ipPath + " -A afwall -m owner --uid-owner 0 -p udp --dport 53 -j RETURN || exit");
-			listCommands.add((ipPath + " -D OUTPUT -j afwall"));
-			listCommands.add((ipPath + " -I OUTPUT 1 -j afwall"));
-			//this will make sure the only afwall will be able to control the OUTPUT chain, regardless of any firewall installed!
-			//listCommands.add((ipPath + " --flush OUTPUT || exit"));
-			
-			// Check if logging is enabled
-			if (logenabled) {
-					listCommands.add((ipPath + " -A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid "));
-			}
-			listCommands.add((ipPath + " -A afwall-reject -j REJECT || exit"));
-			
-			//now reenable everything after restart
-			listCommands.add((ipPath + " -P INPUT ACCEPT"));
-			listCommands.add((ipPath + " -P OUTPUT ACCEPT"));
-			listCommands.add((ipPath + " -P FORWARD ACCEPT"));
-			
-				
-				if (customScript.length() > 0) {
-					replaceAll(customScript, "$IPTABLES", " " +ipPath );
-					listCommands.add(customScript.toString());
-				}
-				
-				for (final String itf : ITFS_3G) {
-					listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-3g || exit")));
-				}
-				for (final String itf : ITFS_WIFI) {
-					if(enableLAN) {
-						if(setv6 && !cfg.lanMaskV6.equals("")) {
-							listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV6 + " -o " + itf + " -j afwall-lan || exit");
-							listCommands.add(ipPath + " -A afwall '!' -d " + cfg.lanMaskV6 + " -o " + itf+ " -j afwall-wifi || exit");
-						}
-						if(!setv6 && !cfg.lanMaskV4.equals("")) {
-							listCommands.add(ipPath + " -A afwall -d " + cfg.lanMaskV4 + " -o " + itf + " -j afwall-lan || exit");
-							listCommands.add(ipPath + " -A afwall '!' -d "+ cfg.lanMaskV4 + " -o " + itf + " -j afwall-wifi || exit");
-						}
-					} else {
-						listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-wifi || exit")));
-					}
-				}
-					
-				if(enableVPN) {
-					for (final String itf : ITFS_VPN) {
-						listCommands.add((ipPath + " -A afwall -o ".concat(itf).concat(" -j afwall-vpn || exit")));
-					}
-				}	
-				
-				final String targetRule = (whitelist ? "RETURN" : "afwall-reject");
-				final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
-				final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
-				final boolean any_lan = uidsLAN.indexOf(SPECIAL_UID_ANY) >= 0;
-				final boolean any_vpn = uidsVPN.indexOf(SPECIAL_UID_ANY) >= 0;
-				if (whitelist && !any_wifi) {
-					addRuleForUsers(listCommands, new String[]{"dhcp","wifi"}, ipPath + " -A afwall-wifi", "-j RETURN || exit");
-				}
-				//now 3g rules!
-				if (any_3g) {
-					if (blacklist) {
-						/* block any application on this interface */
-						listCommands.add((ipPath + " -A afwall-3g -j "+(targetRule)+(" || exit")));
-					}
-				} else {
-					/* release/block individual applications on this interface */
-					if(cfg.isRoaming && enableRoam) {
-						for (final Integer uid : uidsRoam) {
-							if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-						}
-						
-					} else {
-						for (final Integer uid : uids3g) {
-							if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-						}
-					}
-				}
-
-				//now wifi rules!
-				//--if the wifi interface is down, reject all outbound packets without logging them--
-				//revert back to old approach
-				if (any_wifi) {
-					if (blacklist) {
-						/* block any application on this interface */
-						listCommands.add((ipPath + " -A afwall-wifi -j "+(targetRule)+(" || exit")));
-					}
-				} else {
-					/* release/block individual applications on this interface */
-					for (final Integer uid : uidsWifi) {
-						if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-					}
-				}
-				
-				//now LAN rules!
-				if (enableLAN) {
-					if (!cfg.allowWifi) {
-						listCommands.add(ipPath + " -A afwall-lan -j REJECT || exit");
-					} else if (any_lan) {
-						if (blacklist) {
-							/* block any application on this interface */
-							listCommands.add((ipPath + " -A afwall-lan -j "+(targetRule)+(" || exit")));
-						}
-					} else {
-						/* release/block individual applications on this interface */
-						for (final Integer uid : uidsLAN) {
-							if (uid != null && uid >= 0)
-								listCommands.add((ipPath + " -A afwall-lan -m owner --uid-owner " + uid +
-										" -j " + targetRule + " || exit"));
-						}
-
-						// NOTE: we still need to open a hole for DNS lookups
-						// This falls through to the wifi rules if the app is not whitelisted for LAN access
-						if (whitelist) {
-							listCommands.add(ipPath + " -A afwall-lan -p udp --dport 53 -j RETURN || exit");
-						}
-					}
-				}
-
-				//now vpn rules!
-				if(enableVPN) {
-					if (any_vpn) {
-						if (blacklist) {
-							/* block any application on this interface */
-							listCommands.add((ipPath + " -A afwall-vpn -j "+(targetRule)+(" || exit")));
-						}
-					} else {
-						/* release/block individual applications on this interface */
-						for (final Integer uid : uidsVPN) {
-							if (uid !=null && uid >= 0) listCommands.add((ipPath + " -A afwall-vpn -m owner --uid-owner "+(uid)+(" -j ")+(targetRule)+(" || exit")));
-						}
-					}
-				}
-
-				// note that this can only blacklist DNS/DHCP services, not all tethered traffic
-				if (cfg.isTethered &&
-					((blacklist && (any_wifi || any_3g)) ||
-				     (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
-
-					String users[] = { "root", "nobody" };
-					String action = " -j " + targetRule + " || exit";
-
-					// DHCP replies to client
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p udp --sport=67 --dport=68" + action);
-
-					// DNS replies to client
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p udp --sport=53" + action);
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-wifi","-p tcp --sport=53" + action);
-
-					// DNS requests to upstream servers
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g","-p udp --dport=53" + action);
-					addRuleForUsers(listCommands, users, ipPath + " -A afwall-3g","-p tcp --dport=53" + action);
-				}
-				
-				if (whitelist) {
-					if (!any_3g) {
-						if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-3g -j afwall-reject || exit"));
-						}
-					}
-					if (!any_wifi) {
-						if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-wifi -j afwall-reject || exit"));
-						}
-					}
-					if (enableVPN && !any_vpn) {
-						if (uidsVPN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-vpn -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-vpn -j afwall-reject || exit"));
-
-						}
-					} 
-					if (enableLAN && !any_lan) {
-						if (uidsLAN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-							listCommands.add((ipPath + " -A afwall-lan -m owner --uid-owner 0:999999999 -j afwall-reject || exit"));
-						} else {
-							listCommands.add((ipPath + " -A afwall-lan -j afwall-reject || exit"));
-
-						}
-					}
-				} else {
-					if (uids3g.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-3g -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-3g -j afwall-reject || exit"));
-					}
-					if (uidsWifi.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-wifi -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-wifi -j afwall-reject || exit"));
-					}
-					if (enableVPN && uidsVPN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-vpn -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-vpn -j afwall-reject || exit"));
-					}
-					if (enableLAN && uidsLAN.indexOf(SPECIAL_UID_KERNEL) >= 0) {
-						listCommands.add((ipPath + " -A afwall-lan -m owner --uid-owner 0:999999999 -j RETURN || exit"));
-						listCommands.add((ipPath + " -A afwall-lan -j afwall-reject || exit"));
-					}
-				}
-				
-			//active defence
-			
-			
-			final StringBuilder res = new StringBuilder();
-			code = runScriptAsRoot(ctx, listCommands, res);
-			if (showErrors && code != 0) {
-				String msg = res.toString();
-				// Remove unnecessary help message from output
-				if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
-					msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
-				}
-				alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
-			} else {
-				return true;
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "Exception while applying rules: " + e.getMessage());
-			if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
+		for (String s : staticChains) {
+			cmds.add("#NOCHK# -N " + s);
+			cmds.add("-F " + s);
 		}
-		
-		
-		return false;
+		for (String s : dynChains) {
+			cmds.add("#NOCHK# -N " + s);
+			// addInterfaceRouting() will flush these chains, but not create them
+		}
+
+		cmds.add("#NOCHK# -D OUTPUT -j afwall");
+		cmds.add("-I OUTPUT 1 -j afwall");
+		addRejectRules(cmds,ctx);
+
+		// add custom rules before the afwall* chains are populated
+		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
+
+		if (G.enableInbound()) {
+			// we don't have any rules in the INPUT chain prohibiting inbound traffic, but
+			// local processes can't reply to half-open connections without this rule
+			cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
+		}
+
+		addInterfaceRouting(ctx, cmds);
+
+		// send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
+		for (final String itf : ITFS_WIFI) {
+			cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
+		}
+		for (final String itf : ITFS_3G) {
+			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
+		}
+		if (G.enableVPN()) {
+			// if !enableVPN then we ignore those interfaces (pass all traffic)
+			for (final String itf : ITFS_VPN) {
+				cmds.add("-A afwall -o " + itf + " -j afwall-vpn");
+			}
+		}
+
+		final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
+		final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
+
+		// special rules to allow 3G<->wifi tethering
+		// note that this can only blacklist DNS/DHCP services, not all tethered traffic
+		if (((!whitelist && (any_wifi || any_3g)) ||
+		     (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
+
+			String users[] = { "root", "nobody" };
+			String action = " -j " + (whitelist ? "RETURN" : "afwall-reject");
+
+			// DHCP replies to client
+			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+
+			// DNS replies to client
+			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p udp --sport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p tcp --sport=53" + action);
+
+			// DNS requests to upstream servers
+			addRuleForUsers(cmds, users, "-A afwall-3g-tether", "-p udp --dport=53" + action);
+			addRuleForUsers(cmds, users, "-A afwall-3g-tether", "-p tcp --dport=53" + action);
+		}
+
+		// if tethered, try to match the above rules (if enabled).  no match -> fall through to the
+		// normal 3G/wifi rules
+		cmds.add("-A afwall-wifi-tether -j afwall-wifi-fork");
+		cmds.add("-A afwall-3g-tether -j afwall-3g-fork");
+
+		// NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
+		// on the LAN
+		if (whitelist) {
+			cmds.add("-A afwall-wifi-lan -p udp --dport 53 -j RETURN");
+		}
+
+		// now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
+		// in whitelist mode the last rule in the list routes everything else to afwall-reject
+		addRulesForUidlist(cmds, uids3g, "afwall-3g-home", whitelist);
+		addRulesForUidlist(cmds, uidsRoam, "afwall-3g-roam", whitelist);
+		addRulesForUidlist(cmds, uidsWifi, "afwall-wifi-wan", whitelist);
+		addRulesForUidlist(cmds, uidsLAN, "afwall-wifi-lan", whitelist);
+		addRulesForUidlist(cmds, uidsVPN, "afwall-vpn", whitelist);
+
+		cmds.add("-P OUTPUT ACCEPT");
+
+		iptablesCommands(cmds, out);
+		return true;
     }
-	
+
+	/**
+	 * Add the repetitive parts (ipPath and such) to an iptables command list
+	 * 
+	 * @param in Commands in the format: "-A foo ...", "#NOCHK# -A foo ...", or "#LITERAL# <UNIX command>"
+	 * @param out A list of UNIX commands to execute
+	 */
+	private static void iptablesCommands(List<String> in, List<String> out) {
+		for (String s : in) {
+			if (s.matches("#LITERAL# .*")) {
+				out.add(s.replaceFirst("^#LITERAL# ", "").replaceAll("\\$IPTABLES", ipPath));
+			} else if (s.matches("#NOCHK# .*")) {
+					out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath));
+			} else {
+				out.add(ipPath + " " + s);
+			}
+		}
+	}
+
+	private static void fixupLegacyCmds(List<String> cmds) {
+		for (int i = 0; i < cmds.size(); i++) {
+			String s = cmds.get(i);
+			if (s.matches("#NOCHK# .*")) {
+				s = s.replaceFirst("^#NOCHK# ", "");
+			} else {
+				s += " || exit";
+			}
+			cmds.set(i, s);
+		}
+	}
+
 	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
 		initSpecial();
 		final PackageManager pm = ctx.getPackageManager();
@@ -582,24 +569,23 @@ public final class Api {
      * This is much faster than just calling "applyIptablesRules", since it don't need to read installed applications.
      * @param ctx application context (mandatory)
      * @param showErrors indicates if errors should be alerted
+     * @param callback If non-null, use a callback instead of blocking the current thread
      */
-	public static boolean applySavedIptablesRules(Context ctx, boolean showErrors) {
+	public static boolean applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
 		if (ctx == null) {
 			return false;
 		}
 		initSpecial();
 		
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+		final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
+		final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+		final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
+		final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
 
-		final String savedPkg_wifi_uid = prefs.getString(PREF_WIFI_PKG_UIDS, "");
-		final String savedPkg_3g_uid = prefs.getString(PREF_3G_PKG_UIDS, "");
-		final String savedPkg_roam_uid = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
-		final String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
-		final String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
-		
-		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
 		boolean returnValue = false;
+		List<String> cmds = new ArrayList<String>();
+
 		setIpTablePath(ctx,false);
 		returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
@@ -607,8 +593,13 @@ public final class Api {
 					getListFromPref(savedPkg_roam_uid),
 					getListFromPref(savedPkg_vpn_uid),
 					getListFromPref(savedPkg_lan_uid),
-					showErrors);
-		if (enableIPv6) {
+					showErrors,
+					cmds);
+		if (returnValue == false) {
+			return false;
+		}
+
+		if (G.enableIPv6()) {
 			setIpTablePath(ctx,true);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
@@ -616,30 +607,77 @@ public final class Api {
 					getListFromPref(savedPkg_roam_uid),
 					getListFromPref(savedPkg_vpn_uid),
 					getListFromPref(savedPkg_lan_uid),
-					showErrors);
+					showErrors,
+					cmds);
+			if (returnValue == false) {
+				return false;
+			}
 		}
-		return returnValue;
-	}
-	
-    /**
-     * Purge and re-add all rules.
-     * @param ctx application context (mandatory)
-     * @param showErrors indicates if errors should be alerted
-     */
-	public static boolean applyIptablesRules(Context ctx, boolean showErrors) {
-		if (ctx == null) {
+
+		rulesUpToDate = true;
+
+		if (callback != null) {
+			callback.run(ctx, cmds);
+			return true;
+		} else {
+			fixupLegacyCmds(cmds);
+			try {
+				final StringBuilder res = new StringBuilder();
+				int code = runScriptAsRoot(ctx, cmds, res);
+				if (showErrors && code != 0) {
+					String msg = res.toString();
+					// Remove unnecessary help message from output
+					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
+						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
+					}
+					alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
+				} else {
+					return true;
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "Exception while applying rules: " + e.getMessage());
+				if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
+			}
 			return false;
 		}
-		saveRules(ctx);
-		return applySavedIptablesRules(ctx, showErrors);
-    }
-	
+	}
+
+	@Deprecated
+	public static boolean applySavedIptablesRules(Context ctx, boolean showErrors) {
+		return applySavedIptablesRules(ctx, showErrors, null);
+	}
+
+	public static boolean fastApply(Context ctx, RootCommand callback) {
+		if (!rulesUpToDate) {
+			return applySavedIptablesRules(ctx, true, callback);
+		}
+
+		List<String> out = new ArrayList<String>();
+		List<String> cmds;
+
+		cmds = new ArrayList<String>();
+		setIpTablePath(ctx, false);
+		applyShortRules(ctx, cmds);
+		iptablesCommands(cmds, out);
+
+		if (G.enableIPv6()) {
+			setIpTablePath(ctx, true);
+			cmds = new ArrayList<String>();
+			applyShortRules(ctx, cmds);
+			iptablesCommands(cmds, out);
+		}
+		callback.run(ctx, out);
+		return true;
+	}
+
 	/**
 	 * Save current rules using the preferences storage.
 	 * @param ctx application context (mandatory)
 	 */
 	public static void saveRules(Context ctx) {
 		final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+
+		rulesUpToDate = false;
 
 		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
 		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
@@ -691,160 +729,162 @@ public final class Api {
 		edit.commit();
     }
 	
-	
-	 /**
-     * Purge all iptables rules.
-     * @param ctx mandatory context
-     * @param showErrors indicates if errors should be alerted
-     * @return true if the rules were purged
-     */
-	public static boolean purgeVPNRules(Context ctx, boolean showErrors) {
-    	final StringBuilder res = new StringBuilder();
-		try {
-			assertBinaries(ctx, showErrors);
-			// Custom "shutdown" script
-	    	setIpTablePath(ctx,false);
-	    	List<String> listCommands = new ArrayList<String>();
-	    	listCommands.add((ipPath + " -F afwall-vpn"));
-			int code = runScriptAsRoot(ctx, listCommands, res);
-			if (code == -1) {
-				if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-				return false;
-			}
-			final SharedPreferences appprefs = PreferenceManager
-					.getDefaultSharedPreferences(ctx);
-			final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
-			if (enableIPv6) {
-				setIpTablePath(ctx, true);
-				listCommands.clear();
-				listCommands.add((ipPath + " -F afwall-vpn"));
-				code = runScriptAsRoot(ctx, listCommands, res);
-				if (code == -1) {
-					if (showErrors)
-						alert(ctx, ctx.getString(R.string.error_purge) + code
-								+ "\n" + res);
-					return false;
-				}
-			}
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-    }
-    
     /**
      * Purge all iptables rules.
      * @param ctx mandatory context
      * @param showErrors indicates if errors should be alerted
+     * @param callback If non-null, use a callback instead of blocking the current thread
      * @return true if the rules were purged
      */
-	public static boolean purgeIptables(Context ctx, boolean showErrors) {
-    	
+	public static boolean purgeIptables(Context ctx, boolean showErrors, RootCommand callback) {
+
+		List<String> cmds = new ArrayList<String>();
+		List<String> out = new ArrayList<String>();
+
+		for (String s : staticChains) {
+			cmds.add("-F " + s);
+		}
+		for (String s : dynChains) {
+			cmds.add("-F " + s);
+		}
+		cmds.add("-D OUTPUT -j afwall");
+		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT2, cmds);
+
 		try {
 			assertBinaries(ctx, showErrors);
-			// Custom "shutdown" script
-	    	setIpTablePath(ctx,false);
-	    	purgeRules(ctx,showErrors);
-			final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-			final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
-			if(enableIPv6) {
+
+			// IPv4
+			setIpTablePath(ctx, false);
+			iptablesCommands(cmds, out);
+
+			// IPv6
+			if(G.enableIPv6()) {
 				setIpTablePath(ctx,true);
-				purgeRules(ctx,showErrors);
+				iptablesCommands(cmds, out);
 			}
+
+			if (callback != null) {
+				callback.run(ctx, out);
+			} else {
+				fixupLegacyCmds(out);
+				if (runScriptAsRoot(ctx, out, new StringBuilder()) == -1) {
+					if(showErrors) alert(ctx, ctx.getString(R.string.error_purge));
+					return false;
+				}
+			}
+
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
     }
-	
-	private static boolean purgeRules(Context ctx,boolean showErrors) throws IOException {
-		boolean returnVal = true;
-		final StringBuilder res = new StringBuilder();
-		List<String> listCommands = new ArrayList<String>();
-    	listCommands.add((ipPath + " -F afwall"));
-    	listCommands.add((ipPath + " -F afwall-reject"));
-    	listCommands.add((ipPath + " -F afwall-3g"));
-    	listCommands.add((ipPath + " -F afwall-wifi"));
-    	listCommands.add((ipPath + " -D OUTPUT -j afwall || exit"));
-    	final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-    	StringBuilder customScript = new StringBuilder(ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).getString(Api.PREF_CUSTOMSCRIPT2, ""));
-		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
-		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
 
-    	if(enableVPN) {
-    		listCommands.add((ipPath + " -F afwall-vpn"));
-    	}
-    	if(enableLAN) {
-    		listCommands.add((ipPath + " -F afwall-lan"));
-    	}
-    	if (customScript.length() > 0) {
-    		replaceAll(customScript, "$IPTABLES", " " +ipPath );
-    		listCommands.add(customScript.toString());
-    	}
-		int code = runScriptAsRoot(ctx, listCommands, res);
-		if (code == -1) {
-			if(showErrors) alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-			returnVal = false;
-		}
-		return returnVal;
-	}
-	
-	/**
-	 * Display iptables rules output
-	 * @param ctx application context
-	 */
-	public static String showIptablesRules(Context ctx) {
-		try {
-    		final StringBuilder res = new StringBuilder();
-    		setIpTablePath(ctx,false);
-    		List<String> listCommands = new ArrayList<String>();
-    		listCommands.add((ipPath + " -L -n"));
-			runScriptAsRoot(ctx, listCommands,  res);
-			return res.toString();
-		} catch (Exception e) {
-			alert(ctx, "error: " + e);
-		}
-		return "";
-	}
-	
-	/**
-	 * Display iptables rules output
-	 * @param ctx application context
-	 */
-	public static String showIp6tablesRules(Context ctx) {
-		try {
-    		final StringBuilder res = new StringBuilder();
-    		setIpTablePath(ctx,true);
-    		List<String> listCommands = new ArrayList<String>();
-    		listCommands.add((ipPath + " -L -n"));
-			runScriptAsRoot(ctx, listCommands,  res);
-			return res.toString();
-		} catch (Exception e) {
-			alert(ctx, "error: " + e);
-		}
-		return "";
+	@Deprecated
+	public static boolean purgeIptables(Context ctx, boolean showErrors) {
+		// warning: this is a blocking call
+		return purgeIptables(ctx, showErrors, null);
 	}
 
 	/**
-	 * Display logs
+	 * Retrieve the current set of IPv4 or IPv6 rules and pass it to a callback
+	 * 
 	 * @param ctx application context
-     * @return true if the clogs were cleared
+	 * @param callback callback to receive rule list
+	 * @param useIPV6 true to list IPv6 rules, false to list IPv4 rules
 	 */
-	public static boolean clearLog(Context ctx) {
-		try {
-			final StringBuilder res = new StringBuilder();
-			List<String> listCommands = new ArrayList<String>();
-			listCommands.add((getBusyBoxPath(ctx) + " dmesg -c >/dev/null || exit"));
-			int code = runScriptAsRoot(ctx, listCommands, res);
-			if (code != 0) {
-				alert(ctx, res);
-				return false;
-			}
-			return true;
-		} catch (Exception e) {
-			alert(ctx, "error: " + e);
+	public static void fetchIptablesRules(Context ctx, boolean useIPV6, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		List<String> out = new ArrayList<String>();
+		cmds.add("-n -v -L");
+		if (useIPV6) {
+			setIpTablePath(ctx, true);
+		} else {
+			setIpTablePath(ctx, false);
 		}
-		return false;
+		iptablesCommands(cmds, out);
+		callback.run(ctx, out);
+	}
+
+	/**
+	 * Run a list of commands with both iptables and ip6tables
+	 * 
+	 * @param ctx application context
+	 * @param cmds list of commands to run
+	 * @param callback callback for completion
+	 */
+	public static void apply46(Context ctx, List<String> cmds, RootCommand callback) {
+		List<String> out = new ArrayList<String>();
+
+		setIpTablePath(ctx, false);
+		iptablesCommands(cmds, out);
+
+		if (G.enableIPv6()) {
+			setIpTablePath(ctx, true);
+			iptablesCommands(cmds, out);
+		}
+		callback.run(ctx, out);
+	}
+
+	/**
+	 * Delete all firewall rules.  For diagnostic purposes only.
+	 * 
+	 * @param ctx application context
+	 * @param callback callback for completion
+	 */
+	public static void flushAllRules(Context ctx, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-F");
+		cmds.add("-X");
+		apply46(ctx, cmds, callback);
+	}
+
+	/**
+	 * Enable or disable logging by rewriting the afwall-reject chain.  Logging
+	 * will be enabled or disabled based on the preference setting.
+	 * 
+	 * @param ctx application context
+	 * @param callback callback for completion
+	 */
+	public static void updateLogRules(Context ctx, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-F afwall-reject");
+		addRejectRules(cmds,ctx);
+		apply46(ctx, cmds, callback);
+	}
+
+	/**
+	 * Clear firewall logs by purging dmesg
+	 * 
+	 * @param ctx application context
+	 * @param callback Callback for completion status
+	 */
+	public static void clearLog(Context ctx, RootCommand callback) {
+		callback.run(ctx, getBusyBoxPath(ctx) + " dmesg -c");
+	}
+
+	/**
+	 * Fetch kernel logs via busybox dmesg.  This will include {AFL} lines from
+	 * logging rejected packets.
+	 * 
+	 * @param ctx application context
+	 * @param callback Callback for completion status
+	 */
+	public static void fetchDmesg(Context ctx, RootCommand callback) {
+		if(hasTarget(ctx, "LOG")) {
+			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");	
+		} else if(hasTarget(ctx, "NFLOG")){
+			callback.run(ctx, getNflogPath(ctx) + " 0");
+		}
+	}
+
+	/**
+	 * List all interfaces via "ifconfig -a"
+	 * 
+	 * @param ctx application context
+	 * @param callback Callback for completion status
+	 */
+	public static void runIfconfig(Context ctx, RootCommand callback) {
+		callback.run(ctx, getBusyBoxPath(ctx) + " ifconfig -a");
 	}
 	
 	public static class LogEntry {
@@ -863,37 +903,18 @@ public final class Api {
 		    	
 		    }
 	}
-	/**
-	 * Display logs
-	 * @param ctx application context
-	 */
-	public static String showLog(Context ctx) {
+
+	public static String parseLog(Context ctx, String dmesg) {
+		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
+		final Integer unknownUID = -99;
+		StringBuilder res = new StringBuilder();
+		String line;
+		int start, end;
+		Integer appid;
+		final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
+		LogInfo loginfo = null;
+
 		try {
-    		StringBuilder res = new StringBuilder();
-    		StringBuilder output = new StringBuilder();
-    		String busybox = getBusyBoxPath(ctx);
-			String grep = busybox + " grep";
-    		
-			List<String> listCommands = new ArrayList<String>();
-			listCommands.add(getBusyBoxPath(ctx) + "dmesg | " + grep +" {AFL}");
-			
-			int code = runScriptAsRoot(ctx, listCommands,  res);
-			//int code = runScriptAsRoot(ctx, "cat /proc/kmsg", res);
-			if (code != 0) {
-				if (res.length() == 0) {
-					output.append(ctx.getString(R.string.no_log));
-				}
-				return output.toString();
-			}
-						
-			final BufferedReader r = new BufferedReader(new StringReader(res.toString()));
-			final Integer unknownUID = -99;
-			res = new StringBuilder();
-			String line;
-			int start, end;
-			Integer appid;
-			final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
-			LogInfo loginfo = null;
 			while ((line = r.readLine()) != null) {
 				if (line.indexOf("{AFL}") == -1) continue;
 				appid = unknownUID;
@@ -947,70 +968,15 @@ public final class Api {
 					res.append(address.toString());
 					res.append("\n\t---------\n");
 				}
-			if (res.length() == 0) {
-				res.append(ctx.getString(R.string.no_log));
-			}
-			return res.toString();
-			//return output.toString();
-			//alert(ctx, res);
 		} catch (Exception e) {
-			alert(ctx, "error: " + e);
+			return null;
 		}
-		return "";
+		if (res.length() == 0) {
+			res.append(ctx.getString(R.string.no_log));
+		}
+		return res.toString();
 	}
 	
-	/*public static void parseResult(String result) {
-	    int pos = 0;
-	    String src, dst, len, uid;
-	    final BufferedReader r = new BufferedReader(new StringReader(result.toString()));
-	    String line;
-	    try {
-			while ((line = r.readLine()) != null) {
-			  int newline = result.indexOf("\n", pos);
-
-			  pos = line.indexOf("SRC=", pos);
-			  //if(pos == -1) continue;
-			  int space = line.indexOf(" ", pos);
-			  //if(space == -1) continue;
-			  src = line.substring(pos + 4, space);
-
-			  pos = line.indexOf("DST=", pos);
-			  //if(pos == -1) continue;
-			  space = line.indexOf(" ", pos);
-			 // if(space == -1) continue;
-			  dst = line.substring(pos + 4, space);
-			  
-			  pos = line.indexOf("LEN=", pos);
-			  //if(pos == -1) continue;
-			  space = line.indexOf(" ", pos);
-			  //if(space == -1) continue;
-			  len = line.substring(pos + 4, space);
-			 
-			  pos = line.indexOf("UID=", pos);
-			  //if(pos == -1) continue;
-			  space = line.indexOf(" ", pos);
-			  //if(space == -1) continue;
-			  uid = line.substring(pos + 4, space);
-			  LogEntry entry = logEntriesHash.get(uid);
-
-			  if(entry == null)
-			    entry = new LogEntry();
-
-			  entry.uid = uid;
-			  entry.src = src;
-			  entry.dst = dst;
-			  entry.len = new Integer(len).intValue();
-			  entry.packets++;
-			  entry.bytes += entry.len * 8;
-
-			  logEntriesHash.put(uid, entry);
-			  logEntriesList.add(entry);
-			}
-		} catch (NumberFormatException e) {
-		} catch (IOException e) {
-		}
-	  }*/
-
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
@@ -1088,49 +1054,13 @@ public final class Api {
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
-			/*
-				0 - Root
-				1000 - System
-				1001 - Radio
-				1002 - Bluetooth
-				1003 - Graphics
-				1004 - Input
-				1005 - Audio
-				1006 - Camera
-				1007 - Log
-				1008 - Compass
-				1009 - Mount
-				1010 - Wi-Fi
-				1011 - ADB
-				1012 - Install
-				1013 - Media
-				1014 - DHCP
-				1015 - External Storage
-				1016 - VPN
-				1017 - Keystore
-				1018 - USB Devices
-				1019 - DRM
-				1020 - Available
-				1021 - GPS
-				1022 - deprecated
-				1023 - Internal Media Storage
-				1024 - MTP USB
-				1025 - NFC
-				1026 - DRM RPC
-
-			 
-			 */
-			Map<Integer, PackageInfoData> syncMap = new HashMap<Integer, PackageInfoData>();
+			SparseArray<PackageInfoData> syncMap = new SparseArray<PackageInfoData>();
 			final Editor edit = prefs.edit();
 			boolean changed = false;
 			String name = null;
 			String cachekey = null;
 			final String cacheLabel = "cache.label.";
 			PackageInfoData app = null;
-			/*File file = new File(ctx.getDir("data", Context.MODE_PRIVATE), "packageInfo"); 
-			if(file.exists()){
-				syncMap = getObjectFromFile(ctx);
-			}*/
 			
 			for (final ApplicationInfo apinfo : installed) {
 				count = count+1;
@@ -1164,10 +1094,6 @@ public final class Api {
 					syncMap.put(apinfo.uid, app);
 				} else {
 					app.names.add(name);
-					/*final String newnames[] = new String[app.names.length + 1];
-					System.arraycopy(app.names, 0, newnames, 0, app.names.length);
-					newnames[app.names.length] = name;
-					app.names = newnames;*/
 				}
 				app.firstseen = firstseen;
 				// check if this application is selected
@@ -1204,7 +1130,7 @@ public final class Api {
 			specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
 			specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
 			specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
-			specialData.add(new PackageInfoData("adb", "ADB(Android Debug Bridge)", "dev.afwall.special.adb"));
+			specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
 			
 			if(specialApps == null) {
 				specialApps = new HashMap<String, Integer>(); 
@@ -1212,7 +1138,7 @@ public final class Api {
 			for (int i=0; i<specialData.size(); i++) {
 				app = specialData.get(i);
 				specialApps.put(app.pkgName, app.uid);
-				if (app.uid != -1 && !syncMap.containsKey(app.uid)) {
+				if (app.uid != -1 && syncMap.get(app.uid) == null) {
 					// check if this application is allowed
 					if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
 						app.selected_wifi = true;
@@ -1232,12 +1158,12 @@ public final class Api {
 					syncMap.put(app.uid, app);
 				}
 			}
+
 			/* convert the map into an array */
-			applications = new ArrayList<PackageInfoData>(syncMap.values());
-			/*if(!file.exists())	{
-				writeObjectToFile(ctx,syncMap);
-			}*/
-			
+			applications = new ArrayList<PackageInfoData>();
+			for (int i = 0; i < syncMap.size(); i++) {
+				applications.add(syncMap.valueAt(i));
+			}
 			return applications;
 		} catch (Exception e) {
 			alert(ctx, ctx.getString(R.string.error_common) + e);
@@ -1309,16 +1235,23 @@ public final class Api {
 		
 	}
     /**
-     * Runs a script, wither as root or as a regular user (multiple commands separated by "\n").
+     * Runs a script as root (multiple commands separated by "\n")
 	 * @param ctx mandatory context
      * @param script the script to be executed
      * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
      * @return the script exit code
+     * @throws IOException on any error executing the script, or writing it to disk
      */
-	public static int runScript(Context ctx, List<String> script, StringBuilder res, long timeout, boolean asroot) {
+	public static int runScriptAsRoot(Context ctx, List<String> script, StringBuilder res) throws IOException {
 		int returnCode = -1;
-		//Log.d(TAG, "In the runScript mode");
+
+		if ((Looper.myLooper() != null) && (Looper.myLooper() == Looper.getMainLooper())) {
+			Log.e(TAG, "runScriptAsRoot should not be called from the main thread\nCall Trace:\n");
+			for (StackTraceElement e : new Throwable().getStackTrace()) {
+				Log.e(TAG, e.toString());
+			}
+		}
+
 		try {
 			returnCode = new RunCommand().execute(script, res, ctx).get();
 		} catch (RejectedExecutionException r) {
@@ -1332,41 +1265,6 @@ public final class Api {
 		}
 		
 		return returnCode;
-	}
-    /**
-     * Runs a script as root (multiple commands separated by "\n").
-	 * @param ctx mandatory context
-     * @param script the script to be executed
-     * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
-     * @return the script exit code
-     */
-	public static int runScriptAsRoot(Context ctx, List<String> script, StringBuilder res, long timeout) {
-		return runScript(ctx, script, res, timeout, true);
-    }
-    /**
-     * Runs a script as root (multiple commands separated by "\n") with a default timeout of 20 seconds.
-	 * @param ctx mandatory context
-     * @param script the script to be executed
-     * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
-     * @return the script exit code
-     * @throws IOException on any error executing the script, or writing it to disk
-     */
-	public static int runScriptAsRoot(Context ctx, List<String> script, StringBuilder res) throws IOException {
-		return runScriptAsRoot(ctx, script, res, 40000);
-	}
-    /**
-     * Runs a script as a regular user (multiple commands separated by "\n") with a default timeout of 20 seconds.
-	 * @param ctx mandatory context
-     * @param script the script to be executed
-     * @param res the script output response (stdout + stderr)
-     * @param timeout timeout in milliseconds (-1 for none)
-     * @return the script exit code
-     * @throws IOException on any error executing the script, or writing it to disk
-     */
-	public static int runScript(Context ctx, List<String> script, StringBuilder res) throws IOException {
-		return runScript(ctx, script, res, 40000, false);
 	}
 	/**
 	 * Asserts that the binary files are installed in the cache directory.
@@ -1384,11 +1282,20 @@ public final class Api {
 				changed = true;
 			}	
 			// Check busybox
-			file = new File(ctx.getDir("bin",0), "busybox_g1");
+			file = new File(ctx.getDir("bin",0), "busybox_g2");
 			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.busybox_g1, file, "755");
+				copyRawFile(ctx, R.raw.busybox_g2, file, "755");
 				changed = true;
 			}
+			
+			// Check nflog
+			file = new File(ctx.getDir("bin",0), "nflog");
+			if (!file.exists()) {
+				copyRawFile(ctx, R.raw.nflog, file, "755");
+				changed = true;
+			}
+
+			
 			// check script
 			file = new File(ctx.getDir("bin",0), "afwallstart");
 			if (!file.exists()) {
@@ -1437,6 +1344,8 @@ public final class Api {
 		if (prefs.getBoolean(PREF_ENABLED, false) == enabled) {
 			return;
 		}
+		rulesUpToDate = false;
+
 		final Editor edit = prefs.edit();
 		edit.putBoolean(PREF_ENABLED, enabled);
 		if (!edit.commit()) {
@@ -1594,47 +1503,6 @@ public final class Api {
 		}
 	}
 	
-	
-	
-	public static boolean clearRules(Context ctx) throws IOException{
-		final StringBuilder res = new StringBuilder();
-		setIpTablePath(ctx,false);
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add((ipPath + " -F"));
-		listCommands.add((ipPath + " -X"));
-		int code = runScriptAsRoot(ctx, listCommands,  res);
-		if (code == -1) {
-			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-			return false;
-		}
-		return true;
-	}
-	
-	public static boolean clearipv6Rules(Context ctx) throws IOException{
-		final StringBuilder res = new StringBuilder();
-		setIpTablePath(ctx,true);
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add((ipPath + " -F"));
-		listCommands.add((ipPath + " -X"));
-		int code = runScriptAsRoot(ctx, listCommands,  res);
-		if (code == -1) {
-			alert(ctx, ctx.getString(R.string.error_purge) + code + "\n" + res);
-			return false;
-		}
-		return true;
-	}
-	
-	/*public void RunAsRoot(List<String> cmds) throws IOException{
-        Process p = Runtime.getRuntime().exec("su");
-        DataOutputStream os = new DataOutputStream(p.getOutputStream());            
-        for (String tmpCmd : cmds) {
-                os.writeBytes(tmpCmd+""));
-        }           
-        os.writeBytes("exit"));  
-        os.flush();
-	}*/
-	
-	
 	public static String runSUCommand(String cmd) throws IOException {
 		final StringBuilder res = new StringBuilder();
 		Process p  = Runtime.getRuntime().exec(
@@ -1648,23 +1516,6 @@ public final class Api {
 		// use inputLine.toString(); here it would have whole source
 		stdout.close();
 		return res.toString();
-	}
-	
-	public static boolean applyRulesBeforeShutdown(Context ctx) {
-		final StringBuilder res = new StringBuilder();
-		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
-		final String myiptables = dir + "/iptables_armv5 ";
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add((myiptables + " -F"));
-		listCommands.add((myiptables + " -X"));
-		listCommands.add((myiptables + " -P INPUT DROP"));
-		listCommands.add((myiptables + " -P OUTPUT DROP"));
-		listCommands.add((myiptables + " -P FORWARD DROP"));
-		try {
-			runScriptAsRoot(ctx, listCommands, res);
-		} catch (IOException e) {
-		}
-		return true;
 	}
 	
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
@@ -1773,42 +1624,33 @@ public final class Api {
 		return res;
 	}
 	
-	/*public static int getIptablesVersion(Context ctx){
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
-		int number = prefs.getInt("iptablesv", 0);
-		if (number == 0) {
-			try {
-				final StringBuilder res = new StringBuilder();
-				ArrayList<CommandCapture> listCommands = new ArrayList<CommandCapture>();
-				listCommands.add(("iptables --version"));
-				runScriptAsRoot(ctx, listCommands, res);
-				try {
-					String inputLine = res.toString();
-					Pattern pattern = Pattern.compile("[0-9]+(\\.[0-9]+)+$");
-					Matcher matcher = pattern.matcher(inputLine.toString());
-					String numberStr = null;
-					while (matcher.find()) {
-						numberStr = matcher.group();
-					}
-					if (numberStr != null) {
-						number = Integer.parseInt(numberStr.replace(".", ""));
-					}
+	public static List<String> interfaceInfo(boolean showMatches) {
+		List<String> ret = new ArrayList<String>();
 
-					final Editor edit = prefs.edit();
-					edit.putInt("iptablesv", number);
-					edit.commit();
-				} catch (Exception e) {
-					Log.e(TAG, e.getLocalizedMessage());
+		try {
+			for (File f : new File("/sys/class/net").listFiles()) {
+				String name = f.getName();
+
+				if (!showMatches) {
+					ret.add(name);
+				} else {
+					if (InterfaceTracker.matchName(InterfaceTracker.ITFS_WIFI, name) != null) {
+						ret.add(name + ": wifi");
+					} else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_3G, name) != null) {
+						ret.add(name + ": 3G");
+					} else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_VPN, name) != null) {
+						ret.add(name + ": VPN");
+					} else {
+						ret.add(name + ": unknown");
+					}
 				}
-
-			} catch (Exception e) {
-				Log.e(TAG, e.getLocalizedMessage());
 			}
+		} catch (Exception e) {
+			Log.e(TAG, "can't list network interfaces: " + e.getLocalizedMessage());
 		}
-		return number;
-	}*/
-	
+		return ret;
+	}
+
 	public static String showIfaces() {
 		String output = null;
 		try {
@@ -1821,6 +1663,37 @@ public final class Api {
 		}
 		return output;
 	}
+	
+	
+	private static String getTargets(Context context) {
+		String output = null;
+		String busybox = getBusyBoxPath(context);
+		String grep = busybox + " grep";
+		try {
+			output = runSUCommand(grep + " \\.\\* /proc/net/ip_tables_targets");
+		} catch (IOException e1) {
+			Log.e(TAG, "IOException: " + e1.getLocalizedMessage());
+		}
+		if (output != null) {
+			output = output.replace(" ", ",");
+		}
+		return output;
+	}		
+	
+	public static boolean hasTarget(Context ctx, String target){
+		boolean result = false;
+		String targets = getTargets(ctx);
+		if(targets !=null) {
+			for(String str: targets.split(",")) {
+				if(target.equals(str)){
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	
 	
 	@SuppressLint("InlinedApi")
 	public static void showInstalledAppDetails(Context context, String packageName) {
@@ -1848,8 +1721,7 @@ public final class Api {
 	}
 	
 	public static boolean hasRootAccess(Context ctx, boolean showErrors) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean isRoot = prefs.getBoolean("isRootAvail", false);
 
 		if (!isRoot) {
@@ -1869,7 +1741,6 @@ public final class Api {
 			} catch (Exception e) {
 			}
 		}
-
 		return isRoot;
 	}
 	
@@ -1918,21 +1789,8 @@ public final class Api {
 		            .setContentTitle(title)
 		            .setContentText(message);
 		
-		//Notification n = builder.build();
-
-		//Notification notification = new Notification(icon, tickerText, when);
-		
 		builder.setContentIntent(in);
 		
-		/*notification.flags |= Notification.FLAG_AUTO_CANCEL
-				| Notification.FLAG_SHOW_LIGHTS;
-
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-				appIntent, 0);
-
-		notification.setLatestEventInfo(context, tickerText,
-				context.getString(R.string.notification_new), contentIntent);*/
-
 		mNotificationManager.notify(HELLO_ID, builder.build());
 
 	}
@@ -1967,68 +1825,4 @@ public final class Api {
 		}
 
 	}
-	
-	public static String getTargets(Context context) {
-		
-		String busybox = getBusyBoxPath(context);
-		String grep = busybox + " grep";
-		
-		final StringBuilder res = new StringBuilder();
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add(grep + " \\.\\* /proc/net/ip_tables_targets");
-		try {
-			runScriptAsRoot(context, listCommands,  res);
-		}catch(Exception e){
-			Log.d("getTargets: " , e.getLocalizedMessage());
-		}
-		return res.toString();
-	  }
-
-	public static String getMobileInterfaces(Context context){
-		
-		final StringBuilder res = new StringBuilder();
-		List<String> listCommands = new ArrayList<String>();
-		listCommands.add("getprop");
-		try {
-			runScriptAsRoot(context, listCommands,  res);
-		}catch(Exception e){
-			Log.d("getTargets: " , e.getLocalizedMessage());
-		}
-		return res.toString();
-	}
-	
-	/*@SuppressWarnings("unchecked")
-	private static Map<Integer, PackageInfoData> getObjectFromFile(Context ctx) {
-		Map<Integer, PackageInfoData> entries = new HashMap<Integer, PackageInfoData>();
-		Looper.prepare();
-		// now new caching technique to improve the performance
-		File file = new File(ctx.getDir("data", Context.MODE_PRIVATE),
-				"packageInfo");
-		ObjectInputStream input;
-		try {
-			input = new ObjectInputStream(new FileInputStream(file));
-			entries = (Map) input.readObject();
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return entries;
-	}
-
-	private static void writeObjectToFile(Context ctx, Map<Integer, PackageInfoData> syncMap) {
-		Looper.prepare();
-		// now new caching technique to improve the performance
-		File file = new File(ctx.getDir("data", Context.MODE_PRIVATE), "packageInfo");    
-		ObjectOutputStream outputStream;
-		try {
-			outputStream = new ObjectOutputStream(new FileOutputStream(file));
-			outputStream.writeObject(syncMap);
-			outputStream.flush();
-			outputStream.close();
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		}
-		
-	}*/
 }

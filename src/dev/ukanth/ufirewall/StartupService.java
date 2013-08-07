@@ -51,30 +51,9 @@ public class StartupService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		context = this;
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
-		
 		if (Api.isEnabled(context.getApplicationContext())) {
-			if(multimode){
-				int itemPosition = prefs.getInt("storedPosition", 0);
-				switch (itemPosition) {
-				case 0:
-					Api.PREFS_NAME = "AFWallPrefs";
-					break;
-				case 1:
-					Api.PREFS_NAME = "AFWallProfile1";
-					break;
-				case 2:
-					Api.PREFS_NAME = "AFWallProfile2";
-					break;
-				case 3:
-					Api.PREFS_NAME = "AFWallProfile3";
-					break;
-				default:
-					break;
-				}
-			}
-			
+			G.reloadPrefs();
+
 			new Thread() {
 				public void run() {
 					Looper.prepare();

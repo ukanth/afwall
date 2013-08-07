@@ -4,10 +4,12 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.6
-* Bug Fix: MDPI list screen.
-* Bug Fix: Startup rules apply issue.
-* 
+Version 1.2.6-BETA
+
+* Lots of Refactor to bring stability and performance. Fixed many issues along with it
+  (HUGE THANKS TO cernekee !)
+* UI: MDPI header issue fix
+* Reshuffle the preferences.
 
 Version 1.2.5.2
 * Fixed issue with Wifi blocked on whitelist for couple of devices
