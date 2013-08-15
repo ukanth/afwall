@@ -32,7 +32,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
@@ -318,14 +317,13 @@ public final class Api {
 	private static void addRejectRules(List<String> cmds, Context ctx) {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
-		if (G.enableFirewallLog()) {
-			if(hasTarget(ctx, "LOG")) {
-				cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");	
-			} else if(hasTarget(ctx, "NFLOG")){
-				cmds.add("-A afwall-reject -j NFLOG --nflog-prefix \"{AFL}\" ");
+		if (G.enableLog()) {
+			if (G.logTarget().equals("LOG")) {
+				cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
+			} else if (G.logTarget().equals("NFLOG")) {
+				cmds.add("-A afwall-reject -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
 			}
-			
-		} 
+		}
 		cmds.add("-A afwall-reject -j REJECT");
 	}
 
@@ -870,10 +868,10 @@ public final class Api {
 	 * @param callback Callback for completion status
 	 */
 	public static void fetchDmesg(Context ctx, RootCommand callback) {
-		if(hasTarget(ctx, "LOG")) {
+		if(G.logTarget().equals("LOG")) {
 			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");	
-		} else if(hasTarget(ctx, "NFLOG")){
-			callback.run(ctx, getNflogPath(ctx) + " 0");
+		} else if(G.logTarget().equals("NFLOG")){
+			callback.run(ctx, getNflogPath(ctx) + " 40");
 		}
 	}
 
@@ -1503,7 +1501,7 @@ public final class Api {
 		}
 	}
 	
-	public static String runSUCommand(String cmd) throws IOException {
+	/*public static String runSUCommand(String cmd) throws IOException {
 		final StringBuilder res = new StringBuilder();
 		Process p  = Runtime.getRuntime().exec(
 				new String[] { "su", "-c", cmd });
@@ -1516,7 +1514,7 @@ public final class Api {
 		// use inputLine.toString(); here it would have whole source
 		stdout.close();
 		return res.toString();
-	}
+	}*/
 	
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
@@ -1651,7 +1649,7 @@ public final class Api {
 		return ret;
 	}
 
-	public static String showIfaces() {
+	/*public static String showIfaces() {
 		String output = null;
 		try {
 			output = runSUCommand("ls /sys/class/net");
@@ -1662,25 +1660,18 @@ public final class Api {
 			output = output.replace(" ", ",");
 		}
 		return output;
-	}
+	} */
 	
 	
-	private static String getTargets(Context context) {
-		String output = null;
+	public static void getTargets(Context context,RootCommand callback) {
 		String busybox = getBusyBoxPath(context);
 		String grep = busybox + " grep";
-		try {
-			output = runSUCommand(grep + " \\.\\* /proc/net/ip_tables_targets");
-		} catch (IOException e1) {
-			Log.e(TAG, "IOException: " + e1.getLocalizedMessage());
-		}
-		if (output != null) {
-			output = output.replace(" ", ",");
-		}
-		return output;
-	}		
+		List<String> out = new ArrayList<String>();
+		out.add(grep + " \\.\\* /proc/net/ip_tables_targets");
+		callback.run(context, out);
+	}	
 	
-	public static boolean hasTarget(Context ctx, String target){
+	/*public static boolean hasTarget(Context ctx, String target){
 		boolean result = false;
 		String targets = getTargets(ctx);
 		if(targets !=null) {
@@ -1692,7 +1683,7 @@ public final class Api {
 			}
 		}
 		return result;
-	}
+	}*/	
 	
 	
 	@SuppressLint("InlinedApi")
