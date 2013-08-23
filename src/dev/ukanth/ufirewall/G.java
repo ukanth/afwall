@@ -69,8 +69,8 @@ public class G extends android.app.Application {
 	public static boolean enableInbound() { return gPrefs.getBoolean("enableInbound", false); }
 	public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean("enableInbound", val).commit(); return val; }
 
-	public static boolean enableFirewallLog() { return gPrefs.getBoolean("enableFirewallLog", true); }
-	public static boolean enableFirewallLog(boolean val) { gPrefs.edit().putBoolean("enableFirewallLog", val).commit(); return val; }
+	public static boolean enableLog() { return gPrefs.getBoolean("enableLog", false); }
+	public static boolean enableLog(boolean val) { gPrefs.edit().putBoolean("enableLog", val).commit(); return val; }
 
 	public static boolean enableAdmin() { return gPrefs.getBoolean("enableAdmin", false); }
 	public static boolean enableAdmin(boolean val) { gPrefs.edit().putBoolean("enableAdmin", val).commit(); return val; }
@@ -112,6 +112,10 @@ public class G extends android.app.Application {
 	
 	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean("applyOnSwitchProfiles", false); }
 	public static boolean applyOnSwitchProfiles(boolean val) { gPrefs.edit().putBoolean("applyOnSwitchProfiles", val).commit(); return val; }
+	
+	public static String logTarget() { return gPrefs.getString("logTarget", ""); }
+	public static String logTarget(String val) { gPrefs.edit().putString("logTarget", val).commit(); return val; }
+
 	
 	public void onCreate() {
 		super.onCreate();

@@ -271,7 +271,7 @@ public class RootShell {
 		rootSession = new Shell.Builder().
 				useSU().
 				setWantSTDERR(true).
-				setWatchdogTimeout(5).
+				setWatchdogTimeout(0).
 				setMinimalLogging(true).
 				open(new Shell.OnCommandResultListener() {
 					public void onCommandResult(int commandCode, int exitCode, List<String> output) {

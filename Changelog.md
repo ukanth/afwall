@@ -4,12 +4,17 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.6-BETA
+Version 1.2.6
 
 * Lots of Refactor to bring stability and performance. Fixed many issues along with it
   (HUGE THANKS TO cernekee !)
-* UI: MDPI header issue fix
-* Reshuffle the preferences.
+  New option -> Now enable/disable log from preferences
+* New option -> Apply rules on Switch Profiles
+* New option -> Active Rules is now optional ( But requires when using LAN/Roaming )
+* New option -> Enable inbound connections ( Required for sshd, AirDroid etc)
+* New busybox binary for ifconfig
+* Rules Log has more information 
+* NFLOG support for newer devices
 
 Version 1.2.5.2
 * Fixed issue with Wifi blocked on whitelist for couple of devices
