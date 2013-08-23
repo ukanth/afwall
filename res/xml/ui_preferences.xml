@@ -8,7 +8,8 @@
     
         
     <CheckBoxPreference
-        android:key="enableFirewallLog"
+        android:key="enableLog"
+        android:defaultValue="false"
         android:summary="@string/showlog_title"
         android:title="@string/enable_firewall_log" />
 

@@ -47,6 +47,7 @@ import com.stericson.RootTools.RootTools;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
 
 public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
@@ -242,6 +243,17 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 				updateFixLeakScript(enabled);
 			}
 		}
+		
+		if (key.equals("enableLog")) {
+			boolean value = sharedPreferences.getBoolean("enableLog", false);
+			if(value){
+				updateLogTarget();
+			} else {
+				G.logTarget("");
+				G.enableLog(false);
+			}
+
+		}
 
 		if (key.equals("enableAdmin")) {
 			boolean value = sharedPreferences.getBoolean("enableAdmin", false);
@@ -264,6 +276,41 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 				}
 			}
 		}
+	}
+
+	private void updateLogTarget() {
+		final Context ctx = getApplicationContext();
+
+		new AsyncTask<Void, Void, Boolean>() {
+			@Override
+			public Boolean doInBackground(Void... args) {
+				Api.getTargets(ctx,new RootCommand()
+				.setReopenShell(true)
+				.setFailureToast(R.string.log_toggle_failed)
+				.setCallback(new RootCommand.Callback() {
+					@Override
+					public void cbFunc(RootCommand state) {
+						if (state.exitCode == 0) {
+							for(String str: state.lastCommandResult.toString().split("\n")) {
+								if("LOG".equals(str)){
+									G.logTarget("LOG");
+									G.enableLog(true);
+									break;
+								} else if ("NFLOG".equals(str)){
+									G.logTarget("NFLOG");
+									G.enableLog(true);
+									break;
+								} else {
+									G.logTarget("");
+									G.enableLog(false);
+								}
+							}
+						} 
+					}
+				}));
+				return true;
+			}
+		}.execute();
 	}
 
 }

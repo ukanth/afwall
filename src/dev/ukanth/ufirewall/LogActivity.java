@@ -65,11 +65,11 @@ public class LogActivity extends DataDumpActivity {
 	}
 
 	protected void populateMenu(SubMenu sub) {
-		if (G.enableFirewallLog()) {
+		/*if (G.enableFirewallLog()) {
 			sub.add(0,MENU_TOGGLE_LOG, 0, R.string.disable_log).setIcon(R.drawable.disable_log);
 		} else {
 			sub.add(0,MENU_TOGGLE_LOG, 0, R.string.enable_log).setIcon(R.drawable.enable_log);
-		}
+		}*/
 		sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
 	}
 
@@ -78,7 +78,7 @@ public class LogActivity extends DataDumpActivity {
     	final Context ctx = this;
 
     	switch (item.getItemId()) {
-    	case MENU_TOGGLE_LOG:
+    	/*case MENU_TOGGLE_LOG:
     		boolean logenabled = !G.enableFirewallLog();
     		G.enableFirewallLog(logenabled);
 
@@ -87,7 +87,7 @@ public class LogActivity extends DataDumpActivity {
 				.setReopenShell(true)
 				.setSuccessToast(logenabled ? R.string.log_was_enabled : R.string.log_was_disabled)
 				.setFailureToast(R.string.log_toggle_failed));
-			return true;
+			return true;*/
     	case MENU_CLEARLOG:
     		Api.clearLog(ctx, new RootCommand()
 				.setReopenShell(true)
@@ -103,7 +103,7 @@ public class LogActivity extends DataDumpActivity {
     	return super.onMenuItemSelected(featureId, item);
     }
 
-	private void setupLogMenuItem(Menu menu, boolean isEnabled) {
+	/*private void setupLogMenuItem(Menu menu, boolean isEnabled) {
 		if (menu == null) return;
 		MenuItem item_onoff = menu.findItem(MENU_TOGGLE_LOG);
 		if (item_onoff == null) return;
@@ -115,11 +115,11 @@ public class LogActivity extends DataDumpActivity {
 			item_onoff.setTitle(R.string.enable_log);
 			item_onoff.setIcon(R.drawable.enable_log);
 		}
-	}
+	}*/
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		setupLogMenuItem(menu, G.enableFirewallLog());
+		//setupLogMenuItem(menu, G.enableFirewallLog());
 		return super.onPrepareOptionsMenu(menu);
 	}
 }
