@@ -16,7 +16,7 @@
 
 package eu.chainfire.libsuperuser;
 
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import dev.ukanth.ufirewall.BuildConfig;
 
 /**

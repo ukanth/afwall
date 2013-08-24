@@ -51,7 +51,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;

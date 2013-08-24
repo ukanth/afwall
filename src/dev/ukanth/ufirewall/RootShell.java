@@ -30,7 +30,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import android.content.Context;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import android.widget.Toast;
 import eu.chainfire.libsuperuser.Shell;
 

@@ -48,7 +48,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 
 public final class InterfaceTracker {
 

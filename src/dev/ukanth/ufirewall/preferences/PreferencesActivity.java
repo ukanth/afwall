@@ -39,7 +39,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import android.widget.Toast;
 
 import com.stericson.RootTools.RootTools;
