@@ -30,8 +30,12 @@ import dev.ukanth.ufirewall.RootShell.RootCommand;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import java.util.Map;
+import java.util.TreeSet;
 
 public class RulesActivity extends DataDumpActivity {
 
@@ -70,10 +74,82 @@ public class RulesActivity extends DataDumpActivity {
 		res.append(eq + "\n" + title + "\n" + eq + "\n\n");
 	}
 
+	protected void appendSystemInfo(final Context ctx) {
+		// Fourth section: "System info"
+		writeHeading(result, true, "System info");
+
+		InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+
+		result.append("Android version: " + android.os.Build.VERSION.RELEASE + "\n");
+		if (cfg.netType == ConnectivityManager.TYPE_MOBILE) {
+			result.append("Active interface: mobile\n");
+		} else if (cfg.netType == ConnectivityManager.TYPE_WIFI) {
+			result.append("Active interface: wifi\n");
+		} else {
+			result.append("Active interface: unknown\n");
+		}
+		result.append("Tether status: " + (cfg.tetherStatusKnown ? (cfg.isTethered ? "yes" : "no") : "unknown") + "\n");
+		result.append("Roam status: " + (cfg.isRoaming ? "yes" : "no") + "\n");
+		result.append("IPv4 subnet: " + cfg.lanMaskV4 + "\n");
+		result.append("IPv6 subnet: " + cfg.lanMaskV6 + "\n");
+
+		// Fifth section: "Preferences"
+		writeHeading(result, true, "Preferences");
+
+		try {
+			Map<String,?> prefs = G.gPrefs.getAll();
+			for (String s : new TreeSet<String>(prefs.keySet())) {
+				Object entry = prefs.get(s);
+				result.append(s + ": " + entry.toString() + "\n");
+			}
+		} catch (NullPointerException e) {
+			result.append("Error retrieving preferences\n");
+		}
+
+		// finished: post result to the user
+		setData(result.toString());
+	}
+
+	protected void appendIfconfig(final Context ctx) {
+		// Third section: "ifconfig" (for interface info obtained through busybox)
+		writeHeading(result, true, "ifconfig");
+		Api.runIfconfig(ctx, new RootCommand()
+			.setLogging(true)
+			.setCallback(new RootCommand.Callback() {
+				public void cbFunc(RootCommand state) {
+					result.append(state.res);
+					appendSystemInfo(ctx);
+				}
+			}));
+	}
+
+	protected void appendNetworkInterfaces(final Context ctx) {
+		// Second section: "Network Interfaces" (for interface info obtained through Android APIs)
+		writeHeading(result, true, "Network interfaces");
+		new AsyncTask<Void, Void, String>() {
+			@Override
+			public String doInBackground(Void... args) {
+				StringBuilder ret = new StringBuilder();
+
+				// filesystem calls can block, so run in another thread
+				for (String s : Api.interfaceInfo(true)) {
+					ret.append(s + "\n");
+				}
+				return ret.toString();
+			}
+
+			@Override
+			public void onPostExecute(String ifaceList) {
+				result.append(ifaceList);
+				appendIfconfig(ctx);
+			}
+		}.execute();
+	}
+
 	protected void populateData(final Context ctx) {
 		result = new StringBuilder();
 
-		// first step: fetch iptables rules
+		// First section: "IPxx Rules"
 		writeHeading(result, false, showIPv6 ? "IPv6 Rules" : "IPv4 Rules");
 		Api.fetchIptablesRules(ctx, showIPv6, new RootCommand()
 			.setLogging(true)
@@ -82,35 +158,7 @@ public class RulesActivity extends DataDumpActivity {
 			.setCallback(new RootCommand.Callback() {
 				public void cbFunc(RootCommand state) {
 					result.append(state.res);
-
-					writeHeading(result, true, "Network interfaces");
-			    	new AsyncTask<Void, Void, String>() {
-			    		@Override
-			    		public String doInBackground(Void... args) {
-			    			StringBuilder ret = new StringBuilder();
-
-			    			// filesystem calls can block, so run in another thread
-			    			for (String s : Api.interfaceInfo(true)) {
-			    				ret.append(s + "\n");
-			    			}
-			    			return ret.toString();
-			    		}
-
-			    		@Override
-			    		public void onPostExecute(String ifaceList) {
-							result.append(ifaceList);
-
-							writeHeading(result, true, "ifconfig");
-				    		Api.runIfconfig(ctx, new RootCommand()
-				    			.setLogging(true)
-								.setCallback(new RootCommand.Callback() {
-									public void cbFunc(RootCommand state) {
-										result.append(state.res);
-										setData(result.toString());
-									}
-								}));
-			    		}
-			    	}.execute();
+					appendNetworkInterfaces(ctx);
 				}
 			}));
 	}
