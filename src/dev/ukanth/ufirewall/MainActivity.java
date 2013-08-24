@@ -90,6 +90,7 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 //public class MainActivity extends SActivity implements OnCheckedChangeListener,
 public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
 		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener {
+	public static final String TAG = "AFWall";
 
 	private TextView mSelected;
     private String[] mLocations;
@@ -575,7 +576,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					// Inflate a new view
 					convertView = inflater.inflate(R.layout.main_list, parent,
 							false);
-					//Log.d("AFWall+", ">> inflate(" + convertView + ")");
 					holder = new ViewHolder();
 					holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
 					holder.box_3g = (CheckBox) convertView.findViewById(R.id.itemcheck_3g);
@@ -892,7 +892,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(this);
-		//Log.d("AFWall+", "Changing enabled status to: " + enabled);
 		Api.setEnabled(this, enabled,true);
 		if (enabled) {
 			applyOrSaveRules();
@@ -1400,7 +1399,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				// "app"
 				return viewToUpdate;
 			} catch (Exception e) {
-				Log.e("AFWall+", "Error loading icon", e);
+				Log.e(TAG, "Error loading icon", e);
 				return null;
 			}
 		}
@@ -1415,7 +1414,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				entryToUpdate.icon
 						.setImageDrawable(entryToUpdate.app.cached_icon);
 			} catch (Exception e) {
-				Log.e("AFWall+", "Error showing icon", e);
+				Log.e(TAG, "Error showing icon", e);
 			}
 		};
 	}
