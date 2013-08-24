@@ -106,6 +106,10 @@ public class RulesActivity extends DataDumpActivity {
 			result.append("Error retrieving preferences\n");
 		}
 
+		// Sixth section: "Logcat"
+		writeHeading(result, true, "Logcat");
+		result.append(Log.getLog());
+
 		// finished: post result to the user
 		setData(result.toString());
 	}
