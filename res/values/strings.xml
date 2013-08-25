@@ -23,7 +23,7 @@
     <string name="error_common">Error : </string>
     <string name="all_item">(Any application) - Same as selecting all applications</string>
     <string name="root_item">(root) - Applications running as root</string>
-    <string name="operation_timeout">Operation timed-out</string>
+    <string name="operation_timeout">Operation timed out</string>
     <string name="fw_enabled">Enabled</string>
     <string name="fw_disabled">Disabled</string>
     <string name="flushed">Rules flushed</string>
@@ -60,14 +60,14 @@
     <string name="custom_script_defined">Custom script defined</string>
     <string name="custom_script_removed">Custom script removed</string>
     <string name="custom_script_error">Error saving custom script</string>
-    <string name="custom_script_info"><b>Enter your custom script bellow.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
+    <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
 </string>
     <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
     <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b>Linux firewall.
 		It allows you to restrict which applications are permitted to access your data networks.
-		This is the perfect solution if you don\'t have an unlimited data plan, or just wants to see your battery lasting longer.\n\n\n
+		This is the perfect solution if you don\'t have an unlimited data plan, or just want extend battery life.\n\n\n
 <b> Help - </b> http://github.com/ukanth/afwall/wiki/Help \n
 <b>Frequently Asked Questions</b>  -https://github.com/ukanth/afwall/wiki/Help \n
 <b>Developer </b> - Umakanthan Chandran \n
@@ -90,7 +90,7 @@ Thanks to Kevin Cernekee for his huge help in refactor and various patches\n
     <string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
     <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(SSH)</string>
     <string name="notification_new">New application installed.</string>
-    <string name="confirmMsg">This will disable firewall! Do you want to continue ?</string>
+    <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
     <string name="delete">Delete</string>
