@@ -30,7 +30,9 @@ import dev.ukanth.ufirewall.RootShell.RootCommand;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -42,6 +44,7 @@ public class RulesActivity extends DataDumpActivity {
 	protected static final int MENU_FLUSH_RULES = 12;
 	protected static final int MENU_IPV6_RULES = 19;
 	protected static final int MENU_IPV4_RULES = 20;
+	protected static final int MENU_SEND_REPORT = 25;
 
 	protected boolean showIPv6 = false;
 	protected StringBuilder result;
@@ -59,6 +62,7 @@ public class RulesActivity extends DataDumpActivity {
 			sub.add(0, MENU_IPV4_RULES, 0, R.string.switch_ipv4).setIcon(R.drawable.rules);
 		}
 		sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
+		sub.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_dialog_email);
 	}
 
 	private void writeHeading(StringBuilder res, boolean initialNewline, String title) {
@@ -182,6 +186,13 @@ public class RulesActivity extends DataDumpActivity {
     	case MENU_IPV4_RULES:
     		showIPv6 = false;
     		populateData(this);
+    		return true;
+    	case MENU_SEND_REPORT:
+    		Intent email = new Intent(Intent.ACTION_VIEW);
+    		email.setData(Uri.parse("mailto:cumakt%2Bafwall@gmail.com"));
+    		email.putExtra(Intent.EXTRA_SUBJECT, "AFWall+ problem report");
+    		email.putExtra(Intent.EXTRA_TEXT, dataText + "\n\n" + getString(R.string.enter_problem) + "\n\n");
+    		startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
     		return true;
     	}
     	return super.onMenuItemSelected(featureId, item);
