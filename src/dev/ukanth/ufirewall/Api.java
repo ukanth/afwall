@@ -133,8 +133,8 @@ public final class Api {
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
 
-	private static final String dynChains[] = { "afwall-3g", "afwall-3g-fork", "afwall-wifi", "afwall-wifi-fork" };
-	private static final String staticChains[] = { "afwall", "afwall-reject", "afwall-vpn",
+	private static final String dynChains[] = { "afwall-3g-postcustom", "afwall-3g-fork", "afwall-wifi-postcustom", "afwall-wifi-fork" };
+	private static final String staticChains[] = { "afwall", "afwall-3g", "afwall-wifi", "afwall-reject", "afwall-vpn",
 		"afwall-3g-tether", "afwall-3g-home", "afwall-3g-roam", "afwall-wifi-tether", "afwall-wifi-wan", "afwall-wifi-lan" };
 
 	// Cached applications
@@ -355,15 +355,15 @@ public final class Api {
 
 		if (whitelist) {
 			// always allow the DHCP client full wifi access
-			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi", "-j RETURN");
+			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi-postcustom", "-j RETURN");
 		}
 
 		if (cfg.isTethered) {
-			cmds.add("-A afwall-wifi -j afwall-wifi-tether");
-			cmds.add("-A afwall-3g -j afwall-3g-tether");
+			cmds.add("-A afwall-wifi-postcustom -j afwall-wifi-tether");
+			cmds.add("-A afwall-3g-postcustom -j afwall-3g-tether");
 		} else {
-			cmds.add("-A afwall-wifi -j afwall-wifi-fork");
-			cmds.add("-A afwall-3g -j afwall-3g-fork");
+			cmds.add("-A afwall-wifi-postcustom -j afwall-wifi-fork");
+			cmds.add("-A afwall-3g-postcustom -j afwall-3g-fork");
 		}
 
 		if (G.enableLAN() && !cfg.isTethered) {
@@ -433,10 +433,12 @@ public final class Api {
 
 		cmds.add("#NOCHK# -D OUTPUT -j afwall");
 		cmds.add("-I OUTPUT 1 -j afwall");
-		addRejectRules(cmds,ctx);
 
-		// add custom rules before the afwall* chains are populated
+		// custom rules in afwall-{3g,wifi,reject} supersede everything else
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
+		cmds.add("-A afwall-3g -j afwall-3g-postcustom");
+		cmds.add("-A afwall-wifi -j afwall-wifi-postcustom");
+		addRejectRules(cmds,ctx);
 
 		if (G.enableInbound()) {
 			// we don't have any rules in the INPUT chain prohibiting inbound traffic, but
@@ -450,6 +452,7 @@ public final class Api {
 		for (final String itf : ITFS_WIFI) {
 			cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
 		}
+
 		for (final String itf : ITFS_3G) {
 			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
 		}
