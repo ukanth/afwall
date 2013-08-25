@@ -69,7 +69,7 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
@@ -90,7 +90,11 @@ public final class Api {
 	public static final int SPECIAL_UID_KERNEL	= -11;
 	/** special application UID used for dnsmasq DHCP/DNS */
 	public static final int SPECIAL_UID_TETHER	= -12;
-	
+	/** special application UID used for netd DNS proxy */
+	public static final int SPECIAL_UID_DNSPROXY	= -13;
+	/** special application UID used for NTP */
+	public static final int SPECIAL_UID_NTP		= -14;
+
 	// Preferences
 	public static String PREFS_NAME 				= "AFWallPrefs";
 	public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
@@ -133,8 +137,8 @@ public final class Api {
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
 
-	private static final String dynChains[] = { "afwall-3g", "afwall-3g-fork", "afwall-wifi", "afwall-wifi-fork" };
-	private static final String staticChains[] = { "afwall", "afwall-reject", "afwall-vpn",
+	private static final String dynChains[] = { "afwall-3g-postcustom", "afwall-3g-fork", "afwall-wifi-postcustom", "afwall-wifi-fork" };
+	private static final String staticChains[] = { "afwall", "afwall-3g", "afwall-wifi", "afwall-reject", "afwall-vpn",
 		"afwall-3g-tether", "afwall-3g-home", "afwall-3g-roam", "afwall-wifi-tether", "afwall-wifi-wan", "afwall-wifi-lan" };
 
 	// Cached applications
@@ -295,6 +299,16 @@ public final class Api {
 				}
 			}
 
+			// netd runs as root, and on Android 4.3+ it handles all DNS queries
+			if (uids.indexOf(SPECIAL_UID_DNSPROXY) >= 0) {
+				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", action);
+			}
+
+			// NTP service runs as "system" user
+			if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
+				addRuleForUsers(cmds, new String[]{"system"}, "-A " + chain + " -p udp --dport 123", action);
+			}
+
 			boolean kernel_checked = uids.indexOf(SPECIAL_UID_KERNEL) >= 0;
 			if (whitelist) {
 				if (kernel_checked) {
@@ -355,15 +369,15 @@ public final class Api {
 
 		if (whitelist) {
 			// always allow the DHCP client full wifi access
-			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi", "-j RETURN");
+			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi-postcustom", "-j RETURN");
 		}
 
 		if (cfg.isTethered) {
-			cmds.add("-A afwall-wifi -j afwall-wifi-tether");
-			cmds.add("-A afwall-3g -j afwall-3g-tether");
+			cmds.add("-A afwall-wifi-postcustom -j afwall-wifi-tether");
+			cmds.add("-A afwall-3g-postcustom -j afwall-3g-tether");
 		} else {
-			cmds.add("-A afwall-wifi -j afwall-wifi-fork");
-			cmds.add("-A afwall-3g -j afwall-3g-fork");
+			cmds.add("-A afwall-wifi-postcustom -j afwall-wifi-fork");
+			cmds.add("-A afwall-3g-postcustom -j afwall-3g-fork");
 		}
 
 		if (G.enableLAN() && !cfg.isTethered) {
@@ -433,10 +447,12 @@ public final class Api {
 
 		cmds.add("#NOCHK# -D OUTPUT -j afwall");
 		cmds.add("-I OUTPUT 1 -j afwall");
-		addRejectRules(cmds,ctx);
 
-		// add custom rules before the afwall* chains are populated
+		// custom rules in afwall-{3g,wifi,reject} supersede everything else
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
+		cmds.add("-A afwall-3g -j afwall-3g-postcustom");
+		cmds.add("-A afwall-wifi -j afwall-wifi-postcustom");
+		addRejectRules(cmds,ctx);
 
 		if (G.enableInbound()) {
 			// we don't have any rules in the INPUT chain prohibiting inbound traffic, but
@@ -450,6 +466,7 @@ public final class Api {
 		for (final String itf : ITFS_WIFI) {
 			cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
 		}
+
 		for (final String itf : ITFS_3G) {
 			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
 		}
@@ -844,6 +861,9 @@ public final class Api {
 	 * @param callback callback for completion
 	 */
 	public static void updateLogRules(Context ctx, RootCommand callback) {
+		if (!isEnabled(ctx)) {
+			return;
+		}
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-F afwall-reject");
 		addRejectRules(cmds,ctx);
@@ -866,12 +886,17 @@ public final class Api {
 	 * 
 	 * @param ctx application context
 	 * @param callback Callback for completion status
+	 * @return true if logging is enabled, false otherwise
 	 */
-	public static void fetchDmesg(Context ctx, RootCommand callback) {
+	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
-			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");	
+			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
+			return true;
 		} else if(G.logTarget().equals("NFLOG")){
 			callback.run(ctx, getNflogPath(ctx) + " 40");
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -1120,9 +1145,11 @@ public final class Api {
 			//initiate special Apps
 			
 			List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
-			specialData.add(new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), "dev.afwall.special.any"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", "dev.afwall.special.kernel"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER,"(Tethering) - DHCP+DNS services", "dev.afwall.special.tether"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
 			specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
 			specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
 			specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
@@ -1648,43 +1675,69 @@ public final class Api {
 		}
 		return ret;
 	}
+	
+	private static class LogProbeCallback extends RootCommand.Callback {
+		private Context ctx;
 
-	/*public static String showIfaces() {
-		String output = null;
-		try {
-			output = runSUCommand("ls /sys/class/net");
-		} catch (IOException e1) {
-			Log.e(TAG, "IOException: " + e1.getLocalizedMessage());
-		}
-		if (output != null) {
-			output = output.replace(" ", ",");
-		}
-		return output;
-	} */
-	
-	
-	public static void getTargets(Context context,RootCommand callback) {
-		String busybox = getBusyBoxPath(context);
-		String grep = busybox + " grep";
-		List<String> out = new ArrayList<String>();
-		out.add(grep + " \\.\\* /proc/net/ip_tables_targets");
-		callback.run(context, out);
-	}	
-	
-	/*public static boolean hasTarget(Context ctx, String target){
-		boolean result = false;
-		String targets = getTargets(ctx);
-		if(targets !=null) {
-			for(String str: targets.split(",")) {
-				if(target.equals(str)){
-					result = true;
-					break;
+		public void cbFunc(RootCommand state) {
+			if (state.exitCode != 0) {
+				return;
+			}
+
+			boolean hasLOG = false, hasNFLOG = false;
+			for(String str : state.res.toString().split("\n")) {
+				if (str.equals("LOG")) {
+					hasLOG = true;
+				} else if (str.equals("NFLOG")) {
+					hasNFLOG = true;
 				}
 			}
+
+			if (hasLOG) {
+				G.logTarget("LOG");
+				Log.d(TAG, "logging using LOG target");
+			} else if (hasNFLOG) {
+				G.logTarget("NFLOG");
+				Log.d(TAG, "logging using NFLOG target");
+			} else {
+				Log.e(TAG, "could not find LOG or NFLOG target");
+				displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
+				G.logTarget("");
+				G.enableLog(false);
+				return;
+			}
+
+			G.enableLog(true);
+			updateLogRules(ctx, new RootCommand()
+				.setReopenShell(true)
+				.setSuccessToast(R.string.log_was_enabled)
+				.setFailureToast(R.string.log_toggle_failed));
 		}
-		return result;
-	}*/	
-	
+	}
+
+	public static void setLogging(final Context ctx, boolean isEnabled) {
+		if (!isEnabled) {
+			// easy case: just disable
+			G.enableLog(false);
+			G.logTarget("");
+			updateLogRules(ctx, new RootCommand()
+				.setReopenShell(true)
+				.setSuccessToast(R.string.log_was_disabled)
+				.setFailureToast(R.string.log_toggle_failed));
+			return;
+		}
+
+		LogProbeCallback cb = new LogProbeCallback();
+		cb.ctx = ctx;
+
+		// probe for LOG/NFLOG targets (unfortunately the file must be read by root)
+		new RootCommand()
+			.setReopenShell(true)
+			.setFailureToast(R.string.log_toggle_failed)
+			.setCallback(cb)
+			.setLogging(true)
+			.run(ctx, "cat /proc/net/ip_tables_targets");
+	}
 	
 	@SuppressLint("InlinedApi")
 	public static void showInstalledAppDetails(Context context, String packageName) {
@@ -1751,6 +1804,8 @@ public final class Api {
 			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
 			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
 			specialApps.put("dev.afwall.special.tether",SPECIAL_UID_TETHER);
+			specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
+			specialApps.put("dev.afwall.special.ntp",SPECIAL_UID_NTP);
 			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
 			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
 			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));

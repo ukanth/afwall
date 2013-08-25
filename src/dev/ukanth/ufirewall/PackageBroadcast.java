@@ -33,7 +33,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled

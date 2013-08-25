@@ -30,7 +30,7 @@ import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 import android.content.Context;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import android.widget.Toast;
 import eu.chainfire.libsuperuser.Shell;
 
@@ -271,7 +271,7 @@ public class RootShell {
 		rootSession = new Shell.Builder().
 				useSU().
 				setWantSTDERR(true).
-				setWatchdogTimeout(0).
+				setWatchdogTimeout(5).
 				setMinimalLogging(true).
 				open(new Shell.OnCommandResultListener() {
 					public void onCommandResult(int commandCode, int exitCode, List<String> output) {
