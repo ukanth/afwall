@@ -22,6 +22,8 @@
     <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
     <string name="error_common">Error : </string>
     <string name="all_item">(Any application) - Same as selecting all applications</string>
+    <string name="kernel_item">(Kernel) - Linux kernel</string>
+    <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
     <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed out</string>
     <string name="fw_enabled">Enabled</string>

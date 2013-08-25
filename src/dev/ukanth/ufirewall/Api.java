@@ -1131,9 +1131,9 @@ public final class Api {
 			//initiate special Apps
 			
 			List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
-			specialData.add(new PackageInfoData(SPECIAL_UID_ANY,ctx.getString(R.string.all_item), "dev.afwall.special.any"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL,"(Kernel) - Linux kernel", "dev.afwall.special.kernel"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER,"(Tethering) - DHCP+DNS services", "dev.afwall.special.tether"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
 			specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
 			specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
 			specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
