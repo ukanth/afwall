@@ -144,6 +144,7 @@ Thanks to Kevin Cernekee for his huge help in refactor and various patches\n
     <string name="log_was_enabled">Log has been enabled</string>
     <string name="log_was_disabled">Log has been disabled</string>
     <string name="log_toggle_failed">Error toggling log status</string>
+    <string name="log_target_failed">Error: kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>
     <string name="log_clear_error">Error clearing log</string>
     <string name="log_fetch_error">Error fetching log</string>

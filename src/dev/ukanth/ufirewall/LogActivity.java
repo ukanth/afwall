@@ -44,7 +44,7 @@ public class LogActivity extends DataDumpActivity {
 	}
 
 	protected void populateData(final Context ctx) {
-		Api.fetchDmesg(ctx, new RootCommand()
+		boolean enabled = Api.fetchLogs(ctx, new RootCommand()
 			.setLogging(true)
 			.setReopenShell(true)
 			.setFailureToast(R.string.log_fetch_error)
@@ -62,6 +62,10 @@ public class LogActivity extends DataDumpActivity {
 					}
 				}
 			}));
+
+		if (!enabled) {
+			setData(getString(R.string.log_disabled));
+		}
 	}
 
 	protected void populateMenu(SubMenu sub) {

@@ -844,6 +844,9 @@ public final class Api {
 	 * @param callback callback for completion
 	 */
 	public static void updateLogRules(Context ctx, RootCommand callback) {
+		if (!isEnabled(ctx)) {
+			return;
+		}
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-F afwall-reject");
 		addRejectRules(cmds,ctx);
@@ -866,12 +869,17 @@ public final class Api {
 	 * 
 	 * @param ctx application context
 	 * @param callback Callback for completion status
+	 * @return true if logging is enabled, false otherwise
 	 */
-	public static void fetchDmesg(Context ctx, RootCommand callback) {
+	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
-			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");	
+			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
+			return true;
 		} else if(G.logTarget().equals("NFLOG")){
 			callback.run(ctx, getNflogPath(ctx) + " 40");
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -1648,43 +1656,69 @@ public final class Api {
 		}
 		return ret;
 	}
+	
+	private static class LogProbeCallback extends RootCommand.Callback {
+		private Context ctx;
 
-	/*public static String showIfaces() {
-		String output = null;
-		try {
-			output = runSUCommand("ls /sys/class/net");
-		} catch (IOException e1) {
-			Log.e(TAG, "IOException: " + e1.getLocalizedMessage());
-		}
-		if (output != null) {
-			output = output.replace(" ", ",");
-		}
-		return output;
-	} */
-	
-	
-	public static void getTargets(Context context,RootCommand callback) {
-		String busybox = getBusyBoxPath(context);
-		String grep = busybox + " grep";
-		List<String> out = new ArrayList<String>();
-		out.add(grep + " \\.\\* /proc/net/ip_tables_targets");
-		callback.run(context, out);
-	}	
-	
-	/*public static boolean hasTarget(Context ctx, String target){
-		boolean result = false;
-		String targets = getTargets(ctx);
-		if(targets !=null) {
-			for(String str: targets.split(",")) {
-				if(target.equals(str)){
-					result = true;
-					break;
+		public void cbFunc(RootCommand state) {
+			if (state.exitCode != 0) {
+				return;
+			}
+
+			boolean hasLOG = false, hasNFLOG = false;
+			for(String str : state.res.toString().split("\n")) {
+				if (str.equals("LOG")) {
+					hasLOG = true;
+				} else if (str.equals("NFLOG")) {
+					hasNFLOG = true;
 				}
 			}
+
+			if (hasLOG) {
+				G.logTarget("LOG");
+				Log.d(TAG, "logging using LOG target");
+			} else if (hasNFLOG) {
+				G.logTarget("NFLOG");
+				Log.d(TAG, "logging using NFLOG target");
+			} else {
+				Log.e(TAG, "could not find LOG or NFLOG target");
+				displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
+				G.logTarget("");
+				G.enableLog(false);
+				return;
+			}
+
+			G.enableLog(true);
+			updateLogRules(ctx, new RootCommand()
+				.setReopenShell(true)
+				.setSuccessToast(R.string.log_was_enabled)
+				.setFailureToast(R.string.log_toggle_failed));
 		}
-		return result;
-	}*/	
-	
+	}
+
+	public static void setLogging(final Context ctx, boolean isEnabled) {
+		if (!isEnabled) {
+			// easy case: just disable
+			G.enableLog(false);
+			G.logTarget("");
+			updateLogRules(ctx, new RootCommand()
+				.setReopenShell(true)
+				.setSuccessToast(R.string.log_was_disabled)
+				.setFailureToast(R.string.log_toggle_failed));
+			return;
+		}
+
+		LogProbeCallback cb = new LogProbeCallback();
+		cb.ctx = ctx;
+
+		// probe for LOG/NFLOG targets (unfortunately the file must be read by root)
+		new RootCommand()
+			.setReopenShell(true)
+			.setFailureToast(R.string.log_toggle_failed)
+			.setCallback(cb)
+			.setLogging(true)
+			.run(ctx, "cat /proc/net/ip_tables_targets");
+	}
 	
 	@SuppressLint("InlinedApi")
 	public static void showInstalledAppDetails(Context context, String packageName) {
