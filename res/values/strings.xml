@@ -24,6 +24,8 @@
     <string name="all_item">(Any application) - Same as selecting all applications</string>
     <string name="kernel_item">(Kernel) - Linux kernel</string>
     <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
+    <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
+    <string name="ntp_item">(NTP) - Internet time servers</string>
     <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed out</string>
     <string name="fw_enabled">Enabled</string>

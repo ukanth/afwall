@@ -90,7 +90,11 @@ public final class Api {
 	public static final int SPECIAL_UID_KERNEL	= -11;
 	/** special application UID used for dnsmasq DHCP/DNS */
 	public static final int SPECIAL_UID_TETHER	= -12;
-	
+	/** special application UID used for netd DNS proxy */
+	public static final int SPECIAL_UID_DNSPROXY	= -13;
+	/** special application UID used for NTP */
+	public static final int SPECIAL_UID_NTP		= -14;
+
 	// Preferences
 	public static String PREFS_NAME 				= "AFWallPrefs";
 	public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
@@ -293,6 +297,16 @@ public final class Api {
 				if (uid != null && uid >= 0) {
 					cmds.add("-A " + chain + " -m owner --uid-owner " + uid + action);
 				}
+			}
+
+			// netd runs as root, and on Android 4.3+ it handles all DNS queries
+			if (uids.indexOf(SPECIAL_UID_DNSPROXY) >= 0) {
+				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", action);
+			}
+
+			// NTP service runs as "system" user
+			if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
+				addRuleForUsers(cmds, new String[]{"system"}, "-A " + chain + " -p udp --dport 123", action);
 			}
 
 			boolean kernel_checked = uids.indexOf(SPECIAL_UID_KERNEL) >= 0;
@@ -1134,6 +1148,8 @@ public final class Api {
 			specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
+			specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
 			specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
 			specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
 			specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
@@ -1788,6 +1804,8 @@ public final class Api {
 			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
 			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
 			specialApps.put("dev.afwall.special.tether",SPECIAL_UID_TETHER);
+			specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
+			specialApps.put("dev.afwall.special.ntp",SPECIAL_UID_NTP);
 			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
 			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
 			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
