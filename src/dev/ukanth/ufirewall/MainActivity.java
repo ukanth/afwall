@@ -407,7 +407,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private void showOrLoadApplications() {
 		//nocache!!
 		new GetAppList().execute();
-		 
 	}
 	
 
@@ -466,6 +465,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		@Override
 		protected Void doInBackground(Void... params) {
 			Api.getApps(MainActivity.this, this);
+			//Api.removeAllUnusedCacheLabel(getApplicationContext());
 			if( isCancelled() )
                 return null;
             //publishProgress(-1);

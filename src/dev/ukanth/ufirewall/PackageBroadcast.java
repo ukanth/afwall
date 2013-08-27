@@ -63,6 +63,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 				// Update the Firewall if necessary
 				 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -123);
                  Api.applicationRemoved(context, uid);
+                 Api.removeCacheLabel(intent.getData().getSchemeSpecificPart(),context);
                  /*Api.applicationRemoved(context,
 						inputUri.getSchemeSpecificPart());*/
                  // Force app list reload next time

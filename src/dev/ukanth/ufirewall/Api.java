@@ -59,6 +59,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -69,7 +70,6 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
-import dev.ukanth.ufirewall.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
@@ -1189,6 +1189,7 @@ public final class Api {
 			for (int i = 0; i < syncMap.size(); i++) {
 				applications.add(syncMap.valueAt(i));
 			}
+			
 			return applications;
 		} catch (Exception e) {
 			alert(ctx, ctx.getString(R.string.error_common) + e);
@@ -1405,10 +1406,58 @@ public final class Api {
 		}
 		return changed;
 	}
+	
+	/**
+	 * Remove the cache.label key from preferences, so that next time the app appears on the top
+	 * @param pkgName
+	 * @param ctx
+	 */
+	public static void removeCacheLabel(String pkgName,Context ctx) {
+		String cacheKey = "cache.label." + pkgName;
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		String name = prefs.getString(cacheKey, "");
+		if (name.length() > 0) {
+			prefs.edit().remove(cacheKey).commit();
+			//Api.alert(ctx, "Cleaned application cache!");
+		}
+	}
+	
+	/**
+	 * Cleansup the uninstalled packages from the cache - will have slight performance
+	 * @param ctx
+	 */
+	public static void removeAllUnusedCacheLabel(Context ctx){
+		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		final String cacheLabel = "cache.label.";
+		String pkgName;
+		String cacheKey;
+		PackageManager pm = ctx.getPackageManager();
+		Map<String,?> keys = prefs.getAll();
+		for(Map.Entry<String,?> entry : keys.entrySet()){
+			if(entry.getKey().startsWith(cacheLabel)){
+				cacheKey = entry.getKey();
+				pkgName = entry.getKey().replace(cacheLabel, "");
+				if ( prefs.getString(cacheKey, "").length() > 0 && !isPackageExists(pm, pkgName)) {
+					prefs.edit().remove(cacheKey).commit();
+				}
+			}
+		 }
+	}
+
+	public static boolean isPackageExists(PackageManager pm, String targetPackage) {
+		try {
+			pm.getPackageInfo(targetPackage,PackageManager.GET_META_DATA);
+		} catch (NameNotFoundException e) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Called when an application in removed (un-installed) from the system.
 	 * This will look for that application in the selected list and update the persisted values if necessary
 	 * @param ctx mandatory app context
+	 * @param packageName 
 	 * @param uid UID of the application that has been removed
 	 */
 	public static void applicationRemoved(Context ctx, int pkgRemoved) {
