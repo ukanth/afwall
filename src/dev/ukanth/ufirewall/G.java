@@ -42,8 +42,8 @@ public class G extends android.app.Application {
 	public static String[] profiles = { "AFWallPrefs", "AFWallProfile1", "AFWallProfile2", "AFWallProfile3" };
 	
 	/* global preferences */
-	public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }
-	public static boolean alternateStart(boolean val) { gPrefs.edit().putBoolean("alternateStart", val).commit(); return val; }
+	//public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }
+	//public static boolean alternateStart(boolean val) { gPrefs.edit().putBoolean("alternateStart", val).commit(); return val; }
 
 	public static boolean isRootAvail() { return gPrefs.getBoolean("isRootAvail", false); }
 	public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean("isRootAvail", val).commit(); return val; }

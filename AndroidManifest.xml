@@ -28,7 +28,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
     android:versionCode="133"
-    android:versionName="1.2.6.1-Beta" >
+    android:versionName="1.2.6.2-Beta" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -165,8 +165,6 @@
                 <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
-        
-        <service android:name="dev.ukanth.ufirewall.StartupService" ></service>
 
         <activity
             android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"

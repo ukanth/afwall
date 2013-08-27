@@ -1,18 +1,8 @@
 package dev.ukanth.ufirewall;
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
-import android.preference.PreferenceManager;
-import dev.ukanth.ufirewall.Log;
+//TODO: Remove this class - Orphan class
 
-public class StartupService extends Service {
+/*public class StartupService extends Service {
 	private Context context;
 	static final int NOTIFICATION_ID = 24556;
 	
@@ -85,4 +75,4 @@ public class StartupService extends Service {
 		stopForegroundService();
 	}
 
-}
+}*/

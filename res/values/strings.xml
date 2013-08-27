@@ -245,8 +245,8 @@ Thanks to Kevin Cernekee for his huge help in refactor and various patches\n
     <string name="startup_service">Applying Rules. Please wait!</string>
     <string name="fixleakTitle">Fix Startup Data Leak</string>
     <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
-    <string name="alternateStartTitle">Fix Device Start Rules</string>
-    <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
+    <!-- <string name="alternateStartTitle">Fix Device Start Rules</string>
+    <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string> -->
     <string name="enableInboundTitle">Enable inbound connections</string>
     <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
 	
