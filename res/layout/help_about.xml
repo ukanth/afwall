@@ -4,7 +4,7 @@
     android:layout_height="fill_parent" >
 
     <WebView
-        android:id="@+id/yourwebview"
+        android:id="@+id/helpwebview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
