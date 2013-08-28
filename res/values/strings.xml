@@ -72,19 +72,7 @@
     <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
-    <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b>Linux firewall.
-		It allows you to restrict which applications are permitted to access your data networks.
-		This is the perfect solution if you don\'t have an unlimited data plan, or just want extend battery life.\n\n\n
-<b> Help - </b> http://github.com/ukanth/afwall/wiki/Help \n
-<b>Frequently Asked Questions</b>  -https://github.com/ukanth/afwall/wiki/Help \n
-<b>Developer </b> - Umakanthan Chandran \n
-Thanks to Kevin Cernekee for his huge help in refactor and various patches\n
-<a href="mailto:cumakt+afwall@gmail.com">Contact me</a>\n 
-<b>Twitter </b>- @ukanth \n
-<b>Project Homepage</b> - https://github.com/ukanth/afwall/\n
-<b>Credits \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>Icons  </b> - hush66 (http://hush66.deviantart.com/)\n
-</string>
+    <string name="help_dialog_text"></string>
     <string name="showrules_title">IPtables Rules</string>
     <string name="settings_password">Enter Password</string>
     <string name="settings_password2">Enter Password again</string>
