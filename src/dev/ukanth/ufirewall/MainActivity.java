@@ -465,7 +465,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		@Override
 		protected Void doInBackground(Void... params) {
 			Api.getApps(MainActivity.this, this);
-			//Api.removeAllUnusedCacheLabel(getApplicationContext());
 			if( isCancelled() )
                 return null;
             //publishProgress(-1);
@@ -771,6 +770,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
+			refreshCache();
 			return true;
 		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
@@ -859,6 +859,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	
+
+	private void refreshCache() {
+		new AsyncTask<Void, Void, Void>() {
+			protected Void doInBackground(Void... params) {
+				Api.removeAllUnusedCacheLabel(getApplicationContext());
+				return null;
+			}
+		}.execute();
+	}
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
