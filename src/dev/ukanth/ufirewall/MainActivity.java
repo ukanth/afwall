@@ -139,14 +139,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
-			//this.findViewById(R.id.img_invert).setOnClickListener(this);
-			
-			//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			
-			//boolean disableIcons = prefs.getBoolean("disableIcons", false);
-			//boolean enableVPN = prefs.getBoolean("enableVPN", false);
-			//boolean enableRoam = prefs.getBoolean("enableRoam", true);
-			//boolean enableLAN = prefs.getBoolean("enableLAN", false);
 			
 			if(G.disableIcons()){
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
@@ -330,10 +322,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
-								final String mode = (which == 0 ? Api.MODE_WHITELIST
-										: Api.MODE_BLACKLIST);
-								final Editor editor = getSharedPreferences(
-										Api.PREFS_NAME, 0).edit();
+								final String mode = (which == 0 ? Api.MODE_WHITELIST: Api.MODE_BLACKLIST);
+								final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
 								editor.putString(Api.PREF_MODE, mode);
 								editor.commit();
 								refreshHeader();
@@ -552,15 +542,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());
 
-		//final SharedPreferences prefs = PreferenceManager
-			//	.getDefaultSharedPreferences(MainActivity.this);
-		
-	//	final boolean disableIcons = prefs.getBoolean("disableIcons", false);
-	//	final boolean showUid = prefs.getBoolean("showUid", false);
-	//	final boolean enableVPN = prefs.getBoolean("enableVPN", false);
-	//	final boolean enableRoam = prefs.getBoolean("enableRoam", true);
-	//	final boolean enableLAN = prefs.getBoolean("enableLAN", false);
-		
 		final int color = G.sysColor();
 		final int defaultColor = Color.WHITE;
 
