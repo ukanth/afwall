@@ -51,7 +51,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
-import dev.ukanth.ufirewall.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -89,13 +88,14 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 //@Holo(forceThemeApply = true, layout = R.layout.main)
 //public class MainActivity extends SActivity implements OnCheckedChangeListener,
 public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
-		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener {
+		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
 	public static final String TAG = "AFWall";
 
 	private TextView mSelected;
     private String[] mLocations;
 	private Menu mainMenu;
 	
+	public boolean isOnPause = false;
 	
 	/** progress dialog instance */
 	private ListView listview = null;
@@ -117,12 +117,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	ProgressDialog plsWait;
 
-	
-	/** Called when the activity is first created. */
+	/** Called when the activity is first created
+	 * . */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			
+			isOnPause = false;
+
 			try {
 				/* enable hardware acceleration on Android >= 3.0 */
 				final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -250,29 +252,38 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void passCheck(){
-		if(G.usePatterns()){
-			if(!isPassVerify){
-				final String pwd = G.sPrefs.getString("LockPassword", "");
-				if (pwd.length() == 0) {
+		
+		//wait for 30 seconds before prompt for password again.
+	    //if (System.currentTimeMillis() - mLastPause > 30000) {
+		if(!isOnPause){
+	        // If more than 5 seconds since last pause, prompt for password
+	    	if(G.usePatterns()){
+				if(!isPassVerify){
+					final String pwd = G.sPrefs.getString("LockPassword", "");
+					if (pwd.length() == 0) {
+						showOrLoadApplications();
+					} else {
+						// Check the password
+						requestPassword(pwd);
+					}
+				}else {
+					showOrLoadApplications();
+				}	
+			} else{
+				final String oldpwd = G.pPrefs.getString(Api.PREF_PASSWORD, "");
+				if (oldpwd.length() == 0) {
+					// No password lock
 					showOrLoadApplications();
 				} else {
 					// Check the password
-					requestPassword(pwd);
-				}
-			}else {
-				showOrLoadApplications();
-			}	
-		} else{
-			final String oldpwd = G.pPrefs.getString(Api.PREF_PASSWORD, "");
-			if (oldpwd.length() == 0) {
-				// No password lock
-				showOrLoadApplications();
-			} else {
-				// Check the password
-				requestPassword(oldpwd);	
+					requestPassword(oldpwd);	
 
-			}	
-		}
+				}	
+			}
+	    } else {
+			showOrLoadApplications();
+	    }
+		
 
 	}
 
@@ -280,6 +291,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	protected void onPause() {
 		super.onPause();
 		this.listview.setAdapter(null);
+		//mLastPause = System.currentTimeMillis();
+		isOnPause = true;
 	}
 
 	/**
@@ -674,7 +687,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 		};
 		
-		//change color
+				//change color
 		this.listview.setScrollingCacheEnabled(false);
 		this.listview.setAdapter(adapter);
 	}
