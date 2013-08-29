@@ -4,10 +4,25 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.7
+
+* Special UID for DNS and NTP
+* Fixed issues with Android 4.3 - Allow DNS/NTP from application list - Only for 4.3 users !
+* Rewritten logic to detect LOG chain
+* Better Tether status
+* New option for Beta testers to send error logs
+* Fix watchdog RootShell timeout
+* Backward compatible custom rules (from 1.2.5.2)
+* Removed alternate startup service from experimental- It works without it.
+* Improved Caching Logic, Uninstall apps will now remove cache along with rules.
+* Reload applications will remove unused cache.
+* New Help page.
+* Fixed too many prompts when password is enabled.
+
 Version 1.2.6
 
 * Lots of Refactor to bring stability and performance. Fixed many issues along with it
-  (HUGE THANKS TO cernekee !)
+  (HUGE THANKS TO cernekee !) 
   New option -> Now enable/disable log from preferences
 * New option -> Apply rules on Switch Profiles
 * New option -> Active Rules is now optional ( But requires when using LAN/Roaming )
