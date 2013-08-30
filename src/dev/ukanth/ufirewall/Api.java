@@ -137,6 +137,9 @@ public final class Api {
 	private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
 	private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
 
+	// iptables can exit with status 4 if two processes tried to update the same table
+	private static final int IPTABLES_TRY_AGAIN = 4;
+
 	private static final String dynChains[] = { "afwall-3g-postcustom", "afwall-3g-fork", "afwall-wifi-postcustom", "afwall-wifi-fork" };
 	private static final String staticChains[] = { "afwall", "afwall-3g", "afwall-wifi", "afwall-reject", "afwall-vpn",
 		"afwall-3g-tether", "afwall-3g-home", "afwall-3g-roam", "afwall-wifi-tether", "afwall-wifi-wan", "afwall-wifi-lan" };
@@ -632,7 +635,7 @@ public final class Api {
 		rulesUpToDate = true;
 
 		if (callback != null) {
-			callback.run(ctx, cmds);
+			callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
 			return true;
 		} else {
 			fixupLegacyCmds(cmds);
@@ -681,7 +684,7 @@ public final class Api {
 			applyShortRules(ctx, cmds);
 			iptablesCommands(cmds, out);
 		}
-		callback.run(ctx, out);
+		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 		return true;
 	}
 
@@ -779,7 +782,7 @@ public final class Api {
 			}
 
 			if (callback != null) {
-				callback.run(ctx, out);
+				callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 			} else {
 				fixupLegacyCmds(out);
 				if (runScriptAsRoot(ctx, out, new StringBuilder()) == -1) {
@@ -837,7 +840,7 @@ public final class Api {
 			setIpTablePath(ctx, true);
 			iptablesCommands(cmds, out);
 		}
-		callback.run(ctx, out);
+		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 	}
 
 	/**
