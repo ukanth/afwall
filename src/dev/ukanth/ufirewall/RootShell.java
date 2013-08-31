@@ -50,6 +50,8 @@ public class RootShell {
 	private final static int STATE_FAILED = 3;
 	private static int rootState = STATE_INIT;
 
+	private final static int MAX_RETRIES = 10;
+
 	private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
 
 	public final static int EXIT_NO_ROOT_ACCESS = -1;
@@ -63,10 +65,12 @@ public class RootShell {
 		private int successToast = NO_TOAST;
 		private int failureToast = NO_TOAST;
 		private boolean reopenShell = false;
+		private int retryExitCode = -1;
 
 		private int commandIndex;
 		private boolean ignoreExitCode;
 		private Date startTime;
+		private int retryCount;
 
 		public StringBuilder res;
 		public String lastCommand;
@@ -140,6 +144,17 @@ public class RootShell {
 			} else {
 				this.res = null;
 			}
+			return this;
+		}
+
+		/**
+		 * Retry a failed command on a specific exit code
+		 * 
+		 * @param retryExitCode code that indicates a transient failure
+		 * @return RootCommand builder object
+		 */
+		public RootCommand setRetryExitCode(int retryExitCode) {
+			this.retryExitCode = retryExitCode;
 			return this;
 		}
 
@@ -244,7 +259,17 @@ public class RootShell {
 					}
 				}
 
+				if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
+					state.retryCount++;
+					Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+						", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+					submitNextCommand(state);
+					return;
+				}
+
 				state.commandIndex++;
+				state.retryCount = 0;
+
 				boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
 				if (state.commandIndex >= state.script.size() || errorExit) {
 					complete(state, exitCode);
@@ -290,6 +315,7 @@ public class RootShell {
 	private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state) {
 		state.script = script;
 		state.commandIndex = 0;
+		state.retryCount = 0;
 
 		if (mContext == null) {
 			mContext = ctx.getApplicationContext();
