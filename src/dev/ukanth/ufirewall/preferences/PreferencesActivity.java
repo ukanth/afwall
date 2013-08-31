@@ -47,7 +47,6 @@ import com.stericson.RootTools.RootTools;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
 
 public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
