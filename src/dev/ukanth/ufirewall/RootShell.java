@@ -29,12 +29,16 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import dev.ukanth.ufirewall.Log;
+import android.os.Binder;
+import android.os.IBinder;
 import android.widget.Toast;
 import eu.chainfire.libsuperuser.Shell;
 
-public class RootShell {
+public class RootShell extends Service {
 
 	public static final String TAG = "AFWall";
 
@@ -326,8 +330,19 @@ public class RootShell {
 			(rootState == STATE_FAILED && state.reopenShell)) {
 			rootState = STATE_BUSY;
 			startShellInBackground();
+
+			Intent intent = new Intent(ctx, RootShell.class);
+			ctx.startService(intent);
+
 		} else if (rootState != STATE_BUSY) {
 			runNextSubmission();
 		}
+	}
+
+	private final IBinder mBinder = new Binder();
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		return mBinder;
 	}
 }
