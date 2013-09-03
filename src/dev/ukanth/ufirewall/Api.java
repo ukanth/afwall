@@ -634,6 +634,13 @@ public final class Api {
 
 		rulesUpToDate = true;
 
+		if (G.logTarget().equals("NFLOG")) {
+			NflogService.nflogPath = getNflogPath(ctx);
+			NflogService.queueNum = 40;
+			Intent intent = new Intent(ctx.getApplicationContext(), NflogService.class);
+			ctx.startService(intent);
+		}
+
 		if (callback != null) {
 			callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
 			return true;
@@ -894,9 +901,6 @@ public final class Api {
 	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
 			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
-			return true;
-		} else if(G.logTarget().equals("NFLOG")){
-			callback.run(ctx, getNflogPath(ctx) + " 40");
 			return true;
 		} else {
 			return false;
