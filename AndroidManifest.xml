@@ -217,6 +217,8 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
             </intent-filter>
         </receiver>
+        <service android:name="RootShell"></service>
+        <service android:name="NflogService"></service>
         
     </application>
 
