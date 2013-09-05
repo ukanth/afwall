@@ -43,7 +43,20 @@ public class LogActivity extends DataDumpActivity {
 		sdDumpFile = "iptables.log";
 	}
 
+	protected void parseAndSet(Context ctx, String raw) {
+		String cooked = Api.parseLog(ctx, raw);
+		if (cooked == null) {
+			setData(getString(R.string.log_parse_error));
+		} else {
+			setData(cooked);
+		}
+	}
+
 	protected void populateData(final Context ctx) {
+		if (G.logTarget().equals("NFLOG")) {
+			parseAndSet(ctx, NflogService.fetchLogs());
+			return;
+		}
 		boolean enabled = Api.fetchLogs(ctx, new RootCommand()
 			.setLogging(true)
 			.setReopenShell(true)
@@ -53,12 +66,7 @@ public class LogActivity extends DataDumpActivity {
 					if (state.exitCode != 0) {
 						setData(getString(R.string.log_fetch_error));
 					} else {
-						String data = Api.parseLog(ctx, state.res.toString());
-						if (data == null) {
-							setData(getString(R.string.log_parse_error));
-						} else {
-							setData(data);
-						}
+						parseAndSet(ctx, state.res.toString());
 					}
 				}
 			}));
@@ -93,6 +101,11 @@ public class LogActivity extends DataDumpActivity {
 				.setFailureToast(R.string.log_toggle_failed));
 			return true;*/
     	case MENU_CLEARLOG:
+    		if (G.logTarget().equals("NFLOG")) {
+    			NflogService.clearLog();
+    			populateData(ctx);
+    			return true;
+    		}
     		Api.clearLog(ctx, new RootCommand()
 				.setReopenShell(true)
 				.setSuccessToast(R.string.log_cleared)
