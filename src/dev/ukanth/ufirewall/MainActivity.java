@@ -51,7 +51,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -89,12 +88,14 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 //@Holo(forceThemeApply = true, layout = R.layout.main)
 //public class MainActivity extends SActivity implements OnCheckedChangeListener,
 public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
-		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener {
+		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
+	public static final String TAG = "AFWall";
 
 	private TextView mSelected;
     private String[] mLocations;
 	private Menu mainMenu;
 	
+	public boolean isOnPause = false;
 	
 	/** progress dialog instance */
 	private ListView listview = null;
@@ -116,12 +117,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	ProgressDialog plsWait;
 
-	
-	/** Called when the activity is first created. */
+	/** Called when the activity is first created
+	 * . */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			
+			isOnPause = false;
+
 			try {
 				/* enable hardware acceleration on Android >= 3.0 */
 				final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -138,14 +141,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
-			//this.findViewById(R.id.img_invert).setOnClickListener(this);
-			
-			//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			
-			//boolean disableIcons = prefs.getBoolean("disableIcons", false);
-			//boolean enableVPN = prefs.getBoolean("enableVPN", false);
-			//boolean enableRoam = prefs.getBoolean("enableRoam", true);
-			//boolean enableLAN = prefs.getBoolean("enableLAN", false);
 			
 			if(G.disableIcons()){
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
@@ -257,29 +252,38 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void passCheck(){
-		if(G.usePatterns()){
-			if(!isPassVerify){
-				final String pwd = G.sPrefs.getString("LockPassword", "");
-				if (pwd.length() == 0) {
+		
+		//wait for 30 seconds before prompt for password again.
+	    //if (System.currentTimeMillis() - mLastPause > 30000) {
+		if(!isOnPause){
+	        // If more than 5 seconds since last pause, prompt for password
+	    	if(G.usePatterns()){
+				if(!isPassVerify){
+					final String pwd = G.sPrefs.getString("LockPassword", "");
+					if (pwd.length() == 0) {
+						showOrLoadApplications();
+					} else {
+						// Check the password
+						requestPassword(pwd);
+					}
+				}else {
+					showOrLoadApplications();
+				}	
+			} else{
+				final String oldpwd = G.pPrefs.getString(Api.PREF_PASSWORD, "");
+				if (oldpwd.length() == 0) {
+					// No password lock
 					showOrLoadApplications();
 				} else {
 					// Check the password
-					requestPassword(pwd);
-				}
-			}else {
-				showOrLoadApplications();
-			}	
-		} else{
-			final String oldpwd = G.pPrefs.getString(Api.PREF_PASSWORD, "");
-			if (oldpwd.length() == 0) {
-				// No password lock
-				showOrLoadApplications();
-			} else {
-				// Check the password
-				requestPassword(oldpwd);	
+					requestPassword(oldpwd);	
 
-			}	
-		}
+				}	
+			}
+	    } else {
+			showOrLoadApplications();
+	    }
+		
 
 	}
 
@@ -287,6 +291,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	protected void onPause() {
 		super.onPause();
 		this.listview.setAdapter(null);
+		//mLastPause = System.currentTimeMillis();
+		isOnPause = true;
 	}
 
 	/**
@@ -329,10 +335,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int which) {
-								final String mode = (which == 0 ? Api.MODE_WHITELIST
-										: Api.MODE_BLACKLIST);
-								final Editor editor = getSharedPreferences(
-										Api.PREFS_NAME, 0).edit();
+								final String mode = (which == 0 ? Api.MODE_WHITELIST: Api.MODE_BLACKLIST);
+								final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
 								editor.putString(Api.PREF_MODE, mode);
 								editor.commit();
 								refreshHeader();
@@ -406,7 +410,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private void showOrLoadApplications() {
 		//nocache!!
 		new GetAppList().execute();
-		 
 	}
 	
 
@@ -552,15 +555,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());
 
-		//final SharedPreferences prefs = PreferenceManager
-			//	.getDefaultSharedPreferences(MainActivity.this);
-		
-	//	final boolean disableIcons = prefs.getBoolean("disableIcons", false);
-	//	final boolean showUid = prefs.getBoolean("showUid", false);
-	//	final boolean enableVPN = prefs.getBoolean("enableVPN", false);
-	//	final boolean enableRoam = prefs.getBoolean("enableRoam", true);
-	//	final boolean enableLAN = prefs.getBoolean("enableLAN", false);
-		
 		final int color = G.sysColor();
 		final int defaultColor = Color.WHITE;
 
@@ -575,7 +569,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					// Inflate a new view
 					convertView = inflater.inflate(R.layout.main_list, parent,
 							false);
-					//Log.d("AFWall+", ">> inflate(" + convertView + ")");
 					holder = new ViewHolder();
 					holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
 					holder.box_3g = (CheckBox) convertView.findViewById(R.id.itemcheck_3g);
@@ -694,7 +687,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			}
 		};
 		
-		//change color
+				//change color
 		this.listview.setScrollingCacheEnabled(false);
 		this.listview.setAdapter(adapter);
 	}
@@ -771,6 +764,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
+			refreshCache();
 			return true;
 		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
@@ -860,6 +854,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	
 
+	private void refreshCache() {
+		new AsyncTask<Void, Void, Void>() {
+			protected Void doInBackground(Void... params) {
+				Api.removeAllUnusedCacheLabel(getApplicationContext());
+				return null;
+			}
+		}.execute();
+	}
+
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
@@ -892,7 +895,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	 */
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(this);
-		//Log.d("AFWall+", "Changing enabled status to: " + enabled);
 		Api.setEnabled(this, enabled,true);
 		if (enabled) {
 			applyOrSaveRules();
@@ -1400,7 +1402,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				// "app"
 				return viewToUpdate;
 			} catch (Exception e) {
-				Log.e("AFWall+", "Error loading icon", e);
+				Log.e(TAG, "Error loading icon", e);
 				return null;
 			}
 		}
@@ -1415,7 +1417,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				entryToUpdate.icon
 						.setImageDrawable(entryToUpdate.app.cached_icon);
 			} catch (Exception e) {
-				Log.e("AFWall+", "Error showing icon", e);
+				Log.e(TAG, "Error showing icon", e);
 			}
 		};
 	}

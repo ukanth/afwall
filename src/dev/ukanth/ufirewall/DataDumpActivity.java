@@ -33,7 +33,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 

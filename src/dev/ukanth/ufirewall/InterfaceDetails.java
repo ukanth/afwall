@@ -26,7 +26,7 @@ public class InterfaceDetails {
 	// firewall policy
 	boolean isRoaming = false;
 	boolean isTethered = false;
-	boolean allowWifi = false;
+	boolean tetherStatusKnown = false;
 	String lanMaskV4 = "";
 	String lanMaskV6 = "";
 	// TODO: identify DNS servers instead of opening up port 53/udp to all LAN hosts
@@ -39,7 +39,7 @@ public class InterfaceDetails {
 	public boolean equals(InterfaceDetails that) {
 		if (this.isRoaming != that.isRoaming ||
 			this.isTethered != that.isTethered ||
-			this.allowWifi != that.allowWifi ||
+			this.tetherStatusKnown != that.tetherStatusKnown ||
 			!this.lanMaskV4.equals(that.lanMaskV4) ||
 			!this.lanMaskV6.equals(that.lanMaskV6) ||
 			!this.wifiName.equals(that.wifiName) ||
