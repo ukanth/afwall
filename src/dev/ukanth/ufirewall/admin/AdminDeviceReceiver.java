@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.R;
 

@@ -27,7 +27,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 
 import com.stericson.RootTools.RootTools;
 

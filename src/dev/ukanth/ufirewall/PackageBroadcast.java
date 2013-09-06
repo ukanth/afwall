@@ -33,7 +33,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled
@@ -63,6 +63,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 				// Update the Firewall if necessary
 				 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -123);
                  Api.applicationRemoved(context, uid);
+                 Api.removeCacheLabel(intent.getData().getSchemeSpecificPart(),context);
                  /*Api.applicationRemoved(context,
 						inputUri.getSchemeSpecificPart());*/
                  // Force app list reload next time

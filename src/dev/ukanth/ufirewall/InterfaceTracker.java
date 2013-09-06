@@ -48,7 +48,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
+import dev.ukanth.ufirewall.Log;
 
 public final class InterfaceTracker {
 
@@ -128,10 +128,8 @@ public final class InterfaceTracker {
 
 						if (ip instanceof Inet4Address) {
 							ret.lanMaskV4 = mask;
-							ret.allowWifi = true;
 						} else if (ip instanceof Inet6Address) {
 							ret.lanMaskV6 = mask;
-							ret.allowWifi = true;
 						}
 					}
 				}
@@ -141,20 +139,23 @@ public final class InterfaceTracker {
 		}
 	}
 
-	private static boolean getTetherStatus(Context context) {
+	private static void getTetherStatus(Context context, InterfaceDetails d) {
 		WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
 		Method[] wmMethods = wifi.getClass().getDeclaredMethods();
+
+		d.isTethered = false;
+		d.tetherStatusKnown = false;
 
 		for(Method method: wmMethods) {
 			if(method.getName().equals("isWifiApEnabled")) {
 				try {
-					return ((Boolean)method.invoke(wifi)).booleanValue();
+					d.isTethered = ((Boolean)method.invoke(wifi)).booleanValue();
+					d.tetherStatusKnown = true;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return false;
 	}
 
 	private static InterfaceDetails getInterfaceDetails(Context context) {
@@ -176,7 +177,6 @@ public final class InterfaceTracker {
 		case ConnectivityManager.TYPE_MOBILE_SUPL:
 		case ConnectivityManager.TYPE_WIMAX:
 			ret.isRoaming = info.isRoaming();
-			ret.isTethered = ret.allowWifi = getTetherStatus(context);
 			ret.netType = ConnectivityManager.TYPE_MOBILE;
 			ret.netEnabled = true;
 			break;
@@ -187,6 +187,7 @@ public final class InterfaceTracker {
 			ret.netEnabled = true;
 			break;
 		}
+		getTetherStatus(context, ret);
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
 			OldInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);

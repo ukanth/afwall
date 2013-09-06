@@ -1,8 +1,8 @@
 package dev.ukanth.ufirewall;
 
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
@@ -13,7 +13,15 @@ public class HelpActivity extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.help_about);
-		TextView mSelected = (TextView) findViewById(R.id.text);
+		
+		WebView browser = (WebView)findViewById(R.id.helpwebview);
+
+	    WebSettings settings = browser.getSettings();
+	    settings.setJavaScriptEnabled(true);
+
+	    browser.loadUrl("file:///android_asset/about.html");
+	    
+/*		TextView mSelected = (TextView) findViewById(R.id.text);
 		String versionName = "";
 		try {
 			versionName = getApplicationContext()
@@ -23,7 +31,7 @@ public class HelpActivity extends SherlockActivity {
 
 		}
 		setTitle("AFWall+" + versionName);
-		mSelected.setText(getString(R.string.help_dialog_text));
+		mSelected.setText(getString(R.string.help_dialog_text));*/
 	}
 
 }
