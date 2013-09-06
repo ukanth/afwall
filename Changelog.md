@@ -4,11 +4,10 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.7
+Version 1.2.6.1
 
-* Special UID for DNS and NTP
-* Fixed issues with Android 4.3 - Allow DNS/NTP from application list - Only for 4.3 users !
-* Rewritten logic to detect LOG chain
+* Fixed issues with Android 4.3 - Allow DNS/NTP from application list.
+* Rewritten logic to detect LOG chain and logs should work now on newer devices (some dealy)
 * Better Tether status
 * New option for Beta testers to send error logs
 * Fix watchdog RootShell timeout
