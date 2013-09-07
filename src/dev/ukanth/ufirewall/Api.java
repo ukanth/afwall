@@ -635,8 +635,6 @@ public final class Api {
 		rulesUpToDate = true;
 
 		if (G.logTarget().equals("NFLOG")) {
-			NflogService.nflogPath = getNflogPath(ctx);
-			NflogService.queueNum = 40;
 			Intent intent = new Intent(ctx.getApplicationContext(), NflogService.class);
 			ctx.startService(intent);
 		}
