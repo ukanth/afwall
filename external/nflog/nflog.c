@@ -224,6 +224,7 @@ static int log_cb(const struct nlmsghdr *nlh, void *data)
     }
 
     puts("");
+    fflush(stdout);
 
     return MNL_CB_OK;
 }
