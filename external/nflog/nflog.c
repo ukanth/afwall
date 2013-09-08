@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <fcntl.h>
 #include <arpa/inet.h>
 
 #include <libmnl/libmnl.h>
@@ -21,6 +22,7 @@
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <errno.h>
 
 #ifndef aligned_be64
@@ -222,6 +224,7 @@ static int log_cb(const struct nlmsghdr *nlh, void *data)
     }
 
     puts("");
+    fflush(stdout);
 
     return MNL_CB_OK;
 }
@@ -298,7 +301,7 @@ int main(int argc, char *argv[])
 {
     char buf[MNL_SOCKET_BUFFER_SIZE];
     struct nlmsghdr *nlh;
-    int ret;
+    int ret, nfds, sock_fd, stdin_fd;
     unsigned int portid, qnum;
 
     atexit(cleanup);
@@ -349,26 +352,32 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
-    if (ret == -1) {
-        if(errno == ENOSPC || errno == ENOBUFS)  {
-          /* ignore these (hopefully) recoverable errors */
-        } else {
-          perror("mnl_socket_recvfrom");
-          exit(EXIT_FAILURE);
-        }
+    sock_fd = mnl_socket_get_fd(nl);
+    stdin_fd = fileno(stdin);
+    nfds = (sock_fd > stdin_fd ? sock_fd : stdin_fd) + 1;
+
+    if (fcntl(sock_fd,  F_SETFL, O_NONBLOCK) < 0 ||
+        fcntl(stdin_fd, F_SETFL, O_NONBLOCK) < 0) {
+      perror("fcntl");
+      exit(EXIT_FAILURE);
     }
-    
+
     while (1) {
-      if (ret == -1) {
-        /* reset ret and skip mnl_cb_run if previous recvfrom had an error */
-        ret = 0;
-      } else {
-        ret = mnl_cb_run(buf, ret, 0, portid, log_cb, NULL);
-        if (ret < 0) {
-          perror("mnl_cb_run");
-          exit(EXIT_FAILURE);
-        }
+      fd_set fds;
+      char c;
+
+      FD_ZERO(&fds);
+      FD_SET(sock_fd, &fds);
+      FD_SET(stdin_fd, &fds);
+
+      select(nfds, &fds, NULL, NULL, NULL);
+
+      if (FD_ISSET(stdin_fd, &fds) && read(stdin_fd, &c, 1) <= 0) {
+        /* exit if stdin closes */
+        break;
+      } else if (!FD_ISSET(sock_fd, &fds)) {
+        /* no data on the socket */
+        continue;
       }
 
       ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
@@ -380,6 +389,11 @@ int main(int argc, char *argv[])
           perror("mnl_socket_recvfrom");
           exit(EXIT_FAILURE);
         }
+      }
+
+      if (mnl_cb_run(buf, ret, 0, portid, log_cb, NULL) < 0) {
+        perror("mnl_cb_run");
+        exit(EXIT_FAILURE);
       }
     }
 

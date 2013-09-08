@@ -635,8 +635,6 @@ public final class Api {
 		rulesUpToDate = true;
 
 		if (G.logTarget().equals("NFLOG")) {
-			NflogService.nflogPath = getNflogPath(ctx);
-			NflogService.queueNum = 40;
 			Intent intent = new Intent(ctx.getApplicationContext(), NflogService.class);
 			ctx.startService(intent);
 		}
@@ -1323,7 +1321,7 @@ public final class Api {
 			
 			// Check nflog
 			file = new File(ctx.getDir("bin",0), "nflog");
-			if (!file.exists()) {
+			if (!file.exists() || file.length() != 13648) {
 				copyRawFile(ctx, R.raw.nflog, file, "755");
 				changed = true;
 			}
