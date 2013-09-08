@@ -37,7 +37,7 @@ public class NflogService extends Service {
 	public static final String TAG = "AFWall";
 
 	public static String nflogPath;
-	public static int queueNum;
+	public static final int queueNum = 40;
 
 	private final IBinder mBinder = new Binder();
 	private Shell.Interactive rootSession;
@@ -51,6 +51,7 @@ public class NflogService extends Service {
 	}
 
 	public void onCreate() {
+		nflogPath = Api.getNflogPath(getApplicationContext());
 		Log.d(TAG, "Starting " + nflogPath);
 
 		rootSession = new Shell.Builder()
