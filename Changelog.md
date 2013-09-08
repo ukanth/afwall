@@ -4,6 +4,10 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.6.2
+
+* NGLog fixes for various devices including nexus.
+
 Version 1.2.6.1
 
 * LOGS should work now on newer devices which has NFLOG chain.
