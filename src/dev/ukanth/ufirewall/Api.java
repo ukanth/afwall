@@ -770,7 +770,11 @@ public final class Api {
 		for (String s : dynChains) {
 			cmds.add("-F " + s);
 		}
+		//make sure reset the OUTPUT chain to accept state.
+		cmds.add("-P OUTPUT ACCEPT");
+		
 		cmds.add("-D OUTPUT -j afwall");
+		
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT2, cmds);
 
 		try {
