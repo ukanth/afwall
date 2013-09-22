@@ -216,10 +216,8 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		if(key.equals("enableIPv6")){
 			File defaultIP6TablesPath = new File("/system/bin/ip6tables");
 			if(!defaultIP6TablesPath.exists()) {
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putBoolean("enableIPv6", false);
-				editor.commit();
+				CheckBoxPreference connectionPref = (CheckBoxPreference) findPreference(key);
+				connectionPref.setChecked(false);
 				Api.alert(getApplicationContext(), getString(R.string.ip6unavailable));
 			}
 		}
