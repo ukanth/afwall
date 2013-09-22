@@ -134,7 +134,9 @@ public final class InterfaceTracker {
 					}
 				}
 			} catch (SocketException e) {
-				Log.e(TAG, "error fetching network interface list");
+				Log.e(TAG, "Error fetching network interface list");
+			} catch (Exception e) {
+				Log.e(TAG, "Error fetching network interface list");
 			}
 		}
 	}
