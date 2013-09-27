@@ -1,0 +1,8 @@
+[submodule "submodules/android-lockpattern"]
+	path = submodules/android-lockpattern
+	url = https://github.com/yongce/android-lockpattern.git
+	branch = master
+[submodule "submodules/ActionBarSherlock"]
+	path = submodules/ActionBarSherlock
+	url = https://github.com/yongce/ActionBarSherlock.git
+	branch = dev
