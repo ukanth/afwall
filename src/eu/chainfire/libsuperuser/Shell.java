@@ -17,14 +17,17 @@
 package eu.chainfire.libsuperuser;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -1012,9 +1015,29 @@ public class Shell {
 			Debug.log(String.format("[%s%%] START", shell.toUpperCase(Locale.ENGLISH)));
 			
 			try {
+				Map<String,String> sysenv = System.getenv();
+				for(Map.Entry<String,String> entry : sysenv.entrySet()) {
+					Debug.log("ENV: " + entry.getKey() + "=" + entry.getValue());
+				}
+
+				for (String s : new String[] { "/system/bin/su", "/system/xbin/su", "/system/sbin/su", "/bin/su", "/sbin/su", "/vendor/bin/su" }) {
+					File f = new File(s);
+					Debug.log("FILE: " + s + (f.exists() ? " exists" : " does not exist") +
+							  (f.canExecute() ? ", executable" : ", non-exec") + (f.canRead() ? ", readable" : ", unreadable"));
+				}
+				
+				Properties plist = System.getProperties();
+				Enumeration<?> pnames = plist.propertyNames();
+				while (pnames.hasMoreElements()) {
+					String s = (String)pnames.nextElement();
+					Debug.log("PROP: " + s + "=" + plist.getProperty(s));
+				}
+
 				// setup our process, retrieve STDIN stream, and STDOUT/STDERR gobblers
 				if (environment.size() == 0) {
+					Debug.log("trying to exec " + shell);
 					process = Runtime.getRuntime().exec(shell);
+					Debug.log("exec succeeded");
 				} else {
 					Map<String, String> newEnvironment = new HashMap<String, String>();
 					newEnvironment.putAll(System.getenv());
@@ -1050,6 +1073,7 @@ public class Shell {
 						}
 					}
 				});
+
 				STDERR = new StreamGobbler(shell.toUpperCase(Locale.ENGLISH) + "*", process.getErrorStream(), new OnLineListener() {					
 					@Override
 					public void onLine(String line) {
@@ -1077,9 +1101,11 @@ public class Shell {
 				
 				runNextCommand();
 
+				Debug.log("open() returning true");
 				return true;
 			} catch (IOException e) {
 				// shell probably not found
+				android.util.Log.e("AFWall", "open() returning false", e);
 				return false;
 			}
 		}
