@@ -189,8 +189,8 @@ public class RulesActivity extends DataDumpActivity {
     		return true;
     	case MENU_SEND_REPORT:
     		Intent email = new Intent(Intent.ACTION_VIEW);
-    		email.setData(Uri.parse("mailto:cumakt%2Bafwall@gmail.com"));
-    		email.putExtra(Intent.EXTRA_SUBJECT, "AFWall+ problem report");
+    		email.setData(Uri.parse("mailto:afwall-report@googlegroups.com"));
+    		email.putExtra(Intent.EXTRA_SUBJECT, "AFWall+ problem report -v" + android.os.Build.VERSION.RELEASE);
     		email.putExtra(Intent.EXTRA_TEXT, dataText + "\n\n" + getString(R.string.enter_problem) + "\n\n");
     		startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
     		return true;
