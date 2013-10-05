@@ -1245,10 +1245,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAllLAN() {
-		ListAdapter adapter = listview.getAdapter();
-		if (adapter == null) {
+		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
 			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
@@ -1259,10 +1259,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAllVPN() {
-		ListAdapter adapter = listview.getAdapter();
-		if (adapter == null) {
+		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
 			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
@@ -1273,10 +1273,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectRevert(){
-		ListAdapter adapter = listview.getAdapter();
-		if (adapter == null) {
+		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
 			PackageInfoData data = (PackageInfoData) adapter.getItem(item);
@@ -1291,10 +1291,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void selectAllRoam(){
-		ListAdapter adapter = listview.getAdapter();
-		if (adapter == null) {
+		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
 			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
@@ -1305,10 +1305,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void clearAll(){
-		ListAdapter adapter = listview.getAdapter();
-		if (adapter == null) {
+		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
 			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
@@ -1323,10 +1323,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAll3G() {
-		ListAdapter adapter = listview.getAdapter();
-		if (adapter == null) {
+		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
 			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
@@ -1337,10 +1337,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAllWifi() {
-		ListAdapter adapter = listview.getAdapter();
-		if (adapter == null) {
+		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
 			PackageInfoData data = (PackageInfoData) adapter.getItem(item);
