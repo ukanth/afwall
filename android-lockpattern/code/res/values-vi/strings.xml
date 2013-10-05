@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="alp_app_name">android-lockpattern</string>
+    <string name="alp_cmd_confirm">Xác nhận</string>
+    <string name="alp_cmd_continue">Tiếp tục</string>
+    <string name="alp_cmd_retry">Thử lại</string>
+    <string name="alp_lockscreen_access_pattern_cell_added">Cell added</string>
+    <string name="alp_lockscreen_access_pattern_cleared">Pattern cleared</string>
+    <string name="alp_lockscreen_access_pattern_detected">Pattern completed</string>
+    <string name="alp_lockscreen_access_pattern_start">Pattern started</string>
+    <string name="alp_msg_connect_4dots">Kết nối ít nhất 4 điểm.\nHãy thử lại…</string>
+    <string name="alp_msg_draw_an_unlock_pattern">Vẽ mẫu khóa:</string>
+    <string name="alp_msg_draw_pattern_to_unlock">Vẽ mẫu khóa để truy cập:</string>
+    <string name="alp_msg_pattern_recorded">Mẫu khóa đã được nhớ!</string>
+    <string name="alp_msg_redraw_pattern_to_confirm">Vẽ lại mẫu khóa để xác nhận:</string>
+    <string name="alp_msg_release_finger_when_done">Thả ngón tay khi xong</string>
+    <string name="alp_msg_try_again">Xin lỗi, hãy thử lại</string>
+    <string name="alp_msg_your_new_unlock_pattern">Mẫu khóa mới của bạn:</string>
+
+</resources>

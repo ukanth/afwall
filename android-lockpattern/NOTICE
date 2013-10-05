@@ -1,0 +1,121 @@
+android-lockpattern
+Copyright 2012 Hai Bison
+
+Version: 2.3
+
+This product includes software developed at
+http://code.google.com/p/android-lockpattern/
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+===============================================================
+
+History:
+
++++ Version 2.3 +++
+ - Release: August 28, 2012
+
+ - Fixed serious bug: key _PaternSha1 is deprecated but is used to return the pattern;
+ - Removed all fields/ methods which were deprecated in old versions;
+
++++ Version 2.2 +++
+ - Release: August 17, 2012
+
+ - added: Spanish language; special thanks to C. - a kind friend who helped
+   us translate the library into his mother language;
+
++++ Version 2.1 +++
+ - Release: July 29, 2012
+
+ - turn off AutoSave by default;
+ - add new method IEncrypter.encrypt(Context, String);
+ - set method IEncrypter.encrypt(String) as deprecated;
+
++++ Version 2.1 beta +++
+ - Initialization: July 21, 2012
+
++++ Version 2 +++
+ - Release: July 15, 2012
+
+ - add support for encryption;
+
++++ Version 2 beta +++
+ - Initialization: July 12, 2012
+
++++ Version 1.5.5 +++
+ - Release: June 22, 2012
+
+ - set max width and height for LockPatternView to 400dp for tablet;
+
++++ Version 1.5.4 +++
+ - Release: June 09, 2012
+
+ - Fix bug: in mode CreatePattern, LockPatternActivity recognized wrong
+   the confirmed pattern;
+
++++ Version 1.5.4 beta +++
+ - Initialization: June 07, 2012
+
++++ Version 1.5.3 +++
+ - Release: June 07, 2012
+
+ - ability to change theme in runtime;
+ - save and restore controls' state after screen orientation changed;
+
++++ Version 1.5.3 beta +++
+ - Initialization: May 21, 2012
+
+ - make LockPatternView's gravity center;
+
++++ Version 1.5.2 +++
+ - Release: May 21, 2012
+
+ - in landscape mode, move button Cancel to bottom;
+
++++ Version 1.5.1 +++
+ - Release: May 21, 2012
+
+ - set LockPatternView's gravity center;
+
++++ Version 1.5 +++
+ - Release: May 21, 2012
+
+ - due to this bug: http://code.google.com/p/android/issues/detail?id=30622,
+   so we prefix all resource names with 'alp_';
+ - add layout for landscape mode;
+ - update coding style:
+   + prefix global fields with 'm';
+   + prefix static final fields with '_';
+
++++ Version 1.4 +++
+ - Release: April 29, 2012
+
+ - change UI;
+ - determine and use user's haptic feedback;
+
++++ Version 1.2 +++
+ - Release: March 09, 2012
+
+ - make sure LockPatternUtils.patternToSha1() returns lower case string;
+
++++ Version 1.1 +++
+ - Release: March 08, 2012
+
+ - fix security issue about using SharedPreferences;
+
++++ Version 1.0 +++
+ - Release: March 08, 2012
+
+ - first release;
+ - create pattern;
+ - compare to existing pattern;

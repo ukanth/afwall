@@ -25,7 +25,6 @@
 package dev.ukanth.ufirewall;
 
 import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
-import group.pals.android.lib.ui.lockpattern.prefs.DisplayPrefs;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -377,9 +376,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		if(G.usePatterns()){
 			Intent intent = new Intent(getApplicationContext(), LockPatternActivity.class);
-			intent.setAction(LockPatternActivity.ACTION_COMPARE_PATTERN);
-			DisplayPrefs.setMaxRetry(this, 3);
-			intent.putExtra(LockPatternActivity.EXTRA_PATTERN, pwd);
+			intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.ComparePattern);
+			intent.putExtra(LockPatternActivity._MaxRetry, "3");
+			intent.putExtra(LockPatternActivity._Pattern, pwd);
 			startActivityForResult(intent, _ReqSignIn);	
 		}
 		else{
@@ -980,7 +979,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				diaBox.show();
 			} else {
 				Intent intent = new Intent(MainActivity.this, LockPatternActivity.class);
-				intent.setAction(LockPatternActivity.ACTION_CREATE_PATTERN);
+				intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.CreatePattern);
 				startActivityForResult(intent, _ReqCreatePattern);
 			}	
 		}  else {
@@ -1026,7 +1025,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			switch (requestCode) {
 			case _ReqCreatePattern:
 				if (resultCode == RESULT_OK) {
-		            String pattern = data.getStringExtra(LockPatternActivity.EXTRA_PATTERN);
+		            String pattern = data.getStringExtra(LockPatternActivity._Pattern);
 		    		final Editor editor = G.sPrefs.edit();
 	    			editor.putString("LockPassword", pattern);
 	    			editor.commit();

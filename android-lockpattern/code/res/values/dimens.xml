@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="alp_lockpatternview_max_size">400dp</dimen>
+    
+</resources>
