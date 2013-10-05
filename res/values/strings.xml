@@ -258,7 +258,7 @@
     
      <!-- 1.2.6 -->
     <string name="active_rules">Active Rules</string>
-    <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+    <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
     
     <string name="profile_management">Profile Management</string>
     <string name="profile_add">Add Profile</string>
