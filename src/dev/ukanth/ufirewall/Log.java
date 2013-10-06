@@ -30,7 +30,7 @@ import java.util.LinkedList;
 
 public class Log {
 
-	private static final int MAX_ENTRIES = 32;
+	private static final int MAX_ENTRIES = 512;
 
 	public static final int LOG_DEBUG = 0;
 	public static final int LOG_VERBOSE = 1;
