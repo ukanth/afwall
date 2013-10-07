@@ -33,17 +33,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.WindowCompat;
+import android.support.v7.app.ActionBarActivity;
+
 import dev.ukanth.ufirewall.Log;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-import com.actionbarsherlock.view.Window;
-
-public abstract class DataDumpActivity extends SherlockActivity {
+public abstract class DataDumpActivity extends ActionBarActivity {
 
 	public static final String TAG = "AFWall";
 
@@ -67,8 +69,9 @@ public abstract class DataDumpActivity extends SherlockActivity {
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
+
+        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.rules);
 
         // Load partially transparent black background
@@ -84,34 +87,35 @@ public abstract class DataDumpActivity extends SherlockActivity {
     @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
     	// Common options: Copy, Export to SD Card, Refresh
-		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
+		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abc_ic_menu_moreoverflow_normal_holo_dark);
 
 		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
 		sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
 		sub.add(0, MENU_REFRESH, 0, R.string.refresh).setIcon(R.drawable.reload);
 		populateMenu(sub);
 
-        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		MenuItemCompat.setShowAsAction(sub.getItem(), MenuItemCompat.SHOW_AS_ACTION_ALWAYS
+		        | MenuItemCompat.SHOW_AS_ACTION_WITH_TEXT);
         super.onCreateOptionsMenu(menu);
 		mainMenu = menu;
 	    return true;
 	}
 
     @Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-    	switch (item.getItemId()) {
-    	case MENU_COPY:
-    		copy();
-    		return true;
-    	case MENU_EXPORT_LOG:
-    		exportToSD();
-    		return true;
-    	case MENU_REFRESH:
-    		populateData(this);
-    		return true;
-    	default:
-	        return super.onOptionsItemSelected(item);
-		}
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_COPY:
+                copy();
+                return true;
+            case MENU_EXPORT_LOG:
+                exportToSD();
+                return true;
+            case MENU_REFRESH:
+                populateData(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void exportToSD() {

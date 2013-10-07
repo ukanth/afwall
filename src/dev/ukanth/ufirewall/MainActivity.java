@@ -48,10 +48,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -69,13 +76,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.ActionBarSherlock.OnCreateOptionsMenuListener;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
-
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
@@ -87,8 +87,8 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 
 //@Holo(forceThemeApply = true, layout = R.layout.main)
 //public class MainActivity extends SActivity implements OnCheckedChangeListener,
-public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
-		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
+public class MainActivity extends ActionBarActivity implements OnCheckedChangeListener,
+		OnClickListener, ActionBar.OnNavigationListener {
 	public static final String TAG = "AFWall";
 
 	private TextView mSelected;
@@ -234,9 +234,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			
 		    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
 		    	    this,
-		    	    R.layout.sherlock_spinner_item,
+		    	    R.layout.abc_action_bar_title_item,
 		    	    mLocations);
-		    adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+		    adapter.setDropDownViewResource(R.layout.abc_action_menu_item_layout);
 	
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getSupportActionBar().setListNavigationCallbacks(adapter, this);
@@ -696,11 +696,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		getSupportMenuInflater().inflate(R.menu.menu_bar, menu);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_bar, menu);
 		mainMenu = menu;
 	    return true;
 	}
-	
+
 	public void menuSetApplyOrSave(Menu menu, boolean isEnabled) {
 		if (menu == null) {
 			return;
@@ -726,133 +727,134 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		switch (item.getItemId()) {
-		
-		case android.R.id.home:
-			disableOrEnable();
-	        return true;
-		case R.id.menu_toggle:
-			disableOrEnable();
-			return true;
-		case R.id.menu_apply:
-			applyOrSaveRules();
-			return true;
-		case R.id.menu_exit:
-			finish();
-			System.exit(0);
-			return false;
-		case R.id.menu_help:
-			showAbout();
-			return true;
-		case R.id.menu_setpwd:
-			setPassword();
-			return true;
-		case R.id.menu_log:
-			showLog();
-			return true;
-		case R.id.menu_rules:
-			showRules();
-			return true;
-		case R.id.menu_setcustom:
-			setCustomScript();
-			return true;
-		case R.id.menu_preference:
-			showPreferences();
-			return true;
-		case R.id.menu_reload:
-			Api.applications = null;
-			showOrLoadApplications();
-			refreshCache();
-			return true;
-		case R.id.menu_search:	
-			item.setActionView(R.layout.searchbar);
-			final EditText filterText = (EditText) item.getActionView().findViewById(
-					R.id.searchApps);
-			filterText.addTextChangedListener(filterTextWatcher);
-			filterText.setEllipsize(TruncateAt.END);
-			filterText.setSingleLine();
-			
-			item.setOnActionExpandListener(new OnActionExpandListener() {
-			    @Override
-			    public boolean onMenuItemActionCollapse(MenuItem item) {
-			        // Do something when collapsed
-			        return true;  // Return true to collapse action view
-			    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                disableOrEnable();
+                return true;
+            case R.id.menu_toggle:
+                disableOrEnable();
+                return true;
+            case R.id.menu_apply:
+                applyOrSaveRules();
+                return true;
+            case R.id.menu_exit:
+                finish();
+                System.exit(0);
+                return false;
+            case R.id.menu_help:
+                showAbout();
+                return true;
+            case R.id.menu_setpwd:
+                setPassword();
+                return true;
+            case R.id.menu_log:
+                showLog();
+                return true;
+            case R.id.menu_rules:
+                showRules();
+                return true;
+            case R.id.menu_setcustom:
+                setCustomScript();
+                return true;
+            case R.id.menu_preference:
+                showPreferences();
+                return true;
+            case R.id.menu_reload:
+                Api.applications = null;
+                showOrLoadApplications();
+                refreshCache();
+                return true;
+            case R.id.menu_search:
+                MenuItemCompat.setActionView(item, R.layout.searchbar);
+                final EditText filterText = (EditText) MenuItemCompat.getActionView(item).findViewById(
+                        R.id.searchApps);
+                filterText.addTextChangedListener(filterTextWatcher);
+                filterText.setEllipsize(TruncateAt.END);
+                filterText.setSingleLine();
 
-			    @Override
-			    public boolean onMenuItemActionExpand(MenuItem item) {
-			    	filterText.post(new Runnable() {
-			            @Override
-			            public void run() {
-			            	filterText.requestFocus();
-			                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			                imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
-			            }
-			        });
-			        return true;  // Return true to expand action view
-			    }
-			});
-			
-			return true;
-		case R.id.menu_export:
-			Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
-			return true;
-		case R.id.menu_import:
-			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-			builder.setMessage(getString(R.string.overrideRules))
-			       .setCancelable(false)
-			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
-			        		   Api.applications = null;
-			        		   showOrLoadApplications();
-			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-			        	   } else {
-			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-			   				}
-			           }
-			       })
-			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			AlertDialog alert2 = builder.create();
-			alert2.show();
-			return true;
-			
-		case R.id.menu_import_dw:
-			AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
-			builder2.setMessage(getString(R.string.overrideRules))
-			       .setCancelable(false)
-			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   if(ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)){
-			        		   Api.applications = null;
-			        		   showOrLoadApplications();
-			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-			        	   } else {
-			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-			   				}
-			           }
-			       })
-			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			AlertDialog alert3 = builder2.create();
-			alert3.show();
-			return true;	
-			
-		default:
-	        return super.onOptionsItemSelected(item);
-		}
-	}
-	
-	
+                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        // Do something when collapsed
+                        return true; // Return true to collapse action view
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        filterText.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                filterText.requestFocus();
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
+                            }
+                        });
+                        return true; // Return true to expand action view
+                    }
+                });
+
+                return true;
+            case R.id.menu_export:
+                Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+                return true;
+            case R.id.menu_import:
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage(getString(R.string.overrideRules))
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (Api.loadSharedPreferencesFromFile(MainActivity.this)) {
+                                    Api.applications = null;
+                                    showOrLoadApplications();
+                                    Api.alert(MainActivity.this, getString(R.string.import_rules_success)
+                                            + Environment.getExternalStorageDirectory().getAbsolutePath()
+                                            + "/afwall/");
+                                } else {
+                                    Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert2 = builder.create();
+                alert2.show();
+                return true;
+
+            case R.id.menu_import_dw:
+                AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
+                builder2.setMessage(getString(R.string.overrideRules))
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
+                                    Api.applications = null;
+                                    showOrLoadApplications();
+                                    Api.alert(MainActivity.this, getString(R.string.import_rules_success)
+                                            + Environment.getExternalStorageDirectory().getAbsolutePath()
+                                            + "/afwall/");
+                                } else {
+                                    Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert3 = builder2.create();
+                alert3.show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 	private void refreshCache() {
 		new AsyncTask<Void, Void, Void>() {

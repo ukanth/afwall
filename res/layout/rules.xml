@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="?actionBarSize"
+            android:paddingTop="?attr/actionBarSize"
             android:orientation="vertical">
             <!-- <TextView
                 android:layout_width="fill_parent"

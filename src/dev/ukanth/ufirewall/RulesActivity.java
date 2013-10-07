@@ -22,9 +22,6 @@
 
 package dev.ukanth.ufirewall;
 
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 import android.app.AlertDialog;
@@ -35,6 +32,8 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.SubMenu;
 
 import java.util.Map;
 import java.util.TreeSet;
@@ -172,7 +171,7 @@ public class RulesActivity extends DataDumpActivity {
 	}
 
     @Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 		final Context ctx = this;
 
     	switch (item.getItemId()) {
@@ -195,7 +194,7 @@ public class RulesActivity extends DataDumpActivity {
     		startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
     		return true;
     	}
-    	return super.onMenuItemSelected(featureId, item);
+    	return super.onOptionsItemSelected(item);
     }
 
 	private void flushAllRules(final Context ctx) {

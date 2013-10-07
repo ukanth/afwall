@@ -23,8 +23,6 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -36,7 +34,7 @@ import com.actionbarsherlock.app.SherlockPreferenceActivity;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public abstract class UnifiedSherlockPreferenceActivity extends SherlockPreferenceActivity
+public abstract class UnifiedSherlockPreferenceActivity extends PreferenceActivity
 		implements UnifiedPreferenceContainer {
 	private UnifiedPreferenceHelper mHelper = new UnifiedPreferenceHelper(this);
 

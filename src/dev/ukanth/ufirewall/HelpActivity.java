@@ -1,12 +1,11 @@
 package dev.ukanth.ufirewall;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
-public class HelpActivity extends SherlockActivity {
+public class HelpActivity extends ActionBarActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

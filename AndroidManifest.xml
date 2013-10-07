@@ -75,7 +75,7 @@
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Sherlock"
+        android:theme="@style/Theme.AppCompat"
         android:name="dev.ukanth.ufirewall.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
@@ -100,14 +100,12 @@
         <activity
             android:name="dev.ukanth.ufirewall.preferences.PreferencesActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
-            android:hardwareAccelerated="true"
-            android:theme="@style/Theme.Sherlock" >
+            android:hardwareAccelerated="true" >
         </activity>
         <activity
             android:name="dev.ukanth.ufirewall.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
-            android:hardwareAccelerated="true"
-            android:theme="@style/Theme.Sherlock" >
+            android:hardwareAccelerated="true" >
         </activity>
         <activity android:name="dev.ukanth.ufirewall.RulesActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.LogActivity"></activity>
