@@ -13,7 +13,9 @@
 ** limitations under the License.
 -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources" >
 
     <!-- Menu item to cancel the result. This should set the Activity result to RESULT_CANCELED and immediately finish the Activity. -->
 

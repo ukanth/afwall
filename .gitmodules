@@ -1,5 +1,4 @@
-[submodule "submodules/ActionBarSherlock"]
-	path = submodules/ActionBarSherlock
-	url = https://github.com/ukanth/ActionBarSherlock.git
+[submodule "submodules/android-support-v7"]
+	path = submodules/android-support-v7
+	url = https://github.com/yongce/android-support-v7.git
 	branch = master
-

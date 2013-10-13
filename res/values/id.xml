@@ -14,7 +14,6 @@
 -->
 <resources>
 
-
     <!-- Menu item to launch the Help -->
     <item name="twofortyfouram_locale_menu_help" type="id"/>
 

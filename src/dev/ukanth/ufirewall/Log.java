@@ -30,104 +30,104 @@ import java.util.LinkedList;
 
 public class Log {
 
-	private static final int MAX_ENTRIES = 32;
+    private static final int MAX_ENTRIES = 32;
 
-	public static final int LOG_DEBUG = 0;
-	public static final int LOG_VERBOSE = 1;
-	public static final int LOG_INFO = 2;
-	public static final int LOG_WARNING = 3;
-	public static final int LOG_ERROR = 4;
-	public static final int LOG_WTF = 5;
+    public static final int LOG_DEBUG = 0;
+    public static final int LOG_VERBOSE = 1;
+    public static final int LOG_INFO = 2;
+    public static final int LOG_WARNING = 3;
+    public static final int LOG_ERROR = 4;
+    public static final int LOG_WTF = 5;
 
-	public static class LogEntry {
-		Date timestamp;
-		int level;
-		String msg;
-	}
+    public static class LogEntry {
+        Date timestamp;
+        int level;
+        String msg;
+    }
 
-	private static LinkedList<LogEntry> circ = new LinkedList<LogEntry>();
+    private static LinkedList<LogEntry> circ = new LinkedList<LogEntry>();
 
-	private static synchronized void circLog(int level, String msg) {
-		LogEntry e = new LogEntry();
-		e.timestamp = new Date();
-		e.level = level;
-		e.msg = msg;
+    private static synchronized void circLog(int level, String msg) {
+        LogEntry e = new LogEntry();
+        e.timestamp = new Date();
+        e.level = level;
+        e.msg = msg;
 
-		if (circ.size() >= MAX_ENTRIES) {
-			circ.removeFirst();
-		}
-		circ.addLast(e);
-	}
+        if (circ.size() >= MAX_ENTRIES) {
+            circ.removeFirst();
+        }
+        circ.addLast(e);
+    }
 
-	public static synchronized String getLog() {
-		StringBuilder ret = new StringBuilder();
+    public static synchronized String getLog() {
+        StringBuilder ret = new StringBuilder();
 
-		for (int i = 0; i < circ.size(); i++) {
-			LogEntry e = circ.get(i);
-			String timestamp = new SimpleDateFormat("HH:mm:ss").format(e.timestamp);
-			ret.append(timestamp + " " + e.msg + "\n");
-		}
+        for (int i = 0; i < circ.size(); i++) {
+            LogEntry e = circ.get(i);
+            String timestamp = new SimpleDateFormat("HH:mm:ss").format(e.timestamp);
+            ret.append(timestamp + " " + e.msg + "\n");
+        }
 
-		return ret.toString();
-	}
+        return ret.toString();
+    }
 
-	public static int d(String tag, String msg) {
-		circLog(LOG_DEBUG, msg);
-		return android.util.Log.d(tag, msg);
-	}
+    public static int d(String tag, String msg) {
+        circLog(LOG_DEBUG, msg);
+        return android.util.Log.d(tag, msg);
+    }
 
-	public static int d(String tag, String msg, Exception e) {
-		circLog(LOG_DEBUG, msg);
-		return android.util.Log.d(tag, msg, e);
-	}
+    public static int d(String tag, String msg, Exception e) {
+        circLog(LOG_DEBUG, msg);
+        return android.util.Log.d(tag, msg, e);
+    }
 
-	public static int v(String tag, String msg) {
-		circLog(LOG_VERBOSE, msg);
-		return android.util.Log.v(tag, msg);
-	}
+    public static int v(String tag, String msg) {
+        circLog(LOG_VERBOSE, msg);
+        return android.util.Log.v(tag, msg);
+    }
 
-	public static int v(String tag, String msg, Exception e) {
-		circLog(LOG_VERBOSE, msg);
-		return android.util.Log.v(tag, msg, e);
-	}
+    public static int v(String tag, String msg, Exception e) {
+        circLog(LOG_VERBOSE, msg);
+        return android.util.Log.v(tag, msg, e);
+    }
 
-	public static int i(String tag, String msg) {
-		circLog(LOG_INFO, msg);
-		return android.util.Log.i(tag, msg);
-	}
+    public static int i(String tag, String msg) {
+        circLog(LOG_INFO, msg);
+        return android.util.Log.i(tag, msg);
+    }
 
-	public static int i(String tag, String msg, Exception e) {
-		circLog(LOG_INFO, msg);
-		return android.util.Log.i(tag, msg, e);
-	}
+    public static int i(String tag, String msg, Exception e) {
+        circLog(LOG_INFO, msg);
+        return android.util.Log.i(tag, msg, e);
+    }
 
-	public static int w(String tag, String msg) {
-		circLog(LOG_WARNING, msg);
-		return android.util.Log.w(tag, msg);
-	}
+    public static int w(String tag, String msg) {
+        circLog(LOG_WARNING, msg);
+        return android.util.Log.w(tag, msg);
+    }
 
-	public static int w(String tag, String msg, Exception e) {
-		circLog(LOG_WARNING, msg);
-		return android.util.Log.w(tag, msg, e);
-	}
+    public static int w(String tag, String msg, Exception e) {
+        circLog(LOG_WARNING, msg);
+        return android.util.Log.w(tag, msg, e);
+    }
 
-	public static int e(String tag, String msg) {
-		circLog(LOG_ERROR, msg);
-		return android.util.Log.e(tag, msg);
-	}
+    public static int e(String tag, String msg) {
+        circLog(LOG_ERROR, msg);
+        return android.util.Log.e(tag, msg);
+    }
 
-	public static int e(String tag, String msg, Exception e) {
-		circLog(LOG_ERROR, msg);
-		return android.util.Log.e(tag, msg, e);
-	}
+    public static int e(String tag, String msg, Exception e) {
+        circLog(LOG_ERROR, msg);
+        return android.util.Log.e(tag, msg, e);
+    }
 
-	public static int wtf(String tag, String msg) {
-		circLog(LOG_WTF, msg);
-		return android.util.Log.wtf(tag, msg);
-	}
+    public static int wtf(String tag, String msg) {
+        circLog(LOG_WTF, msg);
+        return android.util.Log.wtf(tag, msg);
+    }
 
-	public static int wtf(String tag, String msg, Exception e) {
-		circLog(LOG_WTF, msg);
-		return android.util.Log.wtf(tag, msg, e);
-	}
+    public static int wtf(String tag, String msg, Exception e) {
+        circLog(LOG_WTF, msg);
+        return android.util.Log.wtf(tag, msg, e);
+    }
 }

@@ -44,7 +44,6 @@ public final class PluginBundleManager
      * Method to verify the content of the bundle are correct.
      * <p>
      * This method will not mutate {@code bundle}.
-     * 
      * @param bundle bundle to verify. May be null, which will always return false.
      * @return true if the Bundle is valid, false if the bundle is invalid.
      */
@@ -87,7 +86,6 @@ public final class PluginBundleManager
 
     /**
      * Private constructor prevents instantiation
-     * 
      * @throws UnsupportedOperationException because this class cannot be instantiated.
      */
     private PluginBundleManager()

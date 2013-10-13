@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <style name="Theme.Transparent" parent="android:Theme">
-    <item name="android:windowIsTranslucent">true</item>
-    <item name="android:windowBackground">@android:color/transparent</item>
-    <item name="android:windowContentOverlay">@null</item>
-    <item name="android:windowNoTitle">true</item>
-    <item name="android:windowIsFloating">true</item>
-    <item name="android:backgroundDimEnabled">false</item>
-  </style>
-  
-  
-  <!--  Tasker Locale -->
-  
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!-- Tasker Locale -->
+
+
     <!-- Dark style for all standard Locale and Locale plug-in Activity instances -->
     <style name="Theme.Locale.Dark" parent="android:Theme" />
 
@@ -20,7 +21,7 @@
 
     <!-- Style for Activities that look like a dialog -->
     <style name="Theme.Locale.Dialog" parent="@android:style/Theme.Translucent.NoTitleBar" />
-    
+
     <style name="ButtonText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -35,5 +36,5 @@
         <item name="android:paddingLeft">12dp</item>
         <item name="android:paddingRight">12dp</item>
     </style>
-  
+
 </resources>

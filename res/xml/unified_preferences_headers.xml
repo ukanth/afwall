@@ -13,15 +13,13 @@
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$ExpPreferenceFragment"
         unified:preferenceRes="@xml/experimental_preferences"
         unified:title="@string/exp_prefs_title" />
-    
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$MultiProfilePreferenceFragment"
         unified:preferenceRes="@xml/profiles_preferences"
         unified:title="@string/mp_prefs_title" />
-    
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$CustomBinaryPreferenceFragment"
         unified:preferenceRes="@xml/ui_custom_preferences"
         unified:title="Binaries" />
-    
+
 </preference-headers>

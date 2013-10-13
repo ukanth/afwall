@@ -3,18 +3,19 @@
     <CheckBoxPreference
         android:key="enableMultiProfile"
         android:title="@string/multipleProfiles" />
-    
     <CheckBoxPreference
         android:dependency="enableMultiProfile"
         android:key="applyOnSwitchProfiles"
         android:summary="@string/multi_apply_rules_info"
         android:title="@string/multi_apply_rules" />
-    
-   <!--  <CheckBoxPreference
+
+    <!--
+         <CheckBoxPreference
         android:dependency="enableMultiProfile"
         android:key="resetProfiles"
-        android:title="@string/profile_reset" /> -->
-    
+        android:title="@string/profile_reset" />
+    -->
+
     <EditTextPreference
         android:dependency="enableMultiProfile"
         android:key="default"

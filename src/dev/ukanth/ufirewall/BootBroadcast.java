@@ -32,14 +32,14 @@ import android.content.Intent;
  * necessary because the rules are not persistent.
  */
 public class BootBroadcast extends BroadcastReceiver {
-	// private Handler mHandler = new Handler(Looper.getMainLooper());
+    // private Handler mHandler = new Handler(Looper.getMainLooper());
 
-	@Override
-	public void onReceive(final Context context, final Intent intent) {
-		 InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-		/*if(G.alternateStart()) {
-	         context.startService(new Intent(context, StartupService.class));
-		} else {
-		}*/
-	}
+    @Override
+    public void onReceive(final Context context, final Intent intent) {
+        InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+        /*if(G.alternateStart()) {
+             context.startService(new Intent(context, StartupService.class));
+        } else {
+        }*/
+    }
 }
