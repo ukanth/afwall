@@ -29,31 +29,32 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+
 import dev.ukanth.ufirewall.R;
 
 /**
  * ON/OFF Widget implementation
  */
 public class ToggleWidget extends AppWidgetProvider {
-	@Override
-	public void onReceive(final Context context, final Intent intent) {
-		super.onReceive(context, intent);
-	}
+    @Override
+    public void onReceive(final Context context, final Intent intent) {
+        super.onReceive(context, intent);
+    }
 
-	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-			int[] appWidgetIds) {
-		super.onUpdate(context, appWidgetManager, appWidgetIds);
-		
-		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.toggle_widget_layout);
-		
-		remoteViews.setImageViewResource(R.id.toggle_widget_icon, R.drawable.toggle_on);
-		Intent configIntent = new Intent(context, ToggleWidgetActivity.class);
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager,
+            int[] appWidgetIds) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-		PendingIntent configPendingIntent = PendingIntent.getActivity(context,0, configIntent, 0);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.toggle_widget_layout);
 
-		remoteViews.setOnClickPendingIntent(R.id.toggle_widget_icon,configPendingIntent);
-		appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
-	}
+        remoteViews.setImageViewResource(R.id.toggle_widget_icon, R.drawable.toggle_on);
+        Intent configIntent = new Intent(context, ToggleWidgetActivity.class);
+
+        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
+
+        remoteViews.setOnClickPendingIntent(R.id.toggle_widget_icon, configPendingIntent);
+        appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
+    }
 
 }

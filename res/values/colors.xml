@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-	<drawable name="ab_bg_black">#aa000000</drawable>
-	<color name="toast">#0099CC</color>
-	
+
+    <drawable name="ab_bg_black">#aa000000</drawable>
+
+    <color name="toast">#0099CC</color>
+
 </resources>

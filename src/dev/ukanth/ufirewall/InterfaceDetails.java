@@ -23,29 +23,29 @@
 package dev.ukanth.ufirewall;
 
 public class InterfaceDetails {
-	// firewall policy
-	boolean isRoaming = false;
-	boolean isTethered = false;
-	boolean tetherStatusKnown = false;
-	String lanMaskV4 = "";
-	String lanMaskV6 = "";
-	// TODO: identify DNS servers instead of opening up port 53/udp to all LAN hosts
+    // firewall policy
+    boolean isRoaming = false;
+    boolean isTethered = false;
+    boolean tetherStatusKnown = false;
+    String lanMaskV4 = "";
+    String lanMaskV6 = "";
+    // TODO: identify DNS servers instead of opening up port 53/udp to all LAN hosts
 
-	// supplementary info
-	String wifiName = "";
-	boolean netEnabled = false;
-	int netType = -1;
+    // supplementary info
+    String wifiName = "";
+    boolean netEnabled = false;
+    int netType = -1;
 
-	public boolean equals(InterfaceDetails that) {
-		if (this.isRoaming != that.isRoaming ||
-			this.isTethered != that.isTethered ||
-			this.tetherStatusKnown != that.tetherStatusKnown ||
-			!this.lanMaskV4.equals(that.lanMaskV4) ||
-			!this.lanMaskV6.equals(that.lanMaskV6) ||
-			!this.wifiName.equals(that.wifiName) ||
-			this.netEnabled != that.netEnabled ||
-			this.netType != that.netType)
-			return false;
-		return true;
-	}
+    public boolean equals(InterfaceDetails that) {
+        if (this.isRoaming != that.isRoaming ||
+                this.isTethered != that.isTethered ||
+                this.tetherStatusKnown != that.tetherStatusKnown ||
+                !this.lanMaskV4.equals(that.lanMaskV4) ||
+                !this.lanMaskV6.equals(that.lanMaskV6) ||
+                !this.wifiName.equals(that.wifiName) ||
+                this.netEnabled != that.netEnabled ||
+                this.netType != that.netType)
+            return false;
+        return true;
+    }
 }

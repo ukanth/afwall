@@ -10,13 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:background="@drawable/widget_bg"
-       /> 
+        android:background="@drawable/widget_bg" />
 
-    <!-- <TextView
+    <!--
+         <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="AFWall+" /> -->
+        android:text="AFWall+" />
+    -->
 
 </LinearLayout>

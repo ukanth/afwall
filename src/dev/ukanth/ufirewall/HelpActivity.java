@@ -7,30 +7,30 @@ import android.webkit.WebView;
 
 public class HelpActivity extends ActionBarActivity {
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.help_about);
-		
-		WebView browser = (WebView)findViewById(R.id.helpwebview);
+        setContentView(R.layout.help_about);
 
-	    WebSettings settings = browser.getSettings();
-	    settings.setJavaScriptEnabled(true);
+        WebView browser = (WebView) findViewById(R.id.helpwebview);
 
-	    browser.loadUrl("file:///android_asset/about.html");
-	    
-/*		TextView mSelected = (TextView) findViewById(R.id.text);
-		String versionName = "";
-		try {
-			versionName = getApplicationContext()
-					.getPackageManager()
-					.getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
-		} catch (NameNotFoundException e) {
+        WebSettings settings = browser.getSettings();
+        settings.setJavaScriptEnabled(true);
 
-		}
-		setTitle("AFWall+" + versionName);
-		mSelected.setText(getString(R.string.help_dialog_text));*/
-	}
+        browser.loadUrl("file:///android_asset/about.html");
+
+        /*		TextView mSelected = (TextView) findViewById(R.id.text);
+        		String versionName = "";
+        		try {
+        			versionName = getApplicationContext()
+        					.getPackageManager()
+        					.getPackageInfo(getApplicationContext().getPackageName(), 0).versionName;
+        		} catch (NameNotFoundException e) {
+
+        		}
+        		setTitle("AFWall+" + versionName);
+        		mSelected.setText(getString(R.string.help_dialog_text));*/
+    }
 
 }

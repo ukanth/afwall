@@ -1,24 +1,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-     <CheckBoxPreference
+    <CheckBoxPreference
         android:key="notifyAppInstall"
         android:summaryOff="@string/notify_pref_summary_off"
         android:summaryOn="@string/notify_pref_summary_on"
         android:title="@string/notify_pref_title" />
-    
-        
     <CheckBoxPreference
-        android:key="enableLog"
         android:defaultValue="false"
+        android:key="enableLog"
         android:summary="@string/showlog_title"
         android:title="@string/enable_firewall_log" />
-
     <CheckBoxPreference
         android:key="disableIcons"
         android:summaryOff="@string/hideicons_pref_summary_off"
         android:summaryOn="@string/hideicons_pref_summary_on"
         android:title="@string/hideicons_pref_title" />
-    
     <CheckBoxPreference
         android:key="showUid"
         android:summaryOff="@string/showuid_summary_off"
@@ -36,17 +32,16 @@
         android:key="activeRules"
         android:summary="@string/active_rules_summary"
         android:title="@string/active_rules" />
-
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="enableRoam"
         android:dependency="activeRules"
+        android:key="enableRoam"
         android:summary="@string/roamingSummary"
         android:title="@string/roaming" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="enableLAN"
         android:dependency="activeRules"
+        android:key="enableLAN"
         android:summary="@string/lan_summary"
         android:title="@string/lan_title" />
     <CheckBoxPreference
@@ -54,18 +49,15 @@
         android:key="enableVPN"
         android:summary="@string/vpnSummary"
         android:title="@string/vpn_profile" />
-    
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="enableIPv6"
         android:summary="@string/ipv6_summary"
         android:title="@string/ipv6_title" />
-    
     <CheckBoxPreference
         android:key="enableConfirm"
         android:summary="@string/enableConfirm_summary_on"
         android:title="@string/enableConfirmTitle" />
-    
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="disableTaskerToast"
@@ -79,5 +71,5 @@
         android:key="locale"
         android:title="@string/languages" >
     </ListPreference>
-    
+
 </PreferenceScreen>

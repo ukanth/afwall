@@ -1,28 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/mainlayout" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:duplicateParentState="false">
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
-	<ListView android:id="@android:id/list"
-    android:layout_width="wrap_content" 
-    android:layout_height="wrap_content"
-    android:drawSelectorOnTop="false"
-    android:scrollbarAlwaysDrawVerticalTrack="true"
-    />
-	
-	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6px">
-		 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/label_mode" android:text="@string/mode" android:clickable="true"></TextView>
-        <TextView android:id="@+id/text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textIsSelectable="false"/>
-	</LinearLayout>
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
-	<LinearLayout android:id="@+id/dynamicColumns" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="0px">
-		<View android:layout_width="34dp" android:layout_height="fill_parent" android:id="@+id/imageHolder"/>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_lan" android:src="@drawable/eth_lan" android:clickable="true" android:visibility="gone"></ImageView>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_wifi" android:src="@drawable/eth_wifi" android:clickable="true"></ImageView>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_3g" android:src="@drawable/eth_3g" android:clickable="true"></ImageView>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_roam" android:src="@drawable/roam" android:clickable="true" android:visibility="gone"></ImageView>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_vpn" android:src="@drawable/img_vpn" android:clickable="true" android:visibility="gone"></ImageView>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_invert" android:src="@drawable/invertmini" android:clickable="true"></ImageView>
-		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_reset" android:src="@drawable/clear" android:clickable="true"></ImageView>
-	</LinearLayout>
-	
-	<ListView android:layout_width="wrap_content" android:fastScrollEnabled="true" android:layout_height="wrap_content" android:id="@+id/listview"></ListView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:duplicateParentState="false"
+    android:orientation="vertical" >
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#FFFFFFFF" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawSelectorOnTop="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="6px" >
+
+        <TextView
+            android:id="@+id/label_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:text="@string/mode" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="false" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#FFFFFFFF" />
+
+    <LinearLayout
+        android:id="@+id/dynamicColumns"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="0px" >
+
+        <View
+            android:id="@+id/imageHolder"
+            android:layout_width="34dp"
+            android:layout_height="fill_parent" />
+
+        <ImageView
+            android:id="@+id/img_lan"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/eth_lan"
+            android:visibility="gone" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/img_wifi"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/eth_wifi" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/img_3g"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/eth_3g" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/img_roam"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/roam"
+            android:visibility="gone" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/img_vpn"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/img_vpn"
+            android:visibility="gone" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/img_invert"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/invertmini" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/img_reset"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:src="@drawable/clear" >
+        </ImageView>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fastScrollEnabled="true" >
+    </ListView>
+
 </LinearLayout>

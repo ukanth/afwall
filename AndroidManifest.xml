@@ -21,7 +21,6 @@
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
  * @version 1.2
  */
-
 -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,6 +45,7 @@
          to have themselves running without the user being aware of them. 
          As such, you must explicitly declare your use of this facility to make
          that visible to the user.
+
     -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Allows ufwall to access information about networks -->
@@ -56,14 +56,14 @@
     <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> -->
     <!-- Allows ufwall to write to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
+
     <!-- Allows access to IP configuration and tethering state -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <!-- Will be default in CyanogenMod Superuser App -->
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
-    
+
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"
@@ -71,12 +71,12 @@
         android:normalScreens="true"
         android:smallScreens="true" />
 
-    <application 
+    <application
+        android:name="dev.ukanth.ufirewall.G"
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat"
-        android:name="dev.ukanth.ufirewall.G" >
+        android:theme="@style/Theme.AppCompat" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale"
@@ -89,6 +89,7 @@
                     and the LAUNCHER category says that 
                     this entry point should be listed in 
                     the application launcher
+
                 -->
                 <action android:name="android.intent.action.MAIN" />
                 <!-- Does we need android.intent.category.DEFAULT? -->
@@ -107,9 +108,13 @@
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
             android:hardwareAccelerated="true" >
         </activity>
-        <activity android:name="dev.ukanth.ufirewall.RulesActivity"></activity>
-        <activity android:name="dev.ukanth.ufirewall.LogActivity"></activity>
-        <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity" android:theme="@style/Theme.Transparent" >
+        <activity android:name="dev.ukanth.ufirewall.RulesActivity" >
+        </activity>
+        <activity android:name="dev.ukanth.ufirewall.LogActivity" >
+        </activity>
+        <activity
+            android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity"
+            android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -120,7 +125,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-				<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
+                <action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
@@ -132,14 +138,14 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-        
-        
         <receiver android:name="dev.ukanth.ufirewall.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
+        <receiver
+            android:name="dev.ukanth.ufirewall.StatusWidget"
+            android:label="@string/widget_label_status" >
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
@@ -150,9 +156,9 @@
                 <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
-        
-        
-         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" android:label="@string/widget_label_settings">
+        <receiver
+            android:name="dev.ukanth.ufirewall.widget.ToggleWidget"
+            android:label="@string/widget_label_settings" >
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
@@ -175,8 +181,10 @@
         <receiver
             android:name="dev.ukanth.ufirewall.admin.AdminDeviceReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN" >
-            <meta-data android:name="android.app.device_admin" 
-            android:resource="@xml/device_admin"/>
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+
             <intent-filter>
 
                 <!-- This action is required -->
@@ -185,10 +193,9 @@
                 <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLED" />
             </intent-filter>
         </receiver>
-        
-        
+
         <!-- Tasker/Locale Plugin -->
-        
+
         <activity
             android:name="dev.ukanth.ufirewall.plugin.LocaleEdit"
             android:exported="true"
@@ -204,20 +211,23 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
-        
+
         <receiver
             android:name="dev.ukanth.ufirewall.plugin.FireReceiver"
             android:exported="true"
             android:process=":background"
             tools:ignore="ExportedReceiver" >
+
             <!-- this Intent filter allows the plug-in to discovered by Locale -->
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
             </intent-filter>
         </receiver>
-        <service android:name="RootShell"></service>
-        <service android:name="NflogService"></service>
-        
+
+        <service android:name="RootShell" >
+        </service>
+        <service android:name="NflogService" >
+        </service>
     </application>
 
 </manifest>
