@@ -4,6 +4,12 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.7-Beta
+* Debug information to identify the root cause for exit-3 issue
+* Debug information to identify the tether status change
+* Various bug fixes - User Reported crashes
+
+
 Version 1.2.6.2
 
 * NGLog fixes for various devices including nexus.

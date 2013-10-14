@@ -27,8 +27,27 @@ import android.content.Intent;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
+	public static final String TAG = "AFWall";
+
+	// These are marked "@hide" in WifiManager.java
+	public static final String WIFI_AP_STATE_CHANGED_ACTION =
+			"android.net.wifi.WIFI_AP_STATE_CHANGED";
+	public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
+	public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
+	public static final int WIFI_AP_STATE_DISABLING = 10;
+	public static final int WIFI_AP_STATE_DISABLED = 11;
+	public static final int WIFI_AP_STATE_ENABLING = 12;
+	public static final int WIFI_AP_STATE_ENABLED = 13;
+	public static final int WIFI_AP_STATE_FAILED = 14;
+
 	@Override
 	public void onReceive(final Context context, Intent intent) {
+		if (intent.getAction().equals(WIFI_AP_STATE_CHANGED_ACTION)) {
+			int newState = intent.getIntExtra(EXTRA_WIFI_AP_STATE, -1);
+			int oldState = intent.getIntExtra(EXTRA_PREVIOUS_WIFI_AP_STATE, -1);
+			Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
+			return;
+		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
 		if(G.activeRules()){

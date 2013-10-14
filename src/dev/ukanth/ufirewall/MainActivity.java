@@ -542,7 +542,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		if(searchStr !=null && searchStr.length() > 1) {
 			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
-					if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())) {
+					if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())
+							&& !searchApp.contains(app)) {
 						searchApp.add(app);
 						isResultsFound = true;
 					} 

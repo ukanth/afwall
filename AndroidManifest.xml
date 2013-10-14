@@ -139,6 +139,7 @@
         <receiver android:name="dev.ukanth.ufirewall.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                 <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
             </intent-filter>
         </receiver>
         <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
