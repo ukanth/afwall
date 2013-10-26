@@ -12,22 +12,25 @@ ifeq ($(ARCH),arm)
 TRIPLET := arm-linux-androideabi
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
 APIVER  := 8
+NDK_ABINAME := armeabi
 endif
 ifeq ($(ARCH),x86)
 TRIPLET := i686-linux-android
 TOOLCHAIN := x86-$(GCCVER)
 APIVER  := 9
+NDK_ABINAME := x86
 endif
 ifeq ($(ARCH),mips)
 TRIPLET := mipsel-linux-android
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
 APIVER  := 9
+NDK_ABINAME := mips
 endif
 
 NDK_SYSROOT := $(NDK)/platforms/android-$(APIVER)/arch-$(ARCH)
 
 BINDIR := $(firstword $(wildcard $(NDK)/toolchains/$(TOOLCHAIN)/prebuilt/*/bin))
-PATH := $(BINDIR):$(PATH)
+PATH := $(BINDIR):$(NDK):$(PATH)
 
 RESDIR := $(shell pwd)/../res/raw
 DESTDIR := $(shell pwd)/$(TRIPLET)/out
@@ -35,7 +38,7 @@ DESTDIR := $(shell pwd)/$(TRIPLET)/out
 CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
 		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2"
 
-PER_ARCH_TARGETS := iptables busybox
+PER_ARCH_TARGETS := iptables busybox nflog
 
 .PHONY: all unpack clean
 all: $(addsuffix -binaries,$(ARCH_LIST))
@@ -115,12 +118,27 @@ busybox-unpack: $(BUSYBOX_BUILD)/.configured
 
 #####################################################################
 #
+# Build nflog
+#
+NDK_OUTDIR := ../libs/$(NDK_ABINAME)
+
+$(NDK_OUTDIR)/nflog:
+	ndk-build APP_ABI=$(NDK_ABINAME)
+
+.PHONY: nflog nflog-unpack
+nflog: $(NDK_OUTDIR)/nflog
+	cp $< $(RESDIR)/nflog_$(ARCH)
+nflog-unpack:
+
+#####################################################################
+#
 # Common targets
 #
 .PHONY: arch-clean %-clean %-binaries
 arch-clean:
-	rm -rf $(TRIPLET)
+	rm -rf $(TRIPLET) $(NDK_OUTDIR)
 %-clean:
 	$(MAKE) ARCH=$* arch-clean
+	ndk-build APP_ABI=$(NDK_ABINAME) clean
 %-binaries: unpack
 	$(MAKE) ARCH=$* $(PER_ARCH_TARGETS)
