@@ -61,24 +61,26 @@
     </string-array>
     
     <string-array name="iptables_binary">
+        <item>@string/auto</item>
         <item>@string/system_ipt</item>
         <item>@string/builtin_ipt</item>
     </string-array>
     
       <string-array name="iptables_binary_path">
-        <item>1</item>
-        <item>2</item>
+        <item>auto</item>
+        <item>system</item>
+        <item>builtin</item>
     </string-array>
     
       <string-array name="busybox_binary">
-        <item>@string/system_bb</item>
         <item>@string/builtin_bb</item>
+        <item>@string/system_bb</item>
     </string-array>
     
     
     <string-array name="busybox_binary_path">
-        <item>1</item>
-        <item>2</item>
+        <item>builtin</item>
+        <item>system</item>
     </string-array>
 
 </resources>

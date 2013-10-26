@@ -195,42 +195,39 @@ public final class Api {
 			"BUSYBOX="+mybusybox+"\n" +
 			"";
 	}
-	
+
 	static void setIpTablePath(Context ctx,boolean setv6) {
-		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
-		final String defaultPath = "iptables ";
-		final String defaultIPv6Path = "ip6tables ";
-		final String myiptables = dir + "/iptables ";
-		final SharedPreferences appprefs = PreferenceManager
-				.getDefaultSharedPreferences(ctx);
-		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
-		final String ip_preference = appprefs.getString("ip_path", "2");
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-			Api.ipPath = defaultPath;
+		boolean builtin;
+		String pref = G.ip_path();
+
+		if (pref.equals("system")) {
+			builtin = false;
+		} else if (pref.equals("builtin")) {
+			builtin = true;
 		} else {
-			if(ip_preference.equals("2")) {
-				Api.ipPath = myiptables;	
+			// auto setting: ICS+ devices are mostly expected to have good iptables binaries
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+				builtin = false;
 			} else {
-				Api.ipPath = defaultPath;
+				builtin = true;
 			}
 		}
-		if (setv6 && enableIPv6) {
-			Api.setv6 = true;
-			Api.ipPath = defaultIPv6Path;
-		} else {
-			Api.setv6 = false;
+
+		String dir = "";
+		if (builtin) {
+			dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
 		}
+
+		Api.setv6 = setv6;
+		Api.ipPath = dir + (setv6 ? "ip6tables" : "iptables");
 	}
 	
 	static String getBusyBoxPath(Context ctx) {
-		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		String busybox = "busybox ";
-		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		final String busybox_preference = appprefs.getString("bb_path", "2");
-		if(busybox_preference.equals("2")) {
-			busybox = dir + "/busybox ";
+		if (G.bb_path().equals("system")) {
+			return "busybox ";
+		} else {
+			return ctx.getDir("bin",0).getAbsolutePath() + "/busybox";
 		}
-		return busybox;
 	}
 	
 	static String getNflogPath(Context ctx) {
@@ -539,7 +536,7 @@ public final class Api {
 			if (s.matches("#LITERAL# .*")) {
 				out.add(s.replaceFirst("^#LITERAL# ", "").replaceAll("\\$IPTABLES", ipPath));
 			} else if (s.matches("#NOCHK# .*")) {
-					out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath));
+					out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath + " "));
 			} else {
 				out.add(ipPath + " " + s);
 			}
@@ -1315,6 +1312,24 @@ public final class Api {
 			return false;
 		}
 	}
+
+	private static boolean migrateSettings(Context ctx, int lastVer, int currentVer) {
+		if (lastVer <= 138) {
+			// migrate busybox/iptables path settings from <= 1.2.7-BETA
+			if (G.bb_path().equals("1")) {
+				G.bb_path("system");
+			} else if (G.bb_path().equals("2")) {
+				G.bb_path("builtin");
+			}
+			if (G.ip_path().equals("1")) {
+				G.ip_path("system");
+			} else if (G.ip_path().equals("2")) {
+				G.ip_path("auto");
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Asserts that the binary files are installed in the cache directory.
 	 * @param ctx context
@@ -1363,6 +1378,12 @@ public final class Api {
 				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
 			} else {
 				alert(ctx, ctx.getString(R.string.error_binary));
+			}
+		}
+
+		if (currentVer > 0) {
+			if (migrateSettings(ctx, lastVer, currentVer) == false && showErrors) {
+				alert(ctx, ctx.getString(R.string.error_migration));
 			}
 		}
 

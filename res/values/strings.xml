@@ -16,6 +16,7 @@
     <string name="error_flush">Error flushing iptables</string>
     <string name="error_purge">Error purging iptables</string>
     <string name="error_binary">Error installing binary files</string>
+    <string name="error_migration">Error migrating old settings</string>
     <string name="error_refresh">Error refreshing iptables</string>
     <string name="error_apply">Error applying iptables rules</string>
     <string name="error_fetch">Error fetching iptables rules</string>
@@ -196,6 +197,7 @@
     <string name="builtin_bb">Built-In busybox</string>
     <string name="system_ipt">System iptables</string>
     <string name="builtin_ipt">Built-In iptables</string>
+    <string name="auto">Auto</string>
 	
     <!-- Tasker -->
     <string name="disable_toaster">Disable Tasker Toasts</string>

@@ -121,10 +121,10 @@ public class G extends android.app.Application {
 	public static boolean disableIcons() { return gPrefs.getBoolean(DISABLE_ICONS, false); }
 	public static boolean disableIcons(boolean val) { gPrefs.edit().putBoolean(DISABLE_ICONS, val).commit(); return val; }
 
-	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "2"); }
+	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "auto"); }
 	public static String ip_path(String val) { gPrefs.edit().putString(IPTABLES_PATH, val).commit(); return val; }
 
-	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "2"); }
+	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "builtin"); }
 	public static String bb_path(String val) { gPrefs.edit().putString(BUSYBOX_PATH, val).commit(); return val; }
 
 	public static String locale() { return gPrefs.getString(LANGUAGE, "en"); }
