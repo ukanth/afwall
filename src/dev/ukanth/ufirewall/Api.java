@@ -188,8 +188,8 @@ public final class Api {
 
 	static String customScriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		final String myiptables = dir + "/iptables_armv5";
-		final String mybusybox = dir + "/busybox_g2";
+		final String myiptables = dir + "/iptables";
+		final String mybusybox = dir + "/busybox";
 		return "" +
 			"IPTABLES="+ myiptables + "\n" +
 			"BUSYBOX="+mybusybox+"\n" +
@@ -200,7 +200,7 @@ public final class Api {
 		final String dir = ctx.getDir("bin", 0).getAbsolutePath();
 		final String defaultPath = "iptables ";
 		final String defaultIPv6Path = "ip6tables ";
-		final String myiptables = dir + "/iptables_armv5 ";
+		final String myiptables = dir + "/iptables ";
 		final SharedPreferences appprefs = PreferenceManager
 				.getDefaultSharedPreferences(ctx);
 		final boolean enableIPv6 = appprefs.getBoolean("enableIPv6", false);
@@ -228,7 +228,7 @@ public final class Api {
 		final SharedPreferences appprefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		final String busybox_preference = appprefs.getString("bb_path", "2");
 		if(busybox_preference.equals("2")) {
-			busybox = dir + "/busybox_g2 ";
+			busybox = dir + "/busybox ";
 		}
 		return busybox;
 	}
@@ -1301,6 +1301,20 @@ public final class Api {
 		
 		return returnCode;
 	}
+
+	private static boolean installBinary(Context ctx, int resId, String filename) {
+		try {
+			File f = new File(ctx.getDir("bin", 0), filename);
+			if (f.exists()) {
+				f.delete();
+			}
+			copyRawFile(ctx, resId, f, "0755");
+			return true;
+		} catch (Exception e) {
+			Log.e(TAG, "installBinary failed: " + e.getLocalizedMessage());
+			return false;
+		}
+	}
 	/**
 	 * Asserts that the binary files are installed in the cache directory.
 	 * @param ctx context
@@ -1308,44 +1322,56 @@ public final class Api {
 	 * @return false if the binary files could not be installed
 	 */
 	public static boolean assertBinaries(Context ctx, boolean showErrors) {
-		boolean changed = false;
-		try {
-			// Check iptables_armv5
-			File file = new File(ctx.getDir("bin",0), "iptables_armv5");
-			if (!file.exists() || file.length()!=198652) {
-				copyRawFile(ctx, R.raw.iptables_armv5, file, "755");
-				changed = true;
-			}	
-			// Check busybox
-			file = new File(ctx.getDir("bin",0), "busybox_g2");
-			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.busybox_g2, file, "755");
-				changed = true;
-			}
-			
-			// Check nflog
-			file = new File(ctx.getDir("bin",0), "nflog");
-			if (!file.exists() || file.length() != 13648) {
-				copyRawFile(ctx, R.raw.nflog, file, "755");
-				changed = true;
-			}
+		int currentVer = -1, lastVer = -1;
 
-			
-			// check script
-			file = new File(ctx.getDir("bin",0), "afwallstart");
-			if (!file.exists()) {
-				copyRawFile(ctx, R.raw.afwallstart, file, "755");
-				changed = true;
+		try {
+			currentVer = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
+			lastVer = G.appVersion();
+			if (lastVer == currentVer) {
+				return true;
 			}
-			if (changed && showErrors) {
-				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
-			}
-			
-		} catch (Exception e) {
-			if (showErrors) alert(ctx, ctx.getString(R.string.error_binary) + e);
-			return false;
+		} catch (NameNotFoundException e) {
+			Log.e(TAG, "packageManager can't look up versionCode");
 		}
-		return true;
+
+		String abi = Build.CPU_ABI;
+		boolean ret;
+		if (abi.startsWith("x86")) {
+			ret = installBinary(ctx, R.raw.busybox_x86, "busybox") &&
+					installBinary(ctx, R.raw.iptables_x86, "iptables") &&
+					installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
+					installBinary(ctx, R.raw.nflog_x86, "nflog");
+		} else if (abi.startsWith("mips")) {
+			ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
+					  installBinary(ctx, R.raw.iptables_mips, "iptables") &&
+					  installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
+					  installBinary(ctx, R.raw.nflog_mips, "nflog");
+		} else {
+			// default to ARM
+			ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
+					  installBinary(ctx, R.raw.iptables_arm, "iptables") &&
+					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
+					  installBinary(ctx, R.raw.nflog_arm, "nflog");
+		}
+
+		// arch-independent scripts
+		ret &= installBinary(ctx, R.raw.afwallstart, "afwallstart");
+		Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
+
+		if (showErrors) {
+			if (ret) {
+				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
+			} else {
+				alert(ctx, ctx.getString(R.string.error_binary));
+			}
+		}
+
+		if (ret == true && currentVer > 0) {
+			// this indicates that migration from the old version was successful.
+			G.appVersion(currentVer);
+		}
+
+		return ret;
 	}
 	
 	public static void displayToasts(Context context, int id, int length) {
