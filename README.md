@@ -102,6 +102,18 @@ Quick start:
 
 For complete instructions, please take a look at the [Wiki | HOWTO-Compile-AFWall](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
 
+## Compiling native binaries
+
+On the host side you'll need to install:
+
+* NDK r9, nominally under /opt/android-ndk-r9
+* Host-side gcc, make, etc. (Red Hat "Development Tools" group or Debian build-essential)
+* autoconf, automake, and libtool
+
+This command will build the Android binaries and copy them into res/raw/:
+
+    make -C external NDK=/opt/android-ndk-r9
+
 ## Contributing
 
 Please fork this repository and contribute back using
