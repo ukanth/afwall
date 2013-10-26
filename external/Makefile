@@ -35,7 +35,7 @@ DESTDIR := $(shell pwd)/$(TRIPLET)/out
 CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
 		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2"
 
-PER_ARCH_TARGETS := iptables
+PER_ARCH_TARGETS := iptables busybox
 
 .PHONY: all unpack clean
 all: $(addsuffix -binaries,$(ARCH_LIST))
@@ -78,6 +78,40 @@ iptables: $(DESTDIR)/sbin/iptables
 	cp -L $(DESTDIR)/sbin/iptables $(RESDIR)/iptables_$(ARCH)
 	cp -L $(DESTDIR)/sbin/ip6tables $(RESDIR)/ip6tables_$(ARCH)
 iptables-unpack: $(IPTABLES_SRC)/configure
+
+#####################################################################
+#
+# Build busybox
+#
+BUSYBOX_VER := 1.21.1
+BUSYBOX_BUILD := $(TRIPLET)/busybox
+
+dist/busybox-$(BUSYBOX_VER).tar.bz2:
+	mkdir -p dist
+	curl http://busybox.net/downloads/busybox-$(BUSYBOX_VER).tar.bz2 -o $@.tmp && mv $@.tmp $@
+
+$(BUSYBOX_BUILD)/.unpacked: dist/busybox-$(BUSYBOX_VER).tar.bz2
+	mkdir -p $(BUSYBOX_BUILD)
+	tar --strip 1 -jxf $< -C $(BUSYBOX_BUILD)
+	cd $(BUSYBOX_BUILD) && \
+		for x in ../../dist/busybox-patches/*; do \
+			patch -p1 < $$x || exit 1; \
+		done
+	touch $@
+
+$(BUSYBOX_BUILD)/.configured: $(BUSYBOX_BUILD)/.unpacked
+	cp -f dist/busybox-defconfig $(BUSYBOX_BUILD)/.config
+	echo "CONFIG_CROSS_COMPILER_PREFIX=\"$(TRIPLET)-\"" >> $(BUSYBOX_BUILD)/.config
+	echo "CONFIG_SYSROOT=\"$(NDK_SYSROOT)\"" >> $(BUSYBOX_BUILD)/.config
+	touch $@
+
+$(BUSYBOX_BUILD)/busybox: $(BUSYBOX_BUILD)/.configured
+	$(MAKE) -C $(BUSYBOX_BUILD) KCONFIG_NOTIMESTAMP=1
+
+.PHONY: busybox busybox-unpack
+busybox: $(BUSYBOX_BUILD)/busybox
+	cp $< $(RESDIR)/busybox_$(ARCH)
+busybox-unpack: $(BUSYBOX_BUILD)/.configured
 
 #####################################################################
 #
