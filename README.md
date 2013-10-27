@@ -1,7 +1,9 @@
-AFWall+ ( Android Firewall +)
+AFWall+ ( Android Firewall +) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall)
 ======
 
 ![AFwall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
+
+
 
 Android Firewall+ is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to
 access the network.
@@ -91,6 +93,14 @@ This project also uses many other open source libraries such as:
 
 
 ## How to compile AFWall+
+
+Prerequisites:
+
+* Android SDK in your $PATH (both platform-tools/ and tools/ directories)
+* javac 1.6 and a recent version of Apache ant in your $PATH
+* git in your $PATH
+* Use the Android SDK Manager to install APIs 14, 16, and 17
+
 Quick start:
 
     git clone git://github.com/ukanth/afwall
