@@ -1,0 +1,252 @@
+From 81b9c73f49774ba820bb27c9eaa98b36ab8bdbc2 Mon Sep 17 00:00:00 2001
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Sat, 26 Oct 2013 12:04:25 -0700
+Subject: [PATCH 7/7] android: Import latest libxt_quota2 code from AOSP 4.2.2
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ extensions/libxt_quota.c            |    1 +
+ extensions/libxt_quota2.c           |  141 +++++++++++++++++++++++++++++++++++
+ extensions/libxt_quota2.man         |   37 +++++++++
+ include/linux/netfilter/xt_quota2.h |   25 +++++++
+ 4 files changed, 204 insertions(+)
+ create mode 100644 extensions/libxt_quota2.c
+ create mode 100644 extensions/libxt_quota2.man
+ create mode 100644 include/linux/netfilter/xt_quota2.h
+
+diff --git a/extensions/libxt_quota.c b/extensions/libxt_quota.c
+index ff498da..26fba0b 100644
+--- a/extensions/libxt_quota.c
++++ b/extensions/libxt_quota.c
+@@ -48,6 +48,7 @@ static void quota_parse(struct xt_option_call *cb)
+ 	xtables_option_parse(cb);
+ 	if (cb->invert)
+ 		info->flags |= XT_QUOTA_INVERT;
++	info->quota = cb->val.u64;
+ }
+ 
+ static struct xtables_match quota_match = {
+diff --git a/extensions/libxt_quota2.c b/extensions/libxt_quota2.c
+new file mode 100644
+index 0000000..d004cca
+--- /dev/null
++++ b/extensions/libxt_quota2.c
+@@ -0,0 +1,141 @@
++/*
++ *	"quota2" match extension for iptables
++ *	Sam Johnston <samj [at] samj net>
++ *	Jan Engelhardt <jengelh [at] medozas de>, 2008
++ *
++ *	This program is free software; you can redistribute it and/or
++ *	modify it under the terms of the GNU General Public License; either
++ *	version 2 of the License, or any later version, as published by the
++ *	Free Software Foundation.
++ */
++#include <getopt.h>
++#include <stddef.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <xtables.h>
++#include <linux/netfilter/xt_quota2.h>
++
++enum {
++	FL_QUOTA     = 1 << 0,
++	FL_NAME      = 1 << 1,
++	FL_GROW      = 1 << 2,
++	FL_PACKET    = 1 << 3,
++	FL_NO_CHANGE = 1 << 4,
++};
++
++enum {
++	O_QUOTA     = 0,
++	O_NAME,
++	O_GROW,
++	O_PACKET,
++	O_NO_CHANGE,
++};
++
++
++static const struct xt_option_entry quota_mt2_opts[] = {
++	{.name = "grow", .id = O_GROW, .type = XTTYPE_NONE},
++	{.name = "no-change", .id = O_NO_CHANGE, .type = XTTYPE_NONE},
++	{.name = "name", .id = O_NAME, .type = XTTYPE_STRING,
++	 .flags = XTOPT_PUT, XTOPT_POINTER(struct xt_quota_mtinfo2, name)},
++	{.name = "quota", .id = O_QUOTA, .type = XTTYPE_UINT64,
++	 .flags = XTOPT_INVERT | XTOPT_PUT,
++	 XTOPT_POINTER(struct xt_quota_mtinfo2, quota)},
++	{.name = "packets", .id = O_PACKET, .type = XTTYPE_NONE},
++	XTOPT_TABLEEND,
++};
++
++static void quota_mt2_help(void)
++{
++	printf(
++	"quota match options:\n"
++	"    --grow           provide an increasing counter\n"
++	"    --no-change      never change counter/quota value for matching packets\n"
++	"    --name name      name for the file in sysfs\n"
++	"[!] --quota quota    initial quota (bytes or packets)\n"
++	"    --packets        count packets instead of bytes\n"
++	);
++}
++
++static void quota_mt2_parse(struct xt_option_call *cb)
++{
++	struct xt_quota_mtinfo2 *info = cb->data;
++
++	xtables_option_parse(cb);
++	switch (cb->entry->id) {
++	case O_GROW:
++		info->flags |= XT_QUOTA_GROW;
++		break;
++	case O_NO_CHANGE:
++		info->flags |= XT_QUOTA_NO_CHANGE;
++		break;
++	case O_NAME:
++		break;
++	case O_PACKET:
++		info->flags |= XT_QUOTA_PACKET;
++		break;
++	case O_QUOTA:
++		if (cb->invert)
++			info->flags |= XT_QUOTA_INVERT;
++		break;
++	}
++}
++
++static void
++quota_mt2_save(const void *ip, const struct xt_entry_match *match)
++{
++	const struct xt_quota_mtinfo2 *q = (void *)match->data;
++
++	if (q->flags & XT_QUOTA_INVERT)
++		printf(" !");
++	if (q->flags & XT_QUOTA_GROW)
++		printf(" --grow ");
++	if (q->flags & XT_QUOTA_NO_CHANGE)
++		printf(" --no-change ");
++	if (q->flags & XT_QUOTA_PACKET)
++		printf(" --packets ");
++	if (*q->name != '\0')
++		printf(" --name %s ", q->name);
++	printf(" --quota %llu ", (unsigned long long)q->quota);
++}
++
++static void quota_mt2_print(const void *ip, const struct xt_entry_match *match,
++                            int numeric)
++{
++	const struct xt_quota_mtinfo2 *q = (const void *)match->data;
++
++	if (q->flags & XT_QUOTA_INVERT)
++		printf(" !");
++	if (q->flags & XT_QUOTA_GROW)
++		printf(" counter");
++	else
++		printf(" quota");
++	if (*q->name != '\0')
++		printf(" %s:", q->name);
++	printf(" %llu ", (unsigned long long)q->quota);
++	if (q->flags & XT_QUOTA_PACKET)
++		printf("packets ");
++	else
++		printf("bytes ");
++	if (q->flags & XT_QUOTA_NO_CHANGE)
++		printf("(no-change mode) ");
++}
++
++static struct xtables_match quota_mt2_reg = {
++	.family        = NFPROTO_UNSPEC,
++	.revision      = 3,
++	.name          = "quota2",
++	.version       = XTABLES_VERSION,
++	.size          = XT_ALIGN(sizeof (struct xt_quota_mtinfo2)),
++	.userspacesize = offsetof(struct xt_quota_mtinfo2, quota),
++	.help          = quota_mt2_help,
++	.x6_parse      = quota_mt2_parse,
++	.print         = quota_mt2_print,
++	.save          = quota_mt2_save,
++	.x6_options    = quota_mt2_opts,
++};
++
++void _init(void)
++{
++	xtables_register_match(&quota_mt2_reg);
++}
+diff --git a/extensions/libxt_quota2.man b/extensions/libxt_quota2.man
+new file mode 100644
+index 0000000..c2e6b44
+--- /dev/null
++++ b/extensions/libxt_quota2.man
+@@ -0,0 +1,37 @@
++The "quota2" implements a named counter which can be increased or decreased
++on a per-match basis. Available modes are packet counting or byte counting.
++The value of the counter can be read and reset through procfs, thereby making
++this match a minimalist accounting tool.
++.PP
++When counting down from the initial quota, the counter will stop at 0 and
++the match will return false, just like the original "quota" match. In growing
++(upcounting) mode, it will always return true.
++.TP
++\fB\-\-grow\fP
++Count upwards instead of downwards.
++.TP
++\fB\-\-no\-change\fP
++Makes it so the counter or quota amount is never changed by packets matching
++this rule. This is only really useful in "quota" mode, as it will allow you to
++use complex prerouting rules in association with the quota system, without
++counting a packet twice.
++.TP
++\fB\-\-name\fP \fIname\fP
++Assign the counter a specific name. This option must be present, as an empty
++name is not allowed. Names starting with a dot or names containing a slash are
++prohibited.
++.TP
++[\fB!\fP] \fB\-\-quota\fP \fIiq\fP
++Specify the initial quota for this counter. If the counter already exists,
++it is not reset. An "!" may be used to invert the result of the match. The
++negation has no effect when \fB\-\-grow\fP is used.
++.TP
++\fB\-\-packets\fP
++Count packets instead of bytes that passed the quota2 match.
++.PP
++Because counters in quota2 can be shared, you can combine them for various
++purposes, for example, a bytebucket filter that only lets as much traffic go
++out as has come in:
++.PP
++\-A INPUT \-p tcp \-\-dport 6881 \-m quota \-\-name bt \-\-grow;
++\-A OUTPUT \-p tcp \-\-sport 6881 \-m quota \-\-name bt;
+diff --git a/include/linux/netfilter/xt_quota2.h b/include/linux/netfilter/xt_quota2.h
+new file mode 100644
+index 0000000..eadc690
+--- /dev/null
++++ b/include/linux/netfilter/xt_quota2.h
+@@ -0,0 +1,25 @@
++#ifndef _XT_QUOTA_H
++#define _XT_QUOTA_H
++
++enum xt_quota_flags {
++	XT_QUOTA_INVERT    = 1 << 0,
++	XT_QUOTA_GROW      = 1 << 1,
++	XT_QUOTA_PACKET    = 1 << 2,
++	XT_QUOTA_NO_CHANGE = 1 << 3,
++	XT_QUOTA_MASK      = 0x0F,
++};
++
++struct xt_quota_counter;
++
++struct xt_quota_mtinfo2 {
++	char name[15];
++	u_int8_t flags;
++
++	/* Comparison-invariant */
++	aligned_u64 quota;
++
++	/* Used internally by the kernel */
++	struct xt_quota_counter *master __attribute__((aligned(8)));
++};
++
++#endif /* _XT_QUOTA_H */
+-- 
+1.7.9.5
+

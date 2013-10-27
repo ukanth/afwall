@@ -1,0 +1,39 @@
+From d0c05e88231609ddd8b1e8ab0698f3f22c4e9aff Mon Sep 17 00:00:00 2001
+From: JP Abgrall <jpa@google.com>
+Date: Mon, 12 Nov 2012 11:59:43 -0800
+Subject: [PATCH 6/7] ignore SIGPIPES
+
+During bugreports mostly, when adb goes away it leads to apps crashing
+because their output stream got closed.
+Let's just ignore it.
+
+Bug: 6447319
+Change-Id: I1b293ebef737014162edebd5fd9bf254345b2ce8
+---
+ iptables/iptables-standalone.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/iptables/iptables-standalone.c b/iptables/iptables-standalone.c
+index 4da1d7f..c60b4b7 100644
+--- a/iptables/iptables-standalone.c
++++ b/iptables/iptables-standalone.c
+@@ -34,6 +34,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <errno.h>
++#include <signal.h>
+ #include <string.h>
+ #include <iptables.h>
+ #include "iptables-multi.h"
+@@ -45,6 +46,8 @@ iptables_main(int argc, char *argv[])
+ 	char *table = "filter";
+ 	struct xtc_handle *handle = NULL;
+ 
++	signal(SIGPIPE, SIG_IGN);
++
+ 	iptables_globals.program_name = "iptables";
+ 	ret = xtables_init_all(&iptables_globals, NFPROTO_IPV4);
+ 	if (ret < 0) {
+-- 
+1.7.9.5
+
