@@ -33,8 +33,8 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 
@@ -55,13 +55,14 @@ public class RulesActivity extends DataDumpActivity {
         sdDumpFile = "rules.log";
     }
 
-    protected void populateMenu(SubMenu sub) {
+    @Override
+    protected void populateMenu(Menu menu) {
         if (G.enableIPv6()) {
-            sub.add(0, MENU_IPV6_RULES, 0, R.string.switch_ipv6).setIcon(R.drawable.rules);
-            sub.add(0, MENU_IPV4_RULES, 0, R.string.switch_ipv4).setIcon(R.drawable.rules);
+            menu.add(0, MENU_IPV6_RULES, 0, R.string.switch_ipv6).setIcon(R.drawable.rules);
+            menu.add(0, MENU_IPV4_RULES, 0, R.string.switch_ipv4).setIcon(R.drawable.rules);
         }
-        sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
-        sub.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_dialog_email);
+        menu.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
+        menu.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_dialog_email);
     }
 
     private void writeHeading(StringBuilder res, boolean initialNewline, String title) {

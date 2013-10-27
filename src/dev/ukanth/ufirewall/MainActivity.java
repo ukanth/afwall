@@ -51,9 +51,7 @@ import android.os.Message;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextUtils.TruncateAt;
-import android.text.TextWatcher;
+import android.support.v7.widget.SearchView;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,7 +60,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
@@ -703,6 +700,24 @@ public class MainActivity extends ActionBarActivity implements OnCheckedChangeLi
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_bar, menu);
+
+        // setup "search" action view
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                showApplications(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                showApplications(newText);
+                return true;
+            }
+        });
+
         mainMenu = menu;
         return true;
     }
@@ -770,36 +785,6 @@ public class MainActivity extends ActionBarActivity implements OnCheckedChangeLi
                 Api.applications = null;
                 showOrLoadApplications();
                 refreshCache();
-                return true;
-            case R.id.menu_search:
-                MenuItemCompat.setActionView(item, R.layout.searchbar);
-                final EditText filterText = (EditText) MenuItemCompat.getActionView(item).findViewById(
-                        R.id.searchApps);
-                filterText.addTextChangedListener(filterTextWatcher);
-                filterText.setEllipsize(TruncateAt.END);
-                filterText.setSingleLine();
-
-                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem item) {
-                        // Do something when collapsed
-                        return true; // Return true to collapse action view
-                    }
-
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem item) {
-                        filterText.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                filterText.requestFocus();
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
-                            }
-                        });
-                        return true; // Return true to expand action view
-                    }
-                });
-
                 return true;
             case R.id.menu_export:
                 Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
@@ -869,23 +854,6 @@ public class MainActivity extends ActionBarActivity implements OnCheckedChangeLi
             }
         }.execute();
     }
-
-    private TextWatcher filterTextWatcher = new TextWatcher() {
-
-        public void afterTextChanged(Editable s) {
-            showApplications(s.toString());
-        }
-
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                int after) {
-        }
-
-        public void onTextChanged(CharSequence s, int start, int before,
-                int count) {
-            showApplications(s.toString());
-        }
-
-    };
 
     private void showPreferences() {
         Intent i = new Intent(this, PreferencesActivity.class);
@@ -1358,16 +1326,16 @@ public class MainActivity extends ActionBarActivity implements OnCheckedChangeLi
     @Override
     public boolean onKeyUp(final int keyCode, final KeyEvent event) {
 
-        if (event.getAction() == KeyEvent.ACTION_UP)
-        {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_MENU:
-                    if (mainMenu != null) {
-                        mainMenu.performIdentifierAction(R.id.menu_list_item, 0);
-                        return true;
-                    }
-            }
-        }
+//        if (event.getAction() == KeyEvent.ACTION_UP)
+//        {
+//            switch (keyCode) {
+//                case KeyEvent.KEYCODE_MENU:
+//                    if (mainMenu != null) {
+//                        mainMenu.performIdentifierAction(R.id.menu_list_item, 0);
+//                        return true;
+//                    }
+//            }
+//        }
         return super.onKeyUp(keyCode, event);
     }
 

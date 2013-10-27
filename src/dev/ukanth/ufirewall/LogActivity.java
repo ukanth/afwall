@@ -24,8 +24,8 @@ package dev.ukanth.ufirewall;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 
@@ -74,13 +74,14 @@ public class LogActivity extends DataDumpActivity {
         }
     }
 
-    protected void populateMenu(SubMenu sub) {
+    @Override
+    protected void populateMenu(Menu menu) {
         /*if (G.enableFirewallLog()) {
         	sub.add(0,MENU_TOGGLE_LOG, 0, R.string.disable_log).setIcon(R.drawable.disable_log);
         } else {
         	sub.add(0,MENU_TOGGLE_LOG, 0, R.string.enable_log).setIcon(R.drawable.enable_log);
         }*/
-        sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
+        menu.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
     }
 
     @Override

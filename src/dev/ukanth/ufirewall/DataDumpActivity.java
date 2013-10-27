@@ -33,12 +33,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -57,7 +55,7 @@ public abstract class DataDumpActivity extends ActionBarActivity {
     // to be filled in by subclasses
     protected String sdDumpFile;
 
-    protected abstract void populateMenu(SubMenu sub);
+    protected abstract void populateMenu(Menu sub);
 
     protected abstract void populateData(final Context ctx);
 
@@ -86,16 +84,11 @@ public abstract class DataDumpActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Common options: Copy, Export to SD Card, Refresh
-        SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(
-                R.drawable.abc_ic_menu_moreoverflow_normal_holo_dark);
+        menu.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
+        menu.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
+        menu.add(0, MENU_REFRESH, 0, R.string.refresh).setIcon(R.drawable.reload);
+        populateMenu(menu);
 
-        sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
-        sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
-        sub.add(0, MENU_REFRESH, 0, R.string.refresh).setIcon(R.drawable.reload);
-        populateMenu(sub);
-
-        MenuItemCompat.setShowAsAction(sub.getItem(), MenuItemCompat.SHOW_AS_ACTION_ALWAYS
-                | MenuItemCompat.SHOW_AS_ACTION_WITH_TEXT);
         super.onCreateOptionsMenu(menu);
         mainMenu = menu;
         return true;
