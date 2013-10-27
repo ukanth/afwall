@@ -59,6 +59,7 @@ dist/iptables-$(IPTABLES_VER).tar.bz2:
 	curl http://ftp.netfilter.org/pub/iptables/iptables-$(IPTABLES_VER).tar.bz2 -o $@.tmp && mv $@.tmp $@
 
 $(IPTABLES_SRC)/configure: dist/iptables-$(IPTABLES_VER).tar.bz2
+	rm -rf $(IPTABLES_SRC)
 	mkdir -p sources
 	tar -jxf $< -C sources
 	cd $(IPTABLES_SRC) && \
@@ -94,6 +95,7 @@ dist/busybox-$(BUSYBOX_VER).tar.bz2:
 	curl http://busybox.net/downloads/busybox-$(BUSYBOX_VER).tar.bz2 -o $@.tmp && mv $@.tmp $@
 
 $(BUSYBOX_BUILD)/.unpacked: dist/busybox-$(BUSYBOX_VER).tar.bz2
+	rm -rf $(BUSYBOX_BUILD)
 	mkdir -p $(BUSYBOX_BUILD)
 	tar --strip 1 -jxf $< -C $(BUSYBOX_BUILD)
 	cd $(BUSYBOX_BUILD) && \
