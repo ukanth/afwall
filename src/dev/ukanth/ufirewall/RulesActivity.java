@@ -31,6 +31,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -188,10 +189,23 @@ public class RulesActivity extends DataDumpActivity {
     		populateData(this);
     		return true;
     	case MENU_SEND_REPORT:
-    		Intent email = new Intent(Intent.ACTION_VIEW);
-    		email.setData(Uri.parse("mailto:afwall-report@googlegroups.com"));
-    		email.putExtra(Intent.EXTRA_SUBJECT, "AFWall+ problem report -v" + android.os.Build.VERSION.RELEASE);
-    		email.putExtra(Intent.EXTRA_TEXT, dataText + "\n\n" + getString(R.string.enter_problem) + "\n\n");
+    		String ver;
+    		try {
+    			ver = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionName;
+    		} catch (NameNotFoundException e) {
+    			ver = "???";
+    		}
+    		String body = dataText + "\n\n" + getString(R.string.enter_problem) + "\n\n";
+    		String uriText = "mailto:afwall-report@googlegroups.com?subject=" +
+    				Uri.encode("AFWall+ problem report - v" + ver) + "&body=" +
+    				Uri.encode(body);
+    		Intent email = new Intent(Intent.ACTION_SENDTO);
+    		email.setData(Uri.parse(uriText));
+
+    		// this shouldn't be necessary, but the default Android email client overrides
+    		// "body=" from the URI.  See MessageCompose.initFromIntent()
+    		email.putExtra(Intent.EXTRA_TEXT, body);
+
     		startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
     		return true;
     	}
