@@ -1,5 +1,11 @@
 slanguage: java
 jdk: oraclejdk7
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
 before_install:
   # Install base Android SDK
     - sudo apt-get update -qq

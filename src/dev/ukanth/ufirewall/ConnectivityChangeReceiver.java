@@ -46,7 +46,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 			int newState = intent.getIntExtra(EXTRA_WIFI_AP_STATE, -1);
 			int oldState = intent.getIntExtra(EXTRA_PREVIOUS_WIFI_AP_STATE, -1);
 			Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
-			return;
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices

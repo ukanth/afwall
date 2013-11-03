@@ -86,6 +86,10 @@ public class RulesActivity extends DataDumpActivity {
 		InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
 
 		result.append("Android version: " + android.os.Build.VERSION.RELEASE + "\n");
+		result.append("Manufacturer: " + android.os.Build.MANUFACTURER + "\n");
+		result.append("Model: " + android.os.Build.MODEL + "\n");
+		result.append("Build: " + android.os.Build.DISPLAY + "\n");
+
 		if (cfg.netType == ConnectivityManager.TYPE_MOBILE) {
 			result.append("Active interface: mobile\n");
 		} else if (cfg.netType == ConnectivityManager.TYPE_WIFI) {

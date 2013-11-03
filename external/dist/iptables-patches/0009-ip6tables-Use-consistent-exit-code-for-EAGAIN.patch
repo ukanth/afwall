@@ -1,0 +1,33 @@
+From bb7abec605cf7bc3bb1b1d65e5cd9f57921fc020 Mon Sep 17 00:00:00 2001
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Fri, 1 Nov 2013 20:48:33 -0700
+Subject: [PATCH 9/9] ip6tables: Use consistent exit code for EAGAIN
+
+As of commit 056564f6a (Add new exit value to indicate concurrency
+issues), the IPv4 iptables binary returns exit status 4 to indicate that
+the kernel returned EAGAIN when trying to update a table.  But ip6tables
+still returns exit status 1 under the same circumstances.  Update
+ip6tables to bring it in line with iptables behavior.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ iptables/ip6tables-standalone.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/iptables/ip6tables-standalone.c b/iptables/ip6tables-standalone.c
+index 656e08d..4e20fe6 100644
+--- a/iptables/ip6tables-standalone.c
++++ b/iptables/ip6tables-standalone.c
+@@ -73,6 +73,9 @@ ip6tables_main(int argc, char *argv[])
+ 			fprintf(stderr, "ip6tables: %s.\n",
+ 				ip6tc_strerror(errno));
+ 		}
++		if (errno == EAGAIN) {
++			exit(RESOURCE_PROBLEM);
++		}
+ 	}
+ 
+ 	exit(!ret);
+-- 
+1.7.9.5
+
