@@ -27,7 +27,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="138"
+    android:versionCode="141"
     android:versionName="1.2.7-Beta" >
 
     <!-- Android 2.2 up to 4.x -->
