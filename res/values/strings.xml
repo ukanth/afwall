@@ -281,4 +281,8 @@
      <string name="multi_apply_rules">Apply rules on profile switch</string>
      <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
      
+     <string name="select_all">Do you want to select all ?</string>
+     <string name="reverse_all">Do you want to reverse select all ?</string>
+     <string name="unselect_all">Do you want to unselect all ?</string>
+     
 </resources>

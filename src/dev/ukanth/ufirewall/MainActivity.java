@@ -1219,25 +1219,25 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			selectMode();
 			break;
 		case R.id.img_wifi:
-			selectAllWifi();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_3g:
-			selectAll3G();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_roam:
-			selectAllRoam();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_invert:
-			selectRevert();
+			selectActionConfirmation(getString(R.string.reverse_all), v.getId());
 			break;
 		case R.id.img_vpn:
-			selectAllVPN();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_lan:
-			selectAllLAN();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_reset:
-			clearAll();
+			selectActionConfirmation(getString(R.string.unselect_all), v.getId());
 			break;
 		//case R.id.img_invert:
 		//	revertApplications();
@@ -1491,6 +1491,47 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		  }
 		});
 		alert.show();	
+	}
+	
+
+	private void selectActionConfirmation(String displayMessage, final int i){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+		builder.setMessage(displayMessage)
+		       .setCancelable(false)
+		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+								switch (i) {
+								case R.id.img_wifi:
+									selectAllWifi();
+									break;
+								case R.id.img_3g:
+									selectAll3G();
+									break;
+								case R.id.img_roam:
+									selectAllRoam();
+									break;
+								case R.id.img_invert:
+									selectRevert();
+									break;
+								case R.id.img_vpn:
+									selectAllVPN();
+									break;
+								case R.id.img_lan:
+									selectAllLAN();
+									break;
+								case R.id.img_reset:
+									clearAll();
+								}
+		           }
+		       })
+		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert2 = builder.create();
+		alert2.show();
 	}
 
 }
