@@ -1,0 +1,36 @@
+From 337d40956909c71c3bd527adf9ed6783de631303 Mon Sep 17 00:00:00 2001
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Sat, 26 Oct 2013 11:03:06 -0700
+Subject: [PATCH 4/7] android: build: Blacklist TCPOPTSTRIP on systems that
+ lack TCPOPT_*
+
+Bionic's <netinet/tcp.h> is missing constants needed to build this module,
+so have autoconf check for this condition before trying to build it.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ configure.ac |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/configure.ac b/configure.ac
+index f8affed..9607560 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -91,6 +91,14 @@ if test "$nfconntrack" -ne 1; then
+ 	echo "WARNING: libnetfilter_conntrack not found, connlabel match will not be built";
+ fi;
+ 
++AC_CHECK_DECL([TCPOPT_WINDOW], [tcpopt_ok=1], [tcpopt_ok=0],
++	[[#include <netinet/tcp.h>]])
++
++if test "$tcpopt_ok" -ne 1; then
++	blacklist_modules="$blacklist_modules TCPOPTSTRIP";
++	echo "WARNING: TCPOPT_* constants not found, TCPOPTSTRIP target will not be built";
++fi;
++
+ AC_SUBST([blacklist_modules])
+ AC_CHECK_SIZEOF([struct ip6_hdr], [], [#include <netinet/ip6.h>])
+ 
+-- 
+1.7.9.5
+

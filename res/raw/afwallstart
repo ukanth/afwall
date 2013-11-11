@@ -1,14 +1,14 @@
 #!/system/bin/sh
 
-if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables_armv5 ]; then
+if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables ]; then
     path="dev.ukanth.ufirewall"
-elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables_armv5 ]; then
+elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables ]; then
     path="dev.ukanth.ufirewall.donate"
 else
     log -p i -t afwall "AFWall doesn't seem to be installed."
     exit
 fi;
 
-/data/data/$path/app_bin/iptables_armv5 -P INPUT DROP
-/data/data/$path/app_bin/iptables_armv5 -P OUTPUT DROP
-/data/data/$path/app_bin/iptables_armv5 -P FORWARD DROP
+/data/data/$path/app_bin/iptables -P INPUT DROP
+/data/data/$path/app_bin/iptables -P OUTPUT DROP
+/data/data/$path/app_bin/iptables -P FORWARD DROP

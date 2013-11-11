@@ -60,6 +60,7 @@ public class G extends android.app.Application {
 	private static final String USE_PASSWORD_PATTERN = "usePatterns";
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";
+	private static final String APP_VERSION = "appVersion";
 	
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	
@@ -120,10 +121,10 @@ public class G extends android.app.Application {
 	public static boolean disableIcons() { return gPrefs.getBoolean(DISABLE_ICONS, false); }
 	public static boolean disableIcons(boolean val) { gPrefs.edit().putBoolean(DISABLE_ICONS, val).commit(); return val; }
 
-	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "2"); }
+	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "auto"); }
 	public static String ip_path(String val) { gPrefs.edit().putString(IPTABLES_PATH, val).commit(); return val; }
 
-	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "2"); }
+	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "builtin"); }
 	public static String bb_path(String val) { gPrefs.edit().putString(BUSYBOX_PATH, val).commit(); return val; }
 
 	public static String locale() { return gPrefs.getString(LANGUAGE, "en"); }
@@ -145,6 +146,9 @@ public class G extends android.app.Application {
 	
 	public static String logTarget() { return gPrefs.getString(LOG_TARGET, ""); }
 	public static String logTarget(String val) { gPrefs.edit().putString(LOG_TARGET, val).commit(); return val; }
+
+	public static int appVersion() { return gPrefs.getInt(APP_VERSION, 0); }
+	public static int appVersion(int val) { gPrefs.edit().putInt(APP_VERSION, val).commit(); return val; }
 
 	
 	public void onCreate() {

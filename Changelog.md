@@ -4,6 +4,16 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.7-Beta
+* Improved search functionality & select confirmation.
+* Various bug fixes - User Reported crashes.
+* Support for x86/MIPS/ARM devices.
+* Built-in iptables is upgraded to the latest version.
+* Debug information to identify the root cause for exit-3 issue
+* Debug information to identify the tether status change.
+* Scripts updated for f-droid and developer friendly builds (ant)
+
+
 Version 1.2.6.2
 
 * NGLog fixes for various devices including nexus.

@@ -134,7 +134,9 @@ public final class InterfaceTracker {
 					}
 				}
 			} catch (SocketException e) {
-				Log.e(TAG, "error fetching network interface list");
+				Log.e(TAG, "Error fetching network interface list");
+			} catch (Exception e) {
+				Log.e(TAG, "Error fetching network interface list");
 			}
 		}
 	}
@@ -151,6 +153,7 @@ public final class InterfaceTracker {
 				try {
 					d.isTethered = ((Boolean)method.invoke(wifi)).booleanValue();
 					d.tetherStatusKnown = true;
+					Log.d(TAG, "isWifiApEnabled is " + d.isTethered);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

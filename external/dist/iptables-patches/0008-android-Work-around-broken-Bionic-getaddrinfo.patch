@@ -1,0 +1,33 @@
+From 796e8ae853183e0361441b62f9995cb37e267f55 Mon Sep 17 00:00:00 2001
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Sun, 27 Oct 2013 11:27:27 -0700
+Subject: [PATCH 8/8] android: Work around broken Bionic getaddrinfo()
+
+The first argument to getaddrifo(), "hostname", is normally allowed
+to be NULL.  However, some Bionic implementations erroneously call
+strlen() on this parameter without first checking to see if it is
+NULL.  Work around this by passing in a hostname of "0.0.0.0".
+
+This problem was seen on the HTC One SV stock ROM, JB 4.1.2.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ libxtables/xtoptions.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libxtables/xtoptions.c b/libxtables/xtoptions.c
+index 78e9abd..c206c1d 100644
+--- a/libxtables/xtoptions.c
++++ b/libxtables/xtoptions.c
+@@ -561,7 +561,7 @@ static int xtables_getportbyname(const char *name)
+ 	struct addrinfo *res = NULL, *p;
+ 	int ret;
+ 
+-	ret = getaddrinfo(NULL, name, NULL, &res);
++	ret = getaddrinfo("0.0.0.0", name, NULL, &res);
+ 	if (ret < 0)
+ 		return -1;
+ 	ret = -1;
+-- 
+1.7.9.5
+

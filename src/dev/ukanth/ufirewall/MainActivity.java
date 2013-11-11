@@ -542,7 +542,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		if(searchStr !=null && searchStr.length() > 1) {
 			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
-					if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())) {
+					if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())
+							&& !searchApp.contains(app)) {
 						searchApp.add(app);
 						isResultsFound = true;
 					} 
@@ -1218,25 +1219,25 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			selectMode();
 			break;
 		case R.id.img_wifi:
-			selectAllWifi();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_3g:
-			selectAll3G();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_roam:
-			selectAllRoam();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_invert:
-			selectRevert();
+			selectActionConfirmation(getString(R.string.reverse_all), v.getId());
 			break;
 		case R.id.img_vpn:
-			selectAllVPN();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_lan:
-			selectAllLAN();
+			selectActionConfirmation(getString(R.string.select_all), v.getId());
 			break;
 		case R.id.img_reset:
-			clearAll();
+			selectActionConfirmation(getString(R.string.unselect_all), v.getId());
 			break;
 		//case R.id.img_invert:
 		//	revertApplications();
@@ -1245,6 +1246,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAllLAN() {
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
@@ -1256,6 +1260,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAllVPN() {
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
@@ -1267,6 +1274,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectRevert(){
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
@@ -1282,6 +1292,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void selectAllRoam(){
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
@@ -1293,6 +1306,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 	
 	private void clearAll(){
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
@@ -1308,6 +1324,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAll3G() {
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
@@ -1319,10 +1338,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	}
 
 	private void selectAllWifi() {
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
 		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+			PackageInfoData data = (PackageInfoData) adapter.getItem(item);
 			data.selected_wifi = true;
 			this.dirty = true;
 		}
@@ -1469,6 +1491,47 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		  }
 		});
 		alert.show();	
+	}
+	
+
+	private void selectActionConfirmation(String displayMessage, final int i){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+		builder.setMessage(displayMessage)
+		       .setCancelable(false)
+		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+								switch (i) {
+								case R.id.img_wifi:
+									selectAllWifi();
+									break;
+								case R.id.img_3g:
+									selectAll3G();
+									break;
+								case R.id.img_roam:
+									selectAllRoam();
+									break;
+								case R.id.img_invert:
+									selectRevert();
+									break;
+								case R.id.img_vpn:
+									selectAllVPN();
+									break;
+								case R.id.img_lan:
+									selectAllLAN();
+									break;
+								case R.id.img_reset:
+									clearAll();
+								}
+		           }
+		       })
+		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert2 = builder.create();
+		alert2.show();
 	}
 
 }

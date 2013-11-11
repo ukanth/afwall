@@ -1,0 +1,5 @@
+[submodule "submodules/ActionBarSherlock"]
+	path = submodules/ActionBarSherlock
+	url = https://github.com/ukanth/ActionBarSherlock.git
+	branch = master
+

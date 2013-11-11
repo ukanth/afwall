@@ -23,3 +23,7 @@ local.properties
 # IntelliJ project files
 .idea/
 *.iml
+
+# native binaries
+libs/
+obj/

@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="137"
-    android:versionName="1.2.6.2" >
+    android:versionCode="141"
+    android:versionName="1.2.7-Beta" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -139,6 +139,7 @@
         <receiver android:name="dev.ukanth.ufirewall.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                 <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
             </intent-filter>
         </receiver>
         <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">

@@ -16,6 +16,7 @@
     <string name="error_flush">Error flushing iptables</string>
     <string name="error_purge">Error purging iptables</string>
     <string name="error_binary">Error installing binary files</string>
+    <string name="error_migration">Error migrating old settings</string>
     <string name="error_refresh">Error refreshing iptables</string>
     <string name="error_apply">Error applying iptables rules</string>
     <string name="error_fetch">Error fetching iptables rules</string>
@@ -196,6 +197,7 @@
     <string name="builtin_bb">Built-In busybox</string>
     <string name="system_ipt">System iptables</string>
     <string name="builtin_ipt">Built-In iptables</string>
+    <string name="auto">Auto</string>
 	
     <!-- Tasker -->
     <string name="disable_toaster">Disable Tasker Toasts</string>
@@ -258,7 +260,7 @@
     
      <!-- 1.2.6 -->
     <string name="active_rules">Active Rules</string>
-    <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+    <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
     
     <string name="profile_management">Profile Management</string>
     <string name="profile_add">Add Profile</string>
@@ -278,5 +280,9 @@
     
      <string name="multi_apply_rules">Apply rules on profile switch</string>
      <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+     
+     <string name="select_all">Do you want to select all ?</string>
+     <string name="reverse_all">Do you want to reverse select all ?</string>
+     <string name="unselect_all">Do you want to unselect all ?</string>
      
 </resources>

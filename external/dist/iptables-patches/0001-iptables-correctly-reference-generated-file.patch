@@ -1,0 +1,33 @@
+From e693b5be1f4320c3db64ddb9f3a473de6bb6bc5f Mon Sep 17 00:00:00 2001
+From: Lutz Jaenicke <ljaenicke@innominate.com>
+Date: Wed, 7 Aug 2013 10:09:16 +0200
+Subject: [PATCH 1/7] iptables: correctly reference generated file
+
+Since (14bca55 iptables: use autoconf to process .in man pages),
+the file "iptables-extensions.8.tmpl" is generated from
+"iptables-extensions.8.tmpl.in" and is consequently no
+longer found in ${srcdir} but in the build directory.
+(Becomes visible with builddir != srcdir)
+
+Signed-off-by: Lutz Jaenicke <ljaenicke@innominate.com>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ iptables/Makefile.am |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/iptables/Makefile.am b/iptables/Makefile.am
+index 46d2463..501e825 100644
+--- a/iptables/Makefile.am
++++ b/iptables/Makefile.am
+@@ -38,7 +38,7 @@ if ENABLE_IPV6
+ v6_sbin_links  = ip6tables ip6tables-restore ip6tables-save
+ endif
+ 
+-iptables-extensions.8: ${srcdir}/iptables-extensions.8.tmpl ../extensions/matches.man ../extensions/targets.man
++iptables-extensions.8: iptables-extensions.8.tmpl ../extensions/matches.man ../extensions/targets.man
+ 	${AM_VERBOSE_GEN} sed \
+ 		-e '/@MATCH@/ r ../extensions/matches.man' \
+ 		-e '/@TARGET@/ r ../extensions/targets.man' $< >$@;
+-- 
+1.7.9.5
+

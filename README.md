@@ -1,31 +1,38 @@
-AFWall+ ( Android Firewall +) [![Build Status](https://travis-ci.org/github/android.png)](https://travis-ci.org/github/afwall)
+AFWall+ ( Android Firewall +) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall)
 ======
 
 ![AFwall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
 
-Android Firewall+ is a advance iptables editor (GUI) for Android. It's an improved version of [DroidWall](http://code.google.com/p/droidwall), the original owner and creator Rodrigo Rosauro sold Droidwall to AVAST in december 2011.
 
-<br>For advance Information and community talk please look [at XDA](http://forum.xda-developers.com/showthread.php?t=1957231) or [our WIKI](https://github.com/ukanth/afwall/wiki).
+
+Android Firewall+ is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to
+access the network.
+
+The original codebase was derived from [DroidWall](http://code.google.com/p/droidwall) by Rodrigo Rosauro. DroidWall was sold to AVAST
+in December 2011, and is no longer actively maintained.
+
+For more information and community discussions, please visit the [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or [our WIKI](https://github.com/ukanth/afwall/wiki).
 
 [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall)
 
-[Changelog](https://github.com/ukanth/afwall/blob/master/Changelog.md)
-======
+## Changelog
 
-## Bug Report
+The AFWall+ version history is maintained [here](https://github.com/ukanth/afwall/blob/master/Changelog.md).
+
+## Bug Reports
 Please see the [issues](https://github.com/ukanth/afwall/issues) section to
-report any bugs or feature requests and to see the list of known issues. Before you report an bug, take a look [here](https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug).  
+report any bugs or feature requests and to see the list of known issues. Before you report a bug, take a look [here](https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug).  
 
 
 ## FAQ
-You have problems with AFWall+? Check out the [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) before reporting a bug or problem that maybe already known.
+Having problems with AFWall+? Check out the [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) before reporting a bug or problem that may already be known.
 
 
 ## ToDo:
 * All Bug fixes from original [DroidWall](http://code.google.com/p/droidwall/)
 * Integrate with Network Log 
-* Uninstall application from list window ( or open manage application from list)
-* All Bugs [you reporting](https://github.com/ukanth/afwall/issues)
+* Uninstall application from list window (or open/manage application from list)
+* All bugs [reported by users](https://github.com/ukanth/afwall/issues)
 
 
 ## Already done
@@ -86,7 +93,36 @@ This project also uses many other open source libraries such as:
 
 
 ## How to compile AFWall+
-For instructions how to compile AFWall+ please take a look at the [Wiki | HOWTO-Compile-AFWall](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
+
+Prerequisites:
+
+* Android SDK in your $PATH (both platform-tools/ and tools/ directories)
+* javac 1.6 and a recent version of Apache ant in your $PATH
+* git in your $PATH
+* Use the Android SDK Manager to install APIs 14, 16, and 17
+
+Quick start:
+
+    git clone git://github.com/ukanth/afwall
+    cd afwall
+    git submodule init
+    git submodule update
+    android update project -p . -s
+    ant debug
+
+For complete instructions, please take a look at the [Wiki | HOWTO-Compile-AFWall](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
+
+## Compiling native binaries
+
+On the host side you'll need to install:
+
+* NDK r9, nominally under /opt/android-ndk-r9
+* Host-side gcc, make, etc. (Red Hat "Development Tools" group or Debian build-essential)
+* autoconf, automake, and libtool
+
+This command will build the Android binaries and copy them into res/raw/:
+
+    make -C external NDK=/opt/android-ndk-r9
 
 ## Contributing
 
