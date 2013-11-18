@@ -31,6 +31,8 @@
 		<item>Portuguese</item>        
 		<item>Italian</item>
 		
+		<item>Hungarian</item>
+		
         <item>Simplifed Chinese</item>
         <item>Traditional Chinese</item>
         
@@ -55,6 +57,8 @@
         <item>el</item>
         <item>pt</item>
         <item>it</item>
+        
+        <item>hu</item>
         
         <item>zh_CN</item>  
         <item>zh_TW</item>  

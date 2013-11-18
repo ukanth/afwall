@@ -250,7 +250,7 @@
     <string name="syscolor_pref_summary_on">Selected color will be shown for system applications</string>
     <string name="syscolor_pref_summary_off">Default Color</string>
     <string name="enableConfirmTitle">Confirm box on AFWall+ disable</string>
-    <string name="enableConfirm_summary_on">Firewall will be ask for confirmation before being disabled</string>
+    <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
     <string name="enableConfirm_summary_off">Firewall will be disabled without confirmation</string>
     <string name="showUid">Show UID for apps</string>
     <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
