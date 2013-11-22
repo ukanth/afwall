@@ -16,14 +16,19 @@
   <string name="error_flush">Error al limpiar iptables</string>
   <string name="error_purge">Error purging iptables</string>
   <string name="error_binary">Error installing binary files</string>
+  <string name="error_migration">Error migrating old settings</string>
   <string name="error_refresh">Error refreshing iptables</string>
   <string name="error_apply">Error applying iptables rules</string>
   <string name="error_fetch">Error fetching iptables rules</string>
   <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
   <string name="error_common">Error:</string>
   <string name="all_item">(Cualquier aplicación) - Lo mismo que seleccionar todas las aplicaciones</string>
+  <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
+  <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
+  <string name="ntp_item">(NTP) - Internet time servers</string>
   <string name="root_item">(root) - Aplicaciones ejecutándose como root</string>
-  <string name="operation_timeout">Tiempo de operación expirado</string>
+  <string name="operation_timeout">Operation timed out</string>
   <string name="fw_enabled">Activado</string>
   <string name="fw_disabled">Desactivado</string>
   <string name="flushed">Reglas borradas</string>
@@ -55,18 +60,20 @@
   <string name="preferences">Preferencias</string>
   <string name="reload">Recargar Aplicaciones</string>
   <string name="flush">Borrar Reglas</string>
+  <string name="send_report">Send error report</string>
+  <string name="enter_problem">ENTER PROBLEM DESCRIPTION HERE:</string>
+  <string name="send_mail">Send mail...</string>
   <string name="notify_pref_summary_on">Se mostrará una notificación cuando se instale una nueva aplicación</string>
   <string name="notify_pref_summary_off">No se mostrará ninguna notificación cuando se instale una nueva aplicación</string>
   <string name="custom_script_defined">Script presonalizado definido</string>
   <string name="custom_script_removed">Script personalizado eliminado</string>
   <string name="custom_script_error">Error al guardar script personalizado</string>
-  <string name="custom_script_info"><b>Ingrese su script personalizado abajo.</b>\n<i>(Dejar en blanco para eliminar)</i>\nPara más informacion acerca de scripts personalizados, haga click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">aqui</a>.
+  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
 </string>
   <string name="custom_script2_info">     \n<b>Script de apagado personalizado</b>\nTambién puedes definir un script personalizado para que se ejecute cuando el firewall es <b>desactivado</b>:</string>
   <string name="unsaved_changes">Cambios sin guardar</string>
   <string name="unsaved_changes_message">Hay cambios sin guardar.\nDesea aplicar o descartar?</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Firewall android</i> es una aplicación front-end para el poderoso Firewall de Linux <b>iptables</b>. Permite restringir qué aplicaciones están autorizadas a acceder a sus redes de datos.  Esta es la solución perfecta si no tienes un plan de datos ilimitado, o sólo quiere que su batería dura más.\n\n\n <b>Ayuda -</b> http://github.com/ukanth/afwall/wiki/Help \n <b>Preguntas frecuentes</b>-https://github.com/ukanth/afwall/wiki/Help \n <b>Desarrollador</b> - Umakanthan Chandran \n <a href="mailto:cumakt+afwall@gmail.com"> contactarme</a> \n <b>Twitter</b> - @ukanth \n <b>Página del Proyecto </b> - https://github.com/ukanth/afwall/\n <b>créditos \n\n</b> <b>DroidWall</b> - Rodrigo Zechin Rosauro\n <b>iconos</b> - hush66 (http://hush66.deviantart.com/)\n
-</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">Reglas de IPtables</string>
   <string name="settings_password">Ingrese Contraseña</string>
   <string name="settings_password2">Ingrese Contraseña de nuevo</string>
@@ -79,7 +86,7 @@
   <string name="overrideRules">Esto anulará las reglas existentes! Desea importar las reglas?</string>
   <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(SSH)</string>
   <string name="notification_new">Nueva aplicación instalada.</string>
-  <string name="confirmMsg">Esto desactivará el firewall! Desea continuar?</string>
+  <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
   <string name="apply">Aplicar</string>
   <string name="discard">Descartar</string>
   <string name="delete">Borrar</string>
@@ -118,6 +125,7 @@
   <string name="log_was_enabled">El registro ha sido activado</string>
   <string name="log_was_disabled">El registro ha sido desactivado</string>
   <string name="log_toggle_failed">Error toggling log status</string>
+  <string name="log_target_failed">Error: kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">Registro borrado</string>
   <string name="log_clear_error">Error clearing log</string>
   <string name="log_fetch_error">Error fetching log</string>
@@ -166,6 +174,7 @@
   <string name="builtin_bb">Built-In busybox</string>
   <string name="system_ipt">System iptables</string>
   <string name="builtin_ipt">Built-In iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">Desactivar toasts de Tasker</string>
   <string name="disableTasterSummary">Esta opción desactivará las notificaciones toast del plugin de Tasker</string>
   <string name="enable_tasker">Activar AFWall+</string>
@@ -189,8 +198,6 @@
   <string name="startup_service">Applying Rules. Please wait!</string>
   <string name="fixleakTitle">Arreglar la fuga de datos de arranque</string>
   <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
-  <string name="alternateStartTitle">Fix Device Start Rules</string>
-  <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
   <string name="enableInboundTitle">Enable inbound connections</string>
   <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
   <string name="ui_prefs_title">Preferencias de la interfaz de usuario</string>
@@ -202,14 +209,14 @@
   <string name="syscolor_pref_summary_on">Las aplicaciones del sistema se mostrarán con el color seleccionado</string>
   <string name="syscolor_pref_summary_off">Color por defecto</string>
   <string name="enableConfirmTitle">Confirm box on AFWall+ disable</string>
-  <string name="enableConfirm_summary_on">Se pedirá una confirmación antes de desactivar el cortafuegos</string>
+  <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
   <string name="enableConfirm_summary_off">Se deshabilitará el Firewall sin confirmación</string>
   <string name="showUid">Mostrar UID para aplicaciones</string>
   <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
   <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
   <string name="languages">Idiomas</string>
   <string name="active_rules">Active Rules</string>
-  <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
   <string name="profile_management">Profile Management</string>
   <string name="profile_add">Add Profile</string>
   <string name="profile_remove">Remove Profile</string>
@@ -223,4 +230,7 @@
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Apply rules on profile switch</string>
   <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+  <string name="select_all">Do you want to select all ?</string>
+  <string name="reverse_all">Do you want to reverse select all ?</string>
+  <string name="unselect_all">Do you want to unselect all ?</string>
 </resources>

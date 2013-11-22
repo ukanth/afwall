@@ -14,16 +14,21 @@
   <string name="close">Κλείσιμο</string>
   <string name="exit">Έξοδος</string>
   <string name="error_flush">Σφάλμα εξαγωγής iptables</string>
-  <string name="error_purge">Error purging iptables</string>
-  <string name="error_binary">Error installing binary files</string>
-  <string name="error_refresh">Error refreshing iptables</string>
-  <string name="error_apply">Error applying iptables rules</string>
-  <string name="error_fetch">Error fetching iptables rules</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
+  <string name="error_purge">Σφάλμα εκκαθάρισης των iptables</string>
+  <string name="error_binary">Σφάλμα κατά την εγκατάσταση των δυαδικών αρχείων</string>
+  <string name="error_migration">Error migrating old settings</string>
+  <string name="error_refresh">Σφάλμα ανανέωσης των iptables</string>
+  <string name="error_apply">Σφάλμα κατά την εφαρμογή των κανόνων iptables</string>
+  <string name="error_fetch">Σφάλμα κατά τη λήψη των κανόνων iptables</string>
+  <string name="error_su">Δεν είναι εφικτή η πρόσβαση root.\nΧρειάζεστε δικαιώματα root για να λειτοργήσει το AFWall+.\n\nΕφόσον αυτή η συσκευή είναι ήδη rooted, βεβαιωθείτε ότι το AFWall + έχει δικαιώματα για να εκτελέσει την εντολή \"su\".\n</string>
   <string name="error_common">Σφάλμα: </string>
   <string name="all_item">(Οποιαδήποτε εφαρμογή) - Σα να επιλέγετε όλες τις εφαρμογές</string>
+  <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
+  <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
+  <string name="ntp_item">(NTP) - Internet time servers</string>
   <string name="root_item">(root) - εφαρμογές που εκτελούνται ως root</string>
-  <string name="operation_timeout">Τέλος χρόνου λειτουργείας</string>
+  <string name="operation_timeout">Operation timed out</string>
   <string name="fw_enabled">Ενεργό</string>
   <string name="fw_disabled">Ανενεργό</string>
   <string name="flushed">Οι κανόνες εκκαθαρίστηκαν</string>
@@ -55,28 +60,20 @@
   <string name="preferences">Προτιμήσεις</string>
   <string name="reload">Επαναφόρτωση εφαρμογών</string>
   <string name="flush">Εκκαθάρηση κανόνων</string>
+  <string name="send_report">Send error report</string>
+  <string name="enter_problem">ENTER PROBLEM DESCRIPTION HERE:</string>
+  <string name="send_mail">Send mail...</string>
   <string name="notify_pref_summary_on">Θα αποστέλλεται ενημέρωση όταν εγκαθίσταται μια νέα εφαρμογή</string>
   <string name="notify_pref_summary_off">Δεν θα αποστέλλεται ενημέρωση όταν εγκαθίσταται μια νέα εφαρμογή</string>
   <string name="custom_script_defined">Έχει οριστεί προσαρμοσμένο Script</string>
   <string name="custom_script_removed">Το προσαρμοσμένο Script αφαιρέθηκε</string>
   <string name="custom_script_error">Σφάλμα κατά την αποθήκευση του προσαρμοσμένου script</string>
-  <string name="custom_script_info"><b>Καταχωρίστε το script σας από κάτω.</b>\n<i>(Αφήστε κενό για αφαίρεση)</i>\nΓια πληροφορίες σχετικά μ αυτό, πατήστε <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">εδώ</a>.
+  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
 </string>
   <string name="custom_script2_info">     \n<b>Προσαρμοσμένο script απενεργοποίησης</b>\nΘα εκτελείται όταν το τείχος εισέρχεται σε κατάσταση <b>ανενεργή</b>:</string>
   <string name="unsaved_changes">Μη αποθηκευμένες αλλαγές</string>
   <string name="unsaved_changes_message">Υπάρχουν μη αποθηκευμένες αλλαγές.\nΘέλετε να εφαρμοστούν ή να απορριφθούν;</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Tείχος προστασίας</i> είναι μια εφαρμογή που κάνει χρήση των <b>iptables</b> του τείχους προστασίας Linux.
-Σας επιτρέπει να περιορίσετε ποιες εφαρμογές επιτρέπεται να έχουν πρόσβαση στα δίκτυα των δεδομένων σας.
-Είναι η τέλεια λύση αν δεν έχετε απεριόριστο πρόγραμμα δεδομένων, ή απλά θέλετε να δείτε τη μπαταρία σας να διαρκεί περισσότερο.\n\n\n
-<b> Βοήθεια - </b> http://github.com/ukanth/afwall/wiki/Help \n
-<b>Συχνές ερωτήσεις</b> -https://github.com/ukanth/afwall/wiki/Help \n
-<b>Προγραμματιστής</b> - Umakanthan Chandran \n
-<a href="mailto:cumakt+afwall@gmail.com">Επικοινωνήστε μαζί μου</a>\n
-<b>Twitter </b>- @ukanth \n
-<b>Ιστοσελίδα </b> - https://github.com/ukanth/afwall/\n
-<b>Συντελεστές\n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>Εικονίδια </b> - hush66 (http://hush66.deviantart.com/)\n
-</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">Κανόνες IPtables</string>
   <string name="settings_password">Εισάγετε κωδικό</string>
   <string name="settings_password2">Εισάγετε τον κωδικό και πάλι</string>
@@ -85,11 +82,11 @@
   <string name="copy">Αντιγραφή</string>
   <string name="copied">Αντιγράφηκε</string>
   <string name="Search">Αναζήτηση</string>
-  <string name="flushRulesConfirm">This will flush all the IPtables rules ! Do you want to continue ?</string>
+  <string name="flushRulesConfirm">Θα διαγραφούν όλοι οι κανόνες iptables! Θέλετε να συνεχίσετε;</string>
   <string name="overrideRules">Αυτή η ενέργεια θα αντικαταστήσει τους ισχύοντες κανόνες! Θέλετε να εισαγάγετε τους κανόνες;</string>
-  <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(SSH)</string>
+  <string name="prefLocalmode">Να επιτρέπονται εισερχόμενες/εξερχόμενες συνδέσεις μόνο από το localhost για την θύρα 22(SSH)</string>
   <string name="notification_new">Έγινε εγκατάσταση νέας εφαρμογής.</string>
-  <string name="confirmMsg">Η ενέργεια θα απενεργοποιήσει το τείχος! Θέλετε να συνεχίσετε;</string>
+  <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
   <string name="apply">Εφαρμογή</string>
   <string name="discard">Απόρριψη</string>
   <string name="delete">Διαγραφή</string>
@@ -98,16 +95,16 @@
   <string name="OK">Εντάξει</string>
   <string name="Cancel">Ακύρωση</string>
   <string name="notification_title">Άνοιγμα AFWall+</string>
-  <string name="error_notification_title">AFWall+ error</string>
-  <string name="error_notification_text">Error applying firewall rules. Click here to open settings.</string>
-  <string name="error_notification_ticker">AFWall+ could not apply rules</string>
-  <string name="success_initd">Successfully installed startup script</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d</string>
-  <string name="remove_initd">Successfully removed startup script</string>
-  <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
+  <string name="error_notification_title">Σφάλμα AFWall+</string>
+  <string name="error_notification_text">Σφάλμα κατά την εφαρμογή των κανόνων του τείχους προστασίας. Πατήστε εδώ για να ανοίξετε τις ρυθμίσεις.</string>
+  <string name="error_notification_ticker">Το AFWall+ δεν μπόρεσε να εφαρμόσει τους κανόνες</string>
+  <string name="success_initd">Το script εκκίνησης εγκαταστάθηκε με επιτυχία</string>
+  <string name="unable_initd">Δεν είναι δυνατή η εγκατάσταση του script εκκίνησης. Βεβαιωθείτε ότι η ROM/kernel σας, υποστηρίζει init.d</string>
+  <string name="remove_initd">Το script εκκίνησης αφαιρέθηκε με επιτυχία</string>
+  <string name="unable_remove_initd">Δεν ήταν δυνατή η αφαίρεση του script εκκίνησης</string>
   <string name="widget_disable_fail">Αδύνατη η απενεργοποίηση του τείχους - Έχει οριστεί κωδικός!</string>
-  <string name="widget_label_status">AFWall+ Toggle/Status</string>
-  <string name="widget_label_settings">AFWall+ Settings</string>
+  <string name="widget_label_status">Εναλλαγή/κατάσταση του AFWall+</string>
+  <string name="widget_label_settings">Ρυθμίσεις AFWall+</string>
   <string name="color_pick">Πατήστε στο χρώμα για εφαρμογή</string>
   <string name="import_rules_droidwall">Εισαγωγή κανόνων DW</string>
   <string name="export_rules">Εξαγωγή κανόνων</string>
@@ -127,15 +124,16 @@
   <string name="log_disabled">Καταγραφή ανενεργή</string>
   <string name="log_was_enabled">Η καταγραφή ενεργοποιήθηκε</string>
   <string name="log_was_disabled">Η καταγραφή απενεργοποιήθηκε</string>
-  <string name="log_toggle_failed">Error toggling log status</string>
+  <string name="log_toggle_failed">Σφάλμα εναλλαγής κατάστασης του αρχείου καταγραφής</string>
+  <string name="log_target_failed">Error: kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">Έγινε εκκαθάριση του αρχείου καταγραφής</string>
-  <string name="log_clear_error">Error clearing log</string>
-  <string name="log_fetch_error">Error fetching log</string>
-  <string name="log_parse_error">Error parsing log</string>
+  <string name="log_clear_error">Σφάλμα καθαρισμού αρχείου καταγραφής</string>
+  <string name="log_fetch_error">Σφάλμα προσκόμισης αρχείου καταγραφής</string>
+  <string name="log_parse_error">Σφάλμα ανάλυσης αρχείου καταγραφής</string>
   <string name="no_log">Το αρχείο καταγραφής είναι άδειο</string>
   <string name="LogAppName">Όνομα εφαρμογής</string>
   <string name="LogPackBlock">Σύνολο μπλοκαρισμένων πακέτων</string>
-  <string name="refresh">Refresh</string>
+  <string name="refresh">Ανανέωση</string>
   <string name="mp_prefs_title">Προτιμήσεις πολλαπλών προφίλ</string>
   <string name="custom_title1">Προσαρμοσμένο όνομα για το προεπιλεγμένο προφίλ</string>
   <string name="custom_title2">Προσαρμοσμένο όνομα για το προφιλ1</string>
@@ -159,7 +157,7 @@
   <string name="ifaces">Διασυνδέσεις δικτύου</string>
   <string name="lan_title">Έλεγχος LAN</string>
   <string name="lan_summary">Ενεργοποίηση διαχωρισμού κανόνων LAN - WiFi</string>
-  <string name="iptables_pref">IPtables Binary</string>
+  <string name="iptables_pref">Αρχείο εφαρμογής IPtables</string>
   <string name="vpn_profile">Έλεγχος VPN</string>
   <string name="vpnSummary">Ενεργοποιήστε την επιλογή για κανόνες ελέγχου δεδομένων κατά τη χρήση VPN</string>
   <string name="roaming">Έλεγχος περιαγωγής</string>
@@ -171,11 +169,12 @@
   <string name="toast_error_enabling">AFWall+: Σφάλμα ενεργοποίησης του τείχους!</string>
   <string name="toast_disabled">AFWall+: Τείχος ανενεργό!</string>
   <string name="toast_error_disabling">AFWall+:  Σφάλμα ενεργοποίησης του τείχους!</string>
-  <string name="busybox_pref">Busybox Binary</string>
-  <string name="system_bb">System busybox</string>
-  <string name="builtin_bb">Built-In busybox</string>
-  <string name="system_ipt">System iptables</string>
-  <string name="builtin_ipt">Built-In iptables</string>
+  <string name="busybox_pref">Αρχείο εφαρμογής Busybox</string>
+  <string name="system_bb">Busybox συστήματος</string>
+  <string name="builtin_bb">Ενσωματωμένο busybox</string>
+  <string name="system_ipt">Iptables συστήματος</string>
+  <string name="builtin_ipt">Ενσωματωμένο iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">Απενεργοποιήσετε Tasker Toasts</string>
   <string name="disableTasterSummary">Αυτό θα απενεργοποιήσει τα toast μηνύματα στον tasker</string>
   <string name="enable_tasker">Ενεργοποίηση AFWall+</string>
@@ -189,8 +188,8 @@
   <string name="switch_ipv6">Μετάβαση στους κανόνες IPv6</string>
   <string name="switch_ipv4">Μετάβαση στους κανόνες IPv4</string>
   <string name="sec_prefs_title">Ρυθμίσεων ασφαλείας</string>
-  <string name="usePattern">Use lock pattern instead of password</string>
-  <string name="resetPattern">Do you want to reset the lock pattern ?</string>
+  <string name="usePattern">Χρήση μοτίβου αντί κωδικού</string>
+  <string name="resetPattern">Θέλετε να επαναφέρετε το μοτίβο;</string>
   <string name="enable_device_admin">Διαχειριστής συσκευής</string>
   <string name="device_admin_enabled">AFWall + διαχειριστής συσκευής ενεργό</string>
   <string name="device_admin_disabled">AFWall + διαχειριστής συσκευής ανενεργό</string>
@@ -198,39 +197,40 @@
   <string name="exp_prefs_title">Πειραματικές προτιμήσεις</string>
   <string name="startup_service">Εφαρμογή κανόνων. Παρακαλώ περιμένετε!</string>
   <string name="fixleakTitle">Διόρθωση μη επιθυμητής χρήσης του δικτύου δεδομένων κατά την εκκίνηση της συσκευής</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
-  <string name="alternateStartTitle">Διόρθωση κανόνων έναρξης συσκευής</string>
-  <string name="alternateStartSummary">Αυτό, θα διορθώσει την περίπτωση που οι κανόνες του AFWall+ δεν εφαρμόζονται σε κάποιες συσκευές (CM10.1)  μετά την εκκίνηση</string>
-  <string name="enableInboundTitle">Enable inbound connections</string>
-  <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
+  <string name="fixleakSummary">Πρόληψη διαρροής δεδομένων κατά την εκκίνηση του συστήματος.  Η ROM πρέπει να παρέχει υποστήριξη init.d. Οι συσκευές HTC πρέπει να ρυθμιστούν σε S-OFF.</string>
+  <string name="enableInboundTitle">Ενεργοποίηση εισερχόμενων συνδέσεων</string>
+  <string name="enableInboundSummary">Να επιτρέπονται συνδέσεις από το LAN στο τηλέφωνο (Samba, sshd, AirDroid, κλπ.)</string>
   <string name="ui_prefs_title">Προτιμήσεις UI</string>
-  <string name="hideicons_pref_title">Hide application\'s icons</string>
+  <string name="hideicons_pref_title">Απόκρυψη εικονιδίων εφαρμογής</string>
   <string name="hideicons_pref_summary_on">Θα βελτιώσει την απόδοση απενεργοποιώντας τα εικονίδια στην κύρια προβολή</string>
   <string name="hideicons_pref_summary_off">Οι εικόνες εφαρμογών θα εμφανίζονται στο μενού</string>
   <string name="notify_pref_title">Ενεργοποίηση ειδοποιήσεων</string>
-  <string name="syscolor_pref_title">System application\'s color</string>
+  <string name="syscolor_pref_title">Χρώμα εφαρμογών συστήματος</string>
   <string name="syscolor_pref_summary_on">Το επιλεγμένο χρώμα θα εμφανίζεται για τις εφαρμογές συστήματος</string>
   <string name="syscolor_pref_summary_off">Προεπιλεγμένο χρώμα</string>
-  <string name="enableConfirmTitle">Confirm box on AFWall+ disable</string>
-  <string name="enableConfirm_summary_on">Το τείχος θα ζητά επιβεβαίωση πριν απενεργοποιηθεί</string>
+  <string name="enableConfirmTitle">Πλαίσιο επιβεβαίωσης απενεργοποίησης AFWall+</string>
+  <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
   <string name="enableConfirm_summary_off">Το τείχος θα απενεργοποιηθεί χωρίς επιβεβαίωση</string>
   <string name="showUid">Εμφάνιση του UID των εφαρμογών</string>
-  <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
-  <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
+  <string name="showuid_summary_on">Το UID των εφαρμογών θα εμφανίζεται στην κεντρική προβολή.</string>
+  <string name="showuid_summary_off">Το UID των εφαρμογών δεν εμφανίζεται. Η εμφάνιση είναι χρήσιμη για έρευνα στα logs</string>
   <string name="languages">Γλώσσες</string>
-  <string name="active_rules">Active Rules</string>
-  <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
-  <string name="profile_management">Profile Management</string>
-  <string name="profile_add">Add Profile</string>
-  <string name="profile_remove">Remove Profile</string>
-  <string name="profile_reset">Reset Profile</string>
-  <string name="profile_rename">Rename Profile</string>
-  <string name="email_to_dev">Send E-Mail to Developer</string>
-  <string name="Donate">Donate</string>
-  <string name="rules_management">Rules Management</string>
-  <string name="sort_app">Sort By</string>
-  <string name="sort_application">Application</string>
+  <string name="active_rules">Ενεργοί κανόνες</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
+  <string name="profile_management">Διαχείριση προφίλ</string>
+  <string name="profile_add">Προσθήκη προφίλ</string>
+  <string name="profile_remove">Διαγραφή προφίλ</string>
+  <string name="profile_reset">Επαναφορά προφίλ</string>
+  <string name="profile_rename">Μετονομασία προφίλ</string>
+  <string name="email_to_dev">Αποστολή ηλεκτρονικού μηνύματος στον προγραμματιστή</string>
+  <string name="Donate">Δωρεά</string>
+  <string name="rules_management">Διαχείριση κανόνων</string>
+  <string name="sort_app">Ταξινόμηση κατά</string>
+  <string name="sort_application">Εφαρμογή</string>
   <string name="sort_uid">UID</string>
-  <string name="multi_apply_rules">Apply rules on profile switch</string>
-  <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+  <string name="multi_apply_rules">Εφαρμογή κανόνων κατά την αλλαγή προφίλ</string>
+  <string name="multi_apply_rules_info">Αυτό θα φορτώσει και θα εφαρμόσει τους κανόνες κατά την αλλαγή προφίλ</string>
+  <string name="select_all">Do you want to select all ?</string>
+  <string name="reverse_all">Do you want to reverse select all ?</string>
+  <string name="unselect_all">Do you want to unselect all ?</string>
 </resources>

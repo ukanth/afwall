@@ -14,16 +14,21 @@
   <string name="close">Zamknij</string>
   <string name="exit">Wyjście</string>
   <string name="error_flush">Błąd czyszczenia iptables</string>
-  <string name="error_purge">Error purging iptables</string>
-  <string name="error_binary">Error installing binary files</string>
-  <string name="error_refresh">Error refreshing iptables</string>
-  <string name="error_apply">Error applying iptables rules</string>
-  <string name="error_fetch">Error fetching iptables rules</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
+  <string name="error_purge">Błąd usuwania iptables</string>
+  <string name="error_binary">Błąd instalacji plików binarnych</string>
+  <string name="error_migration">Błąd podczas migracji starych ustawień</string>
+  <string name="error_refresh">Błąd odświeżania iptables</string>
+  <string name="error_apply">Nie udało się zastosować reguł iptables</string>
+  <string name="error_fetch">Błąd przy pobieraniu reguł iptables</string>
+  <string name="error_su">Nie można uzyskać uprawnień root.\n Urządzenie musi być zrootowane, aby używać AFWall+. \n\n Jeśli twój telefon jest już zrootowany, upewnij się że AFWall+ posiada uprawnienia aby uruchomić komendę \"su\".\n</string>
   <string name="error_common">Błąd : </string>
   <string name="all_item">(Wszystkie aplikacje) - jak zaznaczenie wszystkich aplikacji</string>
+  <string name="kernel_item">(Jądro) - Jądro Linux</string>
+  <string name="tethering_item">(Udostępnianie) - usługi DHCP + DNS</string>
+  <string name="dnsproxy_item">(proxy DNS) - zapytania DNS za pomocą netd</string>
+  <string name="ntp_item">(NTP) - Internetowe serwery czasu</string>
   <string name="root_item">(root) - Aplikacje działające z uprawnieniami root</string>
-  <string name="operation_timeout">Przekroczony limit czasu operacji</string>
+  <string name="operation_timeout">Operacja przekroczyła limit czasu</string>
   <string name="fw_enabled">Włączony</string>
   <string name="fw_disabled">Wyłączony</string>
   <string name="flushed">Reguły wyczyszczone</string>
@@ -55,27 +60,20 @@
   <string name="preferences">Ustawienia</string>
   <string name="reload">Utwórz ponownie listę aplikacji</string>
   <string name="flush">Wyczyść reguły</string>
+  <string name="send_report">Wyślij raport o błędach</string>
+  <string name="enter_problem">WPROWADŹ OPIS PROBLEMU:</string>
+  <string name="send_mail">Wyślij wiadomość...</string>
   <string name="notify_pref_summary_on">Po zainstalowaniu nowej aplikacji zostanie wyświetlone powiadomienie</string>
   <string name="notify_pref_summary_off">Po zainstalowaniu nowej aplikacji powiadomienie nie będzie wyświetlane</string>
   <string name="custom_script_defined">Własny skrypt zdefiniowany</string>
   <string name="custom_script_removed">Własny skrypt usunięty</string>
   <string name="custom_script_error">Błąd zapisu własnego skryptu</string>
-  <string name="custom_script_info"><b>Wpisz poniżej własny skrypt</b>\n<i>(Pozostaw pole puste, jeżeli chcesz skrypt usunąć)</i>\nAby uzyskać więcej informacji o skryptach kliknij <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">tutaj</a>.</string>
+  <string name="custom_script_info"><b>Wpisz poniżej własny skrypt</b>\n<i>(Pozostaw pole puste, jeżeli chcesz skrypt usunąć)</i>\nAby uzyskać więcej informacji o skryptach kliknij <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">tutaj</a>.
+</string>
   <string name="custom_script2_info">    	\n<b>Skrypt wyłączania zapory</b>    	\nMożesz również podać własny skrypt, który zostanie wykonany podczas <b>wyłączania zapory</b>:</string>
   <string name="unsaved_changes">Niezapisane zmiany</string>
   <string name="unsaved_changes_message">Nie zapisałeś zmian.\nChcesz je zastosować, czy odrzucić?</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> to nakładka graficzna na <b>iptables</b>zaporę internetową systemu Linux.
-Pozwala on na określenie, które z aplikacji mogą korzystać z połączenia z internetem.
-Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lub gdy chcesz uzyskać mniejsze użycie baterii\n\n\n
-<b> Pomoc - </b> http://github.com/ukanth/afwall/wiki/Help \n
-<b>Najczęściej zadawane pytania</b> -https://github.com/ukanth/afwall/wiki/Help \n
-<b>Autor </b> - Umakanthan Chandran \n
-<a href="mailto:cumakt+afwall@gmail.com">Kontakt</a>\n
-<b>Twitter </b>- @ukanth \n
-<b>Strona projektu</b> - https://github.com/ukanth/afwall/\n
-<b>Podziękowania dla \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>Ikony </b> - hush66 (http://hush66.deviantart.com/)\n
-</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">Reguły IPtables</string>
   <string name="settings_password">Wprowadź hasło</string>
   <string name="settings_password2">Wprowadź hasło ponownie</string>
@@ -84,9 +82,9 @@ Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lu
   <string name="copy">Kopiuj</string>
   <string name="copied">Skopiowane</string>
   <string name="Search">Wyszukaj</string>
-  <string name="flushRulesConfirm">This will flush all the IPtables rules ! Do you want to continue ?</string>
+  <string name="flushRulesConfirm">Ta operacja usunie wszystkie reguły iptables ! Chcesz kontynuować ?</string>
   <string name="overrideRules">Ta operacja nadpisze wszystkie istniejące reguły iptables ! Chcesz zaimportować reguły ?</string>
-  <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(SSH)</string>
+  <string name="prefLocalmode">Zezwól na przychodzące/wychodzące połączenia tylko z localhost i portu 22 (ssh)</string>
   <string name="notification_new">Zainstalowano nową aplikację.</string>
   <string name="confirmMsg">Spowoduje to wyłączenie zapory! Czy chcesz kontynuować?</string>
   <string name="apply">Zastosuj</string>
@@ -97,16 +95,16 @@ Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lu
   <string name="OK">OK</string>
   <string name="Cancel">Anuluj</string>
   <string name="notification_title">Otwórz AFWall+</string>
-  <string name="error_notification_title">AFWall+ error</string>
-  <string name="error_notification_text">Error applying firewall rules. Click here to open settings.</string>
-  <string name="error_notification_ticker">AFWall+ could not apply rules</string>
-  <string name="success_initd">Successfully installed startup script</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d</string>
-  <string name="remove_initd">Successfully removed startup script</string>
-  <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
+  <string name="error_notification_title">Błąd AFWall+</string>
+  <string name="error_notification_text">Wystąpił błąd podczas stosowania reguł zapory. Kliknij tutaj, aby otworzyć ustawienia.</string>
+  <string name="error_notification_ticker">AFWall+ nie mógł zastosować reguł</string>
+  <string name="success_initd">Skrypt startowy zainstalowany pomyślnie</string>
+  <string name="unable_initd">Nie można zainstalować skryptu startowego AFWall+. Upewnij się, że twój ROM/jądro obsługuje init.d</string>
+  <string name="remove_initd">Pomyślnie usunięto skrypt startowy</string>
+  <string name="unable_remove_initd">Nie można usunąć skryptu startowego AFWall+</string>
   <string name="widget_disable_fail">Nie można wyłączyć zapory - blokada hasłem!</string>
-  <string name="widget_label_status">AFWall+ Toggle/Status</string>
-  <string name="widget_label_settings">AFWall+ Settings</string>
+  <string name="widget_label_status">AFWall+ Przełącznik/Status</string>
+  <string name="widget_label_settings">Ustawienia AFWall+</string>
   <string name="color_pick">Naciśnij na kolor aby zaakceptować</string>
   <string name="import_rules_droidwall">Importuj reguły DW</string>
   <string name="export_rules">Eksportuj reguły</string>
@@ -126,10 +124,11 @@ Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lu
   <string name="log_disabled">Logi wyłączone</string>
   <string name="log_was_enabled">Logowanie zdarzeń włączone</string>
   <string name="log_was_disabled">Logowanie zdarzeń wyłączone</string>
-  <string name="log_toggle_failed">Error toggling log status</string>
+  <string name="log_toggle_failed">Błąd zmiany stanu dziennika zdarzeń</string>
+  <string name="log_target_failed">Błąd: jądro nie wspiera LOG/NFLOG</string>
   <string name="log_cleared">Logi wyczyszczone</string>
-  <string name="log_clear_error">Error clearing log</string>
-  <string name="log_fetch_error">Error fetching log</string>
+  <string name="log_clear_error">Błąd podczas czyszczenia dziennika zdarzeń</string>
+  <string name="log_fetch_error">Błąd pobierania dziennika zdarzeń</string>
   <string name="log_parse_error">Error parsing log</string>
   <string name="no_log">Log jest pusty</string>
   <string name="LogAppName">Nazwa aplikacji</string>
@@ -175,6 +174,7 @@ Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lu
   <string name="builtin_bb">Built-In busybox</string>
   <string name="system_ipt">System iptables</string>
   <string name="builtin_ipt">Built-In iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">Wyłącz powiadomienia w dymkach dla aplikacji Tasker</string>
   <string name="disableTasterSummary">Spowoduje to wyłączenie powiadomień w dymkach dla wtyczki do aplikacji Tasker</string>
   <string name="enable_tasker">Włącz AFWall+</string>
@@ -198,8 +198,6 @@ Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lu
   <string name="startup_service">Aktywowanie reguł... Proszę czekać!</string>
   <string name="fixleakTitle">Napraw wyciek danych przed startem zapory</string>
   <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
-  <string name="alternateStartTitle">Napraw aktywowanie reguł po uruchomieniu urządzenia</string>
-  <string name="alternateStartSummary">AFWall+ może nie aktywować reguł na niektórych urządzeniach (CM10.1) po uruchomieniu urządzenia. Włącz jeżeli problem dotyczy Twojego urządzenia</string>
   <string name="enableInboundTitle">Enable inbound connections</string>
   <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
   <string name="ui_prefs_title">Ustawienia interfejsu użytkownika</string>
@@ -211,14 +209,14 @@ Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lu
   <string name="syscolor_pref_summary_on">Wybranym kolorem oznaczone będą aplikacje systemowe</string>
   <string name="syscolor_pref_summary_off">Domyślny kolor</string>
   <string name="enableConfirmTitle">Confirm box on AFWall+ disable</string>
-  <string name="enableConfirm_summary_on">Zapora wyświetli potwierdzenie zanim zostanie wyłączona</string>
+  <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
   <string name="enableConfirm_summary_off">Do wyłączenia zapory potwierdzenie nie będzie potrzebne</string>
   <string name="showUid">Pokaż UID dla aplikacji</string>
   <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
   <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
   <string name="languages">Zmiana języka</string>
   <string name="active_rules">Active Rules</string>
-  <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
   <string name="profile_management">Profile Management</string>
   <string name="profile_add">Add Profile</string>
   <string name="profile_remove">Remove Profile</string>
@@ -232,4 +230,7 @@ Jest to świetne rozwiązanie jeżeli nie masz nielimitowanego pakietu danych lu
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Apply rules on profile switch</string>
   <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+  <string name="select_all">Do you want to select all ?</string>
+  <string name="reverse_all">Do you want to reverse select all ?</string>
+  <string name="unselect_all">Do you want to unselect all ?</string>
 </resources>
