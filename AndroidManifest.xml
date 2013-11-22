@@ -28,7 +28,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
     android:versionCode="141"
-    android:versionName="1.2.7-Beta" >
+    android:versionName="1.2.7" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk

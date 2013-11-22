@@ -16,14 +16,19 @@
   <string name="error_flush">ルールのフラッシュエラー</string>
   <string name="error_purge">Error purging iptables</string>
   <string name="error_binary">Error installing binary files</string>
+  <string name="error_migration">Error migrating old settings</string>
   <string name="error_refresh">Error refreshing iptables</string>
   <string name="error_apply">Error applying iptables rules</string>
   <string name="error_fetch">Error fetching iptables rules</string>
   <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
   <string name="error_common">エラー: </string>
   <string name="all_item">(すべてのアプリ) - すべてのアプリを選択するのと同義</string>
+  <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
+  <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
+  <string name="ntp_item">(NTP) - Internet time servers</string>
   <string name="root_item">(root) - root権限で動作するアプリ</string>
-  <string name="operation_timeout">タイムアウト操作</string>
+  <string name="operation_timeout">Operation timed out</string>
   <string name="fw_enabled">Firewall オン</string>
   <string name="fw_disabled">Firewall オフ</string>
   <string name="flushed">ルールはフラッシュされました</string>
@@ -55,30 +60,21 @@
   <string name="preferences">設定</string>
   <string name="reload">アプリの再読み込み</string>
   <string name="flush">ルールをフラッシュ</string>
+  <string name="send_report">Send error report</string>
+  <string name="enter_problem">ENTER PROBLEM DESCRIPTION HERE:</string>
+  <string name="send_mail">Send mail...</string>
   <string name="notify_pref_summary_on">A notification will be sent when a new application is installed</string>
   <string name="notify_pref_summary_off">No notifications will be sent when a new application is installed</string>
   <string name="custom_script_defined">カスタムスクリプトは定義されました</string>
   <string name="custom_script_removed">カスタムスクリプトは削除されました</string>
   <string name="custom_script_error">カスタムスクリプトの保存に失敗しました</string>
-  <string name="custom_script_info"><b>下記にカスタムスクリプトを記入してください。</b>
-\n<i>(削除する場合は空白のまま)</i>
-\nカスタムスクリプトについての情報は <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">こちら</a>。</string>
+  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
+</string>
   <string name="custom_script2_info">\n<b>Firewall 停止時カスタムスクリプト</b>
 \nFirewall <b>停止時</b>に実行するカスタムスクリプトも定義できます。</string>
   <string name="unsaved_changes">未保存の変更</string>
   <string name="unsaved_changes_message">未保存の変更があります。\n 変更を適用またはキャンセルしますか？</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> は Linux 用の強力なファイアウォールである <b>iptables</b> 用のフロントエンドアプリケーションです。
-どのアプリケーションのデータ通信を許可するか設定する事ができます。
-定額制のデータ通信プランでない場合や、電池を長持ちさせたい場合にぴったりです。\n\n\n
-<b> ヘルプ - </b> http://github.com/ukanth/afwall/wiki/Help \n
-<b>よくある質問</b>  -https://github.com/ukanth/afwall/wiki/Help \n
-<b>開発者 </b> - Umakanthan Chandran \n
-<a href="mailto:cumakt+afwall@gmail.com">メールはこちら</a>\n 
-<b>ツイッター </b>- @ukanth \n
-<b>開発ホームページ</b> - https://github.com/ukanth/afwall/\n
-<b>クレジット \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>アイコン  </b> - hush66 (http://hush66.deviantart.com/)\n
-</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">iptables ルール</string>
   <string name="settings_password">パスワードを入力してください</string>
   <string name="settings_password2">パスワードを再入力してください</string>
@@ -91,7 +87,7 @@
   <string name="overrideRules">これは既存のルールを上書きします! 本当にインポートしますか?</string>
   <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(SSH)</string>
   <string name="notification_new">New application installed.</string>
-  <string name="confirmMsg">これは Firewall を停止します! 本当に実行しますか?</string>
+  <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
   <string name="apply">適用</string>
   <string name="discard">キャンセル</string>
   <string name="delete">削除</string>
@@ -130,6 +126,7 @@
   <string name="log_was_enabled">通信ログの監視を止めました</string>
   <string name="log_was_disabled">通信ログを監視します</string>
   <string name="log_toggle_failed">Error toggling log status</string>
+  <string name="log_target_failed">Error: kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">通信ログを消去しました</string>
   <string name="log_clear_error">Error clearing log</string>
   <string name="log_fetch_error">Error fetching log</string>
@@ -178,6 +175,7 @@
   <string name="builtin_bb">Built-In busybox</string>
   <string name="system_ipt">System iptables</string>
   <string name="builtin_ipt">Built-In iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">Disable Tasker Toasts</string>
   <string name="disableTasterSummary">This will disable toast messages for Tasker\'s plugin</string>
   <string name="enable_tasker">Enable AFWall+</string>
@@ -201,8 +199,6 @@
   <string name="startup_service">Applying Rules. Please wait!</string>
   <string name="fixleakTitle">起動時の通信漏洩を抑制する</string>
   <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
-  <string name="alternateStartTitle">Fix Device Start Rules</string>
-  <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
   <string name="enableInboundTitle">Enable inbound connections</string>
   <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
   <string name="ui_prefs_title">UI 設定</string>
@@ -214,14 +210,14 @@
   <string name="syscolor_pref_summary_on">Selected color will be shown for system applications</string>
   <string name="syscolor_pref_summary_off">既定の色</string>
   <string name="enableConfirmTitle">Confirm box on AFWall+ disable</string>
-  <string name="enableConfirm_summary_on">Firewall will be ask for confirmation before being disabled</string>
+  <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
   <string name="enableConfirm_summary_off">ファイアウォールを停止する時に確認しない</string>
   <string name="showUid">アプリの UID を表示</string>
   <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
   <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
   <string name="languages">言語設定</string>
   <string name="active_rules">Active Rules</string>
-  <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
   <string name="profile_management">Profile Management</string>
   <string name="profile_add">Add Profile</string>
   <string name="profile_remove">Remove Profile</string>
@@ -235,4 +231,7 @@
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Apply rules on profile switch</string>
   <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+  <string name="select_all">Do you want to select all ?</string>
+  <string name="reverse_all">Do you want to reverse select all ?</string>
+  <string name="unselect_all">Do you want to unselect all ?</string>
 </resources>

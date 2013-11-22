@@ -16,14 +16,19 @@
   <string name="error_flush">Error flushing iptables</string>
   <string name="error_purge">Error purging iptables</string>
   <string name="error_binary">Error installing binary files</string>
+  <string name="error_migration">Error migrating old settings</string>
   <string name="error_refresh">Error refreshing iptables</string>
   <string name="error_apply">Error applying iptables rules</string>
   <string name="error_fetch">Error fetching iptables rules</string>
   <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
   <string name="error_common">Error : </string>
   <string name="all_item">(Any application) - Same as selecting all applications</string>
+  <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
+  <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
+  <string name="ntp_item">(NTP) - Internet time servers</string>
   <string name="root_item">(root) - Applications running as root</string>
-  <string name="operation_timeout">Operation timed-out</string>
+  <string name="operation_timeout">Operation timed out</string>
   <string name="fw_enabled">Geaktiveer</string>
   <string name="fw_disabled">Gediaktiveer</string>
   <string name="flushed">Reëls gespoel</string>
@@ -55,28 +60,20 @@
   <string name="preferences">Preferences</string>
   <string name="reload">Reload Applications</string>
   <string name="flush">Flush Rules</string>
+  <string name="send_report">Send error report</string>
+  <string name="enter_problem">ENTER PROBLEM DESCRIPTION HERE:</string>
+  <string name="send_mail">Send mail...</string>
   <string name="notify_pref_summary_on">A notification will be sent when a new application is installed</string>
   <string name="notify_pref_summary_off">No notifications will be sent when a new application is installed</string>
   <string name="custom_script_defined">Custom script defined</string>
   <string name="custom_script_removed">Custom script removed</string>
   <string name="custom_script_error">Error saving custom script</string>
-  <string name="custom_script_info"><b>Enter your custom script bellow.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
+  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
 </string>
   <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
   <string name="unsaved_changes">Unsaved changes</string>
   <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> is a front-end application for the powerful <b>iptables</b>Linux firewall.
-		It allows you to restrict which applications are permitted to access your data networks.
-		This is the perfect solution if you don\'t have an unlimited data plan, or just wants to see your battery lasting longer.\n\n\n
-<b> Help - </b> http://github.com/ukanth/afwall/wiki/Help \n
-<b>Frequently Asked Questions</b>  -https://github.com/ukanth/afwall/wiki/Help \n
-<b>Developer </b> - Umakanthan Chandran \n
-<a href="mailto:cumakt+afwall@gmail.com">Contact me</a>\n 
-<b>Twitter </b>- @ukanth \n
-<b>Project Homepage</b> - https://github.com/ukanth/afwall/\n
-<b>Credits \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>Icons  </b> - hush66 (http://hush66.deviantart.com/)\n
-</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables Rules</string>
   <string name="settings_password">Enter Password</string>
   <string name="settings_password2">Enter Password again</string>
@@ -89,7 +86,7 @@
   <string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
   <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(SSH)</string>
   <string name="notification_new">New application installed.</string>
-  <string name="confirmMsg">This will disable firewall! Do you want to continue ?</string>
+  <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
   <string name="apply">Apply</string>
   <string name="discard">Discard</string>
   <string name="delete">Delete</string>
@@ -128,6 +125,7 @@
   <string name="log_was_enabled">Aantekeninge nou geaktiveer</string>
   <string name="log_was_disabled">Aantekeninge nou gediaktiveer</string>
   <string name="log_toggle_failed">Error toggling log status</string>
+  <string name="log_target_failed">Error: kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">Aantekeninge skoongemaak</string>
   <string name="log_clear_error">Error clearing log</string>
   <string name="log_fetch_error">Error fetching log</string>
@@ -176,6 +174,7 @@
   <string name="builtin_bb">Built-In busybox</string>
   <string name="system_ipt">System iptables</string>
   <string name="builtin_ipt">Built-In iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">Disable Tasker Toasts</string>
   <string name="disableTasterSummary">This will disable toast messages for Tasker\'s plugin</string>
   <string name="enable_tasker">Enable AFWall+</string>
@@ -199,8 +198,6 @@
   <string name="startup_service">Applying Rules. Please wait!</string>
   <string name="fixleakTitle">Fix Startup Data Leak</string>
   <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
-  <string name="alternateStartTitle">Fix Device Start Rules</string>
-  <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
   <string name="enableInboundTitle">Enable inbound connections</string>
   <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
   <string name="ui_prefs_title">UI Preferences</string>
@@ -212,14 +209,14 @@
   <string name="syscolor_pref_summary_on">Selected color will be shown for system applications</string>
   <string name="syscolor_pref_summary_off">Default Color</string>
   <string name="enableConfirmTitle">Confirm box on AFWall+ disable</string>
-  <string name="enableConfirm_summary_on">Firewall will be ask for confirmation before being disabled</string>
+  <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
   <string name="enableConfirm_summary_off">Firewall will be disabled without confirmation</string>
   <string name="showUid">Show UID for apps</string>
   <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
   <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
   <string name="languages">Languages</string>
   <string name="active_rules">Active Rules</string>
-  <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
   <string name="profile_management">Profile Management</string>
   <string name="profile_add">Add Profile</string>
   <string name="profile_remove">Remove Profile</string>
@@ -233,4 +230,7 @@
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Apply rules on profile switch</string>
   <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+  <string name="select_all">Do you want to select all ?</string>
+  <string name="reverse_all">Do you want to reverse select all ?</string>
+  <string name="unselect_all">Do you want to unselect all ?</string>
 </resources>

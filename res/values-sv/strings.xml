@@ -16,14 +16,19 @@
   <string name="error_flush">Tömning av iptables regler misslyckades</string>
   <string name="error_purge">Fel när iptables tömdes</string>
   <string name="error_binary">Fel vid installation av binära filer</string>
+  <string name="error_migration">Misslyckades med migrering av gamla inställningar</string>
   <string name="error_refresh">Uppdatering av iptables regler misslyckades</string>
   <string name="error_apply">Fel vid tillämpning av iptables regler</string>
   <string name="error_fetch">Fel vid hämtning av iptables regler</string>
   <string name="error_su">Kunde inte få root access. \n Det behövs en rootad telefon att köra AFWall+.\n\n Om denna telefon redan är rootad, kontrollera att AFWall+ har tillräcklig behörighet för att köra \"su\" kommandot. \n</string>
   <string name="error_common">Fel:</string>
   <string name="all_item">(Valfri applikation) - samma som att välja alla applikationer</string>
+  <string name="kernel_item">(Kernel) - Linux-kärnan</string>
+  <string name="tethering_item">(Tethering) - DHCP+DNS tjänster</string>
+  <string name="dnsproxy_item">(DNS-proxy) - DNS-uppslag via netd</string>
+  <string name="ntp_item">(NTP) - Internet tidsservrar</string>
   <string name="root_item">(root) - applikationer som körs som root</string>
-  <string name="operation_timeout">Åtgärden överskred tidsgränsen</string>
+  <string name="operation_timeout">Operationen tog för lång tid</string>
   <string name="fw_enabled">Aktiverad</string>
   <string name="fw_disabled">Inaktiverad</string>
   <string name="flushed">Reglerna borttagna</string>
@@ -55,16 +60,20 @@
   <string name="preferences">Inställningar</string>
   <string name="reload">Ladda om applikationslistan</string>
   <string name="flush">Ta bort reglerna</string>
+  <string name="send_report">Skicka felrapport</string>
+  <string name="enter_problem">ANGE PROBLEMBESKRIVNING HÄR:</string>
+  <string name="send_mail">Skicka e-post...</string>
   <string name="notify_pref_summary_on">Notifiering sker när en ny app installeras</string>
   <string name="notify_pref_summary_off">Ingen notifiering kommer att ske när en ny app installeras</string>
   <string name="custom_script_defined">Eget skript definierat</string>
   <string name="custom_script_removed">Eget skript borttaget</string>
   <string name="custom_script_error">Lagring av eget skript misslyckades</string>
-  <string name="custom_script_info"><b>Ange ditt eget skript nedan.</b> \n <i>(lämna tomt för att ta bort)</i> \nför information om egna skript klicka<a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> här</a>. </string>
+  <string name="custom_script_info"><b>Ange ditt eget skript nedan.</b> \n <i>(lämna tomt för att ta bort)</i> \nför information om egna skript klicka<a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> här</a>.
+</string>
   <string name="custom_script2_info">     \n <b>Anpassat avstängningsskript</b> \nDu kan också definiera ett anpassat skript som ska köras när brandväggen är <b>inaktiverad</b>:</string>
   <string name="unsaved_changes">Osparade ändringar</string>
   <string name="unsaved_changes_message">Du har osparade ändringar. \nVill du att tillämpa eller ignorera dem?</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Android brandvägg</i> är ett skal för Linux kraftfulla <b>iptables</b> brandvägg.   Den gör att du kan begränsa vilka program som tillåts få tillgång till ditt nätverk.   Detta är den perfekta lösningen om du inte har ett obegränsat dataabonnemang, eller bara vill att ditt batteri ska räcka längre.\n\n\n <b>Hjälp -</b> http://github.com/ukanth/afwall/wiki/Help \n <b>Vanliga frågor</b>-https://github.com/ukanth/afwall/wiki/Help \n <b>Utvecklare</b> - Umakanthan Chandran \n <a href="mailto:cumakt+afwall@gmail.com"> kontakta mig</a> \n <b>Twitter</b> - @ukanth \n <b>Projektets hemsida</b> - https://github.com/ukanth/afwall/\n <b>Erkännanden \n\n</b> <b>DroidWall</b> - Rodrigo Zechin Rosauro\n <b>Ikoner</b> - hush66 (http://hush66.deviantart.com/)\n </string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables regler</string>
   <string name="settings_password">Ange lösenord</string>
   <string name="settings_password2">Ange lösenordet igen</string>
@@ -116,6 +125,7 @@
   <string name="log_was_enabled">Loggning har aktiverats</string>
   <string name="log_was_disabled">Loggning har inaktiverats</string>
   <string name="log_toggle_failed">Misslyckades ändra loggstatus</string>
+  <string name="log_target_failed">Fel: kärnan saknar LOG/NFLOG stöd</string>
   <string name="log_cleared">Loggen rensad</string>
   <string name="log_clear_error">Misslyckades att tömma loggen</string>
   <string name="log_fetch_error">Misslyckades att hämta loggen</string>
@@ -164,6 +174,7 @@
   <string name="builtin_bb">Inbyggd Busybox</string>
   <string name="system_ipt">Systemets iptables</string>
   <string name="builtin_ipt">Inbyggd iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">Inaktivera popup dialogrutor</string>
   <string name="disableTasterSummary">Detta kommer att inaktivera popup dialoger från Tasker plugin</string>
   <string name="enable_tasker">Aktivera AFWall+</string>
@@ -187,8 +198,6 @@
   <string name="startup_service">Tillämpar regler... Vänta!</string>
   <string name="fixleakTitle">Fix för dataläckage vid uppstart</string>
   <string name="fixleakSummary">Förhindra att data läcker under systemstart.  Ditt ROM måste ha init.d stöd.  HTC enheter måste konfigureras för S-OFF.</string>
-  <string name="alternateStartTitle">Alternativa uppstartsregler</string>
-  <string name="alternateStartSummary">Detta gör att AFWall+ tillämpar regler på vissa enheter (CM10.1) efter start som annars misslyckas</string>
   <string name="enableInboundTitle">Aktivera inkommande anslutningar</string>
   <string name="enableInboundSummary">Tillåt anslutningar från LAN till telefonen (Samba, sshd, AirDroid, osv)</string>
   <string name="ui_prefs_title">UI inställningar</string>
@@ -207,7 +216,7 @@
   <string name="showuid_summary_off">Applikationernas UID är dolda. Att se UID är till hjälp för att följa loggar</string>
   <string name="languages">Språk</string>
   <string name="active_rules">Aktiva regler</string>
-  <string name="active_rules_summary">Aktivera för att tillämpa brandväggsreglerna vid varje anslutningsförändring (Roam/LAN/Wifi/3g osv)</string>
+  <string name="active_rules_summary">Tillämpa brandväggsregler på varje anslutningsförändring (Roam/LAN/Wifi/3G/tether)</string>
   <string name="profile_management">Profilhantering</string>
   <string name="profile_add">Lägg till profil</string>
   <string name="profile_remove">Ta bort profil</string>
@@ -221,4 +230,7 @@
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Tillämpa regler vid profilbyte</string>
   <string name="multi_apply_rules_info">Detta kommer att läsa in och tillämpa regler vid byte av profil</string>
+  <string name="select_all">Vill du markera alla?</string>
+  <string name="reverse_all">Vill du invertera markeringarna?</string>
+  <string name="unselect_all">Vill du avmarkera alla?</string>
 </resources>

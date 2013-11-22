@@ -16,12 +16,17 @@
   <string name="error_flush">Chyba při mazání pravidel</string>
   <string name="error_purge">Chyba čištění iptables</string>
   <string name="error_binary">Chyba instalace binárních souborů</string>
+  <string name="error_migration">Chyba přenosu starého nastavení</string>
   <string name="error_refresh">Chyba aktualizace iptables</string>
   <string name="error_apply">Chyba aplikování pravidel iptables</string>
   <string name="error_fetch">Chyba načítání pravidel iptables</string>
   <string name="error_su">Nelze získat root přístup.\nPotřebujete root telefonu pro používání AFWall+.\n\nPokud je tento telefon již rootnutý, prosím ujistěte se, že AFWall+ má dostatečná oprávnění k provedení příkazu \"su\".\n</string>
   <string name="error_common">Chyba: </string>
   <string name="all_item">(Všechny aplikace) - Stejné jako výběr všech aplikací</string>
+  <string name="kernel_item">(Kernel) - Linux jádro</string>
+  <string name="tethering_item">(Tethering) - DHCP+DNS služby</string>
+  <string name="dnsproxy_item">(DNS proxy) - vyhledávání DNS přes netd</string>
+  <string name="ntp_item">(NTP) - Časové servery Internetu</string>
   <string name="root_item">(root) - Aplikace s pouštěné jako root</string>
   <string name="operation_timeout">Čas pro operaci vypršel</string>
   <string name="fw_enabled">Povoleno</string>
@@ -55,31 +60,20 @@
   <string name="preferences">Předvolby</string>
   <string name="reload">Znovu načíst</string>
   <string name="flush">Smazat pravidla</string>
+  <string name="send_report">Odeslat zprávu o chybách</string>
+  <string name="enter_problem">ZADEJTE POPIS PROBLÉMU ZDE:</string>
+  <string name="send_mail">Poslat mail...</string>
   <string name="notify_pref_summary_on">Po instalaci aplikací bude zobrazeno upozornění</string>
   <string name="notify_pref_summary_off">Po instalaci aplikací nebude zobrazeno žádné upozornění</string>
   <string name="custom_script_defined">Vlastní skript definován</string>
   <string name="custom_script_removed">Vlastní skript odstraněn</string>
   <string name="custom_script_error">Chyba při ukládání vlastního skriptu</string>
-  <string name="custom_script_info"><b>Zadej vlastní skript níže.</b>   
-\n <i>(Ponechej prázdné pro odstranění)</i> 
-\n Pro informace o vlastních skriptech, klepněte <a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> sem</a>.
-</string>
+  <string name="custom_script_info"><b>Zadej vlastní skript níže.</b> \n<i>(Ponechej prázdné pro vynechání)</i> \nPro informaci o vlastních skriptech, klepněte <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">zde</a>.</string>
   <string name="custom_script2_info">     \n<b>Vlastní ukončovací skript</b> 
 \n Můžete také definovat vlastní skript při <b>vypínání</b> brány firewall:</string>
   <string name="unsaved_changes">Neuložené změny</string>
   <string name="unsaved_changes_message">Obsahuje neuložené změny. \n Použít nebo je zahodit?</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - Android Firewall</i> je front-end aplikace pro mocný <b>iptables</b> Linuxový firewall.
-		Umožňuje vám určit, které aplikace nebudou mít přístup k vašim datovým sítím.
-		Je to perfektní řešení, pokud nemáte neomezený datový plán, nebo jen chcete, aby vám vydžela baterie déle.\n\n\n
-<b> Nápověda - </b> http://github.com/ukanth/afwall/wiki/Help \n
-<b>FAQ</b>  -https://github.com/ukanth/afwall/wiki/Help \n
-<b>Developer </b> - Umakanthan Chandran \n
-<a href="mailto:cumakt+afwall@gmail.com">Kontaktujte mě</a>\n 
-<b>Twitter </b>- @ukanth \n
-<b>Domovská stránka projektu</b> - https://github.com/ukanth/afwall/\n
-<b>Zásluhy \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>Ikony</b> - hush66 (http://hush66.deviantart.com/)\n
-</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables pravidla</string>
   <string name="settings_password">Zadejte heslo</string>
   <string name="settings_password2">Zadejte heslo znovuc</string>
@@ -92,7 +86,7 @@
   <string name="overrideRules">Tímto se přepíší stávající pravidla! Chcete importovat pravidla?</string>
   <string name="prefLocalmode">Povolit příchozí/odchozí připojení pouze z localhost a portu 22(SSH)</string>
   <string name="notification_new">Nová aplikace nainstalována.</string>
-  <string name="confirmMsg">Tímto zakážete bránu firewall! Chcete pokračovat?</string>
+  <string name="confirmMsg">Tímto vypnete firewall! Chcete pokračovat?</string>
   <string name="apply">Použít</string>
   <string name="discard">Zrušit</string>
   <string name="delete">Smazat</string>
@@ -131,6 +125,7 @@
   <string name="log_was_enabled">Protokolování bylo povoleno</string>
   <string name="log_was_disabled">Protokolování bylo vypnuto</string>
   <string name="log_toggle_failed">Chyba přepnutí stavu záznamů</string>
+  <string name="log_target_failed">Chyba: v jádru chybí podpora LOG/NFLOG</string>
   <string name="log_cleared">Protokol vymazán</string>
   <string name="log_clear_error">Chyba čištění protokolu</string>
   <string name="log_fetch_error">Chyba načítání protokolu</string>
@@ -179,6 +174,7 @@
   <string name="builtin_bb">Vestavěný busybox</string>
   <string name="system_ipt">Systémové iptables</string>
   <string name="builtin_ipt">Vestavěné iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">Vypnout Tasker toasty</string>
   <string name="disableTasterSummary">Tímto vypnete zprávy toast z Tasker pluginu</string>
   <string name="enable_tasker">Zapnout AFWall+</string>
@@ -202,8 +198,6 @@
   <string name="startup_service">Aplikování pravidel. Prosím vyčkejte!</string>
   <string name="fixleakTitle">Opravit únik dat při spuštění</string>
   <string name="fixleakSummary">Zabráňuje úniku dat během spouštění systému. Vaše ROM musí podporovat init.d. HTC zařízení musí být nasteveny na S-OFF.</string>
-  <string name="alternateStartTitle">Opravit pravidla při startu</string>
-  <string name="alternateStartSummary">Toto opraví chybu aplikace pravidel firewallu po startu na některých zařízeních (CM10.1)</string>
   <string name="enableInboundTitle">Povolit příchozí připojení</string>
   <string name="enableInboundSummary">Povolit spojení z LAN do telefonu (Samba, sshd, AirDroid, atd.)</string>
   <string name="ui_prefs_title">Nastavení UI</string>
@@ -215,14 +209,14 @@
   <string name="syscolor_pref_summary_on">Vybranou barvou se obarví názvy systémových aplikací</string>
   <string name="syscolor_pref_summary_off">Výchozí barva</string>
   <string name="enableConfirmTitle">Potvrzení při vypnutí AFWall+</string>
-  <string name="enableConfirm_summary_on">Firewall bude žádat potvrzení před vypnutím ochrany</string>
+  <string name="enableConfirm_summary_on">Firewall bude žádat o potvrzení před jeho vypnutím</string>
   <string name="enableConfirm_summary_off">Firewall bude zakázán bez potvrzení</string>
   <string name="showUid">Zobrazit UID pro aplikace</string>
   <string name="showuid_summary_on">UID aplikací budou zobrazeny v hlavním zobrazení.</string>
   <string name="showuid_summary_off">UID aplikací jsou skryty. Povolení může být užitečné při sledování záznamů</string>
   <string name="languages">Jazyky</string>
   <string name="active_rules">Aktivní pravidla</string>
-  <string name="active_rules_summary">Povolením tohoto se aplikují pravidla firewallu při každé změně připojení (Roam/LAN/Wifi/3G atd.)</string>
+  <string name="active_rules_summary">Aplikovat pravidla firewallu při každé změně připojení (Roaming/LAN/WiFi/3G/Tethering)</string>
   <string name="profile_management">Správa profilů</string>
   <string name="profile_add">Přidat profil</string>
   <string name="profile_remove">Odstranit profil</string>
@@ -236,4 +230,7 @@
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Aplikovat pravidla na přepínač profilů</string>
   <string name="multi_apply_rules_info">Toto načte a aplikuje pravidla na přepínatelný profil</string>
+  <string name="select_all">Chcete vybrat vše?</string>
+  <string name="reverse_all">Chcete obrátit výběr všeho ?</string>
+  <string name="unselect_all">Přejete si zrušit výběr ?</string>
 </resources>

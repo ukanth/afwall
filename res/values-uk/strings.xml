@@ -16,14 +16,19 @@
   <string name="error_flush">Помилка прошивки iptables</string>
   <string name="error_purge">Помилка видалення iptables</string>
   <string name="error_binary">Помилка встановлення двійкових файлів</string>
+  <string name="error_migration">Помилка міграції старих налаштувань</string>
   <string name="error_refresh">Помилка оновлення iptables</string>
   <string name="error_apply">Помилка застосування правил iptables</string>
   <string name="error_fetch">Помилка отримання правил iptables</string>
   <string name="error_su">Не змогли отримати права root.\nВам необхідний телефон з root для запуску AFWall+.\n\nЯкщо цей телефон вже має права root, то, будь ласка, переконайтеся, що AFWall + має достатньо дозволів для виконання команди \"su\".\n</string>
   <string name="error_common">Помилка: </string>
   <string name="all_item">(Будь-який застосунок) - так само, як і вибрати всі програми</string>
+  <string name="kernel_item">(Ядро) - ядро Linux</string>
+  <string name="tethering_item">(Прив\'язування) - DHCP + DNS послуги</string>
+  <string name="dnsproxy_item">(DNS проксі) - пошук DNS через netd</string>
+  <string name="ntp_item">(NTP) - сервери часу в Інтернеті</string>
   <string name="root_item">(root) - програми, що працюють як root</string>
-  <string name="operation_timeout">Затримка операції</string>
+  <string name="operation_timeout">Минув час операції</string>
   <string name="fw_enabled">Ввімкнено</string>
   <string name="fw_disabled">Вимкнено</string>
   <string name="flushed">Правила почищено</string>
@@ -55,6 +60,9 @@
   <string name="preferences">Налаштування</string>
   <string name="reload">Перезавантажити додатки</string>
   <string name="flush">Правила очищення</string>
+  <string name="send_report">Надіслати звіт про помилки</string>
+  <string name="enter_problem">ВВЕДІТЬ ОПИС ПРОБЛЕМИ ТУТ:</string>
+  <string name="send_mail">Відправити пошту...</string>
   <string name="notify_pref_summary_on">Повідомлення буде надіслано під час інсталяції нової програми</string>
   <string name="notify_pref_summary_off">Жодне повідомлення не буде надіслано під час інсталяції нової програми</string>
   <string name="custom_script_defined">Власний сценарій визначено</string>
@@ -64,7 +72,7 @@
   <string name="custom_script2_info">\n<b>Сценарій завершення роботи</b> \nВи також можете визначити власний сценарій для виконання, коли брандмауер <b>вимкнено</b>:</string>
   <string name="unsaved_changes">Незбережені зміни</string>
   <string name="unsaved_changes_message">Незбережені зміни. \nВи хочете застосувати або скасувати їх?</string>
-  <string name="help_dialog_text"><i>\n\nAFWall+ - android брандмауер</i> є зовнішньою програмою для потужного Linux брандмауера <b>iptables</b>. Вона дозволяє обмежити, яким програмам дозволено доступу до ваших мереж. Це ідеальне рішення, якщо ви не маєте необмежений план, або просто хочете, щоб ваш акумулятор довше тримався.\n\n\n <b>Допомога -</b> http://github.com/ukanth/afwall/wiki/Help \n <b>Часті питання</b>-https://github.com/ukanth/afwall/wiki/Help \n <b>Розробник</b> - Umakanthan Chandran \n <a href="mailto:cumakt+afwall@gmail.com"> Зв\'яжіться зі мною</a> \n <b>Twitter</b> - @ukanth \n <b>Головна сторінка проекту</b> - https://github.com/ukanth/afwall/\n <b>кредити \n\n</b> <b>DroidWall</b> - Родріго Zechin Rosauro\n <b>іконки</b> - hush66 (http://hush66.deviantart.com/)\n </string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables правила</string>
   <string name="settings_password">Введіть пароль</string>
   <string name="settings_password2">Введіть пароль ще раз</string>
@@ -116,6 +124,7 @@
   <string name="log_was_enabled">Журнал вже увімкнено</string>
   <string name="log_was_disabled">Журнал вже вимкнено</string>
   <string name="log_toggle_failed">Помилка перемикання статусу журналу</string>
+  <string name="log_target_failed">Помилка: у ядрі відсутня підтримка журналу/NFLOG</string>
   <string name="log_cleared">Журнал очищено</string>
   <string name="log_clear_error">Помилка очищення журналу</string>
   <string name="log_fetch_error">Помилка отримання журналу</string>
@@ -164,6 +173,7 @@
   <string name="builtin_bb">Вбудований busybox</string>
   <string name="system_ipt">Системний iptables</string>
   <string name="builtin_ipt">Вбудований iptables</string>
+  <string name="auto">Авто</string>
   <string name="disable_toaster">Вимкнути спливаючі повідомлення</string>
   <string name="disableTasterSummary">Це призведе до вимкнення спливаючих повідомлень у модулі планувальника</string>
   <string name="enable_tasker">Увімкнути AFWall +</string>
@@ -187,8 +197,6 @@
   <string name="startup_service">Застосування правил...Будь ласка, зачекайте!</string>
   <string name="fixleakTitle">Виправити витік даних при запуску</string>
   <string name="fixleakSummary">Запобігає витоку даних під час запуску системи.  Ваша прошивка мусить підтримувати init.d.  HTC пристрої повинні бути налаштовані для S-OFF.</string>
-  <string name="alternateStartTitle">Виправити правила при запуску пристрою</string>
-  <string name="alternateStartSummary">Виправлення: AFWall + не буде застосовувати правила на деяких пристроях (CM10.1) після запуску пристрою</string>
   <string name="enableInboundTitle">Дозволити вхідні підключення</string>
   <string name="enableInboundSummary">Дозволити підключення з локальної мережі на телефон (Samba, sshd, AirDroid, і т. д.)</string>
   <string name="ui_prefs_title">Параметри інтерфейсу</string>
@@ -207,7 +215,7 @@
   <string name="showuid_summary_off">UID програм приховано. Увімкнення може бути корисним для відстеження журналів</string>
   <string name="languages">Мови</string>
   <string name="active_rules">Активні правила</string>
-  <string name="active_rules_summary">Вмикання буде застосовувати правила брандмауера при зміні кожного підключення (Роумінг/Локальна мережа/Wi-Fi/3G тощо)</string>
+  <string name="active_rules_summary">Застосувати правила брандмауера при кожній зміні підключення (роумінг/LAN/Wi-Fi/3G/прив\'язка)</string>
   <string name="profile_management">Управління профілем</string>
   <string name="profile_add">Додати профіль</string>
   <string name="profile_remove">Видалити профіль</string>
@@ -221,4 +229,7 @@
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Застосувати правила при перемиканні профілю</string>
   <string name="multi_apply_rules_info">Це завантажить і застосує правила при перемиканню профілю</string>
+  <string name="select_all">Ви хочете вибрати всі?</string>
+  <string name="reverse_all">Ви хочете скасувати вибір усіх?</string>
+  <string name="unselect_all">Ви хочете зняти виділення усі?</string>
 </resources>

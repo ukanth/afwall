@@ -16,14 +16,19 @@
   <string name="error_flush">清理 iptables（防火牆）錯誤</string>
   <string name="error_purge">Error purging iptables</string>
   <string name="error_binary">Error installing binary files</string>
+  <string name="error_migration">Error migrating old settings</string>
   <string name="error_refresh">Error refreshing iptables</string>
   <string name="error_apply">Error applying iptables rules</string>
   <string name="error_fetch">Error fetching iptables rules</string>
   <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
   <string name="error_common">錯誤：</string>
   <string name="all_item">（任何應用程式） - 與全選功能一樣</string>
+  <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
+  <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
+  <string name="ntp_item">(NTP) - Internet time servers</string>
   <string name="root_item">（root） - 以root身份執行應用程式</string>
-  <string name="operation_timeout">操作超時</string>
+  <string name="operation_timeout">Operation timed out</string>
   <string name="fw_enabled">防火牆已啟用</string>
   <string name="fw_disabled">防火牆已禁用</string>
   <string name="flushed">已啟用規則</string>
@@ -55,29 +60,20 @@
   <string name="preferences">優先選項</string>
   <string name="reload">重新載入應用程式</string>
   <string name="flush">啟用規則</string>
+  <string name="send_report">Send error report</string>
+  <string name="enter_problem">ENTER PROBLEM DESCRIPTION HERE:</string>
+  <string name="send_mail">Send mail...</string>
   <string name="notify_pref_summary_on">安裝新應用程式時發送提醒通知</string>
   <string name="notify_pref_summary_off">安裝新應用程式時不發送提醒通知</string>
   <string name="custom_script_defined">自定義腳本已定義</string>
   <string name="custom_script_removed">自定義腳本已刪除</string>
   <string name="custom_script_error">保存自定義腳本時出錯</string>
-  <string name="custom_script_info"><b>在這裡輸入您的自定義腳本。</b>\n<i>（留白則刪除）</i>\n查看自定義腳本的更多訊息，點擊<a href="https://github.com/ukanth/afwall/wiki/CustomScripts">這裡</a>。</string>
+  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
+</string>
   <string name="custom_script2_info">\n<b>自定義腳本關閉</b>\n您可以自定義腳本用於當防火牆被<b>禁用</b>時：</string>
   <string name="unsaved_changes">未保存更改</string>
   <string name="unsaved_changes_message">有更改尚未保存。\n您想保存還是放棄它們？</string>
-  <string name="help_dialog_text">清理 iptables（防火牆）錯誤
-AFWall+：
-
-<i>\n\n AFWall+ - 安卓防火牆</i> 是一個基於 Linux 系统的 <b>iptables</b>防火牆應用。
-防火牆可以用來控制哪些應用允許存取你的網路，哪些應用不被允許。
-限制那些不需要網路連線的應用程式連網可以减少網路的使用流量，還可以節約電池用量\n\n\n
-<b> 幫助 - </b> http://github.com/ukanth/afwall/wiki/Help \n
-<b>常見問題</b> -https://github.com/ukanth/afwall/wiki/Help \n
-<b>開發者 </b> - Umakanthan Chandran \n
-<a href="mailto:cumakt+afwall@gmail.com">聯絡我</a>\n 
-<b>Twitter </b>- @ukanth \n
-<b>程式首頁</b> - https://github.com/ukanth/afwall/\n
-<b>感謝 \n\n</b><b>DroidWall </b> - Rodrigo Zechin Rosauro\n
-<b>圖示 </b> - hush66 (http://hush66.deviantart.com/)\n</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables 規則</string>
   <string name="settings_password">輸入密碼</string>
   <string name="settings_password2">再次輸入密碼</string>
@@ -90,7 +86,7 @@ AFWall+：
   <string name="overrideRules">這將覆蓋現有的規則！您想要導入規則嗎？</string>
   <string name="prefLocalmode">Allow inbound/outbound connections only from localhost and port 22(SSH)</string>
   <string name="notification_new">新應用程式已安裝。</string>
-  <string name="confirmMsg">這將禁用防火牆！您想要繼續嗎？</string>
+  <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
   <string name="apply">應用</string>
   <string name="discard">放棄</string>
   <string name="delete">刪除</string>
@@ -129,6 +125,7 @@ AFWall+：
   <string name="log_was_enabled">日誌已被啟用</string>
   <string name="log_was_disabled">日誌已被禁用</string>
   <string name="log_toggle_failed">Error toggling log status</string>
+  <string name="log_target_failed">Error: kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">日誌已清除</string>
   <string name="log_clear_error">Error clearing log</string>
   <string name="log_fetch_error">Error fetching log</string>
@@ -177,6 +174,7 @@ AFWall+：
   <string name="builtin_bb">Built-In busybox</string>
   <string name="system_ipt">System iptables</string>
   <string name="builtin_ipt">Built-In iptables</string>
+  <string name="auto">Auto</string>
   <string name="disable_toaster">停用螢幕中央的訊息通知</string>
   <string name="disableTasterSummary">這將會停用 Tasker 插件螢幕中央的訊息通知</string>
   <string name="enable_tasker">啟用 AFWall+</string>
@@ -200,8 +198,6 @@ AFWall+：
   <string name="startup_service">正在應用規則... 請稍等！</string>
   <string name="fixleakTitle">修復啟動數據洩漏</string>
   <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
-  <string name="alternateStartTitle">修復設備啟動規則</string>
-  <string name="alternateStartSummary">這將修復 AFWall+ 啟動後在某些設備 (CM10.1) 無法應用規則</string>
   <string name="enableInboundTitle">Enable inbound connections</string>
   <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
   <string name="ui_prefs_title">介面設置</string>
@@ -213,14 +209,14 @@ AFWall+：
   <string name="syscolor_pref_summary_on">選定的顏色將顯示於系統應用程式</string>
   <string name="syscolor_pref_summary_off">預設顏色</string>
   <string name="enableConfirmTitle">Confirm box on AFWall+ disable</string>
-  <string name="enableConfirm_summary_on">防火牆被禁用前將會要求確認</string>
+  <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
   <string name="enableConfirm_summary_off">停用防火牆無需再次確認</string>
   <string name="showUid">顯示應用程式的 UID </string>
   <string name="showuid_summary_on">Application\'s UID will be shown in the main view.</string>
   <string name="showuid_summary_off">Application\'s UID is hidden. Enabling can be useful to track logs</string>
   <string name="languages">語言</string>
   <string name="active_rules">Active Rules</string>
-  <string name="active_rules_summary">Enable this will apply firewall rules on every connectivity change(Roam/LAN/Wifi/3g etc)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
   <string name="profile_management">Profile Management</string>
   <string name="profile_add">Add Profile</string>
   <string name="profile_remove">Remove Profile</string>
@@ -234,4 +230,7 @@ AFWall+：
   <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">Apply rules on profile switch</string>
   <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
+  <string name="select_all">Do you want to select all ?</string>
+  <string name="reverse_all">Do you want to reverse select all ?</string>
+  <string name="unselect_all">Do you want to unselect all ?</string>
 </resources>
