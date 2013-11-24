@@ -4,15 +4,14 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.7-Beta
+Version 1.2.7
 * Improved search functionality & select confirmation.
-* Various bug fixes - User Reported crashes.
+* added builtin ip6tables support
 * Support for x86/MIPS/ARM devices.
 * Built-in iptables is upgraded to the latest version.
-* Debug information to identify the root cause for exit-3 issue
-* Debug information to identify the tether status change.
-* Scripts updated for f-droid and developer friendly builds (ant)
-
+* Various user reported crash/bug fixes.
+* Build scripts updated for f-droid and developer friendly builds (ant)
+* Added Hungarian/Turkish Translations and updated other translations
 
 Version 1.2.6.2
 
