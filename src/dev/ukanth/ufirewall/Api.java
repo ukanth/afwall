@@ -158,6 +158,7 @@ public final class Api {
 	static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
     static List<LogEntry> logEntriesList = new ArrayList<LogEntry>();
 	public static String ipPath = null;
+	public static String bbPath = null;
 	public static boolean setv6 = false;
 	private static Map<String,Integer> specialApps = null;
 
@@ -227,6 +228,7 @@ public final class Api {
 
 		Api.setv6 = setv6;
 		Api.ipPath = dir + (setv6 ? "ip6tables" : "iptables");
+		Api.bbPath = getBusyBoxPath(ctx);
 	}
 	
 	static String getBusyBoxPath(Context ctx) {
@@ -544,9 +546,19 @@ public final class Api {
 	 * @param out A list of UNIX commands to execute
 	 */
 	private static void iptablesCommands(List<String> in, List<String> out) {
+		boolean firstLit = true;
 		for (String s : in) {
 			if (s.matches("#LITERAL# .*")) {
-				out.add(s.replaceFirst("^#LITERAL# ", "").replaceAll("\\$IPTABLES", ipPath));
+				if (firstLit) {
+					// export vars for the benefit of custom scripts
+					// "true" is a dummy command which needs to return success
+					firstLit = false;
+					out.add("export IPTABLES=\"" + ipPath + "\"; "
+							+ "export BUSYBOX=\"" + bbPath + "\"; "
+							+ "export IPV6=" + (setv6 ? "1" : "0") + "; "
+							+ "true");
+				}
+				out.add(s.replaceFirst("^#LITERAL# ", ""));
 			} else if (s.matches("#NOCHK# .*")) {
 					out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath + " "));
 			} else {
