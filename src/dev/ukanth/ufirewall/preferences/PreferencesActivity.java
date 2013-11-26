@@ -266,5 +266,14 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 				}
 			}
 		}
+		
+		if(key.equals("multiUser")){
+			if(!Api.supportsMultipleUsers(getApplicationContext())) {
+				CheckBoxPreference multiUserPref = (CheckBoxPreference) findPreference(key);
+				multiUserPref.setChecked(false);
+			} else {
+				Api.setUserOwner(getApplicationContext());
+			}
+		}
 	}
 }

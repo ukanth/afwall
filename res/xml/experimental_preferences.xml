@@ -8,13 +8,14 @@
             android:key="mobiledataLimit"
             android:title="@string/fixmobileLimit"
             android:summary="@string/fixmobileLimitSummary" /> -->
-<!--          <CheckBoxPreference
-            android:key="alternateStart"
-            android:title="@string/alternateStartTitle"
-            android:summary="@string/alternateStartSummary" /> -->
          <CheckBoxPreference
             android:key="enableInbound"
             android:title="@string/enableInboundTitle"
             android:summary="@string/enableInboundSummary" />
+         
+         <CheckBoxPreference
+            android:key="multiUser"
+            android:title="@string/multi_user_title"
+            android:summary="@string/multi_user_summary" /> 
         
 </PreferenceScreen>

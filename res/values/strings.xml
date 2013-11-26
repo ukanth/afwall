@@ -285,4 +285,6 @@
      <string name="reverse_all">Do you want to reverse select all ?</string>
      <string name="unselect_all">Do you want to unselect all ?</string>
      
+     <string name="multi_user_title">Support MultiUser</string>
+     <string name="multi_user_summary">Enable to support android multi-user on a tablet</string>
 </resources>

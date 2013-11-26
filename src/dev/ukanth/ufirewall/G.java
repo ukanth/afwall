@@ -62,6 +62,9 @@ public class G extends android.app.Application {
 	private static final String LOG_TARGET = "logTarget";
 	private static final String APP_VERSION = "appVersion";
 	
+	private static final String MULTI_USER = "multiUser";
+	private static final String MULTI_USER_ID = "multiUserId";
+	
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	
 	private static final String PROFILES = "profiles";
@@ -140,6 +143,12 @@ public class G extends android.app.Application {
 	public static boolean activeRules() { return gPrefs.getBoolean(ACTIVE_RULES, true); }
 	
 	public static boolean usePatterns() { return gPrefs.getBoolean(USE_PASSWORD_PATTERN, false); }
+	
+	
+	public static boolean isMultiUser() { return gPrefs.getBoolean(MULTI_USER, false); }
+
+	public static void setMultiUserId(int val) { gPrefs.edit().putLong(MULTI_USER_ID, val).commit();}
+	public static Long getMultiUserId() { return gPrefs.getLong(MULTI_USER_ID, 0);}
 	
 	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean(PROFILE_SWITCH, false); }
 	public static boolean applyOnSwitchProfiles(boolean val) { gPrefs.edit().putBoolean(PROFILE_SWITCH, val).commit(); return val; }
