@@ -1250,13 +1250,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		ListAdapter adapter = listview.getAdapter();
-		int count = adapter.getCount(), item;
-		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-			data.selected_lan = true;
-			this.dirty = true;
+		if(adapter !=null) {
+			int count = adapter.getCount(), item;
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+				data.selected_lan = true;
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 
 	private void selectAllVPN() {
@@ -1264,13 +1266,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		ListAdapter adapter = listview.getAdapter();
-		int count = adapter.getCount(), item;
-		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-			data.selected_vpn = true;
-			this.dirty = true;
+		if(adapter !=null) {
+			int count = adapter.getCount(), item;
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+				data.selected_vpn = true;
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 
 	private void selectRevert(){
@@ -1278,17 +1282,19 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		ListAdapter adapter = listview.getAdapter();
-		int count = adapter.getCount(), item;
-		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item);
-			data.selected_wifi = !data.selected_wifi;
-			data.selected_3g = !data.selected_3g;
-			data.selected_roam = !data.selected_roam;
-			data.selected_vpn = !data.selected_vpn;
-			data.selected_lan = !data.selected_lan;
-			this.dirty = true;
+		if(adapter !=null) {
+			int count = adapter.getCount(), item;
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+				data.selected_wifi = !data.selected_wifi;
+				data.selected_3g = !data.selected_3g;
+				data.selected_roam = !data.selected_roam;
+				data.selected_vpn = !data.selected_vpn;
+				data.selected_lan = !data.selected_lan;
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 	
 	private void selectAllRoam(){
@@ -1296,13 +1302,15 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		ListAdapter adapter = listview.getAdapter();
-		int count = adapter.getCount(), item;
-		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-			data.selected_roam = true;
-			this.dirty = true;
+		if(adapter !=null) {
+			int count = adapter.getCount(), item;
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+				data.selected_roam = true;
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 	
 	private void clearAll(){
@@ -1310,17 +1318,19 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		ListAdapter adapter = listview.getAdapter();
-		int count = adapter.getCount(), item;
-		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-			data.selected_wifi = false;
-			data.selected_3g = false;
-			data.selected_roam = false;
-			data.selected_vpn = false;
-			data.selected_lan = false;
-			this.dirty = true;
+		if(adapter !=null) {
+			int count = adapter.getCount(), item;
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+				data.selected_wifi = false;
+				data.selected_3g = false;
+				data.selected_roam = false;
+				data.selected_vpn = false;
+				data.selected_lan = false;
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
 
 	private void selectAll3G() {
@@ -1328,13 +1338,16 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		ListAdapter adapter = listview.getAdapter();
-		int count = adapter.getCount(), item;
-		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-			data.selected_3g = true;
-			this.dirty = true;
+		if(adapter !=null) {
+			int count = adapter.getCount(), item;
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+				data.selected_3g = true;
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		((BaseAdapter) adapter).notifyDataSetChanged();
+		
 	}
 
 	private void selectAllWifi() {
@@ -1343,12 +1356,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		ListAdapter adapter = listview.getAdapter();
 		int count = adapter.getCount(), item;
-		for (item = 0; item < count; item++) {
-			PackageInfoData data = (PackageInfoData) adapter.getItem(item);
-			data.selected_wifi = true;
-			this.dirty = true;
+		if(adapter !=null) {
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+				data.selected_wifi = true;
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		((BaseAdapter) adapter).notifyDataSetChanged();
 	}
  	
 	@Override
