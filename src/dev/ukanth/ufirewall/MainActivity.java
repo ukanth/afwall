@@ -116,6 +116,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	private boolean isPassVerify = false;
 	
 	ProgressDialog plsWait;
+	
+	ArrayAdapter<String> spinnerAdapter;
 
 	/** Called when the activity is first created
 	 * . */
@@ -222,24 +224,24 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
 			mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
 			
-			/*List<String> profilesList = G.getProfiles();
+			List<String> profilesList = G.getProfiles();
 			for(String profiles : profilesList) {
 				mlocalList.add(profiles);
 			}
 			
 			mlocalList.add(getString(R.string.profile_add));
 			mlocalList.add(getString(R.string.profile_remove));
-			*/
+
 			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 			
-		    ArrayAdapter<String> adapter =  new ArrayAdapter<String>(
+		    spinnerAdapter =  new ArrayAdapter<String>(
 		    	    this,
 		    	    R.layout.sherlock_spinner_item,
 		    	    mLocations);
-		    adapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+		    spinnerAdapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 	
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getSupportActionBar().setListNavigationCallbacks(adapter, this);
+			getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
 			
 			int position = G.gPrefs.getInt("storedPosition", -1);
 			if(position > -1) {
@@ -1464,13 +1466,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
 		if(G.enableMultiProfile()){
 			//user clicked add  
-			/*if(itemPosition == mLocations.length - 2){
+			if(itemPosition == mLocations.length - 2){
 				showProfileDialog();
 			}
 			//user clicked remove
 			else if(itemPosition == mLocations.length - 1){
-				G.removeProfile(itemPosition, mSelected.getText().toString());
-			} else {*/
+				//G.removeProfile(itemPosition, mSelected.getText().toString());
+				removeProfileDialog();
+			} else {
 				if(G.setProfile(true, itemPosition)) {
 					new GetAppList().execute();
 					mSelected.setText("  |  " + mLocations[itemPosition]);
@@ -1479,9 +1482,36 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 					}
 					refreshHeader();
 				}
-			//}
+			}
 		}
 		return true;
+	}
+	
+	private int selectedItem = 0;
+	
+	public void removeProfileDialog() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle(getString(R.string.profile_remove));
+		String[] profiles = G.getProfiles().toArray(new String[G.getProfiles().size()]);
+		alert.setSingleChoiceItems(profiles, 0, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				selectedItem = which;
+			}
+		});
+		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+			G.removeProfile(mLocations[selectedItem + 4], selectedItem + 4);
+			setupMultiProfile();
+		  }
+		});
+
+		alert.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int whichButton) {
+		    // Canceled.
+		  }
+		});
+		alert.show();	
 	}
 	
 	public void showProfileDialog() {
@@ -1497,6 +1527,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String value = input.getText().toString();
 	  		G.addProfile(value);
+	  		setupMultiProfile();
 		  }
 		});
 

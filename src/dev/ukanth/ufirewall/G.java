@@ -67,7 +67,9 @@ public class G extends android.app.Application {
 	
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	
-	private static final String PROFILES = "profiles";
+	private static final String CUSTOM_PROFILES = "profiles";
+	
+	private static final String CUSTOM_PROFILE_PREFIX = "AFWallCustom";
 	
 	public static Context ctx;
 	public static SharedPreferences gPrefs;
@@ -174,12 +176,10 @@ public class G extends android.app.Application {
 		//int profileCount = getProfileCount();
 		if (enableMultiProfile() && (pos >= 0 && pos <= 3)) {
 			profileName = profiles[pos];	
-			/*if(pos <= 3) {
-				profileName = profiles[pos];	
-			} else if(pos > 3 && pos <= (profileCount + 3)) {
-				profileName = "AFWallPrefsCustom" + pos;
-			} */
 		}
+		else if(pos > 3) {
+			profileName = CUSTOM_PROFILE_PREFIX + pos;
+		} 
 		else {
 			profileName = profiles[0];
 		} 
@@ -209,43 +209,45 @@ public class G extends android.app.Application {
 	}
 	
 	public static void addProfile(String profile) {
-		String previousProfiles = gPrefs.getString(PROFILES, "");
-		int profileCount = previousProfiles.split(",").length; 
+		String previousProfiles = gPrefs.getString(CUSTOM_PROFILES, "");
 		StringBuilder builder = new StringBuilder();
 		if(previousProfiles.equals("")){
 			builder.append(profile);
 		} else {
 			builder.append(previousProfiles);
 			builder.append(",");
-			builder.append(profile + ":" + profileCount);
+			builder.append(profile);
 		}
-		gPrefs.edit().putString(PROFILES, builder.toString()).commit(); 
+		gPrefs.edit().putString(CUSTOM_PROFILES, builder.toString()).commit(); 
 	}
 	
-	public static void removeProfile(int itemPosition,String profileName) {
-		if(itemPosition > 4) {
-			
-		} else {
-			String previousProfiles = gPrefs.getString(PROFILES, "");
-			
-			StringBuilder builder = new StringBuilder();
-			if(!previousProfiles.equals("")){
-				for(String profile:previousProfiles.split(",")) {
-					if(!profile.equals(profileName)) {
-						builder.append(profile);
-						builder.append(",");
-					}
+	public static void removeProfile(String profileName, int position) {
+		String sharedProfileName = CUSTOM_PROFILE_PREFIX + position;
+		
+		//after remove clear all the data inside the custom profile
+		if(ctx!= null) {
+			ctx.getSharedPreferences(sharedProfileName, 0).edit().clear().commit();
+		}
+		String previousProfiles = gPrefs.getString(CUSTOM_PROFILES, "");
+
+		StringBuilder builder = new StringBuilder();
+		if (!previousProfiles.equals("")) {
+			for (String profile : previousProfiles.split(",")) {
+				if (!profile.equals(profileName)) {
+					builder.append(profile);
+					builder.append(",");
 				}
 			}
-			gPrefs.edit().putString(PROFILES, builder.toString()).commit();	
 		}
-		 
+		gPrefs.edit().putString(CUSTOM_PROFILES, builder.toString()).commit();
+		//reset stored position to default
+		storedPosition(0);
 	}
 	
 
 	public static int getProfileCount() {
 		int count = 0;
-		String previousProfiles = gPrefs.getString(PROFILES, "");
+		String previousProfiles = gPrefs.getString(CUSTOM_PROFILES, "");
 		if(!previousProfiles.equals("")){
 			count = previousProfiles.split(",").length;
 		} 
@@ -253,7 +255,7 @@ public class G extends android.app.Application {
 	}
 	
 	public static List<String> getProfiles() {
-		String previousProfiles = gPrefs.getString(PROFILES, "");
+		String previousProfiles = gPrefs.getString(CUSTOM_PROFILES, "");
 		List<String> profileList = new ArrayList<String>();
 		if(!previousProfiles.equals("")){
 			profileList = Arrays.asList(previousProfiles.split(","));
