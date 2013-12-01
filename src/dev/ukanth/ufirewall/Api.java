@@ -213,8 +213,10 @@ public final class Api {
 		} else if (pref.equals("builtin")) {
 			builtin = true;
 		} else {
-			// auto setting: ICS+ devices are mostly expected to have good iptables binaries
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			// auto setting:
+			// IPv4 iptables on ICS+ devices is mostly sane, so we'll use it by default
+			// IPv6 ip6tables can return the wrong exit status (bug #215) so default to our fixed version
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !setv6) {
 				builtin = false;
 			} else {
 				builtin = true;
