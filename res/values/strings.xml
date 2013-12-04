@@ -29,8 +29,8 @@
     <string name="ntp_item">(NTP) - Internet time servers</string>
     <string name="root_item">(root) - Applications running as root</string>
     <string name="operation_timeout">Operation timed out</string>
-    <string name="fw_enabled">Enabled</string>
-    <string name="fw_disabled">Disabled</string>
+    <string name="fw_enabled">Enable Firewall</string>
+    <string name="fw_disabled">Disable Firewall</string>
     <string name="flushed">Rules flushed</string>
     <string name="show_log">Firewall Logs</string>
     <string name="clear_log">Clear log</string>

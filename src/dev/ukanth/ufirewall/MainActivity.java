@@ -714,11 +714,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		if (isEnabled) {
 			apply.setTitle(R.string.applyrules);
-			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
+			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
+			//onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
 			getSupportActionBar().setIcon(R.drawable.widget_on);
 		} else {
 			apply.setTitle(R.string.saverules);
-			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
+			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
+			//onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
 			getSupportActionBar().setIcon(R.drawable.widget_off);
 		}
 	}
