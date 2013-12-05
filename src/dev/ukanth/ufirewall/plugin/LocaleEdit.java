@@ -1,5 +1,7 @@
 package dev.ukanth.ufirewall.plugin;
 
+import java.util.List;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,12 +14,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
 
 public class LocaleEdit extends Activity {
 	public static final String LOCALE_BRIGHTNESS = "dev.ukanth.ufirewall.plugin.LocaleEdit.ACTIVE_PROFLE";
 	
 	private boolean mIsCancelled = false;
+	
+	private int CUSTOM_PROFILE_ID = 100;
 
 	protected void onCreate(Bundle paramBundle) {
 		super.onCreate(paramBundle);
@@ -37,6 +42,22 @@ public class LocaleEdit extends Activity {
 		RadioButton button2 = (RadioButton) findViewById(R.id.profile1);
 		RadioButton button3 = (RadioButton) findViewById(R.id.profile2);
 		RadioButton button4 = (RadioButton) findViewById(R.id.profile3);
+		
+		RadioGroup profiles = (RadioGroup)findViewById(R.id.radioProfiles);
+		
+		
+		
+		
+		List<String> profilesList = G.getProfiles();
+		
+		int counter = CUSTOM_PROFILE_ID;
+		for(String profile : profilesList) {
+			RadioButton rdbtn = new RadioButton(this);
+			rdbtn.setId(counter++);
+	        rdbtn.setText(profile);
+	        profiles.addView(rdbtn);
+		}
+		
 		
 		String name = prefs.getString("default", getString(R.string.defaultProfile));
 		button1.setText(name != null && name.length() == 0 ? getString(R.string.defaultProfile) : name);
@@ -66,8 +87,13 @@ public class LocaleEdit extends Activity {
 					case 3: button2.setChecked(true); break;
 					case 4: button3.setChecked(true); break;
 					case 5: button4.setChecked(true); break;
+					default:
+						int diff = CUSTOM_PROFILE_ID + (id - 6);
+						RadioButton btn = (RadioButton) findViewById(diff);
+						if(btn !=null) {
+							btn.setChecked(true);	
+						}
 					}
-
 				}
 			}
 		}
