@@ -1528,8 +1528,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String value = input.getText().toString();
-	  		G.addProfile(value);
-	  		setupMultiProfile();
+			if(value !=null && !value.isEmpty()) {
+				G.addProfile(value.trim());
+		  		setupMultiProfile();
+			} 
 		  }
 		});
 
