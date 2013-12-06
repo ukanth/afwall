@@ -9,11 +9,6 @@
     <item name="android:backgroundDimEnabled">false</item>
   </style>
   
-  
-   <style name="MyEditText" parent="Theme.Sherlock">
-   </style>
-  
-  
   <!--  Tasker Locale -->
   
     <!-- Dark style for all standard Locale and Locale plug-in Activity instances -->
