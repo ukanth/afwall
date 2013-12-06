@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
   <style name="Theme.Transparent" parent="android:Theme">
     <item name="android:windowIsTranslucent">true</item>
     <item name="android:windowBackground">@android:color/transparent</item>
@@ -10,17 +10,15 @@
   </style>
   
   
+   <style name="MyEditText" parent="Theme.Sherlock">
+   </style>
+  
+  
   <!--  Tasker Locale -->
   
     <!-- Dark style for all standard Locale and Locale plug-in Activity instances -->
     <style name="Theme.Locale.Dark" parent="android:Theme" />
 
-    <!-- Light style for use within Locale.  This theme is usually not used.  The only place Locale uses this theme is to make dialogs look correct on Android 2.3 and earlier, because http://developer.android.com/reference/android/app/AlertDialog.Builder.html#getContext() requires Android 3.0. -->
-    <style name="Theme.Locale.Light" parent="android:Theme.Light" />
-
-    <!-- Style for Activities that look like a dialog -->
-    <style name="Theme.Locale.Dialog" parent="@android:style/Theme.Translucent.NoTitleBar" />
-    
     <style name="ButtonText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

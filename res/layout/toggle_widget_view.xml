@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widget_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center" >
@@ -10,7 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/toggle_enable" />
-    <!-- style="@style/ButtonText" android:background="@drawable/btn_pressed" -->
 
     <Button
         android:id="@+id/toggle_disable_firewall"

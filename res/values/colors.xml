@@ -2,6 +2,4 @@
 
 <resources>
 	<drawable name="ab_bg_black">#aa000000</drawable>
-	<color name="toast">#0099CC</color>
-	
 </resources>

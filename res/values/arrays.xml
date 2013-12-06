@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="modes">
-        <item>@string/whitelist_array_item</item>
-        <item>@string/blacklist_array_item</item>
-    </string-array>
-    <string-array name="profiles">
-        <item>@string/defaultProfile</item>
-        <item>@string/profile1</item>
-        <item>@string/profile2</item>
-        <item>@string/profile3</item>
-    </string-array>
-    
     <string-array name="supported_languages">
         <item>English</item>
         <item>German</item>
