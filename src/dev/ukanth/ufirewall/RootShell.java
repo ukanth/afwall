@@ -301,7 +301,6 @@ public class RootShell extends Service {
 				useSU().
 				setWantSTDERR(true).
 				setWatchdogTimeout(5).
-				setMinimalLogging(true).
 				open(new Shell.OnCommandResultListener() {
 					public void onCommandResult(int commandCode, int exitCode, List<String> output) {
 						if (exitCode < 0) {
