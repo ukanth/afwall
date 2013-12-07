@@ -797,19 +797,7 @@ public class Shell {
 			}
 
 			if (handler != null) {
-				final Command fCommand = command;
-				final List<String> fBuffer = buffer;
-				startCallback();
-				handler.post(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							fCommand.onCommandResultListener.onCommandResult(fCommand.code, exitCode, fBuffer);
-						} finally {
-							endCallback();
-						}
-					}
-				});
+				postCallback(command, exitCode, buffer);
 			}
 
 			// prevent multiple callbacks for the same command
@@ -906,28 +894,8 @@ public class Shell {
 		 */
 		private synchronized void processMarker() {
 			if (command.marker.equals(lastMarkerSTDOUT) && (command.marker.equals(lastMarkerSTDERR))) {				
-				if (command.onCommandResultListener != null) {
-					if (buffer != null) {
-						if (handler != null) {
-							final List<String> fBuffer = buffer;
-							final int fExitCode = lastExitCode;
-							final Command fCommand = command;
-						
-							startCallback();
-							handler.post(new Runnable() {
-								@Override
-								public void run() {
-									try {
-										fCommand.onCommandResultListener.onCommandResult(fCommand.code, fExitCode, fBuffer);
-									} finally {
-										endCallback();
-									}
-								}
-							});							
-						} else {
-							command.onCommandResultListener.onCommandResult(command.code, lastExitCode, buffer);
-						}
-					}
+				if (buffer != null) {
+					postCallback(command, lastExitCode, buffer);
 				}
 				
 				stopWatchdog();
@@ -997,6 +965,30 @@ public class Shell {
 					callbackSync.notifyAll();
 				}
 			}
+		}
+
+		/**
+		 * Schedule a callback to run on the appropriate thread
+		 */
+		private void postCallback(final Command fCommand, final int fExitCode, final List<String> fOutput) {
+			if (fCommand.onCommandResultListener == null) {
+				return;
+			}
+			if (handler == null) {
+				fCommand.onCommandResultListener.onCommandResult(fCommand.code, fExitCode, fOutput);
+				return;
+			}
+			startCallback();
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						fCommand.onCommandResultListener.onCommandResult(fCommand.code, fExitCode, fOutput);
+					} finally {
+						endCallback();
+					}
+				}
+			});
 		}
 		
 		/**
