@@ -764,10 +764,8 @@ public class Shell {
 		 * @param onCommandResultListener Callback to be called on completion (of all commands)
 		 */
 		public synchronized void addCommand(String[] commands, int code, OnCommandResultListener onCommandResultListener) {
-			if (running) {
-				this.commands.add(new Command(commands, code, onCommandResultListener));
-				runNextCommand();
-			}
+			this.commands.add(new Command(commands, code, onCommandResultListener));
+			runNextCommand();
 		}
 		
 		/**
@@ -880,6 +878,13 @@ public class Shell {
 				} else {
 					runNextCommand(false);
 				}				
+			} else if (!running) {
+				// our shell died for unknown reasons - abort all submissions
+				while (commands.size() > 0) {
+					Command command = commands.get(0);
+					commands.remove(0);
+					postCallback(command, OnCommandResultListener.SHELL_DIED, null);
+				}
 			}
 			
 			if (idle && notifyIdle) {
