@@ -37,6 +37,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 import eu.chainfire.libsuperuser.Shell;
+import eu.chainfire.libsuperuser.Debug;
 
 public class RootShell extends Service {
 
@@ -295,8 +296,22 @@ public class RootShell extends Service {
 		});
 	}
 
+	private static void setupLogging() {
+		Debug.setDebug(true);
+		Debug.setLogTypeEnabled(Debug.LOG_ALL, false);
+		Debug.setLogTypeEnabled(Debug.LOG_GENERAL, true);
+		Debug.setSanityChecksEnabled(true);
+		Debug.setOnLogListener(new Debug.OnLogListener() {
+			@Override
+			public void onLog(int type, String typeIndicator, String message) {
+				Log.i(TAG, "[libsuperuser] " + message);
+			}
+		});
+	}
+
 	private static void startShellInBackground() {
 		Log.d(TAG, "Starting root shell...");
+		setupLogging();
 		rootSession = new Shell.Builder().
 				useSU().
 				setWantSTDERR(true).
