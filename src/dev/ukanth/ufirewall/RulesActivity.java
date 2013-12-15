@@ -31,12 +31,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import java.io.File;
 import java.util.Map;
 import java.util.TreeSet;
 
@@ -79,6 +82,58 @@ public class RulesActivity extends DataDumpActivity {
 		res.append(eq + "\n" + title + "\n" + eq + "\n\n");
 	}
 
+	protected void appendPreferences(final Context ctx) {
+		// Fifth section: "Preferences"
+		writeHeading(result, true, "Preferences");
+
+		try {
+			Map<String,?> prefs = G.gPrefs.getAll();
+			for (String s : new TreeSet<String>(prefs.keySet())) {
+				Object entry = prefs.get(s);
+				result.append(s + ": " + entry.toString() + "\n");
+			}
+		} catch (NullPointerException e) {
+			result.append("Error retrieving preferences\n");
+		}
+
+		// Sixth section: "Logcat"
+		writeHeading(result, true, "Logcat");
+		result.append(Log.getLog());
+
+		// finished: post result to the user
+		setData(result.toString());
+	}
+
+	protected String getFileInfo(String filename) {
+		File f = new File(filename);
+		if (f.exists() && f.isFile()) {
+			return filename + ": " +
+					f.length() + " bytes\n";
+		} else {
+			return filename + ": not present\n";
+		}
+	}
+
+	protected String getSuInfo(PackageManager pm) {
+		String suPackages[] = { "com.koushikdutta.superuser",
+				"com.noshufou.android.su",
+				"com.noshufou.android.su.elite",
+				"eu.chainfire.supersu",
+				"eu.chainfire.supersu.pro" };
+		String found = "none found";
+
+		for (String s : suPackages) {
+			try {
+				PackageInfo info = pm.getPackageInfo(s, 0);
+				found = s + " v" + info.versionName;
+				break;
+			} catch (NameNotFoundException e) {
+			}
+		}
+
+		return found;
+	}
+
 	protected void appendSystemInfo(final Context ctx) {
 		// Fourth section: "System info"
 		writeHeading(result, true, "System info");
@@ -102,25 +157,30 @@ public class RulesActivity extends DataDumpActivity {
 		result.append("IPv4 subnet: " + cfg.lanMaskV4 + "\n");
 		result.append("IPv6 subnet: " + cfg.lanMaskV6 + "\n");
 
-		// Fifth section: "Preferences"
-		writeHeading(result, true, "Preferences");
+		// filesystem calls can block, so run in another thread
+		new AsyncTask<Void, Void, String>() {
+			@Override
+			public String doInBackground(Void... args) {
+				StringBuilder ret = new StringBuilder();
 
-		try {
-			Map<String,?> prefs = G.gPrefs.getAll();
-			for (String s : new TreeSet<String>(prefs.keySet())) {
-				Object entry = prefs.get(s);
-				result.append(s + ": " + entry.toString() + "\n");
+				ret.append(getFileInfo("/system/bin/su"));
+				ret.append(getFileInfo("/system/xbin/su"));
+				ret.append(getFileInfo("/system/app/Superuser.apk"));
+
+				PackageManager pm = ctx.getPackageManager();
+				ret.append("Superuser: " + getSuInfo(pm));
+				ret.append("\n");
+
+				return ret.toString();
 			}
-		} catch (NullPointerException e) {
-			result.append("Error retrieving preferences\n");
-		}
 
-		// Sixth section: "Logcat"
-		writeHeading(result, true, "Logcat");
-		result.append(Log.getLog());
+			@Override
+			public void onPostExecute(String suInfo) {
+				result.append(suInfo);
+				appendPreferences(ctx);
+			}
+		}.execute();
 
-		// finished: post result to the user
-		setData(result.toString());
 	}
 
 	protected void appendIfconfig(final Context ctx) {

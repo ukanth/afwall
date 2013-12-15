@@ -50,6 +50,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -2010,7 +2011,7 @@ public final class Api {
 		}
 	}
 	
-	public static void setUserOwner(Context context)
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) public static void setUserOwner(Context context)
 	{
 		if(supportsMultipleUsers(context)){
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
