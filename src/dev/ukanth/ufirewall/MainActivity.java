@@ -54,6 +54,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -85,8 +86,6 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  * application
  */
 
-//@Holo(forceThemeApply = true, layout = R.layout.main)
-//public class MainActivity extends SActivity implements OnCheckedChangeListener,
 public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
 		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
 	public static final String TAG = "AFWall";
@@ -97,6 +96,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	public boolean isOnPause = false;
 	
+
 	/** progress dialog instance */
 	private ListView listview = null;
 	/** indicates if the view has been modified and not yet saved */
@@ -174,10 +174,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			Api.updateLanguage(getApplicationContext(), lang);
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
-			
 		    Api.assertBinaries(this, true);
 	}
-
+	
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -643,6 +642,18 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				} else {
 					holder.text.setText(holder.app.toString());
 				}
+				
+				final int id = holder.app.uid;
+				
+				holder.text.setOnLongClickListener(new OnLongClickListener() {
+					@Override
+					public boolean onLongClick(View v) {
+						Intent intent = new Intent(getApplicationContext(), AppDetailActivity.class);
+						intent.putExtra("appid", id);
+						startActivity(intent);
+						return true;
+					}
+				});
 			
 				ApplicationInfo info = holder.app.appinfo;
 				if(info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
