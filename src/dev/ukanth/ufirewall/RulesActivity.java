@@ -118,6 +118,7 @@ public class RulesActivity extends DataDumpActivity {
 		String suPackages[] = { "com.koushikdutta.superuser",
 				"com.noshufou.android.su",
 				"com.noshufou.android.su.elite",
+				"com.miui.uac",
 				"eu.chainfire.supersu",
 				"eu.chainfire.supersu.pro" };
 		String found = "none found";
