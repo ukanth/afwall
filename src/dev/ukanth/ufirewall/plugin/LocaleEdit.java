@@ -48,7 +48,7 @@ public class LocaleEdit extends Activity {
 		
 		
 		
-		List<String> profilesList = G.getProfiles();
+		List<String> profilesList = G.getAdditionalProfiles();
 		
 		int counter = CUSTOM_PROFILE_ID;
 		for(String profile : profilesList) {

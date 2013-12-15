@@ -213,10 +213,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		
 		passCheck();
 		
+		
 	}
 	
 	private void setupMultiProfile(){
 		if(G.enableMultiProfile()) {
+			G.reloadPrefs();
 			mSelected = (TextView)findViewById(R.id.text);
 			final List<String> mlocalList = new ArrayList<String>();
 			
@@ -225,10 +227,20 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
 			mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
 			
-			List<String> profilesList = G.getProfiles();
+			boolean isAdditionalProfiles = false;
+			List<String> profilesList = G.getAdditionalProfiles();
 			for(String profiles : profilesList) {
+				isAdditionalProfiles = true;
 				mlocalList.add(profiles);
 			}
+			
+			int position = G.gPrefs.getInt("storedPosition", -1);
+			//something went wrong - No profiles but still it's set more. reset to default
+			if(!isAdditionalProfiles && position > 3) {
+				G.storedPosition(0);
+				position = 0;
+			}
+			
 			
 			mlocalList.add(getString(R.string.profile_add));
 			mlocalList.add(getString(R.string.profile_remove));
@@ -244,13 +256,12 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
 			
-			int position = G.gPrefs.getInt("storedPosition", -1);
 			if(position > -1) {
 				getSupportActionBar().setSelectedNavigationItem(position);
 				getSupportActionBar().setDisplayShowTitleEnabled(false);
 			}
 			getSupportActionBar().setDisplayUseLogoEnabled(true);
-		
+			Api.applications = null;
 		}
 	}
 	
@@ -1480,7 +1491,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		if(G.enableMultiProfile()){
 			//user clicked add  
 			if(itemPosition == mLocations.length - 2){
-				showProfileDialog();
+				addProfileDialog();
 			}
 			//user clicked remove
 			else if(itemPosition == mLocations.length - 1){
@@ -1505,7 +1516,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	public void removeProfileDialog() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(getString(R.string.profile_remove));
-		String[] profiles = G.getProfiles().toArray(new String[G.getProfiles().size()]);
+		String[] profiles = G.getAdditionalProfiles().toArray(new String[G.getAdditionalProfiles().size()]);
 		alert.setSingleChoiceItems(profiles, 0, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -1514,8 +1525,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		});
 		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
-			G.removeProfile(mLocations[selectedItem + 4], selectedItem + 4);
+			G.removeAdditionalProfile(mLocations[selectedItem + 4], selectedItem + 4);
 			setupMultiProfile();
+			Api.applications = null;
+			showOrLoadApplications();
 		  }
 		});
 
@@ -1527,7 +1540,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		alert.show();	
 	}
 	
-	public void showProfileDialog() {
+	public void addProfileDialog() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
 		alert.setTitle(getString(R.string.profile_add));
@@ -1540,7 +1553,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String value = input.getText().toString();
 			if(value !=null && !value.isEmpty()) {
-				G.addProfile(value.trim());
+				G.addAdditionalProfile(value.trim());
 		  		setupMultiProfile();
 			} 
 		  }
