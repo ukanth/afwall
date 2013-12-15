@@ -261,7 +261,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				getSupportActionBar().setDisplayShowTitleEnabled(false);
 			}
 			getSupportActionBar().setDisplayUseLogoEnabled(true);
-			Api.applications = null;
 		}
 	}
 	
