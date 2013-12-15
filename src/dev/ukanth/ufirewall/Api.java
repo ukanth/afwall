@@ -62,6 +62,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -72,6 +73,7 @@ import android.os.UserManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
@@ -1975,10 +1977,16 @@ public final class Api {
 	public static void updateLanguage(Context context, String lang) {
 	    if (!"".equals(lang)) {
 	        Locale locale = new Locale(lang);
-	        Locale.setDefault(locale);
+	       /* Locale.setDefault(locale);
 	        Configuration config = new Configuration();
 	        config.locale = locale;
-	        context.getResources().updateConfiguration(config, null);
+	        context.getResources().updateConfiguration(config, null);*/
+	        
+	        Resources res = context.getResources();
+			DisplayMetrics dm = res.getDisplayMetrics();
+			Configuration conf = res.getConfiguration();
+			conf.locale = locale;
+			res.updateConfiguration(conf, dm);
 	    }
 	}
 	

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.RejectedExecutionException;
 
 import android.app.Activity;
@@ -42,6 +43,7 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -51,6 +53,7 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -205,6 +208,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		setupMultiProfile();
 		refreshHeader();
 		
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -480,7 +484,11 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		protected void onPostExecute(Void result) {
 			showApplications("");
 			publishProgress(-1);
-			plsWait.dismiss();
+			try {
+				plsWait.dismiss();
+			} catch (Exception e) {
+				// nothing
+			}
 		}
 
 		@Override
@@ -698,6 +706,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		//language
+		String lang = G.locale();
+		Api.updateLanguage(getApplicationContext(), lang);
 		super.onCreateOptionsMenu(menu);
 		getSupportMenuInflater().inflate(R.menu.menu_bar, menu);
 		mainMenu = menu;
@@ -727,6 +738,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		//language
+		String lang = G.locale();
+		Api.updateLanguage(getApplicationContext(), lang);
 		menuSetApplyOrSave(menu, Api.isEnabled(this));
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -1583,6 +1597,5 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		AlertDialog alert2 = builder.create();
 		alert2.show();
 	}
-
 }
 
