@@ -175,7 +175,8 @@ public class G extends android.app.Application {
 		int pos = storedPosition();
 		//int profileCount = getProfileCount();
 		if (enableMultiProfile() && (pos >= 0 && pos <= 3)) {
-			profileName = profiles[pos];	
+			profileName = profiles[pos];
+			Api.removeAllProfileCacheLabel(ctx);
 		}
 		else if(pos > 3) {
 			profileName = CUSTOM_PROFILE_PREFIX + pos;

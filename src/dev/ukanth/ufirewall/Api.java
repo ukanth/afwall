@@ -1107,13 +1107,16 @@ public final class Api {
 		}
 		
 		//revert back to old approach
+		
+		//always use the defaul preferences to store cache value - reduces the application usage size
+		final SharedPreferences cachePrefs = ctx.getSharedPreferences("AFWallPrefs", Context.MODE_PRIVATE);
 
 		int count = 0;
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
 			SparseArray<PackageInfoData> syncMap = new SparseArray<PackageInfoData>();
-			final Editor edit = prefs.edit();
+			final Editor edit = cachePrefs.edit();
 			boolean changed = false;
 			String name = null;
 			String cachekey = null;
@@ -1527,6 +1530,28 @@ public final class Api {
 				}
 			}
 		 }
+	}
+	
+	/**
+	 * Cleanup the cache from profiles - Improve performance.
+	 * @param ctx
+	 */
+	public static void removeAllProfileCacheLabel(Context ctx){
+		SharedPreferences prefs;
+		final String cacheLabel = "cache.label.";
+		String cacheKey;
+		for(String profileName: G.profiles) {
+			prefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
+			if(prefs != null) {
+				Map<String,?> keys = prefs.getAll();
+				for(Map.Entry<String,?> entry : keys.entrySet()){
+					if(entry.getKey().startsWith(cacheLabel)){
+						cacheKey = entry.getKey();
+						prefs.edit().remove(cacheKey).commit();
+					}
+				 }		
+			}
+		}
 	}
 
 	public static boolean isPackageExists(PackageManager pm, String targetPackage) {
