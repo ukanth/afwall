@@ -48,6 +48,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -96,7 +97,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	public boolean isOnPause = false;
 	
-
 	/** progress dialog instance */
 	private ListView listview = null;
 	/** indicates if the view has been modified and not yet saved */
@@ -118,6 +118,8 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	ProgressDialog plsWait;
 	
 	ArrayAdapter<String> spinnerAdapter;
+	
+	
 
 	/** Called when the activity is first created
 	 * . */
@@ -175,6 +177,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
 		    Api.assertBinaries(this, true);
+		    
 	}
 	
 	@Override
@@ -198,12 +201,31 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		view.setOnClickListener(this);
 	}
 	
+	private static final String LIST_STATE = "listState";
+	private Parcelable mListState = null;
+	
+	@Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        mListState = getListView().onSaveInstanceState();
+        savedInstanceState.putParcelable(LIST_STATE, mListState);
+    }
+ 
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        mListState = savedInstanceState.getParcelable(LIST_STATE);	
+    }
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
+		if (mListState != null)
+	        this.listview.onRestoreInstanceState(mListState);
+		mListState = null;
 		setupMultiProfile();
 		refreshHeader();
 		
@@ -211,7 +233,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		mNotificationManager.cancel(24556);
 		
 		passCheck();
-		
 		
 	}
 	
@@ -302,7 +323,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	@Override
 	protected void onPause() {
 		super.onPause();
-		this.listview.setAdapter(null);
+		//this.listview.setAdapter(null);
 		//mLastPause = System.currentTimeMillis();
 		isOnPause = true;
 	}
@@ -644,16 +665,17 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				}
 				
 				final int id = holder.app.uid;
-				
-				holder.text.setOnLongClickListener(new OnLongClickListener() {
-					@Override
-					public boolean onLongClick(View v) {
-						Intent intent = new Intent(getApplicationContext(), AppDetailActivity.class);
-						intent.putExtra("appid", id);
-						startActivity(intent);
-						return true;
-					}
-				});
+				if(id > 0) {
+					holder.text.setOnLongClickListener(new OnLongClickListener() {
+						@Override
+						public boolean onLongClick(View v) {
+							Intent intent = new Intent(getApplicationContext(), AppDetailActivity.class);
+							intent.putExtra("appid", id);
+							startActivity(intent);
+							return true;
+						}
+					});	
+				}
 			
 				ApplicationInfo info = holder.app.appinfo;
 				if(info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -715,10 +737,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 				return check;
 			}
 		};
-		
-				//change color
+		//change color
 		this.listview.setScrollingCacheEnabled(false);
 		this.listview.setAdapter(adapter);
+		
 	}
 	
 
