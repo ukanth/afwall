@@ -1910,12 +1910,14 @@ public final class Api {
 	    final int apiLevel = Build.VERSION.SDK_INT;
 	    if (apiLevel >= 9) { // above 2.3
 	        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	        Uri uri = Uri.fromParts(SCHEME, packageName, null);
 	        intent.setData(uri);
 	    } else { // below 2.3
 	        final String appPkgName = (apiLevel == 8 ? APP_PKG_NAME_22
 	                : APP_PKG_NAME_21);
 	        intent.setAction(Intent.ACTION_VIEW);
+	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	        intent.setClassName(APP_DETAILS_PACKAGE_NAME,
 	                APP_DETAILS_CLASS_NAME);
 	        intent.putExtra(appPkgName, packageName);

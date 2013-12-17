@@ -44,7 +44,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
-import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -109,8 +108,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	ProgressDialog plsWait;
 	
 	ArrayAdapter<String> spinnerAdapter;
-	
-	private AppListArrayAdapter listAdapter;
 	
 	private int index;
 	private int top;
@@ -561,11 +558,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());
 		
-		if(listAdapter == null) {
-			listAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2);
-		}
-
-		this.listview.setAdapter(listAdapter);
+		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore
 		this.listview.setSelectionFromTop(index, top);
 		
