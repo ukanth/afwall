@@ -74,8 +74,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 
 		// update settings with actual device admin setting
 		mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-		deviceAdmin = new ComponentName(getApplicationContext(),
-				AdminDeviceReceiver.class);
+		deviceAdmin = new ComponentName(getApplicationContext(), AdminDeviceReceiver.class);
 	}
 
 	public static void setupFixLeak(Preference pref) {
@@ -248,21 +247,18 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		if (key.equals("enableAdmin")) {
 			boolean value = sharedPreferences.getBoolean("enableAdmin", false);
 			if (value) {
-				Log.d("Device Admin Active ?", mDPM.isAdminActive(deviceAdmin)
-						+ "");
+				Log.d("Device Admin Active ?", mDPM.isAdminActive(deviceAdmin) + "");
 				if (!mDPM.isAdminActive(deviceAdmin)) {
 					// Launch the activity to have the user enable our admin.
-					Intent intent = new Intent(
-							DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-					intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-							deviceAdmin);
-					intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-							"Additional Security");
+					Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+					intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,deviceAdmin);
+					intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getString(R.string.device_admin_desc));
 					startActivityForResult(intent, REQUEST_CODE_ENABLE_ADMIN);
 				}
 			} else {
 				if (mDPM.isAdminActive(deviceAdmin)) {
-					Api.displayToasts(getApplicationContext(), R.string.device_admin_on_disable, Toast.LENGTH_LONG);
+					mDPM.removeActiveAdmin(deviceAdmin);
+					Api.displayToasts(getApplicationContext(), R.string.device_admin_disabled, Toast.LENGTH_LONG);
 				}
 			}
 		}
