@@ -253,5 +253,12 @@
     <string name="unselect_all">Do you want to unselect all ?</string>
     <string name="multi_user_title">Support MultiUser</string>
     <string name="multi_user_summary">Enable to support android multi-user on a tablet</string>
+    
+    <!--  -->
+    <string name="device_admin_desc">Additional Security - Prevent AFWall+ from uninstall</string>
+    <string name="traffic_detail_title">Traffic Details</string>
+    <string name="uploaded">Uploaded</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="app_system_detail">Open system details</string>
 
 </resources>

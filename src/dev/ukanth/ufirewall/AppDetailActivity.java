@@ -23,7 +23,7 @@ public class AppDetailActivity extends SherlockActivity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setTitle("Application Details");
+		setTitle(getString(R.string.traffic_detail_title));
         setContentView(R.layout.app_detail);
         
         final Context ctx = getApplicationContext();
