@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.RejectedExecutionException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,10 +39,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -55,15 +51,10 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -87,8 +78,8 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  * application
  */
 
-public class MainActivity extends SherlockListActivity implements OnCheckedChangeListener,
-		OnClickListener,ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
+public class MainActivity extends SherlockListActivity implements OnClickListener,
+					ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
 	public static final String TAG = "AFWall";
 
 	private TextView mSelected;
@@ -100,7 +91,7 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	/** progress dialog instance */
 	private ListView listview = null;
 	/** indicates if the view has been modified and not yet saved */
-	private boolean dirty = false;
+	public static boolean dirty = false;
 	private String currentPassword = "";
 	
 	public String getCurrentPassword() {
@@ -119,7 +110,10 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 	
 	ArrayAdapter<String> spinnerAdapter;
 	
+	private AppListArrayAdapter listAdapter;
 	
+	private int index;
+	private int top;
 
 	/** Called when the activity is first created
 	 * . */
@@ -201,31 +195,13 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		view.setOnClickListener(this);
 	}
 	
-	private static final String LIST_STATE = "listState";
-	private Parcelable mListState = null;
-	
-	@Override
-    public void onSaveInstanceState(Bundle savedInstanceState){
-        super.onSaveInstanceState(savedInstanceState);
-        mListState = getListView().onSaveInstanceState();
-        savedInstanceState.putParcelable(LIST_STATE, mListState);
-    }
- 
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState){
-        super.onRestoreInstanceState(savedInstanceState);
-        mListState = savedInstanceState.getParcelable(LIST_STATE);	
-    }
-	
 	@Override
 	protected void onResume() {
 		super.onResume();
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
-		if (mListState != null)
-	        this.listview.onRestoreInstanceState(mListState);
-		mListState = null;
+		
 		setupMultiProfile();
 		refreshHeader();
 		
@@ -326,6 +302,9 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		//this.listview.setAdapter(null);
 		//mLastPause = System.currentTimeMillis();
 		isOnPause = true;
+		index = this.listview.getFirstVisiblePosition();
+		View v = this.listview.getChildAt(0);
+		top = (v == null) ? 0 : v.getTop();
 	}
 
 	/**
@@ -557,17 +536,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 	}
 	
-	static class ViewHolder { 
-		private CheckBox box_lan;
-		private CheckBox box_wifi;
-		private CheckBox box_3g;
-		private CheckBox box_roam;
-		private CheckBox box_vpn;
-		private TextView text;
-		private ImageView icon;
-		private PackageInfoData app;
-	}
-	
 	/**
 	 * Show the list of applications
 	 */
@@ -592,154 +560,14 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());
-
-		final int color = G.sysColor();
-		final int defaultColor = Color.WHITE;
-
-		final android.view.LayoutInflater inflater = getLayoutInflater();
 		
-		final ListAdapter adapter = new ArrayAdapter<PackageInfoData>(this,R.layout.main_list,  R.id.itemtext, apps2) {
-			
-			public View getView(final int position, View convertView,
-					ViewGroup parent) {
-				ViewHolder holder;
-				if (convertView == null) {
-					// Inflate a new view
-					convertView = inflater.inflate(R.layout.main_list, parent,
-							false);
-					holder = new ViewHolder();
-					holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
-					holder.box_3g = (CheckBox) convertView.findViewById(R.id.itemcheck_3g);
-					
-					holder.box_wifi.setOnCheckedChangeListener(MainActivity.this);
-					holder.box_3g.setOnCheckedChangeListener(MainActivity.this);
-					
-					if(G.enableRoam()){
-						holder.box_roam = addSupport(holder.box_roam,convertView, true, R.id.itemcheck_roam);
-					}
-					if(G.enableVPN()) {
-						holder.box_vpn = addSupport(holder.box_vpn,convertView, true, R.id.itemcheck_vpn);
-					}
-					if(G.enableLAN()) {
-						holder.box_lan = addSupport(holder.box_lan,convertView, true, R.id.itemcheck_lan);
-					}
-					
-					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
-					holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
-					
-					if(G.disableIcons()){
-						holder.icon.setVisibility(View.GONE);
-						findViewById(R.id.imageHolder).setVisibility(View.GONE);
-					}
-					convertView.setTag(holder);
-				} else {
-					// Convert an existing view
-					holder = (ViewHolder) convertView.getTag();
-					holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
-					holder.box_3g = (CheckBox) convertView.findViewById(R.id.itemcheck_3g);
-					
-					if(G.enableRoam()){
-						addSupport(holder.box_roam,convertView,false, R.id.itemcheck_roam);
-					}
-					if(G.enableVPN()) {
-						addSupport(holder.box_vpn,convertView,false, R.id.itemcheck_vpn);
-					}
-					if(G.enableLAN()) {
-						addSupport(holder.box_lan,convertView,false, R.id.itemcheck_lan);
-					}
-					
-					holder.text = (TextView) convertView.findViewById(R.id.itemtext);
-					holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
-					if(G.disableIcons()){
-						holder.icon.setVisibility(View.GONE);
-						findViewById(R.id.imageHolder).setVisibility(View.GONE);
-					}
-				}
-				
-				holder.app = apps2.get(position);
-				
-				if(G.showUid()){
-					holder.text.setText(holder.app.toStringWithUID());
-				} else {
-					holder.text.setText(holder.app.toString());
-				}
-				
-				final int id = holder.app.uid;
-				if(id > 0) {
-					holder.text.setOnLongClickListener(new OnLongClickListener() {
-						@Override
-						public boolean onLongClick(View v) {
-							Intent intent = new Intent(getApplicationContext(), AppDetailActivity.class);
-							intent.putExtra("appid", id);
-							startActivity(intent);
-							return true;
-						}
-					});	
-				}
-			
-				ApplicationInfo info = holder.app.appinfo;
-				if(info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-					holder.text.setTextColor(defaultColor);
-				} else {
-					holder.text.setTextColor(color);
-				}
+		if(listAdapter == null) {
+			listAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2);
+		}
 
-				if(!G.disableIcons()) {
-					holder.icon.setImageDrawable(holder.app.cached_icon);	
-					if (!holder.app.icon_loaded && info != null) {
-						// this icon has not been loaded yet - load it on a
-						// separated thread
-						try {
-							new LoadIconTask().execute(holder.app, getPackageManager(),
-									convertView);
-						} catch (RejectedExecutionException r) {
-						}
-					  }
-				} else {
-					holder.icon.setVisibility(View.GONE);
-					findViewById(R.id.imageHolder).setVisibility(View.GONE);	
-				}
-
-				holder.box_wifi.setTag(holder.app);
-				holder.box_wifi.setChecked(holder.app.selected_wifi);
-
-				holder.box_3g.setTag(holder.app);
-				holder.box_3g.setChecked(holder.app.selected_3g);
-				
-				if(G.enableRoam()){
-					holder.box_roam = addSupport(holder.box_roam,holder, holder.app, 0);
-				}
-				if(G.enableVPN()) {
-					holder.box_vpn = addSupport(holder.box_vpn,holder, holder.app, 1);
-				}
-				if(G.enableLAN()) {
-					holder.box_lan = addSupport(holder.box_lan,holder, holder.app, 2);
-				}
-				
-				return convertView;
-			}
-			
-			private CheckBox addSupport(CheckBox check,ViewHolder entry,PackageInfoData app, int flag ) {
-				check.setTag(app);
-				switch (flag) {
-					case 0: check.setChecked(app.selected_roam); break;
-					case 1: check.setChecked(app.selected_vpn); break;
-					case 2: check.setChecked(app.selected_lan); break;
-				}
-				return check;
-			}
-			private CheckBox addSupport(CheckBox check, View convertView, boolean action, int id) {
-				check = (CheckBox) convertView.findViewById(id);
-				check.setVisibility(View.VISIBLE);
-				if(action){
-					check.setOnCheckedChangeListener(MainActivity.this);
-				}
-				return check;
-			}
-		};
-		//change color
-		this.listview.setScrollingCacheEnabled(false);
-		this.listview.setAdapter(adapter);
+		this.listview.setAdapter(listAdapter);
+		// restore
+		this.listview.setSelectionFromTop(index, top);
 		
 	}
 	
@@ -1227,47 +1055,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}));
 	}
 
-	/**
-	 * Called an application is check/unchecked
-	 */
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		final PackageInfoData app = (PackageInfoData) buttonView.getTag();
-		if (app != null) {
-			switch (buttonView.getId()) {
-			case R.id.itemcheck_wifi:
-				if (app.selected_wifi != isChecked) {
-					app.selected_wifi = isChecked;
-					this.dirty = true;
-				}
-				break;
-			case R.id.itemcheck_3g:
-				if (app.selected_3g != isChecked) {
-					app.selected_3g = isChecked;
-					this.dirty = true;
-				}
-				break;
-			case R.id.itemcheck_roam:
-				if (app.selected_roam != isChecked) {
-					app.selected_roam = isChecked;
-					this.dirty = true;
-				}
-				break;
-			case R.id.itemcheck_vpn:
-				if (app.selected_vpn != isChecked) {
-					app.selected_vpn = isChecked;
-					this.dirty = true;
-				}
-				break;
-			case R.id.itemcheck_lan:
-				if (app.selected_lan != isChecked) {
-					app.selected_lan = isChecked;
-					this.dirty = true;
-				}
-				break;
-			}
-		}
-	}
 
 	@Override
 	public void onClick(View v) {
@@ -1476,45 +1263,6 @@ public class MainActivity extends SherlockListActivity implements OnCheckedChang
 		}
 		return super.onKeyDown(keyCode, event);
 		
-	}
-
-	/**
-	 * Asynchronous task used to load icons in a background thread.
-	 */
-	private static class LoadIconTask extends AsyncTask<Object, Void, View> {
-		@Override
-		protected View doInBackground(Object... params) {
-			try {
-				final PackageInfoData app = (PackageInfoData) params[0];
-				final PackageManager pkgMgr = (PackageManager) params[1];
-				final View viewToUpdate = (View) params[2];
-				if (!app.icon_loaded) {
-					app.cached_icon = pkgMgr.getApplicationIcon(app.appinfo);
-					app.icon_loaded = true;
-				}
-				// Return the view to update at "onPostExecute"
-				// Note that we cannot be sure that this view still references
-				// "app"
-				return viewToUpdate;
-			} catch (Exception e) {
-				Log.e(TAG, "Error loading icon", e);
-				return null;
-			}
-		}
-
-		protected void onPostExecute(View viewToUpdate) {
-			try {
-				// This is executed in the UI thread, so it is safe to use
-				// viewToUpdate.getTag()
-				// and modify the UI
-				final ViewHolder entryToUpdate = (ViewHolder) viewToUpdate
-						.getTag();
-				entryToUpdate.icon
-						.setImageDrawable(entryToUpdate.app.cached_icon);
-			} catch (Exception e) {
-				Log.e(TAG, "Error showing icon", e);
-			}
-		};
 	}
 
 	@Override
