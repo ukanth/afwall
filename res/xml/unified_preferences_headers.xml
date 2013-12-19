@@ -3,25 +3,20 @@
 
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$GeneralPreferenceFragment"
-        unified:preferenceRes="@xml/ui_preferences"
-        unified:title="@string/ui_prefs_title" />
+        unified:preferenceRes="@xml/ui_preferences" />
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$SecPreferenceFragment"
-        unified:preferenceRes="@xml/security_preferences"
-        unified:title="@string/sec_prefs_title" />
+        unified:preferenceRes="@xml/security_preferences" />
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$ExpPreferenceFragment"
-        unified:preferenceRes="@xml/experimental_preferences"
-        unified:title="@string/exp_prefs_title" />
-    
+        unified:preferenceRes="@xml/experimental_preferences" />
+
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$MultiProfilePreferenceFragment"
-        unified:preferenceRes="@xml/profiles_preferences"
-        unified:title="@string/mp_prefs_title" />
-    
+        unified:preferenceRes="@xml/profiles_preferences" />
+
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$CustomBinaryPreferenceFragment"
-        unified:preferenceRes="@xml/ui_custom_preferences"
-        unified:title="Binaries" />
-    
+        unified:preferenceRes="@xml/ui_custom_preferences" />
+
 </preference-headers>
