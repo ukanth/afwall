@@ -284,5 +284,8 @@
      <string name="select_all">Do you want to select all ?</string>
      <string name="reverse_all">Do you want to reverse select all ?</string>
      <string name="unselect_all">Do you want to unselect all ?</string>
-     
+
+     <!-- Strings that need to be localized in order to build inside AOSP -->
+     <string name="apply_color">Press on Color to apply</string>
+     <string name="arrow">→</string>
 </resources>
