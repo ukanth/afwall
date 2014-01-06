@@ -99,7 +99,7 @@ Prerequisites:
 * Android SDK in your $PATH (both platform-tools/ and tools/ directories)
 * javac 1.6 and a recent version of Apache ant in your $PATH
 * git in your $PATH
-* Use the Android SDK Manager to install APIs 14, 16, and 17
+* Use the Android SDK Manager to install APIs 14, 16, and 19
 
 Quick start:
 
