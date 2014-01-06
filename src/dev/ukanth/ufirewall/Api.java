@@ -482,18 +482,26 @@ public final class Api {
 		addInterfaceRouting(ctx, cmds);
 
 		// send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
+		if (G.enableVPN()) {
+			// if !enableVPN then we ignore those interfaces (pass all traffic)
+			for (final String itf : ITFS_VPN) {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-vpn");
+			}
+			// KitKat policy based routing - see:
+			// http://forum.xda-developers.com/showthread.php?p=48703545
+			// This covers mark range 0x3c - 0x47.  The official range is believed to be
+			// 0x3c - 0x45 but this is close enough.
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x3c/0xfffc -g " + AFWALL_CHAIN_NAME + "-vpn");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x40/0xfff8 -g " + AFWALL_CHAIN_NAME + "-vpn");
+			}
+		}
 		for (final String itf : ITFS_WIFI) {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-wifi");
 		}
 
 		for (final String itf : ITFS_3G) {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
-		}
-		if (G.enableVPN()) {
-			// if !enableVPN then we ignore those interfaces (pass all traffic)
-			for (final String itf : ITFS_VPN) {
-				cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-vpn");
-			}
 		}
 
 		final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
