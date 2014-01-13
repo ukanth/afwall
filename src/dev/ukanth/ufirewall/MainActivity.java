@@ -538,7 +538,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 */
 	private void showApplications(final String searchStr) {
 		this.dirty = false;
-		List<PackageInfoData> searchApp = Collections.synchronizedList(new ArrayList<PackageInfoData>());
+		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
 		boolean isResultsFound = false;
 		if(searchStr !=null && searchStr.length() > 1) {
@@ -553,12 +553,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			}
 		}
 		
-		final List<PackageInfoData> apps2 = isResultsFound ? searchApp : searchStr.equals("") ? apps : Collections.synchronizedList(new ArrayList<Api.PackageInfoData>());
+		final List<PackageInfoData> apps2 = isResultsFound ? searchApp : searchStr.equals("") ? apps : new ArrayList<Api.PackageInfoData>();
 
 		// Sort applications - selected first, then alphabetically
-		synchronized (apps2) {
-			Collections.sort(apps2, new PackageComparator());	
-		}
+		Collections.sort(apps2, new PackageComparator());	
 		
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore

@@ -3,7 +3,7 @@
  * Android Manifest
  * Copyright (C) 2007-2008 The Android Open Source Project
  * Copyright (C) 2009-2011 Rodrigo Zechin Rosauro
- * Copyright (C) 2011-2013 Umakanthan Chandran
+ * Copyright (C) 2011-2014 Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="144"
-    android:versionName="1.2.8-BETA3" >
+    android:versionCode="146"
+    android:versionName="1.2.8" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk

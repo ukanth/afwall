@@ -611,10 +611,8 @@ public final class Api {
 			}
 
 		}
-		synchronized(uids)  {
-			Collections.sort(uids);	
-		}
-		
+
+		Collections.sort(uids);	
 		return uids;
 	}
 	
@@ -1262,9 +1260,7 @@ public final class Api {
 			}
 		}
 		// Sort the array to allow using "Arrays.binarySearch" later
-		synchronized (listUids) {
-			Collections.sort(listUids);	
-		}
+		Collections.sort(listUids);	
 		
 		return listUids;
 	}
