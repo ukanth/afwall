@@ -260,5 +260,7 @@
     <string name="uploaded">Uploaded</string>
     <string name="downloaded">Downloaded</string>
     <string name="app_system_detail">Open system details</string>
+    
+    <string name="settings_pwd_not_equal">Passwords mismatch</string>
 
 </resources>
