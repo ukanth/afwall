@@ -8,12 +8,10 @@
   <string name="showrules">显示规则</string>
   <string name="applyrules">应用规则</string>
   <string name="saverules">保存规则</string>
-  <string name="purgerules">清除规则</string>
   <string name="setpwd">设置密码</string>
   <string name="help">帮助</string>
   <string name="close">关闭</string>
   <string name="exit">退出</string>
-  <string name="error_flush">清理 iptables 错误</string>
   <string name="error_purge">清除 iptables 时错误</string>
   <string name="error_binary">二进制文件安装错误。</string>
   <string name="error_migration">Error migrating old settings</string>
@@ -29,15 +27,13 @@
   <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
   <string name="ntp_item">(NTP) - Internet time servers</string>
   <string name="root_item">(root) - 以root身份运行的应用</string>
-  <string name="operation_timeout">Operation timed out</string>
-  <string name="fw_enabled">防火墙已启用</string>
-  <string name="fw_disabled">防火墙已禁用</string>
+  <string name="fw_enabled">Enable Firewall</string>
+  <string name="fw_disabled">Disable Firewall</string>
   <string name="flushed">激活规则</string>
   <string name="show_log">显示日志</string>
   <string name="clear_log">清除日志</string>
   <string name="applying_rules">正在应用 iptables 规则。</string>
   <string name="saving_rules">正在保存 iptables 规则。</string>
-  <string name="deleting_rules">正在删除 iptables 规则。</string>
   <string name="rules_applied">规则应用成功</string>
   <string name="rules_saved">规则保存成功</string>
   <string name="rules_deleted">规则删除成功</string>
@@ -46,13 +42,11 @@
   <string name="enterpass">输入密码：</string>
   <string name="error_write_pref">参数写入错误</string>
   <string name="enternewpass">输入新密码（放空时删除）:</string>
-  <string name="reenternewpass">重新输入密码 :</string>
   <string name="passdefined">密码锁定已设置</string>
   <string name="passremoved">密码锁定已移除</string>
   <string name="passerror">改变密码锁定出错</string>
   <string name="working">工作中...</string>
   <string name="reading_apps">检索已安装的应用程序...</string>
-  <string name="please_wait">请稍等</string>
   <string name="mode">模式:</string>
   <string name="mode_header">模式：%s</string>
   <string name="mode_whitelist">白名单（允许选中）</string>
@@ -69,25 +63,18 @@
   <string name="custom_script_defined">自定义脚本已定义</string>
   <string name="custom_script_removed">自定义脚本已删除</string>
   <string name="custom_script_error">保存自定义脚本时出错</string>
-  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.
-</string>
+  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.</string>
   <string name="custom_script2_info">\n \"<b>自定义关闭脚本</b>\n 您可以自定义脚本用于防火墙被 <b>禁用</b> </string>
   <string name="unsaved_changes">未保存更改</string>
   <string name="unsaved_changes_message">\"有未保存更改。
 您想保存还是放弃它们？\"</string>
   <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables 规则</string>
-  <string name="settings_password">输入密码</string>
-  <string name="settings_password2">再次输入密码</string>
-  <string name="settings_pwd_not_equal">密码不匹配 
-</string>
-  <string name="settings_pwd_equal">密码匹配</string>
   <string name="copy">复制</string>
   <string name="copied">已复制</string>
   <string name="Search">搜索</string>
   <string name="flushRulesConfirm">这将清除所有的 iptables 规则！您想要继续吗？</string>
   <string name="overrideRules">这将覆盖现有的规则！ 您想要导入规则吗？</string>
-  <string name="prefLocalmode">只允许本地主机和端口 22（ssh）入站/出站连接</string>
   <string name="notification_new">新应用程序已安装</string>
   <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
   <string name="apply">应用</string>
@@ -123,7 +110,6 @@
   <string name="showlog_title">防火墙日志</string>
   <string name="enable_log">开启日志</string>
   <string name="disable_log">取消日志</string>
-  <string name="log_enabled">日志已启用</string>
   <string name="log_disabled">日志已禁用</string>
   <string name="log_was_enabled">日志已被启用</string>
   <string name="log_was_disabled">日志已被禁用</string>
@@ -153,11 +139,6 @@
   <string name="profile1">配置 1</string>
   <string name="profile2">配置 2</string>
   <string name="profile3">配置 3</string>
-  <string name="defaultProfileSummary">自定义默认配置名称</string>
-  <string name="customProfile1Summary">自定义配置1名称</string>
-  <string name="customProfile2Summary">自定义配置2名称</string>
-  <string name="customProfile3Summary">自定义配置3名称</string>
-  <string name="ifaces">网络介面</string>
   <string name="lan_title">局域网控制</string>
   <string name="lan_summary">启用此项以单独地从WiFi权限中控制局域网权限</string>
   <string name="iptables_pref">IPtables 的二进制文件</string>
@@ -165,8 +146,6 @@
   <string name="vpnSummary">启用该额外的功能来控制网络和 VPN</string>
   <string name="roaming">漫游控制</string>
   <string name="roamingSummary">启用该额外的功能在漫游时来控制互联网</string>
-  <string name="usb3g_pref_summary">当使用 USB 连接时阻止 AFWall 应用 3g 规则</string>
-  <string name="usb3g_pref_title">连接 USB 时禁用 3G 规则</string>
   <string name="toast_bin_installed">AFWall+: 二进制文件已安装！</string>
   <string name="toast_enabled">AFWall+: 防火墙已启用！</string>
   <string name="toast_error_enabling">AFWall+: 启用防火墙时出错！</string>
@@ -210,30 +189,28 @@
   <string name="notify_pref_title">启用通知</string>
   <string name="syscolor_pref_title">系统应用程序颜色</string>
   <string name="syscolor_pref_summary_on">选定的颜色将应用于系统应用程序</string>
-  <string name="syscolor_pref_summary_off">默认颜色</string>
   <string name="enableConfirmTitle">确认防火墙禁用操作</string>
   <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
-  <string name="enableConfirm_summary_off">取消防火墙无需再次确定</string>
   <string name="showUid">显示应用程序的 UID</string>
   <string name="showuid_summary_on">在主视图显示应用程序的 UID。</string>
   <string name="showuid_summary_off">应用程序 UID 已隐藏，启用后有助于跟踪日志</string>
   <string name="languages">语言</string>
   <string name="active_rules">活动规则</string>
   <string name="active_rules_summary">Apply firewall rules on every connectivity change (Roam/LAN/Wifi/3G/tether)</string>
-  <string name="profile_management">配置文件管理</string>
   <string name="profile_add">添加配置文件</string>
   <string name="profile_remove">删除配置文件</string>
-  <string name="profile_reset">重置配置文件</string>
   <string name="profile_rename">重命名配置文件</string>
-  <string name="email_to_dev">发送电子邮件给开发人员</string>
   <string name="Donate">捐赠！</string>
-  <string name="rules_management">规则管理</string>
-  <string name="sort_app">排序方式</string>
-  <string name="sort_application">应用程序</string>
-  <string name="sort_uid">UID</string>
   <string name="multi_apply_rules">切换配置时应用规则</string>
   <string name="multi_apply_rules_info">这将在切换配置文件时加载和应用规则</string>
   <string name="select_all">Do you want to select all ?</string>
   <string name="reverse_all">Do you want to reverse select all ?</string>
   <string name="unselect_all">Do you want to unselect all ?</string>
+  <string name="multi_user_title">Support MultiUser</string>
+  <string name="multi_user_summary">Enable to support android multi-user on a tablet</string>
+  <string name="device_admin_desc">Additional Security - Prevent AFWall+ from uninstall</string>
+  <string name="traffic_detail_title">Traffic Details</string>
+  <string name="uploaded">Uploaded</string>
+  <string name="downloaded">Downloaded</string>
+  <string name="app_system_detail">Open system details</string>
 </resources>
