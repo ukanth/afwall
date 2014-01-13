@@ -4,3 +4,5 @@
     android:layout_height="wrap_content"
     android:hint="@string/Search"
     android:id="@+id/searchApps"/>
+
+ 

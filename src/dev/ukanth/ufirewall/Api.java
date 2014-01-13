@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -61,15 +63,18 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
+import android.os.UserManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
@@ -139,10 +144,15 @@ public final class Api {
 
 	// iptables can exit with status 4 if two processes tried to update the same table
 	private static final int IPTABLES_TRY_AGAIN = 4;
+	
+	private static String AFWALL_CHAIN_NAME = "afwall";
 
-	private static final String dynChains[] = { "afwall-3g-postcustom", "afwall-3g-fork", "afwall-wifi-postcustom", "afwall-wifi-fork" };
-	private static final String staticChains[] = { "afwall", "afwall-3g", "afwall-wifi", "afwall-reject", "afwall-vpn",
-		"afwall-3g-tether", "afwall-3g-home", "afwall-3g-roam", "afwall-wifi-tether", "afwall-wifi-wan", "afwall-wifi-lan" };
+	private static final String dynChains[] = { 
+		 "-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork" };
+	
+	private static final String staticChains[] = {  "", "-3g", "-wifi", 
+		  "-reject", "-vpn", "-3g-tether",  "-3g-home",  "-3g-roam", 
+		  "-wifi-tether", "-wifi-wan", "-wifi-lan" };
 
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
@@ -151,6 +161,7 @@ public final class Api {
 	static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
     static List<LogEntry> logEntriesList = new ArrayList<LogEntry>();
 	public static String ipPath = null;
+	public static String bbPath = null;
 	public static boolean setv6 = false;
 	private static Map<String,Integer> specialApps = null;
 
@@ -205,8 +216,10 @@ public final class Api {
 		} else if (pref.equals("builtin")) {
 			builtin = true;
 		} else {
-			// auto setting: ICS+ devices are mostly expected to have good iptables binaries
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			// auto setting:
+			// IPv4 iptables on ICS+ devices is mostly sane, so we'll use it by default
+			// IPv6 ip6tables can return the wrong exit status (bug #215) so default to our fixed version
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !setv6) {
 				builtin = false;
 			} else {
 				builtin = true;
@@ -220,6 +233,7 @@ public final class Api {
 
 		Api.setv6 = setv6;
 		Api.ipPath = dir + (setv6 ? "ip6tables" : "iptables");
+		Api.bbPath = getBusyBoxPath(ctx);
 	}
 	
 	static String getBusyBoxPath(Context ctx) {
@@ -285,7 +299,7 @@ public final class Api {
 	}
 
 	private static void addRulesForUidlist(List<String> cmds, List<Integer> uids, String chain, boolean whitelist) {
-		String action = whitelist ? " -j RETURN" : " -j afwall-reject";
+		String action = whitelist ? " -j RETURN" : " -j " + AFWALL_CHAIN_NAME + "-reject";
 
 		if (uids.indexOf(SPECIAL_UID_ANY) >= 0) {
 			if (!whitelist) {
@@ -313,16 +327,16 @@ public final class Api {
 			if (whitelist) {
 				if (kernel_checked) {
 					// reject any other UIDs, but allow the kernel through
-					cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j afwall-reject");
+					cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + AFWALL_CHAIN_NAME + "-reject");
 				} else {
 					// kernel is blocked so reject everything
-					cmds.add("-A " + chain + " -j afwall-reject");
+					cmds.add("-A " + chain + " -j " + AFWALL_CHAIN_NAME + "-reject");
 				}
 			} else {
 				if (kernel_checked) {
 					// allow any other UIDs, but block the kernel
 					cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
-					cmds.add("-A " + chain + " -j afwall-reject");
+					cmds.add("-A " + chain + " -j " + AFWALL_CHAIN_NAME + "-reject");
 				}
 			}
 		}
@@ -333,12 +347,12 @@ public final class Api {
 		// this can be changed dynamically through the Firewall Logs activity
 		if (G.enableLog()) {
 			if (G.logTarget().equals("LOG")) {
-				cmds.add("-A afwall-reject -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
 			} else if (G.logTarget().equals("NFLOG")) {
-				cmds.add("-A afwall-reject -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
 			}
 		}
-		cmds.add("-A afwall-reject -j REJECT");
+		cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
 	}
 
 	private static void addCustomRules(Context ctx, String prefName, List<String> cmds) {
@@ -364,44 +378,44 @@ public final class Api {
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		for (String s : dynChains) {
-			cmds.add("-F " + s);
+			cmds.add("-F " + AFWALL_CHAIN_NAME + s);
 		}
 
 		if (whitelist) {
 			// always allow the DHCP client full wifi access
-			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A afwall-wifi-postcustom", "-j RETURN");
+			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
 		}
 
 		if (cfg.isTethered) {
-			cmds.add("-A afwall-wifi-postcustom -j afwall-wifi-tether");
-			cmds.add("-A afwall-3g-postcustom -j afwall-3g-tether");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
 		} else {
-			cmds.add("-A afwall-wifi-postcustom -j afwall-wifi-fork");
-			cmds.add("-A afwall-3g-postcustom -j afwall-3g-fork");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
 		}
 
 		if (G.enableLAN() && !cfg.isTethered) {
 			if(setv6 && !cfg.lanMaskV6.equals("")) {
-				cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
-				cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 			} else if(!setv6 && !cfg.lanMaskV4.equals("")) {
-				cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
-				cmds.add("-A afwall-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j afwall-wifi-wan");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 			} else {
 				// No IP address -> no traffic.  This prevents a data leak between the time
 				// the interface gets an IP address, and the time we process the intent
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
 				// legitimate traffic from time to time, so we won't log the failures.
-				cmds.add("-A afwall-wifi-fork -j REJECT");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
 			}
 		} else {
-			cmds.add("-A afwall-wifi-fork -j afwall-wifi-wan");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 		}
 
 		if (G.enableRoam() && cfg.isRoaming) {
-			cmds.add("-A afwall-3g-fork -j afwall-3g-roam");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-roam");
 		} else {
-			cmds.add("-A afwall-3g-fork -j afwall-3g-home");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-home");
 		}
 	}
 
@@ -426,6 +440,11 @@ public final class Api {
 		}
 		
 		assertBinaries(ctx, showErrors);
+		if(G.isMultiUser()) {
+			//FIXME: after setting this, we need to flush the iptables ?
+			AFWALL_CHAIN_NAME = AFWALL_CHAIN_NAME + (G.getMultiUserId() != 0 ? G.getMultiUserId() : "");
+		}			
+					
 
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
@@ -437,21 +456,21 @@ public final class Api {
 		cmds.add("-P OUTPUT DROP");
 
 		for (String s : staticChains) {
-			cmds.add("#NOCHK# -N " + s);
-			cmds.add("-F " + s);
+			cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
+			cmds.add("-F " + AFWALL_CHAIN_NAME + s);
 		}
 		for (String s : dynChains) {
-			cmds.add("#NOCHK# -N " + s);
+			cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
 			// addInterfaceRouting() will flush these chains, but not create them
 		}
 
-		cmds.add("#NOCHK# -D OUTPUT -j afwall");
-		cmds.add("-I OUTPUT 1 -j afwall");
+		cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME );
+		cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME );
 
 		// custom rules in afwall-{3g,wifi,reject} supersede everything else
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
-		cmds.add("-A afwall-3g -j afwall-3g-postcustom");
-		cmds.add("-A afwall-wifi -j afwall-wifi-postcustom");
+		cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g -j " + AFWALL_CHAIN_NAME + "-3g-postcustom");
+		cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi -j " + AFWALL_CHAIN_NAME + "-wifi-postcustom");
 		addRejectRules(cmds,ctx);
 
 		if (G.enableInbound()) {
@@ -463,18 +482,26 @@ public final class Api {
 		addInterfaceRouting(ctx, cmds);
 
 		// send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
-		for (final String itf : ITFS_WIFI) {
-			cmds.add("-A afwall -o " + itf + " -j afwall-wifi");
-		}
-
-		for (final String itf : ITFS_3G) {
-			cmds.add("-A afwall -o " + itf + " -j afwall-3g");
-		}
 		if (G.enableVPN()) {
 			// if !enableVPN then we ignore those interfaces (pass all traffic)
 			for (final String itf : ITFS_VPN) {
-				cmds.add("-A afwall -o " + itf + " -j afwall-vpn");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-vpn");
 			}
+			// KitKat policy based routing - see:
+			// http://forum.xda-developers.com/showthread.php?p=48703545
+			// This covers mark range 0x3c - 0x47.  The official range is believed to be
+			// 0x3c - 0x45 but this is close enough.
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x3c/0xfffc -g " + AFWALL_CHAIN_NAME + "-vpn");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x40/0xfff8 -g " + AFWALL_CHAIN_NAME + "-vpn");
+			}
+		}
+		for (final String itf : ITFS_WIFI) {
+			cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-wifi");
+		}
+
+		for (final String itf : ITFS_3G) {
+			cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
 		}
 
 		final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
@@ -486,38 +513,38 @@ public final class Api {
 		     (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
 
 			String users[] = { "root", "nobody" };
-			String action = " -j " + (whitelist ? "RETURN" : "afwall-reject");
+			String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
 
 			// DHCP replies to client
-			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+			addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
 
 			// DNS replies to client
-			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p udp --sport=53" + action);
-			addRuleForUsers(cmds, users, "-A afwall-wifi-tether", "-p tcp --sport=53" + action);
+			addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
+			addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
 
 			// DNS requests to upstream servers
-			addRuleForUsers(cmds, users, "-A afwall-3g-tether", "-p udp --dport=53" + action);
-			addRuleForUsers(cmds, users, "-A afwall-3g-tether", "-p tcp --dport=53" + action);
+			addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
+			addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
 		}
 
 		// if tethered, try to match the above rules (if enabled).  no match -> fall through to the
 		// normal 3G/wifi rules
-		cmds.add("-A afwall-wifi-tether -j afwall-wifi-fork");
-		cmds.add("-A afwall-3g-tether -j afwall-3g-fork");
+		cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-tether -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
+		cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-tether -j " + AFWALL_CHAIN_NAME + "-3g-fork");
 
 		// NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
 		// on the LAN
 		if (whitelist) {
-			cmds.add("-A afwall-wifi-lan -p udp --dport 53 -j RETURN");
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
 		}
 
 		// now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
 		// in whitelist mode the last rule in the list routes everything else to afwall-reject
-		addRulesForUidlist(cmds, uids3g, "afwall-3g-home", whitelist);
-		addRulesForUidlist(cmds, uidsRoam, "afwall-3g-roam", whitelist);
-		addRulesForUidlist(cmds, uidsWifi, "afwall-wifi-wan", whitelist);
-		addRulesForUidlist(cmds, uidsLAN, "afwall-wifi-lan", whitelist);
-		addRulesForUidlist(cmds, uidsVPN, "afwall-vpn", whitelist);
+		addRulesForUidlist(cmds, uids3g,  AFWALL_CHAIN_NAME + "-3g-home", whitelist);
+		addRulesForUidlist(cmds, uidsRoam, AFWALL_CHAIN_NAME + "-3g-roam", whitelist);
+		addRulesForUidlist(cmds, uidsWifi, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
+		addRulesForUidlist(cmds, uidsLAN,  AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
+		addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
 		cmds.add("-P OUTPUT ACCEPT");
 
@@ -532,9 +559,19 @@ public final class Api {
 	 * @param out A list of UNIX commands to execute
 	 */
 	private static void iptablesCommands(List<String> in, List<String> out) {
+		boolean firstLit = true;
 		for (String s : in) {
 			if (s.matches("#LITERAL# .*")) {
-				out.add(s.replaceFirst("^#LITERAL# ", "").replaceAll("\\$IPTABLES", ipPath));
+				if (firstLit) {
+					// export vars for the benefit of custom scripts
+					// "true" is a dummy command which needs to return success
+					firstLit = false;
+					out.add("export IPTABLES=\"" + ipPath + "\"; "
+							+ "export BUSYBOX=\"" + bbPath + "\"; "
+							+ "export IPV6=" + (setv6 ? "1" : "0") + "; "
+							+ "true");
+				}
+				out.add(s.replaceFirst("^#LITERAL# ", ""));
 			} else if (s.matches("#NOCHK# .*")) {
 					out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath + " "));
 			} else {
@@ -574,7 +611,8 @@ public final class Api {
 			}
 
 		}
-		Collections.sort(uids);
+
+		Collections.sort(uids);	
 		return uids;
 	}
 	
@@ -762,15 +800,15 @@ public final class Api {
 		List<String> out = new ArrayList<String>();
 
 		for (String s : staticChains) {
-			cmds.add("-F " + s);
+			cmds.add("-F " + AFWALL_CHAIN_NAME + s);
 		}
 		for (String s : dynChains) {
-			cmds.add("-F " + s);
+			cmds.add("-F " + AFWALL_CHAIN_NAME + s);
 		}
 		//make sure reset the OUTPUT chain to accept state.
 		cmds.add("-P OUTPUT ACCEPT");
 		
-		cmds.add("-D OUTPUT -j afwall");
+		cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME );
 		
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT2, cmds);
 
@@ -874,7 +912,7 @@ public final class Api {
 			return;
 		}
 		List<String> cmds = new ArrayList<String>();
-		cmds.add("-F afwall-reject");
+		cmds.add("-F " + AFWALL_CHAIN_NAME + "-reject");
 		addRejectRules(cmds,ctx);
 		apply46(ctx, cmds, callback);
 	}
@@ -1078,13 +1116,16 @@ public final class Api {
 		}
 		
 		//revert back to old approach
+		
+		//always use the defaul preferences to store cache value - reduces the application usage size
+		final SharedPreferences cachePrefs = ctx.getSharedPreferences("AFWallPrefs", Context.MODE_PRIVATE);
 
 		int count = 0;
 		try {
 			final PackageManager pkgmanager = ctx.getPackageManager();
 			final List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
 			SparseArray<PackageInfoData> syncMap = new SparseArray<PackageInfoData>();
-			final Editor edit = prefs.edit();
+			final Editor edit = cachePrefs.edit();
 			boolean changed = false;
 			String name = null;
 			String cachekey = null;
@@ -1219,7 +1260,8 @@ public final class Api {
 			}
 		}
 		// Sort the array to allow using "Arrays.binarySearch" later
-		Collections.sort(listUids);
+		Collections.sort(listUids);	
+		
 		return listUids;
 	}
 
@@ -1498,6 +1540,28 @@ public final class Api {
 				}
 			}
 		 }
+	}
+	
+	/**
+	 * Cleanup the cache from profiles - Improve performance.
+	 * @param ctx
+	 */
+	public static void removeAllProfileCacheLabel(Context ctx){
+		SharedPreferences prefs;
+		final String cacheLabel = "cache.label.";
+		String cacheKey;
+		for(String profileName: G.profiles) {
+			prefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
+			if(prefs != null) {
+				Map<String,?> keys = prefs.getAll();
+				for(Map.Entry<String,?> entry : keys.entrySet()){
+					if(entry.getKey().startsWith(cacheLabel)){
+						cacheKey = entry.getKey();
+						prefs.edit().remove(cacheKey).commit();
+					}
+				 }		
+			}
+		}
 	}
 
 	public static boolean isPackageExists(PackageManager pm, String targetPackage) {
@@ -1856,12 +1920,14 @@ public final class Api {
 	    final int apiLevel = Build.VERSION.SDK_INT;
 	    if (apiLevel >= 9) { // above 2.3
 	        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	        Uri uri = Uri.fromParts(SCHEME, packageName, null);
 	        intent.setData(uri);
 	    } else { // below 2.3
 	        final String appPkgName = (apiLevel == 8 ? APP_PKG_NAME_22
 	                : APP_PKG_NAME_21);
 	        intent.setAction(Intent.ACTION_VIEW);
+	        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	        intent.setClassName(APP_DETAILS_PACKAGE_NAME,
 	                APP_DETAILS_CLASS_NAME);
 	        intent.putExtra(appPkgName, packageName);
@@ -1949,10 +2015,16 @@ public final class Api {
 	public static void updateLanguage(Context context, String lang) {
 	    if (!"".equals(lang)) {
 	        Locale locale = new Locale(lang);
-	        Locale.setDefault(locale);
+	       /* Locale.setDefault(locale);
 	        Configuration config = new Configuration();
 	        config.locale = locale;
-	        context.getResources().updateConfiguration(config, null);
+	        context.getResources().updateConfiguration(config, null);*/
+	        
+	        Resources res = context.getResources();
+			DisplayMetrics dm = res.getDisplayMetrics();
+			Configuration conf = res.getConfiguration();
+			conf.locale = locale;
+			res.updateConfiguration(conf, dm);
 	    }
 	}
 	
@@ -1974,6 +2046,39 @@ public final class Api {
 			}
 			return exitCode;
 		}
-
 	}
+	
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) public static void setUserOwner(Context context)
+	{
+		if(supportsMultipleUsers(context)){
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+				try
+			    {
+			        Method getUserHandle = UserManager.class.getMethod("getUserHandle");
+			        int userHandle = (Integer) getUserHandle.invoke(context.getSystemService(Context.USER_SERVICE));
+			        G.setMultiUserId(userHandle);
+			    }
+			    catch (Exception ex)
+			    {
+			    	Log.e(TAG,"Exception on setUserOwner " + ex.getMessage());
+			    }
+			}
+		}
+	}
+	
+	@SuppressLint("NewApi")
+    public static boolean supportsMultipleUsers(Context context) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			final UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
+			try {
+				Method supportsMultipleUsers = UserManager.class.getMethod("supportsMultipleUsers");
+				return (Boolean)supportsMultipleUsers.invoke(um);
+			}
+			catch (Exception ex) {
+				return false;
+			}
+		}
+		return false;
+    }
+
 }

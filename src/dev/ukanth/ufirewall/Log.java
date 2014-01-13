@@ -42,7 +42,7 @@ public class Log {
 	public static class LogEntry {
 		Date timestamp;
 		int level;
-		String msg;
+		String msg = "";
 	}
 
 	private static LinkedList<LogEntry> circ = new LinkedList<LogEntry>();

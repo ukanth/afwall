@@ -3,7 +3,7 @@
  * Android Manifest
  * Copyright (C) 2007-2008 The Android Open Source Project
  * Copyright (C) 2009-2011 Rodrigo Zechin Rosauro
- * Copyright (C) 2011-2013 Umakanthan Chandran
+ * Copyright (C) 2011-2014 Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="141"
-    android:versionName="1.2.7" >
+    android:versionCode="146"
+    android:versionName="1.2.8" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -79,7 +79,7 @@
         android:name="dev.ukanth.ufirewall.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
             android:hardwareAccelerated="true"
             android:label="@string/app_name" >
             <intent-filter>
@@ -99,7 +99,7 @@
         </activity>
         <activity
             android:name="dev.ukanth.ufirewall.preferences.PreferencesActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|locale"
+            android:configChanges="orientation|keyboardHidden|screenSize|locale|screenLayout"
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.Sherlock" >
         </activity>
@@ -110,6 +110,7 @@
             android:theme="@style/Theme.Sherlock" >
         </activity>
         <activity android:name="dev.ukanth.ufirewall.RulesActivity"></activity>
+        <activity android:name="dev.ukanth.ufirewall.AppDetailActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.LogActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity" android:theme="@style/Theme.Transparent" >
             <intent-filter>
@@ -122,6 +123,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <data android:scheme="file"/>
 				<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
@@ -178,14 +181,13 @@
         <receiver
             android:name="dev.ukanth.ufirewall.admin.AdminDeviceReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN" >
-            <meta-data android:name="android.app.device_admin" 
-            android:resource="@xml/device_admin"/>
+            <meta-data android:name="android.app.device_admin" android:resource="@xml/device_admin"/>
             <intent-filter>
-
                 <!-- This action is required -->
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
                 <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLE_REQUESTED" />
                 <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLED" />
+		        <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
             </intent-filter>
         </receiver>
         

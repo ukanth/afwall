@@ -12,6 +12,9 @@
 
 package dev.ukanth.ufirewall.plugin;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,10 +23,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.InterfaceTracker;
+import dev.ukanth.ufirewall.Log;
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.
@@ -91,14 +100,25 @@ public final class FireReceiver extends BroadcastReceiver
        				
         		case 1:	
         			if(oldPwd.length() == 0 && newPwd.length() == 0){
-						if (Api.purgeIptables(context, false)) {
-							msg.arg1 = R.string.toast_disabled;
+        				boolean ret = Api.purgeIptables(context, false, new RootCommand()
+    					.setFailureToast(R.string.error_apply)
+    					.setCallback(new RootCommand.Callback() {
+    						@Override
+    						public void cbFunc(RootCommand state) {
+    							if (state.exitCode == 0) {
+    								Log.i(Api.TAG, "" + ": applied rules");
+    							} else {
+    								// error details are already in logcat
+    								Api.setEnabled(context,  false,  false);
+    								errorNotification(context);
+    							}
+    						}
+    					}));
+		        		if (!ret) {
+		        			msg.arg1 = R.string.toast_error_disabling;
 							toaster.sendMessage(msg);
 							Api.setEnabled(context, false, false);
-						} else {
-							msg.arg1 = R.string.toast_error_disabling;
-							toaster.sendMessage(msg);
-						}
+		        		}
 					} else {
 						msg.arg1 = R.string.widget_disable_fail;
 						toaster.sendMessage(msg);
@@ -127,7 +147,24 @@ public final class FireReceiver extends BroadcastReceiver
                 			if(!disableToasts){
                 				Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();	
                 			}
-                			Api.applySavedIptablesRules(context, true);
+                			boolean ret = Api.fastApply(context, new RootCommand()
+        					.setFailureToast(R.string.error_apply)
+        					.setCallback(new RootCommand.Callback() {
+        						@Override
+        						public void cbFunc(RootCommand state) {
+        							if (state.exitCode == 0) {
+        								Log.i(Api.TAG, "" + ": applied rules");
+        							} else {
+        								// error details are already in logcat
+        								Api.setEnabled(context,  false,  false);
+        								errorNotification(context);
+        							}
+        						}
+        					}));
+			        		if (!ret) {
+			        			Log.e(Api.TAG, "applySavedIptablesRules() returned an error");
+			        			errorNotification(context);
+			        		}
                 		} else {
                				Toast.makeText(context, R.string.tasker_disabled, Toast.LENGTH_SHORT).show();
                 		}		
@@ -140,16 +177,50 @@ public final class FireReceiver extends BroadcastReceiver
         }
     }
     
-    private boolean applyRules(Context context,Message msg, Handler toaster) {
-		boolean success = false;
-		if (Api.applySavedIptablesRules(context, false)) {
+    
+    private static void errorNotification(Context ctx) {
+		NotificationManager mNotificationManager =
+				(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		// Artificial stack so that navigating backward leads back to the Home screen
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx)
+				.addParentStack(MainActivity.class)
+				.addNextIntent(new Intent(ctx, MainActivity.class));
+
+		Notification notification = new NotificationCompat.Builder(ctx)
+			.setContentTitle(ctx.getString(R.string.error_notification_title))
+			.setContentText(ctx.getString(R.string.error_notification_text))
+			.setTicker(ctx.getString(R.string.error_notification_ticker))
+			.setSmallIcon(R.drawable.widget_on)
+			.setAutoCancel(true)
+			.setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+			.build();
+
+		mNotificationManager.notify(InterfaceTracker.ERROR_NOTIFICATION_ID, notification);
+	}
+    
+    private boolean applyRules(final Context context,Message msg, Handler toaster) {
+    	boolean ret = Api.fastApply(context, new RootCommand()
+		.setFailureToast(R.string.error_apply)
+		.setCallback(new RootCommand.Callback() {
+			@Override
+			public void cbFunc(RootCommand state) {
+				if (state.exitCode == 0) {
+					Log.i(Api.TAG, "" + ": applied rules");
+				} else {
+					// error details are already in logcat
+					Api.setEnabled(context,  false,  false);
+					errorNotification(context);
+				}
+			}
+		}));
+		if (!ret) {
+			Log.e(Api.TAG, "applySavedIptablesRules() returned an error");
+			errorNotification(context);
+		} else {
 			msg.arg1 = R.string.toast_enabled;
 			toaster.sendMessage(msg);
-			success = true;
-		} else {
-			msg.arg1 = R.string.toast_error_enabling;
-			toaster.sendMessage(msg);
 		}
-		return success;
+		return ret;
 	}
 }

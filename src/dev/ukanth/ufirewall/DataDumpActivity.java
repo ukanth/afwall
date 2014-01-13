@@ -74,7 +74,9 @@ public abstract class DataDumpActivity extends SherlockActivity {
         // Load partially transparent black background
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_bg_black));
 
-        ((EditText)findViewById(R.id.rules)).setKeyListener(null);
+        EditText text = (EditText)findViewById(R.id.rules);
+        text.setKeyListener(null);
+        text.setHorizontallyScrolling(true);
         setData("");
         populateData(this);
 
@@ -85,7 +87,6 @@ public abstract class DataDumpActivity extends SherlockActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
     	// Common options: Copy, Export to SD Card, Refresh
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
-
 		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);
 		sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
 		sub.add(0, MENU_REFRESH, 0, R.string.refresh).setIcon(R.drawable.reload);

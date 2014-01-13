@@ -86,14 +86,12 @@ public class Shell {
 	public static List<String> run(String shell, String[] commands, String[] environment, boolean wantSTDERR) {
 		String shellUpper = shell.toUpperCase(Locale.ENGLISH);
 		
-		if (Debug.sanityChecksEnabled()) {
+		if (Debug.getSanityChecksEnabledEffective() && Debug.onMainThread()) {
 			// check if we're running in the main thread, and if so, crash if we're in debug mode,
 			// to let the developer know attention is needed here.
-			
-			if ((Looper.myLooper() != null) && (Looper.myLooper() == Looper.getMainLooper())) {
-				Debug.log(ShellOnMainThreadException.EXCEPTION_COMMAND);
-				throw new ShellOnMainThreadException(ShellOnMainThreadException.EXCEPTION_COMMAND);
-			}
+
+			Debug.log(ShellOnMainThreadException.EXCEPTION_COMMAND);
+			throw new ShellOnMainThreadException(ShellOnMainThreadException.EXCEPTION_COMMAND);
 		}
 		Debug.logCommand(String.format("[%s%%] START", shellUpper));
 		
@@ -129,10 +127,10 @@ public class Shell {
 			STDERR.start();
 			for (String write : commands) {
 				Debug.logCommand(String.format("[%s+] %s", shellUpper, write));
-				STDIN.writeBytes(write + "\n");
+				STDIN.write((write + "\n").getBytes("UTF-8"));
 				STDIN.flush();
 			}
-			STDIN.writeBytes("exit\n");
+			STDIN.write("exit\n".getBytes("UTF-8"));
 			STDIN.flush();
 			
 			// wait for our process to finish, while we gobble away in the background
@@ -554,8 +552,7 @@ public class Shell {
 		 * @return This Builder object for method chaining
 		 */
 		public Builder setMinimalLogging(boolean useMinimal) {
-			Debug.setDisableCommandLogging(useMinimal);
-			Debug.setDisableOutputLogging(useMinimal);
+			Debug.setLogTypeEnabled(Debug.LOG_COMMAND | Debug.LOG_OUTPUT, !useMinimal);
 			return this;
 		}
 
@@ -706,7 +703,7 @@ public class Shell {
 				
 		@Override
 		protected void finalize() throws Throwable {			
-			if (!closed && Debug.sanityChecksEnabled()) {
+			if (!closed && Debug.getSanityChecksEnabledEffective()) {
 				// waste of resources
 				Debug.log(ShellNotClosedException.EXCEPTION_NOT_CLOSED);
 				throw new ShellNotClosedException();												
@@ -767,10 +764,8 @@ public class Shell {
 		 * @param onCommandResultListener Callback to be called on completion (of all commands)
 		 */
 		public synchronized void addCommand(String[] commands, int code, OnCommandResultListener onCommandResultListener) {
-			if (running) {
-				this.commands.add(new Command(commands, code, onCommandResultListener));
-				runNextCommand();
-			}
+			this.commands.add(new Command(commands, code, onCommandResultListener));
+			runNextCommand();
 		}
 		
 		/**
@@ -787,7 +782,8 @@ public class Shell {
 			final int exitCode;
 
 			if (watchdog == null) return;
-
+			if (watchdogTimeout == 0) return;
+			
 			if (!isRunning()) {
 				exitCode = OnCommandResultListener.SHELL_DIED;
 				Debug.log(String.format("[%s%%] SHELL_DIED", shell.toUpperCase(Locale.ENGLISH)));
@@ -799,19 +795,7 @@ public class Shell {
 			}
 
 			if (handler != null) {
-				final Command fCommand = command;
-				final List<String> fBuffer = buffer;
-				startCallback();
-				handler.post(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							fCommand.onCommandResultListener.onCommandResult(fCommand.code, exitCode, fBuffer);
-						} finally {
-							endCallback();
-						}
-					}
-				});
+				postCallback(command, exitCode, buffer);
 			}
 
 			// prevent multiple callbacks for the same command
@@ -884,16 +868,23 @@ public class Shell {
 						startWatchdog();
 						for (String write : command.commands) {
 							Debug.logCommand(String.format("[%s+] %s", shell.toUpperCase(Locale.ENGLISH), write));
-							STDIN.writeBytes(write + "\n");						
+							STDIN.write((write + "\n").getBytes("UTF-8"));						
 						}
-						STDIN.writeBytes("echo " + command.marker + " $?\n");
-						STDIN.writeBytes("echo " + command.marker + " >&2\n");
+						STDIN.write(("echo " + command.marker + " $?\n").getBytes("UTF-8"));
+						STDIN.write(("echo " + command.marker + " >&2\n").getBytes("UTF-8"));
 						STDIN.flush();
 					} catch (IOException e) {
 					}
 				} else {
 					runNextCommand(false);
 				}				
+			} else if (!running) {
+				// our shell died for unknown reasons - abort all submissions
+				while (commands.size() > 0) {
+					Command command = commands.get(0);
+					commands.remove(0);
+					postCallback(command, OnCommandResultListener.SHELL_DIED, null);
+				}
 			}
 			
 			if (idle && notifyIdle) {
@@ -907,30 +898,9 @@ public class Shell {
 		 * Processes a STDOUT/STDERR line containing an end/exitCode marker
 		 */
 		private synchronized void processMarker() {
-			if (lastMarkerSTDOUT != null && command.marker.equals(lastMarkerSTDOUT) &&
-				lastMarkerSTDERR != null && command.marker.equals(lastMarkerSTDERR)) {
-				if (command.onCommandResultListener != null) {
-					if (buffer != null) {
-						if (handler != null) {
-							final List<String> fBuffer = buffer;
-							final int fExitCode = lastExitCode;
-							final Command fCommand = command;
-						
-							startCallback();
-							handler.post(new Runnable() {
-								@Override
-								public void run() {
-									try {
-										fCommand.onCommandResultListener.onCommandResult(fCommand.code, fExitCode, fBuffer);
-									} finally {
-										endCallback();
-									}
-								}
-							});							
-						} else {
-							command.onCommandResultListener.onCommandResult(command.code, lastExitCode, buffer);
-						}
-					}
+			if (command.marker.equals(lastMarkerSTDOUT) && (command.marker.equals(lastMarkerSTDERR))) {				
+				if (buffer != null) {
+					postCallback(command, lastExitCode, buffer);
 				}
 				
 				stopWatchdog();
@@ -1000,6 +970,30 @@ public class Shell {
 					callbackSync.notifyAll();
 				}
 			}
+		}
+
+		/**
+		 * Schedule a callback to run on the appropriate thread
+		 */
+		private void postCallback(final Command fCommand, final int fExitCode, final List<String> fOutput) {
+			if (fCommand.onCommandResultListener == null) {
+				return;
+			}
+			if (handler == null) {
+				fCommand.onCommandResultListener.onCommandResult(fCommand.code, fExitCode, fOutput);
+				return;
+			}
+			startCallback();
+			handler.post(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						fCommand.onCommandResultListener.onCommandResult(fCommand.code, fExitCode, fOutput);
+					} finally {
+						endCallback();
+					}
+				}
+			});
 		}
 		
 		/**
@@ -1101,7 +1095,7 @@ public class Shell {
 
 			// This method should not be called from the main thread unless the shell is idle
 			// and can be cleaned up with (minimal) waiting. Only throw in debug mode.
-			if (!_idle && Debug.sanityChecksEnabled() && (Looper.myLooper() != null) && (Looper.myLooper() == Looper.getMainLooper())) {
+			if (!_idle && Debug.getSanityChecksEnabledEffective() && Debug.onMainThread()) {
 				Debug.log(ShellOnMainThreadException.EXCEPTION_NOT_IDLE);
 				throw new ShellOnMainThreadException(ShellOnMainThreadException.EXCEPTION_NOT_IDLE);
 			}
@@ -1109,7 +1103,7 @@ public class Shell {
 			if (!_idle) waitForIdle();
 			
 			try {
-				STDIN.writeBytes("exit\n");
+				STDIN.write(("exit\n").getBytes("UTF-8"));
 				STDIN.flush();
 			
 				// wait for our process to finish, while we gobble away in the background
@@ -1141,7 +1135,7 @@ public class Shell {
 		 * Hopefully the StreamGobblers will croak on their own when the other side of
 		 * the pipe is closed.
 		 */
-		private synchronized void kill() {
+		public synchronized void kill() {
 			running = false;
 			closed = true;
 
@@ -1149,7 +1143,10 @@ public class Shell {
 				STDIN.close();
 			} catch (IOException e) {
 			}
-			process.destroy();
+			try {
+				process.destroy();
+			} catch (Exception e) {				
+			}
 		}
 
 		/**
@@ -1204,7 +1201,7 @@ public class Shell {
 		 * @return True if wait complete, false if wait interrupted
 		 */
 		public boolean waitForIdle() {
-			if (Debug.sanityChecksEnabled() && (Looper.myLooper() != null) && (Looper.myLooper() == Looper.getMainLooper())) {
+			if (Debug.getSanityChecksEnabledEffective() && Debug.onMainThread()) {
 				Debug.log(ShellOnMainThreadException.EXCEPTION_WAIT_IDLE);
 				throw new ShellOnMainThreadException(ShellOnMainThreadException.EXCEPTION_WAIT_IDLE);
 			}
