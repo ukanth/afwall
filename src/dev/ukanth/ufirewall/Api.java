@@ -1936,10 +1936,10 @@ public final class Api {
 	    context.startActivity(intent);
 	}
 	
-	public static boolean hasRootAccess(Context ctx, boolean showErrors) {
+	public static boolean hasRootAccess(Context ctx) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean isRoot = prefs.getBoolean("isRootAvail", false);
-
+		isRoot =false;
 		if (!isRoot) {
 			try {
 				// Run an empty script just to check root access
@@ -1950,14 +1950,20 @@ public final class Api {
 					edit.putBoolean("isRootAvail", true);
 					edit.commit();
 				} else {
-					if (showErrors) {
-						alert(ctx, ctx.getString(R.string.error_su));
-					}		
+					Api.showAlertDialogActivity(ctx, ctx.getString(R.string.error_common), ctx.getString(R.string.error_su));
 				}
 			} catch (Exception e) {
 			}
 		}
 		return isRoot;
+	}
+	
+	public static void showAlertDialogActivity(Context ctx,String title, String message) {
+		Intent dialog = new Intent(ctx,AlertDialogActivity.class);
+		dialog.putExtra("title", title);
+		dialog.putExtra("message", message);
+		dialog.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		ctx.startActivity(dialog);
 	}
 	
 	public static boolean isNetfilterSupported() {

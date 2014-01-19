@@ -119,6 +119,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			super.onCreate(savedInstanceState);
 			
 			isOnPause = false;
+			
+			if (getIntent().getBooleanExtra("EXIT", false)) {
+			    finish();
+			}
 
 			try {
 				/* enable hardware acceleration on Android >= 3.0 */
@@ -140,6 +144,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			if(G.disableIcons()){
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
 			}
+			
 			
 			if(G.enableRoam()){
 				addColumns(R.id.img_roam);
@@ -180,10 +185,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
 
-		new RootCommand()
-			.setFailureToast(R.string.error_su)
-			.setReopenShell(true)
-			.run(getApplicationContext(), cmds);
+		new RootCommand().setFailureToast(R.string.error_su)
+				.setReopenShell(true).run(getApplicationContext(), cmds);
+		
 	}
 
 	private void addColumns(int id) {
@@ -418,7 +422,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 */
 	private void showOrLoadApplications() {
 		//nocache!!
-		new GetAppList().execute();
+		new GetAppList().execute();	
 	}
 	
 
