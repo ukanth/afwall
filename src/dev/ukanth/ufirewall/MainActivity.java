@@ -33,6 +33,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -50,10 +51,12 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -138,7 +141,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
-			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			
 			if(G.disableIcons()){
@@ -1061,25 +1063,25 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			selectMode();
 			break;
 		case R.id.img_wifi:
-			selectActionConfirmation(getString(R.string.select_all), v.getId());
+			selectActionConfirmation(v.getId());
 			break;
 		case R.id.img_3g:
-			selectActionConfirmation(getString(R.string.select_all), v.getId());
+			selectActionConfirmation(v.getId());
 			break;
 		case R.id.img_roam:
-			selectActionConfirmation(getString(R.string.select_all), v.getId());
-			break;
-		case R.id.img_invert:
-			selectActionConfirmation(getString(R.string.reverse_all), v.getId());
+			selectActionConfirmation(v.getId());
 			break;
 		case R.id.img_vpn:
-			selectActionConfirmation(getString(R.string.select_all), v.getId());
+			selectActionConfirmation(v.getId());
 			break;
 		case R.id.img_lan:
-			selectActionConfirmation(getString(R.string.select_all), v.getId());
+			selectActionConfirmation(v.getId());
+			break;
+		case R.id.img_invert:
+			 selectActionConfirmation(getString(R.string.reverse_all), v.getId());
 			break;
 		case R.id.img_reset:
-			selectActionConfirmation(getString(R.string.unselect_all), v.getId());
+			 selectActionConfirmation(getString(R.string.unselect_all), v.getId());
 			break;
 		//case R.id.img_invert:
 		//	revertApplications();
@@ -1087,7 +1089,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		}
 	}
 
-	private void selectAllLAN() {
+	private void selectAllLAN(boolean flag) {
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
@@ -1096,14 +1098,14 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_lan = true;
+				data.selected_lan = flag;
 				this.dirty = true;
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
 	}
 
-	private void selectAllVPN() {
+	private void selectAllVPN(boolean flag) {
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
@@ -1112,19 +1114,51 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_vpn = true;
+				data.selected_vpn = flag;
 				this.dirty = true;
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
 	}
 
-	private void selectRevert(){
+	private void selectRevert(int flag){
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		ListAdapter adapter = listview.getAdapter();
-		if(adapter !=null) {
+		if (adapter != null) {
+			int count = adapter.getCount(), item;
+			for (item = 0; item < count; item++) {
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+				switch (flag) {
+				case R.id.img_wifi:
+					data.selected_wifi = !data.selected_wifi;
+					break;
+				case R.id.img_3g:
+					data.selected_3g = !data.selected_3g;
+					break;
+				case R.id.img_roam:
+					data.selected_roam = !data.selected_roam;
+					break;
+				case R.id.img_vpn:
+					data.selected_vpn = !data.selected_vpn;
+					break;
+				case R.id.img_lan:
+					data.selected_lan = !data.selected_lan;
+					break;
+				}
+				this.dirty = true;
+			}
+			((BaseAdapter) adapter).notifyDataSetChanged();
+		}
+	}
+	
+	private void selectRevert() {
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
+		ListAdapter adapter = listview.getAdapter();
+		if (adapter != null) {
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
@@ -1139,7 +1173,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		}
 	}
 	
-	private void selectAllRoam(){
+	
+	private void selectAllRoam(boolean flag){
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
@@ -1148,7 +1183,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_roam = true;
+				data.selected_roam = flag;
 				this.dirty = true;
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1175,7 +1210,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		}
 	}
 
-	private void selectAll3G() {
+	private void selectAll3G(boolean flag) {
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
@@ -1184,7 +1219,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_3g = true;
+				data.selected_3g = flag;
 				this.dirty = true;
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1192,7 +1227,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		
 	}
 
-	private void selectAllWifi() {
+	private void selectAllWifi(boolean flag) {
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
@@ -1201,7 +1236,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if(adapter !=null) {
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
-				data.selected_wifi = true;
+				data.selected_wifi = flag;
 				this.dirty = true;
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1344,45 +1379,125 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		alert.show();	
 	}
 	
-
+   /**
+	* 
+	* @param i
+    */
+	
 	private void selectActionConfirmation(String displayMessage, final int i){
-		
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setMessage(displayMessage)
-		       .setCancelable(false)
-		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
+				.setCancelable(false)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
 								switch (i) {
-								case R.id.img_wifi:
-									selectAllWifi();
-									break;
-								case R.id.img_3g:
-									selectAll3G();
-									break;
-								case R.id.img_roam:
-									selectAllRoam();
-									break;
 								case R.id.img_invert:
 									selectRevert();
-									break;
-								case R.id.img_vpn:
-									selectAllVPN();
-									break;
-								case R.id.img_lan:
-									selectAllLAN();
 									break;
 								case R.id.img_reset:
 									clearAll();
 								}
-		           }
-		       })
-		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                dialog.cancel();
-		           }
-		       });
+							}
+						})
+				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
 		AlertDialog alert2 = builder.create();
 		alert2.show();
+}
+	private void selectActionConfirmation(final int i){
+		final Dialog settingsDialog = new Dialog(this); 
+		settingsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		settingsDialog.getWindow().setBackgroundDrawableResource(R.drawable.class_zero_background);
+		final View dialogView = getLayoutInflater().inflate(R.layout.select_action , null);
+		settingsDialog.setContentView(dialogView); 
+		settingsDialog.show(); 
+		
+		
+		TextView textView = (TextView) dialogView.findViewById(R.id.check_title);
+		String text = getString(R.string.select_action) + " ";
+		switch (i) {
+		case R.id.img_wifi:
+			textView.setText( text + getString(R.string.wifi));
+			break;
+		case R.id.img_3g:
+			textView.setText( text +  getString(R.string.data));
+			break;
+		case R.id.img_roam:
+			textView.setText( text +  getString(R.string.roam));
+			break;
+		case R.id.img_vpn:
+			textView.setText( text +  getString(R.string.vpn));
+			break;
+		case R.id.img_lan:
+			textView.setText( text +  getString(R.string.lan));
+			break;
+		}
+		
+		
+		Button checkAll = (Button) dialogView.findViewById(R.id.checkAll);
+		checkAll.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				switch (i) {
+				case R.id.img_wifi:
+					selectAllWifi(true);
+					break;
+				case R.id.img_3g:
+					selectAll3G(true);
+					break;
+				case R.id.img_roam:
+					selectAllRoam(true);
+					break;
+				case R.id.img_vpn:
+					selectAllVPN(true);
+					break;
+				case R.id.img_lan:
+					selectAllLAN(true);
+					break;
+				}
+				settingsDialog.dismiss();
+			}
+		});
+		
+		Button uncheckAll = (Button) dialogView.findViewById(R.id.uncheckAll);
+		uncheckAll.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				switch (i) {
+				case R.id.img_wifi:
+					selectAllWifi(false);
+					break;
+				case R.id.img_3g:
+					selectAll3G(false);
+					break;
+				case R.id.img_roam:
+					selectAllRoam(false);
+					break;
+				case R.id.img_vpn:
+					selectAllVPN(false);
+					break;
+				case R.id.img_lan:
+					selectAllLAN(false);
+					break;
+				}
+				settingsDialog.dismiss();
+			}
+		});
+		
+		Button invertAll = (Button) dialogView.findViewById(R.id.invertAll);
+		invertAll.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				selectRevert(i);
+				settingsDialog.dismiss();
+			}
+		});
+		
 	}
+	
 }
 

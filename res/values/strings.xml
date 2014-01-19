@@ -248,9 +248,7 @@
 
     <string name="multi_apply_rules">Apply rules on profile switch</string>
     <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
-    <string name="select_all">Do you want to select all ?</string>
-    <string name="reverse_all">Do you want to reverse select all ?</string>
-    <string name="unselect_all">Do you want to unselect all ?</string>
+   
     <string name="multi_user_title">Support MultiUser</string>
     <string name="multi_user_summary">Enable to support android multi-user on a tablet</string>
     
@@ -264,5 +262,20 @@
     <string name="settings_pwd_not_equal">Passwords mismatch</string>
     
     <string name="faq">Frequestly Asked  Questions</string>
+    
+   <string name="reverse_all">Do you want to reverse select all ?</string>
+   <string name="unselect_all">Do you want to unselect all ?</string>
+    
+    <string name="check_all">Check All</string>
+    <string name="invert_all">Invert All</string>
+    <string name="uncheck_all">Uncheck All</string>
 
+    <string name="select_action">Select action on column: </string>
+     
+    <string name="roam">Roam</string>
+    <string name="wifi">Wifi</string>
+    <string name="lan">LAN</string>
+    <string name="vpn">VPN</string>
+    <string name="data">Data</string>
+    
 </resources>
