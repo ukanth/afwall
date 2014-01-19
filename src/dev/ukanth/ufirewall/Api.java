@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
@@ -2080,5 +2081,29 @@ public final class Api {
 		}
 		return false;
     }
+	
+	
+	public static String loadData(final Context context,
+			final String resourceName) throws IOException {
+		int resourceIdentifier = context
+				.getApplicationContext()
+				.getResources()
+				.getIdentifier(resourceName, "raw",
+						context.getApplicationContext().getPackageName());
+		if (resourceIdentifier != 0) {
+			InputStream inputStream = context.getApplicationContext()
+					.getResources().openRawResource(resourceIdentifier);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					inputStream, "UTF-8"));
+			String line;
+			StringBuffer data = new StringBuffer();
+			while ((line = reader.readLine()) != null) {
+				data.append(line);
+			}
+			reader.close();
+			return data.toString();
+		}
+		return null;
+	}
 
 }
