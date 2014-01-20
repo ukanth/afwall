@@ -142,6 +142,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
+			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
 			if(G.disableIcons()){
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);

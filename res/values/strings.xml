@@ -263,14 +263,14 @@
     
     <string name="faq">Frequestly Asked  Questions</string>
     
-   <string name="reverse_all">Do you want to reverse select all ?</string>
-   <string name="unselect_all">Do you want to unselect all ?</string>
+   <string name="reverse_all">This will invert all the selected applications. Continue ?</string>
+   <string name="unselect_all">This will clear all the selected applications . Continue ?</string>
     
     <string name="check_all">Check All</string>
     <string name="invert_all">Invert All</string>
     <string name="uncheck_all">Uncheck All</string>
 
-    <string name="select_action">Select action on column: </string>
+    <string name="select_action">Select action on column </string>
      
     <string name="roam">Roam</string>
     <string name="wifi">Wifi</string>

@@ -1896,10 +1896,8 @@ public final class Api {
 				.setFailureToast(R.string.log_toggle_failed));
 			return;
 		}
-
 		LogProbeCallback cb = new LogProbeCallback();
 		cb.ctx = ctx;
-
 		// probe for LOG/NFLOG targets (unfortunately the file must be read by root)
 		new RootCommand()
 			.setReopenShell(true)
@@ -1939,7 +1937,6 @@ public final class Api {
 	public static boolean hasRootAccess(Context ctx) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean isRoot = prefs.getBoolean("isRootAvail", false);
-		isRoot =false;
 		if (!isRoot) {
 			try {
 				// Run an empty script just to check root access
