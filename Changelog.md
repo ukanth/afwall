@@ -4,6 +4,14 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.2.9
+
+* Feature: Column level select/invert/unselect 
+* Bug Fix : Fixed issue with Tasker plugin (enable/disable/Profile switch)
+* Bug Fix : Added proper alert when superuser not found
+* UI : Revamped About and added FAQ page.
+
+
 Version 1.2.8
 * Features
   * Traffic stats + App detail View (Long press on App Label) Note: A minimal stats and not a complete statistics of traffic details.
