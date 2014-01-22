@@ -27,7 +27,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.Log;
 import dev.ukanth.ufirewall.MainActivity;
@@ -39,6 +38,7 @@ import dev.ukanth.ufirewall.RootShell.RootCommand;
  */
 public final class FireReceiver extends BroadcastReceiver
 {
+	public static final String TAG = "AFWall";
 
     /**
      * @param context {@inheritDoc}.
@@ -91,53 +91,37 @@ public final class FireReceiver extends BroadcastReceiver
     		final Message msg = new Message();
         	if(index != null){
         		int id = Integer.parseInt(index);
-        		switch(id){
-        		case 0:
+        		if(id == 0) {
         			if(applyRules(context,msg,toaster)){
 						Api.setEnabled(context, true, false);
 					}
-       				break;
-       				
-        		case 1:	
-        			if(oldPwd.length() == 0 && newPwd.length() == 0){
-        				boolean ret = Api.purgeIptables(context, false, new RootCommand()
-    					.setFailureToast(R.string.error_apply)
-    					.setCallback(new RootCommand.Callback() {
-    						@Override
-    						public void cbFunc(RootCommand state) {
-    							if (state.exitCode == 0) {
-    								Log.i(Api.TAG, "" + ": applied rules");
-    							} else {
-    								// error details are already in logcat
-    								Api.setEnabled(context,  false,  false);
-    								errorNotification(context);
-    							}
-    						}
-    					}));
-		        		if (!ret) {
-		        			msg.arg1 = R.string.toast_error_disabling;
-							toaster.sendMessage(msg);
-							Api.setEnabled(context, false, false);
-		        		}
-					} else {
-						msg.arg1 = R.string.widget_disable_fail;
+        		} else if (id == 1) {
+        			if (Api.isEnabled(context)) {
+        				if(oldPwd.length() == 0 && newPwd.length() == 0){
+            				boolean ret = Api.purgeIptables(context, false, new RootCommand()
+        					.setFailureToast(R.string.error_apply)
+        					.setCallback(new RootCommand.Callback() {
+        						@Override
+        						public void cbFunc(RootCommand state) {
+        							if (state.exitCode == 0) {
+        								Log.i(Api.TAG, "" + ": applied rules");
+        							} 
+        						}
+        					}));
+    		        		if (ret) {
+    		        			Api.setEnabled(context,  false,  true);
+    		        			msg.arg1 = R.string.tasker_disabled;
+    							toaster.sendMessage(msg);
+    		        		}
+    		        	} else {
+    						msg.arg1 = R.string.widget_disable_fail;
+    						toaster.sendMessage(msg);
+    					}
+        			} else {
+        				msg.arg1 = R.string.tasker_disabled;
 						toaster.sendMessage(msg);
-					}
-        			break;
-        		case 2:
-    				G.setProfile(multimode, 0);
-    				break;
-    			case 3:
-    				G.setProfile(multimode, 1);
-    				break;
-    			case 4:
-    				G.setProfile(multimode, 2);
-    				break;
-    			case 5:
-    				G.setProfile(multimode, 3);
-    				break;
-    			default:
-    				break;
+        			}
+        			
 				}
         		if(id > 1){
         			editor.putInt("storedPosition", (id-2));
@@ -164,6 +148,9 @@ public final class FireReceiver extends BroadcastReceiver
 			        		if (!ret) {
 			        			Log.e(Api.TAG, "applySavedIptablesRules() returned an error");
 			        			errorNotification(context);
+			        		} else {
+			        			msg.arg1 = R.string.tasker_profile_applied ;
+								toaster.sendMessage(msg);
 			        		}
                 		} else {
                				Toast.makeText(context, R.string.tasker_disabled, Toast.LENGTH_SHORT).show();

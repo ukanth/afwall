@@ -2,4 +2,5 @@
 
 <resources>
 	<drawable name="ab_bg_black">#aa000000</drawable>
+	<drawable name="class_zero_background">#7f040000</drawable>
 </resources>

@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="146"
-    android:versionName="1.2.8" >
+    android:versionCode="147"
+    android:versionName="1.2.9-BETA" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -112,6 +112,9 @@
         <activity android:name="dev.ukanth.ufirewall.RulesActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.AppDetailActivity"></activity>
         <activity android:name="dev.ukanth.ufirewall.LogActivity"></activity>
+        
+        <activity android:name="dev.ukanth.ufirewall.AlertDialogActivity"></activity>
+            
         <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity" android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringReader;
@@ -1895,10 +1896,8 @@ public final class Api {
 				.setFailureToast(R.string.log_toggle_failed));
 			return;
 		}
-
 		LogProbeCallback cb = new LogProbeCallback();
 		cb.ctx = ctx;
-
 		// probe for LOG/NFLOG targets (unfortunately the file must be read by root)
 		new RootCommand()
 			.setReopenShell(true)
@@ -1935,10 +1934,9 @@ public final class Api {
 	    context.startActivity(intent);
 	}
 	
-	public static boolean hasRootAccess(Context ctx, boolean showErrors) {
+	public static boolean hasRootAccess(Context ctx) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean isRoot = prefs.getBoolean("isRootAvail", false);
-
 		if (!isRoot) {
 			try {
 				// Run an empty script just to check root access
@@ -1949,14 +1947,20 @@ public final class Api {
 					edit.putBoolean("isRootAvail", true);
 					edit.commit();
 				} else {
-					if (showErrors) {
-						alert(ctx, ctx.getString(R.string.error_su));
-					}		
+					Api.showAlertDialogActivity(ctx, ctx.getString(R.string.error_common), ctx.getString(R.string.error_su));
 				}
 			} catch (Exception e) {
 			}
 		}
 		return isRoot;
+	}
+	
+	public static void showAlertDialogActivity(Context ctx,String title, String message) {
+		Intent dialog = new Intent(ctx,AlertDialogActivity.class);
+		dialog.putExtra("title", title);
+		dialog.putExtra("message", message);
+		dialog.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		ctx.startActivity(dialog);
 	}
 	
 	public static boolean isNetfilterSupported() {
@@ -2080,5 +2084,29 @@ public final class Api {
 		}
 		return false;
     }
+	
+	
+	public static String loadData(final Context context,
+			final String resourceName) throws IOException {
+		int resourceIdentifier = context
+				.getApplicationContext()
+				.getResources()
+				.getIdentifier(resourceName, "raw",
+						context.getApplicationContext().getPackageName());
+		if (resourceIdentifier != 0) {
+			InputStream inputStream = context.getApplicationContext()
+					.getResources().openRawResource(resourceIdentifier);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					inputStream, "UTF-8"));
+			String line;
+			StringBuffer data = new StringBuffer();
+			while ((line = reader.readLine()) != null) {
+				data.append(line);
+			}
+			reader.close();
+			return data.toString();
+		}
+		return null;
+	}
 
 }
