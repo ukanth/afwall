@@ -22,11 +22,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.Log;
 import dev.ukanth.ufirewall.MainActivity;
@@ -84,10 +84,9 @@ public final class FireReceiver extends BroadcastReceiver
         if (PluginBundleManager.isBundleValid(bundle))
         {
         	String index = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
-        	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        	final boolean multimode = prefs.getBoolean("enableMultiProfile", false);
-        	final boolean disableToasts = prefs.getBoolean("disableTaskerToast", false);
-    		SharedPreferences.Editor editor = prefs.edit();
+        	//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        	final boolean multimode = G.enableMultiProfile();
+        	final boolean disableToasts = G.disableTaskerToast();
     		final Message msg = new Message();
         	if(index != null){
         		int id = Integer.parseInt(index);
@@ -124,8 +123,7 @@ public final class FireReceiver extends BroadcastReceiver
         			
 				}
         		if(id > 1){
-        			editor.putInt("storedPosition", (id-2));
-           			editor.commit();
+        			G.setProfile(true, (id-2));
         			if(multimode) {
         				if (Api.isEnabled(context)) {
                 			if(!disableToasts){
