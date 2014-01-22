@@ -82,7 +82,6 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 
 public class MainActivity extends SherlockListActivity implements OnClickListener,
 					ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
-	public static final String TAG = "AFWall";
 
 	private TextView mSelected;
     private String[] mLocations;
@@ -164,11 +163,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 			setupMultiProfile();
 			
-			if(Api.isEnabled(getApplicationContext())) {
-				getSupportActionBar().setIcon(R.drawable.widget_on);
-			} else {
-				getSupportActionBar().setIcon(R.drawable.widget_off);
-			}
+			updateIconStatus();
 			
 			//language
 			String lang = G.locale();
@@ -179,6 +174,14 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		    
 	}
 	
+	private void updateIconStatus() {
+		if(Api.isEnabled(getApplicationContext())) {
+			getSupportActionBar().setIcon(R.drawable.widget_on);
+		} else {
+			getSupportActionBar().setIcon(R.drawable.widget_off);
+		}
+	}
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -208,6 +211,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		
 		setupMultiProfile();
 		refreshHeader();
+		updateIconStatus();
 		
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
@@ -259,6 +263,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			if(position > -1) {
 				getSupportActionBar().setSelectedNavigationItem(position);
 				getSupportActionBar().setDisplayShowTitleEnabled(false);
+				mSelected.setText("  |  " + mLocations[position]);
 			}
 			getSupportActionBar().setDisplayUseLogoEnabled(true);
 		}
