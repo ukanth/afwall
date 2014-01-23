@@ -702,7 +702,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			        		   showOrLoadApplications();
 			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 			        	   } else {
-			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+			   				   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
 			   				}
 			           }
 			       })
