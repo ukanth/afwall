@@ -123,7 +123,7 @@ public final class FireReceiver extends BroadcastReceiver
         			
 				}
         		if(id > 1){
-        			G.setProfile(true, (id-2));
+        			G.setProfile(false, (id-2));
         			if(multimode) {
         				if (Api.isEnabled(context)) {
                 			if(!disableToasts){
