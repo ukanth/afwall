@@ -453,7 +453,7 @@ public final class Api {
 		assertBinaries(ctx, showErrors);
 		if(G.isMultiUser()) {
 			//FIXME: after setting this, we need to flush the iptables ?
-			AFWALL_CHAIN_NAME = AFWALL_CHAIN_NAME + (G.getMultiUserId() != 0 ? G.getMultiUserId() : "");
+			AFWALL_CHAIN_NAME = "afwall" + (G.getMultiUserId() != 0 ? G.getMultiUserId() : "");
 		}			
 					
 
