@@ -279,4 +279,6 @@
     <string name="vpn">VPN</string>
     <string name="data">Data</string>
     
+    <string name="backup_notexist">No backup exists. Please export from menu.</string>
+    
 </resources>

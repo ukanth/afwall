@@ -27,12 +27,14 @@ package dev.ukanth.ufirewall;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.lang.reflect.Method;
@@ -44,6 +46,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
@@ -1835,17 +1838,10 @@ public final class Api {
 	   
 	    return res;
 	}
-
-
-	@SuppressWarnings("unchecked")
-	public static boolean loadSharedPreferencesFromFile(Context ctx) {
-		boolean res = false;
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		dir.mkdirs();
-		File file = new File(dir, "backup.json");
+	
+	private static boolean importRules(Context ctx,File file) {
+		boolean returnVal = false;
 		BufferedReader br = null;
-		
 		final StringBuilder wifi_uids = new StringBuilder();
 		final StringBuilder data_uids = new StringBuilder();
 		final StringBuilder roam_uids = new StringBuilder();
@@ -1941,7 +1937,7 @@ public final class Api {
 			edit.putString(PREF_LAN_PKG_UIDS, lan_uids.toString());
 			
 			edit.commit();
-			res = true;
+			returnVal = true;
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, e.getLocalizedMessage());
 		} catch (IOException e) {
@@ -1955,8 +1951,75 @@ public final class Api {
 				try {
 					br.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e(TAG, e.getLocalizedMessage());
 				}
+			}
+		}
+		return returnVal;
+	}
+	
+	@Deprecated
+	private static boolean importRulesOld(Context ctx, File file) {
+		boolean res = false;
+		ObjectInputStream input = null;
+		try {
+			input = new ObjectInputStream(new FileInputStream(file));
+			Editor prefEdit = ctx.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE).edit();
+			prefEdit.clear();
+			Map<String, ?> entries = (Map<String, ?>) input.readObject();
+			for (Entry<String, ?> entry : entries.entrySet()) {
+				Object v = entry.getValue();
+				String key = entry.getKey();
+				if (v instanceof Boolean)
+					prefEdit.putBoolean(key, ((Boolean) v).booleanValue());
+				else if (v instanceof Float)
+					prefEdit.putFloat(key, ((Float) v).floatValue());
+				else if (v instanceof Integer)
+					prefEdit.putInt(key, ((Integer) v).intValue());
+				else if (v instanceof Long)
+					prefEdit.putLong(key, ((Long) v).longValue());
+				else if (v instanceof String)
+					prefEdit.putString(key, ((String) v));
+			}
+			prefEdit.commit();
+			res = true;
+		} catch (FileNotFoundException e) {
+			// alert(ctx, "Missing back.rules file");
+			Log.e(TAG, e.getLocalizedMessage());
+		} catch (IOException e) {
+			// alert(ctx, "Error reading the backup file");
+			Log.e(TAG, e.getLocalizedMessage());
+		} catch (ClassNotFoundException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		} finally {
+			try {
+				if (input != null) {
+					input.close();
+				}
+			} catch (IOException ex) {
+				Log.e(TAG, ex.getLocalizedMessage());
+			}
+		}
+		return res;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public static boolean loadSharedPreferencesFromFile(Context ctx) {
+		boolean res = false;
+		File sdCard = Environment.getExternalStorageDirectory();
+		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+		dir.mkdirs();
+		File file = new File(dir, "backup.json");
+		//new format
+		if(file.exists()) {
+			res = importRules(ctx,file);
+		} else {
+			file = new File(dir, "backup.rules");
+			if(file.exists()) {
+				res = importRulesOld(ctx,file);
+			} else {
+				alert(ctx,ctx.getString(R.string.backup_notexist));
 			}
 		}
 		return res;
