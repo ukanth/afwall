@@ -458,8 +458,6 @@ public final class Api {
 			//FIXME: after setting this, we need to flush the iptables ?
 			AFWALL_CHAIN_NAME = "afwall" + (G.getMultiUserId() != 0 ? G.getMultiUserId() : "");
 		}			
-					
-
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		List<String> cmds = new ArrayList<String>();
@@ -1225,6 +1223,7 @@ public final class Api {
 			for (int i=0; i<specialData.size(); i++) {
 				app = specialData.get(i);
 				specialApps.put(app.pkgName, app.uid);
+				//default DNS/NTP
 				if (app.uid != -1 && syncMap.get(app.uid) == null) {
 					// check if this application is allowed
 					if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
@@ -1245,6 +1244,19 @@ public final class Api {
 					syncMap.put(app.uid, app);
 				}
 			}
+			
+			//reset DNS/NTP to default for 4.3 or Higher
+			if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2 ){
+				PackageInfoData ntpInfo = syncMap.get(SPECIAL_UID_NTP);
+				ntpInfo.selected_3g = true;
+				ntpInfo.selected_wifi = true;
+				syncMap.put(SPECIAL_UID_NTP, ntpInfo);
+				
+				PackageInfoData dnsInfo = syncMap.get(SPECIAL_UID_DNSPROXY);
+				dnsInfo.selected_3g = true;
+				dnsInfo.selected_wifi = true;
+				syncMap.put(SPECIAL_UID_DNSPROXY, dnsInfo);
+			}
 
 			/* convert the map into an array */
 			applications = new ArrayList<PackageInfoData>();
@@ -1259,24 +1271,6 @@ public final class Api {
 		return null;
 	}
 	
-	
-	private static List<String> getListFromPref(Context ctx,String savedPkg_uid) {
-		final PackageManager pm = ctx.getPackageManager();
-
-		final StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
-		List<String> listPkgs = new ArrayList<String>();
-		while(tok.hasMoreTokens()){
-			final String uid = tok.nextToken();
-			if (!uid.equals("")) {
-				try {
-					listPkgs.add(pm.getNameForUid(Integer.parseInt(uid)));
-				} catch (Exception ex) {
-
-				}
-			}
-		}
-		return listPkgs;
-	}
 	
 	
 	private static List<Integer> getListFromPref(String savedPkg_uid) {
@@ -1686,6 +1680,7 @@ public final class Api {
     	public PackageInfoData(String user, String name, String pkgNameStr) {
     		this(android.os.Process.getUidForName(user), name, pkgNameStr);
     	}
+    	
     	/**
     	 * Screen representation of this application
     	 */
@@ -1795,10 +1790,6 @@ public final class Api {
 				FileOutputStream fOut = new FileOutputStream(file);
 				OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-				final SharedPreferences prefs = ctx.getSharedPreferences(
-						PREFS_NAME, Context.MODE_PRIVATE);
-				
-				
 				final List<PackageInfoData> apps = getApps(ctx,null);
 				// Builds a pipe-separated list of names
 				
