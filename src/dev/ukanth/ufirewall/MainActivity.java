@@ -40,6 +40,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,6 +62,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -147,7 +150,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
 			}
 			
-			
+			if(G.showFilter()) {
+				this.findViewById(R.id.appFilterGroup).setVisibility(View.VISIBLE);
+			}
 			if(G.enableRoam()){
 				addColumns(R.id.img_roam);
 			}
@@ -170,6 +175,29 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			Api.updateLanguage(getApplicationContext(), lang);
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
+	        
+	        
+	        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);        
+	        radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() 
+	        {
+	            public void onCheckedChanged(RadioGroup group, int checkedId) {
+	            	switch(checkedId) {
+	            	case R.id.rpkg_all:
+	            		showOrLoadApplications();
+	            		break;
+	            	case R.id.rpkg_core:
+	            		showFilterApplications(0);
+	            		break;
+	            	case R.id.rpkg_sys:
+	            		showFilterApplications(1);
+	            		break;
+	            	case R.id.rpkg_user:
+	            		showFilterApplications(2);
+	            		break;
+	            	}
+	            }
+	        });
+	        
 		    Api.assertBinaries(this, true);
 		    
 	}
@@ -574,6 +602,38 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		// restore
 		this.listview.setSelectionFromTop(index, top);
 		
+	}
+	
+	
+	private void showFilterApplications(int flag) {
+		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
+		final List<PackageInfoData> apps = Api.getApps(this,null);
+		switch(flag){
+		case 0:
+			for(PackageInfoData app:apps) {
+			   if(app.pkgName.startsWith("dev.afwall.special")) {
+				   searchApp.add(app);   
+			   }
+			}
+			break;
+		case 1:
+			for(PackageInfoData app: apps) {
+				if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+					searchApp.add(app);
+				}
+			}
+			break;
+		case 2:
+			for(PackageInfoData app: apps) {
+				if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+					searchApp.add(app);
+				}
+			}
+			break;
+		}
+		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), searchApp));
+		// restore
+		this.listview.setSelectionFromTop(index, top);
 	}
 	
 

@@ -65,6 +65,8 @@ public class G extends android.app.Application {
 	private static final String MULTI_USER = "multiUser";
 	private static final String MULTI_USER_ID = "multiUserId";
 	
+	private static final String SHOW_FILTER = "showFilter";
+	
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	
 	/* Profiles */
@@ -131,6 +133,9 @@ public class G extends android.app.Application {
 
 	public static boolean showUid() { return gPrefs.getBoolean(SHOW_UID, false); }
 	public static boolean showUid(boolean val) { gPrefs.edit().putBoolean(SHOW_UID, val).commit(); return val; }
+	
+	public static boolean showFilter() { return gPrefs.getBoolean(SHOW_FILTER, false); }
+	public static boolean showFilter(boolean val) { gPrefs.edit().putBoolean(SHOW_FILTER, val).commit(); return val; }
 
 	public static boolean notifyAppInstall() { return gPrefs.getBoolean(NOTIFY_INSTALL, false); }
 	public static boolean notifyAppInstall(boolean val) { gPrefs.edit().putBoolean(NOTIFY_INSTALL, val).commit(); return val; }

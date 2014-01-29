@@ -2,11 +2,11 @@
 
      <CheckBoxPreference
         android:key="notifyAppInstall"
+        android:defaultValue="true"
         android:summaryOff="@string/notify_pref_summary_off"
         android:summaryOn="@string/notify_pref_summary_on"
         android:title="@string/notify_pref_title" />
     
-        
     <CheckBoxPreference
         android:key="enableLog"
         android:defaultValue="false"
@@ -15,11 +15,19 @@
 
     <CheckBoxPreference
         android:key="disableIcons"
+        android:defaultValue="true"
         android:summaryOff="@string/hideicons_pref_summary_off"
         android:summaryOn="@string/hideicons_pref_summary_on"
         android:title="@string/hideicons_pref_title" />
     
     <CheckBoxPreference
+        android:key="showFilter"
+        android:defaultValue="false"
+        android:summaryOff="@string/showfilter_summary_off"
+        android:summaryOn="@string/showfilter_summary_on"
+        android:title="@string/showFilter" />
+    
+     <CheckBoxPreference
         android:key="showUid"
         android:summaryOff="@string/showuid_summary_off"
         android:summaryOn="@string/showuid_summary_on"
@@ -38,13 +46,13 @@
         android:title="@string/active_rules" />
 
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="enableRoam"
         android:dependency="activeRules"
         android:summary="@string/roamingSummary"
         android:title="@string/roaming" />
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="enableLAN"
         android:dependency="activeRules"
         android:summary="@string/lan_summary"

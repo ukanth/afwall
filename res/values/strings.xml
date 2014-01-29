@@ -279,6 +279,16 @@
     <string name="vpn">VPN</string>
     <string name="data">Data</string>
     
+    
+    <string name="pkg_all">All</string>
+    <string name="pkg_core">Core</string>
+    <string name="pkg_sys">System</string>
+    <string name="pkg_user">User</string>
     <string name="backup_notexist">No backup exists. Please export from menu.</string>
+    
+    
+    <string name="showFilter">Show filter option</string>
+    <string name="showfilter_summary_on">Filter options will be shown in the main view.</string>
+    <string name="showfilter_summary_off">Filter option is hidden</string>
     
 </resources>
