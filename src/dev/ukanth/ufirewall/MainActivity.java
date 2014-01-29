@@ -1525,6 +1525,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					selectAllLAN(true);
 					break;
 				}
+				dirty = true;
 				settingsDialog.dismiss();
 			}
 		});
@@ -1550,6 +1551,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					selectAllLAN(false);
 					break;
 				}
+				dirty = true;
 				settingsDialog.dismiss();
 			}
 		});
@@ -1559,6 +1561,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			@Override
 			public void onClick(View v) {
 				selectRevert(i);
+				dirty = true;
 				settingsDialog.dismiss();
 			}
 		});
