@@ -1,4 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+      <ListPreference 
+            android:entries="@array/dns_proxy" 
+            android:entryValues="@array/dns_proxy_values" 
+            android:title="@string/dns_proxy_title" 
+            android:summary="@string/dns_proxy_summary"
+            android:key="dns_value" android:defaultValue="auto"></ListPreference>
        <ListPreference 
             android:entries="@array/iptables_binary" 
             android:entryValues="@array/iptables_binary_path" 

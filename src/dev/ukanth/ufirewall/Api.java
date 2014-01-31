@@ -220,6 +220,19 @@ public final class Api {
 			"BUSYBOX="+mybusybox+"\n" +
 			"";
 	}
+	
+	static boolean enableDNSProxy() {
+		boolean flag = false;
+		String pref = G.dns_proxy();
+		//based on COMMIT: b4e08e9d71b56a0b7e65c8533e5c520cce9f6596
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+			if (pref.equals("auto") || pref.equals("enable")) {
+				flag = true;
+			}
+		}
+		return flag;
+
+	}
 
 	static void setIpTablePath(Context ctx,boolean setv6) {
 		boolean builtin;
@@ -328,7 +341,7 @@ public final class Api {
 			}
 
 			// netd runs as root, and on Android 4.3+ it handles all DNS queries
-			if (uids.indexOf(SPECIAL_UID_DNSPROXY) >= 0) {
+			if (enableDNSProxy()) {
 				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", action);
 			}
 
@@ -1208,7 +1221,7 @@ public final class Api {
 			specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
+			//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
 			specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
 			specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
@@ -1243,19 +1256,6 @@ public final class Api {
 					}
 					syncMap.put(app.uid, app);
 				}
-			}
-			
-			//reset DNS/NTP to default for 4.3 or Higher
-			if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2 ){
-				PackageInfoData ntpInfo = syncMap.get(SPECIAL_UID_NTP);
-				ntpInfo.selected_3g = true;
-				ntpInfo.selected_wifi = true;
-				syncMap.put(SPECIAL_UID_NTP, ntpInfo);
-				
-				PackageInfoData dnsInfo = syncMap.get(SPECIAL_UID_DNSPROXY);
-				dnsInfo.selected_3g = true;
-				dnsInfo.selected_wifi = true;
-				syncMap.put(SPECIAL_UID_DNSPROXY, dnsInfo);
 			}
 
 			/* convert the map into an array */

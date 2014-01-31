@@ -61,6 +61,7 @@ public class G extends android.app.Application {
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";
 	private static final String APP_VERSION = "appVersion";
+	private static final String DNS_PROXY = "dns_proxy";
 	
 	private static final String MULTI_USER = "multiUser";
 	private static final String MULTI_USER_ID = "multiUserId";
@@ -145,6 +146,9 @@ public class G extends android.app.Application {
 
 	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "auto"); }
 	public static String ip_path(String val) { gPrefs.edit().putString(IPTABLES_PATH, val).commit(); return val; }
+	
+	public static String dns_proxy() { return gPrefs.getString(DNS_PROXY, "auto"); }
+	public static String dns_proxy(String val) { gPrefs.edit().putString(DNS_PROXY, val).commit(); return val; }
 
 	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "builtin"); }
 	public static String bb_path(String val) { gPrefs.edit().putString(BUSYBOX_PATH, val).commit(); return val; }
