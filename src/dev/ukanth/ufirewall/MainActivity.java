@@ -176,32 +176,57 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
 	        
-	        
-	        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);        
-	        radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() 
-	        {
-	            public void onCheckedChanged(RadioGroup group, int checkedId) {
-	            	switch(checkedId) {
-	            	case R.id.rpkg_all:
-	            		showOrLoadApplications();
-	            		break;
-	            	case R.id.rpkg_core:
-	            		showFilterApplications(0);
-	            		break;
-	            	case R.id.rpkg_sys:
-	            		showFilterApplications(1);
-	            		break;
-	            	case R.id.rpkg_user:
-	            		showFilterApplications(2);
-	            		break;
-	            	}
-	            }
-	        });
+	        updateFilterGroup();
+	       
 	        
 		    Api.assertBinaries(this, true);
 		    
 	}
 	
+	
+	private void selectFilterGroup() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		switch (radioGroup.getCheckedRadioButtonId()) {
+		case R.id.rpkg_all:
+			showOrLoadApplications();
+			break;
+		case R.id.rpkg_core:
+			showFilterApplications(0);
+			break;
+		case R.id.rpkg_sys:
+			showFilterApplications(1);
+			break;
+		case R.id.rpkg_user:
+			showFilterApplications(2);
+			break;
+		default:
+			showOrLoadApplications();
+			break;
+		}
+	}
+	
+	private void updateFilterGroup() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.rpkg_all:
+					showOrLoadApplications();
+					break;
+				case R.id.rpkg_core:
+					showFilterApplications(0);
+					break;
+				case R.id.rpkg_sys:
+					showFilterApplications(1);
+					break;
+				case R.id.rpkg_user:
+					showFilterApplications(2);
+					break;
+				}
+			}
+		});
+	}
+
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
 			getSupportActionBar().setIcon(R.drawable.widget_on);
@@ -213,14 +238,18 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	@Override
 	public void onStart() {
 		super.onStart();
-
+		
 		// to improve responsiveness, try to open a root shell in the background on launch
 		// (if this fails we'll try again later)
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
+		
+		updateIconStatus();
 
 		new RootCommand().setFailureToast(R.string.error_su)
 				.setReopenShell(true).run(getApplicationContext(), cmds);
+		
+		selectFilterGroup();
 		
 	}
 
@@ -245,6 +274,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		mNotificationManager.cancel(24556);
 		
 		passCheck();
+		
 		
 	}
 	
@@ -328,6 +358,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			}
 	    } else {
 			showOrLoadApplications();
+			
 	    }
 		
 
@@ -459,6 +490,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private void showOrLoadApplications() {
 		//nocache!!
 		new GetAppList().execute();	
+		
 	}
 	
 
@@ -526,6 +558,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		@Override
 		protected void onPostExecute(Void result) {
 			showApplications("");
+			selectFilterGroup();
 			publishProgress(-1);
 			try {
 				plsWait.dismiss();
