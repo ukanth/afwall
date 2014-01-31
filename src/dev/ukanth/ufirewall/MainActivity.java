@@ -184,7 +184,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	}
 	
 	
-	private void selectFilterGroup() {
+	/*private void selectFilterGroup() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
 		switch (radioGroup.getCheckedRadioButtonId()) {
 		case R.id.rpkg_all:
@@ -203,7 +203,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			showOrLoadApplications();
 			break;
 		}
-	}
+	}*/
 	
 	private void updateFilterGroup() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
@@ -248,8 +248,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 		new RootCommand().setFailureToast(R.string.error_su)
 				.setReopenShell(true).run(getApplicationContext(), cmds);
-		
-		selectFilterGroup();
 		
 	}
 
@@ -558,7 +556,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		@Override
 		protected void onPostExecute(Void result) {
 			showApplications("");
-			selectFilterGroup();
 			publishProgress(-1);
 			try {
 				plsWait.dismiss();
