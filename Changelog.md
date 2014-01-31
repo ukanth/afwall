@@ -4,13 +4,26 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.8(BETA)
-* Feature: Traffic stats + App detail View (Long press on App Label) - Donate only for now
-* Feature: Add/Remove Additional Profiles - Donate only for now
-* Feature: Multiuser support for Tablets
-* Feature: Custom rules file support ( . /path/to/file ) 
-* Minor UI enhancements in multiple areas.
-* Bug Fixes: #154,sdcard mount on startup, user reported crash fixes.	 
+Version 1.2.9-Beta2
+
+* Feature: Column level select/invert/unselect
+* Feature: New Import/Export (backward compatiblity)
+* Feature: Filter by All/Core/System/User applications
+* BugFix: Fixed issue with Multiuser iptable rules
+* BugFix : Fixed issue with Tasker plugin (enable/disable/Profile switch)
+* BugFix : Added proper alert when superuser not found
+* UI: Revamped About and added FAQ page.
+* User reported bug fixes.
+
+Version 1.2.8
+* Features
+  * Traffic stats + App detail View (Long press on App Label) Note: A minimal stats and not a complete statistics of traffic details.
+  * Add/Remove Additional Profiles
+  * Multiuser support for Tablets (Experimental)
+  * Custom rules file support (. /path/to/file) 
+* Fixed VPN issue with KitKat & Updated libsuperuser library
+* Many minor UI enhancements and performance improvements
+* Bug Fixes: #154,sdcard mount on startup, user reported crash fixes 
 
 Version 1.2.7
 * Improved search functionality & select confirmation.
