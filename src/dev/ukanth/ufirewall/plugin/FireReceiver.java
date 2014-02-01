@@ -124,7 +124,7 @@ public final class FireReceiver extends BroadcastReceiver
         			toaster.sendMessage(msg);
 				}
         		if(id > 1){
-        			G.setProfile(false, (id-2));
+        			G.setProfile(multimode, (id-2));
         			if(multimode) {
         				if (Api.isEnabled(context)) {
                 			if(!disableToasts){
