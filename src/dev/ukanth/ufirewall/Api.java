@@ -104,7 +104,7 @@ public final class Api {
 	/** special application UID used for dnsmasq DHCP/DNS */
 	public static final int SPECIAL_UID_TETHER	= -12;
 	/** special application UID used for netd DNS proxy */
-	public static final int SPECIAL_UID_DNSPROXY	= -13;
+	//public static final int SPECIAL_UID_DNSPROXY	= -13;
 	/** special application UID used for NTP */
 	public static final int SPECIAL_UID_NTP		= -14;
 	
@@ -341,9 +341,9 @@ public final class Api {
 			}
 
 			// netd runs as root, and on Android 4.3+ it handles all DNS queries
-			if (enableDNSProxy()) {
+			if(whitelist && enableDNSProxy()) {
 				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", action);
-			}
+			} 
 
 			// NTP service runs as "system" user
 			if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
@@ -469,7 +469,7 @@ public final class Api {
 		assertBinaries(ctx, showErrors);
 		if(G.isMultiUser()) {
 			//FIXME: after setting this, we need to flush the iptables ?
-			AFWALL_CHAIN_NAME = "afwall" + (G.getMultiUserId() != 0 ? G.getMultiUserId() : "");
+			AFWALL_CHAIN_NAME = "afwall" + G.getMultiUserId();
 		}			
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
@@ -2176,7 +2176,7 @@ public final class Api {
 			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
 			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
 			specialApps.put("dev.afwall.special.tether",SPECIAL_UID_TETHER);
-			specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
+			//specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
 			specialApps.put("dev.afwall.special.ntp",SPECIAL_UID_NTP);
 			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
 			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
