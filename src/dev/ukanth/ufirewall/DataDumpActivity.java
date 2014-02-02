@@ -130,10 +130,10 @@ public abstract class DataDumpActivity extends SherlockActivity {
 			populateData(this);
 			return true;
 		case MENU_ZOOM_IN:
-			scaleGesture.setTextSize(scaleGesture.getTextSize() + 2);
+			scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, scaleGesture.getTextSize() + 2.0f);
 			return false;
 		case MENU_ZOOM_OUT:
-			scaleGesture.setTextSize(scaleGesture.getTextSize() - 2);
+			scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, scaleGesture.getTextSize() - 2.0f);
 			return false;
 		default:
 			return super.onOptionsItemSelected(item);
