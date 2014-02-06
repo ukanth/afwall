@@ -124,8 +124,8 @@ public final class FireReceiver extends BroadcastReceiver
         			toaster.sendMessage(msg);
 				}
         		if(id > 1){
-        			G.setProfile(multimode, (id-2));
         			if(multimode) {
+        				G.setProfile(multimode, (id-2));
         				if (Api.isEnabled(context)) {
                 			if(!disableToasts){
                 				Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();	
@@ -133,9 +133,6 @@ public final class FireReceiver extends BroadcastReceiver
                 			if(applyRules(context, msg, toaster)) {
                					msg.arg1 = R.string.tasker_profile_applied;
                					if(!disableToasts) toaster.sendMessage(msg);
-                			} else {
-              					Log.e(Api.TAG, "applySavedIptablesRules() returned an error");
-              					errorNotification(context);
                 			}
                 		} else {
                 			msg.arg1 = R.string.tasker_disabled;
