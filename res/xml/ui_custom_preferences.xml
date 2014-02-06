@@ -1,20 +1,28 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-      <ListPreference 
-            android:entries="@array/dns_proxy" 
-            android:entryValues="@array/dns_proxy_values" 
-            android:title="@string/dns_proxy_title" 
-            android:summary="@string/dns_proxy_summary"
-            android:key="dns_value" android:defaultValue="auto"></ListPreference>
-       <ListPreference 
-            android:entries="@array/iptables_binary" 
-            android:entryValues="@array/iptables_binary_path" 
-            android:title="@string/iptables_pref" 
-            android:key="ip_path" android:defaultValue="auto"></ListPreference>
-       <ListPreference 
-            android:entries="@array/busybox_binary" 
-            android:entryValues="@array/busybox_binary_path" 
-            android:title="@string/busybox_pref" 
-            android:key="bb_path" android:defaultValue="builtin"></ListPreference>
+
+    <ListPreference
+        android:defaultValue="auto"
+        android:entries="@array/iptables_binary"
+        android:entryValues="@array/iptables_binary_path"
+        android:key="ip_path"
+        android:title="@string/iptables_pref" >
+    </ListPreference>
+    <ListPreference
+        android:defaultValue="builtin"
+        android:entries="@array/busybox_binary"
+        android:entryValues="@array/busybox_binary_path"
+        android:key="bb_path"
+        android:title="@string/busybox_pref" >
+    </ListPreference>
+    <!--
+    <ListPreference
+        android:defaultValue="auto"
+        android:entries="@array/dns_proxy"
+        android:entryValues="@array/dns_proxy_values"
+        android:key="dns_value"
+        android:summary="@string/dns_proxy_summary"
+        android:title="@string/dns_proxy_title" >
+    </ListPreference>
+    -->
 
 </PreferenceScreen>
-

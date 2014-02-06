@@ -295,6 +295,9 @@
     <string name="disable_dns">Disable</string>
     
     <string name="dns_proxy_title">DNS Proxy</string>
-    <string name="dns_proxy_summary">DNS proxy option was added to support DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>
+    <string name="dns_proxy_summary">DNS proxy will allow all traffic from the system's DNS proxy in netd. 
+        Disable this will block the internet on Android 4.3+
+        Note: enabling internet access for the netd DNS proxy allows all apps with INTERNET permission to send DNS queries, 
+        even if they are otherwise blocked</string>
     
 </resources>
