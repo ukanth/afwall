@@ -40,6 +40,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -61,6 +62,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -147,7 +150,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
 			}
 			
-			
+			if(G.showFilter()) {
+				this.findViewById(R.id.appFilterGroup).setVisibility(View.VISIBLE);
+			}
 			if(G.enableRoam()){
 				addColumns(R.id.img_roam);
 			}
@@ -170,10 +175,58 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			Api.updateLanguage(getApplicationContext(), lang);
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
+	        
+	        updateFilterGroup();
+	       
+	        
 		    Api.assertBinaries(this, true);
 		    
 	}
 	
+	
+	/*private void selectFilterGroup() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		switch (radioGroup.getCheckedRadioButtonId()) {
+		case R.id.rpkg_all:
+			showOrLoadApplications();
+			break;
+		case R.id.rpkg_core:
+			showFilterApplications(0);
+			break;
+		case R.id.rpkg_sys:
+			showFilterApplications(1);
+			break;
+		case R.id.rpkg_user:
+			showFilterApplications(2);
+			break;
+		default:
+			showOrLoadApplications();
+			break;
+		}
+	}*/
+	
+	private void updateFilterGroup() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+				case R.id.rpkg_all:
+					showOrLoadApplications();
+					break;
+				case R.id.rpkg_core:
+					showFilterApplications(0);
+					break;
+				case R.id.rpkg_sys:
+					showFilterApplications(1);
+					break;
+				case R.id.rpkg_user:
+					showFilterApplications(2);
+					break;
+				}
+			}
+		});
+	}
+
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
 			getSupportActionBar().setIcon(R.drawable.widget_on);
@@ -185,11 +238,13 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	@Override
 	public void onStart() {
 		super.onStart();
-
+		
 		// to improve responsiveness, try to open a root shell in the background on launch
 		// (if this fails we'll try again later)
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
+		
+		updateIconStatus();
 
 		new RootCommand().setFailureToast(R.string.error_su)
 				.setReopenShell(true).run(getApplicationContext(), cmds);
@@ -217,6 +272,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		mNotificationManager.cancel(24556);
 		
 		passCheck();
+		
 		
 	}
 	
@@ -300,6 +356,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			}
 	    } else {
 			showOrLoadApplications();
+			
 	    }
 		
 
@@ -431,6 +488,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private void showOrLoadApplications() {
 		//nocache!!
 		new GetAppList().execute();	
+		
 	}
 	
 
@@ -576,6 +634,38 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		
 	}
 	
+	
+	private void showFilterApplications(int flag) {
+		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
+		final List<PackageInfoData> apps = Api.getApps(this,null);
+		switch(flag){
+		case 0:
+			for(PackageInfoData app:apps) {
+			   if(app.pkgName.startsWith("dev.afwall.special")) {
+				   searchApp.add(app);   
+			   }
+			}
+			break;
+		case 1:
+			for(PackageInfoData app: apps) {
+				if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+					searchApp.add(app);
+				}
+			}
+			break;
+		case 2:
+			for(PackageInfoData app: apps) {
+				if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+					searchApp.add(app);
+				}
+			}
+			break;
+		}
+		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), searchApp));
+		// restore
+		this.listview.setSelectionFromTop(index, top);
+	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -702,7 +792,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			        		   showOrLoadApplications();
 			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 			        	   } else {
-			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+			   				   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
 			   				}
 			           }
 			       })
@@ -1465,6 +1555,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					selectAllLAN(true);
 					break;
 				}
+				dirty = true;
 				settingsDialog.dismiss();
 			}
 		});
@@ -1490,6 +1581,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					selectAllLAN(false);
 					break;
 				}
+				dirty = true;
 				settingsDialog.dismiss();
 			}
 		});
@@ -1499,6 +1591,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			@Override
 			public void onClick(View v) {
 				selectRevert(i);
+				dirty = true;
 				settingsDialog.dismiss();
 			}
 		});

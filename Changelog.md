@@ -4,13 +4,15 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.9
+Version 1.2.9-Final Beta
 
-* Feature: Column level select/invert/unselect 
-* Bug Fix : Fixed issue with Tasker plugin (enable/disable/Profile switch)
-* Bug Fix : Added proper alert when superuser not found
-* UI : Revamped About and added FAQ page.
-
+* Feature: Column level select/invert/unselect
+* Feature: New Import/Export (with backward compatiblity)
+* Feature: Filter by All/Core/System/User applications
+* BugFix: Fixed issue with Multiuser iptables rules
+* BugFix: Fixed issue with Tasker plugin (enable/disable/Profile switch)
+* UI: Revamped About and added FAQ page.
+* User reported bug fixes.
 
 Version 1.2.8
 * Features
@@ -20,7 +22,7 @@ Version 1.2.8
   * Custom rules file support (. /path/to/file) 
 * Fixed VPN issue with KitKat & Updated libsuperuser library
 * Many minor UI enhancements and performance improvements
-* Bug Fixes: #154,sdcard mount on startup, user reported crash fixes
+* Bug Fixes: #154,sdcard mount on startup, user reported crash fixes 
 
 Version 1.2.7
 * Improved search functionality & select confirmation.

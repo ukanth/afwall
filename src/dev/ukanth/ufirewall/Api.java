@@ -30,17 +30,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,6 +50,10 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -80,6 +86,7 @@ import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 /**
@@ -100,6 +107,12 @@ public final class Api {
 	public static final int SPECIAL_UID_DNSPROXY	= -13;
 	/** special application UID used for NTP */
 	public static final int SPECIAL_UID_NTP		= -14;
+	
+	private static final int WIFI_EXPORT = 0;
+	private static final int DATA_EXPORT = 1;
+	private static final int ROAM_EXPORT = 2;
+	private static final int VPN_EXPORT = 3;
+	private static final int LAN_EXPORT = 4;
 
 	// Preferences
 	public static String PREFS_NAME 				= "AFWallPrefs";
@@ -207,7 +220,7 @@ public final class Api {
 			"BUSYBOX="+mybusybox+"\n" +
 			"";
 	}
-
+	
 	static void setIpTablePath(Context ctx,boolean setv6) {
 		boolean builtin;
 		String pref = G.ip_path();
@@ -316,8 +329,22 @@ public final class Api {
 
 			// netd runs as root, and on Android 4.3+ it handles all DNS queries
 			if (uids.indexOf(SPECIAL_UID_DNSPROXY) >= 0) {
-				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", action);
+				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  action);
 			}
+			
+			//TODO: target for next version along with dnsproxy2
+			/*String pref = G.dns_proxy();
+			if (pref.equals("auto")) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
+				} else {
+					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");	
+				}
+			} else if(pref.equals("disabled")){
+				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
+			} else {
+				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
+			}*/
 
 			// NTP service runs as "system" user
 			if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
@@ -443,10 +470,8 @@ public final class Api {
 		assertBinaries(ctx, showErrors);
 		if(G.isMultiUser()) {
 			//FIXME: after setting this, we need to flush the iptables ?
-			AFWALL_CHAIN_NAME = AFWALL_CHAIN_NAME + (G.getMultiUserId() != 0 ? G.getMultiUserId() : "");
+			AFWALL_CHAIN_NAME = "afwall" + G.getMultiUserId();
 		}			
-					
-
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		List<String> cmds = new ArrayList<String>();
@@ -809,6 +834,7 @@ public final class Api {
 		//make sure reset the OUTPUT chain to accept state.
 		cmds.add("-P OUTPUT ACCEPT");
 		
+		//Delete only when the afwall chain exist !
 		cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME );
 		
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT2, cmds);
@@ -1211,6 +1237,7 @@ public final class Api {
 			for (int i=0; i<specialData.size(); i++) {
 				app = specialData.get(i);
 				specialApps.put(app.pkgName, app.uid);
+				//default DNS/NTP
 				if (app.uid != -1 && syncMap.get(app.uid) == null) {
 					// check if this application is allowed
 					if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
@@ -1246,8 +1273,8 @@ public final class Api {
 	}
 	
 	
+	
 	private static List<Integer> getListFromPref(String savedPkg_uid) {
-
 		final StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
 		List<Integer> listUids = new ArrayList<Integer>();
 		while(tok.hasMoreTokens()){
@@ -1654,6 +1681,7 @@ public final class Api {
     	public PackageInfoData(String user, String name, String pkgNameStr) {
     		this(android.os.Process.getUidForName(user), name, pkgNameStr);
     	}
+    	
     	/**
     	 * Screen representation of this application
     	 */
@@ -1736,51 +1764,199 @@ public final class Api {
 		
 	}
 	
+	private static void updateExportPackage(Map<String,JSONObject> exportMap, String packageName, int identifier) throws JSONException{
+		JSONObject obj;
+		if (packageName != null) {
+			if (exportMap.containsKey(packageName)) {
+				obj = exportMap.get(packageName);
+				obj.put(identifier +"", true);
+			} else {
+				obj = new JSONObject();
+				obj.put(identifier +"", true);
+				exportMap.put(packageName, obj);
+			}
+		}
+
+	}
+	
 	public static boolean saveSharedPreferencesToFile(Context ctx) {
 	    boolean res = false;
 	    File sdCard = Environment.getExternalStorageDirectory();
-	    File dir = new File (sdCard.getAbsolutePath() + "/afwall/");
-	    dir.mkdirs();
-	    File file = new File(dir, "backup.rules");
-	    
-	    
-	    ObjectOutputStream output = null;
-	    try {
-	        output = new ObjectOutputStream(new FileOutputStream(file));
-	        saveRules(ctx);
-	        SharedPreferences pref = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-	        output.writeObject(pref.getAll());
-	        res = true;
-	    } catch (FileNotFoundException e) {
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }finally {
-	        try {
-	            if (output != null) {
-	                output.flush();
-	                output.close();
-	            }
-	        } catch (IOException ex) {
-	            ex.printStackTrace();
-	        }
-	    }
+		if (isExternalStorageWritable()) {
+			File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+			dir.mkdirs();
+			File file = new File(dir, "backup.json");
+			Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
+			try {
+				FileOutputStream fOut = new FileOutputStream(file);
+				OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+
+				final List<PackageInfoData> apps = getApps(ctx,null);
+				// Builds a pipe-separated list of names
+				
+				for (int i=0; i<apps.size(); i++) {
+					if (apps.get(i).selected_wifi) {
+						updateExportPackage(exportMap,apps.get(i).pkgName,WIFI_EXPORT);
+					}
+					if (apps.get(i).selected_3g) {
+						updateExportPackage(exportMap,apps.get(i).pkgName,DATA_EXPORT);
+					}
+					if (apps.get(i).selected_roam) {
+						updateExportPackage(exportMap,apps.get(i).pkgName,ROAM_EXPORT);
+					}
+					if (apps.get(i).selected_vpn) {
+						updateExportPackage(exportMap,apps.get(i).pkgName,VPN_EXPORT);
+					}
+					if (apps.get(i).selected_lan) {
+						updateExportPackage(exportMap,apps.get(i).pkgName,LAN_EXPORT);
+					}
+				}
+
+				JSONObject obj = new JSONObject(exportMap);
+				JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
+
+				myOutWriter.append(jArray.toString());
+				res = true;
+				myOutWriter.close();
+				fOut.close();
+			} catch (FileNotFoundException e) {
+				Log.e(TAG, e.getLocalizedMessage());
+			} catch (JSONException e) {
+				Log.e(TAG, e.getLocalizedMessage());
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage());
+			} 
+		}
+	   
 	    return res;
 	}
-
-
-	@SuppressWarnings("unchecked")
-	public static boolean loadSharedPreferencesFromFile(Context ctx) {
+	
+	private static boolean importRules(Context ctx,File file) {
+		boolean returnVal = false;
+		BufferedReader br = null;
+		final StringBuilder wifi_uids = new StringBuilder();
+		final StringBuilder data_uids = new StringBuilder();
+		final StringBuilder roam_uids = new StringBuilder();
+		final StringBuilder vpn_uids = new StringBuilder();
+		final StringBuilder lan_uids = new StringBuilder();
+		
+		try {
+			StringBuilder text = new StringBuilder();
+			br = new BufferedReader(new FileReader(file));
+			String line;
+			while ((line = br.readLine()) != null) {
+				text.append(line);
+			}
+			String data = text.toString();
+			JSONArray array = new JSONArray(data);
+			JSONObject object = (JSONObject) array.get(0);
+			Map<String,Object> json = JsonHelper.toMap(object);
+			final PackageManager pm = ctx.getPackageManager();
+			
+			for (Map.Entry<String, Object> entry : json.entrySet())
+			{
+			    String pkgName = entry.getKey();
+			    if(pkgName.contains(":")) {
+			    	pkgName = pkgName.split(":")[0];
+			    }
+			    
+			    JSONObject jsonObj = (JSONObject) JsonHelper.toJSON(entry.getValue());
+			    Iterator<?> keys = jsonObj.keys();
+			    while( keys.hasNext() ){
+			    	//get wifi/data/lan etc
+		            String key = (String)keys.next();
+		            switch(Integer.parseInt(key)){
+		            case WIFI_EXPORT:
+		            	if (wifi_uids.length() != 0) {
+		            		wifi_uids.append('|');
+		            	}
+						if (pkgName.startsWith("dev.afwall.special")) {
+							wifi_uids.append(specialApps.get(pkgName));
+						} else {
+							wifi_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						}
+		            	break;
+		            case DATA_EXPORT: 
+		            	if (data_uids.length() != 0) {
+		            		data_uids.append('|');
+		            	}
+		            	if (pkgName.startsWith("dev.afwall.special")) {
+							data_uids.append(specialApps.get(pkgName));
+						} else {
+							data_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						}
+		            	break;
+		            case ROAM_EXPORT: 
+		            	if (roam_uids.length() != 0) {
+		            		roam_uids.append('|');
+		            	}
+		            	if (pkgName.startsWith("dev.afwall.special")) {
+							roam_uids.append(specialApps.get(pkgName));
+						} else {
+							roam_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						}
+		            	break;
+		            case VPN_EXPORT:
+		            	if (vpn_uids.length() != 0) {
+		            		vpn_uids.append('|');
+		            	}
+		            	if (pkgName.startsWith("dev.afwall.special")) {
+							vpn_uids.append(specialApps.get(pkgName));
+						} else {
+							vpn_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						}
+		            	break;
+		            case LAN_EXPORT:
+		            	if (lan_uids.length() != 0) {
+		            		lan_uids.append('|');
+		            	}
+		            	if (pkgName.startsWith("dev.afwall.special")) {
+							lan_uids.append(specialApps.get(pkgName));
+						} else {
+							lan_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						}
+		            	break;
+		            }
+		           
+		        }
+			}
+			final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+			final Editor edit = prefs.edit();
+			edit.putString(PREF_WIFI_PKG_UIDS, wifi_uids.toString());
+			edit.putString(PREF_3G_PKG_UIDS, data_uids.toString());
+			edit.putString(PREF_ROAMING_PKG_UIDS, roam_uids.toString());
+			edit.putString(PREF_VPN_PKG_UIDS, vpn_uids.toString());
+			edit.putString(PREF_LAN_PKG_UIDS, lan_uids.toString());
+			
+			edit.commit();
+			returnVal = true;
+		} catch (FileNotFoundException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		} catch (IOException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		} catch (JSONException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		} catch (NameNotFoundException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage());
+				}
+			}
+		}
+		return returnVal;
+	}
+	
+	@Deprecated
+	private static boolean importRulesOld(Context ctx, File file) {
 		boolean res = false;
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		dir.mkdirs();
-		File file = new File(dir, "backup.rules");
-
 		ObjectInputStream input = null;
 		try {
 			input = new ObjectInputStream(new FileInputStream(file));
-			Editor prefEdit = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
+			Editor prefEdit = ctx.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE).edit();
 			prefEdit.clear();
 			Map<String, ?> entries = (Map<String, ?>) input.readObject();
 			for (Entry<String, ?> entry : entries.entrySet()) {
@@ -1800,10 +1976,10 @@ public final class Api {
 			prefEdit.commit();
 			res = true;
 		} catch (FileNotFoundException e) {
-			//alert(ctx, "Missing back.rules file");
+			// alert(ctx, "Missing back.rules file");
 			Log.e(TAG, e.getLocalizedMessage());
 		} catch (IOException e) {
-			//alert(ctx, "Error reading the backup file");
+			// alert(ctx, "Error reading the backup file");
 			Log.e(TAG, e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
 			Log.e(TAG, e.getLocalizedMessage());
@@ -1814,6 +1990,28 @@ public final class Api {
 				}
 			} catch (IOException ex) {
 				Log.e(TAG, ex.getLocalizedMessage());
+			}
+		}
+		return res;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	public static boolean loadSharedPreferencesFromFile(Context ctx) {
+		boolean res = false;
+		File sdCard = Environment.getExternalStorageDirectory();
+		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+		dir.mkdirs();
+		File file = new File(dir, "backup.json");
+		//new format
+		if(file.exists()) {
+			res = importRules(ctx,file);
+		} else {
+			file = new File(dir, "backup.rules");
+			if(file.exists()) {
+				res = importRulesOld(ctx,file);
+			} else {
+				alert(ctx,ctx.getString(R.string.backup_notexist));
 			}
 		}
 		return res;
@@ -2108,5 +2306,26 @@ public final class Api {
 		}
 		return null;
 	}
+	
+	
+	/* Checks if external storage is available for read and write */
+	public static boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+	
+	/* Checks if external storage is available to at least read */
+	public static boolean isExternalStorageReadable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)
+				|| Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
 
 }

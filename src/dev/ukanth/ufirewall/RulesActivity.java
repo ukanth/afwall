@@ -22,10 +22,9 @@
 
 package dev.ukanth.ufirewall;
 
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-
-import dev.ukanth.ufirewall.RootShell.RootCommand;
+import java.io.File;
+import java.util.Map;
+import java.util.TreeSet;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -39,9 +38,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import java.io.File;
-import java.util.Map;
-import java.util.TreeSet;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
+
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 public class RulesActivity extends DataDumpActivity {
 

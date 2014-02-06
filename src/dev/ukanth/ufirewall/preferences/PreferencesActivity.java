@@ -222,7 +222,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		}
 		if (key.equals("showUid") || key.equals("enableMultiProfile")
 				|| key.equals("disableIcons") || key.equals("enableVPN") || key.equals("enableLAN")
-				|| key.equals("enableRoam") || key.equals("locale") ) {
+				|| key.equals("enableRoam") || key.equals("locale") || key.equals("showFilter") ) {
 			// revert back to Default profile when disabling multi-profile support
 			if (!G.enableMultiProfile()) {
 				G.storedPosition(0);

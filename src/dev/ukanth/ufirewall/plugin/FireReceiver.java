@@ -75,7 +75,7 @@ public final class FireReceiver extends BroadcastReceiver
 
 		final Handler toaster = new Handler() {
 			public void handleMessage(Message msg) {
-				if (msg.arg1 != 0)Toast.makeText(context, msg.arg1, Toast.LENGTH_SHORT).show();
+				if (msg.arg1 != 0) Toast.makeText(context, msg.arg1, Toast.LENGTH_SHORT).show();
 			}
 		};
         /*
@@ -91,9 +91,13 @@ public final class FireReceiver extends BroadcastReceiver
         	if(index != null){
         		int id = Integer.parseInt(index);
         		if(id == 0) {
-        			if(applyRules(context,msg,toaster)){
-						Api.setEnabled(context, true, false);
-					}
+	    			if (Api.isEnabled(context))  {
+	    				if(applyRules(context,msg,toaster)){
+							Api.setEnabled(context, true, false);
+							msg.arg1 = R.string.toast_enabled;
+							toaster.sendMessage(msg);
+						}
+	    			} 
         		} else if (id == 1) {
         			if (Api.isEnabled(context)) {
         				if(oldPwd.length() == 0 && newPwd.length() == 0){
@@ -110,52 +114,33 @@ public final class FireReceiver extends BroadcastReceiver
     		        		if (ret) {
     		        			Api.setEnabled(context,  false,  true);
     		        			msg.arg1 = R.string.tasker_disabled;
-    							toaster.sendMessage(msg);
     		        		}
     		        	} else {
     						msg.arg1 = R.string.widget_disable_fail;
-    						toaster.sendMessage(msg);
     					}
         			} else {
         				msg.arg1 = R.string.tasker_disabled;
-						toaster.sendMessage(msg);
         			}
-        			
+        			toaster.sendMessage(msg);
 				}
         		if(id > 1){
-        			G.setProfile(true, (id-2));
         			if(multimode) {
+        				G.setProfile(multimode, (id-2));
         				if (Api.isEnabled(context)) {
                 			if(!disableToasts){
                 				Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();	
                 			}
-                			boolean ret = Api.fastApply(context, new RootCommand()
-        					.setFailureToast(R.string.error_apply)
-        					.setCallback(new RootCommand.Callback() {
-        						@Override
-        						public void cbFunc(RootCommand state) {
-        							if (state.exitCode == 0) {
-        								Log.i(Api.TAG, "" + ": applied rules");
-        							} else {
-        								// error details are already in logcat
-        								Api.setEnabled(context,  false,  false);
-        								errorNotification(context);
-        							}
-        						}
-        					}));
-			        		if (!ret) {
-			        			Log.e(Api.TAG, "applySavedIptablesRules() returned an error");
-			        			errorNotification(context);
-			        		} else {
-			        			msg.arg1 = R.string.tasker_profile_applied ;
-								toaster.sendMessage(msg);
-			        		}
+                			if(applyRules(context, msg, toaster)) {
+               					msg.arg1 = R.string.tasker_profile_applied;
+               					if(!disableToasts) toaster.sendMessage(msg);
+                			}
                 		} else {
-               				Toast.makeText(context, R.string.tasker_disabled, Toast.LENGTH_SHORT).show();
+                			msg.arg1 = R.string.tasker_disabled;
+                			toaster.sendMessage(msg);
                 		}		
-        			}
-        			else {
-                		Toast.makeText(context, R.string.tasker_muliprofile, Toast.LENGTH_LONG).show();
+        			} else {
+        				msg.arg1 = R.string.tasker_muliprofile;
+        				toaster.sendMessage(msg);
                 	}
         		}
         	} 
@@ -183,7 +168,7 @@ public final class FireReceiver extends BroadcastReceiver
 
 		mNotificationManager.notify(InterfaceTracker.ERROR_NOTIFICATION_ID, notification);
 	}
-    
+ 
     private boolean applyRules(final Context context,Message msg, Handler toaster) {
     	boolean ret = Api.fastApply(context, new RootCommand()
 		.setFailureToast(R.string.error_apply)
@@ -199,13 +184,6 @@ public final class FireReceiver extends BroadcastReceiver
 				}
 			}
 		}));
-		if (!ret) {
-			Log.e(Api.TAG, "applySavedIptablesRules() returned an error");
-			errorNotification(context);
-		} else {
-			msg.arg1 = R.string.toast_enabled;
-			toaster.sendMessage(msg);
-		}
 		return ret;
 	}
 }

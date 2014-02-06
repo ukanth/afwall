@@ -7,11 +7,20 @@
     android:drawSelectorOnTop="false"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     />
-	
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6px">
 		 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/label_mode" android:text="@string/mode" android:clickable="true"></TextView>
         <TextView android:id="@+id/text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textIsSelectable="false"/>
 	</LinearLayout>
+	
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="0px" >
+	    <RadioGroup android:layout_width="wrap_content" android:id="@+id/appFilterGroup" android:orientation="horizontal" android:layout_height="wrap_content" android:visibility="gone" >
+		   <RadioButton android:id="@+id/rpkg_all" android:layout_height="wrap_content" android:text="@string/pkg_all" android:checked="true" />
+		   <RadioButton android:id="@+id/rpkg_core" android:layout_height="wrap_content" android:text="@string/pkg_core" />
+		   <RadioButton android:id="@+id/rpkg_sys" android:layout_height="wrap_content" android:text="@string/pkg_sys" />
+           <RadioButton android:id="@+id/rpkg_user" android:layout_height="wrap_content" android:text="@string/pkg_user" />
+         </RadioGroup>  
+	</LinearLayout>
+	
 	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="#FFFFFFFF" />
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="0px">
 		<View android:layout_width="34dp" android:layout_height="fill_parent" android:id="@+id/imageHolder"/>
@@ -24,5 +33,9 @@
 		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_reset" android:src="@drawable/clear" android:clickable="true"></ImageView>
 	</LinearLayout>
 	
-	<ListView android:layout_width="wrap_content" android:fastScrollEnabled="true" android:layout_height="wrap_content" android:id="@+id/listview"></ListView>
+	<ListView android:layout_width="wrap_content" android:fastScrollEnabled="true" android:layout_height="wrap_content" 
+	    android:id="@+id/listview"
+	    android:divider="#FFF"
+    	android:dividerHeight="0.5px"
+	    ></ListView>
 </LinearLayout>
