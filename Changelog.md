@@ -4,14 +4,13 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.2.9-Beta2
+Version 1.2.9-Final Beta
 
 * Feature: Column level select/invert/unselect
-* Feature: New Import/Export (backward compatiblity)
+* Feature: New Import/Export (with backward compatiblity)
 * Feature: Filter by All/Core/System/User applications
-* BugFix: Fixed issue with Multiuser iptable rules
-* BugFix : Fixed issue with Tasker plugin (enable/disable/Profile switch)
-* BugFix : Added proper alert when superuser not found
+* BugFix: Fixed issue with Multiuser iptables rules
+* BugFix: Fixed issue with Tasker plugin (enable/disable/Profile switch)
 * UI: Revamped About and added FAQ page.
 * User reported bug fixes.
 
