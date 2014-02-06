@@ -26,8 +26,8 @@
   <string name="dnsproxy_item">(Μεσολαβητής DNS) - αναζητήσεις DNS μέσω netd</string>
   <string name="ntp_item">(NTP) - Διακομιστές ώρας διαδικτύου</string>
   <string name="root_item">(root) - εφαρμογές που εκτελούνται ως root</string>
-  <string name="fw_enabled">Enable Firewall</string>
-  <string name="fw_disabled">Disable Firewall</string>
+  <string name="fw_enabled">Ενεργοποίηση του τείχους</string>
+  <string name="fw_disabled">Απενεργοποίηση του τείχους</string>
   <string name="flushed">Οι κανόνες εκκαθαρίστηκαν</string>
   <string name="show_log">Καταγραφές τείχους</string>
   <string name="clear_log">Καθαρισμός αρχείου καταγραφής</string>
@@ -62,7 +62,7 @@
   <string name="custom_script_defined">Έχει οριστεί προσαρμοσμένο Script</string>
   <string name="custom_script_removed">Το προσαρμοσμένο Script αφαιρέθηκε</string>
   <string name="custom_script_error">Σφάλμα κατά την αποθήκευση του προσαρμοσμένου script</string>
-  <string name="custom_script_info"><b>Enter your custom script below.</b>		\n<i>(Leave it blank to remove)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.</string>
+  <string name="custom_script_info"><b>Εισάγετε την Προσαρμοσμένη Δέσμη Ενεργειών σας παρακάτω</b>\n<i>(Αφήστε κενό για αφαίρεση)</i>\nΓια πληροφορίες σχετικά με τις Προσαρμοσμένες Δέσμες Ενεργειών, πατήστε <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">εδώ</a>.</string>
   <string name="custom_script2_info">     \n<b>Προσαρμοσμένο script απενεργοποίησης</b>\nΘα εκτελείται όταν το τείχος εισέρχεται σε κατάσταση <b>ανενεργή</b>:</string>
   <string name="unsaved_changes">Μη αποθηκευμένες αλλαγές</string>
   <string name="unsaved_changes_message">Υπάρχουν μη αποθηκευμένες αλλαγές.\nΘέλετε να εφαρμοστούν ή να απορριφθούν;</string>
@@ -159,8 +159,9 @@
   <string name="disableTasterSummary">Αυτό θα απενεργοποιήσει τα toast μηνύματα στον tasker</string>
   <string name="enable_tasker">Ενεργοποίηση AFWall+</string>
   <string name="disable_tasker">Απενεργοποίηση AFWall+</string>
-  <string name="tasker_apply">Εφαρμογή κανόνων τείχους</string>
+  <string name="tasker_apply">Tasker: Εφαρμογή κανόνων τείχους προστασίας</string>
   <string name="tasker_disabled">Tasker: AFWall+ ανενεργό!</string>
+  <string name="tasker_profile_applied">Tasker: Το προφίλ εφαρμόστηκε με επιτυχία</string>
   <string name="tasker_muliprofile">AFWall+ Tasker: πολλαπλά προφίλ ανενεργά!</string>
   <string name="ipv6_title">Υποστήριξη IPv6</string>
   <string name="ipv6_summary">Ενεργοποίηση υποστήριξης IPv6</string>
@@ -201,14 +202,36 @@
   <string name="Donate">Δωρεά</string>
   <string name="multi_apply_rules">Εφαρμογή κανόνων κατά την αλλαγή προφίλ</string>
   <string name="multi_apply_rules_info">Αυτό θα φορτώσει και θα εφαρμόσει τους κανόνες κατά την αλλαγή προφίλ</string>
-  <string name="select_all">Θέλετε να τα επιλέξετε όλα;</string>
-  <string name="reverse_all">Θέλετε να αντιστρέψετε την επιλογή όλων;</string>
-  <string name="unselect_all">Θέλετε να τα αποεπιλέξετε όλα;</string>
-  <string name="multi_user_title">Support MultiUser</string>
-  <string name="multi_user_summary">Enable to support android multi-user on a tablet</string>
-  <string name="device_admin_desc">Additional Security - Prevent AFWall+ from uninstall</string>
-  <string name="traffic_detail_title">Traffic Details</string>
-  <string name="uploaded">Uploaded</string>
-  <string name="downloaded">Downloaded</string>
-  <string name="app_system_detail">Open system details</string>
+  <string name="multi_user_title">Υποστήριξη πολλών χρηστών</string>
+  <string name="multi_user_summary">Ενεργοποιήστε για υποστήριξη πολλών χρηστών σε ένα tablet</string>
+  <string name="device_admin_desc">Πρόσθετη ασφάλεια - προστασία απεγκατάστασης</string>
+  <string name="traffic_detail_title">Λεπτομέρειες κίνησης δεδομένων</string>
+  <string name="uploaded">Ανέβηκε</string>
+  <string name="downloaded">Μεταφορτώθηκε</string>
+  <string name="app_system_detail">Άνοιγμα λεπτομερειών συστήματος</string>
+  <string name="settings_pwd_not_equal">Ασυμφωνία κωδικών πρόσβασης</string>
+  <string name="faq">Συχνές ερωτήσεις</string>
+  <string name="reverse_all">Αυτό θα αντιστρέψει όλες τις επιλεγμένες εφαρμογές. Συνέχεια;</string>
+  <string name="unselect_all">Αυτό θα αφαιρέσει όλες τις επιλεγμένες εφαρμογές. Συνέχεια;</string>
+  <string name="check_all">Επιλογή όλων</string>
+  <string name="invert_all">Αντιστροφή όλων</string>
+  <string name="uncheck_all">Απεπιλογή όλων</string>
+  <string name="select_action">Επιλέξτε ενέργεια στη στήλη </string>
+  <string name="roam">Roam</string>
+  <string name="wifi">WiFi</string>
+  <string name="lan">LAN</string>
+  <string name="vpn">VPN</string>
+  <string name="data">Δεδομένα</string>
+  <string name="pkg_all">Όλα</string>
+  <string name="pkg_core">Πυρήνας</string>
+  <string name="pkg_sys">Σύστημα</string>
+  <string name="pkg_user">Χρήστης</string>
+  <string name="backup_notexist">Δεν υπάρχει backup. Παρακαλώ κάντε εξαγωγή από το μενού.</string>
+  <string name="showFilter">Εμφάνιση επιλογών φίλτρου</string>
+  <string name="showfilter_summary_on">Οι επιλογές φίλτρου θα εμφανιστούν στο κύριο μενού.</string>
+  <string name="showfilter_summary_off">Οι επιλογές φίλτρου είναι κρυφές</string>
+  <string name="enable_dns">Ενεργοποίηση</string>
+  <string name="disable_dns">Απενεργοποίηση</string>
+  <string name="dns_proxy_title">Διαμεσολαβητής DNS</string>
+  <string name="dns_proxy_summary">Η επιλογή διαμεσολαβητής DNS προστέθηκε για να υποστηρίζονται αιτήματα DNS μέσω netd στην JB 4.3+. Αν απενεργοποιήσετε αυτή την επιλογή, δε θα έχετε Internet σε  Android 4.3+</string>
 </resources>

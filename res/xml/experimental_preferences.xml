@@ -1,21 +1,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-        <CheckBoxPreference
-            android:key="fixLeak"
-            android:title="@string/fixleakTitle"
-            android:summary="@string/fixleakSummary" />
-       <!--  <CheckBoxPreference
-            android:key="mobiledataLimit"
-            android:title="@string/fixmobileLimit"
-            android:summary="@string/fixmobileLimitSummary" /> -->
-         <CheckBoxPreference
-            android:key="enableInbound"
-            android:title="@string/enableInboundTitle"
-            android:summary="@string/enableInboundSummary" />
-         
-         <CheckBoxPreference
-            android:key="multiUser"
-            android:title="@string/multi_user_title"
-            android:summary="@string/multi_user_summary" /> 
-        
+    <CheckBoxPreference
+        android:key="fixLeak"
+        android:summary="@string/fixleakSummary"
+        android:title="@string/fixleakTitle" />
+    <CheckBoxPreference
+        android:key="enableInbound"
+        android:summary="@string/enableInboundSummary"
+        android:title="@string/enableInboundTitle" />
+    <CheckBoxPreference
+        android:key="multiUser"
+        android:summary="@string/multi_user_summary"
+        android:title="@string/multi_user_title" />
 </PreferenceScreen>
