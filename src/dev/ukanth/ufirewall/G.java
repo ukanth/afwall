@@ -105,13 +105,13 @@ public class G extends android.app.Application {
 	public static boolean disableTaskerToast() { return gPrefs.getBoolean(DISABLE_TASKER_TOAST, false); }
 	public static boolean disableTaskerToast(boolean val) { gPrefs.edit().putBoolean(DISABLE_TASKER_TOAST, val).commit(); return val; }
 
-	public static boolean enableRoam() { return gPrefs.getBoolean(ENABLE_ROAM, true); }
+	public static boolean enableRoam() { return gPrefs.getBoolean(ENABLE_ROAM, false); }
 	public static boolean enableRoam(boolean val) { gPrefs.edit().putBoolean(ENABLE_ROAM, val).commit(); return val; }
 
 	public static boolean enableVPN() { return gPrefs.getBoolean(ENABLE_VPN, false); }
 	public static boolean enableVPN(boolean val) { gPrefs.edit().putBoolean(ENABLE_VPN, val).commit(); return val; }
 
-	public static boolean enableLAN() { return gPrefs.getBoolean(ENABLE_LAN, false); }
+	public static boolean enableLAN() { return gPrefs.getBoolean(ENABLE_LAN, true); }
 	public static boolean enableLAN(boolean val) { gPrefs.edit().putBoolean(ENABLE_LAN, val).commit(); return val; }
 
 	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, false); }
@@ -141,7 +141,7 @@ public class G extends android.app.Application {
 	public static boolean notifyAppInstall() { return gPrefs.getBoolean(NOTIFY_INSTALL, false); }
 	public static boolean notifyAppInstall(boolean val) { gPrefs.edit().putBoolean(NOTIFY_INSTALL, val).commit(); return val; }
 
-	public static boolean disableIcons() { return gPrefs.getBoolean(DISABLE_ICONS, false); }
+	public static boolean disableIcons() { return gPrefs.getBoolean(DISABLE_ICONS, true); }
 	public static boolean disableIcons(boolean val) { gPrefs.edit().putBoolean(DISABLE_ICONS, val).commit(); return val; }
 
 	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "auto"); }
