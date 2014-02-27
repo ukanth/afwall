@@ -213,8 +213,8 @@
   <string name="faq">Häufig gestellte Fragen</string>
   <string name="reverse_all">Dies wird die Auswahl der gewählten Anwendungen umkehren. Fortsetzen?</string>
   <string name="unselect_all">Dies löscht die Auswahl der gewählten Anwendungen. Fortsetzen?</string>
-  <string name="check_all">Alle prüfen</string>
-  <string name="invert_all">Alle umkehren</string>
+  <string name="check_all">Alle markieren</string>
+  <string name="invert_all">Alle invertieren</string>
   <string name="uncheck_all">Alle abwählen</string>
   <string name="select_action">Aktion auf Spalte auswählen </string>
   <string name="roam">Roaming</string>
