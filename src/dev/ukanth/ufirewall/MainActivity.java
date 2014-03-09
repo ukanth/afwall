@@ -661,6 +661,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			}
 			break;
 		}
+		
+		if(this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), searchApp));
 		// restore
 		this.listview.setSelectionFromTop(index, top);
