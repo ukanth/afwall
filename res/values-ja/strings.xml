@@ -12,11 +12,11 @@
   <string name="help">ヘルプ</string>
   <string name="close">閉じる</string>
   <string name="exit">終了</string>
-  <string name="error_purge">Error purging iptables</string>
-  <string name="error_binary">Error installing binary files</string>
-  <string name="error_migration">Error migrating old settings</string>
-  <string name="error_refresh">Error refreshing iptables</string>
-  <string name="error_apply">Error applying iptables rules</string>
+  <string name="error_purge">Iptables の初期化エラー</string>
+  <string name="error_binary">バイナリファイルのインストールエラー</string>
+  <string name="error_migration">以前の設定の移行エラー</string>
+  <string name="error_refresh">Iptables の更新エラー</string>
+  <string name="error_apply">Iptables ルールの適用エラー</string>
   <string name="error_fetch">Error fetching iptables rules</string>
   <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
   <string name="error_common">エラー: </string>

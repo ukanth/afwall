@@ -26,6 +26,8 @@
         <item>Simplifed Chinese</item>
         <item>Traditional Chinese</item>
         
+        <item>Indonesian</item>
+        
     </string-array>
     
     <string-array name="supported_languages_code">
@@ -53,6 +55,8 @@
         
         <item>zh_CN</item>  
         <item>zh_TW</item>  
+        
+         <item>id</item>
     </string-array>
     
     <string-array name="iptables_binary">
