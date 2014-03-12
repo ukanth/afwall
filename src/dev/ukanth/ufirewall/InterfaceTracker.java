@@ -55,9 +55,10 @@ public final class InterfaceTracker {
 	public static final String TAG = "AFWall";
 
 	public static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "ra+", "bnep+" };
+	
 	public static final String ITFS_3G[] = { "rmnet+", "pdp+", "uwbr+","wimax+", "vsnet+", 
 											 "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", 
-											 "wwan+", "cdma_rmnet+", "usb+", "rment_usb+" };
+											 "wwan+", "cdma_rmnet+", "usb+", "rmnet_usb+","clat4+", "cc2mni+", "bond1+" };
 	
 	public static final String ITFS_VPN[] = { "tun+", "ppp+", "tap+" };
 
