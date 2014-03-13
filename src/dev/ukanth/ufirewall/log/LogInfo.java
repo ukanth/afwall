@@ -1,3 +1,26 @@
+/**
+ * Capture Logs from dmesg and return the formatted string
+ * 
+ * 
+ * Copyright (C) 2014  Umakanthan Chandran
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Umakanthan Chandran
+ * @version 1.0
+ */
+
 package dev.ukanth.ufirewall.log;
 
 import java.io.BufferedReader;
@@ -136,36 +159,8 @@ public class LogInfo {
 					}
 				}
 				res.append(address.toString());
-				res.append("\n\t---------\n");
+				res.append("\n\t-------------------------\n");
 			}
-			/*for(int i = 0; i < map.size(); i++) {
-				StringBuilder address = new StringBuilder();
-				   id = map.keyAt(i);
-				   if (id != unknownUID) {
-						for (PackageInfoData app : apps) {
-							if (app.uid == id) {
-								appId = id;
-								appName = app.names.get(0);
-								break;
-							}
-						}
-					} else {
-						appName = "Kernel";
-					}
-				   loginfo = map.valueAt(i);
-				   totalBlocked = loginfo.totalBlocked;
-					if (loginfo.dstBlocked.size() > 0) {
-						for (String dst : loginfo.dstBlocked.keySet()) {
-							address.append( dst + "(" + loginfo.dstBlocked.get(dst) + ")");
-							address.append("\n");
-						}
-					}
-					res.append("AppID :\t" +  appId + "\n"  
-					+ ctx.getString(R.string.LogAppName) +":\t" + appName + "\n" 
-					+ ctx.getString(R.string.LogPackBlock) + ":\t" +  totalBlocked  + "\n");
-					res.append(address.toString());
-					res.append("\n\t---------\n");
-				}*/
 		} catch (Exception e) {
 			return null;
 		}
