@@ -61,7 +61,7 @@ public class G extends android.app.Application {
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";
 	private static final String APP_VERSION = "appVersion";
-	private static final String DNS_PROXY = "dns_proxy";
+	private static final String DNS_PROXY = "dns_value";
 	
 	private static final String MULTI_USER = "multiUser";
 	private static final String MULTI_USER_ID = "multiUserId";

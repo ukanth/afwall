@@ -102,7 +102,7 @@ public final class Api {
 	/** special application UID used for dnsmasq DHCP/DNS */
 	public static final int SPECIAL_UID_TETHER	= -12;
 	/** special application UID used for netd DNS proxy */
-	public static final int SPECIAL_UID_DNSPROXY	= -13;
+	//public static final int SPECIAL_UID_DNSPROXY	= -13;
 	/** special application UID used for NTP */
 	public static final int SPECIAL_UID_NTP		= -14;
 	
@@ -323,24 +323,23 @@ public final class Api {
 				}
 			}
 
-			// netd runs as root, and on Android 4.3+ it handles all DNS queries
+			/*// netd runs as root, and on Android 4.3+ it handles all DNS queries
 			if (uids.indexOf(SPECIAL_UID_DNSPROXY) >= 0) {
 				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  action);
-			}
+			}*/
 			
-			//TODO: target for next version along with dnsproxy2
-			/*String pref = G.dns_proxy();
+			String pref = G.dns_proxy();
 			if (pref.equals("auto")) {
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
 				} else {
 					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");	
 				}
-			} else if(pref.equals("disabled")){
+			} else if(pref.equals("disable")){
 				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
 			} else {
 				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
-			}*/
+			}
 
 			// NTP service runs as "system" user
 			if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
@@ -466,7 +465,9 @@ public final class Api {
 		assertBinaries(ctx, showErrors);
 		if(G.isMultiUser()) {
 			//FIXME: after setting this, we need to flush the iptables ?
-			AFWALL_CHAIN_NAME = "afwall" + G.getMultiUserId();
+			if(G.getMultiUserId() > 0) {
+				AFWALL_CHAIN_NAME = "afwall" + G.getMultiUserId();
+			}
 		}			
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
@@ -978,80 +979,6 @@ public final class Api {
 	}
 	
 
-	/*public static String parseLog(Context ctx, String dmesg) {
-		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -99;
-		StringBuilder res = new StringBuilder();
-		String line;
-		int start, end;
-		Integer appid;
-		final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
-		LogInfo loginfo = null;
-
-		try {
-			while ((line = r.readLine()) != null) {
-				if (line.indexOf("{AFL}") == -1) continue;
-				appid = unknownUID;
-				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					appid = Integer.parseInt(line.substring(start+4, end));
-				}
-				loginfo = map.get(appid);
-				if (loginfo == null) {
-					loginfo = new LogInfo();
-					map.put(appid, loginfo);
-				}
-				loginfo.totalBlocked += 1;
-				if (((start=line.indexOf("DST=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					String dst = line.substring(start+4, end);
-					if (loginfo.dstBlocked.containsKey(dst)) {
-						loginfo.dstBlocked.put(dst, loginfo.dstBlocked.get(dst) + 1);
-					} else {
-						loginfo.dstBlocked.put(dst, 1);
-					}
-				}
-			}
-			final List<PackageInfoData> apps = getApps(ctx,null);
-			Integer id;
-			String appName = "";
-			int appId = -1;
-			int totalBlocked;
-			for(int i = 0; i < map.size(); i++) {
-				StringBuilder address = new StringBuilder();
-				   id = map.keyAt(i);
-				   if (id != unknownUID) {
-						for (PackageInfoData app : apps) {
-							if (app.uid == id) {
-								appId = id;
-								appName = app.names.get(0);
-								break;
-							}
-						}
-					} else {
-						appName = "Kernel";
-					}
-				   loginfo = map.valueAt(i);
-				   totalBlocked = loginfo.totalBlocked;
-					if (loginfo.dstBlocked.size() > 0) {
-						for (String dst : loginfo.dstBlocked.keySet()) {
-							address.append( dst + "(" + loginfo.dstBlocked.get(dst) + ")");
-							address.append("\n");
-						}
-					}
-					res.append("AppID :\t" +  appId + "\n"  
-					+ ctx.getString(R.string.LogAppName) +":\t" + appName + "\n" 
-					+ ctx.getString(R.string.LogPackBlock) + ":\t" +  totalBlocked  + "\n");
-					res.append(address.toString());
-					res.append("\n\t---------\n");
-				}
-		} catch (Exception e) {
-			return null;
-		}
-		if (res.length() == 0) {
-			res.append(ctx.getString(R.string.no_log));
-		}
-		return res.toString();
-	}*/
-	
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
@@ -1203,7 +1130,7 @@ public final class Api {
 			specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
-			specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
+			//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
 			specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
 			specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
 			specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
@@ -1270,7 +1197,6 @@ public final class Api {
 		}
 		// Sort the array to allow using "Arrays.binarySearch" later
 		Collections.sort(listUids);	
-		
 		return listUids;
 	}
 
@@ -1500,7 +1426,6 @@ public final class Api {
 		while (tok.hasMoreTokens()) {
 			final String token = tok.nextToken();
 			if (uid_str.equals(token)) {
-				//Log.d(TAG, "Removing UID " + token + " from the rules list (package removed)!");
 				changed = true;
 			} else {
 				if (newuids.length() > 0)
@@ -1525,7 +1450,6 @@ public final class Api {
 		String name = prefs.getString(cacheKey, "");
 		if (name.length() > 0) {
 			prefs.edit().remove(cacheKey).commit();
-			//Api.alert(ctx, "Cleaned application cache!");
 		}
 	}
 	
@@ -2133,7 +2057,7 @@ public final class Api {
 			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
 			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
 			specialApps.put("dev.afwall.special.tether",SPECIAL_UID_TETHER);
-			specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
+			//specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
 			specialApps.put("dev.afwall.special.ntp",SPECIAL_UID_NTP);
 			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
 			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));

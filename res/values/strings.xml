@@ -250,8 +250,8 @@
     <string name="multi_apply_rules">Apply rules on profile switch</string>
     <string name="multi_apply_rules_info">This will load and apply rules on switching profiles</string>
    
-    <string name="multi_user_title">Support MultiUser</string>
-    <string name="multi_user_summary">Enable to support android multi-user on a tablet</string>
+    <string name="multi_user_title">Enable Multi-user support</string>
+    <string name="multi_user_summary">Enable to support android multi-user on a tablet(only works in blacklist mode)</string>
     
     <!--  -->
     <string name="device_admin_desc">Additional Security - Prevent AFWall+ from uninstall</string>
@@ -291,10 +291,10 @@
     <string name="showfilter_summary_on">Filter options will be shown in the main view.</string>
     <string name="showfilter_summary_off">Filter option is hidden</string>
     
-    <string name="enable_dns">Enable</string>
-    <string name="disable_dns">Disable</string>
+    <string name="enable_dns">Enable DNS via netd (4.3+)</string>
+    <string name="disable_dns">Disable DNS via netd (4.3+)</string>
     
-    <string name="dns_proxy_title">DNS Proxy</string>
+    <string name="dns_proxy_title">DNS Proxy </string>
     <string name="dns_proxy_summary">DNS proxy option was added to support DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>
     
 </resources>
