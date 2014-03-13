@@ -36,12 +36,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -172,8 +170,6 @@ public final class Api {
 	public static List<PackageInfoData> applications = null;
 	
 	//for custom scripts
-	static Hashtable<String, LogEntry> logEntriesHash = new Hashtable<String, LogEntry>();
-    static List<LogEntry> logEntriesList = new ArrayList<LogEntry>();
 	public static String ipPath = null;
 	public static String bbPath = null;
 	public static boolean setv6 = false;
@@ -981,24 +977,8 @@ public final class Api {
 		callback.run(ctx, getBusyBoxPath(ctx) + " ifconfig -a");
 	}
 	
-	public static class LogEntry {
-		    String uid;
-		    String src;
-		    String dst;
-		    int len;
-		    int spt;
-		    int dpt;
-		    int packets;
-		    int bytes;
-		    
-		    @Override
-		    public String toString() {
-				return dst + ":" + src+ ":" + len + ":"+ packets;
-		    	
-		    }
-	}
 
-	public static String parseLog(Context ctx, String dmesg) {
+	/*public static String parseLog(Context ctx, String dmesg) {
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
 		final Integer unknownUID = -99;
 		StringBuilder res = new StringBuilder();
@@ -1057,7 +1037,8 @@ public final class Api {
 							address.append("\n");
 						}
 					}
-					res.append("AppID :\t" +  appId + "\n"  + ctx.getString(R.string.LogAppName) +":\t" + appName + "\n" 
+					res.append("AppID :\t" +  appId + "\n"  
+					+ ctx.getString(R.string.LogAppName) +":\t" + appName + "\n" 
 					+ ctx.getString(R.string.LogPackBlock) + ":\t" +  totalBlocked  + "\n");
 					res.append(address.toString());
 					res.append("\n\t---------\n");
@@ -1069,7 +1050,7 @@ public final class Api {
 			res.append(ctx.getString(R.string.no_log));
 		}
 		return res.toString();
-	}
+	}*/
 	
     /**
      * @param ctx application context (mandatory)
@@ -1644,9 +1625,9 @@ public final class Api {
      */
 	public static final class PackageInfoData {
 		/** linux user id */
-    	int uid;
+    	public int uid;
     	/** application names belonging to this user id */
-    	List<String> names;
+    	public List<String> names;
     	/** rules saving & load **/
     	String pkgName; 
     	/** indicates if this application is selected for wifi */
@@ -1715,31 +1696,6 @@ public final class Api {
     	}
     	
     }
-    /**
-     * Small internal structure used to hold log information
-     */
-	private static final class LogInfo {
-		private int totalBlocked; // Total number of packets blocked
-		private HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address
-		private LogInfo() {
-			this.dstBlocked = new HashMap<String, Integer>();
-		}
-	}
-	
-	/*public static String runSUCommand(String cmd) throws IOException {
-		final StringBuilder res = new StringBuilder();
-		Process p  = Runtime.getRuntime().exec(
-				new String[] { "su", "-c", cmd });
-		BufferedReader stdout = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		String tmp;
-		while ((tmp = stdout.readLine()) != null) {
-			res.append(tmp);
-			res.append(",");
-		}
-		// use inputLine.toString(); here it would have whole source
-		stdout.close();
-		return res.toString();
-	}*/
 	
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);

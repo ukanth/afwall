@@ -27,7 +27,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 
 import dev.ukanth.ufirewall.RootShell.RootCommand;
-
+import dev.ukanth.ufirewall.log.LogInfo;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -44,7 +44,7 @@ public class LogActivity extends DataDumpActivity {
 	}
 
 	protected void parseAndSet(Context ctx, String raw) {
-		String cooked = Api.parseLog(ctx, raw);
+		String cooked = LogInfo.parseLog(ctx, raw);
 		if (cooked == null) {
 			setData(getString(R.string.log_parse_error));
 		} else {
