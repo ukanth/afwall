@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.Set;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.TextView;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.R;
@@ -51,35 +53,35 @@ public class LogInfo {
 	int totalBlocked; 
 	
 	
-	public static String parseLog(Context ctx, String dmesg) {
+	public static void parseLog(Context ctx, String dmesg, TextView textView) {
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
 		final Integer unknownUID = -99;
-		StringBuilder res = new StringBuilder();
+		StringBuilder address = new StringBuilder();
 		String line;
 		int start, end;
 		Integer uid;
 		String out, src, dst, proto, spt, dpt, len;
-		ArrayList<LogInfo> logList = new ArrayList<LogInfo>();
-		HashMap<String,Integer> totalCount = new HashMap<String, Integer>();
-		HashMap<Integer,ArrayList<LogInfo>> logEntityMap = new HashMap<Integer, ArrayList<LogInfo>>();
+		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
 		LogInfo logInfo = null;
+		
+		final List<PackageInfoData> apps = Api.getApps(ctx,null);
 		try {
 			while ((line = r.readLine()) != null) {
 				if (line.indexOf("{AFL}") == -1) continue;
 				uid = unknownUID;
+				
 				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
 					uid = Integer.parseInt(line.substring(start+4, end));
 				}
-				if (logEntityMap.get(uid) == null || logEntityMap.get(uid).size() == 0) {
-					logInfo = new LogInfo();
-					logList = new ArrayList<LogInfo>();
-				} else {
-					logList = logEntityMap.get(uid);
-				}
+				
+				logInfo = new LogInfo();
+				
 				if (((start=line.indexOf("DST=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
 					dst = line.substring(start+4, end);
 					logInfo.dst = dst;
 				}
+				
+				logInfo.timestamp = line.substring(0,24);
 				
 				if (((start=line.indexOf("DPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
 					dpt = line.substring(start+4, end);
@@ -110,25 +112,35 @@ public class LogInfo {
 					out = line.substring(start+4, end);
 					logInfo.out = out;
 				}
-				
-				logList.add(logInfo);
-				String uniqueKey = uid + ":" + logInfo.dst + ":" +  logInfo.dpt;
-				if(!totalCount.containsKey(uniqueKey)) {
-					totalCount.put(uniqueKey, 1);
+				String appName = "";
+				if(uid != -99) {
+					if(!appNameMap.containsKey(uid)) {
+						appName = ctx.getPackageManager().getNameForUid(uid);
+						for (PackageInfoData app : apps) {
+							if (app.uid == uid) {
+								appName = app.names.get(0);
+								break;
+							}
+						}
+						appNameMap.put(uid, appName);
+					} else {
+						appName = appNameMap.get(uid);
+					}
 				} else {
-					int count = totalCount.get(uniqueKey);
-					totalCount.put(uniqueKey, (count + 1));
+					appName = ctx.getString(R.string.kernel_item);
 				}
-				logEntityMap.put(uid, logList);
+				address = new StringBuilder();
+				address.append(logInfo.timestamp + " " + appName + "(" + uid  + ")" + " ");
+				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
+				textView.append(address.toString());
 			}
-			final List<PackageInfoData> apps = Api.getApps(ctx,null);
-			String appName = "";
+			
+		/*	String appName = "";
 			int appId = -99;
 			for (Map.Entry<Integer, ArrayList<LogInfo>> entry : logEntityMap.entrySet())
 			{
 				appId = entry.getKey();
 				if(appId != -99) {
-					appName = ctx.getPackageManager().getNameForUid(appId);
 					for (PackageInfoData app : apps) {
 						if (app.uid == appId) {
 							appName = app.names.get(0);
@@ -160,13 +172,10 @@ public class LogInfo {
 				}
 				res.append(address.toString());
 				res.append("\n\t-------------------------\n");
-			}
+			}*/
 		} catch (Exception e) {
-			return null;
+			Log.e(Api.TAG, e.getMessage());
 		}
-		if (res.length() == 0) {
-			res.append(ctx.getString(R.string.no_log));
-		}
-		return res.toString();
+		
 	}
 }

@@ -961,7 +961,8 @@ public final class Api {
 	 */
 	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
-			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
+			String command = getBusyBoxPath(ctx) + " dmesg | " +  getBusyBoxPath(ctx) + " awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\" -> \"$0}'";
+			callback.run(ctx, command);
 			return true;
 		} else {
 			return false;
