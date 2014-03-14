@@ -38,7 +38,7 @@ DESTDIR := $(shell pwd)/$(TRIPLET)/out
 CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
 		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2"
 
-PER_ARCH_TARGETS := iptables busybox nflog
+PER_ARCH_TARGETS := iptables busybox nflog grep
 
 .PHONY: all unpack clean
 all: $(addsuffix -binaries,$(ARCH_LIST))
@@ -131,6 +131,21 @@ $(NDK_OUTDIR)/nflog:
 nflog: $(NDK_OUTDIR)/nflog
 	cp $< $(RESDIR)/nflog_$(ARCH)
 nflog-unpack:
+
+
+#####################################################################
+#
+# Build nflog
+#
+NDK_OUTDIR := ../libs/$(NDK_ABINAME)
+
+$(NDK_OUTDIR)/grep:
+	ndk-build APP_ABI=$(NDK_ABINAME)
+
+.PHONY: grep grep-unpack
+grep: $(NDK_OUTDIR)/grep
+	cp $< $(RESDIR)/grep_$(ARCH)
+grep-unpack:
 
 #####################################################################
 #
