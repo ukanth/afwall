@@ -25,16 +25,16 @@ package dev.ukanth.ufirewall.log;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.TimeZone;
 
 import android.content.Context;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.R;
@@ -64,6 +64,11 @@ public class LogInfo {
 		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
 		LogInfo logInfo = null;
 		
+		SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sourceFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		destFormat.setTimeZone(TimeZone.getDefault());
+		
 		final List<PackageInfoData> apps = Api.getApps(ctx,null);
 		try {
 			while ((line = r.readLine()) != null) {
@@ -81,7 +86,10 @@ public class LogInfo {
 					logInfo.dst = dst;
 				}
 				
-				logInfo.timestamp = line.substring(0,24);
+				String date = line.substring(0,19);
+				Date parsed = sourceFormat.parse(date); 
+				logInfo.timestamp = destFormat.format(parsed);
+				
 				
 				if (((start=line.indexOf("DPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
 					dpt = line.substring(start+4, end);
@@ -177,5 +185,86 @@ public class LogInfo {
 			Log.e(Api.TAG, e.getMessage());
 		}
 		
+	}
+
+
+	public static void parseLogs(String result,Context ctx) {
+
+		final Integer unknownUID = -99;
+		StringBuilder address = new StringBuilder();
+		int start, end;
+		Integer uid;
+		String out, src, dst, proto, spt, dpt, len;
+		LogInfo logInfo = null;
+
+		SimpleDateFormat sourceFormat = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+		sourceFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		SimpleDateFormat destFormat = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+		destFormat.setTimeZone(TimeZone.getDefault());
+		int pos = 0;
+		try {
+			while ((pos = result.indexOf("{AFL}", pos)) > -1) {
+				if (result.indexOf("{AFL}") == -1)
+					continue;
+				uid = unknownUID;
+
+				if (((start = result.indexOf("UID=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					uid = Integer.parseInt(result.substring(start + 4, end));
+				}
+
+				logInfo = new LogInfo();
+
+				if (((start = result.indexOf("DST=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					dst = result.substring(start + 4, end);
+					logInfo.dst = dst;
+				}
+
+				if (((start = result.indexOf("DPT=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					dpt = result.substring(start + 4, end);
+					logInfo.dpt = dpt;
+				}
+
+				if (((start = result.indexOf("SPT=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					spt = result.substring(start + 4, end);
+					logInfo.spt = spt;
+				}
+
+				if (((start = result.indexOf("PROTO=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					proto = result.substring(start + 6, end);
+					logInfo.proto = proto;
+				}
+
+				if (((start = result.indexOf("LEN=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					len = result.substring(start + 4, end);
+					logInfo.len = len;
+				}
+
+				if (((start = result.indexOf("SRC=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					src = result.substring(start + 4, end);
+					logInfo.src = src;
+				}
+
+				if (((start = result.indexOf("OUT=")) != -1)
+						&& ((end = result.indexOf(" ", start)) != -1)) {
+					out = result.substring(start + 4, end);
+					logInfo.out = out;
+				}
+				address = new StringBuilder();
+				address.append("(" + uid + ")" + " ");
+				address.append(logInfo.dst + ":" + logInfo.dpt + "\n");
+				Toast.makeText(ctx, address.toString(), Toast.LENGTH_SHORT);
+			}
+		} catch (Exception e) {
+			Log.e(Api.TAG, e.getMessage());
+		}
 	}
 }

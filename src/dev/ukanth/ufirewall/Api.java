@@ -84,6 +84,7 @@ import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell.SU;
 
@@ -252,6 +253,10 @@ public final class Api {
 		} else {
 			return ctx.getDir("bin",0).getAbsolutePath() + "/busybox";
 		}
+	}
+	
+	public static String getGrepPath(Context ctx) {
+		return ctx.getDir("bin",0).getAbsolutePath() + "/grep ";
 	}
 	
 	static String getNflogPath(Context ctx) {
@@ -961,7 +966,9 @@ public final class Api {
 	 */
 	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
-			String command = getBusyBoxPath(ctx) + " dmesg | " +  getBusyBoxPath(ctx) + " awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\" -> \"$0}'";
+
+			String command2 = "dmesg | awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\" -> \"$0}'";
+			String command = getBusyBoxPath(ctx) + " dmesg | " +  getBusyBoxPath(ctx) + " awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\"  -> \"$0}'";
 			callback.run(ctx, command);
 			return true;
 		} else {
@@ -1333,18 +1340,21 @@ public final class Api {
 			ret = installBinary(ctx, R.raw.busybox_x86, "busybox") &&
 					installBinary(ctx, R.raw.iptables_x86, "iptables") &&
 					installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
-					installBinary(ctx, R.raw.nflog_x86, "nflog");
+					installBinary(ctx, R.raw.nflog_x86, "nflog") &&
+					installBinary(ctx, R.raw.grep_x86,"grep");
 		} else if (abi.startsWith("mips")) {
 			ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
 					  installBinary(ctx, R.raw.iptables_mips, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
-					  installBinary(ctx, R.raw.nflog_mips, "nflog");
+					  installBinary(ctx, R.raw.nflog_mips, "nflog") &&
+					  installBinary(ctx, R.raw.grep_mips,"grep");
 		} else {
 			// default to ARM
 			ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
 					  installBinary(ctx, R.raw.iptables_arm, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
-					  installBinary(ctx, R.raw.nflog_arm, "nflog");
+					  installBinary(ctx, R.raw.nflog_arm, "nflog") &&
+					  installBinary(ctx, R.raw.grep_arm,"grep");
 		}
 
 		// arch-independent scripts
