@@ -24,7 +24,6 @@ package dev.ukanth.ufirewall;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -46,15 +45,12 @@ public class LogActivity extends DataDumpActivity {
 	}
 
 	protected void parseAndSet(Context ctx, String raw) {
-		//scaleGesture.setMovementMethod(new ScrollingMovementMethod());
-		LogInfo.parseLog(ctx, raw, scaleGesture);
-		//final int scrollAmount = scaleGesture.getLayout().getLineTop(scaleGesture.getLineCount()) - scaleGesture.getHeight();
-		//scaleGesture.scrollTo(0, scrollAmount);
-		/*if (cooked == null) {
+		String cooked = LogInfo.parseLog(ctx, raw);
+		if (cooked == null) {
 			setData(getString(R.string.log_parse_error));
 		} else {
 			setData(cooked);
-		}*/
+		}
 	}
 
 	protected void populateData(final Context ctx) {
