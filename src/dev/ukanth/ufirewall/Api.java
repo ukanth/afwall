@@ -84,7 +84,6 @@ import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
-import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell.SU;
 
@@ -255,8 +254,8 @@ public final class Api {
 		}
 	}
 	
-	public static String getGrepPath(Context ctx) {
-		return ctx.getDir("bin",0).getAbsolutePath() + "/grep ";
+	public static String getKLogPath(Context ctx) {
+		return ctx.getDir("bin",0).getAbsolutePath() + "/klogripper ";
 	}
 	
 	static String getNflogPath(Context ctx) {
@@ -966,9 +965,7 @@ public final class Api {
 	 */
 	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
-
-			//String command = getBusyBoxPath(ctx) + " dmesg | " +  getBusyBoxPath(ctx) + " awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\"  -> \"$0}'";
-			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg | " + getGrepPath(ctx) + "{AFL}");
+			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
 			return true;
 		} else {
 			return false;

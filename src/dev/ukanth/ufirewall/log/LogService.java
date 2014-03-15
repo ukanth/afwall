@@ -26,12 +26,19 @@
 package dev.ukanth.ufirewall.log;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.R;
 
 public class LogService extends Service {
 	private final IBinder mBinder = new Binder();
@@ -39,18 +46,38 @@ public class LogService extends Service {
 	private ShellCommand loggerCommand;
 	
 	private Handler handler;
+	
+	public static Toast toast;
+	public static TextView toastTextView;
+	public static CharSequence toastText;
+	public static boolean toastEnabled;
+	public static int toastDuration;
+	public static int toastPosition;
+	public static int toastDefaultYOffset;
+	public static int toastYOffset;
+	public static int toastOpacity;
+	public static boolean toastShowAddress;
+	
+	
+	private static Runnable showOnlyToastRunnable;
+	private static CancelableRunnable showToastRunnable;
+	private static View toastLayout;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return mBinder;
 	}
 	public static String grepPath;
+	
+	private static abstract class CancelableRunnable implements Runnable {
+	    public boolean cancel;
+	}
 
 	public void onCreate() {
-		grepPath = Api.getGrepPath(getApplicationContext());
+		grepPath = Api.getKLogPath(getApplicationContext());
 		handler = new Handler();
 		loggerCommand = new ShellCommand(
-				new String[] { "su", "-c",  grepPath + "AFL /proc/kmsg" },
+				new String[] { "su", "-c",  grepPath },
 				"LogService");
 		loggerCommand.start(false);
 		if (loggerCommand.error != null) {
@@ -59,6 +86,72 @@ public class LogService extends Service {
 			new Thread(logger, "NetworkLogger").start();
 		}
 	}
+	
+	
+	public static void showToast(final Context context, final Handler handler, final CharSequence text, boolean cancel) {
+	    if(showToastRunnable == null) {
+	      showToastRunnable = new CancelableRunnable() {
+	        public void run() {
+	          if(cancel && toast != null) {
+	            toast.cancel();
+	          }
+
+	          if(cancel || toast == null) {
+	            toastLayout = ((LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_toast, null);
+	            toastTextView = (TextView) toastLayout.findViewById(R.id.toasttext);
+	            if(android.os.Build.VERSION.SDK_INT > 10 || toast == null) {
+	              toast = new Toast(context);
+	            }
+	            toastDefaultYOffset = toast.getYOffset();
+	            GradientDrawable background = (GradientDrawable) toastLayout.getBackground();
+	            background.setColor(toastOpacity << 24);
+	            toast.setView(toastLayout);
+	          }
+
+	          switch(toastDuration) {
+	            case 3500:
+	              toast.setDuration(Toast.LENGTH_LONG);
+	              break;
+	            case 7000:
+	              toast.setDuration(Toast.LENGTH_LONG);
+
+	              if(showOnlyToastRunnable == null) {
+	                showOnlyToastRunnable  = new Runnable() {
+	                  public void run() {
+	                    toast.show();
+	                  }
+	                };
+	              }
+
+	              handler.postDelayed(showOnlyToastRunnable, 3250);
+	              break;
+	            default:
+	              toast.setDuration(Toast.LENGTH_SHORT);
+	          }
+
+	          switch(toastPosition) {
+	            case 1:
+	              toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, toastYOffset);
+	              break;
+	            case 2:
+	              toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastYOffset);
+	              break;
+	            default:
+	              toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastDefaultYOffset);
+	              break;
+	          }
+
+	          toastTextView.setText(android.text.Html.fromHtml(toastText.toString()));
+	          toast.show();
+	        }
+	      };
+	    }
+
+	    showToastRunnable.cancel = cancel;
+	    toastText = text;
+	    handler.post(showToastRunnable);
+	  }
+	
 
 	public class NetworkLogger implements Runnable {
 		boolean running = false;
@@ -90,13 +183,14 @@ public class LogService extends Service {
 					if (result == null) {
 						break;
 					}
-					final String data = result;
+					showToast(getApplicationContext(), handler, result, false);
+					/*final String data = result;
 					handler.post(new Runnable() {
 					    public void run() {
 					        Toast toast = Toast.makeText(LogService.this, LogInfo.parseLogs(data, getApplicationContext()), Toast.LENGTH_LONG);
 					        toast.show();
 					    }
-					 });
+					 });*/
 					
 				}
 
