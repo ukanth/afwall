@@ -967,9 +967,8 @@ public final class Api {
 	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
 
-			String command2 = "dmesg | awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\" -> \"$0}'";
-			String command = getBusyBoxPath(ctx) + " dmesg | " +  getBusyBoxPath(ctx) + " awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\"  -> \"$0}'";
-			callback.run(ctx, command);
+			//String command = getBusyBoxPath(ctx) + " dmesg | " +  getBusyBoxPath(ctx) + " awk -F ] '{\"cat /proc/uptime | cut -d \" \" -f 1\" | getline st;a=substr( $1,2, length($1) - 1);print strftime(\"%F %H:%M:%S %Z\",systime()-st+a)\"  -> \"$0}'";
+			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg | " + getGrepPath(ctx) + "{AFL}");
 			return true;
 		} else {
 			return false;

@@ -26,15 +26,15 @@ package dev.ukanth.ufirewall.log;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
 import android.content.Context;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.R;
@@ -52,7 +52,7 @@ public class LogInfo {
 	String timestamp;
 	int totalBlocked; 
 	
-	
+
 	public static void parseLog(Context ctx, String dmesg, TextView textView) {
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
 		final Integer unknownUID = -99;
@@ -64,10 +64,10 @@ public class LogInfo {
 		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
 		LogInfo logInfo = null;
 		
-		SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		/*SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sourceFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 		SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		destFormat.setTimeZone(TimeZone.getDefault());
+		destFormat.setTimeZone(TimeZone.getDefault());*/
 		
 		final List<PackageInfoData> apps = Api.getApps(ctx,null);
 		try {
@@ -86,9 +86,9 @@ public class LogInfo {
 					logInfo.dst = dst;
 				}
 				
-				String date = line.substring(0,19);
+			/*	String date = line.substring(0,19);
 				Date parsed = sourceFormat.parse(date); 
-				logInfo.timestamp = destFormat.format(parsed);
+				logInfo.timestamp = destFormat.format(parsed);*/
 				
 				
 				if (((start=line.indexOf("DPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
@@ -138,10 +138,11 @@ public class LogInfo {
 					appName = ctx.getString(R.string.kernel_item);
 				}
 				address = new StringBuilder();
-				address.append(logInfo.timestamp + " " + appName + "(" + uid  + ")" + " ");
+				address.append(" " + appName + "(" + uid  + ")" + " ");
 				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
 				textView.append(address.toString());
 			}
+			
 			
 		/*	String appName = "";
 			int appId = -99;
@@ -186,9 +187,9 @@ public class LogInfo {
 		}
 		
 	}
+	
 
-
-	public static void parseLogs(String result,Context ctx) {
+	public static String parseLogs(String result,final Context ctx) {
 
 		final Integer unknownUID = -99;
 		StringBuilder address = new StringBuilder();
@@ -203,6 +204,8 @@ public class LogInfo {
 		SimpleDateFormat destFormat = new SimpleDateFormat(
 				"yyyy-MM-dd HH:mm:ss");
 		destFormat.setTimeZone(TimeZone.getDefault());
+		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
+		final List<PackageInfoData> apps = Api.getApps(ctx,null);
 		int pos = 0;
 		try {
 			while ((pos = result.indexOf("{AFL}", pos)) > -1) {
@@ -258,13 +261,32 @@ public class LogInfo {
 					out = result.substring(start + 4, end);
 					logInfo.out = out;
 				}
+				String appName = "";
+				if(uid != -99) {
+					if(!appNameMap.containsKey(uid)) {
+						appName = ctx.getPackageManager().getNameForUid(uid);
+						for (PackageInfoData app : apps) {
+							if (app.uid == uid) {
+								appName = app.names.get(0);
+								break;
+							}
+						}
+						appNameMap.put(uid, appName);
+					} else {
+						appName = appNameMap.get(uid);
+					}
+				} else {
+					appName = ctx.getString(R.string.kernel_item);
+				}
 				address = new StringBuilder();
-				address.append("(" + uid + ")" + " ");
-				address.append(logInfo.dst + ":" + logInfo.dpt + "\n");
-				Toast.makeText(ctx, address.toString(), Toast.LENGTH_SHORT);
+				address.append(" " + appName + "(" + uid  + ")" + " ");
+				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
+				return address.toString();
+				
 			}
 		} catch (Exception e) {
 			Log.e(Api.TAG, e.getMessage());
 		}
+		return address.toString();
 	}
 }

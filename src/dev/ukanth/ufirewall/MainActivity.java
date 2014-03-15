@@ -76,6 +76,7 @@ import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  
 /**
@@ -178,7 +179,11 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	        
 	        updateFilterGroup();
 	       
-	        
+	        //start logging
+	        if(G.enableLogService()) {
+	        	Intent intent = new Intent(getApplicationContext(), LogService.class);
+				getApplicationContext().startService(intent);
+	        }
 		    Api.assertBinaries(this, true);
 		    
 	}
@@ -245,7 +250,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		cmds.add("true");
 		
 		updateIconStatus();
-
+		
 		new RootCommand().setFailureToast(R.string.error_su)
 				.setReopenShell(true).run(getApplicationContext(), cmds);
 		

@@ -121,7 +121,11 @@
 
     <!-- Logging -->
     <string name="enable_firewall_log">Enable Firewall Logs</string>
+    <string name="enable_firewall_log_service">Turn on log service</string>
+    <string name="enable_firewall_log_service">Turn on log service</string>
+    
     <string name="showlog_title">Firewall Logs</string>
+    <string name="showlog_service_summary">Enable this will show messages when connections gets blocked </string>
     <string name="enable_log">Enable Log</string>
     <string name="disable_log">Disable Log</string>
     <string name="log_disabled">Log Disabled</string>

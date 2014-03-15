@@ -98,14 +98,20 @@ public class ShellCommand {
 			Log.e("AFWall", "Exception finishing [" + tag + "]", e);
 		}
 
-		process.destroy();
+		if(process !=null) {
+			process.destroy();
+		}
 		process = null;
 	}
 
 	public boolean checkForExit() {
 		try {
-			exitval = process.exitValue();
-			Log.d("AFWALL","ShellCommand exited: [" + tag + "] exit " + exitval);
+			if(process != null) {
+				exitval = process.exitValue();
+				Log.d("AFWALL","ShellCommand exited: [" + tag + "] exit " + exitval);
+			} else {
+				finish();
+			}
 		} catch (IllegalThreadStateException e) {
 			return false;
 		}
@@ -116,10 +122,6 @@ public class ShellCommand {
 
 	public boolean stdoutAvailable() {
 		try {
-			/*
-			 * if(Log.enabled) { Log.d("stdoutAvailable [" + tag + "]: " +
-			 * stdout.ready()); }
-			 */
 			return stdout.ready();
 		} catch (java.io.IOException e) {
 			Log.e("AFWall", "stdoutAvailable error", e);

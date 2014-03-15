@@ -225,6 +225,7 @@
         </receiver>
         <service android:name="RootShell"></service>
         <service android:name="NflogService"></service>
+        <service android:name="dev.ukanth.ufirewall.log.LogService"></service>
         
     </application>
 

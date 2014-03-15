@@ -48,6 +48,7 @@ import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.Log;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
+import dev.ukanth.ufirewall.log.LogService;
 
 public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		implements OnSharedPreferenceChangeListener {
@@ -270,6 +271,17 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 			} else {
 				Api.setUserOwner(getApplicationContext());
 			}
+		}
+		if(key.equals("enableLogService")) {
+			boolean enabled = G.enableLogService();
+			if(enabled) {
+				Intent intent = new Intent(getApplicationContext(), LogService.class);
+				getApplicationContext().startService(intent);
+			} else {
+				Intent intent = new Intent(getApplicationContext(), LogService.class);
+				getApplicationContext().stopService(intent);
+			}
+			
 		}
 	}
 }

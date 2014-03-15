@@ -28,13 +28,17 @@ package dev.ukanth.ufirewall.log;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 
 public class LogService extends Service {
 	private final IBinder mBinder = new Binder();
 
 	private ShellCommand loggerCommand;
+	
+	private Handler handler;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -44,20 +48,16 @@ public class LogService extends Service {
 
 	public void onCreate() {
 		grepPath = Api.getGrepPath(getApplicationContext());
-		new Thread(new Runnable() {
-			public void run() {
-				loggerCommand = new ShellCommand(
-						new String[] { "su", "-c",  grepPath + "AFL /proc/kmsg" },
-						"LogService");
-				loggerCommand.start(false);
-				if (loggerCommand.error != null) {
-				} else {
-					NetworkLogger logger = new NetworkLogger();
-					new Thread(logger, "NetworkLogger").start();
-				}
-			}
-		}).start();
-
+		handler = new Handler();
+		loggerCommand = new ShellCommand(
+				new String[] { "su", "-c",  grepPath + "AFL /proc/kmsg" },
+				"LogService");
+		loggerCommand.start(false);
+		if (loggerCommand.error != null) {
+		} else {
+			NetworkLogger logger = new NetworkLogger();
+			new Thread(logger, "NetworkLogger").start();
+		}
 	}
 
 	public class NetworkLogger implements Runnable {
@@ -90,7 +90,14 @@ public class LogService extends Service {
 					if (result == null) {
 						break;
 					}
-					LogInfo.parseLogs(result, getApplicationContext());
+					final String data = result;
+					handler.post(new Runnable() {
+					    public void run() {
+					        Toast toast = Toast.makeText(LogService.this, LogInfo.parseLogs(data, getApplicationContext()), Toast.LENGTH_LONG);
+					        toast.show();
+					    }
+					 });
+					
 				}
 
 				if (running != false) {
