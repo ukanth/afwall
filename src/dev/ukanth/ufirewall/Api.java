@@ -1337,20 +1337,20 @@ public final class Api {
 					installBinary(ctx, R.raw.iptables_x86, "iptables") &&
 					installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
 					installBinary(ctx, R.raw.nflog_x86, "nflog") &&
-					installBinary(ctx, R.raw.grep_x86,"grep");
+					installBinary(ctx, R.raw.klogripper_x86,"klogripper");
 		} else if (abi.startsWith("mips")) {
 			ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
 					  installBinary(ctx, R.raw.iptables_mips, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_mips, "nflog") &&
-					  installBinary(ctx, R.raw.grep_mips,"grep");
+					  installBinary(ctx, R.raw.klogripper_mips,"klogripper");
 		} else {
 			// default to ARM
 			ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
 					  installBinary(ctx, R.raw.iptables_arm, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_arm, "nflog") &&
-					  installBinary(ctx, R.raw.grep_arm,"grep");
+					  installBinary(ctx, R.raw.klogripper_arm,"klogripper");
 		}
 
 		// arch-independent scripts
