@@ -25,14 +25,12 @@ package dev.ukanth.ufirewall.log;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 
 import android.content.Context;
 import android.util.Log;
@@ -144,7 +142,7 @@ public class LogInfo {
 				}
 				
 				StringBuilder address = new StringBuilder();
-				res.append("Application = " +  appName + "(" + appId  + ")" + "\n");
+				res.append("" +  appName + "(" + appId  + ")" + "\n");
 				address.append("\n");
 				Set<String> addedEntry = new HashSet<String>();
 				for(LogInfo info : entry.getValue()) {
@@ -270,12 +268,6 @@ public class LogInfo {
 		String out, src, dst, proto, spt, dpt, len;
 		LogInfo logInfo = null;
 
-		SimpleDateFormat sourceFormat = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
-		sourceFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-		SimpleDateFormat destFormat = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
-		destFormat.setTimeZone(TimeZone.getDefault());
 		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
 		final List<PackageInfoData> apps = Api.getApps(ctx,null);
 		int pos = 0;
@@ -351,7 +343,7 @@ public class LogInfo {
 					appName = ctx.getString(R.string.kernel_item);
 				}
 				address = new StringBuilder();
-				address.append(" " + appName + "(" + uid  + ")" + " ");
+				address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ")" + " ");
 				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
 				return address.toString();
 				

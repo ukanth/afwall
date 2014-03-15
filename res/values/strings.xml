@@ -140,6 +140,7 @@
     <string name="no_log">Log is Empty</string>
     <string name="LogAppName">Application\'s Name</string>
     <string name="LogPackBlock">Total Packets Blocked</string>
+     <string name="blocked">AFWall+ Blocked :</string>
     <string name="refresh">Refresh</string>
 
     <!-- Multi-User-Interface (MUI) -->

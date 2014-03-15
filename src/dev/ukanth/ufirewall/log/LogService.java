@@ -67,17 +67,17 @@ public class LogService extends Service {
 	public IBinder onBind(Intent arg0) {
 		return mBinder;
 	}
-	public static String grepPath;
+	public static String klogPath;
 	
 	private static abstract class CancelableRunnable implements Runnable {
 	    public boolean cancel;
 	}
 
 	public void onCreate() {
-		grepPath = Api.getKLogPath(getApplicationContext());
+		klogPath = Api.getKLogPath(getApplicationContext());
 		handler = new Handler();
 		loggerCommand = new ShellCommand(
-				new String[] { "su", "-c",  grepPath },
+				new String[] { "su", "-c",  klogPath },
 				"LogService");
 		loggerCommand.start(false);
 		if (loggerCommand.error != null) {
@@ -183,7 +183,7 @@ public class LogService extends Service {
 					if (result == null) {
 						break;
 					}
-					showToast(getApplicationContext(), handler, result, false);
+					showToast(getApplicationContext(), handler, LogInfo.parseLogs(result,getApplicationContext()), false);
 					/*final String data = result;
 					handler.post(new Runnable() {
 					    public void run() {
