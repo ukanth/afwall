@@ -58,7 +58,7 @@ public class G extends android.app.Application {
 	private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
-	private static final String USE_PASSWORD_PATTERN = "usePatterns";
+	
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";
 	private static final String APP_VERSION = "appVersion";
@@ -68,6 +68,10 @@ public class G extends android.app.Application {
 	private static final String MULTI_USER_ID = "multiUserId";
 	
 	private static final String SHOW_FILTER = "showFilter";
+	
+	private static final String USE_PASSWORD_PATTERN = "usePatterns";
+	private static final String PATTERN_MAX_TRY = "patternMax";
+	private static final String PATTERN_STEALTH = "stealthMode";
 	
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	
@@ -145,7 +149,7 @@ public class G extends android.app.Application {
 	public static boolean notifyAppInstall() { return gPrefs.getBoolean(NOTIFY_INSTALL, false); }
 	public static boolean notifyAppInstall(boolean val) { gPrefs.edit().putBoolean(NOTIFY_INSTALL, val).commit(); return val; }
 
-	public static boolean disableIcons() { return gPrefs.getBoolean(DISABLE_ICONS, true); }
+	public static boolean disableIcons() { return gPrefs.getBoolean(DISABLE_ICONS, false); }
 	public static boolean disableIcons(boolean val) { gPrefs.edit().putBoolean(DISABLE_ICONS, val).commit(); return val; }
 
 	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "auto"); }
@@ -171,7 +175,12 @@ public class G extends android.app.Application {
 	
 	public static boolean usePatterns() { return gPrefs.getBoolean(USE_PASSWORD_PATTERN, false); }
 	
+	public static boolean enableStealthPattern() { return gPrefs.getBoolean(PATTERN_STEALTH, false); }
+	public static boolean enableStealthPattern(boolean val) { gPrefs.edit().putBoolean(PATTERN_STEALTH, val).commit(); return val;  }
 	
+	
+	public static int getMaxPatternTry() { return Integer.parseInt(gPrefs.getString(PATTERN_MAX_TRY, "3")); }
+
 	public static boolean isMultiUser() { return gPrefs.getBoolean(MULTI_USER, false); }
 
 	public static void setMultiUserId(int val) { gPrefs.edit().putLong(MULTI_USER_ID, val).commit();}

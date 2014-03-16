@@ -207,6 +207,8 @@
     <!-- Security Preferences -->
     <string name="sec_prefs_title">Security Preferences</string>
     <string name="usePattern">Use lock pattern instead of password</string>
+    <string name="stealthMode">Stealth mode on pattern</string>
+    <string name="patternMaxTry">Maximum number of tries</string>
     <string name="resetPattern">Do you want to reset the lock pattern ?</string>
 
     <!-- Device Admin -->
@@ -296,8 +298,8 @@
     <string name="showfilter_summary_on">Filter options will be shown in the main view.</string>
     <string name="showfilter_summary_off">Filter option is hidden</string>
     
-    <string name="enable_dns">Enable DNS via netd (4.3+)</string>
-    <string name="disable_dns">Disable DNS via netd (4.3+)</string>
+    <string name="enable_dns">Enable DNS via netd</string>
+    <string name="disable_dns">Disable DNS via netd</string>
     
     <string name="dns_proxy_title">DNS Proxy </string>
     <string name="dns_proxy_summary">DNS proxy option was added to support DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>

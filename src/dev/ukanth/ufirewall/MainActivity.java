@@ -24,8 +24,6 @@
 
 package dev.ukanth.ufirewall;
 
-import group.pals.android.lib.ui.lockpattern.LockPatternActivity;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -73,6 +71,8 @@ import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
+import com.haibison.android.lockpattern.LockPatternActivity;
+import com.haibison.android.lockpattern.util.Settings;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
@@ -107,8 +107,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		this.currentPassword = currentPassword;
 	}
 	
-	private final int _ReqCreatePattern = 0;
-	private final int _ReqSignIn = 1;
+	private static final int REQ_CREATE_PATTERN = 9877;
+	private static final int REQ_ENTER_PATTERN = 9755;
 	private boolean isPassVerify = false;
 	
 	ProgressDialog plsWait;
@@ -184,6 +184,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	        	Intent intent = new Intent(getApplicationContext(), LogService.class);
 				getApplicationContext().startService(intent);
 	        }
+	        
+        	Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
+	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
+	       
 		    Api.assertBinaries(this, true);
 		    
 	}
@@ -458,11 +462,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private void requestPassword(final String pwd) {
 
 		if(G.usePatterns()){
-			Intent intent = new Intent(getApplicationContext(), LockPatternActivity.class);
-			intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.ComparePattern);
-			intent.putExtra(LockPatternActivity._MaxRetry, "3");
-			intent.putExtra(LockPatternActivity._Pattern, pwd);
-			startActivityForResult(intent, _ReqSignIn);	
+			Intent intent = new Intent(LockPatternActivity.ACTION_COMPARE_PATTERN, null, getApplicationContext(), LockPatternActivity.class);
+			String savedPattern  = G.sPrefs.getString("LockPassword", "");
+			intent.putExtra(LockPatternActivity.EXTRA_PATTERN, savedPattern.toCharArray());
+			startActivityForResult(intent, REQ_ENTER_PATTERN);
 		}
 		else{
 			new PassDialog(this, false, new android.os.Handler.Callback() {
@@ -969,9 +972,11 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				AlertDialog diaBox = resetPassword();
 				diaBox.show();
 			} else {
-				Intent intent = new Intent(MainActivity.this, LockPatternActivity.class);
-				intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.CreatePattern);
-				startActivityForResult(intent, _ReqCreatePattern);
+				//Intent intent = new Intent(MainActivity.this, LockPatternActivity.class);
+				//intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.CreatePattern);
+				//startActivityForResult(intent, _ReqCreatePattern);
+				Intent intent = new Intent(LockPatternActivity.ACTION_CREATE_PATTERN, null,getApplicationContext(), LockPatternActivity.class);
+				startActivityForResult(intent, REQ_CREATE_PATTERN);
 			}	
 		}  else {
 			new PassDialog(this, true, new android.os.Handler.Callback() {
@@ -1014,24 +1019,36 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		
 		if(G.usePatterns()){
 			switch (requestCode) {
-			case _ReqCreatePattern:
+			case REQ_CREATE_PATTERN:
 				if (resultCode == RESULT_OK) {
-		            String pattern = data.getStringExtra(LockPatternActivity._Pattern);
+					char[] pattern = data.getCharArrayExtra(
+			                    LockPatternActivity.EXTRA_PATTERN);
 		    		final Editor editor = G.sPrefs.edit();
-	    			editor.putString("LockPassword", pattern);
+	    			editor.putString("LockPassword", new String(pattern));
 	    			editor.commit();
 				}
 				break;
-			case _ReqSignIn:
-				if (resultCode == RESULT_OK) {
-					isPassVerify= true;
-					showOrLoadApplications();
-				} else {
-					MainActivity.this.finish();
-					android.os.Process.killProcess(android.os.Process.myPid());
+				
+			case REQ_ENTER_PATTERN: {
+				switch (resultCode) {
+					case RESULT_OK:
+						isPassVerify = true;
+						showOrLoadApplications();
+						break;
+					case RESULT_CANCELED:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						break;
+					case LockPatternActivity.RESULT_FAILED:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						break;
+					case LockPatternActivity.RESULT_FORGOT_PATTERN:
+						break;
+					}
 				}
-				break;
-			}	
+			}
+			
 		}
 		
 	    if (resultCode == RESULT_OK

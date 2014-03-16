@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2012 Hai Bison
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<resources>
+
+    <string name="alp_42447968_pkey_sys_pattern">alp.pkey.sys.pattern</string>
+    <string name="alp_42447968_pkey_sys_auto_save_pattern">alp.pkey.sys.auto_save_pattern</string>
+    <string name="alp_42447968_pkey_sys_encrypter_class">alp.pkey.sys.encrypter_class</string>
+    <string name="alp_42447968_pkey_display_stealth_mode">alp.pkey.display.stealth_mode</string>
+    <string name="alp_42447968_pkey_display_min_wired_dots">alp.pkey.display.min_wired_dots</string>
+    <string name="alp_42447968_pkey_display_max_retries">alp.pkey.display.max_retries</string>
+    <string name="alp_42447968_pkey_display_captcha_wired_dots">alp.pkey.display.captcha_wired_dots</string>
+
+    <bool name="alp_42447968_pkey_sys_auto_save_pattern_default">false</bool>
+    <bool name="alp_42447968_pkey_display_stealth_mode_default">false</bool>
+
+    <integer name="alp_42447968_pkey_display_min_wired_dots_default">4</integer>
+    <integer name="alp_42447968_pkey_display_max_retries_default">5</integer>
+    <integer name="alp_42447968_pkey_display_captcha_wired_dots_default">4</integer>
+
+</resources>

@@ -94,5 +94,12 @@
         <item>enable</item>
         <item>disable</item>
     </string-array>
+    
+    <string-array name="pattern_max_attempt">
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+    
 
 </resources>

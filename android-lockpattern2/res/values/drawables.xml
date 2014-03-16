@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2012 Hai Bison
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<resources>
+
+    <attr name="alp_42447968_drawable_btn_code_lock_default_holo" format="reference" />
+    <attr name="alp_42447968_drawable_btn_code_lock_touched_holo" format="reference" />
+    <attr name="alp_42447968_drawable_indicator_code_lock_point_area_default_holo" format="reference" />
+    <attr name="alp_42447968_ic_action_lockpattern" format="reference" />
+    <attr name="aosp_drawable_indicator_code_lock_point_area_normal" format="reference" />
+
+</resources>

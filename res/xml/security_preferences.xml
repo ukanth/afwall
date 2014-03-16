@@ -3,6 +3,18 @@
         <CheckBoxPreference
             android:key="usePatterns"
             android:title="@string/usePattern" />
+        <CheckBoxPreference
+            android:key="stealthMode"  
+            android:dependency="usePatterns"
+            android:title="@string/stealthMode" />
+        <ListPreference
+	        android:defaultValue="3"
+	        android:entries="@array/pattern_max_attempt"
+	        android:entryValues="@array/pattern_max_attempt"
+	        android:key="patternMax"
+	        android:dependency="usePatterns"
+	        android:title="@string/patternMaxTry" >
+   		</ListPreference>
         
         <!--  <CheckBoxPreference
             android:key="activeDefense"

@@ -13,7 +13,7 @@
         android:title="@string/enable_firewall_log" />
     
     <CheckBoxPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="disableIcons"
         android:summaryOff="@string/hideicons_pref_summary_off"
         android:summaryOn="@string/hideicons_pref_summary_on"

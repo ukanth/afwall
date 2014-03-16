@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2012 Hai Bison
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<resources>
+
+    <string name="alp_42447968_cmd_confirm">Xác nhận</string>
+    <string name="alp_42447968_cmd_continue">Tiếp tục</string>
+    <string name="alp_42447968_cmd_forgot_pattern">Quên rồi?</string>
+    <string name="alp_42447968_cmd_retry">Thử lại</string>
+    <string name="alp_42447968_loading">Đang tải…</string>
+    <string name="alp_42447968_lockscreen_access_pattern_cell_added">Đã thêm điểm</string>
+    <string name="alp_42447968_lockscreen_access_pattern_cleared">Đã xóa mẫu khóa</string>
+    <string name="alp_42447968_lockscreen_access_pattern_detected">Hoàn thành mẫu khóa</string>
+    <string name="alp_42447968_lockscreen_access_pattern_start">Bắt đầu mẫu khóa</string>
+    <string name="alp_42447968_msg_connect_4dots">Kết nối ít nhứt 4 điểm.\nHãy thử lại…</string>
+    <string name="alp_42447968_msg_draw_an_unlock_pattern">Vẽ mẫu khóa:</string>
+    <string name="alp_42447968_msg_draw_pattern_to_unlock">Vẽ mẫu khóa để truy cập:</string>
+    <string name="alp_42447968_msg_pattern_recorded">Mẫu khóa đã được nhớ!</string>
+    <string name="alp_42447968_msg_redraw_pattern_to_confirm">Vẽ lại mẫu khóa để xác nhận:</string>
+    <string name="alp_42447968_msg_release_finger_when_done">Thả ngón tay khi xong</string>
+    <string name="alp_42447968_msg_try_again">Xin lỗi, hãy thử lại</string>
+    <string name="alp_42447968_msg_your_new_unlock_pattern">Mẫu khóa mới của bạn:</string>
+
+    <plurals name="alp_42447968_pmsg_connect_x_dots">
+        <item quantity="other">Kết nối ít nhứt %1$d điểm.\nHãy thử lại…</item>
+    </plurals>
+
+</resources>

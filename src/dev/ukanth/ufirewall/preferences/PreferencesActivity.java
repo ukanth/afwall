@@ -41,6 +41,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.haibison.android.lockpattern.util.Settings;
 import com.stericson.RootTools.RootTools;
 
 import dev.ukanth.ufirewall.Api;
@@ -271,6 +272,10 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 			} else {
 				Api.setUserOwner(getApplicationContext());
 			}
+		}
+		
+		if(key.equals("enableStealthPattern")){
+			Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
 		}
 		if(key.equals("enableLogService")) {
 			boolean enabled = G.enableLogService();

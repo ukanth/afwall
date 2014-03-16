@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Copyright 2012 Hai Bison
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<resources>
+
+    <style name="Alp.42447968.BaseTheme.Dark" parent="@android:style/Theme" />
+
+    <style name="Alp.42447968.BaseThemeHelper.Dark" parent="@style/Alp.42447968.BaseTheme.Dark" />
+
+    <style name="Alp.42447968.Theme.Dark" parent="@style/Alp.42447968.BaseThemeHelper.Dark">
+
+        <!-- AOSP -->
+
+        <item name="android:windowBackground">@drawable/aosp_background_holo_dark</item>
+
+        <!-- android-lockpattern -->
+
+        <item name="alp_42447968_theme_dialog">@style/Alp.42447968.Theme.Dialog.Dark</item>
+        <item name="alp_42447968_drawable_btn_code_lock_default_holo">@drawable/alp_42447968_btn_code_lock_default_holo_light</item>
+        <item name="alp_42447968_drawable_btn_code_lock_touched_holo">@drawable/alp_42447968_btn_code_lock_touched_holo_light</item>
+        <item name="alp_42447968_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_42447968_indicator_code_lock_point_area_default_holo_light</item>
+        <item name="alp_42447968_color_pattern_path">@color/alp_42447968_pattern_path_light</item>
+        <item name="alp_42447968_ic_action_lockpattern">@drawable/alp_42447968_ic_action_lockpattern_light</item>
+        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_green_holo</item>
+    </style>
+
+    <style name="Alp.42447968.BaseTheme.Light" parent="@android:style/Theme.Light" />
+
+    <style name="Alp.42447968.BaseThemeHelper.Light" parent="@style/Alp.42447968.BaseTheme.Light" />
+
+    <style name="Alp.42447968.Theme.Light" parent="@style/Alp.42447968.BaseThemeHelper.Light">
+
+        <!-- AOSP -->
+
+        <item name="android:windowBackground">@drawable/aosp_background_holo_light</item>
+
+        <!-- android-lockpattern -->
+
+        <item name="alp_42447968_theme_dialog">@style/Alp.42447968.Theme.Dialog.Light</item>
+        <item name="alp_42447968_drawable_btn_code_lock_default_holo">@drawable/alp_42447968_btn_code_lock_default_holo_dark</item>
+        <item name="alp_42447968_drawable_btn_code_lock_touched_holo">@drawable/alp_42447968_btn_code_lock_touched_holo_dark</item>
+        <item name="alp_42447968_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_42447968_indicator_code_lock_point_area_default_holo_dark</item>
+        <item name="alp_42447968_color_pattern_path">@color/alp_42447968_pattern_path_dark</item>
+        <item name="alp_42447968_ic_action_lockpattern">@drawable/alp_42447968_ic_action_lockpattern_dark</item>
+        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_blue_holo</item>
+    </style>
+
+    <style name="Alp.42447968.BaseTheme.Light.DarkActionBar" parent="@android:style/Theme.Light" />
+
+    <style name="Alp.42447968.BaseThemeHelper.Light.DarkActionBar" parent="@style/Alp.42447968.BaseTheme.Light.DarkActionBar" />
+
+    <style name="Alp.42447968.Theme.Light.DarkActionBar" parent="@style/Alp.42447968.BaseThemeHelper.Light.DarkActionBar">
+
+        <!-- AOSP -->
+
+        <item name="android:windowBackground">@drawable/aosp_background_holo_light</item>
+
+        <!-- android-lockpattern -->
+
+        <item name="alp_42447968_theme_dialog">@style/Alp.42447968.Theme.Dialog.Light</item>
+        <item name="alp_42447968_drawable_btn_code_lock_default_holo">@drawable/alp_42447968_btn_code_lock_default_holo_dark</item>
+        <item name="alp_42447968_drawable_btn_code_lock_touched_holo">@drawable/alp_42447968_btn_code_lock_touched_holo_dark</item>
+        <item name="alp_42447968_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_42447968_indicator_code_lock_point_area_default_holo_dark</item>
+        <item name="alp_42447968_color_pattern_path">@color/alp_42447968_pattern_path_dark</item>
+        <item name="alp_42447968_ic_action_lockpattern">@drawable/alp_42447968_ic_action_lockpattern_dark</item>
+        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_blue_holo</item>
+    </style>
+
+    <style name="Alp.42447968.BaseTheme.Dialog.Dark" parent="@android:style/Theme.Dialog">
+
+        <!-- AOSP -->
+
+        <item name="android:windowBackground">@drawable/aosp_dialog_full_holo_dark</item>
+    </style>
+
+    <style name="Alp.42447968.BaseThemeHelper.Dialog.Dark" parent="@style/Alp.42447968.BaseTheme.Dialog.Dark" />
+
+    <style name="Alp.42447968.Theme.Dialog.Dark" parent="@style/Alp.42447968.BaseThemeHelper.Dialog.Dark">
+
+        <!-- android-lockpattern -->
+
+        <item name="alp_42447968_theme_dialog">@style/Alp.42447968.Theme.Dialog.Dark</item>
+        <item name="alp_42447968_drawable_btn_code_lock_default_holo">@drawable/alp_42447968_btn_code_lock_default_holo_light</item>
+        <item name="alp_42447968_drawable_btn_code_lock_touched_holo">@drawable/alp_42447968_btn_code_lock_touched_holo_light</item>
+        <item name="alp_42447968_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_42447968_indicator_code_lock_point_area_default_holo_light</item>
+        <item name="alp_42447968_color_pattern_path">@color/alp_42447968_pattern_path_light</item>
+        <item name="alp_42447968_ic_action_lockpattern">@drawable/alp_42447968_ic_action_lockpattern_light</item>
+        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_green_holo</item>
+    </style>
+
+    <style name="Alp.42447968.BaseTheme.Dialog.Light" parent="@android:style/Theme.Light">
+
+        <!-- AOSP -->
+
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowTitleStyle">@style/AOSP_DialogWindowTitle</item>
+        <item name="android:windowBackground">@drawable/aosp_dialog_full_holo_light</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+
+    <style name="Alp.42447968.BaseThemeHelper.Dialog.Light" parent="@style/Alp.42447968.BaseTheme.Dialog.Light" />
+
+    <style name="Alp.42447968.Theme.Dialog.Light" parent="@style/Alp.42447968.BaseThemeHelper.Dialog.Light">
+
+        <!-- android-lockpattern -->
+
+        <item name="alp_42447968_theme_dialog">@style/Alp.42447968.Theme.Dialog.Light</item>
+        <item name="alp_42447968_drawable_btn_code_lock_default_holo">@drawable/alp_42447968_btn_code_lock_default_holo_dark</item>
+        <item name="alp_42447968_drawable_btn_code_lock_touched_holo">@drawable/alp_42447968_btn_code_lock_touched_holo_dark</item>
+        <item name="alp_42447968_drawable_indicator_code_lock_point_area_default_holo">@drawable/alp_42447968_indicator_code_lock_point_area_default_holo_dark</item>
+        <item name="alp_42447968_color_pattern_path">@color/alp_42447968_pattern_path_dark</item>
+        <item name="alp_42447968_ic_action_lockpattern">@drawable/alp_42447968_ic_action_lockpattern_dark</item>
+        <item name="aosp_drawable_indicator_code_lock_point_area_normal">@drawable/aosp_indicator_code_lock_point_area_blue_holo</item>
+    </style>
+
+    <style name="AOSP_DialogWindowTitle">
+        <item name="android:maxLines">1</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.DialogWindowTitle</item>
+    </style>
+
+    <item name="alp_42447968_button_bar_style" type="style">@null</item>
+    <item name="alp_42447968_button_bar_button_style" type="style">@null</item>
+
+    <attr name="alp_42447968_button_bar_style" format="reference" />
+    <attr name="alp_42447968_button_bar_button_style" format="reference" />
+    <attr name="alp_42447968_theme_dialog" format="reference" />
+
+</resources>
