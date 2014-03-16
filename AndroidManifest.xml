@@ -174,9 +174,10 @@
         </receiver>
 
         <activity
-            android:name="group.pals.android.lib.ui.lockpattern.LockPatternActivity"
-            android:configChanges="orientation|screenSize|keyboard|keyboardHidden|locale"
-            android:theme="@android:style/Theme.Dialog" />
+		    android:name="com.haibison.android.lockpattern.LockPatternActivity"
+		    android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+    		android:screenOrientation="user"
+		    android:theme="@style/Alp.42447968.Theme.Dark" />
 
         <!-- device admin -->
         <!-- This is required this receiver to become device admin component. -->
