@@ -1,7 +1,6 @@
 package dev.ukanth.ufirewall.widget;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
@@ -48,7 +46,10 @@ public class ToggleWidgetActivity extends Activity {
 		pieMenu.setCenterCircle(new Close());
 		pieMenu.addMenuEntry(new EnableFirewall());
 		pieMenu.addMenuEntry(new DisableFirewall());
-		pieMenu.addMenuEntry(new Profiles());
+		
+		if(G.enableMultiProfile()){
+			pieMenu.addMenuEntry(new Profiles());
+		}
 		
 		ll.addView(pieMenu);
 
@@ -138,16 +139,17 @@ public class ToggleWidgetActivity extends Activity {
 	   }	
 	   
 
-	   public static class Profiles implements RadialMenuEntry
+	   public class Profiles implements RadialMenuEntry
 	   {
 	      public String getName() { return "Profiles"; } 
 		  public String getLabel() { return "Profiles"; }
 	      public int getIcon() { return 0; }
 	      private  List<RadialMenuEntry> children =  new ArrayList<RadialMenuEntry>();
 	      public Profiles(){
-	    	  children.add(new GenericProfile("Profile1"));
-	    	  children.add(new GenericProfile("Profile2"));
-	    	  children.add(new GenericProfile("Profile3"));
+	    	  children.add(new GenericProfile(G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile))));
+	    	  children.add(new GenericProfile(G.gPrefs.getString("profile1", getString(R.string.profile1))));
+	    	  children.add(new GenericProfile(G.gPrefs.getString("profile2", getString(R.string.profile2))));
+	    	  children.add(new GenericProfile(G.gPrefs.getString("profile3", getString(R.string.profile3))));
 	    	  for(String profile: G.getAdditionalProfiles()){
 	    		  children.add(new GenericProfile(profile));
 	    	  }
