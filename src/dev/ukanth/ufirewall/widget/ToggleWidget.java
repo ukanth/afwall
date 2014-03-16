@@ -47,7 +47,6 @@ public class ToggleWidget extends AppWidgetProvider {
 		
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.toggle_widget_layout);
 		
-		remoteViews.setImageViewResource(R.id.toggle_widget_icon, R.drawable.toggle_on);
 		Intent configIntent = new Intent(context, ToggleWidgetActivity.class);
 
 		PendingIntent configPendingIntent = PendingIntent.getActivity(context,0, configIntent, 0);

@@ -148,17 +148,6 @@
                  <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/onoff_widget" />
-
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
-                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
-            </intent-filter>
-        </receiver>
         
         
          <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" android:label="@string/widget_label_settings">

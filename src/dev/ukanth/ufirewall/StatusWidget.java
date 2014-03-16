@@ -23,22 +23,13 @@
 
 package dev.ukanth.ufirewall;
 
-import dev.ukanth.ufirewall.RootShell.RootCommand;
-import android.app.PendingIntent;
-import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.widget.RemoteViews;
-import android.widget.Toast;
 
 /**
  * ON/OFF Widget implementation
  */
-public class StatusWidget extends AppWidgetProvider {
+@Deprecated
+public class StatusWidget extends AppWidgetProvider {/*
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		super.onReceive(context, intent);
@@ -108,4 +99,4 @@ public class StatusWidget extends AppWidgetProvider {
 		manager.updateAppWidget(widgetIds, views);
 	}
 
-}
+*/}
