@@ -1,6 +1,6 @@
 /**
  * 
- * Shell Command for stream blocked packets information from /proc/kmsg
+ * Shell Command for stream blocked packets information from klogripper (/proc/kmsg)
  * 
  * Copyright (C) 2014  Umakanthan Chandran
  * 
@@ -27,7 +27,6 @@ package dev.ukanth.ufirewall.log;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import android.util.Log;
 
@@ -51,8 +50,6 @@ public class ShellCommand {
 	}
 
 	public void start(boolean waitForExit) {
-		Log.d("AFWALL","ShellCommand: starting [" + tag + "] "+ Arrays.toString(command));
-
 		exitval = -1;
 		error = null;
 
@@ -60,8 +57,6 @@ public class ShellCommand {
 			process = new ProcessBuilder().command(command).redirectErrorStream(true).start();
 			stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		} catch (Exception e) {
-			Log.e("AFWall", "Failure starting shell command [" + tag + "]",
-					e);
 			error = e.getCause().getMessage();
 			return;
 		}
@@ -87,9 +82,6 @@ public class ShellCommand {
 	}
 
 	public void finish() {
-		Log.d("AFWALL","ShellCommand: finishing [" + tag + "] "
-				+ Arrays.toString(command));
-
 		try {
 			if (stdout != null) {
 				stdout.close();
@@ -108,7 +100,6 @@ public class ShellCommand {
 		try {
 			if(process != null) {
 				exitval = process.exitValue();
-				Log.d("AFWALL","ShellCommand exited: [" + tag + "] exit " + exitval);
 			} else {
 				finish();
 			}
@@ -130,22 +121,16 @@ public class ShellCommand {
 	}
 
 	public String readStdoutBlocking() {
-		Log.d("AFWALL", "readStdoutBlocking [" + tag + "]");
 		String line;
-
 		if (stdout == null) {
 			return null;
 		}
-
 		try {
 			line = stdout.readLine();
 		} catch (Exception e) {
 			Log.e("AFWall", "readStdoutBlocking error", e);
 			return null;
 		}
-
-		Log.d("AFWALL", "readStdoutBlocking [" + tag + "] return [" + line + "]");
-
 		if (line == null) {
 			return null;
 		} else {
@@ -154,7 +139,6 @@ public class ShellCommand {
 	}
 
 	public String readStdout() {
-		Log.d("AFWALL", "readStdout [" + tag + "]");
 
 		if (stdout == null) {
 			return null;
@@ -163,15 +147,12 @@ public class ShellCommand {
 		try {
 			if (stdout.ready()) {
 				String line = stdout.readLine();
-				Log.d("AFWALL", "read line: [" + line + "]");
-
 				if (line == null) {
 					return null;
 				} else {
 					return line + "\n";
 				}
 			} else {
-				Log.d("AFWALL","readStdout [" + tag + "] no data");
 				return "";
 			}
 		} catch (Exception e) {
