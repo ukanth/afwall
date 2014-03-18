@@ -304,4 +304,7 @@
     <string name="dns_proxy_title">DNS Proxy </string>
     <string name="dns_proxy_summary">DNS proxy option was added to support DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>
     
+    <string name="tasker_lable">AFWall+ Tasker Plugin</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
 </resources>

@@ -1,6 +1,7 @@
 package dev.ukanth.ufirewall.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
@@ -44,6 +45,7 @@ public class ToggleWidgetActivity extends Activity {
 		pieMenu.setTextSize(13);				
 		
 		pieMenu.setCenterCircle(new Close());
+		pieMenu.addMenuEntry(new Status());
 		pieMenu.addMenuEntry(new EnableFirewall());
 		pieMenu.addMenuEntry(new DisableFirewall());
 		
@@ -56,48 +58,6 @@ public class ToggleWidgetActivity extends Activity {
 
 	}
 	
-	/*public boolean onTouchEvent(MotionEvent e) {
-		int state = e.getAction();
-		int eventX = (int) e.getX();
-		int eventY = (int) e.getY();
-		if (state == MotionEvent.ACTION_DOWN) {
-
-			//Screen Sizes
-			int xScreenSize = (getResources().getDisplayMetrics().widthPixels);
-			int yScreenSize = (getResources().getDisplayMetrics().heightPixels);
-			int xLayoutSize = ll.getWidth();
-			int yLayoutSize = ll.getHeight();
-			int xCenter = xScreenSize/2;
-			int xSource = eventX;
-			int yCenter = yScreenSize/2;
-			int ySource = eventY;
-			
-			if (xScreenSize != xLayoutSize) {
-				xCenter = xLayoutSize/2;
-				xSource = eventX-(xScreenSize-xLayoutSize);
-			}
-			if (yScreenSize != yLayoutSize) {
-				yCenter = yLayoutSize/2;
-				ySource = eventY-(yScreenSize-yLayoutSize);
-			}				
-			
-			if(ll.getChildCount() == 0) {
-				pieMenu = new RadialMenuWidget(getBaseContext());
-
-				pieMenu.setSourceLocation(xSource,ySource);
-				pieMenu.setShowSourceLocation(true);
-				pieMenu.setCenterLocation(xCenter,yCenter);
-
-				pieMenu.setCenterCircle(new Close());
-				ll.addView(pieMenu);
-			}
-			
-			
-			
-		}
-		return true;
-	}
-	*/
 	
 	  public class Close implements RadialMenuEntry
 	   {
@@ -117,8 +77,8 @@ public class ToggleWidgetActivity extends Activity {
 	  public class EnableFirewall implements RadialMenuEntry
 	   {
 	      public String getName() { return ""; } 
-		  public String getLabel() { return ""; } 
-		  public int getIcon() { return R.drawable.widget_on; }
+		  public String getLabel() { return getString(R.string.enable); } 
+		  public int getIcon() { return 0; }
 	      public List<RadialMenuEntry> getChildren() { return null; }
 	      public void menuActiviated()
 	      {
@@ -126,11 +86,23 @@ public class ToggleWidgetActivity extends Activity {
 	      }
 	   }	
 	  
-	  public class DisableFirewall implements RadialMenuEntry
+	  public class Status implements RadialMenuEntry
 	   {
 	      public String getName() { return ""; } 
 		  public String getLabel() { return ""; } 
-		  public int getIcon() { return R.drawable.widget_off; }
+		  public int getIcon() { return (Api.isEnabled(getApplicationContext()) ?  R.drawable.widget_on :  R.drawable.widget_off); }
+	      public List<RadialMenuEntry> getChildren() { return null; }
+	      public void menuActiviated()
+	      {
+	    	  
+	      }
+	   }	
+	  
+	  public class DisableFirewall implements RadialMenuEntry
+	   {
+	      public String getName() { return ""; } 
+		  public String getLabel() { return getString(R.string.disable); } 
+		  public int getIcon() { return 0; }
 	      public List<RadialMenuEntry> getChildren() { return null; }
 	      public void menuActiviated()
 	      {
@@ -144,40 +116,58 @@ public class ToggleWidgetActivity extends Activity {
 	      public String getName() { return "Profiles"; } 
 		  public String getLabel() { return "Profiles"; }
 	      public int getIcon() { return 0; }
-	      private  List<RadialMenuEntry> children =  new ArrayList<RadialMenuEntry>();
-	      public Profiles(){
-	    	  children.add(new GenericProfile(G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile))));
-	    	  children.add(new GenericProfile(G.gPrefs.getString("profile1", getString(R.string.profile1))));
-	    	  children.add(new GenericProfile(G.gPrefs.getString("profile2", getString(R.string.profile2))));
-	    	  children.add(new GenericProfile(G.gPrefs.getString("profile3", getString(R.string.profile3))));
-	    	  for(String profile: G.getAdditionalProfiles()){
-	    		  children.add(new GenericProfile(profile));
-	    	  }
-	      }
-	      
-	      /*private List<RadialMenuEntry> children = new ArrayList<RadialMenuEntry>( 
-	    		  Arrays.asList( new GenericProfile(), new GenericProfile()) );*/
-	      
+	      private List<RadialMenuEntry> children = new ArrayList<RadialMenuEntry>( Arrays.asList( new DefaultProfile(), new Profile1(), new Profile2(), new Profile3() ) );
 	      public List<RadialMenuEntry> getChildren() { return children; }
 	      public void menuActiviated()
 	      {
-	    	  
 	      }
 	   }	
-	   public static class GenericProfile implements RadialMenuEntry
-	   {
-	      public String getName() { return profile; } 
-		  public String getLabel() { return profile; }
-		  public String profile;
-		  GenericProfile(String profile){
-			  this.profile = profile;
-		  }
-	      public int getIcon() { return 0; }
-	      public List<RadialMenuEntry> getChildren() { return null; }
-	      public void menuActiviated()
-	      {
-	      }
-	   }	   
+	   
+	   public class DefaultProfile implements RadialMenuEntry
+       {
+          public String getName() { return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile)); } 
+          public String getLabel() { return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile)); }
+          public int getIcon() { return 0; }
+          public List<RadialMenuEntry> getChildren() { return null; }
+          public void menuActiviated()
+          {
+        	  startAction(3);
+          }
+       }    
+	   public class Profile1 implements RadialMenuEntry
+       {
+          public String getName() { return G.gPrefs.getString("profile1", getString(R.string.profile1)); } 
+              public String getLabel() { return G.gPrefs.getString("profile1", getString(R.string.profile1)); }
+          public int getIcon() { return 0; }
+          public List<RadialMenuEntry> getChildren() { return null; }
+          public void menuActiviated()
+          {
+        	  startAction(4);
+          }
+       }    
+	   public class Profile2 implements RadialMenuEntry
+       {
+          public String getName() { return G.gPrefs.getString("profile2", getString(R.string.profile2)); } 
+          public String getLabel() { return G.gPrefs.getString("profile2", getString(R.string.profile2)); }
+          public int getIcon() { return 0; }
+          public List<RadialMenuEntry> getChildren() { return null; }
+          public void menuActiviated()
+          {
+        	  startAction(5);
+          }
+       }    
+	   public class Profile3 implements RadialMenuEntry
+       {
+          public String getName() { return G.gPrefs.getString("profile3", getString(R.string.profile3)); } 
+          public String getLabel() { return G.gPrefs.getString("profile3", getString(R.string.profile3)); }
+          public int getIcon() { return 0; }
+          public List<RadialMenuEntry> getChildren() { return null; }
+          public void menuActiviated()
+          {
+        	  startAction(6);
+          }
+       }    
+	  
 
 
 	private void startAction(final int i) {
