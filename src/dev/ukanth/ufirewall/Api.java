@@ -2218,12 +2218,13 @@ public final class Api {
 	
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
+    	boolean hasMobileData = true;
     	ConnectivityManager cm = (ConnectivityManager)ctx.getSystemService(ctx.CONNECTIVITY_SERVICE);
-		for(NetworkInfo info : cm.getAllNetworkInfo()){
-			if(info.getType() == ConnectivityManager.TYPE_MOBILE) {
-				return true;
-			}
-		}
-		return false;
+    	if (cm != null) {
+    		if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE) == null) {
+    			hasMobileData = false;
+    		}
+		} 
+		return hasMobileData;
     }
 }
