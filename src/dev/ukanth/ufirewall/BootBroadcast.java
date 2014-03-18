@@ -23,6 +23,7 @@
  */
 package dev.ukanth.ufirewall;
 
+import dev.ukanth.ufirewall.log.LogService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +38,9 @@ public class BootBroadcast extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		 InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+		 if(G.enableLogService()){
+			 context.startService(new Intent(context, LogService.class));	 
+		 }
 		/*if(G.alternateStart()) {
 	         context.startService(new Intent(context, StartupService.class));
 		} else {
