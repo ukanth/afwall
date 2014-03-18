@@ -50,11 +50,15 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 			holder = new ViewHolder();
 			holder.box_wifi = (CheckBox) convertView
 					.findViewById(R.id.itemcheck_wifi);
-			holder.box_3g = (CheckBox) convertView
-					.findViewById(R.id.itemcheck_3g);
-
 			holder.box_wifi.setOnCheckedChangeListener(this);
-			holder.box_3g.setOnCheckedChangeListener(this);
+			
+			if(Api.isMobileNetworkSupported(context)) {
+				holder.box_3g = addSupport(holder.box_3g, convertView,
+						true, R.id.itemcheck_3g);
+			} else {
+				removeSupport(holder.box_3g, convertView,R.id.itemcheck_3g);
+			}
+			
 
 			if (G.enableRoam()) {
 				holder.box_roam = addSupport(holder.box_roam, convertView,
@@ -82,9 +86,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 			holder = (ViewHolder) convertView.getTag();
 			holder.box_wifi = (CheckBox) convertView
 					.findViewById(R.id.itemcheck_wifi);
-			holder.box_3g = (CheckBox) convertView
-					.findViewById(R.id.itemcheck_3g);
-
+			if(Api.isMobileNetworkSupported(context)) {
+				holder.box_3g = addSupport(holder.box_3g, convertView,
+						true, R.id.itemcheck_3g);
+			} else {
+				removeSupport(holder.box_3g, convertView,R.id.itemcheck_3g);
+			}
 			if (G.enableRoam()) {
 				addSupport(holder.box_roam, convertView, false,
 						R.id.itemcheck_roam);
@@ -155,8 +162,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 		holder.box_wifi.setTag(holder.app);
 		holder.box_wifi.setChecked(holder.app.selected_wifi);
 
-		holder.box_3g.setTag(holder.app);
-		holder.box_3g.setChecked(holder.app.selected_3g);
+		
+		if(Api.isMobileNetworkSupported(context)) {
+			holder.box_3g.setTag(holder.app);
+			holder.box_3g.setChecked(holder.app.selected_3g);
+		} 
 
 		if (G.enableRoam()) {
 			holder.box_roam = addSupport(holder.box_roam, holder, holder.app, 0);
@@ -188,6 +198,13 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 		}
 		return check;
 	}
+	
+	private CheckBox removeSupport(CheckBox check, View convertView, int id) {
+		check = (CheckBox) convertView.findViewById(id);
+		check.setVisibility(View.GONE);
+		return check;
+	}
+	
 	
 	static class ViewHolder { 
 		private CheckBox box_lan;

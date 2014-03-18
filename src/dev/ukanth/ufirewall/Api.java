@@ -70,6 +70,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -2213,6 +2215,15 @@ public final class Api {
 		}
 		return false;
 	}
+	
 
-
+    public static boolean isMobileNetworkSupported(final Context ctx) {
+    	ConnectivityManager cm = (ConnectivityManager)ctx.getSystemService(ctx.CONNECTIVITY_SERVICE);
+		for(NetworkInfo info : cm.getAllNetworkInfo()){
+			if(info.getType() == ConnectivityManager.TYPE_MOBILE) {
+				return true;
+			}
+		}
+		return false;
+    }
 }

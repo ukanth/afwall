@@ -143,7 +143,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			//set onclick listeners
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
-			this.findViewById(R.id.img_3g).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
@@ -160,6 +159,13 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			
 			if(G.enableVPN()){
 				addColumns(R.id.img_vpn);
+			}
+			
+			if(!Api.isMobileNetworkSupported(getApplicationContext())){
+				ImageView view = (ImageView)this.findViewById(R.id.img_3g);
+				view.setVisibility(View.GONE);
+			} else {
+				this.findViewById(R.id.img_3g).setOnClickListener(this);
 			}
 
 			if(G.enableLAN()){
