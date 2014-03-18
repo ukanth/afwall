@@ -67,10 +67,12 @@
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"
-        android:largeScreens="true"
+        android:smallScreens="true"
         android:normalScreens="true"
-        android:smallScreens="true" />
-
+        android:largeScreens="true"
+        android:xlargeScreens="true"
+     />
+    
     <application 
         android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
@@ -191,7 +193,7 @@
             android:name="dev.ukanth.ufirewall.plugin.LocaleEdit"
             android:exported="true"
             android:icon="@drawable/icon"
-            android:label="AFWall+ Tasker Plugin"
+            android:label="@string/tasker_lable"
             android:theme="@style/Theme.Locale.Dark"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize"
