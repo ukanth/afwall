@@ -85,7 +85,7 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  */
 
 public class MainActivity extends SherlockListActivity implements OnClickListener,
-					ActionBar.OnNavigationListener,OnCreateOptionsMenuListener  {
+					ActionBar.OnNavigationListener,OnCreateOptionsMenuListener, OnCheckedChangeListener  {
 
 	private TextView mSelected;
     private String[] mLocations;
@@ -117,7 +117,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	
 	private int index;
 	private int top;
-
+	
 	/** Called when the activity is first created
 	 * . */
 	@Override
@@ -183,7 +183,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
 	        
-	        updateFilterGroup();
+	        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+			radioGroup.setOnCheckedChangeListener(this);
 	       
 	        //start logging
 	        if(G.enableLogService()) {
@@ -199,48 +200,24 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	}
 	
 	
-	/*private void selectFilterGroup() {
+	private void selectFilterGroup() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
 		switch (radioGroup.getCheckedRadioButtonId()) {
-		case R.id.rpkg_all:
-			showOrLoadApplications();
-			break;
 		case R.id.rpkg_core:
-			showFilterApplications(0);
+			showApplications(null, 0);
 			break;
 		case R.id.rpkg_sys:
-			showFilterApplications(1);
+			showApplications(null, 1);
 			break;
 		case R.id.rpkg_user:
-			showFilterApplications(2);
+			showApplications(null, 2);
 			break;
 		default:
-			showOrLoadApplications();
+			showApplications("",-1);
 			break;
 		}
-	}*/
-	
-	private void updateFilterGroup() {
-		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
-		radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				switch (checkedId) {
-				case R.id.rpkg_all:
-					showOrLoadApplications();
-					break;
-				case R.id.rpkg_core:
-					showFilterApplications(0);
-					break;
-				case R.id.rpkg_sys:
-					showFilterApplications(1);
-					break;
-				case R.id.rpkg_user:
-					showFilterApplications(2);
-					break;
-				}
-			}
-		});
 	}
+	
 
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
@@ -282,12 +259,11 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		setupMultiProfile();
 		refreshHeader();
 		updateIconStatus();
-		
+
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
 		
 		passCheck();
-		
 		
 	}
 	
@@ -371,10 +347,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			}
 	    } else {
 			showOrLoadApplications();
-			
 	    }
-		
-
 	}
 
 	@Override
@@ -569,7 +542,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 		@Override
 		protected void onPostExecute(Void result) {
-			showApplications("");
+			selectFilterGroup();
+			
 			publishProgress(-1);
 			try {
 				plsWait.dismiss();
@@ -620,7 +594,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	/**
 	 * Show the list of applications
 	 */
-	private void showApplications(final String searchStr) {
+	private void showApplications(final String searchStr, int flag) {
 		this.dirty = false;
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
@@ -635,10 +609,38 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					} 
 				}
 			}
+		} else if (flag > -1){
+			switch(flag){
+				case 0:
+					for(PackageInfoData app:apps) {
+					   if(app.pkgName.startsWith("dev.afwall.special")) {
+						   searchApp.add(app);   
+					   }
+					}
+					break;
+				case 1:
+					for(PackageInfoData app: apps) {
+						if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+							searchApp.add(app);
+						}
+					}
+					break;
+				case 2:
+					for(PackageInfoData app: apps) {
+						if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+							searchApp.add(app);
+						}
+					}
+					break;
+			}
+			
 		}
-		
-		final List<PackageInfoData> apps2 = isResultsFound ? searchApp : searchStr.equals("") ? apps : new ArrayList<Api.PackageInfoData>();
-
+		List<PackageInfoData> apps2;
+		if(!isResultsFound && flag == -1) {
+			apps2 = apps; 
+		} else {
+			apps2 = searchApp;
+		}
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());	
 		
@@ -648,41 +650,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		
 	}
 	
-	
-	private void showFilterApplications(int flag) {
-		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
-		final List<PackageInfoData> apps = Api.getApps(this,null);
-		switch(flag){
-		case 0:
-			for(PackageInfoData app:apps) {
-			   if(app.pkgName.startsWith("dev.afwall.special")) {
-				   searchApp.add(app);   
-			   }
-			}
-			break;
-		case 1:
-			for(PackageInfoData app: apps) {
-				if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-					searchApp.add(app);
-				}
-			}
-			break;
-		case 2:
-			for(PackageInfoData app: apps) {
-				if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-					searchApp.add(app);
-				}
-			}
-			break;
-		}
-		
-		if(this.listview == null) {
-			this.listview = (ListView) this.findViewById(R.id.listview);
-		}
-		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), searchApp));
-		// restore
-		this.listview.setSelectionFromTop(index, top);
-	}
 	
 
 	@Override
@@ -866,7 +833,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
-			showApplications(s.toString());
+			showApplications(s.toString(),-1);
 		}
 
 		public void beforeTextChanged(CharSequence s, int start, int count,
@@ -875,7 +842,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
-			showApplications(s.toString());
+			showApplications(s.toString(),-1);
 		}
 
 	};
@@ -1629,6 +1596,26 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		});
 		
 	}
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch (checkedId) {
+			case R.id.rpkg_all:
+				showOrLoadApplications();
+				break;
+			case R.id.rpkg_core:
+				showApplications(null, 0);
+				break;
+			case R.id.rpkg_sys:
+				showApplications(null, 1);
+				break;
+			case R.id.rpkg_user:
+				showApplications(null, 2);
+				break;
+			}
+	}
+	
+	
 	
 }
 
