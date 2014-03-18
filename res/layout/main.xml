@@ -33,9 +33,9 @@
 		<ImageView android:layout_width="34dp" android:layout_height="wrap_content" android:id="@+id/img_reset" android:src="@drawable/clear" android:clickable="true"></ImageView>
 	</LinearLayout>
 	
-	<ListView android:layout_width="wrap_content" android:fastScrollEnabled="true" android:layout_height="wrap_content" 
+	<ListView android:layout_width="match_parent" android:fastScrollEnabled="true" android:layout_height="wrap_content" 
 	    android:id="@+id/listview"
-	    android:divider="#FFF"
+	    android:divider="#555"
     	android:dividerHeight="0.5px"
 	    ></ListView>
 </LinearLayout>
