@@ -229,7 +229,7 @@ public class G extends android.app.Application {
 		Api.applications = null;
 	}
 	
-	public Integer getCurrentProfile(){
+	public static Integer getCurrentProfile(){
 		return storedPosition();
 	}
 
@@ -302,6 +302,47 @@ public class G extends android.app.Application {
 		return count + DEFAULT_PROFILE_COUNT;
 	}
 	
+	public static int getProfilePosition(String profileName){
+		int profilePosition = -1;
+		List<String> profileList = getAdditionalProfiles();
+		for(int i=0; i < profileList.size(); i++) {
+			if(profileName.equals(profileList.get(i))){
+				profilePosition = i + 4;
+			}
+		}
+		return profilePosition;
+	}
+	
+	public static String getProfileName(int position){
+		String profileName  = "";
+		position = position - 4;
+		List<String> profileList = getAdditionalProfiles();
+		for(int i=0; i < profileList.size(); i++) {
+			if(position == i){
+				profileName = profileList.get(i);
+			}
+		}
+		return profileName;
+	}
+	
+	public static String getActiveProfileName(final Context ctx){
+		String profileName = "";
+		if(G.enableMultiProfile()){
+			int pos = getCurrentProfile();
+			if(pos < 4 ) {
+				switch(pos){
+				case 0: profileName = G.gPrefs.getString("default", ctx.getString(R.string.defaultProfile)); break;
+				case 1: profileName = G.gPrefs.getString("profile1", ctx.getString(R.string.profile1));break;
+				case 2: profileName = G.gPrefs.getString("profile2", ctx.getString(R.string.profile2));break;
+				case 3: profileName = G.gPrefs.getString("profile3", ctx.getString(R.string.profile3));break;
+				}
+			} else {
+				profileName = getProfileName(pos);
+			}
+		}
+		return profileName;
+		
+	}
 	public static List<String> getAdditionalProfiles() {
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 		List<String> profileList = new ArrayList<String>();

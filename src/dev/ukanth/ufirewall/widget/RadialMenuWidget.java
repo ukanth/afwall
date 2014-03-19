@@ -21,6 +21,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Toast;
 
 public class RadialMenuWidget extends View {
 
@@ -39,16 +40,16 @@ public class RadialMenuWidget extends View {
 	
 	private float screen_density = getContext().getResources().getDisplayMetrics().density;
 	
-	private int defaultColor = Color.rgb(34, 96, 120); 	//default color of wedge pieces
+	private int defaultColor = Color.rgb(0, 0, 0); 	//default color of wedge pieces
 	private int defaultAlpha = 180;  						//transparency of the colors, 255=Opague, 0=Transparent
-	private int wedge2Color = Color.rgb(50, 50, 50); 	//default color of wedge pieces
+	private int wedge2Color = Color.rgb(85, 85, 85); 	//default color of wedge pieces
 	private int wedge2Alpha = 210; 
-	private int outlineColor = Color.rgb(150, 150, 150);  	//color of outline
+	private int outlineColor = Color.rgb(255, 255, 255);  	//color of outline
 	private int outlineAlpha = 255;							//transparency of outline
-	private int selectedColor = Color.rgb(70, 130, 180);  	//color to fill when something is selected
+	private int selectedColor = Color.rgb(0, 0, 0);  	//color to fill when something is selected
 	private int selectedAlpha = 210;						//transparency of fill when something is selected
 
-	private int disabledColor = Color.rgb(34, 96, 120);  	//color to fill when something is selected
+	private int disabledColor = Color.rgb(85, 85, 85);  	//color to fill when something is selected
 	private int disabledAlpha = 100;						//transparency of fill when something is selected
 	
 	private int pictureAlpha = 255;							//transparency of images
@@ -200,7 +201,7 @@ public class RadialMenuWidget extends View {
 					animateOuterIn = true;  //sets Wedge2Shown = false;
 				}
 				selected = null;
-				////Toast.makeText(getContext(), centerCircle.getName() + " pressed.", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(getContext(), centerCircle.getName() + " pressed.", Toast.LENGTH_SHORT).show();
 				centerCircle.menuActiviated();
 
 			} else if (selected != null){
@@ -223,7 +224,7 @@ public class RadialMenuWidget extends View {
 							if (menuEntries.get(i).getChildren() != null) {
 								determineOuterWedges(menuEntries.get(i));
 								enabled = f;
-								animateOuterOut = true;  //sets Wedge2Shown = true;
+								animateOuterOut = true;  //sets Wedge2Shown = true;m
 								
 							} else {
 								Wedge2Shown = false;
@@ -237,10 +238,11 @@ public class RadialMenuWidget extends View {
 				for (int i = 0; i < Wedges2.length; i++) {
 					Wedge f = Wedges2[i];
 					if (f == selected2) {
-					//Toast.makeText(getContext(), wedge2Data.getChildren().get(i).getName() + " pressed.", Toast.LENGTH_SHORT).show();
-					animateOuterIn = true;  //sets Wedge2Shown = false;
-					enabled = null;
-					selected = null;
+						//Toast.makeText(getContext(), wedge2Data.getChildren().get(i).getName() + " pressed.", Toast.LENGTH_SHORT).show();
+						animateOuterIn = true;  //sets Wedge2Shown = false;
+						wedge2Data.getChildren().get(i).menuActiviated();
+						enabled = null;
+						selected = null;
 					}					
 				}
 			} else {
