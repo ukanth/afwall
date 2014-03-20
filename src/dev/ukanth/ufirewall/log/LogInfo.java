@@ -457,8 +457,7 @@ public class LogInfo {
 					appName = ctx.getString(R.string.kernel_item);
 				}
 				address = new StringBuilder();
-				address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ")" + " ");
-				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
+				address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");
 				return address.toString();
 				
 			}

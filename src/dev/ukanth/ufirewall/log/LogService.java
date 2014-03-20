@@ -41,7 +41,10 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 
 public class LogService extends Service {
+	
 	private final IBinder mBinder = new Binder();
+	
+	private boolean mRunning = false;
 
 	private ShellCommand loggerCommand;
 	
@@ -74,18 +77,32 @@ public class LogService extends Service {
 	}
 
 	public void onCreate() {
-		klogPath = Api.getKLogPath(getApplicationContext());
-		handler = new Handler();
-		loggerCommand = new ShellCommand(
-				new String[] { "su", "-c",  klogPath + " --skip-first"},
-				"LogService");
-		loggerCommand.start(false);
-		if (loggerCommand.error != null) {
-		} else {
-			NetworkLogger logger = new NetworkLogger();
-			new Thread(logger, "NetworkLogger").start();
-		}
+		
+		super.onCreate();
+        mRunning = false;
+        
+		
 	}
+	
+	@Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        if (!mRunning) {
+            mRunning = true;
+            klogPath = Api.getKLogPath(getApplicationContext());
+    		handler = new Handler();
+    		loggerCommand = new ShellCommand(
+    				new String[] { "su", "-c",  klogPath + " --skip-first"},
+    				"LogService");
+    		loggerCommand.start(false);
+    		if (loggerCommand.error != null) {
+    		} else {
+    			NetworkLogger logger = new NetworkLogger();
+    			new Thread(logger, "NetworkLogger").start();
+    		}
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
 	
 	
 	public static void showToast(final Context context, final Handler handler, final CharSequence text, boolean cancel) {
@@ -103,8 +120,6 @@ public class LogService extends Service {
 	              toast = new Toast(context);
 	            }
 	            toastDefaultYOffset = toast.getYOffset();
-	            GradientDrawable background = (GradientDrawable) toastLayout.getBackground();
-	            background.setColor(toastOpacity << 24);
 	            toast.setView(toastLayout);
 	          }
 
@@ -205,6 +220,7 @@ public class LogService extends Service {
 				}
 			}
 		}
-	}
+	}	
+
 
 }
