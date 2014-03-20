@@ -77,7 +77,7 @@ public class LogService extends Service {
 		klogPath = Api.getKLogPath(getApplicationContext());
 		handler = new Handler();
 		loggerCommand = new ShellCommand(
-				new String[] { "su", "-c",  klogPath },
+				new String[] { "su", "-c",  klogPath + " --skip-first"},
 				"LogService");
 		loggerCommand.start(false);
 		if (loggerCommand.error != null) {
