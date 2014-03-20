@@ -197,6 +197,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	       
 		    Api.assertBinaries(this, true);
 		    
+		    
 	}
 	
 	
@@ -241,17 +242,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		new RootCommand().setFailureToast(R.string.error_su)
 				.setReopenShell(true).run(getApplicationContext(), cmds);
 		
-	}
-
-	private void addColumns(int id) {
-		ImageView view = (ImageView)this.findViewById(id);
-		view.setVisibility(View.VISIBLE);
-		view.setOnClickListener(this);
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
@@ -263,8 +253,21 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(24556);
 		
-		passCheck();
+		if(passCheck()){
+	    	showOrLoadApplications();
+	    }
 		
+	}
+
+	private void addColumns(int id) {
+		ImageView view = (ImageView)this.findViewById(id);
+		view.setVisibility(View.VISIBLE);
+		view.setOnClickListener(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
 	}
 	
 	private void setupMultiProfile(){
@@ -316,7 +319,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		}
 	}
 	
-	private void passCheck(){
+	private boolean passCheck(){
 		
 		//wait for 30 seconds before prompt for password again.
 	    //if (System.currentTimeMillis() - mLastPause > 30000) {
@@ -326,28 +329,27 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				if(!isPassVerify){
 					final String pwd = G.sPrefs.getString("LockPassword", "");
 					if (pwd.length() == 0) {
-						showOrLoadApplications();
+						return true;
 					} else {
 						// Check the password
 						requestPassword(pwd);
 					}
 				}else {
-					showOrLoadApplications();
+					return true;
 				}	
 			} else{
 				final String oldpwd = G.pPrefs.getString(Api.PREF_PASSWORD, "");
 				if (oldpwd.length() == 0) {
-					// No password lock
-					showOrLoadApplications();
+					return true;
 				} else {
 					// Check the password
 					requestPassword(oldpwd);	
-
 				}	
 			}
 	    } else {
-			showOrLoadApplications();
+	    	return true;
 	    }
+		return false;
 	}
 
 	@Override
@@ -475,13 +477,13 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private void showOrLoadApplications() {
 		//nocache!!
 		new GetAppList().execute();	
-		
 	}
 	
 
 	public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
 		boolean ready = false;
+		boolean started = false;
 		Activity mContext = null;
 		AsyncTask<Void,Integer,Void> myAsyncTaskInstance = null; 
 
@@ -546,6 +548,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			
 			publishProgress(-1);
 			try {
+				started = false; 
 				plsWait.dismiss();
 			} catch (Exception e) {
 				// nothing
