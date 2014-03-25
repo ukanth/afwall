@@ -25,12 +25,8 @@ package dev.ukanth.ufirewall.log;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import android.content.Context;
 import android.util.Log;

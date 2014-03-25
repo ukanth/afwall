@@ -64,6 +64,7 @@ public class LogService extends Service {
 	private static Runnable showOnlyToastRunnable;
 	private static CancelableRunnable showToastRunnable;
 	private static View toastLayout;
+	
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -87,14 +88,13 @@ public class LogService extends Service {
             mRunning = true;
             klogPath = Api.getKLogPath(getApplicationContext());
     		handler = new Handler();
-    		loggerCommand = new ShellCommand(
-    				new String[] { "su", "-c",  klogPath + " --skip-first"},
-    				"LogService");
+    		String cmd =  klogPath + " --skip-first";
+    		loggerCommand = new ShellCommand( new String[] { "su", "-c",  cmd}, "LogService");
     		loggerCommand.start(false);
     		if (loggerCommand.error != null) {
     		} else {
-    			NetworkLogger logger = new NetworkLogger();
-    			new Thread(logger, "NetworkLogger").start();
+    			Logger logger = new Logger();
+    			new Thread(logger, "Logger").start();
     		}
         }
         return super.onStartCommand(intent, flags, startId);
@@ -164,7 +164,7 @@ public class LogService extends Service {
 	  }
 	
 
-	public class NetworkLogger implements Runnable {
+	public class Logger implements Runnable {
 		boolean running = false;
 
 		public void stop() {
@@ -194,7 +194,15 @@ public class LogService extends Service {
 					if (result == null) {
 						break;
 					}
-					showToast(getApplicationContext(), handler, LogInfo.parseLogs(result,getApplicationContext()), false);
+					if(!result.trim().isEmpty())
+					{
+						if(result.contains("AFL")) {
+							final String logData = LogInfo.parseLogs(result,getApplicationContext());
+							if(!logData.isEmpty()) {
+								showToast(getApplicationContext(), handler,logData,false);
+							}
+						}
+					}
 					/*final String data = result;
 					handler.post(new Runnable() {
 					    public void run() {

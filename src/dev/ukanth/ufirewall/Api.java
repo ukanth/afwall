@@ -71,7 +71,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -248,7 +247,7 @@ public final class Api {
 		Api.bbPath = getBusyBoxPath(ctx);
 	}
 	
-	static String getBusyBoxPath(Context ctx) {
+	public static String getBusyBoxPath(Context ctx) {
 		if (G.bb_path().equals("system")) {
 			return "busybox ";
 		} else {
@@ -1138,7 +1137,7 @@ public final class Api {
 				//initiate special Apps
 				
 				List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
-				specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
+				//specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
 				specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
 				specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
 				//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
@@ -2068,7 +2067,7 @@ public final class Api {
 	private static void initSpecial() {
 		if(specialApps == null || specialApps.size() == 0){
 			specialApps = new HashMap<String, Integer>();
-			specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
+			//specialApps.put("dev.afwall.special.any",SPECIAL_UID_ANY);
 			specialApps.put("dev.afwall.special.kernel",SPECIAL_UID_KERNEL);
 			specialApps.put("dev.afwall.special.tether",SPECIAL_UID_TETHER);
 			//specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
