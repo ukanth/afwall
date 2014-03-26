@@ -3,11 +3,9 @@ package dev.ukanth.ufirewall.admin;
 import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import dev.ukanth.ufirewall.Log;
 import android.widget.Toast;
+import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.Log;
 import dev.ukanth.ufirewall.R;
 
 
@@ -24,10 +22,7 @@ public class AdminDeviceReceiver extends DeviceAdminReceiver {
 	@Override
 	public void onEnabled(Context context, Intent intent) {
 		super.onEnabled(context, intent);
-		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		final Editor editor = prefs.edit();
-		editor.putBoolean("enableAdmin", true);
-		editor.commit();
+		G.enableAdmin(true);
 		Toast.makeText(context, R.string.device_admin_enabled ,Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onEnabled");
 	}
@@ -36,10 +31,7 @@ public class AdminDeviceReceiver extends DeviceAdminReceiver {
 	@Override
 	public void onDisabled(Context context, Intent intent) {
 		super.onDisabled(context, intent);
-		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		final Editor editor = prefs.edit();
-		editor.putBoolean("enableAdmin", false);
-		editor.commit();
+		G.enableAdmin(false);
 		Toast.makeText(context, R.string.device_admin_disabled,Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onDisabled");
 	}

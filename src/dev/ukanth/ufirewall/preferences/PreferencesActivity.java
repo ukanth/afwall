@@ -67,16 +67,13 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setHeaderRes(R.xml.unified_preferences_headers);
-
 		// set language
 		Api.updateLanguage(getApplicationContext(), G.locale());
-
-		super.onCreate(savedInstanceState);
-
+		setHeaderRes(R.xml.unified_preferences_headers);
 		// update settings with actual device admin setting
 		mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 		deviceAdmin = new ComponentName(getApplicationContext(), AdminDeviceReceiver.class);
+		super.onCreate(savedInstanceState);
 	}
 
 	public static void setupFixLeak(Preference pref) {
@@ -247,7 +244,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		}
 
 		if (key.equals("enableAdmin")) {
-			boolean value = sharedPreferences.getBoolean("enableAdmin", false);
+			boolean value = G.enableAdmin();
 			if (value) {
 				Log.d("Device Admin Active ?", mDPM.isAdminActive(deviceAdmin) + "");
 				if (!mDPM.isAdminActive(deviceAdmin)) {
