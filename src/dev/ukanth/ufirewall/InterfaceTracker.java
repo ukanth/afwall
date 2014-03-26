@@ -201,6 +201,10 @@ public final class InterfaceTracker {
 
 		return ret;
 	}
+	
+	public static boolean isNetworkUp(Context context){
+		return getInterfaceDetails(context).netEnabled;
+	}
 
 	public static boolean checkForNewCfg(Context context) {
 		InterfaceDetails newCfg = getInterfaceDetails(context);

@@ -97,6 +97,15 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private ListView listview = null;
 	/** indicates if the view has been modified and not yet saved */
 	public static boolean dirty = false;
+	
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public void setDirty(boolean dirty) {
+		MainActivity.dirty = dirty;
+	}
+
 	private String currentPassword = "";
 	
 	public String getCurrentPassword() {
@@ -139,6 +148,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			} catch (Exception e) {
 			}
 			checkPreferences();
+			
+			 //language
+		    Api.updateLanguage(getApplicationContext(), G.locale());
+		    
 			setContentView(R.layout.main);
 			//set onclick listeners
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
@@ -172,35 +185,35 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				addColumns(R.id.img_lan);
 			}
 
-
 			setupMultiProfile();
-			
 			updateIconStatus();
 			
-			//language
-			String lang = G.locale();
-			Api.updateLanguage(getApplicationContext(), lang);
-			plsWait = new ProgressDialog(this);
-	        plsWait.setCancelable(false);
+			updateRadioFilter();
 	        
-	        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
-			radioGroup.setOnCheckedChangeListener(this);
-	       
 	        //start logging
-	        if(G.enableLogService()) {
+	       /* if(G.enableLogService()) {
 	        	Intent intent = new Intent(getApplicationContext(), LogService.class);
 				getApplicationContext().startService(intent);
-	        }
+	        }*/
 	        
         	Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
 	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 	       
 		    Api.assertBinaries(this, true);
 		    
+		   
+			plsWait = new ProgressDialog(this);
+	        plsWait.setCancelable(false);
+		    
 		    
 	}
 	
 	
+	private void updateRadioFilter() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		radioGroup.setOnCheckedChangeListener(this);
+	}
+
 	private void selectFilterGroup() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
 		switch (radioGroup.getCheckedRadioButtonId()) {
@@ -598,7 +611,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 * Show the list of applications
 	 */
 	private void showApplications(final String searchStr, int flag) {
-		this.dirty = false;
+		setDirty(false);
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
 		boolean isResultsFound = false;
@@ -658,8 +671,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//language
-		String lang = G.locale();
-		Api.updateLanguage(getApplicationContext(), lang);
+		Api.updateLanguage(getApplicationContext(), G.locale());
 		super.onCreateOptionsMenu(menu);
 		getSupportMenuInflater().inflate(R.menu.menu_bar, menu);
 		mainMenu = menu;
@@ -690,9 +702,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		//language
-		String lang = G.locale();
-		Api.updateLanguage(getApplicationContext(), lang);
 		menuSetApplyOrSave(menu, Api.isEnabled(this));
+		Api.updateLanguage(getApplicationContext(), G.locale());
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -987,8 +998,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			if(resultCode == RESULT_OK){
 				Intent intent = getIntent();
 			    finish();
-			    String lang = G.locale();
-				Api.updateLanguage(getApplicationContext(), lang);
+				Api.updateLanguage(getApplicationContext(), G.locale());
 			    startActivity(intent);
 			}
 		}
@@ -1094,7 +1104,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if (!enabled) {
 			Api.setEnabled(ctx, false, true);
 			Api.displayToasts(ctx, R.string.rules_saved, Toast.LENGTH_SHORT);
-			MainActivity.this.dirty = false;
+			setDirty(false);
 			return;
 		}
 
@@ -1118,7 +1128,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				boolean result = enabled;
 
 				if (state.exitCode == 0) {
-					MainActivity.this.dirty = false;
+					setDirty(false);
 				} else {
 					result = false;
 				}
@@ -1197,7 +1207,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
 				data.selected_lan = flag;
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1213,7 +1223,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
 				data.selected_vpn = flag;
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1245,7 +1255,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					data.selected_lan = !data.selected_lan;
 					break;
 				}
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1265,7 +1275,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				data.selected_roam = !data.selected_roam;
 				data.selected_vpn = !data.selected_vpn;
 				data.selected_lan = !data.selected_lan;
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1282,7 +1292,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
 				data.selected_roam = flag;
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1302,7 +1312,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				data.selected_roam = false;
 				data.selected_vpn = false;
 				data.selected_lan = false;
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1318,7 +1328,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
 				data.selected_3g = flag;
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1335,7 +1345,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
 				data.selected_wifi = flag;
-				this.dirty = true;
+				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
@@ -1372,7 +1382,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					case DialogInterface.BUTTON_NEGATIVE:
 						// Propagate the event back to perform the desired
 						// action
-						MainActivity.this.dirty = false;
+						setDirty(false);
 						Api.applications = null;
 						finish();
 						System.exit(0);
@@ -1604,6 +1614,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		switch (checkedId) {
 			case R.id.rpkg_all:
+				
 				showOrLoadApplications();
 				break;
 			case R.id.rpkg_core:
@@ -1617,8 +1628,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				break;
 			}
 	}
-	
-	
 	
 }
 

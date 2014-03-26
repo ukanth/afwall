@@ -52,15 +52,21 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		if(G.activeRules()){
 			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
 		}
-		
-		 if(G.enableLogService()){
+
+		final Intent logIntent = new Intent(context, LogService.class);
+		if(G.enableLogService()){
 			 //check if the firewall is enabled
-			 if(Api.isEnabled(context)) {
-				 Intent logIntent = new Intent(context, LogService.class);
-				 //stop the existing service
-				 context.stopService(logIntent);
-				 context.startService(logIntent);	 
-			 }
+			if(!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
+				context.stopService(logIntent);
+			} else{
+				//restart the service
+				context.stopService(logIntent);
+				context.startService(logIntent);
+			}
+		 } else {
+			 context.stopService(logIntent);
 		 }
+		//no internet - stop the service
+		
 	}
 }

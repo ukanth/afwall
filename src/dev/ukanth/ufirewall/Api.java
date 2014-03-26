@@ -2110,11 +2110,6 @@ public final class Api {
 	public static void updateLanguage(Context context, String lang) {
 	    if (!"".equals(lang)) {
 	        Locale locale = new Locale(lang);
-	       /* Locale.setDefault(locale);
-	        Configuration config = new Configuration();
-	        config.locale = locale;
-	        context.getResources().updateConfiguration(config, null);*/
-	        
 	        Resources res = context.getResources();
 			DisplayMetrics dm = res.getDisplayMetrics();
 			Configuration conf = res.getConfiguration();
