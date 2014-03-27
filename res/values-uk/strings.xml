@@ -91,7 +91,6 @@
   <string name="remove_initd">Успішно видалено сценарію запуску</string>
   <string name="unable_remove_initd">Не вдалося видалити сценарій запуску AFWall+</string>
   <string name="widget_disable_fail">Не вдалося вимкнути брандмауер - визначено пароль!</string>
-  <string name="widget_label_status">Перемикач/Статус AFWall+</string>
   <string name="widget_label_settings">Налаштування AFWall+</string>
   <string name="color_pick">Натисніть на колір, щоб застосувати</string>
   <string name="import_rules_droidwall">Імпортувати правила DW</string>
@@ -105,7 +104,10 @@
   <string name="export_logs_fail">Не вдалося експортувати до SD!</string>
   <string name="export_to_sd">Експорт до карти SD</string>
   <string name="enable_firewall_log">Увімкнути журнали брандмауера</string>
+  <string name="enable_firewall_log_service">Увімкнути службу журналу</string>
+  <string name="enable_firewall_log_service">Увімкнути службу журналу</string>
   <string name="showlog_title">Журнали брандмауера</string>
+  <string name="showlog_service_summary">Вмикання покаже повідомлення, коли блокується з\'єднання </string>
   <string name="enable_log">Увімкнути журнал</string>
   <string name="disable_log">Вимкнути журнал</string>
   <string name="log_disabled">Журнал вимкнено</string>
@@ -120,6 +122,7 @@
   <string name="no_log">Журналу є порожнім</string>
   <string name="LogAppName">Назва програми</string>
   <string name="LogPackBlock">Всього заблокованих пакетів</string>
+  <string name="blocked">AFWall + заблоковані:</string>
   <string name="refresh">Оновити</string>
   <string name="mp_prefs_title">Налаштування кількох профілів</string>
   <string name="custom_title1">Власне ім\'я для типового профілю</string>
@@ -170,6 +173,8 @@
   <string name="switch_ipv4">Перемкнути на правила IPV4</string>
   <string name="sec_prefs_title">Налаштування безпеки</string>
   <string name="usePattern">Використовувати графічний ключ замість паролю</string>
+  <string name="stealthMode">Невидимий режим на шаблоні</string>
+  <string name="patternMaxTry">Максималье число спроб</string>
   <string name="resetPattern">Ви хочете очистити графічний ключ блокування?</string>
   <string name="enable_device_admin">Адміністратор пристрою</string>
   <string name="device_admin_enabled">AFWall + Адміністратор увімкнено</string>
@@ -202,8 +207,8 @@
   <string name="Donate">Пожертва</string>
   <string name="multi_apply_rules">Застосувати правила при перемиканні профілю</string>
   <string name="multi_apply_rules_info">Це завантажить і застосує правила при перемиканню профілю</string>
-  <string name="multi_user_title">Підтримка кількох користувачів</string>
-  <string name="multi_user_summary">Увімкнути підтримку декількох користувачів на планшеті Андроїд</string>
+  <string name="multi_user_title">Увімкнути підтримку декількох користувачів</string>
+  <string name="multi_user_summary">Вмикає підтримку декількох користувачів android на планшеті (працює тільки в режимі чорний список)</string>
   <string name="device_admin_desc">Додаткова безпека - заборона вилучення AFWall+</string>
   <string name="traffic_detail_title">Подробиці трафіку</string>
   <string name="uploaded">Відвантажено</string>
@@ -230,8 +235,11 @@
   <string name="showFilter">Показати параметр фільтру</string>
   <string name="showfilter_summary_on">У головному вікні буде показано параметри фільтру.</string>
   <string name="showfilter_summary_off">Параметр фільтру - прихований</string>
-  <string name="enable_dns">Увімкнути</string>
-  <string name="disable_dns">Вимкнути</string>
+  <string name="enable_dns">Увімкнути DNS за допомогою netd</string>
+  <string name="disable_dns">Вимкнути DNS за допомогою netd</string>
   <string name="dns_proxy_title">Проксі-сервер DNS</string>
   <string name="dns_proxy_summary">Параметр проксі-сервера DNS була доданий для підтримки DNS-запитів через netd на JB 4.3+. Його вимкнення буде блокувати Інтернет на Android 4.3+</string>
+  <string name="tasker_lable">AFWall + втулка Tasker </string>
+  <string name="enable">Увімкнути</string>
+  <string name="disable">Вимкнути</string>
 </resources>

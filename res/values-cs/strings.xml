@@ -92,7 +92,6 @@
   <string name="remove_initd">Úspěšně odebrán spouštěcí skript</string>
   <string name="unable_remove_initd">Nepodařilo se odebrat spouštěcí skript AFWall+</string>
   <string name="widget_disable_fail">Nelze zakázat firewall - definované heslo!</string>
-  <string name="widget_label_status">AFWall+ přepínač/stav</string>
   <string name="widget_label_settings">AFWall + nastavení</string>
   <string name="color_pick">Stiskněte barvu pro výběr</string>
   <string name="import_rules_droidwall">Importovat pravidla DW</string>
@@ -106,7 +105,10 @@
   <string name="export_logs_fail">Export na SD kartu selhal!</string>
   <string name="export_to_sd">Exportovat na SD kartu</string>
   <string name="enable_firewall_log">Povolit protokolování firewallu</string>
+  <string name="enable_firewall_log_service">Zapnout logovací službu</string>
+  <string name="enable_firewall_log_service">Zapnout logovací službu</string>
   <string name="showlog_title">Protokol firewallu</string>
+  <string name="showlog_service_summary">Povolením se zobrazí zprávy když jsou připojení zablokovány </string>
   <string name="enable_log">Povolit protokolování</string>
   <string name="disable_log">Vypnout protokolování</string>
   <string name="log_disabled">Protokol vypnut</string>
@@ -121,6 +123,7 @@
   <string name="no_log">Protokol je prázdný</string>
   <string name="LogAppName">Název aplikace</string>
   <string name="LogPackBlock">Celkový počet zablokovaných paketů</string>
+  <string name="blocked">AFWall+ blokované :</string>
   <string name="refresh">Aktualizovat</string>
   <string name="mp_prefs_title">Předvolby profilů</string>
   <string name="custom_title1">Vlastní název pro výchozí profil</string>
@@ -171,6 +174,8 @@
   <string name="switch_ipv4">Přepnout pravidla IPv4</string>
   <string name="sec_prefs_title">Bezpečnostní předvolby</string>
   <string name="usePattern">Použít uzamykací gesto místo hesla</string>
+  <string name="stealthMode">Vzor v utajeném režimu</string>
+  <string name="patternMaxTry">Maximum počet pokusů</string>
   <string name="resetPattern">Chcete obnovit odemknutí gestem ?</string>
   <string name="enable_device_admin">Správce zařízení</string>
   <string name="device_admin_enabled">AFWall+ Správce zařízení povolen</string>
@@ -203,8 +208,8 @@
   <string name="Donate">Přispět</string>
   <string name="multi_apply_rules">Aplikovat pravidla na přepínač profilů</string>
   <string name="multi_apply_rules_info">Toto načte a aplikuje pravidla na přepínatelný profil</string>
-  <string name="multi_user_title">Podpora více uživatelů</string>
-  <string name="multi_user_summary">Povolí podporu více uživatelů androidu na tabletu</string>
+  <string name="multi_user_title">Povolit podporu více uživatelů</string>
+  <string name="multi_user_summary">Povolit pro podporu více uživatelů v androidu na tabletu(funkční pouze v režimu blacklist)</string>
   <string name="device_admin_desc">Dodatečné zabezpečení - zabrání AFWall+ odinstalovat</string>
   <string name="traffic_detail_title">Podrobnosti o provozu</string>
   <string name="uploaded">Nahráno</string>
@@ -231,8 +236,11 @@
   <string name="showFilter">Zobrazit možnosti filtru</string>
   <string name="showfilter_summary_on">Možnosti filtru se zobrazí v hlavním zobrazení.</string>
   <string name="showfilter_summary_off">Možnosti filtru jsou skryté</string>
-  <string name="enable_dns">Povolit</string>
-  <string name="disable_dns">Zakázat</string>
+  <string name="enable_dns">Povolit DNS přes netd</string>
+  <string name="disable_dns">Zakázat DNS přes netd</string>
   <string name="dns_proxy_title">DNS Proxy</string>
   <string name="dns_proxy_summary">Volba DNS proxy byla přidána pro podporu vyhledávání DNS přes netd na JB 4.3+. Zákazem zablokujete internet na Android 4.3+</string>
+  <string name="tasker_lable">AFWall+ Tasker Plugin</string>
+  <string name="enable">Povolit</string>
+  <string name="disable">Zakázat</string>
 </resources>

@@ -91,7 +91,6 @@
   <string name="remove_initd">Berhasil menghapus skrip permulaan</string>
   <string name="unable_remove_initd">Gagal menghapus skrip permulaan</string>
   <string name="widget_disable_fail">Gagal mematikan firewall. ber-password!</string>
-  <string name="widget_label_status">Status AFWall+</string>
   <string name="widget_label_settings">Pengaturan AFWall+</string>
   <string name="color_pick">Sentuh pd warna untuk menerapkan</string>
   <string name="import_rules_droidwall">Impor aturan DW</string>
@@ -105,7 +104,10 @@
   <string name="export_logs_fail">Gagal mengekspor ke SD!</string>
   <string name="export_to_sd">Ekspor ke SD Card</string>
   <string name="enable_firewall_log">Hidupkan Log firewall</string>
+  <string name="enable_firewall_log_service">Hidupkan layanan log</string>
+  <string name="enable_firewall_log_service">Hidupkan layanan log</string>
   <string name="showlog_title">Log Firewall</string>
+  <string name="showlog_service_summary">Mengaktifkan ini akan menampilkan pesan saat koneksi ditolak </string>
   <string name="enable_log">Hidupkan Log</string>
   <string name="disable_log">Matikan Log</string>
   <string name="log_disabled">Log Dimatikan</string>
@@ -120,6 +122,7 @@
   <string name="no_log">Log kosong</string>
   <string name="LogAppName">Nama aplikasi</string>
   <string name="LogPackBlock">Total Paket yg Diblok</string>
+  <string name="blocked">AFWall+ Diblok:</string>
   <string name="refresh">Segarkan</string>
   <string name="mp_prefs_title">Preferensi profil ganda</string>
   <string name="custom_title1">Atur nama profil default</string>
@@ -170,6 +173,8 @@
   <string name="switch_ipv4">ganti aturan IPV4</string>
   <string name="sec_prefs_title">Preferensi keamanan</string>
   <string name="usePattern">Gunakan pola pengunci daripada password</string>
+  <string name="stealthMode">Mode pola tak terlihat</string>
+  <string name="patternMaxTry">Maksimal percobaan</string>
   <string name="resetPattern">Anda ingin mengatur ulang pola pengunci ?</string>
   <string name="enable_device_admin">Administrator Perangkat</string>
   <string name="device_admin_enabled">Administrator Perangkat AFWall+ dihidupkan</string>
@@ -202,8 +207,8 @@
   <string name="Donate">Donasi</string>
   <string name="multi_apply_rules">terapkan aturan pd pergantian profil</string>
   <string name="multi_apply_rules_info">Akan memuat dan menerapkan aturan pd pergantian profil</string>
-  <string name="multi_user_title">Support Pengguna ganda</string>
-  <string name="multi_user_summary">Aktifkan dukungan pengguna android ganda pada tablet</string>
+  <string name="multi_user_title">Aktifkan dukungan banyak pengguna</string>
+  <string name="multi_user_summary">Aktifkan untuk mendukung banyak pengguna pada tablet android (hanya bekerja pada daftar hitam)</string>
   <string name="device_admin_desc">Tambahan keamanan - Mencegah penghapusan AFWall+</string>
   <string name="traffic_detail_title">Detil Trafik</string>
   <string name="uploaded">Diunggah</string>
@@ -230,8 +235,11 @@
   <string name="showFilter">Tampilkan menu penyaringan</string>
   <string name="showfilter_summary_on">Menu penyaringan akan ditampilkan pd menu utama</string>
   <string name="showfilter_summary_off">Sembunyikan menu penyaringan</string>
-  <string name="enable_dns">Hidupkan</string>
-  <string name="disable_dns">Matikan</string>
+  <string name="enable_dns">Aktifkan DNS dari netd</string>
+  <string name="disable_dns">Matikan DNS dari netd</string>
   <string name="dns_proxy_title">Proxy DNS</string>
   <string name="dns_proxy_summary">Proxy DNS dihidupkan agar dapat mengintip DNS melalui netd pada JB 4.3+. Mematikan ini akan mematikan internet pd Android 4.3+</string>
+  <string name="tasker_lable">Plugin Tugas AFWall+</string>
+  <string name="enable">Aktifkan</string>
+  <string name="disable">Matikan</string>
 </resources>

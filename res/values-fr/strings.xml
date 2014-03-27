@@ -91,7 +91,6 @@
   <string name="remove_initd">Script de démarrage supprimé avec succès</string>
   <string name="unable_remove_initd">Impossible de supprimer le script de démarrage AFWall+</string>
   <string name="widget_disable_fail">Impossible de désactiver le pare-feu - mot de passe défini !</string>
-  <string name="widget_label_status">Activer/Désactiver/Statut AFWall+</string>
   <string name="widget_label_settings">Paramètres AFWall+</string>
   <string name="color_pick">Appuyez sur la couleur à appliquer</string>
   <string name="import_rules_droidwall">Importer les règles DW</string>
@@ -105,7 +104,10 @@
   <string name="export_logs_fail">L\'exportation vers la carte SD a échoué !</string>
   <string name="export_to_sd">Exporter vers la carte SD</string>
   <string name="enable_firewall_log">Activer les journaux du pare-feu</string>
+  <string name="enable_firewall_log_service">Activer la journalisation</string>
+  <string name="enable_firewall_log_service">Activer la journalisation</string>
   <string name="showlog_title">Journaux du pare-feu</string>
+  <string name="showlog_service_summary">Cocher pour afficher des messages quand les connexions sont bloquées </string>
   <string name="enable_log">Activer le journal</string>
   <string name="disable_log">Désactiver le journal</string>
   <string name="log_disabled">Journal désactivé</string>
@@ -120,6 +122,7 @@
   <string name="no_log">Le journal est vide</string>
   <string name="LogAppName">Nom de l\'application</string>
   <string name="LogPackBlock">Total des paquets bloqués</string>
+  <string name="blocked">AFWall+ Bloqué :</string>
   <string name="refresh">Actualiser</string>
   <string name="mp_prefs_title">Préférences des profils multiples</string>
   <string name="custom_title1">Nom personnalisé pour Profil par défaut</string>
@@ -156,7 +159,7 @@
   <string name="builtin_ipt">iptables intégré</string>
   <string name="auto">Auto</string>
   <string name="disable_toaster">Désactiver les toasts de Tasker</string>
-  <string name="disableTasterSummary">Ceci désactivera les messages toast pour le plugin de Tasker</string>
+  <string name="disableTasterSummary">Cocher pour désactiver les messages toast du plugin Tasker</string>
   <string name="enable_tasker">Activer AFWall+</string>
   <string name="disable_tasker">Désactiver AFWall+</string>
   <string name="tasker_apply">Tasker : application des règles de pare-feu</string>
@@ -170,6 +173,8 @@
   <string name="switch_ipv4">Passer aux règles IPV4</string>
   <string name="sec_prefs_title">Préférences de sécurité</string>
   <string name="usePattern">Utiliser le verrouillage par motif au lieu du mot de passe</string>
+  <string name="stealthMode">Motif en mode invisible</string>
+  <string name="patternMaxTry">Nombre maximal de tentatives</string>
   <string name="resetPattern">Voulez-vous réinitialiser le motif de verrouillage ?</string>
   <string name="enable_device_admin">Administrateur de l\'appareil</string>
   <string name="device_admin_enabled">Mode Administrateur AFWall+ activé</string>
@@ -202,8 +207,8 @@
   <string name="Donate">Faire un don</string>
   <string name="multi_apply_rules">Appliquer les règles lors du changement de profil</string>
   <string name="multi_apply_rules_info">Chargement et application des règles lors du changement de profil</string>
-  <string name="multi_user_title">Support multi-utilisateurs</string>
-  <string name="multi_user_summary">Activer la prise en charge multi-utilisateurs Android sur une tablette</string>
+  <string name="multi_user_title">Activer le mode multi-utilisateur</string>
+  <string name="multi_user_summary">Cocher pour activer le mode multi-utilisateur Android sur tablette (fonctionne uniquement en mode liste noire)</string>
   <string name="device_admin_desc">Sécurité supplémentaire - Empêcher la désinstallation de AFWall+</string>
   <string name="traffic_detail_title">Détails du trafic</string>
   <string name="uploaded">Envoyé</string>
@@ -230,8 +235,11 @@
   <string name="showFilter">Afficher l\'option de filtrage</string>
   <string name="showfilter_summary_on">L\'option de filtrage sera affichée dans la vue principale.</string>
   <string name="showfilter_summary_off">L\'option de filtrage est masquée</string>
-  <string name="enable_dns">Activer</string>
-  <string name="disable_dns">Désactiver</string>
+  <string name="enable_dns">Activer DNS via netd</string>
+  <string name="disable_dns">Désactiver DNS via netd</string>
   <string name="dns_proxy_title">Proxy DNS</string>
   <string name="dns_proxy_summary">L\'option Proxy DNS a été ajoutée pour effectuer les recherches DNS via netd sur JB 4.3+. Désactiver ceci peut bloquer Internet sur Android 4.3+</string>
+  <string name="tasker_lable">Plugin Tasker pour AFWall+</string>
+  <string name="enable">Activer</string>
+  <string name="disable">Désactiver</string>
 </resources>

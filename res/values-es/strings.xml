@@ -91,7 +91,6 @@
   <string name="remove_initd">Eliminado correctamente el script de arranque</string>
   <string name="unable_remove_initd">No se puede eliminar el script de arranque de AFWall+</string>
   <string name="widget_disable_fail">No es posible desactivar el firewall - ¡tiene contraseña!</string>
-  <string name="widget_label_status">AFWall+ Interruptor/Estado</string>
   <string name="widget_label_settings">AFWall+ Configuración</string>
   <string name="color_pick">Pulsa en el color que quieres aplicar</string>
   <string name="import_rules_droidwall">Importar reglas de DroidWall</string>
@@ -105,7 +104,10 @@
   <string name="export_logs_fail">¡La exportación a la SD ha fallado!</string>
   <string name="export_to_sd">Exportar a la tarjeta SD</string>
   <string name="enable_firewall_log">Activar el registro del cortafuegos</string>
+  <string name="enable_firewall_log_service">Encender el servicio de registro</string>
+  <string name="enable_firewall_log_service">Encender el servicio de registro</string>
   <string name="showlog_title">Registros del cortafuegos</string>
+  <string name="showlog_service_summary">Activar esto mostrará un mensaje cuando se bloqueen conexiones </string>
   <string name="enable_log">Activar el registro</string>
   <string name="disable_log">Desactivar el registro</string>
   <string name="log_disabled">Registro desactivado</string>
@@ -120,6 +122,7 @@
   <string name="no_log">El registro está vacío</string>
   <string name="LogAppName">Nombre de la aplicación</string>
   <string name="LogPackBlock">Total de paquetes bloqueados</string>
+  <string name="blocked">AFWall + bloqueado:</string>
   <string name="refresh">Actualizar</string>
   <string name="mp_prefs_title">Preferencias del perfil múltiple</string>
   <string name="custom_title1">Nombre personalizado para el perfil predeterminado</string>
@@ -170,6 +173,8 @@
   <string name="switch_ipv4">Cambiar a reglas IPV4</string>
   <string name="sec_prefs_title">Preferencias de seguridad</string>
   <string name="usePattern">Utilizar un patrón de bloqueo en lugar de contraseña</string>
+  <string name="stealthMode">Modo invisible en el patrón</string>
+  <string name="patternMaxTry">Número máximo de intentos</string>
   <string name="resetPattern">¿Quieres restablecer el patrón de bloqueo?</string>
   <string name="enable_device_admin">Administrador de dispositivo</string>
   <string name="device_admin_enabled">Administrador de dispositivos AFWall+ activado</string>
@@ -202,8 +207,8 @@
   <string name="Donate">Donar</string>
   <string name="multi_apply_rules">Aplicar las reglas al cambiar de perfil</string>
   <string name="multi_apply_rules_info">Esto cargará y aplicará las reglas al cambiar a otro perfil</string>
-  <string name="multi_user_title">Soporte multiusuario</string>
-  <string name="multi_user_summary">Permite soporte multi-usuario Android en tabletas</string>
+  <string name="multi_user_title">Activar compatibilidad multiusiario</string>
+  <string name="multi_user_summary">Activar la compatibilidad multiusuario android en tableta (solo funciona en modo lista negra)</string>
   <string name="device_admin_desc">Seguridad adicional - Impedir la desinstalación de AFWall+</string>
   <string name="traffic_detail_title">Detalles del tráfico</string>
   <string name="uploaded">Cargado</string>
@@ -230,8 +235,11 @@
   <string name="showFilter">Mostrar la opción de filtro</string>
   <string name="showfilter_summary_on">Las opciones de filtro se mostrarán en la ventana principal.</string>
   <string name="showfilter_summary_off">La opción de filtro está oculta</string>
-  <string name="enable_dns">Activar</string>
-  <string name="disable_dns">Desactivar</string>
+  <string name="enable_dns">Activar DNS vía netd</string>
+  <string name="disable_dns">Desactivar DNS vía netd</string>
   <string name="dns_proxy_title">Proxy DNS</string>
   <string name="dns_proxy_summary">La opción proxy DNS ha sido añadida para la compatibilidad con búsquedas DNS vía netd en JB 4.3+. Desactivar esto bloqueará internet en Android 4.3+</string>
+  <string name="tasker_lable">AFWall + Plugin de Tasker</string>
+  <string name="enable">Activar</string>
+  <string name="disable">Desactivar</string>
 </resources>
