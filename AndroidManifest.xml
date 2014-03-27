@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="154"
-    android:versionName="1.3.0-BETA2" >
+    android:versionCode="155"
+    android:versionName="1.3.0-BETA3" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -208,7 +208,6 @@
         <receiver
             android:name="dev.ukanth.ufirewall.plugin.FireReceiver"
             android:exported="true"
-            android:process=":background"
             tools:ignore="ExportedReceiver" >
             <!-- this Intent filter allows the plug-in to discovered by Locale -->
             <intent-filter>

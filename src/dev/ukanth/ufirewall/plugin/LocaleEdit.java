@@ -87,7 +87,8 @@ public class LocaleEdit extends Activity {
 					case 3: button2.setChecked(true); break;
 					case 4: button3.setChecked(true); break;
 					case 5: button4.setChecked(true); break;
-					default:
+					}
+					if(id > 5) {
 						int diff = CUSTOM_PROFILE_ID + (id - 6);
 						RadioButton btn = (RadioButton) findViewById(diff);
 						if(btn !=null) {

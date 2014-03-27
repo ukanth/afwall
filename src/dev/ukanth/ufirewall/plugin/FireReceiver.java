@@ -12,9 +12,6 @@
 
 package dev.ukanth.ufirewall.plugin;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,14 +19,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
-import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.Log;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 
@@ -90,47 +82,58 @@ public final class FireReceiver extends BroadcastReceiver
     		final Message msg = new Message();
         	if(index != null){
         		int id = Integer.parseInt(index);
-        		if(id == 0) {
-	    			if (Api.isEnabled(context))  {
-	    				if(applyRules(context,msg,toaster)){
-							Api.setEnabled(context, true, false);
-							msg.arg1 = R.string.toast_enabled;
+        		switch(id){
+        		case 0:
+        			if(applyRules(context,msg,toaster)){
+						Api.setEnabled(context, true, false);
+					}
+					break;
+        		case 1:
+        			if(oldPwd.length() == 0 && newPwd.length() == 0){
+						if (Api.purgeIptables(context, false)) {
+							msg.arg1 = R.string.toast_disabled;
+							toaster.sendMessage(msg);
+							Api.setEnabled(context, false, false);
+						} else {
+							msg.arg1 = R.string.toast_error_disabling;
 							toaster.sendMessage(msg);
 						}
-	    			} 
-        		} else if (id == 1) {
-        			if (Api.isEnabled(context)) {
-        				if(oldPwd.length() == 0 && newPwd.length() == 0){
-            				boolean ret = Api.purgeIptables(context, false, new RootCommand()
-        					.setFailureToast(R.string.error_apply)
-        					.setCallback(new RootCommand.Callback() {
-        						@Override
-        						public void cbFunc(RootCommand state) {
-        							if (state.exitCode == 0) {
-        								Log.i(Api.TAG, "" + ": applied rules");
-        							} 
-        						}
-        					}));
-    		        		if (ret) {
-    		        			Api.setEnabled(context,  false,  true);
-    		        			msg.arg1 = R.string.tasker_disabled;
-    		        		}
-    		        	} else {
-    						msg.arg1 = R.string.widget_disable_fail;
-    					}
-        			} else {
-        				msg.arg1 = R.string.tasker_disabled;
-        			}
-        			toaster.sendMessage(msg);
-				}
-        		if(id > 1){
+					} else {
+						msg.arg1 = R.string.widget_disable_fail;
+						toaster.sendMessage(msg);
+					}
+					break;
+        		case 2:
         			if(multimode) {
-        				G.setProfile(multimode, (id-2));
+        				G.setProfile(true, 0);
+        			}
+					break;
+        		case 3:
+        			if(multimode) {
+        				G.setProfile(true, 1);
+        			}
+        			break;
+        		case 4:
+        			if(multimode) {
+        				G.setProfile(true, 2);
+        			}
+        		case 5:
+        			if(multimode) {
+        				G.setProfile(true, 3);
+        			}
+        			break;
+        		}
+        		if (id > 5 && multimode) {
+       				G.setProfile(true, (id-2));
+    			} 
+        		
+        		if(id > 1) {
+        			if(multimode) {
         				if (Api.isEnabled(context)) {
                 			if(!disableToasts){
                 				Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();	
                 			}
-                			if(applyRules(context, msg, toaster)) {
+                			if(applyProfileRules(context, msg, toaster)) {
                					msg.arg1 = R.string.tasker_profile_applied;
                					if(!disableToasts) toaster.sendMessage(msg);
                 			}
@@ -142,48 +145,40 @@ public final class FireReceiver extends BroadcastReceiver
         				msg.arg1 = R.string.tasker_muliprofile;
         				toaster.sendMessage(msg);
                 	}
+        			G.reloadPrefs();
         		}
         	} 
         }
     }
     
-    
-    private static void errorNotification(Context ctx) {
-		NotificationManager mNotificationManager =
-				(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-
-		// Artificial stack so that navigating backward leads back to the Home screen
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx)
-				.addParentStack(MainActivity.class)
-				.addNextIntent(new Intent(ctx, MainActivity.class));
-
-		Notification notification = new NotificationCompat.Builder(ctx)
-			.setContentTitle(ctx.getString(R.string.error_notification_title))
-			.setContentText(ctx.getString(R.string.error_notification_text))
-			.setTicker(ctx.getString(R.string.error_notification_ticker))
-			.setSmallIcon(R.drawable.widget_on)
-			.setAutoCancel(true)
-			.setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
-			.build();
-
-		mNotificationManager.notify(InterfaceTracker.ERROR_NOTIFICATION_ID, notification);
+    private boolean applyRules(Context context,Message msg, Handler toaster) {
+		boolean success = false;
+		if (Api.applySavedIptablesRules(context, false)) {
+			msg.arg1 = R.string.toast_enabled;
+			toaster.sendMessage(msg);
+			success = true;
+		} else {
+			msg.arg1 = R.string.toast_error_enabling;
+			toaster.sendMessage(msg);
+		}
+		return success;
 	}
- 
-    private boolean applyRules(final Context context,Message msg, Handler toaster) {
-    	boolean ret = Api.fastApply(context, new RootCommand()
+    
+    private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
+		boolean ret = Api.fastApply(context, new RootCommand()
 		.setFailureToast(R.string.error_apply)
 		.setCallback(new RootCommand.Callback() {
 			@Override
 			public void cbFunc(RootCommand state) {
 				if (state.exitCode == 0) {
-					Log.i(Api.TAG, "" + ": applied rules");
+					msg.arg1 = R.string.rules_applied;
 				} else {
 					// error details are already in logcat
-					Api.setEnabled(context,  false,  false);
-					errorNotification(context);
+					msg.arg1 = R.string.error_apply;
 				}
 			}
 		}));
 		return ret;
 	}
+    
 }

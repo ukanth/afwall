@@ -44,6 +44,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -76,7 +77,6 @@ import com.haibison.android.lockpattern.util.Settings;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
-import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
  
 /**
@@ -185,8 +185,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				addColumns(R.id.img_lan);
 			}
 
-			setupMultiProfile();
-			updateIconStatus();
+			/**/
 			
 			updateRadioFilter();
 	        
@@ -250,8 +249,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
 		
-		updateIconStatus();
-		
 		new RootCommand().setFailureToast(R.string.error_su)
 				.setReopenShell(true).run(getApplicationContext(), cmds);
 		
@@ -301,7 +298,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				mlocalList.add(profiles);
 			}
 			
-			int position = G.gPrefs.getInt("storedPosition", -1);
+			int position = G.storedPosition();
 			//something went wrong - No profiles but still it's set more. reset to default
 			if(!isAdditionalProfiles && position > 3) {
 				G.storedPosition(0);

@@ -279,16 +279,6 @@ public class ToggleWidgetActivity extends Activity {
 	}
 	
 	private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
-		boolean success = false;
-/*		if (Api.applySavedIptablesRules(context, false)) {
-			msg.arg1 = R.string.rules_applied;
-			toaster.sendMessage(msg);
-			success = true;
-		} else {
-			msg.arg1 = R.string.error_apply;
-			toaster.sendMessage(msg);
-		}*/
-		
 		boolean ret = Api.fastApply(context, new RootCommand()
 		.setFailureToast(R.string.error_apply)
 		.setCallback(new RootCommand.Callback() {
@@ -306,6 +296,8 @@ public class ToggleWidgetActivity extends Activity {
 		}));
 		return ret;
 	}
+	
+	
 }
 
 
