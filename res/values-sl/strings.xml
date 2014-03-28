@@ -91,7 +91,6 @@
   <string name="remove_initd">Zagonska skripta je bila uspešno odstranjena</string>
   <string name="unable_remove_initd">Ne morem odstraniti zagonske skripte AFWall+</string>
   <string name="widget_disable_fail">Ne morem izključiti požarnega zidu - zaščiteno z geslom!</string>
-  <string name="widget_label_status">Vklop/stanje AFWall+</string>
   <string name="widget_label_settings">Nastavitve AFWall+</string>
   <string name="color_pick">Za izbiro pritisnite na barvo</string>
   <string name="import_rules_droidwall">Uvozi pravila DW</string>
@@ -105,7 +104,10 @@
   <string name="export_logs_fail">Izvoz na kartico SD neuspešen!</string>
   <string name="export_to_sd">Izvozi na kartico SD</string>
   <string name="enable_firewall_log">Dnevnik aktivnosti</string>
+  <string name="enable_firewall_log_service">Beleženje</string>
+  <string name="enable_firewall_log_service">Beleženje</string>
   <string name="showlog_title">Dnevnik aktivnosti</string>
+  <string name="showlog_service_summary">Vklopi prikaz obvestil ob blokadi povezave</string>
   <string name="enable_log">Vključi</string>
   <string name="disable_log">Izključi</string>
   <string name="log_disabled">Dnevnik aktivnosti onemogočen</string>
@@ -120,6 +122,7 @@
   <string name="no_log">Dnevnik pravil prazen</string>
   <string name="LogAppName">Ime aplikacije</string>
   <string name="LogPackBlock">Skupaj blokiranih paketov</string>
+  <string name="blocked">AFWall+ je blokiran:</string>
   <string name="refresh">Osveži</string>
   <string name="mp_prefs_title">Večprofilne nastavitve</string>
   <string name="custom_title1">Ime po meri za Osnovni profil</string>
@@ -170,6 +173,8 @@
   <string name="switch_ipv4">Vklopi pravila IPv4</string>
   <string name="sec_prefs_title">Varnostne nastavitve</string>
   <string name="usePattern">Vzorec za odklepanje</string>
+  <string name="stealthMode">Prikrit vzorec</string>
+  <string name="patternMaxTry">Največje število poskusov</string>
   <string name="resetPattern">Ali zares želite ponastaviti vzorec za odklepanje?</string>
   <string name="enable_device_admin">Skrbništvo naprave</string>
   <string name="device_admin_enabled">AFWall+ dodan med skrbnike naprave</string>
@@ -203,7 +208,7 @@
   <string name="multi_apply_rules">Zamenjava profila</string>
   <string name="multi_apply_rules_info">Uveljavi pravila Iptables ob vsaki zamenjavi profila</string>
   <string name="multi_user_title">Večuporabniški način</string>
-  <string name="multi_user_summary">Vklopi podporo za androidni večuporabniški način na tablici</string>
+  <string name="multi_user_summary">Vklopi podporo za androidni večuporabniški način na tablici (deluje samo s črnim seznamom)</string>
   <string name="device_admin_desc">Dodatna varnostna nastavitev - Prepreči odstranitev AFWall+</string>
   <string name="traffic_detail_title">Podatki o prometu</string>
   <string name="uploaded">Preneseno iz naprave</string>
@@ -230,8 +235,11 @@
   <string name="showFilter">Filtriranje</string>
   <string name="showfilter_summary_on">V glavnem pogledu bodo prikazane možnosti filtriranja.</string>
   <string name="showfilter_summary_off">Možnosti filtriranja so skrite</string>
-  <string name="enable_dns">Vključi</string>
-  <string name="disable_dns">Izključi</string>
+  <string name="enable_dns">Vklopi DNS preko netd</string>
+  <string name="disable_dns">Izklopi DNS preko netd</string>
   <string name="dns_proxy_title">DNS proksi</string>
   <string name="dns_proxy_summary">Dodana je bila izbira DNS proksi za podporo poizvedbam DNS prek netd na napravah JB 4.3+. Brez tega bo internet na različicah Androida 4.3+ blokiran.</string>
+  <string name="tasker_lable">Vtičnik Tasker za AFWall+</string>
+  <string name="enable">Vklopi</string>
+  <string name="disable">Izklopi</string>
 </resources>
