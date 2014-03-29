@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="155"
-    android:versionName="1.3.0-BETA3" >
+    android:versionCode="156"
+    android:versionName="1.3.0" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
