@@ -104,10 +104,10 @@
   <string name="export_logs_fail">Export zu SD fehlgeschlagen!</string>
   <string name="export_to_sd">Auf SD-Karte exportieren</string>
   <string name="enable_firewall_log">Aktiviere Firewall-Logs</string>
-  <string name="enable_firewall_log_service">Schalte Log-service an</string>
-  <string name="enable_firewall_log_service">Schalte Log-service an</string>
+  <string name="enable_firewall_log_service">Protokolldienst einschalten</string>
+  <string name="enable_firewall_log_service">Protokolldienst einschalten</string>
   <string name="showlog_title">Firewall Log</string>
-  <string name="showlog_service_summary">Wenn dies aktiviert ist zeigt es Informationen wenn Verbindungen geblockt werden </string>
+  <string name="showlog_service_summary">Wenn dies aktiviert ist zeigt es Informationen, wenn Verbindungen geblockt werden </string>
   <string name="enable_log">Log aktivieren</string>
   <string name="disable_log">Log deaktivieren</string>
   <string name="log_disabled">Protokollierung deaktiviert</string>
@@ -173,8 +173,8 @@
   <string name="switch_ipv4">Wechsle IPV4 Regeln</string>
   <string name="sec_prefs_title">Sicherheit</string>
   <string name="usePattern">Sperrmuster anstelle Passwort</string>
-  <string name="stealthMode">Verstecktes-Pattern-Modus</string>
-  <string name="patternMaxTry">Maximale Anzahl der Versuche</string>
+  <string name="stealthMode">Versteckter Pattern-Modus</string>
+  <string name="patternMaxTry">Maximale Versuche</string>
   <string name="resetPattern">Möchten Sie das Sperrmuster zurücksetzen ?</string>
   <string name="enable_device_admin">Geräte-Admin</string>
   <string name="device_admin_enabled">AFWall+ Geräte-Admin aktiviert</string>
@@ -207,8 +207,8 @@
   <string name="Donate">Spenden</string>
   <string name="multi_apply_rules">Regeln bei Profilwechsel anwenden</string>
   <string name="multi_apply_rules_info">Dies wird die Regeln beim Profilwechsel laden und anwenden</string>
-  <string name="multi_user_title">Aktiviere Multi-user Unterstützung</string>
-  <string name="multi_user_summary">Aktivieren um Android multi-user auf einem Tablet zu unterstützen ( funktoniert nur mit blacklist Modus)</string>
+  <string name="multi_user_title">Multi-User-Unterstützung aktivieren</string>
+  <string name="multi_user_summary">Auf einem Tablet PC (funktioniert nur im Blacklist Modus) Android Multi-User Unterstützung aktivieren</string>
   <string name="device_admin_desc">Zusätzliche Sicherheit - Verhindere AFWall+ Deinstallation</string>
   <string name="traffic_detail_title">Datenmenge-Details</string>
   <string name="uploaded">Hochgeladen</string>
@@ -235,8 +235,8 @@
   <string name="showFilter">Filteroption anzeigen</string>
   <string name="showfilter_summary_on">Filteroptionen werden in der Hauptansicht angezeigt.</string>
   <string name="showfilter_summary_off">Filteroption ist ausgeblendet</string>
-  <string name="enable_dns">Aktiviere DNS über netd</string>
-  <string name="disable_dns">Deaktiviere DNS über netd</string>
+  <string name="enable_dns">DNS über netd aktivieren</string>
+  <string name="disable_dns">DNS über netd deaktivieren</string>
   <string name="dns_proxy_title">DNS-Proxy</string>
   <string name="dns_proxy_summary">DNS-Proxy Option wurde hinzugefügt, um DNS-Lookups über Netd auf JB 4.3+ zu unterstützen. Deaktiviert unter Android 4.3+ wird das Internet blockiert</string>
   <string name="tasker_lable">AFWall+ Tasker Plugin</string>
