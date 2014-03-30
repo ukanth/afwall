@@ -61,7 +61,7 @@ public class StatusWidget extends AppWidgetProvider {
 			final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 			
-			if (!enabled && oldPwd.length() == 0 && newPwd.length() == 0) {
+			if (!enabled && (oldPwd.length() != 0 || newPwd.length() != 0)) {
 				Toast.makeText(context,R.string.widget_disable_fail,Toast.LENGTH_SHORT).show();
 				return;
 			}

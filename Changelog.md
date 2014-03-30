@@ -4,18 +4,22 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
-Version 1.3.0-BETA 1
+Version 1.3.0.1
+* Old toggle widget is back - Hate you guys :)
+* "Allow All Application" option is back - Again hate you guys :)
+
+Version 1.3.0
 
 * New Widget with support for multiple profiles (single widget)
 * Updated lockpattern - stealth mode/max retry count
-* DNS Proxy to Preferences (By default UDP 53 will be blocked for devices running on android < 4.3)
+* DNS Proxy to Preferences (By default UDP 53 will be blocked on <4.3)
 * More Log information (PORT/PROTOCOL)
 * Fixed application list load performance issues
-* Fixed bug with preferences and filter
+* Fixed bug in preferences
 * Support for Wifi-only tab (auto hide data column)
-* Block packet notification (experimental!) - Log service
-* New Improved Icon!
-* User reported bug fixes.
+* Block packet notification (exp!) - Log service
+* New Icon,User reported bug fixes including tasker plugin
+* Translations updated - Indonesian (thx mirulumam)
 
 Version 1.2.9
 
