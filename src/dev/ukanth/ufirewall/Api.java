@@ -334,16 +334,25 @@ public final class Api {
 			}*/
 			
 			String pref = G.dns_proxy();
-			if (pref.equals("auto")) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
+			
+			if(whitelist) {
+				if (pref.equals("auto")) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+						addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
+					} else {
+						addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");	
+					}
+				} else if(pref.equals("disable")){
+					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
 				} else {
-					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");	
+					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
 				}
-			} else if(pref.equals("disable")){
-				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
 			} else {
-				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
+				if(pref.equals("disable")){
+					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
+				} else if (pref.equals("enable")) {
+					addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  " -j RETURN");
+				}
 			}
 
 			// NTP service runs as "system" user

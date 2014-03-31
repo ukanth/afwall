@@ -222,21 +222,31 @@ public class ToggleWidgetActivity extends Activity {
 				if( i < 7) {
 					switch(i){
 					case 1: 
-						if(applyRules(context,msg,toaster)){
+						if(applyProfileRules(context,msg,toaster)){
 							Api.setEnabled(context, true, false);
 						}
 						break;
 					case 2:
 						//validation, check for password
 						if(oldPwd.length() == 0 && newPwd.length() == 0){
-							if (Api.purgeIptables(context, false)) {
-								msg.arg1 = R.string.toast_disabled;
-								toaster.sendMessage(msg);
-								Api.setEnabled(context, false, false);
-							} else {
-								msg.arg1 = R.string.toast_error_disabling;
-								toaster.sendMessage(msg);
-							}
+							Api.purgeIptables(context, true, new RootCommand()
+							.setSuccessToast(R.string.toast_disabled)
+							.setFailureToast(R.string.toast_error_disabling)
+							.setReopenShell(true)
+							.setCallback(new RootCommand.Callback() {
+								public void cbFunc(RootCommand state) {
+									
+									if (state.exitCode == 0) {
+										msg.arg1 = R.string.toast_disabled;
+										toaster.sendMessage(msg);
+										Api.setEnabled(context, false, false);
+									} else {
+										// error details are already in logcat
+										msg.arg1 = R.string.toast_error_disabling;
+										toaster.sendMessage(msg);
+									}
+								}
+							}));
 						} else {
 							msg.arg1 = R.string.widget_disable_fail;
 							toaster.sendMessage(msg);
@@ -256,6 +266,7 @@ public class ToggleWidgetActivity extends Activity {
 						break;
 					}
 					if(i > 2) {
+						G.reloadPrefs();
 						applyProfileRules(context,msg,toaster);
 					}
 				}
@@ -263,26 +274,12 @@ public class ToggleWidgetActivity extends Activity {
 		}.start();
 	}
 	
-
-	
-	private boolean applyRules(Context context,Message msg, Handler toaster) {
-		boolean success = false;
-		if (Api.applySavedIptablesRules(context, false)) {
-			msg.arg1 = R.string.toast_enabled;
-			toaster.sendMessage(msg);
-			success = true;
-		} else {
-			msg.arg1 = R.string.toast_error_enabling;
-			toaster.sendMessage(msg);
-		}
-		return success;
-	}
 	
 	private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
-		boolean ret = Api.fastApply(context, new RootCommand()
+		boolean ret = Api.applySavedIptablesRules(context, true, new RootCommand()
 		.setFailureToast(R.string.error_apply)
+		.setReopenShell(true)
 		.setCallback(new RootCommand.Callback() {
-			@Override
 			public void cbFunc(RootCommand state) {
 				if (state.exitCode == 0) {
 					msg.arg1 = R.string.rules_applied;

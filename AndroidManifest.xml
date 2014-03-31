@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="159"
-    android:versionName="1.3.0.1" >
+    android:versionCode="160"
+    android:versionName="1.3.0.2" >
 
     <!-- Android 2.2 up to 4.x -->
     <uses-sdk
@@ -151,7 +151,17 @@
             </intent-filter>
         </receiver>
         
-        
+         <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/onoff_widget" />
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
+                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
+            </intent-filter>
+        </receiver>
          <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" android:label="@string/widget_label_settings">
             <meta-data
                 android:name="android.appwidget.provider"
@@ -164,17 +174,7 @@
             </intent-filter>
         </receiver>
         
-          <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/onoff_widget" />
-
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
-                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
-            </intent-filter>
-        </receiver>
+         
 
         <activity
 		    android:name="com.haibison.android.lockpattern.LockPatternActivity"
