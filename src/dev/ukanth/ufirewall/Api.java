@@ -2090,7 +2090,7 @@ public final class Api {
 		}
 	}
 	
-	public static void sendNotification(Context context,String title, String message) {
+	/*public static void sendNotification(Context context,String title, String message) {
 
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -2114,7 +2114,7 @@ public final class Api {
 		
 		mNotificationManager.notify(HELLO_ID, builder.build());
 
-	}
+	}*/
 	
 	public static void updateLanguage(Context context, String lang) {
 	    if (!"".equals(lang)) {
