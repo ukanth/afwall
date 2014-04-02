@@ -44,7 +44,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -90,6 +89,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private TextView mSelected;
     private String[] mLocations;
 	private Menu mainMenu;
+	
+	private static final int SHOW_PREFERENCE_RESULT = 10012;
 	
 	public boolean isOnPause = false;
 	
@@ -860,7 +861,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 	private void showPreferences() {
 		Intent i = new Intent(this, PreferencesActivity.class);
-		startActivityForResult(i, 2);
+		startActivityForResult(i, SHOW_PREFERENCE_RESULT);
 		//startActivity(new Intent(this, PrefsActivity.class));
 	}
 	
@@ -991,56 +992,55 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
-		if (requestCode == 2) {
-			if(resultCode == RESULT_OK){
-				Intent intent = getIntent();
-			    finish();
-				Api.updateLanguage(getApplicationContext(), G.locale());
-			    startActivity(intent);
-			}
-		}
-		
-		if(G.usePatterns()){
-			switch (requestCode) {
-			case REQ_CREATE_PATTERN:
-				if (resultCode == RESULT_OK) {
-					char[] pattern = data.getCharArrayExtra(
-			                    LockPatternActivity.EXTRA_PATTERN);
-		    		final Editor editor = G.sPrefs.edit();
-	    			editor.putString("LockPassword", new String(pattern));
-	    			editor.commit();
-				}
-				break;
-				
-			case REQ_ENTER_PATTERN: {
-				switch (resultCode) {
-					case RESULT_OK:
-						isPassVerify = true;
-						showOrLoadApplications();
-						break;
-					case RESULT_CANCELED:
-						MainActivity.this.finish();
-						android.os.Process.killProcess(android.os.Process.myPid());
-						break;
-					case LockPatternActivity.RESULT_FAILED:
-						MainActivity.this.finish();
-						android.os.Process.killProcess(android.os.Process.myPid());
-						break;
-					case LockPatternActivity.RESULT_FORGOT_PATTERN:
-						break;
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == SHOW_PREFERENCE_RESULT && resultCode == RESULT_OK ) {
+			Intent intent = getIntent();
+		    finish();
+			Api.updateLanguage(getApplicationContext(), G.locale());
+		    startActivity(intent);
+		} else {
+			if(G.usePatterns()){
+				switch (requestCode) {
+				case REQ_CREATE_PATTERN:
+					if (resultCode == RESULT_OK) {
+						char[] pattern = data.getCharArrayExtra(
+				                    LockPatternActivity.EXTRA_PATTERN);
+			    		final Editor editor = G.sPrefs.edit();
+		    			editor.putString("LockPassword", new String(pattern));
+		    			editor.commit();
+					}
+					break;
+					
+				case REQ_ENTER_PATTERN: {
+					switch (resultCode) {
+						case RESULT_OK:
+							isPassVerify = true;
+							showOrLoadApplications();
+							break;
+						case RESULT_CANCELED:
+							MainActivity.this.finish();
+							android.os.Process.killProcess(android.os.Process.myPid());
+							break;
+						case LockPatternActivity.RESULT_FAILED:
+							MainActivity.this.finish();
+							android.os.Process.killProcess(android.os.Process.myPid());
+							break;
+						case LockPatternActivity.RESULT_FORGOT_PATTERN:
+							break;
+						}
 					}
 				}
+				
 			}
-			
+		    
 		}
-		
-	    if (resultCode == RESULT_OK
+		if (resultCode == RESULT_OK
 				&& data != null && Api.CUSTOM_SCRIPT_MSG.equals(data.getAction())) {
 			final String script = data.getStringExtra(Api.SCRIPT_EXTRA);
 			final String script2 = data.getStringExtra(Api.SCRIPT2_EXTRA);
 			setCustomScript(script, script2);
 		}
-		super.onActivityResult(requestCode, resultCode, data);
+		//
 	}
 
 	/**
@@ -1368,7 +1368,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 		
 		// Handle the back button when dirty
-		if (this.dirty && (keyCode == KeyEvent.KEYCODE_BACK)) {
+		if (isDirty() && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

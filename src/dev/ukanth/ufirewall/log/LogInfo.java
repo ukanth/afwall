@@ -58,7 +58,7 @@ public class LogInfo {
 	public static String parseLog(Context ctx, String dmesg) {
 		
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -99;
+		final Integer unknownUID = -1;
 		StringBuilder res = new StringBuilder();
 		String line;
 		int start, end;
@@ -141,7 +141,7 @@ public class LogInfo {
 							}
 						}
 					} else {
-						appName = "Kernel";
+						appName = ctx.getString(R.string.kernel_item);
 					}
 				   loginfo = map.valueAt(i);
 				   totalBlocked = loginfo.totalBlocked;
@@ -341,7 +341,7 @@ public class LogInfo {
 					logInfo.out = out;
 				}
 				String appName = "";
-				if(uid != -99) {
+				if(uid != -1) {
 					if(!appNameMap.containsKey(uid)) {
 						appName = ctx.getPackageManager().getNameForUid(uid);
 						for (PackageInfoData app : apps) {
