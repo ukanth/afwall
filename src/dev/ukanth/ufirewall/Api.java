@@ -1989,45 +1989,6 @@ public final class Api {
 		}
 	}
 	
-	
-	private static class RejectDropCallback extends RootCommand.Callback {
-		private Context ctx;
-
-		public void cbFunc(RootCommand state) {
-			if (state.exitCode != 0) {
-				return;
-			}
-
-			boolean hasLOG = false, hasNFLOG = false;
-			for(String str : state.res.toString().split("\n")) {
-				if (str.equals("LOG")) {
-					hasLOG = true;
-				} else if (str.equals("NFLOG")) {
-					hasNFLOG = true;
-				}
-			}
-
-			if (hasLOG) {
-				G.logTarget("LOG");
-				Log.d(TAG, "logging using LOG target");
-			} else if (hasNFLOG) {
-				G.logTarget("NFLOG");
-				Log.d(TAG, "logging using NFLOG target");
-			} else {
-				Log.e(TAG, "could not find LOG or NFLOG target");
-				displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
-				G.logTarget("");
-				G.enableLog(false);
-				return;
-			}
-
-			G.enableLog(true);
-			updateLogRules(ctx, new RootCommand()
-				.setReopenShell(true)
-				.setSuccessToast(R.string.log_was_enabled)
-				.setFailureToast(R.string.log_toggle_failed));
-		}
-	}
 
 	public static void setLogging(final Context ctx, boolean isEnabled) {
 		if (!isEnabled) {
