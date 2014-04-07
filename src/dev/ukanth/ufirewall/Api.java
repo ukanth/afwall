@@ -1999,12 +1999,23 @@ public final class Api {
 		LogProbeCallback cb = new LogProbeCallback();
 		cb.ctx = ctx;
 		// probe for LOG/NFLOG targets (unfortunately the file must be read by root)
-		new RootCommand()
+		//check for ip6 enabled from preference and check against the same
+		if(G.enableIPv6()) {
+			new RootCommand()
+			.setReopenShell(true)
+			.setFailureToast(R.string.log_toggle_failed)
+			.setCallback(cb)
+			.setLogging(true)
+			.run(ctx, "cat /proc/net/ip6_tables_targets");
+		} else {
+			new RootCommand()
 			.setReopenShell(true)
 			.setFailureToast(R.string.log_toggle_failed)
 			.setCallback(cb)
 			.setLogging(true)
 			.run(ctx, "cat /proc/net/ip_tables_targets");
+		}
+		
 	}
 	
 	@SuppressLint("InlinedApi")
