@@ -382,6 +382,9 @@ public final class Api {
 	private static void addRejectRules(List<String> cmds, Context ctx) {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
+		
+		cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
+		
 		if (G.enableLog()) {
 			if (G.logTarget().equals("LOG")) {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
@@ -389,7 +392,7 @@ public final class Api {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
 			}
 		}
-		cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
+		
 	}
 
 	private static void addCustomRules(Context ctx, String prefName, List<String> cmds) {
@@ -950,6 +953,7 @@ public final class Api {
 			return;
 		}
 		List<String> cmds = new ArrayList<String>();
+		cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + "-reject");
 		cmds.add("-F " + AFWALL_CHAIN_NAME + "-reject");
 		addRejectRules(cmds,ctx);
 		apply46(ctx, cmds, callback);
@@ -1947,6 +1951,46 @@ public final class Api {
 	}
 	
 	private static class LogProbeCallback extends RootCommand.Callback {
+		private Context ctx;
+
+		public void cbFunc(RootCommand state) {
+			if (state.exitCode != 0) {
+				return;
+			}
+
+			boolean hasLOG = false, hasNFLOG = false;
+			for(String str : state.res.toString().split("\n")) {
+				if (str.equals("LOG")) {
+					hasLOG = true;
+				} else if (str.equals("NFLOG")) {
+					hasNFLOG = true;
+				}
+			}
+
+			if (hasLOG) {
+				G.logTarget("LOG");
+				Log.d(TAG, "logging using LOG target");
+			} else if (hasNFLOG) {
+				G.logTarget("NFLOG");
+				Log.d(TAG, "logging using NFLOG target");
+			} else {
+				Log.e(TAG, "could not find LOG or NFLOG target");
+				displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
+				G.logTarget("");
+				G.enableLog(false);
+				return;
+			}
+
+			G.enableLog(true);
+			updateLogRules(ctx, new RootCommand()
+				.setReopenShell(true)
+				.setSuccessToast(R.string.log_was_enabled)
+				.setFailureToast(R.string.log_toggle_failed));
+		}
+	}
+	
+	
+	private static class RejectDropCallback extends RootCommand.Callback {
 		private Context ctx;
 
 		public void cbFunc(RootCommand state) {
