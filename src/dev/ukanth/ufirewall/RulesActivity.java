@@ -51,7 +51,7 @@ public class RulesActivity extends DataDumpActivity {
 	protected static final int MENU_SEND_REPORT = 25;
 
 	protected boolean showIPv6 = false;
-	protected StringBuilder result;
+	protected static StringBuilder result;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,17 +261,23 @@ public class RulesActivity extends DataDumpActivity {
     			ver = "???";
     		}
     		String body = dataText + "\n\n" + getString(R.string.enter_problem) + "\n\n";
-    		String uriText = "mailto:afwall-report@googlegroups.com?subject=" +
+    		/*String uriText = "mailto:afwall-report@googlegroups.com?subject=" +
     				Uri.encode("AFWall+ problem report - v" + ver) + "&body=" +
-    				Uri.encode(body);
-    		Intent email = new Intent(Intent.ACTION_SENDTO);
-    		email.setData(Uri.parse(uriText));
+    				Uri.encode(body);*/
+    		final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+    		//email.setData(Uri.parse(uriText));
+    		
+    		emailIntent.setType("plain/text");
+    		emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"afwall-report@googlegroups.com"});
+    		emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "AFWall+ problem report - v" + ver);
+    		emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+    		startActivity(Intent.createChooser(emailIntent, getString(R.string.send_mail)));
 
     		// this shouldn't be necessary, but the default Android email client overrides
     		// "body=" from the URI.  See MessageCompose.initFromIntent()
-    		email.putExtra(Intent.EXTRA_TEXT, body);
+    		//email.putExtra(Intent.EXTRA_TEXT, body);
 
-    		startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
+    		//startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
     		return true;
     	}
     	return super.onMenuItemSelected(featureId, item);
