@@ -37,6 +37,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
@@ -44,6 +45,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -137,7 +139,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			isOnPause = false;
 			
 			if (getIntent().getBooleanExtra("EXIT", false)) {
-			    finish();
+			    this.finish();
 			}
 
 			try {
@@ -204,7 +206,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		   
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
-		    
+		    //check for root
+	        //new Startup().execute();
 		    
 	}
 	
@@ -240,6 +243,19 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			getSupportActionBar().setIcon(R.drawable.widget_off);
 		}
 	}
+	
+	private void startRootShell() {
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		boolean hasRoot = prefs.getBoolean("hasRoot", false);
+		
+		if(hasRoot) {
+			List<String> cmds = new ArrayList<String>();
+			cmds.add("true");
+			new RootCommand().setFailureToast(R.string.error_su)
+				.setReopenShell(true).run(getApplicationContext(), cmds);
+		} 
+	}
 
 	@Override
 	public void onStart() {
@@ -247,11 +263,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		
 		// to improve responsiveness, try to open a root shell in the background on launch
 		// (if this fails we'll try again later)
-		List<String> cmds = new ArrayList<String>();
-		cmds.add("true");
-		
-		new RootCommand().setFailureToast(R.string.error_su)
-				.setReopenShell(true).run(getApplicationContext(), cmds);
+		startRootShell();
 		
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
@@ -262,7 +274,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		updateIconStatus();
 
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancel(24556);
+		mNotificationManager.cancel(Api.NOTIFICATION_ID);
 		
 		if(passCheck()){
 	    	showOrLoadApplications();
@@ -1469,7 +1481,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String value = input.getText().toString();
-			if(value !=null && !value.isEmpty()) {
+			if(value !=null && value.length() > 0) {
 				G.addAdditionalProfile(value.trim());
 		  		setupMultiProfile();
 			} 
@@ -1625,6 +1637,15 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				break;
 			}
 	}
+	
+	private class Startup extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected Void doInBackground(Void... params) {
+			Api.hasRootAccess(getApplicationContext());
+			return null;
+		}
+	}
+
 	
 }
 

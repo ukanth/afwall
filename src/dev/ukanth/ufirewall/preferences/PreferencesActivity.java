@@ -284,7 +284,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		if(key.equals("enableStealthPattern")){
 			Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
 		}
-		/*if(key.equals("enableLogService")) {
+		if(key.equals("enableLogService")) {
 			boolean enabled = sharedPreferences.getBoolean(key, false);
 			if(enabled) {
 				Intent intent = new Intent(getApplicationContext(), LogService.class);
@@ -294,6 +294,6 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 				getApplicationContext().stopService(intent);
 			}
 			
-		}*/
+		}
 	}
 }
