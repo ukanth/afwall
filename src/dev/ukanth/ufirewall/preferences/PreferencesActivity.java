@@ -75,6 +75,12 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		deviceAdmin = new ComponentName(getApplicationContext(), AdminDeviceReceiver.class);
 		super.onCreate(savedInstanceState);
 	}
+	
+	@Override
+	protected boolean isValidFragment (String fragmentName)
+	{ 
+		return true;
+	}
 
 	public static void setupFixLeak(Preference pref) {
 		if (pref == null) {
