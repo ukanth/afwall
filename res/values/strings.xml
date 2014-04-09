@@ -233,6 +233,7 @@
 
     <!-- UI Preferences -->
     <string name="ui_prefs_title">UI Preferences</string>
+    <string name="log_prefs_title">Log Preferences</string>
     <string name="hideicons_pref_title">Hide application\'s icons</string>
     <string name="hideicons_pref_summary_on">This will improve the performance by disabling application icons on the main view</string>
     <string name="hideicons_pref_summary_off">Application\'s icons will be shown on the main view</string>

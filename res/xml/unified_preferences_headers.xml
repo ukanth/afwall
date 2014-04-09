@@ -5,6 +5,12 @@
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$GeneralPreferenceFragment"
         unified:preferenceRes="@xml/ui_preferences"
         unified:title="@string/ui_prefs_title" />
+    
+     <header
+        unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$LogPreferenceFragment"
+        unified:preferenceRes="@xml/log_preferences"
+        unified:title="@string/log_prefs_title" />
+     
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$SecPreferenceFragment"
         unified:preferenceRes="@xml/security_preferences"

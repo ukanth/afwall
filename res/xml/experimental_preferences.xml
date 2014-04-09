@@ -12,10 +12,4 @@
         android:key="multiUser"
         android:summary="@string/multi_user_summary"
         android:title="@string/multi_user_title" />
-     <CheckBoxPreference
-        android:defaultValue="false"
-        android:dependency="enableLog"
-        android:key="enableLogService"
-        android:summary="@string/showlog_service_summary"
-        android:title="@string/enable_firewall_log_service" />
 </PreferenceScreen>

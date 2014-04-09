@@ -1,0 +1,14 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+      <CheckBoxPreference
+        android:key="enableLog"
+        android:summary="@string/showlog_title"
+        android:title="@string/enable_firewall_log" />
+     
+     <CheckBoxPreference
+        android:dependency="enableLog"
+        android:key="enableLogService"
+        android:summary="@string/showlog_service_summary"
+        android:title="@string/enable_firewall_log_service" />
+
+</PreferenceScreen>
