@@ -1,5 +1,7 @@
 package dev.ukanth.ufirewall;
 
+import java.lang.ref.WeakReference;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -10,6 +12,7 @@ import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Window;
 
 public class AlertDialogActivity  extends SherlockListActivity {
+	WeakReference<AlertDialog> alertDialog;
 	
 	@Override
     protected void onCreate(Bundle icicle) {
@@ -34,6 +37,18 @@ public class AlertDialogActivity  extends SherlockListActivity {
         	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         	intent.putExtra("EXIT", true);
         	startActivity(intent);
+        	finish();
         }
     };
+    
+    @Override
+	protected void onDestroy(){
+		if(alertDialog!=null){
+			AlertDialog d=alertDialog.get();
+			if(d!=null) {
+				d.dismiss();
+			}
+		}
+		super.onDestroy();
+	}
 }
