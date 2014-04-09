@@ -59,7 +59,7 @@ public class AppDetailActivity extends SherlockActivity {
         	
         	try {
         		
-        	    applicationInfo = packageManager.getApplicationInfo(packageName, packageManager.GET_META_DATA);
+        	    applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
         	    image.setImageDrawable(applicationInfo.loadIcon(packageManager));
         	    textView.setText(packageManager.getApplicationLabel(applicationInfo));
         	    if(packageNameList.length > 1) {
