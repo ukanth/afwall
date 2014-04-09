@@ -4,16 +4,21 @@ package dev.ukanth.ufirewall.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
@@ -125,12 +130,47 @@ public class RadialMenuWidget extends View {
 	
 	
 	
+	@SuppressLint("NewApi")
 	public RadialMenuWidget(Context context) {
 		super(context);
 
 		// Gets screen specs and defaults to center of screen
-		this.xPosition = (getResources().getDisplayMetrics().widthPixels)/2;
-		this.yPosition = (getResources().getDisplayMetrics().heightPixels)/2;
+		DisplayMetrics dm = new DisplayMetrics(); 
+		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		wm.getDefaultDisplay().getMetrics(dm);
+		/*
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
+		{
+			Point size = new Point();
+			display.getSize(size);
+			this.xPosition = size.x/3;
+			this.yPosition = size.y/2;
+		} else {
+			 Display d = wm.getDefaultDisplay();
+			 this.xPosition = d.getWidth()/2 ;
+			 this.yPosition = d.getHeight()/2;
+		}*/
+
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+	        Point size = new Point();
+	        try {
+	        	wm.getDefaultDisplay().getRealSize(size);
+	        	//FIXME: handle large tablets
+	        	if(size.x > 2000 ) this.xPosition = size.x / 3;
+	        	else this.xPosition = size.x / 2 ;
+	            this.yPosition = size.y / 2;
+	        } catch (NoSuchMethodError e) {
+	        	this.xPosition = wm.getDefaultDisplay().getWidth() / 2 ;
+	        	this.yPosition= wm.getDefaultDisplay().getHeight() / 2 ;
+	        }
+
+	    } else {
+	        DisplayMetrics metrics = new DisplayMetrics();
+	        wm.getDefaultDisplay().getMetrics(metrics);
+	        this.xPosition = metrics.widthPixels / 2;
+	        this.yPosition = metrics.heightPixels / 2;
+	    }
 		
 		determineWedges();
 		onOpenAnimation();
