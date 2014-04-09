@@ -57,8 +57,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -79,10 +77,12 @@ import android.os.Looper;
 import android.os.UserManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.widget.Toast;
+
+import com.stericson.RootTools.RootTools;
+
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.JsonHelper;
@@ -106,6 +106,9 @@ public final class Api {
 	//public static final int SPECIAL_UID_DNSPROXY	= -13;
 	/** special application UID used for NTP */
 	public static final int SPECIAL_UID_NTP		= -14;
+	
+	
+	public static final int NOTIFICATION_ID = 24556;
 	
 	private static final int WIFI_EXPORT = 0;
 	private static final int DATA_EXPORT = 1;
@@ -160,8 +163,7 @@ public final class Api {
 	
 	private static String AFWALL_CHAIN_NAME = "afwall";
 
-	private static final String dynChains[] = { 
-		 "-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork" };
+	private static final String dynChains[] = { "-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork" };
 	
 	private static final String staticChains[] = {  "", "-3g", "-wifi", 
 		  "-reject", "-vpn", "-3g-tether",  "-3g-home",  "-3g-roam", 
@@ -383,8 +385,6 @@ public final class Api {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
 		
-		cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
-		
 		if (G.enableLog()) {
 			if (G.logTarget().equals("LOG")) {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
@@ -392,7 +392,7 @@ public final class Api {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
 			}
 		}
-		
+		cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
 	}
 
 	private static void addCustomRules(Context ctx, String prefName, List<String> cmds) {
@@ -2052,15 +2052,14 @@ public final class Api {
 	
 	public static boolean hasRootAccess(Context ctx) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		boolean isRoot = prefs.getBoolean("isRootAvail", false);
+		boolean isRoot = prefs.getBoolean("hasRoot", false);
 		if (!isRoot) {
 			try {
 				// Run an empty script just to check root access
-				int returnCode = new SUCheck().execute(null, null).get();
-				if (returnCode == 0) {
+				if (RootTools.isRootAvailable() && RootTools.isAccessGiven()) {
 					isRoot = true;
 					Editor edit = prefs.edit();
-					edit.putBoolean("isRootAvail", true);
+					edit.putBoolean("hasRoot", true);
 					edit.commit();
 				} else {
 					Api.showAlertDialogActivity(ctx, ctx.getString(R.string.error_common), ctx.getString(R.string.error_su));
@@ -2243,7 +2242,7 @@ public final class Api {
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
     	boolean hasMobileData = true;
-    	ConnectivityManager cm = (ConnectivityManager)ctx.getSystemService(ctx.CONNECTIVITY_SERVICE);
+    	ConnectivityManager cm = (ConnectivityManager)ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
     	if (cm != null) {
     		if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE) == null) {
     			hasMobileData = false;
