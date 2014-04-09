@@ -151,7 +151,10 @@
             </intent-filter>
         </receiver>
         
-         <receiver android:name="dev.ukanth.ufirewall.StatusWidget" android:label="@string/widget_label_status">
+         <receiver 
+             android:name="dev.ukanth.ufirewall.StatusWidget" 
+             android:label="@string/widget_label_status"
+             android:icon="@drawable/on_off_widget">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
@@ -162,7 +165,10 @@
                 <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
-         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidget" android:label="@string/widget_label_settings">
+         <receiver 
+             android:name="dev.ukanth.ufirewall.widget.ToggleWidget" 
+             android:label="@string/widget_label_settings"
+             android:icon="@drawable/question">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />

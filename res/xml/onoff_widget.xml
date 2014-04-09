@@ -3,6 +3,7 @@
     android:minWidth="40dp"
     android:minHeight="40dp"
     android:updatePeriodMillis="0"
+    android:previewImage="@drawable/on_off_widget"
     android:initialLayout="@layout/onoff_widget"
     android:resizeMode="horizontal|vertical">
 </appwidget-provider>
