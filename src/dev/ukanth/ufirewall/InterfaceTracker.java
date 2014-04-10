@@ -58,7 +58,7 @@ public final class InterfaceTracker {
 	
 	public static final String ITFS_3G[] = { "rmnet+", "pdp+", "uwbr+","wimax+", "vsnet+", 
 											 "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", 
-											 "wwan+", "cdma_rmnet+", "usb+", "rmnet_usb+","clat4+", "cc2mni+", "bond1+" };
+											 "wwan+", "cdma_rmnet+", "usb+", "rmnet_usb+","clat4+", "cc2mni+", "bond1+", "rmnet_smux+" };
 	
 	public static final String ITFS_VPN[] = { "tun+", "ppp+", "tap+" };
 
