@@ -130,6 +130,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private int index;
 	private int top;
 	
+	private List<String> mlocalList = new ArrayList<String>();
+	
 	/** Called when the activity is first created
 	 * . */
 	@Override
@@ -209,6 +211,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	        plsWait.setCancelable(false);
 		    
 	        checkforRoot();
+	        
+	        setupMultiProfile(true);
 		    
 	}
 	
@@ -275,7 +279,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			this.listview = (ListView) this.findViewById(R.id.listview);
 		}
 		
-		setupMultiProfile();
+		//verifyMultiProfile();
 		refreshHeader();
 		updateIconStatus();
 
@@ -294,16 +298,15 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		view.setOnClickListener(this);
 	}
 	
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-	
-	private void setupMultiProfile(){
+	private void setupMultiProfile(boolean reset){
 		if(G.enableMultiProfile()) {
+			
+			if(reset) {
+				 mlocalList = new ArrayList<String>();
+			}
 			G.reloadPrefs();
 			mSelected = (TextView)findViewById(R.id.text);
-			final List<String> mlocalList = new ArrayList<String>();
+			
 			
 			mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
 			mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
@@ -315,6 +318,47 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			for(String profiles : profilesList) {
 				isAdditionalProfiles = true;
 				mlocalList.add(profiles);
+			}
+			
+			int position = G.storedPosition();
+			//something went wrong - No profiles but still it's set more. reset to default
+			if(!isAdditionalProfiles && position > 3) {
+				G.storedPosition(0);
+				position = 0;
+			}
+			
+			
+			mlocalList.add(getString(R.string.profile_add));
+			mlocalList.add(getString(R.string.profile_remove));
+
+			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
+			
+		    spinnerAdapter =  new ArrayAdapter<String>(this,R.layout.sherlock_spinner_item,
+		    	    mLocations);
+		    spinnerAdapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+	
+			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
+			
+			if(position > -1) {
+				getSupportActionBar().setSelectedNavigationItem(position);
+				getSupportActionBar().setDisplayShowTitleEnabled(false);
+				mSelected.setText("  |  " + mLocations[position]);
+			}
+			getSupportActionBar().setDisplayUseLogoEnabled(true);
+		}
+	}
+	
+	/*private void verifyMultiProfile(){
+		if(G.enableMultiProfile()) {
+			
+			boolean isAdditionalProfiles = false;
+			List<String> profilesList = G.getAdditionalProfiles();
+			for(String profiles : profilesList) {
+				isAdditionalProfiles = true;
+				if(!mlocalList.contains(profiles)) {
+					mlocalList.add(profiles);
+				}
 			}
 			
 			int position = G.storedPosition();
@@ -346,7 +390,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			}
 			getSupportActionBar().setDisplayUseLogoEnabled(true);
 		}
-	}
+	}*/
 	
 	private boolean passCheck(){
 		
@@ -1461,7 +1505,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
 			G.removeAdditionalProfile(mLocations[selectedItem + 4], selectedItem + 4);
-			setupMultiProfile();
+			setupMultiProfile(true);
 			Api.applications = null;
 			showOrLoadApplications();
 		  }
@@ -1473,6 +1517,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		  }
 		});
 		alert.show();	
+	}
+	
+	public void refreshMultiProfile(){
+		
 	}
 	
 	public void addProfileDialog() {
@@ -1489,7 +1537,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			String value = input.getText().toString();
 			if(value !=null && value.length() > 0) {
 				G.addAdditionalProfile(value.trim());
-		  		setupMultiProfile();
+		  		refreshMultiProfile();
 			} 
 		  }
 		});
