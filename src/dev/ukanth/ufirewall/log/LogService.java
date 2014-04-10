@@ -25,12 +25,16 @@
 
 package dev.ukanth.ufirewall.log;
 
+import java.util.Arrays;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -194,12 +198,12 @@ public class LogService extends Service {
 					if (result == null) {
 						break;
 					}
-					if(!result.trim().isEmpty())
+					if(result.trim().length() > 0)
 					{
 						if(result.contains("AFL")) {
 							final String logData = LogInfo.parseLogs(result,getApplicationContext());
-							if(!logData.isEmpty()) {
-								showToast(getApplicationContext(), handler,logData,false);
+							if(logData != null && logData.length() > 0 ) {
+								showToast(getApplicationContext(), handler,logData, false);
 							}
 						}
 					}

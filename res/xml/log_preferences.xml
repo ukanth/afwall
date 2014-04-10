@@ -10,5 +10,11 @@
         android:key="enableLogService"
         android:summary="@string/showlog_service_summary"
         android:title="@string/enable_firewall_log_service" />
+     
+     
+     <dev.ukanth.ufirewall.log.MultiSelectListPreference
+    		android:key="block_filter_app"
+    		android:title="Filter Application"
+    		android:dialogTitle="Filter Applications" />
 
 </PreferenceScreen>

@@ -73,7 +73,10 @@ public class G extends android.app.Application {
 	private static final String PATTERN_MAX_TRY = "patternMax";
 	private static final String PATTERN_STEALTH = "stealthMode";
 	
+	/** FIXME **/
 	private static final String AFWALL_STATUS = "AFWallStaus";
+	
+	private static final String BLOCKED_NOTIFICATION = "block_filter_app";
 	
 	/* Profiles */
 	private static final String ADDITIONAL_PROFILES = "plusprofiles";
@@ -195,6 +198,14 @@ public class G extends android.app.Application {
 	public static int appVersion() { return gPrefs.getInt(APP_VERSION, 0); }
 	public static int appVersion(int val) { gPrefs.edit().putInt(APP_VERSION, val).commit(); return val; }
 
+	public static List<String> getBlockedNotifyApps() {
+		String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
+		List<String> data = new ArrayList<String>();
+		if(blockedApps != null && blockedApps.contains(",")){
+			data = Arrays.asList(blockedApps.split(","));
+		}
+		return data;
+	}
 	
 	public void onCreate() {
 		super.onCreate();

@@ -34,6 +34,7 @@ import android.util.SparseArray;
 import android.widget.TextView;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
 
 public class LogInfo {
@@ -380,6 +381,8 @@ public class LogInfo {
 
 		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
 		final List<PackageInfoData> apps = Api.getApps(ctx,null);
+		
+		
 		int pos = 0;
 		try {
 			while ((pos = result.indexOf("{AFL}", pos)) > -1) {
@@ -453,7 +456,9 @@ public class LogInfo {
 					appName = ctx.getString(R.string.kernel_item);
 				}
 				address = new StringBuilder();
-				address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");
+				if(!G.getBlockedNotifyApps().contains(uid)) { 
+					address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");
+				}
 				return address.toString();
 				
 			}
