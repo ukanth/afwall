@@ -140,6 +140,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			
 			if (getIntent().getBooleanExtra("EXIT", false)) {
 			    this.finish();
+			    android.os.Process.killProcess(android.os.Process.myPid());
 			}
 
 			try {
@@ -206,12 +207,17 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		   
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
-		    //check for root
-	        //new Startup().execute();
+		    
+	        checkforRoot();
 		    
 	}
 	
 	
+	private void checkforRoot() {
+		//check for root
+        new Startup().execute();
+	}
+
 	private void updateRadioFilter() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
 		radioGroup.setOnCheckedChangeListener(this);
