@@ -173,7 +173,7 @@ public class LogService extends Service {
 							Log.e(TAG, "Can't start nflog shell: exitCode " + exitCode);
 							stopSelf();
 						} else {
-							Log.i(TAG, "nflog shell started");
+							Log.i(TAG, "logservice shell started");
 							rootSession.addCommand(klogPath);
 						}
 					}
