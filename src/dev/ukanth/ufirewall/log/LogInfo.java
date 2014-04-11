@@ -59,7 +59,7 @@ public class LogInfo {
 	public static String parseLog(Context ctx, String dmesg) {
 		
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -1;
+		final Integer unknownUID = -11;
 		StringBuilder res = new StringBuilder();
 		String line;
 		int start, end;
@@ -128,7 +128,7 @@ public class LogInfo {
 			final List<PackageInfoData> apps = Api.getApps(ctx,null);
 			Integer id;
 			String appName = "";
-			int appId = -1;
+			int appId = -11;
 			int totalBlocked;
 			for(int i = 0; i < map.size(); i++) {
 				StringBuilder address = new StringBuilder();
@@ -164,128 +164,11 @@ public class LogInfo {
 			res.append(ctx.getString(R.string.no_log));
 		}
 		return res.toString();
-		
-		/*final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -99;
-		StringBuilder res = new StringBuilder();
-		String line;
-		int start, end;
-		Integer uid;
-		String out, src, dst, proto, spt, dpt, len;
-		ArrayList<LogInfo> logList = new ArrayList<LogInfo>();
-		HashMap<String,Integer> totalCount = new HashMap<String, Integer>();
-		HashMap<Integer,ArrayList<LogInfo>> logEntityMap = new HashMap<Integer, ArrayList<LogInfo>>();
-		LogInfo logInfo = null;
-		try {
-			while ((line = r.readLine()) != null) {
-				if (line.indexOf("{AFL}") == -1) continue;
-				uid = unknownUID;
-				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					uid = Integer.parseInt(line.substring(start+4, end));
-				}
-				if (logEntityMap.get(uid) == null || logEntityMap.get(uid).size() == 0) {
-					logInfo = new LogInfo();
-					logList = new ArrayList<LogInfo>();
-				} else {
-					logList = logEntityMap.get(uid);
-				}
-				if (((start=line.indexOf("DST=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dst = line.substring(start+4, end);
-					logInfo.dst = dst;
-				}
-				
-				if (((start=line.indexOf("DPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dpt = line.substring(start+4, end);
-					logInfo.dpt = dpt;
-				}
-				
-				if (((start=line.indexOf("SPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					spt = line.substring(start+4, end);
-					logInfo.spt = spt;
-				}
-				
-				if (((start=line.indexOf("PROTO=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					proto = line.substring(start+6, end);
-					logInfo.proto = proto;
-				}
-				
-				if (((start=line.indexOf("LEN=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					len = line.substring(start+4, end);
-					logInfo.len = len;
-				}
-				
-				if (((start=line.indexOf("SRC=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					src = line.substring(start+4, end);
-					logInfo.src = src;
-				}
-				
-				if (((start=line.indexOf("OUT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					out = line.substring(start+4, end);
-					logInfo.out = out;
-				}
-				
-				logList.add(logInfo);
-				String uniqueKey = uid + ":" + logInfo.dst + ":" +  logInfo.dpt;
-				if(!totalCount.containsKey(uniqueKey)) {
-					totalCount.put(uniqueKey, 1);
-				} else {
-					int count = totalCount.get(uniqueKey);
-					totalCount.put(uniqueKey, (count + 1));
-				}
-				logEntityMap.put(uid, logList);
-			}
-			final List<PackageInfoData> apps = Api.getApps(ctx,null);
-			String appName = "";
-			int appId = -99;
-			for (Map.Entry<Integer, ArrayList<LogInfo>> entry : logEntityMap.entrySet())
-			{
-				appId = entry.getKey();
-				if(appId != -99) {
-					appName = ctx.getPackageManager().getNameForUid(appId);
-					for (PackageInfoData app : apps) {
-						if (app.uid == appId) {
-							appName = app.names.get(0);
-							break;
-						}
-					}
-				} else {
-					appName = ctx.getString(R.string.kernel_item);
-				}
-				
-				StringBuilder address = new StringBuilder();
-				res.append("" +  appName + "(" + appId  + ")" + "\n");
-				address.append("\n");
-				Set<String> addedEntry = new HashSet<String>();
-				for(LogInfo info : entry.getValue()) {
-					String uniqueKey = appId + ":" + info.dst + ":" +  info.dpt;
-					if(totalCount.containsKey(uniqueKey)) {
-						if(!addedEntry.contains(uniqueKey)) {
-							address.append( "[" + info.proto + "]" + info.dst + ":" +  info.dpt + "(" +  totalCount.get(uniqueKey) + ")" + "\n" );
-							addedEntry.add(uniqueKey);
-							info.totalBlocked = totalCount.get(uniqueKey); 
-						}
-					} else {
-						if(!addedEntry.contains(uniqueKey)) {
-							address.append( "[" + info.proto + "]" + info.dst + ":" +  info.dpt + "(" +  1 + ")" + "\n" );
-							addedEntry.add(uniqueKey);
-						}
-					}
-				}
-				res.append(address.toString());
-				res.append("\n\t---------\n");
-			}
-		} catch (Exception e) {
-			res.append(ctx.getString(R.string.no_log));
-		}
-		if (res.length() == 0) {
-			res.append(ctx.getString(R.string.no_log));
-		}
-		return res.toString();*/
 	}
 
 	public static void parseLog(Context ctx, String dmesg, TextView textView) {
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -99;
+		final Integer unknownUID = -11;
 		StringBuilder address = new StringBuilder();
 		String line;
 		int start, end;
@@ -299,7 +182,6 @@ public class LogInfo {
 			while ((line = r.readLine()) != null) {
 				if (line.indexOf("{AFL}") == -1) continue;
 				uid = unknownUID;
-				
 				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
 					uid = Integer.parseInt(line.substring(start+4, end));
 				}
@@ -372,7 +254,7 @@ public class LogInfo {
 
 	public static String parseLogs(String result,final Context ctx) {
 
-		final Integer unknownUID = -99;
+		final Integer unknownUID = -11;
 		StringBuilder address = new StringBuilder();
 		int start, end;
 		Integer uid;
@@ -439,7 +321,7 @@ public class LogInfo {
 					logInfo.out = out;
 				}
 				String appName = "";
-				if(uid != -99) {
+				if(uid != unknownUID) {
 					if(!appNameMap.containsKey(uid)) {
 						appName = ctx.getPackageManager().getNameForUid(uid);
 						for (PackageInfoData app : apps) {

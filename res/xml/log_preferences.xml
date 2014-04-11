@@ -14,7 +14,7 @@
      
      <dev.ukanth.ufirewall.log.MultiSelectListPreference
     		android:key="block_filter_app"
-    		android:title="Filter Application"
-    		android:dialogTitle="Filter Applications" />
+    		android:title="@string/filters_apps_title"
+    		android:dialogTitle="@string/filters_apps_title" />
 
 </PreferenceScreen>
