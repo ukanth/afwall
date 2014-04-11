@@ -28,6 +28,6 @@
     <header
         unified:fragment="dev.ukanth.ufirewall.preferences.PreferencesActivity$CustomBinaryPreferenceFragment"
         unified:preferenceRes="@xml/ui_custom_preferences"
-        unified:title="Binaries" />
+        unified:title="@string/binaries" />
     
 </preference-headers>
