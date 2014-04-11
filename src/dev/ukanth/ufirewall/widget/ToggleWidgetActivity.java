@@ -276,6 +276,7 @@ public class ToggleWidgetActivity extends Activity {
 	
 	
 	private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
+		Api.saveRules(context);
 		boolean ret = Api.applySavedIptablesRules(context, true, new RootCommand()
 		.setFailureToast(R.string.error_apply)
 		.setReopenShell(true)
