@@ -1519,10 +1519,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		alert.show();	
 	}
 	
-	public void refreshMultiProfile(){
-		
-	}
-	
 	public void addProfileDialog() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
@@ -1537,7 +1533,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			String value = input.getText().toString();
 			if(value !=null && value.length() > 0) {
 				G.addAdditionalProfile(value.trim());
-		  		refreshMultiProfile();
+		  		setupMultiProfile(true);
 			} 
 		  }
 		});
