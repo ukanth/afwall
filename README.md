@@ -4,7 +4,6 @@ AFWall+ ( Android Firewall +) [![Build Status](https://travis-ci.org/ukanth/afwa
 ![AFwall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
 
 
-
 Android Firewall+ is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to
 access the network.
 
@@ -14,6 +13,8 @@ in December 2011, and is no longer actively maintained.
 For more information and community discussions, please visit the [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or [our WIKI](https://github.com/ukanth/afwall/wiki).
 
 [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall)
+
+[![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png)](https://www.gittip.com/ukanth/)
 
 ## Changelog
 
