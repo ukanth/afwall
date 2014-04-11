@@ -349,49 +349,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		}
 	}
 	
-	/*private void verifyMultiProfile(){
-		if(G.enableMultiProfile()) {
-			
-			boolean isAdditionalProfiles = false;
-			List<String> profilesList = G.getAdditionalProfiles();
-			for(String profiles : profilesList) {
-				isAdditionalProfiles = true;
-				if(!mlocalList.contains(profiles)) {
-					mlocalList.add(profiles);
-				}
-			}
-			
-			int position = G.storedPosition();
-			//something went wrong - No profiles but still it's set more. reset to default
-			if(!isAdditionalProfiles && position > 3) {
-				G.storedPosition(0);
-				position = 0;
-			}
-			
-			
-			mlocalList.add(getString(R.string.profile_add));
-			mlocalList.add(getString(R.string.profile_remove));
-
-			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-			
-		    spinnerAdapter =  new ArrayAdapter<String>(
-		    	    this,
-		    	    R.layout.sherlock_spinner_item,
-		    	    mLocations);
-		    spinnerAdapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-	
-			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
-			
-			if(position > -1) {
-				getSupportActionBar().setSelectedNavigationItem(position);
-				getSupportActionBar().setDisplayShowTitleEnabled(false);
-				mSelected.setText("  |  " + mLocations[position]);
-			}
-			getSupportActionBar().setDisplayUseLogoEnabled(true);
-		}
-	}*/
-	
 	private boolean passCheck(){
 		
 		//wait for 30 seconds before prompt for password again.

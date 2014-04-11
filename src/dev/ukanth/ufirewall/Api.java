@@ -2143,7 +2143,7 @@ public final class Api {
 	}
 	
 	
-	private static class SUCheck extends AsyncTask<Object, Object, Integer> {
+	/*private static class SUCheck extends AsyncTask<Object, Object, Integer> {
 		private int exitCode = -1;
 
 		@Override
@@ -2160,7 +2160,7 @@ public final class Api {
 			}
 			return exitCode;
 		}
-	}
+	}*/
 	
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) public static void setUserOwner(Context context)
 	{

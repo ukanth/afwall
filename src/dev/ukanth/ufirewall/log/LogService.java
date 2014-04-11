@@ -1,10 +1,7 @@
 /**
+ * Background service to spool /proc/kmesg command output using klogripper
  * 
- * Log Service
- * 
- * Copyright (C) 2014  Umakanthan Chandran
- * 
- * Originally copied from NetworkLog (C) 2012 Pragmatic Software (MPL2.0)
+ * Copyright (C) 2014 Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +22,7 @@
 
 package dev.ukanth.ufirewall.log;
 
-import java.util.Arrays;
+import java.util.List;
 
 import android.app.Service;
 import android.content.Context;
@@ -41,16 +38,19 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.Log;
 import dev.ukanth.ufirewall.R;
+import eu.chainfire.libsuperuser.Shell;
+import eu.chainfire.libsuperuser.StreamGobbler;
 
 public class LogService extends Service {
-	
-	private final IBinder mBinder = new Binder();
-	
-	private boolean mRunning = false;
 
-	private ShellCommand loggerCommand;
-	
+	public static final String TAG = "AFWall";
+
+	public static String klogPath;
+	private final IBinder mBinder = new Binder();
+	private Shell.Interactive rootSession;
+
 	private Handler handler;
 	
 	public static Toast toast;
@@ -69,40 +69,15 @@ public class LogService extends Service {
 	private static CancelableRunnable showToastRunnable;
 	private static View toastLayout;
 	
-
-	@Override
-	public IBinder onBind(Intent arg0) {
-		return mBinder;
-	}
-	public static String klogPath;
 	
 	private static abstract class CancelableRunnable implements Runnable {
 	    public boolean cancel;
 	}
 
-	public void onCreate() {
-		super.onCreate();
-        mRunning = false;
-	}
-	
 	@Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        if (!mRunning) {
-            mRunning = true;
-            klogPath = Api.getKLogPath(getApplicationContext());
-    		handler = new Handler();
-    		String cmd =  klogPath + " --skip-first";
-    		loggerCommand = new ShellCommand( new String[] { "su", "-c",  cmd}, "LogService");
-    		loggerCommand.start(false);
-    		if (loggerCommand.error != null) {
-    		} else {
-    			Logger logger = new Logger();
-    			new Thread(logger, "Logger").start();
-    		}
-        }
-        return super.onStartCommand(intent, flags, startId);
-    }
+	public IBinder onBind(Intent intent) {
+		return mBinder;
+	}
 	
 	
 	public static void showToast(final Context context, final Handler handler, final CharSequence text, boolean cancel) {
@@ -166,69 +141,48 @@ public class LogService extends Service {
 	    toastText = text;
 	    handler.post(showToastRunnable);
 	  }
-	
 
-	public class Logger implements Runnable {
-		boolean running = false;
-
-		public void stop() {
-			running = false;
-		}
-
-		public void run() {
-			String result;
-			running = true;
-
-			while (true) {
-				while (running && loggerCommand.checkForExit() == false) {
-					if (loggerCommand.stdoutAvailable()) {
-						result = loggerCommand.readStdout();
-					} else {
-						try {
-							Thread.sleep(500);
-						} catch (Exception e) {
-						}
-						continue;
-					}
-
-					if (running == false) {
-						break;
-					}
-
-					if (result == null) {
-						break;
-					}
-					if(result.trim().length() > 0)
-					{
-						if(result.contains("AFL")) {
-							final String logData = LogInfo.parseLogs(result,getApplicationContext());
-							if(logData != null && logData.length() > 0 ) {
-								showToast(getApplicationContext(), handler,logData, false);
+	public void onCreate() {
+		klogPath = Api.getKLogPath(getApplicationContext()) + " --skip-first";
+		Log.d(TAG, "Starting " + klogPath);
+		handler = new Handler();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		boolean hasRoot = prefs.getBoolean("hasRoot", false);
+		if(hasRoot) {
+		rootSession = new Shell.Builder()
+				.useSU()
+				.setMinimalLogging(true)
+				.setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
+					@Override
+					public void onLine(String line) {
+						if(line.trim().length() > 0)
+						{
+							if(line.contains("AFL")) {
+								final String logData = LogInfo.parseLogs(line,getApplicationContext());
+								if(logData != null && logData.length() > 0 ) {
+									showToast(getApplicationContext(), handler,logData, false);
+								}
 							}
 						}
 					}
-					/*final String data = result;
-					handler.post(new Runnable() {
-					    public void run() {
-					        Toast toast = Toast.makeText(LogService.this, LogInfo.parseLogs(data, getApplicationContext()), Toast.LENGTH_LONG);
-					        toast.show();
-					    }
-					 });*/
-					
-				}
+				})
 
-				if (running != false) {
-					try {
-						Thread.sleep(10000);
-					} catch (Exception e) {
-						// ignored
+				.open(new Shell.OnCommandResultListener() {
+					public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+						if (exitCode != 0) {
+							Log.e(TAG, "Can't start nflog shell: exitCode " + exitCode);
+							stopSelf();
+						} else {
+							Log.i(TAG, "nflog shell started");
+							rootSession.addCommand(klogPath);
+						}
 					}
-				} else {
-					break;
-				}
-			}
+				});
 		}
-	}	
+	}
 
-
+	public void onDestroy() {
+		Log.e(TAG, "Received request to kill logservice");
+		/* FIXME: we should really be closing the shell through libsuperuser */
+	}
 }

@@ -42,35 +42,28 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		if (convertView == null) {
 			// Inflate a new view
 			convertView = inflater.inflate(R.layout.main_list, parent, false);
 			holder = new ViewHolder();
-			holder.box_wifi = (CheckBox) convertView
-					.findViewById(R.id.itemcheck_wifi);
+			holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
 			holder.box_wifi.setOnCheckedChangeListener(this);
 			
 			if(Api.isMobileNetworkSupported(context)) {
-				holder.box_3g = addSupport(holder.box_3g, convertView,
-						true, R.id.itemcheck_3g);
+				holder.box_3g = addSupport(holder.box_3g, convertView,true, R.id.itemcheck_3g);
 			} else {
 				removeSupport(holder.box_3g, convertView,R.id.itemcheck_3g);
 			}
 			
-
 			if (G.enableRoam()) {
-				holder.box_roam = addSupport(holder.box_roam, convertView,
-						true, R.id.itemcheck_roam);
+				holder.box_roam = addSupport(holder.box_roam, convertView,true, R.id.itemcheck_roam);
 			}
 			if (G.enableVPN()) {
-				holder.box_vpn = addSupport(holder.box_vpn, convertView, true,
-						R.id.itemcheck_vpn);
+				holder.box_vpn = addSupport(holder.box_vpn, convertView, true,R.id.itemcheck_vpn);
 			}
 			if (G.enableLAN()) {
-				holder.box_lan = addSupport(holder.box_lan, convertView, true,
-						R.id.itemcheck_lan);
+				holder.box_lan = addSupport(holder.box_lan, convertView, true,R.id.itemcheck_lan);
 			}
 
 			holder.text = (TextView) convertView.findViewById(R.id.itemtext);
@@ -84,33 +77,27 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 		} else {
 			// Convert an existing view
 			holder = (ViewHolder) convertView.getTag();
-			holder.box_wifi = (CheckBox) convertView
-					.findViewById(R.id.itemcheck_wifi);
+			holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
 			if(Api.isMobileNetworkSupported(context)) {
-				holder.box_3g = addSupport(holder.box_3g, convertView,
-						true, R.id.itemcheck_3g);
+				holder.box_3g = addSupport(holder.box_3g, convertView,true, R.id.itemcheck_3g);
 			} else {
 				removeSupport(holder.box_3g, convertView,R.id.itemcheck_3g);
 			}
 			if (G.enableRoam()) {
-				addSupport(holder.box_roam, convertView, false,
-						R.id.itemcheck_roam);
+				addSupport(holder.box_roam, convertView, false,R.id.itemcheck_roam);
 			}
 			if (G.enableVPN()) {
-				addSupport(holder.box_vpn, convertView, false,
-						R.id.itemcheck_vpn);
+				addSupport(holder.box_vpn, convertView, false,R.id.itemcheck_vpn);
 			}
 			if (G.enableLAN()) {
-				addSupport(holder.box_lan, convertView, false,
-						R.id.itemcheck_lan);
+				addSupport(holder.box_lan, convertView, false,R.id.itemcheck_lan);
 			}
 
 			holder.text = (TextView) convertView.findViewById(R.id.itemtext);
 			holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
 			if (G.disableIcons()) {
 				holder.icon.setVisibility(View.GONE);
-				activity.findViewById(R.id.imageHolder).setVisibility(
-						View.GONE);
+				activity.findViewById(R.id.imageHolder).setVisibility(View.GONE);
 			}
 		}
 
@@ -246,10 +233,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 				// This is executed in the UI thread, so it is safe to use
 				// viewToUpdate.getTag()
 				// and modify the UI
-				final ViewHolder entryToUpdate = (ViewHolder) viewToUpdate
-						.getTag();
-				entryToUpdate.icon
-						.setImageDrawable(entryToUpdate.app.cached_icon);
+				final ViewHolder entryToUpdate = (ViewHolder) viewToUpdate.getTag();
+				entryToUpdate.icon.setImageDrawable(entryToUpdate.app.cached_icon);
 			} catch (Exception e) {
 				Log.e(TAG, "Error showing icon", e);
 			}
