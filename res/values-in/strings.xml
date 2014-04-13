@@ -105,7 +105,6 @@
   <string name="export_to_sd">Ekspor ke SD Card</string>
   <string name="enable_firewall_log">Hidupkan Log firewall</string>
   <string name="enable_firewall_log_service">Hidupkan layanan log</string>
-  <string name="enable_firewall_log_service">Hidupkan layanan log</string>
   <string name="showlog_title">Log Firewall</string>
   <string name="showlog_service_summary">Mengaktifkan ini akan menampilkan pesan saat koneksi ditolak </string>
   <string name="enable_log">Hidupkan Log</string>

@@ -106,7 +106,6 @@
   <string name="export_to_sd">Exportovat na SD kartu</string>
   <string name="enable_firewall_log">Povolit protokolování firewallu</string>
   <string name="enable_firewall_log_service">Zapnout logovací službu</string>
-  <string name="enable_firewall_log_service">Zapnout logovací službu</string>
   <string name="showlog_title">Protokol firewallu</string>
   <string name="showlog_service_summary">Povolením se zobrazí zprávy když jsou připojení zablokovány </string>
   <string name="enable_log">Povolit protokolování</string>

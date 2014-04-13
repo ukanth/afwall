@@ -18,6 +18,7 @@ package net.saik0.android.unifiedpreference;
 
 import java.util.Map;
 
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -29,8 +30,6 @@ import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.preference.TwoStatePreference;
 import android.text.TextUtils;
-import net.margaritov.preference.colorpicker.ColorPickerPreference;
-import dev.ukanth.ufirewall.R;
 
 public final class UnifiedPreferenceUtils {
 
@@ -71,7 +70,7 @@ public final class UnifiedPreferenceUtils {
 				// using RingtoneManager.
 				if (TextUtils.isEmpty(stringValue)) {
 					// Empty values correspond to 'silent' (no ringtone).
-					preference.setSummary(R.string.ringtone_silent);
+					//preference.setSummary(R.string.ringtone_silent);
 				} else {
 					Ringtone ringtone = RingtoneManager.getRingtone(
 							preference.getContext(), Uri.parse(stringValue));

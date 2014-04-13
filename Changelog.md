@@ -1,8 +1,27 @@
 Changelog AFWall+
-=============
+==================
 
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
+
+Version 1.3.1-BETA(BUG FIXES)
+
+Feature-Added filter for block notifications
+Bug-Send error report FC
+Bug-ip6tables log issues on most devices
+Bug-Toggle log error issue on some devices
+Bug-Fixed FC on preferences(Api-19)
+Bug-Widget display issue on some devices(#265)
+Bug-Better root detection and error display when there is no root
+Bug-Fixed FC on experimental Preferences(#270)
+Bug-Widget name issues and icons
+Bug-Performance improvement for multiprofile
+Bug-Reusing rootshell for logservice - should fix the multiple su requests
+Bug-Widget profile issue
+
+
+Version 1.3.0.2
+* Bug fixes on 1.3.x 
 
 Version 1.3.0.1
 * Old toggle widget is back - Hate you guys :)

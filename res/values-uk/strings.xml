@@ -105,7 +105,6 @@
   <string name="export_to_sd">Експорт до карти SD</string>
   <string name="enable_firewall_log">Увімкнути журнали брандмауера</string>
   <string name="enable_firewall_log_service">Увімкнути службу журналу</string>
-  <string name="enable_firewall_log_service">Увімкнути службу журналу</string>
   <string name="showlog_title">Журнали брандмауера</string>
   <string name="showlog_service_summary">Вмикання покаже повідомлення, коли блокується з\'єднання </string>
   <string name="enable_log">Увімкнути журнал</string>
