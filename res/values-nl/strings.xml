@@ -44,8 +44,8 @@
   <string name="passdefined">Wachtwoord beveiliging ingesteld</string>
   <string name="passremoved">Wachtwoord beveiliging verwijderd</string>
   <string name="passerror">Fout bij wijzigen wachtwoord</string>
-  <string name="working">Bezig ...</string>
-  <string name="reading_apps">Ophalen van geïnstalleerde applicaties...</string>
+  <string name="working">Working</string>
+  <string name="reading_apps">Retrieving installed applications</string>
   <string name="mode">Modus: </string>
   <string name="mode_header">Modus: %s</string>
   <string name="mode_whitelist">White list (toestaan selectie)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Regels leegmaken</string>
   <string name="send_report">Foutrapport verzenden</string>
   <string name="enter_problem">OMSCHRIJVING PROBLEEM HIER INVOEREN:</string>
-  <string name="send_mail">E-mail verzenden...</string>
+  <string name="send_mail">Send mail</string>
   <string name="notify_pref_summary_on">Een notificatie zal worden getoond wanneer een nieuwe applicatie is geïnstalleerd</string>
   <string name="notify_pref_summary_off">Er zal geen notificatie worden getoond wanneer er een nieuwe toepassing is geïnstalleerd</string>
   <string name="custom_script_defined">Aangepast script ingesteld</string>
@@ -94,7 +94,7 @@
   <string name="remove_initd">Opstartscript met succes verwijderd</string>
   <string name="unable_remove_initd">Niet mogelijk om AFWall+ startup script te verwijderen</string>
   <string name="widget_disable_fail">Kan firewall niet uitschakelen - Password ingesteld!</string>
-  <string name="widget_label_status">Wisselen AFWall+ status</string>
+  <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ instellingen</string>
   <string name="color_pick">Selecteer kleur om toe te passen</string>
   <string name="import_rules_droidwall">Importeer DW regels</string>
@@ -108,7 +108,10 @@
   <string name="export_logs_fail">Exporteren naar SD mislukt!</string>
   <string name="export_to_sd">Exporteren naar SD Card</string>
   <string name="enable_firewall_log">Inschakelen firewall logs</string>
+  <string name="enable_firewall_log_service">Turn on log service</string>
+  <string name="enable_firewall_log_service">Turn on log service</string>
   <string name="showlog_title">Firewall logs</string>
+  <string name="showlog_service_summary">Enable this will show messages when connections gets blocked </string>
   <string name="enable_log">Log inschakelen</string>
   <string name="disable_log">Log uitschakelen</string>
   <string name="log_disabled">Log uitgeschakeld</string>
@@ -123,6 +126,7 @@
   <string name="no_log">Log is leeg</string>
   <string name="LogAppName">Naam van toepassing</string>
   <string name="LogPackBlock">Totaal aantal packets geblokkeerd</string>
+  <string name="blocked">AFWall+ Blocked :</string>
   <string name="refresh">Ververs</string>
   <string name="mp_prefs_title">Voorkeuren meerdere profielen</string>
   <string name="custom_title1">Aangepaste naam voor standaardprofiel</string>
@@ -173,6 +177,8 @@
   <string name="switch_ipv4">Wissel IPv4 regels</string>
   <string name="sec_prefs_title">Voorkeuren veiligheidsopties</string>
   <string name="usePattern">Vergrendel patroon gebruiken in plaats van wachtwoord</string>
+  <string name="stealthMode">Stealth mode on pattern</string>
+  <string name="patternMaxTry">Maximum number of tries</string>
   <string name="resetPattern">Wilt u het vergrendel patroon opnieuw instellen ?</string>
   <string name="enable_device_admin">Apparaat Admin</string>
   <string name="device_admin_enabled">AFWall+ Device Admin ingeschakeld</string>
@@ -185,6 +191,7 @@
   <string name="enableInboundTitle">Inkomende verbindingen inschakelen</string>
   <string name="enableInboundSummary">Verbindingen toestaan vanaf een LAN naar de telefoon (Samba, sshd, AirDroid, enz.)</string>
   <string name="ui_prefs_title">UI voorkeuren</string>
+  <string name="log_prefs_title">Log Preferences</string>
   <string name="hideicons_pref_title">Verberg applicatie iconen</string>
   <string name="hideicons_pref_summary_on">Dit verbetert de prestaties door de applicatie pictogrammen uit te schakelen in het hoofdscherm</string>
   <string name="hideicons_pref_summary_off">De toepassingsiconen worden getoond op het hoofdscherm</string>
@@ -205,8 +212,8 @@
   <string name="Donate">Doneer</string>
   <string name="multi_apply_rules">Regels toepassen bij wisselen profiel</string>
   <string name="multi_apply_rules_info">Hiermee worden regels geladen en toegepast bij het wisselen van profiel</string>
-  <string name="multi_user_title">Ondersteunen Multi-User</string>
-  <string name="multi_user_summary">Inschakelen voor ondersteuning van meerdere gebruikers op een tablet</string>
+  <string name="multi_user_title">Enable Multi-user support</string>
+  <string name="multi_user_summary">Enable to support android multi-user on a tablet(only works in blacklist mode)</string>
   <string name="device_admin_desc">Extra beveiliging - voorkomen dat AFWall+ wordt verwijderd</string>
   <string name="traffic_detail_title">Details netwerkverkeer</string>
   <string name="uploaded">Geüpload</string>
@@ -233,8 +240,14 @@
   <string name="showFilter">Filter optie weergeven</string>
   <string name="showfilter_summary_on">Filteropties worden getoond in het hoofdscherm.</string>
   <string name="showfilter_summary_off">Filteroptie is verborgen</string>
-  <string name="enable_dns">Inschakelen</string>
-  <string name="disable_dns">Uitschakelen</string>
+  <string name="enable_dns">Enable DNS via netd</string>
+  <string name="disable_dns">Disable DNS via netd</string>
   <string name="dns_proxy_title">DNS-Proxy</string>
   <string name="dns_proxy_summary">DNS-proxy optie was toegevoegd ter ondersteuning van DNS-lookups via netd op JB 4.3 +. Bij uitschakelen wordt het internet op Android 4.3+ geblokkeerd</string>
+  <string name="tasker_lable">AFWall+ Tasker Plugin</string>
+  <string name="enable">Enable</string>
+  <string name="disable">Disable</string>
+  <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
+  <string name="apply_color">Press on Color to apply</string>
+  <string name="binaries">Binaries</string>
 </resources>

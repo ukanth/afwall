@@ -5,7 +5,7 @@
   <string name="title_disabled">AFWall+ (Deaktiviert)</string>
   <string name="whitelist_array_item">Erlaube ausgewählte Apps</string>
   <string name="blacklist_array_item">Blockiere ausgewählte Apps</string>
-  <string name="showrules">Zeige Regeln</string>
+  <string name="showrules">Firewall-Regeln</string>
   <string name="applyrules">Anwenden</string>
   <string name="saverules">Speichern</string>
   <string name="setpwd">Passwort setzen</string>
@@ -29,23 +29,23 @@
   <string name="fw_enabled">Firewall aktivieren</string>
   <string name="fw_disabled">Firewall deaktivieren</string>
   <string name="flushed">Regeln gesäubert</string>
-  <string name="show_log">Firewall Log</string>
-  <string name="clear_log">Lösche Protokoll</string>
+  <string name="show_log">Firewall-Protokoll</string>
+  <string name="clear_log">Protokoll löschen</string>
   <string name="applying_rules">IPTables Regel(n) anwenden...</string>
   <string name="saving_rules">IPTables Regel(n) speichern...</string>
-  <string name="rules_applied">Regeln wurden erfolgreich angewendet</string>
-  <string name="rules_saved">Regeln wurden erfolgreich gespeichert</string>
-  <string name="rules_deleted">Regeln wurden erfolgreich gelöscht</string>
-  <string name="pass_titleset">Setze Passwortsperre</string>
-  <string name="pass_titleget">Passwort benötigt</string>
+  <string name="rules_applied">Regeln erfolgreich angewandt</string>
+  <string name="rules_saved">Regeln erfolgreich gespeichert</string>
+  <string name="rules_deleted">Regeln erfolgreich gelöscht</string>
+  <string name="pass_titleset">Passwortsperre setzen</string>
+  <string name="pass_titleget">Passwort erforderlich</string>
   <string name="enterpass">Passwort eingeben:</string>
   <string name="error_write_pref">Fehler beim Schreiben der Einstellungen</string>
   <string name="enternewpass">Neues Passwort eingeben (Leer lassen für Löschen):</string>
   <string name="passdefined">Passwortsperre definiert</string>
   <string name="passremoved">Passwortsperre entfernt</string>
   <string name="passerror">Fehler beim Ändern der Passwortsperre</string>
-  <string name="working">Verarbeite ...</string>
-  <string name="reading_apps">Lese installierte Apps ein ...</string>
+  <string name="working">Verarbeite</string>
+  <string name="reading_apps">Lese installierte Apps ein</string>
   <string name="mode">Modus: </string>
   <string name="mode_header">Modus: %s</string>
   <string name="mode_whitelist">Erlaube ausgewählte Apps (White list)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Regeln erneuern</string>
   <string name="send_report">Fehlerbericht senden</string>
   <string name="enter_problem">GEBEN SIE HIER EINE BESCHREIBUNG DES PROBLEMS:</string>
-  <string name="send_mail">E-Mail senden...</string>
+  <string name="send_mail">E-Mail senden</string>
   <string name="notify_pref_summary_on">Es wird eine Benachrichtigung gesendet, wenn eine neue App installiert wurde</string>
   <string name="notify_pref_summary_off">Es wird keine Benachrichtigung gesendet, wenn eine neue App installiert wurde</string>
   <string name="custom_script_defined">Eigenes Skript definiert</string>
@@ -91,6 +91,7 @@
   <string name="remove_initd">Startup-Script erfolgreich entfernt!</string>
   <string name="unable_remove_initd">Entfernen des AFWall+ Startup-Script nicht möglich!</string>
   <string name="widget_disable_fail">Firewall kann nicht deaktiviert werden - Passwort festgelegt!</string>
+  <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ Einstellungen</string>
   <string name="color_pick">Auf Farbe tippen zum Anwenden</string>
   <string name="import_rules_droidwall">DW Regeln importieren</string>
@@ -104,6 +105,7 @@
   <string name="export_logs_fail">Export zu SD fehlgeschlagen!</string>
   <string name="export_to_sd">Auf SD-Karte exportieren</string>
   <string name="enable_firewall_log">Aktiviere Firewall-Logs</string>
+  <string name="enable_firewall_log_service">Protokolldienst einschalten</string>
   <string name="enable_firewall_log_service">Protokolldienst einschalten</string>
   <string name="showlog_title">Firewall Log</string>
   <string name="showlog_service_summary">Wenn dies aktiviert ist zeigt es Informationen, wenn Verbindungen geblockt werden </string>
@@ -186,6 +188,7 @@
   <string name="enableInboundTitle">Erlaube eingehende Verbindungen</string>
   <string name="enableInboundSummary">Erlaube Verbindungen vom LAN zum Gerät (Samba, sshd, AirDroid, etc.)</string>
   <string name="ui_prefs_title">Oberfläche</string>
+  <string name="log_prefs_title">Protokolleinstellungen</string>
   <string name="hideicons_pref_title">Verstecke App-Symbole</string>
   <string name="hideicons_pref_summary_on">Werden die Symbole in der Hauptansicht ausgeblendet, verbessert sich die Leistung</string>
   <string name="hideicons_pref_summary_off">App-Symbole werden in der Hauptansicht angezeigt</string>
@@ -241,4 +244,7 @@
   <string name="tasker_lable">AFWall+ Tasker Plugin</string>
   <string name="enable">Aktivieren</string>
   <string name="disable">Deaktivieren</string>
+  <string name="filters_apps_title">Filter Apps (Benachrichtigung nicht zeigen)</string>
+  <string name="apply_color">Auf Farbe zum Anwenden tippen</string>
+  <string name="binaries">Binärdateien</string>
 </resources>

@@ -44,8 +44,8 @@
   <string name="passdefined">Jelszavas védelem lett beállítva</string>
   <string name="passremoved">Jelszavas védelem eltávolítva</string>
   <string name="passerror">Hiba a jelszavas védelem megváltoztatásakor</string>
-  <string name="working">Folyamatban ...</string>
-  <string name="reading_apps">Telepített alkalmazások lekérése ...</string>
+  <string name="working">Working</string>
+  <string name="reading_apps">Retrieving installed applications</string>
   <string name="mode">Mód: </string>
   <string name="mode_header">Mód: %s</string>
   <string name="mode_whitelist">Fehér lista (kiválasztott engedélyezve)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Szabályok ürítése</string>
   <string name="send_report">Hibajelentés küldése</string>
   <string name="enter_problem">A PROBLÉMA LEÍRÁSA:</string>
-  <string name="send_mail">Levél küldése...</string>
+  <string name="send_mail">Send mail</string>
   <string name="notify_pref_summary_on">Új alkalmazás telepítésekor értesítést fog kapni</string>
   <string name="notify_pref_summary_off">Új alkalmazás telepítésekor nem kap értesítést</string>
   <string name="custom_script_defined">Egyéni script beállítva</string>
@@ -91,7 +91,7 @@
   <string name="remove_initd">Sikeresen eltávolította az indítási scriptet</string>
   <string name="unable_remove_initd">Nem sikerült eltávolítani az AFWall+ indítási scriptet</string>
   <string name="widget_disable_fail">Nem lehet letiltani a tűzfalat - jelszó van beállítva!</string>
-  <string name="widget_label_status">AFWall+ Kapcsoló/Állapot</string>
+  <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ beállítások</string>
   <string name="color_pick">Érintsd meg a használni kívánt színt</string>
   <string name="import_rules_droidwall">DW szabályok importálása</string>
@@ -105,7 +105,10 @@
   <string name="export_logs_fail">Nem sikerült az SD-re exportálni!</string>
   <string name="export_to_sd">Exportálás az SD kártyára</string>
   <string name="enable_firewall_log">Tűzfal naplók (log-ok) engedélyezése</string>
+  <string name="enable_firewall_log_service">Turn on log service</string>
+  <string name="enable_firewall_log_service">Turn on log service</string>
   <string name="showlog_title">Tűzfal naplók (log-ok)</string>
+  <string name="showlog_service_summary">Enable this will show messages when connections gets blocked </string>
   <string name="enable_log">Napló (log) engedélyezése</string>
   <string name="disable_log">Napló (log) tiltása</string>
   <string name="log_disabled">Napló (log) letiltva</string>
@@ -120,6 +123,7 @@
   <string name="no_log">A napló (log) üres</string>
   <string name="LogAppName">Alkalmazás(ok) neve</string>
   <string name="LogPackBlock">Összes csomag blokkolva</string>
+  <string name="blocked">AFWall+ Blocked :</string>
   <string name="refresh">Frissítés</string>
   <string name="mp_prefs_title">Profilok beállításai</string>
   <string name="custom_title1">Egyéni név az alapértelmezett profilhoz</string>
@@ -170,6 +174,8 @@
   <string name="switch_ipv4">IPV4 szabályok kapcsoló</string>
   <string name="sec_prefs_title">Biztonsági beállítások</string>
   <string name="usePattern">Használjon zár-mintát a jelszó helyett</string>
+  <string name="stealthMode">Stealth mode on pattern</string>
+  <string name="patternMaxTry">Maximum number of tries</string>
   <string name="resetPattern">Vissza szeretné állítani a zár-mintát eredeti állapotba ?</string>
   <string name="enable_device_admin">Eszköz rendszergazda</string>
   <string name="device_admin_enabled">AFWall+ Eszköz rendszergazda engedélyezve</string>
@@ -182,6 +188,7 @@
   <string name="enableInboundTitle">Engedélyezi a bejövő kapcsolatokat</string>
   <string name="enableInboundSummary">Engedélyezi a LAN-ról az eszközre érkező kapcsolatokat (Samba, sshd, AirDroid, stb.)</string>
   <string name="ui_prefs_title">Felhasználói felület beállításai</string>
+  <string name="log_prefs_title">Log Preferences</string>
   <string name="hideicons_pref_title">Alkalmazás(ok) ikonjának elrejtése</string>
   <string name="hideicons_pref_summary_on">Letilthatja az alkalmazás ikonokat a fő nézetben, ezzel teljesítmény növekedést érhet el</string>
   <string name="hideicons_pref_summary_off">Az alkalmazások ikonjai a fő nézetben meg fognak jelenni</string>
@@ -202,8 +209,8 @@
   <string name="Donate">Támogatás</string>
   <string name="multi_apply_rules">Alkalmazza a szabályokat profil váltás esetén</string>
   <string name="multi_apply_rules_info">Betölti és alkalmazza a szabályokat profil váltás esetén</string>
-  <string name="multi_user_title">Support MultiUser</string>
-  <string name="multi_user_summary">Enable to support android multi-user on a tablet</string>
+  <string name="multi_user_title">Enable Multi-user support</string>
+  <string name="multi_user_summary">Enable to support android multi-user on a tablet(only works in blacklist mode)</string>
   <string name="device_admin_desc">Additional Security - Prevent AFWall+ from uninstall</string>
   <string name="traffic_detail_title">Traffic Details</string>
   <string name="uploaded">Uploaded</string>
@@ -230,8 +237,14 @@
   <string name="showFilter">Show filter option</string>
   <string name="showfilter_summary_on">Filter options will be shown in the main view.</string>
   <string name="showfilter_summary_off">Filter option is hidden</string>
-  <string name="enable_dns">Enable</string>
-  <string name="disable_dns">Disable</string>
-  <string name="dns_proxy_title">DNS Proxy</string>
+  <string name="enable_dns">Enable DNS via netd</string>
+  <string name="disable_dns">Disable DNS via netd</string>
+  <string name="dns_proxy_title">DNS Proxy </string>
   <string name="dns_proxy_summary">DNS proxy option was added to support DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>
+  <string name="tasker_lable">AFWall+ Tasker Plugin</string>
+  <string name="enable">Enable</string>
+  <string name="disable">Disable</string>
+  <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
+  <string name="apply_color">Press on Color to apply</string>
+  <string name="binaries">Binaries</string>
 </resources>

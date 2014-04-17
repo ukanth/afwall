@@ -44,8 +44,8 @@
   <string name="passdefined">Heslo zámku zadáno</string>
   <string name="passremoved">Heslo zámku odstraněno</string>
   <string name="passerror">Chyba při změně hesla</string>
-  <string name="working">Zpracovávám ...</string>
-  <string name="reading_apps">Načítání nainstalovaných aplikací ...</string>
+  <string name="working">Pracuji</string>
+  <string name="reading_apps">Načítání nainstalovaných aplikací</string>
   <string name="mode">Režim: </string>
   <string name="mode_header">Režim: %s</string>
   <string name="mode_whitelist">White list (povolit vybrané)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Smazat pravidla</string>
   <string name="send_report">Odeslat zprávu o chybách</string>
   <string name="enter_problem">ZADEJTE POPIS PROBLÉMU ZDE:</string>
-  <string name="send_mail">Poslat mail...</string>
+  <string name="send_mail">Poslat mail</string>
   <string name="notify_pref_summary_on">Po instalaci aplikací bude zobrazeno upozornění</string>
   <string name="notify_pref_summary_off">Po instalaci aplikací nebude zobrazeno žádné upozornění</string>
   <string name="custom_script_defined">Vlastní skript definován</string>
@@ -92,6 +92,7 @@
   <string name="remove_initd">Úspěšně odebrán spouštěcí skript</string>
   <string name="unable_remove_initd">Nepodařilo se odebrat spouštěcí skript AFWall+</string>
   <string name="widget_disable_fail">Nelze zakázat firewall - definované heslo!</string>
+  <string name="widget_label_status">AFWall+ přepínač/stav</string>
   <string name="widget_label_settings">AFWall + nastavení</string>
   <string name="color_pick">Stiskněte barvu pro výběr</string>
   <string name="import_rules_droidwall">Importovat pravidla DW</string>
@@ -105,6 +106,7 @@
   <string name="export_logs_fail">Export na SD kartu selhal!</string>
   <string name="export_to_sd">Exportovat na SD kartu</string>
   <string name="enable_firewall_log">Povolit protokolování firewallu</string>
+  <string name="enable_firewall_log_service">Zapnout logovací službu</string>
   <string name="enable_firewall_log_service">Zapnout logovací službu</string>
   <string name="showlog_title">Protokol firewallu</string>
   <string name="showlog_service_summary">Povolením se zobrazí zprávy když jsou připojení zablokovány </string>
@@ -187,6 +189,7 @@
   <string name="enableInboundTitle">Povolit příchozí připojení</string>
   <string name="enableInboundSummary">Povolit spojení z LAN do telefonu (Samba, sshd, AirDroid, atd.)</string>
   <string name="ui_prefs_title">Nastavení UI</string>
+  <string name="log_prefs_title">Nastavení záznamů</string>
   <string name="hideicons_pref_title">Skrýt ikony aplikací</string>
   <string name="hideicons_pref_summary_on">Zvýší výkon vypnutím zobrazení ikon aplikací</string>
   <string name="hideicons_pref_summary_off">Ikony aplikací budou zobrazeny v hlavním zobrazení</string>
@@ -242,4 +245,7 @@
   <string name="tasker_lable">AFWall+ Tasker Plugin</string>
   <string name="enable">Povolit</string>
   <string name="disable">Zakázat</string>
+  <string name="filters_apps_title">Filtr aplikací (nezobrazovat upozornění)</string>
+  <string name="apply_color">Stisknutím barvy aplikujete</string>
+  <string name="binaries">Binární</string>
 </resources>

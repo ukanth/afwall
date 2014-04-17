@@ -44,8 +44,8 @@
   <string name="passdefined">Contraseña de bloqueo definida</string>
   <string name="passremoved">Contraseña de bloqueo eliminada</string>
   <string name="passerror">Error al cambiar la contraseña de bloqueo</string>
-  <string name="working">Trabajando...</string>
-  <string name="reading_apps">Recopilando las aplicaciones instaladas ...</string>
+  <string name="working">Trabajando</string>
+  <string name="reading_apps">Recopilando las aplicaciones instaladas</string>
   <string name="mode">Modo: </string>
   <string name="mode_header">Modo: %s</string>
   <string name="mode_whitelist">Lista blanca (permitir los seleccionados)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Borrar Reglas</string>
   <string name="send_report">Envíar informe de errores</string>
   <string name="enter_problem">ESCRIBE AQUÍ LA DESCRIPCIÓN DEL PROBLEMA:</string>
-  <string name="send_mail">Envíar email...</string>
+  <string name="send_mail">Envíar email</string>
   <string name="notify_pref_summary_on">Se mostrará una notificación cuando se instale una nueva aplicación</string>
   <string name="notify_pref_summary_off">No se mostrará ninguna notificación cuando se instale una nueva aplicación</string>
   <string name="custom_script_defined">Script personalizado definido</string>
@@ -91,6 +91,7 @@
   <string name="remove_initd">Eliminado correctamente el script de arranque</string>
   <string name="unable_remove_initd">No se puede eliminar el script de arranque de AFWall+</string>
   <string name="widget_disable_fail">No es posible desactivar el firewall - ¡tiene contraseña!</string>
+  <string name="widget_label_status">AFWall+ Interruptor/Estado</string>
   <string name="widget_label_settings">AFWall+ Configuración</string>
   <string name="color_pick">Pulsa en el color que quieres aplicar</string>
   <string name="import_rules_droidwall">Importar reglas de DroidWall</string>
@@ -104,6 +105,7 @@
   <string name="export_logs_fail">¡La exportación a la SD ha fallado!</string>
   <string name="export_to_sd">Exportar a la tarjeta SD</string>
   <string name="enable_firewall_log">Activar el registro del cortafuegos</string>
+  <string name="enable_firewall_log_service">Encender el servicio de registro</string>
   <string name="enable_firewall_log_service">Encender el servicio de registro</string>
   <string name="showlog_title">Registros del cortafuegos</string>
   <string name="showlog_service_summary">Activar esto mostrará un mensaje cuando se bloqueen conexiones </string>
@@ -186,6 +188,7 @@
   <string name="enableInboundTitle">Habilitar las conexiones entrantes</string>
   <string name="enableInboundSummary">Permitir conexiones desde la LAN al teléfono (Samba, sshd, AirDroid, etc..)</string>
   <string name="ui_prefs_title">Preferencias de la interfaz de usuario</string>
+  <string name="log_prefs_title">Preferencias de registro</string>
   <string name="hideicons_pref_title">Ocultar los iconos de las aplicaciones</string>
   <string name="hideicons_pref_summary_on">Esta opción mejorará el rendimiento desactivando los iconos de aplicación en la ventana principal</string>
   <string name="hideicons_pref_summary_off">Se mostrarán los iconos de las aplicaciones en la ventana principal</string>
@@ -241,4 +244,7 @@
   <string name="tasker_lable">AFWall + Plugin de Tasker</string>
   <string name="enable">Activar</string>
   <string name="disable">Desactivar</string>
+  <string name="filters_apps_title">Filtrar Aplicaciones (No mostrar la notificación)</string>
+  <string name="apply_color">Pulse sobre el color para aplicar</string>
+  <string name="binaries">Binarios</string>
 </resources>

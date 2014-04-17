@@ -44,8 +44,8 @@
   <string name="passdefined">Password didefinisikan</string>
   <string name="passremoved">Password lock dihapus</string>
   <string name="passerror">Gagal mengubah password</string>
-  <string name="working">Sedang bekerja ...</string>
-  <string name="reading_apps">Mengambil daftar aplikasi ...</string>
+  <string name="working">Sedang mengerjakan</string>
+  <string name="reading_apps">Membaca aplikasi terinstall</string>
   <string name="mode">Mode: </string>
   <string name="mode_header">Mode: %s</string>
   <string name="mode_whitelist">Daftar putih (ijinkan yg dipilih)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Bersihkan aturan</string>
   <string name="send_report">Kirim laporan eror</string>
   <string name="enter_problem">TULISKAN MASALAH DI SINI:</string>
-  <string name="send_mail">Kirim...</string>
+  <string name="send_mail">Kirim email</string>
   <string name="notify_pref_summary_on">Pemberitahuan akan dikirim saat aplikasi baru di-install</string>
   <string name="notify_pref_summary_off">Tidak ada pemberitahuan akan dikirim saat aplikasi baru di-install</string>
   <string name="custom_script_defined">Skrip didefinisikan</string>
@@ -91,6 +91,7 @@
   <string name="remove_initd">Berhasil menghapus skrip permulaan</string>
   <string name="unable_remove_initd">Gagal menghapus skrip permulaan</string>
   <string name="widget_disable_fail">Gagal mematikan firewall. ber-password!</string>
+  <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">Pengaturan AFWall+</string>
   <string name="color_pick">Sentuh pd warna untuk menerapkan</string>
   <string name="import_rules_droidwall">Impor aturan DW</string>
@@ -104,6 +105,7 @@
   <string name="export_logs_fail">Gagal mengekspor ke SD!</string>
   <string name="export_to_sd">Ekspor ke SD Card</string>
   <string name="enable_firewall_log">Hidupkan Log firewall</string>
+  <string name="enable_firewall_log_service">Hidupkan layanan log</string>
   <string name="enable_firewall_log_service">Hidupkan layanan log</string>
   <string name="showlog_title">Log Firewall</string>
   <string name="showlog_service_summary">Mengaktifkan ini akan menampilkan pesan saat koneksi ditolak </string>
@@ -186,6 +188,7 @@
   <string name="enableInboundTitle">Hidupkan koneksi masuk</string>
   <string name="enableInboundSummary">Ijinkan koneksi dari LAN ke perangkat (Samba, sshd, AirDroid, dll.)</string>
   <string name="ui_prefs_title">Preferensi Tampilan</string>
+  <string name="log_prefs_title">Preferensi log</string>
   <string name="hideicons_pref_title">Sembunyikan ikon aplikasi</string>
   <string name="hideicons_pref_summary_on">Akan meningkatkan kinerja dengan menyembunikan ikon pada menu utama</string>
   <string name="hideicons_pref_summary_off">Ikon aplikasi akan ditampilkan pada menu utama</string>
@@ -241,4 +244,7 @@
   <string name="tasker_lable">Plugin Tugas AFWall+</string>
   <string name="enable">Aktifkan</string>
   <string name="disable">Matikan</string>
+  <string name="filters_apps_title">Penyaring aplikasi (Pemberitahuan tdk ditampilkan)</string>
+  <string name="apply_color">Sentuh pada warna untuk menerapkan</string>
+  <string name="binaries">Binari</string>
 </resources>

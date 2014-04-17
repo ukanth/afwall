@@ -44,8 +44,8 @@
   <string name="passdefined">Lösenordsskydd aktiverat</string>
   <string name="passremoved">Lösenordsskydd inaktiverat</string>
   <string name="passerror">Fel vid ändring av lösenord</string>
-  <string name="working">Arbetar...</string>
-  <string name="reading_apps">Listar installerade program ...</string>
+  <string name="working">Arbetar</string>
+  <string name="reading_apps">Listar installerade program</string>
   <string name="mode">Mode: </string>
   <string name="mode_header">Mode: %s</string>
   <string name="mode_whitelist">White list (tillåt markerade)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Ta bort reglerna</string>
   <string name="send_report">Skicka felrapport</string>
   <string name="enter_problem">ANGE PROBLEMBESKRIVNING HÄR:</string>
-  <string name="send_mail">Skicka e-post...</string>
+  <string name="send_mail">Skicka e-post</string>
   <string name="notify_pref_summary_on">Notifiering sker när en ny app installeras</string>
   <string name="notify_pref_summary_off">Ingen notifiering kommer att ske när en ny app installeras</string>
   <string name="custom_script_defined">Eget skript definierat</string>
@@ -105,7 +105,10 @@
   <string name="export_logs_fail">Det gick inte att exportera till SD!</string>
   <string name="export_to_sd">Exportera till SD-kort</string>
   <string name="enable_firewall_log">Aktivera brandväggsloggar</string>
+  <string name="enable_firewall_log_service">Slå på Loggtjänsten</string>
+  <string name="enable_firewall_log_service">Slå på Loggtjänsten</string>
   <string name="showlog_title">Brandväggsloggar</string>
+  <string name="showlog_service_summary">Aktivera detta för att visa meddelanden när anslutningar blockeras </string>
   <string name="enable_log">Aktivera logg</string>
   <string name="disable_log">Inaktivera logg</string>
   <string name="log_disabled">Loggning inaktiverad</string>
@@ -120,6 +123,7 @@
   <string name="no_log">Loggen är tom</string>
   <string name="LogAppName">Applikationens namn</string>
   <string name="LogPackBlock">Sammanlagt antal paket blockeras</string>
+  <string name="blocked">AFWall+ blockerade:</string>
   <string name="refresh">Uppdatera</string>
   <string name="mp_prefs_title">Multipla profiler inställningar</string>
   <string name="custom_title1">Eget namn för standardprofil</string>
@@ -170,6 +174,8 @@
   <string name="switch_ipv4">Byt IPv4 regler</string>
   <string name="sec_prefs_title">Säkerhetsinställningar</string>
   <string name="usePattern">Använd låsmönster istället för lösenord</string>
+  <string name="stealthMode">Stealth-läge på mönster</string>
+  <string name="patternMaxTry">Högsta antal försök</string>
   <string name="resetPattern">Vill du återställa låsmönstret?</string>
   <string name="enable_device_admin">Enhetsadministratör</string>
   <string name="device_admin_enabled">AFWall+ Enhetsadministratör aktiverad</string>
@@ -182,6 +188,7 @@
   <string name="enableInboundTitle">Aktivera inkommande anslutningar</string>
   <string name="enableInboundSummary">Tillåt anslutningar från LAN till telefonen (Samba, sshd, AirDroid, osv)</string>
   <string name="ui_prefs_title">UI inställningar</string>
+  <string name="log_prefs_title">Log inställningar</string>
   <string name="hideicons_pref_title">Dölj applikationernas ikoner</string>
   <string name="hideicons_pref_summary_on">Detta kommer att förbättra prestanda genom att inaktivera ikoner på huvudvyn</string>
   <string name="hideicons_pref_summary_off">Applikationernas ikoner visas i huvudvyn</string>
@@ -202,8 +209,8 @@
   <string name="Donate">Donera</string>
   <string name="multi_apply_rules">Tillämpa regler vid profilbyte</string>
   <string name="multi_apply_rules_info">Detta kommer att läsa in och tillämpa regler vid byte av profil</string>
-  <string name="multi_user_title">Stöd flera användare</string>
-  <string name="multi_user_summary">Aktivera för Androids fleranvändarstöd på surfplatta</string>
+  <string name="multi_user_title">Aktivera stöd för flera användare</string>
+  <string name="multi_user_summary">Aktivera för att stödja Android flera användare på en Surfplatta (fungerar bara i blacklist-läge)</string>
   <string name="device_admin_desc">Extra säkerhet - förhindra AFWall+ från att avinstalleras</string>
   <string name="traffic_detail_title">Detaljerad trafikinformation</string>
   <string name="uploaded">Skickat</string>
@@ -230,8 +237,14 @@
   <string name="showFilter">Visa filteralternativ</string>
   <string name="showfilter_summary_on">Filteralternativ visas i huvudvyn.</string>
   <string name="showfilter_summary_off">Filteralternativ är dolt</string>
-  <string name="enable_dns">Aktivera</string>
-  <string name="disable_dns">Inaktivera</string>
+  <string name="enable_dns">Aktivera DNS via netd</string>
+  <string name="disable_dns">Inaktivera DNS via netd</string>
   <string name="dns_proxy_title">DNS-Proxy</string>
   <string name="dns_proxy_summary">Alternativ för DNS-proxy lades till för att stödja DNS-sökningar via netd på JB 4.3+. Inaktiveras detta blockas internet på Android 4.3+</string>
+  <string name="tasker_lable">AFWall+ Tasker Plugin</string>
+  <string name="enable">Aktivera</string>
+  <string name="disable">Inaktivera</string>
+  <string name="filters_apps_title">Filtrera program (Visa inte notifieringar)</string>
+  <string name="apply_color">Tryck på färg att tillämpa</string>
+  <string name="binaries">Binärer</string>
 </resources>

@@ -44,8 +44,8 @@
   <string name="passdefined">Zaklepanje z geslom uveljavljeno</string>
   <string name="passremoved">Zaklepanje z geslom izklopljeno</string>
   <string name="passerror">Napaka pri spreminjanju gesla za odklepanje</string>
-  <string name="working">Delam...</string>
-  <string name="reading_apps">Preverjam nameščene aplikacije...</string>
+  <string name="working">Delam</string>
+  <string name="reading_apps">Pridobivam podatke</string>
   <string name="mode">Način: </string>
   <string name="mode_header">Način: %s</string>
   <string name="mode_whitelist">Beli seznam (dovoli izbrano)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Uveljavi pravila</string>
   <string name="send_report">Pošlji poročilo o napaki</string>
   <string name="enter_problem">VNESITE OPIS TEŽAVE:</string>
-  <string name="send_mail">Pošlji e-pošto...</string>
+  <string name="send_mail">Pošlji sporočilo</string>
   <string name="notify_pref_summary_on">Ob namestitvi nove aplikacije boste prejeli obvestilo</string>
   <string name="notify_pref_summary_off">Brez obveščanja ob namestitvi novih aplikacij</string>
   <string name="custom_script_defined">Skripta nastavljena</string>
@@ -91,6 +91,7 @@
   <string name="remove_initd">Zagonska skripta je bila uspešno odstranjena</string>
   <string name="unable_remove_initd">Ne morem odstraniti zagonske skripte AFWall+</string>
   <string name="widget_disable_fail">Ne morem izključiti požarnega zidu - zaščiteno z geslom!</string>
+  <string name="widget_label_status">Vklop/stanje AFWall+</string>
   <string name="widget_label_settings">Nastavitve AFWall+</string>
   <string name="color_pick">Za izbiro pritisnite na barvo</string>
   <string name="import_rules_droidwall">Uvozi pravila DW</string>
@@ -103,9 +104,10 @@
   <string name="exportConfirm">Želite izvoziti pravila na kartico SD?</string>
   <string name="export_logs_fail">Izvoz na kartico SD neuspešen!</string>
   <string name="export_to_sd">Izvozi na kartico SD</string>
-  <string name="enable_firewall_log">Dnevnik aktivnosti</string>
+  <string name="enable_firewall_log">Vklop/izklop dnevnika aktivnosti</string>
   <string name="enable_firewall_log_service">Beleženje</string>
-  <string name="showlog_title">Dnevnik aktivnosti</string>
+  <string name="enable_firewall_log_service">Beleženje</string>
+  <string name="showlog_title">Vklop/izklop</string>
   <string name="showlog_service_summary">Vklopi prikaz obvestil ob blokadi povezave</string>
   <string name="enable_log">Vključi</string>
   <string name="disable_log">Izključi</string>
@@ -134,7 +136,7 @@
   <string name="toggle_profile1">Aktiviraj profil 1</string>
   <string name="toggle_profile2">Aktiviraj profil 2</string>
   <string name="toggle_profile3">Aktiviraj profil 3</string>
-  <string name="multipleProfiles">Več profilov</string>
+  <string name="multipleProfiles">Nastavitve profilov</string>
   <string name="defaultProfile">Osnovni</string>
   <string name="profile1">Profil 1</string>
   <string name="profile2">Profil 2</string>
@@ -186,6 +188,7 @@
   <string name="enableInboundTitle">Dovoli dohodne povezave</string>
   <string name="enableInboundSummary">Omogoči povezovanje iz omrežja LAN do naprave (Samba, sshd, AirDroid, itd.)</string>
   <string name="ui_prefs_title">Nastavitve vmesnika</string>
+  <string name="log_prefs_title">Nastavitve dnevnika aktivnosti</string>
   <string name="hideicons_pref_title">Skrij ikone aplikacij</string>
   <string name="hideicons_pref_summary_on">Umik ikon aplikacij iz glavnega seznama lahko izboljša zmogljivost požarnega zidu</string>
   <string name="hideicons_pref_summary_off">Ikone aplikacij bodo prikazane v osnovnem pogledu</string>
@@ -204,7 +207,7 @@
   <string name="profile_remove">Odstrani profil</string>
   <string name="profile_rename">Preimenuj profil</string>
   <string name="Donate">Doniraj</string>
-  <string name="multi_apply_rules">Zamenjava profila</string>
+  <string name="multi_apply_rules">Uveljavi pravila</string>
   <string name="multi_apply_rules_info">Uveljavi pravila Iptables ob vsaki zamenjavi profila</string>
   <string name="multi_user_title">Večuporabniški način</string>
   <string name="multi_user_summary">Vklopi podporo za androidni večuporabniški način na tablici (deluje samo s črnim seznamom)</string>
@@ -241,4 +244,7 @@
   <string name="tasker_lable">Vtičnik Tasker za AFWall+</string>
   <string name="enable">Vklopi</string>
   <string name="disable">Izklopi</string>
+  <string name="filters_apps_title">Filtriraj aplikacije (brez obvestil)</string>
+  <string name="apply_color">Za spremembo pritisni na barvo</string>
+  <string name="binaries">Binarne datoteke</string>
 </resources>

@@ -44,8 +44,8 @@
   <string name="passdefined">Parola de blocare a fost stabilită</string>
   <string name="passremoved">Parola de blocare eliminată</string>
   <string name="passerror">Eroare la schimbarea parolei de blocare</string>
-  <string name="working">În lucru...</string>
-  <string name="reading_apps">Se obțin aplicațiile instalate...</string>
+  <string name="working">În lucru</string>
+  <string name="reading_apps">Se obțin aplicațiile instalate</string>
   <string name="mode">Mod: </string>
   <string name="mode_header">Mod: %s</string>
   <string name="mode_whitelist">Lista albă (permite selectate)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Revigorează regulile</string>
   <string name="send_report">Trimite raportul de eroare</string>
   <string name="enter_problem">INTRODUCEŢI DESCRIEREA PROBLEMEI AICI:</string>
-  <string name="send_mail">Trimite e-mail...</string>
+  <string name="send_mail">Trimite e-mail</string>
   <string name="notify_pref_summary_on">O notificare va fi trimisă când este instalată o aplicație nouă</string>
   <string name="notify_pref_summary_off">Nu va fi trimisă notificarea când este instalată o aplicație nouă</string>
   <string name="custom_script_defined">Script personalizat definit</string>
@@ -91,6 +91,7 @@
   <string name="remove_initd">Scriptul de pornire a fost eliminat cu succes</string>
   <string name="unable_remove_initd">Nu s-a putut elimina scriptul de pornire</string>
   <string name="widget_disable_fail">Firewall-ul nu poate fi dezactivat (protejat cu parolă)!</string>
+  <string name="widget_label_status">AFWall+ Comutare/Stare</string>
   <string name="widget_label_settings">Setări AFWall +</string>
   <string name="color_pick">Apasă pe Culoare pentru aplicare</string>
   <string name="import_rules_droidwall">Importă regulile DW</string>
@@ -104,6 +105,7 @@
   <string name="export_logs_fail">Exportul regulilor pe SD Card a eșuat!</string>
   <string name="export_to_sd">Exportă pe SD Card</string>
   <string name="enable_firewall_log">Activează rapoartele pentru Firewall</string>
+  <string name="enable_firewall_log_service">Activaţi serviciul jurnal</string>
   <string name="enable_firewall_log_service">Activaţi serviciul jurnal</string>
   <string name="showlog_title">Rapoarte Firewall</string>
   <string name="showlog_service_summary">Activând această opțiune va afișa mesaje când conexiunile vin blocate </string>
@@ -186,6 +188,7 @@
   <string name="enableInboundTitle">Activează conexiunile de intrare</string>
   <string name="enableInboundSummary">Permite conexiuni LAN către telefon (Samba, sshd, AirDroid, etc.)</string>
   <string name="ui_prefs_title">Preferințe UI</string>
+  <string name="log_prefs_title">Preferințe jurnal</string>
   <string name="hideicons_pref_title">Ascunde pictogramele aplicațiilor</string>
   <string name="hideicons_pref_summary_on">Dezactivarea pictogramelor în ecranul principal va îmbunătăți performanțele</string>
   <string name="hideicons_pref_summary_off">Pictogramele aplicațiilor vor apărea în ecranul principal</string>
@@ -241,4 +244,7 @@
   <string name="tasker_lable">AFWall + Tasker Plugin</string>
   <string name="enable">Activează</string>
   <string name="disable">Dezactivează</string>
+  <string name="filters_apps_title">Filtrează aplicațiile (Nu afișa notificare)</string>
+  <string name="apply_color">Apasă pe Culoare pentru a aplica</string>
+  <string name="binaries">Binare</string>
 </resources>

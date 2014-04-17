@@ -44,19 +44,19 @@
   <string name="passdefined">Şifre tanımlandı</string>
   <string name="passremoved">Şifre kaldırıldı</string>
   <string name="passerror">Şifre değiştirirken hata</string>
-  <string name="working">Çalışıyor ...</string>
-  <string name="reading_apps">Yüklü uygulamalar alınıyor ...</string>
+  <string name="working">Çalışıyor</string>
+  <string name="reading_apps">Yüklü uygulamalar alınıyor</string>
   <string name="mode">Mod: </string>
   <string name="mode_header">Mod: %s</string>
   <string name="mode_whitelist">Beyaz liste (seçilene izin ver)</string>
   <string name="mode_blacklist">Kara liste (seçileni engelle)</string>
   <string name="set_custom_script">Özel komut belirle</string>
   <string name="preferences">Tercihler</string>
-  <string name="reload">Uygulamaları Yeniden Yükle</string>
+  <string name="reload">Uygulamaları tekrar yükle</string>
   <string name="flush">Kuralları Boşalt</string>
   <string name="send_report">Hata raporu gönder</string>
   <string name="enter_problem">PROBLEM AÇIKLAMASINI GİRİNİZ:</string>
-  <string name="send_mail">Mail gönder...</string>
+  <string name="send_mail">Mail gönder</string>
   <string name="notify_pref_summary_on">Yeni bir uygulama yüklendiğinde bildirim gönderilecek</string>
   <string name="notify_pref_summary_off">Yeni bir uygulama yüklendiğinde hiçbir bildirim gönderilmeyecek</string>
   <string name="custom_script_defined">Özel komut tanımlandı</string>
@@ -105,8 +105,12 @@
   <string name="exportConfirm">Kuralları SD kart üzerine vermek istiyor musunuz?</string>
   <string name="export_logs_fail">Bellek kartına verme başarısız oldu!</string>
   <string name="export_to_sd">Bellek Kartına Ver</string>
-  <string name="enable_firewall_log">Güvenlik Duvarı Günlüklerini Etkinleştir</string>
-  <string name="showlog_title">Güvenlik Duvarı Günlükleri</string>
+  <string name="enable_firewall_log">Günlükleri etkinleştir</string>
+  <string name="enable_firewall_log_service">Log servisini aç</string>
+  <string name="enable_firewall_log_service">Log servisini aç</string>
+  <string name="showlog_title">Güvenlik duvarı günlükleri</string>
+  <string name="showlog_service_summary">Enable this will show messages when connections gets blocked 
+Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>
   <string name="enable_log">Günlük Etkin</string>
   <string name="disable_log">Günlük Devredışı</string>
   <string name="log_disabled">Günlük devre dışı</string>
@@ -121,6 +125,7 @@
   <string name="no_log">Günlük Boş</string>
   <string name="LogAppName">Uygulamanın Adı</string>
   <string name="LogPackBlock">Tüm Paketler Engellendi</string>
+  <string name="blocked">AFWall + Engelledi:</string>
   <string name="refresh">Yenile</string>
   <string name="mp_prefs_title">Çoklu Profil Tercihleri</string>
   <string name="custom_title1">Varsayılan profil için isim belirle</string>
@@ -171,6 +176,8 @@
   <string name="switch_ipv4">IPv4 Kurallarına Geçiş</string>
   <string name="sec_prefs_title">Güvenlik Tercihleri</string>
   <string name="usePattern">Şifre yerine, model kilidini kullan</string>
+  <string name="stealthMode">Desen gizli modu</string>
+  <string name="patternMaxTry">En fazla deneme sayısını</string>
   <string name="resetPattern">Model kilidini sıfırlamak istiyor musunuz?</string>
   <string name="enable_device_admin">Cihaz Yöneticisi</string>
   <string name="device_admin_enabled">AFWall+ Cihaz Yöneticisi Etkinleştirildi</string>
@@ -183,6 +190,7 @@
   <string name="enableInboundTitle">Gelen bağlantıları etkinleştir</string>
   <string name="enableInboundSummary">LAN üzerinden telefona gelen (Samba, sshd, AirDroid, etc.) bağlantılara izin ver</string>
   <string name="ui_prefs_title">Kullanıcı arayüz tercihleri</string>
+  <string name="log_prefs_title">Log tercihleri</string>
   <string name="hideicons_pref_title">Uygulama simgelerini gizle</string>
   <string name="hideicons_pref_summary_on">Ana görünümdeki simgeleri devre dışı bırakmak, performansı arttıracaktır</string>
   <string name="hideicons_pref_summary_off">Uygulamaların simgeleri ana görünümünde gösterilecek</string>
@@ -203,8 +211,8 @@
   <string name="Donate">Bağış</string>
   <string name="multi_apply_rules">Profil geçişinde kuralları uygula</string>
   <string name="multi_apply_rules_info">Profil değişimlerinde kuralları yükle ve uygula</string>
-  <string name="multi_user_title">Çok kullanıcı desteği</string>
-  <string name="multi_user_summary">Tablet için android çok kullanıcı desteği aktif</string>
+  <string name="multi_user_title">Çoklu kullanıcı desteği etkinleştir</string>
+  <string name="multi_user_summary">Android çoklu kullanıcı desteğini tablet için etkinleştir. (kara liste modunda sadece çalışır) </string>
   <string name="device_admin_desc">Ek Güvenlik - AFWall+ kaldırılırken önle</string>
   <string name="traffic_detail_title">Trafik detayları</string>
   <string name="uploaded">Yüklendi</string>
@@ -231,8 +239,14 @@
   <string name="showFilter">Filtre seçeneğini göster</string>
   <string name="showfilter_summary_on">Filtre seçenekleri, ana görünümde gösterilecek.</string>
   <string name="showfilter_summary_off">Filtre seçeneği gizli</string>
-  <string name="enable_dns">Etkin</string>
-  <string name="disable_dns">Pasif</string>
+  <string name="enable_dns">Netd DNS\'i etkinleştir</string>
+  <string name="disable_dns">DNS netd devre dışı</string>
   <string name="dns_proxy_title">DNS Proxy</string>
   <string name="dns_proxy_summary">DNS proxy seçeneği JB 4.3 ve üzeri sistemlerde netd aracılığıyla DNS aramalarını desteklemek üzere eklenmiştir. Bu kapatılırsa, Android 4.3 ve üzeri sistemlerin internet bağlantısını devre dışı bırakabilir.</string>
+  <string name="tasker_lable">AFWall + Tasker eklentisi</string>
+  <string name="enable">Etkin</string>
+  <string name="disable">Devre dışı</string>
+  <string name="filters_apps_title">Uygulamaları filtrele (bildirim gösterilmez)</string>
+  <string name="apply_color">Rengi uygulamak için basın</string>
+  <string name="binaries">Binaries</string>
 </resources>

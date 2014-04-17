@@ -44,8 +44,8 @@
   <string name="passdefined">Пароль блокування визначено</string>
   <string name="passremoved">Пароль блокування видалено</string>
   <string name="passerror">Помилка зміни пароля блокування</string>
-  <string name="working">Працює...</string>
-  <string name="reading_apps">Отримання встановлених програм...</string>
+  <string name="working">Йде обробка</string>
+  <string name="reading_apps">Отримання встановлених програм</string>
   <string name="mode">Режим: </string>
   <string name="mode_header">Режим: %s</string>
   <string name="mode_whitelist">Білий список (дозволити вибране)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Правила очищення</string>
   <string name="send_report">Надіслати звіт про помилки</string>
   <string name="enter_problem">ВВЕДІТЬ ОПИС ПРОБЛЕМИ ТУТ:</string>
-  <string name="send_mail">Відправити пошту...</string>
+  <string name="send_mail">Надіслати пошту</string>
   <string name="notify_pref_summary_on">Повідомлення буде надіслано під час інсталяції нової програми</string>
   <string name="notify_pref_summary_off">Жодне повідомлення не буде надіслано під час інсталяції нової програми</string>
   <string name="custom_script_defined">Власний сценарій визначено</string>
@@ -91,6 +91,7 @@
   <string name="remove_initd">Успішно видалено сценарію запуску</string>
   <string name="unable_remove_initd">Не вдалося видалити сценарій запуску AFWall+</string>
   <string name="widget_disable_fail">Не вдалося вимкнути брандмауер - визначено пароль!</string>
+  <string name="widget_label_status">Перемикач/Статус AFWall+</string>
   <string name="widget_label_settings">Налаштування AFWall+</string>
   <string name="color_pick">Натисніть на колір, щоб застосувати</string>
   <string name="import_rules_droidwall">Імпортувати правила DW</string>
@@ -104,6 +105,7 @@
   <string name="export_logs_fail">Не вдалося експортувати до SD!</string>
   <string name="export_to_sd">Експорт до карти SD</string>
   <string name="enable_firewall_log">Увімкнути журнали брандмауера</string>
+  <string name="enable_firewall_log_service">Увімкнути службу журналу</string>
   <string name="enable_firewall_log_service">Увімкнути службу журналу</string>
   <string name="showlog_title">Журнали брандмауера</string>
   <string name="showlog_service_summary">Вмикання покаже повідомлення, коли блокується з\'єднання </string>
@@ -186,6 +188,7 @@
   <string name="enableInboundTitle">Дозволити вхідні підключення</string>
   <string name="enableInboundSummary">Дозволити підключення з локальної мережі на телефон (Samba, sshd, AirDroid, і т. д.)</string>
   <string name="ui_prefs_title">Параметри інтерфейсу</string>
+  <string name="log_prefs_title">Установки журналу</string>
   <string name="hideicons_pref_title">Приховати піктограми програм</string>
   <string name="hideicons_pref_summary_on">Це дозволить підвищити швидкодію, відключивши піктограми програм у головному вікні</string>
   <string name="hideicons_pref_summary_off">Піктограми програм, які буде показано на головному вікні</string>
@@ -241,4 +244,7 @@
   <string name="tasker_lable">AFWall + втулка Tasker </string>
   <string name="enable">Увімкнути</string>
   <string name="disable">Вимкнути</string>
+  <string name="filters_apps_title">Фільтр програм (не показувати сповіщення)</string>
+  <string name="apply_color">Натисніть на колір, щоб застосувати</string>
+  <string name="binaries">Двійкові файли</string>
 </resources>

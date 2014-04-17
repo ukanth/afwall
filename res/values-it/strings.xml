@@ -44,8 +44,8 @@
   <string name="passdefined">Password di blocco definita</string>
   <string name="passremoved">Password di blocco rimossa</string>
   <string name="passerror">Errore durante il cambio Password di blocco</string>
-  <string name="working">Elaborando ...</string>
-  <string name="reading_apps">Recupero applicazioni installate ...</string>
+  <string name="working">Elaborando</string>
+  <string name="reading_apps">Recupero applicazioni installate</string>
   <string name="mode">Modalità: </string>
   <string name="mode_header">Modalità: %s</string>
   <string name="mode_whitelist">White list (consenti selezionati)</string>
@@ -56,7 +56,7 @@
   <string name="flush">Applica regole</string>
   <string name="send_report">Invia report di errore</string>
   <string name="enter_problem">INSERISCI LA DESCRIZIONE DEL PROBLEMA QUI:</string>
-  <string name="send_mail">Invia mail...</string>
+  <string name="send_mail">Invia email</string>
   <string name="notify_pref_summary_on">Riceverai una notifica all\'installazione di una nuova applicazione</string>
   <string name="notify_pref_summary_off">Non riceverai notifiche all\'installazione di una nuova applicazione</string>
   <string name="custom_script_defined">Script personalizzato definito</string>
@@ -91,7 +91,7 @@
   <string name="remove_initd">Script di avvio rimosso correttamente</string>
   <string name="unable_remove_initd">Impossibile rimuovere lo script di avvio AFWall+</string>
   <string name="widget_disable_fail">Impossibile disabilitare il firewall - password necessaria!</string>
-  <string name="widget_label_status">AFWall+ Switch/Stato</string>
+  <string name="widget_label_status">AFWall+ Olivetta/Stato</string>
   <string name="widget_label_settings">Impostazioni AFWall+</string>
   <string name="color_pick">Premere sul colore per applicare</string>
   <string name="import_rules_droidwall">Importare le regole DW</string>
@@ -105,7 +105,10 @@
   <string name="export_logs_fail">Esportazione su scheda SD fallita!</string>
   <string name="export_to_sd">Esporta su scheda SD</string>
   <string name="enable_firewall_log">Abilitare i registri Firewall</string>
+  <string name="enable_firewall_log_service">Attivare il servizio Registro</string>
+  <string name="enable_firewall_log_service">Attivare il servizio Registro</string>
   <string name="showlog_title">Registri del Firewall</string>
+  <string name="showlog_service_summary">Abilitando questa opzione verranno mostrati dei messaggi quando le connessioni vengono bloccate </string>
   <string name="enable_log">Attivare Log</string>
   <string name="disable_log">Disattivare Log</string>
   <string name="log_disabled">Registro disabilitato</string>
@@ -120,6 +123,7 @@
   <string name="no_log">Il Registro è vuoto</string>
   <string name="LogAppName">Nome applicazione</string>
   <string name="LogPackBlock">Totale pacchetti bloccati</string>
+  <string name="blocked">AFWall+ ha bloccato :</string>
   <string name="refresh">Aggiorna</string>
   <string name="mp_prefs_title">Preferenze Profilo Multiplo</string>
   <string name="custom_title1">Nome personalizzato per il Profilo Predefinito</string>
@@ -170,6 +174,8 @@
   <string name="switch_ipv4">Cambia a regole IPv4</string>
   <string name="sec_prefs_title">Preferenze di sicurezza</string>
   <string name="usePattern">Usa una combinazione al posto della password</string>
+  <string name="stealthMode">Modalità stealth su modello</string>
+  <string name="patternMaxTry">Massimo numero di tentativi</string>
   <string name="resetPattern">Si desidera reimpostare la sequenza di blocco?</string>
   <string name="enable_device_admin">Amministratore Dispositivo</string>
   <string name="device_admin_enabled">Admin dispositivo AFWall+ abilitato</string>
@@ -182,6 +188,7 @@
   <string name="enableInboundTitle">Abilitare le connessioni in ingresso</string>
   <string name="enableInboundSummary">Consenti connessioni dalla LAN al telefono (Samba, sshd, AirDroid, ecc.)</string>
   <string name="ui_prefs_title">Preferenze UI</string>
+  <string name="log_prefs_title">Preferenze di registro</string>
   <string name="hideicons_pref_title">Nascondi icone applicazioni</string>
   <string name="hideicons_pref_summary_on">Questo migliorerà le prestazioni disattivando le icone delle applicazioni sulla vista principale</string>
   <string name="hideicons_pref_summary_off">Le icone delle applicazioni saranno mostrate nella schermata principale</string>
@@ -202,8 +209,8 @@
   <string name="Donate">Dona</string>
   <string name="multi_apply_rules">Applicare le regole quando si cambia profilo</string>
   <string name="multi_apply_rules_info">Carica e applica le regole ad ogni cambio di profilo</string>
-  <string name="multi_user_title">Supporto multiutente</string>
-  <string name="multi_user_summary">Abilitare per supportare la multiutenza android su un tablet</string>
+  <string name="multi_user_title">Abilita il supporto multiutente</string>
+  <string name="multi_user_summary">Abilitate per il supporto multiutente di android sui tablet (funziona solo in modalità blacklist)</string>
   <string name="device_admin_desc">Sicurezza supplementare - Impedire la disinstallazione di AFWall+</string>
   <string name="traffic_detail_title">Dettagli di traffico</string>
   <string name="uploaded">Caricato</string>
@@ -217,21 +224,27 @@
   <string name="invert_all">Inverti tutto</string>
   <string name="uncheck_all">Deseleziona tutto</string>
   <string name="select_action">Seleziona l\'azione sulla colonna </string>
-  <string name="roam">Roam</string>
+  <string name="roam">Vagare</string>
   <string name="wifi">WiFi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Dati</string>
   <string name="pkg_all">Tutto</string>
-  <string name="pkg_core">Core</string>
+  <string name="pkg_core">Nucleo</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Utente</string>
   <string name="backup_notexist">Non ci sono backup. Si prega esportare dal menu.</string>
   <string name="showFilter">Mostra il filtro opzioni</string>
   <string name="showfilter_summary_on">Il filtro opzioni sarà mostrato nella schermata principale.</string>
   <string name="showfilter_summary_off">Il filtro opzioni sarà nascosto</string>
-  <string name="enable_dns">Abilita</string>
-  <string name="disable_dns">Disabilita</string>
+  <string name="enable_dns">Abilitare il DNS tramite netd</string>
+  <string name="disable_dns">Disattiva DNS tramite netd</string>
   <string name="dns_proxy_title">Proxy DNS</string>
   <string name="dns_proxy_summary">L\'opzione Proxy DNS è stata introdotta per il supporto alle risoluzioni DNS tramite netd su JB 4.3+. La sua disattivazione bloccherà la navigazione internet su Android 4.3+</string>
+  <string name="tasker_lable">Plugin AFWall+ per Tasker</string>
+  <string name="enable">Abilita</string>
+  <string name="disable">Disabilita</string>
+  <string name="filters_apps_title">Filtra Applicazioni (Non mostrare notifica)</string>
+  <string name="apply_color">Premere sul colore per applicare</string>
+  <string name="binaries">Binari</string>
 </resources>

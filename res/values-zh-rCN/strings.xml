@@ -45,8 +45,8 @@
   <string name="passdefined">密码锁定已设置</string>
   <string name="passremoved">密码锁定已移除</string>
   <string name="passerror">改变密码锁定出错</string>
-  <string name="working">工作中...</string>
-  <string name="reading_apps">检索已安装的应用程序...</string>
+  <string name="working">Working</string>
+  <string name="reading_apps">Retrieving installed applications</string>
   <string name="mode">模式:</string>
   <string name="mode_header">模式：%s</string>
   <string name="mode_whitelist">白名单（允许选中）</string>
@@ -57,7 +57,7 @@
   <string name="flush">激活规则</string>
   <string name="send_report">发送错误报告</string>
   <string name="enter_problem">在此处输入问题描述：</string>
-  <string name="send_mail">发送邮件...</string>
+  <string name="send_mail">Send mail</string>
   <string name="notify_pref_summary_on">安装新应用程序时发送提醒通知</string>
   <string name="notify_pref_summary_off">安装新应用程序时不发送提醒通知</string>
   <string name="custom_script_defined">自定义脚本已定义</string>
@@ -93,7 +93,7 @@
   <string name="remove_initd">成功删除启动脚本</string>
   <string name="unable_remove_initd">无法删除 AFWall+ 启动脚本</string>
   <string name="widget_disable_fail">无法取消防火墙 - 口令错误!</string>
-  <string name="widget_label_status">AFWall+ 切换/状态</string>
+  <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ 设置</string>
   <string name="color_pick">按色块应用</string>
   <string name="import_rules_droidwall">导入DW规则</string>
@@ -107,7 +107,10 @@
   <string name="export_logs_fail">导出到 SD 卡失败！</string>
   <string name="export_to_sd">导出到 SD 卡</string>
   <string name="enable_firewall_log">启用防火墙日志</string>
+  <string name="enable_firewall_log_service">Turn on log service</string>
+  <string name="enable_firewall_log_service">Turn on log service</string>
   <string name="showlog_title">防火墙日志</string>
+  <string name="showlog_service_summary">Enable this will show messages when connections gets blocked </string>
   <string name="enable_log">开启日志</string>
   <string name="disable_log">取消日志</string>
   <string name="log_disabled">日志已禁用</string>
@@ -122,6 +125,7 @@
   <string name="no_log">日志为空</string>
   <string name="LogAppName">应用程序名称</string>
   <string name="LogPackBlock">总数据包阻塞</string>
+  <string name="blocked">AFWall+ Blocked :</string>
   <string name="refresh">刷新</string>
   <string name="mp_prefs_title">多配置设置</string>
   <string name="custom_title1">自定义默认配置名称</string>
@@ -172,6 +176,8 @@
   <string name="switch_ipv4">切换 IPv4 规则</string>
   <string name="sec_prefs_title">安全设置</string>
   <string name="usePattern">使用图案锁代替密码</string>
+  <string name="stealthMode">Stealth mode on pattern</string>
+  <string name="patternMaxTry">Maximum number of tries</string>
   <string name="resetPattern">您想要重置图案解锁吗？</string>
   <string name="enable_device_admin">设备管理</string>
   <string name="device_admin_enabled">开启 AFWall+ 设备管理</string>
@@ -184,6 +190,7 @@
   <string name="enableInboundTitle">启用入站的连接</string>
   <string name="enableInboundSummary">允许从局域网到手机连接 (Samba，sshd，AirDroid，等。)</string>
   <string name="ui_prefs_title">界面设置</string>
+  <string name="log_prefs_title">Log Preferences</string>
   <string name="hideicons_pref_title">隐藏应用程序图标</string>
   <string name="hideicons_pref_summary_on">取消应用图标显示可以提升流畅程度.</string>
   <string name="hideicons_pref_summary_off">在主视图显示应用程序图标</string>
@@ -204,8 +211,8 @@
   <string name="Donate">捐赠！</string>
   <string name="multi_apply_rules">切换配置时应用规则</string>
   <string name="multi_apply_rules_info">这将在切换配置文件时加载和应用规则</string>
-  <string name="multi_user_title">支持多用户</string>
-  <string name="multi_user_summary">启用在平板电脑上支持 Android 多用户</string>
+  <string name="multi_user_title">Enable Multi-user support</string>
+  <string name="multi_user_summary">Enable to support android multi-user on a tablet(only works in blacklist mode)</string>
   <string name="device_admin_desc">额外安全性 - 防止 AFWall+ 被卸载</string>
   <string name="traffic_detail_title">流量详细信息</string>
   <string name="uploaded">已更新</string>
@@ -232,8 +239,14 @@
   <string name="showFilter">显示筛选器选项</string>
   <string name="showfilter_summary_on">将在主视图中显示筛选器选项。</string>
   <string name="showfilter_summary_off">筛选器选项已经隐藏</string>
-  <string name="enable_dns">启用</string>
-  <string name="disable_dns">禁用</string>
+  <string name="enable_dns">Enable DNS via netd</string>
+  <string name="disable_dns">Disable DNS via netd</string>
   <string name="dns_proxy_title">DNS 代理</string>
   <string name="dns_proxy_summary">DNS 代理选项在 JB 4.3+ 中加强支持通过 netd 进行 DNS 查找。在 Andorid 4.3+ 中禁用该选项将阻止 internet</string>
+  <string name="tasker_lable">AFWall+ Tasker Plugin</string>
+  <string name="enable">Enable</string>
+  <string name="disable">Disable</string>
+  <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
+  <string name="apply_color">Press on Color to apply</string>
+  <string name="binaries">Binaries</string>
 </resources>

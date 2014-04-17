@@ -29,7 +29,7 @@
   <string name="fw_enabled">Activer le pare-feu</string>
   <string name="fw_disabled">Désactiver le pare-feu</string>
   <string name="flushed">Règles effacées</string>
-  <string name="show_log">Journaux du pare-feu</string>
+  <string name="show_log">Journal du pare-feu</string>
   <string name="clear_log">Effacer le journal</string>
   <string name="applying_rules">Application des règles iptables.</string>
   <string name="saving_rules">Sauvegarde des règles iptables.</string>
@@ -44,19 +44,19 @@
   <string name="passdefined">Mot de passe de verrouillage défini</string>
   <string name="passremoved">Mot de passe de verrouillage supprimé</string>
   <string name="passerror">Erreur de changement du mot de passe de verrouillage</string>
-  <string name="working">Opération en cours...</string>
-  <string name="reading_apps">Récupération des applications installées...</string>
+  <string name="working">Opération en cours</string>
+  <string name="reading_apps">Récupération des applications installées</string>
   <string name="mode">Mode : </string>
   <string name="mode_header">Mode : %s</string>
   <string name="mode_whitelist">Liste blanche (sélection autorisée)</string>
   <string name="mode_blacklist">Liste noire (sélection bloquée)</string>
   <string name="set_custom_script">Définir un script personnalisé</string>
   <string name="preferences">Préférences</string>
-  <string name="reload">Rafraichir la liste des applications</string>
+  <string name="reload">Actualiser la liste des applications</string>
   <string name="flush">Effacer les règles</string>
   <string name="send_report">Envoyer un rapport d\'erreur</string>
   <string name="enter_problem">ENTREZ LA DESCRIPTION DU PROBLÈME ICI :</string>
-  <string name="send_mail">Envoyer un mail...</string>
+  <string name="send_mail">Envoyer un mail</string>
   <string name="notify_pref_summary_on">Une notification sera affichée lorsqu\'une nouvelle application est installée</string>
   <string name="notify_pref_summary_off">Aucune notification ne sera affichée lorsqu\'une nouvelle application est installée</string>
   <string name="custom_script_defined">Script personnalisé défini</string>
@@ -91,6 +91,7 @@
   <string name="remove_initd">Script de démarrage supprimé avec succès</string>
   <string name="unable_remove_initd">Impossible de supprimer le script de démarrage AFWall+</string>
   <string name="widget_disable_fail">Impossible de désactiver le pare-feu - mot de passe défini !</string>
+  <string name="widget_label_status">Activer/Désactiver AFWall+</string>
   <string name="widget_label_settings">Paramètres AFWall+</string>
   <string name="color_pick">Appuyez sur la couleur à appliquer</string>
   <string name="import_rules_droidwall">Importer les règles DW</string>
@@ -103,9 +104,10 @@
   <string name="exportConfirm">Voulez-vous exporter les règles vers la carte SD ?</string>
   <string name="export_logs_fail">L\'exportation vers la carte SD a échoué !</string>
   <string name="export_to_sd">Exporter vers la carte SD</string>
-  <string name="enable_firewall_log">Activer les journaux du pare-feu</string>
+  <string name="enable_firewall_log">Activer le journal du pare-feu</string>
   <string name="enable_firewall_log_service">Activer la journalisation</string>
-  <string name="showlog_title">Journaux du pare-feu</string>
+  <string name="enable_firewall_log_service">Activer la journalisation</string>
+  <string name="showlog_title">Journal du pare-feu</string>
   <string name="showlog_service_summary">Cocher pour afficher des messages quand les connexions sont bloquées </string>
   <string name="enable_log">Activer le journal</string>
   <string name="disable_log">Désactiver le journal</string>
@@ -186,6 +188,7 @@
   <string name="enableInboundTitle">Activer les connexions entrantes</string>
   <string name="enableInboundSummary">Autoriser les connexions du réseau local (LAN) vers le téléphone (Samba, sshd, AirDroid, etc...)</string>
   <string name="ui_prefs_title">Préférences de l\'interface utilisateur</string>
+  <string name="log_prefs_title">Préférences pour la journalisation</string>
   <string name="hideicons_pref_title">Masquer les icônes des applications</string>
   <string name="hideicons_pref_summary_on">Ceci améliorera les performances en désactivant les icônes d\'application sur l\'écran principal</string>
   <string name="hideicons_pref_summary_off">Les icônes des applications seront affichées sur l\'écran principal</string>
@@ -226,7 +229,7 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Données</string>
-  <string name="pkg_all">Tous</string>
+  <string name="pkg_all">Tout</string>
   <string name="pkg_core">Noyau</string>
   <string name="pkg_sys">Système</string>
   <string name="pkg_user">Utilisateur</string>
@@ -241,4 +244,7 @@
   <string name="tasker_lable">Plugin Tasker pour AFWall+</string>
   <string name="enable">Activer</string>
   <string name="disable">Désactiver</string>
+  <string name="filters_apps_title">Filtrer les applications (pas de notification)</string>
+  <string name="apply_color">Appuyez sur la couleur à appliquer</string>
+  <string name="binaries">Fichiers binaires</string>
 </resources>
