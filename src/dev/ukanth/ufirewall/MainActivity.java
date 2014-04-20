@@ -266,6 +266,12 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				.setReopenShell(true).run(getApplicationContext(), cmds);
 		} 
 	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		finish();
+	}
 
 	@Override
 	public void onStart() {
@@ -412,13 +418,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 */
 	private void refreshHeader() {
 		final String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-		final TextView labelmode = (TextView) this
-				.findViewById(R.id.label_mode);
+		final TextView labelmode = (TextView) this.findViewById(R.id.label_mode);
 		final Resources res = getResources();
-		int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist
-				: R.string.mode_blacklist);
-		labelmode.setText(res.getString(R.string.mode_header,
-				res.getString(resid)));
+		int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist: R.string.mode_blacklist);
+		labelmode.setText(res.getString(R.string.mode_header,res.getString(resid)));
 	}
 
 	/**

@@ -117,7 +117,9 @@
         
         <activity android:name="dev.ukanth.ufirewall.AlertDialogActivity"></activity>
             
-        <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity" android:theme="@style/Theme.Transparent" >
+        <activity 
+            android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity"
+            android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>

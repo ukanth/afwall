@@ -138,37 +138,31 @@ public class RadialMenuWidget extends View {
 		DisplayMetrics dm = new DisplayMetrics(); 
 		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		wm.getDefaultDisplay().getMetrics(dm);
-		/*
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
-		{
-			Point size = new Point();
-			display.getSize(size);
-			this.xPosition = size.x/3;
-			this.yPosition = size.y/2;
-		} else {
-			 Display d = wm.getDefaultDisplay();
-			 this.xPosition = d.getWidth()/2 ;
-			 this.yPosition = d.getHeight()/2;
-		}*/
-
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 	        Point size = new Point();
 	        try {
 	        	wm.getDefaultDisplay().getRealSize(size);
 	        	//FIXME: handle large tablets
-	        	if(size.x > 2000 ) this.xPosition = size.x / 3;
+	        	if(size.x > 1200 ) this.xPosition = size.x / 3;
 	        	else this.xPosition = size.x / 2 ;
-	            this.yPosition = size.y / 2;
+	        	
+	        	this.yPosition = size.y / 2;
 	        } catch (NoSuchMethodError e) {
-	        	this.xPosition = wm.getDefaultDisplay().getWidth() / 2 ;
-	        	this.yPosition= wm.getDefaultDisplay().getHeight() / 2 ;
+	        	if(wm.getDefaultDisplay().getWidth() > 1200) {
+	        		this.xPosition = wm.getDefaultDisplay().getWidth() / 3 ;
+	        	} else {
+	        		this.xPosition = wm.getDefaultDisplay().getWidth() / 2 ;
+	        	}
+        		this.yPosition = wm.getDefaultDisplay().getHeight() / 2 ;
 	        }
 
 	    } else {
 	        DisplayMetrics metrics = new DisplayMetrics();
 	        wm.getDefaultDisplay().getMetrics(metrics);
-	        this.xPosition = metrics.widthPixels / 2;
+	        if(metrics.widthPixels > 1200)  this.xPosition = metrics.widthPixels / 3;
+	        else this.xPosition = metrics.widthPixels / 2;
+	        
 	        this.yPosition = metrics.heightPixels / 2;
 	    }
 		
