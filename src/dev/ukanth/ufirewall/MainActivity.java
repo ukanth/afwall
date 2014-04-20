@@ -268,12 +268,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	}
 	
 	@Override
-	public void onStop() {
-		super.onStop();
-		finish();
-	}
-
-	@Override
 	public void onStart() {
 		super.onStart();
 		
@@ -392,7 +386,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	protected void onPause() {
 		super.onPause();
 		//this.listview.setAdapter(null);
-		//mLastPause = System.currentTimeMillis();
+		//mLastPause = Syst em.currentTimeMillis();
 		isOnPause = true;
 		index = this.listview.getFirstVisiblePosition();
 		View v = this.listview.getChildAt(0);

@@ -119,6 +119,7 @@
             
         <activity 
             android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/Theme.Transparent" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

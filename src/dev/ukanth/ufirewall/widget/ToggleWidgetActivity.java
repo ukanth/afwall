@@ -33,12 +33,7 @@ public class ToggleWidgetActivity extends Activity {
 		pieMenu = new RadialMenuWidget(getBaseContext());
 
 		pieMenu.setAnimationSpeed(0L);
-		//pieMenu.setSourceLocation(100,100);
-		//pieMenu.setCenterLocation(240,400);
-		//pieMenu.setInnerRingRadius(50, 120);
-		//pieMenu.setInnerRingColor(Color.LTGRAY, 255);
-		//pieMenu.setHeader("Menu Header", 20);
-
+	
 		int xLayoutSize = ll.getWidth();
 		int yLayoutSize = ll.getHeight();				
 		pieMenu.setSourceLocation(xLayoutSize,yLayoutSize);
@@ -55,7 +50,6 @@ public class ToggleWidgetActivity extends Activity {
 		}
 		
 		ll.addView(pieMenu);
-
 
 	}
 	
