@@ -6,18 +6,17 @@ Download links are right here on the ["Downloads" front page](https://github.com
 
 Version 1.3.1
 
-Feature-Added filter for block notifications(Still EXPERIMENTAL!)
-Send error report FC
-ip6tables log issues on most devices
-Toggle log error on some devices
-Fixed FC on preferences Api-19
-Widget display issue on some devices-#265
-Better root detection and error display when there is no root
-Fixed FC on experimental Preferences-#270
-Widget name issues and icons
-Performance improvement for multiprofile
-Reusing rootshell for logservice - should fix the multiple su requests
-Widget profile issue
+Added experimental filter for block notifications.
+Error report FC
+ip6tables log/toggle issues on most devices
+Widget display issue on some devices #265
+Better root detection and error display when no root
+Fixed FC on experimental Preferences #270
+Widget name issues and better icons
+Performance improvement for multiple profiles
+Reuse of rootshell on new logservice
+Widget profile switch issue
+Apply rules on boot fix for some devices
 
 
 Version 1.3.0.2
