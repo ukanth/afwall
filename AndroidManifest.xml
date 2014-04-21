@@ -27,7 +27,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="162"
+    android:versionCode="163"
     android:versionName="1.3.1" >
 
     <!-- Android 2.2 up to 4.x -->
@@ -126,17 +126,23 @@
             </intent-filter>
         </activity>
         <activity android:name="dev.ukanth.ufirewall.CustomScriptActivity" />
-
+        
         <receiver android:name="dev.ukanth.ufirewall.BootBroadcast" >
-            <intent-filter>
+            <intent-filter android:priority="1" >
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+            <!-- as reported in some forums it does use different intent on some devices -->
+            <intent-filter>
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
-                <data android:scheme="file"/>
-				<action android:name="android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE"/>  
-                <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
+
         <receiver android:name="dev.ukanth.ufirewall.PackageBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
