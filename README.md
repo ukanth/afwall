@@ -18,7 +18,7 @@ For more information and community discussions, please visit the [XDA thread](ht
 
 ## Changelog
 
-The AFWall+ version history is maintained [here](https://github.com/ukanth/afwall/blob/master/Changelog.md).
+The AFWall+ version history is maintained [here](https://github.com/ukanth/afwall/blob/beta/Changelog.md).
 
 ## Bug Reports
 Please see the [issues](https://github.com/ukanth/afwall/issues) section to

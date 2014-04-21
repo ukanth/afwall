@@ -5,18 +5,17 @@ Changelog AFWall+
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
 Version 1.3.1
-
-Added experimental filter for block notifications.
-Error report FC
-ip6tables log/toggle issues on most devices
-Widget display issue on some devices #265
-Better root detection and error display when no root
-Fixed FC on experimental Preferences #270
-Widget name issues and better icons
-Performance improvement for multiple profiles
-Reuse of rootshell on new logservice
-Widget profile switch issue
-Apply rules on boot fix for some devices
+* Added experimental filter for block notifications.
+* Error report FC
+* ip6tables log/toggle issues on most devices
+* Widget display issue on some devices #265
+* Better root detection and error display when no root
+* Fixed FC on experimental Preferences #270
+* Widget name issues and better icons
+* Performance improvement for multiple profiles
+* Reuse of rootshell on new logservice
+* Widget profile switch issue
+* Apply rules on boot fix for some devices
 
 
 Version 1.3.0.2
@@ -27,7 +26,6 @@ Version 1.3.0.1
 * "Allow All Application" option is back - Again hate you guys :)
 
 Version 1.3.0
-
 * New Widget with support for multiple profiles (single widget)
 * Updated lockpattern - stealth mode/max retry count
 * DNS Proxy to Preferences (By default UDP 53 will be blocked on <4.3)
@@ -40,7 +38,6 @@ Version 1.3.0
 * Translations updated - Indonesian (thx mirulumam)
 
 Version 1.2.9
-
 * Feature: Column level select/invert/unselect
 * Feature: New Import/Export (with backward compatiblity)
 * Feature: Filter by All/Core/System/User applications
@@ -69,11 +66,9 @@ Version 1.2.7
 * Added Hungarian/Turkish Translations and updated other translations
 
 Version 1.2.6.2
-
 * NGLog fixes for various devices including nexus.
 
 Version 1.2.6.1
-
 * LOGS should work now on newer devices which has NFLOG chain.
 * New RootShell Service to keep AFWall+ active.
 * RootShell - Retry on exit 4 while switching from 3G to WiFi or viceversa.
@@ -91,7 +86,6 @@ Version 1.2.6.1
 
 
 Version 1.2.6
-
 * Lots of Refactor to bring stability and performance. Fixed many issues along with it
   (HUGE THANKS TO cernekee !) 
   New option -> Now enable/disable log from preferences
