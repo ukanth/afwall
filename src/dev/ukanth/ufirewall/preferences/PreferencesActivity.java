@@ -76,11 +76,11 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		super.onCreate(savedInstanceState);
 	}
 	
-	@Override
+	/*@Override
 	protected boolean isValidFragment (String fragmentName)
 	{ 
 		return true;
-	}
+	}*/
 
 	public static void setupFixLeak(Preference pref) {
 		if (pref == null) {
