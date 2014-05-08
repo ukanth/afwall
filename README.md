@@ -1,5 +1,4 @@
-AFWall+ ( Android Firewall +) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall)
-[![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
+AFWall+ ( Android Firewall +) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall)[![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
 ======
 
 ![AFwall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
