@@ -59,7 +59,7 @@ int main(int argc, char ** argv) {
 			usage();
 			return 0;
 		} else if (! strcmp(argv[1], "--skip-first")) {
- 			fprintf(stdout, "%s%d%s", "PID=", getpid(),"\n");		
+ 			//fprintf(stdout, "%s%d%s", "PID=", getpid(),"\n");
   			skip = 1;
 		}
                 else {
