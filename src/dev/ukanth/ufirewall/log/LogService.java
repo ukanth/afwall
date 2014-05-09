@@ -22,12 +22,16 @@
 
 package dev.ukanth.ufirewall.log;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.stericson.RootTools.RootTools;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -38,8 +42,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.Log;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
 
@@ -69,10 +75,12 @@ public class LogService extends Service {
 	private static CancelableRunnable showToastRunnable;
 	private static View toastLayout;
 	
+	private List<String> listOfPids;
 	
 	private static abstract class CancelableRunnable implements Runnable {
 	    public boolean cancel;
 	}
+	
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -143,8 +151,9 @@ public class LogService extends Service {
 	  }
 
 	public void onCreate() {
-		klogPath = Api.getKLogPath(getApplicationContext()) + " --skip-first";
-		Log.d(TAG, "Starting " + klogPath);
+		klogPath = Api.getKLogPath(getApplicationContext());
+		listOfPids = new ArrayList<String>();
+		Log.i(TAG, "Starting " + klogPath);
 		handler = new Handler();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		boolean hasRoot = prefs.getBoolean("hasRoot", false);
@@ -155,22 +164,31 @@ public class LogService extends Service {
 				.setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
 					@Override
 					public void onLine(String line) {
-						if(line.trim().length() > 0)
-						{
-							if(line.contains("AFL")) {
-								final String logData = LogInfo.parseLogs(line,getApplicationContext());
-								if(logData != null && logData.length() > 0 ) {
-									showToast(getApplicationContext(), handler,logData, false);
+						if(G.enableLogService()) {
+							if(line.trim().length() > 0)
+							{
+								if(line.startsWith("PID")) {
+									//get pid
+									String pid = line.split("##")[0].split(":")[1];
+									if(!listOfPids.contains(pid)) {
+										listOfPids.add(pid);
+									}
+								}
+								if (line.contains("AFL")) {
+									final String logData = LogInfo.parseLogs(line,getApplicationContext());
+									if(logData != null && logData.length() > 0 ) {
+										showToast(getApplicationContext(), handler,logData, false);
+									}	
 								}
 							}
-						}
+						} 
 					}
 				})
 
 				.open(new Shell.OnCommandResultListener() {
 					public void onCommandResult(int commandCode, int exitCode, List<String> output) {
 						if (exitCode != 0) {
-							Log.e(TAG, "Can't start nflog shell: exitCode " + exitCode);
+							Log.e(TAG, "Can't start klog shell: exitCode " + exitCode);
 							stopSelf();
 						} else {
 							Log.i(TAG, "logservice shell started");
@@ -181,8 +199,23 @@ public class LogService extends Service {
 		}
 	}
 
+	@Override
 	public void onDestroy() {
-		Log.e(TAG, "Received request to kill logservice");
-		/* FIXME: we should really be closing the shell through libsuperuser */
+		super.onDestroy();
+		Log.i(TAG, "Received request to kill logservice");
+		new KillProcess().execute();
+		
+	}
+	
+	private class KillProcess extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected Void doInBackground(Void... params) {
+			RootTools.killProcess(Api.getKLogPath(getApplicationContext()), new String[] { Api.getBusyBoxPath(getApplicationContext()) + " ps" });
+			for(String pids : listOfPids) {
+				Log.i(TAG, "Killing sub process " + pids);
+				new RootCommand().run(getApplicationContext(), "kill -9 " + pids);
+			}
+			return null;
+		}
 	}
 }
