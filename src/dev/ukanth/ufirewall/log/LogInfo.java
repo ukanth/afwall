@@ -338,7 +338,7 @@ public class LogInfo {
 					appName = ctx.getString(R.string.kernel_item);
 				}
 				address = new StringBuilder();
-				if(!G.getBlockedNotifyApps().contains(uid)) { 
+				if(!G.getBlockedNotifyApps().contains(uid+"")) { 
 					address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");
 				}
 				return address.toString();

@@ -201,7 +201,7 @@ public class G extends android.app.Application {
 	public static List<String> getBlockedNotifyApps() {
 		String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
 		List<String> data = new ArrayList<String>();
-		if(blockedApps != null && blockedApps.contains(",")){
+		if(blockedApps != null) {
 			data = Arrays.asList(blockedApps.split(","));
 		}
 		return data;

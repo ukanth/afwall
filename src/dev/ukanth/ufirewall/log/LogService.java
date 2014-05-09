@@ -210,7 +210,6 @@ public class LogService extends Service {
 	private class KillProcess extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
-			RootTools.killProcess(Api.getKLogPath(getApplicationContext()), new String[] { Api.getBusyBoxPath(getApplicationContext()) + " ps" });
 			for(String pids : listOfPids) {
 				Log.i(TAG, "Killing sub process " + pids);
 				new RootCommand().run(getApplicationContext(), "kill -9 " + pids);
