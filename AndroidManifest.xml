@@ -81,15 +81,6 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock"
         android:name="dev.ukanth.ufirewall.G" >
-        <meta-data
-            android:name="AFWall+ XPosed"
-            android:value="true" />
-        <meta-data
-            android:name="xposeddescription"
-            android:value="Easy example which makes the status bar clock red and adds a smiley" />
-        <meta-data
-            android:name="xposedminversion"
-            android:value="30" />
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
