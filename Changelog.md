@@ -4,6 +4,17 @@ Changelog AFWall+
 -------------
 Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
 
+Version 1.3.2 [Beta]
+* Fixed process leak in LogService which creates multiple orphan processes 
+* Fixed issue with Filter with LogService
+* Old Profile switch widget is back, till the new widget is stable.
+
+
+
+
+Version 1.3.1.1
+* Revert Target SDK to 16 to fix issue with boot rules
+
 Version 1.3.1
 * Added experimental filter for block notifications.
 * Error report FC

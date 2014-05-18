@@ -103,6 +103,7 @@
     <string name="widget_disable_fail">Cannot disable firewall - password defined!</string>
     <string name="widget_label_status">AFWall+ Toggle/Status</string>
     <string name="widget_label_settings">AFWall+ Settings</string>
+    <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
 
     <!-- Color Picker -->
     <string name="color_pick">Press on Color to apply</string>

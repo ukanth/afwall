@@ -34,7 +34,7 @@ static void die(const char *fmt, ...)
 
 void usage() {
 	fprintf(stdout, "USAGE:\n"
-		"  klogripper [--skip-first]\n"
+		"  klogripper --live\n"
 		"  klogripper --help\n"
 		"  klogripper --version\n"
 	);
@@ -58,8 +58,7 @@ int main(int argc, char ** argv) {
 		} else if (! strcmp(argv[1], "--help")) {
 			usage();
 			return 0;
-		} else if (! strcmp(argv[1], "--skip-first")) {
- 			//fprintf(stdout, "%s%d%s", "PID=", getpid(),"\n");
+		} else if (! strcmp(argv[1], "--live")) {
   			skip = 1;
 		}
                 else {
@@ -77,21 +76,21 @@ int main(int argc, char ** argv) {
 	buffer = calloc(1, bytes_total + 1);
 	if (!buffer)
 		return 2;
-	if (!skip) {
+	/*if(!skip) {
 		bytes_read = klogctl(SYSLOG_ACTION_READ_ALL, buffer, bytes_total);
 		if (bytes_read < 0)
 			die("SYSLOG_ACTION_READ_ALL returned %d\n", errno);
 	        printf("%s", buffer);
-	}
+	}*/
 
 	for (;;) {
 		bytes_read = klogctl(SYSLOG_ACTION_READ, buffer, bytes_total);
 		if (bytes_read < 0)
 			die("SYSLOG_ACTION_READ returned %d\n", errno);
 		buffer[bytes_read] = '\0';
-		if(strstr(buffer, "AFL")) {
-		  printf("PID:%d## %s",getpid(), buffer);
-		}
+		//if(strstr(buffer, "AFL")) {
+		printf("PID:%d## %s",getpid(), buffer);
+		//}
 	}
 
 	return 0;

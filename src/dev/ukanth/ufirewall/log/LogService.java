@@ -25,8 +25,6 @@ package dev.ukanth.ufirewall.log;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.stericson.RootTools.RootTools;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -214,6 +212,8 @@ public class LogService extends Service {
 				Log.i(TAG, "Killing sub process " + pids);
 				new RootCommand().run(getApplicationContext(), "kill -9 " + pids);
 			}
+			//make sure there is no klogripper process after the above one
+			new RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + "klogripper");
 			return null;
 		}
 	}

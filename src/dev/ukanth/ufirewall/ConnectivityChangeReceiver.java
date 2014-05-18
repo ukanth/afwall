@@ -59,7 +59,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 			if(G.activeRules()){
 				InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
 			}
-			/*final Intent logIntent = new Intent(context, LogService.class);
+			final Intent logIntent = new Intent(context, LogService.class);
 			if(G.enableLogService()){
 				 //check if the firewall is enabled
 				if(!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
@@ -72,7 +72,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 			 } else {
 					//no internet - stop the service
 				 context.stopService(logIntent);
-			 }*/
+			 }
 		}
 	}
 }
