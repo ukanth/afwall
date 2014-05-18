@@ -10,8 +10,6 @@ Version 1.3.2 [Beta]
 * Old Profile switch widget is back, till the new widget is stable.
 
 
-
-
 Version 1.3.1.1
 * Revert Target SDK to 16 to fix issue with boot rules
 
