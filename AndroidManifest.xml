@@ -127,6 +127,15 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        
+        <activity android:name="dev.ukanth.ufirewall.widget.ToggleWidgetOldActivity" 
+             android:launchMode="singleInstance"
+             android:theme="@style/Theme.Transparent" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        
         <activity android:name="dev.ukanth.ufirewall.CustomScriptActivity" />
         
         <receiver android:name="dev.ukanth.ufirewall.BootBroadcast" >
@@ -175,6 +184,19 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
+                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
+            </intent-filter>
+        </receiver>
+        
+         
+         <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidgetOld" android:label="@string/widget_label_settings_old">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/toggle_widget_old" />
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
