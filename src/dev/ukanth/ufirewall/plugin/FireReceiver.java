@@ -23,7 +23,6 @@ import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.
@@ -76,7 +75,6 @@ public final class FireReceiver extends BroadcastReceiver
         if (PluginBundleManager.isBundleValid(bundle))
         {
         	String index = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
-        	//SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         	final boolean multimode = G.enableMultiProfile();
         	final boolean disableToasts = G.disableTaskerToast();
     		final Message msg = new Message();
@@ -117,6 +115,7 @@ public final class FireReceiver extends BroadcastReceiver
         			if(multimode) {
         				G.setProfile(true, 2);
         			}
+        			break;
         		case 5:
         			if(multimode) {
         				G.setProfile(true, 3);
@@ -133,7 +132,7 @@ public final class FireReceiver extends BroadcastReceiver
                 			if(!disableToasts){
                 				Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();	
                 			}
-                			if(applyProfileRules(context, msg, toaster)) {
+                			if(applyRules(context, msg, toaster)) {
                					msg.arg1 = R.string.tasker_profile_applied;
                					if(!disableToasts) toaster.sendMessage(msg);
                 			}
@@ -145,7 +144,6 @@ public final class FireReceiver extends BroadcastReceiver
         				msg.arg1 = R.string.tasker_muliprofile;
         				toaster.sendMessage(msg);
                 	}
-        			G.reloadPrefs();
         		}
         	} 
         }
@@ -154,17 +152,18 @@ public final class FireReceiver extends BroadcastReceiver
     private boolean applyRules(Context context,Message msg, Handler toaster) {
 		boolean success = false;
 		if (Api.applySavedIptablesRules(context, false)) {
-			msg.arg1 = R.string.toast_enabled;
-			toaster.sendMessage(msg);
+			msg.arg1 = R.string.rules_applied;
+			//toaster.sendMessage(msg);
 			success = true;
 		} else {
-			msg.arg1 = R.string.toast_error_enabling;
-			toaster.sendMessage(msg);
+			msg.arg1 = R.string.error_apply;
+			//toaster.sendMessage(msg);
 		}
 		return success;
 	}
     
-    private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
+    //TODO: doesn't work well with some android versions. needs to be fixed
+    /*private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
 		boolean ret = Api.fastApply(context, new RootCommand()
 		.setFailureToast(R.string.error_apply)
 		.setCallback(new RootCommand.Callback() {
@@ -179,6 +178,6 @@ public final class FireReceiver extends BroadcastReceiver
 			}
 		}));
 		return ret;
-	}
+	}*/
     
 }
