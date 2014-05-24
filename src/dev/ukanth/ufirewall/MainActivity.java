@@ -121,6 +121,12 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	
 	private static final int REQ_CREATE_PATTERN = 9877;
 	private static final int REQ_ENTER_PATTERN = 9755;
+	
+	private static final int SHOW_ABOUT_RESULT = 1200;
+	private static final int SHOW_CUSTOM_SCRIPT = 1201;
+	private static final int SHOW_RULES_ACTIVITY = 1202;
+	private static final int SHOW_LOGS_ACTIVITY = 1203;
+	
 	private boolean isPassVerify = false;
 	
 	ProgressDialog plsWait;
@@ -129,6 +135,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	
 	private int index;
 	private int top;
+	
+	private boolean checkForProfile = true;
 	
 	private List<String> mlocalList = new ArrayList<String>();
 	
@@ -211,8 +219,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	        plsWait.setCancelable(false);
 		    
 	        checkforRoot();
-	        
-	        setupMultiProfile(true);
 		    
 	}
 	
@@ -289,6 +295,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if(passCheck()){
 	    	showOrLoadApplications();
 	    }
+		
+		if(checkForProfile) {
+			setupMultiProfile(true);
+		}
 		
 	}
 
@@ -388,6 +398,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		//this.listview.setAdapter(null);
 		//mLastPause = Syst em.currentTimeMillis();
 		isOnPause = true;
+		checkForProfile = true;
 		index = this.listview.getFirstVisiblePosition();
 		View v = this.listview.getChildAt(0);
 		top = (v == null) ? 0 : v.getTop();
@@ -878,11 +889,11 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private void showPreferences() {
 		Intent i = new Intent(this, PreferencesActivity.class);
 		startActivityForResult(i, SHOW_PREFERENCE_RESULT);
-		//startActivity(new Intent(this, PrefsActivity.class));
 	}
 	
 	private void showAbout() {
-		startActivity(new Intent(this, HelpActivity.class));
+		Intent i = new Intent(this, HelpActivity.class);
+		startActivityForResult(i, SHOW_ABOUT_RESULT);
 	}
 
 	/**
@@ -1002,22 +1013,25 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private void setCustomScript() {
 		Intent intent = new Intent();
 		intent.setClass(this, CustomScriptActivity.class);
-		startActivityForResult(intent, 0);
+		startActivityForResult(intent, SHOW_CUSTOM_SCRIPT);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == SHOW_PREFERENCE_RESULT && resultCode == RESULT_OK ) {
-			Intent intent = getIntent();
-		    finish();
-			Api.updateLanguage(getApplicationContext(), G.locale());
-		    startActivity(intent);
-		} else {
-			if(G.usePatterns()){
-				switch (requestCode) {
-				case REQ_CREATE_PATTERN:
+		checkForProfile = false;
+		
+		switch(requestCode) {
+			case SHOW_PREFERENCE_RESULT:
+				if(resultCode == RESULT_OK) {
+					Intent intent = getIntent();
+				    finish();
+					Api.updateLanguage(getApplicationContext(), G.locale());
+				    startActivity(intent);
+				}
+			break;
+			case REQ_CREATE_PATTERN: {
+				if(G.usePatterns()){
 					if (resultCode == RESULT_OK) {
 						char[] pattern = data.getCharArrayExtra(
 				                    LockPatternActivity.EXTRA_PATTERN);
@@ -1026,30 +1040,32 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		    			editor.commit();
 					}
 					break;
-					
-				case REQ_ENTER_PATTERN: {
-					switch (resultCode) {
-						case RESULT_OK:
-							isPassVerify = true;
-							showOrLoadApplications();
-							break;
-						case RESULT_CANCELED:
-							MainActivity.this.finish();
-							android.os.Process.killProcess(android.os.Process.myPid());
-							break;
-						case LockPatternActivity.RESULT_FAILED:
-							MainActivity.this.finish();
-							android.os.Process.killProcess(android.os.Process.myPid());
-							break;
-						case LockPatternActivity.RESULT_FORGOT_PATTERN:
-							break;
-						}
+				}
+			}
+			break;
+			
+			case REQ_ENTER_PATTERN: {
+				if(G.usePatterns()){
+				switch (resultCode) {
+					case RESULT_OK:
+						isPassVerify = true;
+						showOrLoadApplications();
+						break;
+					case RESULT_CANCELED:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						break;
+					case LockPatternActivity.RESULT_FAILED:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						break;
+					case LockPatternActivity.RESULT_FORGOT_PATTERN:
+						break;
 					}
 				}
-				
 			}
-		    
 		}
+		
 		if (resultCode == RESULT_OK
 				&& data != null && Api.CUSTOM_SCRIPT_MSG.equals(data.getAction())) {
 			final String script = data.getStringExtra(Api.SCRIPT_EXTRA);
@@ -1095,14 +1111,16 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 * Show iptables rules on a dialog
 	 */
 	private void showRules() {
-		startActivity(new Intent(this, RulesActivity.class));
+		Intent i = new Intent(this, RulesActivity.class);
+		startActivityForResult(i, SHOW_RULES_ACTIVITY);
 	}
 	
 	/**
 	 * Show logs on a dialog
 	 */
 	private void showLog() {
-		startActivity(new Intent(this, LogActivity.class));
+		Intent i = new Intent(this, LogActivity.class);
+		startActivityForResult(i,SHOW_LOGS_ACTIVITY);
 	}
 
 	/**
