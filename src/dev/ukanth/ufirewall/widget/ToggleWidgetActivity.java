@@ -269,14 +269,20 @@ public class ToggleWidgetActivity extends Activity {
 	}
 	
 	
-	private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
-		boolean success = false;
-		if (Api.applySavedIptablesRules(context, false)) {
-			msg.arg1 = R.string.rules_applied;
-			success = true;
-		} else {
-			msg.arg1 = R.string.error_apply;
+	 private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
+			boolean ret = Api.applySavedIptablesRules(context, false,new RootCommand()
+			.setFailureToast(R.string.error_apply)
+			.setCallback(new RootCommand.Callback() {
+				@Override
+				public void cbFunc(RootCommand state) {
+					if (state.exitCode == 0) {
+						msg.arg1 = R.string.rules_applied;
+					} else {
+						// error details are already in logcat
+						msg.arg1 = R.string.error_apply;
+					}
+				}
+			}));
+			return ret;
 		}
-		return success;
-	}
 }

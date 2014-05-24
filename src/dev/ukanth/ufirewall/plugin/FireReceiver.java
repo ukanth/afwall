@@ -23,6 +23,7 @@ import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.
@@ -144,12 +145,13 @@ public final class FireReceiver extends BroadcastReceiver
         				msg.arg1 = R.string.tasker_muliprofile;
         				toaster.sendMessage(msg);
                 	}
+        			G.reloadPrefs();
         		}
         	} 
         }
     }
     
-    private boolean applyRules(Context context,Message msg, Handler toaster) {
+  /*  private boolean applyRules(Context context,Message msg, Handler toaster) {
 		boolean success = false;
 		if (Api.applySavedIptablesRules(context, false)) {
 			msg.arg1 = R.string.rules_applied;
@@ -160,11 +162,10 @@ public final class FireReceiver extends BroadcastReceiver
 			//toaster.sendMessage(msg);
 		}
 		return success;
-	}
+	}*/
     
-    //TODO: doesn't work well with some android versions. needs to be fixed
-    /*private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
-		boolean ret = Api.fastApply(context, new RootCommand()
+   private boolean applyRules(final Context context,final Message msg, final Handler toaster) {
+		boolean ret = Api.applySavedIptablesRules(context, false,new RootCommand()
 		.setFailureToast(R.string.error_apply)
 		.setCallback(new RootCommand.Callback() {
 			@Override
@@ -178,6 +179,5 @@ public final class FireReceiver extends BroadcastReceiver
 			}
 		}));
 		return ret;
-	}*/
-    
+	}
 }
