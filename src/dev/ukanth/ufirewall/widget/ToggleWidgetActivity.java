@@ -260,8 +260,8 @@ public class ToggleWidgetActivity extends Activity {
 						break;
 					}
 					if(i > 2) {
-						G.reloadPrefs();
 						applyProfileRules(context,msg,toaster);
+						G.reloadPrefs();
 					}
 				}
 			}
@@ -270,27 +270,13 @@ public class ToggleWidgetActivity extends Activity {
 	
 	
 	private boolean applyProfileRules(final Context context,final Message msg, final Handler toaster) {
-		Api.saveRules(context);
-		boolean ret = Api.applySavedIptablesRules(context, true, new RootCommand()
-		.setFailureToast(R.string.error_apply)
-		.setReopenShell(true)
-		.setCallback(new RootCommand.Callback() {
-			public void cbFunc(RootCommand state) {
-				if (state.exitCode == 0) {
-					msg.arg1 = R.string.rules_applied;
-					toaster.sendMessage(msg);
-				} else {
-					// error details are already in logcat
-					msg.arg1 = R.string.error_apply;
-					toaster.sendMessage(msg);
-				}
-			}
-		}));
-		return ret;
+		boolean success = false;
+		if (Api.applySavedIptablesRules(context, false)) {
+			msg.arg1 = R.string.rules_applied;
+			success = true;
+		} else {
+			msg.arg1 = R.string.error_apply;
+		}
+		return success;
 	}
-	
-	
 }
-
-
-
