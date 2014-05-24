@@ -1,13 +1,13 @@
 Changelog AFWall+
 ==================
 
--------------
-Download links are right here on the ["Downloads" front page](https://github.com/ukanth/afwall/downloads).
-
 Version 1.3.2 [Beta]
-* Fixed process leak in LogService which creates multiple orphan processes 
-* Fixed issue with Filter with LogService
-* Old Profile switch widget is back, till the new widget is stable.
+* Added back the old profile switch widget till the new widget gets stable.
+* Fix: process leak with log service.
+* Fix: filter application's not working for block notifications.
+* Fix: multiple tasker issues ( profile 2 applies - profile 3 and rules are not applying when using tasker)
+* Fix: profile status not getting reflected on main view when changed using tasker/widget
+* Fix: new widget not applying rules properly for profiles.
 
 
 Version 1.3.1.1
