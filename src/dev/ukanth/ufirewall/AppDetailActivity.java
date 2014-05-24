@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
@@ -36,7 +37,7 @@ public class AppDetailActivity extends SherlockActivity {
         
         /**/
         
-        int appid = getIntent().getIntExtra("appid", -100);
+        int appid = getIntent().getIntExtra("appid", -1);
         if(appid > 0) {
         	
         	final PackageManager packageManager = getApplicationContext().getPackageManager();
@@ -89,7 +90,7 @@ public class AppDetailActivity extends SherlockActivity {
         	long wifiTotal = (total - mobileTotal);
         	Log.v(TAG, "total=" + total + " mob=" + mobileTotal + " wifi=" + wifiTotal);*/
         	
-        }
+        } 
 	}
 	
 	public static String humanReadableByteCount(long bytes, boolean si) {
