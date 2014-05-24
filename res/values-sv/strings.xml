@@ -106,7 +106,6 @@
   <string name="export_to_sd">Exportera till SD-kort</string>
   <string name="enable_firewall_log">Aktivera brandväggsloggar</string>
   <string name="enable_firewall_log_service">Slå på Loggtjänsten</string>
-  <string name="enable_firewall_log_service">Slå på Loggtjänsten</string>
   <string name="showlog_title">Brandväggsloggar</string>
   <string name="showlog_service_summary">Aktivera detta för att visa meddelanden när anslutningar blockeras </string>
   <string name="enable_log">Aktivera logg</string>

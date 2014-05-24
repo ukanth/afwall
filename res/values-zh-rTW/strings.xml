@@ -106,7 +106,6 @@
   <string name="export_to_sd">導出到 SD卡</string>
   <string name="enable_firewall_log">啟用防火牆日誌</string>
   <string name="enable_firewall_log_service">Turn on log service</string>
-  <string name="enable_firewall_log_service">Turn on log service</string>
   <string name="showlog_title">防火牆日誌</string>
   <string name="showlog_service_summary">Enable this will show messages when connections gets blocked </string>
   <string name="enable_log">啟用日誌</string>

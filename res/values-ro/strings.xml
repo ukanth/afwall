@@ -106,7 +106,6 @@
   <string name="export_to_sd">Exportă pe SD Card</string>
   <string name="enable_firewall_log">Activează rapoartele pentru Firewall</string>
   <string name="enable_firewall_log_service">Activaţi serviciul jurnal</string>
-  <string name="enable_firewall_log_service">Activaţi serviciul jurnal</string>
   <string name="showlog_title">Rapoarte Firewall</string>
   <string name="showlog_service_summary">Activând această opțiune va afișa mesaje când conexiunile vin blocate </string>
   <string name="enable_log">Activează raport</string>

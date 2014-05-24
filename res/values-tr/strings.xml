@@ -107,7 +107,6 @@
   <string name="export_to_sd">Bellek Kartına Ver</string>
   <string name="enable_firewall_log">Günlükleri etkinleştir</string>
   <string name="enable_firewall_log_service">Log servisini aç</string>
-  <string name="enable_firewall_log_service">Log servisini aç</string>
   <string name="showlog_title">Güvenlik duvarı günlükleri</string>
   <string name="showlog_service_summary">Enable this will show messages when connections gets blocked 
 Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>

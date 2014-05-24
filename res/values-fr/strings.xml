@@ -106,7 +106,6 @@
   <string name="export_to_sd">Exporter vers la carte SD</string>
   <string name="enable_firewall_log">Activer le journal du pare-feu</string>
   <string name="enable_firewall_log_service">Activer la journalisation</string>
-  <string name="enable_firewall_log_service">Activer la journalisation</string>
   <string name="showlog_title">Journal du pare-feu</string>
   <string name="showlog_service_summary">Cocher pour afficher des messages quand les connexions sont bloquées </string>
   <string name="enable_log">Activer le journal</string>

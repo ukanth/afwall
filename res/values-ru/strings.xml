@@ -107,7 +107,6 @@
   <string name="export_to_sd">Экспорт на SD-карту</string>
   <string name="enable_firewall_log">Включить ведение лога</string>
   <string name="enable_firewall_log_service">Включить службу журнала</string>
-  <string name="enable_firewall_log_service">Включить службу журнала</string>
   <string name="showlog_title">Логи брандмауэра</string>
   <string name="showlog_service_summary">Включить показ сообщений, когда соединения блокируется </string>
   <string name="enable_log">Включить журнал</string>

@@ -106,7 +106,6 @@
   <string name="export_to_sd">Εξαγωγή σε κάρτα SD</string>
   <string name="enable_firewall_log">Ενεργοποίηση καταγραφών του τείχους</string>
   <string name="enable_firewall_log_service">Turn on log service</string>
-  <string name="enable_firewall_log_service">Turn on log service</string>
   <string name="showlog_title">Καταγραφές τείχους</string>
   <string name="showlog_service_summary">Enable this will show messages when connections gets blocked </string>
   <string name="enable_log">Ενεργοποίηση καταγραφής</string>

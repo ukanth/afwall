@@ -106,7 +106,6 @@
   <string name="export_to_sd">Esporta su scheda SD</string>
   <string name="enable_firewall_log">Abilitare i registri Firewall</string>
   <string name="enable_firewall_log_service">Attivare il servizio Registro</string>
-  <string name="enable_firewall_log_service">Attivare il servizio Registro</string>
   <string name="showlog_title">Registri del Firewall</string>
   <string name="showlog_service_summary">Abilitando questa opzione verranno mostrati dei messaggi quando le connessioni vengono bloccate </string>
   <string name="enable_log">Attivare Log</string>

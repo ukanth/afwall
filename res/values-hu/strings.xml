@@ -106,7 +106,6 @@
   <string name="export_to_sd">Exportálás az SD kártyára</string>
   <string name="enable_firewall_log">Tűzfal naplók (log-ok) engedélyezése</string>
   <string name="enable_firewall_log_service">Turn on log service</string>
-  <string name="enable_firewall_log_service">Turn on log service</string>
   <string name="showlog_title">Tűzfal naplók (log-ok)</string>
   <string name="showlog_service_summary">Enable this will show messages when connections gets blocked </string>
   <string name="enable_log">Napló (log) engedélyezése</string>

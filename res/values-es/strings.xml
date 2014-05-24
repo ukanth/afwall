@@ -106,7 +106,6 @@
   <string name="export_to_sd">Exportar a la tarjeta SD</string>
   <string name="enable_firewall_log">Activar el registro del cortafuegos</string>
   <string name="enable_firewall_log_service">Encender el servicio de registro</string>
-  <string name="enable_firewall_log_service">Encender el servicio de registro</string>
   <string name="showlog_title">Registros del cortafuegos</string>
   <string name="showlog_service_summary">Activar esto mostrará un mensaje cuando se bloqueen conexiones </string>
   <string name="enable_log">Activar el registro</string>

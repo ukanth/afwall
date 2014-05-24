@@ -106,7 +106,6 @@
   <string name="export_to_sd">Auf SD-Karte exportieren</string>
   <string name="enable_firewall_log">Aktiviere Firewall-Logs</string>
   <string name="enable_firewall_log_service">Protokolldienst einschalten</string>
-  <string name="enable_firewall_log_service">Protokolldienst einschalten</string>
   <string name="showlog_title">Firewall Log</string>
   <string name="showlog_service_summary">Wenn dies aktiviert ist zeigt es Informationen, wenn Verbindungen geblockt werden </string>
   <string name="enable_log">Log aktivieren</string>
