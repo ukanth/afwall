@@ -20,9 +20,11 @@ public class MultiSelectListPreference extends ListPreference {
     private String separator;
     private static final String DEFAULT_SEPARATOR = ",";
     private boolean[] entryChecked;
+    private Context ctx;
  
     public MultiSelectListPreference(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+        this.ctx = context;
         if(getEntries() == null){
         	setData();	
         }
@@ -34,24 +36,27 @@ public class MultiSelectListPreference extends ListPreference {
         this(context, null);
     }
     
-    private void setData(){
-    	  CharSequence[] entries = new CharSequence[Api.applications.size()];
-          CharSequence[] entryValues = new CharSequence[Api.applications.size()];
-          int i = 0;
-          for (PackageInfoData dev : Api.applications) {
-              entries[i] = dev.toStringWithUID();
-              entryValues[i] = dev.uid +"";
-              i++;
-          }
-          setEntries(entries);
-          setEntryValues(entryValues);
-    }
+	private void setData() {
+		if (Api.applications == null) {
+			Api.getApps(ctx, null);
+		}
+		CharSequence[] entries = new CharSequence[Api.applications.size()];
+		CharSequence[] entryValues = new CharSequence[Api.applications.size()];
+		int i = 0;
+		for (PackageInfoData dev : Api.applications) {
+			entries[i] = dev.toStringWithUID();
+			entryValues[i] = dev.uid + "";
+			i++;
+		}
+		setEntries(entries);
+		setEntryValues(entryValues);
+	}
  
     @Override
     protected void onPrepareDialogBuilder(Builder builder) {
     	 
         if(Api.applications == null) {
-        	return;
+        	Api.getApps(ctx, null);
         }
         
         CharSequence[] entries = new CharSequence[Api.applications.size()];

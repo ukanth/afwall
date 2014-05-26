@@ -783,48 +783,52 @@ public final class Api {
 
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final List<PackageInfoData> apps = getApps(ctx,null);
-		// Builds a pipe-separated list of names
-		final StringBuilder newpkg_wifi = new StringBuilder();
-		final StringBuilder newpkg_3g = new StringBuilder();
-		final StringBuilder newpkg_roam = new StringBuilder();
-		final StringBuilder newpkg_vpn = new StringBuilder();
-		final StringBuilder newpkg_lan = new StringBuilder();
 		
-		for (int i=0; i<apps.size(); i++) {
+		if(apps != null) {
+			// Builds a pipe-separated list of names
+			final StringBuilder newpkg_wifi = new StringBuilder();
+			final StringBuilder newpkg_3g = new StringBuilder();
+			final StringBuilder newpkg_roam = new StringBuilder();
+			final StringBuilder newpkg_vpn = new StringBuilder();
+			final StringBuilder newpkg_lan = new StringBuilder();
 			
-			if (apps.get(i).selected_wifi) {
-				if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
-				newpkg_wifi.append(apps.get(i).uid);
+			for (int i=0; i<apps.size(); i++) {
 				
-			}
-			if (apps.get(i).selected_3g) {
-				if (newpkg_3g.length() != 0) newpkg_3g.append('|');
-				newpkg_3g.append(apps.get(i).uid);
-			}
-			if (enableRoam && apps.get(i).selected_roam) {
-				if (newpkg_roam.length() != 0) newpkg_roam.append('|');
-				newpkg_roam.append(apps.get(i).uid);
-			}
-			
-			if (enableVPN && apps.get(i).selected_vpn) {
-				if (newpkg_vpn.length() != 0) newpkg_vpn.append('|');
-				newpkg_vpn.append(apps.get(i).uid);
-			}
+				if (apps.get(i).selected_wifi) {
+					if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
+					newpkg_wifi.append(apps.get(i).uid);
+					
+				}
+				if (apps.get(i).selected_3g) {
+					if (newpkg_3g.length() != 0) newpkg_3g.append('|');
+					newpkg_3g.append(apps.get(i).uid);
+				}
+				if (enableRoam && apps.get(i).selected_roam) {
+					if (newpkg_roam.length() != 0) newpkg_roam.append('|');
+					newpkg_roam.append(apps.get(i).uid);
+				}
+				
+				if (enableVPN && apps.get(i).selected_vpn) {
+					if (newpkg_vpn.length() != 0) newpkg_vpn.append('|');
+					newpkg_vpn.append(apps.get(i).uid);
+				}
 
-			if (enableLAN && apps.get(i).selected_lan) {
-				if (newpkg_lan.length() != 0) newpkg_lan.append('|');
-				newpkg_lan.append(apps.get(i).uid);
+				if (enableLAN && apps.get(i).selected_lan) {
+					if (newpkg_lan.length() != 0) newpkg_lan.append('|');
+					newpkg_lan.append(apps.get(i).uid);
+				}
 			}
+			// save the new list of UIDs
+			final Editor edit = prefs.edit();
+			edit.putString(PREF_WIFI_PKG_UIDS, newpkg_wifi.toString());
+			edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
+			edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
+			edit.putString(PREF_VPN_PKG_UIDS, newpkg_vpn.toString());
+			edit.putString(PREF_LAN_PKG_UIDS, newpkg_lan.toString());
+			
+			edit.commit();
 		}
-		// save the new list of UIDs
-		final Editor edit = prefs.edit();
-		edit.putString(PREF_WIFI_PKG_UIDS, newpkg_wifi.toString());
-		edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
-		edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
-		edit.putString(PREF_VPN_PKG_UIDS, newpkg_vpn.toString());
-		edit.putString(PREF_LAN_PKG_UIDS, newpkg_lan.toString());
 		
-		edit.commit();
     }
 	
     /**
