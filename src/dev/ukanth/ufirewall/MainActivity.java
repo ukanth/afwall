@@ -811,12 +811,17 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			       .setCancelable(false)
 			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
-			        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this)){
+			        	   StringBuilder builder = new StringBuilder();
+			        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder)){
 			        		   Api.applications = null;
 			        		   showOrLoadApplications();
 			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 			        	   } else {
-			   				   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+			        		   if(builder.toString().equals("")){
+			        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+			        		   } else {
+			        			   Api.alert(MainActivity.this,builder.toString());
+			        		   }
 			   				}
 			           }
 			       })

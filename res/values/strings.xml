@@ -116,6 +116,7 @@
     <string name="export_rules_fail">Export Rules failed!</string>
     <string name="import_rules_success">Imported successfully from </string>
     <string name="import_rules_fail">Import Rules failed!</string>
+     <string name="import_rules_missing">Rules file is missing!</string>
     <string name="exportConfirm">Do you want to export rules to SD Card ?</string>
     <string name="export_logs_fail">Export To SD failed!</string>
     <string name="export_to_sd">Export to SD Card</string>

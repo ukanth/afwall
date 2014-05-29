@@ -1741,7 +1741,7 @@ public final class Api {
 	    return res;
 	}
 	
-	private static boolean importRules(Context ctx,File file) {
+	private static boolean importRules(Context ctx,File file, StringBuilder msg) {
 		boolean returnVal = false;
 		BufferedReader br = null;
 		final StringBuilder wifi_uids = new StringBuilder();
@@ -1783,7 +1783,11 @@ public final class Api {
 						if (pkgName.startsWith("dev.afwall.special")) {
 							wifi_uids.append(specialApps.get(pkgName));
 						} else {
-							wifi_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							try {
+								wifi_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							} catch(NameNotFoundException e) {
+								
+							}
 						}
 		            	break;
 		            case DATA_EXPORT: 
@@ -1793,7 +1797,11 @@ public final class Api {
 		            	if (pkgName.startsWith("dev.afwall.special")) {
 							data_uids.append(specialApps.get(pkgName));
 						} else {
-							data_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							try {
+								data_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							} catch(NameNotFoundException e) {
+								
+							}
 						}
 		            	break;
 		            case ROAM_EXPORT: 
@@ -1803,7 +1811,11 @@ public final class Api {
 		            	if (pkgName.startsWith("dev.afwall.special")) {
 							roam_uids.append(specialApps.get(pkgName));
 						} else {
-							roam_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							try{
+								roam_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							} catch(NameNotFoundException e) {
+								
+							}
 						}
 		            	break;
 		            case VPN_EXPORT:
@@ -1813,7 +1825,11 @@ public final class Api {
 		            	if (pkgName.startsWith("dev.afwall.special")) {
 							vpn_uids.append(specialApps.get(pkgName));
 						} else {
-							vpn_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							try {	
+								vpn_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							} catch(NameNotFoundException e) {
+							
+							}
 						}
 		            	break;
 		            case LAN_EXPORT:
@@ -1823,7 +1839,11 @@ public final class Api {
 		            	if (pkgName.startsWith("dev.afwall.special")) {
 							lan_uids.append(specialApps.get(pkgName));
 						} else {
-							lan_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							try {	
+								lan_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+							} catch(NameNotFoundException e) {
+								
+							}
 						}
 		            	break;
 		            }
@@ -1841,14 +1861,12 @@ public final class Api {
 			edit.commit();
 			returnVal = true;
 		} catch (FileNotFoundException e) {
-			Log.e(TAG, e.getLocalizedMessage());
+			msg.append(ctx.getString(R.string.import_rules_missing));
 		} catch (IOException e) {
 			Log.e(TAG, e.getLocalizedMessage());
 		} catch (JSONException e) {
 			Log.e(TAG, e.getLocalizedMessage());
-		} catch (NameNotFoundException e) {
-			Log.e(TAG, e.getLocalizedMessage());
-		} finally {
+		}  finally {
 			if (br != null) {
 				try {
 					br.close();
@@ -1907,7 +1925,7 @@ public final class Api {
 
 
 	@SuppressWarnings("unchecked")
-	public static boolean loadSharedPreferencesFromFile(Context ctx) {
+	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder) {
 		boolean res = false;
 		File sdCard = Environment.getExternalStorageDirectory();
 		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
@@ -1915,7 +1933,7 @@ public final class Api {
 		File file = new File(dir, "backup.json");
 		//new format
 		if(file.exists()) {
-			res = importRules(ctx,file);
+			res = importRules(ctx,file,builder);
 		} else {
 			file = new File(dir, "backup.rules");
 			if(file.exists()) {
