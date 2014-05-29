@@ -25,14 +25,16 @@ package dev.ukanth.ufirewall;
 import java.util.LinkedList;
 import java.util.List;
 
-import eu.chainfire.libsuperuser.Shell;
-import eu.chainfire.libsuperuser.StreamGobbler;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
+import eu.chainfire.libsuperuser.Shell;
+import eu.chainfire.libsuperuser.StreamGobbler;
 
 public class NflogService extends Service {
 
@@ -110,6 +112,15 @@ public class NflogService extends Service {
 
 	public void onDestroy() {
 		Log.e(TAG, "Received request to kill nflog");
-		/* FIXME: we should really be closing the shell through libsuperuser */
+		new KillProcess().execute();
+	}
+	
+	private class KillProcess extends AsyncTask<Void, Void, Void> {
+		@Override
+		protected Void doInBackground(Void... params) {
+			//make sure there is no nflog process 
+			new RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + nflogPath);
+			return null;
+		}
 	}
 }
