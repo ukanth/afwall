@@ -28,7 +28,6 @@ import java.util.List;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -112,15 +111,13 @@ public class NflogService extends Service {
 
 	public void onDestroy() {
 		Log.e(TAG, "Received request to kill nflog");
-		new KillProcess().execute();
-	}
-	
-	private class KillProcess extends AsyncTask<Void, Void, Void> {
-		@Override
-		protected Void doInBackground(Void... params) {
-			//make sure there is no nflog process 
-			new RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + nflogPath);
-			return null;
-		}
+		Thread thread = new Thread()
+		{
+		    @Override
+		    public void run() {
+		    	new RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + nflogPath);
+		    }
+		};
+		thread.start();
 	}
 }

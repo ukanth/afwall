@@ -1,6 +1,10 @@
 Changelog AFWall+
 ==================
 
+Version 1.3.3
+* LogService FC issues on 4.4
+
+
 Version 1.3.2
 * Added back the old profile switch widget till the new widget gets stable.
 * Fix: process leak with log and nflog service. Please do a clean install incase if it doesn't work after update.
@@ -10,8 +14,6 @@ Version 1.3.2
 * Fix: new widget not applying rules properly for profiles.
 * Fix: Import rules fails when package not found.
 * Fix: User reported NPE & Force close issues.
-
-
 
 Version 1.3.1.1
 * Revert Target SDK to 16 to fix issue with boot rules
