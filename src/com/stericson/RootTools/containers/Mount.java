@@ -24,7 +24,6 @@ package com.stericson.RootTools.containers;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
