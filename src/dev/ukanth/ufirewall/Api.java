@@ -80,9 +80,6 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.widget.Toast;
-
-import com.stericson.RootTools.RootTools;
-
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.JsonHelper;
@@ -2072,7 +2069,7 @@ public final class Api {
 	    context.startActivity(intent);
 	}
 	
-	public static boolean hasRootAccess(Context ctx) {
+	/*public static boolean hasRootAccess(Context ctx) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		boolean isRoot = prefs.getBoolean("hasRoot", false);
 		if (!isRoot) {
@@ -2090,7 +2087,7 @@ public final class Api {
 			}
 		}
 		return isRoot;
-	}
+	}*/
 	
 	public static void showAlertDialogActivity(Context ctx,String title, String message) {
 		Intent dialog = new Intent(ctx,AlertDialogActivity.class);

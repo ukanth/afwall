@@ -82,6 +82,17 @@ public class RootShell extends Service {
 		public StringBuilder lastCommandResult;
 		public int exitCode;
 		public boolean done = false;
+		private boolean startCheck = false;
+		
+
+		public boolean isStartCheck() {
+			return startCheck;
+		}
+
+		public RootCommand setStartCheck(boolean startCheck) {
+			this.startCheck = startCheck;
+			return this;
+		}
 
 		public static abstract class Callback {
 
@@ -203,8 +214,11 @@ public class RootShell extends Service {
 		if (exitCode == 0 && state.successToast != NO_TOAST) {
 			Toast.makeText(mContext, mContext.getString(state.successToast), Toast.LENGTH_SHORT).show();
 		} else if (exitCode != 0 && state.failureToast != NO_TOAST) {
-			 //Api.showAlertDialogActivity(mContext, mContext.getString(R.string.error_common), mContext.getString(state.failureToast));
-			 Toast.makeText(mContext, mContext.getString(state.failureToast), Toast.LENGTH_SHORT).show();	
+			  if(state.isStartCheck()) {
+				  Api.showAlertDialogActivity(mContext, mContext.getString(R.string.error_common), mContext.getString(R.string.error_su));
+			  } else {
+				  Toast.makeText(mContext, mContext.getString(state.failureToast), Toast.LENGTH_SHORT).show();
+			  }
 		}
 	}
 

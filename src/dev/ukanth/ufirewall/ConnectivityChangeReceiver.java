@@ -24,8 +24,6 @@ package dev.ukanth.ufirewall;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import dev.ukanth.ufirewall.log.LogService;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
@@ -52,27 +50,22 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		boolean hasRoot = prefs.getBoolean("hasRoot", false);
-		
-		if(hasRoot) {
-			if(G.activeRules()){
-				InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-			}
-			final Intent logIntent = new Intent(context, LogService.class);
-			if(G.enableLogService()){
-				 //check if the firewall is enabled
-				if(!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
-					context.stopService(logIntent);
-				} else{
-					//restart the service
-					context.stopService(logIntent);
-					context.startService(logIntent);
-				}
-			 } else {
-					//no internet - stop the service
-				 context.stopService(logIntent);
-			 }
+		if(G.activeRules()){
+			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
 		}
+		final Intent logIntent = new Intent(context, LogService.class);
+		if(G.enableLogService()){
+			 //check if the firewall is enabled
+			if(!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
+				context.stopService(logIntent);
+			} else{
+				//restart the service
+				context.stopService(logIntent);
+				context.startService(logIntent);
+			}
+		 } else {
+				//no internet - stop the service
+			 context.stopService(logIntent);
+		 }
 	}
 }

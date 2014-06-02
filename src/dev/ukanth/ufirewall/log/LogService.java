@@ -149,8 +149,6 @@ public class LogService extends Service {
 		Log.i(TAG, "Starting " + klogPath);
 		handler = new Handler();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		boolean hasRoot = prefs.getBoolean("hasRoot", false);
-		if(hasRoot) {
 		rootSession = new Shell.Builder()
 				.useSU()
 				.setMinimalLogging(true)
@@ -182,7 +180,6 @@ public class LogService extends Service {
 						}
 					}
 				});
-		}
 	}
 
 	@Override

@@ -37,7 +37,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
@@ -45,7 +44,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -218,14 +216,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
 		    
-	        checkforRoot();
-		    
-	}
-	
-	
-	private void checkforRoot() {
-		//check for root
-        new Startup().execute();
 	}
 
 	private void updateRadioFilter() {
@@ -261,16 +251,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	}
 	
 	private void startRootShell() {
-		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		boolean hasRoot = prefs.getBoolean("hasRoot", false);
-		
-		if(hasRoot) {
-			List<String> cmds = new ArrayList<String>();
-			cmds.add("true");
-			new RootCommand().setFailureToast(R.string.error_su)
-				.setReopenShell(true).run(getApplicationContext(), cmds);
-		} 
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("true");
+		new RootCommand().setFailureToast(R.string.error_su)
+			.setReopenShell(true).setStartCheck(true).run(getApplicationContext(), cmds);
 	}
 	
 	@Override
@@ -1664,15 +1648,5 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				break;
 			}
 	}
-	
-	private class Startup extends AsyncTask<Void, Void, Void> {
-		@Override
-		protected Void doInBackground(Void... params) {
-			Api.hasRootAccess(getApplicationContext());
-			return null;
-		}
-	}
-
-	
 }
 

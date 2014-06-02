@@ -57,9 +57,6 @@ public class NflogService extends Service {
 		nflogPath = Api.getNflogPath(getApplicationContext());
 		Log.d(TAG, "Starting " + nflogPath);
 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		boolean hasRoot = prefs.getBoolean("hasRoot", false);
-		if(hasRoot) {
 		rootSession = new Shell.Builder()
 				.useSU()
 				.setMinimalLogging(true)
@@ -88,7 +85,6 @@ public class NflogService extends Service {
 					}
 				});
 		}
-	}
 
 	public static String fetchLogs() {
 		StringBuilder sb = new StringBuilder();
