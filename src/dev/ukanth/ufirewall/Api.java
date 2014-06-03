@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
@@ -1860,12 +1861,6 @@ public final class Api {
 	private static boolean importRules(Context ctx,File file, StringBuilder msg) {
 		boolean returnVal = false;
 		BufferedReader br = null;
-		final StringBuilder wifi_uids = new StringBuilder();
-		final StringBuilder data_uids = new StringBuilder();
-		final StringBuilder roam_uids = new StringBuilder();
-		final StringBuilder vpn_uids = new StringBuilder();
-		final StringBuilder lan_uids = new StringBuilder();
-		
 		try {
 			StringBuilder text = new StringBuilder();
 			br = new BufferedReader(new FileReader(file));
@@ -1875,106 +1870,195 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONArray array = new JSONArray(data);
-			JSONObject object = (JSONObject) array.get(0);
-			Map<String,Object> json = JsonHelper.toMap(object);
-			final PackageManager pm = ctx.getPackageManager();
-			
-			for (Map.Entry<String, Object> entry : json.entrySet())
-			{
-			    String pkgName = entry.getKey();
-			    if(pkgName.contains(":")) {
-			    	pkgName = pkgName.split(":")[0];
-			    }
-			    
-			    JSONObject jsonObj = (JSONObject) JsonHelper.toJSON(entry.getValue());
-			    Iterator<?> keys = jsonObj.keys();
-			    while( keys.hasNext() ){
-			    	//get wifi/data/lan etc
-		            String key = (String)keys.next();
-		            switch(Integer.parseInt(key)){
-		            case WIFI_EXPORT:
-		            	if (wifi_uids.length() != 0) {
-		            		wifi_uids.append('|');
-		            	}
-						if (pkgName.startsWith("dev.afwall.special")) {
-							wifi_uids.append(specialApps.get(pkgName));
-						} else {
-							try {
-								wifi_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
-							} catch(NameNotFoundException e) {
-								
-							}
-						}
-		            	break;
-		            case DATA_EXPORT: 
-		            	if (data_uids.length() != 0) {
-		            		data_uids.append('|');
-		            	}
-		            	if (pkgName.startsWith("dev.afwall.special")) {
-							data_uids.append(specialApps.get(pkgName));
-						} else {
-							try {
-								data_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
-							} catch(NameNotFoundException e) {
-								
-							}
-						}
-		            	break;
-		            case ROAM_EXPORT: 
-		            	if (roam_uids.length() != 0) {
-		            		roam_uids.append('|');
-		            	}
-		            	if (pkgName.startsWith("dev.afwall.special")) {
-							roam_uids.append(specialApps.get(pkgName));
-						} else {
-							try{
-								roam_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
-							} catch(NameNotFoundException e) {
-								
-							}
-						}
-		            	break;
-		            case VPN_EXPORT:
-		            	if (vpn_uids.length() != 0) {
-		            		vpn_uids.append('|');
-		            	}
-		            	if (pkgName.startsWith("dev.afwall.special")) {
-							vpn_uids.append(specialApps.get(pkgName));
-						} else {
-							try {	
-								vpn_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
-							} catch(NameNotFoundException e) {
+			updateRulesFromJson(ctx,(JSONObject) array.get(0),PREFS_NAME);
+			returnVal = true;
+		} catch (FileNotFoundException e) {
+			msg.append(ctx.getString(R.string.import_rules_missing));
+		} catch (IOException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		} catch (JSONException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		}  finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage());
+				}
+			}
+		}
+		return returnVal;
+	}
+	
+	
+	private static void updateRulesFromJson(Context ctx,JSONObject object,String preferenceName ) throws JSONException {
+		final StringBuilder wifi_uids = new StringBuilder();
+		final StringBuilder data_uids = new StringBuilder();
+		final StringBuilder roam_uids = new StringBuilder();
+		final StringBuilder vpn_uids = new StringBuilder();
+		final StringBuilder lan_uids = new StringBuilder();
+		
+		Map<String,Object> json = JsonHelper.toMap(object);
+		final PackageManager pm = ctx.getPackageManager();
+		
+		for (Map.Entry<String, Object> entry : json.entrySet())
+		{
+		    String pkgName = entry.getKey();
+		    if(pkgName.contains(":")) {
+		    	pkgName = pkgName.split(":")[0];
+		    }
+		    
+		    JSONObject jsonObj = (JSONObject) JsonHelper.toJSON(entry.getValue());
+		    Iterator<?> keys = jsonObj.keys();
+		    while( keys.hasNext() ){
+		    	//get wifi/data/lan etc
+	            String key = (String)keys.next();
+	            switch(Integer.parseInt(key)){
+	            case WIFI_EXPORT:
+	            	if (wifi_uids.length() != 0) {
+	            		wifi_uids.append('|');
+	            	}
+					if (pkgName.startsWith("dev.afwall.special")) {
+						wifi_uids.append(specialApps.get(pkgName));
+					} else {
+						try {
+							wifi_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						} catch(NameNotFoundException e) {
 							
-							}
 						}
-		            	break;
-		            case LAN_EXPORT:
-		            	if (lan_uids.length() != 0) {
-		            		lan_uids.append('|');
+					}
+	            	break;
+	            case DATA_EXPORT: 
+	            	if (data_uids.length() != 0) {
+	            		data_uids.append('|');
+	            	}
+	            	if (pkgName.startsWith("dev.afwall.special")) {
+						data_uids.append(specialApps.get(pkgName));
+					} else {
+						try {
+							data_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						} catch(NameNotFoundException e) {
+							
+						}
+					}
+	            	break;
+	            case ROAM_EXPORT: 
+	            	if (roam_uids.length() != 0) {
+	            		roam_uids.append('|');
+	            	}
+	            	if (pkgName.startsWith("dev.afwall.special")) {
+						roam_uids.append(specialApps.get(pkgName));
+					} else {
+						try{
+							roam_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						} catch(NameNotFoundException e) {
+							
+						}
+					}
+	            	break;
+	            case VPN_EXPORT:
+	            	if (vpn_uids.length() != 0) {
+	            		vpn_uids.append('|');
+	            	}
+	            	if (pkgName.startsWith("dev.afwall.special")) {
+						vpn_uids.append(specialApps.get(pkgName));
+					} else {
+						try {	
+							vpn_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						} catch(NameNotFoundException e) {
+						
+						}
+					}
+	            	break;
+	            case LAN_EXPORT:
+	            	if (lan_uids.length() != 0) {
+	            		lan_uids.append('|');
+	            	}
+	            	if (pkgName.startsWith("dev.afwall.special")) {
+						lan_uids.append(specialApps.get(pkgName));
+					} else {
+						try {	
+							lan_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+						} catch(NameNotFoundException e) {
+							
+						}
+					}
+	            	break;
+	            }
+	           
+	        }
+		}
+		final SharedPreferences prefs = ctx.getSharedPreferences(preferenceName, Context.MODE_PRIVATE);
+		final Editor edit = prefs.edit();
+		edit.putString(PREF_WIFI_PKG_UIDS, wifi_uids.toString());
+		edit.putString(PREF_3G_PKG_UIDS, data_uids.toString());
+		edit.putString(PREF_ROAMING_PKG_UIDS, roam_uids.toString());
+		edit.putString(PREF_VPN_PKG_UIDS, vpn_uids.toString());
+		edit.putString(PREF_LAN_PKG_UIDS, lan_uids.toString());
+		
+		edit.commit();
+		
+	}
+
+	private static boolean importAll(Context ctx,File file, StringBuilder msg) {
+		boolean returnVal = false;
+		BufferedReader br = null;
+		
+		try {
+			StringBuilder text = new StringBuilder();
+			br = new BufferedReader(new FileReader(file));
+			String line;
+			while ((line = br.readLine()) != null) {
+				text.append(line);
+			}
+			String data = text.toString();
+			JSONObject object = new JSONObject(data);
+			
+			JSONArray prefArray = (JSONArray) object.get("prefs");
+			for(int i = 0 ; i < prefArray.length(); i++){
+				JSONObject prefObj = (JSONObject) prefArray.get(i);
+				Iterator<?> keys = prefObj.keys();
+				
+		        while( keys.hasNext() ){
+		            String key = (String)keys.next();
+		            String value =  (String) prefObj.get(key);
+		            if(!key.equals("appVersion")) {
+		            	//boolean type values
+		            	Log.i(TAG, "Updating " + key + ":" + value);
+		            	if(value.equals("true") || value.equals("false")) {
+		            		G.gPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).commit();
+		            	} else {
+		            		try {
+		            			//handle Long
+		            			if(key.equals("multiUserId")) {
+		            				G.gPrefs.edit().putLong(key, Long.parseLong(value)).commit();
+		            			} else if(key.equals("patternMax")) {
+		            				G.gPrefs.edit().putString(key, value).commit();
+		            			} else {
+		            				Integer intValue = Integer.parseInt(value);
+		            				G.gPrefs.edit().putInt(key, intValue).commit();
+		            			}
+		            		} catch(NumberFormatException e){
+		            			G.gPrefs.edit().putString(key, value).commit();
+		            		}
 		            	}
-		            	if (pkgName.startsWith("dev.afwall.special")) {
-							lan_uids.append(specialApps.get(pkgName));
-						} else {
-							try {	
-								lan_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
-							} catch(NameNotFoundException e) {
-								
-							}
-						}
-		            	break;
 		            }
-		           
 		        }
 			}
-			final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-			final Editor edit = prefs.edit();
-			edit.putString(PREF_WIFI_PKG_UIDS, wifi_uids.toString());
-			edit.putString(PREF_3G_PKG_UIDS, data_uids.toString());
-			edit.putString(PREF_ROAMING_PKG_UIDS, roam_uids.toString());
-			edit.putString(PREF_VPN_PKG_UIDS, vpn_uids.toString());
-			edit.putString(PREF_LAN_PKG_UIDS, lan_uids.toString());
-			
-			edit.commit();
+			if(G.enableMultiProfile()) {
+				JSONObject profileObject = object.getJSONObject("profiles");
+				Iterator<?> keys = profileObject.keys();
+		        while( keys.hasNext() ){
+		        	String key = (String)keys.next();
+		        	if(!key.equals(PREFS_NAME)) {
+		    			updateRulesFromJson(ctx,profileObject.getJSONObject(key),key);
+		        	}
+		        }
+			} else {
+				//now restore the default profile
+				JSONObject defaultRules = object.getJSONObject("default");
+				updateRulesFromJson(ctx,defaultRules,PREFS_NAME);
+			}
 			returnVal = true;
 		} catch (FileNotFoundException e) {
 			msg.append(ctx.getString(R.string.import_rules_missing));
@@ -2050,6 +2134,27 @@ public final class Api {
 		//new format
 		if(file.exists()) {
 			res = importRules(ctx,file,builder);
+		} else {
+			file = new File(dir, "backup.rules");
+			if(file.exists()) {
+				res = importRulesOld(ctx,file);
+			} else {
+				alert(ctx,ctx.getString(R.string.backup_notexist));
+			}
+		}
+		return res;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static boolean loadAllPreferencesFromFile(Context ctx,StringBuilder builder) {
+		boolean res = false;
+		File sdCard = Environment.getExternalStorageDirectory();
+		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+		dir.mkdirs();
+		File file = new File(dir, "backup_all.json");
+		//new format
+		if(file.exists()) {
+			res = importAll(ctx,file,builder);
 		} else {
 			file = new File(dir, "backup.rules");
 			if(file.exists()) {

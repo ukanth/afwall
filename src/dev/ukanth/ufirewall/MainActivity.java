@@ -862,7 +862,33 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			importAll.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					//Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+					builder.setMessage(getString(R.string.overrideRules))
+					       .setCancelable(false)
+					       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   StringBuilder builder = new StringBuilder();
+					        	   if(Api.loadAllPreferencesFromFile(MainActivity.this,builder)){
+					        		   Api.applications = null;
+					        		   showOrLoadApplications();
+					        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+					        	   } else {
+					        		   if(builder.toString().equals("")){
+					        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+					        		   } else {
+					        			   Api.alert(MainActivity.this,builder.toString());
+					        		   }
+					   				}
+					           }
+					       })
+					       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					                dialog.cancel();
+					           }
+					       });
+					AlertDialog alert2 = builder.create();
+					alert2.show();
+					dialogImport.dismiss();
 					dialogImport.dismiss();
 				}
 			});
