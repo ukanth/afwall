@@ -109,9 +109,11 @@
     <string name="color_pick">Press on Color to apply</string>
 
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">Import DW Rules</string>
-    <string name="export_rules">Export Rules</string>
-    <string name="import_rules">Import Rules</string>
+    <string name="import_rules_droidwall">Import Droidwall Rules</string>
+    <string name="export_rules">Export only the rules</string>
+    <string name="export_all">Export preferences, rules and profile settings</string>
+    <string name="import_rules">Import only the rules</string>
+    <string name="import_all">Import preferences, rules and profile settings</string>
     <string name="export_rules_success">Exported successfully to </string>
     <string name="export_rules_fail">Export Rules failed!</string>
     <string name="import_rules_success">Imported successfully from </string>
@@ -295,7 +297,7 @@
     <string name="pkg_user">User</string>
     <string name="backup_notexist">No backup exists. Please export from menu.</string>
     
-    
+       
     <string name="showFilter">Show filter option</string>
     <string name="showfilter_summary_on">Filter options will be shown in the main view.</string>
     <string name="showfilter_summary_off">Filter option is hidden</string>
@@ -313,4 +315,7 @@
     <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
     <string name="apply_color">Press on Color to apply</string>
     <string name="binaries">Binaries</string>
+    
+    <string name="exports">Export</string>
+    <string name="imports">Import</string>
 </resources>

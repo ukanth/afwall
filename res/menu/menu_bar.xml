@@ -4,7 +4,8 @@
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/abs__ic_search"
-        android:showAsAction="always|collapseActionView"/>
+        android:showAsAction="always|collapseActionView"
+        android:title=""/>
     <item
         android:id="@+id/menu_list_item"
         android:icon="@drawable/abs__ic_menu_moreoverflow_normal_holo_dark"
@@ -14,11 +15,13 @@
             <item
                 android:id="@+id/menu_toggle"
                 android:icon="@drawable/widget_off"
-                android:showAsAction="always|withText"/>
+                android:showAsAction="always|withText"
+                android:title=""/>
             <item
                 android:id="@+id/menu_apply"
                 android:icon="@drawable/apply"
-                android:showAsAction="always|withText"/>
+                android:showAsAction="always|withText"
+                android:title=""/>
             <item
                 android:id="@+id/menu_log"
                 android:icon="@drawable/logs"
@@ -53,17 +56,12 @@
                 android:id="@+id/menu_export"
                 android:icon="@drawable/exportr"
                 android:showAsAction="always"
-                android:title="@string/export_rules"/>
+                android:title="@string/exports"/>
             <item
                 android:id="@+id/menu_import"
                 android:icon="@drawable/importr"
                 android:showAsAction="always"
-                android:title="@string/import_rules"/>
-            <item
-                android:id="@+id/menu_import_dw"
-                android:icon="@drawable/importr"
-                android:showAsAction="always"
-                android:title="@string/import_rules_droidwall"/>
+                android:title="@string/imports"/>
             <item
                 android:id="@+id/menu_help"
                 android:icon="@drawable/help"

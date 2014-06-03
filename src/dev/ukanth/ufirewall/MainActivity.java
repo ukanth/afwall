@@ -40,6 +40,8 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -197,21 +199,12 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				addColumns(R.id.img_lan);
 			}
 
-			/**/
-			
 			updateRadioFilter();
-	        
-	        //start logging
-	       /* if(G.enableLogService()) {
-	        	Intent intent = new Intent(getApplicationContext(), LogService.class);
-				getApplicationContext().startService(intent);
-	        }*/
 	        
         	Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
 	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 	       
 		    Api.assertBinaries(this, true);
-		    
 		   
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
@@ -787,61 +780,134 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			
 			return true;
 		case R.id.menu_export:
-			Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+			final Dialog dialog = new Dialog(this);
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+			//dialog.setCancelable(false);
+			dialog.setContentView(R.layout.export);
+			Button exportRules = (Button) dialog.findViewById(R.id.exportRules);
+			// if button is clicked, close the custom dialog
+			exportRules.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+					dialog.dismiss();
+				}
+			});
+			
+			Button exportAll = (Button) dialog.findViewById(R.id.exportAll);
+			// if button is clicked, close the custom dialog
+			exportAll.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+					dialog.dismiss();
+				}
+			});
+			
+			Button cancel = (Button) dialog.findViewById(R.id.cancelExport);
+			// if button is clicked, close the custom dialog
+			cancel.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+				}
+			});
+ 
+			dialog.show();
 			return true;
 		case R.id.menu_import:
-			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-			builder.setMessage(getString(R.string.overrideRules))
-			       .setCancelable(false)
-			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   StringBuilder builder = new StringBuilder();
-			        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder)){
-			        		   Api.applications = null;
-			        		   showOrLoadApplications();
-			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-			        	   } else {
-			        		   if(builder.toString().equals("")){
-			        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-			        		   } else {
-			        			   Api.alert(MainActivity.this,builder.toString());
-			        		   }
-			   				}
-			           }
-			       })
-			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			AlertDialog alert2 = builder.create();
-			alert2.show();
+			
+			final Dialog dialogImport = new Dialog(this);
+			dialogImport.requestWindowFeature(Window.FEATURE_NO_TITLE);
+			dialogImport.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+			dialogImport.setContentView(R.layout.imports);
+			Button importRules = (Button) dialogImport.findViewById(R.id.importRules);
+			// if button is clicked, close the custom dialog
+			importRules.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+					builder.setMessage(getString(R.string.overrideRules))
+					       .setCancelable(false)
+					       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   StringBuilder builder = new StringBuilder();
+					        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder)){
+					        		   Api.applications = null;
+					        		   showOrLoadApplications();
+					        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+					        	   } else {
+					        		   if(builder.toString().equals("")){
+					        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+					        		   } else {
+					        			   Api.alert(MainActivity.this,builder.toString());
+					        		   }
+					   				}
+					           }
+					       })
+					       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					                dialog.cancel();
+					           }
+					       });
+					AlertDialog alert2 = builder.create();
+					alert2.show();
+					dialogImport.dismiss();
+				}
+			});
+			
+			Button importAll = (Button) dialogImport.findViewById(R.id.importAll);
+			// if button is clicked, close the custom dialog
+			importAll.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					//Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+					dialogImport.dismiss();
+				}
+			});
+			
+			
+			Button importDW = (Button) dialogImport.findViewById(R.id.importDW);
+			// if button is clicked, close the custom dialog
+			importDW.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
+					builder2.setMessage(getString(R.string.overrideRules))
+					       .setCancelable(false)
+					       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   if(ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)){
+					        		   Api.applications = null;
+					        		   showOrLoadApplications();
+					        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+					        	   } else {
+					   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+					   				}
+					           }
+					       })
+					       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					                dialog.cancel();
+					           }
+					       });
+					AlertDialog alert3 = builder2.create();
+					alert3.show();
+					dialogImport.dismiss();
+				}
+			});
+			
+			Button cancelImport = (Button) dialogImport.findViewById(R.id.cancelImport);
+			cancelImport.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					dialogImport.dismiss();
+				}
+			});
+ 
+			dialogImport.show();
 			return true;
-			
-		case R.id.menu_import_dw:
-			AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
-			builder2.setMessage(getString(R.string.overrideRules))
-			       .setCancelable(false)
-			       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   if(ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)){
-			        		   Api.applications = null;
-			        		   showOrLoadApplications();
-			        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-			        	   } else {
-			   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-			   				}
-			           }
-			       })
-			       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
-			           }
-			       });
-			AlertDialog alert3 = builder2.create();
-			alert3.show();
-			return true;	
-			
 		default:
 	        return super.onOptionsItemSelected(item);
 		}

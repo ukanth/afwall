@@ -2,7 +2,14 @@ Changelog AFWall+
 ==================
 
 Version 1.3.3
+* Added export for preferences/profiles including custom profiles
+* New combined dialog for import and export
 * LogService FC issues on 4.4
+* Fix for Possible SU leak
+* Updated libs
+
+TODO:
+* Import for preferences/profiles
 
 
 Version 1.3.2

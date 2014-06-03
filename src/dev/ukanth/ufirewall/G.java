@@ -93,12 +93,12 @@ public class G extends android.app.Application {
 	public static SharedPreferences pPrefs;
 	public static SharedPreferences sPrefs;
 	
-	public static void main(String p[]) {
+	/*public static void main(String p[]) {
 		for(String g: profiles) {
 			System.out.println(g);
 		}
 		
-	}
+	}*/
 	
 	/* global preferences */
 	//public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }

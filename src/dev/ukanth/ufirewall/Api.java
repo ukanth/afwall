@@ -1668,7 +1668,28 @@ public final class Api {
 		       });
 		AlertDialog alert = builder.create();
 		alert.show();
-		
+	}
+	
+	public static void saveAllPreferencesToFileConfirm(final Context ctx) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setMessage(ctx.getString(R.string.exportConfirm))
+		       .setCancelable(false)
+		       .setPositiveButton(ctx.getString(R.string.Yes), new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		        	   if(saveAllPreferencesToFile(ctx)){
+		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
+		       			} else {
+		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
+		        	   }
+		           }
+		       })
+		       .setNegativeButton(ctx.getString(R.string.No), new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                dialog.cancel();
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 	
 	private static void updateExportPackage(Map<String,JSONObject> exportMap, String packageName, int identifier) throws JSONException{
@@ -1686,6 +1707,125 @@ public final class Api {
 
 	}
 	
+	private static void updatePackage(Context ctx,String savedPkg_uid,Map<String,JSONObject> exportMap,int identifier) throws JSONException {
+		final StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
+		while(tok.hasMoreTokens()){
+			final String uid = tok.nextToken();
+			if (!uid.equals("")) {
+				String packageName = ctx.getPackageManager().getNameForUid(Integer.parseInt(uid));
+				updateExportPackage(exportMap,packageName,identifier);
+			}
+		}
+	}
+	
+	private static Map getCurrentRulesAsMap(Context ctx) {
+		final List<PackageInfoData> apps = getApps(ctx,null);
+		// Builds a pipe-separated list of names
+		Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
+		try {
+			for (int i=0; i<apps.size(); i++) {
+				if (apps.get(i).selected_wifi) {
+					updateExportPackage(exportMap,apps.get(i).pkgName,WIFI_EXPORT);
+				}
+				if (apps.get(i).selected_3g) {
+					updateExportPackage(exportMap,apps.get(i).pkgName,DATA_EXPORT);
+				}
+				if (apps.get(i).selected_roam) {
+					updateExportPackage(exportMap,apps.get(i).pkgName,ROAM_EXPORT);
+				}
+				if (apps.get(i).selected_vpn) {
+					updateExportPackage(exportMap,apps.get(i).pkgName,VPN_EXPORT);
+				}
+				if (apps.get(i).selected_lan) {
+					updateExportPackage(exportMap,apps.get(i).pkgName,LAN_EXPORT);
+				}
+			}
+		}catch(JSONException e) {
+			Log.e(TAG, e.getLocalizedMessage());
+		}
+		return exportMap;
+	}
+	
+	public static boolean saveAllPreferencesToFile(Context ctx) {
+	    boolean res = false;
+	    File sdCard = Environment.getExternalStorageDirectory();
+		if (isExternalStorageWritable()) {
+			File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+			dir.mkdirs();
+			File file = new File(dir, "backup_all.json");
+			
+			try {
+				FileOutputStream fOut = new FileOutputStream(file);
+				OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+
+				JSONObject exportObject = new JSONObject();
+				//if multiprofile is enabled
+				if(G.enableMultiProfile()){
+					JSONObject profileObject = new JSONObject();
+					//store all the profile settings
+					for(String profile: G.profiles) {
+						Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
+						final SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
+						updatePackage(ctx,prefs.getString(PREF_WIFI_PKG_UIDS, ""),exportMap,WIFI_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_3G_PKG_UIDS, ""),exportMap,DATA_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_ROAMING_PKG_UIDS, ""),exportMap,ROAM_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_VPN_PKG_UIDS, ""),exportMap,VPN_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_LAN_PKG_UIDS, ""),exportMap,LAN_EXPORT);
+						profileObject.put(profile, new JSONObject(exportMap));
+					}
+					exportObject.put("profiles", profileObject);
+					
+					//if any additional profiles
+					int defaultProfileCount = 3;
+					JSONObject addProfileObject = new JSONObject();
+					for(String profile: G.getAdditionalProfiles()) {
+						defaultProfileCount++;
+						Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
+						final SharedPreferences prefs = ctx.getSharedPreferences("AFWallProfile" + defaultProfileCount, Context.MODE_PRIVATE);
+						updatePackage(ctx,prefs.getString(PREF_WIFI_PKG_UIDS, ""),exportMap,WIFI_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_3G_PKG_UIDS, ""),exportMap,DATA_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_ROAMING_PKG_UIDS, ""),exportMap,ROAM_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_VPN_PKG_UIDS, ""),exportMap,VPN_EXPORT);
+						updatePackage(ctx,prefs.getString(PREF_LAN_PKG_UIDS, ""),exportMap,LAN_EXPORT);
+						addProfileObject.put(profile, new JSONObject(exportMap));
+					}
+					exportObject.put("additional_profiles", addProfileObject);
+				} else {
+					//default Profile - current one
+					JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+					exportObject.put("default", obj);
+				}
+				
+				//now gets all the preferences
+				exportObject.put("prefs", getAllAppPreferences(ctx,G.gPrefs));
+				
+				myOutWriter.append(exportObject.toString());
+				res = true;
+				myOutWriter.close();
+				fOut.close();
+			} catch (FileNotFoundException e) {
+				Log.d(TAG, e.getLocalizedMessage());
+			} catch (IOException e) {
+				Log.d(TAG, e.getLocalizedMessage());
+			} catch (JSONException e) {
+				Log.d(TAG, e.getLocalizedMessage());
+			} 
+		}
+	   
+	    return res;
+	}
+	
+	private static JSONArray getAllAppPreferences(Context ctx, SharedPreferences gPrefs) throws JSONException {
+		Map<String,?> keys = gPrefs.getAll();
+		JSONArray arr = new JSONArray();
+		for(Map.Entry<String,?> entry : keys.entrySet()){
+			JSONObject obj = new JSONObject();
+		    obj.put(entry.getKey(),  entry.getValue().toString());
+		    arr.put(obj);
+		}
+		return arr;
+	}
+
 	public static boolean saveSharedPreferencesToFile(Context ctx) {
 	    boolean res = false;
 	    File sdCard = Environment.getExternalStorageDirectory();
@@ -1693,33 +1833,12 @@ public final class Api {
 			File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
 			dir.mkdirs();
 			File file = new File(dir, "backup.json");
-			Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
 			try {
 				FileOutputStream fOut = new FileOutputStream(file);
 				OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-				final List<PackageInfoData> apps = getApps(ctx,null);
-				// Builds a pipe-separated list of names
-				
-				for (int i=0; i<apps.size(); i++) {
-					if (apps.get(i).selected_wifi) {
-						updateExportPackage(exportMap,apps.get(i).pkgName,WIFI_EXPORT);
-					}
-					if (apps.get(i).selected_3g) {
-						updateExportPackage(exportMap,apps.get(i).pkgName,DATA_EXPORT);
-					}
-					if (apps.get(i).selected_roam) {
-						updateExportPackage(exportMap,apps.get(i).pkgName,ROAM_EXPORT);
-					}
-					if (apps.get(i).selected_vpn) {
-						updateExportPackage(exportMap,apps.get(i).pkgName,VPN_EXPORT);
-					}
-					if (apps.get(i).selected_lan) {
-						updateExportPackage(exportMap,apps.get(i).pkgName,LAN_EXPORT);
-					}
-				}
-
-				JSONObject obj = new JSONObject(exportMap);
+				//default Profile - current one
+				JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
 				JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
 
 				myOutWriter.append(jArray.toString());
@@ -2069,26 +2188,6 @@ public final class Api {
 	    context.startActivity(intent);
 	}
 	
-	/*public static boolean hasRootAccess(Context ctx) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		boolean isRoot = prefs.getBoolean("hasRoot", false);
-		if (!isRoot) {
-			try {
-				// Run an empty script just to check root access
-				if (RootTools.isRootAvailable() && RootTools.isAccessGiven()) {
-					isRoot = true;
-					Editor edit = prefs.edit();
-					edit.putBoolean("hasRoot", true);
-					edit.commit();
-				} else {
-					Api.showAlertDialogActivity(ctx, ctx.getString(R.string.error_common), ctx.getString(R.string.error_su));
-				}
-			} catch (Exception e) {
-			}
-		}
-		return isRoot;
-	}*/
-	
 	public static void showAlertDialogActivity(Context ctx,String title, String message) {
 		Intent dialog = new Intent(ctx,AlertDialogActivity.class);
 		dialog.putExtra("title", title);
@@ -2124,32 +2223,6 @@ public final class Api {
 		}
 	}
 	
-	/*public static void sendNotification(Context context,String title, String message) {
-
-		NotificationManager mNotificationManager = (NotificationManager) context
-				.getSystemService(Context.NOTIFICATION_SERVICE);
-
-		int icon = R.drawable.notification_icon;
-		
-		final int HELLO_ID = 24556;
-
-		Intent appIntent = new Intent(context, MainActivity.class);
-		PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
-		
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-
-		builder.setSmallIcon(icon)
-		            .setWhen(System.currentTimeMillis())
-		            .setAutoCancel(true)
-		            .setContentTitle(title)
-		            .setContentText(message);
-		
-		builder.setContentIntent(in);
-		
-		mNotificationManager.notify(HELLO_ID, builder.build());
-
-	}*/
-	
 	public static void updateLanguage(Context context, String lang) {
 	    if (!"".equals(lang)) {
 	        Locale locale = new Locale(lang);
@@ -2161,25 +2234,6 @@ public final class Api {
 	    }
 	}
 	
-	
-	/*private static class SUCheck extends AsyncTask<Object, Object, Integer> {
-		private int exitCode = -1;
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected Integer doInBackground(Object... params) {
-			try {
-				if (SU.available())
-					exitCode = 0;
-			} catch (Exception ex) {
-			}
-			return exitCode;
-		}
-	}*/
 	
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1) public static void setUserOwner(Context context)
 	{
