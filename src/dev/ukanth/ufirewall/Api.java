@@ -2054,6 +2054,14 @@ public final class Api {
 		    			updateRulesFromJson(ctx,profileObject.getJSONObject(key),key);
 		        	}
 		        }
+ 		        //handle custom/additional profiles
+		        JSONObject customProfileObject = object.getJSONObject("additional_profiles");
+				keys = customProfileObject.keys();
+		        while( keys.hasNext() ){
+		        	String key = (String)keys.next();
+	    			updateRulesFromJson(ctx,profileObject.getJSONObject(key),key);
+		        }
+		        
 			} else {
 				//now restore the default profile
 				JSONObject defaultRules = object.getJSONObject("default");
