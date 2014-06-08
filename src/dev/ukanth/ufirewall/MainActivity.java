@@ -337,9 +337,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	}
 	
 	private boolean passCheck(){
-		
-		//wait for 30 seconds before prompt for password again.
-	    //if (System.currentTimeMillis() - mLastPause > 30000) {
 		if(!isOnPause){
 	        // If more than 5 seconds since last pause, prompt for password
 	    	if(G.usePatterns()){
@@ -355,7 +352,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 					return true;
 				}	
 			} else{
-				final String oldpwd = G.pPrefs.getString(Api.PREF_PASSWORD, "");
+				final String oldpwd = G.profile_pwd();
 				if (oldpwd.length() == 0) {
 					return true;
 				} else {
@@ -435,17 +432,18 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 */
 	private void setPassword(String pwd) {
 		final Resources res = getResources();
-		final Editor editor = G.pPrefs.edit();
-		editor.putString(Api.PREF_PASSWORD, pwd);
-		String msg;
-		if (editor.commit()) {
-			if (pwd.length() > 0) {
+		String msg = "";
+		if(pwd.length() > 0){
+			String enc = Api.hideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", pwd);
+			if(enc != null) {
+				G.profile_pwd(enc);
+				G.isEnc(true);
 				msg = res.getString(R.string.passdefined);
-			} else {
-				msg = res.getString(R.string.passremoved);
 			}
 		} else {
-			msg = res.getString(R.string.passerror);
+			G.profile_pwd(pwd);
+			G.isEnc(false);
+			msg = res.getString(R.string.passremoved);
 		}
 		Api.displayToasts(getApplicationContext(), msg, Toast.LENGTH_SHORT);
 	}
@@ -471,10 +469,21 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 						android.os.Process.killProcess(android.os.Process.myPid());
 						return false;
 					}
-					if (!pwd.equals(msg.obj)) {
-						requestPassword(pwd);
-						return false;
-					} 
+					// only decrypt if encrypted!
+					if (G.isEnc()) {
+						String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", pwd);
+						if (decrypt != null) {
+							if (!decrypt.equals(msg.obj)) {
+								requestPassword(decrypt);
+								return false;
+							}
+						}
+					} else {
+						if (!pwd.equals(msg.obj)) {
+							requestPassword(pwd);
+							return false;
+						}
+					}
 					// Password correct
 					showOrLoadApplications();
 					return true;

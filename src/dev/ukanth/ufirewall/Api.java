@@ -45,10 +45,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,6 +82,7 @@ import android.os.Looper;
 import android.os.UserManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -105,8 +110,11 @@ public final class Api {
 	/** special application UID used for NTP */
 	public static final int SPECIAL_UID_NTP		= -14;
 	
-	
 	public static final int NOTIFICATION_ID = 24556;
+	
+	private static String charsetName = "UTF8";
+    private static String algorithm = "DES";
+    private static int base64Mode = Base64.DEFAULT;
 	
 	private static final int WIFI_EXPORT = 0;
 	private static final int DATA_EXPORT = 1;
@@ -1719,7 +1727,7 @@ public final class Api {
 		}
 	}
 	
-	private static Map getCurrentRulesAsMap(Context ctx) {
+	private static Map<String, JSONObject> getCurrentRulesAsMap(Context ctx) {
 		final List<PackageInfoData> apps = getApps(ctx,null);
 		// Builds a pipe-separated list of names
 		Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
@@ -2425,6 +2433,57 @@ public final class Api {
 		return false;
 	}
 	
+
+	/**
+	 * Encrypt the password
+	 * @param key
+	 * @param data
+	 * @return
+	 */
+	public static String hideCrypt(String key, String data) {
+        if (key == null || data == null)
+            return null;
+        String encodeStr = null;
+        try {
+            DESKeySpec desKeySpec = new DESKeySpec(key.getBytes(charsetName));
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(algorithm);
+            SecretKey secretKey = secretKeyFactory.generateSecret(desKeySpec);
+            byte[] dataBytes = data.getBytes(charsetName);
+            Cipher cipher = Cipher.getInstance(algorithm);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            encodeStr = Base64.encodeToString(cipher.doFinal(dataBytes), base64Mode);
+           
+        } catch (Exception e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
+		return encodeStr;
+    }
+	
+	/**
+	 * Decrypt the password
+	 * @param key
+	 * @param data
+	 * @return
+	 */
+	public static String unhideCrypt(String key, String data) {
+        if (key == null || data == null)
+            return null;
+        
+        String decryptStr = null;
+        try {
+            byte[] dataBytes = Base64.decode(data, base64Mode);
+            DESKeySpec desKeySpec = new DESKeySpec(key.getBytes(charsetName));
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(algorithm);
+            SecretKey secretKey = secretKeyFactory.generateSecret(desKeySpec);
+            Cipher cipher = Cipher.getInstance(algorithm);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            byte[] dataBytesDecrypted = (cipher.doFinal(dataBytes));
+            decryptStr = new String(dataBytesDecrypted);
+        } catch (Exception e) {
+        	Log.e(TAG, e.getLocalizedMessage());
+        }
+        return decryptStr;
+    }
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
     	boolean hasMobileData = true;

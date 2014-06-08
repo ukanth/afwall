@@ -73,6 +73,9 @@ public class G extends android.app.Application {
 	private static final String PATTERN_MAX_TRY = "patternMax";
 	private static final String PATTERN_STEALTH = "stealthMode";
 	
+	private static final String PWD_ENCRYPT= "pwdEncrypt";
+	
+	private static final String profile_Pwd= "profilePwd";
 	/** FIXME **/
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	
@@ -103,6 +106,12 @@ public class G extends android.app.Application {
 	/* global preferences */
 	//public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }
 	//public static boolean alternateStart(boolean val) { gPrefs.edit().putBoolean("alternateStart", val).commit(); return val; }
+	
+	public static boolean isEnc() { return gPrefs.getBoolean(PWD_ENCRYPT, false); }
+	public static boolean isEnc(boolean val) { gPrefs.edit().putBoolean(PWD_ENCRYPT, val).commit(); return val; }
+	
+	public static String profile_pwd() { return gPrefs.getString(profile_Pwd, ""); }
+	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
 
 	public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
 	public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
