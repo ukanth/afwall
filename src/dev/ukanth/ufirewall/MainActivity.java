@@ -1584,16 +1584,17 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
 			String value = input.getText().toString();
-			if(value !=null && value.length() > 0) {
+			if(value !=null && value.length() > 0 && !value.contains(",")) {
 				G.addAdditionalProfile(value.trim());
 		  		setupMultiProfile(true);
-			} 
+			} else {
+				Toast.makeText(getApplicationContext(), getString(R.string.invalid_profile), Toast.LENGTH_SHORT).show();
+			}
 		  }
 		});
 
 		alert.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
 		  public void onClick(DialogInterface dialog, int whichButton) {
-		    // Canceled.
 		  }
 		});
 		alert.show();	

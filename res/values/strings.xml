@@ -318,4 +318,6 @@
     
     <string name="exports">Export</string>
     <string name="imports">Import</string>
+    
+    <string name="invalid_profile">Invalid Profile Name</string>
 </resources>
