@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -64,15 +65,12 @@ public class PackageBroadcast extends BroadcastReceiver {
 				 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -123);
                  Api.applicationRemoved(context, uid);
                  Api.removeCacheLabel(intent.getData().getSchemeSpecificPart(),context);
-                 /*Api.applicationRemoved(context,
-						inputUri.getSchemeSpecificPart());*/
                  // Force app list reload next time
                  Api.applications = null;
 			}
 		} else if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
 
-			final boolean updateApp = intent.getBooleanExtra(
-					Intent.EXTRA_REPLACING, false);
+			final boolean updateApp = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
 
 			if (updateApp) {
 				// dont do anything
@@ -81,26 +79,26 @@ public class PackageBroadcast extends BroadcastReceiver {
 			} else {
 				// Force app list reload next time
 				Api.applications = null;
-				SharedPreferences prefs = PreferenceManager
-						.getDefaultSharedPreferences(context);
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 				boolean isNotify = prefs.getBoolean("notifyAppInstall", false);
 				if (isNotify && Api.isEnabled(context)) {
-					String added_package = intent.getData()
-							.getSchemeSpecificPart();
-					if (PackageManager.PERMISSION_GRANTED == context
-							.getPackageManager()
-							.checkPermission(Manifest.permission.INTERNET,
-									added_package)) {
-						notifyApp(context, intent, added_package);
+					String added_package = intent.getData().getSchemeSpecificPart();
+					final PackageManager pkgmanager = context.getPackageManager();
+					String label = null;
+					try {
+						label = pkgmanager.getApplicationLabel(pkgmanager.getApplicationInfo(added_package, 0)).toString();
+					} catch (NameNotFoundException e) {
+					}
+					if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(Manifest.permission.INTERNET,added_package)) {
+						notifyApp(context, intent, label);
 					}
 				}
 			}
-
 		}
 	}
 
 	//@SuppressWarnings("deprecation")
-	public void notifyApp(Context context, Intent intent2, String addedPackage) {
+	public void notifyApp(Context context, Intent intent2, String label) {
 		String ns = Context.NOTIFICATION_SERVICE;
 
 		NotificationManager mNotificationManager = (NotificationManager) context
@@ -110,35 +108,22 @@ public class PackageBroadcast extends BroadcastReceiver {
 		
 		final int HELLO_ID = 24556;
 
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+		
 		Intent appIntent = new Intent(context, MainActivity.class);
 		PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
 		
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-
+		String notificationText = context.getString(R.string.notification_new);
+		if(label != null) {
+			notificationText = context.getString(R.string.notification_new_package) + " " + label;
+		}
 		builder.setSmallIcon(icon)
-		            //.setWhen(System.currentTimeMillis())
 		            .setAutoCancel(true)
-		            //.addAction(R.drawable.on, "Enable", in)
-		            //.addAction(R.drawable.off, "disable", in)
 		            .setContentTitle(context.getString(R.string.notification_title))
 		            .setTicker(context.getString(R.string.notification_title))
-		            .setContentText(context.getString(R.string.notification_new));
-		
-		//Notification n = builder.build();
-
-		//Notification notification = new Notification(icon, tickerText, when);
-		
+		            .setContentText(notificationText);
 		builder.setContentIntent(in);
 		
-		/*notification.flags |= Notification.FLAG_AUTO_CANCEL
-				| Notification.FLAG_SHOW_LIGHTS;
-
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-				appIntent, 0);
-
-		notification.setLatestEventInfo(context, tickerText,
-				context.getString(R.string.notification_new), contentIntent);*/
-
 		mNotificationManager.notify(HELLO_ID, builder.build());
 
 	}
