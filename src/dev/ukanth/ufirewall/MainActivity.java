@@ -220,16 +220,16 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
 		switch (radioGroup.getCheckedRadioButtonId()) {
 		case R.id.rpkg_core:
-			showApplications(null, 0);
+			showApplications(null, 0, false);
 			break;
 		case R.id.rpkg_sys:
-			showApplications(null, 1);
+			showApplications(null, 1, false);
 			break;
 		case R.id.rpkg_user:
-			showApplications(null, 2);
+			showApplications(null, 2, false);
 			break;
 		default:
-			showApplications("",-1);
+			showApplications("", 99 , true);
 			break;
 		}
 	}
@@ -621,7 +621,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	/**
 	 * Show the list of applications
 	 */
-	private void showApplications(final String searchStr, int flag) {
+	private void showApplications(final String searchStr, int flag, boolean showAll) {
 		setDirty(false);
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
@@ -663,11 +663,14 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			
 		}
 		List<PackageInfoData> apps2;
-		if(!isResultsFound && flag == -1) {
+		if(showAll || searchStr.equals("")) {
 			apps2 = apps; 
-		} else {
+		} else if(isResultsFound || searchApp.size() > 0) {
 			apps2 = searchApp;
+		} else {
+			apps2 = new ArrayList<PackageInfoData>();
 		}
+		
 		// Sort applications - selected first, then alphabetically
 		Collections.sort(apps2, new PackageComparator());	
 		
@@ -756,7 +759,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
-			refreshCache();
 			return true;
 		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
@@ -950,19 +952,19 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	
 	
 
-	private void refreshCache() {
+	/*private void refreshCache() {
 		new AsyncTask<Void, Void, Void>() {
 			protected Void doInBackground(Void... params) {
 				Api.removeAllUnusedCacheLabel(getApplicationContext());
 				return null;
 			}
 		}.execute();
-	}
+	}*/
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
-			showApplications(s.toString(),-1);
+			showApplications(s.toString(),-1,false);
 		}
 
 		public void beforeTextChanged(CharSequence s, int start, int count,
@@ -971,7 +973,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
-			showApplications(s.toString(),-1);
+			showApplications(s.toString(),-1,false);
 		}
 
 	};
@@ -1740,13 +1742,13 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				showOrLoadApplications();
 				break;
 			case R.id.rpkg_core:
-				showApplications(null, 0);
+				showApplications(null, 0,false);
 				break;
 			case R.id.rpkg_sys:
-				showApplications(null, 1);
+				showApplications(null, 1,false);
 				break;
 			case R.id.rpkg_user:
-				showApplications(null, 2);
+				showApplications(null, 2,false);
 				break;
 			}
 	}
