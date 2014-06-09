@@ -76,6 +76,7 @@
     <string name="flushRulesConfirm">This will flush all the IPtables rules ! Do you want to continue ?</string>
     <string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
     <string name="notification_new">New application installed.</string>
+    <string name="notification_new_package">Configure internet permissions for </string>
     <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>

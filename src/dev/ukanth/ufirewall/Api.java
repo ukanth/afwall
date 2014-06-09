@@ -1032,13 +1032,6 @@ public final class Api {
 			final String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
 			final String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
 			
-			// allowed application names separated by pipe '|' (persisted)
-			final String savedPkg_wifi = prefs.getString(PREF_WIFI_PKG, "");
-			final String savedPkg_3g = prefs.getString(PREF_3G_PKG, "");
-			final String savedPkg_roam = prefs.getString(PREF_ROAMING_PKG, "");
-			final String savedPkg_vpn = prefs.getString(PREF_VPN_PKG, "");
-			final String savedPkg_lan = prefs.getString(PREF_LAN_PKG, "");
-			
 			List<Integer> selected_wifi = new ArrayList<Integer>();
 			List<Integer> selected_3g = new ArrayList<Integer>();
 			List<Integer> selected_roam = new ArrayList<Integer>();
@@ -1046,39 +1039,18 @@ public final class Api {
 			List<Integer> selected_lan = new ArrayList<Integer>();
 			
 			
-			if (savedPkg_wifi_uid.equals("")) {
-				selected_wifi = getUidListFromPref(ctx, savedPkg_wifi);
-			} else {
-				selected_wifi = getListFromPref(savedPkg_wifi_uid);
-			}
-
-			if (savedPkg_3g_uid.equals("")) {
-				selected_3g = getUidListFromPref(ctx, savedPkg_3g);
-			} else {
-				selected_3g = getListFromPref(savedPkg_3g_uid);
-			}
+			selected_wifi = getListFromPref(savedPkg_wifi_uid);
+			selected_3g = getListFromPref(savedPkg_3g_uid);
+			
 			if (enableRoam) {
-				if (savedPkg_roam_uid.equals("")) {
-					selected_roam = getUidListFromPref(ctx, savedPkg_roam);
-				} else {
-					selected_roam = getListFromPref(savedPkg_roam_uid);
-				}
+				selected_roam = getListFromPref(savedPkg_roam_uid);
 			}
 			if (enableVPN) {
-				if (savedPkg_vpn_uid.equals("")) {
-					selected_vpn = getUidListFromPref(ctx, savedPkg_vpn);
-				} else {
-					selected_vpn = getListFromPref(savedPkg_vpn_uid);
-				}
+				selected_vpn = getListFromPref(savedPkg_vpn_uid);
 			}
 			if (enableLAN) {
-				if (savedPkg_lan_uid.equals("")) {
-					selected_lan = getUidListFromPref(ctx, savedPkg_lan);
-				} else {
-					selected_lan = getListFromPref(savedPkg_lan_uid);
-				}
+				selected_lan = getListFromPref(savedPkg_lan_uid);
 			}
-			
 			//revert back to old approach
 			
 			//always use the defaul preferences to store cache value - reduces the application usage size
@@ -1096,6 +1068,9 @@ public final class Api {
 				final String cacheLabel = "cache.label.";
 				PackageInfoData app = null;
 				ApplicationInfo apinfo = null;
+				
+				/* add special applications to the list */
+				initSpecialApps(ctx, app, syncMap, selected_lan, selected_lan, selected_lan, selected_lan, selected_lan);
 				
 				for(int i = 0 ; i < installed.size();  i++) {
 				//for (final ApplicationInfo apinfo : installed) {
@@ -1121,7 +1096,7 @@ public final class Api {
 						edit.putString(cachekey, name);
 						changed = true;
 						firstseen = true;
-					}
+					} 
 					if (app == null) {
 						app = new PackageInfoData();
 						app.uid = apinfo.uid;
@@ -1155,51 +1130,6 @@ public final class Api {
 				if (changed) {
 					edit.commit();
 				}
-				/* add special applications to the list */
-
-				//initiate special Apps
-				
-				List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
-				specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
-				specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
-				specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
-				//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
-				specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
-				specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
-				specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
-				specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
-				specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
-				specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
-				specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
-				
-				if(specialApps == null) {
-					specialApps = new HashMap<String, Integer>(); 
-				}
-				for (int i=0; i<specialData.size(); i++) {
-					app = specialData.get(i);
-					specialApps.put(app.pkgName, app.uid);
-					//default DNS/NTP
-					if (app.uid != -1 && syncMap.get(app.uid) == null) {
-						// check if this application is allowed
-						if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
-							app.selected_wifi = true;
-						}
-						if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
-							app.selected_3g = true;
-						}
-						if (enableRoam && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
-							app.selected_roam = true;
-						}
-						if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
-							app.selected_vpn = true;
-						}
-						if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
-							app.selected_lan = true;
-						}
-						syncMap.put(app.uid, app);
-					}
-				}
-
 				/* convert the map into an array */
 				applications = new ArrayList<PackageInfoData>();
 				for (int i = 0; i < syncMap.size(); i++) {
@@ -1211,6 +1141,57 @@ public final class Api {
 				alert(ctx, ctx.getString(R.string.error_common) + e);
 			}
 			return null;
+	}
+	
+	private static void initSpecialApps(Context ctx,PackageInfoData app, SparseArray<PackageInfoData> syncMap,
+			List<Integer> selected_wifi, List<Integer> selected_3g, List<Integer> selected_roam,
+			List<Integer> selected_vpn, List<Integer> selected_lan) {
+		
+		final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
+		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
+		final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
+		
+		List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
+		specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
+		specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
+		specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
+		//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
+		specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
+		specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
+		specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
+		specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
+		specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
+		specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
+		specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
+		
+		if(specialApps == null) {
+			specialApps = new HashMap<String, Integer>(); 
+		}
+		for (int i=0; i<specialData.size(); i++) {
+			app = specialData.get(i);
+			specialApps.put(app.pkgName, app.uid);
+			//default DNS/NTP
+			if (app.uid != -1 && syncMap.get(app.uid) == null) {
+				// check if this application is allowed
+				if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
+					app.selected_wifi = true;
+				}
+				if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
+					app.selected_3g = true;
+				}
+				if (enableRoam && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
+					app.selected_roam = true;
+				}
+				if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
+					app.selected_vpn = true;
+				}
+				if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+					app.selected_lan = true;
+				}
+				syncMap.put(app.uid, app);
+			}
+		}
 	}
 	
 	
@@ -1481,11 +1462,11 @@ public final class Api {
 	 * @param ctx
 	 */
 	public static void removeCacheLabel(String pkgName,Context ctx) {
-		String cacheKey = "cache.label." + pkgName;
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		String name = prefs.getString(cacheKey, "");
-		if (name.length() > 0) {
-			prefs.edit().remove(cacheKey).commit();
+		final SharedPreferences prefs = ctx.getSharedPreferences("AFWallPrefs", Context.MODE_PRIVATE);
+		try {
+			prefs.edit().remove("cache.label." + pkgName).commit();
+		} catch(Exception e) {
+			Log.e(TAG, e.getLocalizedMessage());
 		}
 	}
 	
@@ -1493,8 +1474,9 @@ public final class Api {
 	 * Cleansup the uninstalled packages from the cache - will have slight performance
 	 * @param ctx
 	 */
+	@Deprecated
 	public static void removeAllUnusedCacheLabel(Context ctx){
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		final SharedPreferences prefs = ctx.getSharedPreferences("AFWallPrefs", Context.MODE_PRIVATE);
 		final String cacheLabel = "cache.label.";
 		String pkgName;
 		String cacheKey;
@@ -1515,6 +1497,7 @@ public final class Api {
 	 * Cleanup the cache from profiles - Improve performance.
 	 * @param ctx
 	 */
+	@Deprecated
 	public static void removeAllProfileCacheLabel(Context ctx){
 		SharedPreferences prefs;
 		final String cacheLabel = "cache.label.";
