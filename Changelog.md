@@ -2,13 +2,20 @@ Changelog AFWall+
 ==================
 
 Version 1.3.3
+
+[Features]
 * Added export & import for preferences/profiles including custom profiles (Donate Version only)
 * New combined dialog for import and export
-* LogService FC issues on 4.4
+* Encryption for application password - Also resets the old passwords. Please set password again !
+
+[Bugs]
+* Fix for LogService FC issues on 4.4
+* Fix for new apps not showing on top when profiles are enabled
 * Fix for Possible SU leak
-* Fix for new apps not showing on top
+
+[Improvements]
 * Improved notification text
-* Improved search filter logic
+* Improved search filter/profile validation logic
 * Updated libs
 
 

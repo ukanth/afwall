@@ -638,6 +638,7 @@ public final class Api {
 		}
 	}
 
+	@Deprecated
 	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
 		initSpecial();
 		final PackageManager pm = ctx.getPackageManager();
@@ -1069,9 +1070,6 @@ public final class Api {
 				PackageInfoData app = null;
 				ApplicationInfo apinfo = null;
 				
-				/* add special applications to the list */
-				initSpecialApps(ctx, app, syncMap, selected_lan, selected_lan, selected_lan, selected_lan, selected_lan);
-				
 				for(int i = 0 ; i < installed.size();  i++) {
 				//for (final ApplicationInfo apinfo : installed) {
 					count = count+1;
@@ -1127,6 +1125,48 @@ public final class Api {
 					}
 					
 				}
+				
+				List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
+				specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
+				specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
+				specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
+				//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
+				specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
+				specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
+				specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
+				specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
+				specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
+				specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
+				specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
+				
+				if(specialApps == null) {
+					specialApps = new HashMap<String, Integer>(); 
+				}
+				for (int i=0; i<specialData.size(); i++) {
+					app = specialData.get(i);
+					specialApps.put(app.pkgName, app.uid);
+					//default DNS/NTP
+					if (app.uid != -1 && syncMap.get(app.uid) == null) {
+						// check if this application is allowed
+						if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
+							app.selected_wifi = true;
+						}
+						if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
+							app.selected_3g = true;
+						}
+						if (enableRoam && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
+							app.selected_roam = true;
+						}
+						if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
+							app.selected_vpn = true;
+						}
+						if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+							app.selected_lan = true;
+						}
+						syncMap.put(app.uid, app);
+					}
+				}
+				
 				if (changed) {
 					edit.commit();
 				}
@@ -1142,59 +1182,6 @@ public final class Api {
 			}
 			return null;
 	}
-	
-	private static void initSpecialApps(Context ctx,PackageInfoData app, SparseArray<PackageInfoData> syncMap,
-			List<Integer> selected_wifi, List<Integer> selected_3g, List<Integer> selected_roam,
-			List<Integer> selected_vpn, List<Integer> selected_lan) {
-		
-		final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
-		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
-		final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
-		
-		List<PackageInfoData> specialData = new ArrayList<PackageInfoData>();
-		specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
-		specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
-		specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
-		//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
-		specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
-		specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
-		specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
-		specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
-		specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
-		specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
-		specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
-		
-		if(specialApps == null) {
-			specialApps = new HashMap<String, Integer>(); 
-		}
-		for (int i=0; i<specialData.size(); i++) {
-			app = specialData.get(i);
-			specialApps.put(app.pkgName, app.uid);
-			//default DNS/NTP
-			if (app.uid != -1 && syncMap.get(app.uid) == null) {
-				// check if this application is allowed
-				if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
-					app.selected_wifi = true;
-				}
-				if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
-					app.selected_3g = true;
-				}
-				if (enableRoam && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
-					app.selected_roam = true;
-				}
-				if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
-					app.selected_vpn = true;
-				}
-				if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
-					app.selected_lan = true;
-				}
-				syncMap.put(app.uid, app);
-			}
-		}
-	}
-	
-	
 	
 	private static List<Integer> getListFromPref(String savedPkg_uid) {
 		final StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
