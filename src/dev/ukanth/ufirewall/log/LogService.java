@@ -186,13 +186,6 @@ public class LogService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.i(TAG, "Received request to kill logservice");
-		Thread thread = new Thread()
-		{
-		    @Override
-		    public void run() {
-		        new RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + "klogripper");
-		    }
-		};
-		thread.start();
+		Api.killLogProcess(getApplicationContext());
 	}
 }

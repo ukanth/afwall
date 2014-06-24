@@ -68,6 +68,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
@@ -84,6 +85,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
@@ -2454,6 +2456,16 @@ public final class Api {
         }
         return decryptStr;
     }
+	
+	public static void killLogProcess(final Context ctx){
+		Thread thread = new Thread(){
+		    @Override
+		    public void run() {
+		        new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill " + "klogripper");
+		    }
+		};
+		thread.start();
+	}
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
     	boolean hasMobileData = true;
@@ -2464,5 +2476,15 @@ public final class Api {
     		}
 		} 
 		return hasMobileData;
+    }
+    
+    public static String getCurrentPackage(Context ctx) {
+    	PackageInfo pInfo = null;
+		try {
+			pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+		} catch (NameNotFoundException e) {
+			Log.e(Api.TAG, "Package not found", e);
+		}
+		return pInfo.packageName;
     }
 }

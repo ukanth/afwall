@@ -321,4 +321,6 @@
     <string name="imports">Import</string>
     
     <string name="invalid_profile">Invalid Profile Name</string>
+    <string name="donate_only">This feature is available only in donate version</string>
+    <string name="buy_donate">Buy Donate version</string>
 </resources>

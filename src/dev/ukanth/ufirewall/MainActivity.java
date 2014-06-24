@@ -42,6 +42,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -869,38 +870,62 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			});
 			
 			Button importAll = (Button) dialogImport.findViewById(R.id.importAll);
+			
 			// if button is clicked, close the custom dialog
 			importAll.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-					builder.setMessage(getString(R.string.overrideRules))
-					       .setCancelable(false)
-					       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					        	   StringBuilder builder = new StringBuilder();
-					        	   if(Api.loadAllPreferencesFromFile(MainActivity.this,builder)){
-					        		   Api.applications = null;
-					        		   showOrLoadApplications();
-					        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-					        	   } else {
-					        		   if(builder.toString().equals("")){
-					        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-					        		   } else {
-					        			   Api.alert(MainActivity.this,builder.toString());
-					        		   }
-					   				}
-					           }
-					       })
-					       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					                dialog.cancel();
-					           }
-					       });
-					AlertDialog alert2 = builder.create();
-					alert2.show();
-					dialogImport.dismiss();
-					dialogImport.dismiss();
+					
+					  if(Api.getCurrentPackage(getApplicationContext()).equals("dev.ukanth.ufirewall.donate")) {
+						  AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+							builder.setMessage(getString(R.string.overrideRules))
+							       .setCancelable(false)
+							       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							        	   StringBuilder builder = new StringBuilder();
+							        	   if(Api.loadAllPreferencesFromFile(MainActivity.this,builder)){
+							        		   Api.applications = null;
+							        		   showOrLoadApplications();
+							        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+							        		   Intent intent = getIntent();
+							        		   finish();
+							        		   startActivity(intent);
+							        	   } else {
+							        		   if(builder.toString().equals("")){
+							        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+							        		   } else {
+							        			   Api.alert(MainActivity.this,builder.toString());
+							        		   }
+							   				}
+							           }
+							       })
+							       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							                dialog.cancel();
+							           }
+							       });
+							AlertDialog alert2 = builder.create();
+							alert2.show();
+							dialogImport.dismiss();
+		   				} else {
+		   				   AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+							builder.setMessage(getString(R.string.donate_only))
+							       .setCancelable(false)
+							.setPositiveButton(getString(R.string.buy_donate), new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						        	    Intent intent = new Intent(Intent.ACTION_VIEW); 
+					   					intent.setData(Uri.parse("market://details?id=dev.ukanth.ufirewall.donate")); 
+					   					startActivity(intent);
+						           }
+						       })
+						       .setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						                dialog.cancel();
+						           }
+						       });
+							AlertDialog alert2 = builder.create();
+							alert2.show();
+		   				}
 				}
 			});
 			
@@ -949,17 +974,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	        return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	
-
-	/*private void refreshCache() {
-		new AsyncTask<Void, Void, Void>() {
-			protected Void doInBackground(Void... params) {
-				Api.removeAllUnusedCacheLabel(getApplicationContext());
-				return null;
-			}
-		}.execute();
-	}*/
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
 
