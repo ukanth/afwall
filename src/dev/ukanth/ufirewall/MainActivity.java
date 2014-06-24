@@ -664,7 +664,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			
 		}
 		List<PackageInfoData> apps2;
-		if(showAll || searchStr.equals("")) {
+		if(showAll || (searchStr != null && searchStr.equals(""))) {
 			apps2 = apps; 
 		} else if(isResultsFound || searchApp.size() > 0) {
 			apps2 = searchApp;

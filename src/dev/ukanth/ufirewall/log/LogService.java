@@ -148,7 +148,6 @@ public class LogService extends Service {
 		klogPath = Api.getKLogPath(getApplicationContext());
 		Log.i(TAG, "Starting " + klogPath);
 		handler = new Handler();
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		rootSession = new Shell.Builder()
 				.useSU()
 				.setMinimalLogging(true)

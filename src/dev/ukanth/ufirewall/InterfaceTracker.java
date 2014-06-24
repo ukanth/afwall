@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import dev.ukanth.ufirewall.RootShell.RootCommand;
-
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -287,8 +286,20 @@ public final class InterfaceTracker {
 								Log.i(TAG, reason + ": applied rules");
 							} else {
 								// error details are already in logcat
-								Api.setEnabled(ctx,  false,  false);
-								errorNotification(ctx);
+								//but lets try to run the full rules once
+								Api.applySavedIptablesRules(ctx, false,new RootCommand()
+								.setFailureToast(R.string.error_apply)
+								.setCallback(new RootCommand.Callback() {
+									@Override
+									public void cbFunc(RootCommand state) {
+										if (state.exitCode == 0) {
+											Log.i(TAG, reason + ": applied rules");
+										} else {
+											Api.setEnabled(ctx,  false,  false);
+											errorNotification(ctx);
+										}
+									}
+								}));
 							}
 						}
 					}));

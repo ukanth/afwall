@@ -24,7 +24,6 @@ package dev.ukanth.ufirewall;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.log.LogService;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
@@ -57,7 +56,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		final Intent logIntent = new Intent(context, LogService.class);
 		if(G.enableLogService()){
 			 //check if the firewall is enabled
-			Api.killLogProcess(context);
 			if(!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
 				//make sure kill all the klog ripper
 				context.stopService(logIntent);

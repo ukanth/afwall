@@ -756,6 +756,7 @@ public final class Api {
 	}
 
 	public static boolean fastApply(Context ctx, RootCommand callback) {
+		
 		if (!rulesUpToDate) {
 			return applySavedIptablesRules(ctx, true, callback);
 		}
@@ -2462,7 +2463,11 @@ public final class Api {
 		Thread thread = new Thread(){
 		    @Override
 		    public void run() {
-		        new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill " + "klogripper");
+		    	try {
+		    		new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill " + "klogripper");
+		    	}catch(Exception e) {
+		    		Log.e(TAG,e.getMessage());
+		    	}
 		    }
 		};
 		thread.start();
