@@ -38,6 +38,7 @@ import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1993,7 +1994,8 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONObject object = new JSONObject(data);
-			
+			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "enableLog" };
+			List<String> ignoreList = Arrays.asList(ignore);
 			JSONArray prefArray = (JSONArray) object.get("prefs");
 			for(int i = 0 ; i < prefArray.length(); i++){
 				JSONObject prefObj = (JSONObject) prefArray.get(i);
@@ -2002,9 +2004,8 @@ public final class Api {
 		        while( keys.hasNext() ){
 		            String key = (String)keys.next();
 		            String value =  (String) prefObj.get(key);
-		            if(!key.equals("appVersion")) {
+		            if(!ignoreList.contains(key)) {
 		            	//boolean type values
-		            	Log.i(TAG, "Updating " + key + ":" + value);
 		            	if(value.equals("true") || value.equals("false")) {
 		            		G.gPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).commit();
 		            	} else {
