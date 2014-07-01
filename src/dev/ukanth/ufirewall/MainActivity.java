@@ -876,7 +876,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 				@Override
 				public void onClick(View v) {
 					
-					  if(Api.getCurrentPackage(getApplicationContext()).equals("dev.ukanth.ufirewall.donate")) {
+					  if(Api.getCurrentPackage(getApplicationContext()).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
 						  AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 							builder.setMessage(getString(R.string.overrideRules))
 							       .setCancelable(false)

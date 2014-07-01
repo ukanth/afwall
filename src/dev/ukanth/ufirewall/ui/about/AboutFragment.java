@@ -8,11 +8,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
 
 
@@ -21,7 +24,32 @@ public class AboutFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup group,
 			Bundle saved) {
-		return inflater.inflate(R.layout.help_about_content, group, false);
+		View view = inflater.inflate(R.layout.help_about_content, group, false);
+
+	    view.setOnTouchListener(new View.OnTouchListener() {
+	    		int count = 0;
+				@Override
+				public boolean onTouch(View arg0, MotionEvent event) {
+					if(!G.isDo()) {
+						if(event.getAction() == MotionEvent.ACTION_DOWN){
+		                    if(count < 7 && count > 4) {
+		                    	count++;
+		                    	Toast.makeText(getActivity(), (7-count) + " more to go", Toast.LENGTH_SHORT).show();
+		                    } else {
+		                    	if(!G.isDo()) {
+		                    		G.isDo(true);
+		                    	} else {
+		                    		Toast.makeText(getActivity(), "Please get donate version to support the development!"
+		                    				+ "You can now use donate features!", Toast.LENGTH_LONG).show();
+		                    	}
+		                    }
+		                }
+					}
+	                return true;
+				}
+	    });
+		
+		return view;
 	}
 
 	@Override

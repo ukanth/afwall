@@ -38,6 +38,7 @@ public class G extends android.app.Application {
 	private static final String IS_ROOT_AVAIL = "isRootAvail";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
+	private static final String REG_DO = "regdo";
 	
 	private static final String ENABLE_ROAM = "enableRoam";
 	private static final String ENABLE_VPN = "enableVPN";
@@ -122,6 +123,9 @@ public class G extends android.app.Application {
 	public static boolean disableTaskerToast() { return gPrefs.getBoolean(DISABLE_TASKER_TOAST, false); }
 	public static boolean disableTaskerToast(boolean val) { gPrefs.edit().putBoolean(DISABLE_TASKER_TOAST, val).commit(); return val; }
 
+	public static boolean isDo() { return gPrefs.getBoolean(REG_DO, false); }
+	public static boolean isDo(boolean val) { gPrefs.edit().putBoolean(REG_DO, val).commit(); return val; }
+	
 	public static boolean enableRoam() { return gPrefs.getBoolean(ENABLE_ROAM, false); }
 	public static boolean enableRoam(boolean val) { gPrefs.edit().putBoolean(ENABLE_ROAM, val).commit(); return val; }
 
