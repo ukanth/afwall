@@ -33,15 +33,12 @@ public class AboutFragment extends Fragment {
 					if(!G.isDo()) {
 						if(event.getAction() == MotionEvent.ACTION_DOWN){
 		                    if(count < 7 && count > 4) {
+		                    	Toast.makeText(getActivity(), (7-count) + getActivity().getString(R.string.unlock_donate), Toast.LENGTH_SHORT).show();
 		                    	count++;
-		                    	Toast.makeText(getActivity(), (7-count) + " more to go", Toast.LENGTH_SHORT).show();
-		                    } else {
-		                    	if(!G.isDo()) {
-		                    		G.isDo(true);
-		                    	} else {
-		                    		Toast.makeText(getActivity(), "Please get donate version to support the development!"
-		                    				+ "You can now use donate features!", Toast.LENGTH_LONG).show();
-		                    	}
+		                    } 
+		                    if(count >= 7){
+	                    		G.isDo(true);
+	                    		Toast.makeText(getActivity(), getActivity().getString(R.string.donate_support), Toast.LENGTH_LONG).show();
 		                    }
 		                }
 					}
@@ -66,7 +63,11 @@ public class AboutFragment extends Fragment {
 		version = pInfo.versionName;
 		
 		TextView text = (TextView) getActivity().findViewById(R.id.afwall_title);
-		text.setText(getString(R.string.app_name) + " (v" + version + ")");
+		String versionText = getString(R.string.app_name) + " (v" + version + ")";
+		if(G.isDo() || Api.getCurrentPackage(getActivity().getApplicationContext()).equals("dev.ukanth.ufirewall.donate")) {
+			versionText = versionText + " (Donate) " +  getActivity().getString(R.string.donate_thanks)+  ":)";
+		}
+		text.setText(versionText);
 		
 		WebView creditsWebView = (WebView) getActivity().findViewById(R.id.about_thirdsparty_credits);
 		try {
