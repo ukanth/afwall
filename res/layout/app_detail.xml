@@ -116,7 +116,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/traffic_table"
+            android:id="@+id/traffic_table1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />

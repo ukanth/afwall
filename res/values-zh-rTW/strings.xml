@@ -66,7 +66,6 @@
   <string name="custom_script2_info">\n<b>自定義腳本關閉</b>\n您可以自定義腳本用於當防火牆被<b>禁用</b>時：</string>
   <string name="unsaved_changes">未保存更改</string>
   <string name="unsaved_changes_message">有更改尚未保存。\n您想保存還是放棄它們？</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables 規則</string>
   <string name="copy">複製</string>
   <string name="copied">已複製</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">將要清除所有 IPtables 規則！是否要繼續？</string>
   <string name="overrideRules">這將覆蓋現有的規則！您想要導入規則嗎？</string>
   <string name="notification_new">新應用程式已安裝。</string>
+  <string name="notification_new_package">Configure internet permissions for </string>
   <string name="confirmMsg">將要禁用防火牆！是否要繼續？</string>
   <string name="apply">應用</string>
   <string name="discard">放棄</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">無法停用防火牆 - 密碼錯誤！</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ 設定</string>
+  <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
   <string name="color_pick">按色塊以應用</string>
-  <string name="import_rules_droidwall">導入 DW 規則</string>
-  <string name="export_rules">導出規則</string>
-  <string name="import_rules">導入規則</string>
+  <string name="import_rules_droidwall">Import Droidwall Rules</string>
+  <string name="export_rules">Export the rules only</string>
+  <string name="export_all">Export preferences, rules and profile settings</string>
+  <string name="import_rules">Import the rules only</string>
+  <string name="import_all">Import preferences, rules and profile settings</string>
   <string name="export_rules_success">成功導出至</string>
   <string name="export_rules_fail">導出規則失敗！</string>
   <string name="import_rules_success">成功導入自</string>
   <string name="import_rules_fail">導入規則失敗！</string>
+  <string name="import_rules_missing">Rules file is missing!</string>
   <string name="exportConfirm">您想要導出規則到 SD卡嗎？</string>
   <string name="export_logs_fail">導出到 SD卡失敗！</string>
   <string name="export_to_sd">導出到 SD卡</string>
@@ -246,4 +250,12 @@
   <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
   <string name="apply_color">Press on Color to apply</string>
   <string name="binaries">Binaries</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Invalid Profile Name</string>
+  <string name="donate_only">This feature is available only in donate version</string>
+  <string name="buy_donate">Buy Donate version</string>
+  <string name="unlock_donate">more tap to unlock donate</string>
+  <string name="donate_support">Please get donate version to support the development,You can now use donate features!</string>
+  <string name="donate_thanks">Thanks for your support</string>
 </resources>

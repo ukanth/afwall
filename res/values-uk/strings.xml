@@ -33,7 +33,7 @@
   <string name="clear_log">Очистити журнал</string>
   <string name="applying_rules">Застосування iptables правил.</string>
   <string name="saving_rules">Збереження iptables правил.</string>
-  <string name="rules_applied">Правила застосовуються з успіхом</string>
+  <string name="rules_applied">Правила застосовані успішно</string>
   <string name="rules_saved">Правила успішно збережені</string>
   <string name="rules_deleted">Правила видалені з успіхом</string>
   <string name="pass_titleset">Встановити пароль блокування</string>
@@ -56,7 +56,7 @@
   <string name="flush">Правила очищення</string>
   <string name="send_report">Надіслати звіт про помилки</string>
   <string name="enter_problem">ВВЕДІТЬ ОПИС ПРОБЛЕМИ ТУТ:</string>
-  <string name="send_mail">Надіслати пошту</string>
+  <string name="send_mail">Відправити пошту</string>
   <string name="notify_pref_summary_on">Повідомлення буде надіслано під час інсталяції нової програми</string>
   <string name="notify_pref_summary_off">Жодне повідомлення не буде надіслано під час інсталяції нової програми</string>
   <string name="custom_script_defined">Власний сценарій визначено</string>
@@ -65,8 +65,7 @@
   <string name="custom_script_info"><b>Введіть власний сценарій нижче.</b> \n <i>(залиште порожнім, щоб видалити його)</i>\nДля інформації про власні сценарії, натисніть <a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> тут</a>.</string>
   <string name="custom_script2_info">\n<b>Сценарій завершення роботи</b> \nВи також можете визначити власний сценарій для виконання, коли брандмауер <b>вимкнено</b>:</string>
   <string name="unsaved_changes">Незбережені зміни</string>
-  <string name="unsaved_changes_message">Незбережені зміни. \nВи хочете застосувати або скасувати їх?</string>
-  <string name="help_dialog_text">[порожній рядок]</string>
+  <string name="unsaved_changes_message">Наявні незбережені зміни. \nВи бажаєте застосувати або скасувати їх?</string>
   <string name="showrules_title">IPtables правила</string>
   <string name="copy">Копіювати</string>
   <string name="copied">Копіювання</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">Це очистить всі правила IPtables! Продовжити?</string>
   <string name="overrideRules">Це призведе до перевизначення наявних правил! Ви хочете імпортувати правила?</string>
   <string name="notification_new">Нову програму встановлено.</string>
+  <string name="notification_new_package">Налаштувати дозволи доступу до Інтернет </string>
   <string name="confirmMsg">Це призведе до вимкнення брандмауера! Продовжити?</string>
   <string name="apply">Застосувати</string>
   <string name="discard">Скасувати</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">Не вдалося вимкнути брандмауер - визначено пароль!</string>
   <string name="widget_label_status">Перемикач/Статус AFWall+</string>
   <string name="widget_label_settings">Налаштування AFWall+</string>
+  <string name="widget_label_settings_old">Налаштування AFWall+ (Попередні)</string>
   <string name="color_pick">Натисніть на колір, щоб застосувати</string>
-  <string name="import_rules_droidwall">Імпортувати правила DW</string>
-  <string name="export_rules">Експорт правил</string>
-  <string name="import_rules">Імпорт правил</string>
+  <string name="import_rules_droidwall">Імпортувати правила Droidwall</string>
+  <string name="export_rules">Експортувати лише правила</string>
+  <string name="export_all">Експортувати уподобання, правила та налаштування профілю</string>
+  <string name="import_rules">Імпортувати лише правила</string>
+  <string name="import_all">Імпортувати уподобання, правила та налаштування профілю</string>
   <string name="export_rules_success">Експортовано успішно до </string>
   <string name="export_rules_fail">Не вдалося виконати експорт правил!</string>
   <string name="import_rules_success">Імпортовано успішно до</string>
   <string name="import_rules_fail">Не вдалося виконати імпорт правил!</string>
+  <string name="import_rules_missing">Файл правил відсутній!</string>
   <string name="exportConfirm">Ви бажаєте перенести правила на карту пам\'яті?</string>
   <string name="export_logs_fail">Не вдалося експортувати до SD!</string>
   <string name="export_to_sd">Експорт до карти SD</string>
@@ -119,7 +123,7 @@
   <string name="log_clear_error">Помилка очищення журналу</string>
   <string name="log_fetch_error">Помилка отримання журналу</string>
   <string name="log_parse_error">Помилка аналізу журналу</string>
-  <string name="no_log">Журналу є порожнім</string>
+  <string name="no_log">Журнал порожній</string>
   <string name="LogAppName">Назва програми</string>
   <string name="LogPackBlock">Всього заблокованих пакетів</string>
   <string name="blocked">AFWall + заблоковані:</string>
@@ -239,11 +243,19 @@
   <string name="enable_dns">Увімкнути DNS за допомогою netd</string>
   <string name="disable_dns">Вимкнути DNS за допомогою netd</string>
   <string name="dns_proxy_title">Проксі-сервер DNS</string>
-  <string name="dns_proxy_summary">Параметр проксі-сервера DNS була доданий для підтримки DNS-запитів через netd на JB 4.3+. Його вимкнення буде блокувати Інтернет на Android 4.3+</string>
+  <string name="dns_proxy_summary">Параметр проксі-сервера DNS був доданий для підтримки DNS-запитів через netd на JB 4.3+. Його вимкнення буде блокувати Інтернет на Android 4.3+</string>
   <string name="tasker_lable">AFWall + втулка Tasker </string>
   <string name="enable">Увімкнути</string>
   <string name="disable">Вимкнути</string>
   <string name="filters_apps_title">Фільтр програм (не показувати сповіщення)</string>
   <string name="apply_color">Натисніть на колір, щоб застосувати</string>
   <string name="binaries">Двійкові файли</string>
+  <string name="exports">Експортувати</string>
+  <string name="imports">Імпортувати</string>
+  <string name="invalid_profile">Неприпустиме ім\'я профілю</string>
+  <string name="donate_only">Ця функція доступна лише в донейт-версії</string>
+  <string name="buy_donate">Придбати донейт-версію</string>
+  <string name="unlock_donate">Доторкніться ще раз щоб розблокувати донейт</string>
+  <string name="donate_support">Для підтримки розробки придбайте, будь ласка, донейт-версію. Відтепер ви можете використовувати донейт-функції!</string>
+  <string name="donate_thanks">Дякуємо за вашу підтримку</string>
 </resources>

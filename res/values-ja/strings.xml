@@ -67,7 +67,6 @@
 \nFirewall <b>停止時</b>に実行するカスタムスクリプトも定義できます。</string>
   <string name="unsaved_changes">未保存の変更</string>
   <string name="unsaved_changes_message">未保存の変更があります。\n 変更を適用またはキャンセルしますか？</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">iptables ルール</string>
   <string name="copy">コピー</string>
   <string name="copied">コピーしました</string>
@@ -75,6 +74,7 @@
   <string name="flushRulesConfirm">This will flush all the IPtables rules ! Do you want to continue ?</string>
   <string name="overrideRules">これは既存のルールを上書きします! 本当にインポートしますか?</string>
   <string name="notification_new">New application installed.</string>
+  <string name="notification_new_package">Configure internet permissions for </string>
   <string name="confirmMsg">これは Firewall を停止します! 本当に実行しますか?</string>
   <string name="apply">適用</string>
   <string name="discard">キャンセル</string>
@@ -94,14 +94,18 @@
   <string name="widget_disable_fail">Cannot disable firewall - password defined!</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ 設定</string>
+  <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
   <string name="color_pick">色を選択して適用します</string>
-  <string name="import_rules_droidwall">DroidWall のルールをインポート</string>
-  <string name="export_rules">ルールをエクスポート</string>
-  <string name="import_rules">ルールをインポート</string>
+  <string name="import_rules_droidwall">Import Droidwall Rules</string>
+  <string name="export_rules">Export the rules only</string>
+  <string name="export_all">Export preferences, rules and profile settings</string>
+  <string name="import_rules">Import the rules only</string>
+  <string name="import_all">Import preferences, rules and profile settings</string>
   <string name="export_rules_success">エクスポートは成功しました:</string>
   <string name="export_rules_fail">ルールのエクスポートに失敗!</string>
   <string name="import_rules_success">インポートは成功しました:</string>
   <string name="import_rules_fail">ルールのインポートに失敗!</string>
+  <string name="import_rules_missing">Rules file is missing!</string>
   <string name="exportConfirm">SD カードにルールをエクスポートしますか？</string>
   <string name="export_logs_fail">SD カードへのエクスポートに失敗!</string>
   <string name="export_to_sd">SD カードへエクスポート</string>
@@ -247,4 +251,12 @@
   <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
   <string name="apply_color">Press on Color to apply</string>
   <string name="binaries">Binaries</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Invalid Profile Name</string>
+  <string name="donate_only">This feature is available only in donate version</string>
+  <string name="buy_donate">Buy Donate version</string>
+  <string name="unlock_donate">more tap to unlock donate</string>
+  <string name="donate_support">Please get donate version to support the development,You can now use donate features!</string>
+  <string name="donate_thanks">Thanks for your support</string>
 </resources>

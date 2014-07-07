@@ -3,8 +3,8 @@
 <resources>
   <string name="app_name">AFWall+ </string>
   <string name="title_disabled">AFWall+ (Deaktiviert)</string>
-  <string name="whitelist_array_item">Erlaube ausgewählte Apps</string>
-  <string name="blacklist_array_item">Blockiere ausgewählte Apps</string>
+  <string name="whitelist_array_item">Ausgewählte erlauben</string>
+  <string name="blacklist_array_item">Ausgewählte blockieren</string>
   <string name="showrules">Firewall-Regeln</string>
   <string name="applyrules">Anwenden</string>
   <string name="saverules">Speichern</string>
@@ -48,8 +48,8 @@
   <string name="reading_apps">Lese installierte Apps ein</string>
   <string name="mode">Modus: </string>
   <string name="mode_header">Modus: %s</string>
-  <string name="mode_whitelist">Erlaube ausgewählte Apps</string>
-  <string name="mode_blacklist">Blockiere ausgewählte Apps</string>
+  <string name="mode_whitelist">Ausgewählte erlauben</string>
+  <string name="mode_blacklist">Ausgewählte blockieren</string>
   <string name="set_custom_script">Skript festlegen</string>
   <string name="preferences">Einstellungen</string>
   <string name="reload">Apps erneut einlesen</string>
@@ -73,6 +73,7 @@
   <string name="flushRulesConfirm">Alle IPTables-Regeln werden gelöscht! Trotzdem fortfahren ?</string>
   <string name="overrideRules">Dies überschreibt die vorhandenen Regeln! Möchten Sie die Regeln importieren?</string>
   <string name="notification_new">Neue Anwendung installiert.</string>
+  <string name="notification_new_package">Internet-Berechtigungen konfigurieren für </string>
   <string name="confirmMsg">Dadurch wird die Firewall deaktiviert! Möchten Sie fortfahren?</string>
   <string name="apply">Anwenden</string>
   <string name="discard">Verwerfen</string>
@@ -92,21 +93,25 @@
   <string name="widget_disable_fail">Firewall kann nicht deaktiviert werden - Passwort festgelegt!</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ Einstellungen</string>
+  <string name="widget_label_settings_old">AFWall+ Einstellungen (alt)</string>
   <string name="color_pick">Auf Farbe tippen zum Anwenden</string>
-  <string name="import_rules_droidwall">DW Regeln importieren</string>
-  <string name="export_rules">Regeln exportieren</string>
-  <string name="import_rules">Regeln importieren</string>
+  <string name="import_rules_droidwall">Droidwall-Regeln importieren</string>
+  <string name="export_rules">Nur Regeln exportieren</string>
+  <string name="export_all">Einstellungen, Regeln und Profile exportieren</string>
+  <string name="import_rules">Nur Regeln importieren</string>
+  <string name="import_all">Einstellungen, Regeln und Profile importieren</string>
   <string name="export_rules_success">Erfolgreich exportiert nach </string>
   <string name="export_rules_fail">Fehler beim Exportieren der Regeln!</string>
   <string name="import_rules_success">Erfolgreich importiert von </string>
   <string name="import_rules_fail">Fehler beim Import der Regeln!</string>
+  <string name="import_rules_missing">Datei mit Regeln fehlt!</string>
   <string name="exportConfirm">Möchten Sie die Regeln auf die SD-Karte exportieren?</string>
   <string name="export_logs_fail">Export auf SD fehlgeschlagen!</string>
   <string name="export_to_sd">Auf SD-Karte exportieren</string>
   <string name="enable_firewall_log">Firewall-Protokoll aktivieren</string>
   <string name="enable_firewall_log_service">Protokolldienst einschalten</string>
   <string name="showlog_title">Firewall-Protokoll</string>
-  <string name="showlog_service_summary">Wenn dies aktiviert ist zeigt es Informationen, wenn Verbindungen geblockt werden </string>
+  <string name="showlog_service_summary">Bei Aktivierung werden Meldungen zu blockierten Verbindungen angezeigt</string>
   <string name="enable_log">Protokoll aktivieren</string>
   <string name="disable_log">Protokoll deaktivieren</string>
   <string name="log_disabled">Protokollierung deaktiviert</string>
@@ -208,7 +213,7 @@
   <string name="multi_apply_rules">Regeln bei Profilwechsel anwenden</string>
   <string name="multi_apply_rules_info">Dies wird die Regeln beim Profilwechsel laden und anwenden</string>
   <string name="multi_user_title">Multi-User-Unterstützung aktivieren</string>
-  <string name="multi_user_summary">Android Multi-User-Unterstützung auf einem Tablet PC aktivieren (funktioniert nur im Modus: \'Verbindungen blockieren\')</string>
+  <string name="multi_user_summary">Android Multi-User-Unterstützung aktivieren (nur bei Tablet und in \"Ausgewählte blockieren\"-Modus)</string>
   <string name="device_admin_desc">Zusätzliche Sicherheit - Verhindere AFWall+ Deinstallation</string>
   <string name="traffic_detail_title">Datenmenge-Details</string>
   <string name="uploaded">Hochgeladen</string>
@@ -218,10 +223,10 @@
   <string name="faq">Häufig gestellte Fragen</string>
   <string name="reverse_all">Dies wird die Auswahl der gewählten Anwendungen umkehren. Fortsetzen?</string>
   <string name="unselect_all">Dies löscht die Auswahl der gewählten Anwendungen. Fortsetzen?</string>
-  <string name="check_all">Alle prüfen</string>
+  <string name="check_all">Alle auswählen</string>
   <string name="invert_all">Alle umkehren</string>
   <string name="uncheck_all">Alle abwählen</string>
-  <string name="select_action">Aktion auf Spalte auswählen </string>
+  <string name="select_action">Markierungen in Spalte </string>
   <string name="roam">Roaming</string>
   <string name="wifi">WLAN</string>
   <string name="lan">LAN</string>
@@ -245,4 +250,12 @@
   <string name="filters_apps_title">Filter Apps (Benachrichtigung nicht zeigen)</string>
   <string name="apply_color">Auf Farbe zum Anwenden tippen</string>
   <string name="binaries">Binärdateien</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Ungültiger Profilname</string>
+  <string name="donate_only">Diese Funktion ist nur in der Vollversion verfügbar</string>
+  <string name="buy_donate">Vollversion erwerben</string>
+  <string name="unlock_donate">Zum Freischalten der Vollversion mehrfach antippen</string>
+  <string name="donate_support">Um die Entwicklung zu unterstützen, kaufen Sie bitte die Vollversion. Sie können dann zusätzliche Funktionen nutzen!</string>
+  <string name="donate_thanks">Vielen Dank für Ihre Unterstützung!</string>
 </resources>

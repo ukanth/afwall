@@ -67,7 +67,6 @@
   <string name="unsaved_changes">Изменения не сохранены</string>
   <string name="unsaved_changes_message">\"Обнаружены несохраненные изменения
 Вы хотите их применить или отменить?\"</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">Правила iptables</string>
   <string name="copy">Копировать</string>
   <string name="copied">Скопировано</string>
@@ -75,6 +74,7 @@
   <string name="flushRulesConfirm">Это удалит все правила IPtables! Вы уверены что хотите продолжить?</string>
   <string name="overrideRules">При импорте существующие правила буду перезаписаны! Продолжить?</string>
   <string name="notification_new">Установлено новое приложение.</string>
+  <string name="notification_new_package">Configure internet permissions for </string>
   <string name="confirmMsg">Вы действительно хотите отключить брандмауэр?</string>
   <string name="apply">Применить</string>
   <string name="discard">Отменить</string>
@@ -94,14 +94,18 @@
   <string name="widget_disable_fail">Не удается отключить брандмауэр т.к. назначен пароль!</string>
   <string name="widget_label_status">Переключить/Состояние AFWall+</string>
   <string name="widget_label_settings">Настройки AFWall+</string>
+  <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
   <string name="color_pick">Нажмите на цвет, чтобы применить</string>
-  <string name="import_rules_droidwall">Импортировать правила DW</string>
-  <string name="export_rules">Экспортировать правила</string>
-  <string name="import_rules">Импортировать правила</string>
+  <string name="import_rules_droidwall">Import Droidwall Rules</string>
+  <string name="export_rules">Export the rules only</string>
+  <string name="export_all">Export preferences, rules and profile settings</string>
+  <string name="import_rules">Import the rules only</string>
+  <string name="import_all">Import preferences, rules and profile settings</string>
   <string name="export_rules_success">Успешно экспортированы в </string>
   <string name="export_rules_fail">Ошибка экспорта правил!</string>
   <string name="import_rules_success">Успешно импортированы из </string>
   <string name="import_rules_fail">Ошибка импорта правил!</string>
+  <string name="import_rules_missing">Rules file is missing!</string>
   <string name="exportConfirm">Вы хотите экспортировать правила на SD карточку?</string>
   <string name="export_logs_fail">Ошибка экспорта на карту памяти!</string>
   <string name="export_to_sd">Экспорт на SD-карту</string>
@@ -165,7 +169,7 @@
   <string name="disable_tasker">Отключить AFWall +</string>
   <string name="tasker_apply">Tasker: Применяю правила брандмауэра</string>
   <string name="tasker_disabled">Планировщик AFWall + отключен!</string>
-  <string name="tasker_profile_applied">Tasker: Profile applied with success</string>
+  <string name="tasker_profile_applied">Tasker: Профиль с успехом применен</string>
   <string name="tasker_muliprofile">AFWall + Tasker: многопрофильный режим отключен!</string>
   <string name="ipv6_title">Поддержка IPv6</string>
   <string name="ipv6_summary">Разрешить поддержку IPv6</string>
@@ -174,7 +178,7 @@
   <string name="switch_ipv4">Переключатель IPV4 правила</string>
   <string name="sec_prefs_title">Настройки безопасности</string>
   <string name="usePattern">Использовать графическую блокировку вместо пароля</string>
-  <string name="stealthMode">Stealth mode on pattern</string>
+  <string name="stealthMode">Режим невидимости на узор</string>
   <string name="patternMaxTry">Максимальное количество попыток</string>
   <string name="resetPattern">Вы хотите сбросить графическую блокировку?</string>
   <string name="enable_device_admin">Администратор устройства</string>
@@ -233,18 +237,26 @@
   <string name="pkg_core">Ядро</string>
   <string name="pkg_sys">Система</string>
   <string name="pkg_user">Пользователь</string>
-  <string name="backup_notexist">No backup exists. Please export from menu.</string>
+  <string name="backup_notexist">Нет резервной копии. Пожалуйста, экспортируйте из меню.</string>
   <string name="showFilter">Показать опции фильтра</string>
-  <string name="showfilter_summary_on">Filter options will be shown in the main view.</string>
+  <string name="showfilter_summary_on">Фильтр будет показан на главном экране.</string>
   <string name="showfilter_summary_off">Скрыть опции фильтра</string>
   <string name="enable_dns">Включить DNS через netd</string>
   <string name="disable_dns">Отключить DNS через netd</string>
   <string name="dns_proxy_title">Прокси-сервер DNS </string>
-  <string name="dns_proxy_summary">DNS proxy option was added to support DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>
+  <string name="dns_proxy_summary">Опция прокси DNS была добавлена для поддержки DNS-запросов через NETD на JB 4.3 +. Отключение будет блокировать интернет на Android 4.3+</string>
   <string name="tasker_lable">AFWall+ Tasker плагин</string>
   <string name="enable">Включить</string>
   <string name="disable">Отключить</string>
   <string name="filters_apps_title">Фильтр приложений (Не показывать уведомления)</string>
   <string name="apply_color">Нажмите на цвет, чтобы применить</string>
   <string name="binaries">Бинарные</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Invalid Profile Name</string>
+  <string name="donate_only">This feature is available only in donate version</string>
+  <string name="buy_donate">Buy Donate version</string>
+  <string name="unlock_donate">more tap to unlock donate</string>
+  <string name="donate_support">Please get donate version to support the development,You can now use donate features!</string>
+  <string name="donate_thanks">Thanks for your support</string>
 </resources>

@@ -67,7 +67,6 @@
 \n Můžete také definovat vlastní skript při <b>vypínání</b> brány firewall:</string>
   <string name="unsaved_changes">Neuložené změny</string>
   <string name="unsaved_changes_message">Obsahuje neuložené změny. \n Použít nebo je zahodit?</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables pravidla</string>
   <string name="copy">Kopírovat</string>
   <string name="copied">Zkopírováno</string>
@@ -75,6 +74,7 @@
   <string name="flushRulesConfirm">Toto smaže všechna pravidla IPtables! Přejete si pokračovat ?</string>
   <string name="overrideRules">Tímto se přepíší stávající pravidla! Chcete importovat pravidla?</string>
   <string name="notification_new">Nová aplikace nainstalována.</string>
+  <string name="notification_new_package">Nastavit oprávnění internetu pro </string>
   <string name="confirmMsg">Tímto vypnete firewall! Chcete pokračovat?</string>
   <string name="apply">Použít</string>
   <string name="discard">Zrušit</string>
@@ -94,14 +94,18 @@
   <string name="widget_disable_fail">Nelze zakázat firewall - definované heslo!</string>
   <string name="widget_label_status">AFWall+ přepínač/stav</string>
   <string name="widget_label_settings">AFWall + nastavení</string>
+  <string name="widget_label_settings_old">AFWall+ nastavení(staré)</string>
   <string name="color_pick">Stiskněte barvu pro výběr</string>
-  <string name="import_rules_droidwall">Importovat pravidla DW</string>
-  <string name="export_rules">Exportovat pravidla</string>
-  <string name="import_rules">Importovat pravidla</string>
+  <string name="import_rules_droidwall">Importovat Droidwall pravidla</string>
+  <string name="export_rules">Export pouze pravidel</string>
+  <string name="export_all">Export předvoleb, pravidel a nastavení profilu</string>
+  <string name="import_rules">Import pouze pravidel</string>
+  <string name="import_all">Import předvoleb, pravidel a nastavení profilu</string>
   <string name="export_rules_success">Exportováno úspěšně do </string>
   <string name="export_rules_fail">Exportování pravidel selhalo!</string>
   <string name="import_rules_success">Importováno úspěšně z </string>
   <string name="import_rules_fail">Importování pravidel selhalo!</string>
+  <string name="import_rules_missing">Chybí soubor pravidel!</string>
   <string name="exportConfirm">Přejete si exportovat pravidla na SD kartu?</string>
   <string name="export_logs_fail">Export na SD kartu selhal!</string>
   <string name="export_to_sd">Exportovat na SD kartu</string>
@@ -247,4 +251,12 @@
   <string name="filters_apps_title">Filtr aplikací (nezobrazovat upozornění)</string>
   <string name="apply_color">Stisknutím barvy aplikujete</string>
   <string name="binaries">Binární</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Neplatný název profilu</string>
+  <string name="donate_only">Tato funkce je dostupná pouze v darovací verzi</string>
+  <string name="buy_donate">Koupit darovací verzi</string>
+  <string name="unlock_donate">dalším klepnutím odemknete darování</string>
+  <string name="donate_support">Prosím přispějte na darovací verzi pro podporu vývoje. Nyní můžete užívat darovací funkce!</string>
+  <string name="donate_thanks">Děkuji za vaši podporu</string>
 </resources>

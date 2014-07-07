@@ -66,7 +66,6 @@
   <string name="custom_script2_info">    	\n<b>Buat skrip saat dimatikan</b>    	\nAnda juga dapat membuat skrip saat firewall <b>simatikan</b>:</string>
   <string name="unsaved_changes">Perubahan blm disimpan</string>
   <string name="unsaved_changes_message">Anda belum menyimpan.\nAnda ingin menerapkan atau membuang?</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">Aturan IPtables</string>
   <string name="copy">Salin</string>
   <string name="copied">Disalin</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">Akan menghapus semua aturan. Anda tetap melanjutkan?</string>
   <string name="overrideRules">Akan menimpa aturan yang ada. Anda tetap melanjutkan?</string>
   <string name="notification_new">Aplikasi baru di-install</string>
+  <string name="notification_new_package">Konfigurasi perizinan internet untuk </string>
   <string name="confirmMsg">Akan mematikan firewall. Anda tetap melanjutkan?</string>
   <string name="apply">Terapkan</string>
   <string name="discard">Buang</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">Gagal mematikan firewall. ber-password!</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">Pengaturan AFWall+</string>
+  <string name="widget_label_settings_old">Pengaturan AFWall+ (lama)</string>
   <string name="color_pick">Sentuh pd warna untuk menerapkan</string>
-  <string name="import_rules_droidwall">Impor aturan DW</string>
-  <string name="export_rules">Ekspor aturan</string>
-  <string name="import_rules">Impor aturan</string>
+  <string name="import_rules_droidwall">Impor pengaturan Droidwall</string>
+  <string name="export_rules">Ekspor aturan saja</string>
+  <string name="export_all">Ekspor preferensi, aturan, dan pengaturan profil</string>
+  <string name="import_rules">Impor aturan saja</string>
+  <string name="import_all">Impor preferensi, aturan, dan pengaturan profil</string>
   <string name="export_rules_success">Berhasil diekspor ke </string>
   <string name="export_rules_fail">Gagal ekspor aturan!</string>
   <string name="import_rules_success">Berhasil menyalin dari </string>
   <string name="import_rules_fail">Gagal menyalin aturan!</string>
+  <string name="import_rules_missing">File peraturan hilang!</string>
   <string name="exportConfirm">Anda ingin mengekspor ke SD Card?</string>
   <string name="export_logs_fail">Gagal mengekspor ke SD!</string>
   <string name="export_to_sd">Ekspor ke SD Card</string>
@@ -246,4 +250,12 @@
   <string name="filters_apps_title">Penyaring aplikasi (Pemberitahuan tdk ditampilkan)</string>
   <string name="apply_color">Sentuh pada warna untuk menerapkan</string>
   <string name="binaries">Binari</string>
+  <string name="exports">Ekspor</string>
+  <string name="imports">Impor</string>
+  <string name="invalid_profile">Nama profil tidak benar</string>
+  <string name="donate_only">Fitur ini hanya terdapat di versi donasi</string>
+  <string name="buy_donate">Beli versi donasi</string>
+  <string name="unlock_donate">Sentuh lebih banyak untuk membuka donasi</string>
+  <string name="donate_support">Mohon beli versi donasi untuk mendukung pengembangan, Anda dapat menggunakan fitur donasi sekarang!</string>
+  <string name="donate_thanks">Terima kasih atas dukungan anda</string>
 </resources>

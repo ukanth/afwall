@@ -66,7 +66,6 @@
   <string name="custom_script2_info">     \n \n <b>Skripta za zaustavitev sistema</b>\nLahko določite tudi skripto, ki se izvrši, ko je požarni zid <b>onemogočen</b>:</string>
   <string name="unsaved_changes">Spremembe niso shranjene</string>
   <string name="unsaved_changes_message">Spremembe niso shranjene. \nJih želite uporabiti ali zavreči?</string>
-  <string name="help_dialog_text">[prazen niz]</string>
   <string name="showrules_title">Pravila IPtables</string>
   <string name="copy">Kopiraj</string>
   <string name="copied">Kopirano</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">S tem boste uveljavili vsa pravila Iptables! Želite nadaljevati?</string>
   <string name="overrideRules">S tem boste povozili obstoječa pravila! Res želite uvoziti pravila?</string>
   <string name="notification_new">Nameščena nova aplikacija.</string>
+  <string name="notification_new_package">Določi spletna dovoljanja za </string>
   <string name="confirmMsg">S tem boste izkopili požarni zid! Želite nadaljavati?</string>
   <string name="apply">Uveljavi</string>
   <string name="discard">Zavrzi</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">Ne morem izključiti požarnega zidu - zaščiteno z geslom!</string>
   <string name="widget_label_status">Vklop/stanje AFWall+</string>
   <string name="widget_label_settings">Nastavitve AFWall+</string>
+  <string name="widget_label_settings_old">Nastavitve AFWall+ (stare)</string>
   <string name="color_pick">Za izbiro pritisnite na barvo</string>
-  <string name="import_rules_droidwall">Uvozi pravila DW</string>
-  <string name="export_rules">Izvozi pravila</string>
-  <string name="import_rules">Uvozi pravila</string>
+  <string name="import_rules_droidwall">Uvozi Droidwall-ova pravila</string>
+  <string name="export_rules">Izvozi samo pravila</string>
+  <string name="export_all">Izvozi nastavitve, pravila in nastavitve profilov</string>
+  <string name="import_rules">Uvozi samo pravila</string>
+  <string name="import_all">Uvozi nastavitve, pravila in nastavitve profilov</string>
   <string name="export_rules_success">Uspešno izvoženo v </string>
   <string name="export_rules_fail">Izvoz pravil neuspešen!</string>
   <string name="import_rules_success">Uspešno uvoženo iz </string>
   <string name="import_rules_fail">Uvoz pravil neuspešen!</string>
+  <string name="import_rules_missing">Manjka datoteka z nastavitvami!</string>
   <string name="exportConfirm">Želite izvoziti pravila na kartico SD?</string>
   <string name="export_logs_fail">Izvoz na kartico SD neuspešen!</string>
   <string name="export_to_sd">Izvozi na kartico SD</string>
@@ -246,4 +250,12 @@
   <string name="filters_apps_title">Filtriraj aplikacije (brez obvestil)</string>
   <string name="apply_color">Za spremembo pritisni na barvo</string>
   <string name="binaries">Binarne datoteke</string>
+  <string name="exports">Izvozi</string>
+  <string name="imports">Uvozi</string>
+  <string name="invalid_profile">Nepravilno ime profila</string>
+  <string name="donate_only">Ta možnost je na voljo samo v plačljivi verziji</string>
+  <string name="buy_donate">Kupi plačljivo verzijo</string>
+  <string name="unlock_donate">Z več dotiki lahko odklenete plačljive možnosti</string>
+  <string name="donate_support">Prosimo kupite plačljivo verzijo in pomagajte pri razvoju aplikacije. Zdaj lahko uporabljate tudi plačljive možnosti!</string>
+  <string name="donate_thanks">Hvala za vašo pomoč</string>
 </resources>

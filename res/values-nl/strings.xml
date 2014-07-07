@@ -69,7 +69,6 @@
 \nJe kan tevens een aangepast script instellen om uit te voeren als de Firewall is<b>uitgeschakeld</b>:</string>
   <string name="unsaved_changes">Niet opgeslagen wijzigingen</string>
   <string name="unsaved_changes_message">Je hebt niet opgeslagen wijzigingen.\nWil je deze toepassen of verwijderen?</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables regels</string>
   <string name="copy">Kopiëren</string>
   <string name="copied">Gekopieerd</string>
@@ -77,6 +76,7 @@
   <string name="flushRulesConfirm">Dit zal alle iptables regels legen! Wilt u doorgaan ?</string>
   <string name="overrideRules">De bestaande regels worden overschreven! Wilt u de regels importeren?</string>
   <string name="notification_new">Nieuwe applicatie is geïnstalleerd.</string>
+  <string name="notification_new_package">Configure internet permissions for </string>
   <string name="confirmMsg">Dit zal de firewall uitschakelen! Wilt u doorgaan?</string>
   <string name="apply">Toepassen</string>
   <string name="discard">Negeren</string>
@@ -96,14 +96,18 @@
   <string name="widget_disable_fail">Kan firewall niet uitschakelen - Password ingesteld!</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ instellingen</string>
+  <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
   <string name="color_pick">Selecteer kleur om toe te passen</string>
-  <string name="import_rules_droidwall">Importeer DW regels</string>
-  <string name="export_rules">Regels exporteren</string>
-  <string name="import_rules">Regels importeren</string>
+  <string name="import_rules_droidwall">Import Droidwall Rules</string>
+  <string name="export_rules">Export the rules only</string>
+  <string name="export_all">Export preferences, rules and profile settings</string>
+  <string name="import_rules">Import the rules only</string>
+  <string name="import_all">Import preferences, rules and profile settings</string>
   <string name="export_rules_success">Succesvol geëxporteerd naar </string>
   <string name="export_rules_fail">Regels exporteren is mislukt!</string>
   <string name="import_rules_success">Succesvol geïmporteerd van </string>
   <string name="import_rules_fail">Regels importeren mislukt!</string>
+  <string name="import_rules_missing">Rules file is missing!</string>
   <string name="exportConfirm">Wil je de regels exporteren naar SD Card?</string>
   <string name="export_logs_fail">Exporteren naar SD mislukt!</string>
   <string name="export_to_sd">Exporteren naar SD Card</string>
@@ -249,4 +253,12 @@
   <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
   <string name="apply_color">Press on Color to apply</string>
   <string name="binaries">Binaries</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Invalid Profile Name</string>
+  <string name="donate_only">This feature is available only in donate version</string>
+  <string name="buy_donate">Buy Donate version</string>
+  <string name="unlock_donate">more tap to unlock donate</string>
+  <string name="donate_support">Please get donate version to support the development,You can now use donate features!</string>
+  <string name="donate_thanks">Thanks for your support</string>
 </resources>

@@ -66,7 +66,6 @@
   <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
   <string name="unsaved_changes">Unsaved changes</string>
   <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables Rules</string>
   <string name="copy">Copy</string>
   <string name="copied">Copied</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">This will flush all the IPtables rules ! Do you want to continue ?</string>
   <string name="overrideRules">This will override the existing rules ! Do you want to import the rules ?</string>
   <string name="notification_new">New application installed.</string>
+  <string name="notification_new_package">Configure internet permissions for </string>
   <string name="confirmMsg">This will disable the firewall! Do you want to continue?</string>
   <string name="apply">Apply</string>
   <string name="discard">Discard</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">Cannot disable firewall - password defined!</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ Settings</string>
+  <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
   <string name="color_pick">Press on Color to apply</string>
-  <string name="import_rules_droidwall">Import DW Rules</string>
-  <string name="export_rules">Export Rules</string>
-  <string name="import_rules">Import Rules</string>
+  <string name="import_rules_droidwall">Import Droidwall Rules</string>
+  <string name="export_rules">Export the rules only</string>
+  <string name="export_all">Export preferences, rules and profile settings</string>
+  <string name="import_rules">Import the rules only</string>
+  <string name="import_all">Import preferences, rules and profile settings</string>
   <string name="export_rules_success">Exported successfully to </string>
   <string name="export_rules_fail">Export Rules failed!</string>
   <string name="import_rules_success">Imported successfully from </string>
   <string name="import_rules_fail">Import Rules failed!</string>
+  <string name="import_rules_missing">Rules file is missing!</string>
   <string name="exportConfirm">Do you want to export rules to SD Card ?</string>
   <string name="export_logs_fail">Export To SD failed!</string>
   <string name="export_to_sd">Export to SD Card</string>
@@ -246,4 +250,12 @@
   <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
   <string name="apply_color">Press on Color to apply</string>
   <string name="binaries">Binaries</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Invalid Profile Name</string>
+  <string name="donate_only">This feature is available only in donate version</string>
+  <string name="buy_donate">Buy Donate version</string>
+  <string name="unlock_donate">more tap to unlock donate</string>
+  <string name="donate_support">Please get donate version to support the development,You can now use donate features!</string>
+  <string name="donate_thanks">Thanks for your support</string>
 </resources>

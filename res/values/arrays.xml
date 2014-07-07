@@ -27,6 +27,7 @@
         <item>Traditional Chinese</item>
         
         <item>Indonesian</item>
+        <item>Serbian</item>
         
     </string-array>
     
@@ -57,6 +58,8 @@
         <item>zh_TW</item>  
         
          <item>in</item>
+         
+         <item>sr</item>
     </string-array>
     
     <string-array name="iptables_binary">

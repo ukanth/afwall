@@ -7,12 +7,10 @@ Version 1.3.3
 * Added export & import for preferences/profiles including custom profiles (Donate Version only)
 * New combined dialog for import and export
 * Encryption for application password - Also resets the old passwords. Please set password again !
-
 [Bugs]
 * Fix for LogService FC issues on 4.4
 * Fix for new apps not showing on top when profiles are enabled
 * Fix for Possible SU leak
-
 [Improvements]
 * Improved notification text
 * Improved search filter/profile validation logic

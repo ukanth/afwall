@@ -66,7 +66,6 @@
   <string name="custom_script2_info">    	\n<b>Script de oprire personalizat</b>    	\nDe asemenea poți defini un script personalizat care să ruleze când firewall-ul este <b>dezactivat</b>:</string>
   <string name="unsaved_changes">Modificări nesalvate</string>
   <string name="unsaved_changes_message">Ai schimbări nesalvate.\nVrei să aplici schimbările sau renunți la ele?</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">Reguli IPtables</string>
   <string name="copy">Copiază</string>
   <string name="copied">Copiat</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">Va revigora toate regulile IPtables! Vrei să continui?</string>
   <string name="overrideRules">Va rescrie regulile existente! Vrei să imporți regulile?</string>
   <string name="notification_new">S-a instalat o aplicație nouă.</string>
+  <string name="notification_new_package">Configure internet permissions for </string>
   <string name="confirmMsg">Acest lucru va dezactiva Firewall-ul! Vrei să continui?</string>
   <string name="apply">Aplică</string>
   <string name="discard">Renunță</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">Firewall-ul nu poate fi dezactivat (protejat cu parolă)!</string>
   <string name="widget_label_status">AFWall+ Comutare/Stare</string>
   <string name="widget_label_settings">Setări AFWall +</string>
+  <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
   <string name="color_pick">Apasă pe Culoare pentru aplicare</string>
-  <string name="import_rules_droidwall">Importă regulile DW</string>
-  <string name="export_rules">Exportă regulile</string>
-  <string name="import_rules">Importă regulile</string>
+  <string name="import_rules_droidwall">Import Droidwall Rules</string>
+  <string name="export_rules">Export the rules only</string>
+  <string name="export_all">Export preferences, rules and profile settings</string>
+  <string name="import_rules">Import the rules only</string>
+  <string name="import_all">Import preferences, rules and profile settings</string>
   <string name="export_rules_success">Exportat cu succes la </string>
   <string name="export_rules_fail">Exportul regulilor a eșuat!</string>
   <string name="import_rules_success">Regulile au fost importate cu succes de la </string>
   <string name="import_rules_fail">Importul regulilor a eșuat!</string>
+  <string name="import_rules_missing">Rules file is missing!</string>
   <string name="exportConfirm">Vrei să exporți regulile pe SD Card?</string>
   <string name="export_logs_fail">Exportul regulilor pe SD Card a eșuat!</string>
   <string name="export_to_sd">Exportă pe SD Card</string>
@@ -246,4 +250,12 @@
   <string name="filters_apps_title">Filtrează aplicațiile (Nu afișa notificare)</string>
   <string name="apply_color">Apasă pe Culoare pentru a aplica</string>
   <string name="binaries">Binare</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Invalid Profile Name</string>
+  <string name="donate_only">This feature is available only in donate version</string>
+  <string name="buy_donate">Buy Donate version</string>
+  <string name="unlock_donate">more tap to unlock donate</string>
+  <string name="donate_support">Please get donate version to support the development,You can now use donate features!</string>
+  <string name="donate_thanks">Thanks for your support</string>
 </resources>

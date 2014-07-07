@@ -66,7 +66,6 @@
   <string name="custom_script2_info">    	\n<b>Egyéni leállítás script</b>    	\nBeállíthat egyéni scriptet ami akkor lesz futtatva amikor a tűzfal állapota<b>Letiltva</b>:</string>
   <string name="unsaved_changes">Nem mentett módosítások</string>
   <string name="unsaved_changes_message">Nem mentett módosítások vannak. \nAlkalmazza, vagy eldobja ezeket?</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">IPtables szabályok</string>
   <string name="copy">Másolás</string>
   <string name="copied">Lemásolva</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">Ez az összes IPtables szabályt üríti ! Szeretné folytatni ?</string>
   <string name="overrideRules">Ez a művelet felülírja a meglévő szabályokat ! Szeretné importálni a szabályokat ?</string>
   <string name="notification_new">Új alkalmazás telepítve.</string>
+  <string name="notification_new_package">Configure internet permissions for </string>
   <string name="confirmMsg">Ez le fogja tiltani a tűzfalat! Szeretné folytatni?</string>
   <string name="apply">Alkamaz</string>
   <string name="discard">Elvetés</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">Nem lehet letiltani a tűzfalat - jelszó van beállítva!</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">AFWall+ beállítások</string>
+  <string name="widget_label_settings_old">AFWall+ Settings(Old)</string>
   <string name="color_pick">Érintsd meg a használni kívánt színt</string>
-  <string name="import_rules_droidwall">DW szabályok importálása</string>
-  <string name="export_rules">Szabályok exportálása</string>
-  <string name="import_rules">Szabályok importálása</string>
+  <string name="import_rules_droidwall">Import Droidwall Rules</string>
+  <string name="export_rules">Export the rules only</string>
+  <string name="export_all">Export preferences, rules and profile settings</string>
+  <string name="import_rules">Import the rules only</string>
+  <string name="import_all">Import preferences, rules and profile settings</string>
   <string name="export_rules_success">Sikeresen exportálva ide: </string>
   <string name="export_rules_fail">Szabályok exportálása sikertelen!</string>
   <string name="import_rules_success">Sikeresen importálva </string>
   <string name="import_rules_fail">Szabályok importálása nem sikerült!</string>
+  <string name="import_rules_missing">Rules file is missing!</string>
   <string name="exportConfirm">Szeretné a szabályokat az SD kártyára exportálni?</string>
   <string name="export_logs_fail">Nem sikerült az SD-re exportálni!</string>
   <string name="export_to_sd">Exportálás az SD kártyára</string>
@@ -246,4 +250,12 @@
   <string name="filters_apps_title">Filter Applications(Do not show notification)</string>
   <string name="apply_color">Press on Color to apply</string>
   <string name="binaries">Binaries</string>
+  <string name="exports">Export</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Invalid Profile Name</string>
+  <string name="donate_only">This feature is available only in donate version</string>
+  <string name="buy_donate">Buy Donate version</string>
+  <string name="unlock_donate">more tap to unlock donate</string>
+  <string name="donate_support">Please get donate version to support the development,You can now use donate features!</string>
+  <string name="donate_thanks">Thanks for your support</string>
 </resources>

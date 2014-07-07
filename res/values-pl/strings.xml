@@ -66,7 +66,6 @@
   <string name="custom_script2_info">    	\n<b>Skrypt wyłączania zapory</b>    	\nMożesz również podać własny skrypt, który zostanie wykonany podczas <b>wyłączania zapory</b>:</string>
   <string name="unsaved_changes">Niezapisane zmiany</string>
   <string name="unsaved_changes_message">Nie zapisałeś zmian.\nChcesz je zastosować, czy odrzucić?</string>
-  <string name="help_dialog_text"></string>
   <string name="showrules_title">Reguły IPtables</string>
   <string name="copy">Kopiuj</string>
   <string name="copied">Skopiowane</string>
@@ -74,6 +73,7 @@
   <string name="flushRulesConfirm">Ta operacja usunie wszystkie reguły iptables ! Chcesz kontynuować ?</string>
   <string name="overrideRules">Ta operacja nadpisze wszystkie istniejące reguły iptables ! Chcesz zaimportować reguły ?</string>
   <string name="notification_new">Zainstalowano nową aplikację.</string>
+  <string name="notification_new_package">Skonfiguruj uprawnienia internet dla </string>
   <string name="confirmMsg">Spowoduje to wyłączenie zapory! Czy chcesz kontynuować?</string>
   <string name="apply">Zastosuj</string>
   <string name="discard">Odrzuć</string>
@@ -93,14 +93,18 @@
   <string name="widget_disable_fail">Nie można wyłączyć zapory - blokada hasłem!</string>
   <string name="widget_label_status">AFWall+ Przełącznik/Status</string>
   <string name="widget_label_settings">Ustawienia AFWall+</string>
+  <string name="widget_label_settings_old">Ustawienia AFWall + (Stare)</string>
   <string name="color_pick">Naciśnij na kolor aby zaakceptować</string>
-  <string name="import_rules_droidwall">Importuj reguły DW</string>
-  <string name="export_rules">Eksportuj reguły</string>
-  <string name="import_rules">Importuj reguły</string>
+  <string name="import_rules_droidwall">Importuj reguły Droidwall</string>
+  <string name="export_rules">Eksportuj tylko reguły</string>
+  <string name="export_all">Eksportuj ustawienia, reguły i ustawienia profilu</string>
+  <string name="import_rules">Importuj tylko reguły</string>
+  <string name="import_all">Importuj ustawienia, reguły i ustawienia profilu</string>
   <string name="export_rules_success">Zakończono eksport reguł do </string>
   <string name="export_rules_fail">Eksport reguł nie powiódł się!</string>
   <string name="import_rules_success">Zakończono import reguł z </string>
   <string name="import_rules_fail">Import reguł nie powiódł się!</string>
+  <string name="import_rules_missing">Brak pliku zasad!</string>
   <string name="exportConfirm">Czy chcesz wyeksportować reguły na kartę SD?</string>
   <string name="export_logs_fail">Nie udało się wyeksportować na kartę SD!</string>
   <string name="export_to_sd">Eksport na kartę SD</string>
@@ -246,4 +250,12 @@
   <string name="filters_apps_title">Filtruj aplikacje (nie pokazuj powiadomień)</string>
   <string name="apply_color">Naciśnij na kolor aby zaakceptować</string>
   <string name="binaries">Binaria</string>
+  <string name="exports">Eksport</string>
+  <string name="imports">Import</string>
+  <string name="invalid_profile">Nieprawidłowa nazwa profilu</string>
+  <string name="donate_only">Funkcja dostępna tylko w wersji płatnej</string>
+  <string name="buy_donate">Kup płatną wersję</string>
+  <string name="unlock_donate">więcej tapnięć aby odblokować płatne funkcje</string>
+  <string name="donate_support">Pobierz płatną wersję aby wesprzeć rozwój aplikacji, teraz możesz korzystać z płatnych funkcji!</string>
+  <string name="donate_thanks">Dziękuję za wsparcie</string>
 </resources>
