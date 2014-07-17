@@ -5,6 +5,7 @@ Version 1.3.3
 
 [Features]
 * Added export & import for preferences/profiles including custom profiles (Donate Version only)
+* Custom Script for each Profile
 * New combined dialog for import and export
 * Encryption for application password - Also resets the old passwords. Please set password again !
 [Bugs]

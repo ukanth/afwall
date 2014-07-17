@@ -213,7 +213,7 @@
   <string name="multi_apply_rules">Regeln bei Profilwechsel anwenden</string>
   <string name="multi_apply_rules_info">Dies wird die Regeln beim Profilwechsel laden und anwenden</string>
   <string name="multi_user_title">Multi-User-Unterstützung aktivieren</string>
-  <string name="multi_user_summary">Android Multi-User-Unterstützung aktivieren (nur bei Tablet und in \"Ausgewählte blockieren\"-Modus)</string>
+  <string name="multi_user_summary">Android Multi-User-Unterstützung aktivieren (nur auf Tablets und im \"Ausgewählte blockieren\"-Modus)</string>
   <string name="device_admin_desc">Zusätzliche Sicherheit - Verhindere AFWall+ Deinstallation</string>
   <string name="traffic_detail_title">Datenmenge-Details</string>
   <string name="uploaded">Hochgeladen</string>
@@ -244,7 +244,7 @@
   <string name="disable_dns">DNS über netd deaktivieren</string>
   <string name="dns_proxy_title">DNS-Proxy</string>
   <string name="dns_proxy_summary">DNS-Proxy Option wurde hinzugefügt, um DNS-Lookups über Netd auf JB 4.3+ zu unterstützen. Deaktiviert unter Android 4.3+ wird das Internet blockiert</string>
-  <string name="tasker_lable">AFWall+ Tasker Plugin</string>
+  <string name="tasker_lable">AFWall+-Tasker-Plugin</string>
   <string name="enable">Aktivieren</string>
   <string name="disable">Deaktivieren</string>
   <string name="filters_apps_title">Filter Apps (Benachrichtigung nicht zeigen)</string>
