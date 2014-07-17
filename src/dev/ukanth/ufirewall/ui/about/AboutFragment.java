@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
-import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
@@ -25,26 +23,6 @@ public class AboutFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup group,
 			Bundle saved) {
 		View view = inflater.inflate(R.layout.help_about_content, group, false);
-
-	    view.setOnTouchListener(new View.OnTouchListener() {
-	    		int count = 0;
-				@Override
-				public boolean onTouch(View arg0, MotionEvent event) {
-					if(!G.isDo()) {
-						if(event.getAction() == MotionEvent.ACTION_DOWN){
-		                    if(count < 7 && count > 4) {
-		                    	Toast.makeText(getActivity(), (7-count) + getActivity().getString(R.string.unlock_donate), Toast.LENGTH_SHORT).show();
-		                    	count++;
-		                    } 
-		                    if(count >= 7){
-	                    		G.isDo(true);
-	                    		Toast.makeText(getActivity(), getActivity().getString(R.string.donate_support), Toast.LENGTH_LONG).show();
-		                    }
-		                }
-					}
-	                return true;
-				}
-	    });
 		
 		return view;
 	}
@@ -52,7 +30,7 @@ public class AboutFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		PackageInfo pInfo = null;
 		String version = "";
 		try {

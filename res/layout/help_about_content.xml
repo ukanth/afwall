@@ -3,9 +3,8 @@
     android:id="@+id/aboutscrollview"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/abs__background_holo_dark"
     android:orientation="vertical"
-    android:padding="5dip" >
+    >
     <LinearLayout
         android:id="@+id/aboutLayout"
         android:layout_width="fill_parent"
@@ -23,15 +22,13 @@
         <LinearLayout
             android:id="@+id/about_thirdsparty_credits_container"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="6dip" >
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
 
             <WebView
                 android:id="@+id/about_thirdsparty_credits"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFF" />
+                android:layout_height="fill_parent"/>
         </LinearLayout>
     </LinearLayout>
 

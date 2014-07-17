@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -15,6 +16,7 @@ public class HelpActivity extends SherlockFragmentActivity implements com.action
 
 	private static final String BUNDLE_KEY_TABINDEX = "tabindex";
 	
+	private int count = 0;
 	@Override
     public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -35,6 +37,8 @@ public class HelpActivity extends SherlockFragmentActivity implements com.action
 
             getSupportActionBar().addTab(tab1);
             getSupportActionBar().addTab(tab3);
+            
+            
     }
 
 	 @Override
@@ -53,7 +57,19 @@ public class HelpActivity extends SherlockFragmentActivity implements com.action
 
      @Override
      public void onTabReselected(Tab tab, FragmentTransaction transaction) {
-             Log.i("Tab Reselected", tab.getText().toString());
+    	 if(tab.getPosition() == 0) {
+   			 count++;	 
+    		 if(!G.isDo()) {
+	             if(count < 7 && count > 4) {
+	             	Toast.makeText(this, (7-count) + this.getString(R.string.unlock_donate), Toast.LENGTH_SHORT).show();
+	             	count++;
+	             } 
+	             if(count >= 7){
+	         		G.isDo(true);
+	         		Toast.makeText(this, this.getString(R.string.donate_support), Toast.LENGTH_LONG).show();
+	            }
+    		}
+    	 }
      }
 
      @Override
@@ -75,6 +91,8 @@ public class HelpActivity extends SherlockFragmentActivity implements com.action
      public void onTabUnselected(Tab tab, FragmentTransaction transaction) {
              Log.i("Tab Unselected", tab.getText().toString());
      }
+     
+     
      
      @Override
      public boolean onOptionsItemSelected(MenuItem item) {
