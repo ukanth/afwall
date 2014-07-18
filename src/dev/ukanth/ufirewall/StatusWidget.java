@@ -54,8 +54,7 @@ public class StatusWidget extends AppWidgetProvider {
 		} else if (Api.TOGGLE_REQUEST_MSG.equals(intent.getAction())) {
 			// Broadcast sent to request toggling DroidWall's status
 			
-			final SharedPreferences prefs2 = context.getSharedPreferences(Api.PREFS_NAME, 0);
-			final String oldPwd = prefs2.getString(Api.PREF_PASSWORD, "");
+			final String oldPwd = G.profile_pwd();
 			final String newPwd = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString("LockPassword", "");
 			
 			final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);

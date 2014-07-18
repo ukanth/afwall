@@ -102,9 +102,7 @@ public class ToggleWidgetOldActivity extends Activity implements
 			}
 		};
 		final Context context = getApplicationContext();
-		final SharedPreferences prefs2 = context.getSharedPreferences(
-				Api.PREFS_NAME, 0);
-		final String oldPwd = prefs2.getString(Api.PREF_PASSWORD, "");
+		final String oldPwd = G.profile_pwd();
 		final String newPwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0)
 				.getString("LockPassword", "");
 		new Thread() {

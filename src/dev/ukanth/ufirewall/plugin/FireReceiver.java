@@ -61,8 +61,7 @@ public final class FireReceiver extends BroadcastReceiver
         BundleScrubber.scrub(intent);
         BundleScrubber.scrub(intent.getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE));
         final Bundle bundle = intent.getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
-        final SharedPreferences prefs2 = context.getSharedPreferences(Api.PREFS_NAME, 0);
-        final String oldPwd = prefs2.getString(Api.PREF_PASSWORD, "");
+        final String oldPwd = G.profile_pwd();
 		final String newPwd = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString("LockPassword", "");
 
 		final Handler toaster = new Handler() {
