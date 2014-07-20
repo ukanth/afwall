@@ -1,5 +1,4 @@
-## AFWall+ (Android Firewall+) 
-[![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall)[![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
+## AFWall+ (Android Firewall+) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
 ======
 
 ![AFwall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
@@ -93,10 +92,12 @@ Permissions
 
 AFWall+ asks for the following Android permissions:
 
-* Boot: to be able to check if AFWall+ is enabled
-* Storage: to be able to export the settings to the SD card
-* Internet: send error logs 
-* Network access: on connectivity change, apply the rules again
+* RECEIVE_BOOT_COMPLETED: Autostart (Bootup) AFWall+ after the system finishes booting.
+* ACCESS_NETWORK_STATE: Allows AFWall+ to access information about networks (iptables).
+* WRITE_EXTERNAL_STORAGE: Allows AFWall+ to write to external storage for debug log and export iptables rules.
+* ACCESS_SUPERUSER: Standard to support Superuser/SuperSU (by Koushik/Chainfire).
+* INTERNET : NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at [Stackoverflow](http://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4).
+* ACCESS_WIFI_STATE : Added to detect tether state.
 
 Frequently asked questions
 --------------------------
@@ -113,18 +114,18 @@ ToDo
 Already done
 ------------
 
-* ~~New GUI~~ <i>(since 1.0.1a)</i>
-* ~~Roaming option ( like avast firewall )~~ <i>(1.0.2a)</i>
-* ~~Flush/Reset iptables rules from UI~~ <i>(1.0.2a)</i>
-* ~~Save & Load Profiles/Rules~~ <i>(1.0.3a)</i>
-* ~~Full i18n support~~ <i>(1.0.3a)</i>
-* ~~View iptables rules and logging in a clear view~~ <i>(1.0.4a)</i>
-* ~~Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)~~ <i>(1.0.4a)</i>
-* ~~Multiple Profiles~~ <i>(1.0.7a)</i>
-* ~~Support for IPv6~~ <i>(1.2.4)</i>
-* ~~Support for only within LAN/WAN/Tether~~ <i>(1.2.5)</i>
-* ~~Support NFLOG~~ <i>(1.2.6)</i> 
-* ~~Support for x86/MIPS/ARM devices~~ <i>(1.2.7)</i> 
+* ~~New GUI~~ <i>(1.0.1a)</i>
+* ~~Roaming option (like Avast Firewall )~~<i>(1.0.2a)</i>
+* ~~Flush/Reset iptables rules from UI~~<i>(1.0.2a)</i>
+* ~~Save & Load Profiles/Rules~~<i>(1.0.3a)</i>
+* ~~Full i18n support~~<i>(1.0.3a)</i>
+* ~~View iptables rules and logging in a clear view~~<i>(1.0.4a)</i>
+* ~~Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)~~<i>(1.0.4a)</i>
+* ~~Multiple Profiles~~<i>(1.0.7a)</i>
+* ~~Support for IPv6~~<i>(1.2.4)</i>
+* ~~Support for only within LAN/WAN/Tether~~<i>(1.2.5)</i>
+* ~~Support NFLOG~~<i>(1.2.6)</i> 
+* ~~Support for x86/MIPS/ARM devices~~<i>(1.2.7)</i> 
 
 License
 -------
