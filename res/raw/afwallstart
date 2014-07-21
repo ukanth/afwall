@@ -9,6 +9,17 @@ else
     exit
 fi;
 
-/data/data/$path/app_bin/iptables -P INPUT DROP
-/data/data/$path/app_bin/iptables -P OUTPUT DROP
-/data/data/$path/app_bin/iptables -P FORWARD DROP
+defaultpath_1=/system/bin/iptables
+file=/data/data/$path/app_bin/iptables
+
+if [ -f "$file" ]; then
+	if [ -f "$defaultpath_1" ]; then
+		$defaultpath_1 -P INPUT DROP    
+        	$defaultpath_1 -P OUTPUT DROP   
+	        $defaultpath_1 -P FORWARD DROP        
+	else
+		$file -P INPUT DROP
+		$file -P OUTPUT DROP
+		$file -P FORWARD DROP
+	fi;	
+fi;
