@@ -115,7 +115,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		
 		String notificationText = context.getString(R.string.notification_new);
 		if(label != null) {
-			notificationText = context.getString(R.string.notification_new_package) + " " + label;
+			notificationText = label +  "-" +context.getString(R.string.notification_new_package);
 		}
 		builder.setSmallIcon(icon)
 		            .setAutoCancel(true)
