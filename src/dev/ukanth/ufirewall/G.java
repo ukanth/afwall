@@ -59,6 +59,7 @@ public class G extends android.app.Application {
 	private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
+	private static final String ACTIVE_NOTIFICATION = "activeNotification";
 	
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";
@@ -116,6 +117,9 @@ public class G extends android.app.Application {
 
 	public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
 	public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
+	
+	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
+	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
 	
 	public static boolean fixLeak() { return gPrefs.getBoolean(FIX_START_LEAK, false); }
 	public static boolean fixLeak(boolean val) { gPrefs.edit().putBoolean(FIX_START_LEAK, val).commit(); return val; }

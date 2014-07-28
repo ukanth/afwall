@@ -63,6 +63,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -84,6 +86,7 @@ import android.os.Looper;
 import android.os.UserManager;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -1419,6 +1422,10 @@ public final class Api {
 			if(showErrors)alert(ctx, ctx.getString(R.string.error_write_pref));
 			return;
 		}
+		
+		if(G.activeNotification()) {
+			Api.showNotification(Api.isEnabled(ctx),ctx);
+		}
 		/* notify */
 		final Intent message = new Intent(Api.STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
@@ -2492,5 +2499,37 @@ public final class Api {
 			Log.e(Api.TAG, "Package not found", e);
 		}
 		return pInfo.packageName;
+    }
+    
+    public static void showNotification(boolean status, Context context) {
+    	final int NOTIF_ID = 33341;
+    	String notificationText = "";
+    	NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+		
+		Intent appIntent = new Intent(context, MainActivity.class);
+		PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
+		int icon = R.drawable.widget_on;
+		
+		if(status) { 
+			notificationText = context.getString(R.string.active);
+			icon = R.drawable.widget_on;
+		} else {
+			notificationText = context.getString(R.string.inactive);
+			icon = R.drawable.widget_off;
+		}
+		
+		builder.setSmallIcon(icon).setOngoing(true)
+		       .setAutoCancel(false)
+		       .setContentTitle(context.getString(R.string.app_name))
+		       .setTicker(context.getString(R.string.app_name))
+		       .setContentText(notificationText);
+		
+		builder.setContentIntent(in);
+		
+		mNotificationManager.notify(NOTIF_ID, builder.build());
+    	
     }
 }
