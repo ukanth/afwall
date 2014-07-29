@@ -254,7 +254,7 @@ public final class InterfaceTracker {
 			.setContentTitle(ctx.getString(R.string.error_notification_title))
 			.setContentText(ctx.getString(R.string.error_notification_text))
 			.setTicker(ctx.getString(R.string.error_notification_ticker))
-			.setSmallIcon(R.drawable.widget_on)
+			.setSmallIcon(R.drawable.warn)
 			.setAutoCancel(true)
 			.setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
 			.build();

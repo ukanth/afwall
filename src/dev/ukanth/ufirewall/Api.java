@@ -1426,6 +1426,7 @@ public final class Api {
 		if(G.activeNotification()) {
 			Api.showNotification(Api.isEnabled(ctx),ctx);
 		}
+		
 		/* notify */
 		final Intent message = new Intent(Api.STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
@@ -2500,6 +2501,7 @@ public final class Api {
 		}
 		return pInfo.packageName;
     }
+    
     
     public static void showNotification(boolean status, Context context) {
     	final int NOTIF_ID = 33341;

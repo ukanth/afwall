@@ -1026,7 +1026,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 */
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(this);
-		Api.setEnabled(this, enabled,true);
+		Api.setEnabled(this, enabled, true);
 		if (enabled) {
 			applyOrSaveRules();
 		} else {
@@ -1040,6 +1040,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	}
 	
 	
+	
 
 	public void confirmDisable(){
 		
@@ -1050,6 +1051,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   	purgeRules();
+	            	   	if(G.activeNotification()) {
+	            			Api.showNotification(Api.isEnabled(getApplicationContext()),getApplicationContext());
+	            		}
 	               }
 	           })
 	           .setNegativeButton("No", new DialogInterface.OnClickListener() {
