@@ -1,7 +1,7 @@
 ## AFWall+ (Android Firewall+) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
 ======
 
-![AFwall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
+![AFWall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
 
 [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall) [![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png)](https://www.gittip.com/ukanth/)
 
@@ -11,18 +11,18 @@ Index
 * [Description](#description)
 * [Features](#features)
 * [Changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md)
-* [Bug Reports](#Bug-Reports)
+* [Bug Reports](#bug-reports)
 * [Limitations](#limitations)
 * [Compatibility](#compatibility)
 * [Upgrading](#upgrading)
 * [Permissions](#permissions)
 * [Frequently asked questions](#frequently-asked-questions)
 * [ToDo](#todo)
-* [Already done](#already-done)
 * [License](#license)
 * [Acknowledgements](#acknowledgements)
 * [Compile AFWall+](#compile-afwall+)
 * [Contributing](#contributing)
+* [Translating](#translating)
 
 Description
 -----------
@@ -31,7 +31,7 @@ Android Firewall+ is an advanced iptables editor (GUI) for Android. It provides 
 
 The original codebase was derived from [DroidWall](http://code.google.com/p/droidwall) by Rodrigo Rosauro. DroidWall was sold to AVAST in December 2011, and is no longer actively maintained.
 
-For more information and community discussions, please visit the [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or [our WIKI](https://github.com/ukanth/afwall/wiki).
+For more information and community discussions, please visit the [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or [our Wiki](https://github.com/ukanth/afwall/wiki).
 
 Features
 --------
@@ -67,13 +67,13 @@ Limitations
 -----------
 
 * A firewall cannot protect against attacks that are performed outside the operating point. For example, if there is a Point-TO-POINT to the Internet.
-* The firewall cannot prevent corporate data from being copied to a memory stick or hdd and these are subtracted from the building. 
-* AFWall+ cannot have a precise system of SCAN for each type of virus/malware that may arise in the files that pass through it, because the firewall is not an antivirus.
+* The firewall cannot prevent corporate data from being copied to a memory stick or HDD and these are subtracted from the building. 
+* AFWall+ cannot have a precise system of SCAN for each type of virus/malware that may arise in the files that pass through it, because the Firewall is not an Antivirus solution.
 
 Compatibility
 -------------
 
-AFWall+ has been sucess tested with Android version 2.2 - 4.4.4 (ICS, JellyBean, KitKat) and is reported to work with most Android variants, including stock ROMs.
+AFWall+ has been success tested with Android version 2.2 - 4.4.4 (ICS, JellyBean, KitKat) and is reported to work with most Android variants, including stock ROMs.
 Android L need a little configuration change and a external Busybox app)
 
 I do not recommend using AFWall+ in combination with any of the similar solutions because this could result in conflicts and potential data leaks (iptables could be overwritten)
@@ -105,32 +105,36 @@ Frequently asked questions
 Having problems with AFWall+? Check out the [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) before reporting a bug or problem that may already be known.
 
 ToDo
------
+----
 
-* Fix all bugs from original [DroidWall](http://code.google.com/p/droidwall/)
-* Fix all bugs [reported by users](https://github.com/ukanth/afwall/issues)
-* Uninstall application from list window (or open/manage application from list)
-
-Already done
-------------
-
-* ~~New GUI~~ <i>(1.0.1a)</i>
-* ~~Roaming option (like Avast Firewall )~~<i>(1.0.2a)</i>
-* ~~Flush/Reset iptables rules from UI~~<i>(1.0.2a)</i>
-* ~~Save & Load Profiles/Rules~~<i>(1.0.3a)</i>
-* ~~Full i18n support~~<i>(1.0.3a)</i>
-* ~~View iptables rules and logging in a clear view~~<i>(1.0.4a)</i>
-* ~~Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)~~<i>(1.0.4a)</i>
-* ~~Multiple Profiles~~<i>(1.0.7a)</i>
-* ~~Support for IPv6~~<i>(1.2.4)</i>
-* ~~Support for only within LAN/WAN/Tether~~<i>(1.2.5)</i>
-* ~~Support NFLOG~~<i>(1.2.6)</i> 
-* ~~Support for x86/MIPS/ARM devices~~<i>(1.2.7)</i> 
+- [x] Better GUI<i>(1.0.1a)</i>
+- [x] Roaming "R" option (like Avast Firewall)<i>(1.0.2a)</i>
+- [x] Flush/Reset iptables rules from UI<i>(1.0.2a)</i>
+- [x] Save & Load Profiles/Rules<i>(1.0.3a)</i>
+- [x] Full i18n support<i>(1.0.3a)</i>
+- [x] View iptables rules and logging in a clear view<i>(1.0.4a)</i>
+- [x] Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)<i>(1.0.4a)</i>
+- [x] Multiple Profiles<i>(1.0.7a)</i>
+- [x] Support for IPv6<i>(1.2.4)</i>
+- [x] Support for only within LAN/WAN/Tether<i>(1.2.5)</i>
+- [x] Support NFLOG<i>(1.2.6)</i> 
+- [x] Support for x86/MIPS/ARM devices<i>(1.2.7)</i> 
+- [x] #267, #268<i>(1.3.3)</i> 
+- [ ] Uninstall application from list window (or open/manage application from list)
+- [ ] Kernel logs and mysterious behind it!
+- [ ] Add a hardware search key
+- [ ] Store logs in a separate DB for a detailed report
+- [ ] iptables builder (like blocking websites/ip addresses etc.,)
+- [ ] Reduce Application size
+- [ ] Rewrite the import/export logic
+- [ ] Timer for re-enable firewall after disabling AFWall+
+- [ ] Improve the widget
+- [ ] Fix all bugs [reported by users](https://github.com/ukanth/afwall/issues)
 
 License
 -------
 
-AFWall+ is under the [GNU General Public License v3.0 License](https://www.gnu.org/licenses/gpl.html)
+AFWall+ is under the [GNU General Public License v3.0 License](https://www.gnu.org/licenses/gpl.html).
 
 Acknowledgements
 ----------------
@@ -146,27 +150,52 @@ This project also uses many other open source libraries such as:
     <tr>
         <td>ActionBarSherlock</td>
         <td>Apache License 2.0</td>
-        <td>http://actionbarsherlock.com/</td>
-    </tr>
-    <tr>
-        <td>Unified Preferences</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/saik0/UnifiedPreference/</td>
+        <td>https://github.com/JakeWharton/ActionBarSherlock</td>
     </tr>
     <tr>
         <td>Android Color Picker</td>
         <td>Apache License 2.0</td>
         <td>https://github.com/attenzione/android-ColorPickerPreference</td>
     </tr>
+	<tr>
+        <td>Busybox</td>
+        <td>GNU GPLv2</td>
+        <td>http://www.busybox.net</td>
+    </tr>
     <tr>
-        <td>Root Tools</td>
-        <td>Apache License 2.0</td>
-        <td>https://code.google.com/p/roottools/</td>
+        <td>external_klogripper</td>
+        <td>GNU General Public License 2.0</td>
+        <td>https://github.com/VanirAOSP/external_klogripper</td>
+    </tr>
+	<tr>
+        <td>iptables</td>
+        <td>GNU GPLv2</td>
+        <td>http://netfilter.org/projects/iptables/index.html</td>
     </tr>
     <tr>
         <td>Libsuperuser</td>
         <td>Apache License 2.0</td>
         <td>https://github.com/Chainfire/libsuperuser</td>
+    </tr>
+    <tr>
+        <td>Locale Plugin</td>
+        <td>Apache License 2.0</td>
+        <td>http://www.twofortyfouram.com</td>
+    </tr>
+    <tr>
+        <td>Networklog</td>
+        <td>Mozilla Public License Version 2.0</td>
+        <td>https://github.com/pragma-/networklog</td>
+    </tr>
+	<tr>
+        <td>Root Tools</td>
+        <td>Apache License 2.0</td>
+        <td>https://github.com/Stericson/RootTools</td>
+    </tr>
+	<tr>
+        <td>Unified Preferences</td>
+        <td>Apache License 2.0</td>
+        <td>https://github.com/saik0/UnifiedPreference/</td>
     </tr>
 </table>
 
@@ -193,15 +222,15 @@ For complete instructions, please take a look at the [Wiki | HOWTO-Compile-AFWal
 
 ## Compiling native binaries
 
-On the host side you'll need to install:
+On host side you'll need to install:
 
-* NDK r9, nominally under /opt/android-ndk-r9
-* Host-side gcc, make, etc. (Red Hat "Development Tools" group or Debian build-essential)
+* [NDK r10](http://developer.android.com/tools/sdk/ndk/index.html), nominally under /opt/android-ndk-r10
+* Host-side gcc 4.7, make, etc. (Red Hat "Development Tools" group or Debian build-essential)
 * autoconf, automake, and libtool
 
 This command will build the Android binaries and copy them into res/raw/:
 
-    make -C external NDK=/opt/android-ndk-r9
+    make -C external NDK=/opt/android-ndk-r10
 
 Contributing
 ------------
@@ -210,3 +239,8 @@ Please fork this repository and contribute back using [pull requests](https://gi
 
 Any contributions, large or small, major features, bug fixes, additional language translations, unit/integration tests are welcomed and appreciated but will be thoroughly reviewed and discussed.
 
+Translating
+-----------
+The res/values-* dirs are kept up to date automatically via Crowdin Translate Extension. See [our translation page](http://crowdin.net/project/afwall) if you would like to contribute.
+
+The application is available in many languages, but if yours is not included, or if it needs updating or improving, please create an account and use the translation system (powered by Crowdin Translate Extension) and make your changes.
