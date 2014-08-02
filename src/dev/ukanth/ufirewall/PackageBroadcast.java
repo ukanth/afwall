@@ -104,7 +104,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(ns);
 
-		int icon = R.drawable.widget_on;
+		int icon = R.drawable.question;
 		
 		final int HELLO_ID = 24556;
 
@@ -115,7 +115,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		
 		String notificationText = context.getString(R.string.notification_new);
 		if(label != null) {
-			notificationText = context.getString(R.string.notification_new_package) + " " + label;
+			notificationText = label +  "-" +context.getString(R.string.notification_new_package);
 		}
 		builder.setSmallIcon(icon)
 		            .setAutoCancel(true)

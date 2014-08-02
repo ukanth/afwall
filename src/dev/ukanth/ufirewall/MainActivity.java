@@ -32,7 +32,9 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -249,6 +251,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		cmds.add("true");
 		new RootCommand().setFailureToast(R.string.error_su)
 			.setReopenShell(true).setStartCheck(true).run(getApplicationContext(), cmds);
+		//put up the notification
+		if(G.activeNotification()){ 
+			Api.showNotification(Api.isEnabled(getApplicationContext()),getApplicationContext());
+		}
 	}
 	
 	@Override
@@ -705,12 +711,25 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			apply.setTitle(R.string.applyrules);
 			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
 			//onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
-			getSupportActionBar().setIcon(R.drawable.widget_on);
+			runOnUiThread(new Runnable() {
+			     @Override
+			     public void run() {
+			    	 getSupportActionBar().setIcon(R.drawable.widget_on);
+			    }
+			});
+			
+			
 		} else {
 			apply.setTitle(R.string.saverules);
 			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
 			//onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
-			getSupportActionBar().setIcon(R.drawable.widget_off);
+			runOnUiThread(new Runnable() {
+			     @Override
+			     public void run() {
+			    	 getSupportActionBar().setIcon(R.drawable.widget_off);
+			    }
+			});
+			
 		}
 	}
 
@@ -1007,7 +1026,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	 */
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(this);
-		Api.setEnabled(this, enabled,true);
+		Api.setEnabled(this, enabled, true);
 		if (enabled) {
 			applyOrSaveRules();
 		} else {
@@ -1021,6 +1040,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	}
 	
 	
+	
 
 	public void confirmDisable(){
 		
@@ -1031,6 +1051,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   	purgeRules();
+	            	   	if(G.activeNotification()) {
+	            			Api.showNotification(Api.isEnabled(getApplicationContext()),getApplicationContext());
+	            		}
 	               }
 	           })
 	           .setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -28,6 +28,7 @@ import java.io.File;
 import net.saik0.android.unifiedpreference.UnifiedPreferenceFragment;
 import net.saik0.android.unifiedpreference.UnifiedSherlockPreferenceActivity;
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -292,6 +293,17 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 			} else {
 				Intent intent = new Intent(getApplicationContext(), LogService.class);
 				getApplicationContext().stopService(intent);
+			}
+			
+		}
+		
+		if(key.equals("activeNotification")) {
+			boolean enabled = sharedPreferences.getBoolean(key, false);
+			if(enabled) {
+				Api.showNotification(Api.isEnabled(getApplicationContext()),getApplicationContext());
+			} else {
+				NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.cancel(33341);
 			}
 			
 		}
