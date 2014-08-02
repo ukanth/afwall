@@ -2,7 +2,6 @@ Changelog AFWall+
 ==================
 
 Version 1.3.4
-
 * Feature: Added permanent notification on firewall status (optional)
 * Bug: Modified init.d script to support system iptables.
 * Bug: Fixed FC on multiple devices when enable/disable
