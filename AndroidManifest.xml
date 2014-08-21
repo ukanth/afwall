@@ -27,10 +27,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="170"
-    android:versionName="1.3.4">
+    android:versionCode="171"
+    android:versionName="1.3.4.1">
 
-    <!-- Android 2.2 up to 4.x -->
+    <!-- Android 2.3 up to 3.x -->
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
