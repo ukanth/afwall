@@ -35,6 +35,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -83,7 +85,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		return true;
 	}*/
 
-	public static void setupFixLeak(Preference pref) {
+	public static void setupFixLeak(Preference pref,Context ctx) {
 		if (pref == null) {
 			return;
 		}
@@ -91,7 +93,18 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 
 		// gray out the fixLeak preference if the ROM doesn't support init.d
 		fixLeakPref.setChecked(isFixLeakInstalled());
-		fixLeakPref.setEnabled(getFixLeakPath() != null);
+		
+		fixLeakPref.setEnabled(getFixLeakPath() != null && !isPackageInstalled("com.androguide.universal.init.d",ctx));
+	}
+	
+	private static boolean isPackageInstalled(String packagename, Context ctx) {
+	    PackageManager pm = ctx.getPackageManager();
+	    try {
+	        pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+	        return true;
+	    } catch (NameNotFoundException e) {
+	        return false;
+	    }
 	}
 
 	public static void setupEnableAdmin(Preference pref) {
@@ -110,8 +123,8 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		super.onPostCreate(savedInstanceState);
 
 		// these return non-null in the single pane view
-		// the PreferenceFragment callbacks need to be used on Honeycomb+ with large screens 
-		setupFixLeak(findPreference("fixLeak"));
+		// the PreferenceFragment callbacks need to be used on Honeycomb+ with large screens
+		setupFixLeak(findPreference("fixLeak"),getApplicationContext());
 		setupEnableAdmin(findPreference("enableAdmin"));
 	}
 
@@ -165,7 +178,7 @@ public class PreferencesActivity extends UnifiedSherlockPreferenceActivity
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			setupFixLeak(findPreference("fixLeak"));
+			setupFixLeak(findPreference("fixLeak"),getActivity().getApplicationContext());
 		}
 	}
 

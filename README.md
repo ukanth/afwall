@@ -17,7 +17,6 @@ Index
 * [Upgrading](#upgrading)
 * [Permissions](#permissions)
 * [Frequently asked questions](#frequently-asked-questions)
-* [ToDo](#todo)
 * [License](#license)
 * [Acknowledgements](#acknowledgements)
 * [Compile AFWall+](#compile-afwall+)
@@ -41,23 +40,20 @@ Features
 * No advertisements
 * Choose your preferred language
 * Search for installed applications
-* Get a notification about newly installed application
+* Get a notification about new installed application
 * Blocked packets notification and filter
 * Device Admin Support (Protect AFWall+ from uninstall)
-* Professional skills not required for configuration
-* Easy to add your own rules with a custom script support(required iptables knowledge)
+* Easy to manage your rules with a custom script
 * For any (stock) variant of Android version 2.2 - 4.4.4 (ICS, JellyBean, KitKat)
-* IPv4/IPv6 support
+* Ipv4/Ipv6 support
 * LAN-, VPN-, Tether-, Roaming-Control support
 * Tasker and Locale support
 * Firewall Logs service
 * Multi-User (multiple-profiles) support
 * Build-In Iptables/Busybox
-* Export and Import rules and preferences
+* Export and Import rules (Import All Rules needs donate version)
 * Option to prevent data leaks during boot (REQUIRES init.d support or S-OFF)
 * Supports MIPS/x86/ARM
-* select all/revert rules for applications
-* Highlight/Filter system applications
 
 Bug Reports
 --------
@@ -83,7 +79,7 @@ I do not recommend using AFWall+ in combination with any of the similar solution
 Upgrading
 ---------
 
-* **Make a backup** (e.g. with Titanium Backup) or using AFWall+ export
+* **Make a backup** (e.g. with Titanium Backup)
 * **Do not remove the previous version** (or else your settings will maybe get lost)
 * Download the new version
 * Install the new version over the previous version
@@ -94,41 +90,17 @@ Permissions
 
 AFWall+ asks for the following Android permissions:
 
-* **RECEIVE_BOOT_COMPLETED** : Autostart (Bootup) AFWall+ after the system finishes booting.
-* **ACCESS_NETWORK_STATE** : Allows AFWall+ to access information about networks (iptables).
-* **WRITE_EXTERNAL_STORAGE** : Allows AFWall+ to write to external storage for debug log and export iptables rules.
-* **ACCESS_SUPERUSER** : Standard to support Superuser/SuperSU (by Koush/Chainfire).
-* **INTERNET** : NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at [Stackoverflow](http://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4).
-* **ACCESS_WIFI_STATE** : Added to detect tether state.
+* RECEIVE_BOOT_COMPLETED: Autostart (Bootup) AFWall+ after the system finishes booting.
+* ACCESS_NETWORK_STATE: Allows AFWall+ to access information about networks (iptables).
+* WRITE_EXTERNAL_STORAGE: Allows AFWall+ to write to external storage for debug log and export iptables rules.
+* ACCESS_SUPERUSER: Standard to support Superuser/SuperSU (by Koushik/Chainfire).
+* INTERNET : NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at [Stackoverflow](http://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4).
+* ACCESS_WIFI_STATE : Added to detect tether state.
 
 Frequently asked questions
 --------------------------
 
 Having problems with AFWall+? Check out the [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) before reporting a bug or problem that may already be known.
-
-ToDo
-----
-
-- [x] Better GUI<i>(1.0.1a)</i>
-- [x] Roaming "R" option (like Avast Firewall)<i>(1.0.2a)</i>
-- [x] Flush/Reset iptables rules from UI<i>(1.0.2a)</i>
-- [x] Save & Load Profiles/Rules<i>(1.0.3a)</i>
-- [x] Full i18n support<i>(1.0.3a)</i>
-- [x] View iptables rules and logging in a clear view<i>(1.0.4a)</i>
-- [x] Support for [Tasker](http://tasker.dinglisch.net/) & [Locale](http://www.twofortyfouram.com/)<i>(1.0.4a)</i>
-- [x] Multiple Profiles<i>(1.0.7a)</i>
-- [x] Support for IPv6<i>(1.2.4)</i>
-- [x] Support for only within LAN/WAN/Tether<i>(1.2.5)</i>
-- [x] Support NFLOG<i>(1.2.6)</i> 
-- [x] Support for x86/MIPS/ARM devices<i>(1.2.7)</i> 
-- [x] #267, #268<i>(1.3.3)</i> 
-- [ ] Kernel logs and mysterious behind it!
-- [ ] Store logs in a separate DB for a detailed report
-- [ ] iptables builder (like blocking websites/ip addresses etc.,)
-- [ ] Reduce Application size
-- [ ] Timer for re-enable firewall after disabling AFWall+
-- [ ] Improve the widget
-- [ ] Fix all bugs [reported by users](https://github.com/ukanth/afwall/issues)
 
 License
 -------
@@ -204,7 +176,7 @@ Compile AFWall+
 Prerequisites:
 
 * Android SDK in your $PATH (both platform-tools/ and tools/ directories)
-* Java 1.7 (or higher) and a recent version of Apache ant in your $PATH
+* Javac 1.7 (or higher) and a recent version of Apache ant in your $PATH
 * Git in your $PATH
 * Use the Android SDK Manager to install API 19 (or higher)
 

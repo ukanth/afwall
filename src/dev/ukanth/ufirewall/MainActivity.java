@@ -32,9 +32,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -481,7 +479,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 						String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", pwd);
 						if (decrypt != null) {
 							if (!decrypt.equals(msg.obj)) {
-								requestPassword(decrypt);
+								requestPassword(pwd);
 								return false;
 							}
 						}

@@ -32,12 +32,12 @@ import java.util.NoSuchElementException;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import dev.ukanth.ufirewall.Log;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
-import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Debug;
+import eu.chainfire.libsuperuser.Shell;
 
 public class RootShell extends Service {
 
@@ -199,7 +199,7 @@ public class RootShell extends Service {
 		}
 	}
 
-	private static void complete(RootCommand state, int exitCode) {
+	private static void complete(final RootCommand state, int exitCode) {
 		if (enableProfiling) {
 			Log.d(TAG, "RootShell: " + state.script.size() + " commands completed in " +
 					(new Date().getTime() - state.startTime.getTime()) + " ms");
@@ -212,13 +212,13 @@ public class RootShell extends Service {
 		}
 
 		if (exitCode == 0 && state.successToast != NO_TOAST) {
-			Toast.makeText(mContext, mContext.getString(state.successToast), Toast.LENGTH_SHORT).show();
+			showToastUIThread(mContext.getString(state.successToast));
 		} else if (exitCode != 0 && state.failureToast != NO_TOAST) {
-			  if(state.isStartCheck()) {
-				  Api.showAlertDialogActivity(mContext, mContext.getString(R.string.error_common), mContext.getString(R.string.error_su));
-			  } else {
-				  Toast.makeText(mContext, mContext.getString(state.failureToast), Toast.LENGTH_SHORT).show();
-			  }
+			if (state.isStartCheck()) {
+				showAlertDialog();
+			} else {
+				showToastUIThread(mContext.getString(state.failureToast));
+			}
 		}
 	}
 
@@ -376,5 +376,37 @@ public class RootShell extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
+	}
+	
+	private static void showToastUIThread(final String msg) {
+		final Handler handler = new Handler();
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				handler.post(new Runnable() { // This thread runs in the UI
+					@Override
+					public void run() {
+						Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
+					}
+				});
+			}
+		};
+		new Thread(runnable).start();
+	}
+	
+	private static void showAlertDialog() {
+		final Handler handler = new Handler();
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				handler.post(new Runnable() { // This thread runs in the UI
+					@Override
+					public void run() {
+						Api.showAlertDialogActivity(mContext,mContext.getString(R.string.error_common),mContext.getString(R.string.error_su));
+					}
+				});
+			}
+		};
+		new Thread(runnable).start();
 	}
 }

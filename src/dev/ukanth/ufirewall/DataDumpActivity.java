@@ -69,10 +69,15 @@ public abstract class DataDumpActivity extends SherlockActivity {
 
 	protected abstract void populateData(final Context ctx);
 
-	protected void setData(String data) {
+	protected void setData(final String data) {
 		this.dataText = data;
 		scaleGesture = (TextView) findViewById(R.id.rules);
-		scaleGesture.setText(data);
+		runOnUiThread(new Runnable() {
+		     @Override
+		     public void run() {
+		    	 scaleGesture.setText(data);
+		    }
+		});
 	}
 
 	
