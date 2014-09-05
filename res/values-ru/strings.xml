@@ -40,7 +40,7 @@
   <string name="pass_titleset">Установить пароль блокировки</string>
   <string name="pass_titleget">Требуется пароль</string>
   <string name="enterpass">Введите пароль:</string>
-  <string name="error_write_pref">Ошибка сохранения ностроек</string>
+  <string name="error_write_pref">Ошибка сохранения настроек</string>
   <string name="enternewpass">Введите новый пароль (оставьте пустым для удаления):</string>
   <string name="passdefined">Блокировка паролем установлена</string>
   <string name="passremoved">Блокировка паролем удалена</string>
@@ -75,7 +75,7 @@
   <string name="flushRulesConfirm">Это удалит все правила IPtables! Вы уверены что хотите продолжить?</string>
   <string name="overrideRules">При импорте существующие правила буду перезаписаны! Продолжить?</string>
   <string name="notification_new">Установлено новое приложение.</string>
-  <string name="notification_new_package">Configure internet permission</string>
+  <string name="notification_new_package">Настроить доступ к интернету</string>
   <string name="confirmMsg">Вы действительно хотите отключить брандмауэр?</string>
   <string name="apply">Применить</string>
   <string name="discard">Отменить</string>
@@ -246,11 +246,11 @@
   <string name="enable_dns">Включить DNS через netd</string>
   <string name="disable_dns">Отключить DNS через netd</string>
   <string name="dns_proxy_title">Прокси-сервер DNS </string>
-  <string name="dns_proxy_summary">DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>
+  <string name="dns_proxy_summary">Поиск DNS через netd на версиях ОС 4.3+; отключение приведет к блокировке соединения на таких устройствах</string>
   <string name="tasker_lable">AFWall+ Tasker плагин</string>
   <string name="enable">Включить</string>
   <string name="disable">Отключить</string>
-  <string name="filters_apps_title">Notification Filter</string>
+  <string name="filters_apps_title">Фильтр уведомлений</string>
   <string name="apply_color">Нажмите на цвет, чтобы применить</string>
   <string name="binaries">Бинарные</string>
   <string name="exports">Экспорт</string>
@@ -258,11 +258,11 @@
   <string name="invalid_profile">Недопустимое имя</string>
   <string name="donate_only">Эта функция доступна только в Donate версии</string>
   <string name="buy_donate">Купить версию Donate</string>
-  <string name="unlock_donate"> tap to unlock donate</string>
-  <string name="donate_support">You can now use donate features!</string>
+  <string name="unlock_donate">Нажмите что включить версию Donate</string>
+  <string name="donate_support">Теперь вы можете использовать функции Donate!</string>
   <string name="donate_thanks">Спасибо за вашу поддержку</string>
-  <string name="activeNotification">Show notification icon</string>
-  <string name="activeNotification_summary">Display permanent icon in notification bar</string>
-  <string name="active">Firewall is running</string>
-  <string name="inactive">Firewall is disabled</string>
+  <string name="activeNotification">Показывать иконку</string>
+  <string name="activeNotification_summary">Всегда выводить иконку приложения в строке уведомлений</string>
+  <string name="active">Брандмауэр включен</string>
+  <string name="inactive">Брандмауэр отключен</string>
 </resources>
