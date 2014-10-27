@@ -84,6 +84,8 @@
         android:name="dev.ukanth.ufirewall.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
             android:hardwareAccelerated="true"
             android:label="@string/app_name" >
