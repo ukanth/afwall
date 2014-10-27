@@ -1,28 +1,26 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <PreferenceCategory android:title="@string/sec_prefs_title" >
         <CheckBoxPreference
             android:key="usePatterns"
             android:title="@string/usePattern" />
         <CheckBoxPreference
-            android:key="stealthMode"  
             android:dependency="usePatterns"
+            android:key="stealthMode"
             android:title="@string/stealthMode" />
+
         <ListPreference
-	        android:defaultValue="3"
-	        android:entries="@array/pattern_max_attempt"
-	        android:entryValues="@array/pattern_max_attempt"
-	        android:key="patternMax"
-	        android:dependency="usePatterns"
-	        android:title="@string/patternMaxTry" >
-   		</ListPreference>
-        
-        <!--  <CheckBoxPreference
-            android:key="activeDefense"
-            android:title="@string/userAFWOnly" 
-            android:summary="@string/userAFWSummary"/> -->
-        
+            android:defaultValue="3"
+            android:dependency="usePatterns"
+            android:entries="@array/pattern_max_attempt"
+            android:entryValues="@array/pattern_max_attempt"
+            android:key="patternMax"
+            android:title="@string/patternMaxTry" >
+        </ListPreference>
+
         <CheckBoxPreference
             android:key="enableAdmin"
             android:title="@string/enable_device_admin" />
-        
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -34,13 +34,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 public class RulesActivity extends DataDumpActivity {
@@ -242,6 +240,11 @@ public class RulesActivity extends DataDumpActivity {
 		final Context ctx = this;
 
     	switch (item.getItemId()) {
+    	
+    	case android.R.id.home: {
+    		onBackPressed();
+			return true;
+		}
     	case MENU_FLUSH_RULES:
     		flushAllRules(ctx);
 			return true;

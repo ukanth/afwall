@@ -3,22 +3,21 @@ package dev.ukanth.ufirewall;
 import java.lang.ref.WeakReference;
 
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Window;
-
-public class AlertDialogActivity  extends SherlockListActivity {
+public class AlertDialogActivity  extends ListActivity {
 	WeakReference<AlertDialog> alertDialog;
 	
 	@Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setBackgroundDrawableResource(R.drawable.class_zero_background);
+        //getWindow().setBackgroundDrawableResource(R.drawable.class_zero_background);
         
         String title = getIntent().getStringExtra("title");
         String message = getIntent().getStringExtra("message");

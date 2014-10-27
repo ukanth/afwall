@@ -32,8 +32,8 @@
   <string name="flushed">Regeln gesäubert</string>
   <string name="show_log">Firewall-Protokoll</string>
   <string name="clear_log">Protokoll löschen</string>
-  <string name="applying_rules">IPTables-Regel(n) anwenden...</string>
-  <string name="saving_rules">IPTables-Regel(n) speichern...</string>
+  <string name="applying_rules">IPTables-Regeln werden angewendet.</string>
+  <string name="saving_rules">IPTables-Regeln werden gespeichert.</string>
   <string name="rules_applied">Regeln erfolgreich angewendet</string>
   <string name="rules_saved">Regeln erfolgreich gespeichert</string>
   <string name="rules_deleted">Regeln erfolgreich gelöscht</string>
@@ -45,7 +45,7 @@
   <string name="passdefined">Passwortsperre definiert</string>
   <string name="passremoved">Passwortsperre entfernt</string>
   <string name="passerror">Fehler beim Ändern der Passwortsperre</string>
-  <string name="working">Verarbeite</string>
+  <string name="working">Verarbeitung</string>
   <string name="reading_apps">Lese installierte Apps ein</string>
   <string name="mode">Modus: </string>
   <string name="mode_header">Modus: %s</string>
@@ -262,6 +262,6 @@
   <string name="donate_thanks">Vielen Dank für Ihre Unterstützung!</string>
   <string name="activeNotification">Mitteilungssymbol anzeigen</string>
   <string name="activeNotification_summary">Symbol in der Benachrichtigungsleiste dauerhaft anzeigen</string>
-  <string name="active">Firewall läuft</string>
+  <string name="active">Firewall ist aktiv</string>
   <string name="inactive">Firewall ausgeschaltet</string>
 </resources>

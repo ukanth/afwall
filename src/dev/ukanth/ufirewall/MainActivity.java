@@ -29,9 +29,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -51,6 +53,9 @@ import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -68,32 +73,19 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.ActionBarSherlock.OnCreateOptionsMenuListener;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.MenuItem.OnActionExpandListener;
 import com.haibison.android.lockpattern.LockPatternActivity;
 import com.haibison.android.lockpattern.util.Settings;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
- 
-/**
- * Main application activity. This is the screen displayed when you open the
- * application
- */
 
-public class MainActivity extends SherlockListActivity implements OnClickListener,
-					ActionBar.OnNavigationListener,OnCreateOptionsMenuListener, OnCheckedChangeListener  {
+public class MainActivity extends ListActivity implements OnClickListener,
+					ActionBar.OnNavigationListener,OnCheckedChangeListener  {
 
 	private TextView mSelected;
     private String[] mLocations;
 	private Menu mainMenu;
-	
-	private static final int SHOW_PREFERENCE_RESULT = 10012;
 	
 	public boolean isOnPause = false;
 	
@@ -132,7 +124,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	
 	ProgressDialog plsWait;
 	
-	ArrayAdapter<String> spinnerAdapter;
+	ArrayAdapter<String> spinnerAdapter = null;
 	
 	private int index;
 	private int top;
@@ -174,34 +166,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			this.findViewById(R.id.img_invert).setOnClickListener(this);
 			
-			if(G.disableIcons()){
-				this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
-			}
-			
-			if(G.showFilter()) {
-				this.findViewById(R.id.appFilterGroup).setVisibility(View.VISIBLE);
-			}
-			if(G.enableRoam()){
-				addColumns(R.id.img_roam);
-			}
-			
-			if(G.enableVPN()){
-				addColumns(R.id.img_vpn);
-			}
-			
-			if(!Api.isMobileNetworkSupported(getApplicationContext())){
-				ImageView view = (ImageView)this.findViewById(R.id.img_3g);
-				view.setVisibility(View.GONE);
-			} else {
-				this.findViewById(R.id.img_3g).setOnClickListener(this);
-			}
-
-			if(G.enableLAN()){
-				addColumns(R.id.img_lan);
-			}
-
-			updateRadioFilter();
-	        
         	Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
 	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 	       
@@ -209,7 +173,8 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		   
 			plsWait = new ProgressDialog(this);
 	        plsWait.setCancelable(false);
-		    
+	        
+	        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 	}
 
 	private void updateRadioFilter() {
@@ -238,9 +203,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
-			getSupportActionBar().setIcon(R.drawable.widget_on);
+			getActionBar().setIcon(R.drawable.notification);
 		} else {
-			getSupportActionBar().setIcon(R.drawable.widget_off);
+			getActionBar().setIcon(R.drawable.notification_error);
 		}
 	}
 	
@@ -255,6 +220,59 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		}
 	}
 	
+	@Override
+	public void onResume() {
+		super.onResume();
+		reloadPreferences();
+	}
+	
+	private void reloadPreferences() {
+		Api.updateLanguage(getApplicationContext(), G.locale());
+
+		if (G.disableIcons()) {
+			this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
+		} else {
+			this.findViewById(R.id.imageHolder).setVisibility(View.VISIBLE);
+		}
+
+		if (G.showFilter()) {
+			this.findViewById(R.id.appFilterGroup).setVisibility(View.VISIBLE);
+		} else {
+			this.findViewById(R.id.appFilterGroup).setVisibility(View.GONE);
+		}
+		if (G.enableRoam()) {
+			addColumns(R.id.img_roam);
+		} else {
+			hideColumns(R.id.img_roam);
+		}
+		if (G.enableVPN()) {
+			addColumns(R.id.img_vpn);
+		} else {
+			hideColumns(R.id.img_vpn);
+		}
+
+		if (!Api.isMobileNetworkSupported(getApplicationContext())) {
+			ImageView view = (ImageView) this.findViewById(R.id.img_3g);
+			view.setVisibility(View.GONE);
+		} else {
+			this.findViewById(R.id.img_3g).setOnClickListener(this);
+		}
+
+		if (G.enableLAN()) {
+			addColumns(R.id.img_lan);
+		} else {
+			hideColumns(R.id.img_lan);
+		}
+		updateRadioFilter();
+
+		if (!G.enableMultiProfile()) {
+			getActionBar().setNavigationMode(ActionBar.DISPLAY_SHOW_TITLE);
+			getActionBar().setDisplayShowTitleEnabled(true);
+			mSelected = (TextView)findViewById(R.id.text);
+			mSelected.setText("");
+		}
+	}
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -287,6 +305,12 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	private void addColumns(int id) {
 		ImageView view = (ImageView)this.findViewById(id);
 		view.setVisibility(View.VISIBLE);
+		view.setOnClickListener(this);
+	}
+	
+	private void hideColumns(int id) {
+		ImageView view = (ImageView)this.findViewById(id);
+		view.setVisibility(View.GONE);
 		view.setOnClickListener(this);
 	}
 	
@@ -325,19 +349,19 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 			
-		    spinnerAdapter =  new ArrayAdapter<String>(this,R.layout.sherlock_spinner_item,
+			spinnerAdapter =  new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,
 		    	    mLocations);
-		    spinnerAdapter.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	
-			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
+			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			getActionBar().setListNavigationCallbacks(spinnerAdapter, this);
 			
 			if(position > -1) {
-				getSupportActionBar().setSelectedNavigationItem(position);
-				getSupportActionBar().setDisplayShowTitleEnabled(false);
+				getActionBar().setSelectedNavigationItem(position);
+				getActionBar().setDisplayShowTitleEnabled(false);
 				mSelected.setText("  |  " + mLocations[position]);
 			}
-			getSupportActionBar().setDisplayUseLogoEnabled(true);
+			getActionBar().setDisplayUseLogoEnabled(true);
 		}
 	}
 	
@@ -692,7 +716,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		//language
 		Api.updateLanguage(getApplicationContext(), G.locale());
 		super.onCreateOptionsMenu(menu);
-		getSupportMenuInflater().inflate(R.menu.menu_bar, menu);
+		getMenuInflater().inflate(R.menu.menu_bar, menu);
+		
+		// Get widget's instance
 		mainMenu = menu;
 	    return true;
 	}
@@ -701,30 +727,27 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if (menu == null) {
 			return;
 		}
-
 		MenuItem onoff = menu.findItem(R.id.menu_toggle);
 		MenuItem apply = menu.findItem(R.id.menu_apply);
 
 		if (isEnabled) {
+			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
 			apply.setTitle(R.string.applyrules);
-			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
-			//onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
 			runOnUiThread(new Runnable() {
 			     @Override
 			     public void run() {
-			    	 getSupportActionBar().setIcon(R.drawable.widget_on);
+			    	 getActionBar().setIcon(R.drawable.notification);
 			    }
 			});
 			
 			
 		} else {
+			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
 			apply.setTitle(R.string.saverules);
-			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.widget_on);
-			//onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.widget_off);
 			runOnUiThread(new Runnable() {
 			     @Override
 			     public void run() {
-			    	 getSupportActionBar().setIcon(R.drawable.widget_off);
+			    	 getActionBar().setIcon(R.drawable.notification_error);
 			    }
 			});
 			
@@ -738,14 +761,29 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		Api.updateLanguage(getApplicationContext(), G.locale());
 		return super.onPrepareOptionsMenu(menu);
 	}
+	
+	private void disableOrEnable() {
+		final boolean enabled = !Api.isEnabled(this);
+		Api.setEnabled(this, enabled, true);
+		if (enabled) {
+			applyOrSaveRules();
+		} else {
+			if (G.enableConfirm()) {
+				confirmDisable();
+			} else {
+				purgeRules();
+			}
+		}
+		refreshHeader();
+	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		
-		case android.R.id.home:
+		/*case android.R.id.home:
 			disableOrEnable();
-	        return true;
+	        return true;*/
 		case R.id.menu_toggle:
 			disableOrEnable();
 			return true;
@@ -1011,7 +1049,7 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 
 	private void showPreferences() {
 		Intent i = new Intent(this, PreferencesActivity.class);
-		startActivityForResult(i, SHOW_PREFERENCE_RESULT);
+		startActivity(i);
 	}
 	
 	private void showAbout() {
@@ -1019,34 +1057,12 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		startActivityForResult(i, SHOW_ABOUT_RESULT);
 	}
 
-	/**
-	 * Enables or disables the firewall
-	 */
-	private void disableOrEnable() {
-		final boolean enabled = !Api.isEnabled(this);
-		Api.setEnabled(this, enabled, true);
-		if (enabled) {
-			applyOrSaveRules();
-		} else {
-			if(G.enableConfirm()){
-				confirmDisable();
-			} else {
-				purgeRules();
-			}
-		}
-		refreshHeader();
-	}
-	
-	
-	
-
 	public void confirmDisable(){
-		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    builder.setTitle("Info");
 	    builder.setMessage(R.string.confirmMsg)
 	           .setCancelable(false)
-	           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	           .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   	purgeRules();
 	            	   	if(G.activeNotification()) {
@@ -1054,9 +1070,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 	            		}
 	               }
 	           })
-	           .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	           .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
 	               public void onClick(DialogInterface dialog, int id) {
 	            	   //cancel. reset to the default enable state
+	            	   //swtService.setChecked(true);
 	            	   Api.setEnabled(getApplicationContext(), true, true);
 	                   return;
 	               }
@@ -1149,14 +1166,6 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		checkForProfile = false;
 		
 		switch(requestCode) {
-			case SHOW_PREFERENCE_RESULT:
-				if(resultCode == RESULT_OK) {
-					Intent intent = getIntent();
-				    finish();
-					Api.updateLanguage(getApplicationContext(), G.locale());
-				    startActivity(intent);
-				}
-			break;
 			case REQ_CREATE_PATTERN: {
 				if(G.usePatterns()){
 					if (resultCode == RESULT_OK) {
@@ -1363,8 +1372,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if(adapter !=null) {
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
-				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_lan = flag;
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+				if(data.uid != Api.SPECIAL_UID_ANY) {
+					data.selected_lan = flag;
+				}
 				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1379,8 +1390,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if(adapter !=null) {
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
-				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_vpn = flag;
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+				if(data.uid != Api.SPECIAL_UID_ANY) {
+					data.selected_vpn = flag;
+				}
 				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1396,22 +1409,24 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
-				switch (flag) {
-				case R.id.img_wifi:
-					data.selected_wifi = !data.selected_wifi;
-					break;
-				case R.id.img_3g:
-					data.selected_3g = !data.selected_3g;
-					break;
-				case R.id.img_roam:
-					data.selected_roam = !data.selected_roam;
-					break;
-				case R.id.img_vpn:
-					data.selected_vpn = !data.selected_vpn;
-					break;
-				case R.id.img_lan:
-					data.selected_lan = !data.selected_lan;
-					break;
+				if(data.uid != Api.SPECIAL_UID_ANY) {
+					switch (flag) {
+					case R.id.img_wifi:
+						data.selected_wifi = !data.selected_wifi;
+						break;
+					case R.id.img_3g:
+						data.selected_3g = !data.selected_3g;
+						break;
+					case R.id.img_roam:
+						data.selected_roam = !data.selected_roam;
+						break;
+					case R.id.img_vpn:
+						data.selected_vpn = !data.selected_vpn;
+						break;
+					case R.id.img_lan:
+						data.selected_lan = !data.selected_lan;
+						break;
+					}
 				}
 				setDirty(true);
 			}
@@ -1428,11 +1443,13 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
-				data.selected_wifi = !data.selected_wifi;
-				data.selected_3g = !data.selected_3g;
-				data.selected_roam = !data.selected_roam;
-				data.selected_vpn = !data.selected_vpn;
-				data.selected_lan = !data.selected_lan;
+				if(data.uid != Api.SPECIAL_UID_ANY) {
+					data.selected_wifi = !data.selected_wifi;
+					data.selected_3g = !data.selected_3g;
+					data.selected_roam = !data.selected_roam;
+					data.selected_vpn = !data.selected_vpn;
+					data.selected_lan = !data.selected_lan;
+				}
 				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1448,8 +1465,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if(adapter !=null) {
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
-				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_roam = flag;
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+				if(data.uid != Api.SPECIAL_UID_ANY) {
+					data.selected_roam = flag;
+				}
 				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1484,8 +1503,10 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if(adapter !=null) {
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
-				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
-				data.selected_3g = flag;
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+				if(data.uid != Api.SPECIAL_UID_ANY) {
+					data.selected_3g = flag;
+				}
 				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1502,7 +1523,9 @@ public class MainActivity extends SherlockListActivity implements OnClickListene
 		if(adapter !=null) {
 			for (item = 0; item < count; item++) {
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
-				data.selected_wifi = flag;
+				if(data.uid != Api.SPECIAL_UID_ANY) {
+					data.selected_wifi = flag;
+				}
 				setDirty(true);
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();

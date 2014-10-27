@@ -23,6 +23,7 @@
 package dev.ukanth.ufirewall;
 
 import android.Manifest;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -34,7 +35,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import dev.ukanth.ufirewall.Log;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled
@@ -104,7 +104,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(ns);
 
-		int icon = R.drawable.question;
+		int icon = R.drawable.notification_quest;
 		
 		final int HELLO_ID = 24556;
 

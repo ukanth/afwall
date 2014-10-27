@@ -1,5 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
+ <PreferenceCategory android:title="@string/exp_prefs_title" >
     <CheckBoxPreference
         android:key="fixLeak"
         android:summary="@string/fixleakSummary"
@@ -12,4 +12,5 @@
         android:key="multiUser"
         android:summary="@string/multi_user_summary"
         android:title="@string/multi_user_title" />
+    </PreferenceCategory>
 </PreferenceScreen>

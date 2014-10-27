@@ -33,11 +33,11 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Locale;
 
-import dev.ukanth.ufirewall.RootShell.RootCommand;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -46,8 +46,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
-import dev.ukanth.ufirewall.Log;
+import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 public final class InterfaceTracker {
 
@@ -241,6 +240,7 @@ public final class InterfaceTracker {
 		return currentCfg;
 	}
 
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private static void errorNotification(Context ctx) {
 		NotificationManager mNotificationManager =
 				(NotificationManager)ctx.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -254,7 +254,7 @@ public final class InterfaceTracker {
 			.setContentTitle(ctx.getString(R.string.error_notification_title))
 			.setContentText(ctx.getString(R.string.error_notification_text))
 			.setTicker(ctx.getString(R.string.error_notification_ticker))
-			.setSmallIcon(R.drawable.warn)
+			.setSmallIcon(R.drawable.notification_warn)
 			.setAutoCancel(true)
 			.setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
 			.build();

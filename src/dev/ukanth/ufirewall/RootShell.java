@@ -379,22 +379,25 @@ public class RootShell extends Service {
 	}
 	
 	private static void showToastUIThread(final String msg) {
-		final Handler handler = new Handler();
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				handler.post(new Runnable() { // This thread runs in the UI
-					@Override
-					public void run() {
-						Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
-					}
-				});
-			}
-		};
-		new Thread(runnable).start();
+		try {
+			final Handler handler = new Handler();
+			Runnable runnable = new Runnable() {
+				@Override
+				public void run() {
+					handler.post(new Runnable() { // This thread runs in the UI
+						@Override
+						public void run() {
+							Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
+						}
+					});
+				}
+			};
+			new Thread(runnable).start();
+		}catch(Exception e) {}
 	}
 	
 	private static void showAlertDialog() {
+		try {
 		final Handler handler = new Handler();
 		Runnable runnable = new Runnable() {
 			@Override
@@ -408,5 +411,6 @@ public class RootShell extends Service {
 			}
 		};
 		new Thread(runnable).start();
+		}catch(Exception e){}
 	}
 }

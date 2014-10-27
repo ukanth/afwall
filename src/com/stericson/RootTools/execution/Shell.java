@@ -28,17 +28,56 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import android.content.Context;
+import android.provider.DocumentsContract;
+import android.util.Log;
+
 import com.stericson.RootTools.RootTools;
 import com.stericson.RootTools.exceptions.RootDeniedException;
 
 public class Shell {
 
+    public static enum ShellType {
+        NORMAL,
+        ROOT,
+        CUSTOM
+    }
+
+    //this is only used with root shells
+    public static enum ShellContext {
+        NORMAL("normal"), //The normal context...
+        SHELL("u:r:shell:s0"), //Unpriviliged shell (such as an adb shell)
+        SYSTEM_SERVER("u:r:system_server:s0"), // system_server, u:r:system:s0 on some firmwares
+        SYSTEM_APP("u:r:system_app:s0"), // System apps
+        PLATFORM_APP("u:r:platform_app:s0"), // System apps
+        UNTRUSTED_APP("u:r:untrusted_app:s0"), // Third-party apps
+        RECOVERY("u:r:recovery:s0"); //Recovery
+
+        private String value;
+
+        private ShellContext(String value)
+        {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return this.value;
+        }
+
+    }
+
     //Statics -- visible to all
-    private static int shellTimeout = 25000;
     private static final String token = "F*D^W@#FGF";
     private static Shell rootShell = null;
     private static Shell shell = null;
     private static Shell customShell = null;
+
+    //the default context for root shells...
+    public static ShellContext defaultContext = ShellContext.NORMAL;
+
+    //per shell
+    private int shellTimeout = 25000;
+    private ShellType shellType = null;
+    private ShellContext shellContext = Shell.ShellContext.NORMAL;
 
     private String error = "";
 
@@ -60,12 +99,26 @@ public class Shell {
     private int totalRead = 0;
     private boolean isCleaning = false;
 
-    //private constructor responsible for opening/constructing the shell
-    private Shell(String cmd) throws IOException, TimeoutException, RootDeniedException {
+    private Shell(String cmd, ShellType shellType, ShellContext shellContext, int shellTimeout) throws IOException, TimeoutException, RootDeniedException {
 
         RootTools.log("Starting shell: " + cmd);
+        RootTools.log("Context: " + shellContext.getValue());
+        RootTools.log("Timeout: " + shellTimeout);
 
-        this.proc = new ProcessBuilder(cmd).redirectErrorStream(true).start();
+        this.shellType = shellType;
+        this.shellTimeout = shellTimeout > 0 ? shellTimeout : this.shellTimeout;
+        this.shellContext = shellContext;
+
+        if(this.shellContext == ShellContext.NORMAL)
+        {
+            this.proc = new ProcessBuilder(cmd).redirectErrorStream(true).start();
+        }
+        else
+        {
+            //only done for root shell...
+            this.proc = new ProcessBuilder(cmd, "--context " + this.shellContext.getValue()).redirectErrorStream(true).start();
+        }
+
         this.in = new BufferedReader(new InputStreamReader(this.proc.getInputStream(), "UTF-8"));
         this.out = new OutputStreamWriter(this.proc.getOutputStream(), "UTF-8");
 
@@ -84,7 +137,7 @@ public class Shell {
              * will tell us if the operation was completed successfully or it the operation
              * failed.
              */
-            worker.join(Shell.shellTimeout);
+            worker.join(this.shellTimeout);
 
             /**
              * The operation could not be completed before the timeout occured.
@@ -162,7 +215,8 @@ public class Shell {
                 new CommandCapture(
                         -1,
                         false,
-                        "cd " + context.getApplicationInfo().dataDir));
+                        "cd " + context.getApplicationInfo().dataDir)
+        );
     }
 
     private void cleanCommands() {
@@ -480,7 +534,7 @@ public class Shell {
     }
 
     public static Shell startRootShell() throws IOException, TimeoutException, RootDeniedException {
-        return Shell.startRootShell(20000, 3);
+        return Shell.startRootShell(0, 3);
     }
 
     public static Shell startRootShell(int timeout) throws IOException, TimeoutException, RootDeniedException {
@@ -488,23 +542,35 @@ public class Shell {
     }
 
     public static Shell startRootShell(int timeout, int retry) throws IOException, TimeoutException, RootDeniedException {
+        return Shell.startRootShell(timeout, Shell.defaultContext, retry);
+    }
 
-        Shell.shellTimeout = timeout;
+    public static Shell startRootShell(int timeout, ShellContext shellContext, int retry) throws IOException, TimeoutException, RootDeniedException {
 
         if (Shell.rootShell == null) {
+
             RootTools.log("Starting Root Shell!");
             String cmd = "su";
             // keep prompting the user until they accept for x amount of times...
             int retries = 0;
             while (Shell.rootShell == null) {
                 try {
-                    Shell.rootShell = new Shell(cmd);
+                    Shell.rootShell = new Shell(cmd, ShellType.ROOT, shellContext, timeout);
                 } catch (IOException e) {
                     if (retries++ >= retry) {
                         RootTools.log("IOException, could not start shell");
                         throw e;
                     }
                 }
+            }
+        }
+        else if (Shell.rootShell.shellContext != shellContext) {
+            try {
+                RootTools.log("Context is different than open shell, switching context...");
+                Shell.rootShell.switchRootShellContext(shellContext);
+            } catch (IOException e) {
+                RootTools.log("Context could not be switched for existing root shell...");
+                throw e;
             }
         } else {
             RootTools.log("Using Existing Root Shell!");
@@ -514,15 +580,14 @@ public class Shell {
     }
 
     public static Shell startCustomShell(String shellPath) throws IOException, TimeoutException, RootDeniedException {
-        return Shell.startCustomShell(shellPath, 20000);
+        return Shell.startCustomShell(shellPath, 0);
     }
 
     public static Shell startCustomShell(String shellPath, int timeout) throws IOException, TimeoutException, RootDeniedException {
-        Shell.shellTimeout = timeout;
 
         if (Shell.customShell == null) {
             RootTools.log("Starting Custom Shell!");
-            Shell.customShell = new Shell(shellPath);
+            Shell.customShell = new Shell(shellPath, ShellType.CUSTOM, ShellContext.NORMAL, timeout);
         } else
             RootTools.log("Using Existing Custom Shell!");
 
@@ -530,22 +595,41 @@ public class Shell {
     }
 
     public static Shell startShell() throws IOException, TimeoutException {
-        return Shell.startShell(20000);
+        return Shell.startShell(0);
     }
 
     public static Shell startShell(int timeout) throws IOException, TimeoutException {
-        Shell.shellTimeout = timeout;
 
         try {
             if (Shell.shell == null) {
                 RootTools.log("Starting Shell!");
-                Shell.shell = new Shell("/system/bin/sh");
+                Shell.shell = new Shell("/system/bin/sh", ShellType.NORMAL, ShellContext.NORMAL, timeout);
             } else
                 RootTools.log("Using Existing Shell!");
             return Shell.shell;
         } catch (RootDeniedException e) {
             //Root Denied should never be thrown.
             throw new IOException();
+        }
+    }
+
+    public Shell switchRootShellContext(ShellContext shellContext) throws IOException, TimeoutException, RootDeniedException {
+        if(this.shellType == ShellType.ROOT)
+        {
+            try {
+                Shell.closeRootShell();
+            } catch(Exception e) {
+                RootTools.log("Problem closing shell while trying to switch context...");
+            }
+
+            //create new root shell with new context...
+            return Shell.startRootShell(this.shellTimeout, shellContext, 3);
+        }
+        else
+        {
+            //can only switch context on a root shell...
+            RootTools.log("Can only switch context on a root shell!");
+            return this;
         }
     }
 

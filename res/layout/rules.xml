@@ -8,8 +8,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="?actionBarSize"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="?android:attr/actionBarSize">
         <TextView
             android:id="@+id/rules"
             android:layout_width="fill_parent"

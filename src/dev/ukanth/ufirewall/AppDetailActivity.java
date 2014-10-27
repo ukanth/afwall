@@ -2,22 +2,21 @@ package dev.ukanth.ufirewall;
 
 import java.util.Arrays;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.TrafficStats;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
-public class AppDetailActivity extends SherlockActivity {
+public class AppDetailActivity extends Activity {
 	public static final String TAG = "AFWall";
 	private static String packageName = "";
 	
@@ -27,6 +26,10 @@ public class AppDetailActivity extends SherlockActivity {
 		setTitle(getString(R.string.traffic_detail_title));
         setContentView(R.layout.app_detail);
         
+        
+    	getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
         final Context ctx = getApplicationContext();
         
         ImageView image = (ImageView) findViewById(R.id.app_icon);
@@ -100,5 +103,15 @@ public class AppDetailActivity extends SherlockActivity {
 	    int exp = (int) (Math.log(bytes) / Math.log(unit));
 	    String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
 	    return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

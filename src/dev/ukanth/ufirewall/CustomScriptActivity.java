@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -59,6 +60,18 @@ public class CustomScriptActivity extends Activity implements OnClickListener {
 		this.script2.setText(prefs.getString(Api.PREF_CUSTOMSCRIPT2, ""));
 		setTitle(R.string.set_custom_script);
 		setContentView(view);
+		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			onBackPressed();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 	
 	/**

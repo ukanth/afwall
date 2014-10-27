@@ -395,9 +395,25 @@ public final class RootToolsInternalMethods {
      * @return a boolean that will indicate whether or not the file exists.
      */
     public boolean exists(final String file) {
+        return exists(file, false);
+    }
+
+    /**
+     * Use this to check whether or not a file OR directory exists on the filesystem.
+     *
+     * @param file String that represent the file OR the directory, including the full path to the
+     *             file and its name.
+     *
+     * @param isDir boolean that represent whether or not we are looking for a directory
+     *
+     * @return a boolean that will indicate whether or not the file exists.
+     */
+    public boolean exists(final String file, boolean isDir) {
         final List<String> result = new ArrayList<String>();
 
-        CommandCapture command = new CommandCapture(0, false, "ls " + file) {
+        String cmdToExecute = "ls " + (isDir ? "-d " : " ");
+
+        CommandCapture command = new CommandCapture(0, false, cmdToExecute + file) {
             @Override
             public void output(int arg0, String arg1) {
                 RootTools.log(arg1);
@@ -406,16 +422,10 @@ public final class RootToolsInternalMethods {
         };
 
         try {
-            //Try not to open a new shell if one is open.
-            if (!Shell.isAnyShellOpen()) {
-                Shell.startShell().add(command);
-                commandWait(Shell.startShell(), command);
+            //Try without root...
+            Shell.startShell().add(command);
+            commandWait(Shell.startShell(), command);
 
-            }
-            else {
-                Shell.getOpenShell().add(command);
-                commandWait(Shell.getOpenShell(), command);
-            }
         } catch (Exception e) {
             return false;
         }
@@ -428,10 +438,10 @@ public final class RootToolsInternalMethods {
 
         try {
             RootTools.closeShell(false);
-        } catch (Exception e) {
-        }
+        } catch (Exception e) {}
 
         result.clear();
+
         try {
             Shell.startRootShell().add(command);
             commandWait(Shell.startRootShell(), command);
@@ -637,9 +647,17 @@ public final class RootToolsInternalMethods {
                 }
             }
         };
-        Shell.startRootShell().add(command);
-        commandWait(Shell.startRootShell(), command);
 
+        //try without root first...
+        Shell.startShell().add(command);
+        commandWait(Shell.startShell(), command);
+
+        if(results.size() <= 0) {
+            //try with root...
+            Shell.startRootShell().add(command);
+            commandWait(Shell.startRootShell(), command);
+        }
+        
         return results;
     }
 

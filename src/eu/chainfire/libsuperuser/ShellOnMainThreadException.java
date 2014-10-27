@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Jorrit "Chainfire" Jongma
+ * Copyright (C) 2012-2014 Jorrit "Chainfire" Jongma
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ package eu.chainfire.libsuperuser;
  */
 @SuppressWarnings("serial")
 public class ShellOnMainThreadException extends RuntimeException {
-	public static final String EXCEPTION_COMMAND = "Application attempted to run a shell command from the main thread";
-	public static final String EXCEPTION_NOT_IDLE = "Application attempted to wait for a non-idle shell to close on the main thread";
-	public static final String EXCEPTION_WAIT_IDLE = "Application attempted to wait for a shell to become idle on the main thread";
-	
-	public ShellOnMainThreadException(String message) {
-		super(message);
-	}
+    public static final String EXCEPTION_COMMAND = "Application attempted to run a shell command from the main thread";
+    public static final String EXCEPTION_NOT_IDLE = "Application attempted to wait for a non-idle shell to close on the main thread";
+    public static final String EXCEPTION_WAIT_IDLE = "Application attempted to wait for a shell to become idle on the main thread";
+
+    public ShellOnMainThreadException(String message) {
+        super(message);
+    }
 }

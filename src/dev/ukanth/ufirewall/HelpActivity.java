@@ -1,42 +1,54 @@
 package dev.ukanth.ufirewall;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
+import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.ActionBar.Tab;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuItem;
-
-import dev.ukanth.ufirewall.ui.about.AboutFragment;
-import dev.ukanth.ufirewall.ui.about.FAQFragment;
-
-public class HelpActivity extends SherlockFragmentActivity implements com.actionbarsherlock.app.ActionBar.TabListener{
+public class HelpActivity extends FragmentActivity implements  ActionBar.TabListener{
 
 	private static final String BUNDLE_KEY_TABINDEX = "tabindex";
-	
+
+    private ViewPager viewPager;
+    private TabsPagerAdapter mAdapter;
+    private ActionBar actionBar;
+    
 	private int count = 0;
 	@Override
     public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             
+            String[] tabs = { getString(R.string.About), getString(R.string.FAQ) };
+            
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+
             setContentView(R.layout.help_about);
-
-            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             
+            // Initilization
+            viewPager = (ViewPager) findViewById(R.id.pager);
+            actionBar = getActionBar();
+            mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+     
+            viewPager.setAdapter(mAdapter);
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
             
-            ActionBar.Tab tab1 = getSupportActionBar().newTab();
-            tab1.setText("About");
-            tab1.setTabListener(this);
+            // Adding Tabs
+            for (String tab_name : tabs) {
+                actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
+            }
             
-            ActionBar.Tab tab3 = getSupportActionBar().newTab();
-            tab3.setText("FAQ");
-            tab3.setTabListener(this);
-
-            getSupportActionBar().addTab(tab1);
-            getSupportActionBar().addTab(tab3);
+            viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    actionBar.setSelectedNavigationItem(position);
+                }
+            });
+     
             
             
     }
@@ -44,14 +56,14 @@ public class HelpActivity extends SherlockFragmentActivity implements com.action
 	 @Override
      public void onSaveInstanceState(Bundle savedInstanceState) {
              super.onSaveInstanceState(savedInstanceState);
-             savedInstanceState.putInt(BUNDLE_KEY_TABINDEX, getSupportActionBar()
+             savedInstanceState.putInt(BUNDLE_KEY_TABINDEX, getActionBar()
                              .getSelectedTab().getPosition());
      }
 
      @Override
      public void onRestoreInstanceState(Bundle savedInstanceState) {
              super.onRestoreInstanceState(savedInstanceState);
-             getSupportActionBar().setSelectedNavigationItem(
+             getActionBar().setSelectedNavigationItem(
                              savedInstanceState.getInt(BUNDLE_KEY_TABINDEX));
      }
 
@@ -74,22 +86,12 @@ public class HelpActivity extends SherlockFragmentActivity implements com.action
 
      @Override
      public void onTabSelected(Tab tab, FragmentTransaction transaction) {
-    	 switch(tab.getPosition()) {
-    	 case 0:
-    		 AboutFragment fragment = new AboutFragment();
-             transaction.replace(android.R.id.content, fragment);
-    		 break;
-    	 case 1:
-    		 FAQFragment changelogFragment = new FAQFragment();
-             transaction.replace(android.R.id.content, changelogFragment);
-    		 break;
-    	 }
-             
+    	 viewPager.setCurrentItem(tab.getPosition());
      }
 
      @Override
      public void onTabUnselected(Tab tab, FragmentTransaction transaction) {
-             Log.i("Tab Unselected", tab.getText().toString());
+         Log.i("Tab Unselected", tab.getText().toString());
      }
      
      

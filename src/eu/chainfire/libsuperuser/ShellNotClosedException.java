@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Jorrit "Chainfire" Jongma
+ * Copyright (C) 2012-2014 Jorrit "Chainfire" Jongma
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ package eu.chainfire.libsuperuser;
  */
 @SuppressWarnings("serial")
 public class ShellNotClosedException extends RuntimeException {
-	public static final String EXCEPTION_NOT_CLOSED = "Application did not close() interactive shell";
+    public static final String EXCEPTION_NOT_CLOSED = "Application did not close() interactive shell";
 
-	public ShellNotClosedException() {
-		super(EXCEPTION_NOT_CLOSED);
-	}
+    public ShellNotClosedException() {
+        super(EXCEPTION_NOT_CLOSED);
+    }
 }

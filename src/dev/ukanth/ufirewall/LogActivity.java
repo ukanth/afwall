@@ -24,11 +24,9 @@ package dev.ukanth.ufirewall;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.log.LogInfo;
 
@@ -38,9 +36,11 @@ public class LogActivity extends DataDumpActivity {
 	protected static final int MENU_TOGGLE_LOG = 27;
 
 	@Override
-    protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(getString(R.string.showlog_title));
+		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		sdDumpFile = "iptables.log";
 	}
 
@@ -52,26 +52,24 @@ public class LogActivity extends DataDumpActivity {
 			setData(cooked);
 		}
 	}
-
+	
 	protected void populateData(final Context ctx) {
 		if (G.logTarget().equals("NFLOG")) {
 			parseAndSet(ctx, NflogService.fetchLogs());
 			return;
 		}
-		
-		boolean enabled = Api.fetchLogs(ctx, new RootCommand()
-			.setLogging(true)
-			.setReopenShell(true)
-			.setFailureToast(R.string.log_fetch_error)
-			.setCallback(new RootCommand.Callback() {
-				public void cbFunc(RootCommand state) {
-					if (state.exitCode != 0) {
-						setData(getString(R.string.log_fetch_error));
-					} else {
-						parseAndSet(ctx, state.res.toString());
+
+		boolean enabled = Api.fetchLogs(ctx, new RootCommand().setLogging(true)
+				.setReopenShell(true).setFailureToast(R.string.log_fetch_error)
+				.setCallback(new RootCommand.Callback() {
+					public void cbFunc(RootCommand state) {
+						if (state.exitCode != 0) {
+							setData(getString(R.string.log_fetch_error));
+						} else {
+							parseAndSet(ctx, state.res.toString());
+						}
 					}
-				}
-			}));
+				}));
 
 		if (!enabled) {
 			setData(getString(R.string.log_disabled));
@@ -79,61 +77,46 @@ public class LogActivity extends DataDumpActivity {
 	}
 
 	protected void populateMenu(SubMenu sub) {
-		sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
+		sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(
+				R.drawable.clearlog);
 	}
 
-    @Override
+	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-    	final Context ctx = this;
+		final Context ctx = this;
 
-    	switch (item.getItemId()) {
-    	/*case MENU_TOGGLE_LOG:
-    		boolean logenabled = !G.enableFirewallLog();
-    		G.enableFirewallLog(logenabled);
-
-    		setupLogMenuItem(mainMenu, logenabled);
-    		Api.updateLogRules(ctx, new RootCommand()
-				.setReopenShell(true)
-				.setSuccessToast(logenabled ? R.string.log_was_enabled : R.string.log_was_disabled)
-				.setFailureToast(R.string.log_toggle_failed));
-			return true;*/
-    	case MENU_CLEARLOG:
-    		if (G.logTarget().equals("NFLOG")) {
-    			NflogService.clearLog();
-    			populateData(ctx);
-    			return true;
-    		}
-    		Api.clearLog(ctx, new RootCommand()
-				.setReopenShell(true)
-				.setSuccessToast(R.string.log_cleared)
-				.setFailureToast(R.string.log_clear_error)
-				.setCallback(new RootCommand.Callback() {
-					public void cbFunc(RootCommand state) {
-						populateData(ctx);
-					}
-				}));
+		switch (item.getItemId()) {
+		
+		case android.R.id.home: {
+			onBackPressed();
 			return true;
-    	}
-    	return super.onMenuItemSelected(featureId, item);
-    }
-
-	/*private void setupLogMenuItem(Menu menu, boolean isEnabled) {
-		if (menu == null) return;
-		MenuItem item_onoff = menu.findItem(MENU_TOGGLE_LOG);
-		if (item_onoff == null) return;
-
-		if (isEnabled) {
-			item_onoff.setTitle(R.string.disable_log);
-			item_onoff.setIcon(R.drawable.disable_log);
-		} else {
-			item_onoff.setTitle(R.string.enable_log);
-			item_onoff.setIcon(R.drawable.enable_log);
 		}
-	}*/
+		case MENU_CLEARLOG:
+			if (G.logTarget().equals("NFLOG")) {
+				NflogService.clearLog();
+				populateData(ctx);
+				return true;
+			}
+			Api.clearLog(
+					ctx,
+					new RootCommand().setReopenShell(true)
+							.setSuccessToast(R.string.log_cleared)
+							.setFailureToast(R.string.log_clear_error)
+							.setCallback(new RootCommand.Callback() {
+								public void cbFunc(RootCommand state) {
+									populateData(ctx);
+								}
+							}));
+			return true;
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		//setupLogMenuItem(menu, G.enableFirewallLog());
+		// setupLogMenuItem(menu, G.enableFirewallLog());
 		return super.onPrepareOptionsMenu(menu);
 	}
+
+	
 }

@@ -29,24 +29,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
-import com.actionbarsherlock.view.Window;
 
-public abstract class DataDumpActivity extends SherlockActivity {
+public abstract class DataDumpActivity extends Activity {
 
 	public static final String TAG = "AFWall";
 
@@ -69,15 +66,10 @@ public abstract class DataDumpActivity extends SherlockActivity {
 
 	protected abstract void populateData(final Context ctx);
 
-	protected void setData(final String data) {
+	protected void setData(String data) {
 		this.dataText = data;
 		scaleGesture = (TextView) findViewById(R.id.rules);
-		runOnUiThread(new Runnable() {
-		     @Override
-		     public void run() {
-		    	 scaleGesture.setText(data);
-		    }
-		});
+		scaleGesture.setText(data);
 	}
 
 	
@@ -89,9 +81,10 @@ public abstract class DataDumpActivity extends SherlockActivity {
 		setContentView(R.layout.rules);
 
 		// Load partially transparent black background
-		getSupportActionBar().setBackgroundDrawable(
+		getActionBar().setBackgroundDrawable(
 				getResources().getDrawable(R.drawable.ab_bg_black));
-		
+		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		//TextView text = (TextView) findViewById(R.id.rules);
 		//text.setKeyListener(null);
 		//text.setHorizontallyScrolling(true);
@@ -101,11 +94,11 @@ public abstract class DataDumpActivity extends SherlockActivity {
 
 		Api.updateLanguage(getApplicationContext(), G.locale());
 	}
-
+	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(android.view.Menu menu) {
 		// Common options: Copy, Export to SD Card, Refresh
-		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.abs__ic_menu_moreoverflow_normal_holo_dark);
+		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.ic_core_overflow);
 		sub.add(0, MENU_ZOOM_IN, 0, "+").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		sub.add(0, MENU_ZOOM_OUT, 0, "-").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.copy);

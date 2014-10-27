@@ -39,5 +39,4 @@
         android:dividerHeight="0.1px"
         android:fastScrollEnabled="true" >
     </ListView>
-
 </LinearLayout>

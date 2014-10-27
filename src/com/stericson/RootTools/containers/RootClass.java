@@ -131,7 +131,13 @@ public class RootClass /* #ANNOTATIONS extends AbstractProcessor */ {
                 try {
                     jarBuilder.start().waitFor();
                 } catch (IOException e) {} catch (InterruptedException e) {}
-
+                
+                File rawFolder = new File("res/raw");
+                if (!rawFolder.exists()) {
+                	rawFolder.mkdirs();
+                }
+                
+                
                 System.out.println("Done building jar file. Creating dex file.");
                 if(onWindows) {
                     cmd = new String[] {
@@ -229,8 +235,23 @@ public class RootClass /* #ANNOTATIONS extends AbstractProcessor */ {
             File[] files = new File(androidHome + File.separator + "build-tools").listFiles();
             int recentSdkVersion = 0;
             for(File file:files) {
-                int sdkVersion;
-                String[] sdkVersionBits = file.getName().split("[.]");
+                
+            	String fileName = null;
+            	if (file.getName().contains("-")) {
+            		String[] splitFileName = file.getName().split("-");
+            		if (splitFileName[1].contains("W")) {
+            			char[] fileNameChars = splitFileName[1].toCharArray();
+            			fileName = String.valueOf(fileNameChars[0]);
+            		} else {
+            			fileName = splitFileName[1];
+            		}
+            	} else {
+            		fileName = file.getName();
+            	}
+            	
+            	int sdkVersion;
+                
+                String[] sdkVersionBits = fileName.split("[.]");
                 sdkVersion = Integer.parseInt(sdkVersionBits[0]) * 10000;
                 if(sdkVersionBits.length > 1) {
                     sdkVersion += Integer.parseInt(sdkVersionBits[1]) * 100;

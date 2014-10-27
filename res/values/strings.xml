@@ -338,4 +338,7 @@
     
     <string name="active">Firewall is running</string>
     <string name="inactive">Firewall is disabled</string>
+    
+    <string name="About">About</string>
+    <string name="FAQ">FAQ</string>
 </resources>
