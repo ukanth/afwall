@@ -214,11 +214,7 @@ public class RootShell extends Service {
 		if (exitCode == 0 && state.successToast != NO_TOAST) {
 			showToastUIThread(mContext.getString(state.successToast));
 		} else if (exitCode != 0 && state.failureToast != NO_TOAST) {
-			if (state.isStartCheck()) {
-				showAlertDialog();
-			} else {
-				showToastUIThread(mContext.getString(state.failureToast));
-			}
+			showToastUIThread(mContext.getString(state.failureToast));
 		}
 	}
 
@@ -394,23 +390,5 @@ public class RootShell extends Service {
 			};
 			new Thread(runnable).start();
 		}catch(Exception e) {}
-	}
-	
-	private static void showAlertDialog() {
-		try {
-		final Handler handler = new Handler();
-		Runnable runnable = new Runnable() {
-			@Override
-			public void run() {
-				handler.post(new Runnable() { // This thread runs in the UI
-					@Override
-					public void run() {
-						Api.showAlertDialogActivity(mContext,mContext.getString(R.string.error_common),mContext.getString(R.string.error_su));
-					}
-				});
-			}
-		};
-		new Thread(runnable).start();
-		}catch(Exception e){}
 	}
 }

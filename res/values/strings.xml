@@ -341,4 +341,7 @@
     
     <string name="About">About</string>
     <string name="FAQ">FAQ</string>
+    
+    <string name="su_check_title">Status</string>
+    <string name="su_check_message">Checking root access</string>
 </resources>

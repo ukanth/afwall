@@ -79,6 +79,7 @@ import com.haibison.android.lockpattern.util.Settings;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
+import eu.chainfire.libsuperuser.Shell;
 
 public class MainActivity extends ListActivity implements OnClickListener,
 					ActionBar.OnNavigationListener,OnCheckedChangeListener  {
@@ -141,11 +142,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			
 			isOnPause = false;
 			
-			if (getIntent().getBooleanExtra("EXIT", false)) {
-			    this.finish();
-			    android.os.Process.killProcess(android.os.Process.myPid());
-			}
-
 			try {
 				/* enable hardware acceleration on Android >= 3.0 */
 				final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -171,10 +167,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	       
 		    Api.assertBinaries(this, true);
 		   
-			plsWait = new ProgressDialog(this);
-	        plsWait.setCancelable(false);
-	        
 	        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
+	        // Let's do some background stuff
+	        (new Startup()).setContext(this).execute();
 	}
 
 	private void updateRadioFilter() {
@@ -213,7 +208,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
 		new RootCommand().setFailureToast(R.string.error_su)
-			.setReopenShell(true).setStartCheck(true).run(getApplicationContext(), cmds);
+			.setReopenShell(true).run(getApplicationContext(), cmds);
 		//put up the notification
 		if(G.activeNotification()){ 
 			Api.showNotification(Api.isEnabled(getApplicationContext()),getApplicationContext());
@@ -279,7 +274,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		
 		// to improve responsiveness, try to open a root shell in the background on launch
 		// (if this fails we'll try again later)
-		startRootShell();
+		
 		
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
@@ -291,10 +286,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(Api.NOTIFICATION_ID);
-		
-		if(passCheck()){
-	    	showOrLoadApplications();
-	    }
 		
 		if(checkForProfile) {
 			setupMultiProfile(true);
@@ -519,7 +510,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				}
 			}).show();
 				
-		}
+		}  
 		
 	}
 
@@ -529,7 +520,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	 */
 	private void showOrLoadApplications() {
 		//nocache!!
-		new GetAppList().execute();	
+		(new GetAppList()).setContext(this).execute();	
 	}
 	
 
@@ -537,11 +528,19 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 		boolean ready = false;
 		boolean started = false;
+		Context context = null;
 		Activity mContext = null;
-		AsyncTask<Void,Integer,Void> myAsyncTaskInstance = null; 
+		AsyncTask<Void,Integer,Void> myAsyncTaskInstance = null;
+		
+		public GetAppList setContext(Context context) {
+	        this.context = context;
+	        return this;
+	    }
 
 		@Override
 		protected void onPreExecute() {
+			plsWait = new ProgressDialog(context);
+		    plsWait.setCancelable(false);
 			publishProgress(0);
 		}
 
@@ -598,7 +597,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		@Override
 		protected void onPostExecute(Void result) {
 			selectFilterGroup();
-			
 			publishProgress(-1);
 			try {
 				started = false; 
@@ -1796,7 +1794,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		switch (checkedId) {
 			case R.id.rpkg_all:
-				
 				showOrLoadApplications();
 				break;
 			case R.id.rpkg_core:
@@ -1810,5 +1807,64 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				break;
 			}
 	}
+	
+	private class Startup extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog dialog = null;
+        private Context context = null;
+        private boolean suAvailable = false;
+
+        public Startup setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // We're creating a progress dialog here because we want the user to wait.
+            // If in your app your user can just continue on with clicking other things,
+            // don't do the dialog thing.
+            dialog = new ProgressDialog(context);
+            dialog.setTitle(context.getString(R.string.su_check_title));
+            dialog.setMessage(context.getString(R.string.su_check_message));
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Let's do some SU stuff
+        	suAvailable = Shell.SU.available();
+            if (suAvailable) {
+            	startRootShell();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+        	dialog.dismiss();
+        	if(!suAvailable) {
+        		AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        		alertDialog.setTitle(context.getString(R.string.error_common));
+        		alertDialog.setMessage(context.getString(R.string.error_su));
+        		alertDialog.setIcon(R.drawable.ic_launcher_free);
+        		alertDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+        			public void onClick(DialogInterface dialog,int which) {
+        				MainActivity.this.finish();
+        			    android.os.Process.killProcess(android.os.Process.myPid());
+        			}
+        		});
+                alertDialog.setCancelable(false);
+        		alertDialog.show();
+        		 
+        	} else {
+        		if(passCheck()){
+           	    	showOrLoadApplications();
+           	    }	
+        	}
+        }		
+    }
+	
 }
 

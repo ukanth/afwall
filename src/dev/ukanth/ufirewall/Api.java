@@ -63,7 +63,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -645,31 +644,6 @@ public final class Api {
 		}
 	}
 
-	@Deprecated
-	private static List<Integer> getUidListFromPref(Context ctx,final String pks) {
-		initSpecial();
-		final PackageManager pm = ctx.getPackageManager();
-		final List<Integer> uids = new ArrayList<Integer>();
-		final StringTokenizer tok = new StringTokenizer(pks, "|");
-		while (tok.hasMoreTokens()) {
-			final String pkg = tok.nextToken();
-			if (pkg != null && pkg.length() > 0) {
-				try {
-					if (pkg.startsWith("dev.afwall.special")) {
-						uids.add(specialApps.get(pkg));
-					} else {
-						uids.add(pm.getApplicationInfo(pkg, 0).uid);
-					}
-				} catch (Exception ex) {
-				}
-			}
-
-		}
-
-		Collections.sort(uids);	
-		return uids;
-	}
-	
 
     /**
      * Purge and re-add all saved rules (not in-memory ones).
@@ -2292,13 +2266,13 @@ public final class Api {
 	    context.startActivity(intent);
 	}
 	
-	public static void showAlertDialogActivity(Context ctx,String title, String message) {
+	/*public static void showAlertDialogActivity(Context ctx,String title, String message) {
 		Intent dialog = new Intent(ctx,AlertDialogActivity.class);
 		dialog.putExtra("title", title);
 		dialog.putExtra("message", message);
 		dialog.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		ctx.startActivity(dialog);
-	}
+	}*/
 	
 	public static boolean isNetfilterSupported() {
         if ((new File("/proc/config.gz")).exists() == false) {
