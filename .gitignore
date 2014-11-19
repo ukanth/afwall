@@ -27,3 +27,6 @@ local.properties
 # native binaries
 libs/
 obj/
+
+aFWall/build/
+androidlockpattern2/build/
