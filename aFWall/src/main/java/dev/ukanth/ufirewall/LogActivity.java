@@ -24,9 +24,9 @@ package dev.ukanth.ufirewall;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.log.LogInfo;
 

@@ -23,11 +23,6 @@
 
 package dev.ukanth.ufirewall;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -40,9 +35,13 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 public abstract class DataDumpActivity extends Activity {
@@ -70,7 +69,6 @@ public abstract class DataDumpActivity extends Activity {
 
 	protected void setData(final String data) {
 		this.dataText = data;
-
         Handler refresh = new Handler(Looper.getMainLooper());
         refresh.post(new Runnable() {
             public void run()
@@ -87,7 +85,7 @@ public abstract class DataDumpActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+		//requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.rules);
 

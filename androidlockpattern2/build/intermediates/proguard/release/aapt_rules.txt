@@ -1,6 +1,0 @@
-# view res/layout/alp_42447968_lock_pattern_view.xml #generated:18
--keep class com.haibison.android.lockpattern.widget.LockPatternView { <init>(...); }
-
-# view v14/res/layout-v14/alp_42447968_lock_pattern_view.xml #generated:18
--keep class com.haibison.android.lockpattern.widget.LockPatternView_v14 { <init>(...); }
-
