@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/home/ukanth/AndroidstudioProjects/afwall/androidlockpattern2/src/main/res/values-land/layouts.xml -->
+    <eat-comment />
+
+    <item name="alp_42447968_lock_pattern_activity" type="layout">@layout/alp_42447968_lock_pattern_activity_land</item>
+
+</resources>

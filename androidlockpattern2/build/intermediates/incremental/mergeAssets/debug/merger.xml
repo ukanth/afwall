@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="main" >
+        <source path="/home/ukanth/AndroidstudioProjects/afwall/androidlockpattern2/src/main/assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/home/ukanth/AndroidstudioProjects/afwall/androidlockpattern2/src/debug/assets" />
+    </dataSet>
+
+</merger>

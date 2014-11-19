@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/home/ukanth/AndroidstudioProjects/afwall/androidlockpattern2/src/main/res/values-v14/styles.xml -->
+    <eat-comment />
+
+    <style name="Alp.42447968.BaseTheme.Dark" parent="@android:style/Theme.DeviceDefault" />
+
+    <style name="Alp.42447968.BaseTheme.Dialog.Dark" parent="@android:style/Theme.DeviceDefault.Dialog" />
+
+    <style name="Alp.42447968.BaseTheme.Dialog.Light" parent="@android:style/Theme.DeviceDefault.Light.Dialog" />
+
+    <style name="Alp.42447968.BaseTheme.Light" parent="@android:style/Theme.DeviceDefault.Light" />
+
+    <style name="Alp.42447968.BaseTheme.Light.DarkActionBar" parent="@android:style/Theme.DeviceDefault.Light.DarkActionBar" />
+
+</resources>

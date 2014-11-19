@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/home/ukanth/AndroidstudioProjects/afwall/androidlockpattern2/src/main/res/values-es/strings.xml -->
+    <eat-comment />
+
+    <plurals name="alp_42447968_pmsg_connect_x_dots">
+        <item quantity="one">Conecta al menos %1$d punto.\nIntentalo de nuevo…</item>
+        <item quantity="other">Conecta al menos %1$d puntos.\nIntentalo de nuevo…</item>
+    </plurals>
+
+    <string name="alp_42447968_cmd_confirm">Confirmar</string>
+    <string name="alp_42447968_cmd_continue">Continuar</string>
+    <string name="alp_42447968_cmd_forgot_pattern">¿Has olvidado el patrón?</string>
+    <string name="alp_42447968_cmd_retry">Reintentar</string>
+    <string name="alp_42447968_loading">Cargando…</string>
+    <string name="alp_42447968_lockscreen_access_pattern_cell_added">Celda añadida</string>
+    <string name="alp_42447968_lockscreen_access_pattern_cleared">Patrón limpiado</string>
+    <string name="alp_42447968_lockscreen_access_pattern_detected">Patrón completado</string>
+    <string name="alp_42447968_lockscreen_access_pattern_start">Patrón empezado</string>
+    <string name="alp_42447968_msg_connect_4dots">Conecta al menos 4 puntos.\nIntentalo de nuevo…</string>
+    <string name="alp_42447968_msg_draw_an_unlock_pattern">Dibuja un patrón de desbloqueo:</string>
+    <string name="alp_42447968_msg_draw_pattern_to_unlock">Dibuja el patrón de desbloqueo:</string>
+    <string name="alp_42447968_msg_pattern_recorded">Patrón guardado!</string>
+    <string name="alp_42447968_msg_redraw_pattern_to_confirm">Dibujar de nuevo para confirmar:</string>
+    <string name="alp_42447968_msg_release_finger_when_done">Levanta el dedo cuando termines</string>
+    <string name="alp_42447968_msg_try_again">Lo siento, intentalo de nuevo</string>
+    <string name="alp_42447968_msg_your_new_unlock_pattern">Nuevo patrón de desbloqueo:</string>
+
+</resources>

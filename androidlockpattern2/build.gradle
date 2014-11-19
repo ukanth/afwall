@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+android {
+    compileSdkVersion 19
+    buildToolsVersion '21.0.2'
+    defaultConfig {
+        applicationId 'com.haibison.android.lockpattern'
+        minSdkVersion 4
+        targetSdkVersion 4
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles 'proguard.cfg'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+}

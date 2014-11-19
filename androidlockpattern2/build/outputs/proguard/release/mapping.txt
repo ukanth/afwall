@@ -1,0 +1,254 @@
+com.haibison.android.lockpattern.LockPatternActivity -> com.haibison.android.lockpattern.LockPatternActivity:
+    java.lang.String CLASSNAME -> k
+    java.lang.String ACTION_CREATE_PATTERN -> a
+    java.lang.String ACTION_COMPARE_PATTERN -> b
+    java.lang.String ACTION_VERIFY_CAPTCHA -> c
+    java.lang.String EXTRA_RETRY_COUNT -> d
+    java.lang.String EXTRA_THEME -> e
+    java.lang.String EXTRA_PATTERN -> f
+    java.lang.String EXTRA_RESULT_RECEIVER -> g
+    java.lang.String EXTRA_PENDING_INTENT_OK -> h
+    java.lang.String EXTRA_PENDING_INTENT_CANCELLED -> i
+    java.lang.String EXTRA_INTENT_ACTIVITY_FORGOT_PATTERN -> j
+    int mMaxRetries -> l
+    int mMinWiredDots -> m
+    int mRetryCount -> n
+    int mCaptchaWiredDots -> o
+    boolean mAutoSave -> p
+    boolean mStealthMode -> q
+    com.haibison.android.lockpattern.util.IEncrypter mEncrypter -> r
+    int mBtnOkCmd$125e2c4e -> s
+    android.content.Intent mIntentResult -> t
+    android.widget.TextView mTextInfo -> u
+    com.haibison.android.lockpattern.widget.LockPatternView mLockPatternView -> v
+    android.view.View mFooter -> w
+    android.widget.Button mBtnCancel -> x
+    android.widget.Button mBtnConfirm -> y
+    com.haibison.android.lockpattern.widget.LockPatternView$OnPatternListener mLockPatternViewListener -> z
+    android.view.View$OnClickListener mBtnCancelOnClickListener -> A
+    android.view.View$OnClickListener mBtnConfirmOnClickListener -> B
+    java.lang.Runnable mLockPatternViewReloader -> C
+    void onCreate(android.os.Bundle) -> onCreate
+    void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
+    boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    void initContentView() -> a
+    void finishWithNegativeResult(int) -> a
+    com.haibison.android.lockpattern.util.IEncrypter access$000(com.haibison.android.lockpattern.LockPatternActivity) -> a
+    void access$100(com.haibison.android.lockpattern.LockPatternActivity,char[]) -> a
+    int access$208(com.haibison.android.lockpattern.LockPatternActivity) -> b
+    int access$200(com.haibison.android.lockpattern.LockPatternActivity) -> c
+    android.content.Intent access$300(com.haibison.android.lockpattern.LockPatternActivity) -> d
+    int access$400(com.haibison.android.lockpattern.LockPatternActivity) -> e
+    void access$500(com.haibison.android.lockpattern.LockPatternActivity,int) -> a
+    com.haibison.android.lockpattern.widget.LockPatternView access$600(com.haibison.android.lockpattern.LockPatternActivity) -> f
+    android.widget.TextView access$700(com.haibison.android.lockpattern.LockPatternActivity) -> g
+    java.lang.Runnable access$800(com.haibison.android.lockpattern.LockPatternActivity) -> h
+    android.widget.Button access$900(com.haibison.android.lockpattern.LockPatternActivity) -> i
+    int access$1000$2286baf8(com.haibison.android.lockpattern.LockPatternActivity) -> j
+    void access$1100(com.haibison.android.lockpattern.LockPatternActivity,java.util.List) -> a
+    void access$1200(com.haibison.android.lockpattern.LockPatternActivity,java.util.List) -> b
+    int access$1002$41e28756(com.haibison.android.lockpattern.LockPatternActivity,int) -> b
+    boolean access$1300(com.haibison.android.lockpattern.LockPatternActivity) -> k
+    com.haibison.android.lockpattern.widget.LockPatternView$OnPatternListener access$1400(com.haibison.android.lockpattern.LockPatternActivity) -> l
+com.haibison.android.lockpattern.LockPatternActivity$1 -> com.haibison.android.lockpattern.a:
+    java.util.List val$pattern -> a
+    com.haibison.android.lockpattern.LockPatternActivity this$0 -> b
+    void onPostExecute(java.lang.Object) -> onPostExecute
+    java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
+com.haibison.android.lockpattern.LockPatternActivity$2 -> com.haibison.android.lockpattern.b:
+    java.util.List val$pattern -> a
+    com.haibison.android.lockpattern.LockPatternActivity this$0 -> b
+    void onPostExecute(java.lang.Object) -> onPostExecute
+    java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
+com.haibison.android.lockpattern.LockPatternActivity$3 -> com.haibison.android.lockpattern.c:
+    java.util.List val$pattern -> a
+    com.haibison.android.lockpattern.LockPatternActivity this$0 -> b
+    void onPostExecute(java.lang.Object) -> onPostExecute
+    java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
+com.haibison.android.lockpattern.LockPatternActivity$4 -> com.haibison.android.lockpattern.d:
+    com.haibison.android.lockpattern.LockPatternActivity this$0 -> a
+    void onPatternStart() -> a
+    void onPatternDetected(java.util.List) -> a
+    void onPatternCleared() -> b
+com.haibison.android.lockpattern.LockPatternActivity$5 -> com.haibison.android.lockpattern.e:
+    com.haibison.android.lockpattern.LockPatternActivity this$0 -> a
+    void onClick(android.view.View) -> onClick
+com.haibison.android.lockpattern.LockPatternActivity$6 -> com.haibison.android.lockpattern.f:
+    com.haibison.android.lockpattern.LockPatternActivity this$0 -> a
+    void onClick(android.view.View) -> onClick
+com.haibison.android.lockpattern.LockPatternActivity$7 -> com.haibison.android.lockpattern.g:
+    com.haibison.android.lockpattern.LockPatternActivity this$0 -> a
+    void run() -> run
+com.haibison.android.lockpattern.LockPatternActivity$8 -> com.haibison.android.lockpattern.h:
+    int[] $SwitchMap$com$haibison$android$lockpattern$LockPatternActivity$ButtonOkCommand -> a
+com.haibison.android.lockpattern.LockPatternActivity$ButtonOkCommand -> com.haibison.android.lockpattern.i:
+    int CONTINUE$125e2c4e -> a
+    int FORGOT_PATTERN$125e2c4e -> b
+    int DONE$125e2c4e -> c
+    int[] $VALUES$51d57433 -> d
+    int[] values$5a026454() -> a
+com.haibison.android.lockpattern.util.IEncrypter -> com.haibison.android.lockpattern.util.a:
+    char[] encrypt$4eab087a() -> a
+    java.util.List decrypt$22f62f2c() -> b
+com.haibison.android.lockpattern.util.InvalidEncrypterException -> com.haibison.android.lockpattern.util.b:
+com.haibison.android.lockpattern.util.LoadingDialog -> com.haibison.android.lockpattern.util.c:
+    java.lang.String CLASSNAME -> a
+    android.app.ProgressDialog mDialog -> b
+    int mDelayTime -> c
+    boolean mFinished -> d
+    void onPreExecute() -> onPreExecute
+    void onPostExecute(java.lang.Object) -> onPostExecute
+    void onCancelled() -> onCancelled
+    void doFinish() -> b
+    boolean access$000(com.haibison.android.lockpattern.util.LoadingDialog) -> a
+    android.app.ProgressDialog access$100(com.haibison.android.lockpattern.util.LoadingDialog) -> b
+    java.lang.String access$200() -> a
+com.haibison.android.lockpattern.util.LoadingDialog$2 -> com.haibison.android.lockpattern.util.d:
+    com.haibison.android.lockpattern.util.LoadingDialog this$0 -> a
+    void run() -> run
+com.haibison.android.lockpattern.util.Randoms -> com.haibison.android.lockpattern.util.e:
+    java.util.Random RANDOM -> a
+    int randInt(int) -> a
+    int[] randIntArray(int,int) -> a
+    int[] randIntArray$2558076() -> a
+com.haibison.android.lockpattern.util.Settings -> com.haibison.android.lockpattern.util.f:
+    android.content.SharedPreferences p(android.content.Context) -> a
+com.haibison.android.lockpattern.util.UI -> com.haibison.android.lockpattern.util.g:
+    java.lang.String CLASSNAME -> a
+    void adjustDialogSizeForLargeScreens(android.view.Window) -> a
+    int resolveAttribute(android.content.Context,int) -> a
+com.haibison.android.lockpattern.util.UI$1 -> com.haibison.android.lockpattern.util.h:
+    int[] $SwitchMap$com$haibison$android$lockpattern$util$UI$ScreenSize -> a
+com.haibison.android.lockpattern.util.UI$ScreenSize -> com.haibison.android.lockpattern.util.i:
+    com.haibison.android.lockpattern.util.UI$ScreenSize SMALL -> a
+    com.haibison.android.lockpattern.util.UI$ScreenSize NORMAL -> b
+    com.haibison.android.lockpattern.util.UI$ScreenSize LARGE -> c
+    com.haibison.android.lockpattern.util.UI$ScreenSize XLARGE -> d
+    com.haibison.android.lockpattern.util.UI$ScreenSize UNDEFINED -> e
+    float fixedWidthMinor -> f
+    float fixedWidthMajor -> g
+    float fixedHeightMinor -> h
+    float fixedHeightMajor -> i
+    com.haibison.android.lockpattern.util.UI$ScreenSize[] $VALUES -> j
+    com.haibison.android.lockpattern.util.UI$ScreenSize[] values() -> values
+    com.haibison.android.lockpattern.util.UI$ScreenSize valueOf(java.lang.String) -> valueOf
+    com.haibison.android.lockpattern.util.UI$ScreenSize getCurrent(android.content.Context) -> a
+com.haibison.android.lockpattern.widget.LockPatternUtils -> com.haibison.android.lockpattern.widget.a:
+    java.lang.String CLASSNAME -> a
+    java.util.List stringToPattern(java.lang.String) -> a
+    java.lang.String patternToString(java.util.List) -> a
+    java.lang.String patternToSha1(java.util.List) -> b
+    java.util.ArrayList genCaptchaPattern(int) -> a
+com.haibison.android.lockpattern.widget.LockPatternView -> com.haibison.android.lockpattern.widget.LockPatternView:
+    boolean mDrawingProfilingStarted -> a
+    android.graphics.Paint mPaint -> b
+    android.graphics.Paint mPathPaint -> c
+    com.haibison.android.lockpattern.widget.LockPatternView$OnPatternListener mOnPatternListener -> d
+    java.util.ArrayList mPattern -> e
+    boolean[][] mPatternDrawLookup -> f
+    float mInProgressX -> g
+    float mInProgressY -> h
+    long mAnimatingPeriodStart -> i
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode mPatternDisplayMode -> j
+    boolean mInputEnabled -> k
+    boolean mInStealthMode -> l
+    boolean mEnableHapticFeedback -> m
+    boolean mPatternInProgress -> n
+    float mDiameterFactor -> o
+    int mStrokeAlpha -> p
+    float mHitFactor -> q
+    float mSquareWidth -> r
+    float mSquareHeight -> s
+    android.graphics.Bitmap mBitmapBtnDefault -> t
+    android.graphics.Bitmap mBitmapBtnTouched -> u
+    android.graphics.Bitmap mBitmapCircleDefault -> v
+    android.graphics.Bitmap mBitmapCircleGreen -> w
+    android.graphics.Bitmap mBitmapCircleRed -> x
+    android.graphics.Bitmap mBitmapArrowGreenUp -> y
+    android.graphics.Bitmap mBitmapArrowRedUp -> z
+    android.graphics.Path mCurrentPath -> A
+    android.graphics.Rect mInvalidate -> B
+    android.graphics.Rect mTmpInvalidateRect -> C
+    int mBitmapWidth -> D
+    int mBitmapHeight -> E
+    int mAspect -> F
+    android.graphics.Matrix mArrowMatrix -> G
+    android.graphics.Matrix mCircleMatrix -> H
+    int mPadding -> I
+    int mPaddingLeft -> J
+    int mPaddingRight -> K
+    int mPaddingTop -> L
+    int mPaddingBottom -> M
+    android.content.Context mContext -> N
+    android.graphics.Bitmap getBitmapFor(int) -> a
+    void setInStealthMode(boolean) -> a
+    void setTactileFeedbackEnabled(boolean) -> b
+    void setOnPatternListener(com.haibison.android.lockpattern.widget.LockPatternView$OnPatternListener) -> a
+    void setPattern(com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode,java.util.List) -> a
+    void setDisplayMode(com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode) -> a
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode getDisplayMode() -> a
+    java.util.List getPattern() -> b
+    void notifyPatternStarted() -> d
+    void notifyPatternCleared() -> e
+    void clearPattern() -> c
+    void resetPattern() -> f
+    void clearPatternDrawLookup() -> g
+    void onSizeChanged(int,int,int,int) -> onSizeChanged
+    int resolveMeasured(int,int) -> a
+    int getSuggestedMinimumWidth() -> getSuggestedMinimumWidth
+    int getSuggestedMinimumHeight() -> getSuggestedMinimumHeight
+    void onMeasure(int,int) -> onMeasure
+    com.haibison.android.lockpattern.widget.LockPatternView$Cell detectAndAddHit(float,float) -> a
+    void addCellToPattern(com.haibison.android.lockpattern.widget.LockPatternView$Cell) -> a
+    boolean onTouchEvent(android.view.MotionEvent) -> onTouchEvent
+    void sendAccessEvent(int) -> b
+    float getCenterXForColumn(int) -> c
+    float getCenterYForRow(int) -> d
+    void onDraw(android.graphics.Canvas) -> onDraw
+    android.os.Parcelable onSaveInstanceState() -> onSaveInstanceState
+    void onRestoreInstanceState(android.os.Parcelable) -> onRestoreInstanceState
+com.haibison.android.lockpattern.widget.LockPatternView$Cell -> com.haibison.android.lockpattern.widget.LockPatternView$Cell:
+    int mRow -> a
+    int mColumn -> b
+    com.haibison.android.lockpattern.widget.LockPatternView$Cell[][] sCells -> c
+    android.os.Parcelable$Creator CREATOR -> CREATOR
+    com.haibison.android.lockpattern.widget.LockPatternView$Cell of(int,int) -> a
+    com.haibison.android.lockpattern.widget.LockPatternView$Cell of(int) -> a
+    void checkRange(int,int) -> b
+    java.lang.String toString() -> toString
+    boolean equals(java.lang.Object) -> equals
+    int describeContents() -> describeContents
+    void writeToParcel(android.os.Parcel,int) -> writeToParcel
+com.haibison.android.lockpattern.widget.LockPatternView$Cell$1 -> com.haibison.android.lockpattern.widget.b:
+    java.lang.Object[] newArray(int) -> newArray
+    java.lang.Object createFromParcel(android.os.Parcel) -> createFromParcel
+com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode -> com.haibison.android.lockpattern.widget.c:
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode Correct -> a
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode Animate -> b
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode Wrong -> c
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode[] $VALUES -> d
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode[] values() -> values
+    com.haibison.android.lockpattern.widget.LockPatternView$DisplayMode valueOf(java.lang.String) -> valueOf
+com.haibison.android.lockpattern.widget.LockPatternView$OnPatternListener -> com.haibison.android.lockpattern.widget.d:
+    void onPatternStart() -> a
+    void onPatternCleared() -> b
+    void onPatternDetected(java.util.List) -> a
+com.haibison.android.lockpattern.widget.LockPatternView$SavedState -> com.haibison.android.lockpattern.widget.LockPatternView$SavedState:
+    java.lang.String mSerializedPattern -> a
+    int mDisplayMode -> b
+    boolean mInputEnabled -> c
+    boolean mInStealthMode -> d
+    boolean mTactileFeedbackEnabled -> e
+    android.os.Parcelable$Creator CREATOR -> CREATOR
+    java.lang.String getSerializedPattern() -> a
+    int getDisplayMode() -> b
+    boolean isInputEnabled() -> c
+    boolean isInStealthMode() -> d
+    boolean isTactileFeedbackEnabled() -> e
+    void writeToParcel(android.os.Parcel,int) -> writeToParcel
+com.haibison.android.lockpattern.widget.LockPatternView$SavedState$1 -> com.haibison.android.lockpattern.widget.e:
+    java.lang.Object[] newArray(int) -> newArray
+    java.lang.Object createFromParcel(android.os.Parcel) -> createFromParcel
+com.haibison.android.lockpattern.widget.LockPatternView_v14 -> com.haibison.android.lockpattern.widget.LockPatternView_v14:
+    android.view.accessibility.AccessibilityManager mAccessibilityManager -> a
+    boolean onHoverEvent(android.view.MotionEvent) -> onHoverEvent
