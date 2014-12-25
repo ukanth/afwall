@@ -1115,11 +1115,11 @@ public final class Api {
 				//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
 				specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
 				specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
-				specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
-				specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
-				specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
-				specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
-				specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
+				specialData.add(new PackageInfoData("adb", ctx.getString(R.string.adb_item), "dev.afwall.special.adb"));
+				specialData.add(new PackageInfoData("media", ctx.getString(R.string.media_item), "dev.afwall.special.media"));
+				specialData.add(new PackageInfoData("vpn", ctx.getString(R.string.vpn_item), "dev.afwall.special.vpn"));
+				specialData.add(new PackageInfoData("gps", ctx.getString(R.string.gps_item), "dev.afwall.special.gps"));
+				specialData.add(new PackageInfoData("shell", ctx.getString(R.string.shell_item), "dev.afwall.special.shell"));
 				
 				if(specialApps == null) {
 					specialApps = new HashMap<String, Integer>(); 
