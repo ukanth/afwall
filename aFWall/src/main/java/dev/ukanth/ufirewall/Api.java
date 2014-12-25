@@ -192,6 +192,44 @@ public final class Api {
 
 	private static boolean rulesUpToDate = false;
 
+	/**
+	 * @brief Special user/group IDs that aren't associated with
+	 * any particular app.
+	 *
+	 * See:
+	 *     include/private/android_filesystem_config.h
+	 * in platform/system/core.git.
+	 *
+	 * The accounts listed below are the only ones from
+	 * android_filesystem_config.h that are known to be used as
+	 * the UID of a process that uses the network.  The other
+	 * accounts in that .h file are either:
+	 *   * used as supplemental group IDs for granting extra
+	 *     privileges to apps,
+	 *   * used as UIDs of processes that don't need the network,
+	 *     or
+	 *   * have not yet been reported by users as needing the
+	 *     network.
+	 *
+	 * The list is sorted in ascending UID order.
+	 */
+	private static final String[] specialAndroidAccounts = {
+		"root",
+		"adb",
+		"media",
+		"vpn",
+		"gps",
+		"shell",
+	};
+
+	// returns c.getString(R.string.<acct>_item)
+	private static String getSpecialDescription(Context c, String acct) {
+		Resources r = c.getResources();
+		String pkg = c.getPackageName();
+		int rid = r.getIdentifier(acct + "_item", "string", pkg);
+		return c.getString(rid);
+	}
+
     public static String getIpPath() {
 		return ipPath;
 	}
@@ -1114,12 +1152,11 @@ public final class Api {
 				specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
 				//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
 				specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
-				specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
-				specialData.add(new PackageInfoData("adb", ctx.getString(R.string.adb_item), "dev.afwall.special.adb"));
-				specialData.add(new PackageInfoData("media", ctx.getString(R.string.media_item), "dev.afwall.special.media"));
-				specialData.add(new PackageInfoData("vpn", ctx.getString(R.string.vpn_item), "dev.afwall.special.vpn"));
-				specialData.add(new PackageInfoData("gps", ctx.getString(R.string.gps_item), "dev.afwall.special.gps"));
-				specialData.add(new PackageInfoData("shell", ctx.getString(R.string.shell_item), "dev.afwall.special.shell"));
+				for (String acct : specialAndroidAccounts) {
+					String dsc = getSpecialDescription(ctx, acct);
+					String pkg = "dev.afwall.special." + acct;
+					specialData.add(new PackageInfoData(acct, dsc, pkg));
+				}
 				
 				if(specialApps == null) {
 					specialApps = new HashMap<String, Integer>(); 
@@ -2292,12 +2329,11 @@ public final class Api {
 			specialApps.put("dev.afwall.special.tether",SPECIAL_UID_TETHER);
 			//specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
 			specialApps.put("dev.afwall.special.ntp",SPECIAL_UID_NTP);
-			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
-			specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));
-			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
-			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
-			specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
-			specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
+			for (String acct : specialAndroidAccounts) {
+				String pkg = "dev.afwall.special." + acct;
+				int uid = android.os.Process.getUidForName(acct);
+				specialApps.put(pkg, uid);
+			}
 		}
 	}
 	
