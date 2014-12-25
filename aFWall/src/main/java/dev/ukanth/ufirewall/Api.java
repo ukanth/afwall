@@ -1115,11 +1115,11 @@ public final class Api {
 				//specialData.add(new PackageInfoData(SPECIAL_UID_DNSPROXY, ctx.getString(R.string.dnsproxy_item), "dev.afwall.special.dnsproxy"));
 				specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
 				specialData.add(new PackageInfoData("root", ctx.getString(R.string.root_item), "dev.afwall.special.root"));
+				specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
 				specialData.add(new PackageInfoData("media", "Media server", "dev.afwall.special.media"));
 				specialData.add(new PackageInfoData("vpn", "VPN networking", "dev.afwall.special.vpn"));
-				specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
 				specialData.add(new PackageInfoData("gps", "GPS", "dev.afwall.special.gps"));
-				specialData.add(new PackageInfoData("adb", "ADB (Android Debug Bridge)", "dev.afwall.special.adb"));
+				specialData.add(new PackageInfoData("shell", "Linux shell", "dev.afwall.special.shell"));
 				
 				if(specialApps == null) {
 					specialApps = new HashMap<String, Integer>(); 
@@ -2293,11 +2293,11 @@ public final class Api {
 			//specialApps.put("dev.afwall.special.dnsproxy",SPECIAL_UID_DNSPROXY);
 			specialApps.put("dev.afwall.special.ntp",SPECIAL_UID_NTP);
 			specialApps.put("dev.afwall.special.root",android.os.Process.getUidForName("root"));
+			specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));
 			specialApps.put("dev.afwall.special.media",android.os.Process.getUidForName("media"));
 			specialApps.put("dev.afwall.special.vpn",android.os.Process.getUidForName("vpn"));
-			specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
 			specialApps.put("dev.afwall.special.gps",android.os.Process.getUidForName("gps"));
-			specialApps.put("dev.afwall.special.adb",android.os.Process.getUidForName("adb"));	
+			specialApps.put("dev.afwall.special.shell",android.os.Process.getUidForName("shell"));
 		}
 	}
 	
