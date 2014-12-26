@@ -218,6 +218,7 @@ public final class Api {
 		"adb",
 		"media",
 		"vpn",
+		"drm",
 		"gps",
 		"shell",
 	};

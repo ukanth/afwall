@@ -31,6 +31,7 @@
     <string name="adb_item">(adb) - ADB (Android Debug Bridge)</string>
     <string name="media_item">(media) - Media server</string>
     <string name="vpn_item">(vpn) - VPN networking</string>
+    <string name="drm_item">(drm) - Digital Rights Management service</string>
     <string name="gps_item">(gps) - GPS</string>
     <string name="shell_item">(shell) - Linux shell</string>
     <!-- <string name="operation_timeout">Operation timed out</string> -->
