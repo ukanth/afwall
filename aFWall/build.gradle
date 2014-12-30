@@ -8,17 +8,6 @@ android {
         applicationId "dev.ukanth.ufirewall"
         minSdkVersion 15
         targetSdkVersion 21
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_1_7
-            targetCompatibility JavaVersion.VERSION_1_7
-        }
-    }
-
-    buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
     }
 }
 
