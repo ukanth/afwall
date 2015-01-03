@@ -20,10 +20,7 @@ local.properties
 .classpath
 .project
 
-# IntelliJ project files
-.idea/
-*.iml
-
 # native binaries
 libs/
 obj/
+

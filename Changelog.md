@@ -1,6 +1,16 @@
 Changelog AFWall+
 ==================
 
+Version 2.0.0-ALPHA
+
+* Removed library dependencies (ABS/Unified)
+* Navigation between activities using home button
+* Select all will not affect "All Applications"
+* Minor UI enhancements and new icons
+* Updated libs (superuser/roottools)
+* Updated Translations
+ 
+ 
 Version 1.3.4
 * Feature: Added permanent notification on firewall status (optional)
 * Bug: Modified init.d script to support system iptables.
