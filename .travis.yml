@@ -17,12 +17,12 @@ notifications:
 
 before_install:
   # Install base Android SDK
-  #  - sudo apt-get update -qq
-  #  - sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
-  #  - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
-  #  - sudo tar -C /opt -jxf ndk.tar.bz2
+    - sudo apt-get update -qq
+    - sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
+    - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
+    - sudo tar -C /opt -jxf ndk.tar.bz2
   #  - android update project -p . -s
 
 script:
-  #  - make -C external NDK=/opt/android-ndk-r9
+    - make -C external NDK=/opt/android-ndk-r9
     - ./gradlew clean assembleDebug

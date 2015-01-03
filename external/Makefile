@@ -32,7 +32,7 @@ NDK_SYSROOT := $(NDK)/platforms/android-$(APIVER)/arch-$(ARCH)
 BINDIR := $(firstword $(wildcard $(NDK)/toolchains/$(TOOLCHAIN)/prebuilt/*/bin))
 PATH := $(BINDIR):$(NDK):$(PATH)
 
-RESDIR := $(shell pwd)/../res/raw
+RESDIR := $(shell pwd)/../aFWall/src/main/res/raw/
 DESTDIR := $(shell pwd)/$(TRIPLET)/out
 
 CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
