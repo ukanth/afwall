@@ -1,4 +1,4 @@
-language: java
+language: android
 jdk: oraclejdk7
 
 notifications:
@@ -19,4 +19,4 @@ before_install:
 
 script:
     - make -C external NDK=/opt/android-ndk-r9
-    - ant debug
+    - ./gradlew build assembleDebug
