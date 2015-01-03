@@ -3,7 +3,7 @@ jdk: oraclejdk7
 
 components:
     - build-tools-21.1.1
-    - android-21
+    - android-19
     # Additional components
     - extra-google-google_play_services
     - extra-google-m2repository
