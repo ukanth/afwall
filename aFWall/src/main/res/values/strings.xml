@@ -28,6 +28,12 @@
     <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
     <string name="ntp_item">(NTP) - Internet time servers</string>
     <string name="root_item">(root) - Applications running as root</string>
+    <string name="adb_item">(adb) - ADB (Android Debug Bridge)</string>
+    <string name="media_item">(media) - Media server</string>
+    <string name="vpn_item">(vpn) - VPN networking</string>
+    <string name="drm_item">(drm) - Digital Rights Management service</string>
+    <string name="gps_item">(gps) - GPS</string>
+    <string name="shell_item">(shell) - Linux shell</string>
     <!-- <string name="operation_timeout">Operation timed out</string> -->
     <string name="fw_enabled">Enable Firewall</string>
     <string name="fw_disabled">Disable Firewall</string>
