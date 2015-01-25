@@ -24,11 +24,6 @@
 
 package dev.ukanth.ufirewall;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -76,12 +71,21 @@ import android.widget.Toast;
 import com.haibison.android.lockpattern.LockPatternActivity;
 import com.haibison.android.lockpattern.util.Settings;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import eu.chainfire.libsuperuser.Shell;
 
-import static com.haibison.android.lockpattern.LockPatternActivity.*;
+import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
+import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE_PATTERN;
+import static com.haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
+import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
+import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 public class MainActivity extends ListActivity implements OnClickListener,
 					ActionBar.OnNavigationListener,OnCheckedChangeListener  {
@@ -1600,7 +1604,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				removeProfileDialog();
 			} else {
 				if(G.setProfile(true, itemPosition)) {
-					new GetAppList().execute();
+                    (new GetAppList()).setContext(this).execute();
 					mSelected.setText("  |  " + mLocations[itemPosition]);
 					if(G.applyOnSwitchProfiles()){
 						applyOrSaveRules();
