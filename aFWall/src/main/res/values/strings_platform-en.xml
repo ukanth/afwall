@@ -12,7 +12,9 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 -->
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <!-- A format string for breadcrumbs in the titlebar.  For left to right languages, such as English, the format will look something like "Main Activity > Sub Activity > Sub Activity 2".  Item #1 is the previous path, item #2 is the separator, and item #3 is the current item.  For most left to right languages, this shouldn't need to be changed. -->
     <string name="twofortyfouram_locale_breadcrumb_format">%1$s%2$s%3$s</string>
