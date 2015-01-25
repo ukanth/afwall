@@ -62,9 +62,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <!-- Will be default in CyanogenMod Superuser App -->
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
+    <!--<uses-permission android:name="android.permission.ACCESS_SUPERUSER" />-->
     
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <!--<uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />-->
     
     <!-- Screen support -->
     <supports-screens
@@ -123,7 +123,7 @@
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
 
-        <activity android:name="dev.ukanth.ufirewall.AlertDialogActivity"/>
+       <!-- <activity android:name="dev.ukanth.ufirewall.AlertDialogActivity"/>-->
             
         <activity 
             android:name="dev.ukanth.ufirewall.widget.ToggleWidgetActivity"
