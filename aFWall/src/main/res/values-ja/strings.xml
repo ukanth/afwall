@@ -119,8 +119,8 @@
   <string name="enable_log">通信ログを有効にする</string>
   <string name="disable_log">通信ログを無効にする</string>
   <string name="log_disabled">通信ログ オフ</string>
-  <string name="log_was_enabled">通信ログの監視を止めました</string>
-  <string name="log_was_disabled">通信ログを監視します</string>
+  <string name="log_was_enabled">通信ログを有効にしました</string>
+  <string name="log_was_disabled">通信ログを無効にしました</string>
   <string name="log_toggle_failed">ログ ステータスの切り替え中にエラー</string>
   <string name="log_target_failed">エラー: カーネルのログ/NFLOG のサポートがありません。</string>
   <string name="log_cleared">通信ログを消去しました</string>
