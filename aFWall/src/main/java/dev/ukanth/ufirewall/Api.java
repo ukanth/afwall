@@ -25,40 +25,6 @@
 
 package dev.ukanth.ufirewall;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.StringTokenizer;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.RejectedExecutionException;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -92,6 +58,41 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.StringTokenizer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.RejectedExecutionException;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.JsonHelper;
@@ -238,7 +239,7 @@ public final class Api {
 	/**
      * Display a simple alert box
      * @param ctx context
-     * @param msg message
+     * @param msgText message
      */
 	public static void alert(Context ctx, CharSequence msgText) {
 		if (ctx != null) {
@@ -263,8 +264,13 @@ public final class Api {
 
 	static String customScriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		final String myiptables = dir + "/iptables";
-		final String mybusybox = dir + "/busybox";
+		String myiptables = dir + "/iptables";
+		String mybusybox = dir + "/busybox";
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            myiptables = dir + "/run_pie " + myiptables;
+            mybusybox = dir + "/run_pie " + mybusybox;
+        }
+
 		return "" +
 			"IPTABLES="+ myiptables + "\n" +
 			"BUSYBOX="+mybusybox+"\n" +
@@ -296,7 +302,13 @@ public final class Api {
 		}
 
 		Api.setv6 = setv6;
+
 		Api.ipPath = dir + (setv6 ? "ip6tables" : "iptables");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
+            Api.ipPath = dir + "run_pie " + dir + (setv6 ? "ip6tables":"iptables");
+        }
+
 		Api.bbPath = getBusyBoxPath(ctx);
 	}
 	
@@ -304,16 +316,42 @@ public final class Api {
 		if (G.bb_path().equals("system")) {
 			return "busybox ";
 		} else {
-			return ctx.getDir("bin",0).getAbsolutePath() + "/busybox";
+            String dir = ctx.getDir("bin",0).getAbsolutePath();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                return dir + "/run_pie " +  dir + "/busybox";
+            } else {
+                return dir + "/busybox";
+            }
 		}
 	}
-	
+
+
+    /**
+     * Get KLogripper Path
+     * @param ctx
+     * @return
+     */
 	public static String getKLogPath(Context ctx) {
-		return ctx.getDir("bin",0).getAbsolutePath() + "/klogripper ";
+        String dir = ctx.getDir("bin",0).getAbsolutePath();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            return dir + "/run_pie " +  dir + "/klogripper";
+        } else {
+            return dir + "/klogripper";
+        }
 	}
-	
+
+    /**
+     * Get NFLog Path
+     * @param ctx
+     * @return
+     */
 	static String getNflogPath(Context ctx) {
-		return ctx.getDir("bin",0).getAbsolutePath() + "/nflog ";
+        String dir = ctx.getDir("bin",0).getAbsolutePath();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            return dir + "/run_pie " +  dir + "/nflog ";
+        } else {
+            return dir + "/nflog ";
+        }
 	}
 	/**
 	 * Copies a raw resource file, given its ID to the given location
@@ -1354,13 +1392,15 @@ public final class Api {
 					installBinary(ctx, R.raw.iptables_x86, "iptables") &&
 					installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
 					installBinary(ctx, R.raw.nflog_x86, "nflog") &&
-					installBinary(ctx, R.raw.klogripper_x86,"klogripper");
+					installBinary(ctx, R.raw.klogripper_x86,"klogripper") &&
+                    installBinary(ctx, R.raw.run_pie_x86,"run_pie");
 		} else if (abi.startsWith("mips")) {
 			ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
 					  installBinary(ctx, R.raw.iptables_mips, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_mips, "nflog") &&
-					  installBinary(ctx, R.raw.klogripper_mips,"klogripper");
+					  installBinary(ctx, R.raw.klogripper_mips,"klogripper") &&
+                      installBinary(ctx, R.raw.run_pie_mips,"run_pie");
 		} else {
 			// default to ARM
 			ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
@@ -1368,6 +1408,7 @@ public final class Api {
 					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_arm, "nflog") &&
 					  installBinary(ctx, R.raw.klogripper_arm,"klogripper");
+                      installBinary(ctx, R.raw.run_pie_arm,"run_pie");
 		}
 
 		// arch-independent scripts
@@ -1541,8 +1582,6 @@ public final class Api {
 	 * Called when an application in removed (un-installed) from the system.
 	 * This will look for that application in the selected list and update the persisted values if necessary
 	 * @param ctx mandatory app context
-	 * @param packageName 
-	 * @param uid UID of the application that has been removed
 	 */
 	public static void applicationRemoved(Context ctx, int pkgRemoved) {
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);

@@ -36,9 +36,10 @@ RESDIR := $(shell pwd)/../aFWall/src/main/res/raw/
 DESTDIR := $(shell pwd)/$(TRIPLET)/out
 
 CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
-		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2"
+		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2 -fvisibility=default -fPIE" \
+                  LDFLAGS="-rdynamic -pie" \
 
-PER_ARCH_TARGETS := iptables busybox nflog klogripper
+PER_ARCH_TARGETS := iptables busybox nflog klogripper run_pie
 
 .PHONY: all unpack clean
 all: $(addsuffix -binaries,$(ARCH_LIST))
@@ -146,6 +147,20 @@ klogripper: $(NDK_OUTDIR)/klogripper
 	cp $< $(RESDIR)/klogripper_$(ARCH)
 klogripper-unpack:
 
+
+#####################################################################
+#
+# Build Run PIE
+#
+NDK_OUTDIR := ../libs/$(NDK_ABINAME)
+
+$(NDK_OUTDIR)/run_pie:
+	ndk-build APP_ABI=$(NDK_ABINAME)
+
+.PHONY: run_pie run_pie-unpack
+run_pie: $(NDK_OUTDIR)/run_pie
+	cp $< $(RESDIR)/run_pie_$(ARCH)
+run_pie-unpack:
 
 #####################################################################
 #
