@@ -12,6 +12,7 @@
 bin/
 gen/
 out/
+build/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -23,4 +24,7 @@ local.properties
 # native binaries
 libs/
 obj/
-
+.gradle/
+gradle/
+gradle*
+.idea/
