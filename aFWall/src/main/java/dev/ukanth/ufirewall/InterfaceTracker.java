@@ -22,17 +22,6 @@
 
 package dev.ukanth.ufirewall;
 
-import java.lang.reflect.Method;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Locale;
-
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -46,6 +35,18 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+
+import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Locale;
+
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 
 public final class InterfaceTracker {
@@ -55,7 +56,7 @@ public final class InterfaceTracker {
 	public static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "ra+", "bnep+" };
 	
 	public static final String ITFS_3G[] = { "rmnet+", "pdp+", "uwbr+","wimax+", "vsnet+", 
-											 "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", 
+											 "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", "ccemni+","rmnet_usb+",
 											 "wwan+", "cdma_rmnet+", "usb+", "rmnet_usb+","clat4+", "cc2mni+", "bond1+", "rmnet_smux+" };
 	
 	public static final String ITFS_VPN[] = { "tun+", "ppp+", "tap+" };
