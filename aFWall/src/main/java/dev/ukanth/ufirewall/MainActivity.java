@@ -44,6 +44,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -88,11 +89,13 @@ import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 public class MainActivity extends ListActivity implements OnClickListener,
-					ActionBar.OnNavigationListener,OnCheckedChangeListener  {
+					ActionBar.OnNavigationListener,OnCheckedChangeListener,SwipeRefreshLayout.OnRefreshListener  {
 
 	private TextView mSelected;
     private String[] mLocations;
 	private Menu mainMenu;
+
+    private SwipeRefreshLayout mSwipeLayout;
 	
 	public boolean isOnPause = false;
 	
@@ -172,11 +175,21 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 	       
 		    Api.assertBinaries(this, true);
+
+            mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+            mSwipeLayout.setOnRefreshListener(this);
 		   
 	        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 	        // Let's do some background stuff
 	        (new Startup()).setContext(this).execute();
 	}
+
+
+    public void onRefresh() {
+        Api.applications = null;
+        showOrLoadApplications();
+        mSwipeLayout.setRefreshing(false);
+    }
 
 	private void updateRadioFilter() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
@@ -605,7 +618,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			selectFilterGroup();
 			publishProgress(-1);
 			try {
-				started = false; 
+				started = false;
 				plsWait.dismiss();
 			} catch (Exception e) {
 				// nothing
@@ -816,10 +829,10 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		case R.id.menu_preference:
 			showPreferences();
 			return true;
-		case R.id.menu_reload:
+		/*case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
-			return true;
+			return true;*/
 		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
 			final EditText filterText = (EditText) item.getActionView().findViewById(
