@@ -1407,7 +1407,7 @@ public final class Api {
 					  installBinary(ctx, R.raw.iptables_arm, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_arm, "nflog") &&
-					  installBinary(ctx, R.raw.klogripper_arm,"klogripper");
+					  installBinary(ctx, R.raw.klogripper_arm,"klogripper") &&
                       installBinary(ctx, R.raw.run_pie_arm,"run_pie");
 		}
 
