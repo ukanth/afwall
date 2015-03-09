@@ -1,14 +1,109 @@
 #!/system/bin/sh
+#WIFI=wlan0
 
+# ----------------------------------IPv4 related stuff ----------------------------------------
+# Prevent DoubleDirect Vulnerability
+if [ -e /proc/sys/net/ipv4/conf/all/accept_redirects ]; then
+    # Disable all IPv4 ICMP redirect messages.
+    sysctl -w net.ipv4.conf.all.accept_redirects=0
+fi
+if [ -e /proc/sys/net/ipv4/conf/default/accept_redirects ]; then
+    # Disable all IPv4 ICMP redirect messages on all new interfaces.
+    sysctl -w net.ipv4.conf.default.accept_redirects=0
+fi
+
+# ______________________[Prevent SYN flood attacks]_______________________
+#  *  Recommended option for single homed hosts and stub network routers.
+if [ -e /proc/sys/net/ipv4/conf/all/rp_filter ]; then
+    # Do source validation by reversed path (RFC1812) on all interfaces.
+    sysctl -w net.ipv4.conf.all.rp_filter=1
+fi
+if [ -e /proc/sys/net/ipv4/conf/default/rp_filter ]; then
+    # Do source validation by reversed path (RFC1812) on all new interfaces.
+    sysctl -w net.ipv4.conf.default.rp_filter=1
+fi
+
+# ____________________[Disable Router functionalities]____________________
+if [ -e /proc/sys/net/ipv4/conf/all/send_redirects ]; then
+    # Disables acceptance of all IPv4 ICMP redirected packets on all interfaces. 
+    sysctl -w net.ipv4.conf.all.send_redirects=0
+fi
+if [ -e /proc/sys/net/ipv4/conf/default/send_redirects ]; then
+    # Disables acceptance of all IPv4 ICMP redirected packets on all new interfaces.
+    sysctl -w net.ipv4.conf.default.send_redirects=0
+fi
+if [ -e /proc/sys/net/ipv4/conf/all/secure_redirects ]; then
+    # Disables acceptance of secure ICMP redirected packets on all interfaces.
+    sysctl -w net.ipv4.conf.all.secure_redirects=0
+fi
+if [ -e /proc/sys/net/ipv4/conf/default/secure_redirects ]; then
+    # Disables acceptance of secure ICMP redirected packets on all new interfaces.
+    sysctl -w net.ipv4.conf.default.secure_redirects=0
+fi
+if [ -e /proc/sys/net/ipv4/conf/default/accept_source_route ]; then
+    # Disable source routing on all new interfaces; drop packets with SRR option.
+    sysctl -w net.ipv4.conf.default.accept_source_route=0
+fi
+
+# ____________________________[Miscellaneous]_____________________________
+if [ -e /proc/sys/net/ipv4/tcp_no_metrics_save ]; then
+    # By default, TCP saves various connection metrics in the route cache when the connection closes, 
+    # so that connections established in the near future can use these to set initial conditions. 
+    # Usually, this increases overall performance, but may sometimes cause performance degradation. 
+    # If set to 1, TCP will not cache metrics on closing connections.
+    sysctl -w net.ipv4.tcp_no_metrics_save=1
+fi
+if [ -e /proc/sys/net/ipv4/icmp_echo_ignore_all ]; then
+    # If set non-zero, then the kernel will ignore all ICMP ECHO requests sent to it.
+    sysctl -w net.ipv4.icmp_echo_ignore_all=1
+fi
+
+# ----------------------------------IPv6 related stuff ----------------------------------------
+
+# __________________[Prevent DoubleDirect vulnerability]__________________
+if [ -e /proc/sys/net/ipv6/conf/all/accept_redirects ]; then
+    # Disable all IPv6 ICMP redirected packets.
+    sysctl -w net.ipv6.conf.all.accept_redirects=0
+fi
+if [ -e /proc/sys/net/ipv6/conf/default/accept_redirects ]; then
+    # Disable all IPv6 ICMP redirect messages on all new interfaces.
+    sysctl -w net.ipv6.conf.default.accept_redirects=0
+fi
+
+# ____[Enable IPv6 privacy extensions on all new interfaces (RFC3041)]____
+#  *  <= 0 = disable Privacy Extensions
+#  *  == 1 = enable Privacy Extensions, but prefer public addresses over temporary addresses
+#  *  >  1 = enable Privacy Extensions and prefer temporary addresses over public addresses
+if [ -e /proc/sys/net/ipv6/conf/all/use_tempaddr ]; then
+    # Enable Privacy Extensions and prefer temporary addresses over public addresses.
+    sysctl -w net.ipv6.conf.all.use_tempaddr=2
+fi
+if [ -e /proc/sys/net/ipv6/conf/default/use_tempaddr ]; then
+    # Enable Privacy Extensions and prefer temporary addresses over public addresses.
+    sysctl -w net.ipv6.conf.default.use_tempaddr=2
+fi
+
+# __________________________[Disable IPv6 ]_______________________________
+#if [ -e /proc/sys/net/ipv6/conf/all/disable_ipv6 ]; then
+    # Shutdown all IPv6.
+#    sysctl -w net.ipv6.conf.all.disable_ipv6=1
+#fi
+#if [ -e /proc/sys/net/ipv6/conf/default/disable_ipv6 ]; then
+    # Shutdown IPv6 (default adapters).
+#    sysctl -w net.ipv6.conf.default.disable_ipv6=1
+#fi
+
+# ----------------------------------Detect AFWall+ --------------------------------------------
 if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables ]; then
     path="dev.ukanth.ufirewall"
 elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables ]; then
     path="dev.ukanth.ufirewall.donate"
 else
-    log -p i -t afwall "AFWall doesn't seem to be installed."
+    log -p i -t afwall "AFWall doesn't seems to be installed."
     exit
 fi;
 
+# ----------------------------------Set default IPv4 policy ----------------------------------
 defaultpath_1=/system/bin/iptables
 file=/data/data/$path/app_bin/iptables
 
@@ -21,5 +116,20 @@ if [ -f "$file" ]; then
 		$file -P INPUT DROP
 		$file -P OUTPUT DROP
 		$file -P FORWARD DROP
+	fi;
+	
+# ----------------------------------Set default IPv6 policy ----------------------------------
+defaultpath_2=/system/bin/ip6tables
+file2=/data/data/$path/app_bin/ip6tables
+
+if [ -f "$file2" ]; then
+	if [ -f "$defaultpath_2" ]; then
+		$defaultpath_2 -P INPUT DROP    
+        	$defaultpath_2 -P OUTPUT DROP   
+	        $defaultpath_2 -P FORWARD DROP        
+	else
+		$file2 -P INPUT DROP
+		$file2 -P OUTPUT DROP
+		$file2 -P FORWARD DROP
 	fi;	
 fi;
