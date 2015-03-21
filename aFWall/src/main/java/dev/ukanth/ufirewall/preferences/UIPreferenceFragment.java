@@ -1,7 +1,5 @@
 package dev.ukanth.ufirewall.preferences;
 
-import java.io.File;
-
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -10,6 +8,9 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
+
+import java.io.File;
+
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.G;
 import dev.ukanth.ufirewall.R;
@@ -48,6 +49,7 @@ public class UIPreferenceFragment extends PreferenceFragment implements
 			if (!G.activeRules()) {
 				G.enableRoam(false);
 				G.enableLAN(false);
+                getActivity().setResult(Activity.RESULT_OK);
 			}
 		}
 
@@ -58,7 +60,8 @@ public class UIPreferenceFragment extends PreferenceFragment implements
 				connectionPref.setChecked(false);
 				Api.alert(ctx,getString(R.string.ip6unavailable));
 			}
-		}
+            getActivity().setResult(Activity.RESULT_OK);
+        }
 		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
 				|| key.equals("enableLAN") || key.equals("enableRoam")
 				|| key.equals("locale") || key.equals("showFilter")) {
@@ -68,7 +71,8 @@ public class UIPreferenceFragment extends PreferenceFragment implements
 				G.storedPosition(0);
 			}
 			G.reloadProfile();
-		}
+            getActivity().setResult(Activity.RESULT_OK);
+        }
 		
 		if(key.equals("activeNotification")) {
 			boolean enabled = sharedPreferences.getBoolean(key, false);
@@ -78,6 +82,7 @@ public class UIPreferenceFragment extends PreferenceFragment implements
 				NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 				notificationManager.cancel(33341);
 			}
-		}
+            getActivity().setResult(Activity.RESULT_OK);
+        }
 	}
 }

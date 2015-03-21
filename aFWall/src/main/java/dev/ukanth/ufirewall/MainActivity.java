@@ -44,7 +44,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
@@ -89,15 +88,13 @@ import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 public class MainActivity extends ListActivity implements OnClickListener,
-					ActionBar.OnNavigationListener,OnCheckedChangeListener,SwipeRefreshLayout.OnRefreshListener  {
+					ActionBar.OnNavigationListener,OnCheckedChangeListener  {
 
 	private TextView mSelected;
     private String[] mLocations;
 	private Menu mainMenu;
 
-    private SwipeRefreshLayout mSwipeLayout;
-	
-	public boolean isOnPause = false;
+   	public boolean isOnPause = false;
 	
 	/** progress dialog instance */
 	private ListView listview = null;
@@ -126,6 +123,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	private static final int REQ_ENTER_PATTERN = 9755;
 	
 	private static final int SHOW_ABOUT_RESULT = 1200;
+    private static final int PREFERENCE_RESULT = 1205;
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
@@ -176,20 +174,11 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	       
 		    Api.assertBinaries(this, true);
 
-            mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-            mSwipeLayout.setOnRefreshListener(this);
-		   
-	        getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
+            getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 	        // Let's do some background stuff
 	        (new Startup()).setContext(this).execute();
 	}
 
-
-    public void onRefresh() {
-        Api.applications = null;
-        showOrLoadApplications();
-        mSwipeLayout.setRefreshing(false);
-    }
 
 	private void updateRadioFilter() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
@@ -829,10 +818,10 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		case R.id.menu_preference:
 			showPreferences();
 			return true;
-		/*case R.id.menu_reload:
+		case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
-			return true;*/
+			return true;
 		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
 			final EditText filterText = (EditText) item.getActionView().findViewById(
@@ -1053,7 +1042,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			showApplications(s.toString(),-1,false);
 		}
 
-		public void beforeTextChanged(CharSequence s, int start, int count,
+
+			public void beforeTextChanged(CharSequence s, int start, int count,
 				int after) {
 		}
 
@@ -1066,7 +1056,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 	private void showPreferences() {
 		Intent i = new Intent(this, PreferencesActivity.class);
-		startActivity(i);
+        startActivityForResult(i,PREFERENCE_RESULT);
 	}
 	
 	private void showAbout() {
@@ -1136,7 +1126,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 	/**
 	 * Set a new lock password
-	 */
+    	 */
 	private void setPassword() {
 		if(G.usePatterns()){
 			final String pwd = G.sPrefs.getString(
@@ -1217,6 +1207,13 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					}
 				}
 			}
+            break;
+            case PREFERENCE_RESULT:
+                if (resultCode == RESULT_OK) {
+                    reloadPreferences();
+                    showOrLoadApplications();
+                }
+                break;
 		}
 		
 		if (resultCode == RESULT_OK
@@ -1275,6 +1272,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		Intent i = new Intent(this, LogActivity.class);
 		startActivityForResult(i,SHOW_LOGS_ACTIVITY);
 	}
+
+
 
 	/**
 	 * Apply or save iptables rules, showing a visual indication

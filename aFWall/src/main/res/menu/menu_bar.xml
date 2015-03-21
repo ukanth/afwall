@@ -52,11 +52,11 @@
                 android:icon="@drawable/preferences"
                 android:showAsAction="always"
                 android:title="@string/preferences"/>
-           <!-- <item
+            <item
                 android:id="@+id/menu_reload"
                 android:icon="@drawable/reload"
                 android:showAsAction="always"
-                android:title="@string/reload"/> -->
+                android:title="@string/reload"/>
             <item
                 android:id="@+id/menu_export"
                 android:icon="@drawable/exportr"

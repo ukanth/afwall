@@ -42,6 +42,7 @@ public class MultiProfilePreferenceFragment extends PreferenceFragment
 			}
 			G.reloadProfile();
 		}
+        getActivity().setResult(Activity.RESULT_OK);
 	} 
 
 }

@@ -1,8 +1,5 @@
 package dev.ukanth.ufirewall;
 
-import java.util.List;
-import java.util.concurrent.RejectedExecutionException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +17,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.List;
+import java.util.concurrent.RejectedExecutionException;
+
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 
 public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implements OnCheckedChangeListener {
@@ -169,14 +170,17 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 	}
 	
 	private CheckBox addSupport(CheckBox check,ViewHolder entry,PackageInfoData app, int flag ) {
-		check.setTag(app);
-		switch (flag) {
-			case 0: check.setChecked(app.selected_roam); break;
-			case 1: check.setChecked(app.selected_vpn); break;
-			case 2: check.setChecked(app.selected_lan); break;
-		}
-		return check;
-	}
+        if(check != null) {
+            check.setTag(app);
+            switch (flag) {
+                case 0: check.setChecked(app.selected_roam); break;
+                case 1: check.setChecked(app.selected_vpn); break;
+                case 2: check.setChecked(app.selected_lan); break;
+            }
+        }
+        return check;
+    }
+
 	private CheckBox addSupport(CheckBox check, View convertView, boolean action, int id) {
 		check = (CheckBox) convertView.findViewById(id);
 		check.setVisibility(View.VISIBLE);
