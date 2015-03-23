@@ -2,7 +2,7 @@ language: android
 jdk: oraclejdk7
 
 components:
-    - build-tools-21.1.1
+    - build-tools-21.1.2
     - android-21
     # Additional components
     - extra-google-google_play_services
@@ -22,6 +22,7 @@ before_install:
     - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
     - sudo tar -C /opt -jxf ndk.tar.bz2
     - export NDK_PROJECT_PATH=$PWD	
+    - sudo android update sdk --no-ui --all --filter build-tools-21.1.2
   #  - android update project -p . -s
 
 script:
