@@ -1,0 +1,2 @@
+export NDK_PROJECT_PATH=$PWD
+make -C external NDK=/opt/android-ndk-r9 clean
