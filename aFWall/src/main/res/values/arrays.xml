@@ -29,7 +29,12 @@
         
         <item>Indonesian</item>
         <item>Serbian</item>
-        
+
+
+        <item>Arabic</item>
+        <item>Basque</item>
+        <item>Korean</item>
+        <item>Serbian (Cyrillic)</item>
     </string-array>
     
     <string-array name="supported_languages_code">
@@ -59,8 +64,13 @@
         <item>zh_TW</item>  
         
          <item>in</item>
-         
          <item>sr</item>
+
+         <item>ar</item>
+         <item>eu</item>
+         <item>ko</item>
+         <item>sr_CS</item>
+
     </string-array>
     
     <string-array name="iptables_binary">
