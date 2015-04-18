@@ -1,14 +1,20 @@
 language: android
 jdk: oraclejdk7
 
-components:
-    - build-tools-21.1.2
-    - android-21
-    # Additional components
-    - extra-google-google_play_services
-    - extra-google-m2repository
-    - extra-android-m2repository
-    - addon-google_apis-google-21
+android:
+  components:
+    - platform-tools
+    - tools
+  licenses:
+    - 'android-sdk-license-.+'
+
+before_script:
+    - echo yes | android update sdk -u -a -t tools
+    - echo yes | android update sdk -u -a -t build-tools-21.1.2
+    - echo yes | android update sdk -u -a -t android-21
+    - echo yes | android update sdk -u -a -t extra-google-m2repository
+    - echo yes | android update sdk -u -a -t extra-android-m2repository
+    - echo yes | android update sdk -u -a -t extra-android-support
 
 notifications:
   email:
@@ -21,8 +27,7 @@ before_install:
     - sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
     - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
     - sudo tar -C /opt -jxf ndk.tar.bz2
-    - export NDK_PROJECT_PATH=$PWD	
-  #  - android update project -p . -s
+    - export NDK_PROJECT_PATH=$PWD
 
 script:
     - make -C external NDK=/opt/android-ndk-r9
