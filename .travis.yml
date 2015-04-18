@@ -5,16 +5,12 @@ android:
   components:
     - platform-tools
     - tools
+    - build-tools-21.1.2
+    - extra-google-m2repository
+    - extra-android-support
+    - extra-android-m2repository
   licenses:
-    - 'android-sdk-license-.+'
-
-before_script:
-    - echo yes | android update sdk -u -a -t tools
-    - echo yes | android update sdk -u -a -t build-tools-21.1.2
-    - echo yes | android update sdk -u -a -t android-21
-    - echo yes | android update sdk -u -a -t extra-google-m2repository
-    - echo yes | android update sdk -u -a -t extra-android-m2repository
-    - echo yes | android update sdk -u -a -t extra-android-support
+    - '.+'
 
 notifications:
   email:
@@ -31,4 +27,4 @@ before_install:
 
 script:
     - make -C external NDK=/opt/android-ndk-r9
-    - ./gradlew clean assembleDebug
+    - ./gradlew clean build
