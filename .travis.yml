@@ -27,4 +27,4 @@ before_install:
 
 script:
     - make -C external NDK=/opt/android-ndk-r9
-    - ./gradlew clean build
+    - ./gradlew clean assembleDebug
