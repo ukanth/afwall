@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.activity.AppDetailActivity;
+import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.G;
 
 public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implements OnCheckedChangeListener {
 

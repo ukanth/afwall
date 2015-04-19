@@ -21,7 +21,7 @@
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
  * @version 1.1
  */
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,6 +37,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.R;
 
 /**
  * Custom scripts activity.

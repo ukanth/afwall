@@ -20,15 +20,20 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.activity;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.NflogService;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.activity.DataDumpActivity;
 import dev.ukanth.ufirewall.log.LogInfo;
+import dev.ukanth.ufirewall.util.G;
 
 public class LogActivity extends DataDumpActivity {
 

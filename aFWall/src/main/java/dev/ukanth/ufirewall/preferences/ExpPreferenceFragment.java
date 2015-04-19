@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.stericson.RootTools.RootTools;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 
 public class ExpPreferenceFragment extends PreferenceFragment implements

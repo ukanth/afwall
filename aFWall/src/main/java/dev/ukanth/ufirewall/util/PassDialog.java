@@ -20,7 +20,7 @@
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
  * @version 1.1
  */
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.util;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -34,6 +34,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import dev.ukanth.ufirewall.R;
 
 /**
  * Dialog displayed to request a password.

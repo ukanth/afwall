@@ -15,13 +15,12 @@ package dev.ukanth.ufirewall.plugin;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 

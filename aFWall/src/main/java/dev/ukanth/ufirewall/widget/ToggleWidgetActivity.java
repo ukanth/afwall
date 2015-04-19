@@ -6,7 +6,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,7 +13,7 @@ import android.os.Message;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
 import dev.ukanth.ufirewall.widget.RadialMenuWidget.RadialMenuEntry;

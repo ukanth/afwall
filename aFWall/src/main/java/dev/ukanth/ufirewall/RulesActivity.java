@@ -22,10 +22,6 @@
 
 package dev.ukanth.ufirewall;
 
-import java.io.File;
-import java.util.Map;
-import java.util.TreeSet;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,10 +32,17 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.SubMenu;
+
+import java.io.File;
+import java.util.Map;
+import java.util.TreeSet;
+
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.activity.DataDumpActivity;
+import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.G;
 
 public class RulesActivity extends DataDumpActivity {
 

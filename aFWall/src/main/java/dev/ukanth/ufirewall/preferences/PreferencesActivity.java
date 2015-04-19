@@ -33,7 +33,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.view.MenuItem;
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 
 public class PreferencesActivity extends PreferenceActivity {

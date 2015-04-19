@@ -21,7 +21,7 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -42,6 +42,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 
 public abstract class DataDumpActivity extends Activity {

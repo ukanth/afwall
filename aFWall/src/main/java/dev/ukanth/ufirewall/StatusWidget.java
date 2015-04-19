@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.util.G;
 
 /**
  * ON/OFF Widget implementation

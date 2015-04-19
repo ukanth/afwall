@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 
 public class MultiProfilePreferenceFragment extends PreferenceFragment

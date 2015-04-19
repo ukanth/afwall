@@ -22,7 +22,7 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -48,6 +48,8 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.G;
 
 public final class InterfaceTracker {
 

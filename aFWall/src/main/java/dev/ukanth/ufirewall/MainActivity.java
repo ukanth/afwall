@@ -78,7 +78,13 @@ import java.util.List;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.activity.CustomScriptActivity;
+import dev.ukanth.ufirewall.activity.HelpActivity;
+import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
+import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ImportApi;
+import dev.ukanth.ufirewall.util.PassDialog;
 import eu.chainfire.libsuperuser.Shell;
 
 import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;

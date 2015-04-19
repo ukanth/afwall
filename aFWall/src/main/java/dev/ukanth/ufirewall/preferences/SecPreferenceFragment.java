@@ -3,8 +3,8 @@ package dev.ukanth.ufirewall.preferences;
 import com.haibison.android.lockpattern.util.Settings;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.G;
-import dev.ukanth.ufirewall.Log;
+import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
 import android.annotation.SuppressLint;

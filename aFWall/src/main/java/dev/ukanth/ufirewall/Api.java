@@ -95,6 +95,7 @@ import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell.SU;
 

@@ -4,8 +4,8 @@ import android.app.admin.DeviceAdminReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-import dev.ukanth.ufirewall.G;
-import dev.ukanth.ufirewall.Log;
+import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.R;
 
 

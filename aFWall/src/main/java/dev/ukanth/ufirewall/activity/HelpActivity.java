@@ -1,4 +1,4 @@
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.activity;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -8,6 +8,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.TabsPagerAdapter;
+import dev.ukanth.ufirewall.util.G;
 
 public class HelpActivity extends FragmentActivity implements  ActionBar.TabListener{
 

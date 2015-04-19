@@ -1,6 +1,4 @@
-package dev.ukanth.ufirewall;
-
-import java.util.Arrays;
+package dev.ukanth.ufirewall.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +13,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.Arrays;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.R;
 
 public class AppDetailActivity extends Activity {
 	public static final String TAG = "AFWall";
@@ -56,7 +59,7 @@ public class AppDetailActivity extends Activity {
         	Button button = (Button) findViewById(R.id.app_settings);
             button.setOnClickListener(new OnClickListener() {
     			public void onClick(View v) {
-    				Api.showInstalledAppDetails(getApplicationContext(),packageName);
+    				Api.showInstalledAppDetails(getApplicationContext(), packageName);
     			}
     		});
         	ApplicationInfo applicationInfo;

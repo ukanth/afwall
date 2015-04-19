@@ -12,7 +12,7 @@ import android.preference.PreferenceFragment;
 import java.io.File;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 
 public class UIPreferenceFragment extends PreferenceFragment implements

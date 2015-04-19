@@ -22,16 +22,16 @@
 
 package dev.ukanth.ufirewall;
 
+import android.app.Service;
+import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
+
 import java.util.LinkedList;
 import java.util.List;
 
-import android.app.Service;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Binder;
-import android.os.IBinder;
-import android.preference.PreferenceManager;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.log.Log;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
 

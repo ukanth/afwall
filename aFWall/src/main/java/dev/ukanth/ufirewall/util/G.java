@@ -20,16 +20,19 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+package dev.ukanth.ufirewall.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.R;
 
 public class G extends android.app.Application {
 

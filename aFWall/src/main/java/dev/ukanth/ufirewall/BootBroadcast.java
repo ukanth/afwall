@@ -23,10 +23,12 @@
  */
 package dev.ukanth.ufirewall;
 
-import dev.ukanth.ufirewall.log.LogService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import dev.ukanth.ufirewall.log.LogService;
+import dev.ukanth.ufirewall.util.G;
 
 /**
  * Broadcast receiver that set iptables rules on system startup. This is
@@ -38,7 +40,7 @@ public class BootBroadcast extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-		if(G.activeNotification()){ 
+		if(G.activeNotification()){
 			Api.showNotification(Api.isEnabled(context),context);
 		}
 		if (G.enableLogService()) {

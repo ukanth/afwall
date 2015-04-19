@@ -34,7 +34,7 @@ import android.util.SparseArray;
 import android.widget.TextView;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
-import dev.ukanth.ufirewall.G;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 
 public class LogInfo {

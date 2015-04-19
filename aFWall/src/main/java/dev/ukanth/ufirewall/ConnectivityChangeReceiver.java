@@ -24,7 +24,10 @@ package dev.ukanth.ufirewall;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogService;
+import dev.ukanth.ufirewall.util.G;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
