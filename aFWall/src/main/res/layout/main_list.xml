@@ -5,8 +5,8 @@
         android:layout_height="fill_parent"
         android:baselineAligned="true"
         android:orientation="horizontal"
-        android:paddingBottom="2dp"
-        android:paddingTop="2dp" >
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
 
         <ImageView
             android:id="@+id/itemicon"
