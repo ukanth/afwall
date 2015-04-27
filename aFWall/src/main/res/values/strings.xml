@@ -351,4 +351,10 @@
     
     <string name="su_check_title">Status</string>
     <string name="su_check_message">Checking root access</string>
+
+    <!--choose file -->
+
+    <string name="fileSize">File Size</string>
+    <string name="currentDir">Current Dir</string>
+
 </resources>

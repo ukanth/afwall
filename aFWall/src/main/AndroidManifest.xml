@@ -27,8 +27,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall"
-    android:versionCode="15200"
-    android:versionName="2.0.0-ALPHA-1">
+    android:versionCode="15201"
+    android:versionName="2.0.0-ALPHA-2">
 
     <!-- Android 4.0.3 up -->
     <uses-sdk
@@ -85,7 +85,6 @@
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
             android:hardwareAccelerated="true"
             android:label="@string/app_name" >
@@ -278,6 +277,11 @@
 		<meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:resource="@dimen/app_defaultsize_h" />
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:resource="@dimen/app_minimumsize_w" />
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:resource="@dimen/app_minimumsize_h" />
+
+        <activity
+            android:theme="@android:style/Theme.Dialog"
+            android:name="com.orleonsoft.android.simplefilechooser.ui.FileChooserActivity" />
+
     </application>
 
 </manifest>

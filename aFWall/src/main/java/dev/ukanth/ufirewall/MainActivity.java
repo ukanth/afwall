@@ -70,6 +70,8 @@ import android.widget.Toast;
 
 import com.haibison.android.lockpattern.LockPatternActivity;
 import com.haibison.android.lockpattern.util.Settings;
+import com.orleonsoft.android.simplefilechooser.Constants;
+import com.orleonsoft.android.simplefilechooser.ui.FileChooserActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -133,6 +135,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
+	private static final int FILE_CHOOSER = 1700;
 	
 	private boolean isPassVerify = false;
 	
@@ -906,7 +909,11 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			importRules.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+					Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+					startActivityForResult(intent, FILE_CHOOSER);
+
+					/*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 					builder.setMessage(getString(R.string.overrideRules))
 					       .setCancelable(false)
 					       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
@@ -931,7 +938,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					           }
 					       });
 					AlertDialog alert2 = builder.create();
-					alert2.show();
+					alert2.show();*/
 					dialogImport.dismiss();
 				}
 			});
@@ -1215,11 +1222,17 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			}
             break;
             case PREFERENCE_RESULT:
-                if (resultCode == RESULT_OK) {
+				if (resultCode == RESULT_OK) {
                     reloadPreferences();
                     showOrLoadApplications();
                 }
                 break;
+
+			case FILE_CHOOSER:
+				if (resultCode == RESULT_OK) {
+					String fileSelected = data.getStringExtra(Constants.KEY_FILE_SELECTED);
+					Toast.makeText(this, "file selected "+fileSelected, Toast.LENGTH_SHORT).show();
+				}
 		}
 		
 		if (resultCode == RESULT_OK

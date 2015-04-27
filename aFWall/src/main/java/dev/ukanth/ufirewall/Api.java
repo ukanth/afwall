@@ -75,9 +75,11 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1698,8 +1700,10 @@ public final class Api {
 		       .setCancelable(false)
 		       .setPositiveButton(ctx.getString(R.string.Yes), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   if(saveSharedPreferencesToFile(ctx)){
-		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
+
+					   String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
+		        	   if(saveSharedPreferencesToFile(ctx,fileName)){
+		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
 		       			} else {
 		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
 		        	   }
@@ -1720,7 +1724,8 @@ public final class Api {
 		       .setCancelable(false)
 		       .setPositiveButton(ctx.getString(R.string.Yes), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		        	   if(saveAllPreferencesToFile(ctx)){
+					   String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
+		        	   if(saveAllPreferencesToFile(ctx,fileName)){
 		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
 		       			} else {
 		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
@@ -1790,13 +1795,13 @@ public final class Api {
 		return exportMap;
 	}
 	
-	public static boolean saveAllPreferencesToFile(Context ctx) {
+	public static boolean saveAllPreferencesToFile(Context ctx,final String fileName) {
 	    boolean res = false;
 	    File sdCard = Environment.getExternalStorageDirectory();
 		if (isExternalStorageWritable()) {
 			File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
 			dir.mkdirs();
-			File file = new File(dir, "backup_all.json");
+			File file = new File(dir, fileName);
 			
 			try {
 				FileOutputStream fOut = new FileOutputStream(file);
@@ -1870,13 +1875,13 @@ public final class Api {
 		return arr;
 	}
 
-	public static boolean saveSharedPreferencesToFile(Context ctx) {
+	public static boolean saveSharedPreferencesToFile(Context ctx,final String fileName) {
 	    boolean res = false;
 	    File sdCard = Environment.getExternalStorageDirectory();
 		if (isExternalStorageWritable()) {
 			File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
 			dir.mkdirs();
-			File file = new File(dir, "backup.json");
+			File file = new File(dir,fileName);
 			try {
 				FileOutputStream fOut = new FileOutputStream(file);
 				OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
