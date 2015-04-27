@@ -23,22 +23,31 @@
 
 package dev.ukanth.ufirewall.preferences;
 
-import java.util.List;
-
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
-import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.R;
 
-public class PreferencesActivity extends PreferenceActivity {
+import java.io.File;
+import java.util.List;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.LogService;
+import dev.ukanth.ufirewall.util.G;
+
+public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+	private static final String PREF_CHANGES = "PREF_CHANGE";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +56,21 @@ public class PreferencesActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		getActionBar().setHomeButtonEnabled(true);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		PreferenceManager.getDefaultSharedPreferences(this)
+				.registerOnSharedPreferenceChangeListener(this);
+
+	}
+
+	@Override
+	public void onPause() {
+		PreferenceManager.getDefaultSharedPreferences(this)
+				.unregisterOnSharedPreferenceChangeListener(this);
+		super.onPause();
 	}
 	
 	@Override
@@ -109,5 +133,70 @@ public class PreferencesActivity extends PreferenceActivity {
 		return ALWAYS_SIMPLE_PREFS
 				|| Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
 				|| !isXLargeTablet(context);
+	}
+
+
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		Context ctx = getApplicationContext();
+		if (key.equals("activeRules")) {
+			if (!G.activeRules()) {
+				G.enableRoam(false);
+				G.enableLAN(false);
+			}
+		}
+
+		if (key.equals("enableIPv6")) {
+			File defaultIP6TablesPath = new File("/system/bin/ip6tables");
+			if (!defaultIP6TablesPath.exists()) {
+				CheckBoxPreference connectionPref = (CheckBoxPreference) findPreference(key);
+				connectionPref.setChecked(false);
+				Api.alert(ctx, getString(R.string.ip6unavailable));
+			}
+		}
+		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
+				|| key.equals("enableLAN") || key.equals("enableRoam")
+				|| key.equals("locale") || key.equals("showFilter")) {
+			// revert back to Default profile when disabling multi-profile
+			// support
+			if (!G.enableMultiProfile()) {
+				G.storedPosition(0);
+			}
+			G.reloadProfile();
+		}
+
+		if(key.equals("activeNotification")) {
+			boolean enabled = sharedPreferences.getBoolean(key, false);
+			if(enabled) {
+				Api.showNotification(Api.isEnabled(ctx),ctx);
+			} else {
+				NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.cancel(33341);
+			}
+		}
+
+		if (key.equals("enableLog")) {
+			Api.setLogging(ctx, G.enableLog());
+		}
+
+		if (key.equals("enableLogService")) {
+			boolean enabled = sharedPreferences.getBoolean(key, false);
+			if (enabled) {
+				Intent intent = new Intent(ctx, LogService.class);
+				ctx.startService(intent);
+			} else {
+				Intent intent = new Intent(ctx, LogService.class);
+				ctx.stopService(intent);
+			}
+		}
+
+		if(key.equals("enableMultiProfile")) {
+			if (!G.enableMultiProfile()) {
+				G.storedPosition(0);
+			}
+			G.reloadProfile();
+		}
+
 	}
 }

@@ -135,8 +135,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
-	private static final int FILE_CHOOSER = 1700;
-	
+	private static final int FILE_CHOOSER_LOCAL = 1700;
+	private static final int FILE_CHOOSER_ALL = 1701;
 	private boolean isPassVerify = false;
 	
 	ProgressDialog plsWait;
@@ -166,11 +166,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 						FLAG_HARDWARE_ACCELERATED);
 			} catch (Exception e) {
 			}
-			checkPreferences();
-			
-			 //language
-		    Api.updateLanguage(getApplicationContext(), G.locale());
-		    
+
 			setContentView(R.layout.main);
 			//set onclick listeners
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
@@ -237,9 +233,24 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		super.onResume();
 		reloadPreferences();
 	}
-	
+
 	private void reloadPreferences() {
+
+		G.reloadPrefs();
+		checkPreferences();
+		//language
 		Api.updateLanguage(getApplicationContext(), G.locale());
+
+		if (this.listview == null) {
+			this.listview = (ListView) this.findViewById(R.id.listview);
+		}
+
+		//verifyMultiProfile();
+		refreshHeader();
+		updateIconStatus();
+
+		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(Api.NOTIFICATION_ID);
 
 		if (G.disableIcons()) {
 			this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
@@ -275,6 +286,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		} else {
 			hideColumns(R.id.img_lan);
 		}
+
 		updateRadioFilter();
 
 		if (!G.enableMultiProfile()) {
@@ -282,32 +294,15 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			getActionBar().setDisplayShowTitleEnabled(true);
 			mSelected = (TextView)findViewById(R.id.text);
 			mSelected.setText("");
+		} else {
+			setupMultiProfile(true);
 		}
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		
-		// to improve responsiveness, try to open a root shell in the background on launch
-		// (if this fails we'll try again later)
-		
-		
-		if (this.listview == null) {
-			this.listview = (ListView) this.findViewById(R.id.listview);
-		}
-		
-		//verifyMultiProfile();
-		refreshHeader();
-		updateIconStatus();
-
-		NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancel(Api.NOTIFICATION_ID);
-		
-		if(checkForProfile) {
-			setupMultiProfile(true);
-		}
-		
+		reloadPreferences();
 	}
 
 	private void addColumns(int id) {
@@ -911,7 +906,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				public void onClick(View v) {
 
 					Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-					startActivityForResult(intent, FILE_CHOOSER);
+					startActivityForResult(intent, FILE_CHOOSER_LOCAL);
 
 					/*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 					builder.setMessage(getString(R.string.overrideRules))
@@ -951,7 +946,10 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				public void onClick(View v) {
 					
 					  if(Api.getCurrentPackage(getApplicationContext()).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
-						  AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+						  Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+						  startActivityForResult(intent, FILE_CHOOSER_ALL);
+						 /* AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 							builder.setMessage(getString(R.string.overrideRules))
 							       .setCancelable(false)
 							       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
@@ -979,7 +977,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 							           }
 							       });
 							AlertDialog alert2 = builder.create();
-							alert2.show();
+							alert2.show();*/
 							dialogImport.dismiss();
 		   				} else {
 		   				   AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -1079,7 +1077,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 	public void confirmDisable(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    builder.setTitle("Info");
 	    builder.setMessage(R.string.confirmMsg)
 	           .setCancelable(false)
 	           .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
@@ -1222,17 +1219,51 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			}
             break;
             case PREFERENCE_RESULT:
-				if (resultCode == RESULT_OK) {
-                    reloadPreferences();
-                    showOrLoadApplications();
-                }
-                break;
+				reloadPreferences();
+				showOrLoadApplications();
+				/*Intent intent = getIntent();
+				finish();
+				startActivity(intent);*/
+               	break;
 
-			case FILE_CHOOSER:
+			case FILE_CHOOSER_LOCAL:
 				if (resultCode == RESULT_OK) {
 					String fileSelected = data.getStringExtra(Constants.KEY_FILE_SELECTED);
-					Toast.makeText(this, "file selected "+fileSelected, Toast.LENGTH_SHORT).show();
+					StringBuilder builder = new StringBuilder();
+					if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
+						Api.applications = null;
+						showOrLoadApplications();
+						Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
+					} else {
+						if(builder.toString().equals("")){
+							Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+						} else {
+							Api.alert(MainActivity.this,builder.toString());
+						}
+					}
 				}
+			break;
+
+			case FILE_CHOOSER_ALL:
+				if (resultCode == RESULT_OK) {
+					String fileSelected = data.getStringExtra(Constants.KEY_FILE_SELECTED);
+					StringBuilder builder = new StringBuilder();
+					if(Api.loadAllPreferencesFromFile(MainActivity.this, builder,fileSelected)){
+						Api.applications = null;
+						showOrLoadApplications();
+						Api.alert(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+						Intent intent = getIntent();
+						finish();
+						startActivity(intent);
+					} else {
+						if(builder.toString().equals("")) {
+							Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+						} else {
+							Api.alert(MainActivity.this,builder.toString());
+						}
+					}
+				}
+			break;
 		}
 		
 		if (resultCode == RESULT_OK
