@@ -63,10 +63,13 @@ public class FileArrayAdapter extends ArrayAdapter<FileInfo> {
 				viewHolder.icon.setImageResource(R.drawable.ic_action_back);
 			} else {
 				String name = option.getName().toLowerCase();
-				if (name.endsWith(Constants.JSON))
+				if (name.endsWith(Constants.JSON) && !name.contains("all")) {
 					viewHolder.icon.setImageResource(R.drawable.ic_launcher_free);
-				else
+				} else if(name.endsWith(Constants.JSON) && name.contains("all")) {
+					viewHolder.icon.setImageResource(R.drawable.ic_launcher);
+				} else {
 					viewHolder.icon.setImageResource(R.drawable.enable_log);
+				}
 			}
 
 			viewHolder.name.setText(option.getName());

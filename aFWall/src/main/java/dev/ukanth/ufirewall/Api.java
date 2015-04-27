@@ -922,7 +922,7 @@ public final class Api {
 		cmds.add("-P OUTPUT ACCEPT");
 		
 		//Delete only when the afwall chain exist !
-		cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME );
+		cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
 		
 		addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT2, cmds);
 
@@ -1028,7 +1028,7 @@ public final class Api {
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + "-reject");
 		cmds.add("-F " + AFWALL_CHAIN_NAME + "-reject");
-		addRejectRules(cmds,ctx);
+		addRejectRules(cmds, ctx);
 		apply46(ctx, cmds, callback);
 	}
 
@@ -2181,44 +2181,45 @@ public final class Api {
 
 
 	@SuppressWarnings("unchecked")
-	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder) {
+	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder, String fileName){
 		boolean res = false;
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		dir.mkdirs();
-		File file = new File(dir, "backup.json");
+		//File sdCard = Environment.getExternalStorageDirectory();
+		//File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+		//dir.mkdirs();
+		File file = new File(fileName);
 		//new format
 		if(file.exists()) {
 			res = importRules(ctx,file,builder);
-		} else {
+		} /*else {
+			File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 			file = new File(dir, "backup.rules");
 			if(file.exists()) {
 				res = importRulesOld(ctx,file);
 			} else {
 				alert(ctx,ctx.getString(R.string.backup_notexist));
 			}
-		}
+		}*/
 		return res;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static boolean loadAllPreferencesFromFile(Context ctx,StringBuilder builder) {
+	public static boolean loadAllPreferencesFromFile(Context ctx,StringBuilder builder,final String fileName) {
 		boolean res = false;
-		File sdCard = Environment.getExternalStorageDirectory();
-		File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		dir.mkdirs();
-		File file = new File(dir, "backup_all.json");
+		//File sdCard = Environment.getExternalStorageDirectory();
+		//File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+		//dir.mkdirs();
+		File file = new File(fileName);
 		//new format
 		if(file.exists()) {
 			res = importAll(ctx,file,builder);
-		} else {
+		} /*else {
 			file = new File(dir, "backup.rules");
 			if(file.exists()) {
 				res = importRulesOld(ctx,file);
 			} else {
 				alert(ctx,ctx.getString(R.string.backup_notexist));
 			}
-		}
+		}*/
 		return res;
 	}
 	
