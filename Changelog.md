@@ -1,10 +1,22 @@
 Changelog AFWall+
 ==================
 
-Version 2.0.0-ALPHA
+Version 2.0.0-ALPHA2
 
-* Removed library dependencies (ABS/Unified)
-* Navigation between activities using home button
+* Added File Picker for Import Preferences
+* Added Timestamp with export preferences
+* Fixed bug with UI refresh after preference change
+* Added new translations - huge thanks to translators
+* Updated translations
+* Minor UI Enhancements on list
+ 
+
+Version 2.0.0-ALPHA1
+
+* Initial support for Lollipop 5.0 and 5.1 (PIE compatible) 
+* Removed library dependencies (ABS/Unified) - This is to bring full Material design guidelines to AFWall+
+* Lot of code changes - No functional changes for now.
+* Revamped Preferences
 * Select all will not affect "All Applications"
 * Minor UI enhancements and new icons
 * Updated libs (superuser/roottools)
