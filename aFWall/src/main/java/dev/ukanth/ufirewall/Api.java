@@ -28,11 +28,9 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -250,7 +248,7 @@ public final class Api {
 		}
 	}
 	
-	public static void alertDialog(final Context ctx, String msgText) {
+	/*public static void alertDialog(final Context ctx, String msgText) {
 		if (ctx != null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
 			builder.setMessage(msgText)
@@ -263,7 +261,7 @@ public final class Api {
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
-	}
+	}*/
 
 	static String customScriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
@@ -1695,50 +1693,21 @@ public final class Api {
     }
 	
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-		builder.setMessage(ctx.getString(R.string.exportConfirm))
-		       .setCancelable(false)
-		       .setPositiveButton(ctx.getString(R.string.Yes), new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-
-					   String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-		        	   if(saveSharedPreferencesToFile(ctx,fileName)){
-		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
-		       			} else {
-		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
-		        	   }
-		           }
-		       })
-		       .setNegativeButton(ctx.getString(R.string.No), new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                dialog.cancel();
-		           }
-		       });
-		AlertDialog alert = builder.create();
-		alert.show();
+	 	String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
+	   	if(saveSharedPreferencesToFile(ctx,fileName)){
+			Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
+		} else {
+			Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
+	   	}
 	}
 	
 	public static void saveAllPreferencesToFileConfirm(final Context ctx) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-		builder.setMessage(ctx.getString(R.string.exportConfirm))
-		       .setCancelable(false)
-		       .setPositiveButton(ctx.getString(R.string.Yes), new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-					   String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-		        	   if(saveAllPreferencesToFile(ctx,fileName)){
-		       				Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
-		       			} else {
-		       				Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
-		        	   }
-		           }
-		       })
-		       .setNegativeButton(ctx.getString(R.string.No), new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                dialog.cancel();
-		           }
-		       });
-		AlertDialog alert = builder.create();
-		alert.show();
+	 	String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
+	   	if(saveAllPreferencesToFile(ctx,fileName)){
+			Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
+		} else {
+			Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
+   		}
 	}
 	
 	private static void updateExportPackage(Map<String,JSONObject> exportMap, String packageName, int identifier) throws JSONException{

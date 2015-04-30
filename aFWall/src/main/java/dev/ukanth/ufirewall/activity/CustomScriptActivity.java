@@ -24,7 +24,6 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,6 +36,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -107,7 +108,7 @@ public class CustomScriptActivity extends Activity implements OnClickListener {
 				// Nothing has been changed, just return
 				return super.onKeyDown(keyCode, event);
 			}
-			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+			/*final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					switch (which) {
@@ -120,11 +121,30 @@ public class CustomScriptActivity extends Activity implements OnClickListener {
 						break;
 					}
 				}
-			};
-			final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			};*/
+
+			new MaterialDialog.Builder(this)
+					.title(R.string.unsaved_changes)
+					.content(R.string.unsaved_changes_message)
+					.positiveText(R.string.apply)
+					.negativeText(R.string.discard)
+					.callback(new MaterialDialog.ButtonCallback() {
+						@Override
+						public void onPositive(MaterialDialog dialog) {
+							resultOk();
+						}
+
+						@Override
+						public void onNegative(MaterialDialog dialog) {
+							onBackPressed();
+							findViewById(R.id.customscript_cancel).performClick();
+						}
+					})
+					.show();
+			/*final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.unsaved_changes).setMessage(R.string.unsaved_changes_message)
 					.setPositiveButton(R.string.apply, dialogClickListener)
-					.setNegativeButton(R.string.discard, dialogClickListener).show();
+					.setNegativeButton(R.string.discard, dialogClickListener).show();*/
 			// Say that we've consumed the event
 			return true;
 		}

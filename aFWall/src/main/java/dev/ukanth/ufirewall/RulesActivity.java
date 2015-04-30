@@ -22,9 +22,7 @@
 
 package dev.ukanth.ufirewall;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -34,6 +32,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.SubMenu;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 import java.util.Map;
@@ -290,27 +290,27 @@ public class RulesActivity extends DataDumpActivity {
     }
 
 	private void flushAllRules(final Context ctx) {
-		new AlertDialog.Builder(ctx)
-			.setMessage(getString(R.string.flushRulesConfirm))
-			.setCancelable(false)
-			.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		        	   	dialog.cancel();
+
+		new MaterialDialog.Builder(this)
+				.title(R.string.confirmation)
+				.content(R.string.flushRulesConfirm)
+				.positiveText(R.string.Yes)
+				.negativeText(R.string.No)
+				.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onPositive(MaterialDialog dialog) {
 						Api.flushAllRules(ctx, new RootCommand()
-						.setReopenShell(true)
-						.setSuccessToast(R.string.flushed)
-						.setFailureToast(R.string.error_purge)
-						.setCallback(new RootCommand.Callback() {
-							public void cbFunc(RootCommand state) {
-								populateData(ctx);
-							}
-						}));
-		           }
-		       })
-		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                dialog.cancel();
-	           }
-	    }).create().show();
+								.setReopenShell(true)
+								.setSuccessToast(R.string.flushed)
+								.setFailureToast(R.string.error_purge)
+								.setCallback(new RootCommand.Callback() {
+									public void cbFunc(RootCommand state) {
+										populateData(ctx);
+									}
+								}));
+
+					}
+				})
+				.show();
 	}
 }

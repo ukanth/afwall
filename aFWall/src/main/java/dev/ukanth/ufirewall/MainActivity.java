@@ -38,6 +38,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
@@ -48,6 +49,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -95,6 +97,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 	private TextView mSelected;
     private String[] mLocations;
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
 	private Menu mainMenu;
 
    	public boolean isOnPause = false;
@@ -173,11 +177,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 	       
 		    Api.assertBinaries(this, true);
-
-			//getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
-
-		// Let's do some background stuff
-	        (new Startup()).setContext(this).execute();
+			// Let's do some background stuff
+			(new Startup()).setContext(this).execute();
 	}
 
 
@@ -358,7 +359,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			
 			if(position > -1) {
 				getActionBar().setSelectedNavigationItem(position);
-				getActionBar().setDisplayShowTitleEnabled(false);
+				getActionBar().setDisplayShowTitleEnabled(true);
 				mSelected.setText("  |  " + mLocations[position]);
 			}
 			getActionBar().setDisplayUseLogoEnabled(true);
@@ -1037,26 +1038,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					}
 				})
 				.show();
-
-		/*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    builder.setMessage(R.string.confirmMsg)
-	           .setCancelable(false)
-	           .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int id) {
-	            	   	purgeRules();
-	            	   	if(G.activeNotification()) {
-	            			Api.showNotification(Api.isEnabled(getApplicationContext()),getApplicationContext());
-	            		}
-	               }
-	           })
-	           .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int id) {
-	            	   //cancel. reset to the default enable state
-	            	   //swtService.setChecked(true);
-	            	   Api.setEnabled(getApplicationContext(), true, true);
-	                   return;
-	               }
-	           }).show();*/
 	}
 
 	private void confirmPassword(){
@@ -1097,24 +1078,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					 }
 				 })
 				 .show();
-	    /*AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this)
-	        //set message, title, and icon
-	        .setTitle(getString(R.string.delete))
-	        .setMessage(getString(R.string.resetPattern)) 
-	        .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-	            public void onClick(DialogInterface dialog, int whichButton) {
-	 	    		final Editor editor = G.sPrefs.edit();
-	     			editor.putString("LockPassword", "");
-	     			editor.commit();
-	            }   
-	        })
-	        .setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-	            public void onClick(DialogInterface dialog, int which) {
-	                dialog.dismiss();
-	            }
-	        })
-	        .create();
-	        return myQuittingDialogBox;*/
+
 	    }
 
 	/**
@@ -1676,7 +1640,15 @@ public class MainActivity extends ListActivity implements OnClickListener,
 						return true;
 					}
 				})
+				.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onNegative(MaterialDialog dialog) {
+						G.storedPosition(0);
+						reloadPreferences();
+					}
+				 })
 				.positiveText(R.string.apply)
+				.negativeText(R.string.Cancel)
 				.show();
 	}
 	
@@ -1689,12 +1661,19 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					@Override
 					public void onInput(MaterialDialog dialog, CharSequence input) {
 						String value = input.toString();
-						if(value !=null && value.length() > 0 && !value.contains(",")) {
+						if (value != null && value.length() > 0 && !value.contains(",")) {
 							G.addAdditionalProfile(value.trim());
 							setupMultiProfile(true);
 						} else {
 							Toast.makeText(getApplicationContext(), getString(R.string.invalid_profile), Toast.LENGTH_SHORT).show();
 						}
+					}
+				})
+				.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onNegative(MaterialDialog dialog) {
+						G.storedPosition(0);
+						reloadPreferences();
 					}
 				})
 				.negativeText(R.string.Cancel)
@@ -1731,28 +1710,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					}
 				})
 				.show();
-		/*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-		builder.setMessage(displayMessage)
-				.setCancelable(false)
-				.setPositiveButton(android.R.string.ok,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								switch (i) {
-								case R.id.img_invert:
-									selectRevert();
-									break;
-								case R.id.img_reset:
-									clearAll();
-								}
-							}
-						})
-				.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
-		AlertDialog alert2 = builder.create();
-		alert2.show();*/
 	}
 
 	private void selectActionConfirmation(final int i) {

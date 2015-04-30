@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -115,14 +114,13 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 
 		final int id = holder.app.uid;
 		if (id > 0) {
-			holder.text.setOnLongClickListener(new OnLongClickListener() {
+			holder.text.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public boolean onLongClick(View v) {
+				public void onClick(View v) {
 					Intent intent = new Intent(context, AppDetailActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					intent.putExtra("appid", id);
 					context.startActivity(intent);
-					return true;
 				}
 			});
 		}
