@@ -10,57 +10,21 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <!-- Tasker Locale -->
 
 
     <!-- Dark style for all standard Locale and Locale plug-in Activity instances -->
     <style name="Theme.Locale.Dark" parent="android:Theme" />
 
-    <!-- <style name="ButtonText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_margin">2dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:shadowColor">#000000</item>
-        <item name="android:shadowDx">1</item>
-        <item name="android:shadowDy">1</item>
-        <item name="android:shadowRadius">2</item>
-        <item name="android:paddingLeft">12dp</item>
-        <item name="android:paddingRight">12dp</item>
-    </style>
-
-    <style name="MainTableText" parent="@android:style/TextAppearance.Small">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style> -->
-<!-- 
-    <style name="PreferenceListHeader" parent="@android:style/Widget.TextView">
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:background">#ddd</item>
-        
-        <item name="android:textSize">22sp</item>
-        <item name="android:paddingTop">6dp</item>
-        <item name="android:paddingBottom">6dp</item>
-        <item name="android:paddingLeft">12dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_width">match_parent</item>
-    </style>
- -->
-  <!--   <style name="Theme.Custom" parent="@android:style/Theme">
-        <item name="android:listSeparatorTextViewStyle">@style/PreferenceListHeader</item>
-    </style>
- -->
-     
-     <style name="AppBaseTheme" parent="android:Theme.Holo">
+     <style name="AppBaseTheme" parent="@android:style/Theme.Holo">
         <item name="android:actionBarStyle">@style/MyActionBarTheme</item>
         <item name="android:fitsSystemWindows">true</item>
-    </style>
+         <item name="md_dark_theme">true</item>
+         <item name="md_title_color">#ff2fff01</item>
+         <item name="md_content_color">#ffffffff</item>
+     </style>
 
-    <style name="MyActionBarTheme" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:background">#000000</item>
+    <style name="MyActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#0F9D58</item>
         <item name="android:icon">@drawable/notification</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:titleTextStyle">@style/MyTextAppearance</item>

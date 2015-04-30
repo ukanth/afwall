@@ -357,4 +357,6 @@
     <string name="fileSize">File Size</string>
     <string name="currentDir">Current Dir</string>
 
+    <string name="selectMode">Firewall Mode</string>
+
 </resources>
