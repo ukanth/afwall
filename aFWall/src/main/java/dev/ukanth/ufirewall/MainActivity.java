@@ -1696,7 +1696,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 							Toast.makeText(getApplicationContext(), getString(R.string.invalid_profile), Toast.LENGTH_SHORT).show();
 						}
 					}
-				}).show();
+				})
+				.negativeText(R.string.Cancel)
+				.show();
 	}
 	
    /**
