@@ -882,7 +882,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
 						@Override
 						public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-							switch(which){
+							switch (which) {
 								case 0:
 									Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
 									break;
@@ -892,7 +892,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 							}
 							return true;
 						}
-					}).positiveText(R.string.imports)
+					}).positiveText(R.string.exports)
+					.negativeText(R.string.Cancel)
 					.show();
 			return true;
 		case R.id.menu_import:
@@ -906,14 +907,14 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
 						@Override
 						public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-							switch(which) {
+							switch (which) {
 								case 0:
 									Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
 									startActivityForResult(intent, FILE_CHOOSER_LOCAL);
 									break;
 								case 1:
 
-									if(Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
+									if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
 										Intent intent2 = new Intent(MainActivity.this, FileChooserActivity.class);
 										startActivityForResult(intent2, FILE_CHOOSER_ALL);
 										//dialogImport.dismiss();
@@ -939,8 +940,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 													}
 												})
 												.show();
-								}
-								break;
+									}
+									break;
 								case 2:
 
 									new MaterialDialog.Builder(MainActivity.this)
@@ -952,10 +953,10 @@ public class MainActivity extends ListActivity implements OnClickListener,
 											.callback(new MaterialDialog.ButtonCallback() {
 												@Override
 												public void onPositive(MaterialDialog dialog) {
-													if(ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)){
+													if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
 														Api.applications = null;
 														showOrLoadApplications();
-														Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+														Api.alert(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 													} else {
 														Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
 													}
@@ -969,13 +970,13 @@ public class MainActivity extends ListActivity implements OnClickListener,
 											.show();
 
 
-
 									break;
 							}
 							return true;
 						}
 					})
 					.positiveText(R.string.imports)
+					.negativeText(R.string.Cancel)
 					.show();
 
 			return true;
