@@ -54,6 +54,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		// set language
 		Api.updateLanguage(getApplicationContext(), G.locale());
 		super.onCreate(savedInstanceState);
+		getActionBar().setTitle(getString(R.string.preferences));
 		getActionBar().setHomeButtonEnabled(true);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
