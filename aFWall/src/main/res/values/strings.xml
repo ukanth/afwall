@@ -359,4 +359,10 @@
 
     <string name="selectMode">Firewall Mode</string>
 
+    <string name="confirmation">Confirmation</string>
+
+    <string name="prefill_profile">Enter profile name</string>
+
+    <string name="profile_default">MyProfile</string>
+
 </resources>

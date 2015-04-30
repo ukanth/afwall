@@ -26,25 +26,20 @@ package dev.ukanth.ufirewall;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.NotificationManager;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -53,12 +48,10 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -68,6 +61,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.haibison.android.lockpattern.LockPatternActivity;
 import com.haibison.android.lockpattern.util.Settings;
 import com.orleonsoft.android.simplefilechooser.Constants;
@@ -94,6 +88,7 @@ import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE
 import static com.haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
+
 
 public class MainActivity extends ListActivity implements OnClickListener,
 					ActionBar.OnNavigationListener,OnCheckedChangeListener  {
@@ -138,15 +133,15 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	private static final int FILE_CHOOSER_LOCAL = 1700;
 	private static final int FILE_CHOOSER_ALL = 1701;
 	private boolean isPassVerify = false;
-	
-	ProgressDialog plsWait;
+
+	MaterialDialog plsWait;
 	
 	ArrayAdapter<String> spinnerAdapter = null;
 	
 	private int index;
 	private int top;
 	
-	private boolean checkForProfile = true;
+	//private boolean checkForProfile = true;
 	
 	private List<String> mlocalList = new ArrayList<String>();
 	
@@ -179,8 +174,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	       
 		    Api.assertBinaries(this, true);
 
-            getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
-	        // Let's do some background stuff
+			//getActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(android.R.color.transparent)));
+
+		// Let's do some background stuff
 	        (new Startup()).setContext(this).execute();
 	}
 
@@ -277,6 +273,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		if (!Api.isMobileNetworkSupported(getApplicationContext())) {
 			ImageView view = (ImageView) this.findViewById(R.id.img_3g);
 			view.setVisibility(View.GONE);
+
 		} else {
 			this.findViewById(R.id.img_3g).setOnClickListener(this);
 		}
@@ -404,7 +401,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		//this.listview.setAdapter(null);
 		//mLastPause = Syst em.currentTimeMillis();
 		isOnPause = true;
-		checkForProfile = true;
+		//checkForProfile = true;
 		index = this.listview.getFirstVisiblePosition();
 		View v = this.listview.getChildAt(0);
 		top = (v == null) ? 0 : v.getTop();
@@ -440,20 +437,37 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	 */
 	private void selectMode() {
 		final Resources res = getResources();
-		new AlertDialog.Builder(this)
+
+		new MaterialDialog.Builder(this)
+				.title(R.string.selectMode)
+				.items(new String[]{
+						res.getString(R.string.mode_whitelist),
+						res.getString(R.string.mode_blacklist)})
+				.itemsCallback(new MaterialDialog.ListCallback() {
+					@Override
+					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+						final String mode = (which == 0 ? Api.MODE_WHITELIST : Api.MODE_BLACKLIST);
+						final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
+						editor.putString(Api.PREF_MODE, mode);
+						editor.commit();
+						refreshHeader();
+					}
+				})
+				.show();
+		/*new AlertDialogWrapper.Builder(this)
 				.setItems(
-						new String[] { res.getString(R.string.mode_whitelist),
-								res.getString(R.string.mode_blacklist) },
+						new String[]{res.getString(R.string.mode_whitelist),
+								res.getString(R.string.mode_blacklist)},
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
-									int which) {
-								final String mode = (which == 0 ? Api.MODE_WHITELIST: Api.MODE_BLACKLIST);
+												int which) {
+								final String mode = (which == 0 ? Api.MODE_WHITELIST : Api.MODE_BLACKLIST);
 								final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
 								editor.putString(Api.PREF_MODE, mode);
 								editor.commit();
 								refreshHeader();
 							}
-						}).setTitle("Select mode:").show();
+						}).setTitle("Select mode:").show();*/
 	}
 	
 	/**
@@ -551,8 +565,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 		@Override
 		protected void onPreExecute() {
-			plsWait = new ProgressDialog(context);
-		    plsWait.setCancelable(false);
+			plsWait = new MaterialDialog.Builder(context).
+					title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
+					.size(), true).show();
 			publishProgress(0);
 		}
 
@@ -613,6 +628,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			try {
 				started = false;
 				plsWait.dismiss();
+				//plsWait.autoDismiss(true);
 			} catch (Exception e) {
 				// nothing
 			}
@@ -622,14 +638,14 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		protected void onProgressUpdate(Integer... progress) {
 
 			if (progress[0] == 0) {
-				plsWait.setMax(getPackageManager().getInstalledApplications(0)
-						.size());
-				plsWait.setMessage(getString(R.string.reading_apps));
-				plsWait.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				plsWait.show();
+				//plsWait.setMax(getPackageManager().getInstalledApplications(0)
+				//		.size());
+				//plsWait.setMessage(getString(R.string.reading_apps));
+				//plsWait.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				//plsWait.show();
 			}  else if( progress[0] == -1 ){
 			} else {
-				 plsWait.setProgress(progress[0]);
+				 plsWait.incrementProgress(progress[0]);
 			}
 		}
 	};
@@ -857,190 +873,111 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			
 			return true;
 		case R.id.menu_export:
-			final Dialog dialog = new Dialog(this);
-			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-			//dialog.setCancelable(false);
-			dialog.setContentView(R.layout.export);
-			Button exportRules = (Button) dialog.findViewById(R.id.exportRules);
-			// if button is clicked, close the custom dialog
-			exportRules.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
-					dialog.dismiss();
-				}
-			});
-			
-			Button exportAll = (Button) dialog.findViewById(R.id.exportAll);
-			// if button is clicked, close the custom dialog
-			exportAll.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Api.saveAllPreferencesToFileConfirm(MainActivity.this);
-					dialog.dismiss();
-				}
-			});
-			
-			Button cancel = (Button) dialog.findViewById(R.id.cancelExport);
-			// if button is clicked, close the custom dialog
-			cancel.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialog.dismiss();
-				}
-			});
- 
-			dialog.show();
+
+			new MaterialDialog.Builder(this)
+					.title(R.string.exports)
+					.items(new String[]{
+							getString(R.string.export_rules),
+							getString(R.string.export_all)})
+					.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+						@Override
+						public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+							switch(which){
+								case 0:
+									Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+									break;
+								case 1:
+									Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+									break;
+							}
+							return true;
+						}
+					}).positiveText(R.string.imports)
+					.show();
 			return true;
 		case R.id.menu_import:
-			
-			final Dialog dialogImport = new Dialog(this);
-			dialogImport.requestWindowFeature(Window.FEATURE_NO_TITLE);
-			dialogImport.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-			dialogImport.setContentView(R.layout.imports);
-			Button importRules = (Button) dialogImport.findViewById(R.id.importRules);
-			// if button is clicked, close the custom dialog
-			importRules.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
 
-					Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-					startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+			new MaterialDialog.Builder(this)
+					.title(R.string.imports)
+					.items(new String[]{
+							getString(R.string.import_rules),
+							getString(R.string.import_all),
+							getString(R.string.import_rules_droidwall)})
+					.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+						@Override
+						public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+							switch(which) {
+								case 0:
+									Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+									startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+									break;
+								case 1:
 
-					/*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-					builder.setMessage(getString(R.string.overrideRules))
-					       .setCancelable(false)
-					       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					        	   StringBuilder builder = new StringBuilder();
-					        	   if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder)){
-					        		   Api.applications = null;
-					        		   showOrLoadApplications();
-					        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-					        	   } else {
-					        		   if(builder.toString().equals("")){
-					        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-					        		   } else {
-					        			   Api.alert(MainActivity.this,builder.toString());
-					        		   }
-					   				}
-					           }
-					       })
-					       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					                dialog.cancel();
-					           }
-					       });
-					AlertDialog alert2 = builder.create();
-					alert2.show();*/
-					dialogImport.dismiss();
-				}
-			});
-			
-			Button importAll = (Button) dialogImport.findViewById(R.id.importAll);
-			
-			// if button is clicked, close the custom dialog
-			importAll.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					
-					  if(Api.getCurrentPackage(getApplicationContext()).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
+									if(Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
+										Intent intent2 = new Intent(MainActivity.this, FileChooserActivity.class);
+										startActivityForResult(intent2, FILE_CHOOSER_ALL);
+										//dialogImport.dismiss();
+									} else {
 
-						  Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-						  startActivityForResult(intent, FILE_CHOOSER_ALL);
-						 /* AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-							builder.setMessage(getString(R.string.overrideRules))
-							       .setCancelable(false)
-							       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-							           public void onClick(DialogInterface dialog, int id) {
-							        	   StringBuilder builder = new StringBuilder();
-							        	   if(Api.loadAllPreferencesFromFile(MainActivity.this,builder)){
-							        		   Api.applications = null;
-							        		   showOrLoadApplications();
-							        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-							        		   Intent intent = getIntent();
-							        		   finish();
-							        		   startActivity(intent);
-							        	   } else {
-							        		   if(builder.toString().equals("")){
-							        			   Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-							        		   } else {
-							        			   Api.alert(MainActivity.this,builder.toString());
-							        		   }
-							   				}
-							           }
-							       })
-							       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
-							           public void onClick(DialogInterface dialog, int id) {
-							                dialog.cancel();
-							           }
-							       });
-							AlertDialog alert2 = builder.create();
-							alert2.show();*/
-							dialogImport.dismiss();
-		   				} else {
-		   				   AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-							builder.setMessage(getString(R.string.donate_only))
-							       .setCancelable(false)
-							.setPositiveButton(getString(R.string.buy_donate), new DialogInterface.OnClickListener() {
-						           public void onClick(DialogInterface dialog, int id) {
-						        	    Intent intent = new Intent(Intent.ACTION_VIEW); 
-					   					intent.setData(Uri.parse("market://details?id=dev.ukanth.ufirewall.donate")); 
-					   					startActivity(intent);
-						           }
-						       })
-						       .setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-						           public void onClick(DialogInterface dialog, int id) {
-						                dialog.cancel();
-						           }
-						       });
-							AlertDialog alert2 = builder.create();
-							alert2.show();
-		   				}
-				}
-			});
-			
-			
-			Button importDW = (Button) dialogImport.findViewById(R.id.importDW);
-			// if button is clicked, close the custom dialog
-			importDW.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					AlertDialog.Builder builder2 = new AlertDialog.Builder(MainActivity.this);
-					builder2.setMessage(getString(R.string.overrideRules))
-					       .setCancelable(false)
-					       .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					        	   if(ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)){
-					        		   Api.applications = null;
-					        		   showOrLoadApplications();
-					        		   Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-					        	   } else {
-					   					Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
-					   				}
-					           }
-					       })
-					       .setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
-					           public void onClick(DialogInterface dialog, int id) {
-					                dialog.cancel();
-					           }
-					       });
-					AlertDialog alert3 = builder2.create();
-					alert3.show();
-					dialogImport.dismiss();
-				}
-			});
-			
-			Button cancelImport = (Button) dialogImport.findViewById(R.id.cancelImport);
-			cancelImport.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dialogImport.dismiss();
-				}
-			});
- 
-			dialogImport.show();
+										new MaterialDialog.Builder(MainActivity.this)
+												.title(R.string.buy_donate)
+												.content(R.string.donate_only)
+												.positiveText(R.string.buy_donate)
+												.negativeText(R.string.close)
+												.icon(getResources().getDrawable(R.drawable.ic_launcher))
+												.callback(new MaterialDialog.ButtonCallback() {
+													@Override
+													public void onPositive(MaterialDialog dialog) {
+														Intent intent = new Intent(Intent.ACTION_VIEW);
+														intent.setData(Uri.parse("market://details?id=dev.ukanth.ufirewall.donate"));
+														startActivity(intent);
+													}
+
+													@Override
+													public void onNegative(MaterialDialog dialog) {
+														dialog.cancel();
+													}
+												})
+												.show();
+								}
+								break;
+								case 2:
+
+									new MaterialDialog.Builder(MainActivity.this)
+											.title(R.string.import_rules_droidwall)
+											.content(R.string.overrideRules)
+											.positiveText(R.string.Yes)
+											.negativeText(R.string.No)
+											.icon(getResources().getDrawable(R.drawable.ic_launcher))
+											.callback(new MaterialDialog.ButtonCallback() {
+												@Override
+												public void onPositive(MaterialDialog dialog) {
+													if(ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)){
+														Api.applications = null;
+														showOrLoadApplications();
+														Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+													} else {
+														Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+													}
+												}
+
+												@Override
+												public void onNegative(MaterialDialog dialog) {
+													dialog.cancel();
+												}
+											})
+											.show();
+
+
+
+									break;
+							}
+							return true;
+						}
+					})
+					.positiveText(R.string.imports)
+					.show();
+
 			return true;
 		default:
 	        return super.onOptionsItemSelected(item);
@@ -1076,7 +1013,31 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	}
 
 	public void confirmDisable(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		new MaterialDialog.Builder(this)
+				.title(R.string.confirmMsg)
+				//.content(R.string.confirmMsg)
+				.positiveText(R.string.Yes)
+				.negativeText(R.string.No)
+				.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onPositive(MaterialDialog dialog) {
+						purgeRules();
+						if (G.activeNotification()) {
+							Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+						}
+						dialog.dismiss();
+					}
+
+					@Override
+					public void onNegative(MaterialDialog dialog) {
+						Api.setEnabled(getApplicationContext(), true, true);
+						dialog.dismiss();
+					}
+				})
+				.show();
+
+		/*AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	    builder.setMessage(R.string.confirmMsg)
 	           .setCancelable(false)
 	           .setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
@@ -1094,7 +1055,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	            	   Api.setEnabled(getApplicationContext(), true, true);
 	                   return;
 	               }
-	           }).show();
+	           }).show();*/
 	}
 
 	private void confirmPassword(){
@@ -1112,9 +1073,30 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		}).show();
 	}
 	
-	private AlertDialog resetPassword()
+	private void resetPassword()
 	 {
-	    AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this) 
+
+		 new MaterialDialog.Builder(this)
+				 .title(R.string.delete)
+				 .content(R.string.resetPattern)
+				 .positiveText(R.string.Yes)
+				 .negativeText(R.string.No)
+				 .callback(new MaterialDialog.ButtonCallback() {
+					 @Override
+					 public void onPositive(MaterialDialog dialog) {
+						 final Editor editor = G.sPrefs.edit();
+						 editor.putString("LockPassword", "");
+						 editor.commit();
+						 dialog.dismiss();
+					 }
+
+					 @Override
+					 public void onNegative(MaterialDialog dialog) {
+						dialog.dismiss();
+					 }
+				 })
+				 .show();
+	    /*AlertDialog myQuittingDialogBox =new AlertDialog.Builder(this)
 	        //set message, title, and icon
 	        .setTitle(getString(R.string.delete))
 	        .setMessage(getString(R.string.resetPattern)) 
@@ -1131,7 +1113,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	            }
 	        })
 	        .create();
-	        return myQuittingDialogBox;
+	        return myQuittingDialogBox;*/
 	    }
 
 	/**
@@ -1142,8 +1124,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			final String pwd = G.sPrefs.getString(
 					"LockPassword", "");
 			if (pwd.length() != 0) {
-				AlertDialog diaBox = resetPassword();
-				diaBox.show();
+				resetPassword();
 			} else {
 				//Intent intent = new Intent(MainActivity.this, LockPatternActivity.class);
 				//intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.CreatePattern);
@@ -1180,7 +1161,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		checkForProfile = false;
+		//checkForProfile = false;
 		
 		switch(requestCode) {
 			case REQ_CREATE_PATTERN: {
@@ -1341,10 +1322,14 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			return;
 		}
 
-		final ProgressDialog progress = ProgressDialog.show(this, res
-				.getString(R.string.working), res
-				.getString(enabled ? R.string.applying_rules
-						: R.string.saving_rules), true);
+
+		final MaterialDialog progress = new MaterialDialog.Builder(this)
+				.title(R.string.working)
+				.content(enabled ? R.string.applying_rules
+						: R.string.saving_rules)
+				.progress(true, 0)
+				.show();
+
 
 		Api.applySavedIptablesRules(ctx, true, new RootCommand()
 					.setSuccessToast(R.string.rules_applied)
@@ -1619,33 +1604,31 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		
 		// Handle the back button when dirty
 		if (isDirty() && (keyCode == KeyEvent.KEYCODE_BACK)) {
-			final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					switch (which) {
-					case DialogInterface.BUTTON_POSITIVE:
-						applyOrSaveRules();
-						break;
-					case DialogInterface.BUTTON_NEGATIVE:
-						// Propagate the event back to perform the desired
-						// action
-						setDirty(false);
-						Api.applications = null;
-						finish();
-						System.exit(0);
-						//force reload rules.
-						MainActivity.super.onKeyDown(keyCode, event);
-						break;
-					}
-				}
-			};
-			final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.unsaved_changes)
-					.setMessage(R.string.unsaved_changes_message)
-					.setPositiveButton(R.string.apply, dialogClickListener)
-					.setNegativeButton(R.string.discard, dialogClickListener)
+			new MaterialDialog.Builder(this)
+					.title(R.string.confirmation)
+					.content(R.string.unsaved_changes_message)
+					.positiveText(R.string.apply)
+					.negativeText(R.string.discard)
+					.callback(new MaterialDialog.ButtonCallback() {
+						@Override
+						public void onPositive(MaterialDialog dialog) {
+							applyOrSaveRules();
+							dialog.dismiss();
+						}
+
+						@Override
+						public void onNegative(MaterialDialog dialog) {
+							setDirty(false);
+							Api.applications = null;
+							finish();
+							System.exit(0);
+							//force reload rules.
+							MainActivity.super.onKeyDown(keyCode, event);
+							dialog.dismiss();
+						}
+					})
 					.show();
-			// Say that we've consumed the event
+
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -1678,61 +1661,41 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		return true;
 	}
 	
-	private int selectedItem = 0;
-	
 	public void removeProfileDialog() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		alert.setTitle(getString(R.string.profile_remove));
-		String[] profiles = G.getAdditionalProfiles().toArray(new String[G.getAdditionalProfiles().size()]);
-		alert.setSingleChoiceItems(profiles, 0, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				selectedItem = which;
-			}
-		});
-		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int whichButton) {
-			G.removeAdditionalProfile(mLocations[selectedItem + 4], selectedItem + 4);
-			setupMultiProfile(true);
-			Api.applications = null;
-			showOrLoadApplications();
-		  }
-		});
-
-		alert.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-		  public void onClick(DialogInterface dialog, int whichButton) {
-		    // Canceled.
-		  }
-		});
-		alert.show();	
+	new MaterialDialog.Builder(this)
+				.title(R.string.profile_remove)
+				.items(G.getAdditionalProfiles().toArray(new String[G.getAdditionalProfiles().size()]))
+				.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+					@Override
+					public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+						G.removeAdditionalProfile(mLocations[which + 4], which + 4);
+						setupMultiProfile(true);
+						Api.applications = null;
+						showOrLoadApplications();
+						return true;
+					}
+				})
+				.positiveText(R.string.apply)
+				.show();
 	}
 	
 	public void addProfileDialog() {
-		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-		alert.setTitle(getString(R.string.profile_add));
-
-		// Set an EditText view to get user input 
-		final EditText input = new EditText(this);
-		alert.setView(input);
-
-		alert.setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int whichButton) {
-			String value = input.getText().toString();
-			if(value !=null && value.length() > 0 && !value.contains(",")) {
-				G.addAdditionalProfile(value.trim());
-		  		setupMultiProfile(true);
-			} else {
-				Toast.makeText(getApplicationContext(), getString(R.string.invalid_profile), Toast.LENGTH_SHORT).show();
-			}
-		  }
-		});
-
-		alert.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-		  public void onClick(DialogInterface dialog, int whichButton) {
-		  }
-		});
-		alert.show();	
+		new MaterialDialog.Builder(this)
+				.title(R.string.profile_add)
+				.inputType(InputType.TYPE_CLASS_TEXT)
+				.input(R.string.prefill_profile, R.string.profile_default, new MaterialDialog.InputCallback() {
+					@Override
+					public void onInput(MaterialDialog dialog, CharSequence input) {
+						String value = input.toString();
+						if(value !=null && value.length() > 0 && !value.contains(",")) {
+							G.addAdditionalProfile(value.trim());
+							setupMultiProfile(true);
+						} else {
+							Toast.makeText(getApplicationContext(), getString(R.string.invalid_profile), Toast.LENGTH_SHORT).show();
+						}
+					}
+				}).show();
 	}
 	
    /**
@@ -1741,7 +1704,31 @@ public class MainActivity extends ListActivity implements OnClickListener,
     */
 	
 	private void selectActionConfirmation(String displayMessage, final int i){
-		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+		new MaterialDialog.Builder(this)
+				.title(R.string.confirmation).content(displayMessage)
+				.positiveText(android.R.string.ok)
+				.negativeText(android.R.string.cancel)
+				.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onPositive(MaterialDialog dialog) {
+						switch (i) {
+							case R.id.img_invert:
+								selectRevert();
+								break;
+							case R.id.img_reset:
+								clearAll();
+						}
+						dialog.dismiss();
+					}
+
+					@Override
+					public void onNegative(MaterialDialog dialog) {
+						dialog.dismiss();
+					}
+				})
+				.show();
+		/*AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setMessage(displayMessage)
 				.setCancelable(false)
 				.setPositiveButton(android.R.string.ok,
@@ -1762,100 +1749,93 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					}
 				});
 		AlertDialog alert2 = builder.create();
-		alert2.show();
-}
-	private void selectActionConfirmation(final int i){
-		final Dialog settingsDialog = new Dialog(this); 
-		settingsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		settingsDialog.getWindow().setBackgroundDrawableResource(R.drawable.class_zero_background);
-		final View dialogView = getLayoutInflater().inflate(R.layout.select_action , null);
-		settingsDialog.setContentView(dialogView); 
-		settingsDialog.show(); 
-		
-		
-		TextView textView = (TextView) dialogView.findViewById(R.id.check_title);
-		String text = getString(R.string.select_action) + " ";
-		switch (i) {
-		case R.id.img_wifi:
-			textView.setText( text + getString(R.string.wifi));
-			break;
-		case R.id.img_3g:
-			textView.setText( text +  getString(R.string.data));
-			break;
-		case R.id.img_roam:
-			textView.setText( text +  getString(R.string.roam));
-			break;
-		case R.id.img_vpn:
-			textView.setText( text +  getString(R.string.vpn));
-			break;
-		case R.id.img_lan:
-			textView.setText( text +  getString(R.string.lan));
-			break;
-		}
-		
-		
-		Button checkAll = (Button) dialogView.findViewById(R.id.checkAll);
-		checkAll.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				switch (i) {
-				case R.id.img_wifi:
-					selectAllWifi(true);
-					break;
-				case R.id.img_3g:
-					selectAll3G(true);
-					break;
-				case R.id.img_roam:
-					selectAllRoam(true);
-					break;
-				case R.id.img_vpn:
-					selectAllVPN(true);
-					break;
-				case R.id.img_lan:
-					selectAllLAN(true);
-					break;
-				}
-				dirty = true;
-				settingsDialog.dismiss();
-			}
-		});
-		
-		Button uncheckAll = (Button) dialogView.findViewById(R.id.uncheckAll);
-		uncheckAll.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				switch (i) {
-				case R.id.img_wifi:
-					selectAllWifi(false);
-					break;
-				case R.id.img_3g:
-					selectAll3G(false);
-					break;
-				case R.id.img_roam:
-					selectAllRoam(false);
-					break;
-				case R.id.img_vpn:
-					selectAllVPN(false);
-					break;
-				case R.id.img_lan:
-					selectAllLAN(false);
-					break;
-				}
-				dirty = true;
-				settingsDialog.dismiss();
-			}
-		});
-		
-		Button invertAll = (Button) dialogView.findViewById(R.id.invertAll);
-		invertAll.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				selectRevert(i);
-				dirty = true;
-				settingsDialog.dismiss();
-			}
-		});
-		
+		alert2.show();*/
+	}
+
+	private void selectActionConfirmation(final int i) {
+
+		new MaterialDialog.Builder(this)
+				.title(R.string.select_action)
+				.items(new String[]{
+						getString(R.string.check_all),
+						getString(R.string.invert_all),
+						getString(R.string.uncheck_all)})
+				.itemsCallback(new MaterialDialog.ListCallback() {
+					@Override
+					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+						switch (which) {
+							case 0:
+								switch (i) {
+									case R.id.img_wifi:
+										dialog.setTitle(text + getString(R.string.wifi));
+										selectAllWifi(true);
+										break;
+									case R.id.img_3g:
+										dialog.setTitle(text + getString(R.string.data));
+										selectAll3G(true);
+										break;
+									case R.id.img_roam:
+										dialog.setTitle(text + getString(R.string.roam));
+										selectAllRoam(true);
+										break;
+									case R.id.img_vpn:
+										dialog.setTitle(text + getString(R.string.vpn));
+										selectAllVPN(true);
+										break;
+									case R.id.img_lan:
+										dialog.setTitle(text + getString(R.string.lan));
+										selectAllLAN(true);
+										break;
+								}
+								break;
+							case 1:
+								switch (i) {
+									case R.id.img_wifi:
+										dialog.setTitle(text + getString(R.string.wifi));
+										break;
+									case R.id.img_3g:
+										dialog.setTitle(text + getString(R.string.data));
+										break;
+									case R.id.img_roam:
+										dialog.setTitle(text + getString(R.string.roam));
+										break;
+									case R.id.img_vpn:
+										dialog.setTitle(text + getString(R.string.vpn));
+										break;
+									case R.id.img_lan:
+										dialog.setTitle(text + getString(R.string.lan));
+										break;
+								}
+								selectRevert(i);
+								dirty = true;
+								break;
+							case 2:
+								switch (i) {
+									case R.id.img_wifi:
+										dialog.setTitle(text + getString(R.string.wifi));
+										selectAllWifi(false);
+										break;
+									case R.id.img_3g:
+										dialog.setTitle(text + getString(R.string.data));
+										selectAll3G(false);
+										break;
+									case R.id.img_roam:
+										dialog.setTitle(text + getString(R.string.roam));
+										selectAllRoam(false);
+										break;
+									case R.id.img_vpn:
+										dialog.setTitle(text + getString(R.string.vpn));
+										selectAllVPN(false);
+										break;
+									case R.id.img_lan:
+										dialog.setTitle(text + getString(R.string.lan));
+										selectAllLAN(false);
+										break;
+								}
+								break;
+						}
+					}
+				}).show();
 	}
 
 	@Override
@@ -1877,7 +1857,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	}
 	
 	private class Startup extends AsyncTask<Void, Void, Void> {
-        private ProgressDialog dialog = null;
+        private MaterialDialog dialog = null;
         private Context context = null;
         private boolean suAvailable = false;
 
@@ -1891,10 +1871,10 @@ public class MainActivity extends ListActivity implements OnClickListener,
             // We're creating a progress dialog here because we want the user to wait.
             // If in your app your user can just continue on with clicking other things,
             // don't do the dialog thing.
-            dialog = new ProgressDialog(context);
-            dialog.setTitle(context.getString(R.string.su_check_title));
-            dialog.setMessage(context.getString(R.string.su_check_message));
-            dialog.setIndeterminate(true);
+
+			dialog = new MaterialDialog.Builder(context).
+					title(getString(R.string.su_check_title)).progress(true,0).show();
+			dialog.setContent(context.getString(R.string.su_check_message));
             dialog.setCancelable(false);
             dialog.show();
         }
@@ -1913,20 +1893,20 @@ public class MainActivity extends ListActivity implements OnClickListener,
         protected void onPostExecute(Void result) {
         	dialog.dismiss();
         	if(!suAvailable) {
-        		AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        		alertDialog.setTitle(context.getString(R.string.error_common));
-        		alertDialog.setMessage(context.getString(R.string.error_su));
-        		alertDialog.setIcon(R.drawable.ic_launcher_free);
-        		alertDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-        			public void onClick(DialogInterface dialog,int which) {
-        				MainActivity.this.finish();
-        			    android.os.Process.killProcess(android.os.Process.myPid());
-        			}
-        		});
-                alertDialog.setCancelable(false);
-        		alertDialog.show();
-        		 
-        	} else {
+					new MaterialDialog.Builder(MainActivity.this)
+						.title(R.string.error_common)
+						.content(R.string.error_su)
+						.positiveText(R.string.OK)
+						.callback(new MaterialDialog.ButtonCallback() {
+							@Override
+							public void onPositive(MaterialDialog dialog) {
+								MainActivity.this.finish();
+								android.os.Process.killProcess(android.os.Process.myPid());
+								dialog.dismiss();
+							}
+						})
+						.show();
+			} else {
         		if(passCheck()){
            	    	showOrLoadApplications();
            	    }	
