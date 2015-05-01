@@ -242,7 +242,7 @@ public final class Api {
      * @param ctx context
      * @param msgText message
      */
-	public static void alert(Context ctx, CharSequence msgText) {
+	public static void toast(Context ctx, CharSequence msgText) {
 		if (ctx != null) {
 			Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
 		}
@@ -263,7 +263,7 @@ public final class Api {
 		}
 	}*/
 
-	static String customScriptHeader(Context ctx) {
+	/*static String customScriptHeader(Context ctx) {
 		final String dir = ctx.getDir("bin",0).getAbsolutePath();
 		String myiptables = dir + "/iptables";
 		String mybusybox = dir + "/busybox";
@@ -276,7 +276,7 @@ public final class Api {
 			"IPTABLES="+ myiptables + "\n" +
 			"BUSYBOX="+mybusybox+"\n" +
 			"";
-	}
+	}*/
 	
 	static void setIpTablePath(Context ctx,boolean setv6) {
 		boolean builtin;
@@ -794,13 +794,13 @@ public final class Api {
 					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 					}
-					alert(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
+					toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
 				} else {
 					return true;
 				}
 			} catch (Exception e) {
 				Log.e(TAG, "Exception while applying rules: " + e.getMessage());
-				if (showErrors) alert(ctx, ctx.getString(R.string.error_refresh) + e);
+				if (showErrors) toast(ctx, ctx.getString(R.string.error_refresh) + e);
 			}
 			return false;
 		}
@@ -942,7 +942,7 @@ public final class Api {
 			} else {
 				fixupLegacyCmds(out);
 				if (runScriptAsRoot(ctx, out, new StringBuilder()) == -1) {
-					if(showErrors) alert(ctx, ctx.getString(R.string.error_purge));
+					if(showErrors) toast(ctx, ctx.getString(R.string.error_purge));
 					return false;
 				}
 			}
@@ -1237,7 +1237,7 @@ public final class Api {
 				
 				return applications;
 			} catch (Exception e) {
-				alert(ctx, ctx.getString(R.string.error_common) + e);
+				toast(ctx, ctx.getString(R.string.error_common) + e);
 			}
 			return null;
 	}
@@ -1420,13 +1420,13 @@ public final class Api {
 			if (ret) {
 				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
 			} else {
-				alert(ctx, ctx.getString(R.string.error_binary));
+				toast(ctx, ctx.getString(R.string.error_binary));
 			}
 		}
 
 		if (currentVer > 0) {
 			if (migrateSettings(ctx, lastVer, currentVer) == false && showErrors) {
-				alert(ctx, ctx.getString(R.string.error_migration));
+				toast(ctx, ctx.getString(R.string.error_migration));
 			}
 		}
 
@@ -1474,7 +1474,7 @@ public final class Api {
 		final Editor edit = prefs.edit();
 		edit.putBoolean(PREF_ENABLED, enabled);
 		if (!edit.commit()) {
-			if(showErrors)alert(ctx, ctx.getString(R.string.error_write_pref));
+			if(showErrors)toast(ctx, ctx.getString(R.string.error_write_pref));
 			return;
 		}
 		
@@ -1695,18 +1695,18 @@ public final class Api {
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
 	 	String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
 	   	if(saveSharedPreferencesToFile(ctx,fileName)){
-			Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
+			Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
 		} else {
-			Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
+			Api.toast(ctx, ctx.getString(R.string.export_rules_fail) );
 	   	}
 	}
 	
 	public static void saveAllPreferencesToFileConfirm(final Context ctx) {
 	 	String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
 	   	if(saveAllPreferencesToFile(ctx,fileName)){
-			Api.alert(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
+			Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
 		} else {
-			Api.alert(ctx, ctx.getString(R.string.export_rules_fail) );
+			Api.toast(ctx, ctx.getString(R.string.export_rules_fail) );
    		}
 	}
 	
@@ -2129,10 +2129,10 @@ public final class Api {
 			prefEdit.commit();
 			res = true;
 		} catch (FileNotFoundException e) {
-			// alert(ctx, "Missing back.rules file");
+			// toast(ctx, "Missing back.rules file");
 			Log.e(TAG, e.getLocalizedMessage());
 		} catch (IOException e) {
-			// alert(ctx, "Error reading the backup file");
+			// toast(ctx, "Error reading the backup file");
 			Log.e(TAG, e.getLocalizedMessage());
 		} catch (ClassNotFoundException e) {
 			Log.e(TAG, e.getLocalizedMessage());
@@ -2165,7 +2165,7 @@ public final class Api {
 			if(file.exists()) {
 				res = importRulesOld(ctx,file);
 			} else {
-				alert(ctx,ctx.getString(R.string.backup_notexist));
+				toast(ctx,ctx.getString(R.string.backup_notexist));
 			}
 		}*/
 		return res;
@@ -2186,7 +2186,7 @@ public final class Api {
 			if(file.exists()) {
 				res = importRulesOld(ctx,file);
 			} else {
-				alert(ctx,ctx.getString(R.string.backup_notexist));
+				toast(ctx,ctx.getString(R.string.backup_notexist));
 			}
 		}*/
 		return res;

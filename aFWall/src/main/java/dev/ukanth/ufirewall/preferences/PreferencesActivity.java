@@ -153,7 +153,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			if (!defaultIP6TablesPath.exists()) {
 				CheckBoxPreference connectionPref = (CheckBoxPreference) findPreference(key);
 				connectionPref.setChecked(false);
-				Api.alert(ctx, getString(R.string.ip6unavailable));
+				Api.toast(ctx, getString(R.string.ip6unavailable));
 			}
 		}
 		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")

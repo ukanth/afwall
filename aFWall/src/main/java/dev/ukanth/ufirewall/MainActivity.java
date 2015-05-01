@@ -39,6 +39,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.internal.widget.AdapterViewCompat;
+import android.support.v7.internal.widget.AdapterViewCompat.OnItemSelectedListener;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
@@ -52,6 +54,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -60,6 +63,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,7 +97,7 @@ import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT
 
 
 public class MainActivity extends ListActivity implements OnClickListener,
-					ActionBar.OnNavigationListener,OnCheckedChangeListener  {
+					ActionBar.OnNavigationListener  {
 
 	private TextView mSelected;
     private String[] mLocations;
@@ -182,13 +186,43 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	}
 
 
-	private void updateRadioFilter() {
+	/*private void updateRadioFilter() {
 		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
 		radioGroup.setOnCheckedChangeListener(this);
-	}
+	}*/
 
 	private void selectFilterGroup() {
-		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		Spinner spinner1 = (Spinner) findViewById(R.id.filterGroup);
+		spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
+			{
+				switch(pos) {
+					case 0:
+						showApplications("", 99, true);
+						break;
+					case 1:
+						showApplications(null, 0, false);
+						break;
+					case 2:
+						showApplications(null, 1, false);
+						break;
+					case 3:
+						showApplications(null, 2, false);
+						break;
+					default:
+						showOrLoadApplications();
+						break;
+				}
+			}
+
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+
+			}
+		});
+		showApplications("", 99, true);
+		/*RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
 		switch (radioGroup.getCheckedRadioButtonId()) {
 		case R.id.rpkg_core:
 			showApplications(null, 0, false);
@@ -202,7 +236,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		default:
 			showApplications("", 99 , true);
 			break;
-		}
+		}*/
 	}
 	
 
@@ -256,9 +290,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		}
 
 		if (G.showFilter()) {
-			this.findViewById(R.id.appFilterGroup).setVisibility(View.VISIBLE);
+			this.findViewById(R.id.filerOption).setVisibility(View.VISIBLE);
 		} else {
-			this.findViewById(R.id.appFilterGroup).setVisibility(View.GONE);
+			this.findViewById(R.id.filerOption).setVisibility(View.GONE);
 		}
 		if (G.enableRoam()) {
 			addColumns(R.id.img_roam);
@@ -285,7 +319,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			hideColumns(R.id.img_lan);
 		}
 
-		updateRadioFilter();
+		//updateRadioFilter();
 
 		if (!G.enableMultiProfile()) {
 			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -454,21 +488,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 						refreshHeader();
 					}
 				})
-				.show();
-		/*new AlertDialogWrapper.Builder(this)
-				.setItems(
-						new String[]{res.getString(R.string.mode_whitelist),
-								res.getString(R.string.mode_blacklist)},
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-												int which) {
-								final String mode = (which == 0 ? Api.MODE_WHITELIST : Api.MODE_BLACKLIST);
-								final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
-								editor.putString(Api.PREF_MODE, mode);
-								editor.commit();
-								refreshHeader();
-							}
-						}).setTitle("Select mode:").show();*/
+				.show();		
 	}
 	
 	/**
@@ -728,8 +748,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		}
 		
 		// Sort applications - selected first, then alphabetically
-		Collections.sort(apps2, new PackageComparator());	
-		
+		Collections.sort(apps2, new PackageComparator());
+
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore
 		this.listview.setSelectionFromTop(index, top);
@@ -957,9 +977,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 													if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
 														Api.applications = null;
 														showOrLoadApplications();
-														Api.alert(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+														Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 													} else {
-														Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+														Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
 													}
 												}
 
@@ -1045,9 +1065,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			public boolean handleMessage(Message msg) {
 				if (msg.obj != null) {
 					if(getCurrentPassword().equals((String) msg.obj)) {
-						setPassword((String) msg.obj);	
-					} else{
-						Api.alert(MainActivity.this,getString(R.string.settings_pwd_not_equal));
+						setPassword((String) msg.obj);
+					} else {
+						Api.toast(MainActivity.this,getString(R.string.settings_pwd_not_equal));
 					}
 				}
 				return false;
@@ -1179,12 +1199,12 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
 						Api.applications = null;
 						showOrLoadApplications();
-						Api.alert(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
+						Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
 					} else {
-						if(builder.toString().equals("")){
-							Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+						if (builder.toString().equals("")) {
+							Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
 						} else {
-							Api.alert(MainActivity.this,builder.toString());
+							Api.toast(MainActivity.this,builder.toString());
 						}
 					}
 				}
@@ -1197,15 +1217,15 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					if(Api.loadAllPreferencesFromFile(MainActivity.this, builder,fileSelected)){
 						Api.applications = null;
 						showOrLoadApplications();
-						Api.alert(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+						Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
 						Intent intent = getIntent();
 						finish();
 						startActivity(intent);
 					} else {
 						if(builder.toString().equals("")) {
-							Api.alert(MainActivity.this, getString(R.string.import_rules_fail));
+							Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
 						} else {
-							Api.alert(MainActivity.this,builder.toString());
+							Api.toast(MainActivity.this,builder.toString());
 						}
 					}
 				}
@@ -1266,7 +1286,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	 */
 	private void showLog() {
 		Intent i = new Intent(this, LogActivity.class);
-		startActivityForResult(i,SHOW_LOGS_ACTIVITY);
+		startActivityForResult(i, SHOW_LOGS_ACTIVITY);
 	}
 
 
@@ -1297,28 +1317,28 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 
 		Api.applySavedIptablesRules(ctx, true, new RootCommand()
-					.setSuccessToast(R.string.rules_applied)
-					.setFailureToast(R.string.error_apply)
-					.setReopenShell(true)
-					.setCallback(new RootCommand.Callback() {
+				.setSuccessToast(R.string.rules_applied)
+				.setFailureToast(R.string.error_apply)
+				.setReopenShell(true)
+				.setCallback(new RootCommand.Callback() {
 
-			public void cbFunc(RootCommand state) {
-				try {
-					progress.dismiss();
-				} catch (Exception ex) {
-				}
+					public void cbFunc(RootCommand state) {
+						try {
+							progress.dismiss();
+						} catch (Exception ex) {
+						}
 
-				boolean result = enabled;
+						boolean result = enabled;
 
-				if (state.exitCode == 0) {
-					setDirty(false);
-				} else {
-					result = false;
-				}
-				menuSetApplyOrSave(MainActivity.this.mainMenu, result);
-				Api.setEnabled(ctx, result, true);
-			}
-		}));
+						if (state.exitCode == 0) {
+							setDirty(false);
+						} else {
+							result = false;
+						}
+						menuSetApplyOrSave(MainActivity.this.mainMenu, result);
+						Api.setEnabled(ctx, result, true);
+					}
+				}));
 	}
 
 	/**
@@ -1630,25 +1650,25 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	new MaterialDialog.Builder(this)
 				.title(R.string.profile_remove)
 				.items(G.getAdditionalProfiles().toArray(new String[G.getAdditionalProfiles().size()]))
-				.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-					@Override
-					public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-						G.removeAdditionalProfile(mLocations[which + 4], which + 4);
-						setupMultiProfile(true);
-						Api.applications = null;
-						showOrLoadApplications();
-						return true;
-					}
-				})
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						G.storedPosition(0);
-						reloadPreferences();
-					}
-				 })
-				.positiveText(R.string.apply)
-				.negativeText(R.string.Cancel)
+			.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+				@Override
+				public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+					G.removeAdditionalProfile(mLocations[which + 4], which + 4);
+					setupMultiProfile(true);
+					Api.applications = null;
+					showOrLoadApplications();
+					return true;
+				}
+			})
+			.callback(new MaterialDialog.ButtonCallback() {
+				@Override
+				public void onNegative(MaterialDialog dialog) {
+					G.storedPosition(0);
+					reloadPreferences();
+				}
+			})
+			.positiveText(R.string.apply)
+			.negativeText(R.string.Cancel)
 				.show();
 	}
 	
@@ -1672,7 +1692,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				.callback(new MaterialDialog.ButtonCallback() {
 					@Override
 					public void onNegative(MaterialDialog dialog) {
-						G.storedPosition(0);
 						reloadPreferences();
 					}
 				})
@@ -1798,7 +1817,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				}).show();
 	}
 
-	@Override
+	/*@Override
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
 		switch (checkedId) {
 			case R.id.rpkg_all:
@@ -1814,7 +1833,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				showApplications(null, 2,false);
 				break;
 			}
-	}
+	}*/
 	
 	private class Startup extends AsyncTask<Void, Void, Void> {
         private MaterialDialog dialog = null;

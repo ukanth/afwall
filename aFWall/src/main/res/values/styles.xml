@@ -19,7 +19,7 @@
         <item name="android:actionBarStyle">@style/MyActionBarTheme</item>
         <item name="android:fitsSystemWindows">true</item>
          <item name="md_dark_theme">true</item>
-         <item name="md_title_color">#ff2fff01</item>
+         <item name="md_title_color">#0F9D58</item>
          <item name="md_content_color">#ffffffff</item>
      </style>
 

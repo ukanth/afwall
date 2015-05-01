@@ -19,17 +19,17 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="15dp"
-        android:paddingTop="15dp"
-        android:paddingLeft="40dp">
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/label_mode"
+            android:paddingLeft="10dp"
             android:textStyle="bold"
             android:text="@string/mode"
-            android:clickable="true"></TextView>
+            android:clickable="true"/>
 
 
         <TextView
@@ -38,41 +38,75 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:textIsSelectable="false" />
+<!--
+        <Spinner
+            android:id="@+id/filterGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/filters"/>-->
 
     </LinearLayout>
 
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:id="@+id/appFilterGroup"
-        android:orientation="horizontal"
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/filerOption"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:visibility="gone">
 
-        <RadioButton
-            android:id="@+id/rpkg_all"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pkg_all"
-            android:checked="true" />
+            android:id="@+id/filerText"
+            android:paddingLeft="10dp"
+            android:textStyle="bold"
+            android:text="@string/filter"/>
 
-        <RadioButton
-            android:id="@+id/rpkg_core"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/filterGroup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/pkg_core" />
+            android:entries="@array/filters"/>
 
-        <RadioButton
-            android:id="@+id/rpkg_sys"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pkg_sys" />
+    </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/rpkg_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pkg_user" />
-    </RadioGroup>
+
+    <!-- <RadioGroup
+         android:layout_width="wrap_content"
+         android:id="@+id/appFilterGroup"
+         android:orientation="horizontal"
+         android:layout_height="wrap_content"
+         android:paddingBottom="5dp"
+         android:paddingTop="5dp"
+         android:visibility="gone">
+
+         <RadioButton
+             android:id="@+id/rpkg_all"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/pkg_all"
+             android:checked="true" />
+
+         <RadioButton
+             android:id="@+id/rpkg_core"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/pkg_core" />
+
+         <RadioButton
+             android:id="@+id/rpkg_sys"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/pkg_sys" />
+
+         <RadioButton
+             android:id="@+id/rpkg_user"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/pkg_user" />
+     </RadioGroup>-->
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -80,7 +114,7 @@
         android:padding="0px">
 
         <View
-            android:layout_width="40dp"
+            android:layout_width="35dp"
             android:layout_height="fill_parent"
             android:id="@+id/imageHolder" />
 

@@ -72,6 +72,14 @@
          <item>sr_CS</item>
 
     </string-array>
+
+
+    <string-array name="filters">
+        <item>@string/pkg_all</item>
+        <item>@string/pkg_core</item>
+        <item>@string/pkg_sys</item>
+        <item>@string/pkg_user</item>
+    </string-array>
     
     <string-array name="iptables_binary">
         <item>@string/auto</item>

@@ -190,7 +190,7 @@ public class G extends android.app.Application {
 	public static int storedPosition() { return gPrefs.getInt(PROFILE_STORED_POSITION, 0); }
 	public static int storedPosition(int val) { gPrefs.edit().putInt(PROFILE_STORED_POSITION, val).commit(); return val; }
 
-	public static int sysColor() { return gPrefs.getInt(SYSTEM_APP_COLOR, Color.RED); }
+	public static int sysColor() { return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58")); }
 	public static int sysColor(int val) { gPrefs.edit().putInt(SYSTEM_APP_COLOR, val).commit(); return val; }
 
 	
