@@ -48,7 +48,8 @@
     <string name="rules_deleted">Rules deleted with success</string>
     <string name="pass_titleset">Set password lock</string>
     <string name="pass_titleget">Password required</string>
-    <string name="enterpass">Enter the password:</string>
+    <string name="enterpass">Enter password</string>
+    <string name="reenterpass">Re-enter password</string>
     <string name="error_write_pref">Error writing to preferences</string>
     <string name="enternewpass">Enter the new password (leave blank to remove):</string>
     <string name="passdefined">Password lock defined</string>
@@ -366,4 +367,15 @@
     <string name="profile_default">MyProfile</string>
     <string name="filter">Filter</string>
 
+    <string name="enable_protection">Enable Protection</string>
+    <string name="pref_none">None</string>
+    <string name="pref_password">Password</string>
+    <string name="pref_pattern">Pattern</string>
+    <string name="pref_pin">Pin</string>
+
+
+    <string name="set_password">Set</string>
+    <string name="wrong_password">Wrong Password</string>
+    <string name="password_empty"></string>
+    <string name="submit">Submit</string>
 </resources>

@@ -1,17 +1,26 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/sec_prefs_title" >
-        <CheckBoxPreference
+
+        <ListPreference
+            android:defaultValue="@string/pref_none"
+            android:entries="@array/password_options"
+            android:key="passOptions"
+            android:entryValues="@array/password_option_values"
+            android:title="@string/enable_protection" >
+        </ListPreference>
+
+        <!-- <CheckBoxPreference
             android:key="usePatterns"
-            android:title="@string/usePattern" />
+            android:title="@string/usePattern" />-->
         <CheckBoxPreference
-            android:dependency="usePatterns"
+            android:enabled="false"
             android:key="stealthMode"
             android:title="@string/stealthMode" />
 
         <ListPreference
+            android:enabled="false"
             android:defaultValue="3"
-            android:dependency="usePatterns"
             android:entries="@array/pattern_max_attempt"
             android:entryValues="@array/pattern_max_attempt"
             android:key="patternMax"

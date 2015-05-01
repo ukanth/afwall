@@ -37,11 +37,11 @@
                 android:icon="@drawable/rules"
                 android:showAsAction="always"
                 android:title="@string/showrules"/>
-            <item
+            <!--<item
                 android:id="@+id/menu_setpwd"
                 android:icon="@drawable/lock"
                 android:showAsAction="always"
-                android:title="@string/setpwd"/>
+                android:title="@string/setpwd"/>-->
             <item
                 android:id="@+id/menu_setcustom"
                 android:icon="@drawable/script"

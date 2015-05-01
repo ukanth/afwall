@@ -37,10 +37,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.internal.widget.AdapterViewCompat;
-import android.support.v7.internal.widget.AdapterViewCompat.OnItemSelectedListener;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
@@ -51,7 +48,6 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -61,8 +57,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,11 +80,9 @@ import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
-import dev.ukanth.ufirewall.util.PassDialog;
 import eu.chainfire.libsuperuser.Shell;
 
 import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
-import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE_PATTERN;
 import static com.haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
@@ -130,7 +122,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		this.currentPassword = currentPassword;
 	}
 	
-	private static final int REQ_CREATE_PATTERN = 9877;
+
 	private static final int REQ_ENTER_PATTERN = 9755;
 	
 	private static final int SHOW_ABOUT_RESULT = 1200;
@@ -140,7 +132,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
 	private static final int FILE_CHOOSER_LOCAL = 1700;
 	private static final int FILE_CHOOSER_ALL = 1701;
-	private boolean isPassVerify = false;
+	//private boolean isPassVerify = false;
 
 	MaterialDialog plsWait;
 	
@@ -255,7 +247,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			.setReopenShell(true).run(getApplicationContext(), cmds);
 		//put up the notification
 		if(G.activeNotification()){ 
-			Api.showNotification(Api.isEnabled(getApplicationContext()),getApplicationContext());
+			Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
 		}
 	}
 	
@@ -401,32 +393,27 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	}
 	
 	private boolean passCheck(){
-		if(!isOnPause){
-	        // If more than 5 seconds since last pause, prompt for password
-	    	if(G.usePatterns()){
-				if(!isPassVerify){
-					final String pwd = G.sPrefs.getString("LockPassword", "");
-					if (pwd.length() == 0) {
-						return true;
-					} else {
-						// Check the password
-						requestPassword(pwd);
-					}
-				}else {
-					return true;
-				}	
-			} else{
+		switch (G.protectionLevel()) {
+			case 0:
+				return true;
+			case 1:
 				final String oldpwd = G.profile_pwd();
 				if (oldpwd.length() == 0) {
 					return true;
 				} else {
 					// Check the password
-					requestPassword(oldpwd);	
-				}	
-			}
-	    } else {
-	    	return true;
-	    }
+					requestPassword();
+				}
+				break;
+			case 2:
+				final String pwd = G.sPrefs.getString("LockPassword", "");
+				if (pwd.length() == 0) {
+					return true;
+				} else {
+					requestPassword();
+				}
+				break;
+		}
 		return false;
 	}
 
@@ -491,74 +478,64 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				.show();		
 	}
 	
-	/**
-	 * Set a new password lock
-	 * 
-	 * @param pwd
-	 *            new password (empty to remove the lock)
-	 */
-	private void setPassword(String pwd) {
-		final Resources res = getResources();
-		String msg = "";
-		if(pwd.length() > 0){
-			String enc = Api.hideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", pwd);
-			if(enc != null) {
-				G.profile_pwd(enc);
-				G.isEnc(true);
-				msg = res.getString(R.string.passdefined);
-			}
-		} else {
-			G.profile_pwd(pwd);
-			G.isEnc(false);
-			msg = res.getString(R.string.passremoved);
-		}
-		Api.displayToasts(getApplicationContext(), msg, Toast.LENGTH_SHORT);
-	}
+
 
 
 
 	/**
 	 * Request the password lock before displayed the main screen.
 	 */
-	private void requestPassword(final String pwd) {
-
-		if(G.usePatterns()){
-			Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, getApplicationContext(), LockPatternActivity.class);
-			String savedPattern  = G.sPrefs.getString("LockPassword", "");
-			intent.putExtra(EXTRA_PATTERN, savedPattern.toCharArray());
-			startActivityForResult(intent, REQ_ENTER_PATTERN);
-		}
-		else{
-			new PassDialog(this, false, new android.os.Handler.Callback() {
-				public boolean handleMessage(Message msg) {
-					if (msg.obj == null) {
-						MainActivity.this.finish();
-						android.os.Process.killProcess(android.os.Process.myPid());
-						return false;
-					}
-					// only decrypt if encrypted!
-					if (G.isEnc()) {
-						String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", pwd);
-						if (decrypt != null) {
-							if (!decrypt.equals(msg.obj)) {
-								requestPassword(pwd);
-								return false;
+	private void requestPassword() {
+		switch(G.protectionLevel()) {
+			case 1:
+				new MaterialDialog.Builder(MainActivity.this)
+						.title(R.string.pass_titleget).autoDismiss(false)
+						.inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+						.positiveText(R.string.submit)
+						.negativeText(R.string.Cancel)
+						.callback(new MaterialDialog.ButtonCallback() {
+							@Override
+							public void onNegative(MaterialDialog dialog) {
+								MainActivity.this.finish();
+								android.os.Process.killProcess(android.os.Process.myPid());
 							}
-						}
-					} else {
-						if (!pwd.equals(msg.obj)) {
-							requestPassword(pwd);
-							return false;
-						}
-					}
-					// Password correct
-					showOrLoadApplications();
-					return true;
-				}
-			}).show();
-				
-		}  
-		
+						})
+						.input(R.string.enterpass, R.string.password_empty, new MaterialDialog.InputCallback() {
+							@Override
+							public void onInput(MaterialDialog dialog, CharSequence input) {
+								String pass = input.toString();
+								boolean isAllowed = false;
+								if (G.isEnc()) {
+									String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
+									if (decrypt != null) {
+										if (decrypt.equals(pass)) {
+											isAllowed = true;
+										}
+									}
+								} else {
+									if (pass.equals(G.profile_pwd())) {
+										isAllowed = true;
+									}
+								}
+								if (isAllowed) {
+									showOrLoadApplications();
+									dialog.dismiss();
+								} else {
+									Api.toast(MainActivity.this, getString(R.string.wrong_password));
+								}
+
+
+							}
+						}).show();
+				break;
+			case 2:
+				Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, getApplicationContext(), LockPatternActivity.class);
+				String savedPattern  = G.sPrefs.getString("LockPassword", "");
+				intent.putExtra(EXTRA_PATTERN, savedPattern.toCharArray());
+				startActivityForResult(intent, REQ_ENTER_PATTERN);
+				break;
+		}
+
 	}
 
 
@@ -844,9 +821,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		case R.id.menu_help:
 			showAbout();
 			return true;
-		case R.id.menu_setpwd:
+		/*case R.id.menu_setpwd:
 			setPassword();
-			return true;
+			return true;*/
 		case R.id.menu_log:
 			showLog();
 			return true;
@@ -1060,80 +1037,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 				.show();
 	}
 
-	private void confirmPassword(){
-		new PassDialog(this, true, new android.os.Handler.Callback() {
-			public boolean handleMessage(Message msg) {
-				if (msg.obj != null) {
-					if(getCurrentPassword().equals((String) msg.obj)) {
-						setPassword((String) msg.obj);
-					} else {
-						Api.toast(MainActivity.this,getString(R.string.settings_pwd_not_equal));
-					}
-				}
-				return false;
-			}
-		}).show();
-	}
-	
-	private void resetPassword()
-	 {
-
-		 new MaterialDialog.Builder(this)
-				 .title(R.string.delete)
-				 .content(R.string.resetPattern)
-				 .positiveText(R.string.Yes)
-				 .negativeText(R.string.No)
-				 .callback(new MaterialDialog.ButtonCallback() {
-					 @Override
-					 public void onPositive(MaterialDialog dialog) {
-						 final Editor editor = G.sPrefs.edit();
-						 editor.putString("LockPassword", "");
-						 editor.commit();
-						 dialog.dismiss();
-					 }
-
-					 @Override
-					 public void onNegative(MaterialDialog dialog) {
-						dialog.dismiss();
-					 }
-				 })
-				 .show();
-
-	    }
-
-	/**
-	 * Set a new lock password
-    	 */
-	private void setPassword() {
-		if(G.usePatterns()){
-			final String pwd = G.sPrefs.getString(
-					"LockPassword", "");
-			if (pwd.length() != 0) {
-				resetPassword();
-			} else {
-				//Intent intent = new Intent(MainActivity.this, LockPatternActivity.class);
-				//intent.putExtra(LockPatternActivity._Mode, LockPatternActivity.LPMode.CreatePattern);
-				//startActivityForResult(intent, _ReqCreatePattern);
-				Intent intent = new Intent(ACTION_CREATE_PATTERN, null,getApplicationContext(), LockPatternActivity.class);
-				startActivityForResult(intent, REQ_CREATE_PATTERN);
-			}	
-		}  else {
-			new PassDialog(this, true, new android.os.Handler.Callback() {
-				public boolean handleMessage(Message msg) {
-					if (msg.obj != null) {
-						String getPass = (String) msg.obj;
-						if(getPass.length() > 0) {
-							setCurrentPassword(getPass);
-							confirmPassword();
-						} else {
-							setPassword(getPass);
-						}
-					}
-					return false;
-				}
-			}).show();
-		}
-	}
 	/**
 	 * Set a new init script
 	 */
@@ -1149,7 +1052,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		//checkForProfile = false;
 		
 		switch(requestCode) {
-			case REQ_CREATE_PATTERN: {
+			/*case REQ_CREATE_PATTERN: {
 				if(G.usePatterns()){
 					if (resultCode == RESULT_OK) {
 						char[] pattern = data.getCharArrayExtra(
@@ -1161,13 +1064,13 @@ public class MainActivity extends ListActivity implements OnClickListener,
 					break;
 				}
 			}
-			break;
+			break;*/
 			
 			case REQ_ENTER_PATTERN: {
 				if(G.usePatterns()){
 				switch (resultCode) {
 					case RESULT_OK:
-						isPassVerify = true;
+						//isPassVerify = true;
 						showOrLoadApplications();
 						break;
 					case RESULT_CANCELED:
@@ -1708,8 +1611,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.confirmation).content(displayMessage)
-				.positiveText(android.R.string.ok)
-				.negativeText(android.R.string.cancel)
+				.positiveText(R.string.OK)
+				.negativeText(R.string.Cancel)
 				.callback(new MaterialDialog.ButtonCallback() {
 					@Override
 					public void onPositive(MaterialDialog dialog) {

@@ -57,6 +57,7 @@ public class G extends android.app.Application {
 	private static final String NOTIFY_INSTALL = "notifyAppInstall";
 	private static final String DISABLE_ICONS = "disableIcons";
 	private static final String IPTABLES_PATH = "ip_path";
+	private static final String PROTECTION_OPTION = "passOptions";
 	private static final String BUSYBOX_PATH = "bb_path";
 	private static final String LANGUAGE = "locale";
 	private static final String PROFILE_STORED_POSITION = "storedPosition";
@@ -118,17 +119,17 @@ public class G extends android.app.Application {
 	public static String profile_pwd() { return gPrefs.getString(profile_Pwd, ""); }
 	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
 
-	public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
-	public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
+	//public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
+	//public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
 	
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
 	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
 	
 	public static boolean fixLeak() { return gPrefs.getBoolean(FIX_START_LEAK, false); }
-	public static boolean fixLeak(boolean val) { gPrefs.edit().putBoolean(FIX_START_LEAK, val).commit(); return val; }
+	//public static boolean fixLeak(boolean val) { gPrefs.edit().putBoolean(FIX_START_LEAK, val).commit(); return val; }
 
 	public static boolean disableTaskerToast() { return gPrefs.getBoolean(DISABLE_TASKER_TOAST, false); }
-	public static boolean disableTaskerToast(boolean val) { gPrefs.edit().putBoolean(DISABLE_TASKER_TOAST, val).commit(); return val; }
+	//public static boolean disableTaskerToast(boolean val) { gPrefs.edit().putBoolean(DISABLE_TASKER_TOAST, val).commit(); return val; }
 
 	public static boolean isDo() { return gPrefs.getBoolean(REG_DO, false); }
 	public static boolean isDo(boolean val) { gPrefs.edit().putBoolean(REG_DO, val).commit(); return val; }
@@ -137,28 +138,28 @@ public class G extends android.app.Application {
 	public static boolean enableRoam(boolean val) { gPrefs.edit().putBoolean(ENABLE_ROAM, val).commit(); return val; }
 
 	public static boolean enableVPN() { return gPrefs.getBoolean(ENABLE_VPN, false); }
-	public static boolean enableVPN(boolean val) { gPrefs.edit().putBoolean(ENABLE_VPN, val).commit(); return val; }
+	//public static boolean enableVPN(boolean val) { gPrefs.edit().putBoolean(ENABLE_VPN, val).commit(); return val; }
 
 	public static boolean enableLAN() { return gPrefs.getBoolean(ENABLE_LAN, true); }
 	public static boolean enableLAN(boolean val) { gPrefs.edit().putBoolean(ENABLE_LAN, val).commit(); return val; }
 
 	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, false); }
-	public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
+	//public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
 
 	public static boolean enableInbound() { return gPrefs.getBoolean(ENABLE_INBOUND, false); }
-	public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean(ENABLE_INBOUND, val).commit(); return val; }
+	//public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean(ENABLE_INBOUND, val).commit(); return val; }
 
 	public static boolean enableLog() { return gPrefs.getBoolean(ENABLE_LOG, false); }
 	public static boolean enableLog(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG, val).commit(); return val; }
 	
 	public static boolean enableLogService() { return gPrefs.getBoolean(ENABLE_LOG_SERVICE, false); }
-	public static boolean enableLogService(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG_SERVICE, val).commit(); return val; }
+	//public static boolean enableLogService(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG_SERVICE, val).commit(); return val; }
 
 	public static boolean enableAdmin() { return gPrefs.getBoolean(ENABLE_ADMIN, false); }
 	public static boolean enableAdmin(boolean val) { gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit(); return val; }
 
 	public static boolean enableConfirm() { return gPrefs.getBoolean(ENABLE_CONFIRM, false); }
-	public static boolean enableConfirm(boolean val) { gPrefs.edit().putBoolean(ENABLE_CONFIRM, val).commit(); return val; }
+	//public static boolean enableConfirm(boolean val) { gPrefs.edit().putBoolean(ENABLE_CONFIRM, val).commit(); return val; }
 
 	public static boolean enableMultiProfile() { return gPrefs.getBoolean(ENABLE_MULTI_PROFILE, false); }
 	public static boolean enableMultiProfile(boolean val) { gPrefs.edit().putBoolean(ENABLE_MULTI_PROFILE, val).commit(); return val; }
@@ -169,17 +170,17 @@ public class G extends android.app.Application {
 	public static boolean showFilter() { return gPrefs.getBoolean(SHOW_FILTER, false); }
 	public static boolean showFilter(boolean val) { gPrefs.edit().putBoolean(SHOW_FILTER, val).commit(); return val; }
 
-	public static boolean notifyAppInstall() { return gPrefs.getBoolean(NOTIFY_INSTALL, false); }
-	public static boolean notifyAppInstall(boolean val) { gPrefs.edit().putBoolean(NOTIFY_INSTALL, val).commit(); return val; }
+	//public static boolean notifyAppInstall() { return gPrefs.getBoolean(NOTIFY_INSTALL, false); }
+	//public static boolean notifyAppInstall(boolean val) { gPrefs.edit().putBoolean(NOTIFY_INSTALL, val).commit(); return val; }
 
 	public static boolean disableIcons() { return gPrefs.getBoolean(DISABLE_ICONS, false); }
-	public static boolean disableIcons(boolean val) { gPrefs.edit().putBoolean(DISABLE_ICONS, val).commit(); return val; }
+	//public static boolean disableIcons(boolean val) { gPrefs.edit().putBoolean(DISABLE_ICONS, val).commit(); return val; }
 
 	public static String ip_path() { return gPrefs.getString(IPTABLES_PATH, "auto"); }
 	public static String ip_path(String val) { gPrefs.edit().putString(IPTABLES_PATH, val).commit(); return val; }
 	
 	public static String dns_proxy() { return gPrefs.getString(DNS_PROXY, "auto"); }
-	public static String dns_proxy(String val) { gPrefs.edit().putString(DNS_PROXY, val).commit(); return val; }
+	//public static String dns_proxy(String val) { gPrefs.edit().putString(DNS_PROXY, val).commit(); return val; }
 
 	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "builtin"); }
 	public static String bb_path(String val) { gPrefs.edit().putString(BUSYBOX_PATH, val).commit(); return val; }
@@ -191,15 +192,16 @@ public class G extends android.app.Application {
 	public static int storedPosition(int val) { gPrefs.edit().putInt(PROFILE_STORED_POSITION, val).commit(); return val; }
 
 	public static int sysColor() { return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58")); }
-	public static int sysColor(int val) { gPrefs.edit().putInt(SYSTEM_APP_COLOR, val).commit(); return val; }
+	//public static int sysColor(int val) { gPrefs.edit().putInt(SYSTEM_APP_COLOR, val).commit(); return val; }
 
 	
 	public static boolean activeRules() { return gPrefs.getBoolean(ACTIVE_RULES, true); }
 	
 	public static boolean usePatterns() { return gPrefs.getBoolean(USE_PASSWORD_PATTERN, false); }
+	public static boolean setUsePatterns(boolean val) { gPrefs.edit().putBoolean(USE_PASSWORD_PATTERN, val).commit(); return val; }
 	
 	public static boolean enableStealthPattern() { return gPrefs.getBoolean(PATTERN_STEALTH, false); }
-	public static boolean enableStealthPattern(boolean val) { gPrefs.edit().putBoolean(PATTERN_STEALTH, val).commit(); return val;  }
+	//public static boolean enableStealthPattern(boolean val) { gPrefs.edit().putBoolean(PATTERN_STEALTH, val).commit(); return val;  }
 	
 	
 	public static int getMaxPatternTry() { return Integer.parseInt(gPrefs.getString(PATTERN_MAX_TRY, "3")); }
@@ -210,13 +212,16 @@ public class G extends android.app.Application {
 	public static Long getMultiUserId() { return gPrefs.getLong(MULTI_USER_ID, 0);}
 	
 	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean(PROFILE_SWITCH, false); }
-	public static boolean applyOnSwitchProfiles(boolean val) { gPrefs.edit().putBoolean(PROFILE_SWITCH, val).commit(); return val; }
+	//public static boolean applyOnSwitchProfiles(boolean val) { gPrefs.edit().putBoolean(PROFILE_SWITCH, val).commit(); return val; }
 	
 	public static String logTarget() { return gPrefs.getString(LOG_TARGET, ""); }
 	public static String logTarget(String val) { gPrefs.edit().putString(LOG_TARGET, val).commit(); return val; }
 
 	public static int appVersion() { return gPrefs.getInt(APP_VERSION, 0); }
 	public static int appVersion(int val) { gPrefs.edit().putInt(APP_VERSION, val).commit(); return val; }
+
+	//new protection list
+	public static int protectionLevel() { return Integer.parseInt(gPrefs.getString(PROTECTION_OPTION, "0")); }
 
 	public static List<String> getBlockedNotifyApps() {
 		String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
@@ -314,23 +319,23 @@ public class G extends android.app.Application {
 	}
 	
 
-	public static int getAdditionalProfileCount() {
+	/*public static int getAdditionalProfileCount() {
 		int count = 0;
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 		if(!previousProfiles.equals("")){
 			count = previousProfiles.split(",").length;
 		} 
 		return count;
-	}
+	}*/
 	
-	public static int getProfilePosition() {
+	/*public static int getProfilePosition() {
 		int count = 0;
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 		if(!previousProfiles.equals("")){
 			count = previousProfiles.split(",").length;
 		} 
 		return count + DEFAULT_PROFILE_COUNT;
-	}
+	}*/
 	
 	public static int getProfilePosition(String profileName){
 		int profilePosition = -1;
