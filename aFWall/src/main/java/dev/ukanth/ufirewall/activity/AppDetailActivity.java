@@ -7,6 +7,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.TrafficStats;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,8 +29,11 @@ public class AppDetailActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setTitle(getString(R.string.traffic_detail_title));
         setContentView(R.layout.app_detail);
-        
-        
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+		setSupportActionBar(toolbar);
+
+
     	getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		

@@ -111,14 +111,22 @@
             android:hardwareAccelerated="true" >
         </activity>
         
-        <activity android:name="dev.ukanth.ufirewall.RulesActivity"/>
-        <activity android:name=".activity.AppDetailActivity">
+        <activity
+            android:theme="@style/SettingsTheme"
+            android:name="dev.ukanth.ufirewall.RulesActivity"/>
+        <activity
+            android:theme="@style/SettingsTheme"
+            android:name=".activity.AppDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
-        <activity android:name=".activity.LogActivity"/>
-        <activity android:name=".activity.DataDumpActivity" >
+        <activity
+            android:theme="@style/SettingsTheme"
+            android:name="dev.ukanth.ufirewall.activity.LogActivity"/>
+        <activity
+            android:theme="@style/SettingsTheme"
+            android:name="dev.ukanth.ufirewall.activity.DataDumpActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />

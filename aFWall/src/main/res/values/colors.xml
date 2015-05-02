@@ -6,6 +6,8 @@
 
 	<drawable name="divider_white_line">#ffffffff</drawable>
 
+	<color name="white">#ffffffff</color>
+	<color name="black">#aa000000</color>
 	<color name="ColorPrimary">#0F9D58</color>
 	<color name="ColorPrimaryDark">#ff095b35</color>
 </resources>

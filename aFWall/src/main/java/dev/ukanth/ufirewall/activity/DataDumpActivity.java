@@ -31,6 +31,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -93,6 +94,9 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 		//requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.rules);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
+		setSupportActionBar(toolbar);
 
 		// Load partially transparent black background
 		getSupportActionBar().setBackgroundDrawable(

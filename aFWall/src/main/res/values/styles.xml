@@ -23,7 +23,9 @@
          <item name="md_content_color">#ffffffff</item>
      </style>
 
-    <style name="MyActionBarTheme" parent="Theme.AppCompat">
+    <style name="MyActionBarTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:icon">@drawable/notification</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:titleTextStyle">@style/MyTextAppearance</item>
@@ -33,13 +35,10 @@
     </style>
 
     <style name="SettingsTheme" parent="style/Theme.AppCompat.NoActionBar">
-            <item name="android:windowNoTitle">false</item>
-            <item name="android:windowActionBar">true</item>
-            <item name="android:textColor">#ffffff</item>
-            <item name="android:titleTextStyle">@style/MyTextAppearance</item>
-            <item name="colorPrimary">@color/ColorPrimary</item>
-            <item name="android:icon">@drawable/notification</item>
-            <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:titleTextStyle">@style/MyTextAppearance</item>
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
     </style>
 
     <style name="MyTextAppearance" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">

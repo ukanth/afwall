@@ -24,7 +24,6 @@
 
 package dev.ukanth.ufirewall;
 
-import android.app.ActionBar;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +37,9 @@ import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
@@ -141,6 +142,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			}
 
 			setContentView(R.layout.main);
+
+
+			Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+			setSupportActionBar(toolbar);
 			//set onclick listeners
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
@@ -283,8 +288,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		//updateRadioFilter();
 
 		if (!G.enableMultiProfile()) {
-			//getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-
+			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			mSelected = (TextView)findViewById(R.id.text);
 			mSelected.setText("");
 		} else {
@@ -349,8 +353,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		    	    mLocations);
 			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	
-			//getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			//getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
+			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
 			
 			if(position > -1) {
 				getSupportActionBar().setSelectedNavigationItem(position);
@@ -813,7 +817,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			filterText.setEllipsize(TruncateAt.END);
 			filterText.setSingleLine();
 
-			MenuItemCompat.setOnActionExpandListener(item,  new MenuItemCompat.OnActionExpandListener()  {
+			MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
 				@Override
 				public boolean onMenuItemActionCollapse(MenuItem item) {
 					// Do something when collapsed

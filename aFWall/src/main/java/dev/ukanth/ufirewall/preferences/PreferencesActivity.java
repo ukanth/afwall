@@ -34,7 +34,11 @@ import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.util.List;
@@ -47,17 +51,37 @@ import dev.ukanth.ufirewall.util.G;
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
-	private static final String PREF_CHANGES = "PREF_CHANGE";
+	private Toolbar mToolBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// set language
 		Api.updateLanguage(getApplicationContext(), G.locale());
 		super.onCreate(savedInstanceState);
-		getActionBar().setTitle(getString(R.string.preferences));
-		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		prepareLayout();
 	}
+
+
+	private void prepareLayout() {
+		ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
+		View content = root.getChildAt(0);
+		LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_prefs, null);
+
+		root.removeAllViews();
+		toolbarContainer.addView(content);
+		root.addView(toolbarContainer);
+
+		mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.toolbar);
+		mToolBar.setTitle(getTitle());
+		mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+	}
+
 
 	@Override
 	public void onResume() {
@@ -73,7 +97,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				.unregisterOnSharedPreferenceChangeListener(this);
 		super.onPause();
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
