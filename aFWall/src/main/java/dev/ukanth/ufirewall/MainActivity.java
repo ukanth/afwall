@@ -25,7 +25,6 @@
 package dev.ukanth.ufirewall;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -38,6 +37,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
@@ -89,21 +89,32 @@ import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT
 
 
 public class MainActivity extends ListActivity implements OnClickListener,
-					ActionBar.OnNavigationListener  {
+					ActionBar.OnNavigationListener,SwipeRefreshLayout.OnRefreshListener {
 
 	private TextView mSelected;
     private String[] mLocations;
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	private Menu mainMenu;
-
    	public boolean isOnPause = false;
-	
-	/** progress dialog instance */
 	private ListView listview = null;
-	/** indicates if the view has been modified and not yet saved */
 	public static boolean dirty = false;
-	
+	private MaterialDialog plsWait;
+	private ArrayAdapter<String> spinnerAdapter = null;
+	private SwipeRefreshLayout mSwipeLayout;
+	private int index;
+	private int top;
+	private List<String> mlocalList = new ArrayList<String>();
+
+	private static final int REQ_ENTER_PATTERN = 9755;
+	private static final int SHOW_ABOUT_RESULT = 1200;
+	private static final int PREFERENCE_RESULT = 1205;
+	private static final int SHOW_CUSTOM_SCRIPT = 1201;
+	private static final int SHOW_RULES_ACTIVITY = 1202;
+	private static final int SHOW_LOGS_ACTIVITY = 1203;
+	private static final int FILE_CHOOSER_LOCAL = 1700;
+	private static final int FILE_CHOOSER_ALL = 1701;
+
 	public boolean isDirty() {
 		return dirty;
 	}
@@ -112,39 +123,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		MainActivity.dirty = dirty;
 	}
 
-	private String currentPassword = "";
-	
-	public String getCurrentPassword() {
-		return currentPassword;
-	}
-
-	public void setCurrentPassword(String currentPassword) {
-		this.currentPassword = currentPassword;
-	}
-	
-
-	private static final int REQ_ENTER_PATTERN = 9755;
-	
-	private static final int SHOW_ABOUT_RESULT = 1200;
-    private static final int PREFERENCE_RESULT = 1205;
-	private static final int SHOW_CUSTOM_SCRIPT = 1201;
-	private static final int SHOW_RULES_ACTIVITY = 1202;
-	private static final int SHOW_LOGS_ACTIVITY = 1203;
-	private static final int FILE_CHOOSER_LOCAL = 1700;
-	private static final int FILE_CHOOSER_ALL = 1701;
-	//private boolean isPassVerify = false;
-
-	MaterialDialog plsWait;
-	
-	ArrayAdapter<String> spinnerAdapter = null;
-	
-	private int index;
-	private int top;
-	
-	//private boolean checkForProfile = true;
-	
-	private List<String> mlocalList = new ArrayList<String>();
-	
 	/** Called when the activity is first created
 	 * . */
 	@Override
@@ -168,20 +146,25 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			this.findViewById(R.id.img_wifi).setOnClickListener(this);
 			this.findViewById(R.id.img_reset).setOnClickListener(this);
 			this.findViewById(R.id.img_invert).setOnClickListener(this);
-			
+
+
         	Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
 	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 	       
 		    Api.assertBinaries(this, true);
+
+			mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+			mSwipeLayout.setOnRefreshListener(this);
 			// Let's do some background stuff
 			(new Startup()).setContext(this).execute();
 	}
 
-
-	/*private void updateRadioFilter() {
-		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
-		radioGroup.setOnCheckedChangeListener(this);
-	}*/
+	@Override
+	public void onRefresh() {
+		Api.applications = null;
+		showOrLoadApplications();
+		mSwipeLayout.setRefreshing(false);
+	}
 
 	private void selectFilterGroup() {
 		Spinner spinner1 = (Spinner) findViewById(R.id.filterGroup);
@@ -214,21 +197,6 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			}
 		});
 		showApplications("", 99, true);
-		/*RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
-		switch (radioGroup.getCheckedRadioButtonId()) {
-		case R.id.rpkg_core:
-			showApplications(null, 0, false);
-			break;
-		case R.id.rpkg_sys:
-			showApplications(null, 1, false);
-			break;
-		case R.id.rpkg_user:
-			showApplications(null, 2, false);
-			break;
-		default:
-			showApplications("", 99 , true);
-			break;
-		}*/
 	}
 	
 
@@ -550,10 +518,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 	public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
-		boolean ready = false;
 		boolean started = false;
 		Context context = null;
-		Activity mContext = null;
 		AsyncTask<Void,Integer,Void> myAsyncTaskInstance = null;
 		
 		public GetAppList setContext(Context context) {
@@ -626,6 +592,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			try {
 				started = false;
 				plsWait.dismiss();
+				mSwipeLayout.setRefreshing(false);
 				//plsWait.autoDismiss(true);
 			} catch (Exception e) {
 				// nothing
@@ -635,13 +602,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		@Override
 		protected void onProgressUpdate(Integer... progress) {
 
-			if (progress[0] == 0) {
-				//plsWait.setMax(getPackageManager().getInstalledApplications(0)
-				//		.size());
-				//plsWait.setMessage(getString(R.string.reading_apps));
-				//plsWait.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-				//plsWait.show();
-			}  else if( progress[0] == -1 ){
+			if (progress[0] == 0 ||  progress[0] == -1) {
+				//do nothing
 			} else {
 				 plsWait.incrementProgress(progress[0]);
 			}
@@ -836,10 +798,10 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		case R.id.menu_preference:
 			showPreferences();
 			return true;
-		case R.id.menu_reload:
+		/*case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
-			return true;
+			return true;*/
 		case R.id.menu_search:	
 			item.setActionView(R.layout.searchbar);
 			final EditText filterText = (EditText) item.getActionView().findViewById(
