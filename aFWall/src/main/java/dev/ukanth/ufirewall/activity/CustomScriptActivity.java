@@ -23,11 +23,10 @@
  */
 package dev.ukanth.ufirewall.activity;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -46,7 +45,7 @@ import dev.ukanth.ufirewall.R;
  * Custom scripts activity.
  * This screen is displayed to change the custom scripts.
  */
-public class CustomScriptActivity extends Activity implements OnClickListener {
+public class CustomScriptActivity extends AppCompatActivity implements OnClickListener {
 	private EditText script;
 	private EditText script2;
 
@@ -64,8 +63,8 @@ public class CustomScriptActivity extends Activity implements OnClickListener {
 		this.script2.setText(prefs.getString(Api.PREF_CUSTOMSCRIPT2, ""));
 		setTitle(R.string.set_custom_script);
 		setContentView(view);
-		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	@Override

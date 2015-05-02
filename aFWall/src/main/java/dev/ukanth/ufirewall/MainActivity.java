@@ -25,7 +25,6 @@
 package dev.ukanth.ufirewall;
 
 import android.app.ActionBar;
-import android.app.ListActivity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -36,8 +35,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
@@ -45,7 +46,6 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MenuItem.OnActionExpandListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -88,7 +88,7 @@ import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
-public class MainActivity extends ListActivity implements OnClickListener,
+public class MainActivity extends AppCompatActivity implements OnClickListener,
 					ActionBar.OnNavigationListener,SwipeRefreshLayout.OnRefreshListener {
 
 	private TextView mSelected;
@@ -202,9 +202,9 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
-			getActionBar().setIcon(R.drawable.notification);
+			getSupportActionBar().setIcon(R.drawable.notification);
 		} else {
-			getActionBar().setIcon(R.drawable.notification_error);
+			getSupportActionBar().setIcon(R.drawable.notification_error);
 		}
 	}
 	
@@ -227,6 +227,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 
 	private void reloadPreferences() {
 
+		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		G.reloadPrefs();
 		checkPreferences();
 		//language
@@ -282,8 +283,8 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		//updateRadioFilter();
 
 		if (!G.enableMultiProfile()) {
-			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-			getActionBar().setDisplayShowTitleEnabled(true);
+			//getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
 			mSelected = (TextView)findViewById(R.id.text);
 			mSelected.setText("");
 		} else {
@@ -348,15 +349,15 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		    	    mLocations);
 			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	
-			getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getActionBar().setListNavigationCallbacks(spinnerAdapter, this);
+			//getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			//getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
 			
 			if(position > -1) {
-				getActionBar().setSelectedNavigationItem(position);
-				getActionBar().setDisplayShowTitleEnabled(true);
+				getSupportActionBar().setSelectedNavigationItem(position);
+				getSupportActionBar().setDisplayShowTitleEnabled(true);
 				mSelected.setText("  |  " + mLocations[position]);
 			}
-			getActionBar().setDisplayUseLogoEnabled(true);
+			getSupportActionBar().setDisplayUseLogoEnabled(true);
 		}
 	}
 	
@@ -419,7 +420,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 		final TextView labelmode = (TextView) this.findViewById(R.id.label_mode);
 		final Resources res = getResources();
 		int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist: R.string.mode_blacklist);
-		labelmode.setText(res.getString(R.string.mode_header,res.getString(resid)));
+		labelmode.setText(res.getString(R.string.mode_header, res.getString(resid)));
 	}
 
 	/**
@@ -720,10 +721,10 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
 			apply.setTitle(R.string.applyrules);
 			runOnUiThread(new Runnable() {
-			     @Override
-			     public void run() {
-			    	 getActionBar().setIcon(R.drawable.notification);
-			    }
+				@Override
+				public void run() {
+					getSupportActionBar().setIcon(R.drawable.notification);
+				}
 			});
 			
 			
@@ -733,7 +734,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			runOnUiThread(new Runnable() {
 			     @Override
 			     public void run() {
-			    	 getActionBar().setIcon(R.drawable.notification_error);
+			    	 getSupportActionBar().setIcon(R.drawable.notification_error);
 			    }
 			});
 			
@@ -764,7 +765,7 @@ public class MainActivity extends ListActivity implements OnClickListener,
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		
 		/*case android.R.id.home:
@@ -802,35 +803,37 @@ public class MainActivity extends ListActivity implements OnClickListener,
 			Api.applications = null;
 			showOrLoadApplications();
 			return true;*/
-		case R.id.menu_search:	
+		case R.id.menu_search:
+
+
 			item.setActionView(R.layout.searchbar);
 			final EditText filterText = (EditText) item.getActionView().findViewById(
 					R.id.searchApps);
 			filterText.addTextChangedListener(filterTextWatcher);
 			filterText.setEllipsize(TruncateAt.END);
 			filterText.setSingleLine();
-			
-			item.setOnActionExpandListener(new OnActionExpandListener() {
-			    @Override
-			    public boolean onMenuItemActionCollapse(MenuItem item) {
-			        // Do something when collapsed
-			        return true;  // Return true to collapse action view
-			    }
 
-			    @Override
-			    public boolean onMenuItemActionExpand(MenuItem item) {
-			    	filterText.post(new Runnable() {
-			            @Override
-			            public void run() {
-			            	filterText.requestFocus();
-			                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			                imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
-			            }
-			        });
-			        return true;  // Return true to expand action view
-			    }
+			MenuItemCompat.setOnActionExpandListener(item,  new MenuItemCompat.OnActionExpandListener()  {
+				@Override
+				public boolean onMenuItemActionCollapse(MenuItem item) {
+					// Do something when collapsed
+					return true;  // Return true to collapse action view
+				}
+
+				@Override
+				public boolean onMenuItemActionExpand(MenuItem item) {
+					filterText.post(new Runnable() {
+						@Override
+						public void run() {
+							filterText.requestFocus();
+							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+							imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
+						}
+					});
+					return true;  // Return true to expand action view
+				}
 			});
-			
+
 			return true;
 		case R.id.menu_export:
 

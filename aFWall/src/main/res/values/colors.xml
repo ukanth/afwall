@@ -5,4 +5,7 @@
 	<drawable name="class_zero_background">#7f040000</drawable>
 
 	<drawable name="divider_white_line">#ffffffff</drawable>
+
+	<color name="ColorPrimary">#0F9D58</color>
+	<color name="ColorPrimaryDark">#ff095b35</color>
 </resources>

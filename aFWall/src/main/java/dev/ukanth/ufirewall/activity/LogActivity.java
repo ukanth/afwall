@@ -31,7 +31,6 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.NflogService;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.RootShell.RootCommand;
-import dev.ukanth.ufirewall.activity.DataDumpActivity;
 import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.util.G;
 
@@ -44,8 +43,8 @@ public class LogActivity extends DataDumpActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(getString(R.string.showlog_title));
-		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		sdDumpFile = "iptables.log";
 	}
 
@@ -87,7 +86,7 @@ public class LogActivity extends DataDumpActivity {
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		final Context ctx = this;
 
 		switch (item.getItemId()) {
@@ -114,7 +113,7 @@ public class LogActivity extends DataDumpActivity {
 							}));
 			return true;
 		}
-		return super.onMenuItemSelected(featureId, item);
+		return super.onOptionsItemSelected( item);
 	}
 
 	/*@Override

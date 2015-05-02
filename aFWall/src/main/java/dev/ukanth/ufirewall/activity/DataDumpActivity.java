@@ -24,13 +24,13 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,12 +44,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
 
-public abstract class DataDumpActivity extends Activity {
+public abstract class DataDumpActivity extends AppCompatActivity {
 
 	public static final String TAG = "AFWall";
 
@@ -95,10 +95,10 @@ public abstract class DataDumpActivity extends Activity {
 		setContentView(R.layout.rules);
 
 		// Load partially transparent black background
-		getActionBar().setBackgroundDrawable(
+		getSupportActionBar().setBackgroundDrawable(
 				getResources().getDrawable(R.drawable.ab_bg_black));
-		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		//TextView text = (TextView) findViewById(R.id.rules);
 		//text.setKeyListener(null);
 		//text.setHorizontallyScrolling(true);
@@ -130,7 +130,7 @@ public abstract class DataDumpActivity extends Activity {
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MENU_COPY:
 			copy();

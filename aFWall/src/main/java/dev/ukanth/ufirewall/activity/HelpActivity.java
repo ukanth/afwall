@@ -21,7 +21,7 @@ public class HelpActivity extends FragmentActivity implements  ActionBar.TabList
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
-    
+
 	private int count = 0;
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,30 +32,30 @@ public class HelpActivity extends FragmentActivity implements  ActionBar.TabList
             getActionBar().setDisplayHomeAsUpEnabled(true);
 
             setContentView(R.layout.help_about);
-            
+
             // Initilization
             viewPager = (ViewPager) findViewById(R.id.pager);
             actionBar = getActionBar();
             mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
-     
+
             viewPager.setAdapter(mAdapter);
             actionBar.setHomeButtonEnabled(false);
             actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-            
+
             // Adding Tabs
             for (String tab_name : tabs) {
                 actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
             }
-            
+
             viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
                 public void onPageSelected(int position) {
                     actionBar.setSelectedNavigationItem(position);
                 }
             });
-     
-            
-            
+
+
+
     }
 
 	 @Override

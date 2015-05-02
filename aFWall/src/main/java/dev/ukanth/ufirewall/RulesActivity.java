@@ -239,7 +239,7 @@ public class RulesActivity extends DataDumpActivity {
 	}
 
     @Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		final Context ctx = this;
 
     	switch (item.getItemId()) {
@@ -286,7 +286,7 @@ public class RulesActivity extends DataDumpActivity {
     		//startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
     		return true;
     	}
-    	return super.onMenuItemSelected(featureId, item);
+    	return super.onOptionsItemSelected(item);
     }
 
 	private void flushAllRules(final Context ctx) {

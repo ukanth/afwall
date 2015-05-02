@@ -48,7 +48,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 	
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
 	private static final String PREF_CHANGES = "PREF_CHANGE";
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// set language

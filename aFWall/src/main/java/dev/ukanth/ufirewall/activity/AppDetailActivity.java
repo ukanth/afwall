@@ -1,12 +1,12 @@
 package dev.ukanth.ufirewall.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.TrafficStats;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 
-public class AppDetailActivity extends Activity {
+public class AppDetailActivity extends AppCompatActivity {
 	public static final String TAG = "AFWall";
 	private static String packageName = "";
 	
@@ -30,8 +30,8 @@ public class AppDetailActivity extends Activity {
         setContentView(R.layout.app_detail);
         
         
-    	getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+    	getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		
         final Context ctx = getApplicationContext();
         

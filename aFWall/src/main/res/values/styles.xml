@@ -23,16 +23,32 @@
          <item name="md_content_color">#ffffffff</item>
      </style>
 
-    <style name="MyActionBarTheme" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">#0F9D58</item>
+    <style name="MyActionBarTheme" parent="Theme.AppCompat">
         <item name="android:icon">@drawable/notification</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:titleTextStyle">@style/MyTextAppearance</item>
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="colorPrimary">@color/ColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
+    </style>
+
+    <style name="SettingsTheme" parent="style/Theme.AppCompat.NoActionBar">
+            <item name="android:windowNoTitle">false</item>
+            <item name="android:windowActionBar">true</item>
+            <item name="android:textColor">#ffffff</item>
+            <item name="android:titleTextStyle">@style/MyTextAppearance</item>
+            <item name="colorPrimary">@color/ColorPrimary</item>
+            <item name="android:icon">@drawable/notification</item>
+            <item name="colorPrimaryDark">@color/ColorPrimaryDark</item>
     </style>
 
     <style name="MyTextAppearance" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:icon">@drawable/notification</item>
         <item name="android:textColor">#ffffff</item>
     </style>
-     
+
+    <style name="MyActionBar"
+        parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">#0F9D58</item>
+    </style>
 </resources>
