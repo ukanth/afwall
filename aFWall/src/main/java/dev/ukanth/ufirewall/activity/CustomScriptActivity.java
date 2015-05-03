@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -53,6 +54,9 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		final View view = getLayoutInflater().inflate(R.layout.customscript, null);
+
+
+
 		((Button)view.findViewById(R.id.customscript_ok)).setOnClickListener(this);
 		((Button)view.findViewById(R.id.customscript_cancel)).setOnClickListener(this);
 		((TextView)view.findViewById(R.id.customscript_link)).setMovementMethod(LinkMovementMethod.getInstance());
@@ -63,6 +67,10 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
 		this.script2.setText(prefs.getString(Api.PREF_CUSTOMSCRIPT2, ""));
 		setTitle(R.string.set_custom_script);
 		setContentView(view);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.custom_toolbar);
+		setSupportActionBar(toolbar);
+
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 	}

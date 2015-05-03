@@ -10,9 +10,11 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/help_toolbar"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"/>
+        android:layout_height="?attr/actionBarSize"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        />
 
     <dev.ukanth.ufirewall.ui.about.SlidingTabLayout
         android:id="@+id/tabs"

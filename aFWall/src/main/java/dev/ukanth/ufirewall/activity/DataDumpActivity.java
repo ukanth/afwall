@@ -36,6 +36,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,11 +84,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                 scaleGesture.setText(data);
             }
         });
-
-
 	}
-
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +93,18 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 		setContentView(R.layout.rules);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
+		toolbar.setTitle(getTitle());
+		toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
+
 		setSupportActionBar(toolbar);
 
 		// Load partially transparent black background
-		getSupportActionBar().setBackgroundDrawable(
-				getResources().getDrawable(R.drawable.ab_bg_black));
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		//TextView text = (TextView) findViewById(R.id.rules);
