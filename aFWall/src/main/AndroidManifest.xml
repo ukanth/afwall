@@ -97,7 +97,7 @@
         </activity>
         <activity
             android:name="dev.ukanth.ufirewall.preferences.PreferencesActivity"
-            android:theme="@style/SettingsTheme"
+            android:theme="@style/MyTheme"
             android:configChanges="orientation|keyboardHidden|screenSize|locale|screenLayout"
             android:hardwareAccelerated="true" >
             <meta-data
@@ -106,26 +106,26 @@
         </activity>
         <activity
             android:name=".activity.HelpActivity"
-            android:theme="@style/SettingsTheme"
+            android:theme="@style/MyTheme"
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
             android:hardwareAccelerated="true" >
         </activity>
         
         <activity
-            android:theme="@style/SettingsTheme"
+            android:theme="@style/MyTheme"
             android:name="dev.ukanth.ufirewall.RulesActivity"/>
         <activity
-            android:theme="@style/SettingsTheme"
+            android:theme="@style/MyTheme"
             android:name=".activity.AppDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         <activity
-            android:theme="@style/SettingsTheme"
+            android:theme="@style/MyTheme"
             android:name="dev.ukanth.ufirewall.activity.LogActivity"/>
         <activity
-            android:theme="@style/SettingsTheme"
+            android:theme="@style/MyTheme"
             android:name="dev.ukanth.ufirewall.activity.DataDumpActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
