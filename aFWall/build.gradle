@@ -17,6 +17,7 @@ android {
 
 dependencies {
     compile project(':androidlockpattern2')
+    compile 'eu.chainfire:libsuperuser:1.0.0.+'
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.afollestad:material-dialogs:0.7.3.0'
 }
