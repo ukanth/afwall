@@ -31,8 +31,9 @@
             android:title="@string/showUid" />
 
         <net.margaritov.preference.colorpicker.ColorPickerPreference
-            android:defaultValue="#ffff0000"
+            android:defaultValue="@color/accent"
             android:key="sysColor"
+            alphaSlider="true"
             android:summary="@string/syscolor_pref_summary_on"
             android:title="@string/syscolor_pref_title" />
 
