@@ -32,6 +32,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
@@ -144,7 +145,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			setContentView(R.layout.main);
 
 
+
 			Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+						WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+			}
 			setSupportActionBar(toolbar);
 			//set onclick listeners
 			this.findViewById(R.id.label_mode).setOnClickListener(this);
@@ -163,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			// Let's do some background stuff
 			(new Startup()).setContext(this).execute();
 	}
+
 
 	@Override
 	public void onRefresh() {
