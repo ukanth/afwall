@@ -114,7 +114,7 @@
         
         <activity
             android:theme="@style/MyTheme"
-            android:name="dev.ukanth.ufirewall.RulesActivity"/>
+            android:name=".activity.RulesActivity"/>
         <activity
             android:theme="@style/MyTheme"
             android:name=".activity.AppDetailActivity">
@@ -158,7 +158,7 @@
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         
-        <receiver android:name="dev.ukanth.ufirewall.BootBroadcast" >
+        <receiver android:name=".broadcast.BootBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -166,7 +166,7 @@
               </intent-filter>
         </receiver>
 
-        <receiver android:name="dev.ukanth.ufirewall.PackageBroadcast" >
+        <receiver android:name=".broadcast.PackageBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -176,7 +176,7 @@
         </receiver>
         
         
-        <receiver android:name="dev.ukanth.ufirewall.ConnectivityChangeReceiver" >
+        <receiver android:name=".broadcast.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                  <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
@@ -184,7 +184,7 @@
         </receiver>
         
          <receiver 
-             android:name="dev.ukanth.ufirewall.StatusWidget" 
+             android:name=".widget.StatusWidget"
              android:label="@string/widget_label_status"
              android:icon="@drawable/on_off_widget">
             <meta-data
@@ -278,8 +278,8 @@
             </intent-filter>
         </receiver>
         
-        <service android:name="RootShell"/>
-        <service android:name="NflogService"/>
+        <service android:name=".service.RootShell"/>
+        <service android:name=".service.NflogService"/>
         <service android:name="dev.ukanth.ufirewall.log.LogService"/>
         
         <!--  Samsung MultiWindow Support -->

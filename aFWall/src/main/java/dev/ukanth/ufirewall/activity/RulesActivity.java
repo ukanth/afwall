@@ -20,7 +20,7 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,8 +39,11 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeSet;
 
-import dev.ukanth.ufirewall.RootShell.RootCommand;
-import dev.ukanth.ufirewall.activity.DataDumpActivity;
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.InterfaceDetails;
+import dev.ukanth.ufirewall.InterfaceTracker;
+import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
@@ -189,13 +192,13 @@ public class RulesActivity extends DataDumpActivity {
 		// Third section: "ifconfig" (for interface info obtained through busybox)
 		writeHeading(result, true, "ifconfig");
 		Api.runIfconfig(ctx, new RootCommand()
-			.setLogging(true)
-			.setCallback(new RootCommand.Callback() {
-				public void cbFunc(RootCommand state) {
-					result.append(state.res);
-					appendSystemInfo(ctx);
-				}
-			}));
+				.setLogging(true)
+				.setCallback(new RootCommand.Callback() {
+					public void cbFunc(RootCommand state) {
+						result.append(state.res);
+						appendSystemInfo(ctx);
+					}
+				}));
 	}
 
 	protected void appendNetworkInterfaces(final Context ctx) {

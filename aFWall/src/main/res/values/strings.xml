@@ -285,7 +285,7 @@
     
     <string name="settings_pwd_not_equal">Passwords mismatch</string>
     
-    <string name="faq">Frequestly Asked  Questions</string>
+    <string name="faq">Frequently Asked  Questions</string>
     
    <string name="reverse_all">This will invert all the selected applications. Continue ?</string>
    <string name="unselect_all">This will clear all the selected applications . Continue ?</string>
@@ -379,4 +379,10 @@
     <string name="password_empty"></string>
     <string name="submit">Submit</string>
     <string name="dialog_color_picker">Color Picker</string>
+
+
+    <string name="sort">Sort Application</string>
+    <string name="defaultsort">By Name(Default)</string>
+    <string name="lastupdated">By Install/Update</string>
+    <string name="uid">By UID</string>
 </resources>

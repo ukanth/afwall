@@ -1,10 +1,8 @@
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.ui.about;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import dev.ukanth.ufirewall.ui.about.AboutFragment;
-import dev.ukanth.ufirewall.ui.about.FAQFragment;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 

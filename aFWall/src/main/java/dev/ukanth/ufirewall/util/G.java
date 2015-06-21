@@ -60,6 +60,7 @@ public class G extends android.app.Application {
 	private static final String PROTECTION_OPTION = "passOptions";
 	private static final String BUSYBOX_PATH = "bb_path";
 	private static final String LANGUAGE = "locale";
+	private static final String SORT_BY = "sort";
 	private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
@@ -187,6 +188,9 @@ public class G extends android.app.Application {
 
 	public static String locale() { return gPrefs.getString(LANGUAGE, "en"); }
 	public static String locale(String val) { gPrefs.edit().putString(LANGUAGE, val).commit(); return val; }
+
+
+	public static int sortBy() { return  Integer.parseInt(gPrefs.getString(SORT_BY, "0")); }
 
 	public static int storedPosition() { return gPrefs.getInt(PROFILE_STORED_POSITION, 0); }
 	public static int storedPosition(int val) { gPrefs.edit().putInt(PROFILE_STORED_POSITION, val).commit(); return val; }

@@ -1,4 +1,4 @@
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,10 +20,12 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.MainActivity;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.activity.AppDetailActivity;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.util.G;
 
 public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implements OnCheckedChangeListener {
 

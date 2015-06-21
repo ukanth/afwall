@@ -21,12 +21,14 @@
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
  * @version 1.1
  */
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.util.G;
 
@@ -41,7 +43,7 @@ public class BootBroadcast extends BroadcastReceiver {
 	public void onReceive(final Context context, final Intent intent) {
 		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 		if(G.activeNotification()){
-			Api.showNotification(Api.isEnabled(context),context);
+			Api.showNotification(Api.isEnabled(context), context);
 		}
 		if (G.enableLogService()) {
 			context.startService(new Intent(context, LogService.class));

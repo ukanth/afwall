@@ -20,7 +20,7 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.service;
 
 import java.util.ArrayList;
 import java.util.Date;

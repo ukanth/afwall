@@ -20,7 +20,7 @@
  * @author Rodrigo Zechin Rosauro, Umakanthan Chandran
  * @version 1.1
  */
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.broadcast;
 
 import android.Manifest;
 import android.app.NotificationManager;
@@ -35,6 +35,9 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.MainActivity;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 
 /**

@@ -21,7 +21,7 @@
  * @version 1.1
  */
 
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.widget;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -33,7 +33,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -62,7 +65,7 @@ public class StatusWidget extends AppWidgetProvider {
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 			
 			if (!enabled && (oldPwd.length() != 0 || newPwd.length() != 0)) {
-				Toast.makeText(context,R.string.widget_disable_fail,Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, R.string.widget_disable_fail,Toast.LENGTH_SHORT).show();
 				return;
 			}
 

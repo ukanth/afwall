@@ -75,11 +75,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
 import dev.ukanth.ufirewall.activity.LogActivity;
+import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
+import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import eu.chainfire.libsuperuser.Shell;
@@ -645,8 +647,32 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			return 1;
 		}
 	}
-	
-	/**
+
+
+    class PackageModifiedComparator implements Comparator<PackageInfoData> {
+
+        @Override
+        public int compare(PackageInfoData p1, PackageInfoData p2) {
+            if (p1.firstseen != p2.firstseen) {
+                return (p1.firstseen ? -1 : 1);
+            }
+
+            boolean p1_selected = p1.selected_3g || p1.selected_wifi || p1.selected_roam ||
+                    p1.selected_vpn || p1.selected_lan;
+            boolean p2_selected = p2.selected_3g || p2.selected_wifi || p2.selected_roam ||
+                    p2.selected_vpn || p2.selected_lan;
+
+            if (p1_selected == p2_selected) {
+                return p1.installTime > p2.installTime ? -1: p1.installTime < p2.installTime ? 1 : 0;
+            }
+            if (p1_selected)
+                return -1;
+            return 1;
+        }
+    }
+
+
+    /**
 	 * Show the list of applications
 	 */
 	private void showApplications(final String searchStr, int flag, boolean showAll) {
@@ -700,7 +726,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		}
 		
 		// Sort applications - selected first, then alphabetically
-		Collections.sort(apps2, new PackageComparator());
+        switch (G.sortBy()) {
+            case 0:
+                Collections.sort(apps2, new PackageComparator());
+                break;
+            case 1:
+                Collections.sort(apps2, new PackageModifiedComparator());
+                break;
+
+        }
 
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore

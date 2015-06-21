@@ -15,7 +15,7 @@ import android.widget.Toast;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.widget.RadialMenuWidget.RadialMenuEntry;
 
 public class ToggleWidgetActivity extends Activity {

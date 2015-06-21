@@ -94,7 +94,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.service.NflogService;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell.SU;
@@ -346,7 +347,7 @@ public final class Api {
      * @param ctx
      * @return
      */
-	static String getNflogPath(Context ctx) {
+	public static String getNflogPath(Context ctx) {
         String dir = ctx.getDir("bin",0).getAbsolutePath();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             return dir + "/run_pie " +  dir + "/nflog ";
@@ -1158,6 +1159,7 @@ public final class Api {
 					if (app == null) {
 						app = new PackageInfoData();
 						app.uid = apinfo.uid;
+						app.installTime = new File(apinfo.sourceDir).lastModified();
 						app.names = new ArrayList<String>();
 						app.names.add(name);
 						app.appinfo = apinfo;
@@ -1624,27 +1626,31 @@ public final class Api {
     	/** application names belonging to this user id */
     	public List<String> names;
     	/** rules saving & load **/
-    	String pkgName; 
+		public String pkgName;
     	/** indicates if this application is selected for wifi */
-    	boolean selected_wifi;
+		public boolean selected_wifi;
     	/** indicates if this application is selected for 3g */
-    	boolean selected_3g;
+		public boolean selected_3g;
     	/** indicates if this application is selected for roam */
-    	boolean selected_roam;
+		public boolean selected_roam;
     	/** indicates if this application is selected for vpn */
-    	boolean selected_vpn;
+		public boolean selected_vpn;
     	/** indicates if this application is selected for lan */
-    	boolean selected_lan;
+		public boolean selected_lan;
     	/** toString cache */
-    	String tostr;
+		public String tostr;
     	/** application info */
-    	ApplicationInfo appinfo;
+    	public ApplicationInfo appinfo;
     	/** cached application icon */
-    	Drawable cached_icon;
+    	public Drawable cached_icon;
     	/** indicates if the icon has been loaded already */
-    	boolean icon_loaded;
+		public boolean icon_loaded;
+
+		/* install time */
+		public long installTime;
+
     	/** first time seen? */
-    	boolean firstseen;
+		public boolean firstseen;
     	
     	public PackageInfoData() {
     	}

@@ -24,17 +24,17 @@ package dev.ukanth.ufirewall;
 
 public class InterfaceDetails {
 	// firewall policy
-	boolean isRoaming = false;
-	boolean isTethered = false;
-	boolean tetherStatusKnown = false;
-	String lanMaskV4 = "";
-	String lanMaskV6 = "";
+	public boolean isRoaming = false;
+	public boolean isTethered = false;
+	public boolean tetherStatusKnown = false;
+	public String lanMaskV4 = "";
+	public String lanMaskV6 = "";
 	// TODO: identify DNS servers instead of opening up port 53/udp to all LAN hosts
 
 	// supplementary info
 	String wifiName = "";
 	boolean netEnabled = false;
-	int netType = -1;
+	public int netType = -1;
 
 	public boolean equals(InterfaceDetails that) {
 		if (this.isRoaming != that.isRoaming ||

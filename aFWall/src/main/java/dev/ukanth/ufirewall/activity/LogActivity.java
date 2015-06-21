@@ -28,9 +28,9 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.NflogService;
+import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.util.G;
 

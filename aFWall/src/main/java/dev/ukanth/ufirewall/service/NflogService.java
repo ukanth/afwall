@@ -20,7 +20,7 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall;
+package dev.ukanth.ufirewall.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -30,7 +30,7 @@ import android.os.IBinder;
 import java.util.LinkedList;
 import java.util.List;
 
-import dev.ukanth.ufirewall.RootShell.RootCommand;
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.log.Log;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
@@ -111,7 +111,7 @@ public class NflogService extends Service {
 		{
 		    @Override
 		    public void run() {
-		    	new RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + nflogPath);
+		    	new RootShell.RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + nflogPath);
 		    }
 		};
 		thread.start();
