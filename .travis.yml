@@ -1,5 +1,7 @@
 language: android
-jdk: oraclejdk7
+jdk:
+    - oraclejdk7
+    - openjdk7
 
 android:
   components:
@@ -24,6 +26,7 @@ before_install:
     - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
     - sudo tar -C /opt -jxf ndk.tar.bz2
     - export NDK_PROJECT_PATH=$PWD
+    - chmod +x gradlew
 
 script:
     - make -C external NDK=/opt/android-ndk-r9
