@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	private void reloadPreferences() {
 
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 		G.reloadPrefs();
 		checkPreferences();
 		//language
@@ -304,6 +305,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		} else {
 			setupMultiProfile(true);
 		}
+		selectFilterGroup();
+
 	}
 
 	@Override
@@ -640,37 +643,20 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 					o2.selected_vpn || o2.selected_lan;
 
 			if (o1_selected == o2_selected) {
-				return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());
+				switch (G.sortBy()) {
+					case 0:
+						return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());
+					case 1:
+						return o1.installTime > o2.installTime ? -1: o1.installTime < o2.installTime ? 1 : 0;
+					case 2:
+						return o2.uid > o1.uid ? -1: o2.uid < o1.uid ? 0 : 1;
+				}
 			}
 			if (o1_selected)
 				return -1;
 			return 1;
 		}
 	}
-
-
-    class PackageModifiedComparator implements Comparator<PackageInfoData> {
-
-        @Override
-        public int compare(PackageInfoData p1, PackageInfoData p2) {
-            if (p1.firstseen != p2.firstseen) {
-                return (p1.firstseen ? -1 : 1);
-            }
-
-            boolean p1_selected = p1.selected_3g || p1.selected_wifi || p1.selected_roam ||
-                    p1.selected_vpn || p1.selected_lan;
-            boolean p2_selected = p2.selected_3g || p2.selected_wifi || p2.selected_roam ||
-                    p2.selected_vpn || p2.selected_lan;
-
-            if (p1_selected == p2_selected) {
-                return p1.installTime > p2.installTime ? -1: p1.installTime < p2.installTime ? 1 : 0;
-            }
-            if (p1_selected)
-                return -1;
-            return 1;
-        }
-    }
-
 
     /**
 	 * Show the list of applications
@@ -724,17 +710,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		} else {
 			apps2 = new ArrayList<PackageInfoData>();
 		}
-		
-		// Sort applications - selected first, then alphabetically
-        switch (G.sortBy()) {
-            case 0:
-                Collections.sort(apps2, new PackageComparator());
-                break;
-            case 1:
-                Collections.sort(apps2, new PackageModifiedComparator());
-                break;
 
-        }
+		Collections.sort(apps2, new PackageComparator());
 
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore

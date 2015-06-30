@@ -30,13 +30,6 @@
             android:summaryOn="@string/showuid_summary_on"
             android:title="@string/showUid" />
 
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/sort_key"
-            android:entryValues="@array/sort_value"
-            android:key="sort"
-            android:title="@string/sort" />
-
         <net.margaritov.preference.colorpicker.ColorPickerPreference
             android:defaultValue="@color/accent"
             android:key="sysColor"
