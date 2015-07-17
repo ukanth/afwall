@@ -45,7 +45,8 @@
   <string name="rules_deleted">Reglas eliminadas con éxito</string>
   <string name="pass_titleset">Establecer contraseña de bloqueo</string>
   <string name="pass_titleget">Necesita contraseña</string>
-  <string name="enterpass">Introduce la contraseña:</string>
+  <string name="enterpass">Introduzca la contraseña</string>
+  <string name="reenterpass">Introduzca la contraseña de nuevo</string>
   <string name="error_write_pref">Error al escribir las preferencias</string>
   <string name="enternewpass">Introduce la nueva contraseña (deja en blanco para eliminarla):</string>
   <string name="passdefined">Contraseña de bloqueo definida</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">Preguntas más frecuentes</string>
   <string name="su_check_title">Estado</string>
   <string name="su_check_message">Comprobación de acceso root</string>
+  <string name="fileSize">Tamaño del archivo</string>
+  <string name="currentDir">Directorio actual</string>
+  <string name="selectMode">Modo Firewall</string>
+  <string name="confirmation">Confirmación</string>
+  <string name="prefill_profile">Introduzca el nombre del perfil</string>
+  <string name="profile_default">Mi perfil</string>
+  <string name="filter">Filtro</string>
+  <string name="enable_protection">Activar la protección</string>
+  <string name="pref_none">Ninguno</string>
+  <string name="pref_password">Contraseña</string>
+  <string name="pref_pattern">Modelo</string>
+  <string name="pref_pin">PIN</string>
+  <string name="set_password">Fijar</string>
+  <string name="wrong_password">Contraseña incorrecta</string>
+  <string name="submit">Enviar</string>
+  <string name="dialog_color_picker">Selector de color</string>
 </resources>

@@ -4,72 +4,65 @@
 
     <string-array name="supported_languages">
         <item>English</item>
-        <item>German</item>
-        <item>French</item>
-        <item>Spanish</item>
-        <item>Dutch</item>
-        
-        <item>Japanese</item>
-        <item>Ukrainian</item>
-        <item>Russian</item>
-        <item>Czech</item>
-        <item>Polish</item>
-        
-        <item>Slovenian</item>
-		<item>Swedish</item>        
-		<item>Greek</item>
-		<item>Portuguese</item>        
-		<item>Italian</item>
-		
-		<item>Hungarian</item>
-		<item>Turkey</item>
-		
-        <item>Simplifed Chinese</item>
-        <item>Traditional Chinese</item>
-        
-        <item>Indonesian</item>
-        <item>Serbian</item>
-
-
         <item>Arabic</item>
+        <item>Asturian</item>
         <item>Basque</item>
+        <item>Czech</item>
+        <item>Dutch</item>
+        <item>French</item>
+        <item>German</item>
+        <item>Greek</item>
+        <item>Hungarian</item>
+        <item>Indonesian</item>
+        <item>Italian</item>
+        <item>Japanese</item>
         <item>Korean</item>
+        <item>Polish</item>
+        <item>Portuguese</item>
+        <item>Russian</item>
         <item>Serbian (Cyrillic)</item>
+        <item>Serbian</item>
+        <item>Simplifed Chinese</item>
+        <item>Slovak</item>
+        <item>Slovenian</item>
+        <item>Spanish</item>
+        <item>Swedish</item>
+        <item>Traditional Chinese</item>
+        <item>Turkey</item>
+        <item>Ukrainian</item>
+
     </string-array>
     
     <string-array name="supported_languages_code">
-        
-        <item>en</item>
-        <item>de</item>
-        <item>fr</item>
-        <item>es</item>
-        <item>nl</item>
-        
-        <item>ja</item>
-        <item>uk</item>
-        <item>ru</item>
-        <item>cs</item>
-        <item>pl</item>
-        
-        <item>sl</item>
-        <item>sv</item>
-        <item>el</item>
-        <item>pt</item>
-        <item>it</item>
-        
-        <item>hu</item>
-        <item>tr</item>
-        
-        <item>zh_CN</item>  
-        <item>zh_TW</item>  
-        
-         <item>in</item>
-         <item>sr</item>
 
-         <item>ar</item>
-         <item>eu</item>
-         <item>ko</item>
-         <item>sr_CS</item>
+        <item>en</item>
+        <item>ar</item>
+        <item>ast_ES</item>
+        <item>eu</item>
+        <item>cs</item>
+        <item>nl</item>
+        <item>fr</item>
+        <item>de</item>
+        <item>el</item>
+        <item>hu</item>
+        <item>in</item>
+        <item>it</item>
+        <item>ja</item>
+        <item>ko</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>ru</item>
+        <item>sr_CS</item>
+        <item>sr</item>
+        <item>zh_CN</item>
+        <item>sk</item>
+        <item>sl</item>
+        <item>es</item>
+        <item>sv</item>
+        <item>zh_TW</item>
+        <item>tr</item>
+        <item>uk</item>
+
 
     </string-array>
 

@@ -45,7 +45,8 @@
   <string name="rules_deleted">Правила iptables успешно удалены</string>
   <string name="pass_titleset">Установить пароль блокировки</string>
   <string name="pass_titleget">Требуется пароль</string>
-  <string name="enterpass">Введите пароль:</string>
+  <string name="enterpass">Введите пароль</string>
+  <string name="reenterpass">Введите пароль повторно</string>
   <string name="error_write_pref">Ошибка сохранения ностроек</string>
   <string name="enternewpass">Введите новый пароль (оставьте пустым для удаления):</string>
   <string name="passdefined">Блокировка паролем установлена</string>
@@ -275,4 +276,20 @@
   <string name="FAQ">Часто задаваемые вопросы</string>
   <string name="su_check_title">Состояние</string>
   <string name="su_check_message">Проверка рут-доступа</string>
+  <string name="fileSize">Размер файла</string>
+  <string name="currentDir">Текущий каталог</string>
+  <string name="selectMode">Режим файрвола</string>
+  <string name="confirmation">Подтверждение</string>
+  <string name="prefill_profile">Введите имя профиля</string>
+  <string name="profile_default">MyProfile</string>
+  <string name="filter">Фильтр</string>
+  <string name="enable_protection">Вкл защиту</string>
+  <string name="pref_none">Нет</string>
+  <string name="pref_password">Пароль</string>
+  <string name="pref_pattern">Ключ</string>
+  <string name="pref_pin">ПИН-код</string>
+  <string name="set_password">Установить</string>
+  <string name="wrong_password">Неправильный пароль</string>
+  <string name="submit">Отправить</string>
+  <string name="dialog_color_picker">Палитра цветов</string>
 </resources>

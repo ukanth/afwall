@@ -45,7 +45,8 @@
   <string name="rules_deleted">Pravila uspešno obrisana</string>
   <string name="pass_titleset">Lozinka za otključavanje</string>
   <string name="pass_titleget">Obavezna lozinka</string>
-  <string name="enterpass">Unesite lozinku:</string>
+  <string name="enterpass">Unesite lozinku</string>
+  <string name="reenterpass">Ponovo unesite lozinku</string>
   <string name="error_write_pref">Greška pri upisu podešavanja</string>
   <string name="enternewpass">Unesite novu lozinku (ostavite prazno za uklanjanje):</string>
   <string name="passdefined">Lozinka je postavljena</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">ČPP</string>
   <string name="su_check_title">Stanje</string>
   <string name="su_check_message">Provera root pristupa</string>
+  <string name="fileSize">Veličina fajla</string>
+  <string name="currentDir">Trenutni direktorijum</string>
+  <string name="selectMode">Režim vatrobrana</string>
+  <string name="confirmation">Potvrda</string>
+  <string name="prefill_profile">Unesite naziv profila</string>
+  <string name="profile_default">MojProfil</string>
+  <string name="filter">Filter</string>
+  <string name="enable_protection">Uključi zaštitu</string>
+  <string name="pref_none">bez</string>
+  <string name="pref_password">lozinka</string>
+  <string name="pref_pattern">potez</string>
+  <string name="pref_pin">pin</string>
+  <string name="set_password">Postavi</string>
+  <string name="wrong_password">Pogrešna lozinka</string>
+  <string name="submit">Pošalji</string>
+  <string name="dialog_color_picker">Birač boje</string>
 </resources>

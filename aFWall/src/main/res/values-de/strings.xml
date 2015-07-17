@@ -19,7 +19,7 @@
   <string name="error_refresh">Fehler beim Aktualisieren der IPTables</string>
   <string name="error_apply">Fehler beim Anwenden der IPTables-Regeln</string>
   <string name="error_fetch">Fehler beim Abrufen der IPTables-Regeln</string>
-  <string name="error_su">Konnte keine Rootrechte erwerben.\n Sie benötigen ein gerootetes Gerät um AFWall+ zu nutzen.\n\n Wenn das Gerät bereits gerootet ist, stellen Sie bitte sicher, das AFWall+ ausreichend Rechte besitzt, um \"su\" ausführen zu können.\n</string>
+  <string name="error_su">Es ist kein Root-Zugriff möglich.\nUm AFWall+ nutzen zu können, benötigen Sie ein gerootetes Gerät.\n\nWenn das Gerät bereits gerootet ist, stellen Sie bitte sicher, dass AFWall+ Superuser-Rechte gewährt werden.\n</string>
   <string name="error_common">Fehler: </string>
   <string name="all_item">(Jede App) - entspricht dem Markieren aller Apps</string>
   <string name="kernel_item">(Kernel) - Linux Kernel</string>
@@ -30,7 +30,7 @@
   <string name="adb_item">(ADB) - ADB (Android Debug Bridge)</string>
   <string name="media_item">(Medien) - Medienserver</string>
   <string name="vpn_item">(VPN) - VPN-Netzwerk</string>
-  <string name="drm_item">(DRM) - Digital-Rechte-Management-Dienst</string>
+  <string name="drm_item">(DRM) - Digital-Rights-Management-Dienst</string>
   <string name="gps_item">(GPS) - GPS</string>
   <string name="shell_item">(Shell) - Linux-Shell</string>
   <string name="fw_enabled">Firewall aktivieren</string>
@@ -45,9 +45,10 @@
   <string name="rules_deleted">Regeln erfolgreich gelöscht</string>
   <string name="pass_titleset">Passwortsperre setzen</string>
   <string name="pass_titleget">Passwort erforderlich</string>
-  <string name="enterpass">Passwort eingeben:</string>
+  <string name="enterpass">Passwort eingeben</string>
+  <string name="reenterpass">Passwort wiederholen</string>
   <string name="error_write_pref">Fehler beim Schreiben der Einstellungen</string>
-  <string name="enternewpass">Neues Passwort eingeben (Leer lassen für Löschen):</string>
+  <string name="enternewpass">Neues Passwort eingeben (Zum Löschen leer lassen):</string>
   <string name="passdefined">Passwortsperre definiert</string>
   <string name="passremoved">Passwortsperre entfernt</string>
   <string name="passerror">Fehler beim Ändern der Passwortsperre</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">FAQ</string>
   <string name="su_check_title">Status</string>
   <string name="su_check_message">Root-Zugriffsüberprüfung</string>
+  <string name="fileSize">Dateigröße</string>
+  <string name="currentDir">Aktuelles Verzeichnis</string>
+  <string name="selectMode">Firewall-Modus</string>
+  <string name="confirmation">Bestätigung</string>
+  <string name="prefill_profile">Profilname eingeben</string>
+  <string name="profile_default">Mein Profil</string>
+  <string name="filter">Filter</string>
+  <string name="enable_protection">Schutz aktivieren</string>
+  <string name="pref_none">Kein</string>
+  <string name="pref_password">Passwort</string>
+  <string name="pref_pattern">Muster</string>
+  <string name="pref_pin">PIN</string>
+  <string name="set_password">Festlegen</string>
+  <string name="wrong_password">Falsches Passwort</string>
+  <string name="submit">Senden</string>
+  <string name="dialog_color_picker">Farbauswahl</string>
 </resources>

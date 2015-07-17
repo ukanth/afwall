@@ -45,7 +45,8 @@
   <string name="rules_deleted">규칙 삭제 완료</string>
   <string name="pass_titleset">비밀번호 설정</string>
   <string name="pass_titleget">비밀번호 필요</string>
-  <string name="enterpass">비밀번호 입력:</string>
+  <string name="enterpass">비밀번호 입력</string>
+  <string name="reenterpass">비밀번호 확력</string>
   <string name="error_write_pref">설정 수정 중 에러</string>
   <string name="enternewpass">새로운 비밀번호 입력 (사용하지 않으려면 공백입력)</string>
   <string name="passdefined">비밀번호로 잠금</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">FAQ</string>
   <string name="su_check_title">현재상태</string>
   <string name="su_check_message">루팅여부 확인 중</string>
+  <string name="fileSize">파일 크기</string>
+  <string name="currentDir">현재 위치</string>
+  <string name="selectMode">방화벽 모드</string>
+  <string name="confirmation">재확드</string>
+  <string name="prefill_profile">프로필 이름 입인</string>
+  <string name="profile_default">내 프로필</string>
+  <string name="filter">필력</string>
+  <string name="enable_protection">보호 시기</string>
+  <string name="pref_none">없음</string>
+  <string name="pref_password">비밀번호</string>
+  <string name="pref_pattern">패턴</string>
+  <string name="pref_pin">핀번호</string>
+  <string name="set_password">결정</string>
+  <string name="wrong_password">비밀번호 불일치</string>
+  <string name="submit">제치</string>
+  <string name="dialog_color_picker">색깔 고르출</string>
 </resources>

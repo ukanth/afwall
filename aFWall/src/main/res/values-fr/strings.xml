@@ -43,9 +43,10 @@
   <string name="rules_applied">Règles appliquées avec succès</string>
   <string name="rules_saved">Règles sauvegardées avec succès</string>
   <string name="rules_deleted">Règles supprimées avec succès</string>
-  <string name="pass_titleset">Définir le mot de passe de verrouillage</string>
+  <string name="pass_titleset">Mot de passe de verrouillage</string>
   <string name="pass_titleget">Mot de passe requis</string>
-  <string name="enterpass">Entrez le mot de passe :</string>
+  <string name="enterpass">Entrez le mot de passe</string>
+  <string name="reenterpass">Entrez le mot de passe à nouveau</string>
   <string name="error_write_pref">Erreur d\'écriture des préférences</string>
   <string name="enternewpass">Entrez le nouveau mot de passe (laissez vide pour le supprimer) :</string>
   <string name="passdefined">Mot de passe de verrouillage défini</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">FAQ</string>
   <string name="su_check_title">Status</string>
   <string name="su_check_message">Vérification de l\'accès root</string>
+  <string name="fileSize">Taille du fichier</string>
+  <string name="currentDir">Répertoire courant</string>
+  <string name="selectMode">Mode du pare-feu</string>
+  <string name="confirmation">Confirmation</string>
+  <string name="prefill_profile">Saisissez le nom du profil</string>
+  <string name="profile_default">Mon profil</string>
+  <string name="filter">Filtre</string>
+  <string name="enable_protection">Activer la protection</string>
+  <string name="pref_none">Aucun</string>
+  <string name="pref_password">Mot de passe</string>
+  <string name="pref_pattern">Motif</string>
+  <string name="pref_pin">PIN</string>
+  <string name="set_password">Définir</string>
+  <string name="wrong_password">Mot de passe erroné</string>
+  <string name="submit">Envoyer</string>
+  <string name="dialog_color_picker">Sélecteur de couleurs</string>
 </resources>

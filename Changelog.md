@@ -1,5 +1,17 @@
 Changelog AFWall+
 ==================
+Version 2.0.0-BETA1
+
+* Fix Crash reports and performance improvements
+* Added/Updated translations
+
+Version 2.0.0-ALPHA3
+
+* More UI Enhancements
+* Experimental - Added sort apps by uid/install date
+* Translations
+* Bug Fixes
+
 
 Version 2.0.0-ALPHA2
 

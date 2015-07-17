@@ -45,7 +45,8 @@
   <string name="rules_deleted">ルールを消去しました</string>
   <string name="pass_titleset">パスワード設定</string>
   <string name="pass_titleget">パスワードロック</string>
-  <string name="enterpass">パスワードを入力してください:</string>
+  <string name="enterpass">パスワードを入力してください</string>
+  <string name="reenterpass">パスワードを再入力</string>
   <string name="error_write_pref">設定への書き込みエラー</string>
   <string name="enternewpass">新しいパスワードを入力してください(空白の場合は、未設定になります):</string>
   <string name="passdefined">パスワードを設定しました</string>
@@ -277,4 +278,20 @@
   <string name="FAQ">FAQ</string>
   <string name="su_check_title">ステータス</string>
   <string name="su_check_message">root アクセスを確認しています</string>
+  <string name="fileSize">ファイルサイズ</string>
+  <string name="currentDir">現在のディレクトリ</string>
+  <string name="selectMode">ファイアウォール モード</string>
+  <string name="confirmation">確認</string>
+  <string name="prefill_profile">プロファイル名を入力してください</string>
+  <string name="profile_default">マイ プロファイル</string>
+  <string name="filter">フィルター</string>
+  <string name="enable_protection">保護を有効にする</string>
+  <string name="pref_none">なし</string>
+  <string name="pref_password">パスワード</string>
+  <string name="pref_pattern">パターン</string>
+  <string name="pref_pin">Pin</string>
+  <string name="set_password">セット</string>
+  <string name="wrong_password">パスワードが間違っています</string>
+  <string name="submit">送信</string>
+  <string name="dialog_color_picker">色の選択</string>
 </resources>

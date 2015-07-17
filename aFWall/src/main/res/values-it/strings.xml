@@ -45,7 +45,8 @@
   <string name="rules_deleted">Regole cancellate con successo</string>
   <string name="pass_titleset">Imposta password di blocco</string>
   <string name="pass_titleget">Password richiesta</string>
-  <string name="enterpass">Inserire la password:</string>
+  <string name="enterpass">Inserire la password</string>
+  <string name="reenterpass">Inserisci di nuovo la password</string>
   <string name="error_write_pref">Errore durante la scrittura delle preferenze</string>
   <string name="enternewpass">Immettere la nuova password (lasciare vuoto per rimuovere):</string>
   <string name="passdefined">Password di blocco definita</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">Domande più frequenti</string>
   <string name="su_check_title">Stato</string>
   <string name="su_check_message">Controllo accesso root</string>
+  <string name="fileSize">Dimensione del file</string>
+  <string name="currentDir">Direttore corrente</string>
+  <string name="selectMode">Modalità firewall</string>
+  <string name="confirmation">Confermazione</string>
+  <string name="prefill_profile">Immettere il nome del profilo</string>
+  <string name="profile_default">Il mio profilo</string>
+  <string name="filter">Filtro</string>
+  <string name="enable_protection">Attivare la protezione</string>
+  <string name="pref_none">Nessuno</string>
+  <string name="pref_password">Password</string>
+  <string name="pref_pattern">Modello</string>
+  <string name="pref_pin">PIN</string>
+  <string name="set_password">Impostare</string>
+  <string name="wrong_password">Password sbagliata</string>
+  <string name="submit">Invia</string>
+  <string name="dialog_color_picker">Selettore colore</string>
 </resources>

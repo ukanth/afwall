@@ -45,7 +45,8 @@
   <string name="rules_deleted">Pravidla úspěšně smazána</string>
   <string name="pass_titleset">Nastavit heslo zámku</string>
   <string name="pass_titleget">Vyžadováno heslo</string>
-  <string name="enterpass">Zadejte heslo:</string>
+  <string name="enterpass">Zadejte heslo</string>
+  <string name="reenterpass">Znovu zadejte heslo</string>
   <string name="error_write_pref">Chyba při zápisu do předvoleb</string>
   <string name="enternewpass">Zadejte nové heslo (nechte prázdné pro odstranění):</string>
   <string name="passdefined">Heslo zámku zadáno</string>
@@ -275,4 +276,20 @@
   <string name="FAQ">FAQ</string>
   <string name="su_check_title">Stav</string>
   <string name="su_check_message">Kontroluji root přístup</string>
+  <string name="fileSize">Velikost souboru</string>
+  <string name="currentDir">Aktuální adresář</string>
+  <string name="selectMode">Režim firewallu</string>
+  <string name="confirmation">Potvrzení</string>
+  <string name="prefill_profile">Zadejte název profilu</string>
+  <string name="profile_default">MujProfil</string>
+  <string name="filter">Filtr</string>
+  <string name="enable_protection">Povolit ochranu</string>
+  <string name="pref_none">Žádný</string>
+  <string name="pref_password">Heslo</string>
+  <string name="pref_pattern">Vzor</string>
+  <string name="pref_pin">Pin</string>
+  <string name="set_password">Nastavit</string>
+  <string name="wrong_password">Chybné heslo</string>
+  <string name="submit">Potvrdit</string>
+  <string name="dialog_color_picker">Výběr barvy</string>
 </resources>

@@ -45,7 +45,8 @@
   <string name="rules_deleted">Pengaturan telah dihapus</string>
   <string name="pass_titleset">Atur kunci password</string>
   <string name="pass_titleget">Dibutuhkan password</string>
-  <string name="enterpass">Masukkan password:</string>
+  <string name="enterpass">Masukkan Sandi</string>
+  <string name="reenterpass">Ulangi sandi</string>
   <string name="error_write_pref">Gagal membuat preferensi</string>
   <string name="enternewpass">Masukkan password baru (kosongkan untuk menghapus):</string>
   <string name="passdefined">Password didefinisikan</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">Pertanyaan Umum</string>
   <string name="su_check_title">Status</string>
   <string name="su_check_message">Memeriksa akses root</string>
+  <string name="fileSize">Ukuran file</string>
+  <string name="currentDir">Folder sekarang</string>
+  <string name="selectMode">Mode firewall</string>
+  <string name="confirmation">Konfirmasi</string>
+  <string name="prefill_profile">Masukkan nama profil</string>
+  <string name="profile_default">Profil saya</string>
+  <string name="filter">Penyaring</string>
+  <string name="enable_protection">Aktifkan perlindungan</string>
+  <string name="pref_none">Tidak ada</string>
+  <string name="pref_password">Sandi</string>
+  <string name="pref_pattern">Pola</string>
+  <string name="pref_pin">PIN</string>
+  <string name="set_password">Atur</string>
+  <string name="wrong_password">Sandi salah</string>
+  <string name="submit">Kirim</string>
+  <string name="dialog_color_picker">Ambil Warna</string>
 </resources>

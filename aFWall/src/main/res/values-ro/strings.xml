@@ -45,7 +45,8 @@
   <string name="rules_deleted">Reguli eliminate cu succes</string>
   <string name="pass_titleset">Setează parola de blocare</string>
   <string name="pass_titleget">Parola este necesară</string>
-  <string name="enterpass">Introdu parola:</string>
+  <string name="enterpass">Introdu parola</string>
+  <string name="reenterpass">Reintrodu parola</string>
   <string name="error_write_pref">Eroare la scrierea preferinţelor</string>
   <string name="enternewpass">Introdu noua parolă (lasă necompletat pentru a elimina):</string>
   <string name="passdefined">Parola de blocare a fost stabilită</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">Întrebări frecvente</string>
   <string name="su_check_title">Stare</string>
   <string name="su_check_message">Verificare acces root</string>
+  <string name="fileSize">Dimensiune fişier</string>
+  <string name="currentDir">Directorul curent</string>
+  <string name="selectMode">Modul Firewall</string>
+  <string name="confirmation">Confirmare</string>
+  <string name="prefill_profile">Introdu numele profilului</string>
+  <string name="profile_default">Profilul meu</string>
+  <string name="filter">Filtru</string>
+  <string name="enable_protection">Activează protecţia</string>
+  <string name="pref_none">Nici unul</string>
+  <string name="pref_password">Parola</string>
+  <string name="pref_pattern">Model</string>
+  <string name="pref_pin">PIN</string>
+  <string name="set_password">Set</string>
+  <string name="wrong_password">Parola greșită</string>
+  <string name="submit">Trimite</string>
+  <string name="dialog_color_picker">Selector de culoare</string>
 </resources>

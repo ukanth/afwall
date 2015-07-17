@@ -1,12 +1,5 @@
 package dev.ukanth.ufirewall.log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.Api.PackageInfoData;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +7,14 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.res.TypedArray;
 import android.preference.ListPreference;
 import android.util.AttributeSet;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.Api.PackageInfoData;
  
 public class MultiSelectListPreference extends ListPreference {
  
@@ -175,7 +176,9 @@ public class MultiSelectListPreference extends ListPreference {
         List<CharSequence> joined = Arrays.asList(defaultValue);
         String joinedDefaultValue = join(joined, separator);
         if (restoreValue) {
-            value = getPersistedString(joinedDefaultValue);
+            if(joinedDefaultValue instanceof java.lang.String) {
+                value = getPersistedString(joinedDefaultValue);
+            }
         } else {
             value = joinedDefaultValue;
         }

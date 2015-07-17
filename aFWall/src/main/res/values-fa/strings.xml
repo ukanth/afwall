@@ -45,7 +45,8 @@
   <string name="rules_deleted">قوانینی که با موفقیت حذف شده‌اند</string>
   <string name="pass_titleset">تنظیم رمز عبور</string>
   <string name="pass_titleget">رمز عبور لازم است</string>
-  <string name="enterpass">رمز عبور را وارد کنید:</string>
+  <string name="enterpass">Enter password</string>
+  <string name="reenterpass">Re-enter password</string>
   <string name="error_write_pref">خطای نوشتن در تنظیمات</string>
   <string name="enternewpass">کلمه عبور جدید را وارد کنید (برای حذف رمز خالی بگذارید):</string>
   <string name="passdefined">رمز عبور تعریف شده است</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">سوالات متداول</string>
   <string name="su_check_title">وضعيت</string>
   <string name="su_check_message">چک کردن دسترسی ریشه</string>
+  <string name="fileSize">File Size</string>
+  <string name="currentDir">Current Dir</string>
+  <string name="selectMode">Firewall Mode</string>
+  <string name="confirmation">Confirmation</string>
+  <string name="prefill_profile">Enter profile name</string>
+  <string name="profile_default">MyProfile</string>
+  <string name="filter">Filter</string>
+  <string name="enable_protection">Enable Protection</string>
+  <string name="pref_none">None</string>
+  <string name="pref_password">Password</string>
+  <string name="pref_pattern">Pattern</string>
+  <string name="pref_pin">Pin</string>
+  <string name="set_password">Set</string>
+  <string name="wrong_password">Wrong Password</string>
+  <string name="submit">Submit</string>
+  <string name="dialog_color_picker">Color Picker</string>
 </resources>

@@ -45,7 +45,8 @@
   <string name="rules_deleted">Pravila uspešno pobrisana</string>
   <string name="pass_titleset">Nastavi geslo za zaklepanje</string>
   <string name="pass_titleget">Zahtevano je geslo</string>
-  <string name="enterpass">Vnesite geslo:</string>
+  <string name="enterpass">Vnesite geslo</string>
+  <string name="reenterpass">Ponovno vnesite geslo</string>
   <string name="error_write_pref">Napaka pri zapisovanju nastavitev</string>
   <string name="enternewpass">Vnesite novo geslo (za odstranitev pustite prazno):</string>
   <string name="passdefined">Zaklepanje z geslom uveljavljeno</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">Vprašanja in odgovori</string>
   <string name="su_check_title">Status</string>
   <string name="su_check_message">Preverjam korenski dostop</string>
+  <string name="fileSize">Velikost datoteke</string>
+  <string name="currentDir">Trenutni direktorij</string>
+  <string name="selectMode">Način</string>
+  <string name="confirmation">Potrditev</string>
+  <string name="prefill_profile">Vnesite ime profila</string>
+  <string name="profile_default">Moj profil</string>
+  <string name="filter">Filter</string>
+  <string name="enable_protection">Vklopi zaščito</string>
+  <string name="pref_none">Brez</string>
+  <string name="pref_password">Geslo</string>
+  <string name="pref_pattern">Vzorec</string>
+  <string name="pref_pin">PIN</string>
+  <string name="set_password">Nastavi</string>
+  <string name="wrong_password">Napačno geslo</string>
+  <string name="submit">Uveljavi</string>
+  <string name="dialog_color_picker">Izbira barv</string>
 </resources>

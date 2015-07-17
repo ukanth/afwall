@@ -45,7 +45,8 @@
   <string name="rules_deleted">A szabályok törölve</string>
   <string name="pass_titleset">Jelszavas védelem beállítása</string>
   <string name="pass_titleget">Jelszó szükséges</string>
-  <string name="enterpass">Adja meg a jelszót:</string>
+  <string name="enterpass">Enter password</string>
+  <string name="reenterpass">Re-enter password</string>
   <string name="error_write_pref">Hiba a beállítások írása közben</string>
   <string name="enternewpass">Adja meg az új jelszót (hagyja üresen a jelszó eltávolításához):</string>
   <string name="passdefined">Jelszavas védelem lett beállítva</string>
@@ -274,4 +275,20 @@
   <string name="FAQ">FAQ</string>
   <string name="su_check_title">Status</string>
   <string name="su_check_message">Checking root access</string>
+  <string name="fileSize">File Size</string>
+  <string name="currentDir">Current Dir</string>
+  <string name="selectMode">Firewall Mode</string>
+  <string name="confirmation">Confirmation</string>
+  <string name="prefill_profile">Enter profile name</string>
+  <string name="profile_default">MyProfile</string>
+  <string name="filter">Filter</string>
+  <string name="enable_protection">Enable Protection</string>
+  <string name="pref_none">None</string>
+  <string name="pref_password">Password</string>
+  <string name="pref_pattern">Pattern</string>
+  <string name="pref_pin">Pin</string>
+  <string name="set_password">Set</string>
+  <string name="wrong_password">Wrong Password</string>
+  <string name="submit">Submit</string>
+  <string name="dialog_color_picker">Color Picker</string>
 </resources>
