@@ -140,8 +140,10 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 				// this icon has not been loaded yet - load it on a
 				// separated thread
 				try {
-					new LoadIconTask().execute(holder.app,
+					new LoadIconTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, holder.app,
 							context.getPackageManager(), convertView);
+					/*new LoadIconTask().execute(holder.app,
+							context.getPackageManager(), convertView);*/
 				} catch (RejectedExecutionException r) {
 				}
 			}
