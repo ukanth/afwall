@@ -537,6 +537,8 @@ public final class Api {
 				// the interface gets an IP address, and the time we process the intent
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
 				// legitimate traffic from time to time, so we won't log the failures.
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
 			}
 		} else {
