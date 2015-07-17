@@ -1525,7 +1525,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				removeProfileDialog();
 			} else {
 				if(G.setProfile(true, itemPosition)) {
-                    (new GetAppList()).setContext(this).execute();
+                    (new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 					mSelected.setText("  |  " + mLocations[itemPosition]);
 					if(G.applyOnSwitchProfiles()){
 						applyOrSaveRules();
