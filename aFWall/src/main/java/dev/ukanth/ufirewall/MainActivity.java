@@ -530,7 +530,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	 */
 	private void showOrLoadApplications() {
 		//nocache!!
-		(new GetAppList()).setContext(this).execute();	
+		(new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 	
 
@@ -550,7 +550,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			plsWait = new MaterialDialog.Builder(context).
 					title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
 					.size(), true).show();
-			publishProgress(0);
+			doProgress(0);
 		}
 
 		public void doProgress(int value) {
@@ -606,7 +606,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		@Override
 		protected void onPostExecute(Void result) {
 			selectFilterGroup();
-			publishProgress(-1);
+			doProgress(-1);
 			try {
 				started = false;
 				plsWait.dismiss();
@@ -1779,9 +1779,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			} else {
         		if(passCheck()){
            	    	showOrLoadApplications();
-           	    }	
+           	    }
         	}
-        }		
+        }
     }
 	
 }
