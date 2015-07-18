@@ -66,22 +66,22 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.haibison.android.lockpattern.LockPatternActivity;
 import com.haibison.android.lockpattern.util.Settings;
-import com.orleonsoft.android.simplefilechooser.Constants;
-import com.orleonsoft.android.simplefilechooser.ui.FileChooserActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
-import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
 import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
+import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import eu.chainfire.libsuperuser.Shell;
@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
-	private static final int FILE_CHOOSER_LOCAL = 1700;
-	private static final int FILE_CHOOSER_ALL = 1701;
+	//private static final int FILE_CHOOSER_LOCAL = 1700;
+	//private static final int FILE_CHOOSER_ALL = 1701;
 
 	public boolean isDirty() {
 		return dirty;
@@ -895,15 +895,58 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 						public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
 							switch (which) {
 								case 0:
-									Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-									startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+									//Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+									//startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+									File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+									FileDialog fileDialog = new FileDialog(MainActivity.this,mPath);
+									fileDialog.setFileEndsWith(".json");
+									fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
+										public void fileSelected(File file) {
+											String fileSelected = file.toString();
+											StringBuilder builder = new StringBuilder();
+											if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
+												Api.applications = null;
+												showOrLoadApplications();
+												Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
+											} else {
+												if (builder.toString().equals("")) {
+													Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+												} else {
+													Api.toast(MainActivity.this,builder.toString());
+												}
+											}
+										}
+									});
+									fileDialog.showDialog();
 									break;
 								case 1:
 
 									if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
-										Intent intent2 = new Intent(MainActivity.this, FileChooserActivity.class);
-										startActivityForResult(intent2, FILE_CHOOSER_ALL);
-										//dialogImport.dismiss();
+
+										File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+										FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2);
+										fileDialog2.setFileEndsWith(".json");
+										fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
+											public void fileSelected(File file) {
+												String fileSelected = file.toString();
+												StringBuilder builder = new StringBuilder();
+												if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
+													Api.applications = null;
+													showOrLoadApplications();
+													Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+													Intent intent = getIntent();
+													finish();
+													startActivity(intent);
+												} else {
+													if(builder.toString().equals("")) {
+														Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+													} else {
+														Api.toast(MainActivity.this,builder.toString());
+													}
+												}
+											}
+										});
+										fileDialog2.showDialog();
 									} else {
 
 										new MaterialDialog.Builder(MainActivity.this)
@@ -1036,7 +1079,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
+		//super.onActivityResult(requestCode, resultCode, data);
 		//checkForProfile = false;
 		
 		switch(requestCode) {
@@ -1075,52 +1118,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				}
 			}
             break;
-            case PREFERENCE_RESULT:
+            case PREFERENCE_RESULT: {
 				reloadPreferences();
 				showOrLoadApplications();
-				/*Intent intent = getIntent();
-				finish();
-				startActivity(intent);*/
-               	break;
-
-			case FILE_CHOOSER_LOCAL:
-				if (resultCode == RESULT_OK) {
-					String fileSelected = data.getStringExtra(Constants.KEY_FILE_SELECTED);
-					StringBuilder builder = new StringBuilder();
-					if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
-						Api.applications = null;
-						showOrLoadApplications();
-						Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
-					} else {
-						if (builder.toString().equals("")) {
-							Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-						} else {
-							Api.toast(MainActivity.this,builder.toString());
-						}
-					}
-				}
-			break;
-
-			case FILE_CHOOSER_ALL:
-				if (resultCode == RESULT_OK) {
-					String fileSelected = data.getStringExtra(Constants.KEY_FILE_SELECTED);
-					StringBuilder builder = new StringBuilder();
-					if(Api.loadAllPreferencesFromFile(MainActivity.this, builder,fileSelected)){
-						Api.applications = null;
-						showOrLoadApplications();
-						Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
-						Intent intent = getIntent();
-						finish();
-						startActivity(intent);
-					} else {
-						if(builder.toString().equals("")) {
-							Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-						} else {
-							Api.toast(MainActivity.this,builder.toString());
-						}
-					}
-				}
-			break;
+					/*Intent intent = getIntent();
+					finish();
+					startActivity(intent);*/
+			}
+            break;
 		}
 		
 		if (resultCode == RESULT_OK
