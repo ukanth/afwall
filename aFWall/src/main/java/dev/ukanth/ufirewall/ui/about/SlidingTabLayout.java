@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 /**
  * Created by ukanth on 2/5/15.
@@ -40,10 +42,12 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private int mTabViewTextViewId;
     private boolean mDistributeEvenly;
 
+    private Context context;
     private ViewPager mViewPager;
     private SparseArray<String> mContentDescriptions = new SparseArray<String>();
     private ViewPager.OnPageChangeListener mViewPagerPageChangeListener;
 
+    private int count;
     private final SlidingTabStrip mTabStrip;
 
     public SlidingTabLayout(Context context) {
@@ -56,7 +60,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
 
     public SlidingTabLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
+        this.context = context;
         // Disable the Scroll Bar
         setHorizontalScrollBarEnabled(false);
         // Make sure that the Tab Strips fills this View
@@ -281,6 +285,19 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private class TabClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
+            count++;
+            if(!G.isDo()) {
+                if(count < 10 && count > 8) {
+                    Toast.makeText(context, (7 - count) + context.getString(R.string.unlock_donate), Toast.LENGTH_SHORT).show();
+                    count++;
+                }
+                if(count >= 10){
+                    G.isDo(true);
+                    Toast.makeText(context, context.getString(R.string.donate_support), Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(context, context.getString(R.string.donate_support), Toast.LENGTH_LONG).show();
+            }
             for (int i = 0; i < mTabStrip.getChildCount(); i++) {
                 if (v == mTabStrip.getChildAt(i)) {
                     mViewPager.setCurrentItem(i);
