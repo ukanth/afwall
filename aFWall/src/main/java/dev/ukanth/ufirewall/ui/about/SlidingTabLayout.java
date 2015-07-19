@@ -24,7 +24,7 @@ import dev.ukanth.ufirewall.util.G;
  */
 public class SlidingTabLayout extends HorizontalScrollView {
 
-    /**
+    /**G
      * Allows complete control over the colors drawn in the tab layout. Set with
      * {@link #setCustomTabColorizer(TabColorizer)}.
      */
@@ -287,11 +287,11 @@ public class SlidingTabLayout extends HorizontalScrollView {
         public void onClick(View v) {
             count++;
             if(!G.isDo()) {
-                if(count < 10 && count > 8) {
+                if(count < 20 && count > 15) {
                     Toast.makeText(context, (7 - count) + context.getString(R.string.unlock_donate), Toast.LENGTH_SHORT).show();
                     count++;
                 }
-                if(count >= 10){
+                if(count >= 20){
                     G.isDo(true);
                     Toast.makeText(context, context.getString(R.string.donate_support), Toast.LENGTH_LONG).show();
                 }

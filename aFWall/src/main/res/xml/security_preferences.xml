@@ -3,7 +3,7 @@
     <PreferenceCategory android:title="@string/sec_prefs_title" >
 
         <ListPreference
-            android:defaultValue="@string/pref_none"
+            android:defaultValue="@string/disable"
             android:entries="@array/password_options"
             android:key="passOptions"
             android:entryValues="@array/password_option_values"

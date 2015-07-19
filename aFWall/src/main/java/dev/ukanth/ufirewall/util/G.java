@@ -41,7 +41,7 @@ public class G extends android.app.Application {
 	private static final String IS_ROOT_AVAIL = "isRootAvail";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
-	private static final String REG_DO = "regdo";
+	private static final String REG_DO = "ididnotdonate";
 	
 	private static final String ENABLE_ROAM = "enableRoam";
 	private static final String ENABLE_VPN = "enableVPN";
@@ -190,7 +190,14 @@ public class G extends android.app.Application {
 	public static String locale(String val) { gPrefs.edit().putString(LANGUAGE, val).commit(); return val; }
 
 
-	public static int sortBy() { return  Integer.parseInt(gPrefs.getString(SORT_BY, "0")); }
+	public static int sortBy() {
+		Integer val = 0;
+		try {
+			val = Integer.parseInt(gPrefs.getString(SORT_BY, "0"));
+		} catch (Exception e) {
+		}
+		return val;
+	}
 
 	public static int storedPosition() { return gPrefs.getInt(PROFILE_STORED_POSITION, 0); }
 	public static int storedPosition(int val) { gPrefs.edit().putInt(PROFILE_STORED_POSITION, val).commit(); return val; }
@@ -225,7 +232,15 @@ public class G extends android.app.Application {
 	public static int appVersion(int val) { gPrefs.edit().putInt(APP_VERSION, val).commit(); return val; }
 
 	//new protection list
-	public static int protectionLevel() { return Integer.parseInt(gPrefs.getString(PROTECTION_OPTION, "0")); }
+	public static int protectionLevel() {
+		Integer returnVal = 0;
+		try {
+			returnVal = Integer.parseInt(gPrefs.getString(PROTECTION_OPTION, "0"));
+		} catch (Exception e) {
+
+		}
+		return returnVal;
+	}
 
 	public static List<String> getBlockedNotifyApps() {
 		String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
