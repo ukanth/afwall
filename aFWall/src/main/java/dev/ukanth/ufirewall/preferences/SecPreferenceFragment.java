@@ -49,7 +49,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	private static ComponentName deviceAdmin;
 	private static DevicePolicyManager mDPM;
 
-	private int currentPosition = 0;
+	private String passOption = "p0";
 
 	public static void setupEnableAdmin(Preference pref) {
 		if (pref == null) {
@@ -80,7 +80,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
 		setupEnableAdmin(findPreference("enableAdmin"));
 
-		currentPosition = G.protectionLevel();
+		//passOption = G.protectionLevel();
 	}
 
 	private void preSelectListForBackward() {
@@ -216,7 +216,8 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					//only for donate version
 					break;
 			}
-			currentPosition = index;
+			passOption = "p" + index;
+			//currentPosition = index;
 		}
 		if (key.equals("enableAdmin")) {
 			boolean value = G.enableAdmin();
@@ -255,10 +256,9 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	 * @param itemList
 	 */
 	private void confirmResetPasswords(final ListPreference itemList) {
-		switch(currentPosition) {
-			case 1:
-
-				new MaterialDialog.Builder(getActivity())
+		switch(passOption) {
+			case "p1":
+				new MaterialDialog.Builder(getActivity()).cancelable(false)
 						.title(R.string.confirmation).autoDismiss(false)
 						.content(R.string.enterpass)
 						.inputType(InputType.TYPE_CLASS_TEXT)
@@ -293,7 +293,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 							}
 						}).show();
 				break;
-			case 2:
+			case "p2":
 				Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, getActivity(), LockPatternActivity.class);
 				String savedPattern  = G.sPrefs.getString("LockPassword", "");
 				intent.putExtra(EXTRA_PATTERN, savedPattern.toCharArray());
@@ -353,7 +353,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					final SharedPreferences.Editor editor = G.sPrefs.edit();
 					editor.putString("LockPassword", "");
 					editor.commit();
-					itemList = (ListPreference)findPreference("passOptions");
+					itemList = (ListPreference)findPreference("passSetting");
 					if(itemList != null) {
 						itemList.setValueIndex(0);
 					}

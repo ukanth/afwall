@@ -5,7 +5,7 @@
         <ListPreference
             android:defaultValue="@string/disable"
             android:entries="@array/password_options"
-            android:key="passOptions"
+            android:key="passSetting"
             android:entryValues="@array/password_option_values"
             android:title="@string/enable_protection" >
         </ListPreference>

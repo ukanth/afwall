@@ -380,9 +380,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	
 	private boolean passCheck(){
 		switch (G.protectionLevel()) {
-			case 0:
+			case "p0":
 				return true;
-			case 1:
+			case "p1":
 				final String oldpwd = G.profile_pwd();
 				if (oldpwd.length() == 0) {
 					return true;
@@ -391,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 					requestPassword();
 				}
 				break;
-			case 2:
+			case "p2":
 				final String pwd = G.sPrefs.getString("LockPassword", "");
 				if (pwd.length() == 0) {
 					return true;
@@ -473,8 +473,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	 */
 	private void requestPassword() {
 		switch(G.protectionLevel()) {
-			case 1:
-				new MaterialDialog.Builder(MainActivity.this)
+			case "p1":
+				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.pass_titleget).autoDismiss(false)
 						.inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
 						.positiveText(R.string.submit)
@@ -514,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 							}
 						}).show();
 				break;
-			case 2:
+			case "p2":
 				Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, getApplicationContext(), LockPatternActivity.class);
 				String savedPattern  = G.sPrefs.getString("LockPassword", "");
 				intent.putExtra(EXTRA_PATTERN, savedPattern.toCharArray());
@@ -949,7 +949,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 										fileDialog2.showDialog();
 									} else {
 
-										new MaterialDialog.Builder(MainActivity.this)
+										new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 												.title(R.string.buy_donate)
 												.content(R.string.donate_only)
 												.positiveText(R.string.buy_donate)
@@ -973,7 +973,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 									break;
 								case 2:
 
-									new MaterialDialog.Builder(MainActivity.this)
+									new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 											.title(R.string.import_rules_droidwall)
 											.content(R.string.overrideRules)
 											.positiveText(R.string.Yes)
@@ -1768,7 +1768,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
         protected void onPostExecute(Void result) {
         	dialog.dismiss();
         	if(!suAvailable) {
-					new MaterialDialog.Builder(MainActivity.this)
+				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)
 						.positiveText(R.string.OK)

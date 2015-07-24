@@ -57,7 +57,7 @@ public class G extends android.app.Application {
 	private static final String NOTIFY_INSTALL = "notifyAppInstall";
 	private static final String DISABLE_ICONS = "disableIcons";
 	private static final String IPTABLES_PATH = "ip_path";
-	private static final String PROTECTION_OPTION = "passOptions";
+	private static final String PROTECTION_OPTION = "passSetting";
 	private static final String BUSYBOX_PATH = "bb_path";
 	private static final String LANGUAGE = "locale";
 	private static final String SORT_BY = "sort";
@@ -232,14 +232,8 @@ public class G extends android.app.Application {
 	public static int appVersion(int val) { gPrefs.edit().putInt(APP_VERSION, val).commit(); return val; }
 
 	//new protection list
-	public static int protectionLevel() {
-		Integer returnVal = 0;
-		try {
-			returnVal = Integer.parseInt(gPrefs.getString(PROTECTION_OPTION, "0"));
-		} catch (Exception e) {
-
-		}
-		return returnVal;
+	public static String protectionLevel() {
+		return gPrefs.getString(PROTECTION_OPTION, "p0");
 	}
 
 	public static List<String> getBlockedNotifyApps() {
