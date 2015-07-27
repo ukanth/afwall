@@ -6,6 +6,7 @@ android {
 
     defaultConfig {
         applicationId "dev.ukanth.ufirewall"
+        //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 21
     }
@@ -20,4 +21,5 @@ dependencies {
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.afollestad:material-dialogs:0.7.3.0'
+    //compile 'cat.ereza:customactivityoncrash:1.2.0'
 }

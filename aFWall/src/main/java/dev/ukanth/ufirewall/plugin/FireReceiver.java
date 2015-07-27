@@ -86,7 +86,7 @@ public final class FireReceiver extends BroadcastReceiver
 					}
 					break;
         		case 1:
-        			if(oldPwd.length() == 0 && newPwd.length() == 0){
+					if(G.protectionLevel().equals("p0")){
 						if (Api.purgeIptables(context, false)) {
 							msg.arg1 = R.string.toast_disabled;
 							toaster.sendMessage(msg);

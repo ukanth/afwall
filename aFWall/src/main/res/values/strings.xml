@@ -385,4 +385,6 @@
     <string name="defaultsort">By Name(Default)</string>
     <string name="lastupdated">By Install/Update</string>
     <string name="uid">By UID</string>
+
+    <string name="select_dir">Select directory</string>
 </resources>

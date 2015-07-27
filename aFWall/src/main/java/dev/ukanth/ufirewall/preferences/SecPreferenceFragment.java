@@ -49,7 +49,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	private static ComponentName deviceAdmin;
 	private static DevicePolicyManager mDPM;
 
-	private String passOption = "p0";
+	//private String passOption = "p0";
 
 	public static void setupEnableAdmin(Preference pref) {
 		if (pref == null) {
@@ -85,7 +85,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
 	private void preSelectListForBackward() {
 
-		final ListPreference itemList = (ListPreference)findPreference("passOptions");
+		final ListPreference itemList = (ListPreference)findPreference("passSetting");
 		if(itemList != null) {
 			//logic for patterns
 			if(G.usePatterns() && G.sPrefs.getString("LockPassword", "").length() != 0) {
@@ -182,15 +182,14 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 
-		if(key.equals("passOptions")) {
-			ListPreference itemList = (ListPreference)findPreference("passOptions");
+		if(key.equals("passSetting")) {
+			ListPreference itemList = (ListPreference)findPreference("passSetting");
 			final ListPreference patternMaxTry = (ListPreference)findPreference("patternMax");
 			final CheckBoxPreference stealthMode = (CheckBoxPreference) findPreference("stealthMode");
 			stealthMode.setEnabled(false);
 			patternMaxTry.setEnabled(false);
-			int index = Integer.parseInt(itemList.getValue());
-			switch (index) {
-				case 0:
+			switch (itemList.getValue()) {
+				case "p0":
 					//disable password completly -- add reconfirmation based on current index
 					confirmResetPasswords(itemList);
 					//reset pattern
@@ -202,21 +201,22 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					G.profile_pwd("");
 					G.isEnc(false);*/
 
-					itemList.setValueIndex(0);
+					//itemList.setValueIndex(0);
 					break;
-				case 1:
+				case "p1":
 					//use the existing method to protect password
 					showPasswordActivity(itemList);
 					break;
-				case 2:
+				case "p2":
 					//use the existing method to protect password
 					showPatternActivity();
 					break;
-				case 3:
+				case "p3":
 					//only for donate version
 					break;
 			}
-			passOption = "p" + index;
+			//passOption = "p" + index;
+
 			//currentPosition = index;
 		}
 		if (key.equals("enableAdmin")) {
@@ -256,49 +256,52 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	 * @param itemList
 	 */
 	private void confirmResetPasswords(final ListPreference itemList) {
-		switch(passOption) {
-			case "p1":
-				new MaterialDialog.Builder(getActivity()).cancelable(false)
-						.title(R.string.confirmation).autoDismiss(false)
-						.content(R.string.enterpass)
-						.inputType(InputType.TYPE_CLASS_TEXT)
-						.input(R.string.enterpass, R.string.password_empty, new MaterialDialog.InputCallback() {
-							@Override
-							public void onInput(MaterialDialog dialog, CharSequence input) {
-								String pass = input.toString();
-								boolean isAllowed = false;
-								if (G.isEnc()) {
-									String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
-									if (decrypt != null) {
-										if (decrypt.equals(pass)) {
-											isAllowed = true;
-											//Api.toast(getActivity(), getString(R.string.wrong_password));
-										}
-									}
-								} else {
-									if (pass.equals(G.profile_pwd())) {
-										//reset password
+		//TODO: Logic here
+		String pattern = G.sPrefs.getString("LockPassword", "");
+		String pwd = G.profile_pwd();
+		if(pwd.length() > 0 ) {
+			new MaterialDialog.Builder(getActivity()).cancelable(false)
+					.title(R.string.confirmation).autoDismiss(false)
+					.content(R.string.enterpass)
+					.inputType(InputType.TYPE_CLASS_TEXT)
+					.input(R.string.enterpass, R.string.password_empty, new MaterialDialog.InputCallback() {
+						@Override
+						public void onInput(MaterialDialog dialog, CharSequence input) {
+							String pass = input.toString();
+							boolean isAllowed = false;
+							if (G.isEnc()) {
+								String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
+								if (decrypt != null) {
+									if (decrypt.equals(pass)) {
 										isAllowed = true;
 										//Api.toast(getActivity(), getString(R.string.wrong_password));
 									}
 								}
-								if(isAllowed) {
-									G.profile_pwd("");
-									G.isEnc(false);
-									itemList.setValueIndex(0);
-									dialog.dismiss();
-								} else {
-									Api.toast(getActivity(), getString(R.string.wrong_password));
+							} else {
+								if (pass.equals(G.profile_pwd())) {
+									//reset password
+									isAllowed = true;
+									//Api.toast(getActivity(), getString(R.string.wrong_password));
 								}
 							}
-						}).show();
-				break;
-			case "p2":
+							if(isAllowed) {
+								G.profile_pwd("");
+								G.isEnc(false);
+								itemList.setValueIndex(0);
+								dialog.dismiss();
+							} else {
+								Api.toast(getActivity(), getString(R.string.wrong_password));
+							}
+						}
+					}).show();
+
+		}
+
+		if(pattern.length() > 0) {
 				Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, getActivity(), LockPatternActivity.class);
 				String savedPattern  = G.sPrefs.getString("LockPassword", "");
 				intent.putExtra(EXTRA_PATTERN, savedPattern.toCharArray());
 				startActivityForResult(intent, REQ_ENTER_PATTERN);
-				break;
 		}
 
 	}
@@ -323,7 +326,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 		super.onActivityResult(requestCode, resultCode, data);
 		switch(requestCode) {
 			case REQ_CREATE_PATTERN: {
-				ListPreference itemList = (ListPreference)findPreference("passOptions");
+				ListPreference itemList = (ListPreference)findPreference("passSetting");
 				if (resultCode == getActivity().RESULT_OK) {
 					char[] pattern = data.getCharArrayExtra(
 							EXTRA_PATTERN);
@@ -339,7 +342,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					}
 
 				}else {
-					itemList = (ListPreference)findPreference("passOptions");
+					itemList = (ListPreference)findPreference("passSetting");
 					if(itemList != null) {
 						itemList.setValueIndex(0);
 					}
@@ -348,7 +351,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 			}
 
 			case REQ_ENTER_PATTERN: {
-				ListPreference itemList = (ListPreference)findPreference("passOptions");
+				ListPreference itemList = (ListPreference)findPreference("passSetting");
 				if (resultCode == getActivity().RESULT_OK) {
 					final SharedPreferences.Editor editor = G.sPrefs.edit();
 					editor.putString("LockPassword", "");

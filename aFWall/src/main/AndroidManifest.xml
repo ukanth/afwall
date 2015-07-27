@@ -158,10 +158,11 @@
         </activity>
         
         <receiver android:name=".broadcast.BootBroadcast" >
-            <intent-filter>
+            <intent-filter android:priority="500">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <category android:name="android.intent.category.DEFAULT" />
               </intent-filter>
         </receiver>
 
@@ -287,10 +288,6 @@
 		<meta-data android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H" android:resource="@dimen/app_defaultsize_h" />
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:resource="@dimen/app_minimumsize_w" />
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:resource="@dimen/app_minimumsize_h" />
-
-        <activity
-            android:theme="@android:style/Theme.Dialog"
-            android:name="com.orleonsoft.android.simplefilechooser.ui.FileChooserActivity" />
 
     </application>
 

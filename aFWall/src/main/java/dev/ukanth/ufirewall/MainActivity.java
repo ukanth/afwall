@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 			setContentView(R.layout.main);
 
-
+			//CustomActivityOnCrash.install(this);
 
 			Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 

@@ -101,9 +101,9 @@ public class ToggleWidgetOldActivity extends Activity implements
 			}
 		};
 		final Context context = getApplicationContext();
-		final String oldPwd = G.profile_pwd();
+	/*	final String oldPwd = G.profile_pwd();
 		final String newPwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0)
-				.getString("LockPassword", "");
+				.getString("LockPassword", "");*/
 		new Thread() {
 			@Override
 			public void run() {
@@ -118,7 +118,7 @@ public class ToggleWidgetOldActivity extends Activity implements
 				case 2:
 					// validation, check for password
 
-					if (oldPwd.length() == 0 && newPwd.length() == 0) {
+					if(G.protectionLevel().equals("p0")){
 						if (Api.purgeIptables(context, false)) {
 							msg.arg1 = R.string.toast_disabled;
 							toaster.sendMessage(msg);

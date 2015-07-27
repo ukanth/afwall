@@ -1,9 +1,5 @@
 package dev.ukanth.ufirewall.widget;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,10 +8,15 @@ import android.os.Looper;
 import android.os.Message;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.widget.RadialMenuWidget.RadialMenuEntry;
 
 public class ToggleWidgetActivity extends Activity {
@@ -220,7 +221,7 @@ public class ToggleWidgetActivity extends Activity {
 						break;
 					case 2:
 						//validation, check for password
-						if(oldPwd.length() == 0 && newPwd.length() == 0){
+						if(G.protectionLevel().equals("p0")){
 							Api.purgeIptables(context, true, new RootCommand()
 							.setSuccessToast(R.string.toast_disabled)
 							.setFailureToast(R.string.toast_error_disabling)

@@ -58,13 +58,13 @@ public class StatusWidget extends AppWidgetProvider {
 		} else if (Api.TOGGLE_REQUEST_MSG.equals(intent.getAction())) {
 			// Broadcast sent to request toggling DroidWall's status
 			
-			final String oldPwd = G.profile_pwd();
+			/*final String oldPwd = G.profile_pwd();
 			final String newPwd = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString("LockPassword", "");
-			
+			*/
 			final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 			
-			if (!enabled && (oldPwd.length() != 0 || newPwd.length() != 0)) {
+			if (!enabled && !G.protectionLevel().equals("p0")) {
 				Toast.makeText(context, R.string.widget_disable_fail,Toast.LENGTH_SHORT).show();
 				return;
 			}

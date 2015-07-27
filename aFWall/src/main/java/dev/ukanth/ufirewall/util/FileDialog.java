@@ -12,6 +12,8 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.ukanth.ufirewall.R;
+
 /**
  * Created by ukanth on 18/7/15.
  */
@@ -52,7 +54,7 @@ public class FileDialog {
 
         builder.setTitle(currentPath.getPath());
         if (selectDirectoryOption) {
-            builder.setPositiveButton("Select directory", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(activity.getString(R.string.select_dir), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                    // Log.d(TAG, currentPath.getPath());
                     fireDirectorySelectedEvent(currentPath);
@@ -123,7 +125,7 @@ public class FileDialog {
 
     private void loadFileList(File path) {
         this.currentPath = path;
-        String afwallDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/";
+        //String afwallDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/";
         List<String> r = new ArrayList<String>();
         if (path.exists()) {
             if (path.getParentFile() != null) r.add(PARENT_DIR);
