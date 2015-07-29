@@ -1,39 +1,16 @@
 Changelog AFWall+
 ==================
-Version 2.0.0-BETA1
+Version 2.0.0
 
-* Fix Crash reports and performance improvements
-* Added/Updated translations
-
-Version 2.0.0-ALPHA3
-
-* More UI Enhancements
+* Initial Material design
+* Support for 5.x Lollipop
+* Revamped UI(pull to refresh),Preferences and Icons
+* Enhanced security password protection
+* Enhanced Import/Export with File Picker
+* Performance Improvements and optimizations
 * Experimental - Added sort apps by uid/install date
-* Translations
-* Bug Fixes
-
-
-Version 2.0.0-ALPHA2
-
-* Added File Picker for Import Preferences
-* Added Timestamp with export preferences
-* Fixed bug with UI refresh after preference change
-* Added new translations - huge thanks to translators
-* Updated translations
-* Minor UI Enhancements on list
- 
-
-Version 2.0.0-ALPHA1
-
-* Initial support for Lollipop 5.0 and 5.1 (PIE compatible) 
-* Removed library dependencies (ABS/Unified) - This is to bring full Material design guidelines to AFWall+
-* Lot of code changes - No functional changes for now.
-* Revamped Preferences
-* Select all will not affect "All Applications"
-* Minor UI enhancements and new icons
-* Updated libs (superuser/roottools)
-* Updated Translations
- 
+* Added/Updated Translations. 
+* And lots of changes...
  
 Version 1.3.4
 * Feature: Added permanent notification on firewall status (optional)
