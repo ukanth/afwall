@@ -87,14 +87,16 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
 		final ListPreference itemList = (ListPreference)findPreference("passSetting");
 		if(itemList != null) {
-			//logic for patterns
-			if(G.usePatterns() && G.sPrefs.getString("LockPassword", "").length() != 0) {
-				itemList.setValueIndex(2);
-			}//logic for passwords
-			else if(G.profile_pwd().length() != 0) {
-				itemList.setValueIndex(1);
-			} else {
-				itemList.setValueIndex(0);
+			switch(G.protectionLevel()) {
+				case "p0":
+					itemList.setValueIndex(0);
+					break;
+				case "p1":
+					itemList.setValueIndex(1);
+					break;
+				case "p2":
+					itemList.setValueIndex(2);
+					break;
 			}
 		}
 	}
@@ -359,6 +361,10 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					itemList = (ListPreference)findPreference("passSetting");
 					if(itemList != null) {
 						itemList.setValueIndex(0);
+					}
+				} else {
+					if(itemList != null) {
+						itemList.setValueIndex(2);
 					}
 				}
 			}

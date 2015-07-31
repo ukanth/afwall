@@ -27,8 +27,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
@@ -190,13 +192,8 @@ public class G extends android.app.Application {
 	public static String locale(String val) { gPrefs.edit().putString(LANGUAGE, val).commit(); return val; }
 
 
-	public static int sortBy() {
-		Integer val = 0;
-		try {
-			val = Integer.parseInt(gPrefs.getString(SORT_BY, "0"));
-		} catch (Exception e) {
-		}
-		return val;
+	public static String sortBy() {
+		return gPrefs.getString(SORT_BY, "0");
 	}
 
 	public static int storedPosition() { return gPrefs.getInt(PROFILE_STORED_POSITION, 0); }
@@ -294,14 +291,30 @@ public class G extends android.app.Application {
 	public static void addAdditionalProfile(String profile) {
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 		StringBuilder builder = new StringBuilder();
-		if(previousProfiles.equals("")){
-			builder.append(profile);
-		} else {
-			builder.append(previousProfiles);
-			builder.append(",");
-			builder.append(profile);
+		if(profile !=null && profile.length() > 0) {
+			if(previousProfiles.length() == 0){
+				builder.append(profile);
+			} else {
+				builder.append(previousProfiles);
+				builder.append(",");
+				builder.append(profile);
+			}
+			gPrefs.edit().putString(ADDITIONAL_PROFILES, builder.toString()).commit();
 		}
-		gPrefs.edit().putString(ADDITIONAL_PROFILES, builder.toString()).commit(); 
+	}
+
+
+	public static void clearSharedPreferences(Context ctx, String preferenceName){
+		File dir = new File(ctx.getFilesDir().getParent() + "/shared_prefs/");
+		String[] children = dir.list();
+		for (int i = 0; i < children.length; i++) {
+			// clear each of the prefrances
+			if(children[i].replace(".xml", "").equals(preferenceName)) {
+				ctx.getSharedPreferences(children[i].replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
+				try { Thread.sleep(1000); } catch (InterruptedException e) {}
+				new File(dir, children[i]).delete();
+			}
+		}
 	}
 	
 	public static void removeAdditionalProfile(String profileName, int position) {
@@ -309,7 +322,7 @@ public class G extends android.app.Application {
 		
 		//after remove clear all the data inside the custom profile
 		if(ctx!= null) {
-			ctx.getSharedPreferences(sharedProfileName, 0).edit().clear().commit();
+			clearSharedPreferences(ctx,sharedProfileName);
 		}
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 
@@ -322,8 +335,14 @@ public class G extends android.app.Application {
 				}
 			}
 		}
-		gPrefs.edit().putString(ADDITIONAL_PROFILES, builder.toString()).commit();
-		
+		String profile = builder.toString();
+		if (profile.length() > 0 && profile.charAt(profile.length()-1)==',') {
+			profile = profile.substring(0, profile.length()-1);
+		}
+		gPrefs.edit().putString(ADDITIONAL_PROFILES, profile).commit();
+
+		G.storedPosition(position);
+
 		//deleteing active profile
 		if(storedPosition() == position) {
 			//reset stored position to default
@@ -393,8 +412,8 @@ public class G extends android.app.Application {
 	}
 	public static List<String> getAdditionalProfiles() {
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
-		List<String> profileList = new ArrayList<String>();
-		if(!previousProfiles.equals("")){
+		List<String> profileList = new ArrayList<>(new LinkedHashSet<String>());
+		if(previousProfiles != null && previousProfiles.length() > 0){
 			profileList = Arrays.asList(previousProfiles.split(","));
 		} 
 		return profileList;

@@ -387,4 +387,6 @@
     <string name="uid">By UID</string>
 
     <string name="select_dir">Select directory</string>
+    <string name="select">Select action for</string>
+    <string name="manage_profiles">Manage Profiles</string>
 </resources>

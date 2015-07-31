@@ -9,12 +9,15 @@
             android:key="applyOnSwitchProfiles"
             android:summary="@string/multi_apply_rules_info"
             android:title="@string/multi_apply_rules" />
+        <Preference android:title="@string/manage_profiles"
+            android:key="manage_profiles"
+            android:summary="@string/manage_profiles"/>
         <EditTextPreference
             android:dependency="enableMultiProfile"
             android:key="default"
             android:summary="@string/custom_title1"
             android:title="@string/defaultProfile" />
-        <EditTextPreference
+     ] <EditTextPreference
             android:dependency="enableMultiProfile"
             android:key="profile1"
             android:summary="@string/custom_title2"

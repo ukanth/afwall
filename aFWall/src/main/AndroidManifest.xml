@@ -81,6 +81,7 @@
         android:icon="@drawable/ic_launcher_free"
         android:label="@string/app_name"
         android:theme="@style/MyActionBarTheme"
+        android:launchMode="singleInstance"
         android:name=".util.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
@@ -114,6 +115,10 @@
         <activity
             android:theme="@style/MyTheme"
             android:name=".activity.RulesActivity"/>
+
+        <activity
+            android:theme="@style/MyTheme"
+            android:name=".activity.ProfileActivity"/>
         <activity
             android:theme="@style/MyTheme"
             android:name=".activity.AppDetailActivity">
@@ -257,9 +262,9 @@
             android:exported="true"
             android:icon="@drawable/ic_launcher_free"
             android:label="@string/tasker_lable"
-            android:theme="@style/Theme.Locale.Dark"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize"
+            android:theme="@style/MyActionBarTheme"
             tools:ignore="ExportedActivity" >
 
             <!-- this Intent filter allows the plug-in to be discovered by Locale -->

@@ -1,24 +1,26 @@
 package dev.ukanth.ufirewall.plugin;
 
-import java.util.List;
-
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.R;
 
-public class LocaleEdit extends Activity {
-	public static final String LOCALE_BRIGHTNESS = "dev.ukanth.ufirewall.plugin.LocaleEdit.ACTIVE_PROFLE";
+import java.util.List;
+
+import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
+
+public class LocaleEdit extends AppCompatActivity {
+	//public static final String LOCALE_BRIGHTNESS = "dev.ukanth.ufirewall.plugin.LocaleEdit.ACTIVE_PROFLE";
 	
 	private boolean mIsCancelled = false;
 	
@@ -32,6 +34,10 @@ public class LocaleEdit extends Activity {
 				com.twofortyfouram.locale.Intent.EXTRA_BUNDLE));
 
 		setContentView(R.layout.tasker_profile);
+
+		Toolbar toolbar = (Toolbar) findViewById(R.id.tasker_toolbar);
+
+		setSupportActionBar(toolbar);
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		//final int currentPosition = prefs.getInt("storedPosition", 0);
@@ -44,18 +50,16 @@ public class LocaleEdit extends Activity {
 		RadioButton button4 = (RadioButton) findViewById(R.id.profile3);
 		
 		RadioGroup profiles = (RadioGroup)findViewById(R.id.radioProfiles);
-		
-		
-		
-		
+
 		List<String> profilesList = G.getAdditionalProfiles();
+		//int textColor = Color.parseColor("#000000");
 		
 		int counter = CUSTOM_PROFILE_ID;
 		for(String profile : profilesList) {
 			RadioButton rdbtn = new RadioButton(this);
 			rdbtn.setId(counter++);
-	        rdbtn.setText(profile);
-	        profiles.addView(rdbtn);
+			rdbtn.setText(profile);
+			profiles.addView(rdbtn);
 		}
 		
 		
@@ -120,27 +124,20 @@ public class LocaleEdit extends Activity {
 	}
 	
 	@Override
-    public boolean onMenuItemSelected(final int featureId, final MenuItem item)
+    public boolean onOptionsItemSelected(final MenuItem item)
     {
-        final int id = item.getItemId();
-
-        if (android.R.id.home == id)
-        {
-            finish();
-            return true;
-        }
-        else if (R.id.twofortyfouram_locale_menu_dontsave == id)
-        {
-            mIsCancelled = true;
-            finish();
-            return true;
-        }
-        else if (R.id.twofortyfouram_locale_menu_save == id)
-        {
-            finish();
-            return true;
-        }
-
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				finish();
+				return true;
+			case R.id.twofortyfouram_locale_menu_dontsave:
+				mIsCancelled = true;
+				finish();
+				return true;
+			case R.id.twofortyfouram_locale_menu_save:
+				finish();
+				return true;
+		}
         return super.onOptionsItemSelected(item);
     }
 	

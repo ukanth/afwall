@@ -21,7 +21,7 @@
         android:id="@id/twofortyfouram_locale_menu_dontsave"
         android:icon="@drawable/twofortyfouram_locale_ic_menu_dontsave"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/twofortyfouram_locale_menu_dontsave"/>
+        android:title="@string/Cancel"/>
 
     <!--
          Menu item to save the result. This should set the Activity result to RESULT_OK, with proper blurb and bundle extras, 
@@ -32,7 +32,7 @@
         android:id="@id/twofortyfouram_locale_menu_save"
         android:icon="@drawable/twofortyfouram_locale_ic_menu_save"
         android:showAsAction="ifRoom|withText"
-        android:title="@string/twofortyfouram_locale_menu_save"/>
+        android:title="@string/saverules"/>
 
     <!-- Menu item to launch the Help. It should launch the web browser using ACTION_VIEW with the data set to a URL. -->
 
@@ -40,6 +40,6 @@
         android:id="@id/twofortyfouram_locale_menu_help"
         android:icon="@drawable/twofortyfouram_locale_ic_menu_help"
         android:showAsAction="never"
-        android:title="@string/twofortyfouram_locale_menu_help"/>
+        android:title="@string/help"/>
 
 </menu>

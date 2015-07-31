@@ -36,7 +36,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -71,6 +70,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
@@ -96,9 +96,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 					ActionBar.OnNavigationListener,SwipeRefreshLayout.OnRefreshListener {
 
 	private TextView mSelected;
-    private String[] mLocations;
-	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
+    //private DrawerLayout mDrawerLayout;
+	//private ListView mDrawerList;
 	private Menu mainMenu;
    	public boolean isOnPause = false;
 	private ListView listview = null;
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	private SwipeRefreshLayout mSwipeLayout;
 	private int index;
 	private int top;
-	private List<String> mlocalList = new ArrayList<String>();
+	private List<String> mlocalList = new ArrayList<>(new LinkedHashSet<String>());
 
 	private static final int REQ_ENTER_PATTERN = 9755;
 	private static final int SHOW_ABOUT_RESULT = 1200;
@@ -116,8 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
-	//private static final int FILE_CHOOSER_LOCAL = 1700;
-	//private static final int FILE_CHOOSER_ALL = 1701;
+
 
 	public boolean isDirty() {
 		return dirty;
@@ -183,11 +181,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 	private void selectFilterGroup() {
 		Spinner spinner1 = (Spinner) findViewById(R.id.filterGroup);
-		spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
-			{
-				switch(pos) {
+		spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+				switch (pos) {
 					case 0:
 						showApplications("", 99, true);
 						break;
@@ -206,8 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				}
 			}
 
-			public void onNothingSelected(AdapterView<?> parent)
-			{
+			public void onNothingSelected(AdapterView<?> parent) {
 
 			}
 		});
@@ -329,38 +324,21 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	
 	private void setupMultiProfile(boolean reset){
 		if(G.enableMultiProfile()) {
-			
-			if(reset) {
-				 mlocalList = new ArrayList<String>();
-			}
+
 			G.reloadPrefs();
+
 			mSelected = (TextView)findViewById(R.id.text);
-			
-			
-			mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
-			mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
-			mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
-			mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
-			
-			boolean isAdditionalProfiles = false;
-			List<String> profilesList = G.getAdditionalProfiles();
-			for(String profiles : profilesList) {
-				isAdditionalProfiles = true;
-				mlocalList.add(profiles);
-			}
-			
+
+			boolean isAdditionalProfiles = reloadLocalList(reset);
+
 			int position = G.storedPosition();
 			//something went wrong - No profiles but still it's set more. reset to default
 			if(!isAdditionalProfiles && position > 3) {
 				G.storedPosition(0);
 				position = 0;
 			}
-			
-			
-			mlocalList.add(getString(R.string.profile_add));
-			mlocalList.add(getString(R.string.profile_remove));
 
-			mLocations = mlocalList.toArray(new String[mlocalList.size()]);
+			final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 			
 			spinnerAdapter =  new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,
 		    	    mLocations);
@@ -377,7 +355,30 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			getSupportActionBar().setDisplayUseLogoEnabled(true);
 		}
 	}
-	
+
+	private boolean reloadLocalList(boolean reset) {
+		if(reset) {
+			mlocalList = new ArrayList<>(new LinkedHashSet<String>());
+		}
+		mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
+		mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
+		mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
+		mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
+
+		boolean isAdditionalProfiles = false;
+		List<String> profilesList = G.getAdditionalProfiles();
+		for(String profiles : profilesList) {
+			if(profiles !=null && profiles.length() > 0) {
+				isAdditionalProfiles = true;
+				mlocalList.add(profiles);
+			}
+		}
+
+		//mlocalList.add(getString(R.string.profile_add));
+		//mlocalList.add(getString(R.string.profile_remove));
+		return isAdditionalProfiles;
+	}
+
 	private boolean passCheck(){
 		switch (G.protectionLevel()) {
 			case "p0":
@@ -644,11 +645,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 			if (o1_selected == o2_selected) {
 				switch (G.sortBy()) {
-					case 0:
+					case "0":
 						return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());
-					case 1:
+					case "1":
 						return o1.installTime > o2.installTime ? -1: o1.installTime < o2.installTime ? 1 : 0;
-					case 2:
+					case "2":
 						return o2.uid > o1.uid ? -1: o2.uid < o1.uid ? 0 : 1;
 				}
 			}
@@ -1079,26 +1080,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		//super.onActivityResult(requestCode, resultCode, data);
-		//checkForProfile = false;
-		
+		super.onActivityResult(requestCode, resultCode, data);
 		switch(requestCode) {
-			/*case REQ_CREATE_PATTERN: {
-				if(G.usePatterns()){
-					if (resultCode == RESULT_OK) {
-						char[] pattern = data.getCharArrayExtra(
-				                    EXTRA_PATTERN);
-			    		final Editor editor = G.sPrefs.edit();
-		    			editor.putString("LockPassword", new String(pattern));
-		    			editor.commit();
-					}
-					break;
-				}
-			}
-			break;*/
-			
 			case REQ_ENTER_PATTERN: {
-				if(G.usePatterns()){
 				switch (resultCode) {
 					case RESULT_OK:
 						//isPassVerify = true;
@@ -1113,28 +1097,28 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 						android.os.Process.killProcess(android.os.Process.myPid());
 						break;
 					case RESULT_FORGOT_PATTERN:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						break;
+					default:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
 						break;
 					}
-				}
 			}
             break;
             case PREFERENCE_RESULT: {
 				reloadPreferences();
 				showOrLoadApplications();
-					/*Intent intent = getIntent();
-					finish();
-					startActivity(intent);*/
 			}
             break;
 		}
-		
 		if (resultCode == RESULT_OK
 				&& data != null && Api.CUSTOM_SCRIPT_MSG.equals(data.getAction())) {
 			final String script = data.getStringExtra(Api.SCRIPT_EXTRA);
 			final String script2 = data.getStringExtra(Api.SCRIPT2_EXTRA);
 			setCustomScript(script, script2);
 		}
-		//
 	}
 
 	/**
@@ -1520,56 +1504,53 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		
 		if(G.enableMultiProfile()){
-			//user clicked add  
-			if(itemPosition == mLocations.length - 2){
-				addProfileDialog();
-			}
-			//user clicked remove
-			else if(itemPosition == mLocations.length - 1){
-				//G.removeProfile(itemPosition, mSelected.getText().toString());
-				removeProfileDialog();
-			} else {
-				if(G.setProfile(true, itemPosition)) {
-                    (new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-					mSelected.setText("  |  " + mLocations[itemPosition]);
-					if(G.applyOnSwitchProfiles()){
-						applyOrSaveRules();
-					}
-					refreshHeader();
+			//user clicked add
+			reloadLocalList(true);
+
+			final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
+
+			if(G.setProfile(true, itemPosition)) {
+				(new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				mSelected.setText("  |  " + mLocations[itemPosition]);
+				if(G.applyOnSwitchProfiles()){
+					applyOrSaveRules();
 				}
+				refreshHeader();
 			}
+
 		}
 		return true;
 	}
-	
-	public void removeProfileDialog() {
-	new MaterialDialog.Builder(this)
+
+	/*public void removeProfileDialog() {
+		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
+		new MaterialDialog.Builder(this)
 				.title(R.string.profile_remove)
 				.items(G.getAdditionalProfiles().toArray(new String[G.getAdditionalProfiles().size()]))
-			.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-				@Override
-				public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-					G.removeAdditionalProfile(mLocations[which + 4], which + 4);
-					setupMultiProfile(true);
-					Api.applications = null;
-					showOrLoadApplications();
-					return true;
-				}
-			})
-			.callback(new MaterialDialog.ButtonCallback() {
-				@Override
-				public void onNegative(MaterialDialog dialog) {
-					G.storedPosition(0);
-					reloadPreferences();
-				}
-			})
-			.positiveText(R.string.apply)
-			.negativeText(R.string.Cancel)
+				.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+					@Override
+					public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+						G.removeAdditionalProfile(mLocations[which + 4], which + 4);
+						setupMultiProfile(true);
+						Api.applications = null;
+						showOrLoadApplications();
+						return true;
+					}
+				})
+				.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onNegative(MaterialDialog dialog) {
+						G.storedPosition(0);
+						reloadPreferences();
+					}
+				})
+				.positiveText(R.string.apply)
+				.negativeText(R.string.Cancel)
 				.show();
-	}
-	
-	public void addProfileDialog() {
+	}*/
 
+	public void addProfileDialog() {
+		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 		new MaterialDialog.Builder(this)
 				.title(R.string.profile_add)
 				.inputType(InputType.TYPE_CLASS_TEXT)
