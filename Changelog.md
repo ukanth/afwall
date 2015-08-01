@@ -7,6 +7,7 @@ Version 2.0.0
 * Revamped UI(pull to refresh),Preferences and Icons
 * Enhanced security password protection
 * Enhanced Import/Export with File Picker
+* New Profile Management
 * Performance Improvements and optimizations
 * Experimental - Added sort apps by uid/install date
 * Added/Updated Translations. 
