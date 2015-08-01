@@ -1555,24 +1555,6 @@ public final class Api {
 	 * Cleanup the cache from profiles - Improve performance.
 	 * @param ctx
 	 */
-	@Deprecated
-	public static void removeAllProfileCacheLabel(Context ctx){
-		SharedPreferences prefs;
-		final String cacheLabel = "cache.label.";
-		String cacheKey;
-		for(String profileName: G.profiles) {
-			prefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
-			if(prefs != null) {
-				Map<String,?> keys = prefs.getAll();
-				for(Map.Entry<String,?> entry : keys.entrySet()){
-					if(entry.getKey().startsWith(cacheLabel)){
-						cacheKey = entry.getKey();
-						prefs.edit().remove(cacheKey).commit();
-					}
-				 }		
-			}
-		}
-	}
 
 	public static boolean isPackageExists(PackageManager pm, String targetPackage) {
 		try {
@@ -1815,6 +1797,8 @@ public final class Api {
 						updatePackage(ctx,prefs.getString(PREF_LAN_PKG_UIDS, ""),exportMap,LAN_EXPORT);
 						addProfileObject.put(profile, new JSONObject(exportMap));
 					}
+					//support for new profiles
+
 					exportObject.put("additional_profiles", addProfileObject);
 				} else {
 					//default Profile - current one
@@ -1835,7 +1819,9 @@ public final class Api {
 				Log.d(TAG, e.getLocalizedMessage());
 			} catch (JSONException e) {
 				Log.d(TAG, e.getLocalizedMessage());
-			} 
+			} catch (Exception e) {
+				Log.d(TAG, e.getLocalizedMessage());
+			}
 		}
 	   
 	    return res;
@@ -2038,7 +2024,7 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONObject object = new JSONObject(data);
-			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "enableLog" };
+			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "enableLog" , "sort"};
 			List<String> ignoreList = Arrays.asList(ignore);
 			JSONArray prefArray = (JSONArray) object.get("prefs");
 			for(int i = 0 ; i < prefArray.length(); i++){

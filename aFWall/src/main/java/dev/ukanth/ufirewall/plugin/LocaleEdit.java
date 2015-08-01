@@ -82,23 +82,35 @@ public class LocaleEdit extends AppCompatActivity {
 					com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
 			if (PluginBundleManager.isBundleValid(forwardedBundle)) {
 				String index = forwardedBundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
+				if(index.contains("::")) {
+					index = index.split("::")[0];
+				}
+				String enable = getString(R.string.enable);
 				if(index != null ){
-					int id = Integer.parseInt(index);
-					switch(id){
-					case 0: tasker_enable.setChecked(true);break;
-					case 1: tasker_disable.setChecked(true);break;
-					case 2: button1.setChecked(true); break;
-					case 3: button2.setChecked(true); break;
-					case 4: button3.setChecked(true); break;
-					case 5: button4.setChecked(true); break;
+					//int id = Integer.parseInt(index);
+					switch(index){
+						case "0" : tasker_enable.setChecked(true);break;
+						case "1": tasker_disable.setChecked(true);break;
+						case "2": button1.setChecked(true); break;
+						case "3": button2.setChecked(true); break;
+						case "4": button3.setChecked(true); break;
+						case "5": button4.setChecked(true); break;
+						default:
+							int diff = CUSTOM_PROFILE_ID + (Integer.parseInt(index) - 6);
+							RadioButton btn = (RadioButton) findViewById(diff);
+							if(btn !=null) {
+								btn.setChecked(true);
+							}
+							//logic here
 					}
-					if(id > 5) {
+
+					/*if(id > 5) {
 						int diff = CUSTOM_PROFILE_ID + (id - 6);
 						RadioButton btn = (RadioButton) findViewById(diff);
 						if(btn !=null) {
 							btn.setChecked(true);	
 						}
-					}
+					}*/
 				}
 			}
 		}
@@ -159,10 +171,11 @@ public class LocaleEdit extends AppCompatActivity {
         	RadioGroup group = (RadioGroup) findViewById(R.id.radioProfiles);
     		int selectedId  = group.getCheckedRadioButtonId();
     		RadioButton radioButton = (RadioButton) findViewById(selectedId);
+			String action = radioButton.getText().toString();
     		int idx = group.indexOfChild(radioButton);
     		final Intent resultIntent = new Intent();
-            resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx+""));
-            resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, idx+"");
+            resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx + "::" + action));
+            resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, action);
             setResult(RESULT_OK, resultIntent);
 	
         }

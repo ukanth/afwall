@@ -87,7 +87,7 @@ public class ProfileActivity extends AppCompatActivity{
         int itemId = item.getItemId();
         AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         if(aInfo.position > 3) {
-            G.removeAdditionalProfile(profilesList.get(aInfo.position).getProfileName(),aInfo.position);
+            G.removeAdditionalProfile(profilesList.get(aInfo.position).getProfileName());
             profilesList.remove(aInfo.position);
             profileAdapter.notifyDataSetChanged();
         }

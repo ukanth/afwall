@@ -221,9 +221,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				|| key.equals("locale") || key.equals("showFilter")) {
 			// revert back to Default profile when disabling multi-profile
 			// support
-			if (!G.enableMultiProfile()) {
-				G.storedPosition(0);
-			}
+
 			G.reloadProfile();
 		}
 
@@ -253,9 +251,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		}
 
 		if(key.equals("enableMultiProfile")) {
-			if (!G.enableMultiProfile()) {
+			/*if (!G.enableMultiProfile()) {
 				G.storedPosition(0);
-			}
+			}*/
 			G.reloadProfile();
 		}
 

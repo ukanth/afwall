@@ -389,4 +389,5 @@
     <string name="select_dir">Select directory</string>
     <string name="select">Select action for</string>
     <string name="manage_profiles">Manage Profiles</string>
+    <string name="profiles">Profiles: </string>
 </resources>

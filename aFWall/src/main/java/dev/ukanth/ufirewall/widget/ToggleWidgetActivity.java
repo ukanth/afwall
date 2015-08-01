@@ -83,8 +83,8 @@ public class ToggleWidgetActivity extends Activity {
 	  
 	  public class Status implements RadialMenuEntry
 	   {
-	      public String getName() { return G.getActiveProfileName(getApplicationContext()); } 
-		  public String getLabel() { return G.getActiveProfileName(getApplicationContext()); } 
+	      public String getName() { return G.storedProfile(); }
+		  public String getLabel() { return G.storedProfile(); }
 		  public int getIcon() { return (Api.isEnabled(getApplicationContext()) ?  R.drawable.widget_on :  R.drawable.widget_off); }
 	      public List<RadialMenuEntry> getChildren() { return null; }
 	      public void menuActiviated()
@@ -136,16 +136,14 @@ public class ToggleWidgetActivity extends Activity {
           public List<RadialMenuEntry> getChildren() { return null; }
           public void menuActiviated()
           {
-        	  int pos = G.getProfilePosition(profileName);
         	  final Message msg = new Message();
-        	  Toast.makeText(getApplicationContext(), profileName + " pressed. + position" + pos, Toast.LENGTH_SHORT).show();
         	  final Handler toaster = new Handler() {
       			public void handleMessage(Message msg) {
       				if (msg.arg1 != 0)Toast.makeText(getApplicationContext(), msg.arg1, Toast.LENGTH_SHORT).show();
       			}
       		};
       		final Context context = getApplicationContext();
-      		G.setProfile(true, pos);
+      		G.setProfile(true, profileName);
 			applyProfileRules(context,msg,toaster);
           }
        }    
@@ -205,8 +203,6 @@ public class ToggleWidgetActivity extends Activity {
 			}
 		};
 		final Context context = getApplicationContext();
-		final String oldPwd = G.profile_pwd();
-		final String newPwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString("LockPassword", "");
 		new Thread() {
 			@Override
 			public void run() {
@@ -246,16 +242,16 @@ public class ToggleWidgetActivity extends Activity {
 						}
 						break;
 					case 3:
-						G.setProfile(G.enableMultiProfile(), 0);
+						G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
 						break;
 					case 4:
-						G.setProfile(true, 1);
+						G.setProfile(true, "AFWallProfile1");
 						break;
 					case 5:
-						G.setProfile(true, 2);
+						G.setProfile(true, "AFWallProfile2");
 						break;
 					case 6:
-						G.setProfile(true, 3);
+						G.setProfile(true, "AFWallProfile3");
 						break;
 					}
 					if(i > 2) {

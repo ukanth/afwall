@@ -1,7 +1,5 @@
 package dev.ukanth.ufirewall.preferences;
 
-import java.io.File;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,9 +15,11 @@ import android.widget.Toast;
 
 import com.stericson.RootTools.RootTools;
 
+import java.io.File;
+
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 public class ExpPreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
@@ -37,6 +37,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 		setupFixLeak(findPreference("fixLeak"),this.getActivity().getApplicationContext());
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.experimental_preferences);
+
 	}
 
 	@Override

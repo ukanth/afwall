@@ -1,7 +1,7 @@
 /**
  * Main application activity.
  * This is the screen displayed when you open the application
- * 
+ *
  * Copyright (C) 2009-2011  Rodrigo Zechin Rosauro
  * Copyright (C) 2011-2012  Umakanthan Chandran
  *
@@ -37,7 +37,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -92,14 +91,13 @@ import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
-public class MainActivity extends AppCompatActivity implements OnClickListener,
-					ActionBar.OnNavigationListener,SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener,SwipeRefreshLayout.OnRefreshListener {
 
-	private TextView mSelected;
-    //private DrawerLayout mDrawerLayout;
+	//private TextView mSelected;
+	//private DrawerLayout mDrawerLayout;
 	//private ListView mDrawerList;
 	private Menu mainMenu;
-   	public boolean isOnPause = false;
+	public boolean isOnPause = false;
 	private ListView listview = null;
 	public static boolean dirty = false;
 	private MaterialDialog plsWait;
@@ -108,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	private int index;
 	private int top;
 	private List<String> mlocalList = new ArrayList<>(new LinkedHashSet<String>());
+	private int initDone=0;
 
 	private static final int REQ_ENTER_PATTERN = 9755;
 	private static final int SHOW_ABOUT_RESULT = 1200;
@@ -129,51 +128,53 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 	 * . */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			
-			isOnPause = false;
-			
-			try {
+		super.onCreate(savedInstanceState);
+
+		isOnPause = false;
+
+		try {
 				/* enable hardware acceleration on Android >= 3.0 */
-				final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
-						.getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
-				getWindow().setFlags(FLAG_HARDWARE_ACCELERATED,
-						FLAG_HARDWARE_ACCELERATED);
-			} catch (Exception e) {
-			}
+			final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
+					.getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
+			getWindow().setFlags(FLAG_HARDWARE_ACCELERATED,
+					FLAG_HARDWARE_ACCELERATED);
+		} catch (Exception e) {
+		}
 
-			setContentView(R.layout.main);
+		setContentView(R.layout.main);
 
-			//CustomActivityOnCrash.install(this);
+		//CustomActivityOnCrash.install(this);
 
-			Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-				getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-						WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-			}
-			setSupportActionBar(toolbar);
-			//set onclick listeners
-			this.findViewById(R.id.label_mode).setOnClickListener(this);
-			this.findViewById(R.id.img_wifi).setOnClickListener(this);
-			this.findViewById(R.id.img_reset).setOnClickListener(this);
-			this.findViewById(R.id.img_invert).setOnClickListener(this);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+					WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		}
+		setSupportActionBar(toolbar);
+		//set onclick listeners
+		this.findViewById(R.id.label_mode).setOnClickListener(this);
+		this.findViewById(R.id.img_wifi).setOnClickListener(this);
+		this.findViewById(R.id.img_reset).setOnClickListener(this);
+		this.findViewById(R.id.img_invert).setOnClickListener(this);
 
 
-        	Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
-	        Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
-	       
-		    Api.assertBinaries(this, true);
+		Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
+		Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 
-			mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-			mSwipeLayout.setOnRefreshListener(this);
-			// Let's do some background stuff
-			(new Startup()).setContext(this).execute();
+		Api.assertBinaries(this, true);
+
+		mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+		mSwipeLayout.setOnRefreshListener(this);
+		// Let's do some background stuff
+		(new Startup()).setContext(this).execute();
 	}
 
 
 	@Override
 	public void onRefresh() {
+		index = 0;
+		top = 0;
 		Api.applications = null;
 		showOrLoadApplications();
 		mSwipeLayout.setRefreshing(false);
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		});
 		showApplications("", 99, true);
 	}
-	
+
 
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
@@ -217,22 +218,22 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			getSupportActionBar().setIcon(R.drawable.notification_error);
 		}
 	}
-	
+
 	private void startRootShell() {
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
 		new RootCommand().setFailureToast(R.string.error_su)
-			.setReopenShell(true).run(getApplicationContext(), cmds);
+				.setReopenShell(true).run(getApplicationContext(), cmds);
 		//put up the notification
-		if(G.activeNotification()){ 
+		if(G.activeNotification()){
 			Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		reloadPreferences();
+		//reloadPreferences();
 	}
 
 	private void reloadPreferences() {
@@ -266,6 +267,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		} else {
 			this.findViewById(R.id.filerOption).setVisibility(View.GONE);
 		}
+
+		if (G.enableMultiProfile()) {
+			this.findViewById(R.id.profileOption).setVisibility(View.VISIBLE);
+		} else {
+			this.findViewById(R.id.profileOption).setVisibility(View.GONE);
+		}
 		if (G.enableRoam()) {
 			addColumns(R.id.img_roam);
 		} else {
@@ -292,12 +299,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		}
 
 		//updateRadioFilter();
-
-		if (!G.enableMultiProfile()) {
-			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-			mSelected = (TextView)findViewById(R.id.text);
-			mSelected.setText("");
-		} else {
+		if(G.enableMultiProfile()) {
 			setupMultiProfile(true);
 		}
 		selectFilterGroup();
@@ -315,48 +317,51 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		view.setVisibility(View.VISIBLE);
 		view.setOnClickListener(this);
 	}
-	
+
 	private void hideColumns(int id) {
 		ImageView view = (ImageView)this.findViewById(id);
 		view.setVisibility(View.GONE);
 		view.setOnClickListener(this);
 	}
-	
+
 	private void setupMultiProfile(boolean reset){
-		if(G.enableMultiProfile()) {
 
-			G.reloadPrefs();
+		reloadLocalList(true);
 
-			mSelected = (TextView)findViewById(R.id.text);
+		Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
 
-			boolean isAdditionalProfiles = reloadLocalList(reset);
+		spinnerAdapter =  new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,
+				mlocalList);
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-			int position = G.storedPosition();
-			//something went wrong - No profiles but still it's set more. reset to default
-			if(!isAdditionalProfiles && position > 3) {
-				G.storedPosition(0);
-				position = 0;
-			}
+		getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-			final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-			
-			spinnerAdapter =  new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,
-		    	    mLocations);
-			spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	
-			getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			getSupportActionBar().setListNavigationCallbacks(spinnerAdapter, this);
-			
-			if(position > -1) {
-				getSupportActionBar().setSelectedNavigationItem(position);
-				getSupportActionBar().setDisplayShowTitleEnabled(true);
-				mSelected.setText("  |  " + mLocations[position]);
-			}
-			getSupportActionBar().setDisplayUseLogoEnabled(true);
+		spinner.setAdapter(spinnerAdapter);
+
+		String currentProfile = G.storedProfile();
+
+		switch(currentProfile){
+			case Api.DEFAULT_PREFS_NAME:
+				spinner.setSelection(0);
+				break;
+			case "AFWallProfile1":
+				spinner.setSelection(1);
+				break;
+			case "AFWallProfile2":
+				spinner.setSelection(2);
+				break;
+			case "AFWallProfile3":
+				spinner.setSelection(3);
+				break;
+			default:
+				if(currentProfile != null) {
+					spinner.setSelection(spinnerAdapter.getPosition(currentProfile));
+				}
 		}
+		spinner.setOnItemSelectedListener(this);
 	}
 
-	private boolean reloadLocalList(boolean reset) {
+	private void reloadLocalList(boolean reset) {
 		if(reset) {
 			mlocalList = new ArrayList<>(new LinkedHashSet<String>());
 		}
@@ -374,9 +379,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			}
 		}
 
-		//mlocalList.add(getString(R.string.profile_add));
-		//mlocalList.add(getString(R.string.profile_remove));
-		return isAdditionalProfiles;
 	}
 
 	private boolean passCheck(){
@@ -462,9 +464,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 						refreshHeader();
 					}
 				})
-				.show();		
+				.show();
 	}
-	
+
 
 
 
@@ -533,18 +535,54 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		//nocache!!
 		(new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
-	
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		initDone = initDone + 1;
+		Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
+		String profileName = spinner.getSelectedItem().toString();
+		switch (position) {
+			case 0:
+				G.setProfile(true, "AFWallPrefs");
+				break;
+			case 1:
+				G.setProfile(true, "AFWallProfile1");
+				break;
+			case 2:
+				G.setProfile(true, "AFWallProfile2");
+				break;
+			case 3:
+				G.setProfile(true, "AFWallProfile3");
+				break;
+			default:
+				G.setProfile(true, profileName);
+		}
+		if(initDone > 1) {
+			G.reloadProfile();
+			showOrLoadApplications();
+			if (G.applyOnSwitchProfiles()) {
+				applyOrSaveRules();
+			}
+		}
+
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+
+	}
+
 
 	public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
 		boolean started = false;
 		Context context = null;
 		AsyncTask<Void,Integer,Void> myAsyncTaskInstance = null;
-		
+
 		public GetAppList setContext(Context context) {
-	        this.context = context;
-	        return this;
-	    }
+			this.context = context;
+			return this;
+		}
 
 		@Override
 		protected void onPreExecute() {
@@ -557,7 +595,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		public void doProgress(int value) {
 			publishProgress(value);
 		}
-		
+
 		public AsyncTask<Void, Integer, Void> getInstance() {
 			// if the current async task is already running, return null: no new
 			// async task
@@ -599,8 +637,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		protected Void doInBackground(Void... params) {
 			Api.getApps(MainActivity.this, this);
 			if( isCancelled() )
-                return null;
-            //publishProgress(-1);
+				return null;
+			//publishProgress(-1);
 			return null;
 		}
 
@@ -624,13 +662,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			if (progress[0] == 0 ||  progress[0] == -1) {
 				//do nothing
 			} else {
-				 plsWait.incrementProgress(progress[0]);
+				plsWait.incrementProgress(progress[0]);
 			}
 		}
 	};
 
-	
-	
+
+
 	class PackageComparator implements Comparator<PackageInfoData> {
 
 		@Override
@@ -659,7 +697,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		}
 	}
 
-    /**
+	/**
 	 * Show the list of applications
 	 */
 	private void showApplications(final String searchStr, int flag, boolean showAll) {
@@ -674,16 +712,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 							&& !searchApp.contains(app)) {
 						searchApp.add(app);
 						isResultsFound = true;
-					} 
+					}
 				}
 			}
 		} else if (flag > -1){
 			switch(flag){
 				case 0:
 					for(PackageInfoData app:apps) {
-					   if(app.pkgName.startsWith("dev.afwall.special")) {
-						   searchApp.add(app);   
-					   }
+						if(app.pkgName.startsWith("dev.afwall.special")) {
+							searchApp.add(app);
+						}
 					}
 					break;
 				case 1:
@@ -701,11 +739,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 					}
 					break;
 			}
-			
+
 		}
 		List<PackageInfoData> apps2;
 		if(showAll || (searchStr != null && searchStr.equals(""))) {
-			apps2 = apps; 
+			apps2 = apps;
 		} else if(isResultsFound || searchApp.size() > 0) {
 			apps2 = searchApp;
 		} else {
@@ -717,10 +755,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore
 		this.listview.setSelectionFromTop(index, top);
-		
+
 	}
-	
-	
+
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -728,12 +766,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		Api.updateLanguage(getApplicationContext(), G.locale());
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.menu_bar, menu);
-		
+
 		// Get widget's instance
 		mainMenu = menu;
-	    return true;
+		return true;
 	}
-	
+
 	public void menuSetApplyOrSave(Menu menu, boolean isEnabled) {
 		if (menu == null) {
 			return;
@@ -750,18 +788,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 					getSupportActionBar().setIcon(R.drawable.notification);
 				}
 			});
-			
-			
+
+
 		} else {
 			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
 			apply.setTitle(R.string.saverules);
 			runOnUiThread(new Runnable() {
-			     @Override
-			     public void run() {
-			    	 getSupportActionBar().setIcon(R.drawable.notification_error);
-			    }
+				@Override
+				public void run() {
+					getSupportActionBar().setIcon(R.drawable.notification_error);
+				}
 			});
-			
+
 		}
 	}
 
@@ -772,7 +810,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		Api.updateLanguage(getApplicationContext(), G.locale());
 		return super.onPrepareOptionsMenu(menu);
 	}
-	
+
 	private void disableOrEnable() {
 		final boolean enabled = !Api.isEnabled(this);
 		Api.setEnabled(this, enabled, true);
@@ -795,151 +833,122 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		/*case android.R.id.home:
 			disableOrEnable();
 	        return true;*/
-		case R.id.menu_toggle:
-			disableOrEnable();
-			return true;
-		case R.id.menu_apply:
-			applyOrSaveRules();
-			return true;
-		case R.id.menu_exit:
-			finish();
-			System.exit(0);
-			return false;
-		case R.id.menu_help:
-			showAbout();
-			return true;
+			case R.id.menu_toggle:
+				disableOrEnable();
+				return true;
+			case R.id.menu_apply:
+				applyOrSaveRules();
+				return true;
+			case R.id.menu_exit:
+				finish();
+				System.exit(0);
+				return false;
+			case R.id.menu_help:
+				showAbout();
+				return true;
 		/*case R.id.menu_setpwd:
 			setPassword();
 			return true;*/
-		case R.id.menu_log:
-			showLog();
-			return true;
-		case R.id.menu_rules:
-			showRules();
-			return true;
-		case R.id.menu_setcustom:
-			setCustomScript();
-			return true;
-		case R.id.menu_preference:
-			showPreferences();
-			return true;
+			case R.id.menu_log:
+				showLog();
+				return true;
+			case R.id.menu_rules:
+				showRules();
+				return true;
+			case R.id.menu_setcustom:
+				setCustomScript();
+				return true;
+			case R.id.menu_preference:
+				showPreferences();
+				return true;
 		/*case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
 			return true;*/
-		case R.id.menu_search:
+			case R.id.menu_search:
 
 
-			item.setActionView(R.layout.searchbar);
-			final EditText filterText = (EditText) item.getActionView().findViewById(
-					R.id.searchApps);
-			filterText.addTextChangedListener(filterTextWatcher);
-			filterText.setEllipsize(TruncateAt.END);
-			filterText.setSingleLine();
+				item.setActionView(R.layout.searchbar);
+				final EditText filterText = (EditText) item.getActionView().findViewById(
+						R.id.searchApps);
+				filterText.addTextChangedListener(filterTextWatcher);
+				filterText.setEllipsize(TruncateAt.END);
+				filterText.setSingleLine();
 
-			MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
-				@Override
-				public boolean onMenuItemActionCollapse(MenuItem item) {
-					// Do something when collapsed
-					return true;  // Return true to collapse action view
-				}
+				MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+					@Override
+					public boolean onMenuItemActionCollapse(MenuItem item) {
+						// Do something when collapsed
+						return true;  // Return true to collapse action view
+					}
 
-				@Override
-				public boolean onMenuItemActionExpand(MenuItem item) {
-					filterText.post(new Runnable() {
-						@Override
-						public void run() {
-							filterText.requestFocus();
-							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-							imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
-						}
-					});
-					return true;  // Return true to expand action view
-				}
-			});
-
-			return true;
-		case R.id.menu_export:
-
-			new MaterialDialog.Builder(this)
-					.title(R.string.exports)
-					.items(new String[]{
-							getString(R.string.export_rules),
-							getString(R.string.export_all)})
-					.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-						@Override
-						public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-							switch (which) {
-								case 0:
-									Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
-									break;
-								case 1:
-									Api.saveAllPreferencesToFileConfirm(MainActivity.this);
-									break;
+					@Override
+					public boolean onMenuItemActionExpand(MenuItem item) {
+						filterText.post(new Runnable() {
+							@Override
+							public void run() {
+								filterText.requestFocus();
+								InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+								imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
 							}
-							return true;
-						}
-					}).positiveText(R.string.exports)
-					.negativeText(R.string.Cancel)
-					.show();
-			return true;
-		case R.id.menu_import:
+						});
+						return true;  // Return true to expand action view
+					}
+				});
 
-			new MaterialDialog.Builder(this)
-					.title(R.string.imports)
-					.items(new String[]{
-							getString(R.string.import_rules),
-							getString(R.string.import_all),
-							getString(R.string.import_rules_droidwall)})
-					.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-						@Override
-						public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-							switch (which) {
-								case 0:
-									//Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-									//startActivityForResult(intent, FILE_CHOOSER_LOCAL);
-									File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-									FileDialog fileDialog = new FileDialog(MainActivity.this,mPath);
-									fileDialog.setFileEndsWith(".json");
-									fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
-										public void fileSelected(File file) {
-											String fileSelected = file.toString();
-											StringBuilder builder = new StringBuilder();
-											if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
-												Api.applications = null;
-												showOrLoadApplications();
-												Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
-											} else {
-												if (builder.toString().equals("")) {
-													Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-												} else {
-													Api.toast(MainActivity.this,builder.toString());
-												}
-											}
-										}
-									});
-									fileDialog.showDialog();
-									break;
-								case 1:
+				return true;
+			case R.id.menu_export:
 
-									if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
+				new MaterialDialog.Builder(this)
+						.title(R.string.exports)
+						.items(new String[]{
+								getString(R.string.export_rules),
+								getString(R.string.export_all)})
+						.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+							@Override
+							public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+								switch (which) {
+									case 0:
+										Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+										break;
+									case 1:
+										Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+										break;
+								}
+								return true;
+							}
+						}).positiveText(R.string.exports)
+						.negativeText(R.string.Cancel)
+						.show();
+				return true;
+			case R.id.menu_import:
 
-										File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-										FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2);
-										fileDialog2.setFileEndsWith(".json");
-										fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
+				new MaterialDialog.Builder(this)
+						.title(R.string.imports)
+						.items(new String[]{
+								getString(R.string.import_rules),
+								getString(R.string.import_all),
+								getString(R.string.import_rules_droidwall)})
+						.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+							@Override
+							public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+								switch (which) {
+									case 0:
+										//Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+										//startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+										File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+										FileDialog fileDialog = new FileDialog(MainActivity.this,mPath);
+										fileDialog.setFileEndsWith(".json");
+										fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
 											public void fileSelected(File file) {
 												String fileSelected = file.toString();
 												StringBuilder builder = new StringBuilder();
-												if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
+												if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
 													Api.applications = null;
 													showOrLoadApplications();
-													Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
-													Intent intent = getIntent();
-													finish();
-													startActivity(intent);
+													Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
 												} else {
-													if(builder.toString().equals("")) {
+													if (builder.toString().equals("")) {
 														Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
 													} else {
 														Api.toast(MainActivity.this,builder.toString());
@@ -947,21 +956,78 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 												}
 											}
 										});
-										fileDialog2.showDialog();
-									} else {
+										fileDialog.showDialog();
+										break;
+									case 1:
+
+										if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
+
+											File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+											FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2);
+											fileDialog2.setFileEndsWith(".json");
+											fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
+												public void fileSelected(File file) {
+													String fileSelected = file.toString();
+													StringBuilder builder = new StringBuilder();
+													if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
+														Api.applications = null;
+														showOrLoadApplications();
+														Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+														Intent intent = getIntent();
+														finish();
+														startActivity(intent);
+													} else {
+														if(builder.toString().equals("")) {
+															Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+														} else {
+															Api.toast(MainActivity.this,builder.toString());
+														}
+													}
+												}
+											});
+											fileDialog2.showDialog();
+										} else {
+
+											new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+													.title(R.string.buy_donate)
+													.content(R.string.donate_only)
+													.positiveText(R.string.buy_donate)
+													.negativeText(R.string.close)
+													.icon(getResources().getDrawable(R.drawable.ic_launcher))
+													.callback(new MaterialDialog.ButtonCallback() {
+														@Override
+														public void onPositive(MaterialDialog dialog) {
+															Intent intent = new Intent(Intent.ACTION_VIEW);
+															intent.setData(Uri.parse("market://details?id=dev.ukanth.ufirewall.donate"));
+															startActivity(intent);
+														}
+
+														@Override
+														public void onNegative(MaterialDialog dialog) {
+															dialog.cancel();
+														}
+													})
+													.show();
+										}
+										break;
+									case 2:
 
 										new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-												.title(R.string.buy_donate)
-												.content(R.string.donate_only)
-												.positiveText(R.string.buy_donate)
-												.negativeText(R.string.close)
+												.title(R.string.import_rules_droidwall)
+												.content(R.string.overrideRules)
+												.positiveText(R.string.Yes)
+												.negativeText(R.string.No)
 												.icon(getResources().getDrawable(R.drawable.ic_launcher))
 												.callback(new MaterialDialog.ButtonCallback() {
 													@Override
 													public void onPositive(MaterialDialog dialog) {
-														Intent intent = new Intent(Intent.ACTION_VIEW);
-														intent.setData(Uri.parse("market://details?id=dev.ukanth.ufirewall.donate"));
-														startActivity(intent);
+														if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
+															Api.applications = null;
+															showOrLoadApplications();
+															Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+														} else {
+															Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+														}
 													}
 
 													@Override
@@ -970,48 +1036,20 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 													}
 												})
 												.show();
-									}
-									break;
-								case 2:
-
-									new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-											.title(R.string.import_rules_droidwall)
-											.content(R.string.overrideRules)
-											.positiveText(R.string.Yes)
-											.negativeText(R.string.No)
-											.icon(getResources().getDrawable(R.drawable.ic_launcher))
-											.callback(new MaterialDialog.ButtonCallback() {
-												@Override
-												public void onPositive(MaterialDialog dialog) {
-													if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
-														Api.applications = null;
-														showOrLoadApplications();
-														Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-													} else {
-														Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-													}
-												}
-
-												@Override
-												public void onNegative(MaterialDialog dialog) {
-													dialog.cancel();
-												}
-											})
-											.show();
 
 
-									break;
+										break;
+								}
+								return true;
 							}
-							return true;
-						}
-					})
-					.positiveText(R.string.imports)
-					.negativeText(R.string.Cancel)
-					.show();
+						})
+						.positiveText(R.string.imports)
+						.negativeText(R.string.Cancel)
+						.show();
 
-			return true;
-		default:
-	        return super.onOptionsItemSelected(item);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -1022,12 +1060,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		}
 
 
-			public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
+		public void beforeTextChanged(CharSequence s, int start, int count,
+									  int after) {
 		}
 
 		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
+								  int count) {
 			showApplications(s.toString(),-1,false);
 		}
 
@@ -1035,9 +1073,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 	private void showPreferences() {
 		Intent i = new Intent(this, PreferencesActivity.class);
-        startActivityForResult(i,PREFERENCE_RESULT);
+		startActivityForResult(i,PREFERENCE_RESULT);
 	}
-	
+
 	private void showAbout() {
 		Intent i = new Intent(this, HelpActivity.class);
 		startActivityForResult(i, SHOW_ABOUT_RESULT);
@@ -1047,7 +1085,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.confirmMsg)
-				//.content(R.string.confirmMsg)
+						//.content(R.string.confirmMsg)
 				.positiveText(R.string.Yes)
 				.negativeText(R.string.No)
 				.callback(new MaterialDialog.ButtonCallback() {
@@ -1104,14 +1142,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 						MainActivity.this.finish();
 						android.os.Process.killProcess(android.os.Process.myPid());
 						break;
-					}
+				}
 			}
-            break;
-            case PREFERENCE_RESULT: {
+			break;
+			case PREFERENCE_RESULT: {
 				reloadPreferences();
 				showOrLoadApplications();
 			}
-            break;
+			break;
 		}
 		if (resultCode == RESULT_OK
 				&& data != null && Api.CUSTOM_SCRIPT_MSG.equals(data.getAction())) {
@@ -1123,7 +1161,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 	/**
 	 * Set a new init script
-	 * 
+	 *
 	 * @param script
 	 *            new script (empty to remove)
 	 * @param script2
@@ -1160,7 +1198,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		Intent i = new Intent(this, RulesActivity.class);
 		startActivityForResult(i, SHOW_RULES_ACTIVITY);
 	}
-	
+
 	/**
 	 * Show logs on a dialog
 	 */
@@ -1233,50 +1271,50 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				.setReopenShell(true)
 				.setCallback(new RootCommand.Callback() {
 
-			public void cbFunc(RootCommand state) {
-				// error exit -> assume the rules are still enabled
-				// we shouldn't wind up in this situation, but if we do, the user's
-				// best bet is to click Apply then toggle Enabled again
-				boolean nowEnabled = state.exitCode != 0;
+					public void cbFunc(RootCommand state) {
+						// error exit -> assume the rules are still enabled
+						// we shouldn't wind up in this situation, but if we do, the user's
+						// best bet is to click Apply then toggle Enabled again
+						boolean nowEnabled = state.exitCode != 0;
 
-				Api.setEnabled(ctx, nowEnabled, true);
-				menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
-			}
-		}));
+						Api.setEnabled(ctx, nowEnabled, true);
+						menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
+					}
+				}));
 	}
 
 
 	@Override
 	public void onClick(View v) {
-		
+
 		switch (v.getId()) {
-		case R.id.label_mode:
-			selectMode();
-			break;
-		case R.id.img_wifi:
-			selectActionConfirmation(v.getId());
-			break;
-		case R.id.img_3g:
-			selectActionConfirmation(v.getId());
-			break;
-		case R.id.img_roam:
-			selectActionConfirmation(v.getId());
-			break;
-		case R.id.img_vpn:
-			selectActionConfirmation(v.getId());
-			break;
-		case R.id.img_lan:
-			selectActionConfirmation(v.getId());
-			break;
-		case R.id.img_invert:
-			 selectActionConfirmation(getString(R.string.reverse_all), v.getId());
-			break;
-		case R.id.img_reset:
-			 selectActionConfirmation(getString(R.string.unselect_all), v.getId());
-			break;
-		//case R.id.img_invert:
-		//	revertApplications();
-		//	break;
+			case R.id.label_mode:
+				selectMode();
+				break;
+			case R.id.img_wifi:
+				selectActionConfirmation(v.getId());
+				break;
+			case R.id.img_3g:
+				selectActionConfirmation(v.getId());
+				break;
+			case R.id.img_roam:
+				selectActionConfirmation(v.getId());
+				break;
+			case R.id.img_vpn:
+				selectActionConfirmation(v.getId());
+				break;
+			case R.id.img_lan:
+				selectActionConfirmation(v.getId());
+				break;
+			case R.id.img_invert:
+				selectActionConfirmation(getString(R.string.reverse_all), v.getId());
+				break;
+			case R.id.img_reset:
+				selectActionConfirmation(getString(R.string.unselect_all), v.getId());
+				break;
+			//case R.id.img_invert:
+			//	revertApplications();
+			//	break;
 		}
 	}
 
@@ -1327,21 +1365,21 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
 				if(data.uid != Api.SPECIAL_UID_ANY) {
 					switch (flag) {
-					case R.id.img_wifi:
-						data.selected_wifi = !data.selected_wifi;
-						break;
-					case R.id.img_3g:
-						data.selected_3g = !data.selected_3g;
-						break;
-					case R.id.img_roam:
-						data.selected_roam = !data.selected_roam;
-						break;
-					case R.id.img_vpn:
-						data.selected_vpn = !data.selected_vpn;
-						break;
-					case R.id.img_lan:
-						data.selected_lan = !data.selected_lan;
-						break;
+						case R.id.img_wifi:
+							data.selected_wifi = !data.selected_wifi;
+							break;
+						case R.id.img_3g:
+							data.selected_3g = !data.selected_3g;
+							break;
+						case R.id.img_roam:
+							data.selected_roam = !data.selected_roam;
+							break;
+						case R.id.img_vpn:
+							data.selected_vpn = !data.selected_vpn;
+							break;
+						case R.id.img_lan:
+							data.selected_lan = !data.selected_lan;
+							break;
 					}
 				}
 				setDirty(true);
@@ -1349,7 +1387,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
 	}
-	
+
 	private void selectRevert() {
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
@@ -1371,8 +1409,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
 	}
-	
-	
+
+
 	private void selectAllRoam(boolean flag){
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
@@ -1390,7 +1428,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
 	}
-	
+
 	private void clearAll(){
 		if (this.listview == null) {
 			this.listview = (ListView) this.findViewById(R.id.listview);
@@ -1399,7 +1437,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 		if(adapter !=null) {
 			int count = adapter.getCount(), item;
 			for (item = 0; item < count; item++) {
-				PackageInfoData data = (PackageInfoData) adapter.getItem(item); 
+				PackageInfoData data = (PackageInfoData) adapter.getItem(item);
 				data.selected_wifi = false;
 				data.selected_3g = false;
 				data.selected_roam = false;
@@ -1427,7 +1465,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			}
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
-		
+
 	}
 
 	private void selectAllWifi(boolean flag) {
@@ -1447,26 +1485,26 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			((BaseAdapter) adapter).notifyDataSetChanged();
 		}
 	}
- 	
+
 	@Override
 	public boolean onKeyUp(final int keyCode, final KeyEvent event) {
-		
+
 		if (event.getAction() == KeyEvent.ACTION_UP)
-        {
+		{
 			switch (keyCode) {
-			case KeyEvent.KEYCODE_MENU:
-				if(mainMenu != null){
-					mainMenu.performIdentifierAction(R.id.menu_list_item, 0);
-					return true;
-				}
+				case KeyEvent.KEYCODE_MENU:
+					if(mainMenu != null){
+						mainMenu.performIdentifierAction(R.id.menu_list_item, 0);
+						return true;
+					}
 			}
-        }
+		}
 		return super.onKeyUp(keyCode, event);
 	}
 
 	@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-		
+
 		// Handle the back button when dirty
 		if (isDirty() && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			new MaterialDialog.Builder(this)
@@ -1497,19 +1535,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-		
+
 	}
 
-	@Override
+	/*@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		
+
 		if(G.enableMultiProfile()){
 			//user clicked add
 			reloadLocalList(true);
 
 			final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 
-			if(G.setProfile(true, itemPosition)) {
+			if(G.setProfile(true, itemPosition + "")) {
 				(new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				mSelected.setText("  |  " + mLocations[itemPosition]);
 				if(G.applyOnSwitchProfiles()){
@@ -1520,7 +1558,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 		}
 		return true;
-	}
+	}*/
 
 	/*public void removeProfileDialog() {
 		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
@@ -1549,7 +1587,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				.show();
 	}*/
 
-	public void addProfileDialog() {
+/*	public void addProfileDialog() {
 		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
 		new MaterialDialog.Builder(this)
 				.title(R.string.profile_add)
@@ -1574,13 +1612,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				})
 				.negativeText(R.string.Cancel)
 				.show();
-	}
-	
-   /**
-	* 
-	* @param i
-    */
-	
+	}*/
+
+	/**
+	 *
+	 * @param i
+	 */
+
 	private void selectActionConfirmation(String displayMessage, final int i){
 
 		new MaterialDialog.Builder(this)
@@ -1711,44 +1749,44 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 				break;
 			}
 	}*/
-	
+
 	private class Startup extends AsyncTask<Void, Void, Void> {
-        private MaterialDialog dialog = null;
-        private Context context = null;
-        private boolean suAvailable = false;
+		private MaterialDialog dialog = null;
+		private Context context = null;
+		private boolean suAvailable = false;
 
-        public Startup setContext(Context context) {
-            this.context = context;
-            return this;
-        }
+		public Startup setContext(Context context) {
+			this.context = context;
+			return this;
+		}
 
-        @Override
-        protected void onPreExecute() {
-            // We're creating a progress dialog here because we want the user to wait.
-            // If in your app your user can just continue on with clicking other things,
-            // don't do the dialog thing.
+		@Override
+		protected void onPreExecute() {
+			// We're creating a progress dialog here because we want the user to wait.
+			// If in your app your user can just continue on with clicking other things,
+			// don't do the dialog thing.
 
 			dialog = new MaterialDialog.Builder(context).
 					title(getString(R.string.su_check_title)).progress(true,0).show();
 			dialog.setContent(context.getString(R.string.su_check_message));
-            dialog.setCancelable(false);
-            dialog.show();
-        }
+			dialog.setCancelable(false);
+			dialog.show();
+		}
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            // Let's do some SU stuff
-        	suAvailable = Shell.SU.available();
-            if (suAvailable) {
-            	startRootShell();
-            }
-            return null;
-        }
+		@Override
+		protected Void doInBackground(Void... params) {
+			// Let's do some SU stuff
+			suAvailable = Shell.SU.available();
+			if (suAvailable) {
+				startRootShell();
+			}
+			return null;
+		}
 
-        @Override
-        protected void onPostExecute(Void result) {
-        	dialog.dismiss();
-        	if(!suAvailable) {
+		@Override
+		protected void onPostExecute(Void result) {
+			dialog.dismiss();
+			if(!suAvailable) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)
@@ -1763,12 +1801,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 						})
 						.show();
 			} else {
-        		if(passCheck()){
-           	    	showOrLoadApplications();
-           	    }
-        	}
-        }
-    }
-	
+				if(passCheck()){
+					showOrLoadApplications();
+				}
+			}
+		}
+	}
+
 }
 

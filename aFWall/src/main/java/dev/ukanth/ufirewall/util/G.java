@@ -34,7 +34,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.R;
 
 public class G extends android.app.Application {
 
@@ -63,7 +62,8 @@ public class G extends android.app.Application {
 	private static final String BUSYBOX_PATH = "bb_path";
 	private static final String LANGUAGE = "locale";
 	private static final String SORT_BY = "sort";
-	private static final String PROFILE_STORED_POSITION = "storedPosition";
+	//private static final String PROFILE_STORED_POSITION = "storedPosition";
+	private static final String LAST_STORED_PROFILE = "storedProfile";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
 	private static final String ACTIVE_NOTIFICATION = "activeNotification";
@@ -93,11 +93,9 @@ public class G extends android.app.Application {
 	/* Profiles */
 	private static final String ADDITIONAL_PROFILES = "plusprofiles";
 	
-	private static final int DEFAULT_PROFILE_COUNT = 4; 
-	
 	private static String AFWALL_PROFILE = "AFWallProfile";
 	
-	public static String[] profiles = { "AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3 };
+	public static String[] profiles = { "AFWallPrefs" , AFWALL_PROFILE + 1 , AFWALL_PROFILE + 2, AFWALL_PROFILE + 3 };
 	
 	
 	public static Context ctx;
@@ -196,12 +194,21 @@ public class G extends android.app.Application {
 		String sort = "s0";
 		try {
 			sort = gPrefs.getString(SORT_BY, "s0");
-		} catch(ClassCastException e){ }
+		} catch(Exception e){ }
 		return sort;
 	}
 
-	public static int storedPosition() { return gPrefs.getInt(PROFILE_STORED_POSITION, 0); }
-	public static int storedPosition(int val) { gPrefs.edit().putInt(PROFILE_STORED_POSITION, val).commit(); return val; }
+	public static void sortBy(String sort) {
+		gPrefs.edit().putString(SORT_BY, sort);
+	}
+
+	/*public static int storedPosition() { return gPrefs.getInt(LAST_STORED_PROFILE, 0); }
+	public static int storedPosition(int val) { gPrefs.edit().putInt(LAST_STORED_PROFILE, val).commit(); return val; }*/
+
+
+	public static String storedProfile() { return gPrefs.getString(LAST_STORED_PROFILE, "AFWallPrefs"); }
+	public static String storedProfile(String val) { gPrefs.edit().putString(LAST_STORED_PROFILE, val).commit(); return val; }
+
 
 	public static int sysColor() { return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58")); }
 	//public static int sysColor(int val) { gPrefs.edit().putInt(SYSTEM_APP_COLOR, val).commit(); return val; }
@@ -256,17 +263,11 @@ public class G extends android.app.Application {
 		gPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 
 		String profileName = Api.DEFAULT_PREFS_NAME;
-		int pos = storedPosition();
+		//int pos = storedPosition();
 		//int profileCount = getProfileCount();
-		if (enableMultiProfile() && (pos >= 0 && pos <= 3)) {
-			profileName = profiles[pos];
+		if(enableMultiProfile() ) {
+			profileName = storedProfile();
 		}
-		else if(pos > 3) {
-			profileName = AFWALL_PROFILE + pos;
-		} 
-		else {
-			profileName = profiles[0];
-		} 
 		Api.PREFS_NAME = profileName;
 
 		pPrefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
@@ -278,16 +279,16 @@ public class G extends android.app.Application {
 		Api.applications = null;
 	}
 	
-	public static Integer getCurrentProfile(){
+	/*public static Integer getCurrentProfile(){
 		return storedPosition();
-	}
+	}*/
 
-	public static boolean setProfile(boolean newEnableMultiProfile, int newStoredPosition) {
-		if (newEnableMultiProfile == enableMultiProfile() && newStoredPosition == storedPosition()) {
-			return false;
-		}
+	public static boolean setProfile(boolean newEnableMultiProfile, String profileName) {
+		//if (newEnableMultiProfile == enableMultiProfile()) {
+		//	return false;
+		//}
 		enableMultiProfile(newEnableMultiProfile);
-		storedPosition(newEnableMultiProfile ? newStoredPosition : 0);
+		storedProfile(profileName);
 		reloadProfile();
 		return true;
 	}
@@ -296,6 +297,7 @@ public class G extends android.app.Application {
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 		StringBuilder builder = new StringBuilder();
 		if(profile !=null && profile.length() > 0) {
+			profile = profile.trim();
 			if(previousProfiles.length() == 0){
 				builder.append(profile);
 			} else {
@@ -312,21 +314,19 @@ public class G extends android.app.Application {
 		File dir = new File(ctx.getFilesDir().getParent() + "/shared_prefs/");
 		String[] children = dir.list();
 		for (int i = 0; i < children.length; i++) {
+			//String profName = ;
 			// clear each of the prefrances
 			if(children[i].replace(".xml", "").equals(preferenceName)) {
-				ctx.getSharedPreferences(children[i].replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
-				try { Thread.sleep(1000); } catch (InterruptedException e) {}
 				new File(dir, children[i]).delete();
 			}
 		}
 	}
 	
-	public static void removeAdditionalProfile(String profileName, int position) {
-		String sharedProfileName = AFWALL_PROFILE + position;
-		
+	public static void removeAdditionalProfile(String profileName) {
+
 		//after remove clear all the data inside the custom profile
 		if(ctx!= null) {
-			clearSharedPreferences(ctx,sharedProfileName);
+			clearSharedPreferences(ctx,profileName);
 		}
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 
@@ -345,13 +345,6 @@ public class G extends android.app.Application {
 		}
 		gPrefs.edit().putString(ADDITIONAL_PROFILES, profile).commit();
 
-		G.storedPosition(position);
-
-		//deleteing active profile
-		if(storedPosition() == position) {
-			//reset stored position to default
-			storedPosition(0);			
-		}
 	}
 	
 
@@ -373,7 +366,7 @@ public class G extends android.app.Application {
 		return count + DEFAULT_PROFILE_COUNT;
 	}*/
 	
-	public static int getProfilePosition(String profileName){
+	/*public static int getProfilePosition(String profileName){
 		int profilePosition = -1;
 		List<String> profileList = getAdditionalProfiles();
 		for(int i=0; i < profileList.size(); i++) {
@@ -382,9 +375,9 @@ public class G extends android.app.Application {
 			}
 		}
 		return profilePosition;
-	}
+	}*/
 	
-	public static String getProfileName(int position){
+	/*public static String getProfileName(int position){
 		String profileName  = "";
 		position = position - 4;
 		List<String> profileList = getAdditionalProfiles();
@@ -394,9 +387,9 @@ public class G extends android.app.Application {
 			}
 		}
 		return profileName;
-	}
+	}*/
 	
-	public static String getActiveProfileName(final Context ctx){
+	/*public static String getActiveProfileName(final Context ctx){
 		String profileName = "";
 		if(G.enableMultiProfile()){
 			int pos = getCurrentProfile();
@@ -413,7 +406,7 @@ public class G extends android.app.Application {
 		}
 		return profileName;
 		
-	}
+	}*/
 	public static List<String> getAdditionalProfiles() {
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 		List<String> profileList = new ArrayList<>(new LinkedHashSet<String>());

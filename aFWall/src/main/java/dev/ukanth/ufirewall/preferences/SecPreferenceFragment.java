@@ -258,7 +258,6 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	 * @param itemList
 	 */
 	private void confirmResetPasswords(final ListPreference itemList) {
-		//TODO: Logic here
 		String pattern = G.sPrefs.getString("LockPassword", "");
 		String pwd = G.profile_pwd();
 		if(pwd.length() > 0 ) {

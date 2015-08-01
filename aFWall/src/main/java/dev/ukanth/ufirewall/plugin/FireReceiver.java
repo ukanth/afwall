@@ -72,18 +72,24 @@ public final class FireReceiver extends BroadcastReceiver
         if (PluginBundleManager.isBundleValid(bundle))
         {
         	String index = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
+			String action = null;
+			if(index.contains("::")) {
+				String[] msg = index.split("::");
+				index = msg[0];
+				action = msg[1];
+			}
         	final boolean multimode = G.enableMultiProfile();
         	final boolean disableToasts = G.disableTaskerToast();
     		final Message msg = new Message();
         	if(index != null){
-        		int id = Integer.parseInt(index);
-        		switch(id){
-        		case 0:
+        		//int id = Integer.parseInt(index);
+        		switch(index){
+        		case "0":
         			if(applyRules(context,msg,toaster)){
 						Api.setEnabled(context, true, false);
 					}
 					break;
-        		case 1:
+        		case "1":
 					if(G.protectionLevel().equals("p0")){
 						if (Api.purgeIptables(context, false)) {
 							msg.arg1 = R.string.toast_disabled;
@@ -98,32 +104,34 @@ public final class FireReceiver extends BroadcastReceiver
 						toaster.sendMessage(msg);
 					}
 					break;
-        		case 2:
+        		case "2":
         			if(multimode) {
-        				G.setProfile(true, 0);
+        				G.setProfile(true, "AFWallPrefs");
         			}
 					break;
-        		case 3:
+        		case "3":
         			if(multimode) {
-        				G.setProfile(true, 1);
+        				G.setProfile(true, "AFWallProfile1");
         			}
         			break;
-        		case 4:
+        		case "4":
         			if(multimode) {
-        				G.setProfile(true, 2);
+        				G.setProfile(true, "AFWallProfile2");
         			}
         			break;
-        		case 5:
+        		case "5":
         			if(multimode) {
-        				G.setProfile(true, 3);
+        				G.setProfile(true, "AFWallProfile3");
         			}
         			break;
+					default:
+						if(multimode) {
+							G.setProfile(true,action);
+						}
+						break;
         		}
-        		if (id > 5 && multimode) {
-       				G.setProfile(true, (id-2));
-    			} 
-        		
-        		if(id > 1) {
+
+        		if(Integer.parseInt(index) > 1) {
         			if(multimode) {
         				if (Api.isEnabled(context)) {
                 			if(!disableToasts){

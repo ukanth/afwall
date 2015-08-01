@@ -56,11 +56,12 @@ public class ToggleWidgetOldActivity extends Activity implements
 			profButton3.setEnabled(false);
 		} else {
 			if (Api.isEnabled(getApplicationContext())) {
-				int position = G.storedPosition();
-				if (position == 0) {
+				//TODO: FIX
+				String profileName = G.storedProfile();
+				if(profileName.equals(Api.DEFAULT_PREFS_NAME)) {
 					disableDefault();
 				} else {
-					disableCustom(position);
+					disableCustom(profileName);
 				}
 			}
 		}
@@ -135,27 +136,27 @@ public class ToggleWidgetOldActivity extends Activity implements
 
 					break;
 				case 3:
-					G.setProfile(G.enableMultiProfile(), 0);
+					G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
 					if (applyProfileRules(context, msg, toaster)) {
 						disableDefault();
 					}
 					break;
 				case 4:
-					G.setProfile(true, 1);
+					G.setProfile(true, "AFWallProfile1");
 					if (applyProfileRules(context, msg, toaster)) {
-						disableCustom(1);
+						disableCustom("AFWallProfile1");
 					}
 					break;
 				case 5:
-					G.setProfile(true, 2);
+					G.setProfile(true, "AFWallProfile2");
 					if (applyProfileRules(context, msg, toaster)) {
-						disableCustom(2);
+						disableCustom("AFWallProfile2");
 					}
 					break;
 				case 6:
-					G.setProfile(true, 3);
+					G.setProfile(true, "AFWallProfile3");
 					if (applyProfileRules(context, msg, toaster)) {
-						disableCustom(3);
+						disableCustom("AFWallProfile3");
 					}
 					break;
 				}
@@ -205,23 +206,23 @@ public class ToggleWidgetOldActivity extends Activity implements
 		});
 	}
 
-	private void disableCustom(final int code) {
+	private void disableCustom(final String code) {
 		runOnUiThread(new Runnable() {
 			public void run() {
 				switch (code) {
-				case 1:
+				case "AFWallProfile1":
 					defaultButton.setEnabled(true);
 					profButton1.setEnabled(false);
 					profButton2.setEnabled(true);
 					profButton3.setEnabled(true);
 					break;
-				case 2:
+				case "AFWallProfile2":
 					defaultButton.setEnabled(true);
 					profButton1.setEnabled(true);
 					profButton2.setEnabled(false);
 					profButton3.setEnabled(true);
 					break;
-				case 3:
+				case "AFWallProfile3":
 					defaultButton.setEnabled(true);
 					profButton1.setEnabled(true);
 					profButton2.setEnabled(true);
