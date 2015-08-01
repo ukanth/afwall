@@ -15,7 +15,7 @@
     </PreferenceCategory>
 
     <ListPreference
-        android:defaultValue="0"
+        android:defaultValue="s0"
         android:entries="@array/sort_key"
         android:entryValues="@array/sort_value"
         android:key="sort"

@@ -193,7 +193,11 @@ public class G extends android.app.Application {
 
 
 	public static String sortBy() {
-		return gPrefs.getString(SORT_BY, "0");
+		String sort = "s0";
+		try {
+			sort = gPrefs.getString(SORT_BY, "s0");
+		} catch(ClassCastException e){ }
+		return sort;
 	}
 
 	public static int storedPosition() { return gPrefs.getInt(PROFILE_STORED_POSITION, 0); }

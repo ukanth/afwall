@@ -645,11 +645,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener,
 
 			if (o1_selected == o2_selected) {
 				switch (G.sortBy()) {
-					case "0":
+					case "s0":
 						return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());
-					case "1":
+					case "s1":
 						return o1.installTime > o2.installTime ? -1: o1.installTime < o2.installTime ? 1 : 0;
-					case "2":
+					case "s2":
 						return o2.uid > o1.uid ? -1: o2.uid < o1.uid ? 0 : 1;
 				}
 			}
