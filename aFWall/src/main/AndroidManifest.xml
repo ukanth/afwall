@@ -118,7 +118,8 @@
 
         <activity
             android:theme="@style/MyTheme"
-            android:name=".activity.ProfileActivity"/>
+            android:name=".activity.ProfileActivity">
+        </activity>
         <activity
             android:theme="@style/MyTheme"
             android:name=".activity.AppDetailActivity">

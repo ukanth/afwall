@@ -83,8 +83,35 @@ public class ToggleWidgetActivity extends Activity {
 	  
 	  public class Status implements RadialMenuEntry
 	   {
-	      public String getName() { return G.storedProfile(); }
-		  public String getLabel() { return G.storedProfile(); }
+		   public String getName() {
+			   switch(G.storedProfile()) {
+				   case Api.DEFAULT_PREFS_NAME:
+					   return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+				   case "AFWallProfile1":
+					   return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+				   case "AFWallProfile2":
+					   return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+				   case "AFWallProfile3":
+					   return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+				   default:
+					   return G.storedProfile();
+			   }
+		   }
+		   public String getLabel() {
+			   switch(G.storedProfile()) {
+				   case Api.DEFAULT_PREFS_NAME:
+					   return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+				   case "AFWallProfile1":
+					   return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+				   case "AFWallProfile2":
+					   return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+				   case "AFWallProfile3":
+					   return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+				   default:
+					   return G.storedProfile();
+			   }
+
+		   }
 		  public int getIcon() { return (Api.isEnabled(getApplicationContext()) ?  R.drawable.widget_on :  R.drawable.widget_off); }
 	      public List<RadialMenuEntry> getChildren() { return null; }
 	      public void menuActiviated()

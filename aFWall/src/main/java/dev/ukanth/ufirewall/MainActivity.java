@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private int top;
 	private List<String> mlocalList = new ArrayList<>(new LinkedHashSet<String>());
 	private int initDone=0;
+	private Spinner mSpinner;
 
 	private static final int REQ_ENTER_PATTERN = 9755;
 	private static final int SHOW_ABOUT_RESULT = 1200;
@@ -302,13 +303,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		if(G.enableMultiProfile()) {
 			setupMultiProfile(true);
 		}
-		selectFilterGroup();
 
+		selectFilterGroup();
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
+		initDone = 0;
 		reloadPreferences();
 	}
 
@@ -328,37 +330,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		reloadLocalList(true);
 
-		Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
-
+		mSpinner= (Spinner) findViewById(R.id.profileGroup);
 		spinnerAdapter =  new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,
 				mlocalList);
 		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		getSupportActionBar().setDisplayShowTitleEnabled(true);
-
-		spinner.setAdapter(spinnerAdapter);
-
+		mSpinner.setAdapter(spinnerAdapter);
 		String currentProfile = G.storedProfile();
 
 		switch(currentProfile){
 			case Api.DEFAULT_PREFS_NAME:
-				spinner.setSelection(0);
+				mSpinner.setSelection(0);
 				break;
 			case "AFWallProfile1":
-				spinner.setSelection(1);
+				mSpinner.setSelection(1);
 				break;
 			case "AFWallProfile2":
-				spinner.setSelection(2);
+				mSpinner.setSelection(2);
 				break;
 			case "AFWallProfile3":
-				spinner.setSelection(3);
+				mSpinner.setSelection(3);
 				break;
 			default:
 				if(currentProfile != null) {
-					spinner.setSelection(spinnerAdapter.getPosition(currentProfile));
+					mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile));
 				}
 		}
-		spinner.setOnItemSelectedListener(this);
+		mSpinner.setOnItemSelectedListener(this);
 	}
 
 	private void reloadLocalList(boolean reset) {
@@ -1802,7 +1799,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.show();
 			} else {
 				if(passCheck()){
-					showOrLoadApplications();
+					//showOrLoadApplications();
 				}
 			}
 		}
