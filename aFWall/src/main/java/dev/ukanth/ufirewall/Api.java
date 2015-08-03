@@ -762,7 +762,7 @@ public final class Api {
 		}
 
 		if (G.enableIPv6()) {
-			setIpTablePath(ctx,true);
+			setIpTablePath(ctx, true);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
 					getListFromPref(savedPkg_3g_uid),
@@ -1687,7 +1687,7 @@ public final class Api {
 	   	if(saveSharedPreferencesToFile(ctx,fileName)){
 			Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
 		} else {
-			Api.toast(ctx, ctx.getString(R.string.export_rules_fail) );
+			Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
 	   	}
 	}
 	
@@ -2070,7 +2070,15 @@ public final class Api {
 				keys = customProfileObject.keys();
 		        while( keys.hasNext() ){
 		        	String key = (String)keys.next();
-	    			updateRulesFromJson(ctx,profileObject.getJSONObject(key),key);
+
+					try {
+						JSONObject obj = profileObject.getJSONObject(key);
+						updateRulesFromJson(ctx,obj,key);
+					}catch (JSONException e) {
+						if(e.getMessage().contains("No value")) {
+							continue;
+						}
+					}
 		        }
 		        
 			} else {
@@ -2537,8 +2545,31 @@ public final class Api {
 		PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
 		int icon = R.drawable.notification;
 		
-		if(status) { 
-			notificationText = context.getString(R.string.active);
+		if(status) {
+			if(G.enableMultiProfile()) {
+				String profile = "";
+				switch(G.storedProfile()) {
+					case "AFWallPrefs":
+						profile = G.gPrefs.getString("default", context.getString(R.string.defaultProfile));
+						break;
+					case "AFWallProfile1":
+						profile = G.gPrefs.getString("profile1", context.getString(R.string.profile1));
+						break;
+					case "AFWallProfile2":
+						profile = G.gPrefs.getString("profile2", context.getString(R.string.profile2));
+						break;
+					case "AFWallProfile3":
+						profile = G.gPrefs.getString("profile3", context.getString(R.string.profile3));
+						break;
+					default:
+						profile = G.storedProfile();
+						break;
+				}
+				notificationText = context.getString(R.string.active) + "(" + profile + ")";
+			} else {
+				notificationText = context.getString(R.string.active);
+			}
+			//notificationText = context.getString(R.string.active);
 			icon = R.drawable.notification;
 		} else {
 			notificationText = context.getString(R.string.inactive);
