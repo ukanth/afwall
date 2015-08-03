@@ -63,14 +63,12 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -83,7 +81,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
@@ -1532,7 +1529,7 @@ public final class Api {
 	 * Cleansup the uninstalled packages from the cache - will have slight performance
 	 * @param ctx
 	 */
-	@Deprecated
+	/*@Deprecated
 	public static void removeAllUnusedCacheLabel(Context ctx){
 		final SharedPreferences prefs = ctx.getSharedPreferences("AFWallPrefs", Context.MODE_PRIVATE);
 		final String cacheLabel = "cache.label.";
@@ -1549,11 +1546,12 @@ public final class Api {
 				}
 			}
 		 }
-	}
+	}*/
 	
 	/**
 	 * Cleanup the cache from profiles - Improve performance.
-	 * @param ctx
+	 * @param pm
+	 * @param targetPackage
 	 */
 
 	public static boolean isPackageExists(PackageManager pm, String targetPackage) {
@@ -1684,7 +1682,7 @@ public final class Api {
 	
 	public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
 	 	String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-	   	if(saveSharedPreferencesToFile(ctx,fileName)){
+	   	if(saveSharedPreferencesToFile(ctx, fileName)){
 			Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
 		} else {
 			Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
@@ -1729,7 +1727,7 @@ public final class Api {
 	private static Map<String, JSONObject> getCurrentRulesAsMap(Context ctx) {
 		final List<PackageInfoData> apps = getApps(ctx,null);
 		// Builds a pipe-separated list of names
-		Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
+		Map<String, JSONObject> exportMap = new HashMap<>();
 		try {
 			for (int i=0; i<apps.size(); i++) {
 				if (apps.get(i).selected_wifi) {
@@ -1772,7 +1770,7 @@ public final class Api {
 					JSONObject profileObject = new JSONObject();
 					//store all the profile settings
 					for(String profile: G.profiles) {
-						Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
+						Map<String, JSONObject> exportMap = new HashMap<>();
 						final SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
 						updatePackage(ctx,prefs.getString(PREF_WIFI_PKG_UIDS, ""),exportMap,WIFI_EXPORT);
 						updatePackage(ctx,prefs.getString(PREF_3G_PKG_UIDS, ""),exportMap,DATA_EXPORT);
@@ -1784,12 +1782,11 @@ public final class Api {
 					exportObject.put("profiles", profileObject);
 					
 					//if any additional profiles
-					int defaultProfileCount = 3;
+					//int defaultProfileCount = 3;
 					JSONObject addProfileObject = new JSONObject();
 					for(String profile: G.getAdditionalProfiles()) {
-						defaultProfileCount++;
-						Map<String, JSONObject> exportMap = new HashMap<String, JSONObject>();
-						final SharedPreferences prefs = ctx.getSharedPreferences("AFWallProfile" + defaultProfileCount, Context.MODE_PRIVATE);
+						Map<String, JSONObject> exportMap = new HashMap<>();
+						final SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
 						updatePackage(ctx,prefs.getString(PREF_WIFI_PKG_UIDS, ""),exportMap,WIFI_EXPORT);
 						updatePackage(ctx,prefs.getString(PREF_3G_PKG_UIDS, ""),exportMap,DATA_EXPORT);
 						updatePackage(ctx,prefs.getString(PREF_ROAMING_PKG_UIDS, ""),exportMap,ROAM_EXPORT);
@@ -2024,7 +2021,7 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONObject object = new JSONObject(data);
-			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "enableLog" , "sort"};
+			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "enableLog" , "sort", "storedProfile"};
 			List<String> ignoreList = Arrays.asList(ignore);
 			JSONArray prefArray = (JSONArray) object.get("prefs");
 			for(int i = 0 ; i < prefArray.length(); i++){
@@ -2061,16 +2058,20 @@ public final class Api {
 				Iterator<?> keys = profileObject.keys();
 		        while( keys.hasNext() ){
 		        	String key = (String)keys.next();
-		        	if(!key.equals(PREFS_NAME)) {
-		    			updateRulesFromJson(ctx,profileObject.getJSONObject(key),key);
-		        	}
+					try {
+						JSONObject obj = profileObject.getJSONObject(key);
+						updateRulesFromJson(ctx,obj,key);
+					}catch (JSONException e) {
+						if(e.getMessage().contains("No value")) {
+							continue;
+						}
+					}
 		        }
  		        //handle custom/additional profiles
 		        JSONObject customProfileObject = object.getJSONObject("additional_profiles");
 				keys = customProfileObject.keys();
 		        while( keys.hasNext() ){
 		        	String key = (String)keys.next();
-
 					try {
 						JSONObject obj = profileObject.getJSONObject(key);
 						updateRulesFromJson(ctx,obj,key);
@@ -2106,7 +2107,7 @@ public final class Api {
 	}
 	
 	@Deprecated
-	private static boolean importRulesOld(Context ctx, File file) {
+	/*private static boolean importRulesOld(Context ctx, File file) {
 		boolean res = false;
 		ObjectInputStream input = null;
 		try {
@@ -2149,7 +2150,7 @@ public final class Api {
 		}
 		return res;
 	}
-
+*/
 
 	@SuppressWarnings("unchecked")
 	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder, String fileName){
