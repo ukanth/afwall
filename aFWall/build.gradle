@@ -1,25 +1,27 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+	compileSdkVersion 21
+	buildToolsVersion '22.0.1'
 
-    defaultConfig {
-        applicationId "dev.ukanth.ufirewall"
-        //applicationId "dev.ukanth.ufirewall.donate"
-        minSdkVersion 15
-        targetSdkVersion 21
-    }
+	defaultConfig {
+		applicationId "dev.ukanth.ufirewall"
+		//applicationId "dev.ukanth.ufirewall.donate"
+		minSdkVersion 15
+		targetSdkVersion 21
+	}
 
-    lintOptions {
-        abortOnError false
-    }
+	lintOptions {
+		checkReleaseBuilds false
+		abortOnError false
+		disable 'MissingTranslation'
+	}
 }
 
 dependencies {
-    compile project(':androidlockpattern2')
-    compile 'eu.chainfire:libsuperuser:1.0.0.+'
-    compile 'com.android.support:appcompat-v7:21.0.0'
-    compile 'com.afollestad:material-dialogs:0.7.3.0'
-    //compile 'cat.ereza:customactivityoncrash:1.2.0'
+	compile project(':androidlockpattern2'),
+			'eu.chainfire:libsuperuser:1.0.0.201504231659',
+			'com.android.support:appcompat-v7:22.1.0',
+			'com.afollestad:material-dialogs:0.7.3.0'
+			//'cat.ereza:customactivityoncrash:1.2.0'
 }
