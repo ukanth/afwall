@@ -43,6 +43,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,7 +92,7 @@ import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED
 import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener,SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
 	//private TextView mSelected;
 	//private DrawerLayout mDrawerLayout;
@@ -448,6 +449,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.selectMode)
+				.cancelable(false)
 				.items(new String[]{
 						res.getString(R.string.mode_whitelist),
 						res.getString(R.string.mode_blacklist)})
@@ -583,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		@Override
 		protected void onPreExecute() {
-			plsWait = new MaterialDialog.Builder(context).
+			plsWait = new MaterialDialog.Builder(context).cancelable(false).
 					title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
 					.size(), true).show();
 			doProgress(0);
@@ -747,7 +749,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			apps2 = new ArrayList<PackageInfoData>();
 		}
 
-		Collections.sort(apps2, new PackageComparator());
+		try {
+			Collections.sort(apps2, new PackageComparator());
+		}catch(Exception e) {
+			Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
+		}
 
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore
@@ -803,9 +809,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		//language
-		menuSetApplyOrSave(menu, Api.isEnabled(this));
 		Api.updateLanguage(getApplicationContext(), G.locale());
-		return super.onPrepareOptionsMenu(menu);
+		menuSetApplyOrSave(menu, Api.isEnabled(this));
+		return true;
 	}
 
 	private void disableOrEnable() {
@@ -898,6 +904,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 				new MaterialDialog.Builder(this)
 						.title(R.string.exports)
+						.cancelable(false)
 						.items(new String[]{
 								getString(R.string.export_rules),
 								getString(R.string.export_all)})
@@ -922,6 +929,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 				new MaterialDialog.Builder(this)
 						.title(R.string.imports)
+						.cancelable(false)
 						.items(new String[]{
 								getString(R.string.import_rules),
 								getString(R.string.import_all),
@@ -1070,6 +1078,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	private void showPreferences() {
 		Intent i = new Intent(this, PreferencesActivity.class);
+		//startActivity(i);
 		startActivityForResult(i,PREFERENCE_RESULT);
 	}
 
@@ -1083,6 +1092,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		new MaterialDialog.Builder(this)
 				.title(R.string.confirmMsg)
 						//.content(R.string.confirmMsg)
+				.cancelable(false)
 				.positiveText(R.string.Yes)
 				.negativeText(R.string.No)
 				.callback(new MaterialDialog.ButtonCallback() {
@@ -1143,8 +1153,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 			break;
 			case PREFERENCE_RESULT: {
-				reloadPreferences();
-				showOrLoadApplications();
+				invalidateOptionsMenu();
 			}
 			break;
 		}
@@ -1225,6 +1234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		final MaterialDialog progress = new MaterialDialog.Builder(this)
 				.title(R.string.working)
+				.cancelable(false)
 				.content(enabled ? R.string.applying_rules
 						: R.string.saving_rules)
 				.progress(true, 0)
@@ -1506,6 +1516,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		if (isDirty() && (keyCode == KeyEvent.KEYCODE_BACK)) {
 			new MaterialDialog.Builder(this)
 					.title(R.string.confirmation)
+					.cancelable(false)
 					.content(R.string.unsaved_changes_message)
 					.positiveText(R.string.apply)
 					.negativeText(R.string.discard)
@@ -1620,6 +1631,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.confirmation).content(displayMessage)
+				.cancelable(false)
 				.positiveText(R.string.OK)
 				.negativeText(R.string.Cancel)
 				.callback(new MaterialDialog.ButtonCallback() {
@@ -1647,6 +1659,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.select_action)
+				.cancelable(false)
 				.items(new String[]{
 						getString(R.string.check_all),
 						getString(R.string.invert_all),
@@ -1759,15 +1772,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		@Override
 		protected void onPreExecute() {
-			// We're creating a progress dialog here because we want the user to wait.
-			// If in your app your user can just continue on with clicking other things,
-			// don't do the dialog thing.
-
 			dialog = new MaterialDialog.Builder(context).
-					title(getString(R.string.su_check_title)).progress(true,0).show();
-			dialog.setContent(context.getString(R.string.su_check_message));
-			dialog.setCancelable(false);
-			dialog.show();
+					cancelable(false).
+					title(getString(R.string.su_check_title)).progress(true,0).content(context.getString(R.string.su_check_message)).show();
 		}
 
 		@Override

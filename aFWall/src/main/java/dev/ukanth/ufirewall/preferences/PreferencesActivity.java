@@ -221,7 +221,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				|| key.equals("locale") || key.equals("showFilter")) {
 			// revert back to Default profile when disabling multi-profile
 			// support
-
 			G.reloadProfile();
 		}
 
