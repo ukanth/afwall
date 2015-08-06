@@ -264,37 +264,37 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 			new MaterialDialog.Builder(getActivity()).cancelable(false)
 					.title(R.string.confirmation).autoDismiss(false)
 					.content(R.string.enterpass)
-					.inputType(InputType.TYPE_CLASS_TEXT)
+					.inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
 					.input(R.string.enterpass, R.string.password_empty, new MaterialDialog.InputCallback() {
-						@Override
-						public void onInput(MaterialDialog dialog, CharSequence input) {
-							String pass = input.toString();
-							boolean isAllowed = false;
-							if (G.isEnc()) {
-								String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
-								if (decrypt != null) {
-									if (decrypt.equals(pass)) {
-										isAllowed = true;
-										//Api.toast(getActivity(), getString(R.string.wrong_password));
-									}
-								}
-							} else {
-								if (pass.equals(G.profile_pwd())) {
-									//reset password
-									isAllowed = true;
-									//Api.toast(getActivity(), getString(R.string.wrong_password));
-								}
-							}
-							if(isAllowed) {
-								G.profile_pwd("");
-								G.isEnc(false);
-								itemList.setValueIndex(0);
-								dialog.dismiss();
-							} else {
-								Api.toast(getActivity(), getString(R.string.wrong_password));
+				@Override
+				public void onInput(MaterialDialog dialog, CharSequence input) {
+					String pass = input.toString();
+					boolean isAllowed = false;
+					if (G.isEnc()) {
+						String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
+						if (decrypt != null) {
+							if (decrypt.equals(pass)) {
+								isAllowed = true;
+								//Api.toast(getActivity(), getString(R.string.wrong_password));
 							}
 						}
-					}).show();
+					} else {
+						if (pass.equals(G.profile_pwd())) {
+							//reset password
+							isAllowed = true;
+							//Api.toast(getActivity(), getString(R.string.wrong_password));
+						}
+					}
+					if (isAllowed) {
+						G.profile_pwd("");
+						G.isEnc(false);
+						itemList.setValueIndex(0);
+						dialog.dismiss();
+					} else {
+						Api.toast(getActivity(), getString(R.string.wrong_password));
+					}
+				}
+			}).show();
 
 		}
 

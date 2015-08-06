@@ -20,4 +20,5 @@
         android:entryValues="@array/sort_value"
         android:key="sort"
         android:title="@string/sort" />
+
 </PreferenceScreen>

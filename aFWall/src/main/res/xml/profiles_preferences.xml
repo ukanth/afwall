@@ -32,6 +32,13 @@
             android:key="profile3"
             android:summary="@string/custom_title4"
             android:title="@string/profile3" />
+
+        </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/exp_prefs_title" >
+        <Preference android:title="@string/migrate_profiles"
+            android:key="migrate_profile"
+            android:summary="@string/migrate_summary"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

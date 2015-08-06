@@ -390,4 +390,7 @@
     <string name="select">Select action for</string>
     <string name="manage_profiles">Manage Profiles</string>
     <string name="profiles">Profiles: </string>
+
+    <string name="migrate_profiles">Migrate Profiles</string>
+    <string name="migrate_summary">This will migrate all additional profiles data from 1.x to 2.x version</string>
 </resources>

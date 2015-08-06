@@ -168,10 +168,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 		mSwipeLayout.setOnRefreshListener(this);
+
+		//one time migration of profiles to new logic
+		//migrateProfiles();
 		// Let's do some background stuff
 		(new Startup()).setContext(this).execute();
-	}
 
+	}
 
 	@Override
 	public void onRefresh() {

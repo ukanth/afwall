@@ -75,6 +75,8 @@ public class G extends android.app.Application {
 	
 	private static final String MULTI_USER = "multiUser";
 	private static final String MULTI_USER_ID = "multiUserId";
+
+	private static final String IS_MIGRATED = "isMigrated";
 	
 	private static final String SHOW_FILTER = "showFilter";
 	
@@ -411,4 +413,7 @@ public class G extends android.app.Application {
 		} 
 		return profileList;
 	}
+
+	public static boolean isMigrated() { return gPrefs.getBoolean(IS_MIGRATED, false); }
+	public static boolean isMigrated(boolean val) { gPrefs.edit().putBoolean(IS_MIGRATED, val).commit(); return val; }
 }
