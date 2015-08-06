@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import dev.ukanth.ufirewall.R;
 
@@ -20,8 +22,19 @@ import dev.ukanth.ufirewall.R;
 public class FileDialog {
     private static final String PARENT_DIR = "..";
     private final String TAG = getClass().getName();
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+
+    private boolean flag;
     private String[] fileList;
     private File currentPath;
+
     public interface FileSelectedListener {
         void fileSelected(File file);
     }
@@ -32,17 +45,18 @@ public class FileDialog {
     private ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<FileDialog.DirectorySelectedListener>();
     private final Activity activity;
     private boolean selectDirectoryOption;
-    private String fileEndsWith;
+    private String[] fileEndsWith;
 
     /**
      * @param activity
      * @param path
      *
      */
-    public FileDialog(Activity activity, File path) {
+    public FileDialog(Activity activity, File path, boolean flag) {
         this.activity = activity;
         if (!path.exists()) path = Environment.getExternalStorageDirectory();
-        loadFileList(path);
+        setFlag(flag);
+        loadFileList(path,flag);
     }
 
     /**
@@ -67,7 +81,7 @@ public class FileDialog {
                 String fileChosen = fileList[which];
                 File chosenFile = getChosenFile(fileChosen);
                 if (chosenFile.isDirectory()) {
-                    loadFileList(chosenFile);
+                    loadFileList(chosenFile,flag);
                     dialog.cancel();
                     dialog.dismiss();
                     showDialog();
@@ -123,7 +137,7 @@ public class FileDialog {
         });
     }
 
-    private void loadFileList(File path) {
+    private void loadFileList(File path,final boolean flag) {
         this.currentPath = path;
         //String afwallDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/";
         List<String> r = new ArrayList<String>();
@@ -134,8 +148,34 @@ public class FileDialog {
                     File sel = new File(dir, filename);
                     if (!sel.canRead()) return false;
                     if (selectDirectoryOption) return sel.isDirectory();
+
+                    //backup.json - [a-z]+.json
                     else {
-                        boolean endsWith = fileEndsWith != null ? filename.toLowerCase().endsWith(fileEndsWith) : true;
+                        boolean endsWith;
+                        if(flag) {
+                            Pattern p1 = Pattern.compile("[a-z]+.json");
+                            Matcher m1 = p1.matcher(filename);
+
+                            Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
+                            Matcher m2 = p2.matcher(filename);
+                            if(m2.matches() || m1.matches()) {
+                                endsWith = true;
+                            } else {
+                                endsWith = false;
+                            }
+                        } else {
+                            Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
+                            Matcher m1 = p1.matcher(filename);
+
+                            Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
+                            Matcher m2 = p2.matcher(filename);
+                            if(m2.matches() || m1.matches()) {
+                                endsWith = true;
+                            } else {
+                                endsWith = false;
+                            }
+                        }
+                       // boolean endsWith = fileEndsWith != null ? filename.contains(fileEndsWith) : true;
                         return endsWith || sel.isDirectory();
                     }
                 }
@@ -153,8 +193,8 @@ public class FileDialog {
         else return new File(currentPath, fileChosen);
     }
 
-    public void setFileEndsWith(String fileEndsWith) {
-        this.fileEndsWith = fileEndsWith != null ? fileEndsWith.toLowerCase() : fileEndsWith;
+    public void setFileEndsWith(String[] fileEndsWith,String notContains) {
+        this.fileEndsWith = fileEndsWith != null ? fileEndsWith : new String[]{ "" };
     }
 }
 

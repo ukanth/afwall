@@ -685,9 +685,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 					case "s0":
 						return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());
 					case "s1":
-						return o1.installTime > o2.installTime ? -1: o1.installTime < o2.installTime ? 1 : 0;
+						return (o1.installTime > o2.installTime) ? -1: (o1.installTime < o2.installTime) ? 1 : 0;
 					case "s2":
-						return o2.uid > o1.uid ? -1: o2.uid < o1.uid ? 0 : 1;
+						return (o2.uid > o1.uid) ? -1: (o2.uid < o1.uid) ? 0 : 1;
 				}
 			}
 			if (o1_selected)
@@ -942,8 +942,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 										//Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
 										//startActivityForResult(intent, FILE_CHOOSER_LOCAL);
 										File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-										FileDialog fileDialog = new FileDialog(MainActivity.this,mPath);
-										fileDialog.setFileEndsWith(".json");
+										FileDialog fileDialog = new FileDialog(MainActivity.this,mPath,true);
+										//fileDialog.setFlag(true);
+										//fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
 										fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
 											public void fileSelected(File file) {
 												String fileSelected = file.toString();
@@ -968,8 +969,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 										if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
 
 											File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-											FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2);
-											fileDialog2.setFileEndsWith(".json");
+											FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2,false);
+											//fileDialog2.setFlag(false);
+											//fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
 											fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
 												public void fileSelected(File file) {
 													String fileSelected = file.toString();

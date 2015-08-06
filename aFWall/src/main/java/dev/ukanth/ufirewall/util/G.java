@@ -61,7 +61,7 @@ public class G extends android.app.Application {
 	private static final String PROTECTION_OPTION = "passSetting";
 	private static final String BUSYBOX_PATH = "bb_path";
 	private static final String LANGUAGE = "locale";
-	private static final String SORT_BY = "sort";
+	private static final String SORT_BY = "sortorder";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String LAST_STORED_PROFILE = "storedProfile";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
@@ -191,11 +191,7 @@ public class G extends android.app.Application {
 
 
 	public static String sortBy() {
-		String sort = "s0";
-		try {
-			sort = gPrefs.getString(SORT_BY, "s0");
-		} catch(Exception e){ }
-		return sort;
+		return gPrefs.getString(SORT_BY, "s0");
 	}
 
 	public static void sortBy(String sort) {
