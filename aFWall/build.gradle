@@ -9,6 +9,8 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 21
+        versionCode 15205
+        versionName "2.0.0-FINALBETA"
     }
 
     lintOptions {

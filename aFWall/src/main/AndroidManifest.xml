@@ -26,9 +26,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="dev.ukanth.ufirewall"
-    android:versionCode="15205"
-    android:versionName="2.0.0">
+    package="dev.ukanth.ufirewall">
 
     <!-- Android 4.0.3 up -->
     <uses-sdk

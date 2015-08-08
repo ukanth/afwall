@@ -1636,7 +1636,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.confirmation).content(displayMessage)
-				.cancelable(false)
+				.cancelable(true)
 				.positiveText(R.string.OK)
 				.negativeText(R.string.Cancel)
 				.callback(new MaterialDialog.ButtonCallback() {
@@ -1664,7 +1664,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.select_action)
-				.cancelable(false)
+				.cancelable(true)
 				.items(new String[]{
 						getString(R.string.check_all),
 						getString(R.string.invert_all),
