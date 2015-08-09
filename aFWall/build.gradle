@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-	compileSdkVersion 21
+	compileSdkVersion 22
 	buildToolsVersion '22.0.1'
 
 	defaultConfig {
 		applicationId "dev.ukanth.ufirewall"
 		//applicationId "dev.ukanth.ufirewall.donate"
 		minSdkVersion 15
-		targetSdkVersion 21
+		targetSdkVersion 22
 	}
 
 	lintOptions {
@@ -21,7 +21,7 @@ android {
 dependencies {
 	compile project(':androidlockpattern2'),
 			'eu.chainfire:libsuperuser:1.0.0.201504231659',
-			'com.android.support:appcompat-v7:22.1.0',
+			'com.android.support:appcompat-v7:22.2.1',
 			'com.afollestad:material-dialogs:0.7.3.0'
 			//'cat.ereza:customactivityoncrash:1.2.0'
 }
