@@ -10,12 +10,14 @@ import android.util.AttributeSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
- 
+import dev.ukanth.ufirewall.util.PackageComparator;
+
 public class MultiSelectListPreference extends ListPreference {
  
     private String separator;
@@ -38,53 +40,80 @@ public class MultiSelectListPreference extends ListPreference {
     }
     
 	private void setData() {
-		if (Api.applications == null) {
-			Api.getApps(ctx, null);
-		}
-		CharSequence[] entries = new CharSequence[Api.applications.size()];
-		CharSequence[] entryValues = new CharSequence[Api.applications.size()];
-		int i = 0;
-		for (PackageInfoData dev : Api.applications) {
-			entries[i] = dev.toStringWithUID();
-			entryValues[i] = dev.uid + "";
-			i++;
-		}
-		setEntries(entries);
-		setEntryValues(entryValues);
+
+        try {
+            List<PackageInfoData> apps;
+            if (Api.applications == null) {
+                apps = Api.getApps(ctx, null);
+            } else {
+                apps =  Api.applications;
+            }
+
+            try {
+                Collections.sort(apps, new PackageComparator());
+            }catch(Exception e) {
+                Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
+            }
+
+
+            CharSequence[] entries = new CharSequence[apps.size()];
+            CharSequence[] entryValues = new CharSequence[apps.size()];
+            //int i = 0;
+            for(int i=0; i < apps.size(); i++) {
+                entries[i] = apps.get(i).toStringWithUID();
+                entryValues[i] = apps.get(i).uid + "";
+            }
+            setEntries(entries);
+            setEntryValues(entryValues);
+        } catch(Exception e) {
+
+        }
+
 	}
  
     @Override
     protected void onPrepareDialogBuilder(Builder builder) {
-    	 
-        if(Api.applications == null) {
-        	Api.getApps(ctx, null);
-        }
-        
-        CharSequence[] entries = new CharSequence[Api.applications.size()];
-        CharSequence[] entryValues = new CharSequence[Api.applications.size()];
-        int i = 0;
-        for (PackageInfoData dev : Api.applications) {
-            entries[i] = dev.toStringWithUID();
-            entryValues[i] = dev.uid +"";
-            i++;
-        }
-        setEntries(entries);
-        setEntryValues(entryValues);
+    	 try {
+             List<PackageInfoData> apps;
+             if (Api.applications == null) {
+                 apps = Api.getApps(ctx, null);
+             } else {
+                 apps =  Api.applications;
+             }
 
-        if (entries == null || entryValues == null
-                || entries.length != entryValues.length) {
-            throw new IllegalStateException(
-                    "MultiSelectListPreference requires an entries array and an entryValues "
-                            + "array which are both the same length");
-        }
- 
-        restoreCheckedEntries();
-        OnMultiChoiceClickListener listener = new DialogInterface.OnMultiChoiceClickListener() {
-            public void onClick(DialogInterface dialog, int which, boolean val) {
-                entryChecked[which] = val;
-            }
-        };
-        builder.setMultiChoiceItems(entries, entryChecked, listener);
+             try {
+                 Collections.sort(apps, new PackageComparator());
+             }catch(Exception e) {
+                 Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
+             }
+
+             CharSequence[] entries = new CharSequence[apps.size()];
+             CharSequence[] entryValues = new CharSequence[apps.size()];
+             for(int i=0; i < apps.size(); i++) {
+                 entries[i] = apps.get(i).toStringWithUID();
+                 entryValues[i] = apps.get(i).uid + "";
+             }
+             setEntries(entries);
+             setEntryValues(entryValues);
+
+             if (entries == null || entryValues == null
+                     || entries.length != entryValues.length) {
+                 throw new IllegalStateException(
+                         "MultiSelectListPreference requires an entries array and an entryValues "
+                                 + "array which are both the same length");
+             }
+
+             restoreCheckedEntries();
+             OnMultiChoiceClickListener listener = new DialogInterface.OnMultiChoiceClickListener() {
+                 public void onClick(DialogInterface dialog, int which, boolean val) {
+                     entryChecked[which] = val;
+                 }
+             };
+             builder.setMultiChoiceItems(entries, entryChecked, listener);
+         } catch (Exception e) {
+
+         }
+
     }
  
     private CharSequence[] unpack(CharSequence val) {
