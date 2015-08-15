@@ -1,25 +1,74 @@
 #!/system/bin/sh
 
-if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables ]; then
-    path="dev.ukanth.ufirewall"
-elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables ]; then
-    path="dev.ukanth.ufirewall.donate"
-else
-    log -p i -t afwall "AFWall doesn't seem to be installed."
-    exit
+IPT=/system/bin/iptables;
+IP6T=/system/bin/ip6tables;
+own=/data/data/dev.ukanth.ufirewall/app_bin/iptables;
+own6=/data/data/dev.ukanth.ufirewall/app_bin/ip6tables;
+
+$IPT -F
+$IPT -t nat -F
+$IPT -t mangle -F
+$IPT -X
+$IPT -t nat -X
+$IPT -t mangle -X
+$IPT -Z
+$own -F
+$own -t nat -F
+$own -t mangle -F
+$own -X
+$own -t nat -X
+$own -t mangle -X
+$own -Z
+$IP6T -F
+$IP6T -t nat -F
+$IP6T -t mangle -F
+$IP6T -X 
+$IP6T -t nat -X
+$IP6T -t mangle -X
+$IP6T -Z
+$own6 -F
+$own6 -t nat -F
+$own6 -t mangle -F
+$own6 -X
+$own6 -t nat -X
+$own6 -t mangle -X
+$own6 -Z
+
+
+if [ -f "$IPT" ]; then
+		$IPT -P INPUT DROP
+		$IPT -P FORWARD ACCEPT
+		$IPT -P OUTPUT ACCEPT
+fi
+if [ -f "$IP6T" ]; then
+		$IP6T -P INPUT DROP
+		$IP6T -P FORWARD DROP
+		$IP6T -P OUTPUT DROP
+fi
+if [ -f "$own" ]; then
+		$own -P INPUT DROP
+		$own -P FORWARD DROP
+		$own -P OUTPUT DROP
+fi
+if [ -f "$own6" ]; then
+		$own6 -P INPUT DROP
+		$own6 -P FORWARD DROP
+		$own6 -P OUTPUT DROP
 fi;
 
-defaultpath_1=/system/bin/iptables
-file=/data/data/$path/app_bin/iptables
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/conf/all/forwarding
+echo 1 > /proc/sys/net/ipv6/conf/default/forwarding
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 
-if [ -f "$file" ]; then
-	if [ -f "$defaultpath_1" ]; then
-		$defaultpath_1 -P INPUT DROP    
-        	$defaultpath_1 -P OUTPUT DROP   
-	        $defaultpath_1 -P FORWARD DROP        
-	else
-		$file -P INPUT DROP
-		$file -P OUTPUT DROP
-		$file -P FORWARD DROP
-	fi;	
-fi;
+$IPT -N LOGGING
+$IPT -A INPUT -j LOGGING
+$IPT -A OUTPUT -j LOGGING
+$IPT -A LOGGING -m limit --limit 2/min -j LOG --log-prefix "iptables-dropped: " --log-level 4
+$IPT -A LOGGING -j DROP
+
+$IPT6 -N LOGGING
+$IPT6 -A INPUT -j LOGGING
+$IPT6 -A OUTPUT -j LOGGING
+$IPT6 -A LOGGING -m limit --limit 2/min -j LOG --log-prefix "ip6tables-dropped: " --log-level 4
+$IPT6 -A LOGGING -j DROP
