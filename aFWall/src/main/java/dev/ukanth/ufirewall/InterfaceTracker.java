@@ -1,7 +1,9 @@
 /**
  * Keep track of wifi/3G/tethering status and LAN IP ranges.
  *
- * Copyright (C) 2013 Kevin Cernekee
+ * Copyright (C)      2013 Kevin Cernekee
+ *               2013-2015 Umakanthan Chandran
+ *                    2015 CHEF-KOCH
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * @author Kevin Cernekee
- * @version 1.0
+ * 
+ * 
  */
 
 package dev.ukanth.ufirewall;
@@ -58,8 +60,9 @@ public final class InterfaceTracker {
 	public static final String ITFS_WIFI[] = { "eth+", "wlan+", "tiwlan+", "ra+", "bnep+" };
 	
 	public static final String ITFS_3G[] = { "rmnet+", "pdp+", "uwbr+","wimax+", "vsnet+", 
-											 "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", "ccemni+","rmnet_usb+",
-											 "wwan+", "cdma_rmnet+", "usb+", "rmnet_usb+","clat4+", "cc2mni+", "bond1+", "rmnet_smux+" };
+						"rmnet_sdio+", "ccmni+", "qmi+", "svnet+", "ccemni+",
+						"rmnet_usb+", "wwan+", "cdma_rmnet+", "usb+", "clat4+", 
+						"cc2mni+", "bond1+", "rmnet_smux+" };
 	
 	public static final String ITFS_VPN[] = { "tun+", "ppp+", "tap+" };
 
