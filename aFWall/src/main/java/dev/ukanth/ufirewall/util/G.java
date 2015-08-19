@@ -122,8 +122,8 @@ public class G extends android.app.Application {
 	public static String profile_pwd() { return gPrefs.getString(profile_Pwd, ""); }
 	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
 
-	//public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
-	//public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
+	public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
+	public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
 	
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
 	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
@@ -416,4 +416,5 @@ public class G extends android.app.Application {
 
 	public static boolean isMigrated() { return gPrefs.getBoolean(IS_MIGRATED, false); }
 	public static boolean isMigrated(boolean val) { gPrefs.edit().putBoolean(IS_MIGRATED, val).commit(); return val; }
+
 }

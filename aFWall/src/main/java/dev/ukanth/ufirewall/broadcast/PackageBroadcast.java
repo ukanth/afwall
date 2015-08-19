@@ -108,7 +108,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(ns);
 
-		int icon = R.drawable.notification_quest;
+		int icon = R.drawable.question;
 		
 		final int HELLO_ID = 24556;
 

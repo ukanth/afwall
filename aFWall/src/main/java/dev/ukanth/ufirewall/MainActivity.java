@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	}
 
 	private void startRootShell() {
+		G.isRootAvail(true);
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
 		new RootCommand().setFailureToast(R.string.error_su)
@@ -1755,8 +1756,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		@Override
 		protected Void doInBackground(Void... params) {
 			// Let's do some SU stuff
-			suAvailable = Shell.SU.available();
-			if (suAvailable) {
+			if(!G.isRootAvail()) {
+				suAvailable = Shell.SU.available();
+				if (suAvailable) {
+					startRootShell();
+				}
+			} else {
+				suAvailable = true;
 				startRootShell();
 			}
 			return null;
@@ -1779,10 +1785,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 							}
 						})
 						.show();
-			} else {
-				if(passCheck()){
-					//showOrLoadApplications();
-				}
 			}
 		}
 	}

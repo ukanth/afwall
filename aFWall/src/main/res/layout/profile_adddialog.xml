@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:ems="10"
-        android:hint="Insert your profile name" >
+        android:hint="@string/insert_profile" >
 
         <requestFocus />
     </EditText>
@@ -20,6 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Add" />
+        android:text="@string/add" />
 
 </LinearLayout>

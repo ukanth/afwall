@@ -2571,10 +2571,10 @@ public final class Api {
 				notificationText = context.getString(R.string.active);
 			}
 			//notificationText = context.getString(R.string.active);
-			icon = R.drawable.notification;
+			icon = R.drawable.active;
 		} else {
 			notificationText = context.getString(R.string.inactive);
-			icon = R.drawable.notification_error;
+			icon = R.drawable.error;
 		}
 
 		//TODO: Action button's on notification
