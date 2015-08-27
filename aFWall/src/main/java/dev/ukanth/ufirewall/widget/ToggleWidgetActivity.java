@@ -135,8 +135,8 @@ public class ToggleWidgetActivity extends Activity {
 
 	   public class Profiles implements RadialMenuEntry
 	   {
-	      public String getName() { return "Profiles"; } 
-		  public String getLabel() { return "Profiles"; }
+	      public String getName() { return getString(R.string.profiles); }
+		  public String getLabel() { return getString(R.string.profiles); }
 	      public int getIcon() { return 0; }
 	      private List<RadialMenuEntry> children = new ArrayList<RadialMenuEntry>( Arrays.asList( new DefaultProfile(), new Profile1(), new Profile2(), new Profile3() ) );
 	      public List<RadialMenuEntry> getChildren() { return children; }
