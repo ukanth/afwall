@@ -560,6 +560,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			default:
 				G.setProfile(true, profileName);
 		}
+
 		if(initDone > 1) {
 			G.reloadProfile();
 			showOrLoadApplications();
@@ -1206,7 +1207,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			setDirty(false);
 			return;
 		}
-
+		Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
 
 		final MaterialDialog progress = new MaterialDialog.Builder(this)
 				.title(R.string.working)

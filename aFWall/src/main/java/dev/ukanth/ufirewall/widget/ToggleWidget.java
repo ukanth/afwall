@@ -44,13 +44,11 @@ public class ToggleWidget extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		super.onUpdate(context, appWidgetManager, appWidgetIds);
-		
+
 		RemoteViews remoteViews = new RemoteViews(context.getPackageName(),R.layout.toggle_widget_layout);
-		
 		Intent configIntent = new Intent(context, ToggleWidgetActivity.class);
 
 		PendingIntent configPendingIntent = PendingIntent.getActivity(context,0, configIntent, 0);
-
 		remoteViews.setOnClickPendingIntent(R.id.toggle_widget_icon,configPendingIntent);
 		appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
 	}

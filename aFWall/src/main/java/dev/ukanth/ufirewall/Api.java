@@ -2534,65 +2534,69 @@ public final class Api {
     
     
     public static void showNotification(boolean status, Context context) {
-    	final int NOTIF_ID = 33341;
-    	String notificationText = "";
-    	
-    	NotificationManager mNotificationManager = (NotificationManager) context
-				.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-		
-		Intent appIntent = new Intent(context, MainActivity.class);
-		PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
-		int icon = R.drawable.notification;
-		
-		if(status) {
-			if(G.enableMultiProfile()) {
-				String profile = "";
-				switch(G.storedProfile()) {
-					case "AFWallPrefs":
-						profile = G.gPrefs.getString("default", context.getString(R.string.defaultProfile));
-						break;
-					case "AFWallProfile1":
-						profile = G.gPrefs.getString("profile1", context.getString(R.string.profile1));
-						break;
-					case "AFWallProfile2":
-						profile = G.gPrefs.getString("profile2", context.getString(R.string.profile2));
-						break;
-					case "AFWallProfile3":
-						profile = G.gPrefs.getString("profile3", context.getString(R.string.profile3));
-						break;
-					default:
-						profile = G.storedProfile();
-						break;
+		if(G.activeNotification()) {
+			final int NOTIF_ID = 33341;
+			String notificationText = "";
+
+			NotificationManager mNotificationManager = (NotificationManager) context
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+
+			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+			Intent appIntent = new Intent(context, MainActivity.class);
+			PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
+			int icon = R.drawable.notification;
+
+			if(status) {
+				if(G.enableMultiProfile()) {
+					String profile = "";
+					switch(G.storedProfile()) {
+						case "AFWallPrefs":
+							profile = G.gPrefs.getString("default", context.getString(R.string.defaultProfile));
+							break;
+						case "AFWallProfile1":
+							profile = G.gPrefs.getString("profile1", context.getString(R.string.profile1));
+							break;
+						case "AFWallProfile2":
+							profile = G.gPrefs.getString("profile2", context.getString(R.string.profile2));
+							break;
+						case "AFWallProfile3":
+							profile = G.gPrefs.getString("profile3", context.getString(R.string.profile3));
+							break;
+						default:
+							profile = G.storedProfile();
+							break;
+					}
+					notificationText = context.getString(R.string.active) + "(" + profile + ")";
+				} else {
+					notificationText = context.getString(R.string.active);
 				}
-				notificationText = context.getString(R.string.active) + "(" + profile + ")";
+				//notificationText = context.getString(R.string.active);
+				icon = R.drawable.active;
 			} else {
-				notificationText = context.getString(R.string.active);
+				notificationText = context.getString(R.string.inactive);
+				icon = R.drawable.error;
 			}
-			//notificationText = context.getString(R.string.active);
-			icon = R.drawable.active;
-		} else {
-			notificationText = context.getString(R.string.inactive);
-			icon = R.drawable.error;
+
+			//TODO: Action button's on notification
+			//Intent deleteIntent = new Intent(context, BootBroadcast.class);
+			//PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+			builder.setSmallIcon(icon).setOngoing(true)
+					.setAutoCancel(false)
+					.setContentTitle(context.getString(R.string.app_name))
+					.setTicker(context.getString(R.string.app_name))
+							//.addAction(R.drawable.apply, "", pendingIntentCancel)
+							//.addAction(R.drawable.exit, "", pendingIntentCancel)
+					.setContentText(notificationText);
+
+			builder.setContentIntent(in);
+
+			mNotificationManager.notify(NOTIF_ID, builder.build());
 		}
 
-		//TODO: Action button's on notification
-		//Intent deleteIntent = new Intent(context, BootBroadcast.class);
-		//PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
-		builder.setSmallIcon(icon).setOngoing(true)
-		       .setAutoCancel(false)
-		       .setContentTitle(context.getString(R.string.app_name))
-		       .setTicker(context.getString(R.string.app_name))
-				//.addAction(R.drawable.apply, "", pendingIntentCancel)
-				//.addAction(R.drawable.exit, "", pendingIntentCancel)
-		       .setContentText(notificationText);
-		
-		builder.setContentIntent(in);
-		
-		mNotificationManager.notify(NOTIF_ID, builder.build());
     	
     }
 }

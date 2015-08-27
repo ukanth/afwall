@@ -37,6 +37,10 @@ public class ToggleWidgetOldActivity extends Activity implements
 		profButton2 = (Button) this.findViewById(R.id.toggle_profile2);
 		profButton3 = (Button) this.findViewById(R.id.toggle_profile3);
 
+		profButton1.setText(G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1)));
+		profButton2.setText(G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2)));
+		profButton3.setText(G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3)));
+
 		if (Api.isEnabled(getApplicationContext())) {
 			enableOthers();
 		} else {
@@ -160,6 +164,7 @@ public class ToggleWidgetOldActivity extends Activity implements
 					}
 					break;
 				}
+				Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
 			}
 		}.start();
 	}

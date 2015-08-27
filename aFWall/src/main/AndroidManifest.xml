@@ -203,8 +203,7 @@
         </receiver>
          <receiver 
              android:name="dev.ukanth.ufirewall.widget.ToggleWidget" 
-             android:label="@string/widget_label_settings"
-             android:icon="@drawable/question">
+             android:label="@string/widget_label_settings">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />

@@ -84,33 +84,40 @@ public class ToggleWidgetActivity extends Activity {
 	  public class Status implements RadialMenuEntry
 	   {
 		   public String getName() {
-			   switch(G.storedProfile()) {
-				   case Api.DEFAULT_PREFS_NAME:
-					   return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
-				   case "AFWallProfile1":
-					   return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
-				   case "AFWallProfile2":
-					   return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
-				   case "AFWallProfile3":
-					   return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
-				   default:
-					   return G.storedProfile();
+			   if(G.enableMultiProfile()) {
+				   switch (G.storedProfile()) {
+					   case Api.DEFAULT_PREFS_NAME:
+						   return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+					   case "AFWallProfile1":
+						   return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+					   case "AFWallProfile2":
+						   return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+					   case "AFWallProfile3":
+						   return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+					   default:
+						   return G.storedProfile();
+				   }
+			   } else {
+				   return "";
 			   }
 		   }
 		   public String getLabel() {
-			   switch(G.storedProfile()) {
-				   case Api.DEFAULT_PREFS_NAME:
-					   return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
-				   case "AFWallProfile1":
-					   return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
-				   case "AFWallProfile2":
-					   return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
-				   case "AFWallProfile3":
-					   return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
-				   default:
-					   return G.storedProfile();
+			   if(G.enableMultiProfile()) {
+				   switch(G.storedProfile()) {
+					   case Api.DEFAULT_PREFS_NAME:
+						   return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+					   case "AFWallProfile1":
+						   return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+					   case "AFWallProfile2":
+						   return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+					   case "AFWallProfile3":
+						   return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+					   default:
+						   return G.storedProfile();
+				   }
+			   }else {
+				   return "";
 			   }
-
 		   }
 		  public int getIcon() { return (Api.isEnabled(getApplicationContext()) ?  R.drawable.widget_on :  R.drawable.widget_off); }
 	      public List<RadialMenuEntry> getChildren() { return null; }
@@ -241,6 +248,7 @@ public class ToggleWidgetActivity extends Activity {
 						if(applyProfileRules(context,msg,toaster)){
 							Api.setEnabled(context, true, false);
 						}
+
 						break;
 					case 2:
 						//validation, check for password
@@ -286,6 +294,7 @@ public class ToggleWidgetActivity extends Activity {
 						G.reloadPrefs();
 					}
 				}
+				Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
 			}
 		}.start();
 	}
