@@ -9,7 +9,7 @@
   <string name="showrules">Firewall-Regeln</string>
   <string name="applyrules">Anwenden</string>
   <string name="saverules">Speichern</string>
-  <string name="setpwd">Passwort setzen</string>
+  <string name="setpwd">Passwort festlegen</string>
   <string name="help">Hilfe</string>
   <string name="close">Schließen</string>
   <string name="exit">Beenden</string>
@@ -43,7 +43,7 @@
   <string name="rules_applied">Regeln erfolgreich angewendet</string>
   <string name="rules_saved">Regeln erfolgreich gespeichert</string>
   <string name="rules_deleted">Regeln erfolgreich gelöscht</string>
-  <string name="pass_titleset">Passwortsperre setzen</string>
+  <string name="pass_titleset">Passwortsperre festlegen</string>
   <string name="pass_titleget">Passwort erforderlich</string>
   <string name="enterpass">Passwort eingeben</string>
   <string name="reenterpass">Passwort wiederholen</string>
@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Gesamt blockierte Pakete</string>
   <string name="blocked">AFWall+ blockierte :</string>
   <string name="refresh">Aktualisieren</string>
-  <string name="mp_prefs_title">Multi-Profile</string>
+  <string name="mp_prefs_title">Profile</string>
   <string name="custom_title1">Benutzerdefinierter Name für Standard-Profil</string>
   <string name="custom_title2">Benutzerdefinierter Name für Profil 1</string>
   <string name="custom_title3">Benutzerdefinierter Name für Profil 2</string>
@@ -199,8 +199,8 @@
   <string name="fixleakSummary">Verhindert Datenlecks beim Systemstart. ROM muss init.d unterstützen. HTC Geräte müssen für S-OFF konfiguriert sein</string>
   <string name="enableInboundTitle">Erlaube eingehende Verbindungen</string>
   <string name="enableInboundSummary">Erlaube Verbindungen vom LAN zum Gerät (Samba, sshd, AirDroid, etc.)</string>
-  <string name="ui_prefs_title">Oberfläche</string>
-  <string name="log_prefs_title">Protokolleinstellungen</string>
+  <string name="ui_prefs_title">Benutzeroberfläche</string>
+  <string name="log_prefs_title">Protokoll</string>
   <string name="hideicons_pref_title">App-Symbole ausblenden</string>
   <string name="hideicons_pref_summary_on">Symbole werden in der Hauptansicht ausgeblendet, Leistung wird dadurch verbessert</string>
   <string name="hideicons_pref_summary_off">App-Symbole werden in der Hauptansicht angezeigt</string>
@@ -214,7 +214,7 @@
   <string name="showuid_summary_off">App-User-Identifier (UID) ist versteckt. Aktivierung kann nützlich sein, um Protokolleinträge zu verfolgen.</string>
   <string name="languages">Sprache</string>
   <string name="active_rules">Aktive Regeln</string>
-  <string name="active_rules_summary">Anwenden von Firewall-Regeln bei jeder Verbindungsänderung (Roaming/LAN/WLAN/3G/Tethering)</string>
+  <string name="active_rules_summary">Firewall-Regeln bei jeder Verbindungsänderung (Roaming/LAN/WLAN/3G/Tethering) anwenden</string>
   <string name="profile_add">Profil hinzufügen</string>
   <string name="profile_remove">Profil entfernen</string>
   <string name="profile_rename">Profil umbenennen</string>
@@ -279,7 +279,7 @@
   <string name="currentDir">Aktuelles Verzeichnis</string>
   <string name="selectMode">Firewall-Modus</string>
   <string name="confirmation">Bestätigung</string>
-  <string name="prefill_profile">Profilname eingeben</string>
+  <string name="prefill_profile">Profilnamen eingeben</string>
   <string name="profile_default">Mein Profil</string>
   <string name="filter">Filter</string>
   <string name="enable_protection">Schutz aktivieren</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Falsches Passwort</string>
   <string name="submit">Senden</string>
   <string name="dialog_color_picker">Farbauswahl</string>
+  <string name="sort">Anwendungen sortieren</string>
+  <string name="defaultsort">Nach Namen (Standard)</string>
+  <string name="lastupdated">Nach Installation/Aktualisierung</string>
+  <string name="uid">Nach UID</string>
+  <string name="select_dir">Verzeichnis auswählen</string>
+  <string name="select">Aktion auswählen für</string>
+  <string name="manage_profiles">Profile verwalten</string>
+  <string name="profiles">Profile: </string>
+  <string name="migrate_profiles">Profile migrieren</string>
+  <string name="migrate_summary">Es werden alle zusätzlichen Profildaten von Version 1.x nach 2.x migriert</string>
+  <string name="insert_profile">Profilnamen eingeben</string>
+  <string name="add">Hinzufügen</string>
 </resources>

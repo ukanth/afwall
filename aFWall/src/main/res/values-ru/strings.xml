@@ -137,7 +137,7 @@
   <string name="LogPackBlock">Всего пакетов заблокирован</string>
   <string name="blocked">AFWall+ Блокировка :</string>
   <string name="refresh">Обновить</string>
-  <string name="mp_prefs_title">Несколько настроек профиля</string>
+  <string name="mp_prefs_title">Профили</string>
   <string name="custom_title1">Задать имя для профиля по умолчанию</string>
   <string name="custom_title2">Задать имя для профиля 1</string>
   <string name="custom_title3">Задать имя для профиля 2</string>
@@ -185,7 +185,7 @@
   <string name="ip6unavailable">Ошибка: IPv6 требуется «/system/bin/ip6tables».</string>
   <string name="switch_ipv6">Переключатель IPV6 правила</string>
   <string name="switch_ipv4">Переключатель IPV4 правила</string>
-  <string name="sec_prefs_title">Настройки безопасности</string>
+  <string name="sec_prefs_title">Безопасность</string>
   <string name="usePattern">Использовать графическую блокировку вместо пароля</string>
   <string name="stealthMode">Режим невидимости на узор</string>
   <string name="patternMaxTry">Максимальное количество попыток</string>
@@ -194,14 +194,14 @@
   <string name="device_admin_enabled">AFWall + администратор устройства включены</string>
   <string name="device_admin_disabled">AFWall + администратор устройства отключены</string>
   <string name="device_admin_on_disable">Пожалуйста, перейдите в настройки администратора устройства для отключения AFWall +</string>
-  <string name="exp_prefs_title">Экспериментальные предпочтения</string>
+  <string name="exp_prefs_title">Экспериментальные</string>
   <string name="startup_service">Применение правил. Пожалуйста подождите!</string>
   <string name="fixleakTitle">Исправить утечку данных при запуске</string>
   <string name="fixleakSummary">Предотвратить утечку данных во время запуска системы. Необходима поддержка скриптов init.d вашим ядром/прошивкой. Устройства HTC должны быть настроены для S-OFF.</string>
   <string name="enableInboundTitle">Разрешить входящие подключения</string>
   <string name="enableInboundSummary">Разрешить подключения из локальной сети к телефону (Samba, sshd, AirDroid, и так далее.)</string>
-  <string name="ui_prefs_title">Настройки интерфейса</string>
-  <string name="log_prefs_title">Настройки логов</string>
+  <string name="ui_prefs_title">Пользовательский интерфейс</string>
+  <string name="log_prefs_title">Журнал</string>
   <string name="hideicons_pref_title">Скрыть значки приложений</string>
   <string name="hideicons_pref_summary_on">Это позволит улучшить производительность, отключив значки приложений на главном экране</string>
   <string name="hideicons_pref_summary_off">Значки приложений будут отображаться на главном экране</string>
@@ -292,4 +292,16 @@
   <string name="wrong_password">Неправильный пароль</string>
   <string name="submit">Отправить</string>
   <string name="dialog_color_picker">Палитра цветов</string>
+  <string name="sort">Порядок сортировки</string>
+  <string name="defaultsort">Имя (по умолчанию)</string>
+  <string name="lastupdated">Установка/обновление</string>
+  <string name="uid">UID</string>
+  <string name="select_dir">Выберите папку</string>
+  <string name="select">Выберите действие</string>
+  <string name="manage_profiles">Управление профилями</string>
+  <string name="profiles">Профили: </string>
+  <string name="migrate_profiles">Перенос профилей</string>
+  <string name="migrate_summary">Будет выполнен перенос всех дополнительных данных профилей из версии 1.x в версию 2.x</string>
+  <string name="insert_profile">Введите имя профиля</string>
+  <string name="add">Добавить</string>
 </resources>

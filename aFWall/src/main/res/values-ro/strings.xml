@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Numărul total de pachete blocate</string>
   <string name="blocked">AFWall+ a blocat :</string>
   <string name="refresh">Reîmprospătare</string>
-  <string name="mp_prefs_title">Preferințe profile multiple</string>
+  <string name="mp_prefs_title">Profiluri</string>
   <string name="custom_title1">Nume personalizat pentru profilul implicit</string>
   <string name="custom_title2">Nume personalizat pentru Profilul1</string>
   <string name="custom_title3">Nume personalizat pentru Profilul2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Eroare: IPv6 necesită „/system/bin/ip6tables”.</string>
   <string name="switch_ipv6">Comută regulile IPv6</string>
   <string name="switch_ipv4">Comută regulile IPv4</string>
-  <string name="sec_prefs_title">Preferințe securitate</string>
+  <string name="sec_prefs_title">Securitate</string>
   <string name="usePattern">Utilizează blocare șablon în loc de parolă</string>
   <string name="stealthMode">Modul invizibil pe modul</string>
   <string name="patternMaxTry">Numărul maxim de încercări</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">AFWall+ administrator dispozitiv activat</string>
   <string name="device_admin_disabled">AFWall+ administrator dispozitiv dezactivat</string>
   <string name="device_admin_on_disable">Te rog să mergi la setările administratorului pentru a dezactiva AFWall+</string>
-  <string name="exp_prefs_title">Preferințe experimentale</string>
+  <string name="exp_prefs_title">Experimental</string>
   <string name="startup_service">Aplic regulile. Te rog așteaptă!</string>
   <string name="fixleakTitle">Repară scurgerile de date la pornire</string>
   <string name="fixleakSummary">Previne scurgerile de date la pornirea sistemului. ROM-ul trebuie să suporte init.d. Dispozitivele HTC trebuie să fie configurate pentru S-OFF.</string>
   <string name="enableInboundTitle">Activează conexiunile de intrare</string>
   <string name="enableInboundSummary">Permite conexiuni LAN către telefon (Samba, sshd, AirDroid, etc.)</string>
-  <string name="ui_prefs_title">Preferințe UI</string>
-  <string name="log_prefs_title">Preferințe jurnal</string>
+  <string name="ui_prefs_title">Interfață utilizator</string>
+  <string name="log_prefs_title">Jurnal</string>
   <string name="hideicons_pref_title">Ascunde pictogramele aplicațiilor</string>
   <string name="hideicons_pref_summary_on">Dezactivarea pictogramelor în ecranul principal va îmbunătăți performanțele</string>
   <string name="hideicons_pref_summary_off">Pictogramele aplicațiilor vor apărea în ecranul principal</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Parola greșită</string>
   <string name="submit">Trimite</string>
   <string name="dialog_color_picker">Selector de culoare</string>
+  <string name="sort">Sortează aplicațiile</string>
+  <string name="defaultsort">După nume (implicit)</string>
+  <string name="lastupdated">După Instalare/Actualizare</string>
+  <string name="uid">După UID</string>
+  <string name="select_dir">Alege director</string>
+  <string name="select">Alege acțiunea pentru</string>
+  <string name="manage_profiles">Administrează profiluri</string>
+  <string name="profiles">Profiluri: </string>
+  <string name="migrate_profiles">Migrează profiluri</string>
+  <string name="migrate_summary">Această acțiune va migra toate datele adiționale profilelor de la versiunea 1.x la versiunea 2.x</string>
+  <string name="insert_profile">Introdu numele profilului</string>
+  <string name="add">Adaugă</string>
 </resources>

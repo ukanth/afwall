@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Всього заблокованих пакетів</string>
   <string name="blocked">AFWall + заблоковані:</string>
   <string name="refresh">Оновити</string>
-  <string name="mp_prefs_title">Налаштування кількох профілів</string>
+  <string name="mp_prefs_title">Профілі</string>
   <string name="custom_title1">Власне ім\'я для типового профілю</string>
   <string name="custom_title2">Власне ім\'я для Профілю1</string>
   <string name="custom_title3">Власне ім\'я для Профілю2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Помилка: IPv6 потребує \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Перемкнути на правила IPV6</string>
   <string name="switch_ipv4">Перемкнути на правила IPV4</string>
-  <string name="sec_prefs_title">Налаштування безпеки</string>
+  <string name="sec_prefs_title">Безпека</string>
   <string name="usePattern">Використовувати графічний ключ замість паролю</string>
   <string name="stealthMode">Невидимий режим на шаблоні</string>
   <string name="patternMaxTry">Максималье число спроб</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">AFWall + Адміністратор увімкнено</string>
   <string name="device_admin_disabled">AFWall + Адміністратор вимкнено</string>
   <string name="device_admin_on_disable">Будь ласка, перейдіть до налаштувань адміністратора пристрою для вимкнення AFWall+</string>
-  <string name="exp_prefs_title">Експериментальні параметри</string>
+  <string name="exp_prefs_title">Експериментальне</string>
   <string name="startup_service">Застосування правил...Будь ласка, зачекайте!</string>
   <string name="fixleakTitle">Виправити витік даних при запуску</string>
   <string name="fixleakSummary">Запобігає витоку даних під час запуску системи.  Ваша прошивка мусить підтримувати init.d.  HTC пристрої повинні бути налаштовані для S-OFF.</string>
   <string name="enableInboundTitle">Дозволити вхідні підключення</string>
   <string name="enableInboundSummary">Дозволити підключення з локальної мережі на телефон (Samba, sshd, AirDroid, і т. д.)</string>
-  <string name="ui_prefs_title">Параметри інтерфейсу</string>
-  <string name="log_prefs_title">Установки журналу</string>
+  <string name="ui_prefs_title">Інтерфейс користувача</string>
+  <string name="log_prefs_title">Журнал</string>
   <string name="hideicons_pref_title">Приховати піктограми програм</string>
   <string name="hideicons_pref_summary_on">Це дозволить підвищити швидкодію, відключивши піктограми програм у головному вікні</string>
   <string name="hideicons_pref_summary_off">Піктограми програм, які буде показано на головному вікні</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Неправильний пароль</string>
   <string name="submit">Відправити</string>
   <string name="dialog_color_picker">Палітра кольорів</string>
+  <string name="sort">Сортувати додатки</string>
+  <string name="defaultsort">За именем (за замовчуванням)</string>
+  <string name="lastupdated">Через Встановлення/Оновлення</string>
+  <string name="uid">За UID</string>
+  <string name="select_dir">Виберіть каталог</string>
+  <string name="select">Вибрати дію для</string>
+  <string name="manage_profiles">Керування профілями</string>
+  <string name="profiles">Профілі: </string>
+  <string name="migrate_profiles">Перенести профіль</string>
+  <string name="migrate_summary">Будуть перенесені дані всіх додаткових профілів з версії 1.x у версію 2.x</string>
+  <string name="insert_profile">Введіть ім\'я профілю</string>
+  <string name="add">Додати</string>
 </resources>

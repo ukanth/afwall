@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Total Paket yg Diblok</string>
   <string name="blocked">AFWall+ Diblok:</string>
   <string name="refresh">Segarkan</string>
-  <string name="mp_prefs_title">Preferensi profil ganda</string>
+  <string name="mp_prefs_title">Profil</string>
   <string name="custom_title1">Atur nama profil default</string>
   <string name="custom_title2">Atur nama untuk Profil1</string>
   <string name="custom_title3">Atur nama untuk Profil2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Eror: IPv6 perlu \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Ganti aturan IPV6</string>
   <string name="switch_ipv4">ganti aturan IPV4</string>
-  <string name="sec_prefs_title">Preferensi keamanan</string>
+  <string name="sec_prefs_title">Keamanan</string>
   <string name="usePattern">Gunakan pola pengunci daripada password</string>
   <string name="stealthMode">Mode pola tak terlihat</string>
   <string name="patternMaxTry">Maksimal percobaan</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">Administrator Perangkat AFWall+ dihidupkan</string>
   <string name="device_admin_disabled">Administrator Perangkat AFWall+ dimatikan</string>
   <string name="device_admin_on_disable">Mohon buka pengaturan Administrator Perangkat untuk menghapus AFWall+</string>
-  <string name="exp_prefs_title">Preferensi (fitur) Percobaan</string>
+  <string name="exp_prefs_title">Eksperimen</string>
   <string name="startup_service">Menerapkan. Mohon tunggu</string>
   <string name="fixleakTitle">Perbaiki kebocoran data permulaan (startup)</string>
   <string name="fixleakSummary">Mencegah kebocoran data saat permulaan. ROM anda harus mendukung init.d. Perangkat HTC wajib dikonfigurasikan ke S-OFF</string>
   <string name="enableInboundTitle">Hidupkan koneksi masuk</string>
   <string name="enableInboundSummary">Ijinkan koneksi dari LAN ke perangkat (Samba, sshd, AirDroid, dll.)</string>
-  <string name="ui_prefs_title">Preferensi Tampilan</string>
-  <string name="log_prefs_title">Preferensi log</string>
+  <string name="ui_prefs_title">Tampilan</string>
+  <string name="log_prefs_title">Catatan</string>
   <string name="hideicons_pref_title">Sembunyikan ikon aplikasi</string>
   <string name="hideicons_pref_summary_on">Akan meningkatkan kinerja dengan menyembunikan ikon pada menu utama</string>
   <string name="hideicons_pref_summary_off">Ikon aplikasi akan ditampilkan pada menu utama</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Sandi salah</string>
   <string name="submit">Kirim</string>
   <string name="dialog_color_picker">Ambil Warna</string>
+  <string name="sort">Urutkan Aplikasi</string>
+  <string name="defaultsort">Berdasarkan Nama(Default)</string>
+  <string name="lastupdated">Berdasarkan Instalasi</string>
+  <string name="uid">Berdasarkan UID</string>
+  <string name="select_dir">Pilih direktori (folder)</string>
+  <string name="select">Pilih tindakan untuk</string>
+  <string name="manage_profiles">Atur profil</string>
+  <string name="profiles">Profil: </string>
+  <string name="migrate_profiles">Pindah Profil</string>
+  <string name="migrate_summary">Ini akan memindahkan semua data informasi tambahan dari versi 1.x ke versi 2.x</string>
+  <string name="insert_profile">Masukkan nama profil</string>
+  <string name="add">Tambahkan</string>
 </resources>

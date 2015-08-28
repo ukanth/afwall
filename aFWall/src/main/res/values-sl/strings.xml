@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Skupaj blokiranih paketov</string>
   <string name="blocked">AFWall+ je blokiran:</string>
   <string name="refresh">Osveži</string>
-  <string name="mp_prefs_title">Večprofilne nastavitve</string>
+  <string name="mp_prefs_title">Profili</string>
   <string name="custom_title1">Ime po meri za Osnovni profil</string>
   <string name="custom_title2">Ime po meri za Profil 1</string>
   <string name="custom_title3">Ime po meri za Profil 2</string>
@@ -147,7 +147,7 @@
   <string name="toggle_profile1">Aktiviraj profil 1</string>
   <string name="toggle_profile2">Aktiviraj profil 2</string>
   <string name="toggle_profile3">Aktiviraj profil 3</string>
-  <string name="multipleProfiles">Nastavitve profilov</string>
+  <string name="multipleProfiles">Več profilov</string>
   <string name="defaultProfile">Osnovni</string>
   <string name="profile1">Profil 1</string>
   <string name="profile2">Profil 2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Napaka: IPv6 zahteva \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Vklopi pravila IPv6</string>
   <string name="switch_ipv4">Vklopi pravila IPv4</string>
-  <string name="sec_prefs_title">Varnostne nastavitve</string>
+  <string name="sec_prefs_title">Varnost</string>
   <string name="usePattern">Vzorec za odklepanje</string>
   <string name="stealthMode">Prikrit vzorec</string>
   <string name="patternMaxTry">Največje število poskusov</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">AFWall+ dodan med skrbnike naprave</string>
   <string name="device_admin_disabled">AFWall+ izvzet izmed skrbnikov naprave</string>
   <string name="device_admin_on_disable">Pojdite na nastavitve skrbništva naprave in odtranite AFWall+</string>
-  <string name="exp_prefs_title">Poskusne nastavitve</string>
+  <string name="exp_prefs_title">Preizkusno</string>
   <string name="startup_service">Uveljavljam pravila... Počakajte!</string>
   <string name="fixleakTitle">Onemogoči uhajanje</string>
   <string name="fixleakSummary">Onemogoči uhajanje podatkov ob zagonu sistema.  Vaš ROM mora imeti podporo za init.d. HTC naprave morajo biti nastavljene na S-OFF.</string>
   <string name="enableInboundTitle">Dovoli dohodne povezave</string>
   <string name="enableInboundSummary">Omogoči povezovanje iz omrežja LAN do naprave (Samba, sshd, AirDroid, itd.)</string>
-  <string name="ui_prefs_title">Nastavitve vmesnika</string>
-  <string name="log_prefs_title">Nastavitve dnevnika aktivnosti</string>
+  <string name="ui_prefs_title">Uporabniški vmesnik</string>
+  <string name="log_prefs_title">Dnevnik aktivnosti</string>
   <string name="hideicons_pref_title">Skrij ikone aplikacij</string>
   <string name="hideicons_pref_summary_on">Umik ikon aplikacij iz glavnega seznama lahko izboljša zmogljivost požarnega zidu</string>
   <string name="hideicons_pref_summary_off">Ikone aplikacij bodo prikazane v osnovnem pogledu</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Napačno geslo</string>
   <string name="submit">Uveljavi</string>
   <string name="dialog_color_picker">Izbira barv</string>
+  <string name="sort">Razvrsti aplikacije</string>
+  <string name="defaultsort">Po imenu (privzeto)</string>
+  <string name="lastupdated">Po času namestitve</string>
+  <string name="uid">Po šifri UID</string>
+  <string name="select_dir">Izberi imenik</string>
+  <string name="select">Izberi ravnanje za</string>
+  <string name="manage_profiles">Uredi profile</string>
+  <string name="profiles">Profili: </string>
+  <string name="migrate_profiles">Prenesi profile</string>
+  <string name="migrate_summary">To bo preneslo vse dodatne lastnosti profilov iz različice 1.x v 2.x</string>
+  <string name="insert_profile">Vnesi ime profila</string>
+  <string name="add">Dodaj</string>
 </resources>

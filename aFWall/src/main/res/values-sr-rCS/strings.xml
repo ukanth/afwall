@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Ukupno blokiranih paketa</string>
   <string name="blocked">Blokirani:</string>
   <string name="refresh">Osveži</string>
-  <string name="mp_prefs_title">Podešavanje višestrukih profila</string>
+  <string name="mp_prefs_title">Profili</string>
   <string name="custom_title1">Posebno ime za podrazumevani profil</string>
   <string name="custom_title2">Posebno ime za profil 1</string>
   <string name="custom_title3">Posebno ime za profil 2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Greška: IPv6 zahteva \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Uključi IPV6 pravila</string>
   <string name="switch_ipv4">Uključi IPV4 pravila</string>
-  <string name="sec_prefs_title">Podešavanja sigurnosti</string>
+  <string name="sec_prefs_title">Bezbednost</string>
   <string name="usePattern">Potez umesto lozinke za otključavanje</string>
   <string name="stealthMode">Nevidljivi režim poteza</string>
   <string name="patternMaxTry">Najviše pokušaja</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">Administrator uređaja uključen</string>
   <string name="device_admin_disabled">Administrator uređaja isključen</string>
   <string name="device_admin_on_disable">Idite u postavke administratora uređaja i izbacite AFWall+</string>
-  <string name="exp_prefs_title">Eksperimentalna podešavanja</string>
+  <string name="exp_prefs_title">Eksperimentalno</string>
   <string name="startup_service">Primenjujem pravila. Sačekajte!</string>
   <string name="fixleakTitle">Sredi curenje podataka pri podizanju</string>
   <string name="fixleakSummary">Sprečava pristup mreži pri pokretanju. Vaš ROM mora imati init.d podršku. HTC uređaji podešeni za S-OFF.</string>
   <string name="enableInboundTitle">Uključi dolazne veze</string>
   <string name="enableInboundSummary">Dopušta veze sa lokalne mreže (Samba, sshd, KDEConnect, AirDroid)</string>
-  <string name="ui_prefs_title">Podešavanja sučelja</string>
-  <string name="log_prefs_title">Podešavanja dnevnika</string>
+  <string name="ui_prefs_title">Korisničko sučelje</string>
+  <string name="log_prefs_title">Dnevnik</string>
   <string name="hideicons_pref_title">Sakrij ikone aplikacija</string>
   <string name="hideicons_pref_summary_on">Ovo će isključiti prikaz ikona aplikacija u glavnom prozoru</string>
   <string name="hideicons_pref_summary_off">Ikone aplikacija biće prikazane u glavnom prozoru</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Pogrešna lozinka</string>
   <string name="submit">Pošalji</string>
   <string name="dialog_color_picker">Birač boje</string>
+  <string name="sort">Ređanje aplikacija</string>
+  <string name="defaultsort">po nazivu (podrazumevano)</string>
+  <string name="lastupdated">po vremenu instalacije/ažuriranja</string>
+  <string name="uid">po UID-u</string>
+  <string name="select_dir">Izbor direktorijuma</string>
+  <string name="select">Izbor radnje za</string>
+  <string name="manage_profiles">Upravljanje profilima</string>
+  <string name="profiles">Profili: </string>
+  <string name="migrate_profiles">Preseli profile</string>
+  <string name="migrate_summary">Ovo će preseliti sve podatke profila iz verzije 1.x na 2.x</string>
+  <string name="insert_profile">Unesite naziv profila</string>
+  <string name="add">Dodaj</string>
 </resources>

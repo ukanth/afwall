@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Sammanlagt antal paket blockeras</string>
   <string name="blocked">AFWall+ blockerade:</string>
   <string name="refresh">Uppdatera</string>
-  <string name="mp_prefs_title">Multipla profiler inställningar</string>
+  <string name="mp_prefs_title">Profiler</string>
   <string name="custom_title1">Eget namn för standardprofil</string>
   <string name="custom_title2">Anpassat namn för Profile1</string>
   <string name="custom_title3">Anpassat namn för Profile2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Error: IPv6 kräver \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Byt IPv6 regler</string>
   <string name="switch_ipv4">Byt IPv4 regler</string>
-  <string name="sec_prefs_title">Säkerhetsinställningar</string>
+  <string name="sec_prefs_title">Säkerhet</string>
   <string name="usePattern">Använd låsmönster istället för lösenord</string>
   <string name="stealthMode">Stealth-läge på mönster</string>
   <string name="patternMaxTry">Högsta antal försök</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">AFWall+ Enhetsadministratör aktiverad</string>
   <string name="device_admin_disabled">AFWall+ Enhetsadministratör inaktiverad</string>
   <string name="device_admin_on_disable">Använd Androids enhetsadministratörsinställningar för att inaktivera AFWall+</string>
-  <string name="exp_prefs_title">Experimentella inställningar</string>
+  <string name="exp_prefs_title">Experimentell</string>
   <string name="startup_service">Tillämpar regler... Vänta!</string>
   <string name="fixleakTitle">Fix för dataläckage vid uppstart</string>
   <string name="fixleakSummary">Förhindra att data läcker under systemstart.  Ditt ROM måste ha init.d stöd.  HTC enheter måste konfigureras för S-OFF.</string>
   <string name="enableInboundTitle">Aktivera inkommande anslutningar</string>
   <string name="enableInboundSummary">Tillåt anslutningar från LAN till telefonen (Samba, sshd, AirDroid, osv)</string>
-  <string name="ui_prefs_title">UI inställningar</string>
-  <string name="log_prefs_title">Log inställningar</string>
+  <string name="ui_prefs_title">Användargränssnitt</string>
+  <string name="log_prefs_title">Loggning</string>
   <string name="hideicons_pref_title">Dölj applikationernas ikoner</string>
   <string name="hideicons_pref_summary_on">Detta kommer att förbättra prestanda genom att inaktivera ikoner på huvudvyn</string>
   <string name="hideicons_pref_summary_off">Applikationernas ikoner visas i huvudvyn</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Fel lösenord</string>
   <string name="submit">Använd</string>
   <string name="dialog_color_picker">Färgväljare</string>
+  <string name="sort">Sortera appar</string>
+  <string name="defaultsort">Efter namn (default)</string>
+  <string name="lastupdated">Efter Installations/uppdateringstillfälle</string>
+  <string name="uid">Efter UID</string>
+  <string name="select_dir">Välj katalog</string>
+  <string name="select">Välj åtgärd för</string>
+  <string name="manage_profiles">Hantera profiler</string>
+  <string name="profiles">Profiler: </string>
+  <string name="migrate_profiles">Migrera profiler</string>
+  <string name="migrate_summary">Detta kommer att migrera alla profiler från version 1.x till 2.x</string>
+  <string name="insert_profile">Ange profilnamn</string>
+  <string name="add">Lägg tilll</string>
 </resources>

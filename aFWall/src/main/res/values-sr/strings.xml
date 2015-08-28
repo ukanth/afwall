@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Укупно блокираних пакета</string>
   <string name="blocked">Блокирани:</string>
   <string name="refresh">Освежи</string>
-  <string name="mp_prefs_title">Подешавање вишеструких профила</string>
+  <string name="mp_prefs_title">Профили</string>
   <string name="custom_title1">Посебно име за подразумевани профил</string>
   <string name="custom_title2">Посебно име за профил 1</string>
   <string name="custom_title3">Посебно име за профил 2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Грешка: IPv6 захтева \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Укључи IPV6 правила</string>
   <string name="switch_ipv4">Укључи IPV4 правила</string>
-  <string name="sec_prefs_title">Подешавања сигурности</string>
+  <string name="sec_prefs_title">Безбедност</string>
   <string name="usePattern">Потез уместо лозинке за откључавање</string>
   <string name="stealthMode">Невидљиви режим потеза</string>
   <string name="patternMaxTry">Највише покушаја</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">Администратор уређаја укључен</string>
   <string name="device_admin_disabled">Администратор уређаја искључен</string>
   <string name="device_admin_on_disable">Идите у поставке администратора уређаја и избаците AFWall+</string>
-  <string name="exp_prefs_title">Експериментална подешавања</string>
+  <string name="exp_prefs_title">Експериментално</string>
   <string name="startup_service">Примењујем правила. Сачекајте!</string>
   <string name="fixleakTitle">Среди цурење података при подизању</string>
   <string name="fixleakSummary">Спречава приступ мрежи при покретању. Ваш РОМ мора имати init.d podršku. HTC уређаји подешени за S-OFF.</string>
   <string name="enableInboundTitle">Укључи долазне везе</string>
   <string name="enableInboundSummary">Допушта везе са локалне мреже (Самба, sshd, KDEConnect, AirDroid)</string>
-  <string name="ui_prefs_title">Подешавања сучеља</string>
-  <string name="log_prefs_title">Подешавања дневника</string>
+  <string name="ui_prefs_title">Корисничко сучеље</string>
+  <string name="log_prefs_title">Дневник</string>
   <string name="hideicons_pref_title">Сакриј иконе апликација</string>
   <string name="hideicons_pref_summary_on">Ово ће искључити приказ икона апликација у главном прозору</string>
   <string name="hideicons_pref_summary_off">Иконе апликација биће приказане у главном прозору</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Погрешна лозинка</string>
   <string name="submit">Пошаљи</string>
   <string name="dialog_color_picker">Бирач боје</string>
+  <string name="sort">Ређање апликација</string>
+  <string name="defaultsort">по називу (подразумевано)</string>
+  <string name="lastupdated">по инсталирању/ажурирању</string>
+  <string name="uid">по УИД-у</string>
+  <string name="select_dir">Избор директоријума</string>
+  <string name="select">Избор радње за</string>
+  <string name="manage_profiles">Управљање профилима</string>
+  <string name="profiles">Профили: </string>
+  <string name="migrate_profiles">Пресели профиле</string>
+  <string name="migrate_summary">Ово ће преселити податке свих профила из верзије 1.х у 2.х</string>
+  <string name="insert_profile">Унесите назив профила</string>
+  <string name="add">Додај</string>
 </resources>

@@ -136,7 +136,7 @@
   <string name="LogPackBlock">کل بسته های مسدود شده</string>
   <string name="blocked">AFWall+‎  مسدود کرده:</string>
   <string name="refresh">تازه سازی</string>
-  <string name="mp_prefs_title">تنظیمات چند پروفایلی</string>
+  <string name="mp_prefs_title">Profiles</string>
   <string name="custom_title1">نام سفارشی برای پروفایل پیش فرض</string>
   <string name="custom_title2">نام سفارشی برای پروفایل 1</string>
   <string name="custom_title3">نام سفارشی برای پروفایل 2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">خطا:  IPv6 نیاز به \"/system/bin/ip6tables\"دارد.</string>
   <string name="switch_ipv6">تغییر قوانین IPV6</string>
   <string name="switch_ipv4">تغییر قوانین IPV4</string>
-  <string name="sec_prefs_title">تنظیمات امنیتی</string>
+  <string name="sec_prefs_title">Security</string>
   <string name="usePattern">استفاده از الگو به جای رمز عبور</string>
   <string name="stealthMode">حالت مخفی در الگو</string>
   <string name="patternMaxTry">حداکثر تعداد تلاش</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">مدیر دستگاه AFWall+‎ فعال شد</string>
   <string name="device_admin_disabled">مدیر دستگاه AFWall+‎ غیرفعال شد</string>
   <string name="device_admin_on_disable">لطفا برای غیرفعالسازی AFWall+‎ به تنظیمات مدیر دستگاه بروید</string>
-  <string name="exp_prefs_title">تنظیمات تجربی</string>
+  <string name="exp_prefs_title">Experimental</string>
   <string name="startup_service">در حال اعمال قوانین. لطفاً منتظر بمانید!</string>
   <string name="fixleakTitle">تعمیر راه اندازی نشت داده ها</string>
   <string name="fixleakSummary">جلوگیری از نشت اطلاعات در هنگام راه اندازی سیستم.  ROM شما باید قابلیت پشتیبانی از  init.d داشته باشد.  دستگاه های HTC باید برای پیکربندی خاموش شوند.</string>
   <string name="enableInboundTitle">فعال سازی اتصالات ورودی</string>
   <string name="enableInboundSummary">اجازه اتصال LAN به تلفن (سامبا.sshd.AirDroid،و غیره.)</string>
-  <string name="ui_prefs_title">تنظیمات رابط کاربری</string>
-  <string name="log_prefs_title">تنظیمات آمار</string>
+  <string name="ui_prefs_title">User Interface</string>
+  <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">مخفی کردن آیکون نرم افزار</string>
   <string name="hideicons_pref_summary_on">این عملکرد با غیر فعال کردن آیکون برنامه در نمایش اصلی بهبود بازدهی میکند</string>
   <string name="hideicons_pref_summary_off">آیکون برنامه در نمایش اصلی نشان داده میشود</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Wrong Password</string>
   <string name="submit">Submit</string>
   <string name="dialog_color_picker">Color Picker</string>
+  <string name="sort">Sort Applications</string>
+  <string name="defaultsort">By Name(Default)</string>
+  <string name="lastupdated">By Install/Update</string>
+  <string name="uid">By UID</string>
+  <string name="select_dir">Select directory</string>
+  <string name="select">Select action for</string>
+  <string name="manage_profiles">Manage Profiles</string>
+  <string name="profiles">Profiles: </string>
+  <string name="migrate_profiles">Migrate Profiles</string>
+  <string name="migrate_summary">This will migrate all additional profiles data from 1.x to 2.x version</string>
+  <string name="insert_profile">Enter profile name</string>
+  <string name="add">Add</string>
 </resources>

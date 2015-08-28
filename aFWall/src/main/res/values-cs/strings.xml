@@ -137,7 +137,7 @@
   <string name="LogPackBlock">Celkový počet zablokovaných paketů</string>
   <string name="blocked">AFWall+ blokované :</string>
   <string name="refresh">Aktualizovat</string>
-  <string name="mp_prefs_title">Předvolby profilů</string>
+  <string name="mp_prefs_title">Profily</string>
   <string name="custom_title1">Vlastní název pro výchozí profil</string>
   <string name="custom_title2">Vlastní název pro Profil1</string>
   <string name="custom_title3">Vlastní název pro Profil2</string>
@@ -185,7 +185,7 @@
   <string name="ip6unavailable">Chyba: IPv6 vyžaduje \"/ system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Přepnout pravidla IPv6</string>
   <string name="switch_ipv4">Přepnout pravidla IPv4</string>
-  <string name="sec_prefs_title">Bezpečnostní předvolby</string>
+  <string name="sec_prefs_title">Bezpečnost</string>
   <string name="usePattern">Použít uzamykací gesto místo hesla</string>
   <string name="stealthMode">Vzor v utajeném režimu</string>
   <string name="patternMaxTry">Maximum počet pokusů</string>
@@ -194,14 +194,14 @@
   <string name="device_admin_enabled">AFWall+ Správce zařízení povolen</string>
   <string name="device_admin_disabled">AFWall+ Správce zařízení vypnut</string>
   <string name="device_admin_on_disable">Prosím, přejděte do nastavení správce zařízení pro deaktivaci AFWall+</string>
-  <string name="exp_prefs_title">Experimentální předvolby</string>
+  <string name="exp_prefs_title">Experimentální</string>
   <string name="startup_service">Aplikování pravidel. Prosím vyčkejte!</string>
   <string name="fixleakTitle">Opravit únik dat při spuštění</string>
   <string name="fixleakSummary">Zabráňuje úniku dat během spouštění systému. Vaše ROM musí podporovat init.d. HTC zařízení musí být nasteveny na S-OFF.</string>
   <string name="enableInboundTitle">Povolit příchozí připojení</string>
   <string name="enableInboundSummary">Povolit spojení z LAN do telefonu (Samba, sshd, AirDroid, atd.)</string>
-  <string name="ui_prefs_title">Nastavení UI</string>
-  <string name="log_prefs_title">Nastavení záznamů</string>
+  <string name="ui_prefs_title">Uživatelské rozhraní</string>
+  <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Skrýt ikony aplikací</string>
   <string name="hideicons_pref_summary_on">Zvýší výkon vypnutím zobrazení ikon aplikací</string>
   <string name="hideicons_pref_summary_off">Ikony aplikací budou zobrazeny v hlavním zobrazení</string>
@@ -292,4 +292,16 @@
   <string name="wrong_password">Chybné heslo</string>
   <string name="submit">Potvrdit</string>
   <string name="dialog_color_picker">Výběr barvy</string>
+  <string name="sort">Řazení aplikací</string>
+  <string name="defaultsort">Podle názvu(výchozí)</string>
+  <string name="lastupdated">Podle instalace/updatu</string>
+  <string name="uid">Podle UID</string>
+  <string name="select_dir">Vyberte adresář</string>
+  <string name="select">Vyberte akci pro</string>
+  <string name="manage_profiles">Správa profilů</string>
+  <string name="profiles">Profily: </string>
+  <string name="migrate_profiles">Přenést profily</string>
+  <string name="migrate_summary">Toto přenese všechny další data profilů z verze 1.x do 2.x</string>
+  <string name="insert_profile">Zadejte název profilu</string>
+  <string name="add">Přidat</string>
 </resources>

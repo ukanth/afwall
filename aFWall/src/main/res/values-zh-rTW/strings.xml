@@ -136,7 +136,7 @@
   <string name="LogPackBlock">總數據包阻塞</string>
   <string name="blocked">AFWall + 阻止:</string>
   <string name="refresh">更新</string>
-  <string name="mp_prefs_title">多重配置設定</string>
+  <string name="mp_prefs_title">設定檔</string>
   <string name="custom_title1">自定義預設配置名稱</string>
   <string name="custom_title2">自定義配置1名稱</string>
   <string name="custom_title3">自定義配置2名稱</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">錯誤：IPv6 需要 \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">切換 IPV6 規則</string>
   <string name="switch_ipv4">切換 IPV4 規則</string>
-  <string name="sec_prefs_title">安全設定</string>
+  <string name="sec_prefs_title">安全性</string>
   <string name="usePattern">使用圖案鎖代替密碼鎖</string>
   <string name="stealthMode">隱身模式圖案</string>
   <string name="patternMaxTry">最大嘗試次數</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">已啟用 AFWall+ 設備管理</string>
   <string name="device_admin_disabled">已停用 AFWall+ 設備管理</string>
   <string name="device_admin_on_disable">請至 系統設定 - 設備 取消 AFWall+ </string>
-  <string name="exp_prefs_title">操作設定</string>
+  <string name="exp_prefs_title">實驗性</string>
   <string name="startup_service">正在應用規則... 請稍等！</string>
   <string name="fixleakTitle">修復啟動數據洩漏</string>
   <string name="fixleakSummary">防止在系統啟動期間資料洩漏。ROM 必須具備 init.d 支援。HTC 設備必須設定為 S-OFF。</string>
   <string name="enableInboundTitle">啟用入站連接</string>
   <string name="enableInboundSummary">允許從 LAN 到手機的連接 (Samba、sshd、AirDroid等)</string>
-  <string name="ui_prefs_title">介面設置</string>
-  <string name="log_prefs_title">日誌選項</string>
+  <string name="ui_prefs_title">使用者介面</string>
+  <string name="log_prefs_title">日誌</string>
   <string name="hideicons_pref_title">隱藏應用程式的圖示</string>
   <string name="hideicons_pref_summary_on">取消應用圖示的顯示可以提升流暢度</string>
   <string name="hideicons_pref_summary_off">在主視窗顯示應用程式圖示</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">密碼錯誤</string>
   <string name="submit">確認</string>
   <string name="dialog_color_picker">色彩選擇器</string>
+  <string name="sort">應用程式排序</string>
+  <string name="defaultsort">依名稱(預設)</string>
+  <string name="lastupdated">依安裝/更新</string>
+  <string name="uid">依UID</string>
+  <string name="select_dir">選擇目錄</string>
+  <string name="select">選擇操作</string>
+  <string name="manage_profiles">管理設定檔</string>
+  <string name="profiles">設定檔： </string>
+  <string name="migrate_profiles">遷移設定檔</string>
+  <string name="migrate_summary">這會將所有其他設定檔資料從 1.x 遷移到 2.x 版本</string>
+  <string name="insert_profile">輸入設定檔名稱</string>
+  <string name="add">新增</string>
 </resources>

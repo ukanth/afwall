@@ -136,7 +136,7 @@
   <string name="LogPackBlock">Total de pacotes bloqueados</string>
   <string name="blocked">AFWall + bloqueado:</string>
   <string name="refresh">Atualizar</string>
-  <string name="mp_prefs_title">Preferências de múltiplos perfis</string>
+  <string name="mp_prefs_title">Profiles</string>
   <string name="custom_title1">Nome personalizado para o Perfil Padrão</string>
   <string name="custom_title2">Nome personalizado para Perfil1</string>
   <string name="custom_title3">Nome personalizado para Perfil2</string>
@@ -184,7 +184,7 @@
   <string name="ip6unavailable">Erro: IPv6 requer \"/ sistema/bin/ip6tables\".</string>
   <string name="switch_ipv6">Mudar regras de IPV6</string>
   <string name="switch_ipv4">Mudar regras de IPV4</string>
-  <string name="sec_prefs_title">Preferências de Segurança</string>
+  <string name="sec_prefs_title">Security</string>
   <string name="usePattern">Usar padrão de bloqueio em vez de palavra-passe</string>
   <string name="stealthMode">Modo invisível no padrão</string>
   <string name="patternMaxTry">Número máximo de tentativas</string>
@@ -193,14 +193,14 @@
   <string name="device_admin_enabled">AFWall + Administração do dispositivo ativada</string>
   <string name="device_admin_disabled">AFWall + Administração do dispositivo desativada</string>
   <string name="device_admin_on_disable">Por favor, vá até configurações de administrador do dispositivo para desativar AFWall +</string>
-  <string name="exp_prefs_title">Preferências Experimentais</string>
+  <string name="exp_prefs_title">Experimental</string>
   <string name="startup_service">A aplicar regras...Por favor, aguarde!</string>
   <string name="fixleakTitle">Ajustar Vazamento de Dados de Inicialização</string>
   <string name="fixleakSummary">Evitar perda de dados durante a inicialização do sistema.  Sua ROM deve ter apoio de init.d.  Dispositivos HTC devem ser configurados para S-OFF.</string>
   <string name="enableInboundTitle">Permitir conexões de entrada</string>
   <string name="enableInboundSummary">Permitir conexões de LAN para o telefone (Samba, sshd, AirDroid, etc.)</string>
-  <string name="ui_prefs_title">Preferências de interface</string>
-  <string name="log_prefs_title">Preferências de log</string>
+  <string name="ui_prefs_title">User Interface</string>
+  <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Ocultar ícones da aplicação</string>
   <string name="hideicons_pref_summary_on">Isto melhorará o desempenho ao desativar ícones de aplicações no modo de exibição principal</string>
   <string name="hideicons_pref_summary_off">Os ícones das aplicações aparecem na janela principal</string>
@@ -291,4 +291,16 @@
   <string name="wrong_password">Wrong Password</string>
   <string name="submit">Submit</string>
   <string name="dialog_color_picker">Color Picker</string>
+  <string name="sort">Sort Applications</string>
+  <string name="defaultsort">By Name(Default)</string>
+  <string name="lastupdated">By Install/Update</string>
+  <string name="uid">By UID</string>
+  <string name="select_dir">Select directory</string>
+  <string name="select">Select action for</string>
+  <string name="manage_profiles">Manage Profiles</string>
+  <string name="profiles">Profiles: </string>
+  <string name="migrate_profiles">Migrate Profiles</string>
+  <string name="migrate_summary">This will migrate all additional profiles data from 1.x to 2.x version</string>
+  <string name="insert_profile">Enter profile name</string>
+  <string name="add">Add</string>
 </resources>

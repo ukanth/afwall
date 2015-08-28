@@ -138,7 +138,7 @@ Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>
   <string name="LogPackBlock">Tüm Paketler Engellendi</string>
   <string name="blocked">AFWall + Engelledi:</string>
   <string name="refresh">Yenile</string>
-  <string name="mp_prefs_title">Çoklu Profil Tercihleri</string>
+  <string name="mp_prefs_title">Profiles</string>
   <string name="custom_title1">Varsayılan profil için isim belirle</string>
   <string name="custom_title2">Profil1 için isim belirle</string>
   <string name="custom_title3">Profil2 için isim belirle</string>
@@ -186,7 +186,7 @@ Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>
   <string name="ip6unavailable">Hata: IPv6 için \"/system/bin/ip6tables\" gerekiyor.</string>
   <string name="switch_ipv6">IPv6 Kurallarına Geçiş</string>
   <string name="switch_ipv4">IPv4 Kurallarına Geçiş</string>
-  <string name="sec_prefs_title">Güvenlik Tercihleri</string>
+  <string name="sec_prefs_title">Security</string>
   <string name="usePattern">Şifre yerine, model kilidini kullan</string>
   <string name="stealthMode">Desen gizli modu</string>
   <string name="patternMaxTry">En fazla deneme sayısını</string>
@@ -195,14 +195,14 @@ Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>
   <string name="device_admin_enabled">AFWall+ Cihaz Yöneticisi Etkinleştirildi</string>
   <string name="device_admin_disabled">AFWall+ Cihaz Yöneticisi Devredışı</string>
   <string name="device_admin_on_disable">Lütfen, cihaz yöneticileri ayarlarına gidin ve AFWall+ devre dışı bırakın</string>
-  <string name="exp_prefs_title">Deneysel tercihler</string>
+  <string name="exp_prefs_title">Experimental</string>
   <string name="startup_service">Kurallar uygulanıyor. Lütfen bekleyin!</string>
   <string name="fixleakTitle">Başlangıç veri sızıntısını düzelt</string>
   <string name="fixleakSummary">Sistem başlangıcında veri sızıntıları önle.  ROM\'da init.d desteği olmalıdır.  HTC cihazlar için S-OFF yapılandırılması gerekir.</string>
   <string name="enableInboundTitle">Gelen bağlantıları etkinleştir</string>
   <string name="enableInboundSummary">LAN üzerinden telefona gelen (Samba, sshd, AirDroid, etc.) bağlantılara izin ver</string>
-  <string name="ui_prefs_title">Kullanıcı arayüz tercihleri</string>
-  <string name="log_prefs_title">Log tercihleri</string>
+  <string name="ui_prefs_title">User Interface</string>
+  <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Uygulama simgelerini gizle</string>
   <string name="hideicons_pref_summary_on">Ana görünümdeki simgeleri devre dışı bırakmak, performansı arttıracaktır</string>
   <string name="hideicons_pref_summary_off">Uygulamaların simgeleri ana görünümünde gösterilecek</string>
@@ -293,4 +293,16 @@ Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>
   <string name="wrong_password">Yanlış şifre</string>
   <string name="submit">Gönder</string>
   <string name="dialog_color_picker">Renk Seçici</string>
+  <string name="sort">Sort Applications</string>
+  <string name="defaultsort">By Name(Default)</string>
+  <string name="lastupdated">By Install/Update</string>
+  <string name="uid">By UID</string>
+  <string name="select_dir">Select directory</string>
+  <string name="select">Select action for</string>
+  <string name="manage_profiles">Manage Profiles</string>
+  <string name="profiles">Profiles: </string>
+  <string name="migrate_profiles">Migrate Profiles</string>
+  <string name="migrate_summary">This will migrate all additional profiles data from 1.x to 2.x version</string>
+  <string name="insert_profile">Enter profile name</string>
+  <string name="add">Add</string>
 </resources>
