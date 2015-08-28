@@ -122,6 +122,10 @@ public class RulesActivity extends DataDumpActivity {
 		String suPackages[] = { "com.koushikdutta.superuser",
 				"com.noshufou.android.su",
 				"com.noshufou.android.su.elite",
+				"com.koushikdutta.superuser",
+				"com.kingroot.kinguser";
+				"com.kingroot.master",
+				"com.m0narx.su",
 				"com.miui.uac",
 				"eu.chainfire.supersu",
 				"eu.chainfire.supersu.pro" };
