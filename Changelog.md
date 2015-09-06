@@ -1,6 +1,18 @@
 Changelog AFWall+
 ==================
+Version 2.0.0
 
+* Initial Material design
+* Support for 5.x Lollipop
+* Revamped UI(pull to refresh),Preferences and Icons
+* Enhanced security password protection
+* Enhanced Import/Export with File Picker
+* New Profile Management
+* Performance Improvements and optimizations
+* Experimental - Added sort apps by uid/install date
+* Added/Updated Translations. 
+* And lots of changes...
+ 
 Version 1.3.4
 * Feature: Added permanent notification on firewall status (optional)
 * Bug: Modified init.d script to support system iptables.

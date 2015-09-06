@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+** Copyright 2012 two forty four a.m. LLC <http://www.twofortyfouram.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at <http://www.apache.org/licenses/LICENSE-2.0>
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+-->
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <!-- A format string for breadcrumbs in the titlebar.  For left to right languages, such as English, the format will look something like "Main Activity > Sub Activity > Sub Activity 2".  Item #1 is the previous path, item #2 is the separator, and item #3 is the current item.  For most left to right languages, this shouldn't need to be changed. -->
+    <string name="twofortyfouram_locale_breadcrumb_format">%1$s%2$s%3$s</string>
+
+    <!-- The separator character for breadcrumbs.  For most left to right languages, this shouldn't need to be changed. -->
+    <string name="twofortyfouram_locale_breadcrumb_separator">\u0020&gt;\u0020</string>
+
+    <!-- The Don't Save button in the menu or Action Bar.  MDPI 21 character maximum -->
+    <string name="twofortyfouram_locale_menu_dontsave">Cancel</string>
+
+    <!-- The Help button in the menu or Action Bar.  MDPI 21 character maximum -->
+    <string name="twofortyfouram_locale_menu_help">Help</string>
+
+    <!-- The Save button in the menu or Action Bar.  MDPI 21 character maximum -->
+    <string name="twofortyfouram_locale_menu_save">Done</string>
+
+</resources>

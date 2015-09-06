@@ -1,9 +1,10 @@
 ## AFWall+ (Android Firewall+) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
 ======
 
 ![AFWall+](http://s1.directupload.net/images/121120/zg3xi7w9.png)
 
-[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall) [![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png)](https://www.gittip.com/ukanth/)
+[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall)
 
 Index
 -----
@@ -42,9 +43,10 @@ Features
 * Search for installed applications
 * Get a notification about new installed application
 * Blocked packets notification and filter
+* Password protection
 * Device Admin Support (Protect AFWall+ from uninstall)
 * Easy to manage your rules with a custom script
-* For any (stock) variant of Android version 2.2 - 4.4.4 (ICS, JellyBean, KitKat)
+* For any (stock) variant of Android version 4.xx - 5. (ICS, JellyBean, KitKat, Lollipop)
 * Ipv4/Ipv6 support
 * LAN-, VPN-, Tether-, Roaming-Control support
 * Tasker and Locale support
@@ -71,8 +73,7 @@ Limitations
 Compatibility
 -------------
 
-AFWall+ has been success tested with Android version 2.2 - 4.4.4 (ICS, JellyBean, KitKat) and is reported to work with most Android variants, including stock ROMs.
-Android L need a little configuration change and a external Busybox app)
+AFWall+ has been success tested with Android version 4.xx - 5. (ICS, JellyBean, KitKat, Lollipop) and is reported to work with most Android variants, including stock ROMs
 
 I do not recommend using AFWall+ in combination with any of the similar solutions because this could result in conflicts and potential data leaks (iptables could be overwritten)
 
@@ -119,11 +120,6 @@ This project also uses many other open source libraries such as:
         <td><strong>Website</strong></td>
     </tr>
     <tr>
-        <td>ActionBarSherlock</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/JakeWharton/ActionBarSherlock</td>
-    </tr>
-    <tr>
         <td>Android Color Picker</td>
         <td>Apache License 2.0</td>
         <td>https://github.com/attenzione/android-ColorPickerPreference</td>
@@ -162,12 +158,7 @@ This project also uses many other open source libraries such as:
         <td>Root Tools</td>
         <td>Apache License 2.0</td>
         <td>https://github.com/Stericson/RootTools</td>
-    </tr>
-	<tr>
-        <td>Unified Preferences</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/saik0/UnifiedPreference/</td>
-    </tr>
+    </tr>	
 </table>
 
 Compile AFWall+
@@ -184,10 +175,7 @@ Quick start:
 
     git clone git://github.com/ukanth/afwall
     cd afwall
-    git submodule init
-    git submodule update
-    android update project -p . -s
-    ant debug
+   ./gradlew clean assembleDebug
 
 For complete instructions, please take a look at the [Wiki | HOWTO-Compile-AFWall](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
 

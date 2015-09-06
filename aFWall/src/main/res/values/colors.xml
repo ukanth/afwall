@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<drawable name="ab_bg_black">#aa000000</drawable>
+	<drawable name="class_zero_background">#7f040000</drawable>
+
+	<drawable name="divider_white_line">#ffffffff</drawable>
+
+
+	<color name="theme">#ff313131</color>
+	<color name="white">#ffffffff</color>
+	<color name="black">#ff000000</color>
+
+	<color name="primary">#259b24</color>
+	<color name="primary_dark">#0a7e07</color>
+	<color name="accent">#ffd740</color>
+</resources>

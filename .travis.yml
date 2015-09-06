@@ -1,5 +1,17 @@
-language: java
-jdk: oraclejdk7
+language: android
+jdk:
+    - oraclejdk7
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - build-tools-21.1.2
+    - extra-google-m2repository
+    - extra-android-support
+    - extra-android-m2repository
+  licenses:
+    - '.+'
 
 notifications:
   email:
@@ -10,13 +22,11 @@ before_install:
   # Install base Android SDK
     - sudo apt-get update -qq
     - sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
-    - export COMPONENTS=build-tools-19.1.0,android-14,android-16,android-19,sys-img-armeabi-v7a-android-17,extra-android-support
-    - curl -L https://raw.github.com/embarkmobile/android-sdk-installer/master/android-sdk-installer | bash /dev/stdin --install=$COMPONENTS 
-    - source ~/.android-sdk-installer/env
     - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
     - sudo tar -C /opt -jxf ndk.tar.bz2
-    - android update project -p . -s
+    - export NDK_PROJECT_PATH=$PWD
+    - chmod +x gradlew
 
 script:
     - make -C external NDK=/opt/android-ndk-r9
-    - ant debug
+    - ./gradlew clean assembleDebug

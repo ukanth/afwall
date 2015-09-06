@@ -12,6 +12,7 @@
 bin/
 gen/
 out/
+build/
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -20,10 +21,10 @@ local.properties
 .classpath
 .project
 
-# IntelliJ project files
-.idea/
-*.iml
-
 # native binaries
 libs/
 obj/
+.gradle/
+gradle/
+gradle*
+.idea/

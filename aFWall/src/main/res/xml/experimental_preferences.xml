@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+ <PreferenceCategory android:title="@string/exp_prefs_title" >
+    <CheckBoxPreference
+        android:key="fixLeak"
+        android:summary="@string/fixleakSummary"
+        android:title="@string/fixleakTitle" />
+    <CheckBoxPreference
+        android:key="enableInbound"
+        android:summary="@string/enableInboundSummary"
+        android:title="@string/enableInboundTitle" />
+    <CheckBoxPreference
+        android:key="multiUser"
+        android:summary="@string/multi_user_summary"
+        android:title="@string/multi_user_title" />
+    </PreferenceCategory>
+
+    <ListPreference
+        android:defaultValue="s0"
+        android:entries="@array/sort_key"
+        android:entryValues="@array/sort_value"
+        android:key="sort"
+        android:title="@string/sort" />
+
+</PreferenceScreen>

@@ -1,0 +1,35 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/sec_prefs_title" >
+
+        <ListPreference
+            android:defaultValue="@string/disable"
+            android:entries="@array/password_options"
+            android:key="passSetting"
+            android:entryValues="@array/password_option_values"
+            android:title="@string/enable_protection" >
+        </ListPreference>
+
+        <!-- <CheckBoxPreference
+            android:key="usePatterns"
+            android:title="@string/usePattern" />-->
+        <CheckBoxPreference
+            android:enabled="false"
+            android:key="stealthMode"
+            android:title="@string/stealthMode" />
+
+        <ListPreference
+            android:enabled="false"
+            android:defaultValue="3"
+            android:entries="@array/pattern_max_attempt"
+            android:entryValues="@array/pattern_max_attempt"
+            android:key="patternMax"
+            android:title="@string/patternMaxTry" >
+        </ListPreference>
+
+        <CheckBoxPreference
+            android:key="enableAdmin"
+            android:title="@string/enable_device_admin" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
