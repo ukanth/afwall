@@ -5,11 +5,11 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "dev.ukanth.ufirewall"
-        //applicationId "dev.ukanth.ufirewall.donate"
+        //applicationId "dev.ukanth.ufirewall"
+        applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 15207
+        versionCode 15208
         versionName "2.0.0"
     }
 
