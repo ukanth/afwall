@@ -14,10 +14,8 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.util.G;
 
 /**
  * Created by ukanth on 2/5/15.
@@ -285,7 +283,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
     private class TabClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            count++;
+            /*count++;
             if(!G.isDo()) {
                 if(count < 20 && count > 15) {
                     Toast.makeText(context, (7 - count) + context.getString(R.string.unlock_donate), Toast.LENGTH_SHORT).show();
@@ -297,7 +295,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 }
             } else {
                 Toast.makeText(context, context.getString(R.string.donate_support), Toast.LENGTH_LONG).show();
-            }
+            }*/
             for (int i = 0; i < mTabStrip.getChildCount(); i++) {
                 if (v == mTabStrip.getChildAt(i)) {
                     mViewPager.setCurrentItem(i);

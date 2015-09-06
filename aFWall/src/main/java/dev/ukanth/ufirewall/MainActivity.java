@@ -941,7 +941,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 										break;
 									case 1:
 
-										if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo()) {
+										if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo(getApplicationContext())) {
 
 											File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
 											FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2,false);
@@ -975,12 +975,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 													.content(R.string.donate_only)
 													.positiveText(R.string.buy_donate)
 													.negativeText(R.string.close)
+
 													.icon(getResources().getDrawable(R.drawable.ic_launcher))
 													.callback(new MaterialDialog.ButtonCallback() {
 														@Override
 														public void onPositive(MaterialDialog dialog) {
 															Intent intent = new Intent(Intent.ACTION_VIEW);
-															intent.setData(Uri.parse("market://details?id=dev.ukanth.ufirewall.donate"));
+															intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
 															startActivity(intent);
 														}
 

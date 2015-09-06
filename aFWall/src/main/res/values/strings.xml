@@ -335,7 +335,7 @@
     
     <!-- donate related strings -->
     <string name="donate_only">This feature is available only in donate version</string>
-    <string name="buy_donate">Buy Donate version</string>
+    <string name="buy_donate">Buy Donate version or Donate Key</string>
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features!</string>
     <string name="donate_thanks">Thanks for your support</string>
