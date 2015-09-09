@@ -21,8 +21,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.haibison.android.lockpattern.LockPatternActivity;
-import com.haibison.android.lockpattern.util.Settings;
+import haibison.android.lockpattern.LockPatternActivity;
+import haibison.android.lockpattern.util.AlpSettings;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -30,9 +30,9 @@ import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
-import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
-import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE_PATTERN;
-import static com.haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 
 public class SecPreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
@@ -247,7 +247,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 		}
 		
 		if (key.equals("enableStealthPattern")) {
-			Settings.Display.setStealthMode(this.getActivity().getApplicationContext(),
+			AlpSettings.Display.setStealthMode(this.getActivity().getApplicationContext(),
 					G.enableStealthPattern());
 		}
 

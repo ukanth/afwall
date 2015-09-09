@@ -63,8 +63,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.haibison.android.lockpattern.LockPatternActivity;
-import com.haibison.android.lockpattern.util.Settings;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -85,11 +83,13 @@ import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import eu.chainfire.libsuperuser.Shell;
+import haibison.android.lockpattern.LockPatternActivity;
+import haibison.android.lockpattern.util.AlpSettings;
 
-import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
-import static com.haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
-import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
-import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -161,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		this.findViewById(R.id.img_invert).setOnClickListener(this);
 
 
-		Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
-		Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
+		AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
+		AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 
 		Api.assertBinaries(this, true);
 
@@ -806,6 +806,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
+		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		
 		/*case android.R.id.home:
