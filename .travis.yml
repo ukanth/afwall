@@ -4,9 +4,9 @@ jdk:
 
 android:
   components:
-    - platform-tools
     - tools
-    - build-tools-21.1.2
+    - platform-tools
+    - build-tools-23.0.5
     - extra-google-m2repository
     - extra-android-support
     - extra-android-m2repository
@@ -25,7 +25,9 @@ before_install:
     - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
     - sudo tar -C /opt -jxf ndk.tar.bz2
     - export NDK_PROJECT_PATH=$PWD
-    - chmod +x gradlew
+install:
+  # Ensure Gradle wrapper is executable, download wrapper and show version
+    - chmod +x ./gradlew; ls -l gradlew; ./gradlew wrapper -v
 
 script:
     - make -C external NDK=/opt/android-ndk-r9
