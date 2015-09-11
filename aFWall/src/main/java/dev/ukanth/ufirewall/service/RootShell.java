@@ -22,13 +22,6 @@
 
 package dev.ukanth.ufirewall.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.NoSuchElementException;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -36,6 +29,13 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import dev.ukanth.ufirewall.log.Log;
 import eu.chainfire.libsuperuser.Debug;
@@ -181,7 +181,6 @@ public class RootShell extends Service {
 		 *
 		 * @param ctx Context object used to create toasts
 		 * @param script List of commands to run as root
-		 * @param state RootCommand object containing callback function
 		 */
 		public final void run(Context ctx, List<String> script) {
 			RootShell.runScriptAsRoot(ctx, script, this);
@@ -192,7 +191,6 @@ public class RootShell extends Service {
 		 *
 		 * @param ctx Context object used to create toasts
 		 * @param cmd Command to run as root
-		 * @param state RootCommand object containing callback function
 		 */
 		public final void run(Context ctx, String cmd) {
 			List<String> script = new ArrayList<String>();
@@ -251,65 +249,68 @@ public class RootShell extends Service {
 	private static void submitNextCommand(final RootCommand state) {
 		String s = state.script.get(state.commandIndex);
 
-		if (s.startsWith("#NOCHK# ")) {
-			s = s.replaceFirst("#NOCHK# ", "");
-			state.ignoreExitCode = true;
-		} else {
-			state.ignoreExitCode = false;
-		}
-		state.lastCommand = s;
-		state.lastCommandResult = new StringBuilder();
-
-		rootSession.addCommand(s, 0, new Shell.OnCommandResultListener() {
-
-			@Override
-			public void onCommandResult(int commandCode, int exitCode,
-					List<String> output) {
-
-				if(output != null) {
-					ListIterator<String> iter = output.listIterator();
-					while (iter.hasNext()) {
-						String line = iter.next();
-						if (!line.equals("")) {
-							if (state.res != null) {
-								state.res.append(line + "\n");
-							}
-							state.lastCommandResult.append(line + "\n");
-						}
-					}
-				}
-			
-
-				if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
-					state.retryCount++;
-					Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-						", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-					submitNextCommand(state);
-					return;
-				}
-
-				state.commandIndex++;
-				state.retryCount = 0;
-
-				boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
-				if (state.commandIndex >= state.script.size() || errorExit) {
-					complete(state, exitCode);
-					if (exitCode < 0) {
-						rootState = STATE_FAILED;
-						Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
-					} else {
-						if (errorExit) {
-							Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-									"\nOutput:\n" + state.lastCommandResult);
-						}
-						rootState = STATE_READY;
-					}
-					runNextSubmission();
-				} else {
-					submitNextCommand(state);
-				}
+		if(s != null) {
+			if (s.startsWith("#NOCHK# ")) {
+				s = s.replaceFirst("#NOCHK# ", "");
+				state.ignoreExitCode = true;
+			} else {
+				state.ignoreExitCode = false;
 			}
-		});
+			state.lastCommand = s;
+			state.lastCommandResult = new StringBuilder();
+
+			rootSession.addCommand(s, 0, new Shell.OnCommandResultListener() {
+
+				@Override
+				public void onCommandResult(int commandCode, int exitCode,
+											List<String> output) {
+
+					if(output != null) {
+						ListIterator<String> iter = output.listIterator();
+						while (iter.hasNext()) {
+							String line = iter.next();
+							if (!line.equals("")) {
+								if (state.res != null) {
+									state.res.append(line + "\n");
+								}
+								state.lastCommandResult.append(line + "\n");
+							}
+						}
+					}
+
+
+					if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
+						state.retryCount++;
+						Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+								", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+						submitNextCommand(state);
+						return;
+					}
+
+					state.commandIndex++;
+					state.retryCount = 0;
+
+					boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
+					if (state.commandIndex >= state.script.size() || errorExit) {
+						complete(state, exitCode);
+						if (exitCode < 0) {
+							rootState = STATE_FAILED;
+							Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
+						} else {
+							if (errorExit) {
+								Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+										"\nOutput:\n" + state.lastCommandResult);
+							}
+							rootState = STATE_READY;
+						}
+						runNextSubmission();
+					} else {
+						submitNextCommand(state);
+					}
+				}
+			});
+		}
+
 	}
 
 	private static void setupLogging() {

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@color/theme"
     android:orientation="vertical" >
 
     <android.support.v7.widget.Toolbar

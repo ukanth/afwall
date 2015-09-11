@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	}
 
 	private void startRootShell() {
-		G.isRootAvail(true);
+		//G.isRootAvail(true);
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
 		new RootCommand().setFailureToast(R.string.error_su)
@@ -1526,82 +1526,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	}
 
-	/*@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-
-		if(G.enableMultiProfile()){
-			//user clicked add
-			reloadLocalList(true);
-
-			final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-
-			if(G.setProfile(true, itemPosition + "")) {
-				(new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-				mSelected.setText("  |  " + mLocations[itemPosition]);
-				if(G.applyOnSwitchProfiles()){
-					applyOrSaveRules();
-				}
-				refreshHeader();
-			}
-
-		}
-		return true;
-	}*/
-
-	/*public void removeProfileDialog() {
-		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-		new MaterialDialog.Builder(this)
-				.title(R.string.profile_remove)
-				.items(G.getAdditionalProfiles().toArray(new String[G.getAdditionalProfiles().size()]))
-				.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-					@Override
-					public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-						G.removeAdditionalProfile(mLocations[which + 4], which + 4);
-						setupMultiProfile(true);
-						Api.applications = null;
-						showOrLoadApplications();
-						return true;
-					}
-				})
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						G.storedPosition(0);
-						reloadPreferences();
-					}
-				})
-				.positiveText(R.string.apply)
-				.negativeText(R.string.Cancel)
-				.show();
-	}*/
-
-/*	public void addProfileDialog() {
-		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-		new MaterialDialog.Builder(this)
-				.title(R.string.profile_add)
-				.inputType(InputType.TYPE_CLASS_TEXT)
-				.input(R.string.prefill_profile, R.string.profile_default, new MaterialDialog.InputCallback() {
-					@Override
-					public void onInput(MaterialDialog dialog, CharSequence input) {
-						String value = input.toString();
-						if (value != null && value.length() > 0 && !value.contains(",")) {
-							G.addAdditionalProfile(value.trim());
-							setupMultiProfile(true);
-						} else {
-							Toast.makeText(getApplicationContext(), getString(R.string.invalid_profile), Toast.LENGTH_SHORT).show();
-						}
-					}
-				})
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						reloadPreferences();
-					}
-				})
-				.negativeText(R.string.Cancel)
-				.show();
-	}*/
-
 	/**
 	 *
 	 * @param i
@@ -1740,10 +1664,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 	}*/
 
-	private class Startup extends AsyncTask<Void, Void, Void> {
+	private class Startup extends AsyncTask<Void, Void, Boolean> {
 		private MaterialDialog dialog = null;
 		private Context context = null;
-		private boolean suAvailable = false;
+		//private boolean suAvailable = false;
 
 		public Startup setContext(Context context) {
 			this.context = context;
@@ -1758,24 +1682,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Boolean doInBackground(Void... params) {
 			// Let's do some SU stuff
-			if(!G.isRootAvail()) {
-				suAvailable = Shell.SU.available();
-				if (suAvailable) {
-					startRootShell();
-				}
-			} else {
-				suAvailable = true;
+			boolean suAvailable = Shell.SU.available();
+			if (suAvailable) {
 				startRootShell();
 			}
-			return null;
+			return suAvailable;
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(Boolean result) {
 			dialog.dismiss();
-			if(!suAvailable) {
+			if(result != null && !result) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)

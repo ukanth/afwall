@@ -181,8 +181,6 @@
                 android:id="@+id/listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="#212121"
-                android:dividerHeight="0.2px"
                 android:fastScrollEnabled="true"></ListView>
 
         </android.support.v4.widget.SwipeRefreshLayout>
