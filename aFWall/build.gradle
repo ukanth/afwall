@@ -23,7 +23,7 @@ dependencies {
     //compile project(':androidlockpattern2')
     compile 'com.github.haibison:android-lockpattern:5.0.1'
     //compile 'eu.chainfire:libsuperuser:1.0.0.+'
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.afollestad:material-dialogs:0.7.9.1'
+    compile 'com.android.support:appcompat-v7:22.1.0'
+    compile 'com.afollestad:material-dialogs:0.7.8.1'
     //compile 'cat.ereza:customactivityoncrash:1.3.0'
 }
