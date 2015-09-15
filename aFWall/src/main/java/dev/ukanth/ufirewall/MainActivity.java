@@ -1692,9 +1692,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 
 		@Override
-		protected void onPostExecute(Boolean result) {
+		protected void onPostExecute(Boolean rootGranted) {
+			super.onPostExecute(rootGranted);
 			dialog.dismiss();
-			if(result != null && !result) {
+			if(rootGranted) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)

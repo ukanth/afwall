@@ -386,7 +386,7 @@ public class RootShell extends Service {
 					handler.post(new Runnable() { // This thread runs in the UI
 						@Override
 						public void run() {
-							Toast.makeText(mContext,msg,Toast.LENGTH_SHORT).show();
+							Toast.makeText(mContext,msg,Toast.LENGTH_LONG).show();
 						}
 					});
 				}
