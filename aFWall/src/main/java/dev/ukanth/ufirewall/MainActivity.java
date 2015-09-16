@@ -58,6 +58,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,7 +93,7 @@ import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener, RadioGroup.OnCheckedChangeListener {
 
 	//private TextView mSelected;
 	//private DrawerLayout mDrawerLayout;
@@ -185,7 +186,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		mSwipeLayout.setRefreshing(false);
 	}
 
+	private void updateRadioFilter() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		radioGroup.setOnCheckedChangeListener(this);
+	}
+
+
 	private void selectFilterGroup() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.rpkg_core:
+				showApplications(null, 0, false);
+				break;
+			case R.id.rpkg_sys:
+				showApplications(null, 1, false);
+				break;
+			case R.id.rpkg_user:
+				showApplications(null, 2, false);
+				break;
+			default:
+				showApplications("", 99 , true);
+				break;
+		}
+	}
+
+	/*private void selectFilterGroup() {
 		Spinner spinner1 = (Spinner) findViewById(R.id.filterGroup);
 		spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -214,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		});
 		showApplications("", 99, true);
 	}
-
+*/
 
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
@@ -304,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			hideColumns(R.id.img_lan);
 		}
 
-		//updateRadioFilter();
+		updateRadioFilter();
 		if(G.enableMultiProfile()) {
 			setupMultiProfile(true);
 		}
@@ -312,6 +337,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		selectFilterGroup();
 	}
 
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch (checkedId) {
+			case R.id.rpkg_all:
+				showOrLoadApplications();
+				break;
+			case R.id.rpkg_core:
+				showApplications(null, 0,false);
+				break;
+			case R.id.rpkg_sys:
+				showApplications(null, 1,false);
+				break;
+			case R.id.rpkg_user:
+				showApplications(null, 2,false);
+				break;
+		}
+	}
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -1695,7 +1738,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		protected void onPostExecute(Boolean rootGranted) {
 			super.onPostExecute(rootGranted);
 			dialog.dismiss();
-			if(rootGranted) {
+			if(!rootGranted) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)

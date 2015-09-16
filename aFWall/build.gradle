@@ -9,15 +9,24 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 15209
+        versionCode 15210
         versionName "2.1.0-BETA"
+    }
+
+    buildTypes {
+        debug {
+            debuggable false
+        }
     }
 
     lintOptions {
         disable 'MissingTranslation'
         abortOnError true
     }
+
 }
+
+
 
 dependencies {
     //compile project(':androidlockpattern2')

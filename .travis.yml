@@ -1,6 +1,7 @@
 language: android
 jdk:
     - oraclejdk7
+sudo: false
 
 android:
   components:
@@ -12,6 +13,16 @@ android:
     - extra
   licenses:
     - '.+'
+addons:
+  apt:
+    packages:
+    - libstdc++6:i386
+    - lib32z1
+    - build-essential
+    - autoconf
+    - automake
+    - libtool
+    - expect
 
 notifications:
   email:
@@ -20,15 +31,15 @@ notifications:
 
 before_install:
   # Install base Android SDK
-    - sudo apt-get update -qq
-    - sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
-    - curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
-    - sudo tar -C /opt -jxf ndk.tar.bz2
-    - export NDK_PROJECT_PATH=$PWD
+    #- sudo apt-get update -qq
+    #- sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
+    - wget http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2  /tmp/ndk.tar.bz2
+    - tar -jxf /tmp/ndk.tar.bz2
+    - export NDK_PROJECT_PATH=
 install:
   # Ensure Gradle wrapper is executable, download wrapper and show version
     - chmod +x ./gradlew; ls -l gradlew; ./gradlew wrapper -v
 
 script:
-    - make -C external NDK=/opt/android-ndk-r9
+    - make -C external NDK=/tmp/android-ndk-r9
     - ./gradlew clean assembleDebug
