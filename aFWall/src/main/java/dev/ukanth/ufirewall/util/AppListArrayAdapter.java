@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +19,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.RejectedExecutionException;
+import java.util.Map;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
@@ -32,6 +35,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 	public static final String TAG = "AFWall";
 	private final Context context;
 	private final List<PackageInfoData> listApps;
+
 	private Activity activity;
 
 	final int color = G.sysColor();
@@ -135,6 +139,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 		}
 
 		if (!G.disableIcons()) {
+
 			holder.icon.setImageDrawable(holder.app.cached_icon);
 			if (!holder.app.icon_loaded && info != null) {
 				// this icon has not been loaded yet - load it on a
@@ -142,9 +147,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 				try {
 					new LoadIconTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, holder.app,
 							context.getPackageManager(), convertView);
-					/*new LoadIconTask().execute(holder.app,
-							context.getPackageManager(), convertView);*/
-				} catch (RejectedExecutionException r) {
+				 } catch (Exception r) {
 				}
 			}
 		} else {
@@ -224,7 +227,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 				final PackageManager pkgMgr = (PackageManager) params[1];
 				final View viewToUpdate = (View) params[2];
 				if (!app.icon_loaded) {
-					app.cached_icon = pkgMgr.getApplicationIcon(app.appinfo);
+					Drawable d = new ScaleDrawable(pkgMgr.getApplicationIcon(app.appinfo), 0, 32, 32).getDrawable();
+					d.setBounds(0, 0, 32, 32);
+					app.cached_icon = d;
 					app.icon_loaded = true;
 				}
 				// Return the view to update at "onPostExecute"
