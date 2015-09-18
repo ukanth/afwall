@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -379,19 +380,23 @@ public class RootShell extends Service {
 	
 	private static void showToastUIThread(final String msg) {
 		try {
-			final Handler handler = new Handler();
-			Runnable runnable = new Runnable() {
-				@Override
+			Thread thread = new Thread() {
 				public void run() {
-					handler.post(new Runnable() { // This thread runs in the UI
+					Looper.prepare();
+
+					final Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
 						@Override
 						public void run() {
 							Toast.makeText(mContext,msg,Toast.LENGTH_LONG).show();
+							handler.removeCallbacks(this);
+							Looper.myLooper().quit();
 						}
-					});
+					}, 2000);
+					Looper.loop();
 				}
 			};
-			new Thread(runnable).start();
+			thread.start();
 		}catch(Exception e) {}
 	}
 }
