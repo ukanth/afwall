@@ -82,7 +82,7 @@
         android:label="@string/app_name"
         android:theme="@style/MyActionBarTheme"
         android:launchMode="singleTask"
-        android:name=".util.G" >
+        android:name="dev.ukanth.ufirewall.util.G" >
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:excludeFromRecents="true"
@@ -105,16 +105,16 @@
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.HelpActivity"
+            android:name="dev.ukanth.ufirewall.activity.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
             android:hardwareAccelerated="true" >
         </activity>
         
-        <activity android:name=".activity.RulesActivity"/>
+        <activity android:name="dev.ukanth.ufirewall.activity.RulesActivity"/>
 
         <activity android:name=".activity.ProfileActivity">
         </activity>
-        <activity  android:name=".activity.AppDetailActivity">
+        <activity  android:name="dev.ukanth.ufirewall.activity.AppDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
@@ -146,13 +146,13 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".activity.CustomScriptActivity" >
+        <activity android:name="dev.ukanth.ufirewall.activity.CustomScriptActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         
-        <receiver android:name=".broadcast.BootBroadcast" >
+        <receiver android:name="dev.ukanth.ufirewall.broadcast.BootBroadcast" >
             <intent-filter android:priority="500">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -161,7 +161,7 @@
               </intent-filter>
         </receiver>
 
-        <receiver android:name=".broadcast.PackageBroadcast" >
+        <receiver android:name="dev.ukanth.ufirewall.broadcast.PackageBroadcast" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -171,15 +171,15 @@
         </receiver>
         
         
-        <receiver android:name=".broadcast.ConnectivityChangeReceiver" >
+        <receiver android:name="dev.ukanth.ufirewall.broadcast.ConnectivityChangeReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                 <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
+                <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
             </intent-filter>
         </receiver>
         
          <receiver 
-             android:name=".widget.StatusWidget"
+             android:name="dev.ukanth.ufirewall.widget.StatusWidget"
              android:label="@string/widget_label_status"
              android:icon="@drawable/on_off_widget">
             <meta-data
@@ -222,7 +222,9 @@
          
 
         <activity
-		    android:name="haibison.android.lockpattern.LockPatternActivity"/>
+		    android:name="haibison.android.lockpattern.LockPatternActivity"
+            android:theme="@style/Alp_42447968.Theme.Dialog.Dark"
+            tools:replace="android:theme"/>
 
         <!-- device admin -->
         <!-- This is required this receiver to become device admin component. -->
@@ -269,8 +271,8 @@
             </intent-filter>
         </receiver>
         
-        <service android:name=".service.RootShell"/>
-        <service android:name=".service.NflogService"/>
+        <service android:name="dev.ukanth.ufirewall.service.RootShell"/>
+        <service android:name="dev.ukanth.ufirewall.service.NflogService"/>
         <service android:name="dev.ukanth.ufirewall.log.LogService"/>
         
         <!--  Samsung MultiWindow Support -->
