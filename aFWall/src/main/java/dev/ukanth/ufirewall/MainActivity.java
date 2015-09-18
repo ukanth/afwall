@@ -793,30 +793,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		return true;
 	}
 
-	public void menuSetApplyOrSave(Menu menu, boolean isEnabled) {
+	public void menuSetApplyOrSave(final Menu menu, boolean isEnabled) {
 		if (menu == null) {
 			return;
 		}
-		MenuItem onoff = menu.findItem(R.id.menu_toggle);
-		MenuItem apply = menu.findItem(R.id.menu_apply);
 
 		if (isEnabled) {
-			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
-			apply.setTitle(R.string.applyrules);
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
+					menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
+					menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);
 					getSupportActionBar().setIcon(R.drawable.notification);
 				}
 			});
 
 
 		} else {
-			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
-			apply.setTitle(R.string.saverules);
+
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
+					menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
+					menu.findItem(R.id.menu_apply).setTitle(R.string.saverules);
 					getSupportActionBar().setIcon(R.drawable.notification_error);
 				}
 			});
