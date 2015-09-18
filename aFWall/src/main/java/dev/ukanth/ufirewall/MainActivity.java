@@ -793,41 +793,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		return true;
 	}
 
-	public void menuSetApplyOrSave(final Menu menu, boolean isEnabled) {
+	public void menuSetApplyOrSave(final Menu menu, final boolean isEnabled) {
 		if (menu == null) {
 			return;
 		}
-
-		if (isEnabled) {
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (isEnabled) {
 					menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
 					menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);
 					getSupportActionBar().setIcon(R.drawable.notification);
-				}
-			});
-
-
-		} else {
-
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
+				} else {
 					menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
 					menu.findItem(R.id.menu_apply).setTitle(R.string.saverules);
 					getSupportActionBar().setIcon(R.drawable.notification_error);
 				}
-			});
-
-		}
+			}
+		});
 	}
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
+	public boolean onPrepareOptionsMenu(final Menu menu) {
 		//language
 		Api.updateLanguage(getApplicationContext(), G.locale());
-		menuSetApplyOrSave(menu, Api.isEnabled(this));
+		menuSetApplyOrSave(menu, Api.isEnabled(MainActivity.this));
 		return true;
 	}
 
