@@ -840,13 +840,8 @@ public final class Api {
 	 * @param ctx application context (mandatory)
 	 */
 	public static void saveRules(Context ctx) {
-		final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 
 		rulesUpToDate = false;
-
-		final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
-		final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
-		final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
 
 		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		final List<PackageInfoData> apps = getApps(ctx,null);
@@ -870,17 +865,17 @@ public final class Api {
 						if (newpkg_3g.length() != 0) newpkg_3g.append('|');
 						newpkg_3g.append(apps.get(i).uid);
 					}
-					if (enableRoam && apps.get(i).selected_roam) {
+					if (G.enableRoam() && apps.get(i).selected_roam) {
 						if (newpkg_roam.length() != 0) newpkg_roam.append('|');
 						newpkg_roam.append(apps.get(i).uid);
 					}
 
-					if (enableVPN && apps.get(i).selected_vpn) {
+					if (G.enableVPN() && apps.get(i).selected_vpn) {
 						if (newpkg_vpn.length() != 0) newpkg_vpn.append('|');
 						newpkg_vpn.append(apps.get(i).uid);
 					}
 
-					if (enableLAN && apps.get(i).selected_lan) {
+					if (G.enableLAN() && apps.get(i).selected_lan) {
 						if (newpkg_lan.length() != 0) newpkg_lan.append('|');
 						newpkg_lan.append(apps.get(i).uid);
 					}
@@ -1082,9 +1077,9 @@ public final class Api {
 		}
 		
 			final SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-			final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
-			final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
-			final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
+			//final boolean enableVPN = defaultPrefs.getBoolean("enableVPN", false);
+			//final boolean enableLAN = defaultPrefs.getBoolean("enableLAN", false);
+			//final boolean enableRoam = defaultPrefs.getBoolean("enableRoam", true);
 			
 			final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 			
@@ -1104,13 +1099,13 @@ public final class Api {
 			selected_wifi = getListFromPref(savedPkg_wifi_uid);
 			selected_3g = getListFromPref(savedPkg_3g_uid);
 			
-			if (enableRoam) {
+			if (G.enableRoam()) {
 				selected_roam = getListFromPref(savedPkg_roam_uid);
 			}
-			if (enableVPN) {
+			if (G.enableVPN()) {
 				selected_vpn = getListFromPref(savedPkg_vpn_uid);
 			}
-			if (enableLAN) {
+			if (G.enableLAN()) {
 				selected_lan = getListFromPref(savedPkg_lan_uid);
 			}
 			//revert back to old approach
@@ -1176,13 +1171,13 @@ public final class Api {
 					if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
 						app.selected_3g = true;
 					}
-					if (enableRoam && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
+					if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
 						app.selected_roam = true;
 					}
-					if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
+					if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
 						app.selected_vpn = true;
 					}
-					if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+					if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
 						app.selected_lan = true;
 					}
 					
@@ -1215,13 +1210,13 @@ public final class Api {
 						if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
 							app.selected_3g = true;
 						}
-						if (enableRoam && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
+						if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
 							app.selected_roam = true;
 						}
-						if (enableVPN && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
+						if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
 							app.selected_vpn = true;
 						}
-						if (enableLAN && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+						if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
 							app.selected_lan = true;
 						}
 						syncMap.put(app.uid, app);
