@@ -3,7 +3,6 @@ Changelog AFWall+
 
 Version 2.1.0-BETA
 
-* Update to Lollipop Api(23)
 * Revert Filter from dropdown to radio (UI)
 * Kingo superuser issue
 * Menu key doesn't work(UI)

@@ -2,7 +2,7 @@
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
 ======
 
-![AFwall+](https://lh3.googleusercontent.com/W2fTgB1Ho52F5iK7GYWknd1B-mCCLeEHJYK4xviWxQSo63haZmYoWehJ8kbwwMyi3a4=h900-rw)
+![AFwall+](https://raw.githubusercontent.com/ukanth/afwall/0502e6f17ceda08069720ff2f260902690e65e9b/screenshots/Main_2.0.png)
 
 [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall)
 
