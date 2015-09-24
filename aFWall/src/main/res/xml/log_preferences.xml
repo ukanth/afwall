@@ -5,6 +5,9 @@
             android:key="enableLog"
             android:summary="@string/showlog_title"
             android:title="@string/enable_firewall_log" />
+      </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/exp_prefs_title" >
         <CheckBoxPreference
             android:dependency="enableLog"
             android:key="enableLogService"
@@ -12,9 +15,12 @@
             android:title="@string/enable_firewall_log_service" />
 
         <dev.ukanth.ufirewall.log.MultiSelectListPreference
+            android:dependency="enableLog"
             android:dialogTitle="@string/filters_apps_title"
             android:key="block_filter_app"
             android:title="@string/filters_apps_title" />
-    </PreferenceCategory>
+        </PreferenceCategory>
+
+
 
 </PreferenceScreen>
