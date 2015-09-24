@@ -1521,47 +1521,62 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						mainMenu.performIdentifierAction(R.id.menu_list_item, 0);
 						return true;
 					}
+					break;
+				case KeyEvent.KEYCODE_BACK:
+					if(isDirty()) {
+						new MaterialDialog.Builder(this)
+								.title(R.string.confirmation)
+								.cancelable(false)
+								.content(R.string.unsaved_changes_message)
+								.positiveText(R.string.apply)
+								.negativeText(R.string.discard)
+								.callback(new MaterialDialog.ButtonCallback() {
+									@Override
+									public void onPositive(MaterialDialog dialog) {
+										applyOrSaveRules();
+										dialog.dismiss();
+									}
+
+									@Override
+									public void onNegative(MaterialDialog dialog) {
+										setDirty(false);
+										Api.applications = null;
+										finish();
+										System.exit(0);
+										//force reload rules.
+										MainActivity.super.onKeyDown(keyCode, event);
+										dialog.dismiss();
+									}
+								})
+								.show();
+						return true;
+
+					} else {
+						setDirty(false);
+						finish();
+						System.exit(0);
+					}
+
+
 			}
 		}
 		return super.onKeyUp(keyCode, event);
 	}
 
-	@Override
+	/*@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 
-		// Handle the back button when dirty
-		if (isDirty() && (keyCode == KeyEvent.KEYCODE_BACK)) {
-			new MaterialDialog.Builder(this)
-					.title(R.string.confirmation)
-					.cancelable(false)
-					.content(R.string.unsaved_changes_message)
-					.positiveText(R.string.apply)
-					.negativeText(R.string.discard)
-					.callback(new MaterialDialog.ButtonCallback() {
-						@Override
-						public void onPositive(MaterialDialog dialog) {
-							applyOrSaveRules();
-							dialog.dismiss();
-						}
+		switch (keyCode){
+			case KeyEvent.KEYCODE_BACK:
 
-						@Override
-						public void onNegative(MaterialDialog dialog) {
-							setDirty(false);
-							Api.applications = null;
-							finish();
-							System.exit(0);
-							//force reload rules.
-							MainActivity.super.onKeyDown(keyCode, event);
-							dialog.dismiss();
-						}
-					})
-					.show();
-
-			return true;
+				}
+				break;
 		}
+		// Handle the back button when dirty
+
 		return super.onKeyDown(keyCode, event);
 
-	}
+	}*/
 
 	/**
 	 *
