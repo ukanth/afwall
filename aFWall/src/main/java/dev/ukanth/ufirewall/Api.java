@@ -57,6 +57,8 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.stericson.RootTools.RootTools;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -312,14 +314,14 @@ public final class Api {
 	}
 	
 	public static String getBusyBoxPath(Context ctx) {
-		if (G.bb_path().equals("system")) {
+		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable()) {
 			return "busybox ";
 		} else {
             String dir = ctx.getDir("bin",0).getAbsolutePath();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                return dir + "/run_pie " +  dir + "/busybox";
+                return dir + "/run_pie " +  dir + "/busybox ";
             } else {
-                return dir + "/busybox";
+                return dir + "/busybox ";
             }
 		}
 	}
@@ -333,9 +335,9 @@ public final class Api {
 	public static String getKLogPath(Context ctx) {
         String dir = ctx.getDir("bin",0).getAbsolutePath();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            return dir + "/run_pie " +  dir + "/klogripper";
+            return dir + "/run_pie " +  dir + "/klogripper ";
         } else {
-            return dir + "/klogripper";
+            return dir + "/klogripper ";
         }
 	}
 
@@ -2506,12 +2508,12 @@ public final class Api {
         return decryptStr;
     }
 	
-	public static void killLogProcess(final Context ctx){
+	public static void killLogProcess(final Context ctx,final String klogPath){
 		Thread thread = new Thread(){
 		    @Override
 		    public void run() {
 		    	try {
-		    		new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill " + "klogripper");
+		    		new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill " + klogPath);
 		    	}catch(Exception e) {
 		    		Log.e(TAG,e.getMessage());
 		    	}

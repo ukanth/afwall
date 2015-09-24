@@ -37,7 +37,7 @@ import dev.ukanth.ufirewall.util.G;
 public class LogActivity extends DataDumpActivity {
 
 	protected static final int MENU_CLEARLOG = 7;
-	protected static final int MENU_TOGGLE_LOG = 27;
+	//protected static final int MENU_TOGGLE_LOG = 27;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +101,7 @@ public class LogActivity extends DataDumpActivity {
 				populateData(ctx);
 				return true;
 			}
-			Api.clearLog(
-					ctx,
+			Api.clearLog(ctx,
 					new RootCommand().setReopenShell(true)
 							.setSuccessToast(R.string.log_cleared)
 							.setFailureToast(R.string.log_clear_error)

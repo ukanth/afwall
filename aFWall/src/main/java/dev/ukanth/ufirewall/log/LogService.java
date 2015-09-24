@@ -22,8 +22,6 @@
 
 package dev.ukanth.ufirewall.log;
 
-import java.util.List;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -35,9 +33,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
+
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
 
@@ -181,6 +182,6 @@ public class LogService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.i(TAG, "Received request to kill logservice");
-		Api.killLogProcess(getApplicationContext());
+		Api.killLogProcess(getApplicationContext(),klogPath);
 	}
 }
