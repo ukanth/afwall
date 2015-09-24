@@ -29,6 +29,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -173,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//one time migration of profiles to new logic
 		//migrateProfiles();
 		// Let's do some background stuff
+
+
 		(new Startup()).setContext(this).execute();
 
 	}
@@ -359,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	public void onStart() {
 		super.onStart();
 		initDone = 0;
+		//startRootShell();
 		reloadPreferences();
 	}
 
@@ -1696,6 +1701,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 	}*/
 
+	protected boolean isSuPackage(PackageManager pm, String suPackage) {
+		boolean found = false;
+		try {
+			PackageInfo info = pm.getPackageInfo(suPackage, 0);
+			if(info.applicationInfo != null) {
+				found = true;
+			}
+			//found = s + " v" + info.versionName;
+		} catch (PackageManager.NameNotFoundException e) {
+		} catch (Exception e) { }
+		return found;
+	}
+
 	private class Startup extends AsyncTask<Void, Void, Boolean> {
 		private MaterialDialog dialog = null;
 		private Context context = null;
@@ -1727,7 +1745,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		protected void onPostExecute(Boolean rootGranted) {
 			super.onPostExecute(rootGranted);
 			dialog.dismiss();
-			if(!rootGranted) {
+			if(!rootGranted && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)

@@ -1062,6 +1062,19 @@ public final class Api {
 	public static void runIfconfig(Context ctx, RootCommand callback) {
 		callback.run(ctx, getBusyBoxPath(ctx) + " ifconfig -a");
 	}
+
+	public boolean isSuPackage(PackageManager pm, String suPackage) {
+		boolean found = false;
+		try {
+			PackageInfo info = pm.getPackageInfo(suPackage, 0);
+			if(info.applicationInfo != null) {
+				found = true;
+			}
+			//found = s + " v" + info.versionName;
+		} catch (NameNotFoundException e) {
+		}
+		return found;
+	}
 	
 
     /**

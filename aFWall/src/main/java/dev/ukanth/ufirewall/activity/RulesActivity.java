@@ -125,6 +125,7 @@ public class RulesActivity extends DataDumpActivity {
 				"com.koushikdutta.superuser",
 				"com.kingroot.kinguser",
 				"com.kingroot.master",
+				"com.kingouser.com",
 				"com.m0narx.su",
 				"com.miui.uac",
 				"eu.chainfire.supersu",
