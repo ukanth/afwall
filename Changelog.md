@@ -1,5 +1,19 @@
 Changelog AFWall+
 ==================
+
+Version 2.1.0-BETA
+
+* Update to Lollipop Api(23)
+* Revert Filter from dropdown to radio (UI)
+* Kingo superuser issue
+* Menu key doesn't work(UI)
+* User reported crashes and bug fixes
+* lock pattern improvements(UI)
+* Additional checks for system busybox
+* Log service process leak fix.
+* Fix F-Droid builds using NDK-r10e
+
+
 Version 2.0.0
 
 * Initial Material design
