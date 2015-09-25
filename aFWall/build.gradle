@@ -9,7 +9,7 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 15212
+        versionCode 15213
         versionName "2.1.0"
     }
 

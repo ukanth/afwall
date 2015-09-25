@@ -857,7 +857,6 @@ public final class Api {
 			final StringBuilder newpkg_lan = new StringBuilder();
 			
 			for (int i=0; i<apps.size(); i++) {
-				if(apps.get(i) != null) {
 					if (apps.get(i).selected_wifi) {
 						if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
 						newpkg_wifi.append(apps.get(i).uid);
@@ -881,10 +880,9 @@ public final class Api {
 						if (newpkg_lan.length() != 0) newpkg_lan.append('|');
 						newpkg_lan.append(apps.get(i).uid);
 					}
-				}
 			}
 			// save the new list of UIDs
-			final Editor edit = prefs.edit();
+			Editor edit = prefs.edit();
 			edit.putString(PREF_WIFI_PKG_UIDS, newpkg_wifi.toString());
 			edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
 			edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
