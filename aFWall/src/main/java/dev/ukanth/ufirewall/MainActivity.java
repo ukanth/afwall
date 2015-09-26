@@ -45,7 +45,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -268,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	@Override
 	public void onResume() {
 		super.onResume();
-		//reloadPreferences();
 	}
 
 	private void reloadPreferences() {
@@ -501,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.selectMode)
-				.cancelable(false)
+				.cancelable(true)
 				.items(new String[]{
 						res.getString(R.string.mode_whitelist),
 						res.getString(R.string.mode_blacklist)})
@@ -579,6 +577,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	}
 
 
+
+
 	/**
 	 * If the applications are cached, just show them, otherwise load and show
 	 */
@@ -590,26 +590,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		initDone = initDone + 1;
-		Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
-		String profileName = spinner.getSelectedItem().toString();
-		switch (position) {
-			case 0:
-				G.setProfile(true, "AFWallPrefs");
-				break;
-			case 1:
-				G.setProfile(true, "AFWallProfile1");
-				break;
-			case 2:
-				G.setProfile(true, "AFWallProfile2");
-				break;
-			case 3:
-				G.setProfile(true, "AFWallProfile3");
-				break;
-			default:
-				G.setProfile(true, profileName);
-		}
-
 		if(initDone > 1) {
+			Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
+			String profileName = spinner.getSelectedItem().toString();
+			switch (position) {
+				case 0:
+					G.setProfile(true, "AFWallPrefs");
+					break;
+				case 1:
+					G.setProfile(true, "AFWallProfile1");
+					break;
+				case 2:
+					G.setProfile(true, "AFWallProfile2");
+					break;
+				case 3:
+					G.setProfile(true, "AFWallProfile3");
+					break;
+				default:
+					G.setProfile(true, profileName);
+			}
 			G.reloadProfile();
 			showOrLoadApplications();
 			if (G.applyOnSwitchProfiles()) {
@@ -723,6 +722,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	 * Show the list of applications
 	 */
 	private void showApplications(final String searchStr, int flag, boolean showAll) {
+
 		setDirty(false);
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
@@ -772,11 +772,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			apps2 = new ArrayList<PackageInfoData>();
 		}
 
-		try {
-			Collections.sort(apps2, new PackageComparator());
-		}catch(Exception e) {
-			Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
-		}
+		// Sort applications - selected first, then alphabetically
+		Collections.sort(apps2, new PackageComparator());
 
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore
