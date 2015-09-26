@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,20 +22,20 @@ import dev.ukanth.ufirewall.widget.RadialMenuWidget.RadialMenuEntry;
 public class ToggleWidgetActivity extends Activity {
 	
 	private RadialMenuWidget pieMenu;
-	private LinearLayout ll;
+	private RelativeLayout relativeLayout;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.toggle_widget_view);
 		
-		ll = (LinearLayout) this.findViewById(R.id.widgetCircle);
+		relativeLayout = (RelativeLayout) this.findViewById(R.id.widgetCircle);
 		pieMenu = new RadialMenuWidget(getBaseContext());
 
 		pieMenu.setAnimationSpeed(0L);
 	
-		int xLayoutSize = ll.getWidth();
-		int yLayoutSize = ll.getHeight();				
+		int xLayoutSize = relativeLayout.getWidth();
+		int yLayoutSize = relativeLayout.getHeight();
 		pieMenu.setSourceLocation(xLayoutSize,yLayoutSize);
 		pieMenu.setIconSize(15, 30);
 		pieMenu.setTextSize(13);				
@@ -49,7 +49,7 @@ public class ToggleWidgetActivity extends Activity {
 			pieMenu.addMenuEntry(new Profiles());
 		}
 		
-		ll.addView(pieMenu);
+		relativeLayout.addView(pieMenu);
 
 	}
 	
@@ -63,8 +63,8 @@ public class ToggleWidgetActivity extends Activity {
 	      public List<RadialMenuEntry> getChildren() { return null; }
 	      public void menuActiviated()
 	      {
-	    	  ll = (LinearLayout) findViewById(R.id.widgetCircle);
-	    	  ll.removeAllViews();
+	    	  relativeLayout = (RelativeLayout) findViewById(R.id.widgetCircle);
+	    	  relativeLayout.removeAllViews();
 	    	  finish();
 	      }
 	   }	

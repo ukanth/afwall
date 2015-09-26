@@ -29,6 +29,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -43,7 +45,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,13 +59,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.haibison.android.lockpattern.LockPatternActivity;
-import com.haibison.android.lockpattern.util.Settings;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -85,14 +85,16 @@ import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import eu.chainfire.libsuperuser.Shell;
+import haibison.android.lockpattern.LockPatternActivity;
+import haibison.android.lockpattern.util.AlpSettings;
 
-import static com.haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
-import static com.haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
-import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
-import static com.haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener, RadioGroup.OnCheckedChangeListener {
 
 	//private TextView mSelected;
 	//private DrawerLayout mDrawerLayout;
@@ -161,8 +163,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		this.findViewById(R.id.img_invert).setOnClickListener(this);
 
 
-		Settings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
-		Settings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
+		AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
+		AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 
 		Api.assertBinaries(this, true);
 
@@ -172,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//one time migration of profiles to new logic
 		//migrateProfiles();
 		// Let's do some background stuff
+
+
 		(new Startup()).setContext(this).execute();
 
 	}
@@ -185,7 +189,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		mSwipeLayout.setRefreshing(false);
 	}
 
+	private void updateRadioFilter() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		radioGroup.setOnCheckedChangeListener(this);
+	}
+
+
 	private void selectFilterGroup() {
+		RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+		switch (radioGroup.getCheckedRadioButtonId()) {
+			case R.id.rpkg_core:
+				showApplications(null, 0, false);
+				break;
+			case R.id.rpkg_sys:
+				showApplications(null, 1, false);
+				break;
+			case R.id.rpkg_user:
+				showApplications(null, 2, false);
+				break;
+			default:
+				showApplications("", 99 , true);
+				break;
+		}
+	}
+
+	/*private void selectFilterGroup() {
 		Spinner spinner1 = (Spinner) findViewById(R.id.filterGroup);
 		spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -214,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		});
 		showApplications("", 99, true);
 	}
-
+*/
 
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
@@ -225,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	}
 
 	private void startRootShell() {
-		G.isRootAvail(true);
+		//G.isRootAvail(true);
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("true");
 		new RootCommand().setFailureToast(R.string.error_su)
@@ -239,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	@Override
 	public void onResume() {
 		super.onResume();
-		//reloadPreferences();
 	}
 
 	private void reloadPreferences() {
@@ -304,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			hideColumns(R.id.img_lan);
 		}
 
-		//updateRadioFilter();
+		updateRadioFilter();
 		if(G.enableMultiProfile()) {
 			setupMultiProfile(true);
 		}
@@ -312,10 +339,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		selectFilterGroup();
 	}
 
+
+	@Override
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		switch (checkedId) {
+			case R.id.rpkg_all:
+				showOrLoadApplications();
+				break;
+			case R.id.rpkg_core:
+				showApplications(null, 0,false);
+				break;
+			case R.id.rpkg_sys:
+				showApplications(null, 1,false);
+				break;
+			case R.id.rpkg_user:
+				showApplications(null, 2,false);
+				break;
+		}
+	}
 	@Override
 	public void onStart() {
 		super.onStart();
 		initDone = 0;
+		//startRootShell();
 		reloadPreferences();
 	}
 
@@ -453,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		new MaterialDialog.Builder(this)
 				.title(R.string.selectMode)
-				.cancelable(false)
+				.cancelable(true)
 				.items(new String[]{
 						res.getString(R.string.mode_whitelist),
 						res.getString(R.string.mode_blacklist)})
@@ -531,6 +577,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	}
 
 
+
+
 	/**
 	 * If the applications are cached, just show them, otherwise load and show
 	 */
@@ -542,26 +590,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 		initDone = initDone + 1;
-		Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
-		String profileName = spinner.getSelectedItem().toString();
-		switch (position) {
-			case 0:
-				G.setProfile(true, "AFWallPrefs");
-				break;
-			case 1:
-				G.setProfile(true, "AFWallProfile1");
-				break;
-			case 2:
-				G.setProfile(true, "AFWallProfile2");
-				break;
-			case 3:
-				G.setProfile(true, "AFWallProfile3");
-				break;
-			default:
-				G.setProfile(true, profileName);
-		}
-
 		if(initDone > 1) {
+			Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
+			String profileName = spinner.getSelectedItem().toString();
+			switch (position) {
+				case 0:
+					G.setProfile(true, "AFWallPrefs");
+					break;
+				case 1:
+					G.setProfile(true, "AFWallProfile1");
+					break;
+				case 2:
+					G.setProfile(true, "AFWallProfile2");
+					break;
+				case 3:
+					G.setProfile(true, "AFWallProfile3");
+					break;
+				default:
+					G.setProfile(true, profileName);
+			}
 			G.reloadProfile();
 			showOrLoadApplications();
 			if (G.applyOnSwitchProfiles()) {
@@ -675,6 +722,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	 * Show the list of applications
 	 */
 	private void showApplications(final String searchStr, int flag, boolean showAll) {
+
 		setDirty(false);
 		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
@@ -724,11 +772,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			apps2 = new ArrayList<PackageInfoData>();
 		}
 
-		try {
-			Collections.sort(apps2, new PackageComparator());
-		}catch(Exception e) {
-			Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
-		}
+		// Sort applications - selected first, then alphabetically
+		Collections.sort(apps2, new PackageComparator());
 
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore
@@ -750,42 +795,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		return true;
 	}
 
-	public void menuSetApplyOrSave(Menu menu, boolean isEnabled) {
+	public void menuSetApplyOrSave(final Menu menu, final boolean isEnabled) {
 		if (menu == null) {
 			return;
 		}
-		MenuItem onoff = menu.findItem(R.id.menu_toggle);
-		MenuItem apply = menu.findItem(R.id.menu_apply);
-
-		if (isEnabled) {
-			onoff.setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
-			apply.setTitle(R.string.applyrules);
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (isEnabled) {
+					menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
+					menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);
 					getSupportActionBar().setIcon(R.drawable.notification);
-				}
-			});
-
-
-		} else {
-			onoff.setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
-			apply.setTitle(R.string.saverules);
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
+				} else {
+					menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
+					menu.findItem(R.id.menu_apply).setTitle(R.string.saverules);
 					getSupportActionBar().setIcon(R.drawable.notification_error);
 				}
-			});
-
-		}
+			}
+		});
 	}
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
+	public boolean onPrepareOptionsMenu(final Menu menu) {
 		//language
 		Api.updateLanguage(getApplicationContext(), G.locale());
-		menuSetApplyOrSave(menu, Api.isEnabled(this));
+		menuSetApplyOrSave(menu, Api.isEnabled(MainActivity.this));
 		return true;
 	}
 
@@ -806,6 +840,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
+		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		
 		/*case android.R.id.home:
@@ -1482,122 +1518,61 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						mainMenu.performIdentifierAction(R.id.menu_list_item, 0);
 						return true;
 					}
+					break;
+				case KeyEvent.KEYCODE_BACK:
+					if(isDirty()) {
+						new MaterialDialog.Builder(this)
+								.title(R.string.confirmation)
+								.cancelable(false)
+								.content(R.string.unsaved_changes_message)
+								.positiveText(R.string.apply)
+								.negativeText(R.string.discard)
+								.callback(new MaterialDialog.ButtonCallback() {
+									@Override
+									public void onPositive(MaterialDialog dialog) {
+										applyOrSaveRules();
+										dialog.dismiss();
+									}
+
+									@Override
+									public void onNegative(MaterialDialog dialog) {
+										setDirty(false);
+										Api.applications = null;
+										finish();
+										System.exit(0);
+										//force reload rules.
+										MainActivity.super.onKeyDown(keyCode, event);
+										dialog.dismiss();
+									}
+								})
+								.show();
+						return true;
+
+					} else {
+						setDirty(false);
+						finish();
+						System.exit(0);
+					}
+
+
 			}
 		}
 		return super.onKeyUp(keyCode, event);
 	}
 
-	@Override
+	/*@Override
 	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 
-		// Handle the back button when dirty
-		if (isDirty() && (keyCode == KeyEvent.KEYCODE_BACK)) {
-			new MaterialDialog.Builder(this)
-					.title(R.string.confirmation)
-					.cancelable(false)
-					.content(R.string.unsaved_changes_message)
-					.positiveText(R.string.apply)
-					.negativeText(R.string.discard)
-					.callback(new MaterialDialog.ButtonCallback() {
-						@Override
-						public void onPositive(MaterialDialog dialog) {
-							applyOrSaveRules();
-							dialog.dismiss();
-						}
+		switch (keyCode){
+			case KeyEvent.KEYCODE_BACK:
 
-						@Override
-						public void onNegative(MaterialDialog dialog) {
-							setDirty(false);
-							Api.applications = null;
-							finish();
-							System.exit(0);
-							//force reload rules.
-							MainActivity.super.onKeyDown(keyCode, event);
-							dialog.dismiss();
-						}
-					})
-					.show();
-
-			return true;
+				}
+				break;
 		}
+		// Handle the back button when dirty
+
 		return super.onKeyDown(keyCode, event);
 
-	}
-
-	/*@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-
-		if(G.enableMultiProfile()){
-			//user clicked add
-			reloadLocalList(true);
-
-			final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-
-			if(G.setProfile(true, itemPosition + "")) {
-				(new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-				mSelected.setText("  |  " + mLocations[itemPosition]);
-				if(G.applyOnSwitchProfiles()){
-					applyOrSaveRules();
-				}
-				refreshHeader();
-			}
-
-		}
-		return true;
-	}*/
-
-	/*public void removeProfileDialog() {
-		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-		new MaterialDialog.Builder(this)
-				.title(R.string.profile_remove)
-				.items(G.getAdditionalProfiles().toArray(new String[G.getAdditionalProfiles().size()]))
-				.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-					@Override
-					public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-						G.removeAdditionalProfile(mLocations[which + 4], which + 4);
-						setupMultiProfile(true);
-						Api.applications = null;
-						showOrLoadApplications();
-						return true;
-					}
-				})
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						G.storedPosition(0);
-						reloadPreferences();
-					}
-				})
-				.positiveText(R.string.apply)
-				.negativeText(R.string.Cancel)
-				.show();
-	}*/
-
-/*	public void addProfileDialog() {
-		final String[] mLocations = mlocalList.toArray(new String[mlocalList.size()]);
-		new MaterialDialog.Builder(this)
-				.title(R.string.profile_add)
-				.inputType(InputType.TYPE_CLASS_TEXT)
-				.input(R.string.prefill_profile, R.string.profile_default, new MaterialDialog.InputCallback() {
-					@Override
-					public void onInput(MaterialDialog dialog, CharSequence input) {
-						String value = input.toString();
-						if (value != null && value.length() > 0 && !value.contains(",")) {
-							G.addAdditionalProfile(value.trim());
-							setupMultiProfile(true);
-						} else {
-							Toast.makeText(getApplicationContext(), getString(R.string.invalid_profile), Toast.LENGTH_SHORT).show();
-						}
-					}
-				})
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						reloadPreferences();
-					}
-				})
-				.negativeText(R.string.Cancel)
-				.show();
 	}*/
 
 	/**
@@ -1738,10 +1713,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 	}*/
 
-	private class Startup extends AsyncTask<Void, Void, Void> {
+	protected boolean isSuPackage(PackageManager pm, String suPackage) {
+		boolean found = false;
+		try {
+			PackageInfo info = pm.getPackageInfo(suPackage, 0);
+			if(info.applicationInfo != null) {
+				found = true;
+			}
+			//found = s + " v" + info.versionName;
+		} catch (PackageManager.NameNotFoundException e) {
+		} catch (Exception e) { }
+		return found;
+	}
+
+	private class Startup extends AsyncTask<Void, Void, Boolean> {
 		private MaterialDialog dialog = null;
 		private Context context = null;
-		private boolean suAvailable = false;
+		//private boolean suAvailable = false;
 
 		public Startup setContext(Context context) {
 			this.context = context;
@@ -1756,24 +1744,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 
 		@Override
-		protected Void doInBackground(Void... params) {
+		protected Boolean doInBackground(Void... params) {
 			// Let's do some SU stuff
-			if(!G.isRootAvail()) {
-				suAvailable = Shell.SU.available();
-				if (suAvailable) {
-					startRootShell();
-				}
-			} else {
-				suAvailable = true;
+			boolean suAvailable = Shell.SU.available();
+			if (suAvailable) {
 				startRootShell();
 			}
-			return null;
+			return suAvailable;
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(Boolean rootGranted) {
+			super.onPostExecute(rootGranted);
 			dialog.dismiss();
-			if(!suAvailable) {
+			if(!rootGranted && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)
@@ -1787,6 +1771,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 							}
 						})
 						.show();
+			} else {
+				passCheck();
 			}
 		}
 	}

@@ -1,31 +1,26 @@
 package dev.ukanth.ufirewall.widget;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RadialMenuWidget extends View {
 
@@ -90,8 +85,8 @@ public class RadialMenuWidget extends View {
 	private int textSize = scalePX(15);				//TextSize
 	private int animateTextSize = textSize;
 	
-	private int xPosition = scalePX(120);			//Center X location of Radial Menu
-	private int yPosition = scalePX(120);			//Center Y location of Radial Menu
+	private int xPosition = getSizeX();			//Center X location of Radial Menu
+	private int yPosition = getSizeY();			//Center Y location of Radial Menu
 
 	private int xSource = 0;			//Source X of clicked location
 	private int ySource = 0;			//Center Y of clicked location
@@ -112,8 +107,8 @@ public class RadialMenuWidget extends View {
 	private int headerTextLeft; 
 	private int headerTextBottom;
 	
-	private RotateAnimation rotate; 
-	private AlphaAnimation blend; 
+	//private RotateAnimation rotate;
+	//private AlphaAnimation blend;
 	private ScaleAnimation scale; 
     private TranslateAnimation move;
     private AnimationSet spriteAnimation; 
@@ -135,37 +130,27 @@ public class RadialMenuWidget extends View {
 		super(context);
 
 		// Gets screen specs and defaults to center of screen
-		DisplayMetrics dm = new DisplayMetrics(); 
+		/*DisplayMetrics dm = new DisplayMetrics();
 		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		wm.getDefaultDisplay().getMetrics(dm);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-	        Point size = new Point();
-	        try {
-	        	wm.getDefaultDisplay().getRealSize(size);
-	        	//FIXME: handle large tablets
-	        	if(size.x > 1200 ) this.xPosition = size.x / 3;
-	        	else this.xPosition = size.x / 2 ;
-	        	
-	        	this.yPosition = size.y / 2;
-	        } catch (NoSuchMethodError e) {
-	        	if(wm.getDefaultDisplay().getWidth() > 1200) {
-	        		this.xPosition = wm.getDefaultDisplay().getWidth() / 3 ;
-	        	} else {
-	        		this.xPosition = wm.getDefaultDisplay().getWidth() / 2 ;
-	        	}
-        		this.yPosition = wm.getDefaultDisplay().getHeight() / 2 ;
-	        }
+		Point size = new Point();
+		try {
+			wm.getDefaultDisplay().getRealSize(size);
+			//FIXME: handle large tablets
+			if (size.x > 1200) this.xPosition = size.x / 3;
+			else this.xPosition = size.x / 2;
 
-	    } else {
-	        DisplayMetrics metrics = new DisplayMetrics();
-	        wm.getDefaultDisplay().getMetrics(metrics);
-	        if(metrics.widthPixels > 1200)  this.xPosition = metrics.widthPixels / 3;
-	        else this.xPosition = metrics.widthPixels / 2;
-	        
-	        this.yPosition = metrics.heightPixels / 2;
-	    }
-		
+			this.yPosition = size.y / 2;
+		} catch (NoSuchMethodError e) {
+			if (wm.getDefaultDisplay().getWidth() > 1200) {
+				this.xPosition = wm.getDefaultDisplay().getWidth() / 3;
+			} else {
+				this.xPosition = wm.getDefaultDisplay().getWidth() / 2;
+			}
+			this.yPosition = wm.getDefaultDisplay().getHeight() / 2;
+		}*/
+
 		determineWedges();
 		onOpenAnimation();
 	}
@@ -712,7 +697,7 @@ public class RadialMenuWidget extends View {
 	
     private void onOpenAnimation() { 
 
-    	rotate = new RotateAnimation(0, 360, xPosition, yPosition); 
+    	//rotate = new RotateAnimation(0, 360, xPosition, yPosition);
         //rotate.setRepeatMode(Animation.REVERSE); 
         //rotate.setRepeatCount(Animation.INFINITE); 
         scale = new ScaleAnimation(0, 1, 0, 1, xPosition, yPosition); 
@@ -732,7 +717,7 @@ public class RadialMenuWidget extends View {
     } 
     private void onCloseAnimation() { 
     	
-        rotate = new RotateAnimation(360, 0, xPosition, yPosition); 
+        //rotate = new RotateAnimation(360, 0, xPosition, yPosition);
         scale = new ScaleAnimation(1, 0, 1, 0, xPosition, yPosition); 
         scale.setInterpolator(new AccelerateInterpolator());
         move = new TranslateAnimation(0, xSource-xPosition, 0, ySource-yPosition);
@@ -751,13 +736,8 @@ public class RadialMenuWidget extends View {
 		double diffX = x1 - px;
 		double diffY = y1 - py;
 		double dist = diffX*diffX + diffY*diffY;
-		if (dist < radius*radius) {
-    		return true;
-    		}
-    	else {
-    		return false;
-    		}
-    	} 		
+		return dist < radius*radius;
+	}
 	
 	 
     private boolean pntInWedge(double px, double py, 
@@ -915,9 +895,23 @@ public class RadialMenuWidget extends View {
     
     private int scalePX( int dp_size )
     {
-       int px_size = (int) (dp_size * screen_density + 0.5f);
-       return px_size;
+		int px_size = (int) (dp_size * screen_density + 0.5f);
+        return px_size;
     }
+
+	private int getSizeX()
+	{
+		DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+		Float f = displayMetrics.widthPixels / displayMetrics.density;
+		return f.intValue();
+	}
+
+	private int getSizeY()
+	{
+		DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+		Float f = displayMetrics.heightPixels / displayMetrics.density;
+		return f.intValue();
+	}
     
     
    private void animateOuterWedges( int animation_direction) { 

@@ -1,7 +1,20 @@
 Changelog AFWall+
 ==================
-Version 2.0.0
 
+Version 2.1.0
+* Rules not saving on some devices 
+* Revert Filter from dropdown to radio (UI)
+* Kingo superuser issue
+* Menu key doesn't work(UI)
+* User reported crashes and bug fixes
+* lock pattern improvements(UI)
+* Additional checks for system busybox
+* Log service process leak fix.
+* Widget alignment issue on some devices
+* Fix F-Droid builds using NDK-r10e
+
+
+Version 2.0.0
 * Initial Material design
 * Support for 5.x Lollipop
 * Revamped UI(pull to refresh),Preferences and Icons

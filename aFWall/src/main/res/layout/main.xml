@@ -6,28 +6,29 @@
     android:layout_height="match_parent"
     android:background="@color/primary_dark"
     android:fitsSystemWindows="true">
+
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
         android:background="@color/theme"
-        android:duplicateParentState="false">
+        android:duplicateParentState="false"
+        android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/main_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize" />
 
         <ListView
             android:id="@android:id/list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:drawSelectorOnTop="false"
             android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:layout_gravity="center"
             android:textAlignment="center" />
         <!--android:gravity="center_horizontal"-->
         <LinearLayout
@@ -37,13 +38,13 @@
             android:paddingTop="5dp">
 
             <TextView
+                android:id="@+id/label_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/label_mode"
+                android:clickable="true"
                 android:paddingLeft="10dp"
-                android:textStyle="bold"
                 android:text="@string/mode"
-                android:clickable="true"/>
+                android:textStyle="bold" />
 
 
             <TextView
@@ -63,51 +64,84 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/profileOption"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profileOption"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/profileText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/profileText"
                 android:paddingLeft="10dp"
-                android:textStyle="bold"
-                android:text="@string/profiles"/>
+                android:text="@string/profiles"
+                android:textStyle="bold" />
 
             <Spinner
                 android:id="@+id/profileGroup"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/filerOption"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/filerOption"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
-            <TextView
+            <!-- <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/filerText"
+                 android:paddingLeft="10dp"
+                 android:textStyle="bold"
+                 android:text="@string/filter"/>
+
+             <Spinner
+                 android:id="@+id/filterGroup"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:entries="@array/filters"/>-->
+
+            <RadioGroup
+                android:id="@+id/appFilterGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/filerText"
-                android:paddingLeft="10dp"
-                android:textStyle="bold"
-                android:text="@string/filter"/>
+                android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/filterGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/filters"/>
+                <RadioButton
+                    android:id="@+id/rpkg_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/pkg_all" />
+
+                <RadioButton
+                    android:id="@+id/rpkg_core"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pkg_core" />
+
+                <RadioButton
+                    android:id="@+id/rpkg_sys"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pkg_sys" />
+
+                <RadioButton
+                    android:id="@+id/rpkg_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pkg_user" />
+            </RadioGroup>
 
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -115,74 +149,72 @@
             android:padding="0px">
 
             <View
+                android:id="@+id/imageHolder"
                 android:layout_width="35dp"
-                android:layout_height="fill_parent"
-                android:id="@+id/imageHolder" />
+                android:layout_height="fill_parent" />
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
                 android:id="@+id/img_lan"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
                 android:src="@drawable/eth_lan"
-                android:clickable="true"
                 android:visibility="gone"></ImageView>
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
                 android:id="@+id/img_wifi"
-                android:src="@drawable/eth_wifi"
-                android:clickable="true"></ImageView>
-
-            <ImageView
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/eth_wifi"></ImageView>
+
+            <ImageView
                 android:id="@+id/img_3g"
-                android:src="@drawable/eth_3g"
-                android:clickable="true"></ImageView>
-
-            <ImageView
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:src="@drawable/eth_3g"></ImageView>
+
+            <ImageView
                 android:id="@+id/img_roam"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:clickable="true"
                 android:src="@drawable/roam"
-                android:clickable="true"
                 android:visibility="gone"></ImageView>
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
                 android:id="@+id/img_vpn"
-                android:src="@drawable/img_vpn"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
                 android:clickable="true"
+                android:src="@drawable/img_vpn"
                 android:visibility="gone"></ImageView>
 
             <ImageView
+                android:id="@+id/img_invert"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/img_invert"
-                android:src="@drawable/invertmini"
-                android:clickable="true"></ImageView>
+                android:clickable="true"
+                android:src="@drawable/invertmini"></ImageView>
 
             <ImageView
+                android:id="@+id/img_reset"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/img_reset"
-                android:src="@drawable/clear"
-                android:clickable="true"></ImageView>
+                android:clickable="true"
+                android:src="@drawable/clear"></ImageView>
         </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/swipe_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent">
 
             <ListView
                 android:id="@+id/listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="#212121"
-                android:dividerHeight="0.2px"
                 android:fastScrollEnabled="true"></ListView>
 
         </android.support.v4.widget.SwipeRefreshLayout>
