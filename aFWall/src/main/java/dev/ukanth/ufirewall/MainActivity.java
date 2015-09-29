@@ -77,6 +77,7 @@ import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
 import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
@@ -610,6 +611,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 					G.setProfile(true, profileName);
 			}
 			G.reloadProfile();
+			refreshHeader();
 			showOrLoadApplications();
 			if (G.applyOnSwitchProfiles()) {
 				applyOrSaveRules();
@@ -773,7 +775,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 
 		// Sort applications - selected first, then alphabetically
-		Collections.sort(apps2, new PackageComparator());
+		try {
+			Collections.sort(apps2, new PackageComparator());
+		}catch(IllegalArgumentException e){
+			Log.d(Api.TAG, "IllegalArgumentException on Sort");
+		}
 
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
 		// restore
