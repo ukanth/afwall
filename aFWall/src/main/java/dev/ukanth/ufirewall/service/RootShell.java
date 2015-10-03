@@ -260,7 +260,7 @@ public class RootShell extends Service {
 			state.lastCommand = s;
 			state.lastCommandResult = new StringBuilder();
 
-			rootSession.addCommand(s, 0, new Shell.OnCommandResultListener() {
+			Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
 
 				@Override
 				public void onCommandResult(int commandCode, int exitCode,
@@ -309,9 +309,11 @@ public class RootShell extends Service {
 						submitNextCommand(state);
 					}
 				}
-			});
+			};
+			if(listener != null && s!= null) {
+				rootSession.addCommand(s, 0, listener);
+			}
 		}
-
 	}
 
 	private static void setupLogging() {
