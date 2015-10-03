@@ -181,7 +181,7 @@
          <receiver 
              android:name="dev.ukanth.ufirewall.widget.StatusWidget"
              android:label="@string/widget_label_status"
-             android:icon="@drawable/on_off_widget">
+             android:icon="@drawable/preview_toggle">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
@@ -194,7 +194,8 @@
         </receiver>
          <receiver 
              android:name="dev.ukanth.ufirewall.widget.ToggleWidget" 
-             android:label="@string/widget_label_settings">
+             android:label="@string/widget_label_settings"
+             android:icon="@drawable/preview_new">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
@@ -210,7 +211,8 @@
          <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidgetOld" android:label="@string/widget_label_settings_old">
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/toggle_widget_old" />
+                android:resource="@xml/toggle_widget_old"
+                android:icon="@drawable/preview_old"/>
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
