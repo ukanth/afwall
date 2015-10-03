@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
@@ -109,6 +110,10 @@ public class PackageBroadcast extends BroadcastReceiver {
 				.getSystemService(ns);
 
 		int icon = R.drawable.question;
+
+		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+			icon = R.drawable.notification_quest;
+		}
 		
 		final int HELLO_ID = 24556;
 

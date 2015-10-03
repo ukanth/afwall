@@ -2553,6 +2553,8 @@ public final class Api {
 			PendingIntent in = PendingIntent.getActivity(context, 2, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 			int icon = R.drawable.notification;
 
+
+
 			if(status) {
 				if(G.enableMultiProfile()) {
 					String profile = "";
@@ -2579,9 +2581,15 @@ public final class Api {
 				}
 				//notificationText = context.getString(R.string.active);
 				icon = R.drawable.active;
+				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+					icon = R.drawable.notification;
+				}
 			} else {
 				notificationText = context.getString(R.string.inactive);
 				icon = R.drawable.error;
+				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+					icon = R.drawable.notification_error;
+				}
 			}
 
 			//TODO: Action button's on notification
