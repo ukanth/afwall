@@ -856,6 +856,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			case R.id.menu_toggle:
 				disableOrEnable();
 				return true;
+			case R.id.sort_default:
+				G.sortBy("s0");
+				Api.applications = null;
+				showOrLoadApplications();
+				return true;
+			case R.id.sort_lastupdate:
+				G.sortBy("s1");
+				Api.applications = null;
+				showOrLoadApplications();
+				return true;
+			case R.id.sort_uid:
+				G.sortBy("s2");
+				Api.applications = null;
+				showOrLoadApplications();
+				return true;
 			case R.id.menu_apply:
 				applyOrSaveRules();
 				return true;

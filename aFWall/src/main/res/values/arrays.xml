@@ -130,7 +130,7 @@
     </string-array>
 
 
-    <string-array name="sort_key">
+  <!--  <string-array name="sort_key">
         <item>@string/defaultsort</item>
         <item>@string/lastupdated</item>
         <item>@string/uid</item>
@@ -140,6 +140,6 @@
         <item>s0</item>
         <item>s1</item>
         <item>s2</item>
-    </string-array>
+    </string-array>-->
 
 </resources>

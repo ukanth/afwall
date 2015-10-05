@@ -7,6 +7,19 @@
         android:icon="@drawable/ic_action_search"
         app:showAsAction="always|collapseActionView"
         android:title=""/>
+
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_sort_variant"
+        app:showAsAction="always"
+        android:title="">
+        <menu>
+            <item android:id="@+id/sort_default"  app:showAsAction="always" android:title="@string/defaultsort"></item>
+            <item android:id="@+id/sort_lastupdate"  app:showAsAction="always" android:title="@string/lastupdated"></item>
+            <item android:id="@+id/sort_uid"  app:showAsAction="always" android:title="@string/uid"></item>
+        </menu>
+        </item>
+
     <!-- <item
         android:id="@+id/menu_onoff"
         android:actionViewClass="android.widget.Switch"

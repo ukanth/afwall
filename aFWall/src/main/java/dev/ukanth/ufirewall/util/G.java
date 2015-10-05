@@ -211,7 +211,7 @@ public class G extends android.app.Application {
 	}
 
 	public static void sortBy(String sort) {
-		gPrefs.edit().putString(SORT_BY, sort);
+		gPrefs.edit().putString(SORT_BY, sort).commit();
 	}
 
 	/*public static int storedPosition() { return gPrefs.getInt(LAST_STORED_PROFILE, 0); }

@@ -14,11 +14,11 @@
         android:title="@string/multi_user_title" />
     </PreferenceCategory>
 
-    <ListPreference
+   <!-- <ListPreference
         android:defaultValue="s0"
         android:entries="@array/sort_key"
         android:entryValues="@array/sort_value"
         android:key="sort"
-        android:title="@string/sort" />
+        android:title="@string/sort" />-->
 
 </PreferenceScreen>

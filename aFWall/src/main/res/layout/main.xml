@@ -150,7 +150,7 @@
 
             <View
                 android:id="@+id/imageHolder"
-                android:layout_width="4dp"
+                android:layout_width="32dp"
                 android:layout_height="fill_parent" />
 
             <ImageView
