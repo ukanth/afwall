@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 15216
-        versionName "2.1.2-BETA"
+        versionName "2.1.2"
     }
 
     buildTypes {

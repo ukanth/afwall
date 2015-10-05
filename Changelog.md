@@ -1,5 +1,16 @@
 Changelog AFWall+
 ==================
+Version 2.1.2
+* UI: Sorting now in main page
+* UI: Main screen width issue
+* Possible fix for Widget alignment(not tested!)
+* Reported Crash fixes 
+* UI: Status icon fix for Lollipop
+* Added proper widget preview 
+* UI: Profile switch Bug (change of profile)
+
+Version 2.1.1
+* FIX: Rules not saving when profiles are used.
 
 Version 2.1.0
 * Rules not saving on some devices 
