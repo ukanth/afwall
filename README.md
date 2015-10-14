@@ -20,7 +20,8 @@ Index
 * [Frequently asked questions](#frequently-asked-questions)
 * [License](#license)
 * [Acknowledgements](#acknowledgements)
-* [Compile AFWall+](#compile-afwall+)
+* [Compile AFWall+](#compile-afwall)
+* [Compile Native Binaries](#compiling-native-binaries)
 * [Contributing](#contributing)
 * [Translating](#translating)
 
@@ -35,18 +36,18 @@ For more information and community discussions, please visit the [XDA thread](ht
 
 Features
 --------
-
+* Support 4.x/5.x and 6.x versions of Android
 * Easy to install & simple to use
 * Free and open source
 * No advertisements
 * Choose your preferred language
 * Search for installed applications
-* Get a notification about new installed application
+* Sort installed applications by installed date/uid/alphabatical order
+* Get a notification about new installed application with internet permission
 * Blocked packets notification and filter
 * Password protection
 * Device Admin Support (Protect AFWall+ from uninstall)
 * Easy to manage your rules with a custom script
-* For any (stock) variant of Android version 4.xx - 5. (ICS, JellyBean, KitKat, Lollipop)
 * Ipv4/Ipv6 support
 * LAN-, VPN-, Tether-, Roaming-Control support
 * Tasker and Locale support
@@ -55,7 +56,7 @@ Features
 * Build-In Iptables/Busybox
 * Export and Import rules (Import All Rules needs donate version)
 * Option to prevent data leaks during boot (REQUIRES init.d support or S-OFF)
-* Supports MIPS/x86/ARM
+* Supports ARM/MIPS/x86
 
 Bug Reports
 --------
