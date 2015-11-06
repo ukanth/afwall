@@ -272,7 +272,7 @@
   <string name="donate_thanks">ご支援ありがとうございます</string>
   <string name="activeNotification">通知アイコンを表示</string>
   <string name="activeNotification_summary">通知バーに永続的なアイコンを表示します</string>
-  <string name="active">ファイアウォールは実行中です。</string>
+  <string name="active">ファイアウォールは実行中です</string>
   <string name="inactive">ファイアウォールは無効です</string>
   <string name="About">アプリについて</string>
   <string name="FAQ">FAQ</string>

@@ -38,7 +38,7 @@
   <string name="flushed">مسح القواعد</string>
   <string name="show_log">سجلات جدار الحماية</string>
   <string name="clear_log">مسح  السجل</string>
-  <string name="applying_rules">تطبيق قواعد العناوين.</string>
+  <string name="applying_rules">تطبيق قواعد iptables.</string>
   <string name="saving_rules">حفظ قواعد العناوين.</string>
   <string name="rules_applied">تم تطبيق القواعد بنجاح</string>
   <string name="rules_saved">تم حفظ القواعد بنجاح</string>
@@ -235,7 +235,7 @@
   <string name="check_all">تحديد الكل</string>
   <string name="invert_all">عكس الكل</string>
   <string name="uncheck_all">إلغاء تحديد الكل</string>
-  <string name="select_action">حدد الإجراء في العمود </string>
+  <string name="select_action">اختر خانة العمل من الجدول </string>
   <string name="roam">تجوال</string>
   <string name="wifi">شبكة لاسلكية</string>
   <string name="lan">الشبكة المحلية</string>

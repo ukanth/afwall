@@ -19,7 +19,7 @@
   <string name="error_refresh">Fallu xenerando iptables</string>
   <string name="error_apply">Fallu aplicando les regles d\'iptables</string>
   <string name="error_fetch">Fallu diendo en cata les regles IPtables</string>
-  <string name="error_su">Nun pudo alquirise l\'accesu root.\nNecesites tener un teléfonu rooteáu pa executar AFWall+.\n\nSí esti teléfonu yá ta rooteáu, por favor asegúrate qu\'AFWall+ tien abondos permisos pa executar el comandu \"su\".\n</string>
+  <string name="error_su">Nun pudo alquirise l\'accesu root.\nNecesites tener un teléfonu rootexáu pa executar AFWall+.\n\nSi esti teléfonu yá ta rootexáu asegúrate qu\'AFWall+ tien abondos permisos pa executar el comandu «su», por favor.\n</string>
   <string name="error_common">Fallu: </string>
   <string name="all_item">(Cualesquier aplicación) Lo mesmo qu\'esbillales toes</string>
   <string name="kernel_item">(Kernel) - Kernel Linux</string>
@@ -95,7 +95,7 @@
   <string name="error_notification_text">Fallu aplicando les regles del tornafuéu. Primi equí p\'abrir los axustes.</string>
   <string name="error_notification_ticker">AFWall+ nun pudo aplicar les regles</string>
   <string name="success_initd">Instalóse con ésitu\'l script d\'aniciu</string>
-  <string name="unable_initd">Nun pue instalase\'l script d\'aniciu d\'AFWall+. Por favor, verifica que la to ROM/kernel sofita init.d</string>
+  <string name="unable_initd">Nun pue instalase\'l script d\'aniciu d\'AFWall+. Verifica que la to ROM/kernel sofita init.d, por favor</string>
   <string name="remove_initd">Desanicióse con ésitu\'l script d\'aniciu</string>
   <string name="unable_remove_initd">Nun pue desaniciase\'l script d\'aniciu d\'AFWall+</string>
   <string name="widget_disable_fail">Nun pue desahabilitase\'l tornafuéu - ¡definióse una contraseña!</string>
@@ -192,7 +192,7 @@
   <string name="enable_device_admin">Xestores de preseos</string>
   <string name="device_admin_enabled">Habilitóse AFWall+ nos Xestores de preseos</string>
   <string name="device_admin_disabled">Deshabilitóse AFWall+ nos Xestores de preseos</string>
-  <string name="device_admin_on_disable">Por favor, ve a los axustes de Xestores de preseos pa desactivar AFWall+</string>
+  <string name="device_admin_on_disable">Ve a los axustes de Xestores de preseos pa desactivar AFWall+, por favor</string>
   <string name="exp_prefs_title">Esperimental</string>
   <string name="startup_service">Aplicando regles. ¡Espera, por favor!</string>
   <string name="fixleakTitle">Iguar escape de datos nel aniciu</string>
@@ -245,7 +245,7 @@
   <string name="pkg_core">Nucleu</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Usuariu</string>
-  <string name="backup_notexist">Nun esiste dal respaldu, Por favor, esporta ún dende\'l menú.</string>
+  <string name="backup_notexist">Nun esiste dal respaldu. Esporta ún dende\'l menú, por favor.</string>
   <string name="showFilter">Amosar la opción de peñera</string>
   <string name="showfilter_summary_on">Les opciones de peñera amosaránse na vista principal.</string>
   <string name="showfilter_summary_off">La opción de peñera ta anubrida</string>

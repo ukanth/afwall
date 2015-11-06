@@ -28,7 +28,7 @@
   <string name="ntp_item">(NTP) - сервера времени в Интернете</string>
   <string name="root_item">(root) - Все приложения с root правами</string>
   <string name="adb_item">(adb) - ADB (Android Debug Bridge-отладочный мост Андроид)</string>
-  <string name="media_item">(media) - медиасервер</string>
+  <string name="media_item">(media) - Медиасервер</string>
   <string name="vpn_item">(vpn) - сеть VPN</string>
   <string name="drm_item">(drm) - служба управления цифровыми правами (Digital Rights Management)</string>
   <string name="gps_item">(gps) - GPS (Global Positioning System-система глобального позиционирования)</string>
@@ -283,7 +283,7 @@
   <string name="prefill_profile">Введите имя профиля</string>
   <string name="profile_default">MyProfile</string>
   <string name="filter">Фильтр</string>
-  <string name="enable_protection">Вкл защиту</string>
+  <string name="enable_protection">Включить защиту</string>
   <string name="pref_none">Нет</string>
   <string name="pref_password">Пароль</string>
   <string name="pref_pattern">Ключ</string>

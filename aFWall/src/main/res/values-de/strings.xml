@@ -137,13 +137,13 @@
   <string name="blocked">AFWall+ blockierte :</string>
   <string name="refresh">Aktualisieren</string>
   <string name="mp_prefs_title">Profile</string>
-  <string name="custom_title1">Benutzerdefinierter Name für Standard-Profil</string>
+  <string name="custom_title1">Benutzerdefinierter Name für Standardprofil</string>
   <string name="custom_title2">Benutzerdefinierter Name für Profil 1</string>
   <string name="custom_title3">Benutzerdefinierter Name für Profil 2</string>
   <string name="custom_title4">Benutzerdefinierter Name für Profil 3</string>
   <string name="toggle_enable">Firewall aktivieren</string>
   <string name="toggle_disable">Firewall deaktivieren</string>
-  <string name="toggle_default">Standard-Profil aktivieren</string>
+  <string name="toggle_default">Standardprofil aktivieren</string>
   <string name="toggle_profile1">Profil 1 aktivieren</string>
   <string name="toggle_profile2">Profil 2 aktivieren</string>
   <string name="toggle_profile3">Profil 3 aktivieren</string>
@@ -166,9 +166,9 @@
   <string name="toast_disabled">AFWall+: Firewall deaktiviert!</string>
   <string name="toast_error_disabling">AFWall+: Fehler beim Deaktivieren der Firewall!</string>
   <string name="busybox_pref">Busybox Binärdatei</string>
-  <string name="system_bb">System Busybox</string>
+  <string name="system_bb">System-Busybox</string>
   <string name="builtin_bb">Integrierte Busybox</string>
-  <string name="system_ipt">System IPTables</string>
+  <string name="system_ipt">System-IPTables</string>
   <string name="builtin_ipt">Integrierte IPTables</string>
   <string name="auto">Auto</string>
   <string name="disable_toaster">Tasker-Popup ausschalten</string>
@@ -188,7 +188,7 @@
   <string name="usePattern">Sperrmuster anstelle Passwort</string>
   <string name="stealthMode">Versteckter Pattern-Modus</string>
   <string name="patternMaxTry">Maximale Anzahl an Versuchen</string>
-  <string name="resetPattern">Möchten Sie das Sperrmuster zurücksetzen ?</string>
+  <string name="resetPattern">Möchten Sie das Sperrmuster zurücksetzen?</string>
   <string name="enable_device_admin">Geräte-Admin</string>
   <string name="device_admin_enabled">AFWall+ Geräte-Admin aktiviert</string>
   <string name="device_admin_disabled">AFWall+ Geräte-Admin deaktiviert</string>
