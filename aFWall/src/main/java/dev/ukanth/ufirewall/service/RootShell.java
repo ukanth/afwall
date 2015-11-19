@@ -270,7 +270,7 @@ public class RootShell extends Service {
 						ListIterator<String> iter = output.listIterator();
 						while (iter.hasNext()) {
 							String line = iter.next();
-							if (!line.equals("")) {
+							if (line != null && !line.equals("")) {
 								if (state.res != null) {
 									state.res.append(line + "\n");
 								}
@@ -311,7 +311,11 @@ public class RootShell extends Service {
 				}
 			};
 			if(listener != null && s!= null) {
-				rootSession.addCommand(s, 0, listener);
+				try {
+					rootSession.addCommand(s, 0, listener);
+				} catch (NullPointerException e) {
+					Log.d(TAG, "Unable to add commands to session");
+				}
 			}
 		}
 	}
