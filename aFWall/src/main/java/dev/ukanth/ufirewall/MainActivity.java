@@ -848,6 +848,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		super.onOptionsItemSelected(item);
+		MenuItem menuItem;
 		switch (item.getItemId()) {
 		
 		/*case android.R.id.home:
@@ -858,16 +859,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				return true;
 			case R.id.sort_default:
 				G.sortBy("s0");
+				item.setChecked(true);
 				Api.applications = null;
 				showOrLoadApplications();
 				return true;
 			case R.id.sort_lastupdate:
 				G.sortBy("s1");
+				item.setChecked(true);
 				Api.applications = null;
 				showOrLoadApplications();
 				return true;
 			case R.id.sort_uid:
 				G.sortBy("s2");
+				item.setChecked(true);
 				Api.applications = null;
 				showOrLoadApplications();
 				return true;
