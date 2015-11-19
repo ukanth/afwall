@@ -7,29 +7,39 @@
         <item>Arabic</item>
         <item>Asturian</item>
         <item>Basque</item>
+        <item>Bengali</item>
+        <item>Catalin</item>
+
         <item>Czech</item>
         <item>Dutch</item>
         <item>French</item>
         <item>German</item>
         <item>Greek</item>
+
         <item>Hungarian</item>
         <item>Indonesian</item>
         <item>Italian</item>
         <item>Japanese</item>
         <item>Korean</item>
+
         <item>Polish</item>
         <item>Portuguese</item>
         <item>Russian</item>
         <item>Serbian (Cyrillic)</item>
         <item>Serbian</item>
+
         <item>Simplifed Chinese</item>
         <item>Slovak</item>
         <item>Slovenian</item>
         <item>Spanish</item>
         <item>Swedish</item>
+
         <item>Traditional Chinese</item>
         <item>Turkey</item>
         <item>Ukrainian</item>
+
+
+
 
     </string-array>
     
@@ -39,6 +49,10 @@
         <item>ar</item>
         <item>ast_ES</item>
         <item>eu</item>
+
+        <item>bn</item>
+        <item>ca</item>
+
         <item>cs</item>
         <item>nl</item>
         <item>fr</item>
