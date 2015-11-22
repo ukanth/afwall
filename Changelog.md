@@ -1,5 +1,13 @@
 Changelog AFWall+
 ==================
+
+Version 2.1.3
+* Fix: Missing data Interfaces for new devices
+* UI: Sort option as radio button
+* UI: New Languages (Catalan/Bengali)
+* Minor UI Improvements and About/FAQ link click issue
+* Reported Crash Fixes
+
 Version 2.1.2
 * UI: Sorting now in main page
 * UI: Main screen width issue
