@@ -918,7 +918,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 					@Override
 					public boolean onMenuItemActionCollapse(MenuItem item) {
 						// Do something when collapsed
-						return true;  // Return true to collapse action view
+						showApplications("", 0, true);
+							return true;  // Return true to collapse action view
 					}
 
 					@Override
