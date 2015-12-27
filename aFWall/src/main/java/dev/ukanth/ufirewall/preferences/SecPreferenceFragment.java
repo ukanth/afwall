@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import haibison.android.lockpattern.LockPatternActivity;
-import haibison.android.lockpattern.util.AlpSettings;
+import haibison.android.lockpattern.utils.AlpSettings;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;

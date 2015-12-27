@@ -87,7 +87,7 @@ import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
-import haibison.android.lockpattern.util.AlpSettings;
+import haibison.android.lockpattern.utils.AlpSettings;
 
 import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
