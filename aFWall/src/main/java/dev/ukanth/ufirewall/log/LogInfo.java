@@ -23,19 +23,20 @@
 
 package dev.ukanth.ufirewall.log;
 
+import android.content.Context;
+import android.util.Log;
+import android.util.SparseArray;
+import android.widget.TextView;
+
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 
-import android.content.Context;
-import android.util.Log;
-import android.util.SparseArray;
-import android.widget.TextView;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 public class LogInfo {
 	String uidString;
@@ -48,10 +49,11 @@ public class LogInfo {
 	String src;
 	String dpt;
 	String timestamp;
-	int totalBlocked; 
-	
+	int totalBlocked;
+
 	private HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address
 	private LogInfo() {
+
 		this.dstBlocked = new HashMap<String, Integer>();
 	}
 
@@ -116,7 +118,8 @@ public class LogInfo {
 					loginfo.out = out;
 				}
 				map.put(appid, loginfo);
-				
+
+
 				loginfo.totalBlocked += 1;
 				String unique = "[" + loginfo.proto + "]" + loginfo.dst + ":" + loginfo.dpt; 
 				if (loginfo.dstBlocked.containsKey(unique)) {
@@ -252,14 +255,14 @@ public class LogInfo {
 	}
 	
 
-	public static String parseLogs(String result,final Context ctx) {
+	public static LogInfo parseLogs(String result,final Context ctx) {
 
 		final Integer unknownUID = -11;
 		StringBuilder address = new StringBuilder();
 		int start, end;
 		Integer uid;
 		String out, src, dst, proto, spt, dpt, len;
-		LogInfo logInfo = null;
+		LogInfo logInfo = new LogInfo();
 
 		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
 		final List<PackageInfoData> apps = Api.getApps(ctx,null);
@@ -277,7 +280,7 @@ public class LogInfo {
 					uid = Integer.parseInt(result.substring(start + 4, end));
 				}
 
-				logInfo = new LogInfo();
+				//logInfo = new LogInfo();
 
 				if (((start = result.indexOf("DST=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
@@ -341,12 +344,14 @@ public class LogInfo {
 				if(!G.getBlockedNotifyApps().contains(uid+"")) { 
 					address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");
 				}
-				return address.toString();
+				logInfo.uidString  = address.toString();
+				return logInfo;
+				//return address.toString();
 				
 			}
 		} catch (Exception e) {
 			Log.e(Api.TAG, e.getMessage());
 		}
-		return address.toString();
+		return logInfo;
 	}
 }

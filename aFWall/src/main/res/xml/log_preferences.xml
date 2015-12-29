@@ -14,6 +14,13 @@
             android:summary="@string/showlog_service_summary"
             android:title="@string/enable_firewall_log_service" />
 
+        <CheckBoxPreference
+            android:dependency="enableLog"
+            android:defaultValue="false"
+            android:key="showLogToasts"
+            android:summary="@string/showlog_toasts"
+            android:title="@string/enable_show_toasts" />
+
         <dev.ukanth.ufirewall.log.MultiSelectListPreference
             android:dependency="enableLog"
             android:dialogTitle="@string/filters_apps_title"

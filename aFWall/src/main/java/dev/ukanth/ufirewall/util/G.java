@@ -98,6 +98,8 @@ public class G extends android.app.Application {
 	private static final String ADDITIONAL_PROFILES = "plusprofiles";
 	
 	private static String AFWALL_PROFILE = "AFWallProfile";
+
+	private static String SHOW_LOG_TOAST = "showLogToasts";
 	
 	public static String[] profiles = { "AFWallPrefs" , AFWALL_PROFILE + 1 , AFWALL_PROFILE + 2, AFWALL_PROFILE + 3 };
 	
@@ -129,7 +131,11 @@ public class G extends android.app.Application {
 	
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
 	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
-	
+
+	public static boolean showLogToasts() { return gPrefs.getBoolean(SHOW_LOG_TOAST, false); }
+	public static boolean showLogToasts(boolean val) { gPrefs.edit().putBoolean(SHOW_LOG_TOAST, val).commit(); return val; }
+
+
 	public static boolean fixLeak() { return gPrefs.getBoolean(FIX_START_LEAK, false); }
 	//public static boolean fixLeak(boolean val) { gPrefs.edit().putBoolean(FIX_START_LEAK, val).commit(); return val; }
 
