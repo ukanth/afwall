@@ -47,8 +47,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Locale;
 
-import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public final class InterfaceTracker {
@@ -67,6 +67,8 @@ public final class InterfaceTracker {
 	public static final String CONNECTIVITY_CHANGE = "CONNECTIVITY_CHANGE";
 
 	public static final int ERROR_NOTIFICATION_ID = 1;
+
+	public static long LAST_APPLIED_TIMESTAMP;
 
 	private static InterfaceDetails currentCfg = null;
 
@@ -281,31 +283,53 @@ public final class InterfaceTracker {
 		G.reloadPrefs();
 		
 		boolean ret = Api.fastApply(ctx, new RootCommand()
-					.setFailureToast(R.string.error_apply)
-					.setCallback(new RootCommand.Callback() {
-						@Override
-						public void cbFunc(RootCommand state) {
-							if (state.exitCode == 0) {
-								Log.i(TAG, reason + ": applied rules");
-							} else {
-								// error details are already in logcat
-								//but lets try to run the full rules once
-								Api.applySavedIptablesRules(ctx, false,new RootCommand()
-								.setFailureToast(R.string.error_apply)
-								.setCallback(new RootCommand.Callback() {
-									@Override
-									public void cbFunc(RootCommand state) {
-										if (state.exitCode == 0) {
-											Log.i(TAG, reason + ": applied rules");
-										} else {
-											Api.setEnabled(ctx,  false,  false);
-											errorNotification(ctx);
+				.setFailureToast(R.string.error_apply)
+				.setCallback(new RootCommand.Callback() {
+					@Override
+					public void cbFunc(RootCommand state) {
+						if (state.exitCode == 0) {
+							Log.i(TAG, reason + ": applied rules");
+						} else {
+							// error details are already in logcat
+							//flush all rules first
+							//but lets try to run the full rules once
+							Api.flushAllRules(ctx,new RootCommand());
+							Api.applySavedIptablesRules(ctx, false, new RootCommand()
+									.setFailureToast(R.string.error_apply)
+									.setCallback(new RootCommand.Callback() {
+										@Override
+										public void cbFunc(RootCommand state) {
+											if (state.exitCode == 0) {
+												LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
+												Log.d(TAG, LAST_APPLIED_TIMESTAMP +" time of apply");
+												Log.i(TAG, reason + ": applied rules");
+											} else {
+												/*Api.setEnabled(ctx, false, false);
+												errorNotification(ctx);*/
+												//lets try one more time
+												Api.flushAllRules(ctx,new RootCommand());
+												Api.applySavedIptablesRules(ctx, false, new RootCommand()
+														.setFailureToast(R.string.error_apply)
+														.setCallback(new RootCommand.Callback() {
+															@Override
+															public void cbFunc(RootCommand state) {
+																if (state.exitCode == 0) {
+																	LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
+																	Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
+																	Log.i(TAG, reason + ": applied rules");
+																} else {
+																	Api.setEnabled(ctx, false, false);
+																	errorNotification(ctx);
+																}
+															}
+														}));
+
+											}
 										}
-									}
-								}));
-							}
+									}));
 						}
-					}));
+					}
+				}));
 		if (!ret) {
 			Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
 			errorNotification(ctx);
