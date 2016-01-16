@@ -150,6 +150,10 @@ This project also uses many other open source libraries such as:
         <td>Apache License 2.0</td>
         <td>http://www.twofortyfouram.com</td>
     </tr>
+        <td>Material-Dialogs</td>
+        <td>MIT License</td>
+        <td>https://github.com/afollestad/material-dialogs</td>
+    </td>
     <tr>
         <td>Networklog</td>
         <td>Mozilla Public License Version 2.0</td>
@@ -160,6 +164,11 @@ This project also uses many other open source libraries such as:
         <td>Apache License 2.0</td>
         <td>https://github.com/Stericson/RootTools</td>
     </tr>	
+    <tr>
+        <td>SimpleNoSQL</td>
+        <td>Apache License 2.0</td>
+        <td>https://github.com/Jearil/NoSimpleNoSQL</td>
+    </tr>
 </table>
 
 Compile AFWall+
@@ -167,18 +176,20 @@ Compile AFWall+
 
 Prerequisites:
 
-* Android SDK in your $PATH (both platform-tools/ and tools/ directories)
-* Javac 1.7 (or higher) and a recent version of Apache ant in your $PATH
-* Git in your $PATH
-* Use the Android SDK Manager to install API 19 (or higher)
+* Install Android Studio 1.5 (or higher)
+* Install JavaSDK 1.8 (or higher)
+* Install Gradle 1.5 (or higher) and set GRADLE_HOME into your global $PATH
+
 
 Quick start:
 
-    git clone git://github.com/ukanth/afwall
-    cd afwall
-   ./gradlew clean assembleDebug
+* Open Android Studio and select import from 'Version Control' and then import the afwall+ project from Github
+* Compile AFwall+ via Android Studio 
+* (optional) Or directly via Gradle command line './gradlew clean assembleDebug' 
+* Debug the app and fix/commit your changes
+   
 
-For complete instructions, please take a look at the [Wiki | HOWTO-Compile-AFWall](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
+For complete step-by-step instructions, please take a look at the [Wiki | HOWTO-Compile-AFWall](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
 
 ## Compiling native binaries
 
