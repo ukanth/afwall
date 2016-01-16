@@ -52,6 +52,7 @@ import java.util.List;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.LogService;
+import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -203,8 +204,14 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		Context ctx = getApplicationContext();
 		if (key.equals("activeRules")) {
 			if (!G.activeRules()) {
+				//disable service when there is no active rules
+				stopService(new Intent(PreferencesActivity.this, RootShell.class));
 				G.enableRoam(false);
 				G.enableLAN(false);
+				G.enableVPN(false);
+			} else {
+				//enable service when there active rules is enabled
+				startService(new Intent(PreferencesActivity.this, RootShell.class));
 			}
 		}
 

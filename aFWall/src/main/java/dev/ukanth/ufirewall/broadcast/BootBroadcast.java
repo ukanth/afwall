@@ -41,6 +41,7 @@ public class BootBroadcast extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
+
 		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 		if(G.activeNotification()){
 			Api.showNotification(Api.isEnabled(context), context);

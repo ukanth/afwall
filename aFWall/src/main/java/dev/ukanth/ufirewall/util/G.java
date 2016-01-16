@@ -161,7 +161,7 @@ public class G extends android.app.Application {
 	public static boolean enableRoam(boolean val) { gPrefs.edit().putBoolean(ENABLE_ROAM, val).commit(); return val; }
 
 	public static boolean enableVPN() { return gPrefs.getBoolean(ENABLE_VPN, false); }
-	//public static boolean enableVPN(boolean val) { gPrefs.edit().putBoolean(ENABLE_VPN, val).commit(); return val; }
+	public static boolean enableVPN(boolean val) { gPrefs.edit().putBoolean(ENABLE_VPN, val).commit(); return val; }
 
 	public static boolean enableLAN() { return gPrefs.getBoolean(ENABLE_LAN, true); }
 	public static boolean enableLAN(boolean val) { gPrefs.edit().putBoolean(ENABLE_LAN, val).commit(); return val; }

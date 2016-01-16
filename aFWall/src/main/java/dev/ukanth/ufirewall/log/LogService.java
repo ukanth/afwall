@@ -34,9 +34,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.colintmiller.simplenosql.NoSQL;
-import com.colintmiller.simplenosql.NoSQLEntity;
-
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
@@ -159,9 +156,9 @@ public class LogService extends Service {
 							{
 								if (line.contains("AFL")) {
 									final LogInfo logData = LogInfo.parseLogs(line,getApplicationContext());
-									NoSQLEntity<LogInfo> entity = new NoSQLEntity<LogInfo>("log", String.valueOf(System.currentTimeMillis()/1000));
-									entity.setData(logData);
-									NoSQL.with(getApplicationContext()).using(LogInfo.class).save(entity);
+									//NoSQLEntity<LogInfo> entity = new NoSQLEntity<LogInfo>("log", String.valueOf(System.currentTimeMillis()/1000));
+									//entity.setData(logData);
+									//NoSQL.with(getApplicationContext()).using(LogInfo.class).save(entity);
 									if(logData.uidString != null && logData.uidString.length() > 0 ) {
 										if(G.showLogToasts()) {
 											showToast(getApplicationContext(), handler,logData.uidString, false);
