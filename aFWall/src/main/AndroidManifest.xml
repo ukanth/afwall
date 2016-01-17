@@ -72,8 +72,8 @@
         android:largeScreens="true"
         android:xlargeScreens="true"
      />
-    
-    <application 
+
+    <application
         android:hardwareAccelerated="false"
         android:allowBackup="false"
         android:supportsRtl="true"

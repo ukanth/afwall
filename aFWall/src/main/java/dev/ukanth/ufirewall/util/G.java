@@ -29,6 +29,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 
+import com.raizlabs.android.dbflow.config.FlowManager;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -273,6 +275,7 @@ public class G extends android.app.Application {
 	
 	public void onCreate() {
 		super.onCreate();
+		FlowManager.init(this);
 		ctx = this.getApplicationContext();
 		reloadPrefs();
 	}

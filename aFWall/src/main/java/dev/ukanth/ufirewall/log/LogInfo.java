@@ -38,7 +38,7 @@ import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 
-public class LogInfo {
+public class LogInfo{
 	String uidString;
 	String in;
 	String out;
@@ -52,8 +52,7 @@ public class LogInfo {
 	int totalBlocked;
 
 	private HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address
-	private LogInfo() {
-
+	public LogInfo() {
 		this.dstBlocked = new HashMap<String, Integer>();
 	}
 

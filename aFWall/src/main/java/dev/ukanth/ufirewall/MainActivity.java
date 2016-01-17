@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//migrateProfiles();
 		// Let's do some background stuff
 
-
 		(new Startup()).setContext(this).execute();
 
 	}

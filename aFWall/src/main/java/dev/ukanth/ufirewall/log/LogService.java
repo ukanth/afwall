@@ -155,13 +155,14 @@ public class LogService extends Service {
 							if(line.trim().length() > 0)
 							{
 								if (line.contains("AFL")) {
-									final LogInfo logData = LogInfo.parseLogs(line,getApplicationContext());
+									LogInfo logInfo = LogInfo.parseLogs(line,getApplicationContext());
+									storeData(logInfo);
 									//NoSQLEntity<LogInfo> entity = new NoSQLEntity<LogInfo>("log", String.valueOf(System.currentTimeMillis()/1000));
 									//entity.setData(logData);
 									//NoSQL.with(getApplicationContext()).using(LogInfo.class).save(entity);
-									if(logData.uidString != null && logData.uidString.length() > 0 ) {
+									if(logInfo.uidString != null && logInfo.uidString.length() > 0 ) {
 										if(G.showLogToasts()) {
-											showToast(getApplicationContext(), handler,logData.uidString, false);
+											showToast(getApplicationContext(), handler,logInfo.uidString, false);
 										}
 									}	
 								}
@@ -181,6 +182,21 @@ public class LogService extends Service {
 						}
 					}
 				});
+	}
+
+	private void storeData(LogInfo logInfo) {
+		LogData data = new LogData();
+		data.setDst(logInfo.dst);
+		data.setOut(logInfo.out);
+		data.setSrc(logInfo.src);
+		data.setDpt(logInfo.dpt);
+		data.setIn(logInfo.in);
+		data.setLen(logInfo.len);
+		data.setProto(logInfo.proto);
+		data.setTimestamp(System.currentTimeMillis()+"");
+		data.setSpt(logInfo.spt);
+		data.setUidString(logInfo.uidString);
+		data.save();
 	}
 
 	@Override

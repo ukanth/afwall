@@ -2504,7 +2504,9 @@ public final class Api {
 		    @Override
 		    public void run() {
 		    	try {
-		    		new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill " + klogPath);
+		    		new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill klogripper");
+					//make sure killall command as well used
+					new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " killall klogripper");
 		    	}catch(Exception e) {
 		    		Log.e(TAG,e.getMessage());
 		    	}
