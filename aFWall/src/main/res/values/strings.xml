@@ -25,6 +25,7 @@
     <string name="error_common">Error : </string>
     <string name="all_item">(Any application) - Same as selecting all applications</string>
     <string name="kernel_item">(Kernel) - Linux kernel</string>
+    <string name="unknown_item">Unknown</string>
     <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
     <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
     <string name="ntp_item">(NTP) - Internet time servers</string>

@@ -40,6 +40,8 @@ import dev.ukanth.ufirewall.util.G;
 
 public class LogInfo{
 	String uidString;
+	String appName;
+	String uid;
 	String in;
 	String out;
 	String proto;
@@ -170,7 +172,7 @@ public class LogInfo{
 
 	public static void parseLog(Context ctx, String dmesg, TextView textView) {
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -11;
+		final Integer unknownUID = -1;
 		StringBuilder address = new StringBuilder();
 		String line;
 		int start, end;
@@ -186,6 +188,7 @@ public class LogInfo{
 				uid = unknownUID;
 				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
 					uid = Integer.parseInt(line.substring(start+4, end));
+					if(uid != null) logInfo.uid = uid+"";
 				}
 				
 				logInfo = new LogInfo();
@@ -225,6 +228,7 @@ public class LogInfo{
 					out = line.substring(start+4, end);
 					logInfo.out = out;
 				}
+
 				String appName = "";
 				if(uid != -1) {
 					if(!appNameMap.containsKey(uid)) {
@@ -240,8 +244,9 @@ public class LogInfo{
 						appName = appNameMap.get(uid);
 					}
 				} else {
-					appName = ctx.getString(R.string.kernel_item);
+					appName = ctx.getString(R.string.unknown_item);
 				}
+				logInfo.appName = appName;
 				address = new StringBuilder();
 				address.append(" " + appName + "(" + uid  + ")" + " ");
 				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
@@ -256,7 +261,7 @@ public class LogInfo{
 
 	public static LogInfo parseLogs(String result,final Context ctx) {
 
-		final Integer unknownUID = -11;
+		final Integer unknownUID = -1;
 		StringBuilder address = new StringBuilder();
 		int start, end;
 		Integer uid;
@@ -277,6 +282,7 @@ public class LogInfo{
 				if (((start = result.indexOf("UID=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					uid = Integer.parseInt(result.substring(start + 4, end));
+					if(uid != null) logInfo.uid = uid + "";
 				}
 
 				//logInfo = new LogInfo();
@@ -337,8 +343,9 @@ public class LogInfo{
 						appName = appNameMap.get(uid);
 					}
 				} else {
-					appName = ctx.getString(R.string.kernel_item);
+					appName = ctx.getString(R.string.unknown_item);
 				}
+				logInfo.appName = appName;
 				address = new StringBuilder();
 				if(!G.getBlockedNotifyApps().contains(uid+"")) { 
 					address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");

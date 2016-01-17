@@ -15,7 +15,8 @@ public class LogData extends BaseModel {
     @PrimaryKey(autoincrement = true)
     long id;
 
-    @Column private String uidString;
+    @Column private String uid;
+    @Column private String appName;
     @Column private String in;
     @Column private String out;
     @Column private String proto;
@@ -26,12 +27,20 @@ public class LogData extends BaseModel {
     @Column private String dpt;
     @Column private String timestamp;
 
-    public String getUidString() {
-        return uidString;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUidString(String uidString) {
-        this.uidString = uidString;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public String getIn() {
