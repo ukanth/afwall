@@ -37,10 +37,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.SynchronousQueue;
 
 import dev.ukanth.ufirewall.log.Log;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
+
+import static dev.ukanth.ufirewall.service.RootShell.ShellState.INIT;
 
 public class RootShell extends Service {
 
@@ -52,15 +55,20 @@ public class RootShell extends Service {
 	private static Shell.Interactive rootSession;
 	private static Context mContext;
 
-	private final static int STATE_INIT = 0;
-	private final static int STATE_READY = 1;
-	private final static int STATE_BUSY = 2;
-	private final static int STATE_FAILED = 3;
-	private static int rootState = STATE_INIT;
+	public enum ShellState {
+		INIT,
+		READY,
+		BUSY,
+		FAIL
+	}
+
+	private static ShellState rootState = INIT;
 
 	private final static int MAX_RETRIES = 10;
 
 	private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
+
+	private SynchronousQueue workingCommand = new SynchronousQueue();
 
 	public final static int EXIT_NO_ROOT_ACCESS = -1;
 
@@ -85,7 +93,7 @@ public class RootShell extends Service {
 		public StringBuilder lastCommandResult;
 		public int exitCode;
 		public boolean done = false;
-		private boolean startCheck = false;
+		/*private boolean startCheck = false;
 		
 
 		public boolean isStartCheck() {
@@ -95,7 +103,7 @@ public class RootShell extends Service {
 		public RootCommand setStartCheck(boolean startCheck) {
 			this.startCheck = startCheck;
 			return this;
-		}
+		}*/
 
 		public static abstract class Callback {
 
@@ -226,8 +234,8 @@ public class RootShell extends Service {
 				state = waitQueue.remove();
 			} catch (NoSuchElementException e) {
 				// nothing left to do
-				if (rootState == STATE_BUSY) {
-					rootState = STATE_READY;
+				if (rootState == ShellState.BUSY) {
+					rootState = ShellState.READY;
 				}
 				break;
 			}
@@ -236,12 +244,12 @@ public class RootShell extends Service {
 				state.startTime = new Date();
 			}
 
-			if (rootState == STATE_FAILED) {
+			if (rootState == ShellState.FAIL) {
 				// if we don't have root, abort all queued commands
 				complete(state, EXIT_NO_ROOT_ACCESS);
 				continue;
-			} else if (rootState == STATE_READY) {
-				rootState = STATE_BUSY;
+			} else if (rootState == ShellState.READY) {
+				rootState = ShellState.BUSY;
 				submitNextCommand(state);
 			}
 		} while (false);
@@ -295,14 +303,14 @@ public class RootShell extends Service {
 					if (state.commandIndex >= state.script.size() || errorExit) {
 						complete(state, exitCode);
 						if (exitCode < 0) {
-							rootState = STATE_FAILED;
+							rootState = ShellState.FAIL;
 							Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
 						} else {
 							if (errorExit) {
 								Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
 										"\nOutput:\n" + state.lastCommandResult);
 							}
-							rootState = STATE_READY;
+							rootState = ShellState.READY;
 						}
 						runNextSubmission();
 					} else {
@@ -344,16 +352,22 @@ public class RootShell extends Service {
 					public void onCommandResult(int commandCode, int exitCode, List<String> output) {
 						if (exitCode < 0) {
 							Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
-							rootState = STATE_FAILED;
+							rootState = ShellState.FAIL;
 						} else {
 							Log.d(TAG, "Root shell is open");
-							rootState = STATE_READY;
+							rootState = ShellState.READY;
 						}
 						runNextSubmission();
 					}
 				});
 	}
 
+	private static void reOpenShell(Context ctx) {
+		rootState = ShellState.BUSY;
+		startShellInBackground();
+		Intent intent = new Intent(ctx, RootShell.class);
+		ctx.startService(intent);
+	}
 	private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state) {
 		state.script = script;
 		state.commandIndex = 0;
@@ -364,15 +378,10 @@ public class RootShell extends Service {
 		}
 
 		waitQueue.add(state);
-		if (rootState == STATE_INIT ||
-			(rootState == STATE_FAILED && state.reopenShell)) {
-			rootState = STATE_BUSY;
-			startShellInBackground();
 
-			Intent intent = new Intent(ctx, RootShell.class);
-			ctx.startService(intent);
-
-		} else if (rootState != STATE_BUSY) {
+		if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
+			reOpenShell(ctx);
+		} else if (rootState != ShellState.BUSY) {
 			runNextSubmission();
 		}
 	}

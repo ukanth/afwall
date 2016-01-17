@@ -291,42 +291,40 @@ public final class InterfaceTracker {
 							Log.i(TAG, reason + ": applied rules");
 						} else {
 							// error details are already in logcat
-							//flush all rules first
-							//but lets try to run the full rules once
-							Api.flushAllRules(ctx,new RootCommand());
+							// flush all rules first
+							// but lets try to run the full rules once
 							Api.applySavedIptablesRules(ctx, false, new RootCommand()
-									.setFailureToast(R.string.error_apply)
-									.setCallback(new RootCommand.Callback() {
-										@Override
-										public void cbFunc(RootCommand state) {
-											if (state.exitCode == 0) {
-												LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
-												Log.d(TAG, LAST_APPLIED_TIMESTAMP +" time of apply");
-												Log.i(TAG, reason + ": applied rules");
-											} else {
-												/*Api.setEnabled(ctx, false, false);
-												errorNotification(ctx);*/
-												//lets try one more time
-												Api.flushAllRules(ctx,new RootCommand());
-												Api.applySavedIptablesRules(ctx, false, new RootCommand()
-														.setFailureToast(R.string.error_apply)
-														.setCallback(new RootCommand.Callback() {
-															@Override
-															public void cbFunc(RootCommand state) {
-																if (state.exitCode == 0) {
-																	LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
-																	Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
-																	Log.i(TAG, reason + ": applied rules");
-																} else {
-																	Api.setEnabled(ctx, false, false);
-																	errorNotification(ctx);
-																}
-															}
-														}));
-
+							.setFailureToast(R.string.error_apply)
+							.setCallback(new RootCommand.Callback() {
+								@Override
+								public void cbFunc(RootCommand state) {
+									if (state.exitCode == 0) {
+										LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
+										Log.d(TAG, LAST_APPLIED_TIMESTAMP +" time of apply");
+										Log.i(TAG, reason + ": applied rules");
+									} else {
+										/*Api.setEnabled(ctx, false, false);
+										errorNotification(ctx);*/
+										//!!!! lets try one more time with full flush !!!!!
+										Api.flushAllRules(ctx,new RootCommand());
+										Api.applySavedIptablesRules(ctx, false, new RootCommand()
+										.setFailureToast(R.string.error_apply)
+										.setCallback(new RootCommand.Callback() {
+											@Override
+											public void cbFunc(RootCommand state) {
+												if (state.exitCode == 0) {
+													LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
+													Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
+													Log.i(TAG, reason + ": applied rules");
+												} else {
+													//Api.setEnabled(ctx, false, false);
+													errorNotification(ctx);
+												}
 											}
-										}
-									}));
+										}));
+									}
+								}
+							}));
 						}
 					}
 				}));
