@@ -1,4 +1,4 @@
-package dev.ukanth.ufirewall.ui.about;
+package dev.ukanth.ufirewall.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
