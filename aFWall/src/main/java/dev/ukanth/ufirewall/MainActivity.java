@@ -725,7 +725,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private void showApplications(final String searchStr, int flag, boolean showAll) {
 
 		setDirty(false);
-		List<PackageInfoData> searchApp = new ArrayList<PackageInfoData>();
+		List<PackageInfoData> searchApp = new ArrayList<>();
 		final List<PackageInfoData> apps = Api.getApps(this,null);
 		boolean isResultsFound = false;
 		if(searchStr !=null && searchStr.length() > 1) {

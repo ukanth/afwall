@@ -26,7 +26,6 @@ package dev.ukanth.ufirewall.log;
 import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
@@ -62,7 +61,7 @@ public class LogInfo{
 	public static String parseLog(Context ctx, String dmesg) {
 		
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -11;
+		final Integer unknownUID = -1;
 		StringBuilder res = new StringBuilder();
 		String line;
 		int start, end;
@@ -132,7 +131,7 @@ public class LogInfo{
 			final List<PackageInfoData> apps = Api.getApps(ctx,null);
 			Integer id;
 			String appName = "";
-			int appId = -11;
+			int appId = -1;
 			int totalBlocked;
 			for(int i = 0; i < map.size(); i++) {
 				StringBuilder address = new StringBuilder();
@@ -146,7 +145,7 @@ public class LogInfo{
 							}
 						}
 					} else {
-						appName = ctx.getString(R.string.kernel_item);
+						appName = ctx.getString(R.string.unknown_item);
 					}
 				   loginfo = map.valueAt(i);
 				   totalBlocked = loginfo.totalBlocked;
@@ -156,11 +155,20 @@ public class LogInfo{
 							address.append("\n");
 						}
 					}
-					res.append("AppID :\t" +  appId + "\n"  + ctx.getString(R.string.LogAppName) +":\t" + appName + "\n" 
-					+ ctx.getString(R.string.LogPackBlock) + ":\t" +  totalBlocked  + "\n");
-					res.append(address.toString());
-					res.append("\n\t---------\n");
-				}
+				res.append("AppID :\t");
+				res.append(appId);
+				res.append("\n");
+				res.append(ctx.getString(R.string.LogAppName));
+				res.append(":\t");
+				res.append(appName);
+				res.append("\n");
+				res.append(ctx.getString(R.string.LogPackBlock));
+				res.append(":\t");
+				res.append(totalBlocked);
+				res.append("\n");
+				res.append(address.toString());
+				res.append("\n\t---------\n");
+			}
 		} catch (Exception e) {
 			return null;
 		}
@@ -170,7 +178,7 @@ public class LogInfo{
 		return res.toString();
 	}
 
-	public static void parseLog(Context ctx, String dmesg, TextView textView) {
+	/*public static void parseLog(Context ctx, String dmesg, TextView textView) {
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
 		final Integer unknownUID = -1;
 		StringBuilder address = new StringBuilder();
@@ -256,13 +264,13 @@ public class LogInfo{
 			Log.e(Api.TAG, e.getMessage());
 		}
 		
-	}
+	}*/
 	
 
 	public static LogInfo parseLogs(String result,final Context ctx) {
 
 		final Integer unknownUID = -1;
-		StringBuilder address = new StringBuilder();
+		StringBuilder address;
 		int start, end;
 		Integer uid;
 		String out, src, dst, proto, spt, dpt, len;
@@ -348,7 +356,14 @@ public class LogInfo{
 				logInfo.appName = appName;
 				address = new StringBuilder();
 				if(!G.getBlockedNotifyApps().contains(uid+"")) { 
-					address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");
+					address.append(ctx.getString(R.string.blocked));
+					address.append(" ");
+					address.append(appName);
+					address.append("(" + uid  + ") -");
+					address.append(logInfo.dst);
+					address.append(":");
+					address.append(logInfo.dpt);
+					address.append("\n");
 				}
 				logInfo.uidString  = address.toString();
 				return logInfo;

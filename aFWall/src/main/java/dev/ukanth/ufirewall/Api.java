@@ -856,6 +856,7 @@ public final class Api {
 			StringBuilder newpkg_lan = new StringBuilder();
 
 			for (int i=0; i<apps.size(); i++) {
+				if(apps.get(i) != null) {
 					if (apps.get(i).selected_wifi) {
 						if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
 						newpkg_wifi.append(apps.get(i).uid);
@@ -879,6 +880,7 @@ public final class Api {
 						if (newpkg_lan.length() != 0) newpkg_lan.append('|');
 						newpkg_lan.append(apps.get(i).uid);
 					}
+				}
 			}
 			// save the new list of UIDs
 			Editor edit = prefs.edit();
@@ -1096,11 +1098,11 @@ public final class Api {
 		String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
 		String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
 
-		List<Integer> selected_wifi = new ArrayList<Integer>();
-		List<Integer> selected_3g = new ArrayList<Integer>();
-		List<Integer> selected_roam = new ArrayList<Integer>();
-		List<Integer> selected_vpn = new ArrayList<Integer>();
-		List<Integer> selected_lan = new ArrayList<Integer>();
+		List<Integer> selected_wifi;
+		List<Integer> selected_3g;
+		List<Integer> selected_roam = new ArrayList<>();
+		List<Integer> selected_vpn = new ArrayList<>();
+		List<Integer> selected_lan = new ArrayList<>();
 
 
 		selected_wifi = getListFromPref(savedPkg_wifi_uid);
@@ -1124,7 +1126,7 @@ public final class Api {
 		try {
 			PackageManager pkgmanager = ctx.getPackageManager();
 			List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
-			SparseArray<PackageInfoData> syncMap = new SparseArray<PackageInfoData>();
+			SparseArray<PackageInfoData> syncMap = new SparseArray<>();
 			Editor edit = cachePrefs.edit();
 			boolean changed = false;
 			String name = null;
@@ -1233,7 +1235,7 @@ public final class Api {
 				edit.commit();
 			}
 			/* convert the map into an array */
-			applications = new ArrayList<PackageInfoData>();
+			applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
 			for (int i = 0; i < syncMap.size(); i++) {
 				applications.add(syncMap.valueAt(i));
 			}
@@ -2248,7 +2250,7 @@ public final class Api {
 				G.logTarget("NFLOG");
 				Log.d(TAG, "logging using NFLOG target");
 			} else {
-				Log.e(TAG, "could not find LOG or NFLOG target");
+				Log.d(TAG, "could not find LOG or NFLOG target");
 				//displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
 				G.logTarget("");
 				G.enableLog(false);
