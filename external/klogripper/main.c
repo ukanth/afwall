@@ -1,6 +1,9 @@
 /*
- * Copyright (C) 2010 Sebastian Pipping <sebastian@pipping.org>
- * Licensed under GPL v2 or later
+ * Copyroght (C) 2010 Eric McCann (alias Nuclearmistake) https://github.com/nuclearmistake
+ *
+ * Copyright (C) 2010 Sebastian Pipping <sebastian@pipping.org> https://github.com/hartwork
+ * The original code by Eric MCann was modified to by Sebastian Pipping for the Android port. 
+ * Licensed under GPL v2 or later.
  */
 
 #define PACKAGE_VERSION  "2010.12.15.1"
