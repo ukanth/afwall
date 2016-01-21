@@ -64,6 +64,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -85,6 +86,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -2165,7 +2167,7 @@ public final class Api {
 		File file = new File(fileName);
 		//new format
 		if(file.exists()) {
-			res = importRules(ctx,file,builder);
+			res = importRules(ctx, file, builder);
 		} /*else {
 			File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 			file = new File(dir, "backup.rules");
@@ -2340,9 +2342,38 @@ public final class Api {
                         return false;
                 if ((new File("/proc/net/ip_tables_targets")).exists() == false) 
                         return false;
-        }
+        }else {
+			if (!hasKernelFeature("CONFIG_NETFILTER=") ||
+					!hasKernelFeature("CONFIG_IP_NF_IPTABLES=") ||
+					!hasKernelFeature("CONFIG_NF_NAT"))
+				return false;
+		}
         return true;
     }
+
+	public static boolean hasKernelFeature(String feature) {
+		try {
+			File cfg = new File("/proc/config.gz");
+			if (cfg.exists() == false) {
+				return true;
+			}
+			FileInputStream fis = new FileInputStream(cfg);
+			GZIPInputStream gzip = new GZIPInputStream(fis);
+			BufferedReader in = null;
+			String line = "";
+			in = new BufferedReader(new InputStreamReader(gzip));
+			while ((line = in.readLine()) != null) {
+				if (line.startsWith(feature)) {
+					gzip.close();
+					return true;
+				}
+			}
+			gzip.close();
+		} catch (IOException e) {
+			//e.printStackTrace();
+		}
+		return false;
+	}
 	
 	private static void initSpecial() {
 		if(specialApps == null || specialApps.size() == 0){

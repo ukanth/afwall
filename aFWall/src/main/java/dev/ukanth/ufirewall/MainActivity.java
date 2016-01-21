@@ -37,6 +37,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +65,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
@@ -1132,24 +1134,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.title(R.string.confirmMsg)
 						//.content(R.string.confirmMsg)
 				.cancelable(false)
-				.positiveText(R.string.Yes)
-				.negativeText(R.string.No)
-				.callback(new MaterialDialog.ButtonCallback() {
+				.onPositive(new MaterialDialog.SingleButtonCallback() {
 					@Override
-					public void onPositive(MaterialDialog dialog) {
+					public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 						purgeRules();
 						if (G.activeNotification()) {
 							Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
 						}
 						dialog.dismiss();
 					}
-
+				})
+				.onNegative(new MaterialDialog.SingleButtonCallback() {
 					@Override
-					public void onNegative(MaterialDialog dialog) {
+					public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 						Api.setEnabled(getApplicationContext(), true, true);
 						dialog.dismiss();
 					}
 				})
+				.positiveText(R.string.Yes)
+				.negativeText(R.string.No)
+				/*.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onPositive(MaterialDialog dialog) {
+
+					}
+
+					@Override
+					public void onNegative(MaterialDialog dialog) {
+
+					}
+				})*/
 				.show();
 	}
 
@@ -1782,19 +1796,57 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		protected void onPostExecute(Boolean rootGranted) {
 			super.onPostExecute(rootGranted);
 			dialog.dismiss();
-			if(!rootGranted && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
+
+			if(!Api.isNetfilterSupported()) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
-						.content(R.string.error_su)
-						.positiveText(R.string.OK)
-						.callback(new MaterialDialog.ButtonCallback() {
+						.content(R.string.error_netfilter)
+						.onPositive(new MaterialDialog.SingleButtonCallback() {
+							@Override
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+								dialog.dismiss();
+							}
+						})
+						.onNegative(new MaterialDialog.SingleButtonCallback() {
+							@Override
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+								MainActivity.this.finish();
+								android.os.Process.killProcess(android.os.Process.myPid());
+								dialog.dismiss();
+							}
+						})
+						.positiveText(R.string.Yes)
+						.negativeText(R.string.No)
+						/*.callback(new MaterialDialog.ButtonCallback() {
 							@Override
 							public void onPositive(MaterialDialog dialog) {
 								MainActivity.this.finish();
 								android.os.Process.killProcess(android.os.Process.myPid());
 								dialog.dismiss();
 							}
+						})*/
+						.show();
+			}
+			if(!rootGranted && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
+				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+						.title(R.string.error_common)
+						.content(R.string.error_su)
+						.onPositive(new MaterialDialog.SingleButtonCallback() {
+							@Override
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+								dialog.dismiss();
+							}
 						})
+						.onNegative(new MaterialDialog.SingleButtonCallback() {
+							@Override
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+								MainActivity.this.finish();
+								android.os.Process.killProcess(android.os.Process.myPid());
+								dialog.dismiss();
+							}
+						})
+						.positiveText(R.string.Yes)
+						.negativeText(R.string.No)
 						.show();
 			} else {
 				passCheck();
