@@ -8,6 +8,7 @@ Version 2.1.4
 * Don't disable AFWall+ on failures.
 * Sync queue event for concurrent network changes.
 * Fix : Application not shown after search
+* Library updates: androidlockpattern,material dialogs
 
 Version 2.1.3
 * Fix: Missing data Interfaces for new devices
