@@ -1,6 +1,14 @@
 Changelog AFWall+
 ==================
 
+Version 2.1.4
+* Fix : Mobile data issue for new devices(v4-rmnet0)
+* Fix : Logs should show for more devices
+* Initial support to store logs to db for history.
+* Don't disable AFWall+ on failures.
+* Sync queue event for concurrent network changes.
+* Fix : Application not shown after search
+
 Version 2.1.3
 * Fix: Missing data Interfaces for new devices
 * UI: Sort option as radio button

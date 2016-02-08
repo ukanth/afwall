@@ -141,6 +141,8 @@ public class LogService extends Service {
 	    handler.post(showToastRunnable);
 	  }
 
+
+
 	public void onCreate() {
 		klogPath = Api.getKLogPath(getApplicationContext());
 		Log.i(TAG, "Starting " + klogPath);

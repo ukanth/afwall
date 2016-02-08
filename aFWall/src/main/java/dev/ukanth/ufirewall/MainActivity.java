@@ -1815,8 +1815,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 								dialog.dismiss();
 							}
 						})
-						.positiveText(R.string.Yes)
-						.negativeText(R.string.No)
+						.positiveText(R.string.Continue)
+						.negativeText(R.string.exit)
 						/*.callback(new MaterialDialog.ButtonCallback() {
 							@Override
 							public void onPositive(MaterialDialog dialog) {
@@ -1845,8 +1845,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 								dialog.dismiss();
 							}
 						})
-						.positiveText(R.string.Yes)
-						.negativeText(R.string.No)
+						.positiveText(R.string.Continue)
+						.negativeText(R.string.exit)
 						.show();
 			} else {
 				passCheck();
