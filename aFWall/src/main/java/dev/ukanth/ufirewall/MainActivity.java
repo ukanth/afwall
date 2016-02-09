@@ -502,18 +502,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.title(R.string.selectMode)
 				.cancelable(true)
 				.items(new String[]{
-						res.getString(R.string.mode_whitelist),
-						res.getString(R.string.mode_blacklist)})
+                        res.getString(R.string.mode_whitelist),
+                        res.getString(R.string.mode_blacklist)})
 				.itemsCallback(new MaterialDialog.ListCallback() {
-					@Override
-					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-						final String mode = (which == 0 ? Api.MODE_WHITELIST : Api.MODE_BLACKLIST);
-						final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
-						editor.putString(Api.PREF_MODE, mode);
-						editor.commit();
-						refreshHeader();
-					}
-				})
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        final String mode = (which == 0 ? Api.MODE_WHITELIST : Api.MODE_BLACKLIST);
+                        final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
+                        editor.putString(Api.PREF_MODE, mode);
+                        editor.commit();
+                        refreshHeader();
+                    }
+                })
 				.show();
 	}
 
@@ -533,39 +533,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.positiveText(R.string.submit)
 						.negativeText(R.string.Cancel)
 						.callback(new MaterialDialog.ButtonCallback() {
-							@Override
-							public void onNegative(MaterialDialog dialog) {
-								MainActivity.this.finish();
-								android.os.Process.killProcess(android.os.Process.myPid());
-							}
-						})
+                            @Override
+                            public void onNegative(MaterialDialog dialog) {
+                                MainActivity.this.finish();
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                            }
+                        })
 						.input(R.string.enterpass, R.string.password_empty, new MaterialDialog.InputCallback() {
-							@Override
-							public void onInput(MaterialDialog dialog, CharSequence input) {
-								String pass = input.toString();
-								boolean isAllowed = false;
-								if (G.isEnc()) {
-									String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
-									if (decrypt != null) {
-										if (decrypt.equals(pass)) {
-											isAllowed = true;
-										}
-									}
-								} else {
-									if (pass.equals(G.profile_pwd())) {
-										isAllowed = true;
-									}
-								}
-								if (isAllowed) {
-									showOrLoadApplications();
-									dialog.dismiss();
-								} else {
-									Api.toast(MainActivity.this, getString(R.string.wrong_password));
-								}
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                String pass = input.toString();
+                                boolean isAllowed = false;
+                                if (G.isEnc()) {
+                                    String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
+                                    if (decrypt != null) {
+                                        if (decrypt.equals(pass)) {
+                                            isAllowed = true;
+                                        }
+                                    }
+                                } else {
+                                    if (pass.equals(G.profile_pwd())) {
+                                        isAllowed = true;
+                                    }
+                                }
+                                if (isAllowed) {
+                                    showOrLoadApplications();
+                                    dialog.dismiss();
+                                } else {
+                                    Api.toast(MainActivity.this, getString(R.string.wrong_password));
+                                }
 
 
-							}
-						}).show();
+                            }
+                        }).show();
 				break;
 			case "p2":
 				Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, getApplicationContext(), LockPatternActivity.class);
@@ -850,7 +850,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		super.onOptionsItemSelected(item);
 		MenuItem menuItem;
 		switch (item.getItemId()) {
-		
+
 		/*case android.R.id.home:
 			disableOrEnable();
 	        return true;*/
@@ -891,6 +891,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			case R.id.menu_log:
 				showLog();
 				return true;
+            case R.id.menu_all:
+                selectAll3G(true);
+                selectAllRoam(true);
+                selectAllVPN(true);
+                selectAllLAN(true);
+                selectAllWifi(true);
+                return true;
 			case R.id.menu_rules:
 				showRules();
 				return true;
@@ -943,22 +950,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.title(R.string.exports)
 						.cancelable(false)
 						.items(new String[]{
-								getString(R.string.export_rules),
-								getString(R.string.export_all)})
+                                getString(R.string.export_rules),
+                                getString(R.string.export_all)})
 						.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-							@Override
-							public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-								switch (which) {
-									case 0:
-										Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
-										break;
-									case 1:
-										Api.saveAllPreferencesToFileConfirm(MainActivity.this);
-										break;
-								}
-								return true;
-							}
-						}).positiveText(R.string.exports)
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                switch (which) {
+                                    case 0:
+                                        Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+                                        break;
+                                    case 1:
+                                        Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+                                        break;
+                                }
+                                return true;
+                            }
+                        }).positiveText(R.string.exports)
 						.negativeText(R.string.Cancel)
 						.show();
 				return true;
@@ -968,126 +975,126 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.title(R.string.imports)
 						.cancelable(false)
 						.items(new String[]{
-								getString(R.string.import_rules),
-								getString(R.string.import_all),
-								getString(R.string.import_rules_droidwall)})
+                                getString(R.string.import_rules),
+                                getString(R.string.import_all),
+                                getString(R.string.import_rules_droidwall)})
 						.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-							@Override
-							public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-								switch (which) {
-									case 0:
-										//Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-										//startActivityForResult(intent, FILE_CHOOSER_LOCAL);
-										File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-										FileDialog fileDialog = new FileDialog(MainActivity.this,mPath,true);
-										//fileDialog.setFlag(true);
-										//fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
-										fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
-											public void fileSelected(File file) {
-												String fileSelected = file.toString();
-												StringBuilder builder = new StringBuilder();
-												if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
-													Api.applications = null;
-													showOrLoadApplications();
-													Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
-												} else {
-													if (builder.toString().equals("")) {
-														Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-													} else {
-														Api.toast(MainActivity.this,builder.toString());
-													}
-												}
-											}
-										});
-										fileDialog.showDialog();
-										break;
-									case 1:
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                switch (which) {
+                                    case 0:
+                                        //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+                                        //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+                                        File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                                        FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
+                                        //fileDialog.setFlag(true);
+                                        //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
+                                        fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
+                                            public void fileSelected(File file) {
+                                                String fileSelected = file.toString();
+                                                StringBuilder builder = new StringBuilder();
+                                                if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected)) {
+                                                    Api.applications = null;
+                                                    showOrLoadApplications();
+                                                    Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                                } else {
+                                                    if (builder.toString().equals("")) {
+                                                        Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+                                                    } else {
+                                                        Api.toast(MainActivity.this, builder.toString());
+                                                    }
+                                                }
+                                            }
+                                        });
+                                        fileDialog.showDialog();
+                                        break;
+                                    case 1:
 
-										if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo(getApplicationContext())) {
+                                        if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo(getApplicationContext())) {
 
-											File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-											FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2,false);
-											//fileDialog2.setFlag(false);
-											//fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
-											fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
-												public void fileSelected(File file) {
-													String fileSelected = file.toString();
-													StringBuilder builder = new StringBuilder();
-													if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
-														Api.applications = null;
-														showOrLoadApplications();
-														Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
-														Intent intent = getIntent();
-														finish();
-														startActivity(intent);
-													} else {
-														if(builder.toString().equals("")) {
-															Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-														} else {
-															Api.toast(MainActivity.this,builder.toString());
-														}
-													}
-												}
-											});
-											fileDialog2.showDialog();
-										} else {
+                                            File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                                            FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
+                                            //fileDialog2.setFlag(false);
+                                            //fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
+                                            fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
+                                                public void fileSelected(File file) {
+                                                    String fileSelected = file.toString();
+                                                    StringBuilder builder = new StringBuilder();
+                                                    if (Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)) {
+                                                        Api.applications = null;
+                                                        showOrLoadApplications();
+                                                        Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                                        Intent intent = getIntent();
+                                                        finish();
+                                                        startActivity(intent);
+                                                    } else {
+                                                        if (builder.toString().equals("")) {
+                                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+                                                        } else {
+                                                            Api.toast(MainActivity.this, builder.toString());
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                            fileDialog2.showDialog();
+                                        } else {
 
-											new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-													.title(R.string.buy_donate)
-													.content(R.string.donate_only)
-													.positiveText(R.string.buy_donate)
-													.negativeText(R.string.close)
+                                            new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+                                                    .title(R.string.buy_donate)
+                                                    .content(R.string.donate_only)
+                                                    .positiveText(R.string.buy_donate)
+                                                    .negativeText(R.string.close)
 
-													.icon(getResources().getDrawable(R.drawable.ic_launcher))
-													.callback(new MaterialDialog.ButtonCallback() {
-														@Override
-														public void onPositive(MaterialDialog dialog) {
-															Intent intent = new Intent(Intent.ACTION_VIEW);
-															intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
-															startActivity(intent);
-														}
+                                                    .icon(getResources().getDrawable(R.drawable.ic_launcher))
+                                                    .callback(new MaterialDialog.ButtonCallback() {
+                                                        @Override
+                                                        public void onPositive(MaterialDialog dialog) {
+                                                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                                                            intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
+                                                            startActivity(intent);
+                                                        }
 
-														@Override
-														public void onNegative(MaterialDialog dialog) {
-															dialog.cancel();
-														}
-													})
-													.show();
-										}
-										break;
-									case 2:
+                                                        @Override
+                                                        public void onNegative(MaterialDialog dialog) {
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                                    .show();
+                                        }
+                                        break;
+                                    case 2:
 
-										new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-												.title(R.string.import_rules_droidwall)
-												.content(R.string.overrideRules)
-												.positiveText(R.string.Yes)
-												.negativeText(R.string.No)
-												.icon(getResources().getDrawable(R.drawable.ic_launcher))
-												.callback(new MaterialDialog.ButtonCallback() {
-													@Override
-													public void onPositive(MaterialDialog dialog) {
-														if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
-															Api.applications = null;
-															showOrLoadApplications();
-															Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-														} else {
-															Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-														}
-													}
+                                        new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+                                                .title(R.string.import_rules_droidwall)
+                                                .content(R.string.overrideRules)
+                                                .positiveText(R.string.Yes)
+                                                .negativeText(R.string.No)
+                                                .icon(getResources().getDrawable(R.drawable.ic_launcher))
+                                                .callback(new MaterialDialog.ButtonCallback() {
+                                                    @Override
+                                                    public void onPositive(MaterialDialog dialog) {
+                                                        if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
+                                                            Api.applications = null;
+                                                            showOrLoadApplications();
+                                                            Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+                                                        } else {
+                                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+                                                        }
+                                                    }
 
-													@Override
-													public void onNegative(MaterialDialog dialog) {
-														dialog.cancel();
-													}
-												})
-												.show();
+                                                    @Override
+                                                    public void onNegative(MaterialDialog dialog) {
+                                                        dialog.cancel();
+                                                    }
+                                                })
+                                                .show();
 
 
-										break;
-								}
-								return true;
-							}
-						})
+                                        break;
+                                }
+                                return true;
+                            }
+                        })
 						.positiveText(R.string.imports)
 						.negativeText(R.string.Cancel)
 						.show();
@@ -1136,21 +1143,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.positiveText(R.string.Yes)
 				.negativeText(R.string.No)
 				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog dialog) {
-						purgeRules();
-						if (G.activeNotification()) {
-							Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-						}
-						dialog.dismiss();
-					}
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        purgeRules();
+                        if (G.activeNotification()) {
+                            Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                        }
+                        dialog.dismiss();
+                    }
 
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						Api.setEnabled(getApplicationContext(), true, true);
-						dialog.dismiss();
-					}
-				})
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        Api.setEnabled(getApplicationContext(), true, true);
+                        dialog.dismiss();
+                    }
+                })
 				.show();
 	}
 
@@ -1276,7 +1283,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.title(R.string.working)
 				.cancelable(false)
 				.content(enabled ? R.string.applying_rules
-						: R.string.saving_rules)
+                        : R.string.saving_rules)
 				.progress(true, 0)
 				.show();
 
@@ -1287,23 +1294,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.setReopenShell(true)
 				.setCallback(new RootCommand.Callback() {
 
-					public void cbFunc(RootCommand state) {
-						try {
-							progress.dismiss();
-						} catch (Exception ex) {
-						}
+                    public void cbFunc(RootCommand state) {
+                        try {
+                            progress.dismiss();
+                        } catch (Exception ex) {
+                        }
 
-						boolean result = enabled;
+                        boolean result = enabled;
 
-						if (state.exitCode == 0) {
-							setDirty(false);
-						} else {
-							result = false;
-						}
-						menuSetApplyOrSave(MainActivity.this.mainMenu, result);
-						Api.setEnabled(ctx, result, true);
-					}
-				}));
+                        if (state.exitCode == 0) {
+                            setDirty(false);
+                        } else {
+                            result = false;
+                        }
+                        menuSetApplyOrSave(MainActivity.this.mainMenu, result);
+                        Api.setEnabled(ctx, result, true);
+                    }
+                }));
 	}
 
 	/**
@@ -1318,16 +1325,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.setReopenShell(true)
 				.setCallback(new RootCommand.Callback() {
 
-					public void cbFunc(RootCommand state) {
-						// error exit -> assume the rules are still enabled
-						// we shouldn't wind up in this situation, but if we do, the user's
-						// best bet is to click Apply then toggle Enabled again
-						boolean nowEnabled = state.exitCode != 0;
+                    public void cbFunc(RootCommand state) {
+                        // error exit -> assume the rules are still enabled
+                        // we shouldn't wind up in this situation, but if we do, the user's
+                        // best bet is to click Apply then toggle Enabled again
+                        boolean nowEnabled = state.exitCode != 0;
 
-						Api.setEnabled(ctx, nowEnabled, true);
-						menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
-					}
-				}));
+                        Api.setEnabled(ctx, nowEnabled, true);
+                        menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
+                    }
+                }));
 	}
 
 
@@ -1554,23 +1561,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 								.positiveText(R.string.apply)
 								.negativeText(R.string.discard)
 								.callback(new MaterialDialog.ButtonCallback() {
-									@Override
-									public void onPositive(MaterialDialog dialog) {
-										applyOrSaveRules();
-										dialog.dismiss();
-									}
+                                    @Override
+                                    public void onPositive(MaterialDialog dialog) {
+                                        applyOrSaveRules();
+                                        dialog.dismiss();
+                                    }
 
-									@Override
-									public void onNegative(MaterialDialog dialog) {
-										setDirty(false);
-										Api.applications = null;
-										finish();
-										System.exit(0);
-										//force reload rules.
-										MainActivity.super.onKeyDown(keyCode, event);
-										dialog.dismiss();
-									}
-								})
+                                    @Override
+                                    public void onNegative(MaterialDialog dialog) {
+                                        setDirty(false);
+                                        Api.applications = null;
+                                        finish();
+                                        System.exit(0);
+                                        //force reload rules.
+                                        MainActivity.super.onKeyDown(keyCode, event);
+                                        dialog.dismiss();
+                                    }
+                                })
 								.show();
 						return true;
 
@@ -1614,23 +1621,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.positiveText(R.string.OK)
 				.negativeText(R.string.Cancel)
 				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog dialog) {
-						switch (i) {
-							case R.id.img_invert:
-								selectRevert();
-								break;
-							case R.id.img_reset:
-								clearAll();
-						}
-						dialog.dismiss();
-					}
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        switch (i) {
+                            case R.id.img_invert:
+                                selectRevert();
+                                break;
+                            case R.id.img_reset:
+                                clearAll();
+                        }
+                        dialog.dismiss();
+                    }
 
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						dialog.dismiss();
-					}
-				})
+                    @Override
+                    public void onNegative(MaterialDialog dialog) {
+                        dialog.dismiss();
+                    }
+                })
 				.show();
 	}
 
@@ -1640,85 +1647,85 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.title(R.string.select_action)
 				.cancelable(true)
 				.items(new String[]{
-						getString(R.string.check_all),
-						getString(R.string.invert_all),
-						getString(R.string.uncheck_all)})
+                        getString(R.string.check_all),
+                        getString(R.string.invert_all),
+                        getString(R.string.uncheck_all)})
 				.itemsCallback(new MaterialDialog.ListCallback() {
-					@Override
-					public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-						switch (which) {
-							case 0:
-								switch (i) {
-									case R.id.img_wifi:
-										dialog.setTitle(text + getString(R.string.wifi));
-										selectAllWifi(true);
-										break;
-									case R.id.img_3g:
-										dialog.setTitle(text + getString(R.string.data));
-										selectAll3G(true);
-										break;
-									case R.id.img_roam:
-										dialog.setTitle(text + getString(R.string.roam));
-										selectAllRoam(true);
-										break;
-									case R.id.img_vpn:
-										dialog.setTitle(text + getString(R.string.vpn));
-										selectAllVPN(true);
-										break;
-									case R.id.img_lan:
-										dialog.setTitle(text + getString(R.string.lan));
-										selectAllLAN(true);
-										break;
-								}
-								break;
-							case 1:
-								switch (i) {
-									case R.id.img_wifi:
-										dialog.setTitle(text + getString(R.string.wifi));
-										break;
-									case R.id.img_3g:
-										dialog.setTitle(text + getString(R.string.data));
-										break;
-									case R.id.img_roam:
-										dialog.setTitle(text + getString(R.string.roam));
-										break;
-									case R.id.img_vpn:
-										dialog.setTitle(text + getString(R.string.vpn));
-										break;
-									case R.id.img_lan:
-										dialog.setTitle(text + getString(R.string.lan));
-										break;
-								}
-								selectRevert(i);
-								dirty = true;
-								break;
-							case 2:
-								switch (i) {
-									case R.id.img_wifi:
-										dialog.setTitle(text + getString(R.string.wifi));
-										selectAllWifi(false);
-										break;
-									case R.id.img_3g:
-										dialog.setTitle(text + getString(R.string.data));
-										selectAll3G(false);
-										break;
-									case R.id.img_roam:
-										dialog.setTitle(text + getString(R.string.roam));
-										selectAllRoam(false);
-										break;
-									case R.id.img_vpn:
-										dialog.setTitle(text + getString(R.string.vpn));
-										selectAllVPN(false);
-										break;
-									case R.id.img_lan:
-										dialog.setTitle(text + getString(R.string.lan));
-										selectAllLAN(false);
-										break;
-								}
-								break;
-						}
-					}
-				}).show();
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                        switch (which) {
+                            case 0:
+                                switch (i) {
+                                    case R.id.img_wifi:
+                                        dialog.setTitle(text + getString(R.string.wifi));
+                                        selectAllWifi(true);
+                                        break;
+                                    case R.id.img_3g:
+                                        dialog.setTitle(text + getString(R.string.data));
+                                        selectAll3G(true);
+                                        break;
+                                    case R.id.img_roam:
+                                        dialog.setTitle(text + getString(R.string.roam));
+                                        selectAllRoam(true);
+                                        break;
+                                    case R.id.img_vpn:
+                                        dialog.setTitle(text + getString(R.string.vpn));
+                                        selectAllVPN(true);
+                                        break;
+                                    case R.id.img_lan:
+                                        dialog.setTitle(text + getString(R.string.lan));
+                                        selectAllLAN(true);
+                                        break;
+                                }
+                                break;
+                            case 1:
+                                switch (i) {
+                                    case R.id.img_wifi:
+                                        dialog.setTitle(text + getString(R.string.wifi));
+                                        break;
+                                    case R.id.img_3g:
+                                        dialog.setTitle(text + getString(R.string.data));
+                                        break;
+                                    case R.id.img_roam:
+                                        dialog.setTitle(text + getString(R.string.roam));
+                                        break;
+                                    case R.id.img_vpn:
+                                        dialog.setTitle(text + getString(R.string.vpn));
+                                        break;
+                                    case R.id.img_lan:
+                                        dialog.setTitle(text + getString(R.string.lan));
+                                        break;
+                                }
+                                selectRevert(i);
+                                dirty = true;
+                                break;
+                            case 2:
+                                switch (i) {
+                                    case R.id.img_wifi:
+                                        dialog.setTitle(text + getString(R.string.wifi));
+                                        selectAllWifi(false);
+                                        break;
+                                    case R.id.img_3g:
+                                        dialog.setTitle(text + getString(R.string.data));
+                                        selectAll3G(false);
+                                        break;
+                                    case R.id.img_roam:
+                                        dialog.setTitle(text + getString(R.string.roam));
+                                        selectAllRoam(false);
+                                        break;
+                                    case R.id.img_vpn:
+                                        dialog.setTitle(text + getString(R.string.vpn));
+                                        selectAllVPN(false);
+                                        break;
+                                    case R.id.img_lan:
+                                        dialog.setTitle(text + getString(R.string.lan));
+                                        selectAllLAN(false);
+                                        break;
+                                }
+                                break;
+                        }
+                    }
+                }).show();
 	}
 
 	/*@Override
@@ -1789,13 +1796,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.content(R.string.error_su)
 						.positiveText(R.string.OK)
 						.callback(new MaterialDialog.ButtonCallback() {
-							@Override
-							public void onPositive(MaterialDialog dialog) {
-								MainActivity.this.finish();
-								android.os.Process.killProcess(android.os.Process.myPid());
-								dialog.dismiss();
-							}
-						})
+                            @Override
+                            public void onPositive(MaterialDialog dialog) {
+                                MainActivity.this.finish();
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                                dialog.dismiss();
+                            }
+                        })
 						.show();
 			} else {
 				passCheck();

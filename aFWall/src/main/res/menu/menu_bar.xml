@@ -50,6 +50,11 @@
                 app:showAsAction="always"
                 android:title="@string/show_log"/>
             <item
+                android:id="@+id/menu_all"
+                android:icon="@drawable/logs"
+                app:showAsAction="always"
+                android:title="@string/menu_all"/>
+            <item
                 android:id="@+id/menu_rules"
                 android:icon="@drawable/rules"
                 app:showAsAction="always"
