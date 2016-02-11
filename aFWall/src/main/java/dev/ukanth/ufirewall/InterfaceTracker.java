@@ -30,7 +30,6 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -45,7 +44,6 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Locale;
 
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
@@ -72,7 +70,7 @@ public final class InterfaceTracker {
 
 	private static InterfaceDetails currentCfg = null;
 
-	private static class OldInterfaceScanner {
+	/*private static class OldInterfaceScanner {
 
 		private static String intToDottedQuad(int ip) {
 			return String.format(Locale.US, "%d.%d.%d.%d",
@@ -92,7 +90,7 @@ public final class InterfaceTracker {
 				ret.wifiName = "UNKNOWN";
 			}
 		}
-	}
+	}*/
 
 	private static class NewInterfaceScanner {
 
@@ -170,6 +168,7 @@ public final class InterfaceTracker {
 
 		ConnectivityManager cm = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
+
 		NetworkInfo info = cm.getActiveNetworkInfo();
 
 		if (info == null || info.isConnected() == false) {
@@ -196,11 +195,13 @@ public final class InterfaceTracker {
 		}
 		getTetherStatus(context, ret);
 
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
+		NewInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
+
+		/*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
 			OldInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
 		} else {
 			NewInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
-		}
+		}*/
 
 		return ret;
 	}
@@ -216,6 +217,7 @@ public final class InterfaceTracker {
 			return false;
 		}
 		currentCfg = newCfg;
+
 
 		if (!newCfg.netEnabled) {
 			Log.i(TAG, "Now assuming NO connection (all interfaces down)");
