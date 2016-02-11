@@ -24,6 +24,7 @@
 
 package dev.ukanth.ufirewall;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -121,6 +123,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
+
+	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
+	private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
+
 
 
 	public boolean isDirty() {
@@ -939,164 +945,192 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 				return true;
 			case R.id.menu_export:
+				if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+						!= PackageManager.PERMISSION_GRANTED) {
+					// permissions have not been granted.
+					ActivityCompat.requestPermissions(MainActivity.this,
+							new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+							MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
 
-				new MaterialDialog.Builder(this)
-						.title(R.string.exports)
-						.cancelable(false)
-						.items(new String[]{
-								getString(R.string.export_rules),
-								getString(R.string.export_all)})
-						.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-							@Override
-							public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-								switch (which) {
-									case 0:
-										Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
-										break;
-									case 1:
-										Api.saveAllPreferencesToFileConfirm(MainActivity.this);
-										break;
-								}
-								return true;
-							}
-						}).positiveText(R.string.exports)
-						.negativeText(R.string.Cancel)
-						.show();
+				} else {
+					// permissions have been granted.
+					showExportDialog();
+				}
 				return true;
 			case R.id.menu_import:
 
-				new MaterialDialog.Builder(this)
-						.title(R.string.imports)
-						.cancelable(false)
-						.items(new String[]{
-								getString(R.string.import_rules),
-								getString(R.string.import_all),
-								getString(R.string.import_rules_droidwall)})
-						.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-							@Override
-							public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-								switch (which) {
-									case 0:
-										//Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-										//startActivityForResult(intent, FILE_CHOOSER_LOCAL);
-										File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-										FileDialog fileDialog = new FileDialog(MainActivity.this,mPath,true);
-										//fileDialog.setFlag(true);
-										//fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
-										fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
-											public void fileSelected(File file) {
-												String fileSelected = file.toString();
-												StringBuilder builder = new StringBuilder();
-												if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
-													Api.applications = null;
-													showOrLoadApplications();
-													Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
-												} else {
-													if (builder.toString().equals("")) {
-														Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-													} else {
-														Api.toast(MainActivity.this,builder.toString());
-													}
-												}
-											}
-										});
-										fileDialog.showDialog();
-										break;
-									case 1:
+				if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+						!= PackageManager.PERMISSION_GRANTED) {
+					// permissions have not been granted.
+					ActivityCompat.requestPermissions(MainActivity.this,
+							new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+							MY_PERMISSIONS_REQUEST_READ_STORAGE);
 
-										if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo(getApplicationContext())) {
-
-											File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-											FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2,false);
-											//fileDialog2.setFlag(false);
-											//fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
-											fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
-												public void fileSelected(File file) {
-													String fileSelected = file.toString();
-													StringBuilder builder = new StringBuilder();
-													if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
-														Api.applications = null;
-														showOrLoadApplications();
-														Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
-														Intent intent = getIntent();
-														finish();
-														startActivity(intent);
-													} else {
-														if(builder.toString().equals("")) {
-															Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-														} else {
-															Api.toast(MainActivity.this,builder.toString());
-														}
-													}
-												}
-											});
-											fileDialog2.showDialog();
-										} else {
-
-											new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-													.title(R.string.buy_donate)
-													.content(R.string.donate_only)
-													.positiveText(R.string.buy_donate)
-													.negativeText(R.string.close)
-
-													.icon(getResources().getDrawable(R.drawable.ic_launcher))
-													.callback(new MaterialDialog.ButtonCallback() {
-														@Override
-														public void onPositive(MaterialDialog dialog) {
-															Intent intent = new Intent(Intent.ACTION_VIEW);
-															intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
-															startActivity(intent);
-														}
-
-														@Override
-														public void onNegative(MaterialDialog dialog) {
-															dialog.cancel();
-														}
-													})
-													.show();
-										}
-										break;
-									case 2:
-
-										new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-												.title(R.string.import_rules_droidwall)
-												.content(R.string.overrideRules)
-												.positiveText(R.string.Yes)
-												.negativeText(R.string.No)
-												.icon(getResources().getDrawable(R.drawable.ic_launcher))
-												.callback(new MaterialDialog.ButtonCallback() {
-													@Override
-													public void onPositive(MaterialDialog dialog) {
-														if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
-															Api.applications = null;
-															showOrLoadApplications();
-															Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-														} else {
-															Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-														}
-													}
-
-													@Override
-													public void onNegative(MaterialDialog dialog) {
-														dialog.cancel();
-													}
-												})
-												.show();
-
-
-										break;
-								}
-								return true;
-							}
-						})
-						.positiveText(R.string.imports)
-						.negativeText(R.string.Cancel)
-						.show();
+				} else {
+					// permissions have been granted.
+					showImportDialog();
+				}
 
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void showImportDialog() {
+		new MaterialDialog.Builder(this)
+				.title(R.string.imports)
+				.cancelable(false)
+				.items(new String[]{
+						getString(R.string.import_rules),
+						getString(R.string.import_all),
+						getString(R.string.import_rules_droidwall)})
+				.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+					@Override
+					public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+						switch (which) {
+							case 0:
+								//Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+								//startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+								File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+								FileDialog fileDialog = new FileDialog(MainActivity.this,mPath,true);
+								//fileDialog.setFlag(true);
+								//fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
+								fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
+									public void fileSelected(File file) {
+										String fileSelected = file.toString();
+										StringBuilder builder = new StringBuilder();
+										if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
+											Api.applications = null;
+											showOrLoadApplications();
+											Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
+										} else {
+											if (builder.toString().equals("")) {
+												Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+											} else {
+												Api.toast(MainActivity.this,builder.toString());
+											}
+										}
+									}
+								});
+								fileDialog.showDialog();
+								break;
+							case 1:
+
+								if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo(getApplicationContext())) {
+
+									File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+									FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2,false);
+									//fileDialog2.setFlag(false);
+									//fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
+									fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
+										public void fileSelected(File file) {
+											String fileSelected = file.toString();
+											StringBuilder builder = new StringBuilder();
+											if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
+												Api.applications = null;
+												showOrLoadApplications();
+												Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+												Intent intent = getIntent();
+												finish();
+												startActivity(intent);
+											} else {
+												if(builder.toString().equals("")) {
+													Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+												} else {
+													Api.toast(MainActivity.this,builder.toString());
+												}
+											}
+										}
+									});
+									fileDialog2.showDialog();
+								} else {
+
+									new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+											.title(R.string.buy_donate)
+											.content(R.string.donate_only)
+											.positiveText(R.string.buy_donate)
+											.negativeText(R.string.close)
+
+											.icon(getResources().getDrawable(R.drawable.ic_launcher))
+											.callback(new MaterialDialog.ButtonCallback() {
+												@Override
+												public void onPositive(MaterialDialog dialog) {
+													Intent intent = new Intent(Intent.ACTION_VIEW);
+													intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
+													startActivity(intent);
+												}
+
+												@Override
+												public void onNegative(MaterialDialog dialog) {
+													dialog.cancel();
+												}
+											})
+											.show();
+								}
+								break;
+							case 2:
+
+								new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+										.title(R.string.import_rules_droidwall)
+										.content(R.string.overrideRules)
+										.positiveText(R.string.Yes)
+										.negativeText(R.string.No)
+										.icon(getResources().getDrawable(R.drawable.ic_launcher))
+										.callback(new MaterialDialog.ButtonCallback() {
+											@Override
+											public void onPositive(MaterialDialog dialog) {
+												if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
+													Api.applications = null;
+													showOrLoadApplications();
+													Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+												} else {
+													Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+												}
+											}
+
+											@Override
+											public void onNegative(MaterialDialog dialog) {
+												dialog.cancel();
+											}
+										})
+										.show();
+
+
+								break;
+						}
+						return true;
+					}
+				})
+				.positiveText(R.string.imports)
+				.negativeText(R.string.Cancel)
+				.show();
+	}
+
+	private void showExportDialog() {
+		new MaterialDialog.Builder(this)
+				.title(R.string.exports)
+				.cancelable(false)
+				.items(new String[]{
+						getString(R.string.export_rules),
+						getString(R.string.export_all)})
+				.itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+					@Override
+					public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+						switch (which) {
+							case 0:
+
+								Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+								break;
+							case 1:
+								Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+								break;
+						}
+						return true;
+					}
+				}).positiveText(R.string.exports)
+				.negativeText(R.string.Cancel)
+				.show();
 	}
 
 	private TextWatcher filterTextWatcher = new TextWatcher() {
@@ -1126,6 +1160,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private void showAbout() {
 		Intent i = new Intent(this, HelpActivity.class);
 		startActivityForResult(i, SHOW_ABOUT_RESULT);
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode,
+										   String permissions[], int[] grantResults) {
+		switch (requestCode) {
+			case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					showExportDialog();
+				} else {
+
+				}
+				return;
+			}
+
+			case MY_PERMISSIONS_REQUEST_READ_STORAGE: {
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+					// permission was granted, yay! Do the
+					// contacts-related task you need to do.
+
+				} else {
+
+					// permission denied, boo! Disable the
+					// functionality that depends on this permission.
+				}
+				return;
+			}
+		}
 	}
 
 	public void confirmDisable(){
