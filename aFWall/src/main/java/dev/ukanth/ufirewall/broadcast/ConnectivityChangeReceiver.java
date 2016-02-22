@@ -58,10 +58,29 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-		
-		if(G.activeRules()){
 
-			Thread producer = new Thread("PRODUCER") {
+		if(G.activeRules()) {
+
+			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+			final Intent logIntent = new Intent(context, LogService.class);
+			if (G.enableLogService()) {
+				//check if the firewall is enabled
+				if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
+					//make sure kill all the klog ripper
+					context.stopService(logIntent);
+				} else {
+					//restart the service
+					context.stopService(logIntent);
+					context.startService(logIntent);
+				}
+			} else {
+				//no internet - stop the service
+				context.stopService(logIntent);
+			}
+		}
+
+
+			/*Thread producer = new Thread("PRODUCER") {
 				public void run() {
 					try {
 						syncChange.put(System.currentTimeMillis());
@@ -80,22 +99,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 						Long timestamp = (Long) syncChange.take(); // thread will block here
 						Log.d("current consumed event timestamp ", System.currentTimeMillis() + "");
 						Log.d("consumed event", Thread.currentThread().getName() + ":" + timestamp);
-						InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-						final Intent logIntent = new Intent(context, LogService.class);
-						if(G.enableLogService()){
-							//check if the firewall is enabled
-							if(!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
-								//make sure kill all the klog ripper
-								context.stopService(logIntent);
-							} else{
-								//restart the service
-								context.stopService(logIntent);
-								context.startService(logIntent);
-							}
-						} else {
-							//no internet - stop the service
-							context.stopService(logIntent);
-						}
+
 					} catch (InterruptedException e) {
 						//e.printStackTrace();
 					}
@@ -103,7 +107,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 			};
 
 			consumer.start();
-		}
+		}*/
 
 	}
 	
