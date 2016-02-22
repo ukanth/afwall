@@ -28,6 +28,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 
@@ -104,7 +106,10 @@ public class G extends android.app.Application {
 	private static String SHOW_LOG_TOAST = "showLogToasts";
 	
 	public static String[] profiles = { "AFWallPrefs" , AFWALL_PROFILE + 1 , AFWALL_PROFILE + 2, AFWALL_PROFILE + 3 };
-	
+
+
+	private static final String WIDGET_X = "widgetX";
+	private static final String WIDGET_Y = "widgetY";
 	
 	public static Context ctx;
 	public static SharedPreferences gPrefs;
@@ -167,6 +172,30 @@ public class G extends android.app.Application {
 
 	public static boolean enableLAN() { return gPrefs.getBoolean(ENABLE_LAN, true); }
 	public static boolean enableLAN(boolean val) { gPrefs.edit().putBoolean(ENABLE_LAN, val).commit(); return val; }
+
+	public static int getWidgetX(Context ctx) {
+		DisplayMetrics dm = new DisplayMetrics();
+		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+		wm.getDefaultDisplay().getMetrics(dm);
+		int defaultX = dm.widthPixels;
+		String x = gPrefs.getString(WIDGET_X, defaultX+"");
+		try {
+			defaultX = Integer.parseInt(x);
+		} catch (Exception exception){ }
+		return defaultX;
+	}
+
+	public static int getWidgetY(Context ctx) {
+		DisplayMetrics dm = new DisplayMetrics();
+		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+		wm.getDefaultDisplay().getMetrics(dm);
+		int defaultY = dm.heightPixels;
+		String y = gPrefs.getString(WIDGET_Y, defaultY+"");
+		try {
+			defaultY = Integer.parseInt(y);
+		} catch (Exception exception){ }
+		return defaultY;
+	}
 
 	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, false); }
 	//public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }

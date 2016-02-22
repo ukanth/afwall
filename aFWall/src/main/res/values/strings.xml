@@ -330,6 +330,8 @@
     <string name="filters_apps_title">Notification Filter</string>
     <string name="apply_color">Press on Color to apply</string>
     <string name="binaries">Binaries</string>
+
+    <string name="widgets">Widgets</string>
     
     <string name="exports">Export</string>
     <string name="imports">Import</string>
@@ -402,4 +404,12 @@
     <string name="enable_show_toasts">Enable Show Toasts</string>
 
 
+    <string name="widget_prefs_title">Widget Settings</string>
+    <string name="xTitle">Widget Width</string>
+    <string name="xTitleSummary">Manual Override X Position</string>
+    <string name="xTitleDialog">Set Width (Number)</string>
+
+    <string name="yTitle">Widget Height</string>
+    <string name="yTitleSummary">Manual Override Y Position</string>
+    <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

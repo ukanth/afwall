@@ -152,7 +152,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				|| CustomBinaryPreferenceFragment.class.getName().equals(
 						fragmentName)
 				|| SecPreferenceFragment.class.getName().equals(fragmentName)
-				|| MultiProfilePreferenceFragment.class.getName().equals(fragmentName)) {
+				|| MultiProfilePreferenceFragment.class.getName().equals(fragmentName)
+				|| WidgetPreferenceFragment.class.getName().equals(fragmentName)) {
 			return (true);
 		}
 

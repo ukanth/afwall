@@ -20,4 +20,8 @@
         android:fragment="dev.ukanth.ufirewall.preferences.CustomBinaryPreferenceFragment"
         android:title="@string/binaries" />
 
+    <header
+        android:fragment="dev.ukanth.ufirewall.preferences.WidgetPreferenceFragment"
+        android:title="@string/widgets" />
+
 </preference-headers>

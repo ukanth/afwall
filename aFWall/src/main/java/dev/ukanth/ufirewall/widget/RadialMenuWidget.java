@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
@@ -21,6 +22,8 @@ import android.view.animation.TranslateAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dev.ukanth.ufirewall.util.G;
 
 public class RadialMenuWidget extends View {
 
@@ -74,15 +77,15 @@ public class RadialMenuWidget extends View {
 	private Rect[] iconRect2 = new Rect[wedgeQty2]; 
 	private RadialMenuEntry wedge2Data = null;		//Keeps track off which menuItem data is being used for the outer ring
 	
-	private int MinSize = scalePX(35);				//Radius of inner ring size
-	private int MaxSize = scalePX(90);				//Radius of outer ring size
+	private int MinSize = scalePX(25);				//Radius of inner ring size
+	private int MaxSize = scalePX(70);				//Radius of outer ring size
 	private int r2MinSize = MaxSize+scalePX(5);		//Radius of inner second ring size
 	private int r2MaxSize = r2MinSize+scalePX(45);	//Radius of outer second ring size
-	private int MinIconSize = scalePX(15);					//Min Size of Image in Wedge
-	private int MaxIconSize = scalePX(35);			//Max Size of Image in Wedge
+	private int MinIconSize = scalePX(10);					//Min Size of Image in Wedge
+	private int MaxIconSize = scalePX(30);			//Max Size of Image in Wedge
 	//private int BitmapSize = scalePX(40);			//Size of Image in Wedge
-	private int cRadius = MinSize-scalePX(7); 	 	//Inner Circle Radius
-	private int textSize = scalePX(15);				//TextSize
+	private int cRadius = MinSize-scalePX(5); 	 	//Inner Circle Radius
+	private int textSize = scalePX(10);				//TextSize
 	private int animateTextSize = textSize;
 	
 	private int xPosition = getSizeX();			//Center X location of Radial Menu
@@ -130,26 +133,22 @@ public class RadialMenuWidget extends View {
 		super(context);
 
 		// Gets screen specs and defaults to center of screen
-		/*DisplayMetrics dm = new DisplayMetrics();
+		DisplayMetrics dm = new DisplayMetrics();
 		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		wm.getDefaultDisplay().getMetrics(dm);
 
-		Point size = new Point();
-		try {
-			wm.getDefaultDisplay().getRealSize(size);
-			//FIXME: handle large tablets
-			if (size.x > 1200) this.xPosition = size.x / 3;
-			else this.xPosition = size.x / 2;
+		/*Display mdisp = wm.getDefaultDisplay();
 
-			this.yPosition = size.y / 2;
-		} catch (NoSuchMethodError e) {
-			if (wm.getDefaultDisplay().getWidth() > 1200) {
-				this.xPosition = wm.getDefaultDisplay().getWidth() / 3;
-			} else {
-				this.xPosition = wm.getDefaultDisplay().getWidth() / 2;
-			}
-			this.yPosition = wm.getDefaultDisplay().getHeight() / 2;
-		}*/
+		Point mdispSize = new Point();
+		mdisp.getSize(mdispSize);
+		int maxX = mdispSize.x;
+		int maxY = mdispSize.y; */
+
+
+		this.xPosition = G.getWidgetX(context) / 2;
+		this.yPosition =  G.getWidgetY(context) / 2;
+
+
 
 		determineWedges();
 		onOpenAnimation();
