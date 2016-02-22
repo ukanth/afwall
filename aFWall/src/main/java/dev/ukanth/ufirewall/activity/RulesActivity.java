@@ -96,6 +96,9 @@ public class RulesActivity extends DataDumpActivity {
 				Object entry = prefs.get(s);
 				result.append(s + ": " + entry.toString() + "\n");
 			}
+			//append profile mode & Status
+			result.append("Profile Mode : " + G.pPrefs.getString(Api.PREF_MODE, ""));
+			result.append("Status : " + (Api.isEnabled(ctx) ? "Enabled" : "Disabled"));
 		} catch (NullPointerException e) {
 			result.append("Error retrieving preferences\n");
 		}
@@ -123,6 +126,9 @@ public class RulesActivity extends DataDumpActivity {
 				"com.noshufou.android.su",
 				"com.noshufou.android.su.elite",
 				"com.koushikdutta.superuser",
+				"com.gorserapp.superuser",
+				"me.phh.superuser",
+				"com.bitcubate.superuser.pro",
 				"com.kingroot.kinguser",
 				"com.kingroot.master",
 				"com.kingouser.com",
