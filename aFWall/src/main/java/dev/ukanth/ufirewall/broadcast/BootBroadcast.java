@@ -23,12 +23,18 @@
  */
 package dev.ukanth.ufirewall.broadcast;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
+import dev.ukanth.ufirewall.MainActivity;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.util.G;
@@ -39,21 +45,63 @@ import dev.ukanth.ufirewall.util.G;
  */
 public class BootBroadcast extends BroadcastReceiver {
 	// private Handler mHandler = new Handler(Looper.getMainLooper());
+	private final int id = 1;
+	private NotificationManager notificationManager;
+	private NotificationCompat.Builder notiBuilder;
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 
-		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+		//hard code 5 seconds delay before apply rules
+		final int delay = 5;
 
-		if(G.activeNotification()){
-			Api.showNotification(Api.isEnabled(context), context);
-		}
-		//make sure nflog starts after boot
-		if(G.enableLog() && "NFLOG".equals(G.logTarget())) {
-			context.startService(new Intent(context.getApplicationContext(), NflogService.class));
-		}
-		if (G.enableLogService()) {
-			context.startService(new Intent(context, LogService.class));
-		}
+		notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		notiBuilder = new NotificationCompat.Builder(context);
+		notiBuilder.setContentTitle(context.getString(R.string.applying_rules))
+				.setContentText(context.getString(R.string.apply_sequence, delay))
+				.setSmallIcon(R.drawable.ic_launcher_free);
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+		stackBuilder.addParentStack(MainActivity.class);
+		stackBuilder.addNextIntent(new Intent(context, MainActivity.class));
+		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		notiBuilder.setContentIntent(pendingIntent);
+
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				boolean notification = true;
+				for (int i = delay; i >= 0; i--)
+					try {
+						Thread.sleep(1000);
+						if (notification) {
+							notiBuilder.setContentText(context.getString(R.string.working)).setProgress(delay, delay - i, false);
+							notificationManager.notify(id, notiBuilder.build());
+						} else if ((i % 10 == 0 || i == delay) && i != 0) {
+						}
+					} catch (InterruptedException e) {
+					}
+				if (notification) {
+					notiBuilder.setContentText(context.getString(R.string.rules_applied)).setProgress(0, 0, false);
+					notificationManager.notify(id, notiBuilder.build());
+				}
+
+				InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+
+				if(G.activeNotification()){
+					Api.showNotification(Api.isEnabled(context), context);
+				}
+				//make sure nflog starts after boot
+				if(G.enableLog() && "NFLOG".equals(G.logTarget())) {
+					context.startService(new Intent(context.getApplicationContext(), NflogService.class));
+				}
+				if (G.enableLogService()) {
+					context.startService(new Intent(context, LogService.class));
+				}
+			}
+		}).start();
+
+
+
 	}
 }

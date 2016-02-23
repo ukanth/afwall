@@ -412,4 +412,5 @@
     <string name="yTitle">Widget Height</string>
     <string name="yTitleSummary">Manual Override Y Position</string>
     <string name="yTitleDialog">Set Height (Number)</string>
+    <string name="apply_sequence">Applying rules in %d second/s</string>
 </resources>
