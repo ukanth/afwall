@@ -811,6 +811,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		// Get widget's instance
 		mainMenu = menu;
+		//make sure we update sort entry
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				switch (G.sortBy()){
+					case "s0":
+						mainMenu.findItem(R.id.sort_default).setChecked(true);
+						break;
+					case "s1":
+						mainMenu.findItem(R.id.sort_lastupdate).setChecked(true);
+						break;
+					case "s2":
+						mainMenu.findItem(R.id.sort_uid).setChecked(true);
+						break;
+				}
+			}
+		});
 		return true;
 	}
 
