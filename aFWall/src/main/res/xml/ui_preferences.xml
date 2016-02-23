@@ -63,7 +63,7 @@
             android:summary="@string/vpnSummary"
             android:title="@string/vpn_profile" />
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="enableIPv6"
             android:summary="@string/ipv6_summary"
             android:title="@string/ipv6_title" />

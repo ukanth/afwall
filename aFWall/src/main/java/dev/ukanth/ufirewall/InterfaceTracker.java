@@ -128,9 +128,12 @@ public final class InterfaceTracker {
 						String mask = truncAfter(ip.getHostAddress(), "%") + "/" +
 									  addr.getNetworkPrefixLength();
 
+						G.enableIPv6(false);
 						if (ip instanceof Inet4Address) {
 							ret.lanMaskV4 = mask;
 						} else if (ip instanceof Inet6Address) {
+							//auto enable ipv6
+							G.enableIPv6(true);
 							ret.lanMaskV6 = mask;
 						}
 					}

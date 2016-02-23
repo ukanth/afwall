@@ -197,8 +197,8 @@ public class G extends android.app.Application {
 		return defaultY;
 	}
 
-	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, true); }
-	//public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
+	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, false); }
+	public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
 
 	public static boolean enableInbound() { return gPrefs.getBoolean(ENABLE_INBOUND, false); }
 	//public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean(ENABLE_INBOUND, val).commit(); return val; }
