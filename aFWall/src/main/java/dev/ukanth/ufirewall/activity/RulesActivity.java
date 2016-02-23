@@ -97,8 +97,8 @@ public class RulesActivity extends DataDumpActivity {
 				result.append(s + ": " + entry.toString() + "\n");
 			}
 			//append profile mode & Status
-			result.append("Profile Mode : " + G.pPrefs.getString(Api.PREF_MODE, ""));
-			result.append("Status : " + (Api.isEnabled(ctx) ? "Enabled" : "Disabled"));
+			result.append("Profile Mode : " + G.pPrefs.getString(Api.PREF_MODE, "") + "\n");
+			result.append("Status : " + (Api.isEnabled(ctx) ? "Enabled" : "Disabled") + "\n");
 		} catch (NullPointerException e) {
 			result.append("Error retrieving preferences\n");
 		}
