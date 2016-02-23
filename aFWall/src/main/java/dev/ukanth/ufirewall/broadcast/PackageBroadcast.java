@@ -74,13 +74,11 @@ public class PackageBroadcast extends BroadcastReceiver {
                  Api.applications = null;
 			}
 		} else if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
-
 			final boolean updateApp = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
 
 			if (updateApp) {
 				// dont do anything
 				//1 check the package already added in firewall
-
 			} else {
 				// Force app list reload next time
 				Api.applications = null;

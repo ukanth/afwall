@@ -602,20 +602,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
 			String profileName = spinner.getSelectedItem().toString();
 			switch (position) {
-				case 0:
-					G.setProfile(true, "AFWallPrefs");
-					break;
-				case 1:
-					G.setProfile(true, "AFWallProfile1");
-					break;
-				case 2:
-					G.setProfile(true, "AFWallProfile2");
-					break;
-				case 3:
-					G.setProfile(true, "AFWallProfile3");
-					break;
-				default:
-					G.setProfile(true, profileName);
+					case 0:
+						G.setProfile(true, "AFWallPrefs");
+						break;
+					case 1:
+						G.setProfile(true, "AFWallProfile1");
+						break;
+					case 2:
+						G.setProfile(true, "AFWallProfile2");
+						break;
+					case 3:
+						G.setProfile(true, "AFWallProfile3");
+						break;
+					default:
+						if(profileName != null) {
+							G.setProfile(true, profileName);
+						}
+
 			}
 			G.reloadProfile();
 			refreshHeader();
@@ -739,10 +742,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		if(searchStr !=null && searchStr.length() > 1) {
 			for(PackageInfoData app:apps) {
 				for(String str: app.names) {
-					if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())
-							&& !searchApp.contains(app)) {
-						searchApp.add(app);
-						isResultsFound = true;
+					if(str != null && searchStr != null) {
+						if(str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())
+								&& !searchApp.contains(app)) {
+							searchApp.add(app);
+							isResultsFound = true;
+						}
 					}
 				}
 			}
@@ -774,18 +779,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 		List<PackageInfoData> apps2;
 		if(showAll || (searchStr != null && searchStr.equals(""))) {
-			apps2 = apps;
+			apps2 = Collections.synchronizedList(apps);
 		} else if(isResultsFound || searchApp.size() > 0) {
-			apps2 = searchApp;
+			apps2 = Collections.synchronizedList(searchApp);
 		} else {
-			apps2 = new ArrayList<PackageInfoData>();
+			apps2 = Collections.synchronizedList(new ArrayList<PackageInfoData>());
 		}
-
-		// Sort applications - selected first, then alphabetically
-		try {
-			Collections.sort(apps2, new PackageComparator());
-		}catch(IllegalArgumentException e){
-			Log.d(Api.TAG, "IllegalArgumentException on Sort");
+		synchronized(apps2) {
+			// Sort applications - selected first, then alphabetically
+			try {
+				Collections.sort(apps2, new PackageComparator());
+			}catch(IllegalArgumentException e){
+				Log.d(Api.TAG, "IllegalArgumentException on Sort");
+			}
 		}
 
 		this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
