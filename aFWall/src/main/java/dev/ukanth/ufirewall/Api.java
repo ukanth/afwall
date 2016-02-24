@@ -2403,7 +2403,10 @@ public final class Api {
 	
 	public static void updateLanguage(Context context, String lang) {
 	    if (!"".equals(lang)) {
-	        Locale locale = new Locale(lang);
+			Locale locale = new Locale(lang);
+			if(lang.contains("_")) {
+				locale = new Locale(lang.split("_")[0],lang.split("_")[1]);
+			}
 	        Resources res = context.getResources();
 			DisplayMetrics dm = res.getDisplayMetrics();
 			Configuration conf = res.getConfiguration();
