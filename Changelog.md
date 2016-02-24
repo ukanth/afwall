@@ -2,12 +2,22 @@ Changelog AFWall+
 ==================
 
 Version 2.1.4
-* Fix : Mobile data issue for new devices(v4-rmnet0)
-* Fix : Logs should show for more devices
-* Initial support to store logs to db for history.
-* Don't disable AFWall+ on failures.
-* Sync queue event for concurrent network changes.
-* Fix : Application not shown after search
+* Auto IPV6 support
+* Support for Android 6 runtime permission (external storage - import/export)
+* Widget alignment issue - Support to manual adjustment
+* Device startup rules with 3 sec delay to apply rules properly on some devices
+* Fixed random disable issue of firewall
+* Fixed random complete blocking issue of firewall
+* su.d support(supported by supersu and alternate for init.d to prevent startup leak)
+* Mobile data issue for new devices
+* Logs should show for more devices
+* Application not shown after search completed
+* Fixed sort option position on start
+* Additional check for netfilter support on startup
+* Added additional information for error report for better understanding
+* Initial support to store logs to db for history. New UI will be in the next version with History.
+* Fixed lot of reported crash issues
+* Updated Translations with new language support (pt-BR)
 * Library updates: androidlockpattern,material dialogs
 
 Version 2.1.3
