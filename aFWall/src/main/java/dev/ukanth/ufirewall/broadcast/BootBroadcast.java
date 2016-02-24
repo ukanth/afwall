@@ -59,7 +59,7 @@ public class BootBroadcast extends BroadcastReceiver {
 		notiBuilder = new NotificationCompat.Builder(context);
 		notiBuilder.setContentTitle(context.getString(R.string.applying_rules))
 				.setContentText(context.getString(R.string.apply_sequence, delay))
-				.setSmallIcon(R.drawable.ic_launcher_free);
+				.setSmallIcon(R.drawable.notification_warn);
 
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 		stackBuilder.addParentStack(MainActivity.class);
