@@ -19,10 +19,12 @@
   <string name="error_refresh">Iptables সতেজ করাতে ত্রুটি</string>
   <string name="error_apply">Iptables নিয়ম প্রয়োগে ত্রুটি</string>
   <string name="error_fetch">Iptables নিয়ম আনয়নে ত্রুটি</string>
-  <string name="error_su">রুটের অনুমতি পাওয়া যায় নাই।\nরুট করা মুঠোফোন প্রয়োজন AFWall+ চালানোর জন্য।\n\nযদি আপনার মুঠোফোন ইতিমধ্যে রুট করা থাকে তাহলে অনুগ্রহ করে নিশ্চিত করুন যে AFWall+ এর পর্যাপ্ত অনুমতি আছে  \"su\" নির্দেশনা সম্পাদন করার জন্যে।\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">ত্রুটি: </string>
   <string name="all_item">(যে কোন অ্যাপ) - সমস্ত অ্যাপ নির্বাচনের মত</string>
   <string name="kernel_item">(কার্নেল) - লিনাক্স কার্নেল</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Tethering) - DHCP + DNS সার্ভিস</string>
   <string name="dnsproxy_item">(DNS proxy) - DNS খোঁজা netd এর মাধ্যমে</string>
   <string name="ntp_item">(NTP) - ইন্টারনেট সময় সার্ভার</string>
@@ -87,6 +89,7 @@
   <string name="discard">বাতিল করুন</string>
   <string name="delete">মুছে ফেলুন</string>
   <string name="Yes">হ্যাঁ</string>
+  <string name="Continue">Continue</string>
   <string name="No">না</string>
   <string name="OK">ঠিক আছে</string>
   <string name="Cancel">বাতিল করুন</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Notification ফিল্টার</string>
   <string name="apply_color">রঙ-এ চাপ দেন প্রয়োগ করতে</string>
   <string name="binaries">বাইনারি</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">রপ্তানি করুন</string>
   <string name="imports">আমদানি</string>
   <string name="invalid_profile">অবৈধ প্রোফাইল নাম</string>
   <string name="donate_only">এই বৈশিষ্ট্যটি কেবলমাত্র উপলভ্য অনুদান সংস্করণে।</string>
-  <string name="buy_donate">অনুদান সংস্করণ ক্রয় করুন</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> চাপুন অনুদান অনলক করতে</string>
   <string name="donate_support">আপনি এখন অনুদান বৈশিষ্ট্য ব্যবহার করতে পারবেন!</string>
   <string name="donate_thanks">আপনার সাহায্যের জন্য ধন্যবাদ</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">এটি সকল অতিরিক্ত প্রোফাইল ডাটা 1.x থেকে 2.x এ মাইগ্রেট করবে</string>
   <string name="insert_profile">প্রোফাইল নাম প্রবেশ করুন</string>
   <string name="add">যুক্ত করুন</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

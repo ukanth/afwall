@@ -19,10 +19,12 @@
   <string name="error_refresh">S\'ha produït un error en refrescar les tables IP</string>
   <string name="error_apply">S\'ha produït un error en aplicar les regles de les tables IP</string>
   <string name="error_fetch">S\'ha produït un error en recollir les regles de les tables IP</string>
-  <string name="error_su">No s\'ha pogut obtenir accés root\nEs precís tenir un telèfon amb privilegis root per executar AFWall+.\n\nSi aquest telèfon ja té privilegis root, assegureu-vos que AFWall+ té suficients permisos per executar l\'ordre \"su\".\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Error: </string>
   <string name="all_item">(Qualsevol aplicació) - El mateix que seleccionar totes les aplicacions</string>
   <string name="kernel_item">(Kernel) - nucli de Linux</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Xarxa compartida) - serveis DHCP+DNS</string>
   <string name="dnsproxy_item">(Servidor intermediari de DNS) - Cerces de DNS mitjançant netd</string>
   <string name="ntp_item">(NTP) - servidors de temps a Internet</string>
@@ -87,6 +89,7 @@
   <string name="discard">Descarta</string>
   <string name="delete">Elimina</string>
   <string name="Yes">Sí</string>
+  <string name="Continue">Continue</string>
   <string name="No">No</string>
   <string name="OK">D’acord</string>
   <string name="Cancel">Cancel·la</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Filtre de notificacions</string>
   <string name="apply_color">Premeu al Color per aplicar</string>
   <string name="binaries">Binaris</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Exporta</string>
   <string name="imports">Importa</string>
   <string name="invalid_profile">El nom del perfil no és vàlid</string>
   <string name="donate_only">Aquesta característica està disponible en la versió Donació</string>
-  <string name="buy_donate">Compreu la versió Donació</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> feu un toc per desbloquejar la versió Donació</string>
   <string name="donate_support">Ara ja podeu utilitzar les característiques de la versió Donació!</string>
   <string name="donate_thanks">Gràcies pel vostre suport</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Això migrarà les dades dels perfils adicionals de la versió 1.x a la 2.x</string>
   <string name="insert_profile">Introduïu el nom del perfil</string>
   <string name="add">Afegeix</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

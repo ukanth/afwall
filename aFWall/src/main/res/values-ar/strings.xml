@@ -19,10 +19,12 @@
   <string name="error_refresh">خطأ في تحديث قواعد العناوين</string>
   <string name="error_apply">خطأ في تطبيق قواعد العناوين</string>
   <string name="error_fetch">خطأ في جلب قواعد العناوين</string>
-  <string name="error_su">لا يمكن الحصول على صلاحيات الجذر. \n أنت بحاجة إلى عمل روت لهاتفك لتشغيل تطبيق AFWall+.\n\n إذا كان الهاتف هذا بالفعل يملك صلاحيات الروت، يرجى التأكد من أن AFWall+ لديه أذونات كافية لتنفيذ الأوامر. \n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">خطأ: </string>
   <string name="all_item">(أي تطبيق) -كتحديد كل التطبيقات</string>
   <string name="kernel_item">(Kernel)- نواة لينكس</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS خدمات</string>
   <string name="dnsproxy_item">(DNS proxy) - DNS البحث بواسطة netd</string>
   <string name="ntp_item">(NTP)-ملقمات وقت انترنت</string>
@@ -87,6 +89,7 @@
   <string name="discard">تجاهل</string>
   <string name="delete">حذف</string>
   <string name="Yes">نعم</string>
+  <string name="Continue">Continue</string>
   <string name="No">لا</string>
   <string name="OK">موافق</string>
   <string name="Cancel">إلغاء</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">تصفية الإشعارات</string>
   <string name="apply_color">اضغط على اللون لاختياره</string>
   <string name="binaries">الثنائيات</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">تصدير</string>
   <string name="imports">إستيراد</string>
   <string name="invalid_profile">اسم الوضع غير صالح</string>
   <string name="donate_only">تتوفر هذه الميزة فقط في نسخة التبرع</string>
-  <string name="buy_donate">شراء نسخة التبرع</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> اضغط لفتح التبرع</string>
   <string name="donate_support">يمكنك الآن إستخدام ميزات نسخة التبرع!</string>
   <string name="donate_thanks">شكرا لدعمك</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">سوف يتم ترحيل جميع الأوضاع الإضافية من 1.x إلى الإصدار 2.x</string>
   <string name="insert_profile">أدخل اسم الوضع</string>
   <string name="add">إضافة</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

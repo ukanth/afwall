@@ -19,10 +19,12 @@
   <string name="error_refresh">Fout bij vernieuwen iptables</string>
   <string name="error_apply">Fout bij toepassen iptables regels</string>
   <string name="error_fetch">Fout bij ophalen iptables regels</string>
-  <string name="error_su">Kon geen root toegang krijgen.\nJe hebt een geroote telefoon nodig om AFWall+ te draaien.\n\nAls deze telefoon al is geroot, zorg er dan voor dat AFWall+ genoeg rechten heeft om \"su\" uit te voeren.\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Fout : </string>
   <string name="all_item">(Elke applicatie) - Zelfde als selecteer alle applicaties</string>
   <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Tethering) - DHCP + DNS diensten</string>
   <string name="dnsproxy_item">(DNS-proxy) - DNS-lookups via netd</string>
   <string name="ntp_item">(NTP) - Internet tijd server</string>
@@ -90,6 +92,7 @@
   <string name="discard">Negeren</string>
   <string name="delete">Verwijderen</string>
   <string name="Yes">Ja</string>
+  <string name="Continue">Continue</string>
   <string name="No">Nee</string>
   <string name="OK">OK</string>
   <string name="Cancel">Annuleren</string>
@@ -262,11 +265,12 @@
   <string name="filters_apps_title">Meldingen filter</string>
   <string name="apply_color">Selecteer kleur om toe te passen</string>
   <string name="binaries">Binaries</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Exporteren</string>
   <string name="imports">Importeren</string>
   <string name="invalid_profile">Ongeldige profielnaam</string>
   <string name="donate_only">Deze functie is alleen beschikbaar in de donatie versie</string>
-  <string name="buy_donate">Donatie versie aanschaffen</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> tik om donatie versie te ontgrendelen</string>
   <string name="donate_support">U kunt nu de donatie functies gebruiken!</string>
   <string name="donate_thanks">Bedankt voor uw steun</string>
@@ -306,4 +310,13 @@
   <string name="migrate_summary">Dit zal alle gegevens van de extra profielen migreren van versie 1.x naar 2.x</string>
   <string name="insert_profile">Voer profielnaam in</string>
   <string name="add">Toevoegen</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

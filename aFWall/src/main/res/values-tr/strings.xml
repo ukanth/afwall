@@ -19,10 +19,12 @@
   <string name="error_refresh">Iptables yenileme hatası</string>
   <string name="error_apply">Iptables kurallarını uygulama hatası</string>
   <string name="error_fetch">Iptables kurallarını alma hatası</string>
-  <string name="error_su">Root erişimine sahip değilsiniz.\nAFWall+ uygulaması için root\'lu telefon gereklidir.\n\n Eğer telefon zaten root\'lu ise, SuperUser\'dan AFWall+ uygulamasına gerekli izinleri verdiğinizden emin olun.\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Hata: </string>
   <string name="all_item">(Herhangi bir uygulama) - Tüm uygulamalar için öncekiyle aynı seçim</string>
   <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="unknown_item">Bilinmiyor</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS servisleri</string>
   <string name="dnsproxy_item">(DNS proxy) - Netd aracılığıyla DNS aramaları</string>
   <string name="ntp_item">(NTP) İnternet zaman sunucuları</string>
@@ -45,8 +47,8 @@
   <string name="rules_deleted">Kurallar başarıyla silindi</string>
   <string name="pass_titleset">Şifreyi ayarla</string>
   <string name="pass_titleget">Şifre gerekli</string>
-  <string name="enterpass">Şifreyi girin</string>
-  <string name="reenterpass">Şifre tekrar girin</string>
+  <string name="enterpass">Parolayı gir</string>
+  <string name="reenterpass">Parola (tekrar)</string>
   <string name="error_write_pref">Tercihlere yazılırken hata</string>
   <string name="enternewpass">Yeni şifreyi girin (kaldırmak için boş bırakın):</string>
   <string name="passdefined">Şifre tanımlandı</string>
@@ -88,6 +90,7 @@
   <string name="discard">At</string>
   <string name="delete">Sil</string>
   <string name="Yes">Evet</string>
+  <string name="Continue">Devam et</string>
   <string name="No">Hayır</string>
   <string name="OK">Tamam</string>
   <string name="Cancel">İptal</string>
@@ -261,11 +264,12 @@ Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>
   <string name="filters_apps_title">Bildirim süzgeci</string>
   <string name="apply_color">Rengi uygulamak için basın</string>
   <string name="binaries">Binaries</string>
+  <string name="widgets">Widgetler</string>
   <string name="exports">Export</string>
   <string name="imports">Import</string>
   <string name="invalid_profile">Geçersiz profil adı</string>
   <string name="donate_only">Bu özellik yalnızca bağış sürümünde geçerli</string>
-  <string name="buy_donate">Bağış sürümünü al</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> bağışa dokunup kilidi aç</string>
   <string name="donate_support">Bağış özelliklerini şimdi kullanabilirsin!</string>
   <string name="donate_thanks">Desteğiniz için teşekkürler</string>
@@ -305,4 +309,13 @@ Bağlantılar bloklandığı zaman, mesajı göstermeyi etkinleştir</string>
   <string name="migrate_summary">Bu 2.x sürümü 1.x tüm ek profilleri verilerini geçireceğiniz</string>
   <string name="insert_profile">Profil adı girin</string>
   <string name="add">Ekle</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Ayarları</string>
+  <string name="xTitle">Widget Genişliği</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Genişliği Ayarla (Sayı)</string>
+  <string name="yTitle">Widget Yüksekliği</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Yüksekliği Ayarla (Sayı)</string>
 </resources>

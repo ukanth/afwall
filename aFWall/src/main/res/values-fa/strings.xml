@@ -19,10 +19,12 @@
   <string name="error_refresh">خطای بازیابی iptables</string>
   <string name="error_apply">خطا در اعمال قوانین iptables</string>
   <string name="error_fetch">خطای گیرنده قوانین iptables</string>
-  <string name="error_su">دسترسی روت ممکن نیست\nبرای اجرای AFWall+‎ باید گوشی را روت کنید.\n\nاگر این گوشی روت شده است، لطفا مطمئن شوید که AFWall+‎ مجوز اجرای دستور \"su\" را دارد.\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">خطا : </string>
   <string name="all_item">(هر برنامه‌ای) - مثل اینکه همه برنامه‌ها را انتخاب کرده باشید</string>
   <string name="kernel_item">(کرنل) - هسته لینوکس</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(اتصال اینترنت) - خدمات DHCP + DNS</string>
   <string name="dnsproxy_item">(پروکسی دی ان اس) - جستجو دی ان اس از طریق netd</string>
   <string name="ntp_item">(NTP) - سرویس دهندهای زمان اینترنت</string>
@@ -87,6 +89,7 @@
   <string name="discard">لغو</string>
   <string name="delete">حذف</string>
   <string name="Yes">بله</string>
+  <string name="Continue">Continue</string>
   <string name="No">خیر</string>
   <string name="OK">قبول</string>
   <string name="Cancel">انصراف</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title"> فیلتر کردن اطلاعیه</string>
   <string name="apply_color">برای اعمال روی رنگ فشار دهید</string>
   <string name="binaries">باینری</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">صدور</string>
   <string name="imports">واردکردن</string>
   <string name="invalid_profile">نام پروفایل بی اعتبار</string>
   <string name="donate_only">این ویژگی تنها در نسخه اهدایی در دسترس است</string>
-  <string name="buy_donate">خرید نسخه مالی</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate">کمک مالی به ما برای باز کردن قفل</string>
   <string name="donate_support">شما در حال حاضر می توانید از امکانات نسخه کمک مالی  استفاده !</string>
   <string name="donate_thanks">از حمایت شما متشکریم</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">This will migrate all additional profiles data from 1.x to 2.x version</string>
   <string name="insert_profile">Enter profile name</string>
   <string name="add">Add</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

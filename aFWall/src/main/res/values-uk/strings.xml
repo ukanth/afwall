@@ -19,10 +19,12 @@
   <string name="error_refresh">Помилка оновлення iptables</string>
   <string name="error_apply">Помилка застосування правил iptables</string>
   <string name="error_fetch">Помилка отримання правил iptables</string>
-  <string name="error_su">Не змогли отримати права root.\nВам необхідний телефон з root для запуску AFWall+.\n\nЯкщо цей телефон вже має права root, то, будь ласка, переконайтеся, що AFWall + має достатньо дозволів для виконання команди \"su\".\n</string>
+  <string name="error_su">Не вдалося отримати root-доступ.\nДля запуску AFWall+ необхідно мати телефон з правами root.\n\nЯкщо цей телефон вже має права root, переконайтеся, що AFWall+ має відповідні дозволи для виконання команди \"su\".</string>
+  <string name="error_netfilter">Не вдалося знайти підтримку для цілей та ланцюгів iptables. \nAFWall+ може працювати неналежним чином через це обмеження.</string>
   <string name="error_common">Помилка: </string>
   <string name="all_item">(Будь-який застосунок) - так само, як і вибрати всі програми</string>
   <string name="kernel_item">(Ядро) - ядро Linux</string>
+  <string name="unknown_item">Невідомо</string>
   <string name="tethering_item">(Прив\'язування) - DHCP + DNS послуги</string>
   <string name="dnsproxy_item">(DNS проксі) - пошук DNS через netd</string>
   <string name="ntp_item">(NTP) - сервери часу в Інтернеті</string>
@@ -87,6 +89,7 @@
   <string name="discard">Скасувати</string>
   <string name="delete">Видалити</string>
   <string name="Yes">Так</string>
+  <string name="Continue">Продовжити</string>
   <string name="No">Ні</string>
   <string name="OK">Гаразд</string>
   <string name="Cancel">Скасувати</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Фільтр сповіщень</string>
   <string name="apply_color">Натисніть на колір, щоб застосувати</string>
   <string name="binaries">Двійкові файли</string>
+  <string name="widgets">Віджети</string>
   <string name="exports">Експортувати</string>
   <string name="imports">Імпортувати</string>
   <string name="invalid_profile">Неприпустиме ім\'я профілю</string>
   <string name="donate_only">Ця функція доступна лише в донейт-версії</string>
-  <string name="buy_donate">Придбати донейт-версію</string>
+  <string name="buy_donate">Придбати благодійну версію чи благодійний ключ</string>
   <string name="unlock_donate"> торкніться, щоб розблокувати пожертви</string>
   <string name="donate_support">Тепер ви можете використовувати функцію пожертви!</string>
   <string name="donate_thanks">Дякуємо за вашу підтримку</string>
@@ -283,7 +287,7 @@
   <string name="profile_default">Мій профіль</string>
   <string name="filter">Фільтр</string>
   <string name="enable_protection">Увімкнути захист</string>
-  <string name="pref_none">Ні</string>
+  <string name="pref_none">Жоден</string>
   <string name="pref_password">Пароль</string>
   <string name="pref_pattern">Шаблон</string>
   <string name="pref_pin">PIN-код</string>
@@ -293,7 +297,7 @@
   <string name="dialog_color_picker">Палітра кольорів</string>
   <string name="sort">Сортувати додатки</string>
   <string name="defaultsort">За именем (за замовчуванням)</string>
-  <string name="lastupdated">Через Встановлення/Оновлення</string>
+  <string name="lastupdated">За часом Встановлення/Оновлення</string>
   <string name="uid">За UID</string>
   <string name="select_dir">Виберіть каталог</string>
   <string name="select">Вибрати дію для</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Будуть перенесені дані всіх додаткових профілів з версії 1.x у версію 2.x</string>
   <string name="insert_profile">Введіть ім\'я профілю</string>
   <string name="add">Додати</string>
+  <string name="showlog_toasts">Увімкнення дозволить появу сповіщень про блокування</string>
+  <string name="enable_show_toasts">Увімкнути Показувати сповіщення</string>
+  <string name="widget_prefs_title">Налаштування віджета</string>
+  <string name="xTitle">Ширина віджета</string>
+  <string name="xTitleSummary">Перевизначити позицію X вручну</string>
+  <string name="xTitleDialog">Встановити ширину (число)</string>
+  <string name="yTitle">Висота віджета</string>
+  <string name="yTitleSummary">Перевизначити позицію Y вручну</string>
+  <string name="yTitleDialog">Встановити висоту (число)</string>
 </resources>

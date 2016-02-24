@@ -19,10 +19,12 @@
   <string name="error_refresh">Chyba aktualizace iptables</string>
   <string name="error_apply">Chyba aplikování pravidel iptables</string>
   <string name="error_fetch">Chyba načítání pravidel iptables</string>
-  <string name="error_su">Nelze získat root přístup.\nPotřebujete root telefonu pro používání AFWall+.\n\nPokud je tento telefon již rootnutý, prosím ujistěte se, že AFWall+ má dostatečná oprávnění k provedení příkazu \"su\".\n</string>
+  <string name="error_su">Nelze získat root přístup\nPro používání AFWall+ potřebujete root telefonu\n\nPokud je tento telefon již rootnutý, prosím ujistěte se, že má AFWall+ dostatečná oprávnění pro spustění \"su\" příkazu.</string>
+  <string name="error_netfilter">Nelze najít podporu pro cíle a řetězce iptables.\nAFWall+ nemusí pracovat podle očekávání v důsledku tohoto omezení.</string>
   <string name="error_common">Chyba: </string>
   <string name="all_item">(Všechny aplikace) - Stejné jako výběr všech aplikací</string>
   <string name="kernel_item">(Kernel) - Linux jádro</string>
+  <string name="unknown_item">Neznámé</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS služby</string>
   <string name="dnsproxy_item">(DNS proxy) - vyhledávání DNS přes netd</string>
   <string name="ntp_item">(NTP) - Časové servery Internetu</string>
@@ -30,7 +32,7 @@
   <string name="adb_item">(adb) - ADB (Android Debug Bridge)</string>
   <string name="media_item">(media) - Mediaserver</string>
   <string name="vpn_item">(vpn) - VPN networking</string>
-  <string name="drm_item">(drm) - Digital Rights Management service</string>
+  <string name="drm_item">(drm) - Digital Rights Management služba</string>
   <string name="gps_item">(gps) - GPS</string>
   <string name="shell_item">(shell) - Linux shell</string>
   <string name="fw_enabled">Zapnout firewall</string>
@@ -88,6 +90,7 @@
   <string name="discard">Zrušit</string>
   <string name="delete">Smazat</string>
   <string name="Yes">Ano</string>
+  <string name="Continue">Pokračovat</string>
   <string name="No">Ne</string>
   <string name="OK">OK</string>
   <string name="Cancel">Zrušit</string>
@@ -260,11 +263,12 @@
   <string name="filters_apps_title">Filtr upozornění</string>
   <string name="apply_color">Stisknutím barvy aplikujete</string>
   <string name="binaries">Binární</string>
+  <string name="widgets">Widgety</string>
   <string name="exports">Export</string>
   <string name="imports">Import</string>
   <string name="invalid_profile">Neplatný název profilu</string>
   <string name="donate_only">Tato funkce je dostupná pouze v darovací verzi</string>
-  <string name="buy_donate">Koupit darovací verzi</string>
+  <string name="buy_donate">Koupit příspěvkovou verzi nebo příspěvkový klíč</string>
   <string name="unlock_donate"> klepnutím odemknout darování</string>
   <string name="donate_support">Nyní můžete použít darovací funkce!</string>
   <string name="donate_thanks">Děkuji za vaši podporu</string>
@@ -304,4 +308,13 @@
   <string name="migrate_summary">Toto přenese všechny další data profilů z verze 1.x do 2.x</string>
   <string name="insert_profile">Zadejte název profilu</string>
   <string name="add">Přidat</string>
+  <string name="showlog_toasts">Povolením se zobrazí upozornění toastů v bloku</string>
+  <string name="enable_show_toasts">Povolit zobrazení toastů</string>
+  <string name="widget_prefs_title">Nastavení widgetu</string>
+  <string name="xTitle">Šířka widgetu</string>
+  <string name="xTitleSummary">Ruční ovládání pozice X</string>
+  <string name="xTitleDialog">Nastavit šířku (číslo)</string>
+  <string name="yTitle">Výška widgetu</string>
+  <string name="yTitleSummary">Ruční ovládání pozice Y</string>
+  <string name="yTitleDialog">Nastavit výšku (číslo)</string>
 </resources>

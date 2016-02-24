@@ -19,10 +19,12 @@
   <string name="error_refresh">Грешка при освежавању iptables-а</string>
   <string name="error_apply">Грешка у примени iptables правила</string>
   <string name="error_fetch">Грешка у добављању iptables правила</string>
-  <string name="error_su">Немам корени приступ.\nМорате имати рутован телефон да бисте покренули AFWall+.\n\nАко је телефон већ рутован, обезбедите програму AFWall+ дозволе за извршавање \"su\" наредбе.\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Грешка: </string>
   <string name="all_item">(Било која) — исто као да означите све апликације</string>
   <string name="kernel_item">(Кернел) — Линукс кернел</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Тетеринг) — DHCP+DNS сервиси</string>
   <string name="dnsproxy_item">(DNS прокси) - DNS упити преко netd</string>
   <string name="ntp_item">(NTP) — сервери тачног времена</string>
@@ -87,6 +89,7 @@
   <string name="discard">Одбаци</string>
   <string name="delete">Обриши</string>
   <string name="Yes">Да</string>
+  <string name="Continue">Continue</string>
   <string name="No">Не</string>
   <string name="OK">У реду</string>
   <string name="Cancel">Одустани</string>
@@ -196,7 +199,7 @@
   <string name="exp_prefs_title">Експериментално</string>
   <string name="startup_service">Примењујем правила. Сачекајте!</string>
   <string name="fixleakTitle">Среди цурење података при подизању</string>
-  <string name="fixleakSummary">Спречава приступ мрежи при покретању. Ваш РОМ мора имати init.d podršku. HTC уређаји подешени за S-OFF.</string>
+  <string name="fixleakSummary">Спречава приступ мрежи при покретању. Ваш РОМ мора имати init.d подршку. HTC уређаји подешени за S-OFF.</string>
   <string name="enableInboundTitle">Укључи долазне везе</string>
   <string name="enableInboundSummary">Допушта везе са локалне мреже (Самба, sshd, KDEConnect, AirDroid)</string>
   <string name="ui_prefs_title">Корисничко сучеље</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Филтер обавештења</string>
   <string name="apply_color">Додирните боју да је примените</string>
   <string name="binaries">Програми</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Извоз</string>
   <string name="imports">Увоз</string>
   <string name="invalid_profile">Неисправно име профила</string>
   <string name="donate_only">Ова опција је доступна само у верзији за донаторе</string>
-  <string name="buy_donate">Купи верзију за донаторе</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> додирните да откључате</string>
   <string name="donate_support">Сада имате донаторске опције!</string>
   <string name="donate_thanks">Хвала Вам на подршци</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Ово ће преселити податке свих профила из верзије 1.х у 2.х</string>
   <string name="insert_profile">Унесите назив профила</string>
   <string name="add">Додај</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

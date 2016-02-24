@@ -19,10 +19,12 @@
   <string name="error_refresh">Napaka pri osveževanju pravil</string>
   <string name="error_apply">Napaka pri uveljavljanju pravil</string>
   <string name="error_fetch">Napaka pri pridobivanju pravil Iptables</string>
-  <string name="error_su">Ne morem pridobiti korenskega dostopa.\nZa svoje delovanje potrebuje AFWall+ telefon s korenskim dostopom.\n\nČe imate tak telefon, preverite ali ima AFWall+ potrebna dovoljenja za izvajanje ukaza \"su\".\n</string>
+  <string name="error_su">Ne morem pridobiti korenskega dostopa.\nZa svoje delovanje potrebuje AFWall+ telefon s korenskim dostopom.\n\nČe imate tak telefon, preverite ali ima AFWall+ potrebna dovoljenja za izvajanje ukaza \"su\".</string>
+  <string name="error_netfilter">Ne najdem podpore za tarče in verige iptables.\nZaradi te omejitve aplikacija AFWall+ morda ne bo delovala kot bi morala.</string>
   <string name="error_common">Napaka: </string>
   <string name="all_item">(Katerakoli aplikacija) - Enako kot če izberete vse aplikacije</string>
   <string name="kernel_item">(Jedro) - Jedro linux</string>
+  <string name="unknown_item">Neznano</string>
   <string name="tethering_item">(Deljenje povezave) - DHCP+DNS storitve</string>
   <string name="dnsproxy_item">(DNS proksi) DNS iskanje preko netd</string>
   <string name="ntp_item">(NTP) - Spletni časovni strežniki</string>
@@ -87,6 +89,7 @@
   <string name="discard">Zavrzi</string>
   <string name="delete">Izbriši</string>
   <string name="Yes">Da</string>
+  <string name="Continue">Nadaljuj</string>
   <string name="No">Ne</string>
   <string name="OK">OK</string>
   <string name="Cancel">Prekliči</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Filter obvestil</string>
   <string name="apply_color">Za spremembo pritisni na barvo</string>
   <string name="binaries">Binarne datoteke</string>
+  <string name="widgets">Gradniki</string>
   <string name="exports">Izvozi</string>
   <string name="imports">Uvozi</string>
   <string name="invalid_profile">Nepravilno ime profila</string>
   <string name="donate_only">Ta možnost je na voljo samo v plačljivi verziji</string>
-  <string name="buy_donate">Kupi plačljivo verzijo</string>
+  <string name="buy_donate">Kupi donacijsko različico ali donacijski ključ</string>
   <string name="unlock_donate"> tapni za odklenitev plačljivih funkcij</string>
   <string name="donate_support">Zdaj lahko uporabljate funkcije plačljive verzije!</string>
   <string name="donate_thanks">Hvala za vašo pomoč</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">To bo preneslo vse dodatne lastnosti profilov iz različice 1.x v 2.x</string>
   <string name="insert_profile">Vnesi ime profila</string>
   <string name="add">Dodaj</string>
+  <string name="showlog_toasts">To bo omogočilo prikazovanje sporočil ob blokadah</string>
+  <string name="enable_show_toasts">Vklopi prikaz obvestil</string>
+  <string name="widget_prefs_title">Gradniki</string>
+  <string name="xTitle">Širina gradnika</string>
+  <string name="xTitleSummary">Ročno spremeni položaj X</string>
+  <string name="xTitleDialog">Določi širino (število)</string>
+  <string name="yTitle">Višina gradnika</string>
+  <string name="yTitleSummary">Ročno spremeni položaj Y</string>
+  <string name="yTitleDialog">Določi višino (število)</string>
 </resources>

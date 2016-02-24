@@ -19,10 +19,12 @@
   <string name="error_refresh">Error refreshing iptables</string>
   <string name="error_apply">Error applying iptables rules</string>
   <string name="error_fetch">Error fetching iptables rules</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">ข้อผิดพลาด: </string>
   <string name="all_item">(Any application) - Same as selecting all applications</string>
   <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS services</string>
   <string name="dnsproxy_item">(DNS proxy) - DNS lookups via netd</string>
   <string name="ntp_item">(NTP) - Internet time servers</string>
@@ -87,6 +89,7 @@
   <string name="discard">ยก​เลิก</string>
   <string name="delete">ลบ</string>
   <string name="Yes">ใช่</string>
+  <string name="Continue">Continue</string>
   <string name="No">ไม่ใช่</string>
   <string name="OK">OK</string>
   <string name="Cancel">ยกเลิก</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Notification Filter</string>
   <string name="apply_color">Press on Color to apply</string>
   <string name="binaries">Binaries</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Export</string>
   <string name="imports">Import</string>
   <string name="invalid_profile">Invalid Profile Name</string>
   <string name="donate_only">This feature is available only in donate version</string>
-  <string name="buy_donate">Buy Donate version</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> tap to unlock donate</string>
   <string name="donate_support">You can now use donate features!</string>
   <string name="donate_thanks">Thanks for your support</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">This will migrate all additional profiles data from 1.x to 2.x version</string>
   <string name="insert_profile">Enter profile name</string>
   <string name="add">Add</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

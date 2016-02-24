@@ -19,10 +19,12 @@
   <string name="error_refresh">Lỗi khi tải lại iptables</string>
   <string name="error_apply">Lỗi áp dụng quy tắc iptables</string>
   <string name="error_fetch">Lỗi lấy quy tắc iptables</string>
-  <string name="error_su">Không thể truy cập root. \nĐiện thoại của bạn cần được root để có thể chạy AFWall+.\n\nNếu điện thoại này đã được root, hãy kiểm tra lại để chắc chắn rằng AFWall + có đủ quyền để thực hiện lệnh \"su\". \n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Lỗi: </string>
   <string name="all_item">(Bất kỳ ứng dụng) - giống như cách chọn tất cả các ứng dụng</string>
   <string name="kernel_item">(Nhân) - Nhân Linux</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Tethering) - dịch vụ DHCP + DNS</string>
   <string name="dnsproxy_item">(DNS proxy) - tra cứu DNS thông qua netd</string>
   <string name="ntp_item">(NTP) - máy chủ thời gian Internet</string>
@@ -87,6 +89,7 @@
   <string name="discard">Loại bỏ</string>
   <string name="delete">Delete</string>
   <string name="Yes">Yes</string>
+  <string name="Continue">Continue</string>
   <string name="No">No</string>
   <string name="OK">OK</string>
   <string name="Cancel">Cancel</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Bộ lọc thông báo</string>
   <string name="apply_color">Bấm vào màu sắc để áp dụng</string>
   <string name="binaries">chương trình</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Xuất </string>
   <string name="imports">Nhập </string>
   <string name="invalid_profile">Tên hồ sơ không hợp lệ</string>
   <string name="donate_only">Tính năng này chỉ có sẵn trong phiên bản tài trợ</string>
-  <string name="buy_donate">Mua phiên bản Donate</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> khai thác để mở khóa tặng</string>
   <string name="donate_support">Bạn có thể bây giờ sử dụng tài trợ tính năng!</string>
   <string name="donate_thanks">Cảm ơn bạn đã hỗ trợ của bạn</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">This will migrate all additional profiles data from 1.x to 2.x version</string>
   <string name="insert_profile">Enter profile name</string>
   <string name="add">Add</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

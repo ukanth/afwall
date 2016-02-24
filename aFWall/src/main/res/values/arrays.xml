@@ -24,6 +24,7 @@
 
         <item>Polish</item>
         <item>Portuguese</item>
+        <item>Portuguese(Brazilian)</item>
         <item>Russian</item>
         <item>Serbian (Cyrillic)</item>
         <item>Serbian</item>
@@ -37,7 +38,6 @@
         <item>Traditional Chinese</item>
         <item>Turkey</item>
         <item>Ukrainian</item>
-
 
 
 
@@ -65,6 +65,7 @@
         <item>ko</item>
         <item>pl</item>
         <item>pt</item>
+        <item>pt_BR</item>
         <item>ru</item>
         <item>sr_CS</item>
         <item>sr</item>
@@ -76,7 +77,6 @@
         <item>zh_TW</item>
         <item>tr</item>
         <item>uk</item>
-
 
     </string-array>
 

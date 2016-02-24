@@ -19,16 +19,18 @@
   <string name="error_refresh">Ошибка обновления iptables</string>
   <string name="error_apply">Ошибка применения правил iptables</string>
   <string name="error_fetch">Ошибка получения правил iptables</string>
-  <string name="error_su">Невозможно получить root доступ.\nДля работы приложения AFWall+ необходим root доступ.\n\n Если в вашем телефоне получен root и установлен Superuser, то пожалуйста убедитесь что  AFWall+ имеет достаточно разрешений для выполнения команды \"su\".\n</string>
+  <string name="error_su">Невозможно получить root-доступ.\nДля работы приложения AFWall+ необходим root-доступ.\n\nЕсли в Вашем телефоне есть рут и установлен Superuser, то пожалуйста убедитесь что AFWall+ имеет достаточно разрешений для выполнения команды \"su\".</string>
+  <string name="error_netfilter">Не удалось найти поддержку целей iptables и цепочек. \nИз-за этого ограничения AFWall+ может работать не так, как нужно.</string>
   <string name="error_common">Ошибка :</string>
   <string name="all_item">(все) - Все приложения</string>
   <string name="kernel_item">(Ядро) - ядро Linux</string>
+  <string name="unknown_item">Неизв.</string>
   <string name="tethering_item">(Tethering) - сервисы DHCP+DNS</string>
   <string name="dnsproxy_item">(DNS proxy) - запросы DNS через netd</string>
   <string name="ntp_item">(NTP) - сервера времени в Интернете</string>
   <string name="root_item">(root) - Все приложения с root правами</string>
   <string name="adb_item">(adb) - ADB (Android Debug Bridge-отладочный мост Андроид)</string>
-  <string name="media_item">(media) - Медиасервер</string>
+  <string name="media_item">(media) - медиасервер</string>
   <string name="vpn_item">(vpn) - сеть VPN</string>
   <string name="drm_item">(drm) - служба управления цифровыми правами (Digital Rights Management)</string>
   <string name="gps_item">(gps) - GPS (Global Positioning System-система глобального позиционирования)</string>
@@ -88,6 +90,7 @@
   <string name="discard">Отменить</string>
   <string name="delete">Удалить</string>
   <string name="Yes">Да</string>
+  <string name="Continue">Далее</string>
   <string name="No">Нет</string>
   <string name="OK">OK</string>
   <string name="Cancel">Отмена</string>
@@ -260,11 +263,12 @@
   <string name="filters_apps_title">Фильтр уведомлений</string>
   <string name="apply_color">Нажмите на цвет, чтобы применить</string>
   <string name="binaries">Бинарные</string>
+  <string name="widgets">Виджеты</string>
   <string name="exports">Экспорт</string>
   <string name="imports">Импорт</string>
   <string name="invalid_profile">Недопустимое имя</string>
   <string name="donate_only">Эта функция доступна только в Donate версии</string>
-  <string name="buy_donate">Купить версию Donate</string>
+  <string name="buy_donate">Купить версию для пожертвований или ключ</string>
   <string name="unlock_donate"> нажать для разблокировки платных функций</string>
   <string name="donate_support">Теперь Вы можете использовать платные функции!</string>
   <string name="donate_thanks">Спасибо за вашу поддержку</string>
@@ -304,4 +308,13 @@
   <string name="migrate_summary">Будет выполнен перенос всех дополнительных данных профилей из версии 1.x в версию 2.x</string>
   <string name="insert_profile">Введите имя профиля</string>
   <string name="add">Добавить</string>
+  <string name="showlog_toasts">После включения при блокировке будет отображаться всплывающее сообщение</string>
+  <string name="enable_show_toasts">Включить уведомление</string>
+  <string name="widget_prefs_title">Настройки виджета</string>
+  <string name="xTitle">Ширина виджета</string>
+  <string name="xTitleSummary">Ручная настройка позиции X</string>
+  <string name="xTitleDialog">Задать ширину (число)</string>
+  <string name="yTitle">Высота виджета</string>
+  <string name="yTitleSummary">Ручная настройка позиции Y</string>
+  <string name="yTitleDialog">Задать высоту (число)</string>
 </resources>

@@ -19,10 +19,12 @@
   <string name="error_refresh">更新 iptables 時錯誤</string>
   <string name="error_apply">套用 iptables 規則時錯誤</string>
   <string name="error_fetch">獲取 iptables 規則時錯誤</string>
-  <string name="error_su">無法獲取 root 權限。\n您需要一台已 root 的手機來執行 AFWall+。\n\n如果這台手機已經 root，請確保 AFWall+ 具有足夠的權限執行 \"su\" 命令。\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">錯誤：</string>
   <string name="all_item">（任何應用程式） - 與全選功能一樣</string>
   <string name="kernel_item">(內核) - Linux 內核</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(網路共用) - DHCP+DNS 服務</string>
   <string name="dnsproxy_item">(DNS 代理) - 透過 netd 進行 DNS 搜尋</string>
   <string name="ntp_item">(NTP) - Internet 時間伺服器</string>
@@ -87,6 +89,7 @@
   <string name="discard">放棄</string>
   <string name="delete">刪除</string>
   <string name="Yes">是</string>
+  <string name="Continue">Continue</string>
   <string name="No">否</string>
   <string name="OK">確定</string>
   <string name="Cancel">取消</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">通知篩選器</string>
   <string name="apply_color">點擊顏色以套用</string>
   <string name="binaries">二進位檔案</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">匯出</string>
   <string name="imports">匯入</string>
   <string name="invalid_profile">不正確設定檔名稱</string>
   <string name="donate_only">此功能只在贊助版提供</string>
-  <string name="buy_donate">購買贊助版</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> 點擊解鎖贊助版</string>
   <string name="donate_support">你可以現在使用贊助版的功能!</string>
   <string name="donate_thanks">謝謝你的支持</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">這會將所有其他設定檔資料從 1.x 遷移到 2.x 版本</string>
   <string name="insert_profile">輸入設定檔名稱</string>
   <string name="add">新增</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

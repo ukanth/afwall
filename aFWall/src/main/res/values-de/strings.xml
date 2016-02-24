@@ -19,10 +19,12 @@
   <string name="error_refresh">Fehler beim Aktualisieren der IPTables</string>
   <string name="error_apply">Fehler beim Anwenden der IPTables-Regeln</string>
   <string name="error_fetch">Fehler beim Abrufen der IPTables-Regeln</string>
-  <string name="error_su">Es ist kein Root-Zugriff möglich.\nUm AFWall+ nutzen zu können, benötigen Sie ein gerootetes Gerät.\n\nWenn das Gerät bereits gerootet ist, stellen Sie bitte sicher, dass AFWall+ Superuser-Rechte gewährt werden.\n</string>
+  <string name="error_su">Es ist kein Root-Zugriff möglich.\nUm AFWall+ nutzen zu können, benötigen Sie ein gerootetes Gerät.\n\nWenn das Gerät bereits gerootet ist, stellen Sie bitte sicher, dass AFWall+ Superuser-Rechte gewährt werden.\n.</string>
+  <string name="error_netfilter">Unterstützung für IPTables-Ziele und -Ketten konnte nicht gefunden.\nAFWall+ kann aufgrund dieser Einschränkung möglicherweise nicht erwartungsgemäß funktionieren.</string>
   <string name="error_common">Fehler: </string>
   <string name="all_item">(Jede App) - entspricht dem Markieren aller Apps</string>
   <string name="kernel_item">(Kernel) - Linux Kernel</string>
+  <string name="unknown_item">Unbekannt</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS-Dienste</string>
   <string name="dnsproxy_item">(DNS-Proxy) - DNS-Abfragen über netd</string>
   <string name="ntp_item">(NTP) - Internet-Zeitserver</string>
@@ -30,7 +32,7 @@
   <string name="adb_item">(ADB) - ADB (Android Debug Bridge)</string>
   <string name="media_item">(Medien) - Medienserver</string>
   <string name="vpn_item">(VPN) - VPN-Netzwerk</string>
-  <string name="drm_item">(DRM) - Digital-Rights-Management-Dienst</string>
+  <string name="drm_item">(DRM) - Digitale Rechteverwaltung</string>
   <string name="gps_item">(GPS) - GPS</string>
   <string name="shell_item">(Shell) - Linux-Shell</string>
   <string name="fw_enabled">Firewall aktivieren</string>
@@ -87,6 +89,7 @@
   <string name="discard">Verwerfen</string>
   <string name="delete">Löschen</string>
   <string name="Yes">Ja</string>
+  <string name="Continue">Fortfahren</string>
   <string name="No">Nein</string>
   <string name="OK">OK</string>
   <string name="Cancel">Abbrechen</string>
@@ -227,7 +230,7 @@
   <string name="traffic_detail_title">Traffic-Details</string>
   <string name="uploaded">Hochgeladen</string>
   <string name="downloaded">Heruntergeladen</string>
-  <string name="app_system_detail">System-Details öffnen</string>
+  <string name="app_system_detail">Systemdetails öffnen</string>
   <string name="settings_pwd_not_equal">Passwörter stimmen nicht überein</string>
   <string name="faq">Häufig gestellte Fragen</string>
   <string name="reverse_all">Dies wird die Auswahl der gewählten Anwendungen umkehren. Fortsetzen?</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Benachrichtigungsfilter</string>
   <string name="apply_color">Auf Farbe zum Anwenden tippen</string>
   <string name="binaries">Binärdateien</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Export</string>
   <string name="imports">Import</string>
   <string name="invalid_profile">Ungültiger Profilname</string>
   <string name="donate_only">Diese Funktion ist nur in der Vollversion verfügbar</string>
-  <string name="buy_donate">Vollversion erwerben</string>
+  <string name="buy_donate">Spenden-Version kaufen oder Schlüssel spenden</string>
   <string name="unlock_donate"> Tippen zum Entsperren</string>
   <string name="donate_support">Sie können jetzt alle Funktionen uneingeschränkt verwenden!</string>
   <string name="donate_thanks">Vielen Dank für Ihre Unterstützung!</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Es werden alle zusätzlichen Profildaten von Version 1.x nach 2.x migriert</string>
   <string name="insert_profile">Profilnamen eingeben</string>
   <string name="add">Hinzufügen</string>
+  <string name="showlog_toasts">Popup-Benachrichtigung wird in einem Block angezeigt</string>
+  <string name="enable_show_toasts">Popup anzeigen aktivieren</string>
+  <string name="widget_prefs_title">Widget-Einstellungen</string>
+  <string name="xTitle">Widget-Breite</string>
+  <string name="xTitleSummary">X-Position manuell aufheben</string>
+  <string name="xTitleDialog">Breite festlegen (Zahl)</string>
+  <string name="yTitle">Widget-Höhe</string>
+  <string name="yTitleSummary">Y-Position manuell aufheben</string>
+  <string name="yTitleDialog">Höhe festlegen (Zahl)</string>
 </resources>

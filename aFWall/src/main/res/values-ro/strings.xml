@@ -19,10 +19,12 @@
   <string name="error_refresh">Eroare reîmprospătare iptables</string>
   <string name="error_apply">Eroare la aplicarea regulilor iptables</string>
   <string name="error_fetch">Eroare preluare reguli iptables</string>
-  <string name="error_su">Nu s-a putut obține acces root.\nAi nevoie de un telefon cu root pentru a rula AFWall+.\n\nDacă acest telefon are deja root, te rog să te asiguri că AFWall+ are suficiente permisiuni pentru a rula comanda „su”.\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Eroare: </string>
   <string name="all_item">(Orice aplicaţie) - aceeaşi ca selectarea tuturor aplicaţiilor</string>
   <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Tethering) - servicii DHCP+DNS</string>
   <string name="dnsproxy_item">(DNS proxy) - căutări DNS prin intermediul netd</string>
   <string name="ntp_item">(NTP) - servere de timp Internet</string>
@@ -87,6 +89,7 @@
   <string name="discard">Renunță</string>
   <string name="delete">Șterge</string>
   <string name="Yes">Da</string>
+  <string name="Continue">Continue</string>
   <string name="No">Nu</string>
   <string name="OK">OK</string>
   <string name="Cancel">Revocare</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Filtru notificări</string>
   <string name="apply_color">Apasă pe Culoare pentru a aplica</string>
   <string name="binaries">Binare</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Exportă</string>
   <string name="imports">Importă</string>
   <string name="invalid_profile">Nume profil invalid</string>
   <string name="donate_only">Această caracteristică este disponibilă numai în versiunea Donator</string>
-  <string name="buy_donate">Cumpără versiunea Donator</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> deblochează butonul pentru donații</string>
   <string name="donate_support">Acum poți utiliza funcțiile suplimentare!</string>
   <string name="donate_thanks">Vă mulţumim pentru sprijin</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Această acțiune va migra toate datele adiționale profilelor de la versiunea 1.x la versiunea 2.x</string>
   <string name="insert_profile">Introdu numele profilului</string>
   <string name="add">Adaugă</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

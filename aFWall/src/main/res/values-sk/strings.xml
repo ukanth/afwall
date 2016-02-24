@@ -19,10 +19,12 @@
   <string name="error_refresh">Chyba pri obnove iptables</string>
   <string name="error_apply">Chyba pri aplikácii pravidiel iptables</string>
   <string name="error_fetch">Chyba pri načítaní pravidiel iptables</string>
-  <string name="error_su">Nemožno získať root prístup.\nJe potrebný rootnutý telefón na spustenie AFWall+.\n\nAk je tento telefón už rootnutý, uistite sa, že AFWall+ má dostatočné oprávnenia pre spustenie príkazu \"su\".\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Chyba : </string>
   <string name="all_item">(Každá aplikácia) - Rovnaké ako výber všetkých aplikácií</string>
   <string name="kernel_item">(Kernel) - Linux kernel</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Zdielanie) - DHCP+DNS služby</string>
   <string name="dnsproxy_item">(DNS proxy) - vyhľadávanie DNS cez Netd</string>
   <string name="ntp_item">(NTP) - servery času z Internetu</string>
@@ -87,6 +89,7 @@
   <string name="discard">Zrušiť</string>
   <string name="delete">Odstrániť</string>
   <string name="Yes">Áno</string>
+  <string name="Continue">Continue</string>
   <string name="No">Nie</string>
   <string name="OK">OK</string>
   <string name="Cancel">Zrušiť</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Filter pre Notifikácie</string>
   <string name="apply_color">Stlač na Farbu pre aplikovanie</string>
   <string name="binaries">Binárne súbory</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Export</string>
   <string name="imports">Import</string>
   <string name="invalid_profile">Neplatný názov Profilu</string>
   <string name="donate_only">Táto funkcia je dostupná len v platenej verzii</string>
-  <string name="buy_donate">Kúpiť platenú verziu</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> stlačiť na odomknutie</string>
   <string name="donate_support">Platené funkcie sú odomknuté!</string>
   <string name="donate_thanks">Ďakujeme za vašu podporu</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">To zmigruje všetky profily údajov z verzie 1.x do 2.x</string>
   <string name="insert_profile">Zadať názov profilu</string>
   <string name="add">Pridať</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

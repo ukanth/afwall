@@ -19,10 +19,12 @@
   <string name="error_refresh">Uppdatering av iptables regler misslyckades</string>
   <string name="error_apply">Fel vid tillämpning av iptables regler</string>
   <string name="error_fetch">Fel vid hämtning av iptables regler</string>
-  <string name="error_su">Kunde inte få root access. \n Det behövs en rootad telefon att köra AFWall+.\n\n Om denna telefon redan är rootad, kontrollera att AFWall+ har tillräcklig behörighet för att köra \"su\" kommandot. \n</string>
+  <string name="error_su">Kunde inte få root access.\nDet behövs en rootad telefon att köra AFWall+.\n\nOm denna telefon redan är rootad, kontrollera att AFWall+ har tillräcklig behörighet för att köra \"su\" kommandot.</string>
+  <string name="error_netfilter">Kunde inte få tillgång till kärnstödet för iptables.\nAFWall+ kommer kanske inte att fungera som förväntat på grund av denna begränsning.</string>
   <string name="error_common">Fel:</string>
   <string name="all_item">(Valfri applikation) - samma som att välja alla applikationer</string>
   <string name="kernel_item">(Kernel) - Linux-kärnan</string>
+  <string name="unknown_item">okänd</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS tjänster</string>
   <string name="dnsproxy_item">(DNS-proxy) - DNS-uppslag via netd</string>
   <string name="ntp_item">(NTP) - Internet tidsservrar</string>
@@ -87,6 +89,7 @@
   <string name="discard">Ignorera</string>
   <string name="delete">Ta bort</string>
   <string name="Yes">Ja</string>
+  <string name="Continue">Fortsätt</string>
   <string name="No">Nej</string>
   <string name="OK">OK</string>
   <string name="Cancel">Avbryt</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Notifieringsfilter</string>
   <string name="apply_color">Tryck på färg att tillämpa</string>
   <string name="binaries">Binärer</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Export</string>
   <string name="imports">Import</string>
   <string name="invalid_profile">Ogiltigt profilnamn</string>
   <string name="donate_only">Den här funktionen är endast tillgänglig i donationsversionen</string>
-  <string name="buy_donate">Köp donationsversionen</string>
+  <string name="buy_donate">Köpa donationsversion eller donationsnyckel</string>
   <string name="unlock_donate"> tryck för att låsa upp donationsversionen</string>
   <string name="donate_support">Du kan nu använda funktioner från donationsversionen!</string>
   <string name="donate_thanks">Tack för ditt stöd</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Detta kommer att migrera alla profiler från version 1.x till 2.x</string>
   <string name="insert_profile">Ange profilnamn</string>
   <string name="add">Lägg tilll</string>
+  <string name="showlog_toasts">Aktivera för att visa toast-notifieringar vid nekade paket</string>
+  <string name="enable_show_toasts">Aktivera visning av Toasts</string>
+  <string name="widget_prefs_title">Widget inställningar</string>
+  <string name="xTitle">Widget bredd</string>
+  <string name="xTitleSummary">Manuell inställning av X-position</string>
+  <string name="xTitleDialog">Ställ in bredd</string>
+  <string name="yTitle">Widget höjd</string>
+  <string name="yTitleSummary">Manuell inställning av Y-position</string>
+  <string name="yTitleDialog">Ställ in höjd</string>
 </resources>

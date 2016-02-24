@@ -19,10 +19,12 @@
   <string name="error_refresh">Iptables の更新エラー</string>
   <string name="error_apply">Iptables ルールの適用エラー</string>
   <string name="error_fetch">Iptables ルールの取得エラー</string>
-  <string name="error_su">root 権限を取得できません。\n AFWall+ を動かすには root 化された端末が必要です。\n\n端末が既に root 化されている場合は、AFWall+ を \"su\" コマンドで動かす権限が付与されている事を確認してください。\n</string>
+  <string name="error_su">root アクセスを取得できません。\nAFWall+ を実行するには root 化された電話が必要です。\n\n電話が既に root 化されている場合は、AFWall+ が \"su\" コマンドを実行するアクセス許可が付与されている事を確認してください。</string>
+  <string name="error_netfilter">Iptables のターゲットとチェーンのサポートが見つかりません。 \nAFWall+ はこの制限のため正常に動作しません。</string>
   <string name="error_common">エラー: </string>
   <string name="all_item">(すべてのアプリ) - すべてのアプリを選択するのと同義</string>
   <string name="kernel_item">(カーネル) - Linux カーネル</string>
+  <string name="unknown_item">不明</string>
   <string name="tethering_item">(テザリング) - DHCP+DNS サービス</string>
   <string name="dnsproxy_item">(DNS プロキシ) - netd 経由の DNS ルックアップ</string>
   <string name="ntp_item">(NTP) - インターネット タイムサーバ</string>
@@ -90,6 +92,7 @@
   <string name="discard">キャンセル</string>
   <string name="delete">削除</string>
   <string name="Yes">はい</string>
+  <string name="Continue">続行</string>
   <string name="No">いいえ</string>
   <string name="OK">OK</string>
   <string name="Cancel">キャンセル</string>
@@ -262,11 +265,12 @@
   <string name="filters_apps_title">通知フィルター</string>
   <string name="apply_color">適用する色を押します</string>
   <string name="binaries">バイナリ</string>
+  <string name="widgets">ウィジェット</string>
   <string name="exports">エクスポート</string>
   <string name="imports">インポート</string>
   <string name="invalid_profile">無効なプロファイル名</string>
   <string name="donate_only">この機能は寄付版のみ利用可能です</string>
-  <string name="buy_donate">寄付版を購入</string>
+  <string name="buy_donate">寄付バージョンまたは寄付キーを購入</string>
   <string name="unlock_donate"> ロックを解除するため、タップして寄付してください</string>
   <string name="donate_support">寄付版の機能を使用することができます!</string>
   <string name="donate_thanks">ご支援ありがとうございます</string>
@@ -306,4 +310,13 @@
   <string name="migrate_summary">すべての追加のプロファイル データが、バージョン 1.x から 2.x に移行されます</string>
   <string name="insert_profile">プロファイル名を入力してください</string>
   <string name="add">追加</string>
+  <string name="showlog_toasts">有効にすると、ブロック時にトースト通知が表示されます</string>
+  <string name="enable_show_toasts">トーストの表示を有効にする</string>
+  <string name="widget_prefs_title">ウィジェットの設定</string>
+  <string name="xTitle">ウィジェットの幅</string>
+  <string name="xTitleSummary">X 位置を手動オーバーライドします</string>
+  <string name="xTitleDialog">幅を設定 (数値)</string>
+  <string name="yTitle">ウィジェットの高さ</string>
+  <string name="yTitleSummary">Y 位置を手動オーバーライドします</string>
+  <string name="yTitleDialog">高さを設定 (数値)</string>
 </resources>

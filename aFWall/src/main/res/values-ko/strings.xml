@@ -20,9 +20,11 @@
   <string name="error_apply">방화벽 규칙 적용 중 에러</string>
   <string name="error_fetch">방화벽 규칙 가져오는 중 에러</string>
   <string name="error_su">루팅기능을 쓸 수 없습니다.\nAFWall+를 쓰시려면 기기가 루팅되어있어야 합니다..\n\n기기가 루팅이 되었다면, AFWall+이 \'su\' 커맨드-슈퍼유저 를 사용할 수 있도록 허용되었는지 확인해주세요.\n</string>
+  <string name="error_netfilter">Iptable을 사용할 수 없습니다. \nAFWall+이 미작동할 수 있습니다.</string>
   <string name="error_common">에러: </string>
   <string name="all_item">(모든 앱) - 모두 다 체크하는 것과 같습니다.</string>
   <string name="kernel_item">(커널) - 리눅스 커널</string>
+  <string name="unknown_item">알수없음</string>
   <string name="tethering_item">(테터링) - DHCP+DNS 서비스</string>
   <string name="dnsproxy_item">(DNS 프록시) - DNS lookups via netd</string>
   <string name="ntp_item">(NTP) - 인터넷 시각 서버</string>
@@ -87,6 +89,7 @@
   <string name="discard">저장 안 함</string>
   <string name="delete">삭제</string>
   <string name="Yes">네</string>
+  <string name="Continue">계속</string>
   <string name="No">아니요</string>
   <string name="OK">확인</string>
   <string name="Cancel">최소</string>
@@ -133,7 +136,7 @@
   <string name="log_parse_error">기록 분석 중 에러</string>
   <string name="no_log">기록이 없습니다</string>
   <string name="LogAppName">앱 이름</string>
-  <string name="LogPackBlock">차단되 데이터패킷</string>
+  <string name="LogPackBlock">차단된 데이터패킷</string>
   <string name="blocked">AFWall+ 이 차단한 사항 :</string>
   <string name="refresh">새로고침</string>
   <string name="mp_prefs_title">프로필</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">알림 필터</string>
   <string name="apply_color">색상을 눌러 적용합니다</string>
   <string name="binaries">바이너리</string>
+  <string name="widgets">위젯</string>
   <string name="exports">내보내기</string>
   <string name="imports">가져오기</string>
   <string name="invalid_profile">프로필 이름 인식불가</string>
   <string name="donate_only">이 기능은 프로버전에서 사용가능합니다</string>
-  <string name="buy_donate">프로버전 구매</string>
+  <string name="buy_donate">기부버전을 사주세요</string>
   <string name="unlock_donate"> 눌러서 프로버전 허용</string>
   <string name="donate_support">이제 프로버전 기능을 사용할 수 있습니다.</string>
   <string name="donate_thanks">지원해 주셔서 감사드립니다.</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">1,x 버전으로부터 2.x 버전으로 기타 프로필 데이터를 이동합니다.</string>
   <string name="insert_profile">프로필 이름 입력</string>
   <string name="add">추가</string>
+  <string name="showlog_toasts">차단할 때 알림을 받도록 허용</string>
+  <string name="enable_show_toasts">알림 받도록 허용</string>
+  <string name="widget_prefs_title">위젯 설정</string>
+  <string name="xTitle">위젯 너비</string>
+  <string name="xTitleSummary">수동으로 가로위치 조정</string>
+  <string name="xTitleDialog">너비 조절 (숫자)</string>
+  <string name="yTitle">위젯 높이</string>
+  <string name="yTitleSummary">수동으로 세로위치 조정</string>
+  <string name="yTitleDialog">높이 조절 (숫자)</string>
 </resources>

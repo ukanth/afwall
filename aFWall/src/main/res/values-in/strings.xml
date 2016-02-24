@@ -19,10 +19,12 @@
   <string name="error_refresh">Gagal refresh iptable</string>
   <string name="error_apply">Gagal menerapkan aturan iptable</string>
   <string name="error_fetch">Gagal mengambil aturan iptable</string>
-  <string name="error_su">Tdk mendapatkan akses root.\nAnda butuh perangkat yg sudah diroot untuk menjalankan AFWall+.\n\nJika sudah di-root, pastikan AFWall+ diijinkan untuk menjalankan perintah \"su\"\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Eror : </string>
   <string name="all_item">(Aplikasi apapun) - Sama saja semua aplikasi</string>
   <string name="kernel_item">(Kernel) - Kernel Linux</string>
+  <string name="unknown_item">Unknown</string>
   <string name="tethering_item">(Tethering) - Layanan DHCP+DNS</string>
   <string name="dnsproxy_item">(Proxy DNS) - Intip DNS</string>
   <string name="ntp_item">(NTP) - Waktu server internet</string>
@@ -87,6 +89,7 @@
   <string name="discard">Buang</string>
   <string name="delete">Hapus</string>
   <string name="Yes">Ya</string>
+  <string name="Continue">Continue</string>
   <string name="No">Tidak</string>
   <string name="OK">OK</string>
   <string name="Cancel">Batal</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Filter Pemberitahuan</string>
   <string name="apply_color">Sentuh pada warna untuk menerapkan</string>
   <string name="binaries">Binari</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Ekspor</string>
   <string name="imports">Impor</string>
   <string name="invalid_profile">Nama profil tidak benar</string>
   <string name="donate_only">Fitur ini hanya terdapat di versi donasi</string>
-  <string name="buy_donate">Beli versi donasi</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> sentuh untuk membuka donasi</string>
   <string name="donate_support">Anda dapat menggunakan fitur fitur donasi sekarang!</string>
   <string name="donate_thanks">Terima kasih atas dukungan anda</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Ini akan memindahkan semua data informasi tambahan dari versi 1.x ke versi 2.x</string>
   <string name="insert_profile">Masukkan nama profil</string>
   <string name="add">Tambahkan</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Widget Width</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Widget Height</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>

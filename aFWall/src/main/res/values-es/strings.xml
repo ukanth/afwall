@@ -19,10 +19,12 @@
   <string name="error_refresh">Error al actualizar iptables</string>
   <string name="error_apply">Error al aplicar las reglas iptables</string>
   <string name="error_fetch">Error al buscar reglas iptables</string>
-  <string name="error_su">No se puede obtener acceso root.\nNecesitas un teléfono con root para ejecutar AFWall+.\n\n Si este teléfono ya esta rooteado, por favor asegúrate que AFWall+ tiene permisos para ejecutar el comando \"su\".\n</string>
+  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Error:</string>
   <string name="all_item">(Cualquier aplicación) - Es lo mismo que seleccionar todas las aplicaciones</string>
   <string name="kernel_item">(Kernel) - núcleo Linux</string>
+  <string name="unknown_item">Desconocido</string>
   <string name="tethering_item">(Tethering) - servicios de DNS + DHCP</string>
   <string name="dnsproxy_item">(Proxy DNS) - búsquedas de DNS vía netd</string>
   <string name="ntp_item">(NTP) - Servidores de sincronización horaria en Internet</string>
@@ -87,6 +89,7 @@
   <string name="discard">Descartar</string>
   <string name="delete">Borrar</string>
   <string name="Yes">Sí</string>
+  <string name="Continue">Continuar</string>
   <string name="No">No</string>
   <string name="OK">Aceptar</string>
   <string name="Cancel">Cancelar</string>
@@ -259,11 +262,12 @@
   <string name="filters_apps_title">Filtro de notificación</string>
   <string name="apply_color">Pulse sobre el color para aplicar</string>
   <string name="binaries">Binarios</string>
+  <string name="widgets">Widgets</string>
   <string name="exports">Exportar</string>
   <string name="imports">Importar</string>
   <string name="invalid_profile">Nombre de perfil no válido</string>
   <string name="donate_only">Esta característica esta disponible solo en la versión de donación</string>
-  <string name="buy_donate">Comprar la versión de donación</string>
+  <string name="buy_donate">Buy Donate version or Donate Key</string>
   <string name="unlock_donate"> Activar para desbloquear el boton para donacion</string>
   <string name="donate_support">Usted ahora puede usar  características Donadas!</string>
   <string name="donate_thanks">Gracias por tu apoyo</string>
@@ -303,4 +307,13 @@
   <string name="migrate_summary">Esto migrará todos los datos adicionales de perfiles desde la versión 1.x a 2.x</string>
   <string name="insert_profile">Introduzca nombre de perfil</string>
   <string name="add">Agregar</string>
+  <string name="showlog_toasts">Enable will show toast notification on block</string>
+  <string name="enable_show_toasts">Enable Show Toasts</string>
+  <string name="widget_prefs_title">Widget Settings</string>
+  <string name="xTitle">Anchura del Widget</string>
+  <string name="xTitleSummary">Manual Override X Position</string>
+  <string name="xTitleDialog">Set Width (Number)</string>
+  <string name="yTitle">Altura del Widget</string>
+  <string name="yTitleSummary">Manual Override Y Position</string>
+  <string name="yTitleDialog">Set Height (Number)</string>
 </resources>
