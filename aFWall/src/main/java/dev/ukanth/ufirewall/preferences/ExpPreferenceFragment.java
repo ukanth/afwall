@@ -27,7 +27,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 	private static CheckBoxPreference fixLeakPref;
 
 	private static final String initDirs[] = { "/system/etc/init.d",
-			"/etc/init.d" };
+			"/etc/init.d" , "/system/su.d" };
 	private static final String initScript = "afwallstart";
 
 	@SuppressLint("NewApi")

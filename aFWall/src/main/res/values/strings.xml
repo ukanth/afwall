@@ -108,7 +108,7 @@
         init.d
     -->
     <string name="success_initd">Successfully installed startup script</string>
-    <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d</string>
+    <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
     <string name="remove_initd">Successfully removed startup script</string>
     <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
 
@@ -241,7 +241,7 @@
     <!-- Startup -->
     <string name="startup_service">Applying Rules. Please wait!</string>
     <string name="fixleakTitle">Fix Startup Data Leak</string>
-    <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d support.  HTC devices must be configured for S-OFF.</string>
+    <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d(superSU) support.  HTC devices must be configured for S-OFF.</string>
     <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
