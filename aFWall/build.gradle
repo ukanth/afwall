@@ -35,7 +35,7 @@ android {
 
 
 dependencies {
-    compile 'com.github.haibison:android-lockpattern:7.0.0'
+    compile 'org.bitbucket.ukanth:android-lockpattern:7.0.0'
     //compile 'eu.chainfire:libsuperuser:1.0.0.+'
     compile 'com.android.support:appcompat-v7:23.1.1'
     //compile 'com.afollestad:material-dialogs:0.7.8.1'
