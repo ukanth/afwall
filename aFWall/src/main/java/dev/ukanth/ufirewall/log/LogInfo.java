@@ -61,7 +61,7 @@ public class LogInfo{
 	public static String parseLog(Context ctx, String dmesg) {
 		
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -1;
+		final Integer unknownUID = -11;
 		StringBuilder res = new StringBuilder();
 		String line;
 		int start, end;
@@ -145,7 +145,7 @@ public class LogInfo{
 							}
 						}
 					} else {
-						appName = ctx.getString(R.string.unknown_item);
+						appName = ctx.getString(R.string.kernel_item);
 					}
 				   loginfo = map.valueAt(i);
 				   totalBlocked = loginfo.totalBlocked;
@@ -269,7 +269,7 @@ public class LogInfo{
 
 	public static LogInfo parseLogs(String result,final Context ctx) {
 
-		final Integer unknownUID = -1;
+		final Integer unknownUID = -11;
 		StringBuilder address;
 		int start, end;
 		Integer uid;
@@ -351,7 +351,7 @@ public class LogInfo{
 						appName = appNameMap.get(uid);
 					}
 				} else {
-					appName = ctx.getString(R.string.unknown_item);
+					appName = ctx.getString(R.string.kernel_item);
 				}
 				logInfo.appName = appName;
 				address = new StringBuilder();
