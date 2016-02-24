@@ -17,6 +17,7 @@ Version 2.1.4
 * Added additional information for error report for better understanding
 * Initial support to store logs to db for history. New UI will be in the next version with History.
 * Fixed lot of reported crash issues
+* Fix: Language not switching for few languages
 * Updated Translations with new language support (pt-BR)
 * Library updates: androidlockpattern,material dialogs
 
