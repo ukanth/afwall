@@ -53,7 +53,7 @@ public class BootBroadcast extends BroadcastReceiver {
 	public void onReceive(final Context context, final Intent intent) {
 
 		//hard code 5 seconds delay before apply rules
-		final int delay = 5;
+		final int delay = 3;
 
 		notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		notiBuilder = new NotificationCompat.Builder(context);
@@ -98,10 +98,25 @@ public class BootBroadcast extends BroadcastReceiver {
 				if (G.enableLogService()) {
 					context.startService(new Intent(context, LogService.class));
 				}
+				//cleanup the notification after applying rules
+				notificationManager.cancel(id);
 			}
 		}).start();
 
+		//TODO:  Old way of applying rules for now
 
+		/*InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+
+		if(G.activeNotification()){
+			Api.showNotification(Api.isEnabled(context), context);
+		}
+		//make sure nflog starts after boot
+		if(G.enableLog() && "NFLOG".equals(G.logTarget())) {
+			context.startService(new Intent(context.getApplicationContext(), NflogService.class));
+		}
+		if (G.enableLogService()) {
+			context.startService(new Intent(context, LogService.class));
+		}*/
 
 	}
 }
