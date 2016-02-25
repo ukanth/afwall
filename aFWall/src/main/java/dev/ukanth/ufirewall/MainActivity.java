@@ -779,11 +779,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 		List<PackageInfoData> apps2;
 		if(showAll || (searchStr != null && searchStr.equals(""))) {
-			apps2 = Collections.synchronizedList(apps);
+			apps2 = apps;
 		} else if(isResultsFound || searchApp.size() > 0) {
-			apps2 = Collections.synchronizedList(searchApp);
+			apps2 = searchApp;
 		} else {
-			apps2 = Collections.synchronizedList(new ArrayList<PackageInfoData>());
+			apps2 = new ArrayList<PackageInfoData>();
 		}
 		synchronized(apps2) {
 			// Sort applications - selected first, then alphabetically
