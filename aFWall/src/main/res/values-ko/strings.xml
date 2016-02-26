@@ -21,7 +21,7 @@
   <string name="error_fetch">방화벽 규칙 가져오는 중 에러</string>
   <string name="error_su">루팅기능을 쓸 수 없습니다.\nAFWall+를 쓰시려면 기기가 루팅되어있어야 합니다..\n\n기기가 루팅이 되었다면, AFWall+이 \'su\' 커맨드-슈퍼유저 를 사용할 수 있도록 허용되었는지 확인해주세요.\n</string>
   <string name="error_netfilter">Iptable을 사용할 수 없습니다. \nAFWall+이 미작동할 수 있습니다.</string>
-  <string name="error_common">에러: </string>
+  <string name="error_common">에러 : </string>
   <string name="all_item">(모든 앱) - 모두 다 체크하는 것과 같습니다.</string>
   <string name="kernel_item">(커널) - 리눅스 커널</string>
   <string name="unknown_item">알수없음</string>
