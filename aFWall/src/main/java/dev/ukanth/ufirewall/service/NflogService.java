@@ -111,7 +111,19 @@ public class NflogService extends Service {
 		{
 		    @Override
 		    public void run() {
-		    	new RootShell.RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext()) + " pkill " + nflogPath);
+				try {
+					new RootShell.RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext(),false) + " pkill nflog");
+				} catch (Exception e) {
+					//another attempt to use killall command from system busybox
+					try {
+						new RootShell.RootCommand().run(getApplicationContext(), Api.getBusyBoxPath(getApplicationContext(),true) + " killall nflog");
+					}catch(Exception ee) {
+						// what if this also failed ? try using normal android way
+						new RootShell.RootCommand().run(getApplicationContext(), "echo $(ps | grep nflog) | cut -d' ' -f2 | xargs kill");
+						android.util.Log.e(TAG,ee.getMessage());
+					}
+				}
+
 		    }
 		};
 		thread.start();

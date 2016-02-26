@@ -311,11 +311,12 @@ public final class Api {
             Api.ipPath = dir + "run_pie " + dir + (setv6 ? "ip6tables":"iptables");
         }
 
-		Api.bbPath = getBusyBoxPath(ctx);
+		Api.bbPath = getBusyBoxPath(ctx,true);
 	}
 	
-	public static String getBusyBoxPath(Context ctx) {
-		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable()) {
+	public static String getBusyBoxPath(Context ctx,boolean considerSystem) {
+
+		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable() && considerSystem) {
 			return "busybox ";
 		} else {
             String dir = ctx.getDir("bin",0).getAbsolutePath();
@@ -1046,7 +1047,7 @@ public final class Api {
 	 * @param callback Callback for completion status
 	 */
 	public static void clearLog(Context ctx, RootCommand callback) {
-		callback.run(ctx, getBusyBoxPath(ctx) + " dmesg -c");
+		callback.run(ctx, getBusyBoxPath(ctx,true) + " dmesg -c");
 	}
 
 	/**
@@ -1059,7 +1060,7 @@ public final class Api {
 	 */
 	public static boolean fetchLogs(Context ctx, RootCommand callback) {
 		if(G.logTarget().equals("LOG")) {
-			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
+			callback.run(ctx, getBusyBoxPath(ctx,true) + " dmesg");
 			return true;
 		} else {
 			return false;
@@ -1073,7 +1074,7 @@ public final class Api {
 	 * @param callback Callback for completion status
 	 */
 	public static void runIfconfig(Context ctx, RootCommand callback) {
-		callback.run(ctx, getBusyBoxPath(ctx) + " ifconfig -a");
+		callback.run(ctx, getBusyBoxPath(ctx,true) + " ifconfig -a");
 	}
 
 	public boolean isSuPackage(PackageManager pm, String suPackage) {
@@ -2549,13 +2550,20 @@ public final class Api {
 		Thread thread = new Thread(){
 		    @Override
 		    public void run() {
-		    	try {
-		    		new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill klogripper");
-					//make sure killall command as well used
-					new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " killall klogripper");
-		    	}catch(Exception e) {
-		    		Log.e(TAG,e.getMessage());
-		    	}
+				//use built-in busybox to kill the process
+				try {
+					new RootCommand().run(ctx, Api.getBusyBoxPath(ctx, false) + " pkill klogripper");
+				}catch(Exception e) {
+					//another attempt to use killall command from system busybox
+					try {
+						new RootCommand().run(ctx, Api.getBusyBoxPath(ctx,true) + " killall klogripper");
+					}catch(Exception ee) {
+						// what if this also failed ? try using normal android way
+						new RootCommand().run(ctx, "echo $(ps | grep klogripper) | cut -d' ' -f2 | xargs kill");
+						Log.e(TAG,ee.getMessage());
+					}
+				}
+
 		    }
 		};
 		thread.start();
