@@ -1,7 +1,7 @@
 Changelog AFWall+
 ==================
 
-Version 2.1.4
+Version 2.2.0
 * Auto IPV6 support
 * Support for Android 6 runtime permission (external storage - import/export)
 * Widget alignment issue - Support to manual adjustment
