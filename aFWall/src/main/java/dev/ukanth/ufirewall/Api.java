@@ -1278,7 +1278,16 @@ public final class Api {
 		return listUids;
 	}
 
-	
+	public static void removeNotification(Context context) {
+
+		final int NOTIF_ID = 33341;
+		String notificationText = "";
+
+		NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		mNotificationManager.cancel(NOTIF_ID);
+	}
 
 
 	private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {

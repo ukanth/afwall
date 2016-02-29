@@ -24,17 +24,13 @@
 package dev.ukanth.ufirewall.broadcast;
 
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.MainActivity;
-import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.util.G;
@@ -53,7 +49,7 @@ public class BootBroadcast extends BroadcastReceiver {
 	public void onReceive(final Context context, final Intent intent) {
 
 		//hard code 5 seconds delay before apply rules
-		final int delay = 3;
+		/*final int delay = 3;
 
 		notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		notiBuilder = new NotificationCompat.Builder(context);
@@ -101,22 +97,26 @@ public class BootBroadcast extends BroadcastReceiver {
 				//cleanup the notification after applying rules
 				notificationManager.cancel(id);
 			}
-		}).start();
+		}).start(); */
 
 		//TODO:  Old way of applying rules for now
 
-		/*InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 
-		if(G.activeNotification()){
-			Api.showNotification(Api.isEnabled(context), context);
-		}
+		//make sure we start the notification before apply the rules
+		Api.showNotification(Api.isEnabled(context), context);
+
 		//make sure nflog starts after boot
 		if(G.enableLog() && "NFLOG".equals(G.logTarget())) {
 			context.startService(new Intent(context.getApplicationContext(), NflogService.class));
 		}
 		if (G.enableLogService()) {
 			context.startService(new Intent(context, LogService.class));
-		}*/
+		}
+		//remove the notificaction if user doesn't want.
+		if(!G.activeNotification()){
+			Api.removeNotification(context);
+		}
 
 	}
 }
