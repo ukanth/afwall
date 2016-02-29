@@ -103,19 +103,18 @@ public class BootBroadcast extends BroadcastReceiver {
 
 		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 
-		//make sure we start the notification before apply the rules
-		Api.showNotification(Api.isEnabled(context), context);
-
+		if(G.activeNotification()){
+			Api.showNotification(Api.isEnabled(context), context);
+		}
+		
 		//make sure nflog starts after boot
 		if(G.enableLog() && "NFLOG".equals(G.logTarget())) {
 			context.startService(new Intent(context.getApplicationContext(), NflogService.class));
 		}
+
+		//turn on log service as well
 		if (G.enableLogService()) {
 			context.startService(new Intent(context, LogService.class));
-		}
-		//remove the notificaction if user doesn't want.
-		if(!G.activeNotification()){
-			Api.removeNotification(context);
 		}
 
 	}
