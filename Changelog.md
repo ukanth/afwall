@@ -1,6 +1,12 @@
 Changelog AFWall+
 ==================
 
+Version 2.2.1
+* Fix: delete su.d script if unchecked from preference
+* Fix: Startup hang issue while applying rules
+* Fix: Widget size issue 
+* Added missing translation for Romania - Thanks to @ASebastian/mysterys3by
+
 Version 2.2.0
 * Auto IPV6 support
 * Support for Android 6 runtime permission (external storage - import/export)
