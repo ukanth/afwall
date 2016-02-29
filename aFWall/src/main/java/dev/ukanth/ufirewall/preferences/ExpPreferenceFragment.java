@@ -111,8 +111,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 			@Override
 			public Boolean doInBackground(Void... args) {
 				return enabled ? RootTools.copyFile(srcPath, getFixLeakPath(),
-						true, false) : RootTools.deleteFileOrDirectory(
-						getFixLeakPath(), true);
+						true, false) : deleteFiles();
 			}
 
 			@Override
@@ -133,6 +132,19 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 				Api.displayToasts(ctx, msgid, Toast.LENGTH_SHORT);
 			}
 		}.execute();
+	}
+
+	private Boolean deleteFiles() {
+		for (String s : initDirs) {
+			File f = new File(s);
+			if (f.exists() && f.isDirectory()) {
+				String filePath  = s + "/" + initScript;
+				if(new File(filePath).exists()) {
+					RootTools.deleteFileOrDirectory(filePath, true);
+				}
+			}
+		}
+		return true;
 	}
 
 	private static String getFixLeakPath() {
