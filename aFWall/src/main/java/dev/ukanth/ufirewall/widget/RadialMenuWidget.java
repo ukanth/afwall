@@ -77,15 +77,15 @@ public class RadialMenuWidget extends View {
 	private Rect[] iconRect2 = new Rect[wedgeQty2]; 
 	private RadialMenuEntry wedge2Data = null;		//Keeps track off which menuItem data is being used for the outer ring
 	
-	private int MinSize = scalePX(25);				//Radius of inner ring size
-	private int MaxSize = scalePX(70);				//Radius of outer ring size
+	private int MinSize = scalePX(35);				//Radius of inner ring size
+	private int MaxSize = scalePX(90);				//Radius of outer ring size
 	private int r2MinSize = MaxSize+scalePX(5);		//Radius of inner second ring size
 	private int r2MaxSize = r2MinSize+scalePX(45);	//Radius of outer second ring size
-	private int MinIconSize = scalePX(10);					//Min Size of Image in Wedge
-	private int MaxIconSize = scalePX(30);			//Max Size of Image in Wedge
+	private int MinIconSize = scalePX(15);					//Min Size of Image in Wedge
+	private int MaxIconSize = scalePX(35);			//Max Size of Image in Wedge
 	//private int BitmapSize = scalePX(40);			//Size of Image in Wedge
-	private int cRadius = MinSize-scalePX(5); 	 	//Inner Circle Radius
-	private int textSize = scalePX(10);				//TextSize
+	private int cRadius = MinSize-scalePX(7); 	 	//Inner Circle Radius
+	private int textSize = scalePX(15);				//TextSize
 	private int animateTextSize = textSize;
 	
 	private int xPosition = getSizeX();			//Center X location of Radial Menu
