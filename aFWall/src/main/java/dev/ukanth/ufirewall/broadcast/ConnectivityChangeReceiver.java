@@ -25,8 +25,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.concurrent.SynchronousQueue;
-
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
@@ -41,13 +39,11 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 	public static final String WIFI_AP_STATE_CHANGED_ACTION = "android.net.wifi.WIFI_AP_STATE_CHANGED";
 	public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
 	public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
-	public static final int WIFI_AP_STATE_DISABLING = 10;
+	/*public static final int WIFI_AP_STATE_DISABLING = 10;
 	public static final int WIFI_AP_STATE_DISABLED = 11;
 	public static final int WIFI_AP_STATE_ENABLING = 12;
 	public static final int WIFI_AP_STATE_ENABLED = 13;
-	public static final int WIFI_AP_STATE_FAILED = 14;
-
-	SynchronousQueue syncChange = new SynchronousQueue();
+	public static final int WIFI_AP_STATE_FAILED = 14;*/
 
 	@Override
 	public void onReceive(final Context context, Intent intent) {
@@ -58,9 +54,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-
 		if(G.activeRules()) {
-
 			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
 			final Intent logIntent = new Intent(context, LogService.class);
 			if (G.enableLogService()) {
@@ -68,6 +62,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 				if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
 					//make sure kill all the klog ripper
 					context.stopService(logIntent);
+					Api.killLogProcess(context,Api.getKLogPath(context));
 				} else {
 					//restart the service
 					context.stopService(logIntent);
@@ -76,40 +71,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 			} else {
 				//no internet - stop the service
 				context.stopService(logIntent);
+				Api.killLogProcess(context,Api.getKLogPath(context));
 			}
 		}
-
-
-			/*Thread producer = new Thread("PRODUCER") {
-				public void run() {
-					try {
-						syncChange.put(System.currentTimeMillis());
-					} catch (InterruptedException e) {
-						//e.printStackTrace();
-					}
-
-				}
-			};
-
-			producer.start();
-
-			Thread consumer = new Thread("CONSUMER") {
-				public void run() {
-					try {
-						Long timestamp = (Long) syncChange.take(); // thread will block here
-						Log.d("current consumed event timestamp ", System.currentTimeMillis() + "");
-						Log.d("consumed event", Thread.currentThread().getName() + ":" + timestamp);
-
-					} catch (InterruptedException e) {
-						//e.printStackTrace();
-					}
-				}
-			};
-
-			consumer.start();
-		}*/
-
 	}
-	
-	
 }
