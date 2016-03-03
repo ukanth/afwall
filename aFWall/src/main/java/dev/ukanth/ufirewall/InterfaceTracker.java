@@ -98,7 +98,6 @@ public final class InterfaceTracker {
 			return in.split(regexp)[0];
 		}
 
-		@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 		public static void populateLanMasks(Context context, String[] names, InterfaceDetails ret) {
 			try {
 				Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
@@ -128,12 +127,9 @@ public final class InterfaceTracker {
 						String mask = truncAfter(ip.getHostAddress(), "%") + "/" +
 									  addr.getNetworkPrefixLength();
 
-						//G.enableIPv6(false);
 						if (ip instanceof Inet4Address) {
 							ret.lanMaskV4 = mask;
 						} else if (ip instanceof Inet6Address) {
-							//auto enable ipv6
-							G.enableIPv6(true);
 							ret.lanMaskV6 = mask;
 						}
 					}
@@ -144,6 +140,25 @@ public final class InterfaceTracker {
 				Log.e(TAG, "Error fetching network interface list");
 			}
 		}
+	}
+
+	public static boolean isIpV6() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = (NetworkInterface) en.nextElement();
+				if(intf.isUp()){
+					for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+						InetAddress inetAddress = enumIpAddr.nextElement();
+						if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
+							return true;
+						}
+					}
+				}
+			}
+		} catch (SocketException ex) {
+			Log.e(TAG, "Exception in Get IP Address: " + ex.toString());
+		}
+		return false;
 	}
 
 	private static void getTetherStatus(Context context, InterfaceDetails d) {

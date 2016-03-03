@@ -772,7 +772,7 @@ public final class Api {
 			return false;
 		}
 
-		if (G.enableIPv6()) {
+		if (G.enableIPv6() || InterfaceTracker.isIpV6()) {
 			setIpTablePath(ctx, true);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
