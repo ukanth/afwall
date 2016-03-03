@@ -19,6 +19,7 @@ import java.io.File;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 
 public class ExpPreferenceFragment extends PreferenceFragment implements
@@ -27,7 +28,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 	private static CheckBoxPreference fixLeakPref;
 
 	private static final String initDirs[] = { "/system/etc/init.d",
-			"/etc/init.d" , "/system/su.d" };
+			"/etc/init.d" , "/system/su.d", "/su/su.d" };
 	private static final String initScript = "afwallstart";
 
 	@SuppressLint("NewApi")
@@ -61,9 +62,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 		if (key.equals("fixLeak")) {
 			boolean enabled = G.fixLeak();
 
-			if (enabled != isFixLeakInstalled()) {
+			//if (enabled != isFixLeakInstalled()) {
 				updateFixLeakScript(enabled);
-			}
+			//}
 		}
 		
 		if (key.equals("multiUser")) {
@@ -111,7 +112,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 			@Override
 			public Boolean doInBackground(Void... args) {
 				return enabled ? RootTools.copyFile(srcPath, getFixLeakPath(),
-						true, false) : deleteFiles();
+						true, false) : deleteFiles(ctx);
 			}
 
 			@Override
@@ -134,17 +135,22 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 		}.execute();
 	}
 
-	private Boolean deleteFiles() {
+	private Boolean deleteFiles(Context ctx) {
+		boolean returnFlag = false;
 		for (String s : initDirs) {
 			File f = new File(s);
 			if (f.exists() && f.isDirectory()) {
 				String filePath  = s + "/" + initScript;
-				if(new File(filePath).exists()) {
-					RootTools.deleteFileOrDirectory(filePath, true);
-				}
+					RootTools.remount(f.getAbsolutePath(),"RW");
+					new RootShell.RootCommand()
+						.setReopenShell(true)
+						.setLogging(true)
+						.run(ctx, "rm -f " + filePath);
+					returnFlag  = RootTools.deleteFileOrDirectory(filePath,true);
+					RootTools.remount(f.getAbsolutePath(),"RO");
 			}
 		}
-		return true;
+		return returnFlag;
 	}
 
 	private static String getFixLeakPath() {
