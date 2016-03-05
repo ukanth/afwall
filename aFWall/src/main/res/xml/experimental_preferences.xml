@@ -1,9 +1,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
  <PreferenceCategory android:title="@string/exp_prefs_title" >
     <CheckBoxPreference
-        android:key="fixLeak"
-        android:summary="@string/fixleakSummary"
-        android:title="@string/fixleakTitle" />
+     android:key="fixLeak"
+     android:summary="@string/fixleakSummary"
+     android:title="@string/fixleakTitle" />
     <CheckBoxPreference
         android:key="enableInbound"
         android:summary="@string/enableInboundSummary"
@@ -14,6 +14,10 @@
         android:title="@string/multi_user_title" />
     </PreferenceCategory>
 
+    <CheckBoxPreference
+        android:key="noOtherChains"
+        android:summary="@string/nochains_summary"
+        android:title="@string/nochains_title" />
    <!-- <ListPreference
         android:defaultValue="s0"
         android:entries="@array/sort_key"

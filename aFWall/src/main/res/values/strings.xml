@@ -414,6 +414,9 @@
     <string name="yTitleDialog">Set Height (Number)</string>
     <string name="apply_sequence">Applying rules in %d second/s</string>
 
+
     <string name="error_nonsupported">King Root Detected !</string>
     <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
+    <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
+    <string name="nochains_title">Use only AFWall+ Chains</string>
 </resources>

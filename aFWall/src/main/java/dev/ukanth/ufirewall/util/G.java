@@ -46,6 +46,7 @@ public class G extends android.app.Application {
 	public static final String TAG = "AFWall";
 	
 	private static final String IS_ROOT_AVAIL = "isRootAvail";
+	private static final String NO_CHAINS = "noOtherChains";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
 	private static final String REG_DO = "ipurchaseddonatekey";
@@ -142,6 +143,8 @@ public class G extends android.app.Application {
 	public static boolean showLogToasts() { return gPrefs.getBoolean(SHOW_LOG_TOAST, false); }
 	public static boolean showLogToasts(boolean val) { gPrefs.edit().putBoolean(SHOW_LOG_TOAST, val).commit(); return val; }
 
+
+	public static boolean noOtherChains() { return gPrefs.getBoolean(NO_CHAINS, false); }
 
 	public static boolean fixLeak() { return gPrefs.getBoolean(FIX_START_LEAK, false); }
 	//public static boolean fixLeak(boolean val) { gPrefs.edit().putBoolean(FIX_START_LEAK, val).commit(); return val; }

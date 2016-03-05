@@ -545,11 +545,10 @@ public final class Api {
 				// the interface gets an IP address, and the time we process the intent
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
 				// legitimate traffic from time to time, so we won't log the failures.
-				/*if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
-				}*/
+				//TODO: Alternate to this update. breaking in
+				/*cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT"); */
 
 			}
 		} else {
@@ -593,6 +592,11 @@ public final class Api {
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		List<String> cmds = new ArrayList<String>();
+
+		if(G.noOtherChains()) {
+			cmds.add("-F");
+			cmds.add("-X");
+		}
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 
