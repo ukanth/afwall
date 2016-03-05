@@ -415,5 +415,5 @@
     <string name="apply_sequence">Applying rules in %d second/s</string>
 
     <string name="error_nonsupported">King Root Detected !</string>
-    <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since it's a superuser app, AFWall+ cannot fix this issue.</string>
+    <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
 </resources>
