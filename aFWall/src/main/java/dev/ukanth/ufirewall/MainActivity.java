@@ -1915,6 +1915,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						})*/
 						.show();
 			}
+			// more details on https://github.com/ukanth/afwall/issues/501
+			if(isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
+				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+						.title(R.string.error_nonsupported)
+						.content(R.string.error_nonsupported_details)
+						.onNegative(new MaterialDialog.SingleButtonCallback() {
+							@Override
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+								MainActivity.this.finish();
+								android.os.Process.killProcess(android.os.Process.myPid());
+								dialog.dismiss();
+							}
+						})
+						.negativeText(R.string.exit)
+						.show();
+			}
 			if(!rootGranted && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
