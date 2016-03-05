@@ -413,4 +413,7 @@
     <string name="yTitleSummary">Manual Override Y Position</string>
     <string name="yTitleDialog">Set Height (Number)</string>
     <string name="apply_sequence">Applying rules in %d second/s</string>
+
+    <string name="error_nonsupported">King Root Detected !</string>
+    <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since it's a superuser app, AFWall+ cannot fix this issue.</string>
 </resources>
