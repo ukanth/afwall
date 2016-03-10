@@ -404,14 +404,14 @@
     <string name="enable_show_toasts">Enable Show Toasts</string>
 
 
-    <string name="widget_prefs_title">Widget Settings</string>
-    <string name="xTitle">Widget Width</string>
+    <string name="widget_prefs_title">Widget Positions</string>
+    <string name="xTitle">Widget X Position</string>
     <string name="xTitleSummary">Manual Override X Position</string>
-    <string name="xTitleDialog">Set Width (Number)</string>
+    <string name="xTitleDialog">Set X Position (Number)</string>
 
-    <string name="yTitle">Widget Height</string>
+    <string name="yTitle">Widget Y Position</string>
     <string name="yTitleSummary">Manual Override Y Position</string>
-    <string name="yTitleDialog">Set Height (Number)</string>
+    <string name="yTitleDialog">Set Y Position (Number)</string>
     <string name="apply_sequence">Applying rules in %d second/s</string>
 
 
