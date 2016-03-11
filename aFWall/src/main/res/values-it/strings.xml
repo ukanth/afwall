@@ -105,7 +105,7 @@
         init.d
     -->
   <string name="success_initd">Script di avvio installato con successo</string>
-  <string name="unable_initd">Impossibile installare lo script di avvio AFWall+. Si prega di verificare che la vostra ROM/Kernel supporti init. d</string>
+  <string name="unable_initd">Impossibile installare lo script di avvio di AFWall+. Controlla che la tua ROM o il tuo kernel supportino init.d o su.d.</string>
   <string name="remove_initd">Script di avvio rimosso correttamente</string>
   <string name="unable_remove_initd">Impossibile rimuovere lo script di avvio AFWall+</string>
   <!-- Widget -->
@@ -222,7 +222,7 @@
   <!-- Startup -->
   <string name="startup_service">Applicando le regole... Si prega di attendere!</string>
   <string name="fixleakTitle">Impedisci la fuga di dati all\'avvio</string>
-  <string name="fixleakSummary">Previeni le perdite di dati durante l\'avvio del sistema.  La ROM deve supportare init.d. I dispositivi HTC devono essere configurati con S-OFF.</string>
+  <string name="fixleakSummary">Previene la perdita di dati durante l\'avvio del sistema. La tua ROM deve supportare init.d o su.d (superSU). I dispositivi HTC devono essere configurati con S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -340,11 +340,16 @@
   <string name="add">Aggiungi</string>
   <string name="showlog_toasts">Abilitando questa opzione verranno mostrati dei popup ad ogni bloccaggio</string>
   <string name="enable_show_toasts">Abilita mostra popup</string>
-  <string name="widget_prefs_title">Impostazioni widget</string>
-  <string name="xTitle">Larghezza widget</string>
+  <string name="widget_prefs_title">Posizione widget</string>
+  <string name="xTitle">Coordinata X del widget</string>
   <string name="xTitleSummary">Posizione X manuale</string>
-  <string name="xTitleDialog">Imposta larghezza (numero)</string>
-  <string name="yTitle">Altezza widget</string>
+  <string name="xTitleDialog">Imposta coordinata X (numero)</string>
+  <string name="yTitle">Coordinata Y del widget</string>
   <string name="yTitleSummary">Posizione Y manuale</string>
-  <string name="yTitleDialog">Imposta altezza (numero)</string>
+  <string name="yTitleDialog">Imposta coordinata Y (numero)</string>
+  <string name="apply_sequence">Le regole saranno applicate tra %d secondo/i</string>
+  <string name="error_nonsupported">King Root rilevato!</string>
+  <string name="error_nonsupported_details">AFWall+ ha rilevato la presenza di una app super user non supportata, nota per scavalcare le regole del firewall. Essendo una app super user AFWall+ non può risolvere il problema.</string>
+  <string name="nochains_summary">ATTENZIONE: potrebbe compromettere le altre funzionalità di Android. Utilizza solo le catene di AFWall+. Questo eliminerà ogni altra catena e manterrà solo quelle di AFWall+.</string>
+  <string name="nochains_title">Utilizza solo le catene di AFWall+</string>
 </resources>
