@@ -1,6 +1,14 @@
 Changelog AFWall+
 ==================
 
+Version 2.2.2
+* Fix: Issue with auto IPv6 from preference
+* Fix: afwall su.d script removal on uncheck preference & Added support for systemless su
+* Fix: additional steps to kill klogripper process.
+* Disable AFWall+ if kingroot is detected. AFWall+ will no longer support on devices which has su via Kingroot! more details https://github.com/ukanth/afwall/issues/501 
+* Added highly experimental feature - Keep only AFWall+ chains on connectivity change.
+* Updated translations.
+
 Version 2.2.1
 * Fix: delete su.d script if unchecked from preference
 * Fix: Startup hang issue while applying rules
