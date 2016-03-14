@@ -1924,7 +1924,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 							@Override
 							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 								//make sure wipe all chains for NOW !! Hate this commit
-								G.noOtherChains(true);
+								//G.noOtherChains(true);
 								dialog.dismiss();
 							}
 						})

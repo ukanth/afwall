@@ -593,10 +593,10 @@ public final class Api {
 
 		List<String> cmds = new ArrayList<String>();
 
-		if(G.noOtherChains()) {
+		/*if(G.noOtherChains()) {
 			cmds.add("-F");
 			cmds.add("-X");
-		}
+		}*/
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 

@@ -144,8 +144,8 @@ public class G extends android.app.Application {
 	public static boolean showLogToasts(boolean val) { gPrefs.edit().putBoolean(SHOW_LOG_TOAST, val).commit(); return val; }
 
 
-	public static boolean noOtherChains() { return gPrefs.getBoolean(NO_CHAINS, false); }
-	public static boolean noOtherChains(boolean val) { gPrefs.edit().putBoolean(NO_CHAINS, val).commit(); return val; }
+	/*public static boolean noOtherChains() { return gPrefs.getBoolean(NO_CHAINS, false); }
+	public static boolean noOtherChains(boolean val) { gPrefs.edit().putBoolean(NO_CHAINS, val).commit(); return val; }*/
 
 	public static boolean fixLeak() { return gPrefs.getBoolean(FIX_START_LEAK, false); }
 	//public static boolean fixLeak(boolean val) { gPrefs.edit().putBoolean(FIX_START_LEAK, val).commit(); return val; }
