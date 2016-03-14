@@ -21,7 +21,7 @@
   <string name="error_apply">Errorea iptables arauak aplikatzean</string>
   <string name="error_fetch">Errorea iptables arauak eskuratzean</string>
   <string name="error_su">Ezin izan da root baimena eskuratu.\n root erabilgarri duen telefono bat behar duzu AFWall+ erabiltzeko.\n\nTelefono honek dagoeneko root badu egiaztatu AFWall+-ek \"su\" komandoa exekutatzeko baimen nahikoak dituela.</string>
-  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
+  <string name="error_netfilter">Ezin izan da itables helburu eta kateetarako euskarririk aurkitu.\nAFWall+ agian ez dabil behar bezala muga hau dela eta.</string>
   <string name="error_common">Errorea : </string>
   <string name="all_item">(Edozein aplikazio) - Aplikazio guztiak aukeratzearen baliokidea</string>
   <string name="kernel_item">(Kernel) - Linux kernela</string>
@@ -105,7 +105,7 @@
         init.d
     -->
   <string name="success_initd">Abio script-a ondo instalatu da</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
+  <string name="unable_initd">Ezin izan da AFWall+ abio script-a instalatu. Egiaztatu zure ROM/Kernelak init.d/su.d euskarria duen</string>
   <string name="remove_initd">Abio script-a ondo kendu da</string>
   <string name="unable_remove_initd">Ezin izan da AFWall+ abio script-a kendu</string>
   <!-- Widget -->
@@ -222,7 +222,7 @@
   <!-- Startup -->
   <string name="startup_service">Arauak aplikatzen. Itxaron mesedez.</string>
   <string name="fixleakTitle">Eragotzi abiarazterakoan baimen gabe konektatzea</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d(superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Eragotzi sistema abiatzean baimen gabe konektatu ahal izatea. Zure ROM-ak init.d edo su.d (SuperSU) euskarria izan behar du. HTC gailuak S-OFF gisa konfiguratu behar dira.</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -338,18 +338,18 @@
   <string name="migrate_summary">Honek profilen datuak migratuko ditu 1.x bertsiotik 2.x bertsiora</string>
   <string name="insert_profile">Sartu profilaren izena</string>
   <string name="add">Gehitu</string>
-  <string name="showlog_toasts">Enable will show toast notification on block</string>
-  <string name="enable_show_toasts">Enable Show Toasts</string>
-  <string name="widget_prefs_title">Widget Positions</string>
-  <string name="xTitle">Widget X Position</string>
-  <string name="xTitleSummary">Manual Override X Position</string>
-  <string name="xTitleDialog">Set X Position (Number)</string>
-  <string name="yTitle">Widget Y Position</string>
-  <string name="yTitleSummary">Manual Override Y Position</string>
-  <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
-  <string name="error_nonsupported">King Root Detected !</string>
-  <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="showlog_toasts">Gaituz gero laster-leihoak bistaratuko dira blokeatzean</string>
+  <string name="enable_show_toasts">Gaitu laster-leihoan bistaratzea</string>
+  <string name="widget_prefs_title">Trepetaren koordenatuak</string>
+  <string name="xTitle">Trepetaren X koordenatua</string>
+  <string name="xTitleSummary">Eskuz gainidatzi X koordenatua</string>
+  <string name="xTitleDialog">Ezarri X koordenatua (zenbakia)</string>
+  <string name="yTitle">Trepetaren Y koordenatua</string>
+  <string name="yTitleSummary">Eskuz gainidatzi Y koordenatua</string>
+  <string name="yTitleDialog">Ezarri Y koordenatua (zenbakia)</string>
+  <string name="apply_sequence">Arauak aplikatzen %d segundotan</string>
+  <string name="error_nonsupported">King Root antzeman da!</string>
+  <string name="error_nonsupported_details">AFWall+ek suebakiaren arauak ezikusi ohi dituen euskarririk gabeko super-erabiltzaile aplikazio bat aurkitu du. Root baimena duenez AFWall+ek ezin du hau eragotzi.</string>
+  <string name="nochains_summary">KONTUZ: Androideko beste funtzio batzuk hondatu ditzake. Erabili AFWall+ kateak besterik ez. Honek beste kateak ezabatuko ditu eta afwall kateak utziko ditu soilik</string>
+  <string name="nochains_title">Erabili AFWall+ kateak besterik ez</string>
 </resources>

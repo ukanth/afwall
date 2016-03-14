@@ -298,7 +298,7 @@
   <string name="invalid_profile">Недопустимое имя</string>
   <!-- donate related strings -->
   <string name="donate_only">Эта функция доступна только в Donate версии</string>
-  <string name="buy_donate">Купить версию для пожертвований или ключ</string>
+  <string name="buy_donate">Купить платную версию или ключ</string>
   <string name="unlock_donate"> нажать для разблокировки платных функций</string>
   <string name="donate_support">Теперь Вы можете использовать платные функции!</string>
   <string name="donate_thanks">Спасибо за вашу поддержку</string>
