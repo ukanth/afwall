@@ -144,12 +144,12 @@ public final class InterfaceTracker {
 
 	public static boolean isIpV6() {
 		try {
-			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+			for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en != null; en.hasMoreElements()) {
 				NetworkInterface intf = (NetworkInterface) en.nextElement();
-				if(intf.isUp()){
+				if(intf != null && intf.isUp()){
 					for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
 						InetAddress inetAddress = enumIpAddr.nextElement();
-						if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
+						if (inetAddress != null && !inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
 							return true;
 						}
 					}
@@ -157,8 +157,10 @@ public final class InterfaceTracker {
 			}
 		} catch (SocketException ex) {
 			Log.e(TAG, "Exception in Get IP Address: " + ex.toString());
+		} catch (Exception ex) {
+			Log.e(TAG, "Exception : " + ex.toString());
 		}
-		return false;
+		 return false;
 	}
 
 	private static void getTetherStatus(Context context, InterfaceDetails d) {
