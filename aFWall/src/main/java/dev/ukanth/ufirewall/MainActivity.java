@@ -1920,6 +1920,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_nonsupported)
 						.content(R.string.error_nonsupported_details)
+						.onPositive(new MaterialDialog.SingleButtonCallback() {
+							@Override
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+								//make sure wipe all chains for NOW !! Hate this commit
+								G.noOtherChains(true);
+								dialog.dismiss();
+							}
+						})
 						.onNegative(new MaterialDialog.SingleButtonCallback() {
 							@Override
 							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -1928,6 +1936,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 								dialog.dismiss();
 							}
 						})
+						.positiveText(R.string.Continue)
 						.negativeText(R.string.exit)
 						.show();
 			}
