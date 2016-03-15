@@ -61,8 +61,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 				//check if the firewall is enabled
 				if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
 					//make sure kill all the klog ripper
-					context.stopService(logIntent);
-					Api.killLogProcess(context,Api.getKLogPath(context));
+					context.stopService(logIntent);					
 				} else {
 					//restart the service
 					context.stopService(logIntent);
@@ -71,7 +70,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 			} else {
 				//no internet - stop the service
 				context.stopService(logIntent);
-				Api.killLogProcess(context,Api.getKLogPath(context));
 			}
 		}
 	}
