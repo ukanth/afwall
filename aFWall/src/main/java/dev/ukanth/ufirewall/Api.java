@@ -139,9 +139,9 @@ public final class Api {
 	//for import/export rules
 	public static final String PREF_3G_PKG			= "AllowedPKG3G";
 	public static final String PREF_WIFI_PKG		= "AllowedPKGWifi";
-	public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
-	public static final String PREF_VPN_PKG			= "AllowedPKGVPN";
-	public static final String PREF_LAN_PKG			= "AllowedPKGLAN";
+	//public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
+	//public static final String PREF_VPN_PKG			= "AllowedPKGVPN";
+	//public static final String PREF_LAN_PKG			= "AllowedPKGLAN";
 	
 	//revertback to old approach for performance
 	public static final String PREF_3G_PKG_UIDS			= "AllowedPKG3G_UIDS";
@@ -776,7 +776,8 @@ public final class Api {
 			return false;
 		}
 
-		if (G.enableIPv6() || InterfaceTracker.isIpV6()) {
+		//TODO: InterfaceTracker.isIpV6() -- this is breaking custom script
+		if (G.enableIPv6() ) {
 			setIpTablePath(ctx, true);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
