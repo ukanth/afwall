@@ -360,23 +360,23 @@
 
     <!--choose file -->
 
-    <string name="fileSize">File Size</string>
-    <string name="currentDir">Current Dir</string>
+   <!-- <string name="fileSize">File Size</string>-->
+    <!--<string name="currentDir">Current Dir</string>-->
 
     <string name="selectMode">Firewall Mode</string>
 
     <string name="confirmation">Confirmation</string>
 
-    <string name="prefill_profile">Enter profile name</string>
+    <!--<string name="prefill_profile">Enter profile name</string>-->
 
-    <string name="profile_default">MyProfile</string>
-    <string name="filter">Filter</string>
+    <!--<string name="profile_default">MyProfile</string>-->
+    <!--<string name="filter">Filter</string>-->
 
     <string name="enable_protection">Enable Protection</string>
     <string name="pref_none">None</string>
     <string name="pref_password">Password</string>
     <string name="pref_pattern">Pattern</string>
-    <string name="pref_pin">Pin</string>
+    <!--<string name="pref_pin">Pin</string>-->
 
 
     <string name="set_password">Set</string>
@@ -386,7 +386,7 @@
     <string name="dialog_color_picker">Color Picker</string>
 
 
-    <string name="sort">Sort Applications</string>
+    <!--<string name="sort">Sort Applications</string>-->
     <string name="defaultsort">By Name(Default)</string>
     <string name="lastupdated">By Install/Update</string>
     <string name="uid">By UID</string>
@@ -412,11 +412,8 @@
     <string name="yTitle">Widget Y Position</string>
     <string name="yTitleSummary">Manual Override Y Position</string>
     <string name="yTitleDialog">Set Y Position (Number)</string>
-    <string name="apply_sequence">Applying rules in %d second/s</string>
 
 
     <string name="error_nonsupported">King Root Detected !</string>
     <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-    <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-    <string name="nochains_title">Use only AFWall+ Chains</string>
-</resources>
+ </resources>
