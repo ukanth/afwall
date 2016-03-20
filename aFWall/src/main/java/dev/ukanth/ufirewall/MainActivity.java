@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private ListView listview = null;
 	public static boolean dirty = false;
 	private MaterialDialog plsWait;
+	private MaterialDialog suDialog = null;
 	private ArrayAdapter<String> spinnerAdapter = null;
 	private SwipeRefreshLayout mSwipeLayout;
 	private int index;
@@ -465,6 +466,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	@Override
 	protected void onPause() {
 		super.onPause();
+		try {
+			if ((plsWait != null) && plsWait.isShowing()) {
+				plsWait.dismiss();
+			}
+			if ((suDialog != null) && suDialog.isShowing()) {
+				suDialog.dismiss();
+			}
+
+		} catch (final IllegalArgumentException e) {
+			// Handle or log or ignore
+		} catch (final Exception e) {
+			// Handle or log or ignore
+		} finally {
+			plsWait = null;
+			suDialog = null;
+		}
 		//this.listview.setAdapter(null);
 		//mLastPause = Syst em.currentTimeMillis();
 		isOnPause = true;
@@ -711,9 +728,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			doProgress(-1);
 			try {
 				started = false;
-				plsWait.dismiss();
+				try {
+					if ((plsWait != null) && plsWait.isShowing()) {
+						plsWait.dismiss();
+					}
+				} catch (final IllegalArgumentException e) {
+					// Handle or log or ignore
+				} catch (final Exception e) {
+					// Handle or log or ignore
+				} finally {
+					plsWait = null;
+				}
 				mSwipeLayout.setRefreshing(false);
-				//plsWait.autoDismiss(true);
 			} catch (Exception e) {
 				// nothing
 			}
@@ -1854,7 +1880,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	}
 
 	private class Startup extends AsyncTask<Void, Void, Boolean> {
-		private MaterialDialog dialog = null;
 		private Context context = null;
 		//private boolean suAvailable = false;
 
@@ -1865,7 +1890,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		@Override
 		protected void onPreExecute() {
-			dialog = new MaterialDialog.Builder(context).
+			suDialog = new MaterialDialog.Builder(context).
 					cancelable(false).
 					title(getString(R.string.su_check_title)).progress(true,0).content(context.getString(R.string.su_check_message)).show();
 		}
@@ -1883,7 +1908,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		@Override
 		protected void onPostExecute(Boolean rootGranted) {
 			super.onPostExecute(rootGranted);
-			dialog.dismiss();
+			try {
+				if ((suDialog != null) && suDialog.isShowing()) {
+					suDialog.dismiss();
+				}
+			} catch (final IllegalArgumentException e) {
+				// Handle or log or ignore
+			} catch (final Exception e) {
+				// Handle or log or ignore
+			} finally {
+				suDialog= null;
+			}
+
 
 			if(!Api.isNetfilterSupported()) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
