@@ -1,165 +1,269 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="AFWall+ : Android Firewall - IPTables GUI" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-    <title>AFWall+</title>
+    <title>AFWall+ by ukanth</title>
   </head>
 
   <body>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/ukanth/afwall">View on GitHub</a>
+    <header>
+      <div class="container">
+        <h1>AFWall+</h1>
+        <h2>Android Firewall - IPTables GUI</h2>
 
-          <h1 id="project_title">AFWall+</h1>
-          <h2 id="project_tagline">Android Firewall - IPTables GUI</h2>
+        <section id="downloads">
+          <a href="https://github.com/ukanth/afwall/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/ukanth/afwall/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/ukanth/afwall" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/ukanth/afwall/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/ukanth/afwall/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+    <div class="container">
+      <section id="main_content">
+        <h2>
+<a id="afwall-android-firewall--" class="anchor" href="#afwall-android-firewall--" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AFWall+ (Android Firewall+) <a href="https://travis-ci.org/ukanth/afwall"><img src="https://travis-ci.org/ukanth/afwall.png?branch=beta" alt="Build Status"></a> <a href="https://crowdin.net/project/afwall"><img src="https://d322cqt584bo4o.cloudfront.net/afwall/localized.png" alt="Crowdin"></a>
+</h2>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p>Android Firewall+ is a advance iptables editor (GUI) for Android. It's an improved version of <a href="http://code.google.com/p/droidwall">DroidWall</a>, the original owner and creator Rodrigo Rosauro sold Droidwall to AVAST in december 2011.</p>
+<h1>
+<a id="" class="anchor" href="#" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=6E4VZTULRB8GU"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="Donate"></a>
+</h1>
 
-<p><br>For advance Information and community talk please look <a href="http://forum.xda-developers.com/showthread.php?t=1957231">at XDA</a> or <a href="https://github.com/ukanth/afwall/wiki">our WIKI</a>.</p>
+<p><img src="https://raw.githubusercontent.com/ukanth/afwall/0502e6f17ceda08069720ff2f260902690e65e9b/screenshots/Main_2.0.png" alt="AFwall+"></p>
 
 <p><a href="https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall"><img src="http://developer.android.com/images/brand/en_generic_rgb_wo_45.png" alt="Google Play"></a></p>
 
-<h1>
-<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a><a href="https://github.com/ukanth/afwall/blob/master/Changelog.md">Changelog</a>
-</h1>
+<h2>
+<a id="index" class="anchor" href="#index" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Index</h2>
 
-<h3>
-<a name="bug-report" class="anchor" href="#bug-report"><span class="octicon octicon-link"></span></a>Bug Report</h3>
+<ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="https://github.com/ukanth/afwall/blob/beta/Changelog.md">Changelog</a></li>
+<li><a href="#bug-reports">Bug Reports</a></li>
+<li><a href="#limitations">Limitations</a></li>
+<li><a href="#compatibility">Compatibility</a></li>
+<li><a href="#upgrading">Upgrading</a></li>
+<li><a href="#permissions">Permissions</a></li>
+<li><a href="#frequently-asked-questions">Frequently asked questions</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
+<li><a href="#compile-afwall">Compile AFWall+</a></li>
+<li><a href="#compiling-native-binaries">Compile Native Binaries</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#translating">Translating</a></li>
+</ul>
+
+<h2>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description</h2>
+
+<p>Android Firewall+ is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to access the network.</p>
+
+<p>The original codebase was derived from <a href="http://code.google.com/p/droidwall">DroidWall</a> by Rodrigo Rosauro. DroidWall was sold to AVAST in December 2011, and is no longer actively maintained.</p>
+
+<p>For more information and community discussions, please visit the <a href="http://forum.xda-developers.com/showthread.php?t=1957231">XDA thread</a> or <a href="https://github.com/ukanth/afwall/wiki">our Wiki</a>.</p>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Support 4.x/5.x and 6.x versions of Android</li>
+<li>Easy to install &amp; simple to use</li>
+<li>Free and open source</li>
+<li>No advertisements</li>
+<li>Choose your preferred language</li>
+<li>Search for installed applications</li>
+<li>Sort installed applications by installed date/uid/alphabatical order</li>
+<li>Get a notification about new installed application with internet permission</li>
+<li>Blocked packets notification and filter</li>
+<li>Password protection</li>
+<li>Device Admin Support (Protect AFWall+ from uninstall)</li>
+<li>Easy to manage your rules with a custom script</li>
+<li>Ipv4/Ipv6 support</li>
+<li>LAN-, VPN-, Tether-, Roaming-Control support</li>
+<li>Tasker and Locale support</li>
+<li>Firewall Logs service</li>
+<li>Multi-User (multiple-profiles) support</li>
+<li>Build-In Iptables/Busybox</li>
+<li>Export and Import rules (Import All Rules needs donate version)</li>
+<li>Option to prevent data leaks during boot (REQUIRES init.d support or S-OFF)</li>
+<li>Supports ARM/MIPS/x86</li>
+</ul>
+
+<h2>
+<a id="bug-reports" class="anchor" href="#bug-reports" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Bug Reports</h2>
 
 <p>Please see the <a href="https://github.com/ukanth/afwall/issues">issues</a> section to
-report any bugs or feature requests and to see the list of known issues. Before you report an bug, take a look <a href="https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug">here</a>.  </p>
+report any bugs or feature requests and to see the list of known issues. Before you report a bug, take a look <a href="https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug">here</a>.  </p>
 
-<h3>
-<a name="faq" class="anchor" href="#faq"><span class="octicon octicon-link"></span></a>FAQ</h3>
-
-<p>You have problems with AFWall+? Check out the <a href="https://github.com/ukanth/afwall/wiki/FAQ">FAQ</a> before reporting a bug or problem that maybe already known.</p>
-
-<h3>
-<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>ToDo:</h3>
+<h2>
+<a id="limitations" class="anchor" href="#limitations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Limitations</h2>
 
 <ul>
-<li>All Bug fixes from original <a href="http://code.google.com/p/droidwall/">DroidWall</a>
-</li>
-<li>Integrate with Network Log </li>
-<li>Uninstall application from list window ( or open manage application from list)</li>
-<li>All Bugs <a href="https://github.com/ukanth/afwall/issues">you reporting</a>
-</li>
-</ul><h3>
-<a name="already-done" class="anchor" href="#already-done"><span class="octicon octicon-link"></span></a>Already done</h3>
+<li>A firewall cannot protect against attacks that are performed outside the operating point. For example, if there is a Point-TO-POINT to the Internet.</li>
+<li>The firewall cannot prevent corporate data from being copied to a memory stick or HDD and these are subtracted from the building. </li>
+<li>AFWall+ cannot have a precise system of SCAN for each type of virus/malware that may arise in the files that pass through it, because the Firewall is not an Antivirus solution.</li>
+</ul>
+
+<h2>
+<a id="compatibility" class="anchor" href="#compatibility" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compatibility</h2>
+
+<p>AFWall+ has been success tested with Android version 4.xx - 5. (ICS, JellyBean, KitKat, Lollipop) and is reported to work with most Android variants, including stock ROMs</p>
+
+<p>I do not recommend using AFWall+ in combination with any of the similar solutions because this could result in conflicts and potential data leaks (iptables could be overwritten)</p>
+
+<h2>
+<a id="upgrading" class="anchor" href="#upgrading" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Upgrading</h2>
 
 <ul>
 <li>
-<del>New GUI</del> <i>(since 1.0.1a)</i>
-</li>
+<strong>Make a backup</strong> (e.g. with Titanium Backup)</li>
 <li>
-<del>Roaming option ( like avast firewall )</del> <i>(since 1.0.2a)</i>
-</li>
-<li>
-<del>Flush/Reset iptables rules from UI</del> <i>(since 1.0.2a)</i>
-</li>
-<li>
-<del>Save &amp; Load Profiles/Rules</del> <i>(since 1.0.3a)</i>
-</li>
-<li>
-<del>Full i18n support</del> <i>(since 1.0.3a)</i>
-</li>
-<li>
-<del>View iptables rules and logging in a clear view</del> <i>(since 1.0.4a)</i>
-</li>
-<li>
-<del>Support for <a href="http://tasker.dinglisch.net/">Tasker</a> &amp; <a href="http://www.twofortyfouram.com/">Locale</a></del> <i>(since 1.0.4a)</i>
-</li>
-<li>
-<del>Multiple Profiles</del> <i> (Since 1.0.7a)</i>
-</li>
-<li>
-<del>Support for only within LAN/WAN</del> <i> (Since 1.2.5)</i> </li>
-</ul><h3>
-<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
+<strong>Do not remove the previous version</strong> (or else your settings will maybe get lost)</li>
+<li>Download the new version</li>
+<li>Install the new version over the previous version</li>
+<li>Done</li>
+</ul>
+
+<h2>
+<a id="permissions" class="anchor" href="#permissions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Permissions</h2>
+
+<p>AFWall+ asks for the following Android permissions:</p>
 
 <ul>
-<li>AFwall+ is under the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License v3.0 License</a>
-</li>
-</ul><h2>
-<a name="acknowledgements" class="anchor" href="#acknowledgements"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
+<li>RECEIVE_BOOT_COMPLETED: Autostart (Bootup) AFWall+ after the system finishes booting.</li>
+<li>ACCESS_NETWORK_STATE: Allows AFWall+ to access information about networks (iptables).</li>
+<li>WRITE_EXTERNAL_STORAGE: Allows AFWall+ to write to external storage for debug log and export iptables rules.</li>
+<li>ACCESS_SUPERUSER: Standard to support Superuser/SuperSU (by Koushik/Chainfire).</li>
+<li>INTERNET : NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at <a href="http://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4">Stackoverflow</a>.</li>
+<li>ACCESS_WIFI_STATE : Added to detect tether state.</li>
+</ul>
+
+<h2>
+<a id="frequently-asked-questions" class="anchor" href="#frequently-asked-questions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Frequently asked questions</h2>
+
+<p>Having problems with AFWall+? Check out the <a href="https://github.com/ukanth/afwall/wiki/FAQ">FAQ</a> before reporting a bug or problem that may already be known.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>AFWall+ is under the <a href="https://www.gnu.org/licenses/gpl.html">GNU General Public License v3.0 License</a>.</p>
+
+<h2>
+<a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acknowledgements</h2>
 
 <p>This project also uses many other open source libraries such as:</p>
 
 <table>
-<tr>
-<td><strong>Project</strong></td>
+    <tr>
+        <td><strong>Project</strong></td>
         <td><strong>License</strong></td>
         <td><strong>Website</strong></td>
     </tr>
-<tr>
-<td>ActionBarSherlock</td>
-        <td>Apache License 2.0</td>
-        <td>http://actionbarsherlock.com/</td>
-    </tr>
-<tr>
-<td>Unified Preferences</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/saik0/UnifiedPreference/</td>
-    </tr>
-<tr>
-<td>Android Color Picker</td>
+    <tr>
+        <td>Android Color Picker</td>
         <td>Apache License 2.0</td>
         <td>https://github.com/attenzione/android-ColorPickerPreference</td>
     </tr>
-<tr>
-<td>Root Tools</td>
-        <td>Apache License 2.0</td>
-        <td>https://code.google.com/p/roottools/</td>
+    <tr>
+        <td>Busybox</td>
+        <td>GNU GPLv2</td>
+        <td>http://www.busybox.net</td>
     </tr>
-<tr>
-<td>Libsuperuser</td>
+    <tr>
+        <td>external_klogripper</td>
+        <td>GNU General Public License 2.0</td>
+        <td>https://github.com/VanirAOSP/external_klogripper</td>
+    </tr>
+    <tr>
+        <td>iptables</td>
+        <td>GNU GPLv2</td>
+        <td>http://netfilter.org/projects/iptables/index.html</td>
+    </tr>
+    <tr>
+        <td>Libsuperuser</td>
         <td>Apache License 2.0</td>
         <td>https://github.com/Chainfire/libsuperuser</td>
     </tr>
-</table><h3>
-<a name="how-to-compile-afwall" class="anchor" href="#how-to-compile-afwall"><span class="octicon octicon-link"></span></a>How to compile AFWall+</h3>
+    <tr>
+        <td>Locale Plugin</td>
+        <td>Apache License 2.0</td>
+        <td>http://www.twofortyfouram.com</td>
+    </tr>
+    <tr>
+        <td>Networklog</td>
+        <td>Mozilla Public License Version 2.0</td>
+        <td>https://github.com/pragma-/networklog</td>
+    </tr>
+    <tr>
+        <td>Root Tools</td>
+        <td>Apache License 2.0</td>
+        <td>https://github.com/Stericson/RootTools</td>
+    </tr>   
+</table>
 
-<p>For instructions how to compile AFWall+ please take a look at the <a href="https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall">Wiki | HOWTO-Compile-AFWall</a>.</p>
+<h2>
+<a id="compile-afwall" class="anchor" href="#compile-afwall" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compile AFWall+</h2>
 
-<h3>
-<a name="contributing" class="anchor" href="#contributing"><span class="octicon octicon-link"></span></a>Contributing</h3>
+<p>Prerequisites:</p>
 
-<p>Please fork this repository and contribute back using
-<a href="https://github.com/ukanth/afwall/pulls">pull requests</a>.</p>
+<ul>
+<li>Android SDK in your $PATH (both platform-tools/ and tools/ directories)</li>
+<li>Javac 1.7 (or higher) and a recent version of Apache ant in your $PATH</li>
+<li>Git in your $PATH</li>
+<li>Use the Android SDK Manager to install API 19 (or higher)</li>
+</ul>
 
-<p>Any contributions, large or small, major features, bug fixes, additional
-language translations, unit/integration tests are welcomed and appreciated
-but will be thoroughly reviewed and discussed.</p>
+<p>Quick start:</p>
+
+<pre><code>git clone git://github.com/ukanth/afwall
+cd afwall
+</code></pre>
+
+<p>./gradlew clean assembleDebug</p>
+
+<p>For complete instructions, please take a look at the <a href="https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall">Wiki | HOWTO-Compile-AFWall</a>.</p>
+
+<h2>
+<a id="compiling-native-binaries" class="anchor" href="#compiling-native-binaries" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Compiling native binaries</h2>
+
+<p>On host side you'll need to install:</p>
+
+<ul>
+<li>
+<a href="http://developer.android.com/tools/sdk/ndk/index.html">NDK r10</a>, nominally under /opt/android-ndk-r10</li>
+<li>Host-side gcc 4.7, make, etc. (Red Hat "Development Tools" group or Debian build-essential)</li>
+<li>autoconf, automake, and libtool</li>
+</ul>
+
+<p>This command will build the Android binaries and copy them into res/raw/:</p>
+
+<pre><code>make -C external NDK=/opt/android-ndk-r10
+</code></pre>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Please fork this repository and contribute back using <a href="https://github.com/ukanth/afwall/pulls">pull requests</a>.</p>
+
+<p>Any contributions, large or small, major features, bug fixes, additional language translations, unit/integration tests are welcomed and appreciated but will be thoroughly reviewed and discussed.</p>
+
+<h2>
+<a id="translating" class="anchor" href="#translating" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Translating</h2>
+
+<p>The res/values-* dirs are kept up to date automatically via Crowdin Translate Extension. See <a href="http://crowdin.net/project/afwall">our translation page</a> if you would like to contribute.</p>
+
+<p>The application is available in many languages, but if yours is not included, or if it needs updating or improving, please create an account and use the translation system (powered by Crowdin Translate Extension) and make your changes.</p>
       </section>
     </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">AFWall+ maintained by <a href="https://github.com/ukanth">ukanth</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
     
-
   </body>
 </html>
