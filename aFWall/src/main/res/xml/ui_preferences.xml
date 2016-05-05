@@ -20,6 +20,12 @@
             android:title="@string/activeNotification" />
         <CheckBoxPreference
             android:defaultValue="false"
+            android:dependency="activeNotification"
+            android:key="lockScreenNotification"
+            android:summary="@string/lockScreenNotification_summary"
+            android:title="@string/lockNotification" />
+        <CheckBoxPreference
+            android:defaultValue="false"
             android:key="showFilter"
             android:summaryOff="@string/showfilter_summary_off"
             android:summaryOn="@string/showfilter_summary_on"

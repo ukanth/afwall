@@ -241,6 +241,14 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			}
 		}
 
+		if(key.equals("lockScreenNotification")) {
+			//cancel and recreate..
+			NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancel(33341);
+			Api.showNotification(Api.isEnabled(ctx),ctx);
+		}
+
+
 		if (key.equals("enableLog")) {
 			Api.setLogging(ctx, G.enableLog());
 		}

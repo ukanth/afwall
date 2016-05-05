@@ -2670,11 +2670,15 @@ public final class Api {
 			builder.setSmallIcon(icon).setOngoing(true)
 					.setAutoCancel(false)
 					.setContentTitle(context.getString(R.string.app_name))
+					//keep the priority as low ,so it's not visible on lockscreen
 					.setTicker(context.getString(R.string.app_name))
 							//.addAction(R.drawable.apply, "", pendingIntentCancel)
 							//.addAction(R.drawable.exit, "", pendingIntentCancel)
 					.setContentText(notificationText);
 
+			if(G.lockNotification()) {
+				builder.setVisibility(NotificationCompat.PRIORITY_LOW);
+			}
 			builder.setContentIntent(in);
 
 			mNotificationManager.notify(NOTIF_ID, builder.build());

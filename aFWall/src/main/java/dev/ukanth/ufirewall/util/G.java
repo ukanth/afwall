@@ -74,6 +74,7 @@ public class G extends android.app.Application {
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
 	private static final String ACTIVE_NOTIFICATION = "activeNotification";
+	private static final String LOCK_NOTIFICATION = "lockScreenNotification";
 	
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";
@@ -139,6 +140,10 @@ public class G extends android.app.Application {
 	
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
 	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
+
+	public static boolean lockNotification() { return gPrefs.getBoolean(LOCK_NOTIFICATION, false); }
+	public static boolean lockNotification(boolean val) { gPrefs.edit().putBoolean(LOCK_NOTIFICATION, val).commit(); return val; }
+
 
 	public static boolean showLogToasts() { return gPrefs.getBoolean(SHOW_LOG_TOAST, false); }
 	public static boolean showLogToasts(boolean val) { gPrefs.edit().putBoolean(SHOW_LOG_TOAST, val).commit(); return val; }
