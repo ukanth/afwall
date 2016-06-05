@@ -225,7 +225,7 @@
   <!-- Startup -->
   <string name="startup_service">Regels toepassen. Even geduld!</string>
   <string name="fixleakTitle">Repareer data lek bij opstarten</string>
-  <string name="fixleakSummary">Voorkomen dat gegevens lekken tijdens het opstarten.  De ROM moet init.d of su.d (SuperSU) ondersteunen.  HTC apparaten moeten worden geconfigureerd voor S-OFF.</string>
+  <string name="fixleakSummary">Data lekken tijdens opstarten voorkomen.  De ROM moet init.d of su.d (SuperSU) ondersteunen.  HTC apparaten moeten worden geconfigureerd voor S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -344,15 +344,15 @@
   <string name="showlog_toasts">Inschakelen om een toast notificatie te tonen bij blokkeren</string>
   <string name="enable_show_toasts">Schakel toast notificaties in</string>
   <string name="widget_prefs_title">Widget posities</string>
-  <string name="xTitle">Widget X-positie</string>
+  <string name="xTitle">Horizontale positie widget</string>
   <string name="xTitleSummary">Handmatig aanpassen X-positie</string>
-  <string name="xTitleDialog">Set X Position (Number)</string>
-  <string name="yTitle">Widget Y Position</string>
+  <string name="xTitleDialog">X-Positie (getal) bewaren</string>
+  <string name="yTitle">Verticale positie widget</string>
   <string name="yTitleSummary">Handmatig aanpassen Y-positie</string>
-  <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
-  <string name="error_nonsupported">King Root Detected !</string>
-  <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="yTitleDialog">Y-Positie (getal) bewaren</string>
+  <string name="apply_sequence">Regels in %d seconde(n) bewaren</string>
+  <string name="error_nonsupported">KingRoot gedetecteerd!</string>
+  <string name="error_nonsupported_details">AFWall+ heeft een niet ondersteunde superuser app gedetecteerd welke bekend staat om het omzeilen van firewall rules. Aangezien het een superuser app betreft, kan AFWall+ dit probleem niet verhelpen.</string>
+  <string name="nochains_summary">ATTENTIE: Dit kan andere functionaliteiten van Android in gevaar brengen. Indien alleen de AFWall+ chains worden gebruikt, zullen andere chains gewist worden wissen en alleen de AFWall+ chains worden opgeslagen.</string>
+  <string name="nochains_title">Gebruik alleen AFWall+ chains</string>
 </resources>

@@ -20,12 +20,12 @@
   <string name="error_refresh">Chyba pri obnove iptables</string>
   <string name="error_apply">Chyba pri aplikácii pravidiel iptables</string>
   <string name="error_fetch">Chyba pri načítaní pravidiel iptables</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
-  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
+  <string name="error_su">Nemožno získať root prístup.\nNa spustenie AFWall+ je potrebné mať root.\n\nAk toto zariadenie už má root, uistite sa, že AFWall+ má dostatočné oprávnenia pre spustenie príkazu \"su\".</string>
+  <string name="error_netfilter">Nie je možné nájsť podporu pre iptables ciele a reťazce.\nAFWall+ nemusí fungovať správne.</string>
   <string name="error_common">Chyba : </string>
   <string name="all_item">(Každá aplikácia) - Rovnaké ako výber všetkých aplikácií</string>
   <string name="kernel_item">(Kernel) - Linux kernel</string>
-  <string name="unknown_item">Unknown</string>
+  <string name="unknown_item">Neznáme</string>
   <string name="tethering_item">(Zdielanie) - DHCP+DNS služby</string>
   <string name="dnsproxy_item">(DNS proxy) - vyhľadávanie DNS cez Netd</string>
   <string name="ntp_item">(NTP) - servery času z Internetu</string>
@@ -91,7 +91,7 @@
   <string name="discard">Zrušiť</string>
   <string name="delete">Odstrániť</string>
   <string name="Yes">Áno</string>
-  <string name="Continue">Continue</string>
+  <string name="Continue">Pokračovať</string>
   <string name="No">Nie</string>
   <string name="OK">OK</string>
   <string name="Cancel">Zrušiť</string>
@@ -105,7 +105,7 @@
         init.d
     -->
   <string name="success_initd">Úspešne nainštalovaný spúšťací skript</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
+  <string name="unable_initd">Nepodarilo sa nainštalovať AFWall+ spúšťací skript. Prosím, overte, že vaša ROM/kernel podporuje init.d/su.d</string>
   <string name="remove_initd">Úspešne odstránený spúšťací skript</string>
   <string name="unable_remove_initd">Nepodarilo sa odstrániť AFWall+ spúšťací skript</string>
   <!-- Widget -->
@@ -222,7 +222,7 @@
   <!-- Startup -->
   <string name="startup_service">Aplikovanie pravidiel. Prosím počkajte!</string>
   <string name="fixleakTitle">Oprava úniku dát pri spustení</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d(superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Zabrániť úniku dát počas spúšťania systému. ROM musí mať podporu init.d alebo su.d(superSU).  HTC zariadenia musia byť nakonfigurované pre S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -291,13 +291,13 @@
   <string name="filters_apps_title">Filter pre Notifikácie</string>
   <string name="apply_color">Stlač na Farbu pre aplikovanie</string>
   <string name="binaries">Binárne súbory</string>
-  <string name="widgets">Widgets</string>
+  <string name="widgets">Miniaplikácie</string>
   <string name="exports">Export</string>
   <string name="imports">Import</string>
   <string name="invalid_profile">Neplatný názov Profilu</string>
   <!-- donate related strings -->
   <string name="donate_only">Táto funkcia je dostupná len v platenej verzii</string>
-  <string name="buy_donate">Buy Donate version or Donate Key</string>
+  <string name="buy_donate">Kúpiť Donate verziu alebo kľúč</string>
   <string name="unlock_donate"> stlačiť na odomknutie</string>
   <string name="donate_support">Platené funkcie sú odomknuté!</string>
   <string name="donate_thanks">Ďakujeme za vašu podporu</string>
@@ -338,18 +338,18 @@
   <string name="migrate_summary">To zmigruje všetky profily údajov z verzie 1.x do 2.x</string>
   <string name="insert_profile">Zadať názov profilu</string>
   <string name="add">Pridať</string>
-  <string name="showlog_toasts">Enable will show toast notification on block</string>
-  <string name="enable_show_toasts">Enable Show Toasts</string>
-  <string name="widget_prefs_title">Widget Positions</string>
-  <string name="xTitle">Widget X Position</string>
-  <string name="xTitleSummary">Manual Override X Position</string>
-  <string name="xTitleDialog">Set X Position (Number)</string>
-  <string name="yTitle">Widget Y Position</string>
-  <string name="yTitleSummary">Manual Override Y Position</string>
-  <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
-  <string name="error_nonsupported">King Root Detected !</string>
-  <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="showlog_toasts">Zapnutím sa budú zobrazovať toast upozornenia pri blokovaní</string>
+  <string name="enable_show_toasts">Zapnúť zobrazenie toastov</string>
+  <string name="widget_prefs_title">Pozície miniaplikácií</string>
+  <string name="xTitle">Pozícia X</string>
+  <string name="xTitleSummary">Manuálne prepísať pozíciu X</string>
+  <string name="xTitleDialog">Nastavte pozíciu X (číslo)</string>
+  <string name="yTitle">Pozícia Y</string>
+  <string name="yTitleSummary">Manuálne prepísať pozíciu Y</string>
+  <string name="yTitleDialog">Nastavte pozíciu Y (číslo)</string>
+  <string name="apply_sequence">Aplikovanie pravidiel za %d sek.</string>
+  <string name="error_nonsupported">King Root zistený!</string>
+  <string name="error_nonsupported_details">AFWall+ zistil nepodporovanú superuser aplikáciu, ktorá je známa obchádzaním pravidiel firewallu. Keďže je to superuser aplikácia, AFWall+ nemôže túto chybu napraviť.</string>
+  <string name="nochains_summary">UPOZORNENIE: môže poškodiť iné funkcie Androidu. Používajte iba AFWall+ reťazce. To vymaže akékoľvek iné reťazce a ponechá aba AFWall+ reťazce.</string>
+  <string name="nochains_title">Použiť iba AFWall+ reťazce</string>
 </resources>

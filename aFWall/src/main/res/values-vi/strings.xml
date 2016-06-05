@@ -3,7 +3,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
   <!-- main -->
   <string name="app_name">AFWall+ </string>
-  <string name="app_name_donate">AFWall+ (Donate)</string>
+  <string name="app_name_donate">AFWall + (tặng)</string>
   <string name="title_disabled">AFWall+ (Đang tắt)</string>
   <string name="whitelist_array_item">Danh sách trắng (cho phép mục đã chọn)</string>
   <string name="blacklist_array_item">Danh sách đen (khóa mục đã chọn)</string>
@@ -20,8 +20,8 @@
   <string name="error_refresh">Lỗi khi tải lại iptables</string>
   <string name="error_apply">Lỗi áp dụng quy tắc iptables</string>
   <string name="error_fetch">Lỗi lấy quy tắc iptables</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
-  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
+  <string name="error_su">Không thể truy cập root. \nĐiện thoại của bạn cần được root để có thể chạy AFWall+.\n\nNếu điện thoại này đã được root, hãy kiểm tra lại để chắc chắn rằng AFWall + có đủ quyền để thực hiện lệnh \"su\". \n.</string>
+  <string name="error_netfilter">Không thể tìm thấy hỗ trợ cho mục tiêu iptables và dây chuyền. \nAFWall+ có thể không làm việc như mong đợi do sự hạn chế này.</string>
   <string name="error_common">Lỗi: </string>
   <string name="all_item">(Bất kỳ ứng dụng) - giống như cách chọn tất cả các ứng dụng</string>
   <string name="kernel_item">(Nhân) - Nhân Linux</string>

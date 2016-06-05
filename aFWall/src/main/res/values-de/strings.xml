@@ -228,7 +228,7 @@
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
     -->
   <string name="enableInboundTitle">Erlaube eingehende Verbindungen</string>
-  <string name="enableInboundSummary">Erlaube Verbindungen vom LAN zum Gerät (Samba, sshd, AirDroid, etc.)</string>
+  <string name="enableInboundSummary">Verbindungen vom LAN zum Gerät zulassen (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Benutzeroberfläche</string>
   <string name="log_prefs_title">Protokoll</string>

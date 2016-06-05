@@ -20,7 +20,7 @@
   <string name="error_refresh">Iptables yenileme hatası</string>
   <string name="error_apply">Iptables kurallarını uygulama hatası</string>
   <string name="error_fetch">Iptables kurallarını alma hatası</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
+  <string name="error_su">Root erişimine sahip değilsiniz.\nAFWall+ uygulaması için root\'lu telefon gereklidir.\n\n Eğer telefon zaten root\'lu ise, SuperUser\'dan AFWall+ uygulamasına gerekli izinleri verdiğinizden emin olun.\n.</string>
   <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Hata: </string>
   <string name="all_item">(Herhangi bir uygulama) - Tüm uygulamalar için öncekiyle aynı seçim</string>

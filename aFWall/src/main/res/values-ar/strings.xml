@@ -20,12 +20,12 @@
   <string name="error_refresh">خطأ في تحديث قواعد العناوين</string>
   <string name="error_apply">خطأ في تطبيق قواعد العناوين</string>
   <string name="error_fetch">خطأ في جلب قواعد العناوين</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
-  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
+  <string name="error_su">لا يمكن الحصول على صلاحيات الجذر. \n أنت بحاجة إلى عمل روت لهاتفك لتشغيل تطبيق AFWall+.\n\n إذا كان الهاتف هذا بالفعل يملك صلاحيات الروت، يرجى التأكد من أن AFWall+ لديه أذونات كافية لتنفيذ الأوامر. \n</string>
+  <string name="error_netfilter">تعذر العثور على دعم اهداف iptables والسلاسل.\+nAFWall قد لا يعمل على النحو المتوقع نتيجة لهذا التقييد.</string>
   <string name="error_common">خطأ: </string>
   <string name="all_item">(أي تطبيق) -كتحديد كل التطبيقات</string>
   <string name="kernel_item">(Kernel)- نواة لينكس</string>
-  <string name="unknown_item">Unknown</string>
+  <string name="unknown_item">غير معروف</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS خدمات</string>
   <string name="dnsproxy_item">(DNS proxy) - DNS البحث بواسطة netd</string>
   <string name="ntp_item">(NTP)-ملقمات وقت انترنت</string>
@@ -91,7 +91,7 @@
   <string name="discard">تجاهل</string>
   <string name="delete">حذف</string>
   <string name="Yes">نعم</string>
-  <string name="Continue">Continue</string>
+  <string name="Continue">استمر</string>
   <string name="No">لا</string>
   <string name="OK">موافق</string>
   <string name="Cancel">إلغاء</string>
@@ -105,7 +105,7 @@
         init.d
     -->
   <string name="success_initd">تم تثبيت البرنامج النصي لبدء التشغيل بنجاح</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
+  <string name="unable_initd">غير قادر على تثبيت البرنامج النصي لبدء تشغيل AFWall+ . الرجاء التحقق من أن لديك ROM/Kernel يدعم init.d</string>
   <string name="remove_initd">تم إزالة البرنامج النصي لبدء التشغيل بنجاح</string>
   <string name="unable_remove_initd">غير قادر على إزالة البرنامج النصي لبدء تشغيل AFWall+</string>
   <!-- Widget -->
@@ -222,7 +222,7 @@
   <!-- Startup -->
   <string name="startup_service">تطبيق القواعد. الرجاء الإنتظار!</string>
   <string name="fixleakTitle">إصلاح تسرب البيانات عند بدء التشغيل</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d(superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">منع تسريب البيانات اثناء بدء تشغيل النظام. يجب ان يكون محرك الاقراص المضغوطة الخاصة بك ROM init.d او (superSU). يجب تصحيح HTC لـ S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -291,13 +291,13 @@
   <string name="filters_apps_title">تصفية الإشعارات</string>
   <string name="apply_color">اضغط على اللون لاختياره</string>
   <string name="binaries">الثنائيات</string>
-  <string name="widgets">Widgets</string>
+  <string name="widgets">عناصر واجهة المستخدم</string>
   <string name="exports">تصدير</string>
   <string name="imports">إستيراد</string>
   <string name="invalid_profile">اسم الوضع غير صالح</string>
   <!-- donate related strings -->
   <string name="donate_only">تتوفر هذه الميزة فقط في نسخة التبرع</string>
-  <string name="buy_donate">Buy Donate version or Donate Key</string>
+  <string name="buy_donate">شراء الاصدار الرئيسي او شراء المفتاح</string>
   <string name="unlock_donate"> اضغط لفتح التبرع</string>
   <string name="donate_support">يمكنك الآن إستخدام ميزات نسخة التبرع!</string>
   <string name="donate_thanks">شكرا لدعمك</string>
@@ -338,18 +338,19 @@
   <string name="migrate_summary">سوف يتم ترحيل جميع الأوضاع الإضافية من 1.x إلى الإصدار 2.x</string>
   <string name="insert_profile">أدخل اسم الوضع</string>
   <string name="add">إضافة</string>
-  <string name="showlog_toasts">Enable will show toast notification on block</string>
-  <string name="enable_show_toasts">Enable Show Toasts</string>
-  <string name="widget_prefs_title">Widget Positions</string>
-  <string name="xTitle">Widget X Position</string>
-  <string name="xTitleSummary">Manual Override X Position</string>
-  <string name="xTitleDialog">Set X Position (Number)</string>
-  <string name="yTitle">Widget Y Position</string>
-  <string name="yTitleSummary">Manual Override Y Position</string>
-  <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
-  <string name="error_nonsupported">King Root Detected !</string>
-  <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="showlog_toasts">تمكين اظهار الاشعار على المانع</string>
+  <string name="enable_show_toasts">تمكين إظهار الخبز المحمص (Toasts)
+</string>
+  <string name="widget_prefs_title">مواقع عناصر واجهة المستخدم</string>
+  <string name="xTitle">عنصر واجهة x المستخدم الموضع</string>
+  <string name="xTitleSummary">التجاوز اليدوى x الموضع</string>
+  <string name="xTitleDialog">حدد x الموضع (عدد)</string>
+  <string name="yTitle">عنصر واجهة المستخدم Y الموضع</string>
+  <string name="yTitleSummary">التجاوز اليدوى Y الموضع</string>
+  <string name="yTitleDialog">حدد Y الموضع (عدد)</string>
+  <string name="apply_sequence">القواعد المطبقة في ٪d ثانية /جزء من الثانية</string>
+  <string name="error_nonsupported">تم الكشف عن جذر الملك!</string>
+  <string name="error_nonsupported_details">AFWall + الكشف عن تطبيق جذر غير معتمد لتجاوز قواعد جدار الحماية. وبما أنه المشكلة من تطبيق الجذر AFWall + لا يمكنه إصلاح هذه المشكلة.</string>
+  <string name="nochains_summary">تنبيه: قد كسر وظائف اخرى لنظام التشغيل Android. استخدم فقط سلاسل AFWall. هذا وسيتم مسح/محو اي سلاسل اخرى والاحتفاظ فقط بسلاسل AFWall</string>
+  <string name="nochains_title">استخدم فقط سلاسل +AFWall </string>
 </resources>

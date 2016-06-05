@@ -105,7 +105,7 @@
         init.d
     -->
   <string name="success_initd">Script de arranque instalado satisfactoriamente</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
+  <string name="unable_initd">No es posible instalar el script de inicio de AFWall+. Favor verificar que el ROM/Kernel soporta init.d/su.d</string>
   <string name="remove_initd">Eliminado correctamente el script de arranque</string>
   <string name="unable_remove_initd">No se puede eliminar el script de arranque de AFWall+</string>
   <!-- Widget -->
@@ -222,7 +222,7 @@
   <!-- Startup -->
   <string name="startup_service">Aplicando las reglas. ¡Espera, por favor!</string>
   <string name="fixleakTitle">Arreglar la fuga de datos en el arranque</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d(superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Prevenir fuga de datos durante el arranque del sistema. Su ROM debe tener soporte de init.d o su.d (superSU). Los dispositivos HTC deben ser configurados con S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -340,16 +340,16 @@
   <string name="add">Agregar</string>
   <string name="showlog_toasts">La activación mostrará notificaciones Toast en bloque</string>
   <string name="enable_show_toasts">Habilitar mostrar Toasts</string>
-  <string name="widget_prefs_title">Widget Positions</string>
-  <string name="xTitle">Widget X Position</string>
+  <string name="widget_prefs_title">Posición del Widget</string>
+  <string name="xTitle">Posición X del Widget (coordenada X)</string>
   <string name="xTitleSummary">Anulación manual de la posición X</string>
-  <string name="xTitleDialog">Set X Position (Number)</string>
-  <string name="yTitle">Widget Y Position</string>
+  <string name="xTitleDialog">Establecer la Posición X (Número)</string>
+  <string name="yTitle">Posición Y del Widget (coordenada Y)</string>
   <string name="yTitleSummary">Anulación manual de la posición Y</string>
-  <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
-  <string name="error_nonsupported">King Root Detected !</string>
-  <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="yTitleDialog">Establecer la Posición Y (Número)</string>
+  <string name="apply_sequence">Aplicando reglas en %d segundo/s</string>
+  <string name="error_nonsupported">Técnica de root King detectada!</string>
+  <string name="error_nonsupported_details">AFWall+ ha detectado una aplicación de super usuario no soportada, que es conocida por saltar las reglas del cortafuegos. Debido a que es una aplicación de super usuario, AFWall+ no puede solucionar esto.</string>
+  <string name="nochains_summary">PRECAUCIÓN: se pueden romper otras funcionalidades de android. Utilice sólo cadenas de AFWall+ -AFWall+ Chains-. Esto limpiaría / vaciaría otras cadenas y sólo mantendría cadenas de AFWall+</string>
+  <string name="nochains_title">Usar solo cadenas de AFWall+ -AFWall+ chains-</string>
 </resources>

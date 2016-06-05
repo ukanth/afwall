@@ -106,7 +106,7 @@
         init.d
     -->
   <string name="success_initd">启动脚本已安装成功</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
+  <string name="unable_initd">无法安装 AFWall+ 启动脚本. 请确认您的 ROM/内核是否支持 init.d/su.d</string>
   <string name="remove_initd">成功删除启动脚本</string>
   <string name="unable_remove_initd">无法删除 AFWall+ 启动脚本</string>
   <!-- Widget -->
@@ -223,7 +223,7 @@
   <!-- Startup -->
   <string name="startup_service">正在应用规则...请稍等!</string>
   <string name="fixleakTitle">修复启动数据泄露</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d(superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">防止系统启动过程中的数据泄漏. 您的 ROM 必须支持 nit.d or su.d(superSU). HTC 设备必须 S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -341,16 +341,16 @@
   <string name="add">添加</string>
   <string name="showlog_toasts">启用此选项将显示通知</string>
   <string name="enable_show_toasts">启用通知</string>
-  <string name="widget_prefs_title">Widget Positions</string>
-  <string name="xTitle">Widget X Position</string>
+  <string name="widget_prefs_title">小部件位置</string>
+  <string name="xTitle">小部件 X 轴位置</string>
   <string name="xTitleSummary">手动指定 X 轴位置</string>
-  <string name="xTitleDialog">Set X Position (Number)</string>
-  <string name="yTitle">Widget Y Position</string>
+  <string name="xTitleDialog">设置 X 轴位置(数字)</string>
+  <string name="yTitle">小部件 Y 轴位置</string>
   <string name="yTitleSummary">手动设置 Y 轴 位置</string>
-  <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
-  <string name="error_nonsupported">King Root Detected !</string>
-  <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="yTitleDialog">设置 Y 轴位置(数字)</string>
+  <string name="apply_sequence">在 %d 秒后应用您的设置</string>
+  <string name="error_nonsupported">检测到 King Root!</string>
+  <string name="error_nonsupported_details">AFWall+ 检测到未受支持且已知可以绕过防火墙规则的 superuser 应用. 由于这是一款 superuser 应用, AFWall+ 无法解决此问题.</string>
+  <string name="nochains_summary">请注意: 这可能破坏安卓系统的其他功能. 仅使用 AFWall+ 链. 这将清除所有其他链并只保留 afwall 链</string>
+  <string name="nochains_title">仅使用 AFWall+ 链</string>
 </resources>

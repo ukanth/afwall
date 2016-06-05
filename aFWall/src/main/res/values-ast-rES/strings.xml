@@ -20,7 +20,7 @@
   <string name="error_refresh">Fallu xenerando iptables</string>
   <string name="error_apply">Fallu aplicando les regles d\'iptables</string>
   <string name="error_fetch">Fallu diendo en cata les regles d\'iptables</string>
-  <string name="error_su">Nun pudo alquirise l\'accesu root.\nNecesites tener un teléfonu rootexáu pa executar AFWall+.\n\nSi esti teléfonu yá ta rootexáu asegúrate qu\'AFWall+ tien abondos permisos pa executar el comandu «su», por favor.\n.</string>
+  <string name="error_su">Nun pudo alquirise l\'accesu root.\nPrecises tener un teléfonu rootexáu pa executar AFWall+.\n\nSi esti teléfonu yá lo ta, asegúrate qu\'AFWall+ tien abondos permisos pa executar el comandu «su», por favor.\n.</string>
   <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
   <string name="error_common">Fallu: </string>
   <string name="all_item">(Cualesquier aplicación) Lo mesmo qu\'esbillales toes</string>
@@ -70,7 +70,7 @@
   <string name="enter_problem">INTRODUZ EQUÍ LA DESCRIPCIÓN DEL PROBLEMA:</string>
   <string name="send_mail">Unviar corréu</string>
   <string name="notify_pref_summary_on">Unviaráse un avisu al instalase una aplicación nueva</string>
-  <string name="notify_pref_summary_off">Nun s\'unviará dal avisu al instalese una aplicación nueva</string>
+  <string name="notify_pref_summary_off">Nun s\'unviará avisu dalu al instalese una aplicación nueva</string>
   <string name="custom_script_defined">Definióse\'l script personalizáu</string>
   <string name="custom_script_removed">Desanicióse\'l script personalizáu</string>
   <string name="custom_script_error">Fallu guardando\'l script personalizáu</string>
@@ -347,9 +347,9 @@
   <string name="yTitle">Widget Y Position</string>
   <string name="yTitleSummary">Manual Override Y Position</string>
   <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
+  <string name="apply_sequence">Aplicando regles en %d segundu/os</string>
   <string name="error_nonsupported">¡Deteutóse King Root!</string>
   <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="nochains_summary">CURIÁU: Quiciabes ruempa otres funcionalidaes d\'Android. Usa namái les cadenes d\'AFWall+. Esto llimpiará otres cadenes y caltendrá namái les d\'AFWall+</string>
+  <string name="nochains_title">Usar namái cadenes d\'Afwall+</string>
 </resources>

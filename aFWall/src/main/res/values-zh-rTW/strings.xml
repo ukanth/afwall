@@ -20,19 +20,19 @@
   <string name="error_refresh">更新 iptables 時錯誤</string>
   <string name="error_apply">套用 iptables 規則時錯誤</string>
   <string name="error_fetch">獲取 iptables 規則時錯誤</string>
-  <string name="error_su">Could not acquire root access.\nYou need a rooted phone to run AFWall+.\n\nIf this phone is already rooted, please make sure AFWall+ has enough permissions to execute the \"su\" command.</string>
-  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
+  <string name="error_su">無法獲取 root 權限。\n您需要一台已 root 的手機來執行 AFWall+。\n\n如果這台手機已經 root，請確保 AFWall+ 具有足夠的權限執行 \"su\" 命令。</string>
+  <string name="error_netfilter">找不到支援的 iptables 目標和鏈。 \nAFWall+ 可能無法按這種限制的方式工作。</string>
   <string name="error_common">錯誤：</string>
   <string name="all_item">（任何應用程式） - 與全選功能一樣</string>
   <string name="kernel_item">(內核) - Linux 內核</string>
-  <string name="unknown_item">Unknown</string>
+  <string name="unknown_item">未知</string>
   <string name="tethering_item">(網路共用) - DHCP+DNS 服務</string>
   <string name="dnsproxy_item">(DNS 代理) - 透過 netd 進行 DNS 搜尋</string>
   <string name="ntp_item">(NTP) - Internet 時間伺服器</string>
   <string name="root_item">（root） - 以root身份執行應用程式</string>
   <string name="adb_item">(adb) - ADB (Android Debug Bridge)</string>
   <string name="media_item">(media) - Media server</string>
-  <string name="vpn_item">(vpn) - VPN networking</string>
+  <string name="vpn_item">(vpn) - VPN 網路</string>
   <string name="drm_item">(drm) - 數位著作權管理</string>
   <string name="gps_item">(gps)-GPS</string>
   <string name="shell_item">(shell) - Linux shell</string>
@@ -91,7 +91,7 @@
   <string name="discard">放棄</string>
   <string name="delete">刪除</string>
   <string name="Yes">是</string>
-  <string name="Continue">Continue</string>
+  <string name="Continue">繼續</string>
   <string name="No">否</string>
   <string name="OK">確定</string>
   <string name="Cancel">取消</string>
@@ -105,14 +105,14 @@
         init.d
     -->
   <string name="success_initd">已成功安裝啟動指令碼</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
+  <string name="unable_initd">無法安裝 AFWall+ 啟動腳本。請驗證您的 ROM/內核是否支援 init.d/su.d</string>
   <string name="remove_initd">已成功移除啟動指令碼</string>
   <string name="unable_remove_initd">無法移除 AFWall+ 啟動指令碼</string>
   <!-- Widget -->
   <string name="widget_disable_fail">無法停用防火牆 - 密碼錯誤！</string>
   <string name="widget_label_status">AFWall + 切換/狀態</string>
   <string name="widget_label_settings">AFWall+ 設定</string>
-  <string name="widget_label_settings_old">AFWall + 設定(舊)</string>
+  <string name="widget_label_settings_old">AFWall+ 設定(舊)</string>
   <!-- Color Picker -->
   <string name="color_pick">按色塊以應用</string>
   <!-- Import/Export -->
@@ -222,7 +222,7 @@
   <!-- Startup -->
   <string name="startup_service">正在應用規則... 請稍等！</string>
   <string name="fixleakTitle">修復啟動數據洩漏</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d(superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">防止在系統啟動過程中資料洩漏。您的 ROM 必須 init.d 或 su.d(superSU) 支援。HTC 設備必須設為為 S-OFF。</string>
   <!--
     <string name="alternateStartTitle">Fix Device Start Rules</string>
     <string name="alternateStartSummary">This will fix AFWall+ will not applying rules on some devices (CM10.1) after device startup</string>
@@ -291,13 +291,13 @@
   <string name="filters_apps_title">通知篩選器</string>
   <string name="apply_color">點擊顏色以套用</string>
   <string name="binaries">二進位檔案</string>
-  <string name="widgets">Widgets</string>
+  <string name="widgets">小工具</string>
   <string name="exports">匯出</string>
   <string name="imports">匯入</string>
   <string name="invalid_profile">不正確設定檔名稱</string>
   <!-- donate related strings -->
   <string name="donate_only">此功能只在贊助版提供</string>
-  <string name="buy_donate">Buy Donate version or Donate Key</string>
+  <string name="buy_donate">購買贊助版本或捐贈金鑰</string>
   <string name="unlock_donate"> 點擊解鎖贊助版</string>
   <string name="donate_support">你可以現在使用贊助版的功能!</string>
   <string name="donate_thanks">謝謝你的支持</string>
@@ -320,7 +320,7 @@
   <string name="enable_protection">啟用保護</string>
   <string name="pref_none">沒有</string>
   <string name="pref_password">密碼</string>
-  <string name="pref_pattern">樣式</string>
+  <string name="pref_pattern">圖案</string>
   <string name="pref_pin">Pin</string>
   <string name="set_password">設置</string>
   <string name="wrong_password">密碼錯誤</string>
@@ -338,18 +338,18 @@
   <string name="migrate_summary">這會將所有其他設定檔資料從 1.x 遷移到 2.x 版本</string>
   <string name="insert_profile">輸入設定檔名稱</string>
   <string name="add">新增</string>
-  <string name="showlog_toasts">Enable will show toast notification on block</string>
-  <string name="enable_show_toasts">Enable Show Toasts</string>
-  <string name="widget_prefs_title">Widget Positions</string>
-  <string name="xTitle">Widget X Position</string>
-  <string name="xTitleSummary">Manual Override X Position</string>
-  <string name="xTitleDialog">Set X Position (Number)</string>
-  <string name="yTitle">Widget Y Position</string>
-  <string name="yTitleSummary">Manual Override Y Position</string>
-  <string name="yTitleDialog">Set Y Position (Number)</string>
-  <string name="apply_sequence">Applying rules in %d second/s</string>
-  <string name="error_nonsupported">King Root Detected !</string>
-  <string name="error_nonsupported_details">AFWall+ detected non supported superuser app which is known to bypaas firewall rules. Since its a superuser app, AFWall+ cannot fix this issue.</string>
-  <string name="nochains_summary">CAUTION: it might break other functionalities of android. Use only AFWall+ Chains. This will wipe/flush any other chains and only keep afwall chains</string>
-  <string name="nochains_title">Use only AFWall+ Chains</string>
+  <string name="showlog_toasts">啟用在阻擋時顯示 toast 通知</string>
+  <string name="enable_show_toasts">啟動顯示通知</string>
+  <string name="widget_prefs_title">小工具位置</string>
+  <string name="xTitle">小工具X軸位置</string>
+  <string name="xTitleSummary">手動複寫X軸位置</string>
+  <string name="xTitleDialog">設定X軸位置(數字)</string>
+  <string name="yTitle">小工具Y軸位置</string>
+  <string name="yTitleSummary">手動複寫Y軸位置</string>
+  <string name="yTitleDialog">設定Y軸位置(數字)</string>
+  <string name="apply_sequence">您的規則將在 %d 秒後套用</string>
+  <string name="error_nonsupported">檢測到 King Root !</string>
+  <string name="error_nonsupported_details">AFWall+ 檢測到不支援的超級使用者應用程式，這已知的 bypaas 防火牆規則。因為它是一個超級使用者的應用程式，AFWall+ 不能解決此問題。</string>
+  <string name="nochains_summary">注意︰它可能會破壞其他的安卓系統的功能。請只使用AFWall+ 鏈。這將擦除/更新任何其他鏈，並且只保留 afwall 鏈</string>
+  <string name="nochains_title">唯一使用 AFWall+ 鏈</string>
 </resources>
