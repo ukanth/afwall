@@ -113,7 +113,7 @@
     <!-- init.d -->
     <string name="success_initd">Startup script installed</string>
     <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
-    <string name="remove_initd">Sartup script removed</string>
+    <string name="remove_initd">Startup script removed</string>
     <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
 
     <!-- Widget -->
@@ -126,7 +126,7 @@
     <string name="color_pick">Select color to apply</string>
 
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">Import Droidwall rules</string>
+    <string name="import_rules_droidwall">Import DroidWall rules</string>
     <string name="export_rules">Export rules only</string>
     <string name="export_all">Export rules, profile settings, and preferences</string>
     <string name="import_rules">Import rules only</string>
@@ -202,9 +202,9 @@
     <string name="toast_error_disabling">AFWall+: Error disabling firewall!</string>
 
     <!-- Binary -->
-    <string name="busybox_pref">Busybox binary</string>
-    <string name="system_bb">System busybox</string>
-    <string name="builtin_bb">Built-in busybox</string>
+    <string name="busybox_pref">BusyBox binary</string>
+    <string name="system_bb">System BusyBox</string>
+    <string name="builtin_bb">Built-in BusyBox</string>
     <string name="system_ipt">System iptables</string>
     <string name="builtin_ipt">Built-in iptables</string>
     <string name="auto">Auto</string>
@@ -323,7 +323,7 @@
     <string name="disable_dns">Disable DNS via netd</string>
     
     <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">DNS lookups via netd on JB 4.3+. Disabling this will block the internet on Android 4.3+</string>
+    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
     
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Enable</string>
@@ -345,7 +345,7 @@
     <string name="buy_donate">Buy donate version or donate key</string>
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features!</string>
-    <string name="donate_thanks">Thanks for your support</string>
+    <string name="donate_thanks">Thanks for your support!</string>
     
     <string name="activeNotification">Show notification icon</string>
     <string name="activeNotification_summary">Display permanent icon in notification bar</string>
@@ -381,7 +381,7 @@
 
 
     <string name="set_password">Set</string>
-    <string name="wrong_password">Wrong password</string>
+    <string name="wrong_password">Incorrect password</string>
     <string name="password_empty"></string>
     <string name="submit">Submit</string>
     <string name="dialog_color_picker">Color Picker</string>
@@ -395,10 +395,10 @@
     <string name="select_dir">Select directory</string>
     <string name="select">Select action for</string>
     <string name="manage_profiles">Manage profiles</string>
-    <string name="profiles">Profile: </string>
+    <string name="profiles">Profile </string>
 
     <string name="migrate_profiles">Migrate profiles</string>
-    <string name="migrate_summary">Migrate all additional profiles data from version 1.x to 2.x</string>
+    <string name="migrate_summary">Migrate all additional profile data from version 1.x to 2.x</string>
     <string name="insert_profile">Profile name</string>
     <string name="add">Add</string>
     <string name="showlog_toasts">Show toast notification on block</string>
