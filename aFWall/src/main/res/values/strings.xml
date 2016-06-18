@@ -395,6 +395,7 @@
     <string name="select_dir">Select directory</string>
     <string name="select">Select action for</string>
     <string name="manage_profiles">Manage profiles</string>
+    <string name="manage_profiles_summary">Add or remove profiles</string>
     <string name="profiles">Profile </string>
 
     <string name="migrate_profiles">Migrate profiles</string>
