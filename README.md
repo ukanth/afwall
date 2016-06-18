@@ -17,7 +17,7 @@ Index
 * [Compatibility](#compatibility)
 * [Upgrading](#upgrading)
 * [Permissions](#permissions)
-* [Frequently asked questions](#frequently-asked-questions)
+* [Frequently Asked Questions](#frequently-asked-questions)
 * [License](#license)
 * [Acknowledgements](#acknowledgements)
 * [Compile AFWall+](#compile-afwall)
@@ -42,20 +42,20 @@ Features
 * No advertisements
 * Choose your preferred language
 * Search for installed applications
-* Sort installed applications by installed date/uid/alphabatical order
-* Get a notification about new installed application with internet permission
+* Sort installed applications by installed date/UID/alphabatical order
+* Get a notification for any newly installed application with internet permission
 * Blocked packets notification and filter
 * Password protection
 * Device Admin Support (Protect AFWall+ from uninstall)
 * Easy to manage your rules with a custom script
-* Ipv4/Ipv6 support
-* LAN-, VPN-, Tether-, Roaming-Control support
+* IPv4/IPv6 support
+* WiFi, wireless data, LAN, VPN, tether, and roaming support
 * Tasker and Locale support
 * Firewall Logs service
 * Multi-User (multiple-profiles) support
-* Build-In Iptables/Busybox
-* Export and Import rules (Import All Rules needs donate version)
-* Option to prevent data leaks during boot (REQUIRES init.d support or S-OFF)
+* Built-in iptables/BusyBox
+* Export and import rules (Import All Rules needs donate version)
+* Option to prevent data leaks during boot (requires init.d support or S-OFF)
 * Supports ARM/MIPS/x86
 
 Bug Reports
@@ -67,25 +67,25 @@ report any bugs or feature requests and to see the list of known issues. Before 
 Limitations
 -----------
 
-* A firewall cannot protect against attacks that are performed outside the operating point. For example, if there is a Point-TO-POINT to the Internet.
-* The firewall cannot prevent corporate data from being copied to a memory stick or HDD and these are subtracted from the building. 
-* AFWall+ cannot have a precise system of SCAN for each type of virus/malware that may arise in the files that pass through it, because the Firewall is not an Antivirus solution.
+* A firewall cannot protect against attacks that are performed outside the operating point. For example, if there is a Point-to-Point connection to the Internet.
+* The firewall cannot prevent corporate data from being copied to a memory stick or HDD and these are removed from the building. 
+* AFWall+ does not scan for virus/malware that may exist in the files that pass through it, because a firewall is not an antivirus solution.
 
 Compatibility
 -------------
 
-AFWall+ has been success tested with Android version 4.xx - 5. (ICS, JellyBean, KitKat, Lollipop) and is reported to work with most Android variants, including stock ROMs
+AFWall+ has been success tested with Android version 4.xx - 5. (ICS, JellyBean, KitKat, Lollipop) and is reported to work with most Android variants, including stock ROMs.
 
-I do not recommend using AFWall+ in combination with any of the similar solutions because this could result in conflicts and potential data leaks (iptables could be overwritten)
+I do not recommend using AFWall+ in combination with any of the similar solutions because this could result in conflicts and potential data leaks (iptables could be overwritten).
 
 Upgrading
 ---------
 
 * **Make a backup** (e.g. with Titanium Backup)
-* **Do not remove the previous version** (or else your settings will maybe get lost)
+* **Do not remove the previous version** (or else your settings might get lost)
 * Download the new version
 * Install the new version over the previous version
-* Done
+* Done!
 
 Permissions
 -----------
@@ -96,10 +96,10 @@ AFWall+ asks for the following Android permissions:
 * ACCESS_NETWORK_STATE: Allows AFWall+ to access information about networks (iptables).
 * WRITE_EXTERNAL_STORAGE: Allows AFWall+ to write to external storage for debug log and export iptables rules.
 * ACCESS_SUPERUSER: Standard to support Superuser/SuperSU (by Koushik/Chainfire).
-* INTERNET : NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at [Stackoverflow](http://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4).
-* ACCESS_WIFI_STATE : Added to detect tether state.
+* INTERNET: NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at [Stackoverflow](http://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4).
+* ACCESS_WIFI_STATE: Used to detect tether state.
 
-Frequently asked questions
+Frequently Asked Questions
 --------------------------
 
 Having problems with AFWall+? Check out the [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) before reporting a bug or problem that may already be known.
@@ -176,11 +176,11 @@ Quick start:
 
     git clone git://github.com/ukanth/afwall
     cd afwall
-   ./gradlew clean assembleDebug
+    ./gradlew clean assembleDebug
 
 For complete instructions, please take a look at the [Wiki | HOWTO-Compile-AFWall](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
 
-## Compiling native binaries
+## Compiling Native Binaries
 
 On host side you'll need to install:
 
@@ -203,4 +203,4 @@ Translating
 -----------
 The res/values-* dirs are kept up to date automatically via Crowdin Translate Extension. See [our translation page](http://crowdin.net/project/afwall) if you would like to contribute.
 
-The application is available in many languages, but if yours is not included, or if it needs updating or improving, please create an account and use the translation system (powered by Crowdin Translate Extension) and make your changes.
+This application is available in many languages, but if yours is not included, or if it needs updating or improving, please create an account and use the translation system (powered by Crowdin Translate Extension) and make your changes.
