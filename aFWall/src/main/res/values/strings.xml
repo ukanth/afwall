@@ -1,11 +1,11 @@
-<!--
-AFWall+ UI - String resource (English)
-   By community with many improvements by Gitoffthelawn
--->
-
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
+
+    <!---
+       AFWall+ UI - String resource (English)
+       By community with many improvements by Gitoffthelawn
+    -->
 
     <!-- main -->
     <string name="app_name">AFWall+ </string>
@@ -85,11 +85,11 @@ AFWall+ UI - String resource (English)
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
     <string name="help_dialog_text"></string>
-    <string name="showrules_title">IPtables Rules</string>
+    <string name="showrules_title">Iptables rules</string>
     <string name="copy">Copy</string>
     <string name="copied">Copied</string>
     <string name="Search">Search</string>
-    <string name="flushRulesConfirm">Flush all the IPtables rules?</string>
+    <string name="flushRulesConfirm">Flush all iptables rules?</string>
     <string name="overrideRules">This will override the existing rules! Do you want to import the rules?</string>
     <string name="notification_new">New app installed</string>
     <string name="notification_new_package">Configure internet permission</string>
@@ -141,7 +141,7 @@ AFWall+ UI - String resource (English)
     <string name="export_to_sd">Export to SD card</string>
 
     <!-- Logging -->
-    <string name="enable_firewall_log">Enable firewall logs</string>
+    <string name="enable_firewall_log">Enable firewall log</string>
     <string name="enable_firewall_log_service">Turn on log service</string>
 
     <string name="showlog_title">Firewall Logs</string>
@@ -186,7 +186,7 @@ AFWall+ UI - String resource (English)
     <!-- Interface -->
     <string name="lan_title">LAN Control</string>
     <string name="lan_summary">Enable to control LAN permissions separately from WiFi permissions</string>
-    <string name="iptables_pref">IPtables binary</string>
+    <string name="iptables_pref">Iptables binary</string>
     <string name="vpn_profile">VPN control</string>
     <string name="vpnSummary">Enable to control VPN permissions separately</string>
     <string name="roaming">Roaming control</string>
@@ -194,7 +194,7 @@ AFWall+ UI - String resource (English)
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
 
-    <!-- Toaster msg -->
+    <!-- Toast Messages -->
     <string name="toast_bin_installed">AFWall+: Binary files installed</string>
     <string name="toast_enabled">AFWall+: Firewall enabled</string>
     <string name="toast_error_enabling">AFWall+: ERROR ENABLING FIREWALL!</string>
@@ -245,7 +245,7 @@ AFWall+ UI - String resource (English)
     <!-- Startup -->
     <string name="startup_service">Applying rules. Please wait.</string>
     <string name="fixleakTitle">Fix startup data leak</string>
-    <string name="fixleakSummary">Prevent data leaks during system startup.  Your ROM must have init.d or su.d (superSU) support.  HTC devices must be configured for S-OFF.</string>
+    <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support.  HTC devices must be configured for S-OFF.</string>
     <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -294,8 +294,8 @@ AFWall+ UI - String resource (English)
     
     <string name="faq">Frequently Asked Questions</string>
     
-    <string name="reverse_all">Invert all the selected applications?</string>
-    <string name="unselect_all">Clear all the selected applications?</string>
+    <string name="reverse_all">Invert all the selected apps?</string>
+    <string name="unselect_all">Clear all the selected apps?</string>
     
     <string name="check_all">Check all</string>
     <string name="invert_all">Invert all</string>
@@ -309,17 +309,15 @@ AFWall+ UI - String resource (English)
     <string name="vpn">VPN</string>
     <string name="data">Data</string>
     
-    
     <string name="pkg_all">All</string>
     <string name="pkg_core">Core</string>
     <string name="pkg_sys">System</string>
     <string name="pkg_user">User</string>
     <string name="backup_notexist">No backup exists. Please export from menu.</string>
     
-       
-    <string name="showFilter">Show filter option</string>
-    <string name="showfilter_summary_on">Filter options will be shown in the main view.</string>
-    <string name="showfilter_summary_off">Filter option is hidden</string>
+    <string name="showFilter">Show filters</string>
+    <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
+    <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
     
     <string name="enable_dns">Enable DNS via netd</string>
     <string name="disable_dns">Disable DNS via netd</string>
@@ -361,7 +359,7 @@ AFWall+ UI - String resource (English)
     <string name="su_check_title">Status</string>
     <string name="su_check_message">Checking root access</string>
 
-    <!--choose file -->
+    <!-- choose file -->
 
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
@@ -390,8 +388,8 @@ AFWall+ UI - String resource (English)
 
 
     <!--<string name="sort">Sort Applications</string>-->
-    <string name="defaultsort">By Name(Default)</string>
-    <string name="lastupdated">By Install/Update</string>
+    <string name="defaultsort">By name (default)</string>
+    <string name="lastupdated">By install/update</string>
     <string name="uid">By UID</string>
 
     <string name="select_dir">Select directory</string>
