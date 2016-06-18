@@ -265,8 +265,8 @@
     <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
     <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
     <string name="showUid">Show UID for apps</string>
-    <string name="showuid_summary_on">Show app UID's in the main view</string>
-    <string name="showuid_summary_off">Hide app UID's in the main view. Enabling can be useful to track logs.</string>
+    <string name="showuid_summary_on">Show app UID\'s in the main view</string>
+    <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
     <string name="languages">Languages</string>
 
     <!-- 1.2.6 -->
