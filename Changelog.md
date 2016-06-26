@@ -1,6 +1,14 @@
 Changelog AFWall+
 ==================
 
+Version 2.2.4
+* Feature - Added lockscreen hide notification option
+* Minor UI updates for preferences
+* Updated support libraries
+* Bug - User reported crash fixes
+* Updated Translations and cleanup - Huge thanks for Gitoffthelawn
+
+
 Version 2.2.3
 * Allow kingroot users to continue with warning message until I find proper solution for kingroot problem.
 * AFWall+ will now show in recent apps list 

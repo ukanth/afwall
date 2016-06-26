@@ -80,7 +80,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/23.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.3.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.Raizlabs.DBFlow/dbflow/3.0.0-beta1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.Raizlabs.DBFlow/dbflow/3.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/me.zhanghai.android.materialprogressbar/library/1.1.5/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/org.bitbucket.ukanth/android-lockpattern/7.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
@@ -104,13 +104,13 @@
     <orderEntry type="library" exported="" name="android-lockpattern-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="library-1.1.5" level="project" />
-    <orderEntry type="library" exported="" name="dbflow-core-3.0.0-beta1" level="project" />
     <orderEntry type="library" exported="" name="core-0.8.5.8" level="project" />
     <orderEntry type="library" exported="" name="commons-0.8.5.8" level="project" />
+    <orderEntry type="library" exported="" name="dbflow-core-3.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-24.0.0-beta1" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-23.3.0" level="project" />
+    <orderEntry type="library" exported="" name="dbflow-3.0.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.3.0" level="project" />
-    <orderEntry type="library" exported="" name="dbflow-3.0.0-beta1" level="project" />
   </component>
 </module>

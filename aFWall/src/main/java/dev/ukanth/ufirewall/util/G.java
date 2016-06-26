@@ -31,6 +31,7 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.io.File;
@@ -313,7 +314,8 @@ public class G extends android.app.Application {
 	
 	public void onCreate() {
 		super.onCreate();
-		FlowManager.init(this);
+		FlowManager.init(new FlowConfig.Builder(this)
+				.openDatabasesOnInit(true).build());
 		ctx = this.getApplicationContext();
 		reloadPrefs();
 	}
