@@ -5,14 +5,12 @@
             android:title="@string/xTitle"
             android:summary="@string/xTitleSummary"
             android:dialogTitle="@string/xTitleDialog"
-            android:inputType="number"
             android:dialogMessage=""
             android:key="widgetX"/>
         <EditTextPreference
             android:title="@string/yTitle"
             android:summary="@string/yTitleSummary"
             android:dialogTitle="@string/yTitleDialog"
-            android:inputType="number"
             android:dialogMessage=""
             android:key="widgetY"/>
       </PreferenceCategory>

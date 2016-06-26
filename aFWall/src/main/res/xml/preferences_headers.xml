@@ -19,9 +19,12 @@
     <header
         android:fragment="dev.ukanth.ufirewall.preferences.CustomBinaryPreferenceFragment"
         android:title="@string/binaries" />
-
     <header
         android:fragment="dev.ukanth.ufirewall.preferences.WidgetPreferenceFragment"
         android:title="@string/widgets" />
+
+    <header
+        android:fragment="dev.ukanth.ufirewall.preferences.LanguagePreferenceFragment"
+        android:title="@string/misc_header" />
 
 </preference-headers>

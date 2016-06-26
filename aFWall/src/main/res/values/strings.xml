@@ -210,6 +210,7 @@
     <string name="auto">Auto</string>
 
     <!-- Tasker -->
+    <string name="tasker_prefs_title">Tasker Related</string>
     <string name="disable_toaster">Disable Tasker toasts</string>
     <string name="disableTasterSummary">Disable toast messages for Tasker\'s plugin</string>
     <string name="enable_tasker">Enable AFWall+</string>
@@ -269,6 +270,7 @@
     <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
     <string name="languages">Languages</string>
 
+    <string name="misc_header">Languages/Plugins</string>
     <!-- 1.2.6 -->
     <string name="active_rules">Active rules</string>
     <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/wireless-data/roam/tether)</string>

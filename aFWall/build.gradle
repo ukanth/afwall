@@ -11,7 +11,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 15230
-        versionName "2.3.0"
+        versionName "2.3.0-BETA-1"
     }
 
     buildTypes {
@@ -39,9 +39,10 @@ dependencies {
     // provided fileTree(dir: 'libs', include: ['*.jar'])
 
     compile 'org.bitbucket.ukanth:android-lockpattern:7.0.0'
-    compile 'com.android.support:appcompat-v7:23.1.1'
-    compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
-        transitive = true
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.afollestad.material-dialogs:core:0.8.5.8'
+    compile ('com.afollestad.material-dialogs:commons:0.8.5.8'){
+        exclude module: 'core'
     }
 
     apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.0-beta1'
