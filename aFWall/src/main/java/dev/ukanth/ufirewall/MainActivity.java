@@ -27,6 +27,7 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
@@ -42,6 +43,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -49,6 +51,7 @@ import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -126,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 	private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
+
+	private AlertDialog dialogLegend = null;
 
 
 
@@ -923,6 +928,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		/*case android.R.id.home:
 			disableOrEnable();
 	        return true;*/
+			case R.id.menu_legend:
+				LayoutInflater inflater = LayoutInflater.from(this);
+				View view = inflater.inflate(R.layout.legend, null, false);
+				dialogLegend = new AlertDialog.Builder(this)
+						.setView(view)
+						.setCancelable(true)
+						.setOnDismissListener(new DialogInterface.OnDismissListener() {
+							@Override
+							public void onDismiss(DialogInterface dialogInterface) {
+								dialogLegend = null;
+							}
+						})
+						.create();
+				dialogLegend.show();
+				return true;
 			case R.id.menu_toggle:
 				disableOrEnable();
 				return true;
@@ -2028,6 +2048,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				passCheck();
 			}
 		}
+	}
+	@Override
+	public void onDestroy() {
+		Log.i(Api.TAG, "Destroy");
+		if (dialogLegend != null) {
+			dialogLegend.dismiss();
+			dialogLegend = null;
+		}
+		super.onDestroy();
 	}
 
 }

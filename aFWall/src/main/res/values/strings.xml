@@ -422,4 +422,5 @@
     <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
     <string name="lockNotification">Hide lockscreen notification icon</string>
     <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
+    <string name="menu_legend">Legends</string>
 </resources>

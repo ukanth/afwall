@@ -117,6 +117,11 @@
                 android:title="@string/imports"
                 app:showAsAction="always" />
             <item
+                android:id="@+id/menu_legend"
+                android:icon="@drawable/legend"
+                android:title="@string/menu_legend"
+                app:showAsAction="always" />
+            <item
                 android:id="@+id/menu_help"
                 android:icon="@drawable/help"
                 android:title="@string/help"
