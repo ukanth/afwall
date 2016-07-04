@@ -21,12 +21,18 @@
  */
 package dev.ukanth.ufirewall.broadcast;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
+import dev.ukanth.ufirewall.MainActivity;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.util.G;
@@ -39,6 +45,11 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 	public static final String WIFI_AP_STATE_CHANGED_ACTION = "android.net.wifi.WIFI_AP_STATE_CHANGED";
 	public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
 	public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
+
+	private final int id = 1;
+	private NotificationManager notificationManager;
+	private NotificationCompat.Builder notiBuilder;
+
 	/*public static final int WIFI_AP_STATE_DISABLING = 10;
 	public static final int WIFI_AP_STATE_DISABLED = 11;
 	public static final int WIFI_AP_STATE_ENABLING = 12;
@@ -54,23 +65,64 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
+
+
+		//hard code 5 seconds delay before apply rules
+		final int delay = 3;
+
+		notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		notiBuilder = new NotificationCompat.Builder(context);
+		notiBuilder.setContentTitle(context.getString(R.string.applying_rules))
+				.setContentText(context.getString(R.string.apply))
+				.setSmallIcon(R.drawable.notification_warn);
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+		stackBuilder.addParentStack(MainActivity.class);
+		stackBuilder.addNextIntent(new Intent(context, MainActivity.class));
+		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		notiBuilder.setContentIntent(pendingIntent);
+
 		if(G.activeRules()) {
-			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-			final Intent logIntent = new Intent(context, LogService.class);
-			if (G.enableLogService()) {
-				//check if the firewall is enabled
-				if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
-					//make sure kill all the klog ripper
-					context.stopService(logIntent);					
-				} else {
-					//restart the service
-					context.stopService(logIntent);
-					context.startService(logIntent);
+
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					boolean notification = true;
+					for (int i = delay; i >= 0; i--)
+						try {
+							Thread.sleep(1000);
+							if (notification) {
+								notiBuilder.setContentText(context.getString(R.string.working)).setProgress(delay, delay - i, false);
+								notificationManager.notify(id, notiBuilder.build());
+							} else if ((i % 10 == 0 || i == delay) && i != 0) {
+							}
+						} catch (InterruptedException e) {
+						}
+					if (notification) {
+						notiBuilder.setContentText(context.getString(R.string.rules_applied)).setProgress(0, 0, false);
+						notificationManager.notify(id, notiBuilder.build());
+					}
+
+					InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+					final Intent logIntent = new Intent(context, LogService.class);
+					if (G.enableLogService()) {
+						//check if the firewall is enabled
+						if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
+							//make sure kill all the klog ripper
+							context.stopService(logIntent);
+						} else {
+							//restart the service
+							context.stopService(logIntent);
+							context.startService(logIntent);
+						}
+					} else {
+						//no internet - stop the service
+						context.stopService(logIntent);
+					}
+					//cleanup the notification after applying rules
+					notificationManager.cancel(id);
 				}
-			} else {
-				//no internet - stop the service
-				context.stopService(logIntent);
-			}
+			}).start();
 		}
 	}
 }
