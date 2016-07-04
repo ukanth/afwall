@@ -5,23 +5,55 @@
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/ic_action_search"
-        app:showAsAction="always|collapseActionView"
-        android:title=""/>
+        android:title=""
+        app:showAsAction="always|collapseActionView" />
+
+
+    <item
+        android:id="@+id/menu_mode"
+        android:icon="@drawable/ic_playlist_check"
+        android:title=""
+        app:showAsAction="always">
+
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/allowmode"
+                    android:checked="true"
+                    android:title="@string/mode_whitelist"
+                    app:showAsAction="always"></item>
+                <item
+                    android:id="@+id/blockmode"
+                    android:title="@string/mode_blacklist"
+                    app:showAsAction="always"></item>
+            </group>
+        </menu>
+    </item>
 
     <item
         android:id="@+id/menu_sort"
         android:icon="@drawable/ic_sort_variant"
-        app:showAsAction="always"
-        android:title="">
+        android:title=""
+        app:showAsAction="always">
 
         <menu>
             <group android:checkableBehavior="single">
-            <item android:id="@+id/sort_default"  app:showAsAction="always" android:title="@string/defaultsort" android:checked="true"></item>
-            <item android:id="@+id/sort_lastupdate"  app:showAsAction="always" android:title="@string/lastupdated"></item>
-            <item android:id="@+id/sort_uid"  app:showAsAction="always" android:title="@string/uid"></item>
+                <item
+                    android:id="@+id/sort_default"
+                    android:checked="true"
+                    android:title="@string/defaultsort"
+                    app:showAsAction="always"></item>
+                <item
+                    android:id="@+id/sort_lastupdate"
+                    android:title="@string/lastupdated"
+                    app:showAsAction="always"></item>
+                <item
+                    android:id="@+id/sort_uid"
+                    android:title="@string/uid"
+                    app:showAsAction="always"></item>
             </group>
         </menu>
-        </item>
+    </item>
 
     <!-- <item
         android:id="@+id/menu_onoff"
@@ -31,29 +63,29 @@
     <item
         android:id="@+id/menu_list_item"
         android:icon="@drawable/ic_core_overflow"
-        app:showAsAction="always"
-        android:title="">
+        android:title=""
+        app:showAsAction="always">
         <menu>
-             <item
+            <item
                 android:id="@+id/menu_toggle"
                 android:icon="@drawable/notification"
-                app:showAsAction="always|withText"
-                android:title=""/>	
+                android:title=""
+                app:showAsAction="always|withText" />
             <item
                 android:id="@+id/menu_apply"
                 android:icon="@drawable/apply"
-                app:showAsAction="always|withText"
-                android:title=""/>
+                android:title=""
+                app:showAsAction="always|withText" />
             <item
                 android:id="@+id/menu_log"
                 android:icon="@drawable/logs"
-                app:showAsAction="always"
-                android:title="@string/show_log"/>
+                android:title="@string/show_log"
+                app:showAsAction="always" />
             <item
                 android:id="@+id/menu_rules"
                 android:icon="@drawable/rules"
-                app:showAsAction="always"
-                android:title="@string/showrules"/>
+                android:title="@string/showrules"
+                app:showAsAction="always" />
             <!--<item
                 android:id="@+id/menu_setpwd"
                 android:icon="@drawable/lock"
@@ -62,13 +94,13 @@
             <item
                 android:id="@+id/menu_setcustom"
                 android:icon="@drawable/script"
-                app:showAsAction="always"
-                android:title="@string/set_custom_script"/>
+                android:title="@string/set_custom_script"
+                app:showAsAction="always" />
             <item
                 android:id="@+id/menu_preference"
                 android:icon="@drawable/preferences"
-                app:showAsAction="always"
-                android:title="@string/preferences"/>
+                android:title="@string/preferences"
+                app:showAsAction="always" />
             <!--<item
                 android:id="@+id/menu_reload"
                 android:icon="@drawable/reload"
@@ -77,23 +109,23 @@
             <item
                 android:id="@+id/menu_export"
                 android:icon="@drawable/exportr"
-                app:showAsAction="always"
-                android:title="@string/exports"/>
+                android:title="@string/exports"
+                app:showAsAction="always" />
             <item
                 android:id="@+id/menu_import"
                 android:icon="@drawable/importr"
-                app:showAsAction="always"
-                android:title="@string/imports"/>
+                android:title="@string/imports"
+                app:showAsAction="always" />
             <item
                 android:id="@+id/menu_help"
                 android:icon="@drawable/help"
-                app:showAsAction="always"
-                android:title="@string/help"/>
+                android:title="@string/help"
+                app:showAsAction="always" />
             <item
                 android:id="@+id/menu_exit"
                 android:icon="@drawable/exit"
-                app:showAsAction="always"
-                android:title="@string/exit"/>
+                android:title="@string/exit"
+                app:showAsAction="always" />
         </menu>
     </item>
 

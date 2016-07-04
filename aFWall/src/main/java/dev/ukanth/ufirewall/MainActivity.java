@@ -64,7 +64,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 		setSupportActionBar(toolbar);
 		//set onclick listeners
-		this.findViewById(R.id.label_mode).setOnClickListener(this);
+		//this.findViewById(R.id.label_mode).setOnClickListener(this);
 		this.findViewById(R.id.img_wifi).setOnClickListener(this);
 		this.findViewById(R.id.img_reset).setOnClickListener(this);
 		this.findViewById(R.id.img_invert).setOnClickListener(this);
@@ -510,10 +509,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	 */
 	private void refreshHeader() {
 		final String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-		final TextView labelmode = (TextView) this.findViewById(R.id.label_mode);
+		//final TextView labelmode = (TextView) this.findViewById(R.id.label_mode);
 		final Resources res = getResources();
-		int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist: R.string.mode_blacklist);
-		labelmode.setText(res.getString(R.string.mode_header, res.getString(resid)));
+
+		if(mode.equals(Api.MODE_WHITELIST)){
+			if(mainMenu != null) {
+				mainMenu.findItem(R.id.allowmode).setChecked(true);
+				mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_playlist_check);
+			}
+		} else {
+			if(mainMenu != null) {
+				mainMenu.findItem(R.id.blockmode).setChecked(true);
+				mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_playlist_remove);
+			}
+		}
+		//int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist: R.string.mode_blacklist);
+		//labelmode.setText(res.getString(R.string.mode_header, res.getString(resid)));
 	}
 
 	/**
@@ -852,6 +863,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						mainMenu.findItem(R.id.sort_uid).setChecked(true);
 						break;
 				}
+
+				refreshHeader();
 			}
 		});
 		return true;
@@ -912,6 +925,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	        return true;*/
 			case R.id.menu_toggle:
 				disableOrEnable();
+				return true;
+			case R.id.allowmode:
+				item.setChecked(true);
+				Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
+				editor.putString(Api.PREF_MODE, Api.MODE_WHITELIST);
+				editor.commit();
+				refreshHeader();
+				return true;
+			case R.id.blockmode:
+				item.setChecked(true);
+				Editor editor2 = getSharedPreferences(Api.PREFS_NAME, 0).edit();
+				editor2.putString(Api.PREF_MODE, Api.MODE_BLACKLIST);
+				editor2.commit();
+				refreshHeader();
 				return true;
 			case R.id.sort_default:
 				G.sortBy("s0");
@@ -1462,9 +1489,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	public void onClick(View v) {
 
 		switch (v.getId()) {
-			case R.id.label_mode:
+			/*case R.id.label_mode:
 				selectMode();
-				break;
+				break;*/
 			case R.id.img_wifi:
 				selectActionConfirmation(v.getId());
 				break;

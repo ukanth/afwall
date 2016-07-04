@@ -22,7 +22,7 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize" />
 
-        <ListView
+        <!--<ListView
             android:id="@android:id/list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,6 @@
             android:drawSelectorOnTop="false"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:textAlignment="center" />
-        <!--android:gravity="center_horizontal"-->
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -53,15 +52,15 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:textIsSelectable="false" />
-            <!--
+            &lt;!&ndash;
                     <Spinner
                         android:id="@+id/filterGroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:entries="@array/filters"/>-->
+                        android:entries="@array/filters"/>&ndash;&gt;
 
 
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/profileOption"
