@@ -1,9 +1,11 @@
 Changelog AFWall+
 ==================
 
-Version 2.2.4
+Version 2.2.4-BETA
 * Feature - Added lockscreen hide notification option
-* Minor UI updates for preferences
+* Added Legends inspired by NetGuard 
+* Attempt to fix kingroot issue
+* Minor UI updates for preferences and firewall mode
 * Updated support libraries
 * Bug - User reported crash fixes
 * Updated Translations and cleanup - Huge thanks for Gitoffthelawn
