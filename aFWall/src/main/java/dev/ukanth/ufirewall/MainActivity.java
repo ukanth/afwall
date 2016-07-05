@@ -2000,7 +2000,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 			// more details on https://github.com/ukanth/afwall/issues/501
 			if(isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
-				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+				G.kingDetected(true);
+				/*new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_nonsupported)
 						.content(R.string.error_nonsupported_details)
 						.onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -2021,7 +2022,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						})
 						.positiveText(R.string.Continue)
 						.negativeText(R.string.exit)
-						.show();
+						.show();*/
 			}
 			if(!rootGranted && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)

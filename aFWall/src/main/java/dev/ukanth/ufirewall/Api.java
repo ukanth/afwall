@@ -794,6 +794,14 @@ public final class Api {
 
 		rulesUpToDate = true;
 
+		if(G.kingDetected()) {
+			try {
+				flushAllRules(ctx, new RootCommand());
+			} catch (Exception e) {
+				Log.d(TAG, "Failed flusing firewall chains");
+			}
+		}
+
 		if (G.logTarget().equals("NFLOG")) {
 			Intent intent = new Intent(ctx.getApplicationContext(), NflogService.class);
 			ctx.startService(intent);
@@ -2686,4 +2694,17 @@ public final class Api {
 
     	
     }
+
+	/**
+	 * Delete all firewall rules.  For diagnostic purposes only.
+	 *
+	 * @param ctx application context
+	 * @param callback callback for completion
+	 */
+	public static void flushOtherRules(Context ctx, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-F firewall");
+		cmds.add("-X firewall");
+		apply46(ctx, cmds, callback);
+	}
 }

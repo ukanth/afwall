@@ -92,6 +92,7 @@ public class G extends android.app.Application {
 	private static final String USE_PASSWORD_PATTERN = "usePatterns";
 	private static final String PATTERN_MAX_TRY = "patternMax";
 	private static final String PATTERN_STEALTH = "stealthMode";
+	private static final String ISKINGDETECT = "kingDetect";
 	
 	private static final String PWD_ENCRYPT= "pwdEncrypt";
 	
@@ -233,6 +234,10 @@ public class G extends android.app.Application {
 	
 	public static boolean showFilter() { return gPrefs.getBoolean(SHOW_FILTER, false); }
 	public static boolean showFilter(boolean val) { gPrefs.edit().putBoolean(SHOW_FILTER, val).commit(); return val; }
+
+
+	public static boolean kingDetected() { return gPrefs.getBoolean(ISKINGDETECT, false); }
+	public static boolean kingDetected(boolean val) { gPrefs.edit().putBoolean(ISKINGDETECT, val).commit(); return val; }
 
 	//public static boolean notifyAppInstall() { return gPrefs.getBoolean(NOTIFY_INSTALL, false); }
 	//public static boolean notifyAppInstall(boolean val) { gPrefs.edit().putBoolean(NOTIFY_INSTALL, val).commit(); return val; }
