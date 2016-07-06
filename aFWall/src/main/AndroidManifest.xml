@@ -83,6 +83,19 @@
         android:theme="@style/MyActionBarTheme"
         android:launchMode="singleTask"
         android:name="dev.ukanth.ufirewall.util.G" >
+
+        <!--WIP: uncomment following to get XPOSED working -->
+        <!--
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="Xposed addition for AFWall+" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="53" />-->
+
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
