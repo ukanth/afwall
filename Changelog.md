@@ -7,6 +7,7 @@ Version 2.2.4-BETA
 * Attempt to fix kingroot issue
 * Minor UI updates for preferences and firewall mode
 * Updated support libraries
+* Improved init.d for IPv6 - Thanks to F-i-f 
 * Bug - User reported crash fixes
 * Updated Translations and cleanup - Huge thanks for Gitoffthelawn
 
