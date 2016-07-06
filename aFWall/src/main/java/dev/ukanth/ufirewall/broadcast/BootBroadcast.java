@@ -23,15 +23,12 @@
  */
 package dev.ukanth.ufirewall.broadcast;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.util.G;
 
@@ -55,11 +52,6 @@ public class BootBroadcast extends BroadcastReceiver {
 		//make sure nflog starts after boot
 		if(G.enableLog() && "NFLOG".equals(G.logTarget())) {
 			context.startService(new Intent(context.getApplicationContext(), NflogService.class));
-		}
-
-		//turn on log service as well
-		if (G.enableLogService()) {
-			context.startService(new Intent(context, LogService.class));
 		}
 
 	}
