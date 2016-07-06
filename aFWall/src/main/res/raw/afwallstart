@@ -1,25 +1,42 @@
 #!/system/bin/sh
 
+export PATH=/system/bin
+
+startDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
+while :
+do
+  if [ -d /data/data/com.android.providers.downloads ]
+  then
+    break
+  fi
+  sleep 1
+done
+endDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
+
 if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables ]; then
-    path="dev.ukanth.ufirewall"
+  path="dev.ukanth.ufirewall"
 elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables ]; then
-    path="dev.ukanth.ufirewall.donate"
+  path="dev.ukanth.ufirewall.donate"
 else
-    log -p i -t afwall "AFWall doesn't seem to be installed."
-    exit
-fi;
+  log -p i -t afwall "AFWall does not seem to be installed, waited for $((endDt-startDt)) seconds."
+  exit
+fi
 
-defaultpath_1=/system/bin/iptables
-file=/data/data/$path/app_bin/iptables
+log -p i -t afwall "Waited $((endDt-startDt)) seconds for /data/data."
 
-if [ -f "$file" ]; then
-	if [ -f "$defaultpath_1" ]; then
-		$defaultpath_1 -P INPUT DROP    
-        	$defaultpath_1 -P OUTPUT DROP   
-	        $defaultpath_1 -P FORWARD DROP        
-	else
-		$file -P INPUT DROP
-		$file -P OUTPUT DROP
-		$file -P FORWARD DROP
-	fi;	
-fi;
+doit() {
+  for i in "$@"
+  do
+    if [ -x "$i" ]
+    then
+      "$i" -wP INPUT DROP
+      "$i" -wP OUTPUT DROP
+      "$i" -wP FORWARD DROP
+      return
+    fi
+  done
+}
+
+doit /system/bin/iptables /data/data/$path/app_bin/iptables
+doit /system/bin/ip6tables /data/data/$path/app_bin/ip6tables
+log -p i -t afwall "IPv4/6 policy set to DROP"
