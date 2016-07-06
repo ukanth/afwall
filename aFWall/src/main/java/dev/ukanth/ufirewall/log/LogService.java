@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
@@ -144,43 +143,49 @@ public class LogService extends Service {
 
 
 	public void onCreate() {
-		klogPath = Api.getKLogPath(getApplicationContext());
+		//klogPath = Api.getKLogPath(getApplicationContext());
+		klogPath = "while true; do dmesg -c ; sleep 1 ; done";
 		Log.i(TAG, "Starting " + klogPath);
 		handler = new Handler();
-		rootSession = new Shell.Builder()
-				.useSU()
-				.setMinimalLogging(true)
-				.setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
-					@Override
-					public void onLine(String line) {
-						if(G.enableLogService()) {
-							if(line.trim().length() > 0)
-							{
-								if (line.contains("AFL")) {
-									LogInfo logInfo = LogInfo.parseLogs(line,getApplicationContext());
-									storeData(logInfo);
-									if(logInfo.uidString != null && logInfo.uidString.length() > 0 ) {
-										if(G.showLogToasts()) {
-											showToast(getApplicationContext(), handler,logInfo.uidString, false);
+		if(rootSession == null) {
+			rootSession = new Shell.Builder()
+					.useSU()
+					.setMinimalLogging(true)
+					.setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
+						@Override
+						public void onLine(String line) {
+							if(G.enableLogService()) {
+								//Log.d(TAG,line);
+								if(line.trim().length() > 0)
+								{
+									if (line.contains("AFL")) {
+										LogInfo logInfo = LogInfo.parseLogs(line,getApplicationContext());
+										storeData(logInfo);
+										if(logInfo.uidString != null && logInfo.uidString.length() > 0 ) {
+											//Log.d(TAG,logInfo.uidString);
+											if(G.showLogToasts()) {
+												showToast(getApplicationContext(), handler,logInfo.uidString, false);
+											}
 										}
-									}	
+									}
 								}
 							}
-						} 
-					}
-				})
-
-				.open(new Shell.OnCommandResultListener() {
-					public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-						if (exitCode != 0) {
-							Log.e(TAG, "Can't start klog shell: exitCode " + exitCode);
-							stopSelf();
-						} else {
-							Log.i(TAG, "logservice shell started");
-							rootSession.addCommand(klogPath);
 						}
-					}
-				});
+					})
+
+					.open(new Shell.OnCommandResultListener() {
+						public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+							if (exitCode != 0) {
+								Log.e(TAG, "Can't start klog shell: exitCode " + exitCode);
+								stopSelf();
+							} else {
+								Log.d(TAG, "logservice shell started");
+								//rootSession.addCommand("while true; do dmesg -c ; sleep 1 ; done");
+								rootSession.addCommand(klogPath);
+							}
+						}
+					});
+		}
 	}
 
 	private void storeData(LogInfo logInfo) {
@@ -201,8 +206,11 @@ public class LogService extends Service {
 
 	@Override
 	public void onDestroy() {
+		if(rootSession != null){
+			rootSession.kill();
+			rootSession.close();
+		}
+		Log.d(TAG, "Received request to kill logservice");
 		super.onDestroy();
-		Log.i(TAG, "Received request to kill logservice");
-		Api.killLogProcess(getApplicationContext(),klogPath);
 	}
 }
