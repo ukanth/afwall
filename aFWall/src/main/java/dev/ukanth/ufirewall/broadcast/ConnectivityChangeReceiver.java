@@ -74,7 +74,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		notiBuilder = new NotificationCompat.Builder(context);
 		notiBuilder.setContentTitle(context.getString(R.string.applying_rules))
 				.setContentText(context.getString(R.string.apply))
-				.setSmallIcon(R.drawable.notification_warn);
+				.setPriority(NotificationCompat.PRIORITY_MIN)
+				.setSmallIcon(R.drawable.widget_bg);
 
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 		stackBuilder.addParentStack(MainActivity.class);
@@ -92,7 +93,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 						try {
 							Thread.sleep(1000);
 							if (notification) {
-								notiBuilder.setContentText(context.getString(R.string.working)).setProgress(delay, delay - i, false);
+								notiBuilder.setContentText(context.getString(R.string.apply)).setProgress(delay, delay - i, false);
 								notificationManager.notify(id, notiBuilder.build());
 							} else if ((i % 10 == 0 || i == delay) && i != 0) {
 							}
