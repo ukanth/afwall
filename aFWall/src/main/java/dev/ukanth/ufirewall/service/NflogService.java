@@ -57,35 +57,37 @@ public class NflogService extends Service {
         nflogPath = Api.getNflogPath(getApplicationContext());
         Log.d(TAG, "Starting " + nflogPath);
 
-        if (rootSession == null) {
-            rootSession = new Shell.Builder()
-                    .useSU()
-                    .setMinimalLogging(true)
-                    .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
-
-                        @Override
-                        public void onLine(String line) {
-                            synchronized (circ) {
-                                while (circ.size() >= MAX_ENTRIES) {
-                                    circ.removeFirst();
-                                }
-                                circ.addLast(line);
-                            }
-                        }
-                    })
-
-                    .open(new Shell.OnCommandResultListener() {
-                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                            if (exitCode != 0) {
-                                Log.e(TAG, "Can't start nflog shell: exitCode " + exitCode);
-                                stopSelf();
-                            } else {
-                                Log.i(TAG, "nflog shell started");
-                                rootSession.addCommand(nflogPath + " " + queueNum);
-                            }
-                        }
-                    });
+        if(rootSession != null){
+            rootSession.kill();
+            rootSession.close();
         }
+        rootSession = new Shell.Builder()
+                .useSU()
+                .setMinimalLogging(true)
+                .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
+
+                    @Override
+                    public void onLine(String line) {
+                        synchronized (circ) {
+                            while (circ.size() >= MAX_ENTRIES) {
+                                circ.removeFirst();
+                            }
+                            circ.addLast(line);
+                        }
+                    }
+                })
+
+                .open(new Shell.OnCommandResultListener() {
+                    public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+                        if (exitCode != 0) {
+                            Log.e(TAG, "Can't start nflog shell: exitCode " + exitCode);
+                            stopSelf();
+                        } else {
+                            Log.i(TAG, "nflog shell started");
+                            rootSession.addCommand(nflogPath + " " + queueNum);
+                        }
+                    }
+                });
 
     }
 
@@ -108,6 +110,7 @@ public class NflogService extends Service {
         }
     }
 
+    @Override
     public void onDestroy() {
         if(rootSession != null){
             rootSession.kill();

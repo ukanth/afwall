@@ -147,45 +147,49 @@ public class LogService extends Service {
 		klogPath = "while true; do dmesg -c ; sleep 1 ; done";
 		Log.i(TAG, "Starting " + klogPath);
 		handler = new Handler();
-		if(rootSession == null) {
-			rootSession = new Shell.Builder()
-					.useSU()
-					.setMinimalLogging(true)
-					.setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
-						@Override
-						public void onLine(String line) {
-							if(G.enableLogService()) {
-								//Log.d(TAG,line);
-								if(line.trim().length() > 0)
-								{
-									if (line.contains("AFL")) {
-										LogInfo logInfo = LogInfo.parseLogs(line,getApplicationContext());
-										storeData(logInfo);
-										if(logInfo.uidString != null && logInfo.uidString.length() > 0 ) {
-											//Log.d(TAG,logInfo.uidString);
-											if(G.showLogToasts()) {
-												showToast(getApplicationContext(), handler,logInfo.uidString, false);
-											}
-										}
+		Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
+
+		if(rootSession != null){
+			rootSession.kill();
+			rootSession.close();
+		}
+		rootSession = new Shell.Builder()
+			.useSU()
+			.setMinimalLogging(true)
+			.setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
+				@Override
+				public void onLine(String line) {
+					if(G.enableLogService()) {
+						//Log.d(TAG,line);
+						if(line.trim().length() > 0)
+						{
+							if (line.contains("AFL")) {
+								LogInfo logInfo = LogInfo.parseLogs(line,getApplicationContext());
+								storeData(logInfo);
+								if(logInfo.uidString != null && logInfo.uidString.length() > 0 ) {
+									//Log.d(TAG,logInfo.uidString);
+									if(G.showLogToasts()) {
+										showToast(getApplicationContext(), handler,logInfo.uidString, false);
 									}
 								}
 							}
 						}
-					})
+					}
+				}
+			})
 
-					.open(new Shell.OnCommandResultListener() {
-						public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-							if (exitCode != 0) {
-								Log.e(TAG, "Can't start klog shell: exitCode " + exitCode);
-								stopSelf();
-							} else {
-								Log.d(TAG, "logservice shell started");
-								//rootSession.addCommand("while true; do dmesg -c ; sleep 1 ; done");
-								rootSession.addCommand(klogPath);
-							}
-						}
-					});
-		}
+			.open(new Shell.OnCommandResultListener() {
+				public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+					if (exitCode != 0) {
+						Log.e(TAG, "Can't start klog shell: exitCode " + exitCode);
+						stopSelf();
+					} else {
+						Log.d(TAG, "logservice shell started");
+						//rootSession.addCommand("while true; do dmesg -c ; sleep 1 ; done");
+						rootSession.addCommand(klogPath);
+					}
+				}
+			});
 	}
 
 	private void storeData(LogInfo logInfo) {
