@@ -104,8 +104,8 @@
     <orderEntry type="library" exported="" name="libsuperuser-1.0.0.201607041850" level="project" />
     <orderEntry type="library" exported="" name="core-0.8.5.8" level="project" />
     <orderEntry type="library" exported="" name="dbflow-core-3.0.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="api-82" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.3.0" level="project" />
     <orderEntry type="library" exported="" name="android-lockpattern-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.3.0" level="project" />

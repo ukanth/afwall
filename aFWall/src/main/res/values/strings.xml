@@ -406,6 +406,10 @@
     <string name="add">Add</string>
     <string name="showlog_toasts">Show toast notification on block</string>
     <string name="enable_show_toasts">Enable show toasts</string>
+    <string name="top">Top</string>
+    <string name="center">Center</string>
+    <string name="bottom">Bottom</string>
+    <string name="position">Toasts Position</string>
 
 
     <string name="widget_prefs_title">Widget positions</string>

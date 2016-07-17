@@ -106,7 +106,7 @@ public class LogService extends Service {
 	              if(showOnlyToastRunnable == null) {
 	                showOnlyToastRunnable  = new Runnable() {
 	                  public void run() {
-	                    toast.show();
+					    toast.show();
 	                  }
 	                };
 	              }
@@ -117,17 +117,20 @@ public class LogService extends Service {
 	              toast.setDuration(Toast.LENGTH_SHORT);
 	          }
 
-	          switch(toastPosition) {
-	            case 1:
-	              toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, toastYOffset);
-	              break;
-	            case 2:
-	              toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastYOffset);
-	              break;
-	            default:
-	              toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastDefaultYOffset);
-	              break;
-	          }
+				switch (G.toast_pos()) {
+					case "top":
+						toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, toastYOffset);
+						break;
+					case "bottom":
+						toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastYOffset);
+						break;
+					case "center":
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						break;
+					default:
+						toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastDefaultYOffset);
+						break;
+				}
 
 	          toastTextView.setText(android.text.Html.fromHtml(toastText.toString()));
 	          toast.show();

@@ -68,6 +68,7 @@ public class G extends android.app.Application {
 	private static final String IPTABLES_PATH = "ip_path";
 	private static final String PROTECTION_OPTION = "passSetting";
 	private static final String BUSYBOX_PATH = "bb_path";
+	private static final String TOAST_POS = "toast_pos";
 	private static final String LANGUAGE = "locale";
 	private static final String SORT_BY = "sort";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
@@ -253,6 +254,9 @@ public class G extends android.app.Application {
 
 	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "builtin"); }
 	public static String bb_path(String val) { gPrefs.edit().putString(BUSYBOX_PATH, val).commit(); return val; }
+
+	public static String toast_pos() { return gPrefs.getString(TOAST_POS, "bottom"); }
+	public static String toast_pos(String val) { gPrefs.edit().putString(TOAST_POS, val).commit(); return val; }
 
 	public static String locale() { return gPrefs.getString(LANGUAGE, "en"); }
 	public static String locale(String val) { gPrefs.edit().putString(LANGUAGE, val).commit(); return val; }

@@ -102,8 +102,8 @@
         <item>system</item>
         <item>builtin</item>
     </string-array>
-    
-      <string-array name="busybox_binary">
+
+    <string-array name="busybox_binary">
         <item>@string/builtin_bb</item>
         <item>@string/system_bb</item>
     </string-array>
@@ -146,6 +146,19 @@
         <item>p2</item>
     </string-array>
 
+
+    <string-array name="toast_pos">
+        <item>@string/top</item>
+        <item>@string/center</item>
+        <item>@string/bottom</item>
+    </string-array>
+
+
+    <string-array name="toast_pos_val">
+        <item>top</item>
+        <item>center</item>
+        <item>bottom</item>
+    </string-array>
 
   <!--  <string-array name="sort_key">
         <item>@string/defaultsort</item>

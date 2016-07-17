@@ -21,6 +21,17 @@
             android:summary="@string/showlog_toasts"
             android:title="@string/enable_show_toasts" />
 
+
+        <ListPreference
+            android:dependency="enableLog"
+            android:defaultValue="bottom"
+            android:entries="@array/toast_pos"
+            android:entryValues="@array/toast_pos_val"
+            android:key="toast_pos"
+            android:title="@string/position" >
+        </ListPreference>
+
+
         <dev.ukanth.ufirewall.log.MultiSelectListPreference
             android:dependency="enableLog"
             android:dialogTitle="@string/filters_apps_title"
