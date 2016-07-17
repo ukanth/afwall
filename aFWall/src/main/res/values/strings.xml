@@ -423,4 +423,5 @@
     <string name="lockNotification">Hide lockscreen notification icon</string>
     <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
     <string name="menu_legend">Legends</string>
+    <string name="permissiondenied">Permission denied to READ/WRITE access. Please give access to export/import rules.</string>
 </resources>

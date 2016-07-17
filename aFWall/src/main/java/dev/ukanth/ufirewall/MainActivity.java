@@ -1049,7 +1049,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 							MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
 
 				} else {
-					// permissions have been granted.
 					showExportDialog();
 				}
 				return true;
@@ -1063,7 +1062,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 							MY_PERMISSIONS_REQUEST_READ_STORAGE);
 
 				} else {
-					// permissions have been granted.
 					showImportDialog();
 				}
 
@@ -1267,7 +1265,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					showExportDialog();
 				} else {
-
+				    Toast.makeText(this,R.string.permissiondenied,Toast.LENGTH_SHORT).show();
 				}
 				return;
 			}
@@ -1275,14 +1273,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			case MY_PERMISSIONS_REQUEST_READ_STORAGE: {
 				if (grantResults.length > 0
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-					// permission was granted, yay! Do the
-					// contacts-related task you need to do.
-
+					showImportDialog();
 				} else {
-
-					// permission denied, boo! Disable the
-					// functionality that depends on this permission.
+					Toast.makeText(this,R.string.permissiondenied,Toast.LENGTH_SHORT).show();
 				}
 				return;
 			}
