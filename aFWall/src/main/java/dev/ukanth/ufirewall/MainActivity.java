@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 	private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
+	private static final int  MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
 	private AlertDialog dialogLegend = null;
 
@@ -180,7 +181,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
 		AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 
-		Api.assertBinaries(this, true);
+
+		//make sure we have WRITE_EXTERNAL_STORAGE ACCESS
+		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+				!= PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(MainActivity.this,
+					new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+					MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
+		} else {
+			Api.assertBinaries(this, true);
+
+		}
+
 
 		mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 		mSwipeLayout.setOnRefreshListener(this);
@@ -1265,7 +1277,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					showExportDialog();
 				} else {
-				    Toast.makeText(this,R.string.permissiondenied,Toast.LENGTH_SHORT).show();
+				    Toast.makeText(this,R.string.permissiondenied_importexport,Toast.LENGTH_SHORT).show();
+				}
+				return;
+			}
+
+			case MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET: {
+				if (grantResults.length > 0
+						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+					Api.assertBinaries(this, true);
+				} else {
+					Toast.makeText(this,R.string.permissiondenied_asset,Toast.LENGTH_SHORT).show();
 				}
 				return;
 			}
@@ -1275,7 +1297,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 					showImportDialog();
 				} else {
-					Toast.makeText(this,R.string.permissiondenied,Toast.LENGTH_SHORT).show();
+					Toast.makeText(this,R.string.permissiondenied_importexport,Toast.LENGTH_SHORT).show();
 				}
 				return;
 			}
@@ -1931,8 +1953,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		@Override
 		protected void onPreExecute() {
 			suDialog = new MaterialDialog.Builder(context).
-					cancelable(false).
-					title(getString(R.string.su_check_title)).progress(true,0).content(context.getString(R.string.su_check_message)).show();
+					cancelable(false).title(getString(R.string.su_check_title)).progress(true,0).content(context.getString(R.string.su_check_message))
+					.show();
 		}
 
 		@Override
