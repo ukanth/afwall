@@ -10,8 +10,8 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 15224
-        versionName "2.2.4-BETA"
+        versionCode 15225
+        versionName "2.2.4-BETA2"
     }
 
     buildTypes {
@@ -41,10 +41,10 @@ dependencies {
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
     compile 'org.bitbucket.ukanth:android-lockpattern:7.0.0'
     compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.afollestad.material-dialogs:core:0.8.5.8'
-    compile ('com.afollestad.material-dialogs:commons:0.8.5.8'){
+    compile 'com.afollestad.material-dialogs:core:0.8.6.1'
+    /*compile ('com.afollestad.material-dialogs:commons:0.8.5.8'){
         exclude module: 'core'
-    }
+    }*/
 
     apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1'
     compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
