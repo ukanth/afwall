@@ -37,7 +37,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.SynchronousQueue;
 
 import dev.ukanth.ufirewall.log.Log;
 import eu.chainfire.libsuperuser.Debug;
@@ -68,7 +67,7 @@ public class RootShell extends Service {
 
 	private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
 
-	private SynchronousQueue workingCommand = new SynchronousQueue();
+	//private SynchronousQueue workingCommand = new SynchronousQueue();
 
 	public final static int EXIT_NO_ROOT_ACCESS = -1;
 
@@ -344,22 +343,26 @@ public class RootShell extends Service {
 	private static void startShellInBackground() {
 		Log.d(TAG, "Starting root shell...");
 		setupLogging();
-		rootSession = new Shell.Builder().
-				useSU().
-				setWantSTDERR(true).
-				setWatchdogTimeout(5).
-				open(new Shell.OnCommandResultListener() {
-					public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-						if (exitCode < 0) {
-							Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
-							rootState = ShellState.FAIL;
-						} else {
-							Log.d(TAG, "Root shell is open");
-							rootState = ShellState.READY;
+		//start only rootSession is null
+		if(rootSession == null) {
+			rootSession = new Shell.Builder().
+					useSU().
+					setWantSTDERR(true).
+					setWatchdogTimeout(5).
+					open(new Shell.OnCommandResultListener() {
+						public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+							if (exitCode < 0) {
+								Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
+								rootState = ShellState.FAIL;
+							} else {
+								Log.d(TAG, "Root shell is open");
+								rootState = ShellState.READY;
+							}
+							runNextSubmission();
 						}
-						runNextSubmission();
-					}
-				});
+					});
+		}
+
 	}
 
 	private static void reOpenShell(Context ctx) {
@@ -414,4 +417,14 @@ public class RootShell extends Service {
 			thread.start();
 		}catch(Exception e) {}
 	}
+
+	/*@Override
+	public void onDestroy() {
+		if(rootSession != null){
+			rootSession.kill();
+			rootSession.close();
+		}
+		Log.d(TAG, "Received request to kill rootshell");
+		super.onDestroy();
+	}*/
 }
