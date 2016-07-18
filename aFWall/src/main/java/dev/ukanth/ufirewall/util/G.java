@@ -115,6 +115,8 @@ public class G extends android.app.Application {
 
 	private static final String WIDGET_X = "widgetX";
 	private static final String WIDGET_Y = "widgetY";
+
+	private static final String  XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
 	
 	public static Context ctx;
 	public static SharedPreferences gPrefs;
@@ -138,9 +140,10 @@ public class G extends android.app.Application {
 	public static String profile_pwd() { return gPrefs.getString(profile_Pwd, ""); }
 	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
 
-	public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
-	public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
-	
+	public static boolean isXposedDM() { return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false); }
+	public static boolean isXposedDM(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
+
+
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
 	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
 

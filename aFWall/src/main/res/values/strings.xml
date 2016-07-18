@@ -209,6 +209,10 @@
     <string name="builtin_ipt">Built-in iptables</string>
     <string name="auto">Auto</string>
 
+    <!-- XPOSED -->
+    <string name="XPosed_prefs_title">XPosed Related</string>
+    <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
+    <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker Related</string>
     <string name="disable_toaster">Disable Tasker toasts</string>
@@ -427,5 +431,6 @@
     <string name="lockNotification">Hide lockscreen notification icon</string>
     <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
     <string name="menu_legend">Legends</string>
-    <string name="permissiondenied">Permission denied to READ/WRITE access. Please give access to export/import rules.</string>
+    <string name="permissiondenied_importexport">Permission denied to READ/WRITE access. Please give access for export/import rules.</string>
+    <string name="permissiondenied_asset">Permission denied to READ/WRITE access. Please give access for copying binaries for AFWall+ </string>
 </resources>
