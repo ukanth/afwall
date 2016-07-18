@@ -46,6 +46,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -93,6 +94,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
+import de.robv.android.xposed.XSharedPreferences;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
@@ -243,9 +245,15 @@ public final class Api {
      * @param ctx context
      * @param msgText message
      */
-	public static void toast(Context ctx, CharSequence msgText) {
+	public static void toast(final Context ctx, final CharSequence msgText) {
 		if (ctx != null) {
-			Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
+			Handler mHandler = new Handler(Looper.getMainLooper());
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
+				}
+			});
 		}
 	}
 	
@@ -518,8 +526,7 @@ public final class Api {
 			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
 		}
 
-		if (cfg.isTethered) {
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
+		if (cfg.isTethered) { cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
 		} else {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
@@ -1302,6 +1309,36 @@ public final class Api {
 		mNotificationManager.cancel(NOTIF_ID);
 	}
 
+	public static boolean isAppAllowed(Context context, PackageInfo packageInfo,XSharedPreferences pPrefs) {
+		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context);
+		if(details.netEnabled) {
+			switch ((details.netType)) {
+				case ConnectivityManager.TYPE_WIFI:
+					final String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+					Log.d(TAG,"UID: " + packageInfo.applicationInfo.uid);
+					Log.d(TAG,"UIDs: " + savedPkg_wifi_uid);
+					if(savedPkg_wifi_uid.contains(packageInfo.applicationInfo.uid +"")) {
+						Log.d(TAG,"Allowed: " +"true");
+						return true;
+					} else {
+						Log.d(TAG,"Allowed: " +"false");
+						return false;
+					}
+				case ConnectivityManager.TYPE_MOBILE:
+					String savedPkg_3g_uid = pPrefs.getString(PREF_3G_PKG_UIDS, "");
+					if(details.isRoaming ) {
+						savedPkg_3g_uid = pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+					}
+					if(savedPkg_3g_uid.contains(packageInfo.applicationInfo.uid +"")) {
+						return true;
+					} else {
+						return false;
+					}
+			}
+		}
+		return true;
+	}
+
 
 	private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
 
@@ -1433,14 +1470,14 @@ public final class Api {
 					installBinary(ctx, R.raw.iptables_x86, "iptables") &&
 					installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
 					installBinary(ctx, R.raw.nflog_x86, "nflog") &&
-					installBinary(ctx, R.raw.klogripper_x86,"klogripper") &&
+					//installBinary(ctx, R.raw.klogripper_x86,"klogripper") &&
                     installBinary(ctx, R.raw.run_pie_x86,"run_pie");
 		} else if (abi.startsWith("mips")) {
 			ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
 					  installBinary(ctx, R.raw.iptables_mips, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_mips, "nflog") &&
-					  installBinary(ctx, R.raw.klogripper_mips,"klogripper") &&
+					  //installBinary(ctx, R.raw.klogripper_mips,"klogripper") &&
                       installBinary(ctx, R.raw.run_pie_mips,"run_pie");
 		} else {
 			// default to ARM
@@ -1448,7 +1485,7 @@ public final class Api {
 					  installBinary(ctx, R.raw.iptables_arm, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_arm, "nflog") &&
-					  installBinary(ctx, R.raw.klogripper_arm,"klogripper") &&
+					  //installBinary(ctx, R.raw.klogripper_arm,"klogripper") &&
                       installBinary(ctx, R.raw.run_pie_arm,"run_pie");
 		}
 
