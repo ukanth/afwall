@@ -61,7 +61,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:text="@string/wifi"
+                    android:text="@string/legend_wifi"
                     android:textAppearance="@style/TextMedium" />
             </LinearLayout>
 
@@ -83,7 +83,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:text="@string/data"
+                    android:text="@string/legend_data"
                     android:textAppearance="@style/TextMedium" />
             </LinearLayout>
 
@@ -129,7 +129,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:text="@string/roamingSummary"
+                    android:text="@string/legend_roam"
                     android:textAppearance="@style/TextMedium" />
             </LinearLayout>
 
@@ -175,7 +175,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:text="@string/mode_whitelist"
+                    android:text="@string/legend_whitelist"
                     android:textAppearance="@style/TextMedium" />
             </LinearLayout>
 
@@ -198,7 +198,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:text="@string/mode_blacklist"
+                    android:text="@string/legend_blacklist"
                     android:textAppearance="@style/TextMedium" />
             </LinearLayout>
 
@@ -221,7 +221,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:text="@string/invert_all"
+                    android:text="@string/legend_invert"
                     android:textAppearance="@style/TextMedium" />
             </LinearLayout>
 
@@ -244,7 +244,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginStart="8dp"
-                    android:text="@string/clear_log"
+                    android:text="@string/legend_clear"
                     android:textAppearance="@style/TextMedium" />
             </LinearLayout>
         </LinearLayout>
