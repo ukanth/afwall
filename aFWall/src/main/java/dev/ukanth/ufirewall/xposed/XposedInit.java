@@ -43,6 +43,9 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         try {
+            if(loadPackageParam.packageName.equals(MY_PACKAGE_NAME)) {
+                reloadPreference();
+            }
             //enable when through settings
             interceptDownloadManager(loadPackageParam);
             //interceptNet(loadPackageParam);
