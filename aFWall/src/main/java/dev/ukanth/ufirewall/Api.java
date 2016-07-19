@@ -844,17 +844,38 @@ public final class Api {
 		}
 	}
 
-	public static void cleanupChains(Context ctx) {
-		List<String> cmds = new ArrayList<String>();
-		cmds.add("-P INPUT ACCEPT");
-		cmds.add("-P FORWARD ACCEPT");
-		cmds.add("-P OUTPUT ACCEPT ");
-		final StringBuilder res = new StringBuilder();
-		try {
-			runScriptAsRoot(ctx, cmds, res);
-		}catch (Exception ex) {
+	private static class ChangeDefaultChain extends AsyncTask<Void, Void, Void> {
+		private Context context = null;
+		//private boolean suAvailable = false;
+
+		public ChangeDefaultChain setContext(Context context) {
+			this.context = context;
+			return this;
+		}
+
+		@Override
+		protected void onPreExecute() {
 
 		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			List<String> cmds = new ArrayList<String>();
+			cmds.add("-P INPUT ACCEPT");
+			cmds.add("-P FORWARD ACCEPT");
+			cmds.add("-P OUTPUT ACCEPT ");
+			final StringBuilder res = new StringBuilder();
+			try {
+				runScriptAsRoot(context, cmds, res);
+			}catch (Exception ex) {
+
+			}
+			return null;
+		}
+	}
+
+	public static void cleanupChains(Context ctx) {
+		(new ChangeDefaultChain()).setContext(ctx).execute();
 	}
 
 	@Deprecated
@@ -1328,10 +1349,13 @@ public final class Api {
 
 	public static boolean isAppAllowed(Context context, PackageInfo packageInfo,SharedPreferences pPrefs) {
 		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context,false);
+		Log.i(TAG,"Calling isAppAllowed method from DM");
 		if(details.netEnabled) {
 			switch ((details.netType)) {
 				case ConnectivityManager.TYPE_WIFI:
 					final String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+					Log.i(TAG,"DM check for UID: " + packageInfo.applicationInfo.uid);
+					Log.i(TAG,"DM allowed UIDs: " + savedPkg_wifi_uid);
 					if(savedPkg_wifi_uid.contains(packageInfo.applicationInfo.uid +"")) {
 						return true;
 					} else {
@@ -1342,6 +1366,8 @@ public final class Api {
 					if(details.isRoaming ) {
 						savedPkg_3g_uid = pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
 					}
+					Log.i(TAG,"DM check for UID: " + packageInfo.applicationInfo.uid);
+					Log.i(TAG,"DM allowed UIDs: " + savedPkg_3g_uid);
 					if(savedPkg_3g_uid.contains(packageInfo.applicationInfo.uid +"")) {
 						return true;
 					} else {
@@ -1349,6 +1375,7 @@ public final class Api {
 					}
 			}
 		}
+
 		return true;
 	}
 

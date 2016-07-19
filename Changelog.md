@@ -5,14 +5,13 @@ Version 2.2.4-BETA2
 * Feature-Fix Download Manager Leak using XPosed module
 * Feature-Added lockscreen hide notification option
 * Feature-Position for log notification
-* Bug:sometimes everything is blocked
-* Bug:replaces logic for logservice
-* Added Legends inspired by NetGuard
+* Bug: sometimes everything is blocked
+* Bug: replaces logic for logservice
+* Added Legends
 * Attempt to fix kingroot issue
-* Minor UI updates for preferences and firewall mode
+* Minor UI fixes for preferences and firewall mode
 * Updated support libraries
-* Improved init.d for IPv6 - Thanks to F-i-f 
-* User reported crash fixes
+* Improved init.d for IPv6 - Thanks to F-i-f
 * Updated Translations and cleanup - Huge thanks for Gitoffthelawn
 
 

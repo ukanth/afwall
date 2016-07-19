@@ -38,7 +38,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private XSharedPreferences prefs;
     private SharedPreferences pPrefs;
     List<String> cmds;
-    private String profileName = Api.DEFAULT_PREFS_NAME;
+    private String profileName = Api.PREFS_NAME;
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -52,23 +52,34 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     }
 
     private void reloadPreference() {
-        if (context == null) {
-            Object activityThread = callStaticMethod(
-                    findClass("android.app.ActivityThread", null), "currentActivityThread");
-            context = (Context) callMethod(activityThread, "getSystemContext");
-        }
-        if (prefs == null) {
-            prefs = new XSharedPreferences(MainActivity.class.getPackage().getName());
-            if (prefs.getBoolean("enableMultiProfile", false)) {
-                profileName = prefs.getString("storedProfile", "AFWallPrefs");
+        try {
+            if (context == null) {
+                Object activityThread = callStaticMethod(
+                        findClass("android.app.ActivityThread", null), "currentActivityThread");
+                context = (Context) callMethod(activityThread, "getSystemContext");
             }
-            Log.d(TAG, "Loading Profile: " + profileName);
+            if (prefs == null) {
+                prefs = new XSharedPreferences(MainActivity.class.getPackage().getName());
+                prefs.makeWorldReadable();
+                prefs.reload();
+                if (prefs.getBoolean("enableMultiProfile", false)) {
+                    profileName = prefs.getString("storedProfile", "AFWallPrefs");
+                }
+                Log.d(TAG, "Loading Profile: " + profileName);
+            } else {
+                prefs.makeWorldReadable();
+                prefs.reload();
+            }
+            if (pPrefs == null) {
+                pPrefs =  new SharePreference(context,MainActivity.class.getPackage().getName(),Api.PREFS_NAME);
+                Log.d(TAG,"Loaded pPrefs from AFWall");
+            }
+            Log.d(TAG,"Reloaded preferences from AFWall");
+        }catch (Exception e){
+            Log.d(TAG, "Exception in reloading preferences" + e.getLocalizedMessage());
         }
-        if (pPrefs == null) {
-            pPrefs =  new SharePreference(context,MainActivity.class.getPackage().getName(),Api.PREFS_NAME);
 
-        }
-        prefs.reload();
+
     }
 
     /*private static class ChangePermission extends AsyncTask<Void, Void, Void> {
@@ -117,16 +128,16 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
-                final PackageInfo packageInfo = Api.getPackageDetails(context, packageName);
                 final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
+                Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
                 if (isXposedEnabled) {
+                    final PackageInfo packageInfo = Api.getPackageDetails(context, packageName);
                     final boolean isAppAllowed = Api.isAppAllowed(context, packageInfo, pPrefs);
                     Log.i(TAG, "DM Calling Application: " + packageInfo.packageName + ", Allowed: " + isAppAllowed);
                     if (!isAppAllowed) {
                         DownloadManager.Request request = (DownloadManager.Request) param.args[0];
                         request.setDestinationUri(Uri.parse("http://127.0.0.1/dummy.txt"));
                     }
-                    //Toast.makeText(context,"Application doesn't have access to network",Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -134,15 +145,15 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
                 final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
+                Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
                 if (isXposedEnabled) {
-                    PackageInfo packageInfo = Api.getPackageDetails(context, packageName);
-                    boolean isAppAllowed = Api.isAppAllowed(context, packageInfo, pPrefs);
+                    final PackageInfo packageInfo = Api.getPackageDetails(context, packageName);
+                    final boolean isAppAllowed = Api.isAppAllowed(context, packageInfo, pPrefs);
                     Log.i(TAG, "DM Calling Application: " + packageInfo.packageName + ", Allowed: " + isAppAllowed);
                     if (!isAppAllowed) {
                         param.setResult(0);
                         DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                         dm.remove(0);
-                        Api.toast(context, packageInfo.packageName + " trying to use Download manager when it's not allowed using network");
                     }
                     //
                 }
