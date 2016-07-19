@@ -183,7 +183,7 @@ public final class InterfaceTracker {
         }
     }
 
-    private static InterfaceDetails getInterfaceDetails(Context context) {
+    private static InterfaceDetails getInterfaceDetails(Context context,boolean checkTether) {
         InterfaceDetails ret = new InterfaceDetails();
 
         ConnectivityManager cm = (ConnectivityManager) context
@@ -213,7 +213,10 @@ public final class InterfaceTracker {
                 ret.netEnabled = true;
                 break;
         }
-        getTetherStatus(context, ret);
+        //TODO: crashing when calling using xposed
+        if(checkTether) {
+            getTetherStatus(context, ret);
+        }
 
         NewInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
 
@@ -227,11 +230,11 @@ public final class InterfaceTracker {
     }
 
     public static boolean isNetworkUp(Context context) {
-        return getInterfaceDetails(context).netEnabled;
+        return getInterfaceDetails(context,true).netEnabled;
     }
 
     public static boolean checkForNewCfg(Context context) {
-        InterfaceDetails newCfg = getInterfaceDetails(context);
+        InterfaceDetails newCfg = getInterfaceDetails(context,true);
 
         if (currentCfg != null && currentCfg.equals(newCfg)) {
             return false;
@@ -260,9 +263,9 @@ public final class InterfaceTracker {
         return true;
     }
 
-    public static InterfaceDetails getCurrentCfg(Context context) {
+    public static InterfaceDetails getCurrentCfg(Context context,boolean checkTether) {
         if (currentCfg == null) {
-            currentCfg = getInterfaceDetails(context);
+            currentCfg = getInterfaceDetails(context,checkTether);
         }
         return currentCfg;
     }
@@ -339,7 +342,7 @@ public final class InterfaceTracker {
                                                                     Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
                                                                     Log.i(TAG, reason + ": applied rules");
                                                                 } else {
-                                                                    //Api.setEnabled(ctx, false, false);
+                                                                    Api.cleanupChains(ctx);
                                                                     errorNotification(ctx);
                                                                 }
                                                             }
@@ -352,6 +355,7 @@ public final class InterfaceTracker {
                 }));
         if (!ret) {
             Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
+            Api.cleanupChains(ctx);
             errorNotification(ctx);
         }
     }

@@ -94,7 +94,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import de.robv.android.xposed.XSharedPreferences;
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
@@ -387,6 +386,7 @@ public final class Api {
 		out.close();
 		is.close();
 		// Change the permissions
+
 		Runtime.getRuntime().exec("chmod "+mode+" "+abspath).waitFor();
 	}
 	
@@ -514,7 +514,7 @@ public final class Api {
 	 * @param cmds command list
 	 */
 	private static void addInterfaceRouting(Context ctx, List<String> cmds) {
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		for (String s : dynChains) {
@@ -526,7 +526,8 @@ public final class Api {
 			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
 		}
 
-		if (cfg.isTethered) { cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
+		if (cfg.isTethered) {
+			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
 		} else {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
@@ -828,15 +829,31 @@ public final class Api {
 					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 					}
+					cleanupChains(ctx);
 					toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
 				} else {
 					return true;
 				}
 			} catch (Exception e) {
+				//in case of exception rollback to default chains to ACCEPT
 				Log.e(TAG, "Exception while applying rules: " + e.getMessage());
+				cleanupChains(ctx);
 				if (showErrors) toast(ctx, ctx.getString(R.string.error_refresh) + e);
 			}
 			return false;
+		}
+	}
+
+	public static void cleanupChains(Context ctx) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P INPUT ACCEPT");
+		cmds.add("-P FORWARD ACCEPT");
+		cmds.add("-P OUTPUT ACCEPT ");
+		final StringBuilder res = new StringBuilder();
+		try {
+			runScriptAsRoot(ctx, cmds, res);
+		}catch (Exception ex) {
+
 		}
 	}
 
@@ -1309,19 +1326,15 @@ public final class Api {
 		mNotificationManager.cancel(NOTIF_ID);
 	}
 
-	public static boolean isAppAllowed(Context context, PackageInfo packageInfo,XSharedPreferences pPrefs) {
-		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context);
+	public static boolean isAppAllowed(Context context, PackageInfo packageInfo,SharedPreferences pPrefs) {
+		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context,false);
 		if(details.netEnabled) {
 			switch ((details.netType)) {
 				case ConnectivityManager.TYPE_WIFI:
 					final String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
-					Log.d(TAG,"UID: " + packageInfo.applicationInfo.uid);
-					Log.d(TAG,"UIDs: " + savedPkg_wifi_uid);
 					if(savedPkg_wifi_uid.contains(packageInfo.applicationInfo.uid +"")) {
-						Log.d(TAG,"Allowed: " +"true");
 						return true;
 					} else {
-						Log.d(TAG,"Allowed: " +"false");
 						return false;
 					}
 				case ConnectivityManager.TYPE_MOBILE:
