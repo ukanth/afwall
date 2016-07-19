@@ -86,7 +86,7 @@
 
         <!--WIP: uncomment following to get XPOSED working -->
 
-        <!--<meta-data
+        <meta-data
             android:name="xposedmodule"
             android:value="true" />
         <meta-data
@@ -94,7 +94,7 @@
             android:value="Xposed related fixes for AFWall+" />
         <meta-data
             android:name="xposedminversion"
-            android:value="53" />-->
+            android:value="53" />
 
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
@@ -296,6 +296,10 @@
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:resource="@dimen/app_minimumsize_w" />
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:resource="@dimen/app_minimumsize_h" />
 
+        <provider
+            android:authorities="dev.ukanth.ufirewall"
+            android:name="dev.ukanth.ufirewall.preferences.ShareProfilePreference"
+            android:exported="true"/>
     </application>
 
 </manifest>
