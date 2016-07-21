@@ -1347,33 +1347,39 @@ public final class Api {
 		mNotificationManager.cancel(NOTIF_ID);
 	}
 
-	public static boolean isAppAllowed(Context context, PackageInfo packageInfo,SharedPreferences pPrefs) {
+	public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo,SharedPreferences pPrefs) {
 		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context,false);
-		Log.i(TAG,"Calling isAppAllowed method from DM");
 		if(details.netEnabled) {
+			String mode = pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+			Log.i(TAG,"Calling isAppAllowed method from DM with Mode: " + mode);
 			switch ((details.netType)) {
 				case ConnectivityManager.TYPE_WIFI:
 					final String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
-					Log.i(TAG,"DM check for UID: " + packageInfo.applicationInfo.uid);
+					Log.i(TAG,"DM check for UID: " + applicationInfo.uid);
 					Log.i(TAG,"DM allowed UIDs: " + savedPkg_wifi_uid);
-					if(savedPkg_wifi_uid.contains(packageInfo.applicationInfo.uid +"")) {
+					if(mode.equals(Api.MODE_WHITELIST) && savedPkg_wifi_uid.contains(applicationInfo.uid +"")) {
+						return true;
+					} else if (mode.equals(Api.MODE_BLACKLIST) && !savedPkg_wifi_uid.contains(applicationInfo.uid +"")) {
 						return true;
 					} else {
 						return false;
 					}
+
 				case ConnectivityManager.TYPE_MOBILE:
 					String savedPkg_3g_uid = pPrefs.getString(PREF_3G_PKG_UIDS, "");
 					if(details.isRoaming ) {
 						savedPkg_3g_uid = pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
 					}
-					Log.i(TAG,"DM check for UID: " + packageInfo.applicationInfo.uid);
+					Log.i(TAG,"DM check for UID: " + applicationInfo.uid);
 					Log.i(TAG,"DM allowed UIDs: " + savedPkg_3g_uid);
-					if(savedPkg_3g_uid.contains(packageInfo.applicationInfo.uid +"")) {
+					if(mode.equals(Api.MODE_WHITELIST) && savedPkg_3g_uid.contains(applicationInfo.uid +"")) {
+						return true;
+					} else if (mode.equals(Api.MODE_BLACKLIST) && !savedPkg_3g_uid.contains(applicationInfo.uid +"")) {
 						return true;
 					} else {
 						return false;
 					}
-			}
+				}
 		}
 
 		return true;
