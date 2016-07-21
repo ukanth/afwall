@@ -1,11 +1,15 @@
 package dev.ukanth.ufirewall.xposed;
 
 import android.app.DownloadManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
+import android.content.pm.ApplicationInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -18,6 +22,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.preferences.SharePreference;
 
 import static de.robv.android.xposed.XposedHelpers.callMethod;
@@ -61,6 +66,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                         findClass("android.app.ActivityThread", null), "currentActivityThread");
                 context = (Context) callMethod(activityThread, "getSystemContext");
             }
+
             if (prefs == null) {
                 prefs = new XSharedPreferences(MainActivity.class.getPackage().getName());
                 prefs.makeWorldReadable();
@@ -120,10 +126,34 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         }
     }*/
 
+    private void showNotification(Context context,String notificationText){
+        try {
+
+            final int ID_NOTIFICATION = 33345;
+
+            NotificationManager mNotificationManager = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+
+            Notification.Builder build = new Notification.Builder(context);
+            build.setOngoing(true);
+            build.setSmallIcon(R.drawable.notification_warn);
+            build.setContentTitle(context.getString(R.string.LeakDetected));
+            build.setContentText(notificationText);
+
+            if (Build.VERSION.SDK_INT <= 15) {
+                mNotificationManager.notify(ID_NOTIFICATION, build.getNotification());
+            } else {
+                mNotificationManager.notify(ID_NOTIFICATION, build.build());
+            }
+        }catch (Exception e) {
+            Toast.makeText(context,notificationText,Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 
     private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        final String packageName = loadPackageParam.packageName;
-
+        final ApplicationInfo applicationInfo = loadPackageParam.appInfo;
         Class<?> downloadManager = findClass("android.app.DownloadManager", loadPackageParam.classLoader);
 
         XC_MethodHook dmSingleResult = new XC_MethodHook() {
@@ -134,10 +164,10 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
                 Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
                 if (isXposedEnabled) {
-                    final PackageInfo packageInfo = Api.getPackageDetails(context, packageName);
-                    final boolean isAppAllowed = Api.isAppAllowed(context, packageInfo, pPrefs);
-                    Log.i(TAG, "DM Calling Application: " + packageInfo.packageName + ", Allowed: " + isAppAllowed);
+                    final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
+                    Log.i(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
                     if (!isAppAllowed) {
+                        //showNotification(context,"Package: " + pPrefs.getString("cache.label." + applicationInfo.packageName,applicationInfo.packageName) + " trying to use download manager has been blocked successfully");
                         DownloadManager.Request request = (DownloadManager.Request) param.args[0];
                         request.setDestinationUri(Uri.parse("http://127.0.0.1/dummy.txt"));
                     }
@@ -150,10 +180,10 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
                 Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
                 if (isXposedEnabled) {
-                    final PackageInfo packageInfo = Api.getPackageDetails(context, packageName);
-                    final boolean isAppAllowed = Api.isAppAllowed(context, packageInfo, pPrefs);
-                    Log.i(TAG, "DM Calling Application: " + packageInfo.packageName + ", Allowed: " + isAppAllowed);
+                    final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
+                    Log.i(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
                     if (!isAppAllowed) {
+                        //showNotification(context,"Package: " + pPrefs.getString("cache.label." + applicationInfo.packageName,applicationInfo.packageName) + " trying to use download manager has been blocked successfully");
                         param.setResult(0);
                         DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                         dm.remove(0);
