@@ -312,6 +312,9 @@ public class G extends android.app.Application {
 
 	//new protection list
 	public static String protectionLevel() {
+		if(gPrefs.getString(PROTECTION_OPTION, "p0").equals("Disable")) {
+			gPrefs.edit().putString(PROTECTION_OPTION,"p0").commit();
+		}
 		return gPrefs.getString(PROTECTION_OPTION, "p0");
 	}
 

@@ -97,6 +97,12 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 				case "p2":
 					itemList.setValueIndex(2);
 					break;
+				case "Disable":
+					itemList.setValueIndex(0);
+					break;
+				default:
+					itemList.setValueIndex(0);
+					break;
 			}
 		}
 	}
