@@ -2171,7 +2171,7 @@ public final class Api {
 		            			//handle Long
 		            			if(key.equals("multiUserId")) {
 		            				G.gPrefs.edit().putLong(key, Long.parseLong(value)).commit();
-		            			} else if(key.equals("patternMax")) {
+		            			} else if(key.equals("patternMax") || key.equals("widgetX") || key.equals("widgetY")) {
 		            				G.gPrefs.edit().putString(key, value).commit();
 		            			} else {
 		            				Integer intValue = Integer.parseInt(value);

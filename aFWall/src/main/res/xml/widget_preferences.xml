@@ -2,12 +2,14 @@
 
     <PreferenceCategory android:title="@string/widget_prefs_title" >
         <EditTextPreference
+            android:inputType="text"
             android:title="@string/xTitle"
             android:summary="@string/xTitleSummary"
             android:dialogTitle="@string/xTitleDialog"
             android:dialogMessage=""
             android:key="widgetX"/>
         <EditTextPreference
+            android:inputType="text"
             android:title="@string/yTitle"
             android:summary="@string/yTitleSummary"
             android:dialogTitle="@string/yTitleDialog"
