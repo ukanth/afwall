@@ -18,7 +18,7 @@
 
     <PreferenceCategory android:title="@string/XPosed_prefs_title">
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="fixDownloadManagerLeak"
             android:summary="@string/fixDownloadTitleSummary"
             android:title="@string/fixDownloadTitle" />
