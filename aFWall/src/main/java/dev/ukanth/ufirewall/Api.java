@@ -1218,7 +1218,7 @@ public final class Api {
 				boolean firstseen = false;
 				app = syncMap.get(apinfo.uid);
 				// filter applications which are not allowed to access the Internet
-				if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
+				if (app == null && !apinfo.packageName.equals("com.android.webview") && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
 					continue;
 				}
 				// try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
