@@ -141,7 +141,7 @@ public class G extends android.app.Application {
 	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
 
 	public static boolean isXposedDM() { return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false); }
-	public static boolean isXposedDM(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
+	public static boolean isXposedDM(boolean val) { gPrefs.edit().putBoolean(XPOSED_FIX_DM_LEAK, val).commit(); return val; }
 
 
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
