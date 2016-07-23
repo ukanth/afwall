@@ -3,10 +3,11 @@ Changelog AFWall+
 
 Version 2.2.4-BETA2
 * Feature-Fix Download Manager Leak using XPosed module
+* Feature- Added "Webview" to Application List
 * Feature-Added lockscreen hide notification option
 * Feature-Position for log notification
-* Bug: sometimes everything is blocked
-* Bug: replaces logic for logservice
+* Bug:sometimes everything is blocked
+* Bug:replaces logic for logservice/Widget bugs
 * Added Legends
 * Attempt to fix kingroot issue
 * Minor UI fixes for preferences and firewall mode
