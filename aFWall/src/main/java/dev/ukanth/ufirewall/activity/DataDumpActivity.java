@@ -202,13 +202,9 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 			@Override
 			public void onPostExecute(Boolean res) {
 				if (res == true) {
-					Api.displayToasts(
-							ctx,
-							getString(R.string.export_rules_success) + filename,
-							Toast.LENGTH_LONG);
+					Api.toast(ctx,getString(R.string.export_rules_success) + filename,Toast.LENGTH_LONG);
 				} else {
-					Api.displayToasts(ctx, R.string.export_logs_fail,
-							Toast.LENGTH_LONG);
+					Api.toast(ctx, getString(R.string.export_logs_fail),Toast.LENGTH_LONG);
 				}
 			}
 		}.execute();
@@ -229,10 +225,10 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 						.newPlainText("", rulesText.getText().toString());
 				clipboard.setPrimaryClip(clip);
 			}
-			Api.displayToasts(this, R.string.copied, Toast.LENGTH_SHORT);
+			Api.toast(this, this.getString(R.string.copied));
 		} catch (Exception e) {
 			Log.d("AFWall+", "Exception in Clipboard" + e);
 		}
-		Api.displayToasts(this, R.string.copied, Toast.LENGTH_SHORT);
+		Api.toast(this, this.getString(R.string.copied));
 	}
 }

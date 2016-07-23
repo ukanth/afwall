@@ -1419,7 +1419,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		} else {
 			msgid = R.string.custom_script_error;
 		}
-		Api.displayToasts(MainActivity.this, msgid, Toast.LENGTH_SHORT);
+		Api.toast(MainActivity.this, MainActivity.this.getString(msgid));
 		if (Api.isEnabled(this)) {
 			// If the firewall is enabled, re-apply the rules
 			applyOrSaveRules();
@@ -1455,7 +1455,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		Api.saveRules(ctx);
 		if (!enabled) {
 			Api.setEnabled(ctx, false, true);
-			Api.displayToasts(ctx, R.string.rules_saved, Toast.LENGTH_SHORT);
+			Api.toast(ctx, ctx.getString(R.string.rules_saved));
 			setDirty(false);
 			return;
 		}

@@ -130,7 +130,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 					}
 					fixLeakPref.setChecked(isFixLeakInstalled());
 				}
-				Api.displayToasts(ctx, msgid, Toast.LENGTH_SHORT);
+				Api.toast(ctx, getString(msgid), Toast.LENGTH_SHORT);
 			}
 		}.execute();
 	}

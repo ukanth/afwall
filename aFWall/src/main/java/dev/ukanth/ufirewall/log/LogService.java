@@ -132,8 +132,8 @@ public class LogService extends Service {
 						break;
 				}
 
-	          toastTextView.setText(android.text.Html.fromHtml(toastText.toString()));
-	          toast.show();
+	          	toastTextView.setText(android.text.Html.fromHtml(toastText.toString()));
+	          	toast.show();
 	        }
 	      };
 	    }

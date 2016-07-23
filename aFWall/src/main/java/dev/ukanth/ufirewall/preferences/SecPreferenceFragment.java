@@ -129,7 +129,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 			G.isEnc(false);
 			msg = res.getString(R.string.passremoved);
 		}*/
-		Api.displayToasts(getActivity(), msg, Toast.LENGTH_SHORT);
+		Api.toast(getActivity(), msg, Toast.LENGTH_SHORT);
 	}
 
 	/**
@@ -245,9 +245,8 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 			} else {
 				if (mDPM.isAdminActive(deviceAdmin)) {
 					mDPM.removeActiveAdmin(deviceAdmin);
-					Api.displayToasts(this.getActivity()
-							.getApplicationContext(),
-							R.string.device_admin_disabled, Toast.LENGTH_LONG);
+					Api.toast(this.getActivity().getApplicationContext(),
+							getString(R.string.device_admin_disabled), Toast.LENGTH_LONG);
 				}
 			}
 		}
