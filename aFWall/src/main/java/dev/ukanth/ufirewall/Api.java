@@ -108,7 +108,7 @@ import eu.chainfire.libsuperuser.Shell.SU;
 public final class Api {
 	/** application logcat tag */
 	public static final String TAG = "AFWall";
-	
+
 	/** special application UID used to indicate "any application" */
 	public static final int SPECIAL_UID_ANY	= -10;
 	/** special application UID used to indicate the Linux Kernel */
@@ -251,6 +251,17 @@ public final class Api {
 				@Override
 				public void run() {
 					Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+	}
+	public static void toast(final Context ctx, final CharSequence msgText, final int toastlen) {
+		if (ctx != null) {
+			Handler mHandler = new Handler(Looper.getMainLooper());
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(ctx, msgText, toastlen).show();
 				}
 			});
 		}
@@ -1218,7 +1229,7 @@ public final class Api {
 				boolean firstseen = false;
 				app = syncMap.get(apinfo.uid);
 				// filter applications which are not allowed to access the Internet
-				if (app == null && !apinfo.packageName.equals("com.android.webview") && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
+				if (app == null && !apinfo.packageName.equals("com.android.webview") && !apinfo.packageName.equals("com.google.android.webview") && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
 					continue;
 				}
 				// try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
@@ -1541,7 +1552,7 @@ public final class Api {
 
 		if (showErrors) {
 			if (ret) {
-				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
+				toast(ctx, ctx.getString(R.string.toast_bin_installed));
 			} else {
 				toast(ctx, ctx.getString(R.string.error_binary));
 			}
@@ -1561,13 +1572,13 @@ public final class Api {
 		return ret;
 	}
 	
-	public static void displayToasts(Context context, int id, int length) {
+	/*public static void displayToasts(Context context, int id, int length) {
 		Toast.makeText(context, context.getString(id), length).show();
 	}
 	
 	public static void displayToasts(Context context, String text, int length) {
 		Toast.makeText(context, text, length).show();
-	}
+	}*/
 	
 	/**
 	 * Check if the firewall is enabled
