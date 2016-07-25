@@ -120,6 +120,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 						//no internet - stop the service
 						context.stopService(logIntent);
 					}
+
+					//also make sure we default all chains to ACCEPT state
+					Api.cleanupChains(context);
+
 					//cleanup the notification after applying rules
 					notificationManager.cancel(id);
 				}
