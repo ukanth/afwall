@@ -1705,6 +1705,20 @@ public final class Api {
 		}
 	}
 
+	public static PackageInfo getPackageDetails(Context ctx, int uid) {
+		try {
+			final PackageManager pm = ctx.getPackageManager();
+			String[] packages = pm.getPackagesForUid(uid);
+			if(packages != null && packages.length > 0) {
+				return pm.getPackageInfo(packages[0],PackageManager.GET_META_DATA);
+			} else {
+				return null;
+			}
+		} catch (NameNotFoundException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Called when an application in removed (un-installed) from the system.
 	 * This will look for that application in the selected list and update the persisted values if necessary

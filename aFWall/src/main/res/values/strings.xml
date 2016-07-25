@@ -441,4 +441,13 @@
     <string name="menu_legend">Legends</string>
     <string name="permissiondenied_importexport">Permission denied to READ/WRITE access. Please give access for export/import rules.</string>
     <string name="permissiondenied_asset">Permission denied to READ/WRITE access. Please give access for copying binaries for AFWall+ </string>
+
+    <string name="log_deletedapp">Deleted Application</string>
+    <string name="log_denied">Denied :</string>
+    <string name="log_times">times</string>
+    <string name="log_time">time</string>
+    <string name="log_dst">Destination :</string>
+    <string name="log_src">Source :</string>
+    <string name="log_proto">Protocol :</string>
+
 </resources>
