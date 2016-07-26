@@ -35,9 +35,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setupFixLeak(findPreference("fixLeak"),this.getActivity().getApplicationContext());
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.experimental_preferences);
+		setupFixLeak(findPreference("fixLeak"),this.getActivity().getApplicationContext());
 
 	}
 
