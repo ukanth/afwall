@@ -23,9 +23,7 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,7 +40,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
@@ -100,8 +97,6 @@ public class LogActivity extends AppCompatActivity {
 		HashMap<String,LogData> logMap = new HashMap<>();
 		HashMap<String,Integer> count = new HashMap<>();
 		List<LogData> analyticsList = new ArrayList();
-		PackageInfo info;
-		Drawable icon;
 		LogData tmpData;
 		for(LogData data: logDataList) {
 			tmpData = data;
@@ -112,13 +107,6 @@ public class LogActivity extends AppCompatActivity {
 				logMap.put(data.getUid(),tmpData);
 			} else {
 				//process template here
-				try {
-					info = Api.getPackageDetails(getApplicationContext(), data.getUid());
-					icon = info.applicationInfo.loadIcon(getApplicationContext().getPackageManager());
-					tmpData.setIcon(icon);
-				}catch (Exception e) {
-					tmpData.setIcon(getApplicationContext().getResources().getDrawable(R.drawable.ic_unknown_package));
-				}
 				count.put(data.getUid(),1);
 				tmpData.setCount(1);
 				logMap.put(data.getUid(),tmpData);

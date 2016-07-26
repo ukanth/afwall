@@ -1,7 +1,5 @@
 package dev.ukanth.ufirewall.log;
 
-import android.graphics.drawable.Drawable;
-
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -28,16 +26,6 @@ public class LogData extends BaseModel {
     @Column private String src;
     @Column private String dpt;
     @Column private String timestamp;
-
-    public Drawable getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
-    }
-
-    private Drawable icon;
 
     public long getCount() {
         return count;

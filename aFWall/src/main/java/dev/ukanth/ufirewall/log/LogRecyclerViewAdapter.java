@@ -1,6 +1,8 @@
 package dev.ukanth.ufirewall.log;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 
 /**
@@ -19,6 +22,8 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     private List<LogData> logData;
     private Context context;
     private LogData data;
+    private PackageInfo info;
+    private Drawable icon;
 
     public LogRecyclerViewAdapter(final Context context,List<LogData> logData ){
         this.context = context;
@@ -36,12 +41,20 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
-        holder.icon.setImageDrawable(data.getIcon());
+        try {
+            info = Api.getPackageDetails(context, Integer.parseInt(data.getUid()));
+            icon = info.applicationInfo.loadIcon(context.getPackageManager());
+            holder.icon.setImageDrawable(icon);
+        } catch (Exception e) {
+            info = null;
+            icon = null;
+            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_unknown_package));
+        }
         holder.appname.setText(data.getAppName() != null ? data.getAppName(): context.getString(R.string.log_deletedapp));
         if(data.getCount() > 2) {
-            holder.dataReceived.setText(context.getString(R.string.log_deletedapp) + data.getCount() + " " + context.getString(R.string.log_times)) ;
+            holder.dataReceived.setText(context.getString(R.string.log_denied) + data.getCount() + " " + context.getString(R.string.log_times)) ;
         } else {
-            holder.dataReceived.setText(context.getString(R.string.log_deletedapp) + data.getCount() + " " + context.getString(R.string.log_time)) ;
+            holder.dataReceived.setText(context.getString(R.string.log_denied) + data.getCount() + " " + context.getString(R.string.log_time)) ;
         }
         holder.dataTransmitted.setText(context.getString(R.string.log_dst) + data.getDst());
         holder.packetsReceived.setText(context.getString(R.string.log_src)+ data.getSrc());
