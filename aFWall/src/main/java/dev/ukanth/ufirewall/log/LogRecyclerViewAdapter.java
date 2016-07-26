@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.util.Date;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
@@ -24,6 +27,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     private LogData data;
     private PackageInfo info;
     private Drawable icon;
+    private PrettyTime prettyTime;
 
     public LogRecyclerViewAdapter(final Context context,List<LogData> logData ){
         this.context = context;
@@ -37,7 +41,6 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
         return new ViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
@@ -50,15 +53,26 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
             icon = null;
             holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_unknown_package));
         }
-        holder.appname.setText(data.getAppName() != null ? data.getAppName(): context.getString(R.string.log_deletedapp));
-        if(data.getCount() > 2) {
-            holder.dataReceived.setText(context.getString(R.string.log_denied) + data.getCount() + " " + context.getString(R.string.log_times)) ;
-        } else {
-            holder.dataReceived.setText(context.getString(R.string.log_denied) + data.getCount() + " " + context.getString(R.string.log_time)) ;
+
+        try {
+            prettyTime = new PrettyTime(new Date(System.currentTimeMillis() - Long.parseLong(data.getTimestamp())));
+            if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
+                //String time = prettyTime.format(new Date(Integer.parseInt(data.getTimestamp())));
+                String time = prettyTime.format(new Date(0));
+                holder.lastDenied.setText(time);
+            }
+        } catch (Exception e) {
         }
-        holder.dataTransmitted.setText(context.getString(R.string.log_dst) + data.getDst());
-        holder.packetsReceived.setText(context.getString(R.string.log_src)+ data.getSrc());
-        holder.packetsTransmitted.setText(context.getString(R.string.log_proto)+ data.getProto());
+        holder.appname.setText(data.getAppName() != null ? data.getAppName(): context.getString(R.string.log_deletedapp));
+
+        if(data.getCount() > 1) {
+            holder.dataDenied.setText(context.getString(R.string.log_denied) + " " + data.getCount() + " " + context.getString(R.string.log_times)) ;
+        } else {
+            holder.dataDenied.setText(context.getString(R.string.log_denied) + " " + data.getCount() + " " + context.getString(R.string.log_time)) ;
+        }
+        /*holder.dataDest.setText(context.getString(R.string.log_dst) + data.getDst());
+        holder.dataSrc.setText(context.getString(R.string.log_src)+ data.getSrc());
+        holder.dataProto.setText(context.getString(R.string.log_proto)+ data.getProto());*/
     }
 
 
@@ -72,19 +86,21 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
 
         final ImageView icon;
         final TextView appname;
-        final TextView dataReceived;
-        final TextView dataTransmitted;
-        final TextView packetsReceived;
-        final TextView packetsTransmitted;
+        final TextView lastDenied;
+        final TextView dataDenied;
+       /* final TextView dataDest;
+        final TextView dataSrc;
+        final TextView dataProto;*/
 
         public ViewHolder(View itemView) {
             super(itemView);
             icon = (ImageView )itemView.findViewById(R.id.app_icon);
             appname = (TextView)itemView.findViewById(R.id.app_name);
-            dataReceived = (TextView)itemView.findViewById(R.id.data_received);
-            dataTransmitted = (TextView)itemView.findViewById(R.id.data_transmitted);
-            packetsReceived = (TextView)itemView.findViewById(R.id.packets_received);
-            packetsTransmitted = (TextView)itemView.findViewById(R.id.packets_transmitted);
+            lastDenied = (TextView)itemView.findViewById(R.id.last_denied);
+            dataDenied = (TextView)itemView.findViewById(R.id.data_denied);
+            /*dataDest = (TextView)itemView.findViewById(R.id.data_dest);
+            dataSrc = (TextView)itemView.findViewById(R.id.data_src);
+            dataProto = (TextView)itemView.findViewById(R.id.data_proto);*/
         }
     }
 

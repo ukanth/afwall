@@ -77,7 +77,7 @@ public class LogActivity extends AppCompatActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		List<LogData> logData = SQLite.select()
 				.from(LogData.class)
-				.orderBy(LogData_Table.timestamp,false)
+				.orderBy(LogData_Table.timestamp,true)
 				.queryList();
 
 		Resources res = getResources();
@@ -96,11 +96,18 @@ public class LogActivity extends AppCompatActivity {
 	private List<LogData> updateMap(List<LogData> logDataList, Resources res) {
 		HashMap<String,LogData> logMap = new HashMap<>();
 		HashMap<String,Integer> count = new HashMap<>();
+		HashMap<String,Long> lastBlocked = new HashMap<>();
 		List<LogData> analyticsList = new ArrayList();
 		LogData tmpData;
 		for(LogData data: logDataList) {
 			tmpData = data;
 			if(logMap.containsKey(data.getUid())) {
+				if(Long.parseLong(data.getTimestamp()) >  lastBlocked.get(data.getUid())) {
+					lastBlocked.put(data.getUid(),Long.parseLong(data.getTimestamp()));
+					tmpData.setTimestamp(data.getTimestamp());
+				} else {
+					tmpData.setTimestamp(lastBlocked.get(data.getUid())+"");
+				}
 				//data already Present. Update the template here
 				count.put(data.getUid(),count.get(data.getUid()).intValue() + 1);
 				tmpData.setCount(count.get(data.getUid()).intValue());
@@ -109,6 +116,7 @@ public class LogActivity extends AppCompatActivity {
 				//process template here
 				count.put(data.getUid(),1);
 				tmpData.setCount(1);
+				lastBlocked.put(data.getUid(),Long.parseLong(data.getTimestamp()));
 				logMap.put(data.getUid(),tmpData);
 			}
 		}

@@ -19,8 +19,8 @@
 
         <ImageView
             android:id="@+id/app_icon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter" />
 
@@ -36,12 +36,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#fff"
-                android:textSize="18sp"/>
-
+                android:textSize="16sp"/>
 
             <TextView
 
-                android:id="@+id/data_received"
+                android:id="@+id/last_denied"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/app_name"
@@ -49,30 +48,39 @@
                 android:textColor="#fff" />
 
             <TextView
-                android:id="@+id/data_transmitted"
+
+                android:id="@+id/data_denied"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/data_received"
+                android:layout_below="@+id/last_denied"
+                android:layout_marginTop="6dp"
+                android:textColor="#fff" />
+
+            <!--<TextView
+                android:id="@+id/data_dest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/data_denied"
                 android:layout_marginTop="6dp"
                 android:textColor="#fff" />
 
 
             <TextView
-                android:id="@+id/packets_received"
+                android:id="@+id/data_src"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/data_transmitted"
+                android:layout_below="@+id/data_dest"
                 android:layout_marginTop="6dp"
                 android:textColor="#fff" />
 
 
             <TextView
-                android:id="@+id/packets_transmitted"
+                android:id="@+id/data_proto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/packets_received"
+                android:layout_below="@+id/data_src"
                 android:layout_marginTop="6dp"
-                android:textColor="#fff"/>
+                android:textColor="#fff"/>-->
 
         </RelativeLayout>
     </LinearLayout>
