@@ -50,6 +50,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         try {
             if(loadPackageParam.packageName.equals(MY_PACKAGE_NAME)) {
                 reloadPreference();
+                interceptAFWall(loadPackageParam);
             }
             //enable when through settings
             interceptDownloadManager(loadPackageParam);
@@ -57,6 +58,22 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         } catch (XposedHelpers.ClassNotFoundError e) {
             Log.d(TAG, e.getLocalizedMessage());
         }
+    }
+
+    //Check if AFWall is hooked to make sure XPosed works fine.
+    private void interceptAFWall(XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        Class<?> afwallHook = findClass("dev.ukanth.ufirewall.util.G", loadPackageParam.classLoader);
+        XC_MethodHook xposedResult = new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Log.i(TAG, "Util.isXposedEnabled hooked");
+                param.setResult(true);
+            }
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+            }
+        };
+        XposedBridge.hookAllMethods(afwallHook, "isXposedEnabled", xposedResult);
     }
 
     private void reloadPreference() {
@@ -155,7 +172,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         final ApplicationInfo applicationInfo = loadPackageParam.appInfo;
         Class<?> downloadManager = findClass("android.app.DownloadManager", loadPackageParam.classLoader);
-
         XC_MethodHook dmSingleResult = new XC_MethodHook() {
 
             @Override
@@ -193,7 +209,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             }
         };
         XposedBridge.hookAllMethods(downloadManager, "enqueue", dmSingleResult);
-        //XposedBridge.hookAllMethods(downloadManager, "query", dmSingleResult);
     }
 
     private void interceptNet(final XC_LoadPackage.LoadPackageParam loadPackageParam) {

@@ -326,6 +326,11 @@ public class G extends android.app.Application {
 		}
 		return data;
 	}
+
+	public static boolean isXposedEnabled() {
+		// will be used by XPosed to return true
+		return false;
+	}
 	
 	public void onCreate() {
 		super.onCreate();
