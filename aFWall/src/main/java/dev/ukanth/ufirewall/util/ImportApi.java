@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Environment;
 
-import com.kerneladiutor.library.root.RootFile;
+import com.stericson.roottools.RootTools;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -57,7 +57,7 @@ public class ImportApi {
 			dir.mkdirs();
 			File shared_prefs = new File(getDataDir(ctx, "com.googlecode.droidwall.free") + File.separator + "shared_prefs" + File.separator + "DroidWallPrefs.xml");
 			File file = new File(dir,"DroidWallPrefs.xml");
-			RootFile.copy(shared_prefs.getPath(), dir.getPath(), true, false);
+			RootTools.copyFile(shared_prefs.getPath(), dir.getPath(), true, false);
 			final Editor prefEdit = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).edit();
 			// write the logic to read the copied xml 
 			String wifi = null, g = null;
