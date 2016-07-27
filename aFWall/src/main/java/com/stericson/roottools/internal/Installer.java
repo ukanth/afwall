@@ -20,7 +20,7 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools.internal;
+package com.stericson.roottools.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,14 +36,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import android.util.Log;
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.Command;
-import com.stericson.RootTools.execution.CommandCapture;
-import com.stericson.RootTools.execution.Shell;
+
+import com.stericson.rootshell.execution.Command;
+import com.stericson.rootshell.execution.Shell;
+import com.stericson.roottools.RootTools;
 
 import android.content.Context;
 
-class Installer {
+class Installer
+{
 
     //-------------
     //# Installer #
@@ -57,7 +58,8 @@ class Installer {
     String filesPath;
 
     public Installer(Context context)
-            throws IOException {
+            throws IOException
+    {
 
         this.context = context;
         this.filesPath = context.getFilesDir().getCanonicalPath();
@@ -73,42 +75,61 @@ class Installer {
      * @param destName destination file name; appended to /data/data/app.package/files/
      * @param mode     chmod value for this file
      * @return a <code>boolean</code> which indicates whether or not we were
-     *         able to create the new file.
+     * able to create the new file.
      */
-    protected boolean installBinary(int sourceId, String destName, String mode) {
+    protected boolean installBinary(int sourceId, String destName, String mode)
+    {
         File mf = new File(filesPath + File.separator + destName);
         if (!mf.exists() ||
                 !getFileSignature(mf).equals(
                         getStreamSignature(
                                 context.getResources().openRawResource(sourceId))
-                )) {
+                ))
+        {
             Log.e(LOG_TAG, "Installing a new version of binary: " + destName);
             // First, does our files/ directory even exist?
             // We cannot wait for android to lazily create it as we will soon
             // need it.
-            try {
+            try
+            {
                 FileInputStream fis = context.openFileInput(BOGUS_FILE_NAME);
                 fis.close();
-            } catch (FileNotFoundException e) {
+            }
+            catch (FileNotFoundException e)
+            {
                 FileOutputStream fos = null;
-                try {
+                try
+                {
                     fos = context.openFileOutput("bogus", Context.MODE_PRIVATE);
                     fos.write("justcreatedfilesdirectory".getBytes());
-                } catch (Exception ex) {
-                    if (RootTools.debugMode) {
+                }
+                catch (Exception ex)
+                {
+                    if (RootTools.debugMode)
+                    {
                         Log.e(LOG_TAG, ex.toString());
                     }
                     return false;
-                } finally {
-                    if (null != fos) {
-                        try {
+                }
+                finally
+                {
+                    if (null != fos)
+                    {
+                        try
+                        {
                             fos.close();
                             context.deleteFile(BOGUS_FILE_NAME);
-                        } catch (IOException e1) {}
+                        }
+                        catch (IOException e1)
+                        {
+                        }
                     }
                 }
-            } catch (IOException ex) {
-                if (RootTools.debugMode) {
+            }
+            catch (IOException ex)
+            {
+                if (RootTools.debugMode)
+                {
                     Log.e(LOG_TAG, ex.toString());
                 }
                 return false;
@@ -118,69 +139,99 @@ class Installer {
             InputStream iss = context.getResources().openRawResource(sourceId);
             ReadableByteChannel rfc = Channels.newChannel(iss);
             FileOutputStream oss = null;
-            try {
+            try
+            {
                 oss = new FileOutputStream(mf);
                 FileChannel ofc = oss.getChannel();
                 long pos = 0;
-                try {
-					long size = iss.available();
-					while ((pos += ofc.transferFrom(rfc, pos, size- pos)) < size)
-						;
-                } catch (IOException ex) {
-                    if (RootTools.debugMode) {
+                try
+                {
+                    long size = iss.available();
+                    while ((pos += ofc.transferFrom(rfc, pos, size - pos)) < size)
+                    {
+                        ;
+                    }
+                }
+                catch (IOException ex)
+                {
+                    if (RootTools.debugMode)
+                    {
                         Log.e(LOG_TAG, ex.toString());
                     }
                     return false;
                 }
-            } catch (FileNotFoundException ex) {
-                if (RootTools.debugMode) {
+            }
+            catch (FileNotFoundException ex)
+            {
+                if (RootTools.debugMode)
+                {
                     Log.e(LOG_TAG, ex.toString());
                 }
                 return false;
-            } finally {
-                if (oss != null) {
-                    try {
-                    	oss.flush();
-                    	oss.getFD().sync();
+            }
+            finally
+            {
+                if (oss != null)
+                {
+                    try
+                    {
+                        oss.flush();
+                        oss.getFD().sync();
                         oss.close();
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e)
+                    {
                     }
                 }
             }
-            try {
+            try
+            {
                 iss.close();
-            } catch (IOException ex) {
-                if (RootTools.debugMode) {
+            }
+            catch (IOException ex)
+            {
+                if (RootTools.debugMode)
+                {
                     Log.e(LOG_TAG, ex.toString());
                 }
                 return false;
             }
 
-            try {
-                CommandCapture command = new CommandCapture(0, false, "chmod " + mode + " " + filesPath + File.separator + destName);
+            try
+            {
+                Command command = new Command(0, false, "chmod " + mode + " " + filesPath + File.separator + destName);
                 Shell.startRootShell().add(command);
                 commandWait(command);
 
-            } catch (Exception e) {}
+            }
+            catch (Exception e)
+            {
+            }
         }
         return true;
     }
 
-    protected boolean isBinaryInstalled(String destName) {
+    protected boolean isBinaryInstalled(String destName)
+    {
         boolean installed = false;
         File mf = new File(filesPath + File.separator + destName);
-        if (mf.exists()) {
+        if (mf.exists())
+        {
             installed = true;
             // TODO: pass mode as argument and check it matches
         }
         return installed;
     }
 
-    protected String getFileSignature(File f) {
+    protected String getFileSignature(File f)
+    {
         String signature = "";
-        try {
+        try
+        {
             signature = getStreamSignature(new FileInputStream(f));
-        } catch (FileNotFoundException ex) {
+        }
+        catch (FileNotFoundException ex)
+        {
             Log.e(LOG_TAG, ex.toString());
         }
         return signature;
@@ -189,38 +240,62 @@ class Installer {
     /*
      * Note: this method will close any string passed to it
      */
-    protected String getStreamSignature(InputStream is) {
+    protected String getStreamSignature(InputStream is)
+    {
         String signature = "";
-        try {
+        try
+        {
             MessageDigest md = MessageDigest.getInstance("MD5");
             DigestInputStream dis = new DigestInputStream(is, md);
-            byte [] buffer = new byte[4096];
-            while(-1 != dis.read(buffer));
+            byte[] buffer = new byte[4096];
+            while (-1 != dis.read(buffer))
+            {
+                ;
+            }
             byte[] digest = md.digest();
             StringBuffer sb = new StringBuffer();
 
-            for(int i=0; i<digest.length; i++)
+            for (int i = 0; i < digest.length; i++)
+            {
                 sb.append(Integer.toHexString(digest[i] & 0xFF));
+            }
 
             signature = sb.toString();
-        } catch (IOException ex) {
-            Log.e(LOG_TAG, ex.toString());
-        } catch (NoSuchAlgorithmException ex) {
+        }
+        catch (IOException ex)
+        {
             Log.e(LOG_TAG, ex.toString());
         }
-        finally {
-            try { is.close(); } catch (IOException e) {}
+        catch (NoSuchAlgorithmException ex)
+        {
+            Log.e(LOG_TAG, ex.toString());
+        }
+        finally
+        {
+            try
+            {
+                is.close();
+            }
+            catch (IOException e)
+            {
+            }
         }
         return signature;
     }
 
-    private void commandWait(Command cmd) {
-        synchronized (cmd) {
-            try {
-                if (!cmd.isFinished()) {
+    private void commandWait(Command cmd)
+    {
+        synchronized (cmd)
+        {
+            try
+            {
+                if (!cmd.isFinished())
+                {
                     cmd.wait(2000);
                 }
-            } catch (InterruptedException ex) {
+            }
+            catch (InterruptedException ex)
+            {
                 Log.e(LOG_TAG, ex.toString());
             }
         }

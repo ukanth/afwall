@@ -13,7 +13,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
-import com.stericson.RootTools.RootTools;
+import com.stericson.roottools.RootTools;
 
 import java.io.File;
 
@@ -27,6 +27,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 
 	private static CheckBoxPreference fixLeakPref;
 
+	private static final String mountPoints[] = { "/system", "/su" };
 	private static final String initDirs[] = { "/system/etc/init.d",
 			"/etc/init.d" , "/system/su.d", "/su/su.d" };
 	private static final String initScript = "afwallstart";
@@ -37,7 +38,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.experimental_preferences);
-		setupFixLeak(findPreference("fixLeak"),this.getActivity().getApplicationContext());
+
 
 	}
 
@@ -111,8 +112,26 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 		new AsyncTask<Void, Void, Boolean>() {
 			@Override
 			public Boolean doInBackground(Void... args) {
-				return enabled ? RootTools.copyFile(srcPath, getFixLeakPath(),
-						true, false) : deleteFiles(ctx);
+				boolean returnFlag;
+				for(String mount : mountPoints) {
+					RootTools.remount(mount,"RW");
+				}
+				if(enabled) {
+					returnFlag = RootTools.copyFile(srcPath, getFixLeakPath(),
+							false, false);
+					//make sure it's executable
+					new RootShell.RootCommand()
+							.setReopenShell(true)
+							.setLogging(true)
+							.run(ctx, "chmod 755 " + getFixLeakPath());
+				} else {
+					returnFlag = deleteFiles(ctx);
+				}
+
+				for(String mount : mountPoints) {
+					RootTools.remount(mount,"RO");
+				}
+				return returnFlag;
 			}
 
 			@Override
@@ -137,18 +156,23 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 
 	private Boolean deleteFiles(Context ctx) {
 		boolean returnFlag = false;
+		//mount filesystem
+		for(String mount : mountPoints) {
+			RootTools.remount(mount,"RW");
+		}
 		for (String s : initDirs) {
 			File f = new File(s);
 			if (f.exists() && f.isDirectory()) {
 				String filePath  = s + "/" + initScript;
-					RootTools.remount(f.getAbsolutePath(),"RW");
 					new RootShell.RootCommand()
 						.setReopenShell(true)
 						.setLogging(true)
 						.run(ctx, "rm -f " + filePath);
-					returnFlag  = RootTools.deleteFileOrDirectory(filePath,true);
-					RootTools.remount(f.getAbsolutePath(),"RO");
+					//returnFlag  = RootFile.delete(filePath,true);
 			}
+		}
+		for(String mount : mountPoints) {
+			RootTools.remount(mount,"RO");
 		}
 		return returnFlag;
 	}

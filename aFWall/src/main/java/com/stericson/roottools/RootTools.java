@@ -20,28 +20,30 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
+package com.stericson.roottools;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.stericson.RootTools.containers.Mount;
-import com.stericson.RootTools.containers.Permissions;
-import com.stericson.RootTools.containers.Symlink;
-import com.stericson.RootTools.exceptions.RootDeniedException;
-import com.stericson.RootTools.execution.Command;
-import com.stericson.RootTools.execution.Shell;
-import com.stericson.RootTools.internal.Remounter;
-import com.stericson.RootTools.internal.RootToolsInternalMethods;
-import com.stericson.RootTools.internal.Runner;
+import com.stericson.roottools.Constants;
+import com.stericson.rootshell.RootShell;
+import com.stericson.rootshell.exceptions.RootDeniedException;
+import com.stericson.rootshell.execution.Command;
+import com.stericson.rootshell.execution.Shell;
+import com.stericson.roottools.containers.Mount;
+import com.stericson.roottools.containers.Permissions;
+import com.stericson.roottools.containers.Symlink;
+import com.stericson.roottools.internal.Remounter;
+import com.stericson.roottools.internal.RootToolsInternalMethods;
+import com.stericson.roottools.internal.Runner;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public final class RootTools {
 
@@ -78,13 +80,12 @@ public final class RootTools {
     // --------------------
 
     public static boolean debugMode = false;
-    public static List<String> lastFoundBinaryPaths = new ArrayList<String>();
     public static String utilPath;
 
     /**
      * Setting this to false will disable the handler that is used
      * by default for the 3 callback methods for Command.
-     *
+     * <p/>
      * By disabling this all callbacks will be called from a thread other than
      * the main UI thread.
      */
@@ -93,7 +94,7 @@ public final class RootTools {
 
     /**
      * Setting this will change the default command timeout.
-     *
+     * <p/>
      * The default is 20000ms
      */
     public static int default_Command_Timeout = 20000;
@@ -125,7 +126,7 @@ public final class RootTools {
      * @throws IOException
      */
     public static void closeAllShells() throws IOException {
-        Shell.closeAll();
+        RootShell.closeAllShells();
     }
 
     /**
@@ -134,7 +135,7 @@ public final class RootTools {
      * @throws IOException
      */
     public static void closeCustomShell() throws IOException {
-        Shell.closeCustomShell();
+        RootShell.closeCustomShell();
     }
 
     /**
@@ -144,10 +145,7 @@ public final class RootTools {
      * @throws IOException
      */
     public static void closeShell(boolean root) throws IOException {
-        if (root)
-            Shell.closeRootShell();
-        else
-            Shell.closeShell();
+        RootShell.closeShell(root);
     }
 
     /**
@@ -191,15 +189,13 @@ public final class RootTools {
     /**
      * Use this to check whether or not a file OR directory exists on the filesystem.
      *
-     * @param file String that represent the file OR the directory, including the full path to the
-     *             file and its name.
-     *
+     * @param file  String that represent the file OR the directory, including the full path to the
+     *              file and its name.
      * @param isDir boolean that represent whether or not we are looking for a directory
-     *
      * @return a boolean that will indicate whether or not the file exists.
      */
     public static boolean exists(final String file, boolean isDir) {
-            return getInternals().exists(file, isDir);
+        return RootShell.exists(file, isDir);
     }
 
     /**
@@ -223,8 +219,8 @@ public final class RootTools {
      *
      * @param utils Name of the utility to check.
      * @return boolean to indicate whether the operation completed. Note that this is not indicative
-     *         of whether the problem was fixed, just that the method did not encounter any
-     *         exceptions.
+     * of whether the problem was fixed, just that the method did not encounter any
+     * exceptions.
      * @throws Exception if the operation cannot be completed.
      */
     public static boolean fixUtils(String[] utils) throws Exception {
@@ -233,12 +229,10 @@ public final class RootTools {
 
     /**
      * @param binaryName String that represent the binary to find.
-     * @return <code>true</code> if the specified binary was found. Also, the path the binary was
-     *         found at can be retrieved via the variable lastFoundBinaryPath, if the binary was
-     *         found in more than one location this will contain all of these locations.
+     * @return <code>List<String></code> containing the paths the binary was found at.
      */
-    public static boolean findBinary(String binaryName) {
-        return getInternals().findBinary(binaryName);
+    public static List<String> findBinary(String binaryName) {
+        return RootShell.findBinary(binaryName);
     }
 
     /**
@@ -281,23 +275,23 @@ public final class RootTools {
      * This will open or return, if one is already open, a custom shell, you are responsible for managing the shell, reading the output
      * and for closing the shell when you are done using it.
      *
+     * @param shellPath a <code>String</code> to Indicate the path to the shell that you want to open.
+     * @param timeout   an <code>int</code> to Indicate the length of time before giving up on opening a shell.
      * @throws TimeoutException
-     * @throws com.stericson.RootTools.exceptions.RootDeniedException
-     * @param    shellPath a <code>String</code> to Indicate the path to the shell that you want to open.
-     * @param    timeout an <code>int</code> to Indicate the length of time before giving up on opening a shell.
+     * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
     public static Shell getCustomShell(String shellPath, int timeout) throws IOException, TimeoutException, RootDeniedException {
-        return Shell.startCustomShell(shellPath, timeout);
+        return RootShell.getCustomShell(shellPath, timeout);
     }
 
     /**
      * This will open or return, if one is already open, a custom shell, you are responsible for managing the shell, reading the output
      * and for closing the shell when you are done using it.
      *
+     * @param shellPath a <code>String</code> to Indicate the path to the shell that you want to open.
      * @throws TimeoutException
-     * @throws com.stericson.RootTools.exceptions.RootDeniedException
-     * @param    shellPath a <code>String</code> to Indicate the path to the shell that you want to open.
+     * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
     public static Shell getCustomShell(String shellPath) throws IOException, TimeoutException, RootDeniedException {
@@ -307,8 +301,8 @@ public final class RootTools {
     /**
      * @param file String that represent the file, including the full path to the file and its name.
      * @return An instance of the class permissions from which you can get the permissions of the
-     *         file or if the file could not be found or permissions couldn't be determined then
-     *         permissions will be null.
+     * file or if the file could not be found or permissions couldn't be determined then
+     * permissions will be null.
      */
     public static Permissions getFilePermissionsSymlinks(String file) {
         return getInternals().getFilePermissionsSymlinks(file);
@@ -363,30 +357,27 @@ public final class RootTools {
      * This will open or return, if one is already open, a shell, you are responsible for managing the shell, reading the output
      * and for closing the shell when you are done using it.
      *
+     * @param root         a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
+     * @param timeout      an <code>int</code> to Indicate the length of time to wait before giving up on opening a shell.
+     * @param shellContext the context to execute the shell with
+     * @param retry        a <code>int</code> to indicate how many times the ROOT shell should try to open with root priviliges...
      * @throws TimeoutException
-     * @throws com.stericson.RootTools.exceptions.RootDeniedException
-     * @param    root a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
-     * @param    timeout an <code>int</code> to Indicate the length of time to wait before giving up on opening a shell.
-     * @param    shellContext the context to execute the shell with
-     * @param    retry a <code>int</code> to indicate how many times the ROOT shell should try to open with root priviliges...
+     * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
     public static Shell getShell(boolean root, int timeout, Shell.ShellContext shellContext, int retry) throws IOException, TimeoutException, RootDeniedException {
-        if (root)
-            return Shell.startRootShell(timeout, shellContext, retry);
-        else
-            return Shell.startShell(timeout);
+        return RootShell.getShell(root, timeout, shellContext, retry);
     }
 
     /**
      * This will open or return, if one is already open, a shell, you are responsible for managing the shell, reading the output
      * and for closing the shell when you are done using it.
      *
+     * @param root         a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
+     * @param timeout      an <code>int</code> to Indicate the length of time to wait before giving up on opening a shell.
+     * @param shellContext the context to execute the shell with
      * @throws TimeoutException
-     * @throws com.stericson.RootTools.exceptions.RootDeniedException
-     * @param    root a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
-     * @param    timeout an <code>int</code> to Indicate the length of time to wait before giving up on opening a shell.
-     * @param    shellContext the context to execute the shell with
+     * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
     public static Shell getShell(boolean root, int timeout, Shell.ShellContext shellContext) throws IOException, TimeoutException, RootDeniedException {
@@ -397,24 +388,24 @@ public final class RootTools {
      * This will open or return, if one is already open, a shell, you are responsible for managing the shell, reading the output
      * and for closing the shell when you are done using it.
      *
+     * @param root         a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
+     * @param shellContext the context to execute the shell with
      * @throws TimeoutException
-     * @throws com.stericson.RootTools.exceptions.RootDeniedException
-     * @param    root a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
-     * @param    shellContext the context to execute the shell with
+     * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
     public static Shell getShell(boolean root, Shell.ShellContext shellContext) throws IOException, TimeoutException, RootDeniedException {
-        return getShell(root, 0, Shell.defaultContext, 3);
+        return getShell(root, 0, shellContext, 3);
     }
 
     /**
      * This will open or return, if one is already open, a shell, you are responsible for managing the shell, reading the output
      * and for closing the shell when you are done using it.
      *
+     * @param root    a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
+     * @param timeout an <code>int</code> to Indicate the length of time to wait before giving up on opening a shell.
      * @throws TimeoutException
-     * @throws com.stericson.RootTools.exceptions.RootDeniedException
-     * @param    root a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
-     * @param    timeout an <code>int</code> to Indicate the length of time to wait before giving up on opening a shell.
+     * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
     public static Shell getShell(boolean root, int timeout) throws IOException, TimeoutException, RootDeniedException {
@@ -425,9 +416,9 @@ public final class RootTools {
      * This will open or return, if one is already open, a shell, you are responsible for managing the shell, reading the output
      * and for closing the shell when you are done using it.
      *
+     * @param root a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
      * @throws TimeoutException
-     * @throws com.stericson.RootTools.exceptions.RootDeniedException
-     * @param    root a <code>boolean</code> to Indicate whether or not you want to open a root shell or a standard shell
+     * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
     public static Shell getShell(boolean root) throws IOException, TimeoutException, RootDeniedException {
@@ -439,7 +430,7 @@ public final class RootTools {
      *
      * @param path The partition to find the space for.
      * @return the amount if space found within the desired partition. If the space was not found
-     *         then the value is -1
+     * then the value is -1
      * @throws TimeoutException
      */
     public static long getSpace(String path) {
@@ -452,7 +443,7 @@ public final class RootTools {
      *
      * @param file path to the file to get the Symlink for. (must have absolute path)
      * @return <code>String</code> a String that represent the symlink for a specified file or an
-     *         empty string if no symlink exists.
+     * empty string if no symlink exists.
      */
     public static String getSymlink(String file) {
         return getInternals().getSymlink(file);
@@ -488,8 +479,8 @@ public final class RootTools {
      *
      * @param updateSize size to Check (long)
      * @return <code>true</code> if the Update will fit on SDCard, <code>false</code> if not enough
-     *         space on SDCard. Will also return <code>false</code>, if the SDCard is not mounted as
-     *         read/write
+     * space on SDCard. Will also return <code>false</code>, if the SDCard is not mounted as
+     * read/write
      */
     public static boolean hasEnoughSpaceOnSdCard(long updateSize) {
         return getInternals().hasEnoughSpaceOnSdCard(updateSize);
@@ -517,7 +508,7 @@ public final class RootTools {
      * @param destName destination file name; appended to /data/data/app.package/files/
      * @param mode     chmod value for this file
      * @return a <code>boolean</code> which indicates whether or not we were able to create the new
-     *         file.
+     * file.
      */
     public static boolean installBinary(Context context, int sourceId, String destName, String mode) {
         return getInternals().installBinary(context, sourceId, destName, mode);
@@ -532,7 +523,7 @@ public final class RootTools {
      * @param sourceId   resource id; typically <code>R.raw.id</code>
      * @param binaryName destination file name; appended to /data/data/app.package/files/
      * @return a <code>boolean</code> which indicates whether or not we were able to create the new
-     *         file.
+     * file.
      */
     public static boolean installBinary(Context context, int sourceId, String binaryName) {
         return installBinary(context, sourceId, binaryName, "700");
@@ -544,7 +535,7 @@ public final class RootTools {
      * @param context    the current activity's <code>Context</code>
      * @param binaryName binary file name; appended to /data/data/app.package/files/
      * @return a <code>boolean</code> which indicates whether or not
-     *         the binary already exists.
+     * the binary already exists.
      */
     public static boolean hasBinary(Context context, String binaryName) {
         return getInternals().isBinaryAvailable(context, binaryName);
@@ -578,14 +569,14 @@ public final class RootTools {
      * @throws TimeoutException if this operation times out. (cannot determine if access is given)
      */
     public static boolean isAccessGiven() {
-        return getInternals().isAccessGiven();
+        return RootShell.isAccessGiven();
     }
 
     /**
      * @return <code>true</code> if BusyBox was found.
      */
     public static boolean isBusyboxAvailable() {
-        return findBinary("busybox");
+        return RootShell.isBusyboxAvailable();
     }
 
     public static boolean isNativeToolsReady(int nativeToolsId, Context context) {
@@ -608,7 +599,7 @@ public final class RootTools {
      * @return <code>true</code> if su was found.
      */
     public static boolean isRootAvailable() {
-        return findBinary("su");
+        return RootShell.isRootAvailable();
     }
 
     /**
@@ -676,7 +667,7 @@ public final class RootTools {
      * @param file      file path
      * @param mountType mount type: pass in RO (Read only) or RW (Read Write)
      * @return a <code>boolean</code> which indicates whether or not the partition has been
-     *         remounted as specified.
+     * remounted as specified.
      */
     public static boolean remount(String file, String mountType) {
         // Recieved a request, get an instance of Remounter
@@ -781,16 +772,15 @@ public final class RootTools {
      * After all writing logging calls should be painless.
      * This method exists to save Android going through the various Java layers
      * that are traversed any time a string is created (i.e. what you are logging)
-     *
+     * <p/>
      * Example usage:
      * if(islog) {
-     *     StrinbBuilder sb = new StringBuilder();
-     *     // ...
-     *     // build string
-     *     // ...
-     *     log(sb.toString());
+     * StrinbBuilder sb = new StringBuilder();
+     * // ...
+     * // build string
+     * // ...
+     * log(sb.toString());
      * }
-     *
      *
      * @return true if logging is enabled
      */

@@ -20,17 +20,11 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools.test;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
+package com.stericson.roottools;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -38,12 +32,14 @@ import android.os.StrictMode;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.containers.Permissions;
-import com.stericson.RootTools.exceptions.RootDeniedException;
-import com.stericson.RootTools.execution.CommandCapture;
-import com.stericson.RootTools.execution.JavaCommandCapture;
-import com.stericson.RootTools.execution.Shell;
+import com.stericson.rootshell.exceptions.RootDeniedException;
+import com.stericson.rootshell.execution.Command;
+import com.stericson.rootshell.execution.Shell;
+import com.stericson.roottools.containers.Permissions;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class SanityCheckRootTools extends Activity {
     private ScrollView mScrollView;
@@ -54,7 +50,7 @@ public class SanityCheckRootTools extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads()
                 .detectDiskWrites()
                 .detectNetwork()   // or .detectAll() for all detectable problems
@@ -65,7 +61,7 @@ public class SanityCheckRootTools extends Activity {
                 .detectLeakedClosableObjects()
                 .penaltyLog()
                 .penaltyDeath()
-                .build());*/
+                .build());
 
         RootTools.debugMode = true;
 
@@ -75,22 +71,11 @@ public class SanityCheckRootTools extends Activity {
         mScrollView.addView(mTextView);
         setContentView(mScrollView);
 
-        // Great the user with our version number
-        String version = "?";
-        try {
-            PackageInfo packageInfo =
-                    this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
-            version = packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-        }
+        print("SanityCheckRootTools \n\n");
 
-        print("SanityCheckRootTools v " + version + "\n\n");
-
-        if(RootTools.isRootAvailable()) {
+        if (RootTools.isRootAvailable()) {
             print("Root found.\n");
-        }
-        else
-        {
+        } else {
             print("Root not found");
         }
 
@@ -164,9 +149,8 @@ public class SanityCheckRootTools extends Activity {
             try {
                 List<String> paths = RootTools.getPath();
 
-                for(String path : paths)
-                {
-                    visualUpdate(TestHandler.ACTION_DISPLAY,  path + " k\n\n");
+                for (String path : paths) {
+                    visualUpdate(TestHandler.ACTION_DISPLAY, path + " k\n\n");
                 }
 
             } catch (Exception e) {
@@ -205,7 +189,7 @@ public class SanityCheckRootTools extends Activity {
 
             visualUpdate(TestHandler.ACTION_PDISPLAY, "Testing getBusyBoxVersion");
             visualUpdate(TestHandler.ACTION_DISPLAY, "[ Checking busybox version ]\n");
-            visualUpdate(TestHandler.ACTION_DISPLAY, RootTools.getBusyBoxVersion("/system/bin/") + " k\n\n");
+            visualUpdate(TestHandler.ACTION_DISPLAY, RootTools.getBusyBoxVersion("/system/xbin/") + " k\n\n");
 
             try {
                 visualUpdate(TestHandler.ACTION_PDISPLAY, "Testing fixUtils");
@@ -233,7 +217,7 @@ public class SanityCheckRootTools extends Activity {
             try {
 
                 visualUpdate(TestHandler.ACTION_DISPLAY, "[ Getting all available Busybox applets ]\n");
-                for (String applet : RootTools.getBusyBoxApplets("/data/data/stericson.busybox.donate/files/bb")) {
+                for (String applet : RootTools.getBusyBoxApplets("/data/data/stericson.busybox/files/bb/busybox")) {
                     visualUpdate(TestHandler.ACTION_DISPLAY, applet + " k\n\n");
                 }
 
@@ -242,8 +226,21 @@ public class SanityCheckRootTools extends Activity {
                 e1.printStackTrace();
             }
 
+            visualUpdate(TestHandler.ACTION_PDISPLAY, "Testing GetBusyBox version in a special directory!");
+            try {
+
+                visualUpdate(TestHandler.ACTION_DISPLAY, "[ Testing GetBusyBox version in a special directory! ]\n");
+                String v = RootTools.getBusyBoxVersion("/data/data/stericson.busybox/files/bb/");
+
+                visualUpdate(TestHandler.ACTION_DISPLAY, v + " k\n\n");
+
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
             visualUpdate(TestHandler.ACTION_PDISPLAY, "Testing getFilePermissionsSymlinks");
-            Permissions permissions = RootTools.getFilePermissionsSymlinks("/system/bin/busybox");
+            Permissions permissions = RootTools.getFilePermissionsSymlinks("/system/xbin/busybox");
             visualUpdate(TestHandler.ACTION_DISPLAY, "[ Checking busybox permissions and symlink ]\n");
 
             if (permissions != null) {
@@ -257,29 +254,96 @@ public class SanityCheckRootTools extends Activity {
                 visualUpdate(TestHandler.ACTION_DISPLAY, "Permissions == null k\n\n");
             }
 
-            visualUpdate(TestHandler.ACTION_PDISPLAY, "JAVA");
-            visualUpdate(TestHandler.ACTION_DISPLAY, "[ Running some Java code ]\n");
-
             Shell shell;
+
+            visualUpdate(TestHandler.ACTION_PDISPLAY, "Testing output capture");
+            visualUpdate(TestHandler.ACTION_DISPLAY, "[ busybox ash --help ]\n");
+
             try {
                 shell = RootTools.getShell(true);
-                JavaCommandCapture cmd = new JavaCommandCapture(
-                        43,
-                        false,
-                        SanityCheckRootTools.this,
-                        "com.stericson.RootToolsTests.NativeJavaClass") {
+                Command cmd = new Command(
+                        0,
+                        "busybox ash --help") {
 
                     @Override
                     public void commandOutput(int id, String line) {
-                        super.commandOutput(id, line);
                         visualUpdate(TestHandler.ACTION_DISPLAY, line + "\n");
+                        super.commandOutput(id, line);
+                    }
+                };
+                shell.add(cmd);
+
+                visualUpdate(TestHandler.ACTION_PDISPLAY, "getevent - /dev/input/event0");
+                visualUpdate(TestHandler.ACTION_DISPLAY, "[ getevent - /dev/input/event0 ]\n");
+
+                cmd = new Command(0, 0, "getevent /dev/input/event0") {
+                    @Override
+                    public void commandOutput(int id, String line) {
+                        visualUpdate(TestHandler.ACTION_DISPLAY, line + "\n");
+                        super.commandOutput(id, line);
+                    }
+
+                };
+                shell.add(cmd);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            visualUpdate(TestHandler.ACTION_PDISPLAY, "Switching RootContext - SYSTEM_APP");
+            visualUpdate(TestHandler.ACTION_DISPLAY, "[ Switching Root Context - SYSTEM_APP ]\n");
+
+            try {
+                shell = RootTools.getShell(true, Shell.ShellContext.SYSTEM_APP);
+                Command cmd = new Command(
+                        0,
+                        "id") {
+
+                    @Override
+                    public void commandOutput(int id, String line) {
+                        visualUpdate(TestHandler.ACTION_DISPLAY, line + "\n");
+                        super.commandOutput(id, line);
+                    }
+                };
+                shell.add(cmd);
+
+                visualUpdate(TestHandler.ACTION_PDISPLAY, "Testing PM");
+                visualUpdate(TestHandler.ACTION_DISPLAY, "[ Testing pm list packages -d ]\n");
+
+                cmd = new Command(
+                        0,
+                        "sh /system/bin/pm list packages -d") {
+
+                    @Override
+                    public void commandOutput(int id, String line) {
+                        visualUpdate(TestHandler.ACTION_DISPLAY, line + "\n");
+                        super.commandOutput(id, line);
                     }
                 };
                 shell.add(cmd);
 
             } catch (Exception e) {
-                // Oops. Say, did you run RootClass and move the resulting anbuild.dex " file to res/raw?
-                // If you don't you will not be able to check root mode Java.
+                e.printStackTrace();
+            }
+
+            visualUpdate(TestHandler.ACTION_PDISPLAY, "Switching RootContext - UNTRUSTED");
+            visualUpdate(TestHandler.ACTION_DISPLAY, "[ Switching Root Context - UNTRUSTED ]\n");
+
+            try {
+                shell = RootTools.getShell(true, Shell.ShellContext.UNTRUSTED_APP);
+                Command cmd = new Command(
+                        0,
+                        "id") {
+
+                    @Override
+                    public void commandOutput(int id, String line) {
+                        visualUpdate(TestHandler.ACTION_DISPLAY, line + "\n");
+                        super.commandOutput(id, line);
+                    }
+                };
+                shell.add(cmd);
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -291,17 +355,18 @@ public class SanityCheckRootTools extends Activity {
             try {
                 shell = RootTools.getShell(true);
 
-                CommandCapture cmd = new CommandCapture(42, false, "find /") {
+                Command cmd = new Command(42, false, "echo done") {
 
                     boolean _catch = false;
 
                     @Override
                     public void commandOutput(int id, String line) {
-                        super.commandOutput(id, line);
-
                         if (_catch) {
                             RootTools.log("CAUGHT!!!");
                         }
+
+                        super.commandOutput(id, line);
+
                     }
 
                     @Override
@@ -377,8 +442,9 @@ public class SanityCheckRootTools extends Activity {
                     mPDialog.setMessage("Running Root Library Tests...");
                     break;
                 case ACTION_HIDE:
-                    if (null != text)
+                    if (null != text) {
                         print(text);
+                    }
                     mPDialog.hide();
                     break;
                 case ACTION_DISPLAY:

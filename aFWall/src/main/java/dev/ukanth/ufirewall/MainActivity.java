@@ -71,6 +71,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.kerneladiutor.library.root.RootUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,7 +92,6 @@ import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
-import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
@@ -1953,14 +1953,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		@Override
 		protected void onPreExecute() {
 			suDialog = new MaterialDialog.Builder(context).
-					cancelable(false).title(getString(R.string.su_check_title)).progress(true,0).content(context.getString(R.string.su_check_message))
+					cancelable(false).title(getString(R.string.su_check_title)).content(context.getString(R.string.su_check_message))
 					.show();
 		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			// Let's do some SU stuff
-			boolean suAvailable = Shell.SU.available();
+
+			boolean suAvailable = RootUtils.rootAccess();
 			if (suAvailable) {
 				startRootShell();
 			}

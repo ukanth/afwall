@@ -20,19 +20,19 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools.internal;
+package com.stericson.roottools.internal;
 
 import java.io.IOException;
 
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.Command;
-import com.stericson.RootTools.execution.CommandCapture;
-import com.stericson.RootTools.execution.Shell;
+import com.stericson.rootshell.execution.Command;
+import com.stericson.rootshell.execution.Shell;
+import com.stericson.roottools.RootTools;
 
 import android.content.Context;
 import android.util.Log;
 
-public class Runner extends Thread {
+public class Runner extends Thread
+{
 
     private static final String LOG_TAG = "RootTools::Runner";
 
@@ -40,39 +40,56 @@ public class Runner extends Thread {
     String binaryName;
     String parameter;
 
-    public Runner(Context context, String binaryName, String parameter) {
+    public Runner(Context context, String binaryName, String parameter)
+    {
         this.context = context;
         this.binaryName = binaryName;
         this.parameter = parameter;
     }
 
-    public void run() {
+    public void run()
+    {
         String privateFilesPath = null;
-        try {
+        try
+        {
             privateFilesPath = context.getFilesDir().getCanonicalPath();
-        } catch (IOException e) {
-            if (RootTools.debugMode) {
+        }
+        catch (IOException e)
+        {
+            if (RootTools.debugMode)
+            {
                 Log.e(LOG_TAG, "Problem occured while trying to locate private files directory!");
             }
             e.printStackTrace();
         }
-        if (privateFilesPath != null) {
-            try {
-                CommandCapture command = new CommandCapture(0, false, privateFilesPath + "/" + binaryName + " " + parameter);
+        if (privateFilesPath != null)
+        {
+            try
+            {
+                Command command = new Command(0, false, privateFilesPath + "/" + binaryName + " " + parameter);
                 Shell.startRootShell().add(command);
                 commandWait(command);
 
-            } catch (Exception e) {}
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 
-    private void commandWait(Command cmd) {
-        synchronized (cmd) {
-            try {
-                if (!cmd.isFinished()) {
+    private void commandWait(Command cmd)
+    {
+        synchronized (cmd)
+        {
+            try
+            {
+                if (!cmd.isFinished())
+                {
                     cmd.wait(2000);
                 }
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e)
+            {
                 e.printStackTrace();
             }
         }

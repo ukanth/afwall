@@ -1,7 +1,7 @@
 /* 
- * This file is part of the RootTools Project: http://code.google.com/p/roottools/
+ * This file is part of the RootShell Project: https://github.com/Stericson/RootShell
  *  
- * Copyright (c) 2012 Stephen Erickson, Chris Ravenscroft, Dominik Schuermann, Adam Shanks
+ * Copyright (c) 2014 Stephen Erickson, Chris Ravenscroft
  *  
  * This code is dual-licensed under the terms of the Apache License Version 2.0 and
  * the terms of the General Public License (GPL) Version 2.
@@ -20,24 +20,13 @@
  * limitations under that License.
  */
 
-package com.stericson.RootTools.containers;
+package com.stericson.rootshell.exceptions;
 
-import java.io.File;
+public class RootDeniedException extends Exception {
 
-public class Symlink {
-    protected final File file;
-    protected final File symlinkPath;
+    private static final long serialVersionUID = -8713947214162841310L;
 
-    public Symlink(File file, File path) {
-        this.file = file;
-        symlinkPath = path;
-    }
-
-    public File getFile() {
-        return this.file;
-    }
-
-    public File getSymlinkPath() {
-        return symlinkPath;
+    public RootDeniedException(String error) {
+        super(error);
     }
 }
