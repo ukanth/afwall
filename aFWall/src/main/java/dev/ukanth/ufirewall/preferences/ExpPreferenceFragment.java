@@ -168,7 +168,6 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 						.setReopenShell(true)
 						.setLogging(true)
 						.run(ctx, "rm -f " + filePath);
-					//returnFlag  = RootFile.delete(filePath,true);
 			}
 		}
 		for(String mount : mountPoints) {

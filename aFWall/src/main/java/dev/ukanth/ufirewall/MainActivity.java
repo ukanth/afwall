@@ -71,7 +71,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.kerneladiutor.library.root.RootUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -92,6 +91,7 @@ import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
+import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
@@ -1962,10 +1962,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		@Override
 		protected Void doInBackground(Void... params) {
 			// Let's do some SU stuff
-			hasRoot = RootUtils.rootAccess();
-			if(hasRoot) {
-				startRootShell();
-			}
+			hasRoot = Shell.SU.available();
 			return null;
 		}
 
@@ -2064,13 +2061,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.show();
 			} else {
 				passCheck();
-				RootUtils.closeSU();
+				startRootShell();
 			}
 		}
 	}
 	@Override
 	public void onDestroy() {
-		RootUtils.closeSU();
 		Log.i(Api.TAG, "Destroy");
 		if (dialogLegend != null) {
 			dialogLegend.dismiss();

@@ -57,7 +57,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
-import com.kerneladiutor.library.root.RootUtils;
+import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -334,7 +334,7 @@ public final class Api {
 	
 	public static String getBusyBoxPath(Context ctx,boolean considerSystem) {
 
-		if (G.bb_path().equals("system") && RootUtils.busyboxInstalled() && considerSystem) {
+		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable() && considerSystem) {
 			return "busybox ";
 		} else {
             String dir = ctx.getDir("bin",0).getAbsolutePath();
