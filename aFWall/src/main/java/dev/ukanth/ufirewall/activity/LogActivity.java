@@ -32,10 +32,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,7 @@ import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.service.NflogService;
+import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 
 public class LogActivity extends AppCompatActivity {
@@ -53,6 +56,7 @@ public class LogActivity extends AppCompatActivity {
 
 	RecyclerView recyclerView;
 	LogRecyclerViewAdapter recyclerViewAdapter;
+	private TextView emptyView;
 
 	//protected static final int MENU_TOGGLE_LOG = 27;
 
@@ -83,9 +87,20 @@ public class LogActivity extends AppCompatActivity {
 		Resources res = getResources();
 
 		recyclerView = (RecyclerView)findViewById(R.id.recyclerview);
+		emptyView = (TextView)findViewById(R.id.empty_view);
 
+		if (logData																																																																																																										.isEmpty()) {
+			recyclerView.setVisibility(View.GONE);
+			emptyView.setVisibility(View.VISIBLE);
+		}
+		else {
+			recyclerView.setVisibility(View.VISIBLE);
+			emptyView.setVisibility(View.GONE);
+		}
 
-		recyclerViewAdapter = new LogRecyclerViewAdapter(this, updateMap(logData,res));
+		logData = updateMap(logData);
+		Collections.sort(logData, new DateComparator());
+		recyclerViewAdapter = new LogRecyclerViewAdapter(this, logData);
 		recyclerView.hasFixedSize();
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(recyclerViewAdapter);
@@ -93,7 +108,7 @@ public class LogActivity extends AppCompatActivity {
 
 	}
 
-	private List<LogData> updateMap(List<LogData> logDataList, Resources res) {
+	private List<LogData> updateMap(List<LogData> logDataList) {
 		HashMap<String,LogData> logMap = new HashMap<>();
 		HashMap<String,Integer> count = new HashMap<>();
 		HashMap<String,Long> lastBlocked = new HashMap<>();

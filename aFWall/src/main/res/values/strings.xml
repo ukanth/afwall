@@ -449,5 +449,6 @@
     <string name="log_dst">Destination :</string>
     <string name="log_src">Source :</string>
     <string name="log_proto">Protocol :</string>
+    <string name="no_data_available">Please enable log service or no data</string>
 
 </resources>
