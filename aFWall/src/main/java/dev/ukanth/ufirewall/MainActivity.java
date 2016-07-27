@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private static final int  MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
 	private AlertDialog dialogLegend = null;
+	private boolean hasRoot = false;
 
 
 
@@ -200,9 +201,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//one time migration of profiles to new logic
 		//migrateProfiles();
 		// Let's do some background stuff
-
-		(new Startup()).setContext(this).execute();
-
+		if(!hasRoot) {
+			(new Startup()).setContext(this).execute();
+		}
 	}
 
 	@Override
@@ -1943,7 +1944,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	private class Startup extends AsyncTask<Void, Void, Void> {
 		private Context context = null;
-		private boolean hasRoot = false;
+
 		//private boolean suAvailable = false;
 
 		public Startup setContext(Context context) {
