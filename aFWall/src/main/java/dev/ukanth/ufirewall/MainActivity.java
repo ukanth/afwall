@@ -1941,8 +1941,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		return found;
 	}
 
-	private class Startup extends AsyncTask<Void, Void, Boolean> {
+	private class Startup extends AsyncTask<Void, Void, Void> {
 		private Context context = null;
+		private boolean hasRoot = false;
 		//private boolean suAvailable = false;
 
 		public Startup setContext(Context context) {
@@ -1958,19 +1959,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 
 		@Override
-		protected Boolean doInBackground(Void... params) {
+		protected Void doInBackground(Void... params) {
 			// Let's do some SU stuff
-
-			boolean suAvailable = RootUtils.rootAccess();
-			if (suAvailable) {
+			hasRoot = RootUtils.rootAccess();
+			if(hasRoot) {
 				startRootShell();
 			}
-			return suAvailable;
+			return null;
 		}
 
 		@Override
-		protected void onPostExecute(Boolean rootGranted) {
-			super.onPostExecute(rootGranted);
+		protected void onPostExecute(Void aVoid) {
+			super.onPostExecute(aVoid);
 			try {
 				if ((suDialog != null) && suDialog.isShowing()) {
 					suDialog.dismiss();
@@ -2040,7 +2040,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.negativeText(R.string.exit)
 						.show();*/
 			}
-			if(!rootGranted && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
+			if(!hasRoot && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)
@@ -2063,11 +2063,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.show();
 			} else {
 				passCheck();
+				RootUtils.closeSU();
 			}
 		}
 	}
 	@Override
 	public void onDestroy() {
+		RootUtils.closeSU();
 		Log.i(Api.TAG, "Destroy");
 		if (dialogLegend != null) {
 			dialogLegend.dismiss();
