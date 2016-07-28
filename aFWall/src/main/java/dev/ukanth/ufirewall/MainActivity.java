@@ -201,9 +201,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//one time migration of profiles to new logic
 		//migrateProfiles();
 		// Let's do some background stuff
-		if(!hasRoot) {
-			(new Startup()).setContext(this).execute();
-		}
+		(new Startup()).setContext(this).execute();
 	}
 
 	@Override

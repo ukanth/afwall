@@ -28,6 +28,7 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -51,6 +52,7 @@ import android.os.Looper;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -2741,13 +2743,24 @@ public final class Api {
 
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-
-
 			Intent appIntent = new Intent(context, MainActivity.class);
-			//appIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			PendingIntent in = PendingIntent.getActivity(context, 2, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			int icon = R.drawable.notification;
 
+			TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+			stackBuilder.addParentStack(MainActivity.class);
+			stackBuilder.addNextIntent(appIntent);
+
+			/*appIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			appIntent.setAction(Long.toString(System.currentTimeMillis()));*/
+
+			//appIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			//PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+			PendingIntent resultPendingIntent =
+					stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+			builder.setContentIntent(resultPendingIntent);
+
+			int icon = R.drawable.notification;
 
 
 			if(status) {
@@ -2804,9 +2817,11 @@ public final class Api {
 			if(G.lockNotification()) {
 				builder.setVisibility(NotificationCompat.PRIORITY_LOW);
 			}
-			builder.setContentIntent(in);
+			Notification notify = builder.build();
+			notify.flags = Notification.FLAG_ONGOING_EVENT;
+			//builder.setContentIntent(in);
 
-			mNotificationManager.notify(NOTIF_ID, builder.build());
+			mNotificationManager.notify(NOTIF_ID, notify);
 		}
 
     	
