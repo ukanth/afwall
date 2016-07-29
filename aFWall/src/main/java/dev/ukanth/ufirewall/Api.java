@@ -101,6 +101,7 @@ import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
+import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 /**
@@ -2838,5 +2839,22 @@ public final class Api {
 		cmds.add("-F firewall");
 		cmds.add("-X firewall");
 		apply46(ctx, cmds, callback);
+	}
+
+	public static boolean hasRoot()
+	{
+		final boolean[] hasRoot = new boolean[1];
+		Thread t = new Thread(){
+			@Override
+			public void run(){
+				hasRoot[0] = Shell.SU.available();
+			}
+		};
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+		}
+		return hasRoot[0];
 	}
 }

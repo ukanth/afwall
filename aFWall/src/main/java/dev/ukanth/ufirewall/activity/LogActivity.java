@@ -1,18 +1,18 @@
 /**
  * Display/purge logs and toggle logging
- * 
+ * <p/>
  * Copyright (C) 2011-2013  Kevin Cernekee
- *
+ * <p/>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
@@ -24,6 +24,7 @@ package dev.ukanth.ufirewall.activity;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -52,119 +54,162 @@ import dev.ukanth.ufirewall.util.G;
 
 public class LogActivity extends AppCompatActivity {
 
-	protected static final int MENU_CLEARLOG = 7;
+    protected static final int MENU_CLEARLOG = 7;
 
-	RecyclerView recyclerView;
-	LogRecyclerViewAdapter recyclerViewAdapter;
-	private TextView emptyView;
+    RecyclerView recyclerView;
+    LogRecyclerViewAdapter recyclerViewAdapter;
+    private TextView emptyView;
 
-	//protected static final int MENU_TOGGLE_LOG = 27;
+    //protected static final int MENU_TOGGLE_LOG = 27;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.log_view);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
-		setTitle(getString(R.string.showlog_title));
-		//toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.log_view);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
+        setTitle(getString(R.string.showlog_title));
+        //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-		setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
-		// Load partially transparent black background
-		getSupportActionBar().setHomeButtonEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		List<LogData> logData = SQLite.select()
-				.from(LogData.class)
-				.orderBy(LogData_Table.timestamp,true)
-				.queryList();
+        // Load partially transparent black background
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		Resources res = getResources();
+        (new CollectLog()).setContext(this).execute();
 
-		recyclerView = (RecyclerView)findViewById(R.id.recyclerview);
-		emptyView = (TextView)findViewById(R.id.empty_view);
+        Resources res = getResources();
 
-		if (logData																																																																																																										.isEmpty()) {
-			recyclerView.setVisibility(View.GONE);
-			emptyView.setVisibility(View.VISIBLE);
-		}
-		else {
-			recyclerView.setVisibility(View.VISIBLE);
-			emptyView.setVisibility(View.GONE);
-		}
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        emptyView = (TextView) findViewById(R.id.empty_view);
 
-		logData = updateMap(logData);
-		Collections.sort(logData, new DateComparator());
-		recyclerViewAdapter = new LogRecyclerViewAdapter(this, logData);
-		recyclerView.hasFixedSize();
-		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		recyclerView.setAdapter(recyclerViewAdapter);
+    }
 
 
-	}
+    private class CollectLog extends AsyncTask<Void, Void, List<LogData>> {
+        private Context context = null;
+        MaterialDialog loadDialog = null;
+        boolean hasRoot = false;
+        //private boolean suAvailable = false;
 
-	private List<LogData> updateMap(List<LogData> logDataList) {
-		HashMap<String,LogData> logMap = new HashMap<>();
-		HashMap<String,Integer> count = new HashMap<>();
-		HashMap<String,Long> lastBlocked = new HashMap<>();
-		List<LogData> analyticsList = new ArrayList();
-		LogData tmpData;
-		for(LogData data: logDataList) {
-			tmpData = data;
-			if(logMap.containsKey(data.getUid())) {
-				if(Long.parseLong(data.getTimestamp()) >  lastBlocked.get(data.getUid())) {
-					lastBlocked.put(data.getUid(),Long.parseLong(data.getTimestamp()));
-					tmpData.setTimestamp(data.getTimestamp());
-				} else {
-					tmpData.setTimestamp(lastBlocked.get(data.getUid())+"");
-				}
-				//data already Present. Update the template here
-				count.put(data.getUid(),count.get(data.getUid()).intValue() + 1);
-				tmpData.setCount(count.get(data.getUid()).intValue());
-				logMap.put(data.getUid(),tmpData);
-			} else {
-				//process template here
-				count.put(data.getUid(),1);
-				tmpData.setCount(1);
-				lastBlocked.put(data.getUid(),Long.parseLong(data.getTimestamp()));
-				logMap.put(data.getUid(),tmpData);
-			}
-		}
-		for (Map.Entry<String, LogData> entry : logMap.entrySet())
-		{
-			analyticsList.add(entry.getValue());
-		}
-		return analyticsList;
-	}
+        public CollectLog setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadDialog = new MaterialDialog.Builder(context).
+                    cancelable(false).title(getString(R.string.loading_data_title)).progress(true, 0).content(context.getString(R.string.loading_data))
+                    .show();
+        }
+
+        @Override
+        protected List<LogData> doInBackground(Void... params) {
+            // Let's do some SU stuff
+            List<LogData> logData = SQLite.select()
+                    .from(LogData.class)
+                    .orderBy(LogData_Table.timestamp, true)
+                    .queryList();
+            logData = updateMap(logData);
+            Collections.sort(logData, new DateComparator());
+            return logData;
+        }
+
+        @Override
+        protected void onPostExecute(List<LogData> logData) {
+            super.onPostExecute(logData);
+            try {
+                if ((loadDialog != null) && loadDialog.isShowing()) {
+                    loadDialog.dismiss();
+                }
+            } catch (final IllegalArgumentException e) {
+                // Handle or log or ignore
+            } catch (final Exception e) {
+                // Handle or log or ignore
+            } finally {
+                loadDialog = null;
+            }
+
+            if (logData.isEmpty()) {
+                recyclerView.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+            } else {
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.GONE);
+            }
+
+            recyclerViewAdapter = new LogRecyclerViewAdapter(context, logData);
+            recyclerView.hasFixedSize();
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(recyclerViewAdapter);
 
 
-	protected void populateMenu(SubMenu sub) {
-		sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(
-				R.drawable.clearlog);
-	}
+        }
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		final Context ctx = this;
+    private List<LogData> updateMap(List<LogData> logDataList) {
+        HashMap<String, LogData> logMap = new HashMap<>();
+        HashMap<String, Integer> count = new HashMap<>();
+        HashMap<String, Long> lastBlocked = new HashMap<>();
+        List<LogData> analyticsList = new ArrayList();
+        LogData tmpData;
+        for (LogData data : logDataList) {
+            tmpData = data;
+            if (logMap.containsKey(data.getUid())) {
+                if (Long.parseLong(data.getTimestamp()) > lastBlocked.get(data.getUid())) {
+                    lastBlocked.put(data.getUid(), Long.parseLong(data.getTimestamp()));
+                    tmpData.setTimestamp(data.getTimestamp());
+                } else {
+                    tmpData.setTimestamp(lastBlocked.get(data.getUid()) + "");
+                }
+                //data already Present. Update the template here
+                count.put(data.getUid(), count.get(data.getUid()).intValue() + 1);
+                tmpData.setCount(count.get(data.getUid()).intValue());
+                logMap.put(data.getUid(), tmpData);
+            } else {
+                //process template here
+                count.put(data.getUid(), 1);
+                tmpData.setCount(1);
+                lastBlocked.put(data.getUid(), Long.parseLong(data.getTimestamp()));
+                logMap.put(data.getUid(), tmpData);
+            }
+        }
+        for (Map.Entry<String, LogData> entry : logMap.entrySet()) {
+            analyticsList.add(entry.getValue());
+        }
+        return analyticsList;
+    }
 
-		switch (item.getItemId()) {
-		
-		case android.R.id.home: {
-			onBackPressed();
-			return true;
-		}
-		case MENU_CLEARLOG:
-			if (G.logTarget().equals("NFLOG")) {
-				NflogService.clearLog();
-				//populateData(ctx);
-				return true;
-			}
-			/*Api.clearLog(ctx,
+
+    protected void populateMenu(SubMenu sub) {
+        sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(
+                R.drawable.clearlog);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final Context ctx = this;
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home: {
+                onBackPressed();
+                return true;
+            }
+            case MENU_CLEARLOG:
+                if (G.logTarget().equals("NFLOG")) {
+                    NflogService.clearLog();
+                    //populateData(ctx);
+                    return true;
+                }
+            /*Api.clearLog(ctx,
 					new RootCommand().setReopenShell(true)
 							.setSuccessToast(R.string.log_cleared)
 							.setFailureToast(R.string.log_clear_error)
@@ -173,10 +218,10 @@ public class LogActivity extends AppCompatActivity {
 									populateData(ctx);
 								}
 							}));*/
-			return true;
-		}
-		return super.onOptionsItemSelected( item);
-	}
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 	/*@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -184,5 +229,5 @@ public class LogActivity extends AppCompatActivity {
 		return super.onPrepareOptionsMenu(menu);
 	}*/
 
-	
+
 }

@@ -450,5 +450,7 @@
     <string name="log_src">Source :</string>
     <string name="log_proto">Protocol :</string>
     <string name="no_data_available">Please enable log service or no data</string>
+    <string name="loading_data_title">Loading...</string>
+    <string name="loading_data">Retrieving log data</string>
 
 </resources>

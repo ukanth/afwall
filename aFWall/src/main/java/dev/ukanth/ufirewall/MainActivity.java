@@ -91,7 +91,6 @@ import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
-import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
@@ -111,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private ListView listview = null;
 	public static boolean dirty = false;
 	private MaterialDialog plsWait;
-	private MaterialDialog suDialog = null;
 	private ArrayAdapter<String> spinnerAdapter = null;
 	private SwipeRefreshLayout mSwipeLayout;
 	private int index;
@@ -132,9 +130,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private static final int  MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
 	private AlertDialog dialogLegend = null;
-	private boolean hasRoot = false;
-
-
 
 	public boolean isDirty() {
 		return dirty;
@@ -202,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//migrateProfiles();
 		// Let's do some background stuff
 		(new Startup()).setContext(this).execute();
+
 	}
 
 	@Override
@@ -385,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	public void onStart() {
 		super.onStart();
 		initDone = 0;
+
 		//startRootShell();
 		reloadPreferences();
 	}
@@ -485,9 +482,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			if ((plsWait != null) && plsWait.isShowing()) {
 				plsWait.dismiss();
 			}
-			if ((suDialog != null) && suDialog.isShowing()) {
-				suDialog.dismiss();
-			}
 
 		} catch (final IllegalArgumentException e) {
 			// Handle or log or ignore
@@ -495,7 +489,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			// Handle or log or ignore
 		} finally {
 			plsWait = null;
-			suDialog = null;
 		}
 		//this.listview.setAdapter(null);
 		//mLastPause = Syst em.currentTimeMillis();
@@ -1942,7 +1935,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	private class Startup extends AsyncTask<Void, Void, Void> {
 		private Context context = null;
-
+		MaterialDialog suDialog = null;
+		boolean hasRoot = false;
 		//private boolean suAvailable = false;
 
 		public Startup setContext(Context context) {
@@ -1953,14 +1947,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		@Override
 		protected void onPreExecute() {
 			suDialog = new MaterialDialog.Builder(context).
-					cancelable(false).title(getString(R.string.su_check_title)).content(context.getString(R.string.su_check_message))
+					cancelable(false).title(getString(R.string.su_check_title)).progress(true, 0).content(context.getString(R.string.su_check_message))
 					.show();
 		}
 
 		@Override
 		protected Void doInBackground(Void... params) {
 			// Let's do some SU stuff
-			hasRoot = Shell.SU.available();
+			hasRoot = Api.hasRoot();
+			startRootShell();
 			return null;
 		}
 
@@ -2059,7 +2054,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.show();
 			} else {
 				passCheck();
-				startRootShell();
 			}
 		}
 	}

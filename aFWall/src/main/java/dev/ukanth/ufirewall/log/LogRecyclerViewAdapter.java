@@ -28,6 +28,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     private PackageInfo info;
     private Drawable icon;
     private PrettyTime prettyTime;
+    private int uid;
 
     public LogRecyclerViewAdapter(final Context context,List<LogData> logData ){
         this.context = context;
@@ -45,7 +46,8 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
         try {
-            info = Api.getPackageDetails(context, Integer.parseInt(data.getUid()));
+            uid = Integer.parseInt(data.getUid());
+            info = Api.getPackageDetails(context, uid);
             icon = info.applicationInfo.loadIcon(context.getPackageManager());
             holder.icon.setImageDrawable(icon);
         } catch (Exception e) {
