@@ -57,7 +57,7 @@ public class G extends android.app.Application {
 	private static final String ENABLE_LAN = "enableLAN";
 	private static final String ENABLE_IPV6 = "enableIPv6";
 	private static final String ENABLE_INBOUND = "enableInbound";
-	private static final String ENABLE_LOG = "enableLog";
+	//private static final String ENABLE_LOG = "enableLog";
 	private static final String ENABLE_LOG_SERVICE = "enableLogService";
 	private static final String ENABLE_ADMIN = "enableAdmin";
 	private static final String ENABLE_CONFIRM = "enableConfirm";
@@ -218,11 +218,11 @@ public class G extends android.app.Application {
 	public static boolean enableInbound() { return gPrefs.getBoolean(ENABLE_INBOUND, false); }
 	//public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean(ENABLE_INBOUND, val).commit(); return val; }
 
-	public static boolean enableLog() { return gPrefs.getBoolean(ENABLE_LOG, false); }
-	public static boolean enableLog(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG, val).commit(); return val; }
+	/*public static boolean enableLog() { return gPrefs.getBoolean(ENABLE_LOG, false); }
+	public static boolean enableLog(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG, val).commit(); return val; }*/
 	
 	public static boolean enableLogService() { return gPrefs.getBoolean(ENABLE_LOG_SERVICE, false); }
-	//public static boolean enableLogService(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG_SERVICE, val).commit(); return val; }
+	public static boolean enableLogService(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG_SERVICE, val).commit(); return val; }
 
 	public static boolean enableAdmin() { return gPrefs.getBoolean(ENABLE_ADMIN, false); }
 	public static boolean enableAdmin(boolean val) { gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit(); return val; }

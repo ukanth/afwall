@@ -38,18 +38,18 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 
 public class LogInfo{
-	String uidString;
-	String appName;
-	String uid;
-	String in;
-	String out;
-	String proto;
-	String spt;
-	String dst;
-	String len;
-	String src;
-	String dpt;
-	String timestamp;
+	public String uidString;
+	public String appName;
+	public String uid;
+	public String in;
+	public String out;
+	public String proto;
+	public String spt;
+	public String dst;
+	public String len;
+	public String src;
+	public String dpt;
+	public String timestamp;
 	int totalBlocked;
 
 	private HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address

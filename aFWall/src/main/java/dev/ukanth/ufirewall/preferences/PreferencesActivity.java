@@ -250,11 +250,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		}
 
 
-		if (key.equals("enableLog")) {
-			Api.setLogging(ctx, G.enableLog());
-		}
 
 		if (key.equals("enableLogService")) {
+			Api.setLogging(ctx, G.enableLogService());
 			boolean enabled = sharedPreferences.getBoolean(key, false);
 			if (enabled) {
 				Intent intent = new Intent(ctx, LogService.class);

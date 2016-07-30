@@ -196,7 +196,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//one time migration of profiles to new logic
 		//migrateProfiles();
 		// Let's do some background stuff
-		(new Startup()).setContext(this).execute();
+		boolean skipsu = false;
+		Bundle bundle = getIntent().getExtras();
+		if(bundle != null) {
+			skipsu = bundle.getBoolean("SKIPSU");
+		}
+
+		if(!skipsu) {
+			(new Startup()).setContext(this).execute();
+		} else {
+			startRootShell();
+			passCheck();
+		}
 
 	}
 

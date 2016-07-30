@@ -97,7 +97,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
-import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
@@ -499,7 +498,7 @@ public final class Api {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
 		
-		if (G.enableLog()) {
+		if (G.enableLogService()) {
 			if (G.logTarget().equals("LOG")) {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
 			} else if (G.logTarget().equals("NFLOG")) {
@@ -822,11 +821,6 @@ public final class Api {
 			} catch (Exception e) {
 				Log.d(TAG, "Failed flusing firewall chains");
 			}
-		}
-
-		if (G.logTarget().equals("NFLOG")) {
-			Intent intent = new Intent(ctx.getApplicationContext(), NflogService.class);
-			ctx.startService(intent);
 		}
 
 		if (callback != null) {
@@ -2408,11 +2402,11 @@ public final class Api {
 				Log.d(TAG, "could not find LOG or NFLOG target");
 				//displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
 				G.logTarget("");
-				G.enableLog(false);
+				G.enableLogService(false);
 				return;
 			}
 
-			G.enableLog(true);
+			G.enableLogService(true);
 			updateLogRules(ctx, new RootCommand()
 				.setReopenShell(true)
 				.setSuccessToast(R.string.log_was_enabled)
@@ -2424,7 +2418,7 @@ public final class Api {
 	public static void setLogging(final Context ctx, boolean isEnabled) {
 		if (!isEnabled) {
 			// easy case: just disable
-			G.enableLog(false);
+			G.enableLogService(false);
 			G.logTarget("");
 			updateLogRules(ctx, new RootCommand()
 				.setReopenShell(true)
@@ -2745,6 +2739,7 @@ public final class Api {
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 			Intent appIntent = new Intent(context, MainActivity.class);
+			appIntent.putExtra("SKIPSU",true);
 
 			TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 			stackBuilder.addParentStack(MainActivity.class);

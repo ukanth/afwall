@@ -48,9 +48,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
-import dev.ukanth.ufirewall.service.NflogService;
 import dev.ukanth.ufirewall.util.DateComparator;
-import dev.ukanth.ufirewall.util.G;
 
 public class LogActivity extends AppCompatActivity {
 
@@ -117,8 +115,10 @@ public class LogActivity extends AppCompatActivity {
                     .from(LogData.class)
                     .orderBy(LogData_Table.timestamp, true)
                     .queryList();
-            logData = updateMap(logData);
-            Collections.sort(logData, new DateComparator());
+            if(logData != null && logData.size() > 0) {
+                logData = updateMap(logData);
+                Collections.sort(logData, new DateComparator());
+            }
             return logData;
         }
 
@@ -129,7 +129,7 @@ public class LogActivity extends AppCompatActivity {
                 if ((loadDialog != null) && loadDialog.isShowing()) {
                     loadDialog.dismiss();
                 }
-            } catch (final IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 // Handle or log or ignore
             } catch (final Exception e) {
                 // Handle or log or ignore
@@ -137,7 +137,7 @@ public class LogActivity extends AppCompatActivity {
                 loadDialog = null;
             }
 
-            if (logData.isEmpty()) {
+            if (logData == null || logData.isEmpty()) {
                 recyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             } else {
@@ -204,11 +204,6 @@ public class LogActivity extends AppCompatActivity {
                 return true;
             }
             case MENU_CLEARLOG:
-                if (G.logTarget().equals("NFLOG")) {
-                    NflogService.clearLog();
-                    //populateData(ctx);
-                    return true;
-                }
             /*Api.clearLog(ctx,
 					new RootCommand().setReopenShell(true)
 							.setSuccessToast(R.string.log_cleared)

@@ -286,7 +286,6 @@
         </receiver>
         
         <service android:name="dev.ukanth.ufirewall.service.RootShell"/>
-        <service android:name="dev.ukanth.ufirewall.service.NflogService"/>
         <service android:name="dev.ukanth.ufirewall.log.LogService"/>
         
         <!--  Samsung MultiWindow Support -->
