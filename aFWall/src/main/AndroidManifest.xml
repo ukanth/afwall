@@ -237,7 +237,7 @@
 
         <activity
 		    android:name="haibison.android.lockpattern.LockPatternActivity"
-            android:theme="@style/Alp_42447968.Theme.Dialog.Dark"
+            android:theme="@style/Alp_42447968.Theme.Dark"
             tools:replace="android:theme"/>
 
         <!-- device admin -->

@@ -39,7 +39,7 @@ dependencies {
     // provided fileTree(dir: 'libs', include: ['*.jar'])
 
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
-    compile 'org.bitbucket.ukanth:android-lockpattern:7.0.0'
+    compile 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.afollestad.material-dialogs:core:0.8.6.2'
 
