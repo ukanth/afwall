@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			skipsu = bundle.getBoolean("SKIPSU");
 		}
 
-		if(!skipsu) {
+		if(!skipsu || !G.hasRoot()) {
 			(new Startup()).setContext(this).execute();
 		} else {
 			startRootShell();
@@ -1966,6 +1966,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		protected Void doInBackground(Void... params) {
 			// Let's do some SU stuff
 			hasRoot = Api.hasRoot();
+			G.hasRoot(hasRoot);
 			startRootShell();
 			return null;
 		}

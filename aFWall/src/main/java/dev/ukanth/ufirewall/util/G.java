@@ -46,7 +46,7 @@ public class G extends android.app.Application {
 
 	public static final String TAG = "AFWall";
 	
-	private static final String IS_ROOT_AVAIL = "isRootAvail";
+	private static final String HAS_ROOT = "hasRoot";
 	private static final String NO_CHAINS = "noOtherChains";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
@@ -142,6 +142,10 @@ public class G extends android.app.Application {
 
 	public static boolean isXposedDM() { return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false); }
 	public static boolean isXposedDM(boolean val) { gPrefs.edit().putBoolean(XPOSED_FIX_DM_LEAK, val).commit(); return val; }
+
+
+	public static boolean hasRoot() { return gPrefs.getBoolean(HAS_ROOT, false); }
+	public static boolean hasRoot(boolean val) { gPrefs.edit().putBoolean(HAS_ROOT, val).commit(); return val; }
 
 
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
