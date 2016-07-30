@@ -23,9 +23,9 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,13 +50,15 @@ import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
 
-public class LogActivity extends AppCompatActivity {
+public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     protected static final int MENU_CLEARLOG = 7;
 
     RecyclerView recyclerView;
     LogRecyclerViewAdapter recyclerViewAdapter;
     private TextView emptyView;
+    private SwipeRefreshLayout mSwipeLayout;
+
 
     //protected static final int MENU_TOGGLE_LOG = 27;
 
@@ -80,12 +82,13 @@ public class LogActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        (new CollectLog()).setContext(this).execute();
-
-        Resources res = getResources();
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        mSwipeLayout.setOnRefreshListener(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         emptyView = (TextView) findViewById(R.id.empty_view);
+
+        (new CollectLog()).setContext(this).execute();
 
     }
 
@@ -137,6 +140,7 @@ public class LogActivity extends AppCompatActivity {
                 loadDialog = null;
             }
 
+            mSwipeLayout.setRefreshing(false);
             if (logData == null || logData.isEmpty()) {
                 recyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
@@ -144,6 +148,7 @@ public class LogActivity extends AppCompatActivity {
                 recyclerView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
             }
+
 
             recyclerViewAdapter = new LogRecyclerViewAdapter(context, logData);
             recyclerView.hasFixedSize();
@@ -216,6 +221,12 @@ public class LogActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onRefresh() {
+        (new CollectLog()).setContext(this).execute();
     }
 
 	/*@Override
