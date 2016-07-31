@@ -91,6 +91,7 @@ import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
+import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
@@ -196,13 +197,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		//one time migration of profiles to new logic
 		//migrateProfiles();
 		// Let's do some background stuff
-		boolean skipsu = false;
+		/*boolean skipsu = false;
 		Bundle bundle = getIntent().getExtras();
 		if(bundle != null) {
 			skipsu = bundle.getBoolean("SKIPSU");
-		}
+		}*/
 
-		if(!skipsu || !G.hasRoot()) {
+		if(!G.hasRoot()) {
 			(new Startup()).setContext(this).execute();
 		} else {
 			startRootShell();
@@ -1965,9 +1966,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		@Override
 		protected Void doInBackground(Void... params) {
 			// Let's do some SU stuff
-			hasRoot = Api.hasRoot();
-			G.hasRoot(hasRoot);
-			startRootShell();
+			hasRoot = Shell.SU.available();
 			return null;
 		}
 
@@ -1975,7 +1974,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		protected void onPostExecute(Void aVoid) {
 			super.onPostExecute(aVoid);
 			try {
-				if ((suDialog != null) && suDialog.isShowing()) {
+				if (suDialog != null) {
 					suDialog.dismiss();
 				}
 			} catch (final IllegalArgumentException e) {
@@ -2007,41 +2006,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						})
 						.positiveText(R.string.Continue)
 						.negativeText(R.string.exit)
-						/*.callback(new MaterialDialog.ButtonCallback() {
-							@Override
-							public void onPositive(MaterialDialog dialog) {
-								MainActivity.this.finish();
-								android.os.Process.killProcess(android.os.Process.myPid());
-								dialog.dismiss();
-							}
-						})*/
 						.show();
 			}
 			// more details on https://github.com/ukanth/afwall/issues/501
 			if(isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
 				G.kingDetected(true);
-				/*new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-						.title(R.string.error_nonsupported)
-						.content(R.string.error_nonsupported_details)
-						.onPositive(new MaterialDialog.SingleButtonCallback() {
-							@Override
-							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-								//make sure wipe all chains for NOW !! Hate this commit
-								//G.noOtherChains(true);
-								dialog.dismiss();
-							}
-						})
-						.onNegative(new MaterialDialog.SingleButtonCallback() {
-							@Override
-							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-								MainActivity.this.finish();
-								android.os.Process.killProcess(android.os.Process.myPid());
-								dialog.dismiss();
-							}
-						})
-						.positiveText(R.string.Continue)
-						.negativeText(R.string.exit)
-						.show();*/
 			}
 			if(!hasRoot && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
@@ -2065,7 +2034,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 						.negativeText(R.string.exit)
 						.show();
 			} else {
+				G.hasRoot(hasRoot);
 				passCheck();
+				startRootShell();
 			}
 		}
 	}
