@@ -285,15 +285,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	}
 
 	private void startRootShell() {
-		//G.isRootAvail(true);
-		List<String> cmds = new ArrayList<String>();
-		cmds.add("true");
-		new RootCommand().setFailureToast(R.string.error_su)
-				.setReopenShell(true).run(getApplicationContext(), cmds);
-		//put up the notification
-		if(G.activeNotification()){
-			Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-		}
+		Thread rootShell = new Thread(){
+			@Override
+			public void run(){
+				List<String> cmds = new ArrayList<String>();
+				cmds.add("true");
+				new RootCommand().setFailureToast(R.string.error_su)
+						.setReopenShell(true).run(getApplicationContext(), cmds);
+				if(G.activeNotification()){
+					Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+				}
+			}
+		};
+		rootShell.start();
 	}
 
 	@Override
