@@ -51,9 +51,9 @@ dependencies {
         exclude module: 'core'
     }*/
 
-    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.0.1'
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.0.1"
-    compile "com.github.Raizlabs.DBFlow:dbflow:3.0.1"
+    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.1.1'
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.1.1"
+    compile "com.github.Raizlabs.DBFlow:dbflow:3.1.1"
 
     compile "org.ocpsoft.prettytime:prettytime:4.0.1.Final"
     provided 'de.robv.android.xposed:api:82'
