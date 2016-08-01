@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,9 +31,15 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     private PrettyTime prettyTime;
     private int uid;
 
-    public LogRecyclerViewAdapter(final Context context,List<LogData> logData ){
+    public LogRecyclerViewAdapter(final Context context){
         this.context = context;
-        this.logData = logData;
+        logData = new ArrayList<>();
+    }
+
+    public void updateData(List<LogData> logDataList) {
+        logData.clear();
+        logData.addAll(logDataList);
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -65,7 +72,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
             }
         } catch (Exception e) {
         }
-        holder.appname.setText(data.getAppName() != null ? data.getAppName(): context.getString(R.string.log_deletedapp));
+        holder.appname.setText(data.getAppName() != null ? data.getAppName() + "(" + data.getUid() + ")" : context.getString(R.string.log_deletedapp));
 
         if(data.getCount() > 1) {
             holder.dataDenied.setText(context.getString(R.string.log_denied) + " " + data.getCount() + " " + context.getString(R.string.log_times)) ;

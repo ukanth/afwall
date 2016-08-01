@@ -44,11 +44,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
-import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
+import dev.ukanth.ufirewall.util.G;
 
 public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -88,15 +90,39 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         emptyView = (TextView) findViewById(R.id.empty_view);
 
-        (new CollectLog()).setContext(this).execute();
+        initializeRecyclerView();
 
+        if(G.enableLogService()) {
+            (new CollectLog()).setContext(this).execute();
+
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            mSwipeLayout.setVisibility(View.GONE);
+            emptyView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void initializeRecyclerView() {
+        recyclerView.hasFixedSize();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerViewAdapter = new LogRecyclerViewAdapter(getApplicationContext());
+        recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    private List<LogData> getLogData() {
+        return SQLite.select()
+                .from(LogData.class)
+                //.orderBy(LogData_Table.timestamp, true)
+                .queryList();
     }
 
 
     private class CollectLog extends AsyncTask<Void, Void, List<LogData>> {
         private Context context = null;
         MaterialDialog loadDialog = null;
-        boolean hasRoot = false;
+
+        public CollectLog() {
+        }
         //private boolean suAvailable = false;
 
         public CollectLog setContext(Context context) {
@@ -113,16 +139,18 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
         @Override
         protected List<LogData> doInBackground(Void... params) {
-            // Let's do some SU stuff
-            List<LogData> logData = SQLite.select()
-                    .from(LogData.class)
-                    .orderBy(LogData_Table.timestamp, true)
-                    .queryList();
-            if(logData != null && logData.size() > 0) {
-                logData = updateMap(logData);
-                Collections.sort(logData, new DateComparator());
+            List<LogData> logData = getLogData();
+            try {
+                if(logData != null && logData.size() > 0) {
+                    logData = updateMap(logData);
+                    Collections.sort(logData, new DateComparator());
+                }
+                return logData;
+            } catch(Exception e) {
+                Log.e(Api.TAG,"Exception while retrieving  data" + e.getLocalizedMessage());
+                return null;
             }
-            return logData;
+
         }
 
         @Override
@@ -141,23 +169,22 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             }
 
             mSwipeLayout.setRefreshing(false);
+
             if (logData == null || logData.isEmpty()) {
+                mSwipeLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             } else {
+                recyclerViewAdapter.updateData(logData);
                 recyclerView.setVisibility(View.VISIBLE);
+                mSwipeLayout.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
             }
 
-
-            recyclerViewAdapter = new LogRecyclerViewAdapter(context, logData);
-            recyclerView.hasFixedSize();
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(recyclerViewAdapter);
-
-
         }
     }
+
+
 
     private List<LogData> updateMap(List<LogData> logDataList) {
         HashMap<String, LogData> logMap = new HashMap<>();
