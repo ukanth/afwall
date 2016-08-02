@@ -116,8 +116,14 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                 .queryList();
     }
 
+    private int getCount() {
+        long l = SQLite.select()
+                .from(LogData.class).count();
+        return (int) l;
+    }
 
-    private class CollectLog extends AsyncTask<Void, Void, List<LogData>> {
+
+    private class CollectLog extends AsyncTask<Void, Integer, List<LogData>> {
         private Context context = null;
         MaterialDialog loadDialog = null;
 
@@ -132,9 +138,13 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
         @Override
         protected void onPreExecute() {
-            loadDialog = new MaterialDialog.Builder(context).
-                    cancelable(false).title(getString(R.string.loading_data_title)).progress(true, 0).content(context.getString(R.string.loading_data))
-                    .show();
+            loadDialog = new MaterialDialog.Builder(context).cancelable(false).
+                    title(getString(R.string.loading_data)).progress(false, getCount(), true).show();
+            doProgress(0);
+        }
+
+        public void doProgress(int value) {
+            publishProgress(value);
         }
 
         @Override
@@ -142,7 +152,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             List<LogData> logData = getLogData();
             try {
                 if(logData != null && logData.size() > 0) {
-                    logData = updateMap(logData);
+                    logData = updateMap(logData,this);
                     Collections.sort(logData, new DateComparator());
                 }
                 return logData;
@@ -154,8 +164,19 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         }
 
         @Override
+        protected void onProgressUpdate(Integer... progress) {
+
+            if (progress[0] == 0 ||  progress[0] == -1) {
+                //do nothing
+            } else {
+                loadDialog.incrementProgress(progress[0]);
+            }
+        }
+
+        @Override
         protected void onPostExecute(List<LogData> logData) {
             super.onPostExecute(logData);
+            doProgress(-1);
             try {
                 if ((loadDialog != null) && loadDialog.isShowing()) {
                     loadDialog.dismiss();
@@ -186,13 +207,15 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
 
 
-    private List<LogData> updateMap(List<LogData> logDataList) {
+    private List<LogData> updateMap(List<LogData> logDataList, CollectLog collectLog) {
         HashMap<String, LogData> logMap = new HashMap<>();
         HashMap<String, Integer> count = new HashMap<>();
         HashMap<String, Long> lastBlocked = new HashMap<>();
         List<LogData> analyticsList = new ArrayList();
         LogData tmpData;
+        int counter = 0;
         for (LogData data : logDataList) {
+            collectLog.doProgress(counter++);
             tmpData = data;
             if (logMap.containsKey(data.getUid())) {
                 if (Long.parseLong(data.getTimestamp()) > lastBlocked.get(data.getUid())) {
