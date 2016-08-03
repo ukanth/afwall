@@ -81,7 +81,7 @@
         android:icon="@drawable/ic_launcher_free"
         android:label="@string/app_name"
         android:theme="@style/MyActionBarTheme"
-        android:launchMode="singleTask"
+        android:launchMode="singleTop"
         android:name="dev.ukanth.ufirewall.util.G" >
 
         <!--WIP: uncomment following to get XPOSED working -->
