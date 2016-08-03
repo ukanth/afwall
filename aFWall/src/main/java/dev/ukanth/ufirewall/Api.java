@@ -2736,8 +2736,7 @@ public final class Api {
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 			Intent appIntent = new Intent(context, MainActivity.class);
-			appIntent.putExtra("SKIPSU",true);
-
+			appIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 			stackBuilder.addParentStack(MainActivity.class);
 			stackBuilder.addNextIntent(appIntent);
@@ -2746,11 +2745,10 @@ public final class Api {
 					| Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			appIntent.setAction(Long.toString(System.currentTimeMillis()));*/
 
-			//appIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
 			//PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-			PendingIntent resultPendingIntent =
-					stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 			builder.setContentIntent(resultPendingIntent);
 
 			int icon = R.drawable.notification;
