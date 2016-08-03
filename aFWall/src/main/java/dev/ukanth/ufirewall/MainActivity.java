@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	//private DrawerLayout mDrawerLayout;
 	//private ListView mDrawerList;
 	private Menu mainMenu;
-	public boolean isOnPause = false;
+	//public boolean isOnPause = false;
 	private ListView listview = null;
 	public static boolean dirty = false;
 	private MaterialDialog plsWait;
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		isOnPause = false;
+		//isOnPause = false;
 
 		try {
 				/* enable hardware acceleration on Android >= 3.0 */
@@ -275,6 +275,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		showApplications("", 99, true);
 	}
 */
+
+
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+	}
 
 	private void updateIconStatus() {
 		if(Api.isEnabled(getApplicationContext())) {
@@ -508,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}
 		//this.listview.setAdapter(null);
 		//mLastPause = Syst em.currentTimeMillis();
-		isOnPause = true;
+		//isOnPause = true;
 		//checkForProfile = true;
 		index = this.listview.getFirstVisiblePosition();
 		View v = this.listview.getChildAt(0);
