@@ -61,7 +61,7 @@ public class RulesActivity extends DataDumpActivity {
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(getString(R.string.showrules_title));
-		sdDumpFile = "rules.log";
+		//sdDumpFile = "rules.log";
 	}
 
 	protected void populateMenu(SubMenu sub) {
@@ -241,6 +241,11 @@ public class RulesActivity extends DataDumpActivity {
 
 		// First section: "IPxx Rules"
 		writeHeading(result, false, showIPv6 ? "IPv6 Rules" : "IPv4 Rules");
+		if(showIPv6) {
+			sdDumpFile = "IPv6rules.log";
+		} else {
+			sdDumpFile = "IPv4rules.log";
+		}
 		Api.fetchIptablesRules(ctx, showIPv6, new RootCommand()
 			.setLogging(true)
 			.setReopenShell(true)
