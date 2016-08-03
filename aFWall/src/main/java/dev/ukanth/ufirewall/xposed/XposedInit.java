@@ -1,5 +1,6 @@
 package dev.ukanth.ufirewall.xposed;
 
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -44,6 +45,16 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private SharedPreferences pPrefs;
     List<String> cmds;
     private String profileName = Api.PREFS_NAME;
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
+    private Activity activity;
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -146,7 +157,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private void showNotification(Context context,String notificationText){
         try {
 
-            final int ID_NOTIFICATION = 33345;
+            final int ID_NOTIFICATION = 43345;
 
             NotificationManager mNotificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -163,18 +174,21 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 mNotificationManager.notify(ID_NOTIFICATION, build.build());
             }
         }catch (Exception e) {
-            Toast.makeText(context,notificationText,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context,notificationText,Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
-    private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) throws NoSuchMethodException {
         final ApplicationInfo applicationInfo = loadPackageParam.appInfo;
+        Activity mCurrentActivity;
         Class<?> downloadManager = findClass("android.app.DownloadManager", loadPackageParam.classLoader);
+        Class<?> downloadManagerRequest = findClass("android.app.DownloadManager.Request", loadPackageParam.classLoader);
+
         XC_MethodHook dmSingleResult = new XC_MethodHook() {
 
-            @Override
+            /*@Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
                 final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
@@ -185,10 +199,10 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                     if (!isAppAllowed) {
                         //showNotification(context,"Package: " + pPrefs.getString("cache.label." + applicationInfo.packageName,applicationInfo.packageName) + " trying to use download manager has been blocked successfully");
                         DownloadManager.Request request = (DownloadManager.Request) param.args[0];
-                        request.setDestinationUri(Uri.parse("http://127.0.0.1/dummy.txt"));
+                        request.setDestinationUri(Uri.fromFile(new File("dummy.txt")));
                     }
                 }
-            }
+            }*/
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -203,12 +217,65 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                         param.setResult(0);
                         DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                         dm.remove(0);
+                        if(getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity().getApplicationContext(),"AFWall+ denied access to Download Manager for application : " + applicationInfo.uid,Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                       // showNotification(context,"Denied access to Download Manager for application : " + applicationInfo.uid);
                     }
                     //
                 }
             }
         };
+
+        XC_MethodHook hookDM = new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                reloadPreference();
+                final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
+                Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
+                if (isXposedEnabled) {
+                    final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
+                    Log.i(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
+                    if (!isAppAllowed) {
+                        final Uri uri = (Uri) param.args[0];
+                        Log.i(TAG, "Attempted URL via DM Leak : " + uri.toString());
+                        XposedHelpers.setObjectField(param.thisObject, "mUri", Uri.parse("http://localhost/dummy.txt"));
+                        if(getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity().getApplicationContext(),"Download Manager is attempting to download : " + uri.toString(),Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                        //showNotification(context,"Attempted URL via DM : " + uri.toString());
+                    }
+                }
+            }
+        };
+
         XposedBridge.hookAllMethods(downloadManager, "enqueue", dmSingleResult);
+        XposedBridge.hookAllConstructors(downloadManagerRequest, hookDM);
+
+        Class<?> instrumentation = findClass("android.app.Instrumentation", loadPackageParam.classLoader);
+
+        XposedBridge.hookAllMethods(instrumentation, "newActivity", new XC_MethodHook() {
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Activity mCurrentActivity = (Activity) param.getResult();
+                if(mCurrentActivity != null ){
+                    setActivity(mCurrentActivity);
+                }
+                Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
+            }
+        });
+
     }
 
     private void interceptNet(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
