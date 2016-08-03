@@ -45,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
@@ -223,6 +224,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				connectionPref.setChecked(false);
 				Api.toast(ctx, getString(R.string.ip6unavailable));
 			}
+			boolean enabled = sharedPreferences.getBoolean(key, false);
+			Toast.makeText(ctx, "Kindly reapply the rules because of ipv6 change" ,Toast.LENGTH_LONG).show();
 		}
 		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
 				|| key.equals("enableLAN") || key.equals("enableRoam")
@@ -230,6 +233,10 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			// revert back to Default profile when disabling multi-profile
 			// support
 			G.reloadProfile();
+		}
+
+		if (key.equals("ip_path") || key.equals("dns_value") ) {
+			Toast.makeText(ctx, "Kindly reapply the rules since iptables/dns values has been changed" ,Toast.LENGTH_LONG).show();
 		}
 
 		if(key.equals("activeNotification")) {
