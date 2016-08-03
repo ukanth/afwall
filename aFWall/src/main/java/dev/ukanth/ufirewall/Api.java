@@ -852,40 +852,6 @@ public final class Api {
 		}
 	}
 
-	private static class ChangeDefaultChain extends AsyncTask<Void, Void, Void> {
-		private Context context = null;
-		//private boolean suAvailable = false;
-
-		public ChangeDefaultChain setContext(Context context) {
-			this.context = context;
-			return this;
-		}
-
-		@Override
-		protected void onPreExecute() {
-
-		}
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			List<String> cmds = new ArrayList<String>();
-			cmds.add("-P INPUT ACCEPT");
-			cmds.add("-P FORWARD ACCEPT");
-			cmds.add("-P OUTPUT ACCEPT ");
-			final StringBuilder res = new StringBuilder();
-			try {
-				runScriptAsRoot(context, cmds, res);
-			}catch (Exception ex) {
-
-			}
-			return null;
-		}
-	}
-
-	public static void cleanupChains(Context ctx) {
-		(new ChangeDefaultChain()).setContext(ctx).execute();
-	}
-
 	@Deprecated
 	public static boolean applySavedIptablesRules(Context ctx, boolean showErrors) {
 		return applySavedIptablesRules(ctx, showErrors, null);
@@ -1076,7 +1042,7 @@ public final class Api {
 	}
 
 	/**
-	 * Delete all firewall rules.  For diagnostic purposes only.
+	 * Delete all kingroot firewall rules.  For diagnostic purposes only.
 	 * 
 	 * @param ctx application context
 	 * @param callback callback for completion
@@ -2736,7 +2702,7 @@ public final class Api {
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 			Intent appIntent = new Intent(context, MainActivity.class);
-			appIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
 			TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 			stackBuilder.addParentStack(MainActivity.class);
 			stackBuilder.addNextIntent(appIntent);
@@ -2817,6 +2783,14 @@ public final class Api {
 
     	
     }
+
+	public static void cleanupChains(Context ctx) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P INPUT ACCEPT");
+		cmds.add("-P FORWARD ACCEPT");
+		cmds.add("-P OUTPUT ACCEPT ");
+		apply46(ctx,cmds, new RootCommand());
+	}
 
 	/**
 	 * Delete all firewall rules.  For diagnostic purposes only.
