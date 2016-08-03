@@ -117,8 +117,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     }
 
     private int getCount() {
-        long l = SQLite.select()
-                .from(LogData.class).count();
+        long l = SQLite.selectCountOf().from(LogData.class).count();
         return (int) l;
     }
 
