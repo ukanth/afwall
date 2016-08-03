@@ -1041,6 +1041,20 @@ public final class Api {
 		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 	}
 
+	public static void applyQuick(Context ctx, List<String> cmds, RootCommand callback) {
+		List<String> out = new ArrayList<String>();
+
+		setIpTablePath(ctx, false);
+		iptablesCommands(cmds, out);
+
+		//related to #511, disable ipv6 but use startup leak.
+		if (G.enableIPv6() || G.fixLeak()) {
+			setIpTablePath(ctx, true);
+			iptablesCommands(cmds, out);
+		}
+		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+	}
+
 	/**
 	 * Delete all kingroot firewall rules.  For diagnostic purposes only.
 	 * 
@@ -2789,7 +2803,7 @@ public final class Api {
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 		cmds.add("-P OUTPUT ACCEPT ");
-		apply46(ctx,cmds, new RootCommand());
+		applyQuick(ctx,cmds, new RootCommand());
 	}
 
 	/**
