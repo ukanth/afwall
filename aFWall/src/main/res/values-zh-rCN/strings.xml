@@ -9,8 +9,8 @@
   <string name="app_name">AFWall+ </string>
   <string name="app_name_donate">AFWall+ (捐赠版)</string>
   <string name="title_disabled">AFWall+ (已禁用)</string>
-  <string name="whitelist_array_item">Allow selected</string>
-  <string name="blacklist_array_item">Block selected</string>
+  <string name="whitelist_array_item">允许所选项</string>
+  <string name="blacklist_array_item">阻止所选项</string>
   <string name="showrules">显示规则</string>
   <string name="applyrules">应用规则</string>
   <string name="saverules">保存规则</string>
@@ -24,7 +24,7 @@
   <string name="error_refresh">刷新 iptables 错误。</string>
   <string name="error_apply">应用 iptables 规则时出错。</string>
   <string name="error_fetch">获取 iptables 规则时出错。</string>
-  <string name="error_su">Could not acquire root access.\nYour device must be rooted to use AFWall+.\n\nIf this device is already rooted, please ensure AFWall+ has permission to execute the \"su\" command.</string>
+  <string name="error_su">无法获取 root 权限.\nAFWall+ 只能在已 root 设备上使用.\n\n如果此设备已 root, 请确认 AFWall+ 已获取执行 \"su\" 命令的权限.</string>
   <string name="error_netfilter">Iptables 缺失。\nAFWall+可能将不能达到预期效果。</string>
   <string name="error_common">错误: </string>
   <string name="all_item">(任何应用) - 同全选所有应用</string>
@@ -32,9 +32,9 @@
   <string name="unknown_item">未知项</string>
   <string name="tethering_item">(网络共享) - DHCP+DNS 服务</string>
   <string name="dnsproxy_item">(dns 代理) - 使用 netd 进行 DNS 查找</string>
-  <string name="ntp_item">(ntp) - Internet time servers</string>
+  <string name="ntp_item">(Ntp) - 互联网时间服务器</string>
   <string name="root_item">(root) - 获得 root 权限的应用</string>
-  <string name="adb_item">(adb) - Android Debug Bridge</string>
+  <string name="adb_item">(adb) - Adb 调试工具</string>
   <string name="media_item">(媒体) - 媒体服务器</string>
   <string name="vpn_item">(vpn) - VPN 网络</string>
   <string name="drm_item">(drm)-数字权限管理服务</string>
@@ -64,12 +64,15 @@
   <string name="reading_apps">正在检索已安装应用</string>
   <string name="mode">模式:</string>
   <string name="mode_header">模式：%s</string>
-  <string name="mode_whitelist">Allow selected</string>
-  <string name="mode_blacklist">Block selected</string>
+  <string name="legend_clear">清除所有列中的所有复选框</string>
+  <string name="mode_whitelist">允许所选项</string>
+  <string name="legend_whitelist">所选应用将被授予网络访问权限</string>
+  <string name="mode_blacklist">阻止所选项</string>
+  <string name="legend_blacklist">所选应用将被拒绝网络访问权限</string>
   <string name="set_custom_script">设置自定义脚本</string>
   <string name="preferences">首选项</string>
   <string name="reload">重新加載应用</string>
-  <string name="flush">Flush rules</string>
+  <string name="flush">刷新规则</string>
   <string name="send_report">发送错误报告</string>
   <string name="enter_problem">请描述问题︰</string>
   <string name="send_mail">发送邮件</string>
@@ -78,7 +81,7 @@
   <string name="custom_script_defined">自定义脚本已定义</string>
   <string name="custom_script_removed">自定义脚本已删除</string>
   <string name="custom_script_error">保存自定义脚本时出错</string>
-  <string name="custom_script_info"><b>Enter custom script below.</b>		\n<i>(Leave blank to remove.)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.</string>
+  <string name="custom_script_info"><b>在下方输入自定义脚本.</b>		\n<i>(留空以移除.)</i>		\n查阅更多关于自定义脚本的信息, 请访问 <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.</string>
   <string name="custom_script2_info">\n \"<b>自定义关闭脚本</b>\n 您可以自定义脚本用于防火墙被 <b>禁用</b> </string>
   <string name="unsaved_changes">未保存更改</string>
   <string name="unsaved_changes_message">\"有未保存更改。
@@ -87,7 +90,7 @@
   <string name="copy">复制</string>
   <string name="copied">已复制</string>
   <string name="Search">搜索</string>
-  <string name="flushRulesConfirm">Flush all iptables rules?</string>
+  <string name="flushRulesConfirm">是否刷新所有 iptables 规则?</string>
   <string name="overrideRules">此操作将覆盖现有规则！ 是否确认导入规则？</string>
   <string name="notification_new">新应用已安装</string>
   <string name="notification_new_package">配置互联网权限</string>
@@ -125,7 +128,7 @@
   <string name="import_all">导入规则, 配置文件设置, 和首选项</string>
   <string name="export_rules_success">导出至： </string>
   <string name="export_rules_fail">导出失败</string>
-  <string name="import_rules_success">Imported from </string>
+  <string name="import_rules_success">导入自 </string>
   <string name="import_rules_fail">导入失败!</string>
   <string name="import_rules_missing">规则文件缺失！</string>
   <string name="exportConfirm">导出规则至 SD 卡？</string>
@@ -135,7 +138,7 @@
   <string name="enable_firewall_log">启用防火墙日志</string>
   <string name="enable_firewall_log_service">打开日志服务</string>
   <string name="showlog_title">防火墙日志</string>
-  <string name="showlog_service_summary">Enable to show toast messages when a connection gets blocked </string>
+  <string name="showlog_service_summary">当链接被阻断时显示 toast 信息 </string>
   <string name="enable_log">启用日志</string>
   <string name="disable_log">禁用日志</string>
   <string name="log_disabled">日志已禁用</string>
@@ -150,14 +153,14 @@
   <string name="no_log">空日志</string>
   <string name="LogAppName">应用名称</string>
   <string name="LogPackBlock">总数据包阻塞</string>
-  <string name="blocked">AFWall+ Blocked:</string>
+  <string name="blocked">AFWall+ 已阻止:</string>
   <string name="refresh">刷新</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">配置文件</string>
   <string name="custom_title1">自定义默认配置名称</string>
-  <string name="custom_title2">Custom name for Profile 1</string>
-  <string name="custom_title3">Custom name for Profile 2</string>
-  <string name="custom_title4">Custom name for Profile 3</string>
+  <string name="custom_title2">配置文件 1 自定义名称</string>
+  <string name="custom_title3">配置文件 2 自定义名称</string>
+  <string name="custom_title4">配置文件 3 自定义名称</string>
   <string name="toggle_enable">启用防火墙</string>
   <string name="toggle_disable">禁用防火墙</string>
   <string name="toggle_default">激活默认配置文件</string>
@@ -172,37 +175,42 @@
   <string name="reapply_profile">重新应用配置文件规则</string>
   <!-- Interface -->
   <string name="lan_title">局域网控制</string>
-  <string name="lan_summary">Enable to control LAN permissions separately from WiFi permissions</string>
-  <string name="iptables_pref">Iptables binary</string>
+  <string name="lan_summary">启用以分别控制 LAN 权限与 WiFi 权限</string>
+  <string name="iptables_pref">Iptables 二进制文件</string>
   <string name="vpn_profile">VPN 控制</string>
   <string name="vpnSummary">启用以单独控制 VPN 权限</string>
   <string name="roaming">漫游控制</string>
-  <string name="roamingSummary">Enable to control internet while roaming permissions separately</string>
+  <string name="roamingSummary">启用以单独控制漫游时的网络连接</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
-  <string name="toast_bin_installed">AFWall+: Binary files installed</string>
-  <string name="toast_enabled">AFWall+: Firewall enabled</string>
-  <string name="toast_error_enabling">AFWall+: ERROR ENABLING FIREWALL!</string>
-  <string name="toast_disabled">AFWall+: Firewall DISABLED!</string>
+  <string name="toast_bin_installed">AFWall+: 二进制文件已安装</string>
+  <string name="toast_enabled">AFWall+: 防火墙已启用</string>
+  <string name="toast_error_enabling">AFWall+: 启用防火墙出错</string>
+  <string name="toast_disabled">AFWall+: 防火墙已禁用!</string>
   <string name="toast_error_disabling">AFWall+: 禁用用防火墙时出错！</string>
   <!-- Binary -->
-  <string name="busybox_pref">BusyBox binary</string>
+  <string name="busybox_pref">Busybox 二进制文件</string>
   <string name="system_bb">系统 Busybox</string>
   <string name="builtin_bb">内置 Busybox</string>
   <string name="system_ipt">系统的 iptables</string>
   <string name="builtin_ipt">内置 iptables</string>
   <string name="auto">自动</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">Xposed 相关</string>
+  <string name="fixDownloadTitle">修复 DownloadManager 泄漏</string>
+  <string name="fixDownloadTitleSummary">当应用访问权限被拒绝时使用 xposed 防止应用通过 Android 内置下载管理器下载数据</string>
+  <string name="LeakDetected">检测到泄漏</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 相关</string>
-  <string name="disable_toaster">Disable Tasker toasts</string>
-  <string name="disableTasterSummary">Disable toast messages for Tasker\'s plugin</string>
+  <string name="disable_toaster">禁用 Tasker toasts</string>
+  <string name="disableTasterSummary">禁用 Tasker 插件 toast 信息</string>
   <string name="enable_tasker">启用 AFWall+</string>
   <string name="disable_tasker">禁用 AFWall+</string>
   <string name="tasker_apply">Tasker：正在应用防火墙规则</string>
   <string name="tasker_disabled">Tasker: AFWall+ 已禁用!</string>
   <string name="tasker_profile_applied">Tasker：配置文件应用已成功</string>
-  <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
+  <string name="tasker_muliprofile">Tasker: AFWall+ 多配置文件已禁用</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 支持</string>
   <string name="ipv6_summary">启用对 IPv6 的支持</string>
@@ -214,12 +222,12 @@
   <string name="usePattern">使用图案锁代替密码</string>
   <string name="stealthMode">锁屏隐身模式</string>
   <string name="patternMaxTry">最大尝试次数</string>
-  <string name="resetPattern">Reset the lock pattern?</string>
+  <string name="resetPattern">重置图形锁?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">设备管理</string>
-  <string name="device_admin_enabled">AFWall+ Device Admin enabled</string>
-  <string name="device_admin_disabled">AFWall+ Device Admin disabled</string>
-  <string name="device_admin_on_disable">Please go to Device Administrator settings to deactivate AFWall+</string>
+  <string name="device_admin_enabled">AFWall+ 设备管理权限已启用</string>
+  <string name="device_admin_disabled">AFWall+ 设备管理权限已禁用</string>
+  <string name="device_admin_on_disable">请前往设备管理员设置停用 AFWall+</string>
   <!-- Experimental Preferences -->
   <string name="exp_prefs_title">实验性功能</string>
   <!-- Startup -->
@@ -240,7 +248,7 @@
   <string name="hideicons_pref_summary_off">在主视图中显示应用图标</string>
   <string name="notify_pref_title">启用通知</string>
   <string name="syscolor_pref_title">系统应用颜色</string>
-  <string name="syscolor_pref_summary_on">Color for all system apps</string>
+  <string name="syscolor_pref_summary_on">系统应用颜色</string>
   <string name="enableConfirmTitle">确认 AFWall+ 禁用操作</string>
   <string name="enableConfirm_summary_on">防火墙被禁用前将要求确认</string>
   <string name="showUid">显示应用程序的 UID</string>
@@ -258,7 +266,7 @@
   <string name="multi_apply_rules">切换配置时应用规则</string>
   <string name="multi_apply_rules_info">切换配置文件时加载和应用规则</string>
   <string name="multi_user_title">启用多用户支持</string>
-  <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
+  <string name="multi_user_summary">支持 Android 多用户 (仅适用于黑名单模式)</string>
   <string name="device_admin_desc">额外安全措施 - 防止卸载 AFWall+</string>
   <string name="traffic_detail_title">流量详情</string>
   <string name="uploaded">已更新</string>
@@ -266,17 +274,21 @@
   <string name="app_system_detail">打开系统详细信息</string>
   <string name="settings_pwd_not_equal">密码不匹配</string>
   <string name="faq">常见问题</string>
-  <string name="reverse_all">Invert all the selected apps?</string>
+  <string name="reverse_all">反选所有已选定的应用?</string>
   <string name="unselect_all">清除所有已选定的应用？</string>
   <string name="check_all">全部勾选</string>
   <string name="invert_all">反选所有</string>
+  <string name="legend_invert">反选所有列中的所有复选框</string>
   <string name="uncheck_all">全部取消勾选</string>
   <string name="select_action">已选择操作的连接：</string>
   <string name="roam">漫游</string>
+  <string name="legend_roam">启用以在使用不同的网络服务商 (漫游) 时单独控制数据权限</string>
   <string name="wifi">WiFi</string>
+  <string name="legend_wifi">启用以控制 WiFi 权限</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">数据</string>
+  <string name="legend_data">启用以控制移动数据 (2G,3G,EDGE,LTE/4G) 权限</string>
   <string name="pkg_all">全部</string>
   <string name="pkg_core">核心</string>
   <string name="pkg_sys">系统</string>
@@ -288,7 +300,7 @@
   <string name="enable_dns">由netd启用DNS</string>
   <string name="disable_dns">由netd禁用DNS</string>
   <string name="dns_proxy_title">DNS 代理 </string>
-  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
+  <string name="dns_proxy_summary">在 Android 4.3 及更高版本上, DNS 查询通过 netd 完成. 禁用此项将导致这些设备上网络连接受阻</string>
   <string name="tasker_lable">AFWall+ Tasker 插件</string>
   <string name="enable">启用</string>
   <string name="disable">禁用</string>
@@ -343,8 +355,12 @@
   <string name="migrate_summary">将所有附加配置文件数据从版本 1.x 迁移至 2.x</string>
   <string name="insert_profile">配置文件名称:</string>
   <string name="add">添加</string>
-  <string name="showlog_toasts">Show toast notification on block</string>
-  <string name="enable_show_toasts">Enable show toasts</string>
+  <string name="showlog_toasts">阻止时显示 toast 通知</string>
+  <string name="enable_show_toasts">启用 toasts 消息</string>
+  <string name="top">顶部</string>
+  <string name="center">居中</string>
+  <string name="bottom">底部</string>
+  <string name="position">Toasts 消息位置</string>
   <string name="widget_prefs_title">小部件位置</string>
   <string name="xTitle">小部件 X 轴位置</string>
   <string name="xTitleSummary">手动设置 X 轴位置</string>
@@ -356,4 +372,17 @@
   <string name="error_nonsupported_details">AFWall+ 检测到未受支持且已知可以绕过防火墙规则的 superuser 应用. 由于这是一款 superuser 应用, AFWall+ 无法解决此问题.</string>
   <string name="lockNotification">隐藏锁屏通知图标</string>
   <string name="lockScreenNotification_summary">在锁屏界面上隐藏常驻通知</string>
+  <string name="menu_legend">图例</string>
+  <string name="permissiondenied_importexport">无读取/写入外部储存权限. 请授予权限以导出/导入规则.</string>
+  <string name="permissiondenied_asset">无读取/写入储存权限. 请授予权限以复制 AFWall+ 二进制文件 </string>
+  <string name="log_deletedapp">已删除应用</string>
+  <string name="log_denied">已拒绝 :</string>
+  <string name="log_times">次</string>
+  <string name="log_time">次</string>
+  <string name="log_dst">最后链接目标 :</string>
+  <string name="log_src">最后源地址 :</string>
+  <string name="log_proto">最后使用协议 :</string>
+  <string name="no_data_available">请启用日志, 否则无法记录数据</string>
+  <string name="loading_data_title">加载中...</string>
+  <string name="loading_data">获取日志数据中</string>
 </resources>

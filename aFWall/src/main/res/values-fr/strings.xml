@@ -64,8 +64,11 @@
   <string name="reading_apps">Récupération des applications installées</string>
   <string name="mode">Mode : </string>
   <string name="mode_header">Mode : %s</string>
+  <string name="legend_clear">Désactivez toutes les cases à cocher sur toutes les colonnes</string>
   <string name="mode_whitelist">Autoriser la sélection</string>
+  <string name="legend_whitelist">Les applications sélectionnées seront autorisées à accéder à internet</string>
   <string name="mode_blacklist">Bloquer la sélection</string>
+  <string name="legend_blacklist">Les applications sélectionnées ne seront pas autorisées à accéder à internet</string>
   <string name="set_custom_script">Définir un script personnalisé</string>
   <string name="preferences">Préférences</string>
   <string name="reload">Recharger les applications</string>
@@ -192,6 +195,11 @@
   <string name="system_ipt">iptables système</string>
   <string name="builtin_ipt">iptables intégré</string>
   <string name="auto">Auto</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">Relatif à XPosed</string>
+  <string name="fixDownloadTitle">Réparer les fuites de données du gestionnaire de téléchargement</string>
+  <string name="fixDownloadTitleSummary">Ceci utilisera xposed pour bloquer le téléchargement de données des applications au moyen du gestionnaire de téléchargement intégré à android même l’accès refusé aux applications</string>
+  <string name="LeakDetected">Fuite de données détectée</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Associé à Tasker</string>
   <string name="disable_toaster">Désactiver les messages toast de Tasker</string>
@@ -269,13 +277,17 @@
   <string name="unselect_all">Décocher les applications sélectionnées ?</string>
   <string name="check_all">Sélectionner tout</string>
   <string name="invert_all">Inverser la sélection</string>
+  <string name="legend_invert">Inversez toutes les cases à cocher sur toutes les colonnes</string>
   <string name="uncheck_all">Tout désélectionner</string>
   <string name="select_action">Choisissez une action sur la colonne </string>
   <string name="roam">Itinérance</string>
+  <string name="legend_roam">Activer le contrôle des données tout en ayant des autorisations différentes de fournisseurs d\'accès réseau (roaming)</string>
   <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Activer le contrôle des autorisations Wi-Fi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Données</string>
+  <string name="legend_data">Activer le contrôle des autorisations aux data (2G, 3G, EDGE, LTE / 4G)</string>
   <string name="pkg_all">Tout</string>
   <string name="pkg_core">Noyau</string>
   <string name="pkg_sys">Système</string>
@@ -344,6 +356,10 @@
   <string name="add">Ajouter</string>
   <string name="showlog_toasts">Afficher une notification toast en cas de blocage</string>
   <string name="enable_show_toasts">Activer l\'affichage des toasts</string>
+  <string name="top">Haut</string>
+  <string name="center">Centre</string>
+  <string name="bottom">Bas</string>
+  <string name="position">Position des toasts</string>
   <string name="widget_prefs_title">Positions du widget</string>
   <string name="xTitle">Position X du widget</string>
   <string name="xTitleSummary">Réglage manuel de la position X</string>
@@ -355,4 +371,17 @@
   <string name="error_nonsupported_details">AFWall+ a détecté une application superuser non supportée qui est connue pour contourner les règles de pare-feu. Étant donné que c\'est une application superuser, AFWall+ ne peut pas résoudre ce problème.</string>
   <string name="lockNotification">Masquer l\'icône de notification de l\'écran de verrouillage</string>
   <string name="lockScreenNotification_summary">Masquer la notification sur l\'écran de verrouillage</string>
+  <string name="menu_legend">Légende</string>
+  <string name="permissiondenied_importexport">Autorisation refusée pour accéder en lecture/écriture au stockage externe. Veuillez donner l\'accès aux règles d’exportation/importation.</string>
+  <string name="permissiondenied_asset">Autorisation refusée pour accéder en lecture/écriture au stockage. Veuillez donner l\'accès pour copier les fichiers binaires pour AFWall+ </string>
+  <string name="log_deletedapp">Application supprimée</string>
+  <string name="log_denied">Refusé :</string>
+  <string name="log_times">fois</string>
+  <string name="log_time">fois</string>
+  <string name="log_dst">Dernière destination :</string>
+  <string name="log_src">Dernière source :</string>
+  <string name="log_proto">Dernier protocole :</string>
+  <string name="no_data_available">Veuillez activer le service de journalisation ou pas de données</string>
+  <string name="loading_data_title">Chargement...</string>
+  <string name="loading_data">Récupération des données de journalisation</string>
 </resources>

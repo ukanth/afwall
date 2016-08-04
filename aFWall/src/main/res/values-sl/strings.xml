@@ -64,8 +64,11 @@
   <string name="reading_apps">Pridobivam podatke</string>
   <string name="mode">Način: </string>
   <string name="mode_header">Način: %s</string>
+  <string name="legend_clear">Izbris vseh označb v vseh stolpcih</string>
   <string name="mode_whitelist">Dovoli izbrane</string>
+  <string name="legend_whitelist">Označenim aplikacijam bo dovoljen dostop do interneta</string>
   <string name="mode_blacklist">Blokiraj izbrane</string>
+  <string name="legend_blacklist">Označenim aplikacijam ne bo dovoljen dostop do interneta</string>
   <string name="set_custom_script">Dodaj skripte</string>
   <string name="preferences">Nastavitve</string>
   <string name="reload">Osveži seznam</string>
@@ -132,7 +135,7 @@
   <string name="export_to_sd">Izvozi na kartico SD</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Vklopi dnevnik aktivnosti</string>
-  <string name="enable_firewall_log_service">Beleženje</string>
+  <string name="enable_firewall_log_service">Vklop beleženja</string>
   <string name="showlog_title">Vklop/izklop</string>
   <string name="showlog_service_summary">Vklopi prikaz obvestil ob blokadi povezave </string>
   <string name="enable_log">Vklopi beleženje</string>
@@ -171,12 +174,12 @@
   <string name="reapply_profile">Ponovno uveljavi pravila</string>
   <!-- Interface -->
   <string name="lan_title">LAN nadzor</string>
-  <string name="lan_summary">Vklop nadzora podatkovnega pretoka preko lokalnega omrežja (neodvisno od WiFi)</string>
+  <string name="lan_summary">Označite za nadzor podatkovnega prometa preko lokalnega omrežja (neodvisno od WiFi)</string>
   <string name="iptables_pref">Binarna datoteka Iptables</string>
   <string name="vpn_profile">VPN nadzor</string>
-  <string name="vpnSummary">Vklop nadzora podatkovnega pretoka preko VPN</string>
+  <string name="vpnSummary">Označite za nadzor podatkovnega prometa preko VPN</string>
   <string name="roaming">Nadzor med gostovanjem</string>
-  <string name="roamingSummary">Vklop nadzora podatkovnega pretoka med gostovanjem v tujih omrežjih</string>
+  <string name="roamingSummary">Označite za nadzor podatkovnega prometa med gostovanjem v tujih omrežjih</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -192,10 +195,15 @@
   <string name="system_ipt">Sistemski Iptables</string>
   <string name="builtin_ipt">Sistemski iptables</string>
   <string name="auto">Avtomatsko</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">Povezava z ogrodjem Xposed</string>
+  <string name="fixDownloadTitle">Blokada uhajanja preko apl. DownloadManager</string>
+  <string name="fixDownloadTitleSummary">S tem bo preko modula Xposed onemogočeno uhajanje podatkov pri aplikacijah, ki za prenos uporabljajo sistemsko aplikacijo DownloadManager</string>
+  <string name="LeakDetected">Zaznano uhajanje</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Povezava z aplikacijo Tasker</string>
   <string name="disable_toaster">Izklop obvestil za Tasker</string>
-  <string name="disableTasterSummary">Onemogoči obvestila za vtičnik aplikacije Tasker</string>
+  <string name="disableTasterSummary">To bo izklopilo obvestila za vtičnik aplikacije Tasker</string>
   <string name="enable_tasker">Vklopi AFWall+</string>
   <string name="disable_tasker">Izkopi AFWall+</string>
   <string name="tasker_apply">Tasker: uveljavljam pravila požarnega zidu</string>
@@ -269,13 +277,17 @@
   <string name="unselect_all">Počistim izbrane aplikacije?</string>
   <string name="check_all">Označi vse</string>
   <string name="invert_all">Preobrni vse</string>
+  <string name="legend_invert">Zamenjava vseh označb v vseh stolpcih</string>
   <string name="uncheck_all">Odznači vse</string>
   <string name="select_action">Izberi ravnanje za stolpec </string>
   <string name="roam">Gostovanje</string>
+  <string name="legend_roam">Označite za nadzor podatkovnega prometa med gostovanjem</string>
   <string name="wifi">WiFi</string>
+  <string name="legend_wifi">Označite za nadzor prometa preko WiFi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Podatkovno omrežje</string>
+  <string name="legend_data">Označite za nadzor podatkovnega prometa (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Vse</string>
   <string name="pkg_core">Jedro</string>
   <string name="pkg_sys">Sistem</string>
@@ -343,7 +355,11 @@
   <string name="insert_profile">Ime profila</string>
   <string name="add">Dodaj</string>
   <string name="showlog_toasts">To bo omogočilo prikazovanje sporočil ob blokadah</string>
-  <string name="enable_show_toasts">Vklopi prikaz obvestil</string>
+  <string name="enable_show_toasts">Vklop obvestil</string>
+  <string name="top">Na vrhu</string>
+  <string name="center">Na sredini</string>
+  <string name="bottom">Na dnu</string>
+  <string name="position">Položaj obvestil</string>
   <string name="widget_prefs_title">Položaj gradnikov</string>
   <string name="xTitle">Položaj X gradnika</string>
   <string name="xTitleSummary">Ročno spremeni položaj X</string>
@@ -355,4 +371,17 @@
   <string name="error_nonsupported_details">AFWall+ je zaznal nepodprto aplikacijo za korenski dostop, ki je znana po tem, da obide pravila požarnega zidu. Ker ima aplikacija korenski dostop, ji AFWall+ tega ne more preprečiti.</string>
   <string name="lockNotification">Skrij obvestilo na zaslonu za zaklepanje</string>
   <string name="lockScreenNotification_summary">Skrije obvestilo na zaslonu za zaklepanje</string>
+  <string name="menu_legend">Legenda</string>
+  <string name="permissiondenied_importexport">Zavrnjena je bila zahteva za BRANJE/PISANJE v zunanjo shrambo. Prosimo dovolite dostop pravilom za izvoz/uvoz.</string>
+  <string name="permissiondenied_asset">Zavrnjen je bil dostop za BRANJE/PISANJE v shrambo. Prosimo dovolite dostop za kopiranje za izvoz/uvoz.aplikacijo AFWall+. </string>
+  <string name="log_deletedapp">Odstranjena aplikacija</string>
+  <string name="log_denied">Zavrnjen dostop :</string>
+  <string name="log_times">časi</string>
+  <string name="log_time">čas</string>
+  <string name="log_dst">Zadnja destinacija :</string>
+  <string name="log_src">Zadnji vir :</string>
+  <string name="log_proto">Zadnji protokol :</string>
+  <string name="no_data_available">Ni podatkov. Preverite, če je dnevnik vključen.</string>
+  <string name="loading_data_title">Nalagam...</string>
+  <string name="loading_data">Pridobivam podatke</string>
 </resources>

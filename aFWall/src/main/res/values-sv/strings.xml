@@ -64,8 +64,11 @@
   <string name="reading_apps">Listar installerade appar</string>
   <string name="mode">Mode: </string>
   <string name="mode_header">Mode: %s</string>
+  <string name="legend_clear">Avmarkera alla kryssrutor för alla kolumner</string>
   <string name="mode_whitelist">Tillåt markerade</string>
+  <string name="legend_whitelist">Valda appar kommer att beviljas tillgång till internet</string>
   <string name="mode_blacklist">Blockera markerade</string>
+  <string name="legend_blacklist">Valda appar kommer att nekas tillgång till internet</string>
   <string name="set_custom_script">Ange eget skript</string>
   <string name="preferences">Inställningar</string>
   <string name="reload">Ladda om appar</string>
@@ -192,6 +195,11 @@
   <string name="system_ipt">Systemets iptables</string>
   <string name="builtin_ipt">Inbyggd iptables</string>
   <string name="auto">Auto</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">XPosed-relaterade</string>
+  <string name="fixDownloadTitle">Hindra DownloadManager läckage</string>
+  <string name="fixDownloadTitleSummary">Detta kommer att använda XPosed för att blockera appar från att ladda ner data med Androids inbyggda nedladdninghanterare trots att appen har nekats åtkomst</string>
+  <string name="LeakDetected">Dataläckage upptäcktes</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker-relaterad</string>
   <string name="disable_toaster">Inaktivera popup-notifikationer</string>
@@ -269,13 +277,17 @@
   <string name="unselect_all">Avmarkera allt?</string>
   <string name="check_all">Markera alla</string>
   <string name="invert_all">Invertera alla</string>
+  <string name="legend_invert">Invertera markering i alla kryssrutor för alla kolumner</string>
   <string name="uncheck_all">Avmarkera alla</string>
   <string name="select_action">Välj åtgärd på kolumn </string>
   <string name="roam">Roam</string>
+  <string name="legend_roam">Gör det möjligt för att kontrollera datatrafik till andra nätleverantörer (roaming) separat</string>
   <string name="wifi">WiFi</string>
+  <string name="legend_wifi">Gör det möjligt för att kontrollera Wifi behörigheter</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Data</string>
+  <string name="legend_data">Aktivera för att kontrollera mobilt data (2G, 3G, EDGE, LTE / 4G) behörigheter</string>
   <string name="pkg_all">Alla</string>
   <string name="pkg_core">Kärnan</string>
   <string name="pkg_sys">System</string>
@@ -344,6 +356,10 @@
   <string name="add">Lägg tilll</string>
   <string name="showlog_toasts">Aktivera för att visa popup-notifieringar vid nekade paket</string>
   <string name="enable_show_toasts">Aktivera visning av popup-notifieringar</string>
+  <string name="top">Överst</string>
+  <string name="center">Mitten</string>
+  <string name="bottom">Botten</string>
+  <string name="position">Toast placering</string>
   <string name="widget_prefs_title">Widget positioner</string>
   <string name="xTitle">Widget X-position</string>
   <string name="xTitleSummary">Manuell inställning av X-position</string>
@@ -355,4 +371,17 @@
   <string name="error_nonsupported_details">AFWall+ upptäckte en superuser app som är känd för att kringgå brandväggsregler. Eftersom det är en superuser app kan AFWall+ inte åtgärda problemet.</string>
   <string name="lockNotification">Dölj notifieringsikonen på låsskärmen</string>
   <string name="lockScreenNotification_summary">Dölj meddelanden på låsskärmen</string>
+  <string name="menu_legend">Förklaringar</string>
+  <string name="permissiondenied_importexport">Åtkomst nekad till läs- och skrivbehörighet för extern lagring. Vänligen åtgärda för möjliggöra export/import av regler.</string>
+  <string name="permissiondenied_asset">Åtkomst nekad till läs- och skrivbehörighet för extern lagring. Vänligen åtgärda för möjliggöra kopiering av AFWall+ binärer </string>
+  <string name="log_deletedapp">Avinstallerad app</string>
+  <string name="log_denied">Nekad:</string>
+  <string name="log_times">gånger</string>
+  <string name="log_time">tid</string>
+  <string name="log_dst">Senaste destination:</string>
+  <string name="log_src">Senaste källa:</string>
+  <string name="log_proto">Senaste protokoll:</string>
+  <string name="no_data_available">Vänligen aktivera Loggtjänsten eller inga data</string>
+  <string name="loading_data_title">Laddar ...</string>
+  <string name="loading_data">Hämtar loggdata</string>
 </resources>

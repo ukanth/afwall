@@ -64,8 +64,11 @@
   <string name="reading_apps">インストール済みアプリを取得中</string>
   <string name="mode">モード:</string>
   <string name="mode_header">モード: %s</string>
+  <string name="legend_clear">すべての列のすべてのチェック ボックスをオフにします</string>
   <string name="mode_whitelist">選択済を許可</string>
+  <string name="legend_whitelist">選択したアプリケーションはインターネットのアクセス許可が与えられます</string>
   <string name="mode_blacklist">選択済をブロック</string>
+  <string name="legend_blacklist">選択したアプリケーションはインターネットのアクセスが拒否されます</string>
   <string name="set_custom_script">カスタムスクリプト設定</string>
   <string name="preferences">設定</string>
   <string name="reload">アプリの再読み込み</string>
@@ -195,6 +198,11 @@
   <string name="system_ipt">システム iptables</string>
   <string name="builtin_ipt">組み込み iptables</string>
   <string name="auto">自動</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">XPosed 関連</string>
+  <string name="fixDownloadTitle">ダウンロードマネージャーのリークを修正</string>
+  <string name="fixDownloadTitleSummary">これは xposed を使用して、アクセスを拒否するアプリケーションも、Android 内蔵ダウンロード マネージャーを使ってデータをダウンロードするアプリをブロックします</string>
+  <string name="LeakDetected">リークを検出しました</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 関連</string>
   <string name="disable_toaster">Tasker トーストを無効にする</string>
@@ -272,13 +280,17 @@
   <string name="unselect_all">すべてのアプリの選択を消去しますか?</string>
   <string name="check_all">すべて選択</string>
   <string name="invert_all">すべて反転</string>
+  <string name="legend_invert">すべての列のすべてのチェック ボックスを反転します</string>
   <string name="uncheck_all">すべての選択を解除</string>
   <string name="select_action">列のアクションを選択 </string>
   <string name="roam">ローミング</string>
+  <string name="legend_roam">別のネットワークプロバイダー (ローミング) で、個別にデータのアクセス許可の制御を有効にする</string>
   <string name="wifi">WiFi</string>
+  <string name="legend_wifi">Wifi のアクセス許可の管理を有効にする</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">データ</string>
+  <string name="legend_data">データ (2G,3G,EDGE,LTE/4G) のアクセス許可の制御を有効にする</string>
   <string name="pkg_all">すべて</string>
   <string name="pkg_core">コア</string>
   <string name="pkg_sys">システム</string>
@@ -347,6 +359,10 @@
   <string name="add">追加</string>
   <string name="showlog_toasts">ブロック時にトースト通知を表示</string>
   <string name="enable_show_toasts">トーストの表示を有効にする</string>
+  <string name="top">上部</string>
+  <string name="center">中央</string>
+  <string name="bottom">下部</string>
+  <string name="position">トーストの位置</string>
   <string name="widget_prefs_title">ウィジェット位置</string>
   <string name="xTitle">ウィジェット X 位置</string>
   <string name="xTitleSummary">X 位置を手動で上書きします</string>
@@ -358,4 +374,17 @@
   <string name="error_nonsupported_details">ファイアウォールのルールをバイパスすることで知られている、AFWall+ でサポートされていない、スーパーユーザー アプリが検出されました。それはスーパーユーザ アプリのため、AFWall+ はこの問題を解決できません。</string>
   <string name="lockNotification">ロック画面の通知を非表示にする</string>
   <string name="lockScreenNotification_summary">ロック画面で新しい通知を非表示にします</string>
+  <string name="menu_legend">表題</string>
+  <string name="permissiondenied_importexport">外部ストレージの読み取り/書き込みアクセスが拒否されました。エクスポート/インポート ルールへのアクセス許可を付与してください。</string>
+  <string name="permissiondenied_asset">ストレージの読み取り/書き込みアクセスが拒否されました。AFWall+ バイナリをコピーするためにアクセス許可を付与してください。 </string>
+  <string name="log_deletedapp">アプリケーションを削除しました</string>
+  <string name="log_denied">拒否 :</string>
+  <string name="log_times">回</string>
+  <string name="log_time">回</string>
+  <string name="log_dst">最後の先 :</string>
+  <string name="log_src">最後の元 :</string>
+  <string name="log_proto">最後のプロトコル :</string>
+  <string name="no_data_available">ログ サービスを有効にしてください。またはデータがありません</string>
+  <string name="loading_data_title">読み込んでいます...</string>
+  <string name="loading_data">ログデータを取得しています</string>
 </resources>

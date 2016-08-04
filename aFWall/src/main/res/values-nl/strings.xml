@@ -64,8 +64,11 @@
   <string name="reading_apps">Ophalen van geïnstalleerde applicaties</string>
   <string name="mode">Modus: </string>
   <string name="mode_header">Modus: %s</string>
+  <string name="legend_clear">Selectievakjes op alle kolommen leegmaken</string>
   <string name="mode_whitelist">Selectie toestaan</string>
+  <string name="legend_whitelist">Geselecteerde applicaties toegang geven tot internet</string>
   <string name="mode_blacklist">Selectie blokkeren</string>
+  <string name="legend_blacklist">Geselcteerde applicaties toegang tot internet ontzeggen</string>
   <string name="set_custom_script">Eigen script</string>
   <string name="preferences">Voorkeuren</string>
   <string name="reload">Applicaties opnieuw laden</string>
@@ -174,12 +177,12 @@
   <string name="reapply_profile">Profiel regels opnieuw toepassen</string>
   <!-- Interface -->
   <string name="lan_title">LAN beheer</string>
-  <string name="lan_summary">Inschakelen om de LAN en wifi instellingen apart te beheren</string>
+  <string name="lan_summary">Inschakelen om de LAN en wifi permissies apart te beheren</string>
   <string name="iptables_pref">Iptables binary</string>
   <string name="vpn_profile">VPN beheer</string>
-  <string name="vpnSummary">Inschakelen om VPN instellingen afzonderlijk te beheren</string>
+  <string name="vpnSummary">Inschakelen om VPN permissies afzonderlijk te beheren</string>
   <string name="roaming">Beheer roaming</string>
-  <string name="roamingSummary">Inschakelen om data roaming instellingen afzonderlijk te beheren</string>
+  <string name="roamingSummary">Inschakelen om data roaming permissies afzonderlijk te beheren</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -195,6 +198,11 @@
   <string name="system_ipt">Systeem iptables</string>
   <string name="builtin_ipt">Ingebouwde iptables</string>
   <string name="auto">Automatisch</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">XPosed gerelateerd</string>
+  <string name="fixDownloadTitle">Repareer DownloadManager lek</string>
+  <string name="fixDownloadTitleSummary">Dit zal XPosed gebruiken om het downloaden van data te blokkeren voor applicaties via de ingebouwde Android download-manager, ook wanneer de applicatie hier geen toegang toe geeft</string>
+  <string name="LeakDetected">Lek gedetecteerd</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker gerelateerd</string>
   <string name="disable_toaster">Uitschakelen tasker popups</string>
@@ -272,13 +280,17 @@
   <string name="unselect_all">Selectie leegmaken?</string>
   <string name="check_all">Alles selecteren</string>
   <string name="invert_all">Alles omkeren</string>
+  <string name="legend_invert">Selectievakjes op alle kolommen inverteren</string>
   <string name="uncheck_all">Alles deselecteren</string>
   <string name="select_action">Selecteer actie op kolom </string>
   <string name="roam">Roaming</string>
+  <string name="legend_roam">Activeren om de roaming permissies apart te beheren</string>
   <string name="wifi">Wifi</string>
+  <string name="legend_wifi">Inschakelen om wifi permissies afzonderlijk te beheren</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Gegevens</string>
+  <string name="legend_data">Inschakelen om data (2G, 3G, EDGE, LTE/4G) permissies te beheren</string>
   <string name="pkg_all">Alles</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">Systeem</string>
@@ -347,6 +359,10 @@
   <string name="add">Toevoegen</string>
   <string name="showlog_toasts">Toast-melding weergeven bij blokkeren</string>
   <string name="enable_show_toasts">Schakel toast notificaties in</string>
+  <string name="top">Naar boven</string>
+  <string name="center">Centreer</string>
+  <string name="bottom">Naar beneden</string>
+  <string name="position">Toast positie</string>
   <string name="widget_prefs_title">Widget posities</string>
   <string name="xTitle">Widget X-positie</string>
   <string name="xTitleSummary">Handmatig aanpassen X-positie</string>
@@ -358,4 +374,17 @@
   <string name="error_nonsupported_details">AFWall+ heeft een niet ondersteunde superuser applicatie gedetecteerd welke bekend staat om het omzeilen van firewall rules. Aangezien het een superuser app betreft, kan AFWall+ dit probleem niet verhelpen.</string>
   <string name="lockNotification">Meldingen verbergen op vergrendelingsscherm</string>
   <string name="lockScreenNotification_summary">Verbergen actieve meldingen op lockscreen</string>
+  <string name="menu_legend">Legenda</string>
+  <string name="permissiondenied_importexport">Machtiging geweigerd voor READ/WRITE toegang voor externe opslag. Geef toegang voor het exporteren/importeren van regels.</string>
+  <string name="permissiondenied_asset">Machtiging geweigerd voor READ/WRITE toegang voor externe opslag. Geef toegang voor kopiëren van binaries van AFWall+.</string>
+  <string name="log_deletedapp">Verwijder applicatie</string>
+  <string name="log_denied">Geweigerd:</string>
+  <string name="log_times">keer</string>
+  <string name="log_time">tijd</string>
+  <string name="log_dst">Laatste bestemming:</string>
+  <string name="log_src">Laatste Bron:</string>
+  <string name="log_proto">Laatste Protocol:</string>
+  <string name="no_data_available">Activeer logboekservice of er zullen geen gegevens worden opgeslagen</string>
+  <string name="loading_data_title">Laden...</string>
+  <string name="loading_data">Logboek gegevens worden opgehaald</string>
 </resources>

@@ -64,8 +64,11 @@
   <string name="reading_apps">설치된 앱 가져오는 중</string>
   <string name="mode">사용모드: </string>
   <string name="mode_header">사용모드: %s</string>
+  <string name="legend_clear">모든 선택 취소</string>
   <string name="mode_whitelist">선택사항 허용</string>
+  <string name="legend_whitelist">선택된 앱들은 인터넷을 연결합니다</string>
   <string name="mode_blacklist">선택사항 차단</string>
+  <string name="legend_blacklist">선택된 앱들은 인터넷을 차단합니다</string>
   <string name="set_custom_script">나만의 명령어 설정</string>
   <string name="preferences">설정</string>
   <string name="reload">앱 다시가져오기</string>
@@ -192,6 +195,11 @@
   <string name="system_ipt">System iptables</string>
   <string name="builtin_ipt">Built-In iptables</string>
   <string name="auto">자동</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">XPosed 관련</string>
+  <string name="fixDownloadTitle">DownloadManager 오류 고치기</string>
+  <string name="fixDownloadTitleSummary">Xposed를 이용해서 차단된 앱들이 DownloadManager를 이용해서 인터넷을 연결하는 오류를 차단합니다</string>
+  <string name="LeakDetected">오류가 있습니다</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 관련</string>
   <string name="disable_toaster">Tasker 팝업창 뜨지 않게하기</string>
@@ -269,13 +277,17 @@
   <string name="unselect_all">선택된 앱들을 해제할까요?</string>
   <string name="check_all">모두선택</string>
   <string name="invert_all">모두 역변</string>
+  <string name="legend_invert">모든 선택 역변</string>
   <string name="uncheck_all">선택 해제하기</string>
   <string name="select_action">카데고리 전체적용 선택 </string>
   <string name="roam">로밍</string>
+  <string name="legend_roam">로밍관련 권한을 따로 지정하기</string>
   <string name="wifi">WiFi</string>
+  <string name="legend_wifi">와이파이 권한 허가하기</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">데이터</string>
+  <string name="legend_data">데이터 (2G,3G,EDGE,LTE/4G) 권한 허가하기</string>
   <string name="pkg_all">모두</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">시스템</string>
@@ -344,6 +356,10 @@
   <string name="add">추가</string>
   <string name="showlog_toasts">차단할 때 알림을 받도록 허용</string>
   <string name="enable_show_toasts">알림 받도록 허용</string>
+  <string name="top">위쪽</string>
+  <string name="center">중앙</string>
+  <string name="bottom">아래</string>
+  <string name="position">알림 위치</string>
   <string name="widget_prefs_title">위젯 위치</string>
   <string name="xTitle">위젯 가로 위치</string>
   <string name="xTitleSummary">수동으로 가로위치 조정</string>
@@ -355,4 +371,17 @@
   <string name="error_nonsupported_details">현재 사용하시는 슈퍼유저 앱은 방화벽을 무시합니다. 이 문제는 AFWall+이 고칠 수 없습니다.</string>
   <string name="lockNotification">잠금화면 알림 숨기기</string>
   <string name="lockScreenNotification_summary">잠금화면에서 알림 숨기기</string>
+  <string name="menu_legend">설명</string>
+  <string name="permissiondenied_importexport">외부저장장치 읽기/쓰기 권한이 없습니다. 내보내기/가져오기를 하시라면 권한을 허가해 주세요.</string>
+  <string name="permissiondenied_asset">외부저장장치 읽기/쓰기 권한이 없습니다. AFWall+ binary를 복사하시려면 권한을 허가해 주세요. </string>
+  <string name="log_deletedapp">삭제된 앱들</string>
+  <string name="log_denied">차단됨 :</string>
+  <string name="log_times">번</string>
+  <string name="log_time">번</string>
+  <string name="log_dst">최근 인터넷 도착지 :</string>
+  <string name="log_src">최근 인터넷 출발지 :</string>
+  <string name="log_proto">최근 인터넷 프로토콜 :</string>
+  <string name="no_data_available">로깅서비스가 시작되지 않았거나 로깅데이터가 없습니다</string>
+  <string name="loading_data_title">로딩중...</string>
+  <string name="loading_data">데이타 가져오기...</string>
 </resources>

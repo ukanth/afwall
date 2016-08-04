@@ -64,8 +64,11 @@
   <string name="reading_apps">Načítání nainstalovaných aplikací</string>
   <string name="mode">Režim: </string>
   <string name="mode_header">Režim: %s</string>
+  <string name="legend_clear">Zrušit zaškrtnutí všech políček u všech sloupců</string>
   <string name="mode_whitelist">Povolit vybrané</string>
+  <string name="legend_whitelist">Vybrané aplikaci bude udělen přístup k Internetu</string>
   <string name="mode_blacklist">Blokovat vybrané</string>
+  <string name="legend_blacklist">Vybrané aplikaci bude zamítnut přístup k Internetu</string>
   <string name="set_custom_script">Vlastní skripty</string>
   <string name="preferences">Předvolby</string>
   <string name="reload">Znovu načíst aplikace</string>
@@ -193,6 +196,11 @@
   <string name="system_ipt">Systémové iptables</string>
   <string name="builtin_ipt">Vestavěné iptables</string>
   <string name="auto">Auto</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">XPosed související</string>
+  <string name="fixDownloadTitle">Oprava úniku Správce stahování</string>
+  <string name="fixDownloadTitleSummary">Toto použije xposed pro blokování aplikací stahující data pomocí věstavěného android správce stahování i aplikaci odepře přístup</string>
+  <string name="LeakDetected">Únik zjištěn</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker související</string>
   <string name="disable_toaster">Vypnout Tasker okna</string>
@@ -270,13 +278,17 @@
   <string name="unselect_all">Odznačit všechny vybrané aplikace?</string>
   <string name="check_all">Zaškrtnout vše</string>
   <string name="invert_all">Invertovat vše</string>
+  <string name="legend_invert">Převrátit zaškrtnutí všech políček u všech sloupců</string>
   <string name="uncheck_all">Odškrtnout vše</string>
   <string name="select_action">Vyberte akci na sloupci </string>
   <string name="roam">Roam</string>
+  <string name="legend_roam">Povolit pro řízení dat při různých síťových poskytovatelech (roaming) oprávnění odděleně</string>
   <string name="wifi">WiFi</string>
+  <string name="legend_wifi">Povolit pro kontrolu WiFi oprávnění</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Data</string>
+  <string name="legend_data">Povolit pro kontrolu dat (2G,3G,EDGE,LTE/4G) oprávnění</string>
   <string name="pkg_all">Vše</string>
   <string name="pkg_core">Jádro</string>
   <string name="pkg_sys">Systém</string>
@@ -345,6 +357,10 @@
   <string name="add">Přidat</string>
   <string name="showlog_toasts">Zobrazit vyskakovací oznámení v bloku</string>
   <string name="enable_show_toasts">Povolit zobrazení oken</string>
+  <string name="top">Vrchní</string>
+  <string name="center">Střed</string>
+  <string name="bottom">Spodní</string>
+  <string name="position">Pozice vyskakovacího okna</string>
   <string name="widget_prefs_title">Pozice widgetu</string>
   <string name="xTitle">Pozice X widgetu</string>
   <string name="xTitleSummary">Ruční ovládání pozice X</string>
@@ -356,4 +372,17 @@
   <string name="error_nonsupported_details">AFWall+ zjistil nepodporovanou aplikaci superuser, která je známa, že obchází pravidla firewallu. Jelikož je to superuser aplikace, AFWall+ to nemůže vyřešit.</string>
   <string name="lockNotification">Skrýt ikonu oznámení na zamčené obrazovce</string>
   <string name="lockScreenNotification_summary">Skrýt trvající oznámení na uzamykací obrazovce</string>
+  <string name="menu_legend">Legenda</string>
+  <string name="permissiondenied_importexport">Povolení zamítnuto ČTENÍ/ZÁPIS pro přístup na externí úložiště. Prosím povolte přístup pro export/import pravidla.</string>
+  <string name="permissiondenied_asset">Povolení zamítnuto ČTENÍ/ZÁPIS pro přístup na úložiště. Prosím povolte přístup pro kopírování binárních souborů pro AFWall+ </string>
+  <string name="log_deletedapp">Odstraněné aplikace</string>
+  <string name="log_denied">Zakázáno :</string>
+  <string name="log_times">krát</string>
+  <string name="log_time">krát</string>
+  <string name="log_dst">Poslední cíl :</string>
+  <string name="log_src">Poslední zdroj :</string>
+  <string name="log_proto">Poslední protokol :</string>
+  <string name="no_data_available">Prosím povolte služby protokolování nebo žádná data</string>
+  <string name="loading_data_title">Načítání...</string>
+  <string name="loading_data">Načítání dat protokolu</string>
 </resources>

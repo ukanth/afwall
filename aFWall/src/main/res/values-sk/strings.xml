@@ -64,8 +64,11 @@
   <string name="reading_apps">Načítavanie nainštalovaných aplikácií</string>
   <string name="mode">Režim: </string>
   <string name="mode_header">Režim: %s</string>
+  <string name="legend_clear">Odznačiť všetky políčka vo všetkých stĺpcoch</string>
   <string name="mode_whitelist">Povoliť vybrané</string>
+  <string name="legend_whitelist">Vybrané aplikácie budú mať prístup k internetu</string>
   <string name="mode_blacklist">Blokovať vybrané</string>
+  <string name="legend_blacklist">Vybrané aplikácie nebudú mať prístup k internetu</string>
   <string name="set_custom_script">Nastaviť vlastný skript</string>
   <string name="preferences">Nastavenia</string>
   <string name="reload">Obnoviť aplikácie</string>
@@ -171,19 +174,19 @@
   <string name="reapply_profile">Opätovné aplikovanie pravidiel profilu</string>
   <!-- Interface -->
   <string name="lan_title">Ovládanie LAN</string>
-  <string name="lan_summary">Umožní to ovládanie povolení LAN oddelene od povolení Wi-Fi</string>
+  <string name="lan_summary">Umožní ovládanie povolení LAN oddelene od povolení Wi-Fi</string>
   <string name="iptables_pref">Binárne súbory iptables</string>
   <string name="vpn_profile">Ovládanie VPN</string>
-  <string name="vpnSummary">Enable to control VPN permissions separately</string>
+  <string name="vpnSummary">Umožní ovládanie VPN povolení</string>
   <string name="roaming">Ovládanie roamingu</string>
-  <string name="roamingSummary">Enable to control internet while roaming permissions separately</string>
+  <string name="roamingSummary">Umožní ovládanie internetu počas roamingu</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: binárne súbory nainštalované</string>
-  <string name="toast_enabled">AFWall +: firewall povolený</string>
+  <string name="toast_enabled">AFWall+: firewall povolený</string>
   <string name="toast_error_enabling">AFWall+: VYSKYTLA SA CHYBA!</string>
-  <string name="toast_disabled">AFWall +: firewall ZAKÁZANÝ!</string>
+  <string name="toast_disabled">AFWall+: firewall ZAKÁZANÝ!</string>
   <string name="toast_error_disabling">AFWall+: Chyba pri zakázaní firewallu!</string>
   <!-- Binary -->
   <string name="busybox_pref">Binárne súbory BusyBox</string>
@@ -192,16 +195,21 @@
   <string name="system_ipt">Systémové iptables</string>
   <string name="builtin_ipt">Vstavané iptables</string>
   <string name="auto">Auto</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">XPosed Related</string>
+  <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
+  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="LeakDetected">Leak Detected</string>
   <!-- Tasker -->
-  <string name="tasker_prefs_title">Tasker Related</string>
-  <string name="disable_toaster">Zakázať Tasker toasty</string>
-  <string name="disableTasterSummary">Disable toast messages for Tasker\'s plugin</string>
+  <string name="tasker_prefs_title">Súvisiace s Tasker</string>
+  <string name="disable_toaster">Zakázať Tasker toast upozornenia</string>
+  <string name="disableTasterSummary">Zakázať toast správy pre Tasker zásuvný modul</string>
   <string name="enable_tasker">Povoliť AFWall+</string>
   <string name="disable_tasker">Zakázať AFWall+</string>
   <string name="tasker_apply">Tasker: aplikovanie pravidiel firewallu</string>
-  <string name="tasker_disabled">Tasker: AFWall+ DISABLED!</string>
+  <string name="tasker_disabled">Tasker: AFWall+ ZAKÁZANÝ!</string>
   <string name="tasker_profile_applied">Tasker: profil úspešne použitý</string>
-  <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
+  <string name="tasker_muliprofile">Tasker: AFWall+ viac profilov zakázané</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podpora IPv6</string>
   <string name="ipv6_summary">Zapnúť podporu pre IPv6</string>
@@ -213,18 +221,18 @@
   <string name="usePattern">Namiesto hesla použiť uzamykací vzor</string>
   <string name="stealthMode">Skrytý režim pre vzor</string>
   <string name="patternMaxTry">Maximálny počet pokusov</string>
-  <string name="resetPattern">Reset the lock pattern?</string>
+  <string name="resetPattern">Obnoviť uzamykací vzor?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Správca zariadenia</string>
   <string name="device_admin_enabled">AFWall+ správca zariadenia povolený</string>
   <string name="device_admin_disabled">AFWall+ správca zariadenia zakázaný</string>
-  <string name="device_admin_on_disable">Please go to Device Administrator settings to deactivate AFWall+</string>
+  <string name="device_admin_on_disable">Prosím, prejdite do nastavení Správcu zariadenia pre deaktiváciu AFWall+</string>
   <!-- Experimental Preferences -->
   <string name="exp_prefs_title">Experimentálne</string>
   <!-- Startup -->
   <string name="startup_service">Aplikovanie pravidiel. Prosím, počkajte.</string>
   <string name="fixleakTitle">Oprava úniku dát pri spustení</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Zabrániť úniku dát počas spúšťania systému. ROM musí mať podporu init.d alebo su.d (superSU).  HTC zariadenia musia byť nakonfigurované pre S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -234,32 +242,32 @@
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Používateľské rozhranie</string>
   <string name="log_prefs_title">Záznam</string>
-  <string name="hideicons_pref_title">Skryť ikonu aplikácie</string>
-  <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
-  <string name="hideicons_pref_summary_off">Show App icons in the main view</string>
+  <string name="hideicons_pref_title">Skryť ikony aplikácií</string>
+  <string name="hideicons_pref_summary_on">Zlepšiť výkon zakázaním ikon aplikácií v hlavnom zobrazení</string>
+  <string name="hideicons_pref_summary_off">Zobraziť ikony aplikácií v hlavnom zobrazení</string>
   <string name="notify_pref_title">Povoliť upozornenia</string>
-  <string name="syscolor_pref_title">System app color</string>
-  <string name="syscolor_pref_summary_on">Color for all system apps</string>
+  <string name="syscolor_pref_title">Farba systemovej aplikácie</string>
+  <string name="syscolor_pref_summary_on">Farba pre všetky systémové aplikácie</string>
   <string name="enableConfirmTitle">Potvrdenie zakázania AFWall+</string>
   <string name="enableConfirm_summary_on">Brána firewall bude pýtať potvrdenie pred jej zakázaním</string>
   <string name="showUid">Zobraziť UID aplikácií</string>
-  <string name="showuid_summary_on">Show app UID\'s in the main view</string>
-  <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
+  <string name="showuid_summary_on">Zobraziť UID aplikácií v hlavnom zobrazení</string>
+  <string name="showuid_summary_off">Skryť UID aplikácií v hlavnom zobrazení. Môže byť užitočné pre monitorovanie záznamov.</string>
   <string name="languages">Jazyky</string>
   <string name="misc_header">Jazyky / zásuvné moduly</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktívne pravidlá</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/wireless-data/roam/tether)</string>
+  <string name="active_rules_summary">Aplikovať pravidlá firewallu pri každej zmene pripojenia (LAN/Wi-Fi/bezdrátové dáta/roam./zdieľanie)</string>
   <string name="profile_add">Pridať profil</string>
   <string name="profile_remove">Odstrániť profil</string>
   <string name="profile_rename">Premenovať profil</string>
   <string name="Donate">Prispieť</string>
   <string name="multi_apply_rules">Aplikovať pravidlá pri prepnutí profilov</string>
-  <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
-  <string name="multi_user_title">Povoliť podporu viacerých užívateľov</string>
-  <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
-  <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
-  <string name="traffic_detail_title">Traffic details</string>
+  <string name="multi_apply_rules_info">Načítať a aplikovať pravidlá pri prepínaní profilov</string>
+  <string name="multi_user_title">Povoliť podporu viacerých používateľov</string>
+  <string name="multi_user_summary">Podpora viacerých používateľov Androidu (funguje iba v režime, kde označené položky sú blokované)</string>
+  <string name="device_admin_desc">Dodatočné zabezpečenie - zabrániť odinštalovaniu AFWall+</string>
+  <string name="traffic_detail_title">Detaily prevádzky</string>
   <string name="uploaded">Nahrané</string>
   <string name="downloaded">Stiahnuté</string>
   <string name="app_system_detail">Otvoriť detaily systému</string>
@@ -269,25 +277,29 @@
   <string name="unselect_all">Odznačiť všetky vybrané aplikácie?</string>
   <string name="check_all">Označiť všetko</string>
   <string name="invert_all">Invertovať všetko</string>
+  <string name="legend_invert">Zmeniť všetky políčka vo všetkých stĺpcoch</string>
   <string name="uncheck_all">Odznačiť všetko</string>
   <string name="select_action">Vybrať akciu na stĺpec </string>
   <string name="roam">Roam</string>
+  <string name="legend_roam">Umožní ovládanie povolení pri rôznych sieťových poskytovateľoch (roaming)</string>
   <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Umožní ovládanie povolení Wi-Fi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Dáta</string>
+  <string name="legend_data">Umožní ovládanie povolení prenosu dát (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Všetko</string>
   <string name="pkg_core">Jadro</string>
   <string name="pkg_sys">Systém</string>
   <string name="pkg_user">Používateľ</string>
   <string name="backup_notexist">Neexistuje žiadna záloha. Exportujte z menu.</string>
   <string name="showFilter">Zobraziť filtre</string>
-  <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
-  <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
+  <string name="showfilter_summary_on">Filtre (Všetky/Jadro/Systém/Používateľ) sú zobrazené v hlavnom zobrazení</string>
+  <string name="showfilter_summary_off">Filtre (Všetky/Jadro/Systém/Používateľ) sú skryté v hlavnom zobrazení</string>
   <string name="enable_dns">Povoliť DNS pomocou netd</string>
   <string name="disable_dns">Zakázať DNS pomocou netd</string>
   <string name="dns_proxy_title">DNS proxy </string>
-  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
+  <string name="dns_proxy_summary">DNS dotazy sú cez netd na Android 4.3 a novšie. Vypnutie zablokuje internet na týchto zariadeniach.</string>
   <string name="tasker_lable">AFWall+ Tasker zásuvný modul</string>
   <string name="enable">Povoliť</string>
   <string name="disable">Zakázať</string>
@@ -306,7 +318,7 @@
   <string name="donate_thanks">Ďakujeme za vašu podporu!</string>
   <string name="activeNotification">Zobraziť ikonu upozornenia</string>
   <string name="activeNotification_summary">Trvalá ikona na paneli upozornení</string>
-  <string name="active">Firewall running</string>
+  <string name="active">Firewall je spustený</string>
   <string name="inactive">Firewall zakázaný</string>
   <string name="About">O aplikácii</string>
   <string name="FAQ">FAQ</string>
@@ -339,11 +351,15 @@
   <string name="manage_profiles_summary">Pridať alebo odstrániť profily</string>
   <string name="profiles">Profil </string>
   <string name="migrate_profiles">Migrovať profily</string>
-  <string name="migrate_summary">Migrate all additional profile data from version 1.x to 2.x</string>
+  <string name="migrate_summary">Migrovať všetky dáta profilov z verzie 1.x do 2.x</string>
   <string name="insert_profile">Názov profilu</string>
   <string name="add">Pridať</string>
-  <string name="showlog_toasts">Show toast notification on block</string>
+  <string name="showlog_toasts">Zobraziť toast upozornenia pri blokovaní</string>
   <string name="enable_show_toasts">Povoliť zobrazenie toast upozornení</string>
+  <string name="top">Hore</string>
+  <string name="center">V strede</string>
+  <string name="bottom">Dole</string>
+  <string name="position">Pozícia toast upozornenia</string>
   <string name="widget_prefs_title">Pozície miniaplikácií</string>
   <string name="xTitle">Pozícia X</string>
   <string name="xTitleSummary">Manuálne prepísať pozíciu X</string>
@@ -353,6 +369,19 @@
   <string name="yTitleDialog">Nastavte pozíciu Y (číslo)</string>
   <string name="error_nonsupported">King Root zistený!</string>
   <string name="error_nonsupported_details">AFWall+ zistil nepodporovanú superuser aplikáciu, ktorá je známa obchádzaním pravidiel firewallu. Keďže je to superuser aplikácia, AFWall+ nemôže túto chybu napraviť.</string>
-  <string name="lockNotification">Hide lockscreen notification icon</string>
-  <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
+  <string name="lockNotification">Skryť ikonu upozornenia na obrazovke uzamknutia</string>
+  <string name="lockScreenNotification_summary">Skryť upozornenie na obrazovke uzamknutia</string>
+  <string name="menu_legend">Legends</string>
+  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
+  <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
+  <string name="log_deletedapp">Odstránená aplikácia</string>
+  <string name="log_denied">Odmietnuté:</string>
+  <string name="log_times">krát</string>
+  <string name="log_time">krát</string>
+  <string name="log_dst">Posledný cieľ:</string>
+  <string name="log_src">Posledný zdroj:</string>
+  <string name="log_proto">Posledný protokol:</string>
+  <string name="no_data_available">Please enable log service or no data</string>
+  <string name="loading_data_title">Načítavanie...</string>
+  <string name="loading_data">Načítavajú sa údaje záznamu</string>
 </resources>

@@ -25,7 +25,7 @@
   <string name="error_apply">Fehler beim Anwenden der IPTables-Regeln</string>
   <string name="error_fetch">Fehler beim Abrufen der IPTables-Regeln</string>
   <string name="error_su">Es ist kein Root-Zugriff möglich.\nUm AFWall+ nutzen zu können, benötigen Sie ein gerootetes Gerät.\n\nWenn das Gerät bereits gerootet ist, stellen Sie bitte sicher, dass AFWall+ Superuser-Rechte gewährt werden.\n.</string>
-  <string name="error_netfilter">Unterstützung für IPTables-Ziele und -Ketten konnte nicht gefunden.\nAFWall+ kann aufgrund dieser Einschränkung möglicherweise nicht erwartungsgemäß funktionieren.</string>
+  <string name="error_netfilter">IPTables-Ziele und -Ketten werden nicht unterstützt.\nAFWall+ funktioniert aufgrund dieser Einschränkung möglicherweise nicht wie erwartet.</string>
   <string name="error_common">Fehler: </string>
   <string name="all_item">(Jede App) - entspricht dem Markieren aller Apps</string>
   <string name="kernel_item">(Kernel) - Linux Kernel</string>
@@ -64,8 +64,11 @@
   <string name="reading_apps">Installierte Apps werden eingelesen</string>
   <string name="mode">Modus: </string>
   <string name="mode_header">Modus: %s</string>
+  <string name="legend_clear">Alle Kontrollkästchen für alle Spalten entfernen</string>
   <string name="mode_whitelist">Auswahl erlauben</string>
+  <string name="legend_whitelist">Ausgewählte Apps erhalten Zugriff auf das internet</string>
   <string name="mode_blacklist">Auswahl blockieren</string>
+  <string name="legend_blacklist">Ausgewählte Apps erhalten keinen Zugriff auf das internet</string>
   <string name="set_custom_script">Skript festlegen</string>
   <string name="preferences">Einstellungen</string>
   <string name="reload">Apps erneut laden</string>
@@ -192,6 +195,11 @@
   <string name="system_ipt">System-IPTables</string>
   <string name="builtin_ipt">Integrierte IPTables</string>
   <string name="auto">Auto</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">Von XPosed abhängig</string>
+  <string name="fixDownloadTitle">DownloadManager-Leck beheben</string>
+  <string name="fixDownloadTitleSummary">Es wird Xposed verwendet, um Apps, denen die Internetzugangsberechtigung verweigert wurde, daran zu hindern, trotzdem Daten über den in Android integrierten Download-Manager herunterzuladen.</string>
+  <string name="LeakDetected">Leck erkannt</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker</string>
   <string name="disable_toaster">Tasker-Meldungen ausschalten</string>
@@ -269,13 +277,17 @@
   <string name="unselect_all">Auswahl der gewählten Apps aufheben?</string>
   <string name="check_all">Alle auswählen</string>
   <string name="invert_all">Auswahl umkehren</string>
+  <string name="legend_invert">Alle Kontrollkästchen für alle Spalten umkehren</string>
   <string name="uncheck_all">Alle abwählen</string>
   <string name="select_action">Markierungen in Spalte </string>
   <string name="roam">Roaming</string>
+  <string name="legend_roam">Aktivieren, um Berechtigungen bei Datenverbindung mit fremdem Provider (Roaming) separat zu kontrollieren</string>
   <string name="wifi">WLAN</string>
+  <string name="legend_wifi">Aktivieren, um Datenübertragungsrechte im WLAN-Netz zu kontrollieren</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Daten</string>
+  <string name="legend_data">Aktivieren, um Datenübertragungsrechte im Mobilfunknetz zu kontrollieren</string>
   <string name="pkg_all">Alle</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">System</string>
@@ -344,6 +356,10 @@
   <string name="add">Hinzufügen</string>
   <string name="showlog_toasts">Bei Blockade wird eine Popup-Benachrichtigung eingeblendet</string>
   <string name="enable_show_toasts">Meldungen einblenden</string>
+  <string name="top">Oben</string>
+  <string name="center">Mittig</string>
+  <string name="bottom">Unten</string>
+  <string name="position">Toast-Position</string>
   <string name="widget_prefs_title">Widget positionieren</string>
   <string name="xTitle">Horizontale Widget-Position</string>
   <string name="xTitleSummary">Manuelles Festlegen der Widget-Position entlang der X-Achse</string>
@@ -355,4 +371,17 @@
   <string name="error_nonsupported_details">AFWall+ erkannte eine nicht unterstützte Superuser-App, die Firewall-Regeln übergeht. Da es eine Superuser-App ist, kann AFWall+ dieses Problem nicht beheben.</string>
   <string name="lockNotification">Sperrbildschirm-Benachrichtigungen-Symbol ausblenden</string>
   <string name="lockScreenNotification_summary">Permanente Benachrichtigung auf Sperrbildschirm ausblenden</string>
+  <string name="menu_legend">Legende</string>
+  <string name="permissiondenied_importexport">AFWall+ hat keine Berechtigung, lesend/schreibend auf den Speicher zuzugreifen. Bitte erlauben Sie den Zugriff, damit Regeln exportiert/importiert werden können. </string>
+  <string name="permissiondenied_asset">AFWall+ hat keine Berechtigung, lesend/schreibend auf den Speicher zuzugreifen. Bitte erlauben Sie den Zugriff, damit Binärdateien für AFWall+ kopiert werden können. </string>
+  <string name="log_deletedapp">Gelöschte Anwendung</string>
+  <string name="log_denied">Verweigert:</string>
+  <string name="log_times">-mal</string>
+  <string name="log_time">-mal</string>
+  <string name="log_dst">Letztes Ziel:</string>
+  <string name="log_src">Letzte Quelle:</string>
+  <string name="log_proto">Letztes Protokoll:</string>
+  <string name="no_data_available">Bitte aktivieren Sie den Protokolldienst oder keine Daten</string>
+  <string name="loading_data_title">Wird geladen...</string>
+  <string name="loading_data">Protokoll wird abgerufen ...</string>
 </resources>

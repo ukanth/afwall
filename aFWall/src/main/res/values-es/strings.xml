@@ -64,8 +64,11 @@
   <string name="reading_apps">Recuperando aplicaciones instaladas</string>
   <string name="mode">Modo: </string>
   <string name="mode_header">Modo: %s</string>
+  <string name="legend_clear">Clear All checkboxes on all columns</string>
   <string name="mode_whitelist">Permitir seleccionados</string>
+  <string name="legend_whitelist">Selected apps will be granted to access internet</string>
   <string name="mode_blacklist">Bloquear seleccionados</string>
+  <string name="legend_blacklist">Selected apps will be denied to access internet</string>
   <string name="set_custom_script">Establecer script personalizado</string>
   <string name="preferences">Preferencias</string>
   <string name="reload">Recargar aplicaciones</string>
@@ -192,6 +195,11 @@
   <string name="system_ipt">Sistema iptables</string>
   <string name="builtin_ipt">Built-in iptables</string>
   <string name="auto">Automático</string>
+  <!-- XPOSED -->
+  <string name="XPosed_prefs_title">XPosed Related</string>
+  <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
+  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="LeakDetected">Leak Detected</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker Related</string>
   <string name="disable_toaster">Disable Tasker toasts</string>
@@ -269,13 +277,17 @@
   <string name="unselect_all">Limpiar/desmarcar todas las aplicaciones seleccionadas?</string>
   <string name="check_all">Seleccionar todo</string>
   <string name="invert_all">Invert all</string>
+  <string name="legend_invert">Invert all checkboxes on all columns</string>
   <string name="uncheck_all">Uncheck all</string>
   <string name="select_action">Selecciona acción en la columna </string>
   <string name="roam">Itinerancia</string>
+  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
   <string name="wifi">WiFi</string>
+  <string name="legend_wifi">Enable to control Wifi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Datos</string>
+  <string name="legend_data">Enable to control data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Todo</string>
   <string name="pkg_core">Núcleo</string>
   <string name="pkg_sys">Sistema</string>
@@ -344,6 +356,10 @@
   <string name="add">Agregar</string>
   <string name="showlog_toasts">Show toast notification on block</string>
   <string name="enable_show_toasts">Enable show toasts</string>
+  <string name="top">Top</string>
+  <string name="center">Center</string>
+  <string name="bottom">Bottom</string>
+  <string name="position">Toasts Position</string>
   <string name="widget_prefs_title">Widget positions</string>
   <string name="xTitle">Widget X position</string>
   <string name="xTitleSummary">Manual override X position</string>
@@ -355,4 +371,17 @@
   <string name="error_nonsupported_details">AFWall+ ha detectado una aplicación de super usuario no soportada, que es conocida por saltar las reglas del cortafuegos. Debido a que es una aplicación de super usuario, AFWall+ no puede solucionar esto.</string>
   <string name="lockNotification">Ocultar ícono de notificación en pantalla de bloqueo</string>
   <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
+  <string name="menu_legend">Legends</string>
+  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
+  <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
+  <string name="log_deletedapp">Deleted Application</string>
+  <string name="log_denied">Denied :</string>
+  <string name="log_times">times</string>
+  <string name="log_time">time</string>
+  <string name="log_dst">Last Destination :</string>
+  <string name="log_src">Last Source :</string>
+  <string name="log_proto">Last Protocol :</string>
+  <string name="no_data_available">Please enable log service or no data</string>
+  <string name="loading_data_title">Loading...</string>
+  <string name="loading_data">Retrieving log data</string>
 </resources>
