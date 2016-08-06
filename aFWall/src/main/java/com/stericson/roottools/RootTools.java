@@ -579,6 +579,13 @@ public final class RootTools {
         return RootShell.isBusyboxAvailable();
     }
 
+    /**
+     * @return <code>true</code> if Toybox was found.
+     */
+    public static boolean isToyboxAvailable() {
+        return RootShell.isToyboxAvailable();
+    }
+
     public static boolean isNativeToolsReady(int nativeToolsId, Context context) {
         return getInternals().isNativeToolsReady(nativeToolsId, context);
     }

@@ -390,6 +390,10 @@ public class RootShell {
         return (findBinary("busybox")).size() > 0;
     }
 
+    public static boolean isToyboxAvailable() {
+        return (findBinary("toybox")).size() > 0;
+    }
+
     /**
      * @return <code>true</code> if su was found.
      */

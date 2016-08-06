@@ -333,11 +333,20 @@ public final class Api {
 
 		Api.bbPath = getBusyBoxPath(ctx,true);
 	}
-	
+
+
+	/**
+	 * Determine toybox/busybox or built in
+	 * @param ctx
+	 * @param considerSystem
+	 * @return
+     */
 	public static String getBusyBoxPath(Context ctx,boolean considerSystem) {
 
 		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable() && considerSystem) {
 			return "busybox ";
+		} else if( RootTools.isToyboxAvailable()) {
+			return "toybox ";
 		} else {
             String dir = ctx.getDir("bin",0).getAbsolutePath();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
@@ -2659,7 +2668,7 @@ public final class Api {
         return decryptStr;
     }
 	
-	public static void killLogProcess(final Context ctx,final String klogPath){
+	/*public static void killLogProcess(final Context ctx,final String klogPath){
 		Thread thread = new Thread(){
 		    @Override
 		    public void run() {
@@ -2680,7 +2689,7 @@ public final class Api {
 		    }
 		};
 		thread.start();
-	}
+	}*/
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
     	boolean hasMobileData = true;

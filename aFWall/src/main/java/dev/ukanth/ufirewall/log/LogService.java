@@ -34,6 +34,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.stericson.roottools.RootTools;
+
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
@@ -153,7 +155,13 @@ public class LogService extends Service {
 		if(G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty()) {
 			switch(G.logTarget()) {
 				case "LOG":
-					logPath = "while true; do dmesg -c ; sleep 1 ; done";
+					if(RootTools.isBusyboxAvailable()) {
+						logPath = "while true; do busybox dmesg -c ; sleep 1 ; done";
+					} else if ( RootTools.isToyboxAvailable()) {
+						logPath = "while true; do toybox dmesg -c ; sleep 1 ; done";
+					} else {
+						logPath = "while true; do dmesg -c ; sleep 1 ; done";
+					}
 					break;
 				case "NFLOG":
 					logPath = Api.getNflogPath(getApplicationContext());
