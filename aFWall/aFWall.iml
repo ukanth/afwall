@@ -81,10 +81,11 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/24.1.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/24.1.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/24.1.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.Raizlabs.DBFlow/dbflow/3.0.1/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.github.Raizlabs.DBFlow/dbflow/3.1.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/eu.chainfire/libsuperuser/1.0.0.201607041850/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/me.zhanghai.android.materialprogressbar/library/1.1.7/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/org.bitbucket.ukanth/android-lockpattern/7.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/org.bitbucket.haibison/underdogs/3.1.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/org.bitbucket.ukanth/android-lockpattern/8.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/instant-run-support" />
@@ -105,18 +106,19 @@
     <orderEntry type="library" exported="" name="support-v4-24.1.0" level="project" />
     <orderEntry type="library" exported="" name="core-0.8.6.2" level="project" />
     <orderEntry type="library" exported="" name="libsuperuser-1.0.0.201607041850" level="project" />
+    <orderEntry type="library" exported="" name="android-lockpattern-8.0.1" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-24.1.0" level="project" />
     <orderEntry type="library" exported="" name="prettytime-4.0.1.Final" level="project" />
-    <orderEntry type="library" exported="" name="dbflow-core-3.0.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-24.1.0" level="project" />
     <orderEntry type="library" exported="" name="api-82" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-24.1.0" level="project" />
+    <orderEntry type="library" exported="" name="dbflow-core-3.1.1" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-24.1.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-24.1.0" level="project" />
     <orderEntry type="library" exported="" name="design-23.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-24.1.1" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-23.2.1" level="project" />
-    <orderEntry type="library" exported="" name="android-lockpattern-7.0.0" level="project" />
+    <orderEntry type="library" exported="" name="dbflow-3.1.1" level="project" />
     <orderEntry type="library" exported="" name="library-1.1.7" level="project" />
-    <orderEntry type="library" exported="" name="dbflow-3.0.1" level="project" />
+    <orderEntry type="library" exported="" name="underdogs-3.1.0" level="project" />
   </component>
 </module>

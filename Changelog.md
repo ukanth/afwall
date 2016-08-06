@@ -1,20 +1,33 @@
 Changelog AFWall+
 ==================
 
-Version 2.2.4-BETA2
-* Feature-Fix Download Manager Leak using XPosed module
-* Feature- Added "Webview" to Application List
-* Feature-Added lockscreen hide notification option
-* Feature-Position for log notification
-* Bug:sometimes everything is blocked
-* Bug:replaces logic for logservice/Widget bugs
-* Added Legends
-* Attempt to fix kingroot issue
-* Minor UI fixes for preferences and firewall mode
-* Updated support libraries
-* Improved init.d for IPv6 - Thanks to F-i-f
-* Updated Translations and cleanup - Huge thanks for Gitoffthelawn
+Version 2.5.0-BETA
 
+* Features
+    - XPosed module - Download manager Leak with notification
+    - New Log UI with History
+    - Webview filter(applist)
+    - Hide lockscreen notification
+    - Log Toast position
+    - Toybox support(system level)
+* Bugs
+    - su leak issues
+    - Random block issue
+    - toast related crashes
+    - All Log related issues/Removed klogripper
+    - Widget crashes,bug in app lock
+    - Rules export issue
+    - Kingroot issue
+    - Improved init.d/su.d related bugs
+* UI
+    - Rearrange preferences
+    - Added legends
+    - Firewall mode
+    - Helper notification on preference change
+* Misc
+    - Updated support libraries
+    - Updated Translations and cleanup - Huge thanks for Gitoffthelawn
+* Thanks to F-i-f,Gitoffthelawn
 
 Version 2.2.3
 * Allow kingroot users to continue with warning message until I find proper solution for kingroot problem.
