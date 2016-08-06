@@ -376,8 +376,8 @@
   <string name="permissiondenied_asset">AFWall+ hat keine Berechtigung, lesend/schreibend auf den Speicher zuzugreifen. Bitte erlauben Sie den Zugriff, damit Binärdateien für AFWall+ kopiert werden können. </string>
   <string name="log_deletedapp">Gelöschte Anwendung</string>
   <string name="log_denied">Verweigert:</string>
-  <string name="log_times">-mal</string>
-  <string name="log_time">-mal</string>
+  <string name="log_times">Mal</string>
+  <string name="log_time">Mal</string>
   <string name="log_dst">Letztes Ziel:</string>
   <string name="log_src">Letzte Quelle:</string>
   <string name="log_proto">Letztes Protokoll:</string>
