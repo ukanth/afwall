@@ -10,7 +10,6 @@
     <PreferenceCategory android:title="@string/exp_prefs_title" >
         <CheckBoxPreference
             android:key="enableLogService"
-            android:summary="@string/showlog_service_summary"
             android:title="@string/enable_firewall_log_service" />
 
         <CheckBoxPreference
