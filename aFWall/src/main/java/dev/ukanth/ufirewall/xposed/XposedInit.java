@@ -18,7 +18,6 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.preferences.SharePreference;
 
 import static de.robv.android.xposed.XposedHelpers.callMethod;
@@ -92,7 +91,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             }
 
             if (prefs == null) {
-                prefs = new XSharedPreferences(MainActivity.class.getPackage().getName());
+                prefs = new XSharedPreferences(MY_APP);
                 prefs.makeWorldReadable();
                 prefs.reload();
                 if (prefs.getBoolean("enableMultiProfile", false)) {
@@ -104,7 +103,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 prefs.reload();
             }
             if (pPrefs == null) {
-                pPrefs =  new SharePreference(context,MainActivity.class.getPackage().getName(),Api.PREFS_NAME);
+                pPrefs =  new SharePreference(context,MY_APP,Api.PREFS_NAME);
                 Log.d(TAG,"Loaded pPrefs from AFWall");
             }
             Log.d(TAG,"Reloaded preferences from AFWall");
@@ -201,7 +200,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(),"AFWall+ denied access to Download Manager for application : " + applicationInfo.uid,Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity().getApplicationContext(),"AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")" ,Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
