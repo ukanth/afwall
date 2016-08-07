@@ -1,3 +1,4 @@
+# Convert exported crowdin files to android format
 for d in */ ; do
    while read line           
 	do
@@ -9,3 +10,6 @@ for d in */ ; do
 		fi
 	done < convert.properties
 done
+#delete Playstore.txt files
+find . -name "Playstore.txt" -print0 | xargs -0 rm -rf
+
