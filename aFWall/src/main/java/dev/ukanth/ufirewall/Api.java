@@ -1596,7 +1596,7 @@ public final class Api {
 		}
 		
 		if(G.activeNotification()) {
-			Api.showNotification(Api.isEnabled(ctx),ctx);
+			showNotification(Api.isEnabled(ctx),ctx);
 		}
 		
 		/* notify */
