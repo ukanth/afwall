@@ -3,7 +3,12 @@ package dev.ukanth.ufirewall.preferences;
 /**
  * Created by ukanth on 19/7/16.
  */
-import android.content.*;
+
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -13,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import dev.ukanth.ufirewall.BuildConfig;
 
 /**
  * Exposes {@link SharedPreferences} to other apps running on the device.
@@ -33,6 +40,8 @@ public abstract class SharePreferenceProvider extends ContentProvider implements
     private static final int PREFERENCES_ID = 1;
     private static final int PREFERENCE_ID = 2;
 
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID;
+
     private final Uri mBaseUri;
     private final String[] mPrefNames;
     private final Map<String, SharedPreferences> mPreferences;
@@ -45,16 +54,15 @@ public abstract class SharePreferenceProvider extends ContentProvider implements
      * file. Only the specified preference files will be accessible
      * through the provider.
      *
-     * @param authority The authority of the provider.
      * @param prefNames The names of the preference files to expose.
      */
-    public SharePreferenceProvider(String authority, String[] prefNames) {
-        mBaseUri = Uri.parse("content://" + authority);
+    public SharePreferenceProvider(String[] prefNames) {
+        mBaseUri = Uri.parse("content://" + AUTHORITY);
         mPrefNames = prefNames;
         mPreferences = new HashMap<String, SharedPreferences>(prefNames.length);
         mUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        mUriMatcher.addURI(authority, "*/", PREFERENCES_ID);
-        mUriMatcher.addURI(authority, "*/*", PREFERENCE_ID);
+        mUriMatcher.addURI(AUTHORITY, "*/", PREFERENCES_ID);
+        mUriMatcher.addURI(AUTHORITY, "*/*", PREFERENCE_ID);
     }
 
     @Override

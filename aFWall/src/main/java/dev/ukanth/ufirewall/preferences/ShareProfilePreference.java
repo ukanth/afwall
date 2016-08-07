@@ -7,6 +7,6 @@ import dev.ukanth.ufirewall.Api;
  */
 public class ShareProfilePreference extends SharePreferenceProvider {
     public ShareProfilePreference() {
-        super("dev.ukanth.ufirewall", new String[] {Api.PREFS_NAME});
+        super(new String[] {Api.PREFS_NAME});
     }
 }

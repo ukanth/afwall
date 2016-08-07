@@ -2,17 +2,12 @@ package dev.ukanth.ufirewall.xposed;
 
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.util.List;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -22,8 +17,8 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.MainActivity;
-import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.preferences.SharePreference;
 
 import static de.robv.android.xposed.XposedHelpers.callMethod;
@@ -36,14 +31,13 @@ import static de.robv.android.xposed.XposedHelpers.findClass;
  */
 public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
-    public static final String MY_PACKAGE_NAME = MainActivity.class.getPackage().getName();
+    public static final String MY_APP = BuildConfig.APPLICATION_ID;
 
     public static String MODULE_PATH = null;
     public static final String TAG = "AFWallXPosed";
     private static Context context;
     private XSharedPreferences prefs;
     private SharedPreferences pPrefs;
-    List<String> cmds;
     private String profileName = Api.PREFS_NAME;
 
     public Activity getActivity() {
@@ -59,7 +53,9 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         try {
-            if(loadPackageParam.packageName.equals(MY_PACKAGE_NAME)) {
+            //Log.i(TAG,"Looking for AFWall: " +  loadPackageParam.packageName);
+            if(loadPackageParam.packageName.equals(MY_APP)) {
+                Log.i(TAG,"Matched Package and now hooking: " +  loadPackageParam.packageName);
                 reloadPreference();
                 interceptAFWall(loadPackageParam);
             }
@@ -154,7 +150,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         }
     }*/
 
-    private void showNotification(Context context,String notificationText){
+    /*private void showNotification(Context context,String notificationText){
         try {
 
             final int ID_NOTIFICATION = 43345;
@@ -177,7 +173,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             //Toast.makeText(context,notificationText,Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }*/
 
 
     private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) throws NoSuchMethodException {
@@ -187,22 +183,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         Class<?> downloadManagerRequest = findClass("android.app.DownloadManager.Request", loadPackageParam.classLoader);
 
         XC_MethodHook dmSingleResult = new XC_MethodHook() {
-
-            /*@Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                reloadPreference();
-                final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
-                Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
-                if (isXposedEnabled) {
-                    final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
-                    Log.i(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
-                    if (!isAppAllowed) {
-                        //showNotification(context,"Package: " + pPrefs.getString("cache.label." + applicationInfo.packageName,applicationInfo.packageName) + " trying to use download manager has been blocked successfully");
-                        DownloadManager.Request request = (DownloadManager.Request) param.args[0];
-                        request.setDestinationUri(Uri.fromFile(new File("dummy.txt")));
-                    }
-                }
-            }*/
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -357,6 +337,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         MODULE_PATH = startupParam.modulePath;
-        Log.d(TAG, "MyPackage: " + MY_PACKAGE_NAME);
+        Log.d(TAG, "MyPackage: " + MY_APP);
     }
 }

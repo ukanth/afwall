@@ -1,7 +1,5 @@
 package dev.ukanth.ufirewall.ui.about;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,6 +12,7 @@ import android.widget.TextView;
 import java.io.IOException;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 
@@ -31,18 +30,11 @@ public class AboutFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		PackageInfo pInfo = null;
-		String version = "";
-		try {
-			pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-		} catch (NameNotFoundException e) {
-			Log.e(Api.TAG, "Package not found", e);
-		}
-		version = pInfo.versionName;
-		
+		String version = BuildConfig.VERSION_NAME;
+
 		TextView text = (TextView) getActivity().findViewById(R.id.afwall_title);
 		String versionText = getString(R.string.app_name) + " (v" + version + ")";
-		if(G.isDo(getActivity().getApplicationContext()) || Api.getCurrentPackage(getActivity().getApplicationContext()).equals("dev.ukanth.ufirewall.donate")) {
+		if(G.isDo(getActivity().getApplicationContext()) || BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate")) {
 			versionText = versionText + " (Donate) " +  getActivity().getString(R.string.donate_thanks)+  ":)";
 		}
 		text.setText(versionText);

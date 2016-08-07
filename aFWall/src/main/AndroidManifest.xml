@@ -296,9 +296,11 @@
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:resource="@dimen/app_minimumsize_h" />
 
         <provider
-            android:authorities="dev.ukanth.ufirewall"
+            android:authorities="${applicationId}"
             android:name="dev.ukanth.ufirewall.preferences.ShareProfilePreference"
-            android:exported="true"/>
+            android:exported="true">
+            <!--<grant-uri-permission android:pathPattern=".*" />-->
+        </provider>
     </application>
 
 </manifest>
