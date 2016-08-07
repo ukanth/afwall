@@ -11,7 +11,7 @@
   <string name="title_disabled">AFWall+ (DISABLED)</string>
   <string name="whitelist_array_item">Allow selected</string>
   <string name="blacklist_array_item">Block selected</string>
-  <string name="showrules">Show rules</string>
+  <string name="showrules">Amosar regles</string>
   <string name="applyrules">Aplicar</string>
   <string name="saverules">Guardar</string>
   <string name="setpwd">Afitar contraseña</string>
@@ -64,11 +64,11 @@
   <string name="reading_apps">Retrieving installed apps</string>
   <string name="mode">Mou: </string>
   <string name="mode_header">Mou: %s</string>
-  <string name="legend_clear">Clear All checkboxes on all columns</string>
+  <string name="legend_clear">Llimpia toles caxelles de toles columnes</string>
   <string name="mode_whitelist">Allow selected</string>
-  <string name="legend_whitelist">Selected apps will be granted to access internet</string>
+  <string name="legend_whitelist">Les apps esbillaes concederáse-yos l\'accesu a internet</string>
   <string name="mode_blacklist">Block selected</string>
-  <string name="legend_blacklist">Selected apps will be denied to access internet</string>
+  <string name="legend_blacklist">Les apps esbillaes ñegaráse-yos l\'accesu a internet</string>
   <string name="set_custom_script">Afitar script personalizáu</string>
   <string name="preferences">Preferencies</string>
   <string name="reload">Reload apps</string>
@@ -85,7 +85,7 @@
   <string name="custom_script2_info">    	\n<b>Script d\'apagáu personalizáu</b>    	\nPues tamién definir un script personalizáu que s\'execute cuando\'l tonafuéu tea <b>deshabilitáu</b>:</string>
   <string name="unsaved_changes">Camudancies ensin guardar</string>
   <string name="unsaved_changes_message">Tienes camudancies ensin guardar.\n¿Quies aplicales o descartales?</string>
-  <string name="showrules_title">Iptables rules</string>
+  <string name="showrules_title">Regles d\'Iptables</string>
   <string name="copy">Copiar</string>
   <string name="copied">Copiáu</string>
   <string name="Search">Guetar</string>
@@ -144,7 +144,7 @@
   <string name="log_was_enabled">Habilitóse\'l rexistru</string>
   <string name="log_was_disabled">Deshabilitóse\'l rexistru</string>
   <string name="log_toggle_failed">Fallu alternando l\'estáu del rexistru</string>
-  <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
+  <string name="log_target_failed">Fallu: Al kernel fálta-y sofitu de LOG/NFLOG</string>
   <string name="log_cleared">Rexistru llimpiáu</string>
   <string name="log_clear_error">Fallu llimpiando\'l rexistru</string>
   <string name="log_fetch_error">Fallu diendo en cata\'l rexistru</string>
@@ -199,7 +199,7 @@
   <string name="XPosed_prefs_title">XPosed Related</string>
   <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
   <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
-  <string name="LeakDetected">Leak Detected</string>
+  <string name="LeakDetected">Deteutóse escape</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker Related</string>
   <string name="disable_toaster">Deshabilitar avisos emerxentes</string>
@@ -277,7 +277,7 @@
   <string name="unselect_all">Clear all the selected apps?</string>
   <string name="check_all">Conseñar too</string>
   <string name="invert_all">Invertir too</string>
-  <string name="legend_invert">Invert all checkboxes on all columns</string>
+  <string name="legend_invert">Invierte toles caxelles de toles columnes</string>
   <string name="uncheck_all">Nun conseñar nada</string>
   <string name="select_action">Esbilla l\'aición na columna </string>
   <string name="roam">Roaming</string>
@@ -352,13 +352,13 @@
   <string name="profiles">Perfil </string>
   <string name="migrate_profiles">Migrate profiles</string>
   <string name="migrate_summary">Migra tolos datos de perfil adicionales dende la versión 1.x a la 2.X</string>
-  <string name="insert_profile">Profile name</string>
+  <string name="insert_profile">Nome de perfil</string>
   <string name="add">Amestar</string>
   <string name="showlog_toasts">Show toast notification on block</string>
   <string name="enable_show_toasts">Enable show toasts</string>
-  <string name="top">Top</string>
-  <string name="center">Center</string>
-  <string name="bottom">Bottom</string>
+  <string name="top">Cimero</string>
+  <string name="center">Centru</string>
+  <string name="bottom">Baxero</string>
   <string name="position">Toasts Position</string>
   <string name="widget_prefs_title">Posiciones de widget</string>
   <string name="xTitle">Posición X de widget</string>
@@ -371,7 +371,7 @@
   <string name="error_nonsupported_details">AFWall+ deteutó una aplicación de susperusuariu non sofitada que ye conocida por saltase les regles del tornafuéu. Darréu que ye una aplicación de superusuariu, AFWall+ nun pue iguar esti problema.</string>
   <string name="lockNotification">Hide lockscreen notification icon</string>
   <string name="lockScreenNotification_summary">Anubre l\'avisu entrante na pantalla de bloquéu</string>
-  <string name="menu_legend">Legends</string>
+  <string name="menu_legend">Lleendes</string>
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
   <string name="log_deletedapp">Deleted Application</string>
@@ -381,7 +381,7 @@
   <string name="log_dst">Last Destination :</string>
   <string name="log_src">Last Source :</string>
   <string name="log_proto">Last Protocol :</string>
-  <string name="no_data_available">Please enable log service or no data</string>
-  <string name="loading_data_title">Loading...</string>
+  <string name="no_data_available">Habilita\'l serviciu de rexistru o nun habrá datos, por favor</string>
+  <string name="loading_data_title">Cargando...</string>
   <string name="loading_data">Retrieving log data</string>
 </resources>

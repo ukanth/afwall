@@ -64,11 +64,11 @@
   <string name="reading_apps">檢查安裝的應用程式</string>
   <string name="mode">模式：</string>
   <string name="mode_header">模式：%s</string>
-  <string name="legend_clear">Clear All checkboxes on all columns</string>
+  <string name="legend_clear">清空全部選擇</string>
   <string name="mode_whitelist">允許所選</string>
-  <string name="legend_whitelist">Selected apps will be granted to access internet</string>
+  <string name="legend_whitelist">授予選取程式的瀏覽網路權限</string>
   <string name="mode_blacklist">阻擋所選</string>
-  <string name="legend_blacklist">Selected apps will be denied to access internet</string>
+  <string name="legend_blacklist">封鎖選取程式的瀏覽網路權限</string>
   <string name="set_custom_script">設定自定義腳本</string>
   <string name="preferences">優先選項</string>
   <string name="reload">重新載入應用程式</string>
@@ -108,9 +108,9 @@
   <string name="error_notification_ticker">AFWall+ 無法套用規則</string>
   <!-- Advanced Settings -->
   <!-- init.d -->
-  <string name="success_initd">Startup script installed</string>
+  <string name="success_initd">啟動腳本已安裝</string>
   <string name="unable_initd">無法安裝 AFWall+ 啟動腳本。請驗證您的 ROM/內核是否支援 init.d/su.d</string>
-  <string name="remove_initd">Startup script removed</string>
+  <string name="remove_initd">啟動腳本已刪除</string>
   <string name="unable_remove_initd">無法移除 AFWall+ 啟動指令碼</string>
   <!-- Widget -->
   <string name="widget_disable_fail">無法停用防火牆 - 密碼保護！</string>
@@ -179,7 +179,7 @@
   <string name="vpn_profile">VPN 控制</string>
   <string name="vpnSummary">啟用 分別控制 VPN 的許可權</string>
   <string name="roaming">漫遊控制</string>
-  <string name="roamingSummary">Enable to control internet while roaming permissions separately</string>
+  <string name="roamingSummary">啟動以單獨控制漫遊時的網路連接</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -196,10 +196,10 @@
   <string name="builtin_ipt">內置 iptables</string>
   <string name="auto">自動</string>
   <!-- XPOSED -->
-  <string name="XPosed_prefs_title">XPosed Related</string>
-  <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
-  <string name="LeakDetected">Leak Detected</string>
+  <string name="XPosed_prefs_title">XPosed 相關</string>
+  <string name="fixDownloadTitle">修復 下載管理員 漏洞</string>
+  <string name="fixDownloadTitleSummary">使用 xposed 防止：當程式網路權限被拒絕時，轉而使用 Android 內建下载管理器來下載檔案。</string>
+  <string name="LeakDetected">檢查到漏洞</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 相關</string>
   <string name="disable_toaster">停用螢幕中央的訊息通知</string>
@@ -252,11 +252,11 @@
   <string name="enableConfirm_summary_on">防火牆被禁用前將要求確認</string>
   <string name="showUid">顯示應用程式的 UID </string>
   <string name="showuid_summary_on">在主畫面中顯示應用程式圖示</string>
-  <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
+  <string name="showuid_summary_off">在首頁中隱藏程式UID，啟用可以更有效率的追蹤日誌。</string>
   <string name="languages">語言</string>
   <string name="misc_header">語言/插件</string>
   <!-- 1.2.6 -->
-  <string name="active_rules">Active rules</string>
+  <string name="active_rules">啟動規則</string>
   <string name="active_rules_summary">各種連接變更時套用防火牆規則 (漫遊/LAN/WiFi/3G/網路共用)</string>
   <string name="profile_add">新增設定檔</string>
   <string name="profile_remove">移除設定檔</string>
@@ -277,25 +277,25 @@
   <string name="unselect_all">清除所有選定的應用程式？</string>
   <string name="check_all">檢查全部</string>
   <string name="invert_all">反選全部</string>
-  <string name="legend_invert">Invert all checkboxes on all columns</string>
+  <string name="legend_invert">反選全部選擇</string>
   <string name="uncheck_all">取消全選</string>
   <string name="select_action">已選取操作的連接：</string>
   <string name="roam">漫遊</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">啟動以在不同的網路供應商 (漫遊) 時，分別控制網路權限</string>
   <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Enable to control Wifi permissions</string>
+  <string name="legend_wifi">啟動以控制 WiFi 權限</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">資料</string>
-  <string name="legend_data">Enable to control data (2G,3G,EDGE,LTE/4G) permissions</string>
+  <string name="legend_data">啟動以控制行動數據 (2G,3G,EDGE,LTE/4G) 權限</string>
   <string name="pkg_all">全部</string>
   <string name="pkg_core">核心</string>
   <string name="pkg_sys">系統</string>
   <string name="pkg_user">使用者</string>
   <string name="backup_notexist">沒有備份存在。請從功能表中匯出。</string>
   <string name="showFilter">顯示過濾器</string>
-  <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
-  <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
+  <string name="showfilter_summary_on">在首頁中顯示過濾器 (所有/核心/系统/用戶)</string>
+  <string name="showfilter_summary_off">在首頁中隱藏過濾器 (所有/核心/系统/用戶)</string>
   <string name="enable_dns">通過 netd 啟用 DNS</string>
   <string name="disable_dns">通過 netd 停用 DNS</string>
   <string name="dns_proxy_title">DNS 代理 </string>
@@ -303,7 +303,7 @@
   <string name="tasker_lable">AFWall + Tasker 插件</string>
   <string name="enable">啟用</string>
   <string name="disable">停用</string>
-  <string name="filters_apps_title">Notification filter</string>
+  <string name="filters_apps_title">通知篩選器</string>
   <string name="apply_color">按下顏色以套用修改</string>
   <string name="binaries">二進位檔案</string>
   <string name="widgets">小工具</string>
@@ -356,10 +356,10 @@
   <string name="add">新增</string>
   <string name="showlog_toasts">在阻擋時顯示 toast 通知</string>
   <string name="enable_show_toasts">啟動顯示通知</string>
-  <string name="top">Top</string>
-  <string name="center">Center</string>
-  <string name="bottom">Bottom</string>
-  <string name="position">Toasts Position</string>
+  <string name="top">頂端</string>
+  <string name="center">中間</string>
+  <string name="bottom">底端</string>
+  <string name="position">Toasts 消息位置</string>
   <string name="widget_prefs_title">小工具位置</string>
   <string name="xTitle">小工具X軸位置</string>
   <string name="xTitleSummary">手動複寫X軸位置</string>
@@ -370,18 +370,18 @@
   <string name="error_nonsupported">檢測到 King Root！</string>
   <string name="error_nonsupported_details">AFWall+ 檢測到不支援的超級使用者應用程式，這已知的 bypaas 防火牆規則。因為它是一個超級使用者的應用程式，AFWall+ 不能解決此問題。</string>
   <string name="lockNotification">在鎖屏介面隱藏通知圖示</string>
-  <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-  <string name="menu_legend">Legends</string>
-  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
-  <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
-  <string name="log_deletedapp">Deleted Application</string>
-  <string name="log_denied">Denied :</string>
-  <string name="log_times">times</string>
-  <string name="log_time">time</string>
-  <string name="log_dst">Last Destination :</string>
-  <string name="log_src">Last Source :</string>
-  <string name="log_proto">Last Protocol :</string>
-  <string name="no_data_available">Please enable log service or no data</string>
-  <string name="loading_data_title">Loading...</string>
-  <string name="loading_data">Retrieving log data</string>
+  <string name="lockScreenNotification_summary">在鎖定螢幕上隱藏通知</string>
+  <string name="menu_legend">圖例</string>
+  <string name="permissiondenied_importexport">無法讀取/寫入外部儲存空間，請授權以匯出/匯入規則。</string>
+  <string name="permissiondenied_asset">無法讀取/寫入外部儲存空間，請授權以複製 AFWall+ 的二進位檔案 。 </string>
+  <string name="log_deletedapp">已刪除程式</string>
+  <string name="log_denied">已拒絕：</string>
+  <string name="log_times">次</string>
+  <string name="log_time">次</string>
+  <string name="log_dst">最後連結目標：</string>
+  <string name="log_src">最後源網址：</string>
+  <string name="log_proto">最後使用協定︰</string>
+  <string name="no_data_available">請啟用日誌，否則會沒有資料</string>
+  <string name="loading_data_title">載入中...</string>
+  <string name="loading_data">讀取日誌中</string>
 </resources>

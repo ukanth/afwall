@@ -136,7 +136,7 @@
   <!-- Logging -->
   <string name="enable_firewall_log">Vklopi dnevnik aktivnosti</string>
   <string name="enable_firewall_log_service">Vklop beleženja</string>
-  <string name="showlog_title">Vklop/izklop</string>
+  <string name="showlog_title">Dnevnik aktivnosti</string>
   <string name="showlog_service_summary">Vklopi prikaz obvestil ob blokadi povezave </string>
   <string name="enable_log">Vklopi beleženje</string>
   <string name="disable_log">Izklopi beleženje</string>
@@ -254,7 +254,7 @@
   <string name="showuid_summary_on">Prikaži šifre aplikacij na seznamu</string>
   <string name="showuid_summary_off">Skrij šifre aplikacij s seznama.</string>
   <string name="languages">Jeziki</string>
-  <string name="misc_header">Jeziki/vtičniki</string>
+  <string name="misc_header">Jezik/vtičniki</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktivna pravila</string>
   <string name="active_rules_summary">Uveljavi pravila požarnega zidu ob vsaki spremembi povezave (Gostovanje/LAN/Wifi/3G/deljenje povezave)</string>
@@ -307,8 +307,8 @@
   <string name="apply_color">Za vklop izberite barvo</string>
   <string name="binaries">Binarne datoteke</string>
   <string name="widgets">Gradniki</string>
-  <string name="exports">Izvozi</string>
-  <string name="imports">Uvozi</string>
+  <string name="exports">Izvoz</string>
+  <string name="imports">Uvoz</string>
   <string name="invalid_profile">Neveljavno ime profila</string>
   <!-- Donate -->
   <string name="donate_only">Ta funkcija je na voljo samo v donacijski različici aplikacije</string>
@@ -376,7 +376,7 @@
   <string name="permissiondenied_asset">Zavrnjen je bil dostop za BRANJE/PISANJE v shrambo. Prosimo dovolite dostop za kopiranje za izvoz/uvoz.aplikacijo AFWall+. </string>
   <string name="log_deletedapp">Odstranjena aplikacija</string>
   <string name="log_denied">Zavrnjen dostop :</string>
-  <string name="log_times">časi</string>
+  <string name="log_times">krat</string>
   <string name="log_time">čas</string>
   <string name="log_dst">Zadnja destinacija :</string>
   <string name="log_src">Zadnji vir :</string>
