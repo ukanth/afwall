@@ -22,12 +22,14 @@
 
 package dev.ukanth.ufirewall.log;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,7 +151,7 @@ public class LogService extends Service {
 	  }
 
 
-
+	@Override
 	public void onCreate() {
 
 		if(G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty()) {
@@ -172,8 +174,6 @@ public class LogService extends Service {
 			Log.i(TAG, "Unable to start log service. LogTarget is empty");
 			stopSelf();
 		}
-
-		//klogPath = Api.getKLogPath(getApplicationContext());
 
 		Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
 		handler = new Handler();
