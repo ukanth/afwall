@@ -22,14 +22,12 @@
 
 package dev.ukanth.ufirewall.log;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
