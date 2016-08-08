@@ -16,7 +16,7 @@ public class LanguagePreferenceFragment extends PreferenceFragment implements
 		SharedPreferences.OnSharedPreferenceChangeListener
 	{
 
-	private static CheckBoxPreference fixDownloadManagerLeak;
+	private static CheckBoxPreference checkBoxPreference;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -24,16 +24,17 @@ public class LanguagePreferenceFragment extends PreferenceFragment implements
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.language_preferences);
 		checkXposed(findPreference("fixDownloadManagerLeak"),this.getActivity().getApplicationContext());
+		checkXposed(findPreference("lockScreenNotification"),this.getActivity().getApplicationContext());
 	}
 
 	public static void checkXposed(Preference pref, Context ctx) {
 		if (pref == null) {
 			return;
 		}
-		fixDownloadManagerLeak = (CheckBoxPreference) pref;
+		checkBoxPreference = (CheckBoxPreference) pref;
 		// gray out the fixDownloadManagerLeak preference if xposed module is not activated
-		Log.i(Api.TAG,"checkXposed:" + G.isXposedEnabled() + "");
-		fixDownloadManagerLeak.setEnabled(G.isXposedEnabled());
+		Log.i(Api.TAG,"Checking Xposed:" + G.isXposedEnabled() + "");
+		checkBoxPreference.setEnabled(G.isXposedEnabled());
 	}
 
 	@Override

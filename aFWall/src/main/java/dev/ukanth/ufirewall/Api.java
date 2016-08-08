@@ -2794,14 +2794,14 @@ public final class Api {
 							//.addAction(R.drawable.exit, "", pendingIntentCancel)
 					.setContentText(notificationText);
 
-			if(G.lockNotification()) {
-				builder.setVisibility(NotificationCompat.PRIORITY_LOW);
-			}
-			Notification notify = builder.build();
-			notify.flags = Notification.FLAG_ONGOING_EVENT;
-			//builder.setContentIntent(in);
+			Notification notification = builder.build();
+			notification.flags = Notification.FLAG_ONGOING_EVENT;
 
-			mNotificationManager.notify(NOTIF_ID, notify);
+			/*if(G.lockNotification() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				builder.setVisibility(NotificationCompat.PRIORITY_LOW);
+			}*/
+			//builder.setContentIntent(in);
+			mNotificationManager.notify(NOTIF_ID, notification);
 		}
 
     	

@@ -22,6 +22,11 @@
             android:key="fixDownloadManagerLeak"
             android:summary="@string/fixDownloadTitleSummary"
             android:title="@string/fixDownloadTitle" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="lockScreenNotification"
+            android:summary="@string/lockScreenNotification_summary"
+            android:title="@string/lockNotification" />
 
     </PreferenceCategory>
 

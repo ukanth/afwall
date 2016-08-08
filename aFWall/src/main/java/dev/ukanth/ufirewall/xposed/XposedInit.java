@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
+import android.os.Build;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -53,11 +55,13 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         try {
             //Log.i(TAG,"Looking for AFWall: " +  loadPackageParam.packageName);
-            if(loadPackageParam.packageName.equals(MY_APP)) {
-                Log.i(TAG,"Matched Package and now hooking: " +  loadPackageParam.packageName);
+            if (loadPackageParam.packageName.equals(MY_APP)) {
+                Log.i(TAG, "Matched Package and now hooking: " + loadPackageParam.packageName);
                 reloadPreference();
                 interceptAFWall(loadPackageParam);
             }
+            //hide lockscreen notification
+            hookLockScreen(loadPackageParam);
             //enable when through settings
             interceptDownloadManager(loadPackageParam);
             //interceptNet(loadPackageParam);
@@ -65,6 +69,45 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             Log.d(TAG, e.getLocalizedMessage());
         }
     }
+
+    private void hookLockScreen(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        if (loadPackageParam.packageName.equals("com.android.systemui")) {
+            XC_MethodHook xNotificationHook = new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    StatusBarNotification notification = (StatusBarNotification) param.args[0];
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && notification.getPackageName().equals(MY_APP)) {
+                        reloadPreference();
+                        if(prefs.getBoolean("lockScreenNotification", false)) {
+                            if (param.getResult() != Boolean.valueOf(false)) {
+                                param.setResult(Boolean.valueOf(false));
+                            }
+                        }
+                    }
+                }
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                }
+            };
+            XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.BaseStatusBar", loadPackageParam.classLoader, "shouldShowOnKeyguard", new Object[]{StatusBarNotification.class, xNotificationHook});
+        }
+    }
+
+    /*class shouldShowOnKeyguard extends XC_MethodHook {
+        shouldShowOnKeyguard() {
+        }
+
+        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+            if (param.getResult() != Boolean.valueOf(false)) {
+                StatusBarNotification notification = (StatusBarNotification) param.args[0];
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && prefs.getBoolean("lockScreenNotification", false)) {
+                    if (notification.getPackageName().equals(MY_APP)) {
+                        param.setResult(Boolean.valueOf(false));
+                    }
+                }
+            }
+        }
+    }*/
 
     //Check if AFWall is hooked to make sure XPosed works fine.
     private void interceptAFWall(XC_LoadPackage.LoadPackageParam loadPackageParam) {
@@ -75,6 +118,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 Log.i(TAG, "Util.isXposedEnabled hooked");
                 param.setResult(true);
             }
+
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
             }
@@ -103,11 +147,11 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 prefs.reload();
             }
             if (pPrefs == null) {
-                pPrefs =  new SharePreference(context,MY_APP,Api.PREFS_NAME);
-                Log.d(TAG,"Loaded pPrefs from AFWall");
+                pPrefs = new SharePreference(context, MY_APP, Api.PREFS_NAME);
+                Log.d(TAG, "Loaded pPrefs from AFWall");
             }
-            Log.d(TAG,"Reloaded preferences from AFWall");
-        }catch (Exception e){
+            Log.d(TAG, "Reloaded preferences from AFWall");
+        } catch (Exception e) {
             Log.d(TAG, "Exception in reloading preferences" + e.getLocalizedMessage());
         }
 
@@ -196,15 +240,15 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                         param.setResult(0);
                         DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                         dm.remove(0);
-                        if(getActivity() != null) {
+                        if (getActivity() != null) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(),"AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")" ,Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity().getApplicationContext(), "AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")", Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
-                       // showNotification(context,"Denied access to Download Manager for application : " + applicationInfo.uid);
+                        // showNotification(context,"Denied access to Download Manager for application : " + applicationInfo.uid);
                     }
                     //
                 }
@@ -224,11 +268,11 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                         final Uri uri = (Uri) param.args[0];
                         Log.i(TAG, "Attempted URL via DM Leak : " + uri.toString());
                         XposedHelpers.setObjectField(param.thisObject, "mUri", Uri.parse("http://localhost/dummy.txt"));
-                        if(getActivity() != null) {
+                        if (getActivity() != null) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(),"Download Manager is attempting to download : " + uri.toString(),Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity().getApplicationContext(), "Download Manager is attempting to download : " + uri.toString(), Toast.LENGTH_LONG).show();
                                 }
                             });
                         }
@@ -248,7 +292,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Activity mCurrentActivity = (Activity) param.getResult();
-                if(mCurrentActivity != null ){
+                if (mCurrentActivity != null) {
                     setActivity(mCurrentActivity);
                 }
                 Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());

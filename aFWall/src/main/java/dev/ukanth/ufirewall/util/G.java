@@ -151,8 +151,8 @@ public class G extends android.app.Application {
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
 	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
 
-	public static boolean lockNotification() { return gPrefs.getBoolean(LOCK_NOTIFICATION, false); }
-	public static boolean lockNotification(boolean val) { gPrefs.edit().putBoolean(LOCK_NOTIFICATION, val).commit(); return val; }
+	/*public static boolean lockNotification() { return gPrefs.getBoolean(LOCK_NOTIFICATION, false); }
+	public static boolean lockNotification(boolean val) { gPrefs.edit().putBoolean(LOCK_NOTIFICATION, val).commit(); return val; }*/
 
 
 	public static boolean showLogToasts() { return gPrefs.getBoolean(SHOW_LOG_TOAST, false); }
