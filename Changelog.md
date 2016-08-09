@@ -7,7 +7,7 @@ Version 2.5.0
     - XPosed module - Download manager Leak with notification - Application can bypaas AFWall+ by using Download Manager API to download from network. This module helpsblocking application using this API if the application is not allowed to access internet with AFWall+
     - New Log UI with History - Log service not stores the blocked information in database. Current UI only shows how many times its blocked. Future versions will have more details screens with all ipaddress with DNS Lookup. Also you can start blocking ipaddress directly from Logs in future versions 
     - Webview filter(applist) - Another possible way apps can use webview to access internet. So now there is a separate system level application for webviews. Please whitelist/blocklist this app accordingly.
-    - Hide lockscreen notification
+    - XPosed module - Hide lockscreen notification - This will hide ongoing notification in lockscreen. Due to android restrictions it uses xposed to hide it
     - Log Toast position - Now you can customize the position of app block notification
     - Toybox support(system level) - CM13/12 and even stock android uses toybox instead of busybox. If AFwall+ doesnt find busybox it will look for toybox. If bot not found it will use built-in busybox
 
