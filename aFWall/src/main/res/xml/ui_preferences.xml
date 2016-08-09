@@ -18,12 +18,6 @@
             android:key="activeNotification"
             android:summary="@string/activeNotification_summary"
             android:title="@string/activeNotification" />
-       <!-- <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="activeNotification"
-            android:key="lockScreenNotification"
-            android:summary="@string/lockScreenNotification_summary"
-            android:title="@string/lockNotification" />-->
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="showFilter"

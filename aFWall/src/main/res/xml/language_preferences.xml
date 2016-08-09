@@ -27,6 +27,9 @@
             android:key="lockScreenNotification"
             android:summary="@string/lockScreenNotification_summary"
             android:title="@string/lockNotification" />
+        <!--<CheckBoxPreference
+            android:key="fixLeakXPosed"
+            android:title="@string/fixleakTitle" />-->
 
     </PreferenceCategory>
 

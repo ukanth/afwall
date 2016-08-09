@@ -62,6 +62,9 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             }
             //hide lockscreen notification
             hookLockScreen(loadPackageParam);
+
+            //apply DROP to all chains
+            //hookFixLeak(loadPackageParam);
             //enable when through settings
             interceptDownloadManager(loadPackageParam);
             //interceptNet(loadPackageParam);
@@ -70,8 +73,18 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         }
     }
 
+    /*private void hookFixLeak(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        //look for downloads
+        if(loadPackageParam.packageName.equals("com.android.providers.downloads")){
+            reloadPreference();
+            Log.i(TAG, "Applying IPTABLES Rules for LEAK");
+            Api.cleanupChains(getActivity());
+        }
+    }*/
+
     private void hookLockScreen(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (loadPackageParam.packageName.equals("com.android.systemui")) {
+
             XC_MethodHook xNotificationHook = new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -92,22 +105,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.BaseStatusBar", loadPackageParam.classLoader, "shouldShowOnKeyguard", new Object[]{StatusBarNotification.class, xNotificationHook});
         }
     }
-
-    /*class shouldShowOnKeyguard extends XC_MethodHook {
-        shouldShowOnKeyguard() {
-        }
-
-        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-            if (param.getResult() != Boolean.valueOf(false)) {
-                StatusBarNotification notification = (StatusBarNotification) param.args[0];
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && prefs.getBoolean("lockScreenNotification", false)) {
-                    if (notification.getPackageName().equals(MY_APP)) {
-                        param.setResult(Boolean.valueOf(false));
-                    }
-                }
-            }
-        }
-    }*/
 
     //Check if AFWall is hooked to make sure XPosed works fine.
     private void interceptAFWall(XC_LoadPackage.LoadPackageParam loadPackageParam) {
@@ -221,7 +218,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) throws NoSuchMethodException {
         final ApplicationInfo applicationInfo = loadPackageParam.appInfo;
-        Activity mCurrentActivity;
         Class<?> downloadManager = findClass("android.app.DownloadManager", loadPackageParam.classLoader);
         Class<?> downloadManagerRequest = findClass("android.app.DownloadManager.Request", loadPackageParam.classLoader);
 
