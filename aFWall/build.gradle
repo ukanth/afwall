@@ -12,6 +12,7 @@ android {
         targetSdkVersion 23
         versionCode 15500
         versionName "2.5.0"
+        //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
     buildTypes {
@@ -29,7 +30,6 @@ android {
         disable 'MissingTranslation'
         abortOnError true
     }
-
 }
 
 
