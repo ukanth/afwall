@@ -1,5 +1,12 @@
 Changelog AFWall+
 ==================
+Version 2.5.1
+
+* Added Switchback option to Old Log view - Listen to users
+* Donate/Donate key users can view the ipaddress/src/dst in details view (clicking on from new logview)
+* Bug fix: Fixed uninstall apps iptables not reset
+
+PLEASE NOTE: I am aware of Log slowness. This will be fixed in future versions!
 
 Version 2.5.0
 
