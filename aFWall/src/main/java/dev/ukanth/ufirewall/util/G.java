@@ -41,6 +41,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.BuildConfig;
 
 public class G extends android.app.Application {
 
@@ -168,20 +169,25 @@ public class G extends android.app.Application {
 	public static boolean disableTaskerToast() { return gPrefs.getBoolean(DISABLE_TASKER_TOAST, false); }
 	//public static boolean disableTaskerToast(boolean val) { gPrefs.edit().putBoolean(DISABLE_TASKER_TOAST, val).commit(); return val; }
 
-	public static boolean isDo(Context ctx) {
+	public static boolean isDonate() {
+		return BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate");
+	}
+	public static boolean isDoKey(Context ctx) {
 		if(!gPrefs.getBoolean(REG_DO, false))  {
 			try {
 				ApplicationInfo app = ctx.getPackageManager().getApplicationInfo("dev.ukanth.ufirewall.donatekey", 0);
 				if(app!= null) {
 					gPrefs.edit().putBoolean(REG_DO, true).commit();
 				}
+
 			} catch (PackageManager.NameNotFoundException e) {
 
 			}
 		}
 		return gPrefs.getBoolean(REG_DO, false);
 	}
-	//public static boolean isDo(boolean val) { gPrefs.edit().putBoolean(REG_DO, val).commit(); return val; }
+
+	public static boolean isDo(boolean val) { gPrefs.edit().putBoolean(REG_DO, val).commit(); return val; }
 	
 	public static boolean enableRoam() { return gPrefs.getBoolean(ENABLE_ROAM, false); }
 	public static boolean enableRoam(boolean val) { gPrefs.edit().putBoolean(ENABLE_ROAM, val).commit(); return val; }

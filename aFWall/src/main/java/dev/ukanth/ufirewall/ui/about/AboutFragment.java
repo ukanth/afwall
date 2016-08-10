@@ -34,7 +34,7 @@ public class AboutFragment extends Fragment {
 
 		TextView text = (TextView) getActivity().findViewById(R.id.afwall_title);
 		String versionText = getString(R.string.app_name) + " (v" + version + ")";
-		if(G.isDo(getActivity().getApplicationContext()) || BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate")) {
+		if(G.isDoKey(getActivity().getApplicationContext()) || BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate")) {
 			versionText = versionText + " (Donate) " +  getActivity().getString(R.string.donate_thanks)+  ":)";
 		}
 		text.setText(versionText);

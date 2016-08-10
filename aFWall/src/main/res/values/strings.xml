@@ -446,11 +446,13 @@
     <string name="log_denied">Denied :</string>
     <string name="log_times">times</string>
     <string name="log_time">time</string>
-    <string name="log_dst">Last Destination :</string>
-    <string name="log_src">Last Source :</string>
-    <string name="log_proto">Last Protocol :</string>
+    <string name="log_dst">Destination :</string>
+    <string name="log_src">Source :</string>
+    <string name="log_proto">Protocol :</string>
     <string name="no_data_available">Please enable log service or no data</string>
     <string name="loading_data_title">Loading...</string>
     <string name="loading_data">Retrieving log data</string>
+
+    <string name="showlogdetail_title">Application Log Details</string>
 
 </resources>

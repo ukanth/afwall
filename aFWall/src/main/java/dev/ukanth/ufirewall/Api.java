@@ -59,6 +59,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
@@ -1736,6 +1737,29 @@ public final class Api {
 			}
 		}
 		
+	}
+
+	public static void donateDialog(final Context ctx){
+		new MaterialDialog.Builder(ctx).cancelable(false)
+				.title(R.string.buy_donate)
+				.content(R.string.donate_only)
+				.positiveText(R.string.buy_donate)
+				.negativeText(R.string.close)
+				.icon(ctx.getResources().getDrawable(R.drawable.ic_launcher))
+				.callback(new MaterialDialog.ButtonCallback() {
+					@Override
+					public void onPositive(MaterialDialog dialog) {
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
+						ctx.startActivity(intent);
+					}
+
+					@Override
+					public void onNegative(MaterialDialog dialog) {
+						dialog.cancel();
+					}
+				})
+				.show();
 	}
 
     /**

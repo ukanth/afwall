@@ -54,22 +54,23 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
+import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDatabase;
-import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
+import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
 import dev.ukanth.ufirewall.log.RecyclerItemClickListener;
 import dev.ukanth.ufirewall.util.DateComparator;
-import dev.ukanth.ufirewall.util.G;
 
-public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class LogDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     protected static final int MENU_CLEARLOG = 7;
 
     RecyclerView recyclerView;
-    LogRecyclerViewAdapter recyclerViewAdapter;
+    LogDetailRecyclerViewAdapter recyclerViewAdapter;
     private TextView emptyView;
     private SwipeRefreshLayout mSwipeLayout;
     protected Menu mainMenu;
 
+    private String uid;
     protected  static final int MENU_TOGGLE = -4;
     protected static final int MENU_CLEAR = 40;
     //protected static final int MENU_EXPORT_LOG = 47;
@@ -79,9 +80,9 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.log_view);
+        setContentView(R.layout.logdetail_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
-        setTitle(getString(R.string.showlog_title));
+        setTitle(getString(R.string.showlogdetail_title));
         //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,70 +93,57 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+        uid = intent.getStringExtra("DATA");
         // Load partially transparent black background
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipedetailContainer);
         mSwipeLayout.setOnRefreshListener(this);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        emptyView = (TextView) findViewById(R.id.empty_view);
+        recyclerView = (RecyclerView) findViewById(R.id.detailrecyclerview);
+        emptyView = (TextView) findViewById(R.id.emptydetail_view);
 
         initializeRecyclerView(getApplicationContext());
 
-        if(G.enableLogService()) {
-            (new CollectLog()).setContext(this).execute();
-
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            mSwipeLayout.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
-        }
+        (new CollectDetailLog()).setContext(this).execute();
     }
 
     private void initializeRecyclerView(final Context ctx) {
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerViewAdapter = new LogRecyclerViewAdapter(getApplicationContext(),new RecyclerItemClickListener() {
+        recyclerViewAdapter = new LogDetailRecyclerViewAdapter(getApplicationContext(),new RecyclerItemClickListener() {
             @Override
             public void onItemClick(LogData logData) {
-                G.isDo(true);
-                if(G.isDoKey(ctx) || G.isDonate()) {
-                    Intent intent = new Intent(ctx, LogDetailActivity.class);
-                    intent.putExtra("DATA",logData.getUid());
-                    startActivity(intent);
-                } else {
-                    Api.donateDialog(ctx);
-                }
                 // do what ever you want to do with it
             }
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
-    private List<LogData> getLogData() {
+    private List<LogData> getLogData(final String uid) {
         return SQLite.select()
                 .from(LogData.class)
-                //.orderBy(LogData_Table.timestamp, true)
+                .where(LogData_Table.uid.eq(uid))
+                .orderBy(LogData_Table.timestamp, false)
                 .queryList();
     }
 
     private int getCount() {
-        long l = SQLite.selectCountOf().from(LogData.class).count();
+        long l = SQLite.selectCountOf().from(LogData.class).where(LogData_Table.uid.eq(uid)).count();
         return (int) l;
     }
 
 
-    private class CollectLog extends AsyncTask<Void, Integer, Boolean> {
+    private class CollectDetailLog extends AsyncTask<Void, Integer, Boolean> {
         private Context context = null;
         MaterialDialog loadDialog = null;
-
-        public CollectLog() {
+        public CollectDetailLog() {
         }
         //private boolean suAvailable = false;
 
-        public CollectLog setContext(Context context) {
+        public CollectDetailLog setContext(Context context) {
             this.context = context;
             return this;
         }
@@ -173,10 +161,9 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            List<LogData> logData = getLogData();
+            List<LogData> logData = getLogData(uid);
             try {
                 if(logData != null && logData.size() > 0) {
-                    logData = updateMap(logData,this);
                     Collections.sort(logData, new DateComparator());
                     recyclerViewAdapter.updateData(logData);
                     return true;
@@ -218,7 +205,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
             mSwipeLayout.setRefreshing(false);
 
-            if (logPresent) {
+            if (logPresent != null && logPresent) {
                 recyclerView.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
@@ -233,7 +220,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
 
     @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Common options: Copy, Export to SD Card, Refresh
         SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.ic_core_overflow);
         sub.add(0, MENU_CLEAR, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
@@ -246,7 +233,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     }
 
 
-    private List<LogData> updateMap(List<LogData> logDataList, CollectLog collectLog) {
+    private List<LogData> updateMap(List<LogData> logDataList, CollectDetailLog collectLog) {
         HashMap<String, LogData> logMap = new HashMap<>();
         HashMap<String, Integer> count = new HashMap<>();
         HashMap<String, Long> lastBlocked = new HashMap<>();
@@ -327,7 +314,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        (new CollectLog()).setContext(this).execute();
+        (new CollectDetailLog()).setContext(this).execute();
     }
 
 	/*@Override

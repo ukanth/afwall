@@ -34,7 +34,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -1137,7 +1136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 								break;
 							case 1:
 
-								if (Api.getCurrentPackage(MainActivity.this).equals("dev.ukanth.ufirewall.donate") || G.isDo(getApplicationContext())) {
+								if (G.isDoKey(getApplicationContext()) || G.isDonate()) {
 
 									File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
 									FileDialog fileDialog2 = new FileDialog(MainActivity.this,mPath2,false);
@@ -1165,28 +1164,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 									});
 									fileDialog2.showDialog();
 								} else {
-
-									new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-											.title(R.string.buy_donate)
-											.content(R.string.donate_only)
-											.positiveText(R.string.buy_donate)
-											.negativeText(R.string.close)
-
-											.icon(getResources().getDrawable(R.drawable.ic_launcher))
-											.callback(new MaterialDialog.ButtonCallback() {
-												@Override
-												public void onPositive(MaterialDialog dialog) {
-													Intent intent = new Intent(Intent.ACTION_VIEW);
-													intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
-													startActivity(intent);
-												}
-
-												@Override
-												public void onNegative(MaterialDialog dialog) {
-													dialog.cancel();
-												}
-											})
-											.show();
+									Api.donateDialog(getApplicationContext());
 								}
 								break;
 							case 2:

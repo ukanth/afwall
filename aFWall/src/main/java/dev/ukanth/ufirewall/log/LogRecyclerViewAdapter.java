@@ -50,19 +50,13 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_recycle_item,parent,false);
-        final ViewHolder mViewHolder = new ViewHolder(mView);
-        /*mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerItemClickListener.onItemClick(v, getLogData().get(mViewHolder.getPosition()));
-            }
-        });*/
         return new ViewHolder(mView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
+        holder.bind(logData.get(position),recyclerItemClickListener);
         try {
             info = Api.getPackageDetails(context, Integer.parseInt(data.getUid()));
             holder.icon.setImageDrawable(info.applicationInfo.loadIcon(context.getPackageManager()));
@@ -119,6 +113,14 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
             appName = (TextView)itemView.findViewById(R.id.app_name);
             lastDenied = (TextView)itemView.findViewById(R.id.last_denied);
             dataDenied = (TextView)itemView.findViewById(R.id.data_denied);
+        }
+
+        public void bind(final LogData item, final RecyclerItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
         }
     }
 
