@@ -120,13 +120,13 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         recyclerViewAdapter = new LogRecyclerViewAdapter(getApplicationContext(),new RecyclerItemClickListener() {
             @Override
             public void onItemClick(LogData logData) {
-                G.isDo(true);
+                //G.isDo(true);
                 if(G.isDoKey(ctx) || G.isDonate()) {
                     Intent intent = new Intent(ctx, LogDetailActivity.class);
                     intent.putExtra("DATA",logData.getUid());
                     startActivity(intent);
                 } else {
-                    Api.donateDialog(ctx);
+                    Api.donateDialog(LogActivity.this);
                 }
                 // do what ever you want to do with it
             }
@@ -137,7 +137,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     private List<LogData> getLogData() {
         return SQLite.select()
                 .from(LogData.class)
-                //.orderBy(LogData_Table.timestamp, true)
+                //.orderBy(LogData_Table.timestamp, false)
                 .queryList();
     }
 
@@ -173,11 +173,18 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            //Log.i(Api.TAG,"data retrive: " + System.currentTimeMillis());
             List<LogData> logData = getLogData();
+
             try {
                 if(logData != null && logData.size() > 0) {
+                    //long startedTime = System.currentTimeMillis();
+                    //Log.i(Api.TAG,"Starting filterring: " + startedTime);
                     logData = updateMap(logData,this);
+                    //long fishedTime = System.currentTimeMillis();
+                    //Log.i(Api.TAG,"After filterring: " + (fishedTime - startedTime));
                     Collections.sort(logData, new DateComparator());
+                    //Log.i(Api.TAG,"After sorting: " + (System.currentTimeMillis() - fishedTime));
                     recyclerViewAdapter.updateData(logData);
                     return true;
                 } else {
@@ -218,16 +225,17 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
             mSwipeLayout.setRefreshing(false);
 
-            if (logPresent) {
+            if (logPresent != null && logPresent) {
+                recyclerViewAdapter.notifyDataSetChanged();
                 recyclerView.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
-                recyclerViewAdapter.notifyDataSetChanged();
             } else {
                 mSwipeLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
+            Log.i(Api.TAG,"Ended Loading: " + System.currentTimeMillis());
         }
     }
 
@@ -251,13 +259,15 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         HashMap<String, Integer> count = new HashMap<>();
         HashMap<String, Long> lastBlocked = new HashMap<>();
         List<LogData> analyticsList = new ArrayList();
-        LogData tmpData;
+        LogData tmpData,data;
         int counter = 0;
-        for (LogData data : logDataList) {
+        int size = logDataList.size();
+        for (int i=0; i<size; i++) {
             collectLog.doProgress(counter++);
-            tmpData = data;
+            tmpData = logDataList.get(i);
+            data = logDataList.get(i);
             if (logMap.containsKey(data.getUid())) {
-                if (Long.parseLong(data.getTimestamp()) > lastBlocked.get(data.getUid())) {
+               if (Long.parseLong(data.getTimestamp()) > lastBlocked.get(data.getUid())) {
                     lastBlocked.put(data.getUid(), Long.parseLong(data.getTimestamp()));
                     tmpData.setTimestamp(data.getTimestamp());
                 } else {
@@ -290,7 +300,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                 return true;
             }
             case MENU_CLEAR:
-                clearDatabase(getApplicationContext());
+                clearDatabase(LogActivity.this);
                 return true;
             /*case MENU_EXPORT_LOG:
                 //exportToSD();
@@ -309,8 +319,9 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         //SQLite.delete(LogData_Table.class);
                         FlowManager.getDatabase(LogDatabase.NAME).reset(ctx);
-                        Toast.makeText(getApplicationContext(), ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ctx, ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+                        (new CollectLog()).setContext(LogActivity.this).execute();
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {

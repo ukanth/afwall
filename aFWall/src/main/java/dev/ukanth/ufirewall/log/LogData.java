@@ -1,7 +1,6 @@
 package dev.ukanth.ufirewall.log;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -11,24 +10,36 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  */
 
 @Table(database = LogDatabase.class)
+//,indexGroups = { @IndexGroup(number = 1, name = "uidIndex"),})
 public class LogData extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
 
-    @Index(indexGroups = 1)
-    @Column private String uid;
-    @Index(indexGroups = 2)
-    @Column private String appName;
-    @Column private String in;
-    @Column private String out;
-    @Column private String proto;
-    @Column private String spt;
-    @Column private String dst;
-    @Column private String len;
-    @Column private String src;
-    @Column private String dpt;
-    @Column private String timestamp;
+    @Column
+    private String uid;
+
+    @Column
+    private String appName;
+
+    @Column
+    private String in;
+    @Column
+    private String out;
+    @Column
+    private String proto;
+    @Column
+    private String spt;
+    @Column
+    private String dst;
+    @Column
+    private String len;
+    @Column
+    private String src;
+    @Column
+    private String dpt;
+    @Column
+    private String timestamp;
 
     public long getCount() {
         return count;
@@ -127,4 +138,5 @@ public class LogData extends BaseModel {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
+
 }

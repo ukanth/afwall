@@ -792,7 +792,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			if (progress[0] == 0 ||  progress[0] == -1) {
 				//do nothing
 			} else {
-				plsWait.incrementProgress(progress[0]);
+				if(plsWait != null){
+					plsWait.incrementProgress(progress[0]);
+				}
 			}
 		}
 	};
