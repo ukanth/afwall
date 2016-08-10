@@ -1732,7 +1732,7 @@ public final class Api {
 			editor.commit();
 			if (isEnabled(ctx)) {
 				// .. and also re-apply the rules if the firewall is enabled
-				applySavedIptablesRules(ctx, false);
+				applySavedIptablesRules(ctx, false, new RootCommand());
 			}
 		}
 		
