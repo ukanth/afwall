@@ -134,6 +134,8 @@
         <activity
             android:name="dev.ukanth.ufirewall.activity.LogActivity"/>
         <activity
+            android:name="dev.ukanth.ufirewall.activity.OldLogActivity"/>
+        <activity
             android:name="dev.ukanth.ufirewall.activity.LogDetailActivity"/>
         <activity android:name="dev.ukanth.ufirewall.activity.DataDumpActivity" >
             <meta-data

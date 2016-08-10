@@ -187,6 +187,9 @@ public class G extends android.app.Application {
 		return gPrefs.getBoolean(REG_DO, false);
 	}
 
+	public static boolean oldLogView(boolean val) { gPrefs.edit().putBoolean("oldLogView", val).commit(); return val; }
+	public static boolean oldLogView() {return gPrefs.getBoolean("oldLogView", false); }
+
 	public static boolean isDo(boolean val) { gPrefs.edit().putBoolean(REG_DO, val).commit(); return val; }
 	
 	public static boolean enableRoam() { return gPrefs.getBoolean(ENABLE_ROAM, false); }

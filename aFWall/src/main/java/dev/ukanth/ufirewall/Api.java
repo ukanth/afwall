@@ -60,6 +60,7 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
@@ -98,6 +99,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
+import dev.ukanth.ufirewall.log.LogData;
+import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
@@ -1110,16 +1113,18 @@ public final class Api {
 	 * Fetch kernel logs via busybox dmesg.  This will include {AFL} lines from
 	 * logging rejected packets.
 	 * 
-	 * @param ctx application context
-	 * @param callback Callback for completion status
 	 * @return true if logging is enabled, false otherwise
 	 */
-	public static boolean fetchLogs(Context ctx, RootCommand callback) {
-		if(G.logTarget().equals("LOG")) {
-			callback.run(ctx, getBusyBoxPath(ctx,true) + " dmesg");
-			return true;
-		} else {
-			return false;
+	public static List<LogData> fetchLogs() {
+		List<LogData> log = SQLite.select()
+				.from(LogData.class)
+				.orderBy(LogData_Table.timestamp,true)
+				.queryList();
+		//fetch last 100 records
+		if(log != null && log.size() > 100) {
+			return log.subList((log.size() - 100), log.size());
+		} else  {
+			return log;
 		}
 	}
 

@@ -27,8 +27,6 @@ import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,68 +56,32 @@ public class LogInfo{
 	}
 
 	
-	public static String parseLog(Context ctx, String dmesg) {
+	public static String parseLog(Context ctx, List<LogData> listLogData) {
 		
-		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
+		//final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
 		final Integer unknownUID = -11;
 		StringBuilder res = new StringBuilder();
-		String line;
-		int start, end;
 		Integer appid;
-		String out, src, dst, proto, spt, dpt, len;
 		final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
 		LogInfo loginfo = null;
 
 		try {
-			while ((line = r.readLine()) != null) {
-				if (line.indexOf("{AFL}") == -1) continue;
-				appid = unknownUID;
-				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					appid = Integer.parseInt(line.substring(start+4, end));
-				}
-				
+			for(LogData logData: listLogData) {
+				appid =  Integer.parseInt(logData.getUid());
+
 				loginfo = map.get(appid);
 				if (loginfo == null) {
 					loginfo = new LogInfo();
 				}
-				
-				if (((start=line.indexOf("DST=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dst = line.substring(start+4, end);
-					loginfo.dst = dst;
-				}
-				
-				if (((start=line.indexOf("DPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dpt = line.substring(start+4, end);
-					loginfo.dpt = dpt;
-				}
-				
-				if (((start=line.indexOf("SPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					spt = line.substring(start+4, end);
-					loginfo.spt = spt;
-				}
-				
-				if (((start=line.indexOf("PROTO=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					proto = line.substring(start+6, end);
-					loginfo.proto = proto;
-				}
-				
-				if (((start=line.indexOf("LEN=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					len = line.substring(start+4, end);
-					loginfo.len = len;
-				}
-				
-				if (((start=line.indexOf("SRC=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					src = line.substring(start+4, end);
-					loginfo.src = src;
-				}
-				
-				if (((start=line.indexOf("OUT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					out = line.substring(start+4, end);
-					loginfo.out = out;
-				}
+
+				loginfo.dst = logData.getDst();
+				loginfo.dpt = logData.getDpt();
+				loginfo.spt = logData.getSpt();
+				loginfo.proto = logData.getProto();
+				loginfo.len = logData.getLen();
+				loginfo.src = logData.getSrc();
+				loginfo.out = logData.getOut();
 				map.put(appid, loginfo);
-
-
 				loginfo.totalBlocked += 1;
 				String unique = "[" + loginfo.proto + "]" + loginfo.dst + ":" + loginfo.dpt; 
 				if (loginfo.dstBlocked.containsKey(unique)) {

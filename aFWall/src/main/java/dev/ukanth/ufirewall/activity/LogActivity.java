@@ -72,6 +72,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
     protected  static final int MENU_TOGGLE = -4;
     protected static final int MENU_CLEAR = 40;
+    protected static final int MENU_SWITCH_OLD = 42;
     //protected static final int MENU_EXPORT_LOG = 47;
 
     //protected static final int MENU_TOGGLE_LOG = 27;
@@ -245,7 +246,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         // Common options: Copy, Export to SD Card, Refresh
         SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.ic_core_overflow);
         sub.add(0, MENU_CLEAR, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
-        //sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
+        sub.add(0, MENU_SWITCH_OLD, 0, "Switch To old View").setIcon(R.drawable.logs);
         //populateMenu(sub);
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         super.onCreateOptionsMenu(menu);
@@ -305,6 +306,11 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             /*case MENU_EXPORT_LOG:
                 //exportToSD();
                 return true;*/
+            case MENU_SWITCH_OLD:
+                Intent i = new Intent(this, OldLogActivity.class);
+                G.oldLogView(true);
+                startActivity(i);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
