@@ -26,28 +26,38 @@ import dev.ukanth.ufirewall.util.G;
  * Created by ukanth on 25/7/16.
  */
 public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerViewAdapter.ViewHolder>{
+
+
     private List<LogData> logData;
     private Context context;
     private LogData data;
     private PackageInfo info;
     private static PrettyTime prettyTime;
+    private RecyclerItemClickListener recyclerItemClickListener;
 
-    public LogRecyclerViewAdapter(final Context context){
+
+    public LogRecyclerViewAdapter(final Context context,RecyclerItemClickListener recyclerItemClickListener){
         this.context = context;
         logData = new ArrayList<>();
+        this.recyclerItemClickListener = recyclerItemClickListener;
     }
 
     public void updateData(List<LogData> logDataList) {
         logData.clear();
         logData.addAll(logDataList);
-        this.notifyDataSetChanged();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_recycle_item,parent,false);
-        return new ViewHolder(view);
+        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_recycle_item,parent,false);
+        final ViewHolder mViewHolder = new ViewHolder(mView);
+        /*mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerItemClickListener.onItemClick(v, getLogData().get(mViewHolder.getPosition()));
+            }
+        });*/
+        return new ViewHolder(mView);
     }
 
     @Override
@@ -79,7 +89,6 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     public static String pretty(Date date) {
         if(prettyTime == null) {
             prettyTime = new PrettyTime(new Locale(G.locale()));
-            List<TimeUnit> timeUnits  = new ArrayList<>();
             for (TimeUnit t : prettyTime.getUnits()) {
                 if (t instanceof JustNow) {
                     prettyTime.removeUnit(t);
@@ -111,6 +120,10 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
             lastDenied = (TextView)itemView.findViewById(R.id.last_denied);
             dataDenied = (TextView)itemView.findViewById(R.id.data_denied);
         }
+    }
+
+    public List<LogData> getLogData() {
+        return logData;
     }
 
 }

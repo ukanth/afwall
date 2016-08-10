@@ -1,6 +1,7 @@
 package dev.ukanth.ufirewall.log;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Index;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -15,7 +16,9 @@ public class LogData extends BaseModel {
     @PrimaryKey(autoincrement = true)
     long id;
 
+    @Index(indexGroups = 1)
     @Column private String uid;
+    @Index(indexGroups = 2)
     @Column private String appName;
     @Column private String in;
     @Column private String out;
