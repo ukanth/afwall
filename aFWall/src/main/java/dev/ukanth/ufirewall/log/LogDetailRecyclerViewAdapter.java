@@ -51,9 +51,9 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         } else {
             holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.eth_3g));
         }
-        if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
-            holder.deniedTime.setText(pretty(Long.parseLong(data.getTimestamp())) + "(" + data.getOut() + ")");
-        }
+       // if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
+            holder.deniedTime.setText(pretty(data.getTimestamp()) + "(" + data.getOut() + ")");
+       // }
         //holder.appName.setText(data.getAppName() != null ? data.getAppName() + "(" + data.getUid() + ")" : context.getString(R.string.log_deletedapp));
         //holder.dataInterface.setText();
         holder.dataDest.setText(context.getResources().getString(R.string.log_dst)+ data.getDst() + ":" +data.getDpt());

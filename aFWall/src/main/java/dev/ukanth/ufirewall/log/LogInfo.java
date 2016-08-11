@@ -38,15 +38,15 @@ import dev.ukanth.ufirewall.util.G;
 public class LogInfo{
 	public String uidString;
 	public String appName;
-	public String uid;
+	public int uid;
 	public String in;
 	public String out;
 	public String proto;
-	public String spt;
+	public int spt;
 	public String dst;
-	public String len;
+	public int len;
 	public String src;
-	public String dpt;
+	public int dpt;
 	public String timestamp;
 	int totalBlocked;
 
@@ -67,7 +67,7 @@ public class LogInfo{
 
 		try {
 			for(LogData logData: listLogData) {
-				appid =  Integer.parseInt(logData.getUid());
+				appid =  logData.getUid();
 
 				loginfo = map.get(appid);
 				if (loginfo == null) {
@@ -252,7 +252,7 @@ public class LogInfo{
 				if (((start = result.indexOf("UID=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					uid = Integer.parseInt(result.substring(start + 4, end));
-					if(uid != null) logInfo.uid = uid + "";
+					if(uid != null) logInfo.uid = uid;
 				}
 
 				//logInfo = new LogInfo();
@@ -266,13 +266,13 @@ public class LogInfo{
 				if (((start = result.indexOf("DPT=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					dpt = result.substring(start + 4, end);
-					logInfo.dpt = dpt;
+					logInfo.dpt = Integer.parseInt(dpt);
 				}
 
 				if (((start = result.indexOf("SPT=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					spt = result.substring(start + 4, end);
-					logInfo.spt = spt;
+					logInfo.spt = Integer.parseInt(spt);
 				}
 
 				if (((start = result.indexOf("PROTO=")) != -1)
@@ -284,7 +284,7 @@ public class LogInfo{
 				if (((start = result.indexOf("LEN=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					len = result.substring(start + 4, end);
-					logInfo.len = len;
+					logInfo.len = Integer.parseInt(len);
 				}
 
 				if (((start = result.indexOf("SRC=")) != -1)

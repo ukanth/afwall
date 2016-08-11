@@ -224,8 +224,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				connectionPref.setChecked(false);
 				Api.toast(ctx, getString(R.string.ip6unavailable));
 			}
-			//TODO: strings
-			Toast.makeText(ctx, "Kindly reapply the rules because of ipv6 change" ,Toast.LENGTH_LONG).show();
+			Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
 		}
 		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
 				|| key.equals("enableLAN") || key.equals("enableRoam")
@@ -236,8 +235,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		}
 
 		if (key.equals("ip_path") || key.equals("dns_value") ) {
-			//TODO: strings
-			Toast.makeText(ctx, "Kindly reapply the rules since iptables/dns values has been changed" ,Toast.LENGTH_LONG).show();
+			Toast.makeText(ctx, getString(R.string.reapply_rules_other) ,Toast.LENGTH_LONG).show();
 		}
 
 		if(key.equals("activeNotification")) {

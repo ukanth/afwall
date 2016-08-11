@@ -453,6 +453,10 @@
     <string name="loading_data_title">Loading...</string>
     <string name="loading_data">Retrieving log data</string>
 
+    <string name="switch_old">Switch to old view</string>
+    <string name="switch_new">Switch to new view</string>
     <string name="showlogdetail_title">Application Log Details</string>
+    <string name="reapply_rules">Kindly reapply the rules because of ipv6 change</string>
+    <string name="reapply_rules_other">Kindly reapply the rules since iptables/dns values has been changed</string>
 
 </resources>

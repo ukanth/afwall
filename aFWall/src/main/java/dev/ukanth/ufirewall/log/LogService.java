@@ -233,7 +233,7 @@ public class LogService extends Service {
 		data.setIn(logInfo.in);
 		data.setLen(logInfo.len);
 		data.setProto(logInfo.proto);
-		data.setTimestamp(System.currentTimeMillis()+"");
+		data.setTimestamp(System.currentTimeMillis());
 		data.setSpt(logInfo.spt);
 		data.setUid(logInfo.uid);
 		data.setAppName(logInfo.appName);

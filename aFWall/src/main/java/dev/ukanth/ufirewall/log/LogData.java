@@ -17,7 +17,7 @@ public class LogData extends BaseModel {
     long id;
 
     @Column
-    private String uid;
+    private int uid;
 
     @Column
     private String appName;
@@ -29,17 +29,17 @@ public class LogData extends BaseModel {
     @Column
     private String proto;
     @Column
-    private String spt;
+    private int spt;
     @Column
     private String dst;
     @Column
-    private String len;
+    private int len;
     @Column
     private String src;
     @Column
-    private String dpt;
+    private int dpt;
     @Column
-    private String timestamp;
+    private long timestamp;
 
     public long getCount() {
         return count;
@@ -51,11 +51,11 @@ public class LogData extends BaseModel {
 
     private long count;
 
-    public String getUid() {
+    public int getUid() {
         return uid;
     }
 
-    public void setUid(String uid) {
+    public void setUid(int uid) {
         this.uid = uid;
     }
 
@@ -91,11 +91,11 @@ public class LogData extends BaseModel {
         this.proto = proto;
     }
 
-    public String getSpt() {
+    public int getSpt() {
         return spt;
     }
 
-    public void setSpt(String spt) {
+    public void setSpt(int spt) {
         this.spt = spt;
     }
 
@@ -107,11 +107,11 @@ public class LogData extends BaseModel {
         this.dst = dst;
     }
 
-    public String getLen() {
+    public int getLen() {
         return len;
     }
 
-    public void setLen(String len) {
+    public void setLen(int len) {
         this.len = len;
     }
 
@@ -123,19 +123,19 @@ public class LogData extends BaseModel {
         this.src = src;
     }
 
-    public String getDpt() {
+    public int getDpt() {
         return dpt;
     }
 
-    public void setDpt(String dpt) {
+    public void setDpt(int dpt) {
         this.dpt = dpt;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 

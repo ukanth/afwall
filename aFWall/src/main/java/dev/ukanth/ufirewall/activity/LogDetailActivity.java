@@ -44,11 +44,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -70,7 +67,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private SwipeRefreshLayout mSwipeLayout;
     protected Menu mainMenu;
 
-    private String uid;
+    private int uid;
     protected  static final int MENU_TOGGLE = -4;
     protected static final int MENU_CLEAR = 40;
     //protected static final int MENU_EXPORT_LOG = 47;
@@ -94,7 +91,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
-        uid = intent.getStringExtra("DATA");
+        uid = intent.getIntExtra("DATA", -1);
         // Load partially transparent black background
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -122,7 +119,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
-    private List<LogData> getLogData(final String uid) {
+    private List<LogData> getLogData(final int uid) {
         return SQLite.select()
                 .from(LogData.class)
                 .where(LogData_Table.uid.eq(uid))
@@ -230,42 +227,6 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         super.onCreateOptionsMenu(menu);
         mainMenu = menu;
         return true;
-    }
-
-
-    private List<LogData> updateMap(List<LogData> logDataList, CollectDetailLog collectLog) {
-        HashMap<String, LogData> logMap = new HashMap<>();
-        HashMap<String, Integer> count = new HashMap<>();
-        HashMap<String, Long> lastBlocked = new HashMap<>();
-        List<LogData> analyticsList = new ArrayList();
-        LogData tmpData;
-        int counter = 0;
-        for (LogData data : logDataList) {
-            collectLog.doProgress(counter++);
-            tmpData = data;
-            if (logMap.containsKey(data.getUid())) {
-                if (Long.parseLong(data.getTimestamp()) > lastBlocked.get(data.getUid())) {
-                    lastBlocked.put(data.getUid(), Long.parseLong(data.getTimestamp()));
-                    tmpData.setTimestamp(data.getTimestamp());
-                } else {
-                    tmpData.setTimestamp(lastBlocked.get(data.getUid()) + "");
-                }
-                //data already Present. Update the template here
-                count.put(data.getUid(), count.get(data.getUid()).intValue() + 1);
-                tmpData.setCount(count.get(data.getUid()).intValue());
-                logMap.put(data.getUid(), tmpData);
-            } else {
-                //process template here
-                count.put(data.getUid(), 1);
-                tmpData.setCount(1);
-                lastBlocked.put(data.getUid(), Long.parseLong(data.getTimestamp()));
-                logMap.put(data.getUid(), tmpData);
-            }
-        }
-        for (Map.Entry<String, LogData> entry : logMap.entrySet()) {
-            analyticsList.add(entry.getValue());
-        }
-        return analyticsList;
     }
 
 

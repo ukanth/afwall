@@ -67,7 +67,7 @@ public class OldLogActivity extends DataDumpActivity {
 
     protected void populateMenu(SubMenu sub) {
         sub.add(0, MENU_CLEARLOG, 0, R.string.clear_log).setIcon(R.drawable.clearlog);
-        sub.add(0, MENU_SWITCH_NEW, 0, "Switch To New View").setIcon(R.drawable.logs);
+        sub.add(0, MENU_SWITCH_NEW, 0, R.string.switch_new).setIcon(R.drawable.logs);
 
     }
 
@@ -85,6 +85,7 @@ public class OldLogActivity extends DataDumpActivity {
                 Intent i = new Intent(this, LogActivity.class);
                 G.oldLogView(false);
                 startActivity(i);
+                finish();
                 return true;
             case MENU_CLEARLOG:
                 Api.clearLog(ctx,

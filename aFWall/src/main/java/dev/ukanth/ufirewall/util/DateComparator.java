@@ -11,8 +11,8 @@ public class DateComparator implements Comparator<LogData>{
 
     @Override
     public int compare(LogData o1, LogData o2) {
-        Long o1_date = Long.parseLong(o1.getTimestamp());
-        Long o2_date = Long.parseLong(o2.getTimestamp());
+        Long o1_date = o1.getTimestamp();
+        Long o2_date = o2.getTimestamp();
         return (o1_date > o2_date) ? -1: (o1_date < o2_date) ? 0 : 1;
     }
 }

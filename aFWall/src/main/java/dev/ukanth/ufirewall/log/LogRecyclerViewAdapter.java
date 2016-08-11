@@ -58,7 +58,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
         data = logData.get(position);
         holder.bind(logData.get(position),recyclerItemClickListener);
         try {
-            info = Api.getPackageDetails(context, Integer.parseInt(data.getUid()));
+            info = Api.getPackageDetails(context, data.getUid());
             holder.icon.setImageDrawable(info.applicationInfo.loadIcon(context.getPackageManager()));
         } catch (Exception e) {
             info = null;
@@ -66,9 +66,9 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
         }
 
         try {
-            if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
-                holder.lastDenied.setText(pretty(new Date(System.currentTimeMillis() - Long.parseLong(data.getTimestamp()))));
-            }
+            //if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
+                holder.lastDenied.setText(pretty(new Date(System.currentTimeMillis() - data.getTimestamp())));
+            //}
         } catch (Exception e) {
             holder.lastDenied.setText("-");
         }
