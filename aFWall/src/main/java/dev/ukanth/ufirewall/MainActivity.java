@@ -1167,7 +1167,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 									});
 									fileDialog2.showDialog();
 								} else {
-									Api.donateDialog(getApplicationContext());
+									Api.donateDialog(MainActivity.this);
 								}
 								break;
 							case 2:
