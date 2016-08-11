@@ -60,6 +60,7 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.stericson.roottools.RootTools;
 
@@ -1109,6 +1110,11 @@ public final class Api {
 		callback.run(ctx, getBusyBoxPath(ctx,true) + " dmesg -c");
 	}
 
+	public static void purgeOldLog(){
+		long purgeInterval = System.currentTimeMillis() - 604800000;
+		new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
+	}
+
 	/**
 	 * Fetch kernel logs via busybox dmesg.  This will include {AFL} lines from
 	 * logging rejected packets.
@@ -1116,10 +1122,14 @@ public final class Api {
 	 * @return true if logging is enabled, false otherwise
 	 */
 	public static List<LogData> fetchLogs() {
+		//load min data
+		long loadInterval = System.currentTimeMillis() - 3600000;
 		List<LogData> log = SQLite.select()
 				.from(LogData.class)
+				.where(LogData_Table.timestamp.greaterThan(loadInterval))
 				.orderBy(LogData_Table.timestamp,true)
 				.queryList();
+		purgeOldLog();
 		//fetch last 100 records
 		if(log != null && log.size() > 100) {
 			return log.subList((log.size() - 100), log.size());

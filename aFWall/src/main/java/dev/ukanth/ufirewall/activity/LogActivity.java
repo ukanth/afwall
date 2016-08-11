@@ -42,7 +42,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -140,14 +139,14 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     private List<LogData> getLogData() {
         //load 3 day data
         long loadInterval = System.currentTimeMillis() - 259200000;
-        long purgeInterval = System.currentTimeMillis() - 604800000;
+
         List<LogData> logData = SQLite.select()
                 .from(LogData.class)
                 .where(LogData_Table.timestamp.greaterThan(loadInterval))
                 .orderBy(LogData_Table.timestamp,true)
                 .queryList();
         //auto purge old data - > week old data
-        new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
+        Api.purgeOldLog();
         return logData;
     }
 
