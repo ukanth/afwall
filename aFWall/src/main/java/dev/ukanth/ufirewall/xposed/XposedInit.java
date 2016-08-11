@@ -59,28 +59,14 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 Log.i(TAG, "Matched Package and now hooking: " + loadPackageParam.packageName);
                 reloadPreference();
                 interceptAFWall(loadPackageParam);
+                //hide lockscreen notification
+                hookLockScreen(loadPackageParam);
             }
-            //hide lockscreen notification
-            hookLockScreen(loadPackageParam);
-
-            //apply DROP to all chains
-            //hookFixLeak(loadPackageParam);
-            //enable when through settings
             interceptDownloadManager(loadPackageParam);
-            //interceptNet(loadPackageParam);
         } catch (XposedHelpers.ClassNotFoundError e) {
             Log.d(TAG, e.getLocalizedMessage());
         }
     }
-
-    /*private void hookFixLeak(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        //look for downloads
-        if(loadPackageParam.packageName.equals("com.android.providers.downloads")){
-            reloadPreference();
-            Log.i(TAG, "Applying IPTABLES Rules for LEAK");
-            Api.cleanupChains(getActivity());
-        }
-    }*/
 
     private void hookLockScreen(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (loadPackageParam.packageName.equals("com.android.systemui")) {
@@ -155,66 +141,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     }
 
-    /*private static class ChangePermission extends AsyncTask<Void, Void, Void> {
-        private Context context = null;
-        //private boolean suAvailable = false;
-
-        public ChangePermission setContext(Context context) {
-            this.context = context;
-            return this;
-        }
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            File prefsFile = new File(context.getFilesDir() + "/../shared_prefs/" + Api.PREFS_NAME + ".xml");
-            Log.d(TAG, "doInBackground File Path:" + prefsFile.getAbsolutePath() + "CanRead: " + prefsFile.canRead());
-            List<String> cmds = new ArrayList<String>();
-            cmds.add("chmod 0664 " + prefsFile.getAbsolutePath());
-            try {
-                Api.runScriptAsRoot(context, cmds, new StringBuilder());
-            } catch (IOException io) {
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void empty) {
-            File prefsFile = new File(context.getFilesDir() + "/../shared_prefs/" + Api.PREFS_NAME + ".xml");
-            Log.d(TAG, "After File Path:" + prefsFile.getAbsolutePath() + " , CanRead: " + prefsFile.canRead());
-
-        }
-    }*/
-
-    /*private void showNotification(Context context,String notificationText){
-        try {
-
-            final int ID_NOTIFICATION = 43345;
-
-            NotificationManager mNotificationManager = (NotificationManager) context
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-
-            Notification.Builder build = new Notification.Builder(context);
-            build.setOngoing(true);
-            build.setSmallIcon(R.drawable.notification_warn);
-            build.setContentTitle(context.getString(R.string.LeakDetected));
-            build.setContentText(notificationText);
-
-            if (Build.VERSION.SDK_INT <= 15) {
-                mNotificationManager.notify(ID_NOTIFICATION, build.getNotification());
-            } else {
-                mNotificationManager.notify(ID_NOTIFICATION, build.build());
-            }
-        }catch (Exception e) {
-            //Toast.makeText(context,notificationText,Toast.LENGTH_SHORT).show();
-        }
-
-    }*/
-
 
     private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) throws NoSuchMethodException {
         final ApplicationInfo applicationInfo = loadPackageParam.appInfo;
@@ -244,9 +170,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                 }
                             });
                         }
-                        // showNotification(context,"Denied access to Download Manager for application : " + applicationInfo.uid);
                     }
-                    //
                 }
             }
         };
@@ -272,7 +196,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                                 }
                             });
                         }
-                        //showNotification(context,"Attempted URL via DM : " + uri.toString());
                     }
                 }
             }
@@ -282,16 +205,13 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         XposedBridge.hookAllConstructors(downloadManagerRequest, hookDM);
 
         Class<?> instrumentation = findClass("android.app.Instrumentation", loadPackageParam.classLoader);
-
         XposedBridge.hookAllMethods(instrumentation, "newActivity", new XC_MethodHook() {
-
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 Activity mCurrentActivity = (Activity) param.getResult();
                 if (mCurrentActivity != null) {
                     setActivity(mCurrentActivity);
                 }
-                Log.d(TAG, "Current Activity : " + mCurrentActivity.getClass().getName());
             }
         });
 
