@@ -6,6 +6,7 @@ Version 2.5.2
 * Auto trim log database
 * Switch log viw bug
 * Crash on export and import
+* Re-moved Lock screen notification xposed,since it was draining battery
 * Updates languages
 
 Version 2.5.1
