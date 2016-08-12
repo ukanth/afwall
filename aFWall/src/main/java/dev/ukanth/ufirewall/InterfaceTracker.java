@@ -68,7 +68,9 @@ public final class InterfaceTracker {
 
     public static long LAST_APPLIED_TIMESTAMP;
 
+    private static final int NOTIF_ID = 10221;
     private static InterfaceDetails currentCfg = null;
+
 
 	/*private static class OldInterfaceScanner {
 
@@ -275,6 +277,7 @@ public final class InterfaceTracker {
         NotificationManager mNotificationManager =
                 (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        mNotificationManager.cancel(NOTIF_ID);
         // Artificial stack so that navigating backward leads back to the Home screen
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx)
                 .addParentStack(MainActivity.class)
@@ -292,6 +295,27 @@ public final class InterfaceTracker {
         mNotificationManager.notify(ERROR_NOTIFICATION_ID, notification);
     }
 
+    public static void notif(Context context,boolean cancel) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if(cancel) {
+            notificationManager.cancel(NOTIF_ID);
+        } else {
+            NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(context);
+            notiBuilder.setContentTitle(context.getString(R.string.applying_rules))
+                    .setContentText(context.getString(R.string.apply))
+                    .setPriority(NotificationCompat.PRIORITY_MIN)
+                    .setSmallIcon(R.drawable.widget_bg);
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+            stackBuilder.addParentStack(MainActivity.class);
+            stackBuilder.addNextIntent(new Intent(context, MainActivity.class));
+            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            notiBuilder.setContentIntent(pendingIntent);
+            notiBuilder.setContentText(context.getString(R.string.rules_applied)).setProgress(0, 0, false);
+            notificationManager.notify(NOTIF_ID, notiBuilder.build());
+        }
+    }
+
     public static void applyRulesOnChange(Context context, final String reason) {
         final Context ctx = context.getApplicationContext();
 
@@ -307,12 +331,15 @@ public final class InterfaceTracker {
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
 
+        notif(context,false);
+
         boolean ret = Api.fastApply(ctx, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
                     @Override
                     public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
+                            notif(ctx,true);
                             Log.i(TAG, reason + ": applied rules");
                         } else {
                             // error details are already in logcat
@@ -327,10 +354,11 @@ public final class InterfaceTracker {
                                                 LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
                                                 Log.d(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
                                                 Log.i(TAG, reason + ": applied rules");
+                                                notif(ctx,true);
                                             } else {
-										/*Api.setEnabled(ctx, false, false);
-										errorNotification(ctx);*/
-                                                //!!!! lets try one more time with full flush !!!!!
+                                                notif(ctx,true);
+                                                //start notification again
+                                                notif(ctx,false);
                                                 Api.flushAllRules(ctx, new RootCommand());
                                                 Api.applySavedIptablesRules(ctx, false, new RootCommand()
                                                         .setFailureToast(R.string.error_apply)
@@ -341,6 +369,8 @@ public final class InterfaceTracker {
                                                                     LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
                                                                     Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
                                                                     Log.i(TAG, reason + ": applied rules");
+                                                                    //cleanup the notification after applying rules
+                                                                    notif(ctx,true);
                                                                 } else {
                                                                     Api.cleanupChains(ctx);
                                                                     errorNotification(ctx);

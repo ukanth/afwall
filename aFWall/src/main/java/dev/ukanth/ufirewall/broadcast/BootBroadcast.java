@@ -38,7 +38,6 @@ import dev.ukanth.ufirewall.util.G;
 public class BootBroadcast extends BroadcastReceiver {
 	// private Handler mHandler = new Handler(Looper.getMainLooper());
 
-
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 
