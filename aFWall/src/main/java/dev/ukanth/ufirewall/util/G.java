@@ -77,7 +77,7 @@ public class G extends android.app.Application {
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
 	private static final String ACTIVE_NOTIFICATION = "activeNotification";
-	private static final String LOCK_NOTIFICATION = "lockScreenNotification";
+	//private static final String LOCK_NOTIFICATION = "lockScreenNotification";
 	
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";

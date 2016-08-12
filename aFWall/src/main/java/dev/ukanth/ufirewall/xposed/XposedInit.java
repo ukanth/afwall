@@ -60,7 +60,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 reloadPreference();
                 interceptAFWall(loadPackageParam);
                 //hide lockscreen notification
-                hookLockScreen(loadPackageParam);
+                //hookLockScreen(loadPackageParam);
             }
             interceptDownloadManager(loadPackageParam);
         } catch (XposedHelpers.ClassNotFoundError e) {

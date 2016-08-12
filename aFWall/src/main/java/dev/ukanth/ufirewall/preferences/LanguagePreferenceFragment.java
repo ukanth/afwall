@@ -24,7 +24,7 @@ public class LanguagePreferenceFragment extends PreferenceFragment implements
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.language_preferences);
 		checkXposed(findPreference("fixDownloadManagerLeak"),this.getActivity().getApplicationContext());
-		checkXposed(findPreference("lockScreenNotification"),this.getActivity().getApplicationContext());
+		//checkXposed(findPreference("lockScreenNotification"),this.getActivity().getApplicationContext());
 	}
 
 	public static void checkXposed(Preference pref, Context ctx) {
