@@ -190,10 +190,10 @@
   <string name="toast_error_disabling">AFWall+: Napaka pri izklopu!</string>
   <!-- Binary -->
   <string name="busybox_pref">Binarna datoteka Busybox</string>
-  <string name="system_bb">Sistemski BusyBox</string>
-  <string name="builtin_bb">Sistemska datoteka BusyBox</string>
-  <string name="system_ipt">Sistemski Iptables</string>
-  <string name="builtin_ipt">Sistemski iptables</string>
+  <string name="system_bb">Sistemska datoteka BusyBox</string>
+  <string name="builtin_bb">Vgrajena datoteka BusyBox</string>
+  <string name="system_ipt">Sistemska datoteka iptables</string>
+  <string name="builtin_ipt">Vgrajena datoteka iptables</string>
   <string name="auto">Avtomatsko</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Povezava z ogrodjem Xposed</string>

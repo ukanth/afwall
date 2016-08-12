@@ -1122,7 +1122,7 @@ public final class Api {
 	 * @return true if logging is enabled, false otherwise
 	 */
 	public static List<LogData> fetchLogs() {
-		//load min data
+		//load hour data
 		long loadInterval = System.currentTimeMillis() - 3600000;
 		List<LogData> log = SQLite.select()
 				.from(LogData.class)

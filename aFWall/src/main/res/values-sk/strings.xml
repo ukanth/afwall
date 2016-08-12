@@ -196,10 +196,10 @@
   <string name="builtin_ipt">Vstavané iptables</string>
   <string name="auto">Auto</string>
   <!-- XPOSED -->
-  <string name="XPosed_prefs_title">XPosed Related</string>
-  <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
-  <string name="LeakDetected">Leak Detected</string>
+  <string name="XPosed_prefs_title">Súvisiace s Xposed</string>
+  <string name="fixDownloadTitle">Opraviť únik cez DownloadManager</string>
+  <string name="fixDownloadTitleSummary">Pomocou Xposed zabráni aplikáciám sťahovanie dát pomocou vstavaného download managera aj po odmietnutí prístupu</string>
+  <string name="LeakDetected">Zistený únik</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Súvisiace s Tasker</string>
   <string name="disable_toaster">Zakázať Tasker toast upozornenia</string>
@@ -371,7 +371,7 @@
   <string name="error_nonsupported_details">AFWall+ zistil nepodporovanú superuser aplikáciu, ktorá je známa obchádzaním pravidiel firewallu. Keďže je to superuser aplikácia, AFWall+ nemôže túto chybu napraviť.</string>
   <string name="lockNotification">Skryť ikonu upozornenia na obrazovke uzamknutia</string>
   <string name="lockScreenNotification_summary">Skryť upozornenie na obrazovke uzamknutia</string>
-  <string name="menu_legend">Legends</string>
+  <string name="menu_legend">Legenda</string>
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
   <string name="log_deletedapp">Odstránená aplikácia</string>
@@ -381,7 +381,7 @@
   <string name="log_dst">Posledný cieľ:</string>
   <string name="log_src">Posledný zdroj:</string>
   <string name="log_proto">Posledný protokol:</string>
-  <string name="no_data_available">Please enable log service or no data</string>
+  <string name="no_data_available">Prosím, povoľte službu záznamu, inak nebudú uložené žiadne údaje</string>
   <string name="loading_data_title">Načítavanie...</string>
   <string name="loading_data">Načítavajú sa údaje záznamu</string>
 </resources>

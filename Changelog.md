@@ -1,5 +1,13 @@
 Changelog AFWall+
 ==================
+
+Version 2.5.2
+* Logs should load much faster
+* Auto trim log database
+* Switch log viw bug
+* Crash on export and import
+* Updates languages
+
 Version 2.5.1
 
 * Added Switchback option to Old Log view - Listen to users

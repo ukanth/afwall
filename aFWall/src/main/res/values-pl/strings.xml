@@ -8,7 +8,7 @@
   <!-- main -->
   <string name="app_name">AFWall+ </string>
   <string name="app_name_donate">AFWall + (dotacja)</string>
-  <string name="title_disabled">AFWall+ (DISABLED)</string>
+  <string name="title_disabled">AFWall+ (WYŁĄCZONY)</string>
   <string name="whitelist_array_item">Allow selected</string>
   <string name="blacklist_array_item">Block selected</string>
   <string name="showrules">Show rules</string>
@@ -18,7 +18,7 @@
   <string name="help">Pomoc</string>
   <string name="close">Zamknij</string>
   <string name="exit">Wyjście</string>
-  <string name="error_purge">Błąd usuwania iptables</string>
+  <string name="error_purge">Błąd czyszczenia iptables</string>
   <string name="error_binary">Błąd instalacji plików binarnych</string>
   <string name="error_migration">Błąd podczas migracji starych ustawień</string>
   <string name="error_refresh">Błąd odświeżania iptables</string>
@@ -49,22 +49,22 @@
   <string name="applying_rules">Applying iptables rules</string>
   <string name="saving_rules">Saving iptables rules</string>
   <string name="rules_applied">Reguły zostały zastosowane</string>
-  <string name="rules_saved">Rules saved</string>
+  <string name="rules_saved">Reguły zapisane</string>
   <string name="rules_deleted">Rules deleted</string>
   <string name="pass_titleset">Ustaw hasło</string>
   <string name="pass_titleget">Wymagane hasło</string>
   <string name="enterpass">Wprowadź hasło</string>
-  <string name="reenterpass">Confirm password</string>
+  <string name="reenterpass">Potwierdź hasło</string>
   <string name="error_write_pref">Error saving preferences</string>
   <string name="enternewpass">Wprowadź nowe hasło (zostaw puste aby usunąć):</string>
-  <string name="passdefined">Password lock enabled</string>
-  <string name="passremoved">Password lock disabled</string>
+  <string name="passdefined">Blokada hasłem włączona</string>
+  <string name="passremoved">Blokada hasłem wyłączona</string>
   <string name="passerror">Błąd zmiany hasła</string>
   <string name="working">Pracuję</string>
   <string name="reading_apps">Retrieving installed apps</string>
   <string name="mode">Tryb: </string>
   <string name="mode_header">Tryb: %s</string>
-  <string name="legend_clear">Clear All checkboxes on all columns</string>
+  <string name="legend_clear">Czyści wszystkie pola wyboru we wszystkich kolumnach</string>
   <string name="mode_whitelist">Allow selected</string>
   <string name="legend_whitelist">Selected apps will be granted to access internet</string>
   <string name="mode_blacklist">Block selected</string>
@@ -126,7 +126,7 @@
   <string name="import_rules">Import rules only</string>
   <string name="import_all">Import rules, profile settings, and preferences</string>
   <string name="export_rules_success">Exported to </string>
-  <string name="export_rules_fail">Export failed!</string>
+  <string name="export_rules_fail">Eksport nie powiódł się!</string>
   <string name="import_rules_success">Imported from </string>
   <string name="import_rules_fail">Import failed!</string>
   <string name="import_rules_missing">Brak pliku zasad!</string>
@@ -138,11 +138,11 @@
   <string name="enable_firewall_log_service">Włącz usługę dziennika zdarzeń</string>
   <string name="showlog_title">Logi firewalla</string>
   <string name="showlog_service_summary">Enable to show toast messages when a connection gets blocked </string>
-  <string name="enable_log">Enable log</string>
-  <string name="disable_log">Disable log</string>
-  <string name="log_disabled">Log disabled</string>
-  <string name="log_was_enabled">Log enabled</string>
-  <string name="log_was_disabled">Log disabled</string>
+  <string name="enable_log">Włącz logowanie</string>
+  <string name="disable_log">Wyłącz logowanie</string>
+  <string name="log_disabled">Logowanie wyłączone</string>
+  <string name="log_was_enabled">Logowanie włączone</string>
+  <string name="log_was_disabled">Logowanie wyłączone</string>
   <string name="log_toggle_failed">Błąd zmiany stanu dziennika zdarzeń</string>
   <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">Logi wyczyszczone</string>
@@ -150,7 +150,7 @@
   <string name="log_fetch_error">Błąd pobierania dziennika zdarzeń</string>
   <string name="log_parse_error">Błąd tworzenia dziennika zdarzeń</string>
   <string name="no_log">Log is empty</string>
-  <string name="LogAppName">App Name</string>
+  <string name="LogAppName">Nazwa aplikacji</string>
   <string name="LogPackBlock">Ilość zablokowanych pakietów</string>
   <string name="blocked">AFWall+ Blocked:</string>
   <string name="refresh">Odśwież</string>
@@ -211,7 +211,7 @@
   <string name="tasker_profile_applied">Tasker: Profil zastosowany prawidłowo</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
   <!-- IPv4/IPv6 -->
-  <string name="ipv6_title">IPv6 support</string>
+  <string name="ipv6_title">Wsparcie IPv6</string>
   <string name="ipv6_summary">Włącz wsparcie IPv6</string>
   <string name="ip6unavailable">Błąd: IPv6 wymaga \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Switch IPv6 rules</string>
@@ -240,21 +240,21 @@
   <string name="enableInboundTitle">Zezwól na połączenia przychodzące</string>
   <string name="enableInboundSummary">Zezwalaj na połączenia z sieci LAN do telefonu (Samba, sshd, AirDroid, itp.)</string>
   <!-- UI Preferences -->
-  <string name="ui_prefs_title">User interface</string>
+  <string name="ui_prefs_title">Interfejs użytkownika</string>
   <string name="log_prefs_title">Dziennik zdarzeń</string>
-  <string name="hideicons_pref_title">Hide app icons</string>
+  <string name="hideicons_pref_title">Ukryj ikony aplikacji</string>
   <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
   <string name="hideicons_pref_summary_off">Show App icons in the main view</string>
-  <string name="notify_pref_title">Enable notifications</string>
+  <string name="notify_pref_title">Włącz powiadomienia</string>
   <string name="syscolor_pref_title">System app color</string>
   <string name="syscolor_pref_summary_on">Color for all system apps</string>
-  <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
+  <string name="enableConfirmTitle">Potwierdź wyłączenie AFWall+</string>
   <string name="enableConfirm_summary_on">Zapora wyświetli potwierdzenie zanim zostanie wyłączona</string>
   <string name="showUid">Pokaż UID dla aplikacji</string>
   <string name="showuid_summary_on">Show app UID\'s in the main view</string>
   <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
   <string name="languages">Zmiana języka</string>
-  <string name="misc_header">Languages/Plugins</string>
+  <string name="misc_header">Języki/Dodatki</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Active rules</string>
   <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/wireless-data/roam/tether)</string>
@@ -277,7 +277,7 @@
   <string name="unselect_all">Clear all the selected apps?</string>
   <string name="check_all">Check all</string>
   <string name="invert_all">Invert all</string>
-  <string name="legend_invert">Invert all checkboxes on all columns</string>
+  <string name="legend_invert">Odwraca zaznaczenie wszystkich pól wyboru we wszystkich kolumnach</string>
   <string name="uncheck_all">Uncheck all</string>
   <string name="select_action">Wybierz opcję Akcja w kolumnie </string>
   <string name="roam">Roaming</string>
@@ -293,7 +293,7 @@
   <string name="pkg_sys">System</string>
   <string name="pkg_user">Użytkownik</string>
   <string name="backup_notexist">Brak kopii zapasowej. Proszę o eksport z menu.</string>
-  <string name="showFilter">Show filters</string>
+  <string name="showFilter">Pokaż filtry</string>
   <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
   <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
   <string name="enable_dns">Włącz DNS przez netd</string>
@@ -371,7 +371,7 @@
   <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
   <string name="lockNotification">Hide lockscreen notification icon</string>
   <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-  <string name="menu_legend">Legends</string>
+  <string name="menu_legend">Legenda</string>
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
   <string name="log_deletedapp">Deleted Application</string>

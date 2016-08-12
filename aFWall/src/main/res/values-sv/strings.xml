@@ -377,7 +377,7 @@
   <string name="log_deletedapp">Avinstallerad app</string>
   <string name="log_denied">Nekad:</string>
   <string name="log_times">gånger</string>
-  <string name="log_time">tid</string>
+  <string name="log_time">gång</string>
   <string name="log_dst">Senaste destination:</string>
   <string name="log_src">Senaste källa:</string>
   <string name="log_proto">Senaste protokoll:</string>
