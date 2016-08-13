@@ -4,7 +4,7 @@ Changelog AFWall+
 Version 2.5.2
 * New Feature: Auto-trim log database
 * Enhancement: Logs should load much faster
-* Change: Move lock screen notification back to Xposed, since it was draining battery
+* Change: Removed lock screen notification from Xposed module, since it was draining battery
 * Bug Fix: Fix switch log view bug
 * Bug Fix: Fix crash on export and import
 * Update: Translation updates
