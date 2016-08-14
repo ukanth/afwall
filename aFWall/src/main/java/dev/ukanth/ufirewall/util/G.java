@@ -61,6 +61,7 @@ public class G extends android.app.Application {
 	//private static final String ENABLE_LOG = "enableLog";
 	private static final String ENABLE_LOG_SERVICE = "enableLogService";
 	private static final String ENABLE_ADMIN = "enableAdmin";
+	private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
 	private static final String ENABLE_CONFIRM = "enableConfirm";
 	private static final String ENABLE_MULTI_PROFILE =  "enableMultiProfile";
 	private static final String SHOW_UID = "showUid"; 
@@ -239,6 +240,9 @@ public class G extends android.app.Application {
 
 	public static boolean enableAdmin() { return gPrefs.getBoolean(ENABLE_ADMIN, false); }
 	public static boolean enableAdmin(boolean val) { gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit(); return val; }
+
+	public static boolean enableDeviceCheck() { return gPrefs.getBoolean(ENABLE_DEVICE_CHECK, false); }
+	public static boolean enableDeviceCheck(boolean val) { gPrefs.edit().putBoolean(ENABLE_DEVICE_CHECK, val).commit(); return val; }
 
 	public static boolean enableConfirm() { return gPrefs.getBoolean(ENABLE_CONFIRM, false); }
 	//public static boolean enableConfirm(boolean val) { gPrefs.edit().putBoolean(ENABLE_CONFIRM, val).commit(); return val; }

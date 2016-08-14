@@ -25,7 +25,9 @@
 package dev.ukanth.ufirewall;
 
 import android.Manifest;
+import android.app.KeyguardManager;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -125,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
+
+	private static final int LOCK_VERIFICATION = 1212;
+
 
 	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 	private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
@@ -472,27 +477,51 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	}
 
+	public void deviceCheck() {
+		if (Build.VERSION.SDK_INT >= 21) {
+			if((G.isDoKey(getApplicationContext()) || G.isDonate()) ) {
+				KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+				if (keyguardManager.isKeyguardSecure()) {
+					Intent createConfirmDeviceCredentialIntent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
+					if (createConfirmDeviceCredentialIntent != null) {
+						try {
+							startActivityForResult(createConfirmDeviceCredentialIntent,LOCK_VERIFICATION);
+						} catch (ActivityNotFoundException e) {
+						}
+					}
+				} else {
+					Toast.makeText(this,getText(R.string.android_version),Toast.LENGTH_SHORT).show();
+				}
+			} else {
+				Api.donateDialog(MainActivity.this,true);
+			}
+		}
+	}
+
 	private boolean passCheck(){
-		switch (G.protectionLevel()) {
-			case "p0":
-				return true;
-			case "p1":
-				final String oldpwd = G.profile_pwd();
-				if (oldpwd.length() == 0) {
+		if(G.enableDeviceCheck()) {
+			deviceCheck();
+		} else {
+			switch (G.protectionLevel()) {
+				case "p0":
 					return true;
-				} else {
-					// Check the password
-					requestPassword();
-				}
-				break;
-			case "p2":
-				final String pwd = G.sPrefs.getString("LockPassword", "");
-				if (pwd.length() == 0) {
-					return true;
-				} else {
-					requestPassword();
-				}
-				break;
+				case "p1":
+					final String oldpwd = G.profile_pwd();
+					if (oldpwd.length() == 0) {
+						return true;
+					} else {
+						// Check the password
+						requestPassword();
+					}
+					break;
+				case "p2":
+					final String pwd = G.sPrefs.getString("LockPassword", "");
+					if (pwd.length() == 0) {
+						return true;
+					} else {
+						requestPassword();
+					}
+			}
 		}
 		return false;
 	}
@@ -1167,7 +1196,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 									});
 									fileDialog2.showDialog();
 								} else {
-									Api.donateDialog(MainActivity.this);
+									Api.donateDialog(MainActivity.this,false);
 								}
 								break;
 							case 2:
@@ -1351,6 +1380,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch(requestCode) {
+			case LOCK_VERIFICATION: {
+				switch (resultCode) {
+					case RESULT_OK:
+						showOrLoadApplications();
+						break;
+					default:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						break;
+				}
+			}
+			break;
+
 			case REQ_ENTER_PATTERN: {
 				switch (resultCode) {
 					case RESULT_OK:

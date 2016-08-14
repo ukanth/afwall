@@ -28,9 +28,11 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -1399,6 +1401,8 @@ public final class Api {
 	}
 
 
+
+
 	private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
 
 		private int exitCode = -1;
@@ -1754,27 +1758,35 @@ public final class Api {
 		
 	}
 
-	public static void donateDialog(final Context ctx){
-		new MaterialDialog.Builder(ctx).cancelable(false)
-				.title(R.string.buy_donate)
-				.content(R.string.donate_only)
-				.positiveText(R.string.buy_donate)
-				.negativeText(R.string.close)
-				.icon(ctx.getResources().getDrawable(R.drawable.ic_launcher))
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog dialog) {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
-						ctx.startActivity(intent);
-					}
+	public static void donateDialog(final Context ctx,boolean showToast){
+		if(showToast) {
+			Toast.makeText(ctx,ctx.getText(R.string.donate_only),Toast.LENGTH_LONG).show();
+		} else {
+			try {
+				new MaterialDialog.Builder(ctx).cancelable(false)
+						.title(R.string.buy_donate)
+						.content(R.string.donate_only)
+						.positiveText(R.string.buy_donate)
+						.negativeText(R.string.close)
+						.icon(ctx.getResources().getDrawable(R.drawable.ic_launcher))
+						.callback(new MaterialDialog.ButtonCallback() {
+							@Override
+							public void onPositive(MaterialDialog dialog) {
+								Intent intent = new Intent(Intent.ACTION_VIEW);
+								intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
+								ctx.startActivity(intent);
+							}
 
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						dialog.cancel();
-					}
-				})
-				.show();
+							@Override
+							public void onNegative(MaterialDialog dialog) {
+								dialog.cancel();
+							}
+						})
+						.show();
+			} catch(Exception e) {
+				Toast.makeText(ctx,ctx.getText(R.string.donate_only),Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
     /**

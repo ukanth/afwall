@@ -128,7 +128,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                     intent.putExtra("DATA",logData.getUid());
                     startActivity(intent);
                 } else {
-                    Api.donateDialog(LogActivity.this);
+                    Api.donateDialog(LogActivity.this,false);
                 }
                 // do what ever you want to do with it
             }
