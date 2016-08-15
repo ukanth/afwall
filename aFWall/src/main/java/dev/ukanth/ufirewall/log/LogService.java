@@ -251,24 +251,29 @@ public class LogService extends Service {
     }*/
 
     private void store(final LogInfo logInfo) {
-        data = new LogData();
-        data.setDst(logInfo.dst);
-        data.setOut(logInfo.out);
-        data.setSrc(logInfo.src);
-        data.setDpt(logInfo.dpt);
-        data.setIn(logInfo.in);
-        data.setLen(logInfo.len);
-        data.setProto(logInfo.proto);
-        data.setTimestamp(System.currentTimeMillis());
-        data.setSpt(logInfo.spt);
-        data.setUid(logInfo.uid);
-        data.setAppName(logInfo.appName);
-        FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(new ITransaction() {
-            @Override
-            public void execute(DatabaseWrapper databaseWrapper) {
-                data.save(databaseWrapper);
-            }
-        }).build().execute();
+        try {
+            data = new LogData();
+            data.setDst(logInfo.dst);
+            data.setOut(logInfo.out);
+            data.setSrc(logInfo.src);
+            data.setDpt(logInfo.dpt);
+            data.setIn(logInfo.in);
+            data.setLen(logInfo.len);
+            data.setProto(logInfo.proto);
+            data.setTimestamp(System.currentTimeMillis());
+            data.setSpt(logInfo.spt);
+            data.setUid(logInfo.uid);
+            data.setAppName(logInfo.appName);
+            FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(new ITransaction() {
+                @Override
+                public void execute(DatabaseWrapper databaseWrapper) {
+                    data.save(databaseWrapper);
+                }
+            }).build().execute();
+        } catch(Exception e){
+            Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
+        }
+
     }
 
     @Override

@@ -28,6 +28,7 @@ import android.Manifest;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -105,6 +106,7 @@ import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PAT
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener, RadioGroup.OnCheckedChangeListener {
 
+
 	//private TextView mSelected;
 	//private DrawerLayout mDrawerLayout;
 	//private ListView mDrawerList;
@@ -129,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
 
 	private static final int LOCK_VERIFICATION = 1212;
+	private static final int VERIFY_CHECK = 10000;
 
 
 	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
@@ -209,12 +212,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}*/
 
 		if(!G.hasRoot()) {
-			(new Startup()).setContext(this).execute();
+			(new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} else {
 			startRootShell();
 			passCheck();
 		}
 
+		//(new CheckingTask()).execute();
 	}
 
 	@Override
@@ -1393,6 +1397,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 			break;
 
+			case VERIFY_CHECK: {
+				Log.i(Api.TAG, "In VERIFY_CHECK");
+				switch (resultCode) {
+					case RESULT_OK:
+						G.isDo(true);
+						break;
+					case RESULT_CANCELED:
+						G.isDo(false);
+				}
+			}
+			break;
+
 			case REQ_ENTER_PATTERN: {
 				switch (resultCode) {
 					case RESULT_OK:
@@ -2088,5 +2104,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		super.onDestroy();
 	}
 
+	/**
+	 * Validate donate key is legit or not
+	 */
+	/*private class CheckingTask extends AsyncTask<Void, Void, Boolean> {
+
+		private ApplicationInfo mApplicationInfo;
+		private PackageInfo mPackageInfo;
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			try {
+				mApplicationInfo = getPackageManager().getApplicationInfo(
+						"dev.ukanth.ufirewall.donatekey", 0);
+				mPackageInfo = getPackageManager().getPackageInfo(
+						"dev.ukanth.ufirewall.donatekey", 0);
+			} catch (PackageManager.NameNotFoundException ignored) {
+			}
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			return mApplicationInfo != null && mPackageInfo != null && mPackageInfo.versionCode == 103;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean aBoolean) {
+			super.onPostExecute(aBoolean);
+			if (aBoolean) {
+				Log.i(Api.TAG, "Startning Activity to Verify Donate package");
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.setComponent(new ComponentName("dev.ukanth.ufirewall.donatekey",
+						"dev.ukanth.ufirewall.donatekey.MainActivity"));
+				startActivityForResult(intent, VERIFY_CHECK);
+			} else {
+				G.isDo(false);
+			}
+		}
+	}*/
 }
 

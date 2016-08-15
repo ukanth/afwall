@@ -182,7 +182,7 @@ public class G extends android.app.Application {
 				}
 
 			} catch (PackageManager.NameNotFoundException e) {
-
+				gPrefs.edit().putBoolean(REG_DO, false).commit();
 			}
 		}
 		return gPrefs.getBoolean(REG_DO, false);
