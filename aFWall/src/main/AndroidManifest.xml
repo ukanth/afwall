@@ -303,7 +303,6 @@
             android:authorities="${applicationId}"
             android:name="dev.ukanth.ufirewall.preferences.ShareProfilePreference"
             android:exported="true">
-            <!--<grant-uri-permission android:pathPattern=".*" />-->
         </provider>
     </application>
 

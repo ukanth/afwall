@@ -116,7 +116,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                         findClass("android.app.ActivityThread", null), "currentActivityThread");
                 context = (Context) callMethod(activityThread, "getSystemContext");
             }
-
             if (prefs == null) {
                 prefs = new XSharedPreferences(MY_APP);
                 prefs.makeWorldReadable();
@@ -129,10 +128,8 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 prefs.makeWorldReadable();
                 prefs.reload();
             }
-            if (pPrefs == null) {
-                pPrefs = new SharePreference(context, MY_APP, Api.PREFS_NAME);
-                Log.d(TAG, "Loaded pPrefs from AFWall");
-            }
+            //pPrefs = context.getSharedPreferences(Api.PREFS_NAME,Context.MODE_PRIVATE);
+            pPrefs = new SharePreference(context, MY_APP, Api.PREFS_NAME);
             Log.d(TAG, "Reloaded preferences from AFWall");
         } catch (Exception e) {
             Log.d(TAG, "Exception in reloading preferences" + e.getLocalizedMessage());
