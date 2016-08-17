@@ -72,8 +72,8 @@
         android:largeScreens="true"
         android:xlargeScreens="true"
      />
-    
-    <application 
+
+    <application
         android:hardwareAccelerated="false"
         android:allowBackup="false"
         android:supportsRtl="true"
@@ -81,11 +81,23 @@
         android:icon="@drawable/ic_launcher_free"
         android:label="@string/app_name"
         android:theme="@style/MyActionBarTheme"
-        android:launchMode="singleTask"
+        android:launchMode="singleTop"
         android:name="dev.ukanth.ufirewall.util.G" >
+
+        <!--WIP: uncomment following to get XPOSED working -->
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="Xposed related fixes for AFWall+" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="53" />
+
         <activity
             android:name="dev.ukanth.ufirewall.MainActivity"
-            android:excludeFromRecents="true"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
             android:hardwareAccelerated="true"
             android:label="@string/app_name" >
@@ -121,6 +133,10 @@
         </activity>
         <activity
             android:name="dev.ukanth.ufirewall.activity.LogActivity"/>
+        <activity
+            android:name="dev.ukanth.ufirewall.activity.OldLogActivity"/>
+        <activity
+            android:name="dev.ukanth.ufirewall.activity.LogDetailActivity"/>
         <activity android:name="dev.ukanth.ufirewall.activity.DataDumpActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -181,7 +197,7 @@
          <receiver 
              android:name="dev.ukanth.ufirewall.widget.StatusWidget"
              android:label="@string/widget_label_status"
-             android:icon="@drawable/on_off_widget">
+             android:icon="@drawable/preview_toggle">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/onoff_widget" />
@@ -194,7 +210,8 @@
         </receiver>
          <receiver 
              android:name="dev.ukanth.ufirewall.widget.ToggleWidget" 
-             android:label="@string/widget_label_settings">
+             android:label="@string/widget_label_settings"
+             android:icon="@drawable/preview_new">
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/toggle_widget" />
@@ -210,7 +227,8 @@
          <receiver android:name="dev.ukanth.ufirewall.widget.ToggleWidgetOld" android:label="@string/widget_label_settings_old">
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/toggle_widget_old" />
+                android:resource="@xml/toggle_widget_old"
+                android:icon="@drawable/preview_old"/>
 
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -223,7 +241,7 @@
 
         <activity
 		    android:name="haibison.android.lockpattern.LockPatternActivity"
-            android:theme="@style/Alp_42447968.Theme.Dialog.Dark"
+            android:theme="@style/Alp_42447968.Theme.Dark"
             tools:replace="android:theme"/>
 
         <!-- device admin -->
@@ -272,7 +290,6 @@
         </receiver>
         
         <service android:name="dev.ukanth.ufirewall.service.RootShell"/>
-        <service android:name="dev.ukanth.ufirewall.service.NflogService"/>
         <service android:name="dev.ukanth.ufirewall.log.LogService"/>
         
         <!--  Samsung MultiWindow Support -->
@@ -282,6 +299,12 @@
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W" android:resource="@dimen/app_minimumsize_w" />
 		<meta-data android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H" android:resource="@dimen/app_minimumsize_h" />
 
+        <provider
+            android:authorities="${applicationId}"
+            android:name="dev.ukanth.ufirewall.preferences.ShareProfilePreference"
+            android:exported="true">
+            <!--<grant-uri-permission android:pathPattern=".*" />-->
+        </provider>
     </application>
 
 </manifest>

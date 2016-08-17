@@ -7,29 +7,41 @@
         <item>Arabic</item>
         <item>Asturian</item>
         <item>Basque</item>
+        <item>Bengali</item>
+        <item>Catalin</item>
+
         <item>Czech</item>
         <item>Dutch</item>
         <item>French</item>
         <item>German</item>
         <item>Greek</item>
+
         <item>Hungarian</item>
         <item>Indonesian</item>
         <item>Italian</item>
         <item>Japanese</item>
         <item>Korean</item>
+
         <item>Polish</item>
         <item>Portuguese</item>
+        <item>Portuguese(Brazilian)</item>
+        <item>Romanian</item>
         <item>Russian</item>
+
         <item>Serbian (Cyrillic)</item>
         <item>Serbian</item>
+
         <item>Simplifed Chinese</item>
         <item>Slovak</item>
         <item>Slovenian</item>
         <item>Spanish</item>
         <item>Swedish</item>
+
         <item>Traditional Chinese</item>
         <item>Turkey</item>
         <item>Ukrainian</item>
+
+
 
     </string-array>
     
@@ -39,6 +51,10 @@
         <item>ar</item>
         <item>ast_ES</item>
         <item>eu</item>
+
+        <item>bn</item>
+        <item>ca</item>
+
         <item>cs</item>
         <item>nl</item>
         <item>fr</item>
@@ -51,6 +67,8 @@
         <item>ko</item>
         <item>pl</item>
         <item>pt</item>
+        <item>pt_BR</item>
+        <item>ro</item>
         <item>ru</item>
         <item>sr_CS</item>
         <item>sr</item>
@@ -62,7 +80,6 @@
         <item>zh_TW</item>
         <item>tr</item>
         <item>uk</item>
-
 
     </string-array>
 
@@ -85,8 +102,8 @@
         <item>system</item>
         <item>builtin</item>
     </string-array>
-    
-      <string-array name="busybox_binary">
+
+    <string-array name="busybox_binary">
         <item>@string/builtin_bb</item>
         <item>@string/system_bb</item>
     </string-array>
@@ -130,7 +147,20 @@
     </string-array>
 
 
-    <string-array name="sort_key">
+    <string-array name="toast_pos">
+        <item>@string/top</item>
+        <item>@string/center</item>
+        <item>@string/bottom</item>
+    </string-array>
+
+
+    <string-array name="toast_pos_val">
+        <item>top</item>
+        <item>center</item>
+        <item>bottom</item>
+    </string-array>
+
+  <!--  <string-array name="sort_key">
         <item>@string/defaultsort</item>
         <item>@string/lastupdated</item>
         <item>@string/uid</item>
@@ -140,6 +170,6 @@
         <item>s0</item>
         <item>s1</item>
         <item>s2</item>
-    </string-array>
+    </string-array>-->
 
 </resources>

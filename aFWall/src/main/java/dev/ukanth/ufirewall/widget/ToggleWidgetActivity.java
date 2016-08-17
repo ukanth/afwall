@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -36,10 +37,10 @@ public class ToggleWidgetActivity extends Activity {
 	
 		int xLayoutSize = relativeLayout.getWidth();
 		int yLayoutSize = relativeLayout.getHeight();
-		pieMenu.setSourceLocation(xLayoutSize,yLayoutSize);
+		pieMenu.setSourceLocation(xLayoutSize, yLayoutSize);
 		pieMenu.setIconSize(15, 30);
 		pieMenu.setTextSize(13);				
-		
+
 		pieMenu.setCenterCircle(new Close());
 		pieMenu.addMenuEntry(new Status());
 		pieMenu.addMenuEntry(new EnableFirewall());
@@ -48,8 +49,11 @@ public class ToggleWidgetActivity extends Activity {
 		if(G.enableMultiProfile()){
 			pieMenu.addMenuEntry(new Profiles());
 		}
-		
-		relativeLayout.addView(pieMenu);
+
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+
+		relativeLayout.addView(pieMenu,params);
 
 	}
 	

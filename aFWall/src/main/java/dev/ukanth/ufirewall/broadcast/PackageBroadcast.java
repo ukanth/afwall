@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
@@ -73,13 +74,11 @@ public class PackageBroadcast extends BroadcastReceiver {
                  Api.applications = null;
 			}
 		} else if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
-
 			final boolean updateApp = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
 
 			if (updateApp) {
 				// dont do anything
 				//1 check the package already added in firewall
-
 			} else {
 				// Force app list reload next time
 				Api.applications = null;
@@ -109,6 +108,10 @@ public class PackageBroadcast extends BroadcastReceiver {
 				.getSystemService(ns);
 
 		int icon = R.drawable.question;
+
+		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+			icon = R.drawable.notification_quest;
+		}
 		
 		final int HELLO_ID = 24556;
 

@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:layout_centerInParent="true"
     android:orientation="vertical"
+    android:layout_gravity="center_vertical|center_horizontal"
     android:gravity="center" android:id="@+id/widgetCircle" >
 
 </RelativeLayout>

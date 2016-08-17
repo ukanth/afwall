@@ -39,11 +39,14 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 	public static final String WIFI_AP_STATE_CHANGED_ACTION = "android.net.wifi.WIFI_AP_STATE_CHANGED";
 	public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
 	public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
-	public static final int WIFI_AP_STATE_DISABLING = 10;
+
+
+
+	/*public static final int WIFI_AP_STATE_DISABLING = 10;
 	public static final int WIFI_AP_STATE_DISABLED = 11;
 	public static final int WIFI_AP_STATE_ENABLING = 12;
 	public static final int WIFI_AP_STATE_ENABLED = 13;
-	public static final int WIFI_AP_STATE_FAILED = 14;
+	public static final int WIFI_AP_STATE_FAILED = 14;*/
 
 	@Override
 	public void onReceive(final Context context, Intent intent) {
@@ -54,26 +57,25 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-		
-		if(G.activeRules()){
+		if(G.activeRules()) {
 			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-		}
-		final Intent logIntent = new Intent(context, LogService.class);
-		if(G.enableLogService()){
-			 //check if the firewall is enabled
-			if(!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
-				//make sure kill all the klog ripper
-				context.stopService(logIntent);
-			} else{
-				//restart the service
-				context.stopService(logIntent);
-				context.startService(logIntent);
-			}
-		 } else {
+			final Intent logIntent = new Intent(context, LogService.class);
+			if (G.enableLogService()) {
+				//check if the firewall is enabled
+				if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
+					//make sure kill all the klog ripper
+					context.stopService(logIntent);
+				} else {
+					//restart the service
+					context.stopService(logIntent);
+					context.startService(logIntent);
+				}
+			} else {
 				//no internet - stop the service
-			 context.stopService(logIntent);
-		 }
+				context.stopService(logIntent);
+			}
+			//also make sure we default all chains to ACCEPT state
+			Api.cleanupChains(context);
+		}
 	}
-	
-	
 }

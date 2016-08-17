@@ -71,20 +71,16 @@
             android:key="enableConfirm"
             android:summary="@string/enableConfirm_summary_on"
             android:title="@string/enableConfirmTitle" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="disableTaskerToast"
-            android:summary="@string/disableTasterSummary"
-            android:title="@string/disable_toaster" />
 
 
-        <ListPreference
-            android:defaultValue="en"
+
+      <!--  <listpreference
+            android:defaultvalue="en"
             android:entries="@array/supported_languages"
-            android:entryValues="@array/supported_languages_code"
+            android:entryvalues="@array/supported_languages_code"
             android:key="locale"
             android:title="@string/languages" >
-        </ListPreference>
+        </listpreference>-->
     </PreferenceCategory>
 
 </PreferenceScreen>

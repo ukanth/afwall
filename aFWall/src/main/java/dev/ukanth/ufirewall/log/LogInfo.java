@@ -23,100 +23,65 @@
 
 package dev.ukanth.ufirewall.log;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-
 import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
-import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.List;
+
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
-public class LogInfo {
-	String uidString;
-	String in;
-	String out;
-	String proto;
-	String spt;
-	String dst;
-	String len;
-	String src;
-	String dpt;
-	String timestamp;
-	int totalBlocked; 
-	
+public class LogInfo{
+	public String uidString;
+	public String appName;
+	public int uid;
+	public String in;
+	public String out;
+	public String proto;
+	public int spt;
+	public String dst;
+	public int len;
+	public String src;
+	public int dpt;
+	public String timestamp;
+	int totalBlocked;
+
 	private HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address
-	private LogInfo() {
+	public LogInfo() {
 		this.dstBlocked = new HashMap<String, Integer>();
 	}
 
 	
-	public static String parseLog(Context ctx, String dmesg) {
+	public static String parseLog(Context ctx, List<LogData> listLogData) {
 		
-		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
+		//final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
 		final Integer unknownUID = -11;
 		StringBuilder res = new StringBuilder();
-		String line;
-		int start, end;
 		Integer appid;
-		String out, src, dst, proto, spt, dpt, len;
 		final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
 		LogInfo loginfo = null;
 
 		try {
-			while ((line = r.readLine()) != null) {
-				if (line.indexOf("{AFL}") == -1) continue;
-				appid = unknownUID;
-				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					appid = Integer.parseInt(line.substring(start+4, end));
-				}
-				
+			for(LogData logData: listLogData) {
+				appid =  logData.getUid();
+
 				loginfo = map.get(appid);
 				if (loginfo == null) {
 					loginfo = new LogInfo();
 				}
-				
-				if (((start=line.indexOf("DST=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dst = line.substring(start+4, end);
-					loginfo.dst = dst;
-				}
-				
-				if (((start=line.indexOf("DPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dpt = line.substring(start+4, end);
-					loginfo.dpt = dpt;
-				}
-				
-				if (((start=line.indexOf("SPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					spt = line.substring(start+4, end);
-					loginfo.spt = spt;
-				}
-				
-				if (((start=line.indexOf("PROTO=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					proto = line.substring(start+6, end);
-					loginfo.proto = proto;
-				}
-				
-				if (((start=line.indexOf("LEN=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					len = line.substring(start+4, end);
-					loginfo.len = len;
-				}
-				
-				if (((start=line.indexOf("SRC=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					src = line.substring(start+4, end);
-					loginfo.src = src;
-				}
-				
-				if (((start=line.indexOf("OUT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					out = line.substring(start+4, end);
-					loginfo.out = out;
-				}
+
+				loginfo.dst = logData.getDst();
+				loginfo.dpt = logData.getDpt();
+				loginfo.spt = logData.getSpt();
+				loginfo.proto = logData.getProto();
+				loginfo.len = logData.getLen();
+				loginfo.src = logData.getSrc();
+				loginfo.out = logData.getOut();
 				map.put(appid, loginfo);
-				
 				loginfo.totalBlocked += 1;
 				String unique = "[" + loginfo.proto + "]" + loginfo.dst + ":" + loginfo.dpt; 
 				if (loginfo.dstBlocked.containsKey(unique)) {
@@ -128,7 +93,7 @@ public class LogInfo {
 			final List<PackageInfoData> apps = Api.getApps(ctx,null);
 			Integer id;
 			String appName = "";
-			int appId = -11;
+			int appId = -1;
 			int totalBlocked;
 			for(int i = 0; i < map.size(); i++) {
 				StringBuilder address = new StringBuilder();
@@ -152,11 +117,20 @@ public class LogInfo {
 							address.append("\n");
 						}
 					}
-					res.append("AppID :\t" +  appId + "\n"  + ctx.getString(R.string.LogAppName) +":\t" + appName + "\n" 
-					+ ctx.getString(R.string.LogPackBlock) + ":\t" +  totalBlocked  + "\n");
-					res.append(address.toString());
-					res.append("\n\t---------\n");
-				}
+				res.append("AppID :\t");
+				res.append(appId);
+				res.append("\n");
+				res.append(ctx.getString(R.string.LogAppName));
+				res.append(":\t");
+				res.append(appName);
+				res.append("\n");
+				res.append(ctx.getString(R.string.LogPackBlock));
+				res.append(":\t");
+				res.append(totalBlocked);
+				res.append("\n");
+				res.append(address.toString());
+				res.append("\n\t---------\n");
+			}
 		} catch (Exception e) {
 			return null;
 		}
@@ -166,9 +140,9 @@ public class LogInfo {
 		return res.toString();
 	}
 
-	public static void parseLog(Context ctx, String dmesg, TextView textView) {
+	/*public static void parseLog(Context ctx, String dmesg, TextView textView) {
 		final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -11;
+		final Integer unknownUID = -1;
 		StringBuilder address = new StringBuilder();
 		String line;
 		int start, end;
@@ -184,6 +158,7 @@ public class LogInfo {
 				uid = unknownUID;
 				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
 					uid = Integer.parseInt(line.substring(start+4, end));
+					if(uid != null) logInfo.uid = uid+"";
 				}
 				
 				logInfo = new LogInfo();
@@ -223,6 +198,7 @@ public class LogInfo {
 					out = line.substring(start+4, end);
 					logInfo.out = out;
 				}
+
 				String appName = "";
 				if(uid != -1) {
 					if(!appNameMap.containsKey(uid)) {
@@ -238,8 +214,9 @@ public class LogInfo {
 						appName = appNameMap.get(uid);
 					}
 				} else {
-					appName = ctx.getString(R.string.kernel_item);
+					appName = ctx.getString(R.string.unknown_item);
 				}
+				logInfo.appName = appName;
 				address = new StringBuilder();
 				address.append(" " + appName + "(" + uid  + ")" + " ");
 				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
@@ -249,17 +226,17 @@ public class LogInfo {
 			Log.e(Api.TAG, e.getMessage());
 		}
 		
-	}
+	}*/
 	
 
-	public static String parseLogs(String result,final Context ctx) {
+	public static LogInfo parseLogs(String result,final Context ctx) {
 
 		final Integer unknownUID = -11;
-		StringBuilder address = new StringBuilder();
+		StringBuilder address;
 		int start, end;
 		Integer uid;
 		String out, src, dst, proto, spt, dpt, len;
-		LogInfo logInfo = null;
+		LogInfo logInfo = new LogInfo();
 
 		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
 		final List<PackageInfoData> apps = Api.getApps(ctx,null);
@@ -275,9 +252,10 @@ public class LogInfo {
 				if (((start = result.indexOf("UID=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					uid = Integer.parseInt(result.substring(start + 4, end));
+					if(uid != null) logInfo.uid = uid;
 				}
 
-				logInfo = new LogInfo();
+				//logInfo = new LogInfo();
 
 				if (((start = result.indexOf("DST=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
@@ -288,13 +266,13 @@ public class LogInfo {
 				if (((start = result.indexOf("DPT=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					dpt = result.substring(start + 4, end);
-					logInfo.dpt = dpt;
+					logInfo.dpt = Integer.parseInt(dpt);
 				}
 
 				if (((start = result.indexOf("SPT=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					spt = result.substring(start + 4, end);
-					logInfo.spt = spt;
+					logInfo.spt = Integer.parseInt(spt);
 				}
 
 				if (((start = result.indexOf("PROTO=")) != -1)
@@ -306,7 +284,7 @@ public class LogInfo {
 				if (((start = result.indexOf("LEN=")) != -1)
 						&& ((end = result.indexOf(" ", start)) != -1)) {
 					len = result.substring(start + 4, end);
-					logInfo.len = len;
+					logInfo.len = Integer.parseInt(len);
 				}
 
 				if (((start = result.indexOf("SRC=")) != -1)
@@ -337,16 +315,26 @@ public class LogInfo {
 				} else {
 					appName = ctx.getString(R.string.kernel_item);
 				}
+				logInfo.appName = appName;
 				address = new StringBuilder();
 				if(!G.getBlockedNotifyApps().contains(uid+"")) { 
-					address.append(ctx.getString(R.string.blocked) + " " + appName + "(" + uid  + ") -" + logInfo.dst + ":" +  logInfo.dpt + "\n");
+					address.append(ctx.getString(R.string.blocked));
+					address.append(" ");
+					address.append(appName);
+					address.append("(" + uid  + ") -");
+					address.append(logInfo.dst);
+					address.append(":");
+					address.append(logInfo.dpt);
+					address.append("\n");
 				}
-				return address.toString();
+				logInfo.uidString  = address.toString();
+				return logInfo;
+				//return address.toString();
 				
 			}
 		} catch (Exception e) {
 			Log.e(Api.TAG, e.getMessage());
 		}
-		return address.toString();
+		return logInfo;
 	}
 }

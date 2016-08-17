@@ -1,43 +1,28 @@
 package dev.ukanth.ufirewall.ui.about;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 
 
 public class AboutFragment extends Fragment {
 
-
-	private static final int SWIPE_MIN_DISTANCE = 120;
-	private static final int SWIPE_MAX_OFF_PATH = 250;
-	private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-	private GestureDetector gestureDetector;
-	View.OnTouchListener gestureListener;
-
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup group,
 			Bundle saved) {
 		View view = inflater.inflate(R.layout.help_about_content, group, false);
-
-		ActivitySwipeDetector swipe = new ActivitySwipeDetector();
-		view.findViewById(R.id.about_thirdsparty_credits).setOnTouchListener(swipe);
 		return view;
 	}
 
@@ -45,18 +30,11 @@ public class AboutFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		PackageInfo pInfo = null;
-		String version = "";
-		try {
-			pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
-		} catch (NameNotFoundException e) {
-			Log.e(Api.TAG, "Package not found", e);
-		}
-		version = pInfo.versionName;
-		
+		String version = BuildConfig.VERSION_NAME;
+
 		TextView text = (TextView) getActivity().findViewById(R.id.afwall_title);
 		String versionText = getString(R.string.app_name) + " (v" + version + ")";
-		if(G.isDo(getActivity().getApplicationContext()) || Api.getCurrentPackage(getActivity().getApplicationContext()).equals("dev.ukanth.ufirewall.donate")) {
+		if(G.isDoKey(getActivity().getApplicationContext()) || BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate")) {
 			versionText = versionText + " (Donate) " +  getActivity().getString(R.string.donate_thanks)+  ":)";
 		}
 		text.setText(versionText);
@@ -70,19 +48,8 @@ public class AboutFragment extends Fragment {
 		}
 	}
 
-	interface SwipeInterface {
 
-		public void bottom2top(View v);
-
-		public void left2right(View v);
-
-		public void right2left(View v);
-
-		public void top2bottom(View v);
-	}
-
-
-	class ActivitySwipeDetector implements View.OnTouchListener {
+	/*class ActivitySwipeDetector implements View.OnTouchListener {
 		static final String logTag = "ActivitySwipeDetector";
 		static final int MIN_DISTANCE = 100;
 		private float downX, downY, upX, upY;
@@ -145,5 +112,5 @@ public class AboutFragment extends Fragment {
 			}
 			return false;
 		}
-	}
+	}*/
 }

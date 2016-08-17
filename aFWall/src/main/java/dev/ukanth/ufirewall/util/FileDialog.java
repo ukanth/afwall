@@ -181,11 +181,16 @@ public class FileDialog {
                 }
             };
             String[] fileList1 = path.list(filter);
-            for (String file : fileList1) {
-                r.add(file);
+            if(fileList1 != null) {
+                for (String file : fileList1) {
+                    r.add(file);
+                }
             }
+
         }
-        fileList = (String[]) r.toArray(new String[]{});
+        if(r != null && r.size() > 0) {
+            fileList = (String[]) r.toArray(new String[]{});
+        }
     }
 
     private File getChosenFile(String fileChosen) {

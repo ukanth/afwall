@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
@@ -21,6 +22,8 @@ import android.view.animation.TranslateAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import dev.ukanth.ufirewall.util.G;
 
 public class RadialMenuWidget extends View {
 
@@ -130,26 +133,22 @@ public class RadialMenuWidget extends View {
 		super(context);
 
 		// Gets screen specs and defaults to center of screen
-		/*DisplayMetrics dm = new DisplayMetrics();
+		DisplayMetrics dm = new DisplayMetrics();
 		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		wm.getDefaultDisplay().getMetrics(dm);
 
-		Point size = new Point();
-		try {
-			wm.getDefaultDisplay().getRealSize(size);
-			//FIXME: handle large tablets
-			if (size.x > 1200) this.xPosition = size.x / 3;
-			else this.xPosition = size.x / 2;
+		/*Display mdisp = wm.getDefaultDisplay();
 
-			this.yPosition = size.y / 2;
-		} catch (NoSuchMethodError e) {
-			if (wm.getDefaultDisplay().getWidth() > 1200) {
-				this.xPosition = wm.getDefaultDisplay().getWidth() / 3;
-			} else {
-				this.xPosition = wm.getDefaultDisplay().getWidth() / 2;
-			}
-			this.yPosition = wm.getDefaultDisplay().getHeight() / 2;
-		}*/
+		Point mdispSize = new Point();
+		mdisp.getSize(mdispSize);
+		int maxX = mdispSize.x;
+		int maxY = mdispSize.y; */
+
+
+		this.xPosition = G.getWidgetX(context) / 2;
+		this.yPosition =  G.getWidgetY(context) / 2;
+
+
 
 		determineWedges();
 		onOpenAnimation();

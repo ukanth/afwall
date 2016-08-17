@@ -28,6 +28,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,12 +41,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.BuildConfig;
 
 public class G extends android.app.Application {
 
 	public static final String TAG = "AFWall";
 	
-	private static final String IS_ROOT_AVAIL = "isRootAvail";
+	private static final String HAS_ROOT = "hasRoot";
+	private static final String NO_CHAINS = "noOtherChains";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
 	private static final String REG_DO = "ipurchaseddonatekey";
@@ -51,9 +58,10 @@ public class G extends android.app.Application {
 	private static final String ENABLE_LAN = "enableLAN";
 	private static final String ENABLE_IPV6 = "enableIPv6";
 	private static final String ENABLE_INBOUND = "enableInbound";
-	private static final String ENABLE_LOG = "enableLog";
+	//private static final String ENABLE_LOG = "enableLog";
 	private static final String ENABLE_LOG_SERVICE = "enableLogService";
 	private static final String ENABLE_ADMIN = "enableAdmin";
+	private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
 	private static final String ENABLE_CONFIRM = "enableConfirm";
 	private static final String ENABLE_MULTI_PROFILE =  "enableMultiProfile";
 	private static final String SHOW_UID = "showUid"; 
@@ -62,6 +70,7 @@ public class G extends android.app.Application {
 	private static final String IPTABLES_PATH = "ip_path";
 	private static final String PROTECTION_OPTION = "passSetting";
 	private static final String BUSYBOX_PATH = "bb_path";
+	private static final String TOAST_POS = "toast_pos";
 	private static final String LANGUAGE = "locale";
 	private static final String SORT_BY = "sort";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
@@ -69,6 +78,7 @@ public class G extends android.app.Application {
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
 	private static final String ACTIVE_NOTIFICATION = "activeNotification";
+	//private static final String LOCK_NOTIFICATION = "lockScreenNotification";
 	
 	private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
 	private static final String LOG_TARGET = "logTarget";
@@ -85,6 +95,7 @@ public class G extends android.app.Application {
 	private static final String USE_PASSWORD_PATTERN = "usePatterns";
 	private static final String PATTERN_MAX_TRY = "patternMax";
 	private static final String PATTERN_STEALTH = "stealthMode";
+	private static final String ISKINGDETECT = "kingDetect";
 	
 	private static final String PWD_ENCRYPT= "pwdEncrypt";
 	
@@ -98,9 +109,16 @@ public class G extends android.app.Application {
 	private static final String ADDITIONAL_PROFILES = "plusprofiles";
 	
 	private static String AFWALL_PROFILE = "AFWallProfile";
+
+	private static String SHOW_LOG_TOAST = "showLogToasts";
 	
 	public static String[] profiles = { "AFWallPrefs" , AFWALL_PROFILE + 1 , AFWALL_PROFILE + 2, AFWALL_PROFILE + 3 };
-	
+
+
+	private static final String WIDGET_X = "widgetX";
+	private static final String WIDGET_Y = "widgetY";
+
+	private static final String  XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
 	
 	public static Context ctx;
 	public static SharedPreferences gPrefs;
@@ -124,56 +142,107 @@ public class G extends android.app.Application {
 	public static String profile_pwd() { return gPrefs.getString(profile_Pwd, ""); }
 	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
 
-	public static boolean isRootAvail() { return gPrefs.getBoolean(IS_ROOT_AVAIL, false); }
-	public static boolean isRootAvail(boolean val) { gPrefs.edit().putBoolean(IS_ROOT_AVAIL, val).commit(); return val; }
-	
+	public static boolean isXposedDM() { return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false); }
+	public static boolean isXposedDM(boolean val) { gPrefs.edit().putBoolean(XPOSED_FIX_DM_LEAK, val).commit(); return val; }
+
+
+	public static boolean hasRoot() { return gPrefs.getBoolean(HAS_ROOT, false); }
+	public static boolean hasRoot(boolean val) { gPrefs.edit().putBoolean(HAS_ROOT, val).commit(); return val; }
+
+
 	public static boolean activeNotification() { return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false); }
 	public static boolean activeNotification(boolean val) { gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit(); return val; }
-	
+
+	/*public static boolean lockNotification() { return gPrefs.getBoolean(LOCK_NOTIFICATION, false); }
+	public static boolean lockNotification(boolean val) { gPrefs.edit().putBoolean(LOCK_NOTIFICATION, val).commit(); return val; }*/
+
+
+	public static boolean showLogToasts() { return gPrefs.getBoolean(SHOW_LOG_TOAST, false); }
+	public static boolean showLogToasts(boolean val) { gPrefs.edit().putBoolean(SHOW_LOG_TOAST, val).commit(); return val; }
+
+
+	/*public static boolean noOtherChains() { return gPrefs.getBoolean(NO_CHAINS, false); }
+	public static boolean noOtherChains(boolean val) { gPrefs.edit().putBoolean(NO_CHAINS, val).commit(); return val; }*/
+
 	public static boolean fixLeak() { return gPrefs.getBoolean(FIX_START_LEAK, false); }
 	//public static boolean fixLeak(boolean val) { gPrefs.edit().putBoolean(FIX_START_LEAK, val).commit(); return val; }
 
 	public static boolean disableTaskerToast() { return gPrefs.getBoolean(DISABLE_TASKER_TOAST, false); }
 	//public static boolean disableTaskerToast(boolean val) { gPrefs.edit().putBoolean(DISABLE_TASKER_TOAST, val).commit(); return val; }
 
-	public static boolean isDo(Context ctx) {
+	public static boolean isDonate() {
+		return BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate");
+	}
+	public static boolean isDoKey(Context ctx) {
 		if(!gPrefs.getBoolean(REG_DO, false))  {
 			try {
 				ApplicationInfo app = ctx.getPackageManager().getApplicationInfo("dev.ukanth.ufirewall.donatekey", 0);
 				if(app!= null) {
 					gPrefs.edit().putBoolean(REG_DO, true).commit();
 				}
+
 			} catch (PackageManager.NameNotFoundException e) {
 
 			}
 		}
 		return gPrefs.getBoolean(REG_DO, false);
 	}
-	//public static boolean isDo(boolean val) { gPrefs.edit().putBoolean(REG_DO, val).commit(); return val; }
+
+	public static boolean oldLogView(boolean val) { gPrefs.edit().putBoolean("oldLogView", val).commit(); return val; }
+	public static boolean oldLogView() {return gPrefs.getBoolean("oldLogView", false); }
+
+	public static boolean isDo(boolean val) { gPrefs.edit().putBoolean(REG_DO, val).commit(); return val; }
 	
 	public static boolean enableRoam() { return gPrefs.getBoolean(ENABLE_ROAM, false); }
 	public static boolean enableRoam(boolean val) { gPrefs.edit().putBoolean(ENABLE_ROAM, val).commit(); return val; }
 
 	public static boolean enableVPN() { return gPrefs.getBoolean(ENABLE_VPN, false); }
-	//public static boolean enableVPN(boolean val) { gPrefs.edit().putBoolean(ENABLE_VPN, val).commit(); return val; }
+	public static boolean enableVPN(boolean val) { gPrefs.edit().putBoolean(ENABLE_VPN, val).commit(); return val; }
 
 	public static boolean enableLAN() { return gPrefs.getBoolean(ENABLE_LAN, true); }
 	public static boolean enableLAN(boolean val) { gPrefs.edit().putBoolean(ENABLE_LAN, val).commit(); return val; }
 
+	public static int getWidgetX(Context ctx) {
+		DisplayMetrics dm = new DisplayMetrics();
+		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+		wm.getDefaultDisplay().getMetrics(dm);
+		int defaultX = dm.widthPixels;
+		String x = gPrefs.getString(WIDGET_X, defaultX+"");
+		try {
+			defaultX = Integer.parseInt(x);
+		} catch (Exception exception){ }
+		return defaultX;
+	}
+
+	public static int getWidgetY(Context ctx) {
+		DisplayMetrics dm = new DisplayMetrics();
+		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+		wm.getDefaultDisplay().getMetrics(dm);
+		int defaultY = dm.heightPixels;
+		String y = gPrefs.getString(WIDGET_Y, defaultY+"");
+		try {
+			defaultY = Integer.parseInt(y);
+		} catch (Exception exception){ }
+		return defaultY;
+	}
+
 	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, false); }
-	//public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
+	public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
 
 	public static boolean enableInbound() { return gPrefs.getBoolean(ENABLE_INBOUND, false); }
 	//public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean(ENABLE_INBOUND, val).commit(); return val; }
 
-	public static boolean enableLog() { return gPrefs.getBoolean(ENABLE_LOG, false); }
-	public static boolean enableLog(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG, val).commit(); return val; }
+	/*public static boolean enableLog() { return gPrefs.getBoolean(ENABLE_LOG, false); }
+	public static boolean enableLog(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG, val).commit(); return val; }*/
 	
 	public static boolean enableLogService() { return gPrefs.getBoolean(ENABLE_LOG_SERVICE, false); }
-	//public static boolean enableLogService(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG_SERVICE, val).commit(); return val; }
+	public static boolean enableLogService(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG_SERVICE, val).commit(); return val; }
 
 	public static boolean enableAdmin() { return gPrefs.getBoolean(ENABLE_ADMIN, false); }
 	public static boolean enableAdmin(boolean val) { gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit(); return val; }
+
+	public static boolean enableDeviceCheck() { return gPrefs.getBoolean(ENABLE_DEVICE_CHECK, false); }
+	public static boolean enableDeviceCheck(boolean val) { gPrefs.edit().putBoolean(ENABLE_DEVICE_CHECK, val).commit(); return val; }
 
 	public static boolean enableConfirm() { return gPrefs.getBoolean(ENABLE_CONFIRM, false); }
 	//public static boolean enableConfirm(boolean val) { gPrefs.edit().putBoolean(ENABLE_CONFIRM, val).commit(); return val; }
@@ -186,6 +255,10 @@ public class G extends android.app.Application {
 	
 	public static boolean showFilter() { return gPrefs.getBoolean(SHOW_FILTER, false); }
 	public static boolean showFilter(boolean val) { gPrefs.edit().putBoolean(SHOW_FILTER, val).commit(); return val; }
+
+
+	public static boolean kingDetected() { return gPrefs.getBoolean(ISKINGDETECT, false); }
+	public static boolean kingDetected(boolean val) { gPrefs.edit().putBoolean(ISKINGDETECT, val).commit(); return val; }
 
 	//public static boolean notifyAppInstall() { return gPrefs.getBoolean(NOTIFY_INSTALL, false); }
 	//public static boolean notifyAppInstall(boolean val) { gPrefs.edit().putBoolean(NOTIFY_INSTALL, val).commit(); return val; }
@@ -202,6 +275,9 @@ public class G extends android.app.Application {
 	public static String bb_path() { return gPrefs.getString(BUSYBOX_PATH, "builtin"); }
 	public static String bb_path(String val) { gPrefs.edit().putString(BUSYBOX_PATH, val).commit(); return val; }
 
+	public static String toast_pos() { return gPrefs.getString(TOAST_POS, "bottom"); }
+	public static String toast_pos(String val) { gPrefs.edit().putString(TOAST_POS, val).commit(); return val; }
+
 	public static String locale() { return gPrefs.getString(LANGUAGE, "en"); }
 	public static String locale(String val) { gPrefs.edit().putString(LANGUAGE, val).commit(); return val; }
 
@@ -211,7 +287,7 @@ public class G extends android.app.Application {
 	}
 
 	public static void sortBy(String sort) {
-		gPrefs.edit().putString(SORT_BY, sort);
+		gPrefs.edit().putString(SORT_BY, sort).commit();
 	}
 
 	/*public static int storedPosition() { return gPrefs.getInt(LAST_STORED_PROFILE, 0); }
@@ -253,6 +329,9 @@ public class G extends android.app.Application {
 
 	//new protection list
 	public static String protectionLevel() {
+		if(gPrefs.getString(PROTECTION_OPTION, "p0").equals("Disable")) {
+			gPrefs.edit().putString(PROTECTION_OPTION,"p0").commit();
+		}
 		return gPrefs.getString(PROTECTION_OPTION, "p0");
 	}
 
@@ -264,9 +343,16 @@ public class G extends android.app.Application {
 		}
 		return data;
 	}
+
+	public static boolean isXposedEnabled() {
+		// will be used by XPosed to return true
+		return false;
+	}
 	
 	public void onCreate() {
 		super.onCreate();
+		FlowManager.init(new FlowConfig.Builder(this)
+				.openDatabasesOnInit(true).build());
 		ctx = this.getApplicationContext();
 		reloadPrefs();
 	}

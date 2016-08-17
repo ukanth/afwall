@@ -28,8 +28,11 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.KeyguardManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,17 +49,22 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
-import com.stericson.RootTools.RootTools;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +72,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -85,6 +94,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -92,10 +102,12 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
-import dev.ukanth.ufirewall.service.NflogService;
+import dev.ukanth.ufirewall.log.LogData;
+import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
+import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 /**
@@ -105,7 +117,7 @@ import eu.chainfire.libsuperuser.Shell.SU;
 public final class Api {
 	/** application logcat tag */
 	public static final String TAG = "AFWall";
-	
+
 	/** special application UID used to indicate "any application" */
 	public static final int SPECIAL_UID_ANY	= -10;
 	/** special application UID used to indicate the Linux Kernel */
@@ -137,9 +149,9 @@ public final class Api {
 	//for import/export rules
 	public static final String PREF_3G_PKG			= "AllowedPKG3G";
 	public static final String PREF_WIFI_PKG		= "AllowedPKGWifi";
-	public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
-	public static final String PREF_VPN_PKG			= "AllowedPKGVPN";
-	public static final String PREF_LAN_PKG			= "AllowedPKGLAN";
+	//public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
+	//public static final String PREF_VPN_PKG			= "AllowedPKGVPN";
+	//public static final String PREF_LAN_PKG			= "AllowedPKGLAN";
 	
 	//revertback to old approach for performance
 	public static final String PREF_3G_PKG_UIDS			= "AllowedPKG3G_UIDS";
@@ -241,9 +253,26 @@ public final class Api {
      * @param ctx context
      * @param msgText message
      */
-	public static void toast(Context ctx, CharSequence msgText) {
+	public static void toast(final Context ctx, final CharSequence msgText) {
 		if (ctx != null) {
-			Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
+			Handler mHandler = new Handler(Looper.getMainLooper());
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
+				}
+			});
+		}
+	}
+	public static void toast(final Context ctx, final CharSequence msgText, final int toastlen) {
+		if (ctx != null) {
+			Handler mHandler = new Handler(Looper.getMainLooper());
+			mHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(ctx, msgText, toastlen).show();
+				}
+			});
 		}
 	}
 	
@@ -309,12 +338,22 @@ public final class Api {
             Api.ipPath = dir + "run_pie " + dir + (setv6 ? "ip6tables":"iptables");
         }
 
-		Api.bbPath = getBusyBoxPath(ctx);
+		Api.bbPath = getBusyBoxPath(ctx,true);
 	}
-	
-	public static String getBusyBoxPath(Context ctx) {
-		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable()) {
+
+
+	/**
+	 * Determine toybox/busybox or built in
+	 * @param ctx
+	 * @param considerSystem
+	 * @return
+     */
+	public static String getBusyBoxPath(Context ctx,boolean considerSystem) {
+
+		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable() && considerSystem) {
 			return "busybox ";
+		} else if( RootTools.isToyboxAvailable()) {
+			return "toybox ";
 		} else {
             String dir = ctx.getDir("bin",0).getAbsolutePath();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
@@ -331,14 +370,14 @@ public final class Api {
      * @param ctx
      * @return
      */
-	public static String getKLogPath(Context ctx) {
+	/*public static String getKLogPath(Context ctx) {
         String dir = ctx.getDir("bin",0).getAbsolutePath();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             return dir + "/run_pie " +  dir + "/klogripper ";
         } else {
             return dir + "/klogripper ";
         }
-	}
+	}*/
 
     /**
      * Get NFLog Path
@@ -376,6 +415,7 @@ public final class Api {
 		out.close();
 		is.close();
 		// Change the permissions
+
 		Runtime.getRuntime().exec("chmod "+mode+" "+abspath).waitFor();
 	}
 	
@@ -474,7 +514,7 @@ public final class Api {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
 		
-		if (G.enableLog()) {
+		if (G.enableLogService()) {
 			if (G.logTarget().equals("LOG")) {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
 			} else if (G.logTarget().equals("NFLOG")) {
@@ -503,7 +543,7 @@ public final class Api {
 	 * @param cmds command list
 	 */
 	private static void addInterfaceRouting(Context ctx, List<String> cmds) {
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		for (String s : dynChains) {
@@ -524,20 +564,29 @@ public final class Api {
 		}
 
 		if (G.enableLAN() && !cfg.isTethered) {
-			if(setv6 && !cfg.lanMaskV6.equals("")) {
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-			} else if(!setv6 && !cfg.lanMaskV4.equals("")) {
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+
+			if(setv6) {
+				if(!cfg.lanMaskV6.equals("")){
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+				}
 			} else {
+				if(!cfg.lanMaskV4.equals("")) {
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+				}
+			}
+
+			if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
 				// No IP address -> no traffic.  This prevents a data leak between the time
 				// the interface gets an IP address, and the time we process the intent
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
 				// legitimate traffic from time to time, so we won't log the failures.
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				//TODO: Alternate to this update. breaking in
+				/*cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT"); */
+
 			}
 		} else {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
@@ -580,6 +629,11 @@ public final class Api {
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
 		List<String> cmds = new ArrayList<String>();
+
+		/*if(G.noOtherChains()) {
+			cmds.add("-F");
+			cmds.add("-X");
+		}*/
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 
@@ -759,7 +813,8 @@ public final class Api {
 			return false;
 		}
 
-		if (G.enableIPv6()) {
+		//TODO: InterfaceTracker.isIpV6() -- this is breaking custom script
+		if (G.enableIPv6() ) {
 			setIpTablePath(ctx, true);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
@@ -776,9 +831,12 @@ public final class Api {
 
 		rulesUpToDate = true;
 
-		if (G.logTarget().equals("NFLOG")) {
-			Intent intent = new Intent(ctx.getApplicationContext(), NflogService.class);
-			ctx.startService(intent);
+		if(G.kingDetected()) {
+			try {
+				flushAllRules(ctx, new RootCommand());
+			} catch (Exception e) {
+				Log.d(TAG, "Failed flusing firewall chains");
+			}
 		}
 
 		if (callback != null) {
@@ -795,12 +853,15 @@ public final class Api {
 					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 					}
+					cleanupChains(ctx);
 					toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
 				} else {
 					return true;
 				}
 			} catch (Exception e) {
+				//in case of exception rollback to default chains to ACCEPT
 				Log.e(TAG, "Exception while applying rules: " + e.getMessage());
+				cleanupChains(ctx);
 				if (showErrors) toast(ctx, ctx.getString(R.string.error_refresh) + e);
 			}
 			return false;
@@ -856,6 +917,7 @@ public final class Api {
 			StringBuilder newpkg_lan = new StringBuilder();
 
 			for (int i=0; i<apps.size(); i++) {
+				if(apps.get(i) != null) {
 					if (apps.get(i).selected_wifi) {
 						if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
 						newpkg_wifi.append(apps.get(i).uid);
@@ -879,6 +941,7 @@ public final class Api {
 						if (newpkg_lan.length() != 0) newpkg_lan.append('|');
 						newpkg_lan.append(apps.get(i).uid);
 					}
+				}
 			}
 			// save the new list of UIDs
 			Editor edit = prefs.edit();
@@ -994,8 +1057,22 @@ public final class Api {
 		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 	}
 
+	public static void applyQuick(Context ctx, List<String> cmds, RootCommand callback) {
+		List<String> out = new ArrayList<String>();
+
+		setIpTablePath(ctx, false);
+		iptablesCommands(cmds, out);
+
+		//related to #511, disable ipv6 but use startup leak.
+		if (G.enableIPv6() || G.fixLeak()) {
+			setIpTablePath(ctx, true);
+			iptablesCommands(cmds, out);
+		}
+		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+	}
+
 	/**
-	 * Delete all firewall rules.  For diagnostic purposes only.
+	 * Delete all kingroot firewall rules.  For diagnostic purposes only.
 	 * 
 	 * @param ctx application context
 	 * @param callback callback for completion
@@ -1032,23 +1109,34 @@ public final class Api {
 	 * @param callback Callback for completion status
 	 */
 	public static void clearLog(Context ctx, RootCommand callback) {
-		callback.run(ctx, getBusyBoxPath(ctx) + " dmesg -c");
+		callback.run(ctx, getBusyBoxPath(ctx,true) + " dmesg -c");
+	}
+
+	public static void purgeOldLog(){
+		long purgeInterval = System.currentTimeMillis() - 604800000;
+		new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
 	}
 
 	/**
 	 * Fetch kernel logs via busybox dmesg.  This will include {AFL} lines from
 	 * logging rejected packets.
 	 * 
-	 * @param ctx application context
-	 * @param callback Callback for completion status
 	 * @return true if logging is enabled, false otherwise
 	 */
-	public static boolean fetchLogs(Context ctx, RootCommand callback) {
-		if(G.logTarget().equals("LOG")) {
-			callback.run(ctx, getBusyBoxPath(ctx) + " dmesg");
-			return true;
-		} else {
-			return false;
+	public static List<LogData> fetchLogs() {
+		//load hour data
+		long loadInterval = System.currentTimeMillis() - 3600000;
+		List<LogData> log = SQLite.select()
+				.from(LogData.class)
+				.where(LogData_Table.timestamp.greaterThan(loadInterval))
+				.orderBy(LogData_Table.timestamp,true)
+				.queryList();
+		purgeOldLog();
+		//fetch last 100 records
+		if(log != null && log.size() > 100) {
+			return log.subList((log.size() - 100), log.size());
+		} else  {
+			return log;
 		}
 	}
 
@@ -1059,7 +1147,7 @@ public final class Api {
 	 * @param callback Callback for completion status
 	 */
 	public static void runIfconfig(Context ctx, RootCommand callback) {
-		callback.run(ctx, getBusyBoxPath(ctx) + " ifconfig -a");
+		callback.run(ctx, getBusyBoxPath(ctx,true) + " ifconfig -a");
 	}
 
 	public boolean isSuPackage(PackageManager pm, String suPackage) {
@@ -1096,11 +1184,11 @@ public final class Api {
 		String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
 		String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
 
-		List<Integer> selected_wifi = new ArrayList<Integer>();
-		List<Integer> selected_3g = new ArrayList<Integer>();
-		List<Integer> selected_roam = new ArrayList<Integer>();
-		List<Integer> selected_vpn = new ArrayList<Integer>();
-		List<Integer> selected_lan = new ArrayList<Integer>();
+		List<Integer> selected_wifi;
+		List<Integer> selected_3g;
+		List<Integer> selected_roam = new ArrayList<>();
+		List<Integer> selected_vpn = new ArrayList<>();
+		List<Integer> selected_lan = new ArrayList<>();
 
 
 		selected_wifi = getListFromPref(savedPkg_wifi_uid);
@@ -1124,7 +1212,7 @@ public final class Api {
 		try {
 			PackageManager pkgmanager = ctx.getPackageManager();
 			List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
-			SparseArray<PackageInfoData> syncMap = new SparseArray<PackageInfoData>();
+			SparseArray<PackageInfoData> syncMap = new SparseArray<>();
 			Editor edit = cachePrefs.edit();
 			boolean changed = false;
 			String name = null;
@@ -1145,7 +1233,7 @@ public final class Api {
 				boolean firstseen = false;
 				app = syncMap.get(apinfo.uid);
 				// filter applications which are not allowed to access the Internet
-				if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
+				if (app == null && !apinfo.packageName.equals("com.android.webview") && !apinfo.packageName.equals("com.google.android.webview") && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
 					continue;
 				}
 				// try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
@@ -1233,7 +1321,7 @@ public final class Api {
 				edit.commit();
 			}
 			/* convert the map into an array */
-			applications = new ArrayList<PackageInfoData>();
+			applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
 			for (int i = 0; i < syncMap.size(); i++) {
 				applications.add(syncMap.valueAt(i));
 			}
@@ -1263,7 +1351,56 @@ public final class Api {
 		return listUids;
 	}
 
-	
+	public static void removeNotification(Context context) {
+
+		final int NOTIF_ID = 33341;
+		String notificationText = "";
+
+		NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		mNotificationManager.cancel(NOTIF_ID);
+	}
+
+	public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo,SharedPreferences pPrefs) {
+		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context,false);
+		if(details.netEnabled) {
+			String mode = pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+			Log.i(TAG,"Calling isAppAllowed method from DM with Mode: " + mode);
+			switch ((details.netType)) {
+				case ConnectivityManager.TYPE_WIFI:
+					final String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+					Log.i(TAG,"DM check for UID: " + applicationInfo.uid);
+					Log.i(TAG,"DM allowed UIDs: " + savedPkg_wifi_uid);
+					if(mode.equals(Api.MODE_WHITELIST) && savedPkg_wifi_uid.contains(applicationInfo.uid +"")) {
+						return true;
+					} else if (mode.equals(Api.MODE_BLACKLIST) && !savedPkg_wifi_uid.contains(applicationInfo.uid +"")) {
+						return true;
+					} else {
+						return false;
+					}
+
+				case ConnectivityManager.TYPE_MOBILE:
+					String savedPkg_3g_uid = pPrefs.getString(PREF_3G_PKG_UIDS, "");
+					if(details.isRoaming ) {
+						savedPkg_3g_uid = pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+					}
+					Log.i(TAG,"DM check for UID: " + applicationInfo.uid);
+					Log.i(TAG,"DM allowed UIDs: " + savedPkg_3g_uid);
+					if(mode.equals(Api.MODE_WHITELIST) && savedPkg_3g_uid.contains(applicationInfo.uid +"")) {
+						return true;
+					} else if (mode.equals(Api.MODE_BLACKLIST) && !savedPkg_3g_uid.contains(applicationInfo.uid +"")) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+		}
+
+		return true;
+	}
+
+
 
 
 	private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
@@ -1396,14 +1533,12 @@ public final class Api {
 					installBinary(ctx, R.raw.iptables_x86, "iptables") &&
 					installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
 					installBinary(ctx, R.raw.nflog_x86, "nflog") &&
-					installBinary(ctx, R.raw.klogripper_x86,"klogripper") &&
                     installBinary(ctx, R.raw.run_pie_x86,"run_pie");
 		} else if (abi.startsWith("mips")) {
 			ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
 					  installBinary(ctx, R.raw.iptables_mips, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_mips, "nflog") &&
-					  installBinary(ctx, R.raw.klogripper_mips,"klogripper") &&
                       installBinary(ctx, R.raw.run_pie_mips,"run_pie");
 		} else {
 			// default to ARM
@@ -1411,7 +1546,6 @@ public final class Api {
 					  installBinary(ctx, R.raw.iptables_arm, "iptables") &&
 					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
 					  installBinary(ctx, R.raw.nflog_arm, "nflog") &&
-					  installBinary(ctx, R.raw.klogripper_arm,"klogripper") &&
                       installBinary(ctx, R.raw.run_pie_arm,"run_pie");
 		}
 
@@ -1421,7 +1555,7 @@ public final class Api {
 
 		if (showErrors) {
 			if (ret) {
-				displayToasts(ctx, R.string.toast_bin_installed, Toast.LENGTH_LONG);
+				toast(ctx, ctx.getString(R.string.toast_bin_installed));
 			} else {
 				toast(ctx, ctx.getString(R.string.error_binary));
 			}
@@ -1441,13 +1575,13 @@ public final class Api {
 		return ret;
 	}
 	
-	public static void displayToasts(Context context, int id, int length) {
+	/*public static void displayToasts(Context context, int id, int length) {
 		Toast.makeText(context, context.getString(id), length).show();
 	}
 	
 	public static void displayToasts(Context context, String text, int length) {
 		Toast.makeText(context, text, length).show();
-	}
+	}*/
 	
 	/**
 	 * Check if the firewall is enabled
@@ -1482,7 +1616,7 @@ public final class Api {
 		}
 		
 		if(G.activeNotification()) {
-			Api.showNotification(Api.isEnabled(ctx),ctx);
+			showNotification(Api.isEnabled(ctx),ctx);
 		}
 		
 		/* notify */
@@ -1565,6 +1699,29 @@ public final class Api {
 		return true;
 	}
 
+	public static PackageInfo getPackageDetails(Context ctx, String targetPackage) {
+		try {
+			final PackageManager pm = ctx.getPackageManager();
+			return pm.getPackageInfo(targetPackage,PackageManager.GET_META_DATA);
+		} catch (NameNotFoundException e) {
+			return null;
+		}
+	}
+
+	public static PackageInfo getPackageDetails(Context ctx, int uid) {
+		try {
+			final PackageManager pm = ctx.getPackageManager();
+			String[] packages = pm.getPackagesForUid(uid);
+			if(packages != null && packages.length > 0) {
+				return pm.getPackageInfo(packages[0],PackageManager.GET_META_DATA);
+			} else {
+				return null;
+			}
+		} catch (NameNotFoundException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Called when an application in removed (un-installed) from the system.
 	 * This will look for that application in the selected list and update the persisted values if necessary
@@ -1595,10 +1752,41 @@ public final class Api {
 			editor.commit();
 			if (isEnabled(ctx)) {
 				// .. and also re-apply the rules if the firewall is enabled
-				applySavedIptablesRules(ctx, false);
+				applySavedIptablesRules(ctx, false, new RootCommand());
 			}
 		}
 		
+	}
+
+	public static void donateDialog(final Context ctx,boolean showToast){
+		if(showToast) {
+			Toast.makeText(ctx,ctx.getText(R.string.donate_only),Toast.LENGTH_LONG).show();
+		} else {
+			try {
+				new MaterialDialog.Builder(ctx).cancelable(false)
+						.title(R.string.buy_donate)
+						.content(R.string.donate_only)
+						.positiveText(R.string.buy_donate)
+						.negativeText(R.string.close)
+						.icon(ctx.getResources().getDrawable(R.drawable.ic_launcher))
+						.callback(new MaterialDialog.ButtonCallback() {
+							@Override
+							public void onPositive(MaterialDialog dialog) {
+								Intent intent = new Intent(Intent.ACTION_VIEW);
+								intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
+								ctx.startActivity(intent);
+							}
+
+							@Override
+							public void onNegative(MaterialDialog dialog) {
+								dialog.cancel();
+							}
+						})
+						.show();
+			} catch(Exception e) {
+				Toast.makeText(ctx,ctx.getText(R.string.donate_only),Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
     /**
@@ -2023,7 +2211,7 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONObject object = new JSONObject(data);
-			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "enableLog" , "sort", "storedProfile"};
+			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot"};
 			List<String> ignoreList = Arrays.asList(ignore);
 			JSONArray prefArray = (JSONArray) object.get("prefs");
 			for(int i = 0 ; i < prefArray.length(); i++){
@@ -2042,7 +2230,7 @@ public final class Api {
 		            			//handle Long
 		            			if(key.equals("multiUserId")) {
 		            				G.gPrefs.edit().putLong(key, Long.parseLong(value)).commit();
-		            			} else if(key.equals("patternMax")) {
+		            			} else if(key.equals("patternMax") || key.equals("widgetX") || key.equals("widgetY")) {
 		            				G.gPrefs.edit().putString(key, value).commit();
 		            			} else {
 		            				Integer intValue = Integer.parseInt(value);
@@ -2163,7 +2351,7 @@ public final class Api {
 		File file = new File(fileName);
 		//new format
 		if(file.exists()) {
-			res = importRules(ctx,file,builder);
+			res = importRules(ctx, file, builder);
 		} /*else {
 			File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
 			file = new File(dir, "backup.rules");
@@ -2248,14 +2436,14 @@ public final class Api {
 				G.logTarget("NFLOG");
 				Log.d(TAG, "logging using NFLOG target");
 			} else {
-				Log.e(TAG, "could not find LOG or NFLOG target");
+				Log.d(TAG, "could not find LOG or NFLOG target");
 				//displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
 				G.logTarget("");
-				G.enableLog(false);
+				G.enableLogService(false);
 				return;
 			}
 
-			G.enableLog(true);
+			G.enableLogService(true);
 			updateLogRules(ctx, new RootCommand()
 				.setReopenShell(true)
 				.setSuccessToast(R.string.log_was_enabled)
@@ -2267,7 +2455,7 @@ public final class Api {
 	public static void setLogging(final Context ctx, boolean isEnabled) {
 		if (!isEnabled) {
 			// easy case: just disable
-			G.enableLog(false);
+			G.enableLogService(false);
 			G.logTarget("");
 			updateLogRules(ctx, new RootCommand()
 				.setReopenShell(true)
@@ -2338,9 +2526,38 @@ public final class Api {
                         return false;
                 if ((new File("/proc/net/ip_tables_targets")).exists() == false) 
                         return false;
-        }
+        }else {
+			if (!hasKernelFeature("CONFIG_NETFILTER=") ||
+					!hasKernelFeature("CONFIG_IP_NF_IPTABLES=") ||
+					!hasKernelFeature("CONFIG_NF_NAT"))
+				return false;
+		}
         return true;
     }
+
+	public static boolean hasKernelFeature(String feature) {
+		try {
+			File cfg = new File("/proc/config.gz");
+			if (cfg.exists() == false) {
+				return true;
+			}
+			FileInputStream fis = new FileInputStream(cfg);
+			GZIPInputStream gzip = new GZIPInputStream(fis);
+			BufferedReader in = null;
+			String line = "";
+			in = new BufferedReader(new InputStreamReader(gzip));
+			while ((line = in.readLine()) != null) {
+				if (line.startsWith(feature)) {
+					gzip.close();
+					return true;
+				}
+			}
+			gzip.close();
+		} catch (IOException e) {
+			//e.printStackTrace();
+		}
+		return false;
+	}
 	
 	private static void initSpecial() {
 		if(specialApps == null || specialApps.size() == 0){
@@ -2360,7 +2577,10 @@ public final class Api {
 	
 	public static void updateLanguage(Context context, String lang) {
 	    if (!"".equals(lang)) {
-	        Locale locale = new Locale(lang);
+			Locale locale = new Locale(lang);
+			if(lang.contains("_")) {
+				locale = new Locale(lang.split("_")[0],lang.split("_")[1]);
+			}
 	        Resources res = context.getResources();
 			DisplayMetrics dm = res.getDisplayMetrics();
 			Configuration conf = res.getConfiguration();
@@ -2499,19 +2719,28 @@ public final class Api {
         return decryptStr;
     }
 	
-	public static void killLogProcess(final Context ctx,final String klogPath){
+	/*public static void killLogProcess(final Context ctx,final String klogPath){
 		Thread thread = new Thread(){
 		    @Override
 		    public void run() {
-		    	try {
-		    		new RootCommand().run(ctx, Api.getBusyBoxPath(ctx) + " pkill " + klogPath);
-		    	}catch(Exception e) {
-		    		Log.e(TAG,e.getMessage());
-		    	}
+				//use built-in busybox to kill the process
+				try {
+					new RootCommand().run(ctx, Api.getBusyBoxPath(ctx, false) + " pkill klogripper");
+				}catch(Exception e) {
+					//another attempt to use killall command from system busybox
+					try {
+						new RootCommand().run(ctx, Api.getBusyBoxPath(ctx,true) + " killall klogripper");
+					}catch(Exception ee) {
+						// what if this also failed ? try using normal android way
+						new RootCommand().run(ctx, "echo $(ps | grep klogripper) | cut -d' ' -f2 | xargs kill");
+						Log.e(TAG,ee.getMessage());
+					}
+				}
+
 		    }
 		};
 		thread.start();
-	}
+	}*/
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
     	boolean hasMobileData = true;
@@ -2546,12 +2775,24 @@ public final class Api {
 
 			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
-
-
 			Intent appIntent = new Intent(context, MainActivity.class);
-			//appIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			PendingIntent in = PendingIntent.getActivity(context, 2, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+			TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+			stackBuilder.addParentStack(MainActivity.class);
+			stackBuilder.addNextIntent(appIntent);
+
+			/*appIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			appIntent.setAction(Long.toString(System.currentTimeMillis()));*/
+
+
+			//PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+			PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+			builder.setContentIntent(resultPendingIntent);
+
 			int icon = R.drawable.notification;
+
 
 			if(status) {
 				if(G.enableMultiProfile()) {
@@ -2579,9 +2820,15 @@ public final class Api {
 				}
 				//notificationText = context.getString(R.string.active);
 				icon = R.drawable.active;
+				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+					icon = R.drawable.notification;
+				}
 			} else {
 				notificationText = context.getString(R.string.inactive);
 				icon = R.drawable.error;
+				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+					icon = R.drawable.notification_error;
+				}
 			}
 
 			//TODO: Action button's on notification
@@ -2592,16 +2839,60 @@ public final class Api {
 			builder.setSmallIcon(icon).setOngoing(true)
 					.setAutoCancel(false)
 					.setContentTitle(context.getString(R.string.app_name))
+					//keep the priority as low ,so it's not visible on lockscreen
 					.setTicker(context.getString(R.string.app_name))
 							//.addAction(R.drawable.apply, "", pendingIntentCancel)
 							//.addAction(R.drawable.exit, "", pendingIntentCancel)
 					.setContentText(notificationText);
 
-			builder.setContentIntent(in);
+			Notification notification = builder.build();
+			notification.flags = Notification.FLAG_ONGOING_EVENT;
 
-			mNotificationManager.notify(NOTIF_ID, builder.build());
+			/*if(G.lockNotification() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+				builder.setVisibility(NotificationCompat.PRIORITY_LOW);
+			}*/
+			//builder.setContentIntent(in);
+			mNotificationManager.notify(NOTIF_ID, notification);
 		}
 
     	
     }
+
+	public static void cleanupChains(Context ctx) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P INPUT ACCEPT");
+		cmds.add("-P FORWARD ACCEPT");
+		cmds.add("-P OUTPUT ACCEPT ");
+		applyQuick(ctx,cmds, new RootCommand());
+	}
+
+	/**
+	 * Delete all firewall rules.  For diagnostic purposes only.
+	 *
+	 * @param ctx application context
+	 * @param callback callback for completion
+	 */
+	public static void flushOtherRules(Context ctx, RootCommand callback) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-F firewall");
+		cmds.add("-X firewall");
+		apply46(ctx, cmds, callback);
+	}
+
+	public static boolean hasRoot()
+	{
+		final boolean[] hasRoot = new boolean[1];
+		Thread t = new Thread(){
+			@Override
+			public void run(){
+				hasRoot[0] = Shell.SU.available();
+			}
+		};
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+		}
+		return hasRoot[0];
+	}
 }

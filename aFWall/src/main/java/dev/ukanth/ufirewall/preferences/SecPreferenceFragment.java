@@ -1,6 +1,7 @@
 package dev.ukanth.ufirewall.preferences;
 
 import android.annotation.SuppressLint;
+import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,12 +10,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.text.InputType;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -22,7 +26,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import haibison.android.lockpattern.LockPatternActivity;
-import haibison.android.lockpattern.util.AlpSettings;
+import haibison.android.lockpattern.utils.AlpSettings;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -38,6 +42,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 		OnSharedPreferenceChangeListener {
 
 	private static CheckBoxPreference enableAdminPref;
+	private static CheckBoxPreference enableDeviceCheckPref;
 
 	private static final int REQ_CREATE_PATTERN = 9877;
 	private static final int REQ_ENTER_PATTERN = 9755;
@@ -48,6 +53,8 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
 	private static ComponentName deviceAdmin;
 	private static DevicePolicyManager mDPM;
+
+	private Context globalContext = null;
 
 	//private String passOption = "p0";
 
@@ -70,7 +77,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 				.getApplicationContext(), AdminDeviceReceiver.class);
 		super.onCreate(savedInstanceState);
 
-
+		globalContext = this.getActivity();
 
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.security_preferences);
@@ -78,14 +85,46 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 		//backward compatibility
 		preSelectListForBackward();
 
+		setupDeviceSecurityCheck(findPreference("enableDeviceCheck"));
 		setupEnableAdmin(findPreference("enableAdmin"));
 
 		//passOption = G.protectionLevel();
 	}
 
+	private void setupDeviceSecurityCheck(Preference pref) {
+		PreferenceCategory mCategory = (PreferenceCategory) findPreference("securitySetting");
+		enableDeviceCheckPref = (CheckBoxPreference) pref;
+		if (Build.VERSION.SDK_INT >= 21) {
+			//only for donate version
+			if((G.isDoKey(getActivity()) || G.isDonate()) ) {
+				if(globalContext != null) {
+					KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(Context.KEYGUARD_SERVICE);
+					//enable only when keyguard has set
+					if (keyguardManager.isKeyguardSecure()) {
+						enableDeviceCheckPref.setEnabled(true);
+					} else {
+						enableDeviceCheckPref.setEnabled(false);
+						enableDeviceCheckPref.setChecked(false);
+					}
+				}
+			} else {
+				enableDeviceCheckPref.setEnabled(false);
+				enableDeviceCheckPref.setChecked(false);
+			}
+		} else {
+			//remove this option for older devices
+			mCategory.removePreference(enableDeviceCheckPref);
+		}
+	}
+
+
 	private void preSelectListForBackward() {
 
 		final ListPreference itemList = (ListPreference)findPreference("passSetting");
+		//remove other option
+		if (Build.VERSION.SDK_INT < 21) {
+			itemList.setEntries(itemList.getEntries());
+		}
 		if(itemList != null) {
 			switch(G.protectionLevel()) {
 				case "p0":
@@ -96,6 +135,15 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					break;
 				case "p2":
 					itemList.setValueIndex(2);
+					break;
+				/*case "p3":
+					itemList.setValueIndex(3);
+					break;*/
+				case "Disable":
+					itemList.setValueIndex(0);
+					break;
+				default:
+					itemList.setValueIndex(0);
 					break;
 			}
 		}
@@ -123,7 +171,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 			G.isEnc(false);
 			msg = res.getString(R.string.passremoved);
 		}*/
-		Api.displayToasts(getActivity(), msg, Toast.LENGTH_SHORT);
+		Api.toast(getActivity(), msg, Toast.LENGTH_SHORT);
 	}
 
 	/**
@@ -158,6 +206,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 				//get the two inputs
 				if(firstPass.getText().toString().equals(secondPass.getText().toString())){
 					setPassword(firstPass.getText().toString());
+					G.enableDeviceCheck(false);
 					dialog.dismiss();
 				} else {
 					Api.toast(getActivity(), getString(R.string.settings_pwd_not_equal));
@@ -194,16 +243,6 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 				case "p0":
 					//disable password completly -- add reconfirmation based on current index
 					confirmResetPasswords(itemList);
-					//reset pattern
-					/*final SharedPreferences.Editor editor = G.sPrefs.edit();
-					editor.putString("LockPassword", "");
-					editor.commit();
-
-					//reset password
-					G.profile_pwd("");
-					G.isEnc(false);*/
-
-					//itemList.setValueIndex(0);
 					break;
 				case "p1":
 					//use the existing method to protect password
@@ -213,9 +252,8 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					//use the existing method to protect password
 					showPatternActivity();
 					break;
-				case "p3":
-					//only for donate version
-					break;
+				/*case "p3":
+					break;*/
 			}
 			//passOption = "p" + index;
 
@@ -239,13 +277,11 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 			} else {
 				if (mDPM.isAdminActive(deviceAdmin)) {
 					mDPM.removeActiveAdmin(deviceAdmin);
-					Api.displayToasts(this.getActivity()
-							.getApplicationContext(),
-							R.string.device_admin_disabled, Toast.LENGTH_LONG);
+					Api.toast(this.getActivity().getApplicationContext(),
+							getString(R.string.device_admin_disabled), Toast.LENGTH_LONG);
 				}
 			}
 		}
-		
 		if (key.equals("enableStealthPattern")) {
 			AlpSettings.Display.setStealthMode(this.getActivity().getApplicationContext(),
 					G.enableStealthPattern());
@@ -334,6 +370,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 					final SharedPreferences.Editor editor = G.sPrefs.edit();
 					editor.putString("LockPassword", new String(pattern));
 					editor.commit();
+					G.enableDeviceCheck(false);
 					//enable
 					if(itemList != null) {
 						final ListPreference patternMaxTry = (ListPreference)findPreference("patternMax");
@@ -364,10 +401,10 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 				} else {
 					if(itemList != null) {
 						itemList.setValueIndex(2);
+						G.enableDeviceCheck(false);
 					}
 				}
 			}
 		}
 	}
-
 }

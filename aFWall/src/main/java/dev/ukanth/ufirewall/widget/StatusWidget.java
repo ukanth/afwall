@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -63,8 +64,9 @@ public class StatusWidget extends AppWidgetProvider {
 			*/
 			final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
-			
-			if (!enabled && !G.protectionLevel().equals("p0")) {
+
+			Log.d(Api.TAG, "Protection Level: " + G.protectionLevel());
+			if (!G.protectionLevel().equals("p0")) {
 				Toast.makeText(context, R.string.widget_disable_fail,Toast.LENGTH_SHORT).show();
 				return;
 			}

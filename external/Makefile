@@ -39,7 +39,7 @@ CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
 		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2 -fvisibility=default -fPIE" \
                   LDFLAGS="-rdynamic -pie" \
 
-PER_ARCH_TARGETS := iptables busybox nflog klogripper run_pie
+PER_ARCH_TARGETS := iptables busybox nflog run_pie
 
 .PHONY: all unpack clean
 all: $(addsuffix -binaries,$(ARCH_LIST))
@@ -132,21 +132,6 @@ $(NDK_OUTDIR)/nflog:
 nflog: $(NDK_OUTDIR)/nflog
 	cp $< $(RESDIR)/nflog_$(ARCH)
 nflog-unpack:
-
-#####################################################################
-#
-# Build klogripper
-#
-NDK_OUTDIR := ../libs/$(NDK_ABINAME)
-
-$(NDK_OUTDIR)/klogripper:
-	ndk-build APP_ABI=$(NDK_ABINAME)
-
-.PHONY: klogripper klogripper-unpack
-klogripper: $(NDK_OUTDIR)/klogripper
-	cp $< $(RESDIR)/klogripper_$(ARCH)
-klogripper-unpack:
-
 
 #####################################################################
 #

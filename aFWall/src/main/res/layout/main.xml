@@ -22,7 +22,7 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize" />
 
-        <ListView
+        <!--<ListView
             android:id="@android:id/list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,6 @@
             android:drawSelectorOnTop="false"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:textAlignment="center" />
-        <!--android:gravity="center_horizontal"-->
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -53,15 +52,15 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:textIsSelectable="false" />
-            <!--
+            &lt;!&ndash;
                     <Spinner
                         android:id="@+id/filterGroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:entries="@array/filters"/>-->
+                        android:entries="@array/filters"/>&ndash;&gt;
 
 
-        </LinearLayout>
+        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/profileOption"
@@ -150,12 +149,12 @@
 
             <View
                 android:id="@+id/imageHolder"
-                android:layout_width="35dp"
+                android:layout_width="32dp"
                 android:layout_height="fill_parent" />
 
             <ImageView
                 android:id="@+id/img_lan"
-                android:layout_width="40dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@drawable/eth_lan"
@@ -163,21 +162,21 @@
 
             <ImageView
                 android:id="@+id/img_wifi"
-                android:layout_width="40dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@drawable/eth_wifi"></ImageView>
 
             <ImageView
                 android:id="@+id/img_3g"
-                android:layout_width="40dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@drawable/eth_3g"></ImageView>
 
             <ImageView
                 android:id="@+id/img_roam"
-                android:layout_width="40dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@drawable/roam"
@@ -185,7 +184,7 @@
 
             <ImageView
                 android:id="@+id/img_vpn"
-                android:layout_width="40dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@drawable/img_vpn"
@@ -193,14 +192,14 @@
 
             <ImageView
                 android:id="@+id/img_invert"
-                android:layout_width="40dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@drawable/invertmini"></ImageView>
 
             <ImageView
                 android:id="@+id/img_reset"
-                android:layout_width="40dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@drawable/clear"></ImageView>

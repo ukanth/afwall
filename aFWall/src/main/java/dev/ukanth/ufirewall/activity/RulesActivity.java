@@ -61,7 +61,7 @@ public class RulesActivity extends DataDumpActivity {
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTitle(getString(R.string.showrules_title));
-		sdDumpFile = "rules.log";
+		//sdDumpFile = "rules.log";
 	}
 
 	protected void populateMenu(SubMenu sub) {
@@ -96,6 +96,9 @@ public class RulesActivity extends DataDumpActivity {
 				Object entry = prefs.get(s);
 				result.append(s + ": " + entry.toString() + "\n");
 			}
+			//append profile mode & Status
+			result.append("Profile Mode : " + G.pPrefs.getString(Api.PREF_MODE, "") + "\n");
+			result.append("Status : " + (Api.isEnabled(ctx) ? "Enabled" : "Disabled") + "\n");
 		} catch (NullPointerException e) {
 			result.append("Error retrieving preferences\n");
 		}
@@ -123,6 +126,9 @@ public class RulesActivity extends DataDumpActivity {
 				"com.noshufou.android.su",
 				"com.noshufou.android.su.elite",
 				"com.koushikdutta.superuser",
+				"com.gorserapp.superuser",
+				"me.phh.superuser",
+				"com.bitcubate.superuser.pro",
 				"com.kingroot.kinguser",
 				"com.kingroot.master",
 				"com.kingouser.com",
@@ -149,7 +155,7 @@ public class RulesActivity extends DataDumpActivity {
 		// Fourth section: "System info"
 		writeHeading(result, true, "System info");
 
-		InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+		InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
 
 		result.append("Android version: " + android.os.Build.VERSION.RELEASE + "\n");
 		result.append("Manufacturer: " + android.os.Build.MANUFACTURER + "\n");
@@ -235,6 +241,11 @@ public class RulesActivity extends DataDumpActivity {
 
 		// First section: "IPxx Rules"
 		writeHeading(result, false, showIPv6 ? "IPv6 Rules" : "IPv4 Rules");
+		if(showIPv6) {
+			sdDumpFile = "IPv6rules.log";
+		} else {
+			sdDumpFile = "IPv4rules.log";
+		}
 		Api.fetchIptablesRules(ctx, showIPv6, new RootCommand()
 			.setLogging(true)
 			.setReopenShell(true)

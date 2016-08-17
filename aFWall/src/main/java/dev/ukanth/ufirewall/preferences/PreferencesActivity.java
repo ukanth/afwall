@@ -45,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
@@ -79,7 +80,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
 		mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.toolbar);
 		mToolBar.setTitle(getTitle());
-		mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		//mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 		mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -152,7 +153,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				|| CustomBinaryPreferenceFragment.class.getName().equals(
 						fragmentName)
 				|| SecPreferenceFragment.class.getName().equals(fragmentName)
-				|| MultiProfilePreferenceFragment.class.getName().equals(fragmentName)) {
+				|| MultiProfilePreferenceFragment.class.getName().equals(fragmentName)
+				|| WidgetPreferenceFragment.class.getName().equals(fragmentName)
+				|| LanguagePreferenceFragment.class.getName().equals(fragmentName)) {
 			return (true);
 		}
 
@@ -203,8 +206,14 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		Context ctx = getApplicationContext();
 		if (key.equals("activeRules")) {
 			if (!G.activeRules()) {
+				//disable service when there is no active rules
+				//stopService(new Intent(PreferencesActivity.this, RootShell.class));
 				G.enableRoam(false);
 				G.enableLAN(false);
+				G.enableVPN(false);
+			} else {
+				//enable service when there active rules is enabled
+				//startService(new Intent(PreferencesActivity.this, RootShell.class));
 			}
 		}
 
@@ -215,6 +224,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				connectionPref.setChecked(false);
 				Api.toast(ctx, getString(R.string.ip6unavailable));
 			}
+			Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
 		}
 		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
 				|| key.equals("enableLAN") || key.equals("enableRoam")
@@ -222,6 +232,10 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			// revert back to Default profile when disabling multi-profile
 			// support
 			G.reloadProfile();
+		}
+
+		if (key.equals("ip_path") || key.equals("dns_value") ) {
+			Toast.makeText(ctx, getString(R.string.reapply_rules_other) ,Toast.LENGTH_LONG).show();
 		}
 
 		if(key.equals("activeNotification")) {
@@ -234,11 +248,17 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			}
 		}
 
-		if (key.equals("enableLog")) {
-			Api.setLogging(ctx, G.enableLog());
-		}
+		/*if(key.equals("lockScreenNotification")) {
+			//cancel and recreate..
+			NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancel(33341);
+			Api.showNotification(Api.isEnabled(ctx),ctx);
+		}*/
+
+
 
 		if (key.equals("enableLogService")) {
+			Api.setLogging(ctx, G.enableLogService());
 			boolean enabled = sharedPreferences.getBoolean(key, false);
 			if (enabled) {
 				Intent intent = new Intent(ctx, LogService.class);
