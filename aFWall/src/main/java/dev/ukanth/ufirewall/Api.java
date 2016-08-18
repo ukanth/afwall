@@ -1236,7 +1236,7 @@ public final class Api {
 				boolean firstseen = false;
 				app = syncMap.get(apinfo.uid);
 				// filter applications which are not allowed to access the Internet
-				if (app == null && !apinfo.packageName.equals("com.android.webview") && !apinfo.packageName.equals("com.google.android.webview") && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
+				if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
 					continue;
 				}
 				// try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
@@ -1367,6 +1367,10 @@ public final class Api {
 
 	public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo,SharedPreferences pPrefs) {
 		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context,false);
+		//allow webview to download since webview requires INTERNET permission
+		if(applicationInfo.packageName.equals("com.android.webview") || applicationInfo.packageName.equals("com.google.android.webview")) {
+			return true;
+		}
 		if(details.netEnabled) {
 			String mode = pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
 			Log.i(TAG,"Calling isAppAllowed method from DM with Mode: " + mode);
