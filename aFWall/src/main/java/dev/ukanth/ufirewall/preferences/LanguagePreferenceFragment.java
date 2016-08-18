@@ -23,11 +23,11 @@ public class LanguagePreferenceFragment extends PreferenceFragment implements
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.language_preferences);
-		checkXposed(findPreference("fixDownloadManagerLeak"),this.getActivity().getApplicationContext());
+		checkXposed(findPreference("fixDownloadManagerLeak"));
 		//checkXposed(findPreference("lockScreenNotification"),this.getActivity().getApplicationContext());
 	}
 
-	public static void checkXposed(Preference pref, Context ctx) {
+	public static void checkXposed(Preference pref) {
 		if (pref == null) {
 			return;
 		}

@@ -146,6 +146,15 @@
         <item>p2</item>
     </string-array>
 
+    <string-array name="logTargetArray">
+        <item>LOG</item>
+        <item>NFLOG</item>
+    </string-array>
+
+    <string-array name="logTargetValue">
+        <item>LOG</item>
+        <item>NFLOG</item>
+    </string-array>
 
     <string-array name="toast_pos">
         <item>@string/top</item>

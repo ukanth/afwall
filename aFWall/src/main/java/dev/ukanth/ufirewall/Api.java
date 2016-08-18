@@ -2270,7 +2270,7 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONObject object = new JSONObject(data);
-			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot"};
+			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains"};
 			List<String> ignoreList = Arrays.asList(ignore);
 			JSONArray prefArray = (JSONArray) object.get("prefs");
 			for(int i = 0 ; i < prefArray.length(); i++){
@@ -2502,6 +2502,12 @@ public final class Api {
 				return;
 			}
 
+			if(hasLOG && hasNFLOG) {
+				G.logTargetChose(true);
+			} else {
+				G.logTargetChose(false);
+			}
+
 			G.enableLogService(true);
 			updateLogRules(ctx, new RootCommand()
 				.setReopenShell(true)
@@ -2522,26 +2528,32 @@ public final class Api {
 				.setFailureToast(R.string.log_toggle_failed));
 			return;
 		}
-		LogProbeCallback cb = new LogProbeCallback();
-		cb.ctx = ctx;
-		// probe for LOG/NFLOG targets (unfortunately the file must be read by root)
-		//check for ip6 enabled from preference and check against the same
-		if(G.enableIPv6()) {
-			new RootCommand()
-			.setReopenShell(true)
-			.setFailureToast(R.string.log_toggle_failed)
-			.setCallback(cb)
-			.setLogging(true)
-			.run(ctx, "cat /proc/net/ip6_tables_targets");
+		if(!G.logTargetChose()) {
+			LogProbeCallback cb = new LogProbeCallback();
+			cb.ctx = ctx;
+			// probe for LOG/NFLOG targets (unfortunately the file must be read by root)
+			//check for ip6 enabled from preference and check against the same
+			if(G.enableIPv6()) {
+				new RootCommand()
+						.setReopenShell(true)
+						.setFailureToast(R.string.log_toggle_failed)
+						.setCallback(cb)
+						.setLogging(true)
+						.run(ctx, "cat /proc/net/ip6_tables_targets");
+			} else {
+				new RootCommand()
+						.setReopenShell(true)
+						.setFailureToast(R.string.log_toggle_failed)
+						.setCallback(cb)
+						.setLogging(true)
+						.run(ctx, "cat /proc/net/ip_tables_targets");
+			}
 		} else {
-			new RootCommand()
-			.setReopenShell(true)
-			.setFailureToast(R.string.log_toggle_failed)
-			.setCallback(cb)
-			.setLogging(true)
-			.run(ctx, "cat /proc/net/ip_tables_targets");
+			updateLogRules(ctx, new RootCommand()
+					.setReopenShell(true)
+					.setSuccessToast(R.string.log_was_enabled)
+					.setFailureToast(R.string.log_target_failed));
 		}
-		
 	}
 	
 	@SuppressLint("InlinedApi")

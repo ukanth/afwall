@@ -234,8 +234,17 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			G.reloadProfile();
 		}
 
-		if (key.equals("ip_path") || key.equals("dns_value") ) {
-			Toast.makeText(ctx, getString(R.string.reapply_rules_other) ,Toast.LENGTH_LONG).show();
+		if (key.equals("ip_path") || key.equals("dns_value")) {
+			Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
+		}
+
+		//logTarget changes
+		if(key.equals("logTarget")){
+			Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
+			Api.setLogging(ctx, G.enableLogService());
+			Intent intent = new Intent(ctx, LogService.class);
+			ctx.stopService(intent);
+			ctx.startService(intent);
 		}
 
 		if(key.equals("activeNotification")) {

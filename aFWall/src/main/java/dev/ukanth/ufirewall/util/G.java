@@ -48,7 +48,7 @@ public class G extends android.app.Application {
 	public static final String TAG = "AFWall";
 	
 	private static final String HAS_ROOT = "hasRoot";
-	private static final String NO_CHAINS = "noOtherChains";
+	private static final String LOG_CHAINS = "logChains";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
 	private static final String REG_DO = "ipurchaseddonatekey";
@@ -517,4 +517,6 @@ public class G extends android.app.Application {
 	public static boolean isMigrated() { return gPrefs.getBoolean(IS_MIGRATED, false); }
 	public static boolean isMigrated(boolean val) { gPrefs.edit().putBoolean(IS_MIGRATED, val).commit(); return val; }
 
+	public static boolean logTargetChose(boolean s) { gPrefs.edit().putBoolean(LOG_CHAINS,s).commit(); return s;}
+	public static boolean logTargetChose() { return gPrefs.getBoolean(LOG_CHAINS, false); }
 }
