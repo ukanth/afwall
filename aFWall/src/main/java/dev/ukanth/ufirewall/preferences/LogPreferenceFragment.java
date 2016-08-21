@@ -8,6 +8,11 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -22,10 +27,10 @@ public class LogPreferenceFragment extends PreferenceFragment  {
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.log_preferences);
-		populateLogTarget(findPreference("logTarget"));
+		//populateLogTarget(findPreference("logTarget"));
 	}
 
-	public void populateLogTarget(Preference logTargetChoice) {
+	/*public void populateLogTarget(Preference logTargetChoice) {
 		if (logTargetChoice == null) {
 			return;
 		}
@@ -35,6 +40,6 @@ public class LogPreferenceFragment extends PreferenceFragment  {
 		if(!G.logTargetChose()) {
 			mCategory.removePreference(listPreference);
 		}
-	}
+	}*/
 
 }

@@ -321,7 +321,7 @@ public class G extends android.app.Application {
 	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean(PROFILE_SWITCH, false); }
 	//public static boolean applyOnSwitchProfiles(boolean val) { gPrefs.edit().putBoolean(PROFILE_SWITCH, val).commit(); return val; }
 	
-	public static String logTarget() { return gPrefs.getString(LOG_TARGET, ""); }
+	public static String logTarget() { return gPrefs.getString(LOG_TARGET, null); }
 	public static String logTarget(String val) { gPrefs.edit().putString(LOG_TARGET, val).commit(); return val; }
 
 	public static int appVersion() { return gPrefs.getInt(APP_VERSION, 0); }
@@ -517,6 +517,6 @@ public class G extends android.app.Application {
 	public static boolean isMigrated() { return gPrefs.getBoolean(IS_MIGRATED, false); }
 	public static boolean isMigrated(boolean val) { gPrefs.edit().putBoolean(IS_MIGRATED, val).commit(); return val; }
 
-	public static boolean logTargetChose(boolean s) { gPrefs.edit().putBoolean(LOG_CHAINS,s).commit(); return s;}
-	public static boolean logTargetChose() { return gPrefs.getBoolean(LOG_CHAINS, false); }
+	/*public static boolean logTargetChose(boolean s) { gPrefs.edit().putBoolean(LOG_CHAINS,s).commit(); return s;}
+	public static boolean logTargetChose() { return gPrefs.getBoolean(LOG_CHAINS, false); }*/
 }
