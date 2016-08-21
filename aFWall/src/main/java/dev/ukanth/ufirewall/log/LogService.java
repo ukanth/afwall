@@ -34,15 +34,21 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 import com.stericson.roottools.RootTools;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.events.LogEvent;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
@@ -157,6 +163,8 @@ public class LogService extends Service {
     @Override
     public void onCreate() {
 
+        EventBus.getDefault().register(this);
+
         if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty() && G.enableLogService()) {
             switch (G.logTarget()) {
                 case "LOG":
@@ -203,6 +211,7 @@ public class LogService extends Service {
                     public void onCommandResult(int commandCode, int exitCode, List<String> output) {
                         if (exitCode != 0) {
                             Log.e(TAG, "Can't start logservice shell: exitCode " + exitCode);
+
                             stopSelf();
                         } else {
                             Log.d(TAG, "logservice shell started");
@@ -225,30 +234,31 @@ public class LogService extends Service {
             //Log.d(TAG,line);
             if (line != null && line.trim().length() > 0) {
                 if (line.contains("AFL")) {
-                    LogInfo logInfo = LogInfo.parseLogs(line, context);
-                    store(logInfo);
+                    EventBus.getDefault().post(new LogEvent(LogInfo.parseLogs(line, context), context));
+                   /* store(logInfo);
                     if (logInfo.uidString != null && logInfo.uidString.length() > 0) {
                         if (G.showLogToasts()) {
                             showToast(context, handler, logInfo.uidString, false);
                         }
-                    }
+                    }*/
                 }
             }
         }
     }
 
-    /*private static void storeData() {
-        try {
-            Log.i(TAG,"Updating logs to database");
-            FlowManager.getDatabase(LogDatabase.class)
-                    .executeTransaction(FastStoreModelTransaction
-                            .insertBuilder(FlowManager.getModelAdapter(LogData.class))
-                            .addAll(circular).build());
-            clearCirc();
-        } catch (Exception e) {
-            Log.i(TAG, "Exception in storeData: " + e.getLocalizedMessage());
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showMessageToast(LogEvent event) {
+        if (event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+            if (G.showLogToasts()) {
+                showToast(event.ctx, handler, event.logInfo.uidString, false);
+            }
         }
-    }*/
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void storeDataToDB(LogEvent event) {
+        store(event.logInfo);
+    }
 
     private void store(final LogInfo logInfo) {
         try {
@@ -270,6 +280,16 @@ public class LogService extends Service {
                     data.save(databaseWrapper);
                 }
             }).build().execute();
+        } catch(IllegalStateException e){
+            if(e.getMessage().contains("connection pool has been closed")) {
+                //reconnect logic
+                try {
+                    FlowManager.init(new FlowConfig.Builder(this).build());
+                }catch (Exception de) {
+                    Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
+                }
+            }
+            Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
         } catch(Exception e){
             Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
         }
@@ -286,6 +306,7 @@ public class LogService extends Service {
             }
         }
         Log.d(TAG, "Received request to kill logservice");
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 }

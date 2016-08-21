@@ -55,6 +55,8 @@ dependencies {
     compile "com.github.Raizlabs.DBFlow:dbflow-core:3.1.1"
     compile "com.github.Raizlabs.DBFlow:dbflow:3.1.1"
 
+    compile 'org.greenrobot:eventbus:3.0.0'
+
     compile "org.ocpsoft.prettytime:prettytime:4.0.1.Final"
     provided 'de.robv.android.xposed:api:82'
 }
