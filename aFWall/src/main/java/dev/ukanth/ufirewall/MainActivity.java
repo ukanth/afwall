@@ -2040,7 +2040,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 
 
-			if(!Api.isNetfilterSupported()) {
+			if(!Api.isNetfilterSupported() && !isFinishing()) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_netfilter)
@@ -2066,7 +2066,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			if(isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
 				G.kingDetected(true);
 			}
-			if(!hasRoot && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
+			if(!hasRoot && !isSuPackage(getPackageManager(), "com.kingouser.com")&& !isFinishing()) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)

@@ -220,9 +220,9 @@ public class RootShell extends Service {
 		}
 
 		if (exitCode == 0 && state.successToast != NO_TOAST) {
-			showToastUIThread(mContext.getString(state.successToast));
+			showToastUIThread(mContext.getString(state.successToast), mContext);
 		} else if (exitCode != 0 && state.failureToast != NO_TOAST) {
-			showToastUIThread(mContext.getString(state.failureToast));
+			showToastUIThread(mContext.getString(state.failureToast), mContext);
 		}
 	}
 
@@ -396,35 +396,29 @@ public class RootShell extends Service {
 		return mBinder;
 	}
 	
-	private static void showToastUIThread(final String msg) {
-		try {
-			Thread thread = new Thread() {
-				public void run() {
-					Looper.prepare();
+	private static void showToastUIThread(final String msg,final Context mContext) {
+		Thread thread = new Thread() {
+			public void run() {
+				Looper.prepare();
 
-					final Handler handler = new Handler();
-					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							Toast.makeText(mContext,msg,Toast.LENGTH_LONG).show();
+				final Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							if(mContext !=null && msg != null ) {
+								Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+							}
 							handler.removeCallbacks(this);
 							Looper.myLooper().quit();
+						} catch(Exception e) {
+							Log.i(TAG,"Exception in showToastUIThread: " + e.getLocalizedMessage());
 						}
-					}, 2000);
-					Looper.loop();
-				}
-			};
-			thread.start();
-		}catch(Exception e) {}
+					}
+				}, 2000);
+				Looper.loop();
+			}
+		};
+		thread.start();
 	}
-
-	/*@Override
-	public void onDestroy() {
-		if(rootSession != null){
-			rootSession.kill();
-			rootSession.close();
-		}
-		Log.d(TAG, "Received request to kill rootshell");
-		super.onDestroy();
-	}*/
 }
