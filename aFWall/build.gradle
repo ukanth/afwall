@@ -15,6 +15,21 @@ android {
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
+    /*sourceSets {
+        main {
+            jniLibs.srcDir file('jniLibs/')
+        }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi', 'mips'
+            universalApk false
+        }
+    }*/
+
     buildTypes {
         debug {
             minifyEnabled true
