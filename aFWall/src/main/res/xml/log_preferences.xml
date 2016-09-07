@@ -20,14 +20,14 @@
             android:summary="@string/showlog_toasts"
             android:title="@string/enable_show_toasts" />
 
-        <!--<ListPreference
+        <ListPreference
             android:dependency="enableLogService"
-            android:defaultValue="LOG"
-            android:entries="@array/logTargetArray"
-            android:entryValues="@array/logTargetValue"
-            android:key="logTarget"
-            android:title="@string/log_target" >
-        </ListPreference>-->
+            android:defaultValue="BB"
+            android:entries="@array/logDmesgArray"
+            android:entryValues="@array/logDmesgValue"
+            android:key="logDmesg"
+            android:title="@string/log_dmesg" >
+        </ListPreference>
 
         <ListPreference
             android:dependency="enableLogService"

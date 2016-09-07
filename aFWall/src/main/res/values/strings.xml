@@ -157,7 +157,7 @@
     <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>
-    <string name="log_target">Log Target</string>
+    <string name="log_dmesg">Log fetch method</string>
     <string name="log_clear_error">Error clearing log</string>
     <string name="log_fetch_error">Error fetching log</string>
     <string name="log_parse_error">Error parsing log</string>

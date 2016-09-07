@@ -168,12 +168,18 @@ public class LogService extends Service {
         if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty() && G.enableLogService()) {
             switch (G.logTarget()) {
                 case "LOG":
-                    if (RootTools.isBusyboxAvailable()) {
-                        logPath = "while true; do busybox dmesg -c ; sleep 1 ; done";
-                    } else if (RootTools.isToyboxAvailable()) {
-                        logPath = "while true; do toybox dmesg -c ; sleep 1 ; done";
-                    } else {
-                        logPath = "while true; do dmesg -c ; sleep 1 ; done";
+                    switch(G.logDmsg()){
+                        case "OS":
+                            logPath = "while true; do dmesg -c ; sleep 1 ; done";
+                            break;
+                        case "BB":
+                            logPath = "while true; do busybox dmesg -c ; sleep 1 ; done";
+                            break;
+                        case "TB":
+                            logPath = "while true; do toybox dmesg -c ; sleep 1 ; done";
+                            break;
+                        default:
+                            logPath = "while true; do dmesg -c ; sleep 1 ; done";
                     }
                     break;
                 case "NFLOG":
@@ -221,17 +227,8 @@ public class LogService extends Service {
                 });
     }
 
-   /* public static void clearCirc() {
-        synchronized (circular) {
-            while (circular.size() > 0) {
-                circular.remove();
-            }
-        }
-    }*/
-
     private void storeLogInfo(String line, Context context) {
         if (G.enableLogService()) {
-            //Log.d(TAG,line);
             if (line != null && line.trim().length() > 0) {
                 if (line.contains("AFL")) {
                     EventBus.getDefault().post(new LogEvent(LogInfo.parseLogs(line, context), context));

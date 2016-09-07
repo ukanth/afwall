@@ -72,6 +72,7 @@ public class G extends android.app.Application {
 	private static final String BUSYBOX_PATH = "bb_path";
 	private static final String TOAST_POS = "toast_pos";
 	private static final String LANGUAGE = "locale";
+	private static final String LOG_DMESG = "logDmesg";
 	private static final String SORT_BY = "sort";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String LAST_STORED_PROFILE = "storedProfile";
@@ -280,6 +281,11 @@ public class G extends android.app.Application {
 
 	public static String locale() { return gPrefs.getString(LANGUAGE, "en"); }
 	public static String locale(String val) { gPrefs.edit().putString(LANGUAGE, val).commit(); return val; }
+
+
+
+	public static String logDmsg() { return gPrefs.getString(LOG_DMESG, "OS"); }
+	public static String logDmsg(String val) { gPrefs.edit().putString(LOG_DMESG, val).commit(); return val; }
 
 
 	public static String sortBy() {
