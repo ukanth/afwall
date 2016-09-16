@@ -55,26 +55,15 @@ public class LogPreferenceFragment extends PreferenceFragment  {
 			val.add("TB");
 		}
 
-		if(ar.size() > 1) {
+		if(ar.size() > 1 && listPreference != null ) {
 			String[] array = ar.toArray(new String[0]);
 			String[] values = val.toArray(new String[0]);
 			listPreference.setEntries(array);
 			listPreference.setEntryValues(values);
 		} else {
-			mCategory.removePreference(listPreference);
+			if(listPreference != null && mCategory != null) {
+				mCategory.removePreference(listPreference);
+			}
 		}
 	}
-
-	/*public void populateLogTarget(Preference logTargetChoice) {
-		if (logTargetChoice == null) {
-			return;
-		}
-		PreferenceCategory mCategory = (PreferenceCategory) findPreference("logExperimental");
-
-		listPreference = (ListPreference) logTargetChoice;
-		if(!G.logTargetChose()) {
-			mCategory.removePreference(listPreference);
-		}
-	}*/
-
 }
