@@ -1,6 +1,20 @@
 Changelog AFWall+
 ==================
 
+Version 2.5.3
+* Nougat Support.
+* Feature: Split screen of Activity (Nougat+)
+* Feature: Ability is use device pin/password for app
+* Feature: Ability to fetch logs using busybox/toybox
+* Feature: Improve auto apply rules for preference changes
+* Using NDK10 for building binary
+* Log toast with warning icon
+* Bug: Improved log storing logic to avoid cpu/battery/hang/crash issues
+* Bug: Connectivity change hug notification issue
+* Bug: Xposed related and user reported fixes
+* Reduced APK size
+
+
 Version 2.5.2
 * New Feature: Auto-trim log database
 * Enhancement: Logs should load much faster

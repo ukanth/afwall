@@ -137,7 +137,6 @@
         <item>@string/pref_none</item>
         <item>@string/pref_password</item>
         <item>@string/pref_pattern</item>
-        <!--<item>@string/pref_pin</item>-->
     </string-array>
 
     <string-array name="password_option_values">
@@ -181,17 +180,5 @@
         <item>BB</item>
         <item>TB</item>
     </string-array>
-
-  <!--  <string-array name="sort_key">
-        <item>@string/defaultsort</item>
-        <item>@string/lastupdated</item>
-        <item>@string/uid</item>
-    </string-array>
-
-    <string-array name="sort_value">
-        <item>s0</item>
-        <item>s1</item>
-        <item>s2</item>
-    </string-array>-->
 
 </resources>
