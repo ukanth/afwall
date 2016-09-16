@@ -2,16 +2,16 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion '24.0.1'
 
     defaultConfig {
         applicationId "dev.ukanth.ufirewall"
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 15503
-        versionName "2.5.3-BETA"
+        versionName "2.5.3"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 

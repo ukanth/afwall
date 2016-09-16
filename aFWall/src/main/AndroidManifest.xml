@@ -75,6 +75,7 @@
 
     <application
         android:hardwareAccelerated="false"
+        android:resizeableActivity="true"
         android:allowBackup="false"
         android:supportsRtl="true"
         android:largeHeap="true"
