@@ -174,7 +174,7 @@
   <string name="reapply_profile">Profilregeln erneut anwenden</string>
   <!-- Interface -->
   <string name="lan_title">LAN-Steuerung</string>
-  <string name="lan_summary">Bei Aktivierung werden LAN- und WLAN-Berechtigungen unabhängig voneinander gesteuert</string>
+  <string name="lan_summary">Aktivieren, um Berechtigungen bei LAN- oder WLAN-Verbindung unabhängig voneinander zu steuern</string>
   <string name="iptables_pref">IPTables-Binärdatei</string>
   <string name="vpn_profile">VPN-Steuerung</string>
   <string name="vpnSummary">Aktivieren, um Berechtigungen bei VPN-Verbindungen zu steuern</string>
@@ -237,22 +237,22 @@
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
     -->
-  <string name="enableInboundTitle">Erlaube eingehende Verbindungen</string>
+  <string name="enableInboundTitle">Interne Verbindungen erlauben</string>
   <string name="enableInboundSummary">Verbindungen vom LAN zum Gerät zulassen (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Benutzeroberfläche</string>
   <string name="log_prefs_title">Protokoll</string>
-  <string name="hideicons_pref_title">App-Symbole ausblenden</string>
+  <string name="hideicons_pref_title">App-Symbol-Anzeige</string>
   <string name="hideicons_pref_summary_on">Leistungssteigerung durch Ausblenden der App-Symbole in der Hauptansicht</string>
   <string name="hideicons_pref_summary_off">App-Symbole werden in der Hauptansicht angezeigt</string>
-  <string name="notify_pref_title">Benachrichtigungen aktivieren</string>
+  <string name="notify_pref_title">Benachrichtigungen</string>
   <string name="syscolor_pref_title">System-App-Farbe</string>
   <string name="syscolor_pref_summary_on">Farbe für alle System-Apps</string>
   <string name="enableConfirmTitle">Bestätigungsfenster beim Deaktivieren von AFWall+</string>
   <string name="enableConfirm_summary_on">Ausschalten der Firewall muss bestätigt werden</string>
-  <string name="showUid">APP-UID anzeigen</string>
+  <string name="showUid">APP-UID-Anzeige</string>
   <string name="showuid_summary_on">App-User-Identifier (UID) werden in der Hauptansicht angezeigt</string>
-  <string name="showuid_summary_off">App-User-Identifier (UID) sind in der Hauptansicht versteckt. Die Anzeige kann aber nützlich sein, um Protokolleinträge zu verfolgen.</string>
+  <string name="showuid_summary_off">App-User-Identifier (UID) sind in der Hauptansicht ausgeblendet. Ihre Anzeige kann aber nützlich sein, um Protokolleinträge zu verfolgen.</string>
   <string name="languages">Sprache</string>
   <string name="misc_header">Sprachen/Erweiterungen</string>
   <!-- 1.2.6 -->
@@ -293,7 +293,7 @@
   <string name="pkg_sys">System</string>
   <string name="pkg_user">Benutzer</string>
   <string name="backup_notexist">Keine Sicherung vorhanden. Bitte über das Menü exportieren.</string>
-  <string name="showFilter">Filter anzeigen</string>
+  <string name="showFilter">Filteranzeige</string>
   <string name="showfilter_summary_on">Filter (Alle/Kern/System/Benutzer) werden in der Hauptansicht angezeigt</string>
   <string name="showfilter_summary_off">Filter (Alle/Kern/System/Benutzer) werden in der Hauptansicht ausgeblendet</string>
   <string name="enable_dns">DNS über netd aktivieren</string>
@@ -316,7 +316,7 @@
   <string name="unlock_donate"> Tippen zum Entsperren</string>
   <string name="donate_support">Sie können jetzt alle Funktionen uneingeschränkt verwenden!</string>
   <string name="donate_thanks">Vielen Dank für Ihre Unterstützung!</string>
-  <string name="activeNotification">Mitteilungssymbol anzeigen</string>
+  <string name="activeNotification">AFWall-Symbol anzeigen</string>
   <string name="activeNotification_summary">Symbol in der Benachrichtigungsleiste dauerhaft anzeigen</string>
   <string name="active">Firewall ist aktiv</string>
   <string name="inactive">Firewall ausgeschaltet</string>
@@ -359,7 +359,7 @@
   <string name="top">Oben</string>
   <string name="center">Mittig</string>
   <string name="bottom">Unten</string>
-  <string name="position">Toast-Position</string>
+  <string name="position">Popup-Position</string>
   <string name="widget_prefs_title">Widget positionieren</string>
   <string name="xTitle">Horizontale Widget-Position</string>
   <string name="xTitleSummary">Manuelles Festlegen der Widget-Position entlang der X-Achse</string>

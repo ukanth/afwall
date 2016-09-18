@@ -176,24 +176,24 @@
   <string name="lan_title">Controlo de LAN</string>
   <string name="lan_summary">Enable to control LAN permissions separately from WiFi permissions</string>
   <string name="iptables_pref">Binário iptables</string>
-  <string name="vpn_profile">VPN control</string>
+  <string name="vpn_profile">Controlo VPN</string>
   <string name="vpnSummary">Enable to control VPN permissions separately</string>
-  <string name="roaming">Roaming control</string>
+  <string name="roaming">Controlo de roaming</string>
   <string name="roamingSummary">Enable to control internet while roaming permissions separately</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
-  <string name="toast_bin_installed">AFWall+: Binary files installed</string>
-  <string name="toast_enabled">AFWall+: Firewall enabled</string>
-  <string name="toast_error_enabling">AFWall+: ERROR ENABLING FIREWALL!</string>
-  <string name="toast_disabled">AFWall+: Firewall DISABLED!</string>
+  <string name="toast_bin_installed">AFWall+: ficheiros binários instalados</string>
+  <string name="toast_enabled">AFWall+: firewall ativada</string>
+  <string name="toast_error_enabling">AFWall+: erro ao ativar a firewall!</string>
+  <string name="toast_disabled">AFWall+: firewall desativada!</string>
   <string name="toast_error_disabling">AFWall +: Erro ao desativar firewall!</string>
   <!-- Binary -->
-  <string name="busybox_pref">BusyBox binary</string>
-  <string name="system_bb">System BusyBox</string>
-  <string name="builtin_bb">Built-in BusyBox</string>
+  <string name="busybox_pref">Binário Busybox</string>
+  <string name="system_bb">Busybox do sistema</string>
+  <string name="builtin_bb">Busybox nativa</string>
   <string name="system_ipt">Iptables do sistema</string>
-  <string name="builtin_ipt">Built-in iptables</string>
+  <string name="builtin_ipt">Iptable nativa</string>
   <string name="auto">Automático</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed Related</string>
@@ -223,14 +223,14 @@
   <string name="patternMaxTry">Número máximo de tentativas</string>
   <string name="resetPattern">Reset the lock pattern?</string>
   <!-- Device Admin -->
-  <string name="enable_device_admin">Device admin</string>
+  <string name="enable_device_admin">Administrador do dispositivo</string>
   <string name="device_admin_enabled">AFWall+ Device Admin enabled</string>
   <string name="device_admin_disabled">AFWall+ Device Admin disabled</string>
   <string name="device_admin_on_disable">Please go to Device Administrator settings to deactivate AFWall+</string>
   <!-- Experimental Preferences -->
   <string name="exp_prefs_title">Experimental</string>
   <!-- Startup -->
-  <string name="startup_service">Applying rules. Please wait.</string>
+  <string name="startup_service">A aplicar regras. Aguarde.</string>
   <string name="fixleakTitle">Fix startup data leak</string>
   <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support.  HTC devices must be configured for S-OFF.</string>
   <!--
@@ -246,9 +246,9 @@
   <string name="hideicons_pref_summary_on">Melhora o desempenho da aplicação, desativando os ícones na vista principal</string>
   <string name="hideicons_pref_summary_off">Mostrar ícones na vista principal</string>
   <string name="notify_pref_title">Ativar notificações</string>
-  <string name="syscolor_pref_title">System app color</string>
-  <string name="syscolor_pref_summary_on">Color for all system apps</string>
-  <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
+  <string name="syscolor_pref_title">Cor das aplicações do sistema</string>
+  <string name="syscolor_pref_summary_on">A cor para todas as aplicações do sistema</string>
+  <string name="enableConfirmTitle">Confirmar desativação da firewall</string>
   <string name="enableConfirm_summary_on">Pedir confirmação antes de desativar a firewall</string>
   <string name="showUid">Mostrar UID das aplicações</string>
   <string name="showuid_summary_on">Mostrar UID da aplicação na vista principal</string>
@@ -264,7 +264,7 @@
   <string name="Donate">Doar</string>
   <string name="multi_apply_rules">Aplicar regras na mudança de perfil</string>
   <string name="multi_apply_rules_info">Carregar e aplicar regras ao trocar de prfil</string>
-  <string name="multi_user_title">Enable multi-user support</string>
+  <string name="multi_user_title">Ativar suporte a vários utilizadores</string>
   <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
   <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
   <string name="traffic_detail_title">Detalhes de tráfego</string>
@@ -303,7 +303,7 @@
   <string name="tasker_lable">AFWall+ Tasker plugin</string>
   <string name="enable">Ativar</string>
   <string name="disable">Desativar</string>
-  <string name="filters_apps_title">Notification filter</string>
+  <string name="filters_apps_title">Filtrar notificações</string>
   <string name="apply_color">Selecione a cor a aplicar</string>
   <string name="binaries">Binários</string>
   <string name="widgets">Widgets</string>
@@ -364,7 +364,7 @@
   <string name="xTitle">Posição X do widget</string>
   <string name="xTitleSummary">Manual override X position</string>
   <string name="xTitleDialog">Set X Position (number)</string>
-  <string name="yTitle">Widget Y position</string>
+  <string name="yTitle">Posição Y do widget</string>
   <string name="yTitleSummary">Manual override Y position</string>
   <string name="yTitleDialog">Set Y position (number)</string>
   <string name="error_nonsupported">King Root detetado!</string>

@@ -174,10 +174,10 @@
   <string name="reapply_profile">重新應用設定檔規則</string>
   <!-- Interface -->
   <string name="lan_title">區域網路控制</string>
-  <string name="lan_summary">啟動此項以單獨控制WiFi權限及區域網路權限</string>
+  <string name="lan_summary">啟動以單獨控制WiFi權限及區域網路權限</string>
   <string name="iptables_pref">Iptables 二進位檔案</string>
   <string name="vpn_profile">VPN 控制</string>
-  <string name="vpnSummary">啟用 分別控制 VPN 的許可權</string>
+  <string name="vpnSummary">啟用以分別控制 VPN 的許可權</string>
   <string name="roaming">漫遊控制</string>
   <string name="roamingSummary">啟動以單獨控制漫遊時的網路連接</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
@@ -198,7 +198,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed 相關</string>
   <string name="fixDownloadTitle">修復 下載管理員 漏洞</string>
-  <string name="fixDownloadTitleSummary">使用 xposed 防止：當程式網路權限被拒絕時，轉而使用 Android 內建下载管理器來下載檔案。</string>
+  <string name="fixDownloadTitleSummary">使用 xposed 防止：當程式網路權限被拒絕時，轉而使用 Android 內建下載管理器來下載檔案。</string>
   <string name="LeakDetected">檢查到漏洞</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 相關</string>
@@ -275,10 +275,10 @@
   <string name="faq">常見問題解答</string>
   <string name="reverse_all">反轉所有選定的應用程式？</string>
   <string name="unselect_all">清除所有選定的應用程式？</string>
-  <string name="check_all">檢查全部</string>
+  <string name="check_all">選擇全部</string>
   <string name="invert_all">反選全部</string>
   <string name="legend_invert">反選全部選擇</string>
-  <string name="uncheck_all">取消全選</string>
+  <string name="uncheck_all">取消全部</string>
   <string name="select_action">已選取操作的連接：</string>
   <string name="roam">漫遊</string>
   <string name="legend_roam">啟動以在不同的網路供應商 (漫遊) 時，分別控制網路權限</string>
@@ -314,8 +314,8 @@
   <string name="donate_only">此功能只在贊助版提供</string>
   <string name="buy_donate">購買贊助版本或捐贈金鑰</string>
   <string name="unlock_donate"> 點擊解鎖贊助版</string>
-  <string name="donate_support">你可以現在使用贊助版的功能!</string>
-  <string name="donate_thanks">謝謝你的支持！</string>
+  <string name="donate_support">您可以現在使用贊助版的功能!</string>
+  <string name="donate_thanks">謝謝您的支持！</string>
   <string name="activeNotification">顯示通知圖示</string>
   <string name="activeNotification_summary">在通知列永久顯示圖示</string>
   <string name="active">防火牆正在執行</string>

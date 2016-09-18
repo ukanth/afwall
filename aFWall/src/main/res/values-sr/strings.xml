@@ -374,14 +374,14 @@
   <string name="menu_legend">Legends</string>
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
-  <string name="log_deletedapp">Deleted Application</string>
+  <string name="log_deletedapp">Обрисана апликација</string>
   <string name="log_denied">Denied :</string>
   <string name="log_times">times</string>
   <string name="log_time">time</string>
   <string name="log_dst">Last Destination :</string>
   <string name="log_src">Last Source :</string>
   <string name="log_proto">Last Protocol :</string>
-  <string name="no_data_available">Please enable log service or no data</string>
-  <string name="loading_data_title">Loading...</string>
-  <string name="loading_data">Retrieving log data</string>
+  <string name="no_data_available">Укључите сервис дневника или подаци неће бити сачувани</string>
+  <string name="loading_data_title">Учитавам...</string>
+  <string name="loading_data">Добављам податке дневника</string>
 </resources>

@@ -372,8 +372,8 @@
   <string name="lockNotification">Skryť ikonu upozornenia na obrazovke uzamknutia</string>
   <string name="lockScreenNotification_summary">Skryť upozornenie na obrazovke uzamknutia</string>
   <string name="menu_legend">Legenda</string>
-  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
-  <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
+  <string name="permissiondenied_importexport">Povolenie pre čítanie/zápis na externé úložisko bolo zamietnuté. Prosím, povoľte pre export/import pravidiel.</string>
+  <string name="permissiondenied_asset">Povolenie pre čítanie/zápis na externé úložisko bolo zamietnuté. Prosím, povoľte pre kopírovanie binárnych súborov pre AFWall+ </string>
   <string name="log_deletedapp">Odstránená aplikácia</string>
   <string name="log_denied">Odmietnuté:</string>
   <string name="log_times">krát</string>
