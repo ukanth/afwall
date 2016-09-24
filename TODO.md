@@ -13,7 +13,7 @@ List
 - [ ] Uninstall application from list window (or open/manage application from list)
 - [ ] Explain and control Kernel logs and mysterious behind it!
 - [ ] Add a hardware search key
-- [ ] Store logs in a separate DB for a detailed report
+- [x] Store logs in a separate DB for a detailed report
 - [ ] Offline iptables builder (like blocking websites/ip addresses etc.,)
 - [ ] Reduce Application size (low-prio)
 - [ ] Fixing IPSec and L2TP connection problems

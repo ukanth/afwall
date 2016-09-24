@@ -545,10 +545,9 @@ public final class Api {
 	 * @param ctx application context
 	 * @param cmds command list
 	 */
-	private static void addInterfaceRouting(Context ctx, List<String> cmds) {
+	private static void addInterfaceRouting(Context ctx ,List<String> cmds) {
 		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
-
 		for (String s : dynChains) {
 			cmds.add("-F " + AFWALL_CHAIN_NAME + s);
 		}
@@ -566,10 +565,6 @@ public final class Api {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
 		}
 
-		Log.i(TAG, "RULES: " + G.enableLAN() );
-		Log.i(TAG, "CFG: " + cfg.lanMaskV6 );
-		Log.i(TAG, "CFG: " + cfg.lanMaskV4 );
-		Log.i(TAG, "SETV6: " + setv6 );
 		if (G.enableLAN() && !cfg.isTethered) {
 			Log.i(TAG, "RULES: INSIDE G.enableLAN()" );
 			if(setv6) {
@@ -583,6 +578,9 @@ public final class Api {
 					Log.i(TAG, "RULES: INSIDE -wifi-fork" );
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+				} else {
+					//ipaddress not found, but still block WIFI rules
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 				}
 			}
 
@@ -591,8 +589,6 @@ public final class Api {
 				// the interface gets an IP address, and the time we process the intent
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
 				// legitimate traffic from time to time, so we won't log the failures.
-				//TODO: Alternate to this update. breaking in
-				Log.i(TAG, "RULES: INSIDE TODO" );
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
@@ -613,9 +609,21 @@ public final class Api {
 		cmds.add("-P OUTPUT DROP");
 		addInterfaceRouting(ctx, cmds);
 		cmds.add("-P OUTPUT ACCEPT");
+		deleteWifiForkRules(ctx,cmds);
 	}
 
-    /**
+	private static void deleteWifiForkRules(Context ctx, List<String> cmds) {
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
+		if (G.enableLAN() && !cfg.isTethered) {
+			if (!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")) {
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
+			}
+		}
+	}
+
+	/**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
      * @param uidsWifi list of selected UIDs for WIFI to allow or disallow (depending on the working mode)
@@ -745,16 +753,7 @@ public final class Api {
 
 		cmds.add("-P OUTPUT ACCEPT");
 
-		//make sure we delete these chains
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
-		if (G.enableLAN() && !cfg.isTethered) {
-			if (!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")) {
-				Log.i(TAG, "RULES: INSIDE DELETE" );
-				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
-				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
-			}
-		}
+		deleteWifiForkRules(ctx,cmds);
 
 		iptablesCommands(cmds, out);
 		return true;
