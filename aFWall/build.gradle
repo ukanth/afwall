@@ -55,15 +55,15 @@ dependencies {
 
     //compile 'eu.chainfire:libsuperuser:1.0.0.201602271131'
     compile 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
-    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:appcompat-v7:24.+'
     compile 'com.afollestad.material-dialogs:core:0.8.6.2'
 
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:cardview-v7:23.2.1'
-    compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.android.support:design:24.+'
+    compile 'com.android.support:cardview-v7:24.+'
+    compile 'com.android.support:recyclerview-v7:24.+'
 
     /*compile ('com.afollestad.material-dialogs:commons:0.8.5.8'){
-        exclude module: 'core'
+        exclude module: 'core'h
     }*/
 
     apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.1.1'
