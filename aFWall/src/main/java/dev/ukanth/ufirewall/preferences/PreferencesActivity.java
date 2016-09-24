@@ -56,7 +56,9 @@ import java.io.File;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.events.LogChangeEvent;
 import dev.ukanth.ufirewall.events.RulesEvent;
 import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.service.RootShell;
@@ -237,6 +239,26 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				}));
 	}
 
+	@Subscribe(threadMode = ThreadMode.BACKGROUND)
+	public void logDemsgChangeApplyRules(LogChangeEvent logChangeEvent) {
+		final Context context = logChangeEvent.ctx;
+		final Intent logIntent = new Intent(context, LogService.class);
+		if (G.enableLogService()) {
+			//check if the firewall is enabled
+			if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
+				//make sure kill all the klog ripper
+				context.stopService(logIntent);
+			} else {
+				//restart the service
+				context.stopService(logIntent);
+				context.startService(logIntent);
+			}
+		} else {
+			//no internet - stop the service
+			context.stopService(logIntent);
+		}
+	}
+
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Context ctx = getApplicationContext();
@@ -273,6 +295,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
 		if (key.equals("ip_path") || key.equals("dns_value")) {
 			EventBus.getDefault().post(new RulesEvent("",ctx));
+			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
+		}
+
+		if (key.equals("logDmesg")) {
+			EventBus.getDefault().post(new LogChangeEvent("",ctx));
 			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
 		}
 

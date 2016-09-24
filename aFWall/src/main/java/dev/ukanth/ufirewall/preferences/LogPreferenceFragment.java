@@ -55,11 +55,12 @@ public class LogPreferenceFragment extends PreferenceFragment  {
 			val.add("TB");
 		}
 
-		if(ar.size() > 1 && listPreference != null ) {
+		if(ar.size() >= 1 && listPreference != null ) {
 			String[] array = ar.toArray(new String[0]);
 			String[] values = val.toArray(new String[0]);
 			listPreference.setEntries(array);
 			listPreference.setEntryValues(values);
+
 		} else {
 			if(listPreference != null && mCategory != null) {
 				mCategory.removePreference(listPreference);
