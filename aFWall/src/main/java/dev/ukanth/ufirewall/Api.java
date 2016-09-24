@@ -566,15 +566,21 @@ public final class Api {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
 		}
 
+		Log.i(TAG, "RULES: " + G.enableLAN() );
+		Log.i(TAG, "CFG: " + cfg.lanMaskV6 );
+		Log.i(TAG, "CFG: " + cfg.lanMaskV4 );
+		Log.i(TAG, "SETV6: " + setv6 );
 		if (G.enableLAN() && !cfg.isTethered) {
-
+			Log.i(TAG, "RULES: INSIDE G.enableLAN()" );
 			if(setv6) {
 				if(!cfg.lanMaskV6.equals("")){
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 				}
 			} else {
+				Log.i(TAG, "RULES: INSIDE cfg.lanMaskV4" );
 				if(!cfg.lanMaskV4.equals("")) {
+					Log.i(TAG, "RULES: INSIDE -wifi-fork" );
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 				}
@@ -586,9 +592,10 @@ public final class Api {
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
 				// legitimate traffic from time to time, so we won't log the failures.
 				//TODO: Alternate to this update. breaking in
-				/*cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				Log.i(TAG, "RULES: INSIDE TODO" );
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT"); */
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
 
 			}
 		} else {
@@ -734,7 +741,20 @@ public final class Api {
 		addRulesForUidlist(cmds, uidsLAN,  AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
 		addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
+
+
 		cmds.add("-P OUTPUT ACCEPT");
+
+		//make sure we delete these chains
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
+		if (G.enableLAN() && !cfg.isTethered) {
+			if (!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")) {
+				Log.i(TAG, "RULES: INSIDE DELETE" );
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
+			}
+		}
 
 		iptablesCommands(cmds, out);
 		return true;
@@ -2416,48 +2436,19 @@ public final class Api {
 */
 
 	@SuppressWarnings("unchecked")
-	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder, String fileName){
+	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder, String fileName, boolean loadAll){
 		boolean res = false;
-		//File sdCard = Environment.getExternalStorageDirectory();
-		//File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		//dir.mkdirs();
 		File file = new File(fileName);
-		//new format
 		if(file.exists()) {
-			res = importRules(ctx, file, builder);
-		} /*else {
-			File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-			file = new File(dir, "backup.rules");
-			if(file.exists()) {
-				res = importRulesOld(ctx,file);
+			if(loadAll) {
+				res = importAll(ctx,file,builder);
 			} else {
-				toast(ctx,ctx.getString(R.string.backup_notexist));
+				res = importRules(ctx, file, builder);
 			}
-		}*/
+		}
 		return res;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static boolean loadAllPreferencesFromFile(Context ctx,StringBuilder builder,final String fileName) {
-		boolean res = false;
-		//File sdCard = Environment.getExternalStorageDirectory();
-		//File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		//dir.mkdirs();
-		File file = new File(fileName);
-		//new format
-		if(file.exists()) {
-			res = importAll(ctx,file,builder);
-		} /*else {
-			file = new File(dir, "backup.rules");
-			if(file.exists()) {
-				res = importRulesOld(ctx,file);
-			} else {
-				toast(ctx,ctx.getString(R.string.backup_notexist));
-			}
-		}*/
-		return res;
-	}
-	
+
 	public static List<String> interfaceInfo(boolean showMatches) {
 		List<String> ret = new ArrayList<String>();
 

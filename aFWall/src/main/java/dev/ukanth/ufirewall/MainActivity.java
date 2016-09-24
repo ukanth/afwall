@@ -104,7 +104,8 @@ import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener, RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener,
+		RadioGroup.OnCheckedChangeListener {
 
 
 	//private TextView mSelected;
@@ -1155,7 +1156,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 									public void fileSelected(File file) {
 										String fileSelected = file.toString();
 										StringBuilder builder = new StringBuilder();
-										if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
+										if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder, fileSelected, false)){
 											Api.applications = null;
 											showOrLoadApplications();
 											Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
@@ -1182,7 +1183,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 										public void fileSelected(File file) {
 											String fileSelected = file.toString();
 											StringBuilder builder = new StringBuilder();
-											if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
+											if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder, fileSelected, true)){
 												Api.applications = null;
 												showOrLoadApplications();
 												Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);

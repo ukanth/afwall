@@ -26,9 +26,14 @@ package dev.ukanth.ufirewall.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
+import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -41,10 +46,24 @@ public class BootBroadcast extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 
-		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+		//make sure we set OUTPUT to drop
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P OUTPUT DROP");
+		Api.apply46(context, cmds, new RootShell.RootCommand());
 
-		if(G.activeNotification()){
-			Api.showNotification(Api.isEnabled(context), context);
-		}
+		//make sure we apply rules after 5 sec
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				if(InterfaceTracker.isNetworkUp(context)) {
+					InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+
+					if(G.activeNotification()){
+						Api.showNotification(Api.isEnabled(context), context);
+					}
+				}
+			}
+		}, 5000);
 	}
 }
