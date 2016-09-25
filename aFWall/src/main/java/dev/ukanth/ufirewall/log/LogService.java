@@ -25,6 +25,7 @@ package dev.ukanth.ufirewall.log;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -44,7 +45,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -162,29 +168,29 @@ public class LogService extends Service {
 
     @Override
     public void onCreate() {
-
         EventBus.getDefault().register(this);
-
+        // this method is executed in a background thread
+        // no problem calling su here
         if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty() && G.enableLogService()) {
             switch (G.logTarget()) {
                 case "LOG":
                     switch(G.logDmsg()){
                         case "OS":
-                            logPath = "while true; do dmesg -c ; sleep 1 ; done";
+                            logPath = "while true; do dmesg -c ; echo PID=$$ ; sleep 1 ; done";
                             break;
                         case "BB":
-                            logPath = "while true; do busybox dmesg -c ; sleep 1 ; done";
+                            logPath = "while true; do busybox dmesg -c ; echo PID=$$ ; sleep 1 ; done";
                             break;
                         case "TB":
-                            logPath = "while true; do toybox dmesg -c ; sleep 1 ; done";
+                            logPath = "while true; do toybox dmesg -c ; echo PID=$$ ; sleep 1 ; done";
                             break;
                         default:
-                            logPath = "while true; do dmesg -c ; sleep 1 ; done";
+                            logPath = "while true; do dmesg -c ; echo PID=$$ ; sleep 1 ; done";
                     }
                     break;
                 case "NFLOG":
                     logPath = Api.getNflogPath(getApplicationContext());
-                    logPath = logPath + " " + QUEUE_NUM;
+                    logPath = "echo $$ & " + logPath + " " + QUEUE_NUM;
                     break;
             }
         } else {
@@ -196,48 +202,53 @@ public class LogService extends Service {
         handler = new Handler();
         Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
 
-        if (rootSession != null) {
+        if (rootSession != null && rootSession.isRunning()) {
             try {
                 rootSession.kill();
                 rootSession.close();
             } catch (Exception e) {
             }
         }
+        // kill all previous logged uid
+        Api.cleanupUid();
+
         rootSession = new Shell.Builder()
                 .useSU()
                 .setMinimalLogging(true)
                 .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
                     @Override
                     public void onLine(String line) {
-                        storeLogInfo(line, getApplicationContext());
-                    }
-                })
-
-                .open(new Shell.OnCommandResultListener() {
-                    public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                        if (exitCode != 0) {
-                            Log.e(TAG, "Can't start logservice shell: exitCode " + exitCode);
-
-                            stopSelf();
+                        if(line !=null && !line.isEmpty() && line.startsWith("PID=")) {
+                            try {
+                                String uid = line.split("=")[1];
+                                if(uid != null) {
+                                    Set data = G.storedPid();
+                                    if ( data == null || data .isEmpty()) {
+                                        data = new HashSet();
+                                        data.add(uid);
+                                        G.storedPid(data);
+                                    } else if(!data.contains(uid)) {
+                                        data.add(uid);
+                                        G.storedPid(data);
+                                    }
+                                }
+                            } catch (Exception e) {
+                            }
                         } else {
-                            Log.d(TAG, "logservice shell started");
-                            rootSession.addCommand(logPath);
+                            storeLogInfo(line, getApplicationContext());
                         }
+
                     }
-                });
+                }).addCommand(logPath).open();
+
     }
+
 
     private void storeLogInfo(String line, Context context) {
         if (G.enableLogService()) {
             if (line != null && line.trim().length() > 0) {
                 if (line.contains("AFL")) {
                     EventBus.getDefault().post(new LogEvent(LogInfo.parseLogs(line, context), context));
-                   /* store(logInfo);
-                    if (logInfo.uidString != null && logInfo.uidString.length() > 0) {
-                        if (G.showLogToasts()) {
-                            showToast(context, handler, logInfo.uidString, false);
-                        }
-                    }*/
                 }
             }
         }
@@ -304,6 +315,7 @@ public class LogService extends Service {
         }
         Log.d(TAG, "Received request to kill logservice");
         EventBus.getDefault().unregister(this);
+        Api.cleanupUid();
         super.onDestroy();
     }
 }

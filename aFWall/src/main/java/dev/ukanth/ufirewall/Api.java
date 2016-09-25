@@ -90,10 +90,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
@@ -1078,6 +1080,23 @@ public final class Api {
 		}
 		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 	}
+
+	//Cleanup unused shell opened by logservice
+	public static void cleanupUid() {
+		Shell.Interactive tempSession = new Shell.Builder()
+				.useSU().open();
+		Set uids = G.storedPid();
+		if(uids != null && uids.size() > 0) {
+			for(String uid: G.storedPid()) {
+				dev.ukanth.ufirewall.log.Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
+				tempSession.addCommand("kill -9 " + uid);
+			}
+			G.storedPid(new HashSet());
+		}
+		tempSession.kill();
+		tempSession.close();
+	}
+
 
 	public static void applyQuick(Context ctx, List<String> cmds, RootCommand callback) {
 		List<String> out = new ArrayList<String>();
@@ -2540,7 +2559,7 @@ public final class Api {
 					.setFailureToast(R.string.log_toggle_failed)
 					.setCallback(cb)
 					.setLogging(true)
-					.run(ctx, "cat /proc/net/ip6_tables_targets");
+						.run(ctx, "cat /proc/net/ip6_tables_targets");
 		} else {
 			new RootCommand()
 					.setReopenShell(true)

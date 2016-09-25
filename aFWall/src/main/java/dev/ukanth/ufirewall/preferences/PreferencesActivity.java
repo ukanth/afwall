@@ -248,6 +248,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
 				//make sure kill all the klog ripper
 				context.stopService(logIntent);
+				Api.cleanupUid();
 			} else {
 				//restart the service
 				context.stopService(logIntent);
@@ -256,6 +257,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		} else {
 			//no internet - stop the service
 			context.stopService(logIntent);
+			Api.cleanupUid();
 		}
 	}
 

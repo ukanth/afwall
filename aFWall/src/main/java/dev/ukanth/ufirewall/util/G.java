@@ -37,8 +37,10 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
@@ -136,6 +138,9 @@ public class G extends android.app.Application {
 	/* global preferences */
 	//public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }
 	//public static boolean alternateStart(boolean val) { gPrefs.edit().putBoolean("alternateStart", val).commit(); return val; }
+
+	public static Set<String> storedPid() { return gPrefs.getStringSet("storedPid", null); }
+	public static void storedPid(Set store) { gPrefs.edit().putStringSet("storedPid", store).commit(); }
 	
 	public static boolean isEnc() { return gPrefs.getBoolean(PWD_ENCRYPT, false); }
 	public static boolean isEnc(boolean val) { gPrefs.edit().putBoolean(PWD_ENCRYPT, val).commit(); return val; }
