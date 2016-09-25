@@ -44,8 +44,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -114,10 +118,36 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             @Override
             public void onItemClick(LogData logData) {
                 // do what ever you want to do with it
+                /*try {
+                    Log.i("AFWall",new NetTask().execute(logData.getDst()).get());
+                } catch (ExecutionException | InterruptedException e) {
+                    Log.i("AFWall", e.getLocalizedMessage());
+                }*/
+
             }
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }
+
+    public class NetTask extends AsyncTask<String, Integer, String>
+    {
+        @Override
+        protected String doInBackground(String... params)
+        {
+            InetAddress addr = null;
+            try
+            {
+                addr = InetAddress.getByName(params[0]);
+            }
+
+            catch (UnknownHostException e)
+            {
+                e.printStackTrace();
+            }
+            return addr.getCanonicalHostName().toString();
+        }
+    }
+
 
     private List<LogData> getLogData(final int uid) {
         return SQLite.select()
