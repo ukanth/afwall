@@ -176,17 +176,18 @@ public class LogService extends Service {
                 case "LOG":
                     switch(G.logDmsg()){
                         case "OS":
-                            logPath = "while true; do dmesg -c ; echo PID=$$ ; sleep 1 ; done";
+                            logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                             break;
                         case "BB":
-                            logPath = "while true; do busybox dmesg -c ; echo PID=$$ ; sleep 1 ; done";
+                            logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
                             break;
                         case "TB":
-                            logPath = "while true; do toybox dmesg -c ; echo PID=$$ ; sleep 1 ; done";
+                            logPath = "echo PID=$$ & while true; do toybox dmesg -c ; sleep 1 ; done";
                             break;
                         default:
-                            logPath = "while true; do dmesg -c ; echo PID=$$ ; sleep 1 ; done";
+                            logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                     }
+
                     break;
                 case "NFLOG":
                     logPath = Api.getNflogPath(getApplicationContext());
