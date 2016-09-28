@@ -3,14 +3,14 @@ Changelog AFWall+
 
 Version 2.6.0
 * CRITICAL: Connection leak when LAN option is enabled
-* CRITICAL: Multiple su process process(su leak)
+* CRITICAL: Multiple su process (su leak) when logservice enabled
 * Feature: Nougat Support
 * Feature: Split screen of Activity (Nougat+)
 * Feature: Ability is use device pin/password/+ for app using Android API (Donate)
 * Feature: Ability to fetch logs using busybox/toybox/system
 * Feature: Improve auto apply rules for specific preference changes
 * Using NDK10 for building binary
-* Log toast with warning icon
+* UI: Log toast with warning icon
 * Bug: Improved log storing logic to avoid cpu/battery/hang/crash issues
 * Bug: Connectivity change hang notification issue
 * Bug: Xposed related and user reported fixes

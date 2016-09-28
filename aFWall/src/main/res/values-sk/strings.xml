@@ -146,6 +146,7 @@
   <string name="log_toggle_failed">Chyba pri prepnutí stavu záznamu</string>
   <string name="log_target_failed">Chyba: nie je podpora LOG/NFLOG pre kernel</string>
   <string name="log_cleared">Záznam vymazaný</string>
+  <string name="log_dmesg">Metóda načítania záznamu</string>
   <string name="log_clear_error">Chyba pri vymazaní záznamu</string>
   <string name="log_fetch_error">Chyba pri načítaní záznamu</string>
   <string name="log_parse_error">Chyba pri analýze záznamu</string>
@@ -336,6 +337,10 @@
   <string name="pref_none">Nič</string>
   <string name="pref_password">Heslo</string>
   <string name="pref_pattern">Vzor</string>
+  <string name="pref_device">Použiť bezpečnostnú ochranu zariadenia</string>
+  <string name="pref_device_desc">Použiť bezpečnostnú ochranu zariadenia pre otvorenie AFWall+ (len v platenej verzii)</string>
+  <string name="secure_option">Zariadenie nie je zabezpečené heslom/PIN kódom</string>
+  <string name="android_version">Táto funkcia je dostupná len na zariadeniach s Androidom Lollipop a vyšším</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Nastaviť</string>
   <string name="wrong_password">Nesprávne heslo</string>
@@ -378,10 +383,14 @@
   <string name="log_denied">Odmietnuté:</string>
   <string name="log_times">krát</string>
   <string name="log_time">krát</string>
-  <string name="log_dst">Posledný cieľ:</string>
-  <string name="log_src">Posledný zdroj:</string>
-  <string name="log_proto">Posledný protokol:</string>
+  <string name="log_dst">Cieľ:</string>
+  <string name="log_src">Zdroj:</string>
+  <string name="log_proto">Protokol:</string>
   <string name="no_data_available">Prosím, povoľte službu záznamu, inak nebudú uložené žiadne údaje</string>
   <string name="loading_data_title">Načítavanie...</string>
   <string name="loading_data">Načítavajú sa údaje záznamu</string>
+  <string name="switch_old">Prepnúť na staré zobrazenie</string>
+  <string name="switch_new">Prepnúť na nové zobrazenie</string>
+  <string name="showlogdetail_title">Detaily záznamu aplikácie</string>
+  <string name="reapply_rules">Prosím, aplikujte znovu pravidlá v dôsledku zmeny nastavení</string>
 </resources>

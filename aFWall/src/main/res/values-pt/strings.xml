@@ -146,6 +146,7 @@
   <string name="log_toggle_failed">Erro ao alternar o estado do log</string>
   <string name="log_target_failed">Erro: o kernel não tem suporte LOG/NFLOG</string>
   <string name="log_cleared">Log limpo</string>
+  <string name="log_dmesg">Log fetch method</string>
   <string name="log_clear_error">Erro ao limpar o log</string>
   <string name="log_fetch_error">Erro ao percorrer o log</string>
   <string name="log_parse_error">Erro ao analisar o log</string>
@@ -336,6 +337,10 @@
   <string name="pref_none">Nenhum</string>
   <string name="pref_password">Palavra-passe</string>
   <string name="pref_pattern">Padrão</string>
+  <string name="pref_device">Use Device Security Protection</string>
+  <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
+  <string name="secure_option">Device is not secured with password/pin</string>
+  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Definir</string>
   <string name="wrong_password">Palavra-passe incorreta</string>
@@ -378,10 +383,14 @@
   <string name="log_denied">Recusado:</string>
   <string name="log_times">vezes</string>
   <string name="log_time">vez</string>
-  <string name="log_dst">Último destino:</string>
-  <string name="log_src">Última origem:</string>
-  <string name="log_proto">Último protocolo:</string>
+  <string name="log_dst">Destino:</string>
+  <string name="log_src">Origem:</string>
+  <string name="log_proto">Protocolo:</string>
   <string name="no_data_available">Please enable log service or no data</string>
   <string name="loading_data_title">A carregar...</string>
   <string name="loading_data">A obter dados do registo</string>
+  <string name="switch_old">Switch to old view</string>
+  <string name="switch_new">Trocar para outra vista</string>
+  <string name="showlogdetail_title">Detalhes do registo de aplicações</string>
+  <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
 </resources>

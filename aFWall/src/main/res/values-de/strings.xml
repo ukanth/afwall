@@ -146,6 +146,7 @@
   <string name="log_toggle_failed">Fehler beim Ändern des Protokoll-Status!</string>
   <string name="log_target_failed">Fehler: Kernel fehlt LOG/NFLOG-Unterstützung</string>
   <string name="log_cleared">Protokoll gelöscht!</string>
+  <string name="log_dmesg">Protokolliermethode</string>
   <string name="log_clear_error">Fehler beim Löschen des Protokolls!</string>
   <string name="log_fetch_error">Fehler beim Abrufen des Protokolls!</string>
   <string name="log_parse_error">Fehler in der Protokollanalyse!</string>
@@ -218,8 +219,8 @@
   <string name="switch_ipv4">IPv4-Regeln einschalten</string>
   <!-- Security Preferences -->
   <string name="sec_prefs_title">Sicherheit</string>
-  <string name="usePattern">Sperrmuster anstelle Passwort</string>
-  <string name="stealthMode">Versteckter Pattern-Modus</string>
+  <string name="usePattern">Sperrmuster statt Passwort verwenden</string>
+  <string name="stealthMode">Verdecktes Sperrmuster</string>
   <string name="patternMaxTry">Maximale Anzahl an Versuchen</string>
   <string name="resetPattern">Entsperrmuster zurücksetzen?</string>
   <!-- Device Admin -->
@@ -264,7 +265,7 @@
   <string name="Donate">Spenden</string>
   <string name="multi_apply_rules">Regeln bei Profilwechsel anwenden</string>
   <string name="multi_apply_rules_info">Regeln beim Profilwechsel laden und anwenden</string>
-  <string name="multi_user_title">Multi-User-Unterstützung aktivieren</string>
+  <string name="multi_user_title">Multi-User-Unterstützung</string>
   <string name="multi_user_summary">Multi-User-Unterstützung aktivieren (nur im Modus möglich, in dem ausgewählte Elemente blockiert werden)</string>
   <string name="device_admin_desc">Erweitere Sicherheit - Deinstallation von AFWall+ verhindern</string>
   <string name="traffic_detail_title">Traffic-Details</string>
@@ -336,6 +337,10 @@
   <string name="pref_none">Kein</string>
   <string name="pref_password">Passwort</string>
   <string name="pref_pattern">Muster</string>
+  <string name="pref_device">Einstellungen zur Gerätesicherheit verwenden</string>
+  <string name="pref_device_desc">Gerätesicherheitsprüfung zum Öffnen von AFWall+ verwenden (Funktion in der Spendenversion)</string>
+  <string name="secure_option">Gerät ist nicht mit Passwort oder PIN gesichert</string>
+  <string name="android_version">Diese Funktion läuft nur unter Android Versionen ab Lollipop</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Festlegen</string>
   <string name="wrong_password">Ungültiges Passwort</string>
@@ -369,7 +374,7 @@
   <string name="yTitleDialog">Y-Position festlegen (Zahl)</string>
   <string name="error_nonsupported">King-Root erkannt!</string>
   <string name="error_nonsupported_details">AFWall+ erkannte eine nicht unterstützte Superuser-App, die Firewall-Regeln übergeht. Da es eine Superuser-App ist, kann AFWall+ dieses Problem nicht beheben.</string>
-  <string name="lockNotification">Sperrbildschirm-Benachrichtigungen-Symbol ausblenden</string>
+  <string name="lockNotification">Sperrbildschirm-Benachrichtigung ausblenden</string>
   <string name="lockScreenNotification_summary">Permanente Benachrichtigung auf Sperrbildschirm ausblenden</string>
   <string name="menu_legend">Legende</string>
   <string name="permissiondenied_importexport">AFWall+ hat keine Berechtigung, lesend/schreibend auf den Speicher zuzugreifen. Bitte erlauben Sie den Zugriff, damit Regeln exportiert/importiert werden können. </string>
@@ -378,10 +383,14 @@
   <string name="log_denied">Verweigert:</string>
   <string name="log_times">Mal</string>
   <string name="log_time">Mal</string>
-  <string name="log_dst">Letztes Ziel:</string>
-  <string name="log_src">Letzte Quelle:</string>
-  <string name="log_proto">Letztes Protokoll:</string>
-  <string name="no_data_available">Bitte aktivieren Sie den Protokolldienst oder keine Daten</string>
+  <string name="log_dst">Ziel :</string>
+  <string name="log_src">Quelle :</string>
+  <string name="log_proto">Protokoll :</string>
+  <string name="no_data_available">Bitte aktivieren Sie den Protokolldienst, sonst werden keine Daten gespeichert</string>
   <string name="loading_data_title">Wird geladen...</string>
   <string name="loading_data">Protokoll wird abgerufen ...</string>
+  <string name="switch_old">Zur alten Ansicht wechseln</string>
+  <string name="switch_new">Zur neuen Ansicht wechseln</string>
+  <string name="showlogdetail_title">Anwendungsprotokolldetails</string>
+  <string name="reapply_rules">Bitte wenden Sie aufgrund der Einstellungsänderungen die Regeln erneut an.</string>
 </resources>
