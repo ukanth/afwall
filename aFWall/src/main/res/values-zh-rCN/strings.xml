@@ -147,6 +147,7 @@
   <string name="log_toggle_failed">切换日志状态错误</string>
   <string name="log_target_failed">错误: 内核缺少 LOG/NFLOG 支持</string>
   <string name="log_cleared">日志已清除</string>
+  <string name="log_dmesg">Log fetch method</string>
   <string name="log_clear_error">清除日志错误</string>
   <string name="log_fetch_error">获取日志错误</string>
   <string name="log_parse_error">分析日志错误</string>
@@ -337,6 +338,10 @@
   <string name="pref_none">无</string>
   <string name="pref_password">密码</string>
   <string name="pref_pattern">图案</string>
+  <string name="pref_device">Use Device Security Protection</string>
+  <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
+  <string name="secure_option">Device is not secured with password/pin</string>
+  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">设置</string>
   <string name="wrong_password">密码错误</string>
@@ -379,10 +384,14 @@
   <string name="log_denied">已拒绝 :</string>
   <string name="log_times">次</string>
   <string name="log_time">次</string>
-  <string name="log_dst">最后链接目标 :</string>
-  <string name="log_src">最后源地址 :</string>
-  <string name="log_proto">最后使用协议 :</string>
+  <string name="log_dst">Destination :</string>
+  <string name="log_src">Source :</string>
+  <string name="log_proto">Protocol :</string>
   <string name="no_data_available">请启用日志, 否则无法记录数据</string>
   <string name="loading_data_title">加载中...</string>
   <string name="loading_data">获取日志数据中</string>
+  <string name="switch_old">Switch to old view</string>
+  <string name="switch_new">Switch to new view</string>
+  <string name="showlogdetail_title">Application Log Details</string>
+  <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
 </resources>

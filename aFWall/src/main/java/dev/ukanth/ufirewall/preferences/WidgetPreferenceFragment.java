@@ -17,27 +17,31 @@ public class WidgetPreferenceFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.widget_preferences);
+        try {
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.widget_preferences);
 
-        EditTextPreference editX = (EditTextPreference) findPreference("widgetX");
-        EditTextPreference editY = (EditTextPreference) findPreference("widgetY");
+            EditTextPreference editX = (EditTextPreference) findPreference("widgetX");
+            EditTextPreference editY = (EditTextPreference) findPreference("widgetY");
 
-        EditText prefEditTextX = editX.getEditText();
-        prefEditTextX.setInputType(InputType.TYPE_CLASS_TEXT);
+            EditText prefEditTextX = editX.getEditText();
+            prefEditTextX.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        EditText prefEditTextY = editY.getEditText();
-        prefEditTextY.setInputType(InputType.TYPE_CLASS_TEXT);
+            EditText prefEditTextY = editY.getEditText();
+            prefEditTextY.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        if (editX != null && (editX.getText() == null || editX.getText().equals("")) && editY != null && (editY.getText() == null || editY.getText().equals(""))) {
-            DisplayMetrics dm = new DisplayMetrics();
-            Context hostActivity = getActivity();
-            if (hostActivity != null) {
-                WindowManager wm = (WindowManager) hostActivity.getSystemService(Context.WINDOW_SERVICE);
-                wm.getDefaultDisplay().getMetrics(dm);
-                editX.setText(dm.widthPixels + "");
-                editY.setText(dm.heightPixels + "");
+            if (editX != null && (editX.getText() == null || editX.getText().equals("")) && editY != null && (editY.getText() == null || editY.getText().equals(""))) {
+                DisplayMetrics dm = new DisplayMetrics();
+                Context hostActivity = getActivity();
+                if (hostActivity != null) {
+                    WindowManager wm = (WindowManager) hostActivity.getSystemService(Context.WINDOW_SERVICE);
+                    wm.getDefaultDisplay().getMetrics(dm);
+                    editX.setText(dm.widthPixels + "");
+                    editY.setText(dm.heightPixels + "");
+                }
             }
+        } catch(ClassCastException e) {
+            
         }
     }
 }

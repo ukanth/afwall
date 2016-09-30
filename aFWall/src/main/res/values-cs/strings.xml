@@ -147,6 +147,7 @@
   <string name="log_toggle_failed">Chyba přepnutí stavu záznamů</string>
   <string name="log_target_failed">Chyba: v jádru chybí podpora LOG/NFLOG</string>
   <string name="log_cleared">Protokol vymazán</string>
+  <string name="log_dmesg">Metoda sběru protokolu</string>
   <string name="log_clear_error">Chyba čištění protokolu</string>
   <string name="log_fetch_error">Chyba načítání protokolu</string>
   <string name="log_parse_error">Chyba analyzování protokolu</string>
@@ -337,6 +338,10 @@
   <string name="pref_none">Žádný</string>
   <string name="pref_password">Heslo</string>
   <string name="pref_pattern">Vzor</string>
+  <string name="pref_device">Použít ochranu zabezpečení zařízení</string>
+  <string name="pref_device_desc">Použije kontrolu zabezpečení zařízení pro otevření AFWall+ (funkce darovacího klíče)</string>
+  <string name="secure_option">Zařízení není zabezpečeno heslem/pinem</string>
+  <string name="android_version">Tato funkce funguje pouze na Androidu verzi Lollipop+</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Nastavit</string>
   <string name="wrong_password">Nesprávné heslo</string>
@@ -379,10 +384,14 @@
   <string name="log_denied">Zakázáno :</string>
   <string name="log_times">krát</string>
   <string name="log_time">krát</string>
-  <string name="log_dst">Poslední cíl :</string>
-  <string name="log_src">Poslední zdroj :</string>
-  <string name="log_proto">Poslední protokol :</string>
+  <string name="log_dst">Cíl:</string>
+  <string name="log_src">Zdroj:</string>
+  <string name="log_proto">Protokol:</string>
   <string name="no_data_available">Prosím povolte služby protokolování nebo žádná data</string>
   <string name="loading_data_title">Načítání...</string>
   <string name="loading_data">Načítání dat protokolu</string>
+  <string name="switch_old">Přepnout do starého zobrazení</string>
+  <string name="switch_new">Přepnout do nového zobrazení</string>
+  <string name="showlogdetail_title">Detaily protokolu aplikace</string>
+  <string name="reapply_rules">Laskavě znovu aplikujte pravidla kvůli změně voleb</string>
 </resources>

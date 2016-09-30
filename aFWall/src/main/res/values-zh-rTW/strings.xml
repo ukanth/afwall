@@ -7,7 +7,7 @@
     -->
   <!-- main -->
   <string name="app_name">AFWall+ </string>
-  <string name="app_name_donate">AFWall+(贊助版)</string>
+  <string name="app_name_donate">AFWall+ (贊助版)</string>
   <string name="title_disabled">AFWall+  (已停止)</string>
   <string name="whitelist_array_item">允許所選</string>
   <string name="blacklist_array_item">阻擋所選</string>
@@ -146,6 +146,7 @@
   <string name="log_toggle_failed">切換日誌狀態時錯誤</string>
   <string name="log_target_failed">錯誤：內核缺少 LOG/NFLOG 支援</string>
   <string name="log_cleared">日誌已清除</string>
+  <string name="log_dmesg">日誌讀取方式</string>
   <string name="log_clear_error">清除日誌時錯誤</string>
   <string name="log_fetch_error">獲取日誌時錯誤</string>
   <string name="log_parse_error">剖析日誌時錯誤</string>
@@ -174,10 +175,10 @@
   <string name="reapply_profile">重新應用設定檔規則</string>
   <!-- Interface -->
   <string name="lan_title">區域網路控制</string>
-  <string name="lan_summary">啟動此項以單獨控制WiFi權限及區域網路權限</string>
+  <string name="lan_summary">啟動以單獨控制WiFi權限及區域網路權限</string>
   <string name="iptables_pref">Iptables 二進位檔案</string>
   <string name="vpn_profile">VPN 控制</string>
-  <string name="vpnSummary">啟用 分別控制 VPN 的許可權</string>
+  <string name="vpnSummary">啟用以分別控制 VPN 的許可權</string>
   <string name="roaming">漫遊控制</string>
   <string name="roamingSummary">啟動以單獨控制漫遊時的網路連接</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
@@ -198,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed 相關</string>
   <string name="fixDownloadTitle">修復 下載管理員 漏洞</string>
-  <string name="fixDownloadTitleSummary">使用 xposed 防止：當程式網路權限被拒絕時，轉而使用 Android 內建下载管理器來下載檔案。</string>
+  <string name="fixDownloadTitleSummary">使用 xposed 防止：當程式網路權限被拒絕時，轉而使用 Android 內建下載管理器來下載檔案。</string>
   <string name="LeakDetected">檢查到漏洞</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 相關</string>
@@ -275,10 +276,10 @@
   <string name="faq">常見問題解答</string>
   <string name="reverse_all">反轉所有選定的應用程式？</string>
   <string name="unselect_all">清除所有選定的應用程式？</string>
-  <string name="check_all">檢查全部</string>
+  <string name="check_all">選擇全部</string>
   <string name="invert_all">反選全部</string>
   <string name="legend_invert">反選全部選擇</string>
-  <string name="uncheck_all">取消全選</string>
+  <string name="uncheck_all">取消全部</string>
   <string name="select_action">已選取操作的連接：</string>
   <string name="roam">漫遊</string>
   <string name="legend_roam">啟動以在不同的網路供應商 (漫遊) 時，分別控制網路權限</string>
@@ -314,8 +315,8 @@
   <string name="donate_only">此功能只在贊助版提供</string>
   <string name="buy_donate">購買贊助版本或捐贈金鑰</string>
   <string name="unlock_donate"> 點擊解鎖贊助版</string>
-  <string name="donate_support">你可以現在使用贊助版的功能!</string>
-  <string name="donate_thanks">謝謝你的支持！</string>
+  <string name="donate_support">您可以現在使用贊助版的功能!</string>
+  <string name="donate_thanks">謝謝您的支持！</string>
   <string name="activeNotification">顯示通知圖示</string>
   <string name="activeNotification_summary">在通知列永久顯示圖示</string>
   <string name="active">防火牆正在執行</string>
@@ -336,6 +337,10 @@
   <string name="pref_none">沒有</string>
   <string name="pref_password">密碼</string>
   <string name="pref_pattern">圖案</string>
+  <string name="pref_device">使用裝置安全保護</string>
+  <string name="pref_device_desc">使用裝置安全檢查打開 AFWall + (捐贈/金鑰版的功能)</string>
+  <string name="secure_option">設備未設定密碼/PIN</string>
+  <string name="android_version">此功能僅適用於 Lollipop (Android5.0) 以上</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">設置</string>
   <string name="wrong_password">密碼不正確</string>
@@ -378,10 +383,14 @@
   <string name="log_denied">已拒絕：</string>
   <string name="log_times">次</string>
   <string name="log_time">次</string>
-  <string name="log_dst">最後連結目標：</string>
-  <string name="log_src">最後源網址：</string>
-  <string name="log_proto">最後使用協定︰</string>
+  <string name="log_dst">目標：</string>
+  <string name="log_src">來源：</string>
+  <string name="log_proto">協定：</string>
   <string name="no_data_available">請啟用日誌，否則會沒有資料</string>
   <string name="loading_data_title">載入中...</string>
   <string name="loading_data">讀取日誌中</string>
+  <string name="switch_old">切換到舊版檢視</string>
+  <string name="switch_new">切換到新版檢視</string>
+  <string name="showlogdetail_title">應用程式日誌資訊</string>
+  <string name="reapply_rules">因為偏好設定改變，請重新套用規則</string>
 </resources>

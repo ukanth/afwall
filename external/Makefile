@@ -2,7 +2,7 @@
 # Based somewhat on android/Makefile in OpenConnect (David Woodhouse)
 #
 
-NDK     := /opt/android-ndk-r9
+NDK     := /opt/android-ndk-r10e
 ARCH    := arm
 GCCVER  := 4.8
 

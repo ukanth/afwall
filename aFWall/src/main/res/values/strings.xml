@@ -157,6 +157,7 @@
     <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>
+    <string name="log_dmesg">Log fetch method</string>
     <string name="log_clear_error">Error clearing log</string>
     <string name="log_fetch_error">Error fetching log</string>
     <string name="log_parse_error">Error parsing log</string>
@@ -391,6 +392,10 @@
     <string name="pref_none">None</string>
     <string name="pref_password">Password</string>
     <string name="pref_pattern">Pattern</string>
+    <string name="pref_device">Use Device Security Protection</string>
+    <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
+    <string name="secure_option">Device is not secured with password/pin</string>
+    <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
     <!--<string name="pref_pin">Pin</string>-->
 
 
@@ -456,7 +461,6 @@
     <string name="switch_old">Switch to old view</string>
     <string name="switch_new">Switch to new view</string>
     <string name="showlogdetail_title">Application Log Details</string>
-    <string name="reapply_rules">Kindly reapply the rules because of ipv6 change</string>
-    <string name="reapply_rules_other">Kindly reapply the rules since iptables/dns values has been changed</string>
+    <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
 
 </resources>

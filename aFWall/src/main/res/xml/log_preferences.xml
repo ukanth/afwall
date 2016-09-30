@@ -7,7 +7,8 @@
             android:title="@string/enable_firewall_log" />
       </PreferenceCategory>-->
 
-    <PreferenceCategory android:title="@string/exp_prefs_title" >
+    <PreferenceCategory android:key="logExperimental"
+        android:title="@string/exp_prefs_title" >
         <CheckBoxPreference
             android:key="enableLogService"
             android:title="@string/enable_firewall_log_service" />
@@ -19,6 +20,14 @@
             android:summary="@string/showlog_toasts"
             android:title="@string/enable_show_toasts" />
 
+        <ListPreference
+            android:dependency="enableLogService"
+            android:defaultValue="BB"
+            android:entries="@array/logDmesgArray"
+            android:entryValues="@array/logDmesgValue"
+            android:key="logDmesg"
+            android:title="@string/log_dmesg" >
+        </ListPreference>
 
         <ListPreference
             android:dependency="enableLogService"

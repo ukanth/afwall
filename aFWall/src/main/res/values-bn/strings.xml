@@ -146,6 +146,7 @@
   <string name="log_toggle_failed">কার্যবিবরণী অবস্থা Toggling এ ত্রুটি</string>
   <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">কার্যবিবরণী পরিষ্কার করা হয়েছে</string>
+  <string name="log_dmesg">Log fetch method</string>
   <string name="log_clear_error">ত্রুটি কার্যবিবরণী পরিষ্কার করতে</string>
   <string name="log_fetch_error">কার্যবিবরণী fetching ত্রুটি</string>
   <string name="log_parse_error">কার্যবিবরণী পার্সিং ত্রুটি</string>
@@ -336,6 +337,10 @@
   <string name="pref_none">কোনটি নয়</string>
   <string name="pref_password">পাসওয়ার্ড</string>
   <string name="pref_pattern">প্যাটার্ন</string>
+  <string name="pref_device">Use Device Security Protection</string>
+  <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
+  <string name="secure_option">Device is not secured with password/pin</string>
+  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">বিন্যাস করুন</string>
   <string name="wrong_password">Incorrect password</string>
@@ -378,10 +383,14 @@
   <string name="log_denied">Denied :</string>
   <string name="log_times">times</string>
   <string name="log_time">time</string>
-  <string name="log_dst">Last Destination :</string>
-  <string name="log_src">Last Source :</string>
-  <string name="log_proto">Last Protocol :</string>
+  <string name="log_dst">Destination :</string>
+  <string name="log_src">Source :</string>
+  <string name="log_proto">Protocol :</string>
   <string name="no_data_available">Please enable log service or no data</string>
   <string name="loading_data_title">Loading...</string>
   <string name="loading_data">Retrieving log data</string>
+  <string name="switch_old">Switch to old view</string>
+  <string name="switch_new">Switch to new view</string>
+  <string name="showlogdetail_title">Application Log Details</string>
+  <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
 </resources>

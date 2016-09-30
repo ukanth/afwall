@@ -37,8 +37,10 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
@@ -48,7 +50,7 @@ public class G extends android.app.Application {
 	public static final String TAG = "AFWall";
 	
 	private static final String HAS_ROOT = "hasRoot";
-	private static final String NO_CHAINS = "noOtherChains";
+	private static final String LOG_CHAINS = "logChains";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
 	private static final String REG_DO = "ipurchaseddonatekey";
@@ -61,6 +63,7 @@ public class G extends android.app.Application {
 	//private static final String ENABLE_LOG = "enableLog";
 	private static final String ENABLE_LOG_SERVICE = "enableLogService";
 	private static final String ENABLE_ADMIN = "enableAdmin";
+	private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
 	private static final String ENABLE_CONFIRM = "enableConfirm";
 	private static final String ENABLE_MULTI_PROFILE =  "enableMultiProfile";
 	private static final String SHOW_UID = "showUid"; 
@@ -71,6 +74,7 @@ public class G extends android.app.Application {
 	private static final String BUSYBOX_PATH = "bb_path";
 	private static final String TOAST_POS = "toast_pos";
 	private static final String LANGUAGE = "locale";
+	private static final String LOG_DMESG = "logDmesg";
 	private static final String SORT_BY = "sort";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String LAST_STORED_PROFILE = "storedProfile";
@@ -134,6 +138,9 @@ public class G extends android.app.Application {
 	/* global preferences */
 	//public static boolean alternateStart() { return gPrefs.getBoolean("alternateStart", false); }
 	//public static boolean alternateStart(boolean val) { gPrefs.edit().putBoolean("alternateStart", val).commit(); return val; }
+
+	public static Set<String> storedPid() { return gPrefs.getStringSet("storedPid", null); }
+	public static void storedPid(Set store) { gPrefs.edit().putStringSet("storedPid", store).commit(); }
 	
 	public static boolean isEnc() { return gPrefs.getBoolean(PWD_ENCRYPT, false); }
 	public static boolean isEnc(boolean val) { gPrefs.edit().putBoolean(PWD_ENCRYPT, val).commit(); return val; }
@@ -181,7 +188,7 @@ public class G extends android.app.Application {
 				}
 
 			} catch (PackageManager.NameNotFoundException e) {
-
+				gPrefs.edit().putBoolean(REG_DO, false).commit();
 			}
 		}
 		return gPrefs.getBoolean(REG_DO, false);
@@ -240,6 +247,9 @@ public class G extends android.app.Application {
 	public static boolean enableAdmin() { return gPrefs.getBoolean(ENABLE_ADMIN, false); }
 	public static boolean enableAdmin(boolean val) { gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit(); return val; }
 
+	public static boolean enableDeviceCheck() { return gPrefs.getBoolean(ENABLE_DEVICE_CHECK, false); }
+	public static boolean enableDeviceCheck(boolean val) { gPrefs.edit().putBoolean(ENABLE_DEVICE_CHECK, val).commit(); return val; }
+
 	public static boolean enableConfirm() { return gPrefs.getBoolean(ENABLE_CONFIRM, false); }
 	//public static boolean enableConfirm(boolean val) { gPrefs.edit().putBoolean(ENABLE_CONFIRM, val).commit(); return val; }
 
@@ -276,6 +286,11 @@ public class G extends android.app.Application {
 
 	public static String locale() { return gPrefs.getString(LANGUAGE, "en"); }
 	public static String locale(String val) { gPrefs.edit().putString(LANGUAGE, val).commit(); return val; }
+
+
+
+	public static String logDmsg() { return gPrefs.getString(LOG_DMESG, "OS"); }
+	public static String logDmsg(String val) { gPrefs.edit().putString(LOG_DMESG, val).commit(); return val; }
 
 
 	public static String sortBy() {
@@ -317,7 +332,7 @@ public class G extends android.app.Application {
 	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean(PROFILE_SWITCH, false); }
 	//public static boolean applyOnSwitchProfiles(boolean val) { gPrefs.edit().putBoolean(PROFILE_SWITCH, val).commit(); return val; }
 	
-	public static String logTarget() { return gPrefs.getString(LOG_TARGET, ""); }
+	public static String logTarget() { return gPrefs.getString(LOG_TARGET, null); }
 	public static String logTarget(String val) { gPrefs.edit().putString(LOG_TARGET, val).commit(); return val; }
 
 	public static int appVersion() { return gPrefs.getInt(APP_VERSION, 0); }
@@ -513,4 +528,6 @@ public class G extends android.app.Application {
 	public static boolean isMigrated() { return gPrefs.getBoolean(IS_MIGRATED, false); }
 	public static boolean isMigrated(boolean val) { gPrefs.edit().putBoolean(IS_MIGRATED, val).commit(); return val; }
 
+	/*public static boolean logTargetChose(boolean s) { gPrefs.edit().putBoolean(LOG_CHAINS,s).commit(); return s;}
+	public static boolean logTargetChose() { return gPrefs.getBoolean(LOG_CHAINS, false); }*/
 }

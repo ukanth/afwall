@@ -28,9 +28,11 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,16 +81,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
@@ -540,10 +547,9 @@ public final class Api {
 	 * @param ctx application context
 	 * @param cmds command list
 	 */
-	private static void addInterfaceRouting(Context ctx, List<String> cmds) {
+	private static void addInterfaceRouting(Context ctx ,List<String> cmds) {
 		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
 		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
-
 		for (String s : dynChains) {
 			cmds.add("-F " + AFWALL_CHAIN_NAME + s);
 		}
@@ -562,16 +568,21 @@ public final class Api {
 		}
 
 		if (G.enableLAN() && !cfg.isTethered) {
-
+			Log.i(TAG, "RULES: INSIDE G.enableLAN()" );
 			if(setv6) {
 				if(!cfg.lanMaskV6.equals("")){
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 				}
 			} else {
+				Log.i(TAG, "RULES: INSIDE cfg.lanMaskV4" );
 				if(!cfg.lanMaskV4.equals("")) {
+					Log.i(TAG, "RULES: INSIDE -wifi-fork" );
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+				} else {
+					//ipaddress not found, but still block WIFI rules
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 				}
 			}
 
@@ -580,10 +591,9 @@ public final class Api {
 				// the interface gets an IP address, and the time we process the intent
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
 				// legitimate traffic from time to time, so we won't log the failures.
-				//TODO: Alternate to this update. breaking in
-				/*cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT"); */
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
 
 			}
 		} else {
@@ -601,9 +611,21 @@ public final class Api {
 		cmds.add("-P OUTPUT DROP");
 		addInterfaceRouting(ctx, cmds);
 		cmds.add("-P OUTPUT ACCEPT");
+		deleteWifiForkRules(ctx,cmds);
 	}
 
-    /**
+	private static void deleteWifiForkRules(Context ctx, List<String> cmds) {
+		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
+		if (G.enableLAN() && !cfg.isTethered) {
+			if (!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")) {
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
+				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
+			}
+		}
+	}
+
+	/**
      * Purge and re-add all rules (internal implementation).
      * @param ctx application context (mandatory)
      * @param uidsWifi list of selected UIDs for WIFI to allow or disallow (depending on the working mode)
@@ -729,7 +751,11 @@ public final class Api {
 		addRulesForUidlist(cmds, uidsLAN,  AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
 		addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
+
+
 		cmds.add("-P OUTPUT ACCEPT");
+
+		deleteWifiForkRules(ctx,cmds);
 
 		iptablesCommands(cmds, out);
 		return true;
@@ -1055,6 +1081,23 @@ public final class Api {
 		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 	}
 
+	//Cleanup unused shell opened by logservice
+	public static void cleanupUid() {
+		Shell.Interactive tempSession = new Shell.Builder()
+				.useSU().open();
+		Set uids = G.storedPid();
+		if(uids != null && uids.size() > 0) {
+			for(String uid: G.storedPid()) {
+				dev.ukanth.ufirewall.log.Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
+				tempSession.addCommand("kill -9 " + uid);
+			}
+			G.storedPid(new HashSet());
+		}
+		tempSession.kill();
+		tempSession.close();
+	}
+
+
 	public static void applyQuick(Context ctx, List<String> cmds, RootCommand callback) {
 		List<String> out = new ArrayList<String>();
 
@@ -1231,7 +1274,7 @@ public final class Api {
 				boolean firstseen = false;
 				app = syncMap.get(apinfo.uid);
 				// filter applications which are not allowed to access the Internet
-				if (app == null && !apinfo.packageName.equals("com.android.webview") && !apinfo.packageName.equals("com.google.android.webview") && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
+				if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
 					continue;
 				}
 				// try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
@@ -1362,6 +1405,10 @@ public final class Api {
 
 	public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo,SharedPreferences pPrefs) {
 		InterfaceDetails details = InterfaceTracker.getCurrentCfg(context,false);
+		//allow webview to download since webview requires INTERNET permission
+		if(applicationInfo.packageName.equals("com.android.webview") || applicationInfo.packageName.equals("com.google.android.webview")) {
+			return true;
+		}
 		if(details.netEnabled) {
 			String mode = pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
 			Log.i(TAG,"Calling isAppAllowed method from DM with Mode: " + mode);
@@ -1397,6 +1444,8 @@ public final class Api {
 
 		return true;
 	}
+
+
 
 
 	private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
@@ -1522,32 +1571,42 @@ public final class Api {
 			Log.e(TAG, "packageManager can't look up versionCode");
 		}
 
-		String abi = Build.CPU_ABI;
-		boolean ret;
-		if (abi.startsWith("x86")) {
-			ret = installBinary(ctx, R.raw.busybox_x86, "busybox") &&
-					installBinary(ctx, R.raw.iptables_x86, "iptables") &&
-					installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
-					installBinary(ctx, R.raw.nflog_x86, "nflog") &&
-                    installBinary(ctx, R.raw.run_pie_x86,"run_pie");
-		} else if (abi.startsWith("mips")) {
-			ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
-					  installBinary(ctx, R.raw.iptables_mips, "iptables") &&
-					  installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
-					  installBinary(ctx, R.raw.nflog_mips, "nflog") &&
-                      installBinary(ctx, R.raw.run_pie_mips,"run_pie");
+		final String[] abis;
+		if ( Build.VERSION.SDK_INT > 21 ) {
+			abis = Build.SUPPORTED_ABIS;
 		} else {
-			// default to ARM
-			ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
-					  installBinary(ctx, R.raw.iptables_arm, "iptables") &&
-					  installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
-					  installBinary(ctx, R.raw.nflog_arm, "nflog") &&
-                      installBinary(ctx, R.raw.run_pie_arm,"run_pie");
+			abis = new String[]{Build.CPU_ABI, Build.CPU_ABI2};
+		}
+
+		boolean ret = false;
+
+		for (String abi: abis) {
+			if (abi.startsWith("x86")) {
+				ret = installBinary(ctx, R.raw.busybox_x86, "busybox") &&
+						installBinary(ctx, R.raw.iptables_x86, "iptables") &&
+						installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
+						installBinary(ctx, R.raw.nflog_x86, "nflog") &&
+						installBinary(ctx, R.raw.run_pie_x86, "run_pie");
+			} else if (abi.startsWith("mips")) {
+				ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
+						installBinary(ctx, R.raw.iptables_mips, "iptables") &&
+						installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
+						installBinary(ctx, R.raw.nflog_mips, "nflog") &&
+						installBinary(ctx, R.raw.run_pie_mips, "run_pie");
+			} else {
+				// default to ARM
+				ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
+						installBinary(ctx, R.raw.iptables_arm, "iptables") &&
+						installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
+						installBinary(ctx, R.raw.nflog_arm, "nflog") &&
+						installBinary(ctx, R.raw.run_pie_arm, "run_pie");
+			}
+			Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
 		}
 
 		// arch-independent scripts
 		ret &= installBinary(ctx, R.raw.afwallstart, "afwallstart");
-		Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
+		//Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
 
 		if (showErrors) {
 			if (ret) {
@@ -1754,27 +1813,91 @@ public final class Api {
 		
 	}
 
-	public static void donateDialog(final Context ctx){
-		new MaterialDialog.Builder(ctx).cancelable(false)
-				.title(R.string.buy_donate)
-				.content(R.string.donate_only)
-				.positiveText(R.string.buy_donate)
-				.negativeText(R.string.close)
-				.icon(ctx.getResources().getDrawable(R.drawable.ic_launcher))
-				.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog dialog) {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
-						ctx.startActivity(intent);
-					}
+	public static boolean checkMD5(String md5, File updateFile) {
+		if (md5.isEmpty() || updateFile == null) {
+			dev.ukanth.ufirewall.log.Log.e(TAG, "MD5 string empty or updateFile null");
+			return false;
+		}
 
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-						dialog.cancel();
-					}
-				})
-				.show();
+		String calculatedDigest = calculateMD5(updateFile);
+		if (calculatedDigest == null) {
+			dev.ukanth.ufirewall.log.Log.e(TAG, "calculatedDigest null");
+			return false;
+		}
+
+		return calculatedDigest.equalsIgnoreCase(md5);
+	}
+
+	private static String calculateMD5(File updateFile) {
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			Log.e(TAG, "Exception while getting digest", e);
+			return null;
+		}
+
+		InputStream is;
+		try {
+			is = new FileInputStream(updateFile);
+		} catch (FileNotFoundException e) {
+			Log.e(TAG, "Exception while getting FileInputStream", e);
+			return null;
+		}
+
+		byte[] buffer = new byte[8192];
+		int read;
+		try {
+			while ((read = is.read(buffer)) > 0) {
+				digest.update(buffer, 0, read);
+			}
+			byte[] md5sum = digest.digest();
+			BigInteger bigInt = new BigInteger(1, md5sum);
+			String output = bigInt.toString(16);
+			// Fill to 32 chars
+			output = String.format("%32s", output).replace(' ', '0');
+			return output;
+		} catch (IOException e) {
+			throw new RuntimeException("Unable to process file for MD5", e);
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				Log.e(TAG, "Exception on closing MD5 input stream", e);
+			}
+		}
+	}
+
+	public static void donateDialog(final Context ctx,boolean showToast){
+		if(showToast) {
+			Toast.makeText(ctx,ctx.getText(R.string.donate_only),Toast.LENGTH_LONG).show();
+		} else {
+			try {
+				new MaterialDialog.Builder(ctx).cancelable(false)
+						.title(R.string.buy_donate)
+						.content(R.string.donate_only)
+						.positiveText(R.string.buy_donate)
+						.negativeText(R.string.close)
+						.icon(ctx.getResources().getDrawable(R.drawable.ic_launcher))
+						.callback(new MaterialDialog.ButtonCallback() {
+							@Override
+							public void onPositive(MaterialDialog dialog) {
+								Intent intent = new Intent(Intent.ACTION_VIEW);
+								intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
+								ctx.startActivity(intent);
+							}
+
+							@Override
+							public void onNegative(MaterialDialog dialog) {
+								dialog.cancel();
+								G.isDo(false);
+							}
+						})
+						.show();
+			} catch(Exception e) {
+				Toast.makeText(ctx,ctx.getText(R.string.donate_only),Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
     /**
@@ -2199,7 +2322,7 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONObject object = new JSONObject(data);
-			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot"};
+			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains"};
 			List<String> ignoreList = Arrays.asList(ignore);
 			JSONArray prefArray = (JSONArray) object.get("prefs");
 			for(int i = 0 ; i < prefArray.length(); i++){
@@ -2331,48 +2454,19 @@ public final class Api {
 */
 
 	@SuppressWarnings("unchecked")
-	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder, String fileName){
+	public static boolean loadSharedPreferencesFromFile(Context ctx,StringBuilder builder, String fileName, boolean loadAll){
 		boolean res = false;
-		//File sdCard = Environment.getExternalStorageDirectory();
-		//File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		//dir.mkdirs();
 		File file = new File(fileName);
-		//new format
 		if(file.exists()) {
-			res = importRules(ctx, file, builder);
-		} /*else {
-			File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-			file = new File(dir, "backup.rules");
-			if(file.exists()) {
-				res = importRulesOld(ctx,file);
+			if(loadAll) {
+				res = importAll(ctx,file,builder);
 			} else {
-				toast(ctx,ctx.getString(R.string.backup_notexist));
+				res = importRules(ctx, file, builder);
 			}
-		}*/
+		}
 		return res;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static boolean loadAllPreferencesFromFile(Context ctx,StringBuilder builder,final String fileName) {
-		boolean res = false;
-		//File sdCard = Environment.getExternalStorageDirectory();
-		//File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-		//dir.mkdirs();
-		File file = new File(fileName);
-		//new format
-		if(file.exists()) {
-			res = importAll(ctx,file,builder);
-		} /*else {
-			file = new File(dir, "backup.rules");
-			if(file.exists()) {
-				res = importRulesOld(ctx,file);
-			} else {
-				toast(ctx,ctx.getString(R.string.backup_notexist));
-			}
-		}*/
-		return res;
-	}
-	
+
 	public static List<String> interfaceInfo(boolean showMatches) {
 		List<String> ret = new ArrayList<String>();
 
@@ -2431,6 +2525,10 @@ public final class Api {
 				return;
 			}
 
+			/*if(hasLOG && hasNFLOG) {
+			} else {
+			}*/
+
 			G.enableLogService(true);
 			updateLogRules(ctx, new RootCommand()
 				.setReopenShell(true)
@@ -2446,9 +2544,9 @@ public final class Api {
 			G.enableLogService(false);
 			G.logTarget("");
 			updateLogRules(ctx, new RootCommand()
-				.setReopenShell(true)
-				.setSuccessToast(R.string.log_was_disabled)
-				.setFailureToast(R.string.log_toggle_failed));
+					.setReopenShell(true)
+					.setSuccessToast(R.string.log_was_disabled)
+					.setFailureToast(R.string.log_toggle_failed));
 			return;
 		}
 		LogProbeCallback cb = new LogProbeCallback();
@@ -2457,20 +2555,19 @@ public final class Api {
 		//check for ip6 enabled from preference and check against the same
 		if(G.enableIPv6()) {
 			new RootCommand()
-			.setReopenShell(true)
-			.setFailureToast(R.string.log_toggle_failed)
-			.setCallback(cb)
-			.setLogging(true)
-			.run(ctx, "cat /proc/net/ip6_tables_targets");
+					.setReopenShell(true)
+					.setFailureToast(R.string.log_toggle_failed)
+					.setCallback(cb)
+					.setLogging(true)
+						.run(ctx, "cat /proc/net/ip6_tables_targets");
 		} else {
 			new RootCommand()
-			.setReopenShell(true)
-			.setFailureToast(R.string.log_toggle_failed)
-			.setCallback(cb)
-			.setLogging(true)
-			.run(ctx, "cat /proc/net/ip_tables_targets");
+					.setReopenShell(true)
+					.setFailureToast(R.string.log_toggle_failed)
+					.setCallback(cb)
+					.setLogging(true)
+					.run(ctx, "cat /proc/net/ip_tables_targets");
 		}
-		
 	}
 	
 	@SuppressLint("InlinedApi")

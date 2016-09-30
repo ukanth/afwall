@@ -41,18 +41,27 @@ import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.events.LogChangeEvent;
+import dev.ukanth.ufirewall.events.RulesEvent;
 import dev.ukanth.ufirewall.log.LogService;
+import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -66,6 +75,18 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		Api.updateLanguage(getApplicationContext(), G.locale());
 		super.onCreate(savedInstanceState);
 		prepareLayout();
+	}
+
+	@Override
+	public void onStart() {
+		EventBus.getDefault().register(this);
+		super.onStart();
+	}
+
+	@Override
+	public void onStop() {
+		EventBus.getDefault().unregister(this);
+		super.onStop();
 	}
 
 
@@ -135,6 +156,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		super.onPause();
 	}
 
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -199,7 +221,45 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				|| !isXLargeTablet(context);
 	}
 
+	@Subscribe(threadMode = ThreadMode.BACKGROUND)
+	public void preferenceChangeApplyRules(RulesEvent rulesEvent) {
+		final Context context = rulesEvent.ctx;
+		Api.applySavedIptablesRules(context, false, new RootShell.RootCommand()
+				.setFailureToast(R.string.error_apply)
+				.setCallback(new RootShell.RootCommand.Callback() {
+					@Override
+					public void cbFunc(RootShell.RootCommand state) {
+						if (state.exitCode == 0) {
+							Log.i(Api.TAG,"Rules applied successfully during preference change");
+						} else {
+							// error details are already in logcat
+							Log.i(Api.TAG,"Error applying rules during preference change");
+						}
+					}
+				}));
+	}
 
+	@Subscribe(threadMode = ThreadMode.BACKGROUND)
+	public void logDemsgChangeApplyRules(LogChangeEvent logChangeEvent) {
+		final Context context = logChangeEvent.ctx;
+		final Intent logIntent = new Intent(context, LogService.class);
+		if (G.enableLogService()) {
+			//check if the firewall is enabled
+			if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
+				//make sure kill all the klog ripper
+				context.stopService(logIntent);
+				Api.cleanupUid();
+			} else {
+				//restart the service
+				context.stopService(logIntent);
+				context.startService(logIntent);
+			}
+		} else {
+			//no internet - stop the service
+			context.stopService(logIntent);
+			Api.cleanupUid();
+		}
+	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -224,7 +284,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				connectionPref.setChecked(false);
 				Api.toast(ctx, getString(R.string.ip6unavailable));
 			}
-			Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
+			EventBus.getDefault().post(new RulesEvent("",ctx));
+			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
 		}
 		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
 				|| key.equals("enableLAN") || key.equals("enableRoam")
@@ -234,9 +295,24 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			G.reloadProfile();
 		}
 
-		if (key.equals("ip_path") || key.equals("dns_value") ) {
-			Toast.makeText(ctx, getString(R.string.reapply_rules_other) ,Toast.LENGTH_LONG).show();
+		if (key.equals("ip_path") || key.equals("dns_value")) {
+			EventBus.getDefault().post(new RulesEvent("",ctx));
+			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
 		}
+
+		if (key.equals("logDmesg")) {
+			EventBus.getDefault().post(new LogChangeEvent("",ctx));
+			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
+		}
+
+		/*//logTarget changes
+		if(key.equals("logTarget")){
+			Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
+			Api.setLogging(ctx, G.enableLogService());
+			Intent intent = new Intent(ctx, LogService.class);
+			ctx.stopService(intent);
+			ctx.startService(intent);
+		}*/
 
 		if(key.equals("activeNotification")) {
 			boolean enabled = sharedPreferences.getBoolean(key, false);

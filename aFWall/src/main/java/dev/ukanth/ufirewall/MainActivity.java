@@ -25,7 +25,10 @@
 package dev.ukanth.ufirewall;
 
 import android.Manifest;
+import android.app.KeyguardManager;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -101,7 +104,9 @@ import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener, RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener,
+		RadioGroup.OnCheckedChangeListener {
+
 
 	//private TextView mSelected;
 	//private DrawerLayout mDrawerLayout;
@@ -125,6 +130,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	private static final int SHOW_CUSTOM_SCRIPT = 1201;
 	private static final int SHOW_RULES_ACTIVITY = 1202;
 	private static final int SHOW_LOGS_ACTIVITY = 1203;
+
+	private static final int LOCK_VERIFICATION = 1212;
+	private static final int VERIFY_CHECK = 10000;
+
 
 	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 	private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
@@ -204,12 +213,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		}*/
 
 		if(!G.hasRoot()) {
-			(new Startup()).setContext(this).execute();
+			(new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} else {
 			startRootShell();
 			passCheck();
 		}
 
+		//(new CheckingTask()).execute();
 	}
 
 	@Override
@@ -472,27 +482,51 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 	}
 
+	public void deviceCheck() {
+		if (Build.VERSION.SDK_INT >= 21) {
+			if((G.isDoKey(getApplicationContext()) || G.isDonate()) ) {
+				KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+				if (keyguardManager.isKeyguardSecure()) {
+					Intent createConfirmDeviceCredentialIntent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
+					if (createConfirmDeviceCredentialIntent != null) {
+						try {
+							startActivityForResult(createConfirmDeviceCredentialIntent,LOCK_VERIFICATION);
+						} catch (ActivityNotFoundException e) {
+						}
+					}
+				} else {
+					Toast.makeText(this,getText(R.string.android_version),Toast.LENGTH_SHORT).show();
+				}
+			} else {
+				Api.donateDialog(MainActivity.this,true);
+			}
+		}
+	}
+
 	private boolean passCheck(){
-		switch (G.protectionLevel()) {
-			case "p0":
-				return true;
-			case "p1":
-				final String oldpwd = G.profile_pwd();
-				if (oldpwd.length() == 0) {
+		if(G.enableDeviceCheck()) {
+			deviceCheck();
+		} else {
+			switch (G.protectionLevel()) {
+				case "p0":
 					return true;
-				} else {
-					// Check the password
-					requestPassword();
-				}
-				break;
-			case "p2":
-				final String pwd = G.sPrefs.getString("LockPassword", "");
-				if (pwd.length() == 0) {
-					return true;
-				} else {
-					requestPassword();
-				}
-				break;
+				case "p1":
+					final String oldpwd = G.profile_pwd();
+					if (oldpwd.length() == 0) {
+						return true;
+					} else {
+						// Check the password
+						requestPassword();
+					}
+					break;
+				case "p2":
+					final String pwd = G.sPrefs.getString("LockPassword", "");
+					if (pwd.length() == 0) {
+						return true;
+					} else {
+						requestPassword();
+					}
+			}
 		}
 		return false;
 	}
@@ -1122,7 +1156,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 									public void fileSelected(File file) {
 										String fileSelected = file.toString();
 										StringBuilder builder = new StringBuilder();
-										if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder,fileSelected)){
+										if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder, fileSelected, false)){
 											Api.applications = null;
 											showOrLoadApplications();
 											Api.toast(MainActivity.this, getString(R.string.import_rules_success) +  fileSelected);
@@ -1149,7 +1183,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 										public void fileSelected(File file) {
 											String fileSelected = file.toString();
 											StringBuilder builder = new StringBuilder();
-											if(Api.loadAllPreferencesFromFile(MainActivity.this, builder, fileSelected)){
+											if(Api.loadSharedPreferencesFromFile(MainActivity.this,builder, fileSelected, true)){
 												Api.applications = null;
 												showOrLoadApplications();
 												Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
@@ -1167,7 +1201,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 									});
 									fileDialog2.showDialog();
 								} else {
-									Api.donateDialog(MainActivity.this);
+									Api.donateDialog(MainActivity.this,false);
 								}
 								break;
 							case 2:
@@ -1351,6 +1385,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch(requestCode) {
+			case LOCK_VERIFICATION: {
+				switch (resultCode) {
+					case RESULT_OK:
+						showOrLoadApplications();
+						break;
+					default:
+						MainActivity.this.finish();
+						android.os.Process.killProcess(android.os.Process.myPid());
+						break;
+				}
+			}
+			break;
+
+			case VERIFY_CHECK: {
+				Log.i(Api.TAG, "In VERIFY_CHECK");
+				switch (resultCode) {
+					case RESULT_OK:
+						G.isDo(true);
+						break;
+					case RESULT_CANCELED:
+						G.isDo(false);
+				}
+			}
+			break;
+
 			case REQ_ENTER_PATTERN: {
 				switch (resultCode) {
 					case RESULT_OK:
@@ -1982,7 +2041,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			}
 
 
-			if(!Api.isNetfilterSupported()) {
+			if(!Api.isNetfilterSupported() && !isFinishing()) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_netfilter)
@@ -2008,7 +2067,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			if(isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
 				G.kingDetected(true);
 			}
-			if(!hasRoot && !isSuPackage(getPackageManager(), "com.kingouser.com")) {
+			if(!hasRoot && !isSuPackage(getPackageManager(), "com.kingouser.com")&& !isFinishing()) {
 				new MaterialDialog.Builder(MainActivity.this).cancelable(false)
 						.title(R.string.error_common)
 						.content(R.string.error_su)
@@ -2046,5 +2105,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		super.onDestroy();
 	}
 
+	/**
+	 * Validate donate key is legit or not
+	 */
+	/*private class CheckingTask extends AsyncTask<Void, Void, Boolean> {
+
+		private ApplicationInfo mApplicationInfo;
+		private PackageInfo mPackageInfo;
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			try {
+				mApplicationInfo = getPackageManager().getApplicationInfo(
+						"dev.ukanth.ufirewall.donatekey", 0);
+				mPackageInfo = getPackageManager().getPackageInfo(
+						"dev.ukanth.ufirewall.donatekey", 0);
+			} catch (PackageManager.NameNotFoundException ignored) {
+			}
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			return mApplicationInfo != null && mPackageInfo != null && mPackageInfo.versionCode == 103;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean aBoolean) {
+			super.onPostExecute(aBoolean);
+			if (aBoolean) {
+				Log.i(Api.TAG, "Startning Activity to Verify Donate package");
+				Intent intent = new Intent(Intent.ACTION_MAIN);
+				intent.setComponent(new ComponentName("dev.ukanth.ufirewall.donatekey",
+						"dev.ukanth.ufirewall.donatekey.MainActivity"));
+				startActivityForResult(intent, VERIFY_CHECK);
+			} else {
+				G.isDo(false);
+			}
+		}
+	}*/
 }
 

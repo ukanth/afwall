@@ -1,14 +1,14 @@
 language: android
 jdk:
-    - oraclejdk7
+    - oraclejdk8
 sudo: false
 
 android:
   components:
     - tools
     - platform-tools
-    - build-tools-23.0.3
-    - android-23
+    - build-tools-24.0.1
+    - android-24
     - add-on
     - extra
   licenses:
@@ -23,6 +23,7 @@ addons:
     - automake
     - libtool
     - expect
+    - unzip	
 
 notifications:
   email:

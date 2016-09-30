@@ -146,6 +146,7 @@
   <string name="log_toggle_failed">Napaka pri vklopu</string>
   <string name="log_target_failed">Napaka: jedro brez podpore za LOG/NFLOG</string>
   <string name="log_cleared">Dnevnik aktivnosti pobrisan</string>
+  <string name="log_dmesg">Metoda beleženja</string>
   <string name="log_clear_error">Napaka pri brisanju podatkov</string>
   <string name="log_fetch_error">Napaka pri pridobivanju podatkov</string>
   <string name="log_parse_error">Napaka pri razčlenjevanju podatkov</string>
@@ -336,6 +337,10 @@
   <string name="pref_none">Brez</string>
   <string name="pref_password">Geslo</string>
   <string name="pref_pattern">Vzorec</string>
+  <string name="pref_device">Uporabi sistemsko zaklepanje</string>
+  <string name="pref_device_desc">Uporabi sistemsko varnostno preverjanje za odpiranje aplikacije</string>
+  <string name="secure_option">Naprava ni zaščitena z geslom/PIN-kodo</string>
+  <string name="android_version">Ta funkcija deluje samo na napravah z različico Androida Lollipop+</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Nastavi</string>
   <string name="wrong_password">Napačno geslo</string>
@@ -378,10 +383,14 @@
   <string name="log_denied">Zavrnjen dostop :</string>
   <string name="log_times">krat</string>
   <string name="log_time">čas</string>
-  <string name="log_dst">Zadnja destinacija :</string>
-  <string name="log_src">Zadnji vir :</string>
-  <string name="log_proto">Zadnji protokol :</string>
+  <string name="log_dst">Naslov :</string>
+  <string name="log_src">Izvor :</string>
+  <string name="log_proto">Protokol :</string>
   <string name="no_data_available">Ni podatkov. Preverite, če je dnevnik vključen.</string>
   <string name="loading_data_title">Nalagam...</string>
   <string name="loading_data">Pridobivam podatke</string>
+  <string name="switch_old">Preklopi na staro podobo</string>
+  <string name="switch_new">Preklopi na novo podobo</string>
+  <string name="showlogdetail_title">Podrobnosti dnevnika aplikacij</string>
+  <string name="reapply_rules">Prosimo ponovno uveljavite pravila zaradi spremembe nastavitev</string>
 </resources>

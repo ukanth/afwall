@@ -75,6 +75,7 @@
 
     <application
         android:hardwareAccelerated="false"
+        android:resizeableActivity="true"
         android:allowBackup="false"
         android:supportsRtl="true"
         android:largeHeap="true"
@@ -303,7 +304,6 @@
             android:authorities="${applicationId}"
             android:name="dev.ukanth.ufirewall.preferences.ShareProfilePreference"
             android:exported="true">
-            <!--<grant-uri-permission android:pathPattern=".*" />-->
         </provider>
     </application>
 

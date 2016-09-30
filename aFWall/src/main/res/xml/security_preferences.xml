@@ -1,6 +1,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/sec_prefs_title" >
+    <PreferenceCategory
+        android:key="securitySetting"
+        android:title="@string/sec_prefs_title" >
 
         <ListPreference
             android:defaultValue="@string/disable"
@@ -26,6 +28,11 @@
             android:key="patternMax"
             android:title="@string/patternMaxTry" >
         </ListPreference>
+
+        <CheckBoxPreference
+            android:key="enableDeviceCheck"
+            android:summary="@string/pref_device_desc"
+            android:title="@string/pref_device" />
 
         <CheckBoxPreference
             android:key="enableAdmin"

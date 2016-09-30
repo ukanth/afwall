@@ -100,7 +100,7 @@ public final class InterfaceTracker {
             return in.split(regexp)[0];
         }
 
-        public static void populateLanMasks(Context context, String[] names, InterfaceDetails ret) {
+        public static void populateLanMasks(InterfaceDetails ret) {
             try {
                 Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
 
@@ -220,7 +220,7 @@ public final class InterfaceTracker {
             getTetherStatus(context, ret);
         }
 
-        NewInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
+        NewInterfaceScanner.populateLanMasks(ret);
 
 		/*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
             OldInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
@@ -238,11 +238,11 @@ public final class InterfaceTracker {
     public static boolean checkForNewCfg(Context context) {
         InterfaceDetails newCfg = getInterfaceDetails(context,true);
 
-        if (currentCfg != null && currentCfg.equals(newCfg)) {
+        //always check for new config
+        /*if (currentCfg != null && currentCfg.equals(newCfg)) {
             return false;
-        }
+        }*/
         currentCfg = newCfg;
-
 
         if (!newCfg.netEnabled) {
             Log.i(TAG, "Now assuming NO connection (all interfaces down)");
