@@ -46,23 +46,27 @@ public class BootBroadcast extends BroadcastReceiver {
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
 
-		//make sure we set OUTPUT to drop
-		List<String> cmds = new ArrayList<String>();
-		cmds.add("-P OUTPUT DROP");
-		Api.apply46(context, cmds, new RootShell.RootCommand());
+		//only if it's enabled
+		if(Api.isEnabled(context)) {
+			//make sure we set OUTPUT to drop
+			List<String> cmds = new ArrayList<String>();
+			cmds.add("-P OUTPUT DROP");
+			Api.apply46(context, cmds, new RootShell.RootCommand());
 
-		//make sure we apply rules after 5 sec
-		Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if(InterfaceTracker.isNetworkUp(context)) {
-					InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+			//make sure we apply rules after 5 sec
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if(InterfaceTracker.isNetworkUp(context)) {
+						InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+					}
+					if(G.activeNotification()){
+						Api.showNotification(Api.isEnabled(context), context);
+					}
 				}
-				if(G.activeNotification()){
-					Api.showNotification(Api.isEnabled(context), context);
-				}
-			}
-		}, 5000);
+			}, 5000);
+		}
+
 	}
 }
