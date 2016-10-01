@@ -1083,18 +1083,25 @@ public final class Api {
 
 	//Cleanup unused shell opened by logservice
 	public static void cleanupUid() {
-		Shell.Interactive tempSession = new Shell.Builder()
-				.useSU().open();
-		Set uids = G.storedPid();
-		if(uids != null && uids.size() > 0) {
-			for(String uid: G.storedPid()) {
-				dev.ukanth.ufirewall.log.Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
-				tempSession.addCommand("kill -9 " + uid);
+		try {
+			Shell.Interactive tempSession = new Shell.Builder()
+					.useSU().open();
+			Set uids = G.storedPid();
+			if(uids != null && uids.size() > 0) {
+				for(String uid: G.storedPid()) {
+					dev.ukanth.ufirewall.log.Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
+					tempSession.addCommand("kill -9 " + uid);
+				}
+				G.storedPid(new HashSet());
 			}
-			G.storedPid(new HashSet());
+			if(tempSession != null) {
+				tempSession.kill();
+				tempSession.close();
+			}
+
+		} catch (Exception e) {
+			Log.e(TAG, "Exception in cleanupUid");
 		}
-		tempSession.kill();
-		tempSession.close();
 	}
 
 

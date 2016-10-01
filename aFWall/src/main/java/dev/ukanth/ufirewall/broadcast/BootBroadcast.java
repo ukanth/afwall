@@ -58,10 +58,9 @@ public class BootBroadcast extends BroadcastReceiver {
 			public void run() {
 				if(InterfaceTracker.isNetworkUp(context)) {
 					InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-
-					if(G.activeNotification()){
-						Api.showNotification(Api.isEnabled(context), context);
-					}
+				}
+				if(G.activeNotification()){
+					Api.showNotification(Api.isEnabled(context), context);
 				}
 			}
 		}, 5000);
