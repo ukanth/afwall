@@ -1100,7 +1100,7 @@ public final class Api {
 			}
 
 		} catch (Exception e) {
-			Log.e(TAG, "Exception in cleanupUid");
+			Log.e(TAG, "Exception in cleanupUid." + e.getLocalizedMessage());
 		}
 	}
 
