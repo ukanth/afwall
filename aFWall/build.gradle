@@ -10,15 +10,15 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 15600
-        versionName "2.6.0"
+        versionCode 15601
+        versionName "2.6.0.1"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
     /*sourceSets {
         main {
             jniLibs.srcDir file('jniLibs/')
-        }
+
     }
 
     splits {

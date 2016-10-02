@@ -1,6 +1,11 @@
 Changelog AFWall+
 ==================
 
+Version 2.6.0.1
+* Bug: Frequent crash while logservice enabled
+* Bug: Persistent notification not shown after reboot
+* Translation updates
+
 Version 2.6.0
 * CRITICAL: Connection leak when LAN option is enabled
 * CRITICAL: Multiple su process (su leak) when logservice enabled
