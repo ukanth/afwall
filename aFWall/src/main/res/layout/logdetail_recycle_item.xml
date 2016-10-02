@@ -31,27 +31,12 @@
             android:orientation="vertical">
 
 
-            <!--<TextView
-                android:id="@+id/app_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#fff"
-                android:textSize="16sp"/>-->
-
             <TextView
                 android:id="@+id/denied_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:textColor="#fff" />
-
-          <!--  <TextView
-                android:id="@+id/data_interface"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/denied_time"
-                android:layout_marginTop="6dp"
-                android:textColor="#fff" />-->
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/data_dest"
@@ -59,8 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/denied_time"
                 android:layout_marginTop="6dp"
-                android:textColor="#fff" />
-
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/data_src"
@@ -68,8 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/data_dest"
                 android:layout_marginTop="6dp"
-                android:textColor="#fff" />
-
+                android:textColor="@color/white" />
 
             <TextView
                 android:id="@+id/data_proto"
@@ -77,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/data_src"
                 android:layout_marginTop="6dp"
-                android:textColor="#fff"/>
+                android:textColor="@color/white"/>
 
         </RelativeLayout>
     </LinearLayout>
