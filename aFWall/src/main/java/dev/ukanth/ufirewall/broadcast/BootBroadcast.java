@@ -58,7 +58,8 @@ public class BootBroadcast extends BroadcastReceiver {
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if(InterfaceTracker.isNetworkUp(context)) {
+					// Apply the changes regards if network is up/not
+					if(InterfaceTracker.isNetworkUp(context) || !G.activeRules()) {
 						InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 					}
 					if(G.activeNotification()){
