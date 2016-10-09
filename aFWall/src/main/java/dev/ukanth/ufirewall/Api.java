@@ -280,37 +280,7 @@ public final class Api {
 			});
 		}
 	}
-	
-	/*public static void alertDialog(final Context ctx, String msgText) {
-		if (ctx != null) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-			builder.setMessage(msgText)
-			       .setCancelable(false)
-			       .setPositiveButton(ctx.getString(R.string.OK), new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   dialog.cancel();
-			           }
-			       });
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
-	}*/
 
-	/*static String customScriptHeader(Context ctx) {
-		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		String myiptables = dir + "/iptables";
-		String mybusybox = dir + "/busybox";
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            myiptables = dir + "/run_pie " + myiptables;
-            mybusybox = dir + "/run_pie " + mybusybox;
-        }
-
-		return "" +
-			"IPTABLES="+ myiptables + "\n" +
-			"BUSYBOX="+mybusybox+"\n" +
-			"";
-	}*/
-	
 	static void setIpTablePath(Context ctx,boolean setv6) {
 		boolean builtin;
 		String pref = G.ip_path();
@@ -369,20 +339,6 @@ public final class Api {
 		}
 	}
 
-
-    /**
-     * Get KLogripper Path
-     * @param ctx
-     * @return
-     */
-	/*public static String getKLogPath(Context ctx) {
-        String dir = ctx.getDir("bin",0).getAbsolutePath();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            return dir + "/run_pie " +  dir + "/klogripper ";
-        } else {
-            return dir + "/klogripper ";
-        }
-	}*/
 
     /**
      * Get NFLog Path
@@ -518,8 +474,8 @@ public final class Api {
 	private static void addRejectRules(List<String> cmds, Context ctx) {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
-		
-		if (G.enableLogService()) {
+
+		if (G.enableLogService() && G.logTarget() != null) {
 			if (G.logTarget().equals("LOG")) {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
 			} else if (G.logTarget().equals("NFLOG")) {
@@ -597,7 +553,9 @@ public final class Api {
 
 			}
 		} else {
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+			if(!cfg.isTethered) {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+			}
 		}
 
 		if (G.enableRoam() && cfg.isRoaming) {
