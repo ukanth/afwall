@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.stericson.roottools.RootTools;
@@ -37,9 +38,8 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
+		setupFixLeak(findPreference("fixLeak"),this.getActivity().getApplicationContext());
 		addPreferencesFromResource(R.xml.experimental_preferences);
-
-
 	}
 
 	@Override
@@ -63,9 +63,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 		if (key.equals("fixLeak")) {
 			boolean enabled = G.fixLeak();
 
-			//if (enabled != isFixLeakInstalled()) {
+			if (enabled != isFixLeakInstalled()) {
 				updateFixLeakScript(enabled);
-			//}
+			}
 		}
 		
 		if (key.equals("multiUser")) {
@@ -112,18 +112,28 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 		new AsyncTask<Void, Void, Boolean>() {
 			@Override
 			public Boolean doInBackground(Void... args) {
-				boolean returnFlag;
+				boolean returnFlag = false;
 				for(String mount : mountPoints) {
 					RootTools.remount(mount,"RW");
 				}
 				if(enabled) {
-					returnFlag = RootTools.copyFile(srcPath, getFixLeakPath(),
-							false, false);
-					//make sure it's executable
-					new RootShell.RootCommand()
-							.setReopenShell(true)
-							.setLogging(true)
-							.run(ctx, "chmod 755 " + getFixLeakPath());
+					for(String mount : mountPoints) {
+						RootTools.remount(mount,"RW");
+					}
+					for (String s : initDirs) {
+						File f = new File(s);
+						if (f.exists() && f.isDirectory()) {
+							//make sure it's executable
+							new RootShell.RootCommand()
+									.setReopenShell(true)
+									.setLogging(true)
+									.run(ctx, "chmod 755 " + f.getAbsolutePath());
+							returnFlag = RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
+									false, false);
+							break;
+						}
+					}
+
 				} else {
 					returnFlag = deleteFiles(ctx);
 				}
@@ -155,7 +165,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 	}
 
 	private Boolean deleteFiles(Context ctx) {
-		boolean returnFlag = false;
+		final boolean[] returnFlag = {false};
 		//mount filesystem
 		for(String mount : mountPoints) {
 			RootTools.remount(mount,"RW");
@@ -165,21 +175,27 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 			if (f.exists() && f.isDirectory()) {
 				String filePath  = s + "/" + initScript;
 					new RootShell.RootCommand()
-						.setReopenShell(true)
-						.setLogging(true)
-						.run(ctx, "rm -f " + filePath);
+						.setReopenShell(true).setCallback(new RootShell.RootCommand.Callback() {
+						@Override
+						public void cbFunc(RootShell.RootCommand state) {
+							if (state.exitCode == 0) {
+								returnFlag[0] = true;
+							}
+						}
+					}).setLogging(true).run(ctx, "rm -f " + filePath);
 			}
 		}
 		for(String mount : mountPoints) {
 			RootTools.remount(mount,"RO");
 		}
-		return returnFlag;
+		return returnFlag[0];
 	}
 
 	private static String getFixLeakPath() {
 		for (String s : initDirs) {
 			File f = new File(s);
 			if (f.exists() && f.isDirectory()) {
+				Log.i(Api.TAG, "Found init.d/su.d module support under " + f.getAbsolutePath());
 				return s + "/" + initScript;
 			}
 		}
