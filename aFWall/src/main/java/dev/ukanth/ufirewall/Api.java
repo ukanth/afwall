@@ -2864,7 +2864,7 @@ public final class Api {
 							profile = G.storedProfile();
 							break;
 					}
-					notificationText = context.getString(R.string.active) + "(" + profile + ")";
+					notificationText = context.getString(R.string.active) + " (" + profile + ")";
 				} else {
 					notificationText = context.getString(R.string.active);
 				}
