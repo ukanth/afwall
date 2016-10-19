@@ -113,7 +113,6 @@ public class PackageBroadcast extends BroadcastReceiver {
 			icon = R.drawable.notification_quest;
 		}
 		
-		final int HELLO_ID = 24556;
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 		
@@ -131,7 +130,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		            .setContentText(notificationText);
 		builder.setContentIntent(in);
 		
-		mNotificationManager.notify(HELLO_ID, builder.build());
+		mNotificationManager.notify(Api.NOTIFICATION_ID, builder.build());
 
 	}
 
