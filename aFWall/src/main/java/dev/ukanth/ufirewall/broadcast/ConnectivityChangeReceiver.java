@@ -78,7 +78,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 				Api.cleanupUid();
 			}
 			//also make sure we default all chains to ACCEPT state
-			Api.cleanupChains(context);
+			Api.allowDefaultChains(context);
 		}
 	}
 }

@@ -350,7 +350,7 @@ public final class InterfaceTracker {
                                                                     //cleanup the notification after applying rules
                                                                     notif(ctx, true);
                                                                 } else {
-                                                                    Api.cleanupChains(ctx);
+                                                                    Api.allowDefaultChains(ctx);
                                                                     errorNotification(ctx);
                                                                 }
                                                             }
@@ -363,7 +363,7 @@ public final class InterfaceTracker {
                 }));
         if (!ret) {
             Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
-            Api.cleanupChains(ctx);
+            Api.allowDefaultChains(ctx);
             errorNotification(ctx);
         }
     }

@@ -232,6 +232,10 @@
     <!-- IPv4/IPv6 -->
     <string name="ipv6_title">IPv6 support</string>
     <string name="ipv6_summary">Enable support for IPv6</string>
+
+    <string name="block_ipv6_title">Block IPv6</string>
+    <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUSION: Use only if you have connection through IPv4</string>
+
     <string name="ip6unavailable">Error: IPv6 requires \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Switch IPv6 rules</string>
     <string name="switch_ipv4">Switch IPv4 rules</string>

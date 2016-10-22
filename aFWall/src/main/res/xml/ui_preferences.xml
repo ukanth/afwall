@@ -1,4 +1,4 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="uiPrefsScreen">
 
     <PreferenceCategory android:title="@string/ui_prefs_title" >
         <CheckBoxPreference
@@ -58,15 +58,24 @@
             android:title="@string/lan_title" />
         <CheckBoxPreference
             android:defaultValue="false"
+            android:dependency="activeRules"
             android:key="enableVPN"
             android:icon="@drawable/img_vpn"
             android:summary="@string/vpnSummary"
             android:title="@string/vpn_profile" />
+
+        <!--<CheckBoxPreference
+            android:defaultValue="false"
+            android:key="blockIPv6"
+            android:summary="@string/block_ipv6_summary"
+            android:title="@string/block_ipv6_title" />-->
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enableIPv6"
             android:summary="@string/ipv6_summary"
             android:title="@string/ipv6_title" />
+
         <CheckBoxPreference
             android:key="enableConfirm"
             android:summary="@string/enableConfirm_summary_on"

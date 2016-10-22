@@ -59,6 +59,7 @@ public class G extends android.app.Application {
 	private static final String ENABLE_VPN = "enableVPN";
 	private static final String ENABLE_LAN = "enableLAN";
 	private static final String ENABLE_IPV6 = "enableIPv6";
+	//private static final String BLOCK_IPV6 = "blockIPv6";
 	private static final String ENABLE_INBOUND = "enableInbound";
 	//private static final String ENABLE_LOG = "enableLog";
 	private static final String ENABLE_LOG_SERVICE = "enableLogService";
@@ -235,6 +236,9 @@ public class G extends android.app.Application {
 
 	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, false); }
 	public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
+
+	/*public static boolean blockIPv6() { return gPrefs.getBoolean(BLOCK_IPV6, false); }
+	public static boolean blockIPv6(boolean val) { gPrefs.edit().putBoolean(BLOCK_IPV6, val).commit(); return val; }*/
 
 	public static boolean enableInbound() { return gPrefs.getBoolean(ENABLE_INBOUND, false); }
 	//public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean(ENABLE_INBOUND, val).commit(); return val; }
