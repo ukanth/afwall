@@ -216,7 +216,7 @@
     <!-- XPOSED -->
     <string name="XPosed_prefs_title">Xposed Related</string>
     <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-    <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android's built-in download manager even if the application is denied access</string>
+    <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
     <string name="LeakDetected">Leak Detected</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker Related</string>
