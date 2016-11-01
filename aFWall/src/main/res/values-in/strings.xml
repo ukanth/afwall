@@ -146,7 +146,7 @@
   <string name="log_toggle_failed">Gagal menukan status log</string>
   <string name="log_target_failed">Eror: Kernel tidak mendukung LOG/NFLOG</string>
   <string name="log_cleared">Log dihapus</string>
-  <string name="log_dmesg">Log fetch method</string>
+  <string name="log_dmesg">Metode pengambilan log</string>
   <string name="log_clear_error">Gagal menghapus log</string>
   <string name="log_fetch_error">Gagal mengambil log</string>
   <string name="log_parse_error">Gagal mengurai log</string>
@@ -337,10 +337,10 @@
   <string name="pref_none">Tidak ada</string>
   <string name="pref_password">Sandi</string>
   <string name="pref_pattern">Pola</string>
-  <string name="pref_device">Use Device Security Protection</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
-  <string name="secure_option">Device is not secured with password/pin</string>
-  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
+  <string name="pref_device">Gunakan Perlindungan Keamanan Perangkat</string>
+  <string name="pref_device_desc">Gunakan pengecekan keamanan perangkat untuk membuka AFWall+ (fitur donasi)</string>
+  <string name="secure_option">Perangkat tidak dilindungi password/pin</string>
+  <string name="android_version">Fitur ini hanya bekerja pada Android minimum versi Lollipop </string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Atur</string>
   <string name="wrong_password">Password salah</string>
@@ -383,14 +383,14 @@
   <string name="log_denied">Ditolak :</string>
   <string name="log_times">kali</string>
   <string name="log_time">waktu</string>
-  <string name="log_dst">Destination :</string>
-  <string name="log_src">Source :</string>
-  <string name="log_proto">Protocol :</string>
+  <string name="log_dst">Tujuan :</string>
+  <string name="log_src">Sumber :</string>
+  <string name="log_proto">Protokol :</string>
   <string name="no_data_available">Aktifkan atau log servis tidak tersimpan</string>
   <string name="loading_data_title">Memuat...</string>
   <string name="loading_data">Mengambil data log</string>
-  <string name="switch_old">Switch to old view</string>
-  <string name="switch_new">Switch to new view</string>
-  <string name="showlogdetail_title">Application Log Details</string>
-  <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
+  <string name="switch_old">Ubah ke tampilan lama</string>
+  <string name="switch_new">Ubah ke tampilan baru</string>
+  <string name="showlogdetail_title">Detail Log Aplikasi</string>
+  <string name="reapply_rules">Silakan terapkan kembali peraturan karena perubahan preferensi</string>
 </resources>
