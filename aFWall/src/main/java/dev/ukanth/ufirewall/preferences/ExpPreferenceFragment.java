@@ -1,6 +1,7 @@
 package dev.ukanth.ufirewall.preferences;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -105,63 +106,67 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 	}
 
 	private void updateFixLeakScript(final boolean enabled) {
-		final Context ctx = this.getActivity().getApplicationContext();
-		final String srcPath = new File(ctx.getDir("bin", 0), initScript)
-				.getAbsolutePath();
 
-		new AsyncTask<Void, Void, Boolean>() {
-			@Override
-			public Boolean doInBackground(Void... args) {
-				boolean returnFlag = false;
-				for(String mount : mountPoints) {
-					RootTools.remount(mount,"RW");
-				}
-				if(enabled) {
+		Activity activity = getActivity();
+		if(activity != null && isAdded()) {
+			final Context ctx = activity.getApplicationContext();
+			final String srcPath = new File(ctx.getDir("bin", 0), initScript)
+					.getAbsolutePath();
+
+			new AsyncTask<Void, Void, Boolean>() {
+				@Override
+				public Boolean doInBackground(Void... args) {
+					boolean returnFlag = false;
 					for(String mount : mountPoints) {
 						RootTools.remount(mount,"RW");
 					}
-					for (String s : initDirs) {
-						File f = new File(s);
-						if (f.exists() && f.isDirectory()) {
-							//make sure it's executable
-							new RootShell.RootCommand()
-									.setReopenShell(true)
-									.setLogging(true)
-									.run(ctx, "chmod 755 " + f.getAbsolutePath());
-							returnFlag = RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
-									false, false);
-							break;
+					if(enabled) {
+						for(String mount : mountPoints) {
+							RootTools.remount(mount,"RW");
 						}
+						for (String s : initDirs) {
+							File f = new File(s);
+							if (f.exists() && f.isDirectory()) {
+								//make sure it's executable
+								new RootShell.RootCommand()
+										.setReopenShell(true)
+										.setLogging(true)
+										.run(ctx, "chmod 755 " + f.getAbsolutePath());
+								returnFlag = RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
+										false, false);
+								break;
+							}
+						}
+
+					} else {
+						returnFlag = deleteFiles(ctx);
 					}
 
-				} else {
-					returnFlag = deleteFiles(ctx);
-				}
-
-				for(String mount : mountPoints) {
-					RootTools.remount(mount,"RO");
-				}
-				return returnFlag;
-			}
-
-			@Override
-			public void onPostExecute(Boolean success) {
-				int msgid;
-
-				if (success) {
-					msgid = enabled ? R.string.success_initd
-							: R.string.remove_initd;
-				} else {
-					msgid = enabled ? R.string.unable_initd
-							: R.string.unable_remove_initd;
-					if(fixLeakPref == null) {
-						fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
+					for(String mount : mountPoints) {
+						RootTools.remount(mount,"RO");
 					}
-					fixLeakPref.setChecked(isFixLeakInstalled());
+					return returnFlag;
 				}
-				Api.toast(ctx, getString(msgid), Toast.LENGTH_SHORT);
-			}
-		}.execute();
+
+				@Override
+				public void onPostExecute(Boolean success) {
+					int msgid;
+
+					if (success) {
+						msgid = enabled ? R.string.success_initd
+								: R.string.remove_initd;
+					} else {
+						msgid = enabled ? R.string.unable_initd
+								: R.string.unable_remove_initd;
+						if(fixLeakPref == null) {
+							fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
+						}
+						fixLeakPref.setChecked(isFixLeakInstalled());
+					}
+					Api.toast(ctx, getString(msgid), Toast.LENGTH_SHORT);
+				}
+			}.execute();
+		}
 	}
 
 	private Boolean deleteFiles(Context ctx) {
