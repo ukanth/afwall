@@ -217,6 +217,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 ondersteuning</string>
   <string name="ipv6_summary">Ondersteuning voor IPv6 inschakelen</string>
+  <string name="block_ipv6_title">Block IPv6</string>
+  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
   <string name="ip6unavailable">Fout: IPv6 vereist \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Naar IPv6 regels</string>
   <string name="switch_ipv4">Naar IPv4 regels</string>
@@ -235,6 +237,8 @@
   <string name="exp_prefs_title">Experimenteel</string>
   <!-- Startup -->
   <string name="startup_service">Regels toepassen. Even geduld.</string>
+  <string name="addStartupDelayTitle">Startup Delay</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Repareer opstart datalek</string>
   <string name="fixleakSummary">Data lekken tijdens opstarten voorkomen.  De ROM moet init.d of su.d (SuperSU) ondersteunen.  HTC apparaten moeten worden geconfigureerd voor S-OFF.</string>
   <!--

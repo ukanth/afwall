@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Sofitu d\'IPv6</string>
   <string name="ipv6_summary">Habilita\'l sofitu d\'IPv6</string>
+  <string name="block_ipv6_title">Block IPv6</string>
+  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
   <string name="ip6unavailable">Fallu: IPv6 rique «/system/bin/ip6tables».</string>
   <string name="switch_ipv6">Switch IPv6 rules</string>
   <string name="switch_ipv4">Switch IPv4 rules</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Esperimental</string>
   <!-- Startup -->
   <string name="startup_service">Aplicando regles. Espera, por favor.</string>
+  <string name="addStartupDelayTitle">Startup Delay</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Iguar escape de datos nel aniciu</string>
   <string name="fixleakSummary">Evita los escapes de datos nel aniciu\'l sistema. La to ROM ha tener sofitu d\'Init.d o su.d (superSU). Los preseos HTC tienen de tar configuraos pa S-OFF.</string>
   <!--

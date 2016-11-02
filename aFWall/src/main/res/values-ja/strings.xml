@@ -217,6 +217,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 のサポート</string>
   <string name="ipv6_summary">IPv6 のサポートを有効にします</string>
+  <string name="block_ipv6_title">IPv6 をブロック</string>
+  <string name="block_ipv6_summary">これにより、IPv6 を使用して接続するアプリケーションをブロックします。注意: IPv4 で接続する場合にのみ使用してください</string>
   <string name="ip6unavailable">エラー: IPv6 には \"/system/bin/ip6tables\" が必要です。</string>
   <string name="switch_ipv6">IPv6 ルールを切り替え</string>
   <string name="switch_ipv4">IPv4 ルールを切り替え</string>
@@ -235,6 +237,8 @@
   <string name="exp_prefs_title">実験的</string>
   <!-- Startup -->
   <string name="startup_service">ルールを適用します。お待ちください。</string>
+  <string name="addStartupDelayTitle">起動の遅延</string>
+  <string name="addStartupDelaySummary">AFWall+ は、ルールを適用する前に 5 秒間待機します。起動時に、スタートアップ ルールが正しく適用されない場合にのみ、この設定を有効にしてください。</string>
   <string name="fixleakTitle">起動時の通信漏洩を抑制する</string>
   <string name="fixleakSummary">システムの起動時に通信漏洩を防止します。お使いの ROM に init.d または su.d (superSU) のサポートが必要です。HTC のデバイスは S-OFF に構成する必要があります。</string>
   <!--

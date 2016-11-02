@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-stöd</string>
   <string name="ipv6_summary">Aktivera stöd för IPv6</string>
+  <string name="block_ipv6_title">Blockera IPv6</string>
+  <string name="block_ipv6_summary">Detta blockerar appar att ansluta med IPv6. OBS! Använd endast om du har en aktiv IPv4 anslutning</string>
   <string name="ip6unavailable">Error: IPv6 kräver \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Byt IPv6 regler</string>
   <string name="switch_ipv4">Byt IPv4 regler</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Experimentell</string>
   <!-- Startup -->
   <string name="startup_service">Tillämpar regler. Vänta.</string>
+  <string name="addStartupDelayTitle">Fördröjd start</string>
+  <string name="addStartupDelaySummary">Aktivering av AFWall+ brandväggsregler kommer att fördröjas med 5 sekunder. Använd endast om startregler inte aktiveras som dom ska under enhetens uppstart.</string>
   <string name="fixleakTitle">Fix för dataläckage vid uppstart</string>
   <string name="fixleakSummary">Förhindra att trafik läcker under systemstart. Ditt ROM måste ha init.d eller su.d (superSU) stöd.  HTC enheter måste konfigureras för S-OFF.</string>
   <!--

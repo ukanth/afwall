@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Dukungan IPv6</string>
   <string name="ipv6_summary">Hidupkan support IPv6</string>
+  <string name="block_ipv6_title">Blokir IPv6</string>
+  <string name="block_ipv6_summary">Akan memblokir aplikasi yang terhubung menggunakan IPv6. PERHATIAN: Terapkan jika jaringan Anda menggunakan IPv4</string>
   <string name="ip6unavailable">Eror: IPv6 perlu \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Ganti aturan IPv6</string>
   <string name="switch_ipv4">Ganti aturan IPv4</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Eksperimen</string>
   <!-- Startup -->
   <string name="startup_service">Menerapkan. Mohon tunggu.</string>
+  <string name="addStartupDelayTitle">Jeda mulai</string>
+  <string name="addStartupDelaySummary">AFWall+ akan menunggu selama 5 detik sebelum menerapkan aturan baru. Aktifkan jika aturan firewall pada saat prangkat booting tidak terpasang secara benar.</string>
   <string name="fixleakTitle">Perbaiki kebocoran data startup</string>
   <string name="fixleakSummary">Cegah kebocoran data saat permulaan sistem. ROM Anda harus mendukung init.d atau su.d. Perangkat HTC harus terkonfigurasi S-OFF.</string>
   <!--

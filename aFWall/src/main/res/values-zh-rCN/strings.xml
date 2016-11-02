@@ -215,6 +215,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 支持</string>
   <string name="ipv6_summary">启用对 IPv6 的支持</string>
+  <string name="block_ipv6_title">屏蔽 IPv6</string>
+  <string name="block_ipv6_summary">此操作将阻止应用通过 IPv6 连接网络. 请注意: 仅在您只通过 IPv4 连接时使用此选项</string>
   <string name="ip6unavailable">错误：IPv6 需要 \"/system/bin/ip6tables\"</string>
   <string name="switch_ipv6">切换 IPv6 规则</string>
   <string name="switch_ipv4">切换 IPv6 规则</string>
@@ -233,6 +235,8 @@
   <string name="exp_prefs_title">实验性功能</string>
   <!-- Startup -->
   <string name="startup_service">正在应用规则. 请稍后.</string>
+  <string name="addStartupDelayTitle">启动延迟</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">修复启动数据泄露</string>
   <string name="fixleakSummary">防止系统启动过程中的数据泄漏. 您的 ROM 必须支持 nit.d or su.d(superSU). HTC 设备必须 S-OFF.</string>
   <!--

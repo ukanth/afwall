@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podpora IPv6</string>
   <string name="ipv6_summary">Zapnúť podporu pre IPv6</string>
+  <string name="block_ipv6_title">Blokovať IPv6</string>
+  <string name="block_ipv6_summary">Zabráni aplikáciám pripojiť sa pomocou IPv6. UPOZORNENIE: Použite iba v prípade, že máte pripojenie cez IPv4</string>
   <string name="ip6unavailable">Chyba: IPv6 vyžaduje \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Prepnúť IPV6 pravidlá</string>
   <string name="switch_ipv4">Prepnúť IPV4 pravidlá</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Experimentálne</string>
   <!-- Startup -->
   <string name="startup_service">Aplikovanie pravidiel. Prosím, počkajte.</string>
+  <string name="addStartupDelayTitle">Oneskorenie pri štarte</string>
+  <string name="addStartupDelaySummary">AFWall+ počká 5 sekúnd pred aplikovaním pravidiel. Povoľte, ak sa pravidlá neaplikujú správne počas štartovania zariadenia.</string>
   <string name="fixleakTitle">Oprava úniku dát pri spustení</string>
   <string name="fixleakSummary">Zabrániť úniku dát počas spúšťania systému. ROM musí mať podporu init.d alebo su.d (superSU).  HTC zariadenia musia byť nakonfigurované pre S-OFF.</string>
   <!--

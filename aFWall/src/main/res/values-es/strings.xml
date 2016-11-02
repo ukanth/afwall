@@ -214,6 +214,9 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Compatibilidad con IPv6</string>
   <string name="ipv6_summary">Activa la compatibilidad con IPv6</string>
+  <string name="block_ipv6_title">Bloquear IPv6</string>
+  <string name="block_ipv6_summary">Esto bloqueará la conexión IPv6 en las aplicaciones.
+PRECAUCIÓN: Utilízalo sólo si tienes una conexión IPv4</string>
   <string name="ip6unavailable">Error: IPv6 necesita \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Cambiar a reglas IPV6</string>
   <string name="switch_ipv4">Cambiar a reglas IPV4</string>
@@ -232,6 +235,8 @@
   <string name="exp_prefs_title">Experimental</string>
   <!-- Startup -->
   <string name="startup_service">Aplicando reglas. Por favor, espera.</string>
+  <string name="addStartupDelayTitle">Demora del inicio</string>
+  <string name="addStartupDelaySummary">AFWall+ esperará 5 segundos antes de aplicar las reglas. Activa esta opción sólo si las reglas no se aplican apropiadamente durante el arranque.</string>
   <string name="fixleakTitle">Arreglar la fuga de datos en el arranque</string>
   <string name="fixleakSummary">Prevenir la fuga de datos durante el arranque del sistema. Tu ROM debe ser compatible con init.d o su.d (superSU). Los dispositivos HTC deben ser configurados con S-OFF.</string>
   <!--
