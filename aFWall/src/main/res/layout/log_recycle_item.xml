@@ -35,7 +35,7 @@
                 android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#fff"
+                android:textColor="@color/white"
                 android:textSize="16sp"/>
 
             <TextView
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/app_name"
                 android:layout_marginTop="6dp"
-                android:textColor="#fff" />
+                android:textColor="@color/white" />
 
             <TextView
 
@@ -54,33 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/last_denied"
                 android:layout_marginTop="6dp"
-                android:textColor="#fff" />
-
-            <!--<TextView
-                android:id="@+id/data_dest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/data_denied"
-                android:layout_marginTop="6dp"
-                android:textColor="#fff" />
-
-
-            <TextView
-                android:id="@+id/data_src"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/data_dest"
-                android:layout_marginTop="6dp"
-                android:textColor="#fff" />
-
-
-            <TextView
-                android:id="@+id/data_proto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/data_src"
-                android:layout_marginTop="6dp"
-                android:textColor="#fff"/>-->
+                android:textColor="@color/white" />
 
         </RelativeLayout>
     </LinearLayout>

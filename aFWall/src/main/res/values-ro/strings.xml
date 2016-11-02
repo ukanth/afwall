@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suport IPv6</string>
   <string name="ipv6_summary">Activează suportul pentru IPv6</string>
+  <string name="block_ipv6_title">Block IPv6</string>
+  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
   <string name="ip6unavailable">Eroare: IPv6 necesită „/system/bin/ip6tables”.</string>
   <string name="switch_ipv6">Comută regulile IPv6</string>
   <string name="switch_ipv4">Comută regulile IPv4</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Experimental</string>
   <!-- Startup -->
   <string name="startup_service">Aplic regulile. Te rog așteaptă.</string>
+  <string name="addStartupDelayTitle">Startup Delay</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Repară pierderile de date la pornire</string>
   <string name="fixleakSummary">Previne pierderile de date la pornirea sistemului. ROM-ul trebuie să suporte init.d sau su.d (superSU). Dispozitivele HTC trebuie să fie configurate pentru S-OFF.</string>
   <!--
@@ -387,7 +391,7 @@
   <string name="log_src">Sursă: </string>
   <string name="log_proto">Protocol: </string>
   <string name="no_data_available">Te rog să activezi serviciul regiștri sau nimic nu v-a fi salvat în regiștri</string>
-  <string name="loading_data_title">Încarcare...</string>
+  <string name="loading_data_title">Încărcare...</string>
   <string name="loading_data">Preluarea datelor de jurnal</string>
   <string name="switch_old">Switch to old view</string>
   <string name="switch_new">Switch to new view</string>

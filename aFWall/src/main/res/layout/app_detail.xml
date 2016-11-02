@@ -37,15 +37,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
-                android:singleLine="true"
-                android:textColor="#FFF"
+                android:maxLines="1"
+                android:textColor="@color/white"
                 android:textSize="18.0sp" />
 
             <TextView
                 android:id="@+id/app_package"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#FFF"
+                android:textColor="@color/white"
                 android:textSize="12.0sp" />
         </LinearLayout>
     </LinearLayout>
@@ -62,14 +62,14 @@
             android:paddingLeft="10.0dip"
             android:paddingTop="12.0dip"
             android:text="@string/traffic_detail_title"
-            android:textColor="#FFF"
+            android:textColor="@color/white"
             android:textSize="16.0sp" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6.0dip"
-            android:background="#000"
+            android:background="@color/black"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -82,6 +82,7 @@
                     android:layout_width="0.0dip"
                     android:layout_height="fill_parent"
                     android:layout_weight="2.0"
+                    android:textColor="@color/white"
                     android:gravity="right|center"
                     android:text="@string/uploaded" />
 
@@ -90,6 +91,7 @@
                     style=""
                     android:layout_width="2.0dip"
                     android:layout_height="fill_parent"
+                    android:textColor="@color/white"
                     android:layout_weight="3.73"
                     android:gravity="left" />
             </LinearLayout>
@@ -104,6 +106,7 @@
                     android:layout_width="0.0dip"
                     android:layout_height="fill_parent"
                     android:layout_weight="1.0"
+                    android:textColor="@color/white"
                     android:gravity="right|center"
                     android:text="@string/downloaded" />
 
@@ -112,6 +115,7 @@
                     style=""
                     android:layout_width="2.0dip"
                     android:layout_height="fill_parent"
+                    android:textColor="@color/white"
                     android:layout_weight="1.83"
                     android:gravity="left" />
             </LinearLayout>

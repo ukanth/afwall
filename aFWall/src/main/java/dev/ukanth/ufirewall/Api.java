@@ -201,6 +201,7 @@ public final class Api {
 
 	// Cached applications
 	public static List<PackageInfoData> applications = null;
+	public static Set<String> recentlyInstalled = new HashSet<>();
 	
 	//for custom scripts
 	public static String ipPath = null;
@@ -280,37 +281,7 @@ public final class Api {
 			});
 		}
 	}
-	
-	/*public static void alertDialog(final Context ctx, String msgText) {
-		if (ctx != null) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-			builder.setMessage(msgText)
-			       .setCancelable(false)
-			       .setPositiveButton(ctx.getString(R.string.OK), new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			        	   dialog.cancel();
-			           }
-			       });
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
-	}*/
 
-	/*static String customScriptHeader(Context ctx) {
-		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		String myiptables = dir + "/iptables";
-		String mybusybox = dir + "/busybox";
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            myiptables = dir + "/run_pie " + myiptables;
-            mybusybox = dir + "/run_pie " + mybusybox;
-        }
-
-		return "" +
-			"IPTABLES="+ myiptables + "\n" +
-			"BUSYBOX="+mybusybox+"\n" +
-			"";
-	}*/
-	
 	static void setIpTablePath(Context ctx,boolean setv6) {
 		boolean builtin;
 		String pref = G.ip_path();
@@ -369,20 +340,6 @@ public final class Api {
 		}
 	}
 
-
-    /**
-     * Get KLogripper Path
-     * @param ctx
-     * @return
-     */
-	/*public static String getKLogPath(Context ctx) {
-        String dir = ctx.getDir("bin",0).getAbsolutePath();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            return dir + "/run_pie " +  dir + "/klogripper ";
-        } else {
-            return dir + "/klogripper ";
-        }
-	}*/
 
     /**
      * Get NFLog Path
@@ -518,8 +475,8 @@ public final class Api {
 	private static void addRejectRules(List<String> cmds, Context ctx) {
 		// set up reject chain to log or not log
 		// this can be changed dynamically through the Firewall Logs activity
-		
-		if (G.enableLogService()) {
+
+		if (G.enableLogService() && G.logTarget() != null) {
 			if (G.logTarget().equals("LOG")) {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
 			} else if (G.logTarget().equals("NFLOG")) {
@@ -597,7 +554,9 @@ public final class Api {
 
 			}
 		} else {
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+			if(!cfg.isTethered) {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+			}
 		}
 
 		if (G.enableRoam() && cfg.isRoaming) {
@@ -838,7 +797,7 @@ public final class Api {
 		}
 
 		//TODO: InterfaceTracker.isIpV6() -- this is breaking custom script
-		if (G.enableIPv6() ) {
+		if (G.enableIPv6()) {
 			setIpTablePath(ctx, true);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
@@ -877,15 +836,25 @@ public final class Api {
 					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 					}
-					cleanupChains(ctx);
+					allowDefaultChains(ctx);
 					toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
 				} else {
+					//make sure we check for preference change
+
+					/*if(G.enableIPv6()){
+						allowV6Chains(ctx);
+					} else {
+						if(G.blockIPv6()) {
+							dropV6Chains(ctx);
+						}
+					}*/
+
 					return true;
 				}
 			} catch (Exception e) {
 				//in case of exception rollback to default chains to ACCEPT
-				Log.e(TAG, "Exception while applying rules: " + e.getMessage());
-				cleanupChains(ctx);
+				Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+				allowDefaultChains(ctx);
 				if (showErrors) toast(ctx, ctx.getString(R.string.error_refresh) + e);
 			}
 			return false;
@@ -1083,20 +1052,34 @@ public final class Api {
 
 	//Cleanup unused shell opened by logservice
 	public static void cleanupUid() {
-		Shell.Interactive tempSession = new Shell.Builder()
-				.useSU().open();
-		Set uids = G.storedPid();
-		if(uids != null && uids.size() > 0) {
-			for(String uid: G.storedPid()) {
-				dev.ukanth.ufirewall.log.Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
-				tempSession.addCommand("kill -9 " + uid);
+		try {
+			Shell.Interactive tempSession = new Shell.Builder()
+					.useSU().open();
+			Set uids = G.storedPid();
+			if(uids != null && uids.size() > 0) {
+				for(String uid: G.storedPid()) {
+					dev.ukanth.ufirewall.log.Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
+					tempSession.addCommand("kill -9 " + uid);
+				}
+				G.storedPid(new HashSet());
 			}
-			G.storedPid(new HashSet());
+			if(tempSession != null) {
+				tempSession.kill();
+				tempSession.close();
+			}
+
+		} catch (Exception e) {
+			Log.e(TAG, "Exception in cleanupUid." + e.getLocalizedMessage());
 		}
-		tempSession.kill();
-		tempSession.close();
 	}
 
+
+	public static void applyIPv6Quick(Context ctx, List<String> cmds, RootCommand callback) {
+		List<String> out = new ArrayList<String>();
+		setIpTablePath(ctx, true);
+		iptablesCommands(cmds, out);
+		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+	}
 
 	public static void applyQuick(Context ctx, List<String> cmds, RootCommand callback) {
 		List<String> out = new ArrayList<String>();
@@ -1262,12 +1245,15 @@ public final class Api {
 			PackageInfoData app = null;
 			ApplicationInfo apinfo = null;
 
-			for(int i = 0 ; i < installed.size();  i++) {
-			//for (ApplicationInfo apinfo : installed) {
-				count = count+1;
+			Date install = new Date();
+			install.setTime(System.currentTimeMillis() - (120000));
+
+			for (int i = 0; i < installed.size(); i++) {
+				//for (ApplicationInfo apinfo : installed) {
+				count = count + 1;
 				apinfo = installed.get(i);
 
-				if(appList != null ){
+				if (appList != null) {
 					appList.doProgress(count);
 				}
 
@@ -1280,7 +1266,7 @@ public final class Api {
 				// try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
 				cachekey = cacheLabel + apinfo.packageName;
 				name = prefs.getString(cachekey, "");
-				if (name.length() == 0) {
+				if (name.length() == 0  || isRecentlyInstalled(apinfo.packageName)) {
 					// get label and put on cache
 					name = pkgmanager.getApplicationLabel(apinfo).toString();
 					edit.putString(cachekey, name);
@@ -1330,10 +1316,10 @@ public final class Api {
 				specialData.add(new PackageInfoData(acct, dsc, pkg));
 			}
 
-			if(specialApps == null) {
+			if (specialApps == null) {
 				specialApps = new HashMap<String, Integer>();
 			}
-			for (int i=0; i<specialData.size(); i++) {
+			for (int i = 0; i < specialData.size(); i++) {
 				app = specialData.get(i);
 				specialApps.put(app.pkgName, app.uid);
 				//default DNS/NTP
@@ -1372,6 +1358,17 @@ public final class Api {
 			//toast(ctx, ctx.getString(R.string.error_common) + e);
 		}
 		return null;
+	}
+
+	private static boolean isRecentlyInstalled(String packageName) {
+		boolean isRecent = false;
+		try {
+			if(recentlyInstalled != null && recentlyInstalled.contains(packageName)) {
+				isRecent = true;
+				recentlyInstalled.remove(packageName);
+			}
+		} catch (Exception e) {}
+		return isRecent;
 	}
 
 	private static List<Integer> getListFromPref(String savedPkg_uid) {
@@ -1720,24 +1717,25 @@ public final class Api {
 	 * Cleansup the uninstalled packages from the cache - will have slight performance
 	 * @param ctx
 	 */
-	/*@Deprecated
 	public static void removeAllUnusedCacheLabel(Context ctx){
-		SharedPreferences prefs = ctx.getSharedPreferences("AFWallPrefs", Context.MODE_PRIVATE);
-		final String cacheLabel = "cache.label.";
-		String pkgName;
-		String cacheKey;
-		PackageManager pm = ctx.getPackageManager();
-		Map<String,?> keys = prefs.getAll();
-		for(Map.Entry<String,?> entry : keys.entrySet()){
-			if(entry.getKey().startsWith(cacheLabel)){
-				cacheKey = entry.getKey();
-				pkgName = entry.getKey().replace(cacheLabel, "");
-				if ( prefs.getString(cacheKey, "").length() > 0 && !isPackageExists(pm, pkgName)) {
-					prefs.edit().remove(cacheKey).commit();
+		try {
+			SharedPreferences prefs = ctx.getSharedPreferences("AFWallPrefs", Context.MODE_PRIVATE);
+			final String cacheLabel = "cache.label.";
+			String pkgName;
+			String cacheKey;
+			PackageManager pm = ctx.getPackageManager();
+			Map<String, ?> keys = prefs.getAll();
+			for (Map.Entry<String, ?> entry : keys.entrySet()) {
+				if (entry.getKey().startsWith(cacheLabel)) {
+					cacheKey = entry.getKey();
+					pkgName = entry.getKey().replace(cacheLabel, "");
+					if (prefs.getString(cacheKey, "").length() > 0 && !isPackageExists(pm, pkgName)) {
+						prefs.edit().remove(cacheKey).commit();
+					}
 				}
 			}
-		 }
-	}*/
+		}catch (Exception e) {}
+	}
 	
 	/**
 	 * Cleanup the cache from profiles - Improve performance.
@@ -2899,7 +2897,7 @@ public final class Api {
 							profile = G.storedProfile();
 							break;
 					}
-					notificationText = context.getString(R.string.active) + "(" + profile + ")";
+					notificationText = context.getString(R.string.active) + " (" + profile + ")";
 				} else {
 					notificationText = context.getString(R.string.active);
 				}
@@ -2943,12 +2941,29 @@ public final class Api {
     	
     }
 
-	public static void cleanupChains(Context ctx) {
+	/*public static void dropV6Chains(Context ctx) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P INPUT DROP");
+		cmds.add("-P FORWARD DROP");
+		cmds.add("-P OUTPUT DROP ");
+		applyIPv6Quick(ctx,cmds, new RootCommand());
+	}
+
+	public static void allowV6Chains(Context ctx) {
+		List<String> cmds = new ArrayList<String>();
+		cmds.add("-P INPUT ACCEPT");
+		cmds.add("-P FORWARD ACCEPT");
+		cmds.add("-P OUTPUT ACCEPT ");
+		applyIPv6Quick(ctx,cmds, new RootCommand());
+	}*/
+
+	public static void allowDefaultChains(Context ctx) {
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 		cmds.add("-P OUTPUT ACCEPT ");
 		applyQuick(ctx,cmds, new RootCommand());
+		applyIPv6Quick(ctx,cmds, new RootCommand());
 	}
 
 	/**

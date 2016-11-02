@@ -146,7 +146,7 @@
   <string name="log_toggle_failed">Misslyckades ändra loggstatus</string>
   <string name="log_target_failed">Fel: kärnan saknar LOG/NFLOG stöd</string>
   <string name="log_cleared">Loggen rensad</string>
-  <string name="log_dmesg">Log fetch method</string>
+  <string name="log_dmesg">Logginsamlingsmetod</string>
   <string name="log_clear_error">Misslyckades att tömma loggen</string>
   <string name="log_fetch_error">Misslyckades att hämta loggen</string>
   <string name="log_parse_error">Misslyckades att behandla loggen</string>
@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-stöd</string>
   <string name="ipv6_summary">Aktivera stöd för IPv6</string>
+  <string name="block_ipv6_title">Blockera IPv6</string>
+  <string name="block_ipv6_summary">Detta blockerar appar att ansluta med IPv6. OBS! Använd endast om du har en aktiv IPv4 anslutning</string>
   <string name="ip6unavailable">Error: IPv6 kräver \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Byt IPv6 regler</string>
   <string name="switch_ipv4">Byt IPv4 regler</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Experimentell</string>
   <!-- Startup -->
   <string name="startup_service">Tillämpar regler. Vänta.</string>
+  <string name="addStartupDelayTitle">Fördröjd start</string>
+  <string name="addStartupDelaySummary">Aktivering av AFWall+ brandväggsregler kommer att fördröjas med 5 sekunder. Använd endast om startregler inte aktiveras som dom ska under enhetens uppstart.</string>
   <string name="fixleakTitle">Fix för dataläckage vid uppstart</string>
   <string name="fixleakSummary">Förhindra att trafik läcker under systemstart. Ditt ROM måste ha init.d eller su.d (superSU) stöd.  HTC enheter måste konfigureras för S-OFF.</string>
   <!--
@@ -339,8 +343,8 @@
   <string name="pref_pattern">Mönster</string>
   <string name="pref_device">Use Device Security Protection</string>
   <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
-  <string name="secure_option">Device is not secured with password/pin</string>
-  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
+  <string name="secure_option">Enheten är inte skyddad med lösenord/PIN-kod</string>
+  <string name="android_version">Denna funktion fungerar endast på Lollipop+ versioner av Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Ange</string>
   <string name="wrong_password">Felaktigt lösenord</string>
@@ -383,14 +387,14 @@
   <string name="log_denied">Nekad:</string>
   <string name="log_times">gånger</string>
   <string name="log_time">gång</string>
-  <string name="log_dst">Destination :</string>
-  <string name="log_src">Source :</string>
-  <string name="log_proto">Protocol :</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Källa:</string>
+  <string name="log_proto">Protokoll:</string>
   <string name="no_data_available">Vänligen aktivera Loggtjänsten eller inga data</string>
   <string name="loading_data_title">Laddar ...</string>
   <string name="loading_data">Hämtar loggdata</string>
-  <string name="switch_old">Switch to old view</string>
-  <string name="switch_new">Switch to new view</string>
-  <string name="showlogdetail_title">Application Log Details</string>
-  <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
+  <string name="switch_old">Växla till gammalt utseende</string>
+  <string name="switch_new">Växla till nytt utseende</string>
+  <string name="showlogdetail_title">Visa detaljerad logg</string>
+  <string name="reapply_rules">Var god tillämpa reglerna igen eftersom inställningarna har ändrats</string>
 </resources>

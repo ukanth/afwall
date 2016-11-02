@@ -1,6 +1,22 @@
 Changelog AFWall+
 ==================
 
+Version 2.7.0
+* Bug: Random hang issue with CM root and Phh's superuser
+* Bug: Added option to add delay applying rules on startup
+* Bug: Minor fixes on preferences on change
+* Bug: Fix for newly installed app on top on few scenarios
+* Bug: Startup script related bugs
+* Bug: Possible tether issue from last version
+* Request: Extra space on notification text ! took lot of time ;)
+* User reported crash fixes
+* Updated Translations
+
+Version 2.6.0.1 [Oct 1, 2016]
+* Bug: Frequent crash while logservice enabled
+* Bug: Persistent notification not shown after reboot
+* Translation updates
+
 Version 2.6.0
 * CRITICAL: Connection leak when LAN option is enabled
 * CRITICAL: Multiple su process (su leak) when logservice enabled

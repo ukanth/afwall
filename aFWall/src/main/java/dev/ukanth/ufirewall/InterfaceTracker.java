@@ -35,6 +35,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -70,29 +71,6 @@ public final class InterfaceTracker {
 
     private static final int NOTIF_ID = 10221;
     private static InterfaceDetails currentCfg = null;
-
-
-	/*private static class OldInterfaceScanner {
-
-		private static String intToDottedQuad(int ip) {
-			return String.format(Locale.US, "%d.%d.%d.%d",
-					(ip >>>  0) & 0xff,
-					(ip >>>  8) & 0xff,
-					(ip >>> 16) & 0xff,
-					(ip >>> 24) & 0xff);
-		}
-
-		public static void populateLanMasks(Context context, String[] names, InterfaceDetails ret) {
-			WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-			DhcpInfo dhcp = wifi.getDhcpInfo();
-
-			if (dhcp != null) {
-				ret.lanMaskV4 = intToDottedQuad(dhcp.ipAddress) + "/" +
-							    intToDottedQuad(dhcp.netmask);
-				ret.wifiName = "UNKNOWN";
-			}
-		}
-	}*/
 
     private static class NewInterfaceScanner {
 
@@ -179,13 +157,13 @@ public final class InterfaceTracker {
                     d.tetherStatusKnown = true;
                     Log.d(TAG, "isWifiApEnabled is " + d.isTethered);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(Api.TAG, e.getMessage());
                 }
             }
         }
     }
 
-    private static InterfaceDetails getInterfaceDetails(Context context,boolean checkTether) {
+    private static InterfaceDetails getInterfaceDetails(Context context, boolean checkTether) {
         InterfaceDetails ret = new InterfaceDetails();
 
         ConnectivityManager cm = (ConnectivityManager) context
@@ -216,7 +194,7 @@ public final class InterfaceTracker {
                 break;
         }
         //TODO: crashing when calling using xposed
-        if(checkTether) {
+        if (checkTether) {
             getTetherStatus(context, ret);
         }
 
@@ -232,16 +210,16 @@ public final class InterfaceTracker {
     }
 
     public static boolean isNetworkUp(Context context) {
-        return getInterfaceDetails(context,true).netEnabled;
+        return getInterfaceDetails(context, true).netEnabled;
     }
 
     public static boolean checkForNewCfg(Context context) {
-        InterfaceDetails newCfg = getInterfaceDetails(context,true);
+        InterfaceDetails newCfg = getInterfaceDetails(context, true);
 
         //always check for new config
-        /*if (currentCfg != null && currentCfg.equals(newCfg)) {
+        if (currentCfg != null && currentCfg.equals(newCfg)) {
             return false;
-        }*/
+        }
         currentCfg = newCfg;
 
         if (!newCfg.netEnabled) {
@@ -265,9 +243,9 @@ public final class InterfaceTracker {
         return true;
     }
 
-    public static InterfaceDetails getCurrentCfg(Context context,boolean checkTether) {
+    public static InterfaceDetails getCurrentCfg(Context context, boolean checkTether) {
         if (currentCfg == null) {
-            currentCfg = getInterfaceDetails(context,checkTether);
+            currentCfg = getInterfaceDetails(context, checkTether);
         }
         return currentCfg;
     }
@@ -295,9 +273,9 @@ public final class InterfaceTracker {
         mNotificationManager.notify(ERROR_NOTIFICATION_ID, notification);
     }
 
-    public static void notif(Context context,boolean cancel) {
+    public static void notif(Context context, boolean cancel) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if(cancel) {
+        if (cancel) {
             notificationManager.cancel(NOTIF_ID);
         } else {
             NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(context);
@@ -331,7 +309,7 @@ public final class InterfaceTracker {
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
 
-        notif(context,false);
+        notif(context, false);
 
         boolean ret = Api.fastApply(ctx, new RootCommand()
                 .setFailureToast(R.string.error_apply)
@@ -339,7 +317,7 @@ public final class InterfaceTracker {
                     @Override
                     public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
-                            notif(ctx,true);
+                            notif(ctx, true);
                             Log.i(TAG, reason + ": applied rules");
                         } else {
                             // error details are already in logcat
@@ -354,11 +332,11 @@ public final class InterfaceTracker {
                                                 LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
                                                 Log.d(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
                                                 Log.i(TAG, reason + ": applied rules");
-                                                notif(ctx,true);
+                                                notif(ctx, true);
                                             } else {
-                                                notif(ctx,true);
+                                                notif(ctx, true);
                                                 //start notification again
-                                                notif(ctx,false);
+                                                notif(ctx, false);
                                                 Api.flushAllRules(ctx, new RootCommand());
                                                 Api.applySavedIptablesRules(ctx, false, new RootCommand()
                                                         .setFailureToast(R.string.error_apply)
@@ -370,9 +348,9 @@ public final class InterfaceTracker {
                                                                     Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
                                                                     Log.i(TAG, reason + ": applied rules");
                                                                     //cleanup the notification after applying rules
-                                                                    notif(ctx,true);
+                                                                    notif(ctx, true);
                                                                 } else {
-                                                                    Api.cleanupChains(ctx);
+                                                                    Api.allowDefaultChains(ctx);
                                                                     errorNotification(ctx);
                                                                 }
                                                             }
@@ -385,7 +363,7 @@ public final class InterfaceTracker {
                 }));
         if (!ret) {
             Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
-            Api.cleanupChains(ctx);
+            Api.allowDefaultChains(ctx);
             errorNotification(ctx);
         }
     }

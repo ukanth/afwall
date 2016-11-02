@@ -215,6 +215,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Поддержка IPv6</string>
   <string name="ipv6_summary">Разрешить поддержку IPv6</string>
+  <string name="block_ipv6_title">Блокировка IPv6</string>
+  <string name="block_ipv6_summary">Блокировка приложений, использующих IPv6. ВНИМАНИЕ: используйте только при наличии соединения через IPv4</string>
   <string name="ip6unavailable">Ошибка: IPv6 требуется «/system/bin/ip6tables».</string>
   <string name="switch_ipv6">Переключение IPV6 правил</string>
   <string name="switch_ipv4">Переключение IPV46 правил</string>
@@ -233,6 +235,8 @@
   <string name="exp_prefs_title">Экспериментальные</string>
   <!-- Startup -->
   <string name="startup_service">Применение правил. Пожалуйста подождите.</string>
+  <string name="addStartupDelayTitle">Задержка при запуске</string>
+  <string name="addStartupDelaySummary">Задержка перед применением правил AFWall + составит 5 секунд. Включайте этот параметр только если правила, которые установлены при запуске, не применяются должным образом во время загрузки.</string>
   <string name="fixleakTitle">Исправить утечку данных при запуске</string>
   <string name="fixleakSummary">Предотвратите утечку данных во время запуска системы. Необходима поддержка скриптов init.d или su.d (superSU) Вашим ядром/прошивкой. Устройства HTC должны быть настроены для S-OFF.</string>
   <!--

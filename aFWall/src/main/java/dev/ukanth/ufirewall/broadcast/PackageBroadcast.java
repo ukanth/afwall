@@ -29,12 +29,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+
+import java.util.HashSet;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
@@ -70,6 +73,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 				 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -123);
                  Api.applicationRemoved(context, uid);
                  Api.removeCacheLabel(intent.getData().getSchemeSpecificPart(),context);
+				 Api.removeAllUnusedCacheLabel(context);
                  // Force app list reload next time
                  Api.applications = null;
 			}
@@ -89,11 +93,16 @@ public class PackageBroadcast extends BroadcastReceiver {
 					final PackageManager pkgmanager = context.getPackageManager();
 					String label = null;
 					try {
-						label = pkgmanager.getApplicationLabel(pkgmanager.getApplicationInfo(added_package, 0)).toString();
+						ApplicationInfo applicationInfo = pkgmanager.getApplicationInfo(added_package, 0);
+						label = pkgmanager.getApplicationLabel(applicationInfo).toString();
+						if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(Manifest.permission.INTERNET,added_package)) {
+							notifyApp(context, intent, label);
+						}
+						if(Api.recentlyInstalled == null) {
+							Api.recentlyInstalled = new HashSet<>();
+						}
+						Api.recentlyInstalled.add(applicationInfo.packageName);
 					} catch (NameNotFoundException e) {
-					}
-					if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(Manifest.permission.INTERNET,added_package)) {
-						notifyApp(context, intent, label);
 					}
 				}
 			}
@@ -113,7 +122,6 @@ public class PackageBroadcast extends BroadcastReceiver {
 			icon = R.drawable.notification_quest;
 		}
 		
-		final int HELLO_ID = 24556;
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 		
@@ -131,7 +139,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		            .setContentText(notificationText);
 		builder.setContentIntent(in);
 		
-		mNotificationManager.notify(HELLO_ID, builder.build());
+		mNotificationManager.notify(Api.NOTIFICATION_ID, builder.build());
 
 	}
 

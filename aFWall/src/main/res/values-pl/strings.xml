@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Wsparcie IPv6</string>
   <string name="ipv6_summary">Włącz wsparcie IPv6</string>
+  <string name="block_ipv6_title">Block IPv6</string>
+  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
   <string name="ip6unavailable">Błąd: IPv6 wymaga \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Przełącz reguły IPv6</string>
   <string name="switch_ipv4">Przełącz reguły IPv4</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Eksperymentalne</string>
   <!-- Startup -->
   <string name="startup_service">Aktywowanie reguł. Proszę czekać.</string>
+  <string name="addStartupDelayTitle">Startup Delay</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Napraw wyciek danych przed startem zapory</string>
   <string name="fixleakSummary">Zapobiega wyciekom danych podczas uruchamiania systemu.  ROM musi wspierać init.d lub su.d (superSU). Urządzenia HTC muszą być skonfigurowane na S-OFF.</string>
   <!--
@@ -306,7 +310,7 @@
   <string name="disable">Wyłącz</string>
   <string name="filters_apps_title">Notification filter</string>
   <string name="apply_color">Select color to apply</string>
-  <string name="binaries">Binaria</string>
+  <string name="binaries">Pliki wykonywalne</string>
   <string name="widgets">Widgets</string>
   <string name="exports">Eksport</string>
   <string name="imports">Import</string>

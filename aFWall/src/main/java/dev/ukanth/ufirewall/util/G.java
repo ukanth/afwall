@@ -59,6 +59,7 @@ public class G extends android.app.Application {
 	private static final String ENABLE_VPN = "enableVPN";
 	private static final String ENABLE_LAN = "enableLAN";
 	private static final String ENABLE_IPV6 = "enableIPv6";
+	//private static final String BLOCK_IPV6 = "blockIPv6";
 	private static final String ENABLE_INBOUND = "enableInbound";
 	//private static final String ENABLE_LOG = "enableLog";
 	private static final String ENABLE_LOG_SERVICE = "enableLogService";
@@ -78,6 +79,7 @@ public class G extends android.app.Application {
 	private static final String SORT_BY = "sort";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String LAST_STORED_PROFILE = "storedProfile";
+	private static final String STARTUP_DELAY = "addStartupDelay";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
 	private static final String ACTIVE_NOTIFICATION = "activeNotification";
@@ -235,6 +237,9 @@ public class G extends android.app.Application {
 	public static boolean enableIPv6() { return gPrefs.getBoolean(ENABLE_IPV6, false); }
 	public static boolean enableIPv6(boolean val) { gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit(); return val; }
 
+	/*public static boolean blockIPv6() { return gPrefs.getBoolean(BLOCK_IPV6, false); }
+	public static boolean blockIPv6(boolean val) { gPrefs.edit().putBoolean(BLOCK_IPV6, val).commit(); return val; }*/
+
 	public static boolean enableInbound() { return gPrefs.getBoolean(ENABLE_INBOUND, false); }
 	//public static boolean enableInbound(boolean val) { gPrefs.edit().putBoolean(ENABLE_INBOUND, val).commit(); return val; }
 
@@ -314,9 +319,11 @@ public class G extends android.app.Application {
 
 	
 	public static boolean activeRules() { return gPrefs.getBoolean(ACTIVE_RULES, true); }
+
+	public static boolean startupDelay() { return gPrefs.getBoolean(STARTUP_DELAY, true); }
 	
-	public static boolean usePatterns() { return gPrefs.getBoolean(USE_PASSWORD_PATTERN, false); }
-	public static boolean setUsePatterns(boolean val) { gPrefs.edit().putBoolean(USE_PASSWORD_PATTERN, val).commit(); return val; }
+	//public static boolean usePatterns() { return gPrefs.getBoolean(USE_PASSWORD_PATTERN, false); }
+	//public static boolean setUsePatterns(boolean val) { gPrefs.edit().putBoolean(USE_PASSWORD_PATTERN, val).commit(); return val; }
 	
 	public static boolean enableStealthPattern() { return gPrefs.getBoolean(PATTERN_STEALTH, false); }
 	//public static boolean enableStealthPattern(boolean val) { gPrefs.edit().putBoolean(PATTERN_STEALTH, val).commit(); return val;  }

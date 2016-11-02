@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">支援 IPv6</string>
   <string name="ipv6_summary">啟用對 IPv6 的支持</string>
+  <string name="block_ipv6_title">Block IPv6</string>
+  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
   <string name="ip6unavailable">錯誤：IPv6 需要 \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">切換 IPv6 規則</string>
   <string name="switch_ipv4">切換 IPv4 規則</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">實驗性</string>
   <!-- Startup -->
   <string name="startup_service">正在套用規則，請稍等。</string>
+  <string name="addStartupDelayTitle">Startup Delay</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">修復啟動數據洩漏</string>
   <string name="fixleakSummary">防止在系統啟動過程中資料洩漏。您的 ROM 必須 init.d 或 su.d(superSU) 支援。HTC 設備必須設為為 S-OFF。</string>
   <!--

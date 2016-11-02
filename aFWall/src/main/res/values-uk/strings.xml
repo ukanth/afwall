@@ -146,7 +146,7 @@
   <string name="log_toggle_failed">Помилка перемикання статусу журналу</string>
   <string name="log_target_failed">Помилка: у ядрі відсутня підтримка журналу/NFLOG</string>
   <string name="log_cleared">Журнал очищено</string>
-  <string name="log_dmesg">Log fetch method</string>
+  <string name="log_dmesg">Метод отримання журналу</string>
   <string name="log_clear_error">Помилка очищення журналу</string>
   <string name="log_fetch_error">Помилка отримання журналу</string>
   <string name="log_parse_error">Помилка аналізу журналу</string>
@@ -214,6 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Підтримка IPv6</string>
   <string name="ipv6_summary">Увімкнути підтримку IPv6</string>
+  <string name="block_ipv6_title">Блокувати IPv6</string>
+  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
   <string name="ip6unavailable">Помилка: IPv6 потребує \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Перемикач IPv6 правил</string>
   <string name="switch_ipv4">Перемикач IPv4 правил</string>
@@ -232,6 +234,8 @@
   <string name="exp_prefs_title">Експериментальне</string>
   <!-- Startup -->
   <string name="startup_service">Застосування правил. Будь ласка, зачекайте.</string>
+  <string name="addStartupDelayTitle">Затримка запуску</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Виправити витік даних при завантаженні</string>
   <string name="fixleakSummary">Запобігайте витоку даних під час запуску системи.  Ваша прошивка повинна підтримувати init.d або su.d (superSU).  Пристрої HTC необхідно налаштувати на S-OFF.</string>
   <!--
@@ -249,7 +253,7 @@
   <string name="notify_pref_title">Увімкнути сповіщення</string>
   <string name="syscolor_pref_title">Колір системної програми</string>
   <string name="syscolor_pref_summary_on">Колір для усіх системних застосунків</string>
-  <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
+  <string name="enableConfirmTitle">Підтвердіть вимкнення AFWall+</string>
   <string name="enableConfirm_summary_on">Брандмауер буде запитувати підтвердження перед відключенням</string>
   <string name="showUid">Показати UID для програм</string>
   <string name="showuid_summary_on">Show app UID\'s in the main view</string>
@@ -277,7 +281,7 @@
   <string name="reverse_all">Invert all the selected apps?</string>
   <string name="unselect_all">Очистити всі вибрані програми?</string>
   <string name="check_all">Виділити все</string>
-  <string name="invert_all">Invert all</string>
+  <string name="invert_all">Інвертувати всі</string>
   <string name="legend_invert">Invert all checkboxes on all columns</string>
   <string name="uncheck_all">Зняти всі відмітки</string>
   <string name="select_action">Виберіть дію на стовпчику</string>
@@ -337,10 +341,10 @@
   <string name="pref_none">Жоден</string>
   <string name="pref_password">Пароль</string>
   <string name="pref_pattern">Шаблон</string>
-  <string name="pref_device">Use Device Security Protection</string>
+  <string name="pref_device">Використовувати захист безпеки пристрою</string>
   <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
-  <string name="secure_option">Device is not secured with password/pin</string>
-  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
+  <string name="secure_option">Пристрій не захищений паролем/пін-кодом</string>
+  <string name="android_version">Ця функція працює лише на версії Android не нижче Lollipop</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Встановити</string>
   <string name="wrong_password">Хибний пароль</string>
@@ -381,11 +385,11 @@
   <string name="permissiondenied_asset">Немає дозволу на читання та записування для пам\'яті. Будь ласка, надайте доступ для копіювання двійкових файлів для AFWall + </string>
   <string name="log_deletedapp">Видалено програму</string>
   <string name="log_denied">Заборонено:</string>
-  <string name="log_times">times</string>
-  <string name="log_time">time</string>
-  <string name="log_dst">Destination :</string>
-  <string name="log_src">Source :</string>
-  <string name="log_proto">Protocol :</string>
+  <string name="log_times">разів</string>
+  <string name="log_time">раз</string>
+  <string name="log_dst">Призначення:</string>
+  <string name="log_src">Джерело:</string>
+  <string name="log_proto">Протокол:</string>
   <string name="no_data_available">Please enable log service or no data</string>
   <string name="loading_data_title">Завантаження...</string>
   <string name="loading_data">Отримання даних журналу</string>

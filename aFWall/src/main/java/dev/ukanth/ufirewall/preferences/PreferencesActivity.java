@@ -31,9 +31,11 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatCheckedTextView;
 import android.support.v7.widget.AppCompatEditText;
@@ -45,6 +47,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -54,6 +57,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
@@ -264,55 +268,21 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 		Context ctx = getApplicationContext();
-		if (key.equals("activeRules")) {
-			if (!G.activeRules()) {
-				//disable service when there is no active rules
-				//stopService(new Intent(PreferencesActivity.this, RootShell.class));
-				G.enableRoam(false);
-				G.enableLAN(false);
-				G.enableVPN(false);
-			} else {
-				//enable service when there active rules is enabled
-				//startService(new Intent(PreferencesActivity.this, RootShell.class));
-			}
-		}
 
-		if (key.equals("enableIPv6")) {
-			File defaultIP6TablesPath = new File("/system/bin/ip6tables");
-			if (!defaultIP6TablesPath.exists()) {
-				CheckBoxPreference connectionPref = (CheckBoxPreference) findPreference(key);
-				connectionPref.setChecked(false);
-				Api.toast(ctx, getString(R.string.ip6unavailable));
-			}
-			EventBus.getDefault().post(new RulesEvent("",ctx));
-			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
-		}
+
 		if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
 				|| key.equals("enableLAN") || key.equals("enableRoam")
 				|| key.equals("locale") || key.equals("showFilter")) {
-			// revert back to Default profile when disabling multi-profile
-			// support
 			G.reloadProfile();
 		}
 
 		if (key.equals("ip_path") || key.equals("dns_value")) {
 			EventBus.getDefault().post(new RulesEvent("",ctx));
-			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
 		}
 
 		if (key.equals("logDmesg")) {
 			EventBus.getDefault().post(new LogChangeEvent("",ctx));
-			//Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
 		}
-
-		/*//logTarget changes
-		if(key.equals("logTarget")){
-			Toast.makeText(ctx, getString(R.string.reapply_rules) ,Toast.LENGTH_LONG).show();
-			Api.setLogging(ctx, G.enableLogService());
-			Intent intent = new Intent(ctx, LogService.class);
-			ctx.stopService(intent);
-			ctx.startService(intent);
-		}*/
 
 		if(key.equals("activeNotification")) {
 			boolean enabled = sharedPreferences.getBoolean(key, false);
@@ -323,15 +293,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 				notificationManager.cancel(33341);
 			}
 		}
-
-		/*if(key.equals("lockScreenNotification")) {
-			//cancel and recreate..
-			NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-			notificationManager.cancel(33341);
-			Api.showNotification(Api.isEnabled(ctx),ctx);
-		}*/
-
-
 
 		if (key.equals("enableLogService")) {
 			Api.setLogging(ctx, G.enableLogService());
@@ -346,9 +307,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 		}
 
 		if(key.equals("enableMultiProfile")) {
-			/*if (!G.enableMultiProfile()) {
-				G.storedPosition(0);
-			}*/
 			G.reloadProfile();
 		}
 

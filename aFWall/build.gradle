@@ -10,15 +10,15 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 15600
-        versionName "2.6.0"
+        versionCode 15690
+        versionName "2.7.0-BETA"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
     /*sourceSets {
         main {
             jniLibs.srcDir file('jniLibs/')
-        }
+
     }
 
     splits {
@@ -53,7 +53,7 @@ dependencies {
     //for XPosed moduleA
     // provided fileTree(dir: 'libs', include: ['*.jar'])
 
-    //compile 'eu.chainfire:libsuperuser:1.0.0.201602271131'
+    compile 'eu.chainfire:libsuperuser:1.0.0.201602271131'
     compile 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     compile 'com.android.support:appcompat-v7:24.+'
     compile 'com.afollestad.material-dialogs:core:0.8.6.2'
