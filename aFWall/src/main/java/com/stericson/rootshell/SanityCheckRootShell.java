@@ -22,10 +22,6 @@
 
 package com.stericson.rootshell;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeoutException;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,10 +32,13 @@ import android.os.StrictMode;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.stericson.rootshell.RootShell;
 import com.stericson.rootshell.exceptions.RootDeniedException;
 import com.stericson.rootshell.execution.Command;
 import com.stericson.rootshell.execution.Shell;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 public class SanityCheckRootShell extends Activity
 {

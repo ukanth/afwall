@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
+
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 public class ToggleWidgetOldActivity extends Activity implements
 		OnClickListener {

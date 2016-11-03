@@ -19,10 +19,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
+
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
+import dev.ukanth.ufirewall.util.G;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.

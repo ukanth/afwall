@@ -47,9 +47,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;

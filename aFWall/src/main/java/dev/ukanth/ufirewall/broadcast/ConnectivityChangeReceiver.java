@@ -25,15 +25,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.HashMap;
-
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.util.G;
-import eu.chainfire.libsuperuser.Shell;
-import eu.chainfire.libsuperuser.StreamGobbler;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 

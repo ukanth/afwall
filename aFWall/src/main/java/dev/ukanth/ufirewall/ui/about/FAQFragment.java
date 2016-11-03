@@ -1,7 +1,5 @@
 package dev.ukanth.ufirewall.ui.about;
 
-import java.io.IOException;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+
+import java.io.IOException;
+
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 

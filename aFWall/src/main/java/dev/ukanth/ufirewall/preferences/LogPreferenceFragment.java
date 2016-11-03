@@ -1,27 +1,16 @@
 package dev.ukanth.ufirewall.preferences;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.stericson.roottools.RootTools;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
 
-import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.service.RootShell;
-import dev.ukanth.ufirewall.util.G;
 
 public class LogPreferenceFragment extends PreferenceFragment  {
 

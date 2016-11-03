@@ -18,21 +18,20 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.text.InputType;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
-import haibison.android.lockpattern.LockPatternActivity;
-import haibison.android.lockpattern.utils.AlpSettings;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
+import haibison.android.lockpattern.LockPatternActivity;
+import haibison.android.lockpattern.utils.AlpSettings;
 
 import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE_PATTERN;

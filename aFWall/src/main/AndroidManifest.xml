@@ -74,7 +74,7 @@
      />
 
     <application
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:resizeableActivity="true"
         android:allowBackup="false"
         android:supportsRtl="true"

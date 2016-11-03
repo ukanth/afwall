@@ -43,8 +43,8 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceDetails;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public class RulesActivity extends DataDumpActivity {

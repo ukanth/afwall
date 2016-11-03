@@ -7,8 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.util.SlidingTabLayout;
 import dev.ukanth.ufirewall.ui.about.ViewPagerAdapter;
+import dev.ukanth.ufirewall.util.SlidingTabLayout;
 
 public class HelpActivity extends ActionBarActivity {
 

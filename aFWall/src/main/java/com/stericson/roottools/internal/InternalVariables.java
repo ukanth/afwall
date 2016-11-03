@@ -22,12 +22,12 @@
 
 package com.stericson.roottools.internal;
 
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-
 import com.stericson.roottools.containers.Mount;
 import com.stericson.roottools.containers.Permissions;
 import com.stericson.roottools.containers.Symlink;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class InternalVariables
 {

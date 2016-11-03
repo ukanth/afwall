@@ -22,14 +22,14 @@
 
 package com.stericson.roottools.internal;
 
-import java.io.IOException;
+import android.content.Context;
+import android.util.Log;
 
 import com.stericson.rootshell.execution.Command;
 import com.stericson.rootshell.execution.Shell;
 import com.stericson.roottools.RootTools;
 
-import android.content.Context;
-import android.util.Log;
+import java.io.IOException;
 
 public class Runner extends Thread
 {

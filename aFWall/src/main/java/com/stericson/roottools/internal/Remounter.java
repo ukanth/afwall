@@ -22,15 +22,15 @@
 
 package com.stericson.roottools.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.stericson.rootshell.execution.Command;
 import com.stericson.rootshell.execution.Shell;
 import com.stericson.roottools.Constants;
 import com.stericson.roottools.RootTools;
 import com.stericson.roottools.containers.Mount;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Remounter
 {

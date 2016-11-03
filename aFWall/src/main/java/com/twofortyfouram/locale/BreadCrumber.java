@@ -15,6 +15,7 @@ package com.twofortyfouram.locale;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
 import dev.ukanth.ufirewall.R;
 
 /**

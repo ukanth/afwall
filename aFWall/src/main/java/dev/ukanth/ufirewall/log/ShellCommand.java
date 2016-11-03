@@ -25,10 +25,10 @@
 
 package dev.ukanth.ufirewall.log;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
-import android.util.Log;
 
 public class ShellCommand {
 	Runtime rt;

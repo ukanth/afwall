@@ -22,6 +22,13 @@
 
 package com.stericson.roottools.internal;
 
+import android.content.Context;
+import android.util.Log;
+
+import com.stericson.rootshell.execution.Command;
+import com.stericson.rootshell.execution.Shell;
+import com.stericson.roottools.RootTools;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,14 +41,6 @@ import java.nio.channels.ReadableByteChannel;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import android.util.Log;
-
-import com.stericson.rootshell.execution.Command;
-import com.stericson.rootshell.execution.Shell;
-import com.stericson.roottools.RootTools;
-
-import android.content.Context;
 
 class Installer
 {

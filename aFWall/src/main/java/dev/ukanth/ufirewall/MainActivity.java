@@ -28,7 +28,6 @@ import android.Manifest;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -157,14 +156,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 		//isOnPause = false;
 
-		try {
-				/* enable hardware acceleration on Android >= 3.0 */
+		/*try {
+				*//* enable hardware acceleration on Android >= 3.0 *//*
 			final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
 					.getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
 			getWindow().setFlags(FLAG_HARDWARE_ACCELERATED,
 					FLAG_HARDWARE_ACCELERATED);
 		} catch (Exception e) {
-		}
+		}*/
 
 		setContentView(R.layout.main);
 
@@ -177,8 +176,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 					WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 		}
 		setSupportActionBar(toolbar);
-		//set onclick listeners
-		//this.findViewById(R.id.label_mode).setOnClickListener(this);
+
 		this.findViewById(R.id.img_wifi).setOnClickListener(this);
 		this.findViewById(R.id.img_reset).setOnClickListener(this);
 		this.findViewById(R.id.img_invert).setOnClickListener(this);
