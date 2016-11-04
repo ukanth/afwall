@@ -53,7 +53,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/eth_wifi" />
+                    android:src="@drawable/ic_wifi" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/eth_3g" />
+                    android:src="@drawable/ic_mobiledata" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -98,7 +98,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/eth_lan" />
+                    android:src="@drawable/ic_lan" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -121,7 +121,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/roam" />
+                    android:src="@drawable/ic_roam" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -144,7 +144,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/img_vpn" />
+                    android:src="@drawable/ic_vpn" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -167,7 +167,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/ic_playlist_check" />
+                    android:src="@drawable/ic_allow" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -190,7 +190,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/ic_playlist_remove" />
+                    android:src="@drawable/ic_deny" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -213,7 +213,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/invertmini" />
+                    android:src="@drawable/ic_invert" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -236,7 +236,7 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical"
                     android:layout_margin="4dp"
-                    android:src="@drawable/clear" />
+                    android:src="@drawable/ic_clean" />
 
                 <TextView
                     android:layout_width="wrap_content"

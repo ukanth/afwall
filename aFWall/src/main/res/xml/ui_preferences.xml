@@ -46,21 +46,21 @@
             android:defaultValue="false"
             android:dependency="activeRules"
             android:key="enableRoam"
-            android:icon="@drawable/roam"
+            android:icon="@drawable/ic_roam"
             android:summary="@string/roamingSummary"
             android:title="@string/roaming" />
         <CheckBoxPreference
             android:defaultValue="true"
             android:dependency="activeRules"
             android:key="enableLAN"
-            android:icon="@drawable/eth_lan"
+            android:icon="@drawable/ic_lan"
             android:summary="@string/lan_summary"
             android:title="@string/lan_title" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="activeRules"
             android:key="enableVPN"
-            android:icon="@drawable/img_vpn"
+            android:icon="@drawable/ic_vpn"
             android:summary="@string/vpnSummary"
             android:title="@string/vpn_profile" />
 

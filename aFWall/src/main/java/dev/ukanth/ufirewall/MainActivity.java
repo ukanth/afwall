@@ -578,12 +578,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		if(mode.equals(Api.MODE_WHITELIST)){
 			if(mainMenu != null) {
 				mainMenu.findItem(R.id.allowmode).setChecked(true);
-				mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_playlist_check);
+				mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_allow);
 			}
 		} else {
 			if(mainMenu != null) {
 				mainMenu.findItem(R.id.blockmode).setChecked(true);
-				mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_playlist_remove);
+				mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_deny);
 			}
 		}
 		//int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist: R.string.mode_blacklist);

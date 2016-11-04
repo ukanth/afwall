@@ -66,11 +66,11 @@ public class RulesActivity extends DataDumpActivity {
 
 	protected void populateMenu(SubMenu sub) {
 		if (G.enableIPv6()) {
-			sub.add(0, MENU_IPV6_RULES, 0, R.string.switch_ipv6).setIcon(R.drawable.rules);
-			sub.add(0, MENU_IPV4_RULES, 0, R.string.switch_ipv4).setIcon(R.drawable.rules);
+			sub.add(0, MENU_IPV6_RULES, 0, R.string.switch_ipv6).setIcon(R.drawable.ic_rules);
+			sub.add(0, MENU_IPV4_RULES, 0, R.string.switch_ipv4).setIcon(R.drawable.ic_rules);
 		}
-		sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.clearlog);
-		sub.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_dialog_email);
+		sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.ic_clearlog);
+		sub.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_mail);
 	}
 
 	private void writeHeading(StringBuilder res, boolean initialNewline, String title) {

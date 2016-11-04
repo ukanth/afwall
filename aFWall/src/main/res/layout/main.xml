@@ -155,54 +155,54 @@
             <ImageView
                 android:id="@+id/img_lan"
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:clickable="true"
-                android:src="@drawable/eth_lan"
+                android:src="@drawable/ic_lan"
                 android:visibility="gone"></ImageView>
 
             <ImageView
                 android:id="@+id/img_wifi"
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:clickable="true"
-                android:src="@drawable/eth_wifi"></ImageView>
+                android:src="@drawable/ic_wifi"></ImageView>
 
             <ImageView
                 android:id="@+id/img_3g"
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:clickable="true"
-                android:src="@drawable/eth_3g"></ImageView>
+                android:src="@drawable/ic_mobiledata"></ImageView>
 
             <ImageView
                 android:id="@+id/img_roam"
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:clickable="true"
-                android:src="@drawable/roam"
+                android:src="@drawable/ic_roam"
                 android:visibility="gone"></ImageView>
 
             <ImageView
                 android:id="@+id/img_vpn"
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:clickable="true"
-                android:src="@drawable/img_vpn"
+                android:src="@drawable/ic_vpn"
                 android:visibility="gone"></ImageView>
 
             <ImageView
                 android:id="@+id/img_invert"
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:clickable="true"
-                android:src="@drawable/invertmini"></ImageView>
+                android:src="@drawable/ic_invert"></ImageView>
 
             <ImageView
                 android:id="@+id/img_reset"
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
+                android:layout_height="24dp"
                 android:clickable="true"
-                android:src="@drawable/clear"></ImageView>
+                android:src="@drawable/ic_clean"></ImageView>
         </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
