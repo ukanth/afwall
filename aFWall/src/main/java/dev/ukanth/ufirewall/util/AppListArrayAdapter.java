@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +37,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 
     private Activity activity;
 
-    final int color = G.sysColor();
-    final int defaultColor = Color.WHITE;
+    //final int color = G.sysColor();
+    //final int defaultColor = Color.WHITE;
 
     public AppListArrayAdapter(MainActivity activity, Context context, List<PackageInfoData> apps) {
         super(context, R.layout.main_list, apps);
@@ -131,9 +132,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 
         ApplicationInfo info = holder.app.appinfo;
         if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-            holder.text.setTextColor(defaultColor);
+            holder.text.setTextColor(ContextCompat.getColor(context,R.color.white));
         } else {
-            holder.text.setTextColor(color);
+            holder.text.setTextColor(G.sysColor());
         }
 
         if (!G.disableIcons()) {

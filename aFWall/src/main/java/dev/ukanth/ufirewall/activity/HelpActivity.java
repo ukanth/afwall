@@ -1,6 +1,7 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -50,7 +51,7 @@ public class HelpActivity extends ActionBarActivity {
             tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
                 @Override
                 public int getIndicatorColor(int position) {
-                    return getResources().getColor(R.color.white);
+                    return ContextCompat.getColor(getApplicationContext(),R.color.white);
                 }
             });
 

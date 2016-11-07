@@ -9,6 +9,7 @@
 
 	<color name="theme">#ff313131</color>
 	<color name="white">#ffffffff</color>
+	<color name="menu">#ffffffff</color>
 	<color name="black">#ff000000</color>
 	<color name="widget_color1">#FFFF4040</color>
 	<color name="widget_color2">#FFA00000</color>
