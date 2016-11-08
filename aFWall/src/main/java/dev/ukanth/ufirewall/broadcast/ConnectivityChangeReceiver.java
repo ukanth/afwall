@@ -57,8 +57,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-		if(Api.isEnabled(context) && G.activeRules()) {
-			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+		if(Api.isEnabled(context)) {
+			if(G.activeRules()) {
+				InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+			}
 			final Intent logIntent = new Intent(context, LogService.class);
 			if (G.enableLogService()) {
 				//check if the firewall is enabled
