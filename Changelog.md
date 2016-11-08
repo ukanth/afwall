@@ -1,6 +1,16 @@
 Changelog AFWall+
 ==================
 
+Version 2.8.0
+* Bug: Boot rules are not working on some devices
+* Bug: Logs without active rules issue
+* Bug: Rules are blocked completely on some devices
+* Bug: Removed notification while applying rules
+* Feature: New UI menu icons to support themes 
+* Upgraded support library to API 25
+* User Reported crash fixes
+* Updated Translations
+
 Version 2.7.0
 * Bug: Random hang issue with various superuser (phh,cm root)
 * Bug: Added option to add delay applying rules on startup
