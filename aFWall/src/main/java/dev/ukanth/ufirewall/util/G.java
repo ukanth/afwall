@@ -78,7 +78,7 @@ public class G extends android.app.Application {
 	private static final String SORT_BY = "sort";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String LAST_STORED_PROFILE = "storedProfile";
-	private static final String STARTUP_DELAY = "addStartupDelay";
+	private static final String STARTUP_DELAY = "addDelayStart";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
 	private static final String ACTIVE_NOTIFICATION = "activeNotification";
@@ -319,7 +319,7 @@ public class G extends android.app.Application {
 	
 	public static boolean activeRules() { return gPrefs.getBoolean(ACTIVE_RULES, true); }
 
-	public static boolean startupDelay() { return gPrefs.getBoolean(STARTUP_DELAY, true); }
+	public static boolean startupDelay() { return gPrefs.getBoolean(STARTUP_DELAY, false); }
 	
 	//public static boolean usePatterns() { return gPrefs.getBoolean(USE_PASSWORD_PATTERN, false); }
 	//public static boolean setUsePatterns(boolean val) { gPrefs.edit().putBoolean(USE_PASSWORD_PATTERN, val).commit(); return val; }
