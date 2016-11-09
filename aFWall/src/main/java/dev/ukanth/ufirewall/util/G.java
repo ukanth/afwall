@@ -49,7 +49,7 @@ public class G extends android.app.Application {
 	public static final String TAG = "AFWall";
 	
 	private static final String HAS_ROOT = "hasRoot";
-	private static final String LOG_CHAINS = "logChains";
+	//private static final String LOG_CHAINS = "logChains";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
 	private static final String REG_DO = "ipurchaseddonatekey";

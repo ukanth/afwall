@@ -166,6 +166,9 @@ public class LogService extends Service {
         // this method is executed in a background thread
         // no problem calling su here
         if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty() && G.enableLogService()) {
+            if(G.logDmsg().isEmpty()) {
+                G.logDmsg("OS");
+            }
             switch (G.logTarget()) {
                 case "LOG":
                     switch(G.logDmsg()){
