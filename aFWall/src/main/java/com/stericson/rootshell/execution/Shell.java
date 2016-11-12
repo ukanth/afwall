@@ -21,11 +21,10 @@
  */
 package com.stericson.rootshell.execution;
 
+import android.content.Context;
+
 import com.stericson.rootshell.RootShell;
 import com.stericson.rootshell.exceptions.RootDeniedException;
-
-import android.content.Context;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.EOFException;

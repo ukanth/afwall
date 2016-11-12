@@ -28,11 +28,9 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -543,7 +541,7 @@ public final class Api {
 				}
 			}
 
-			if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
+			/*if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
 				// No IP address -> no traffic.  This prevents a data leak between the time
 				// the interface gets an IP address, and the time we process the intent
 				// (which could be 5+ seconds).  This is likely to catch a little bit of
@@ -552,7 +550,7 @@ public final class Api {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
 
-			}
+			}*/
 		} else {
 			if(!cfg.isTethered) {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
@@ -570,10 +568,10 @@ public final class Api {
 		cmds.add("-P OUTPUT DROP");
 		addInterfaceRouting(ctx, cmds);
 		cmds.add("-P OUTPUT ACCEPT");
-		deleteWifiForkRules(ctx,cmds);
+		//deleteWifiForkRules(ctx,cmds);
 	}
 
-	private static void deleteWifiForkRules(Context ctx, List<String> cmds) {
+	/*private static void deleteWifiForkRules(Context ctx, List<String> cmds) {
 		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
 		if (G.enableLAN() && !cfg.isTethered) {
 			if (!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")) {
@@ -582,7 +580,7 @@ public final class Api {
 				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
 			}
 		}
-	}
+	}*/
 
 	/**
      * Purge and re-add all rules (internal implementation).
@@ -714,7 +712,7 @@ public final class Api {
 
 		cmds.add("-P OUTPUT ACCEPT");
 
-		deleteWifiForkRules(ctx,cmds);
+		//deleteWifiForkRules(ctx,cmds);
 
 		iptablesCommands(cmds, out);
 		return true;
@@ -2902,16 +2900,10 @@ public final class Api {
 					notificationText = context.getString(R.string.active);
 				}
 				//notificationText = context.getString(R.string.active);
-				icon = R.drawable.active;
-				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-					icon = R.drawable.notification;
-				}
+				icon = R.drawable.notification;
 			} else {
 				notificationText = context.getString(R.string.inactive);
-				icon = R.drawable.error;
-				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-					icon = R.drawable.notification_error;
-				}
+				icon = R.drawable.notification_error;
 			}
 
 			//TODO: Action button's on notification

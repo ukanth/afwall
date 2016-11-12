@@ -47,9 +47,9 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         data = logData.get(position);
         holder.bind(logData.get(position),recyclerItemClickListener);
         if(data.getOut().contains("lan") || data.getOut().startsWith("eth")  || data.getOut().startsWith("ra") ||  data.getOut().startsWith("bnep")) {
-            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.eth_wifi));
+            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_wifi));
         } else {
-            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.eth_3g));
+            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_mobiledata));
         }
        // if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
             holder.deniedTime.setText(pretty(data.getTimestamp()) + "(" + data.getOut() + ")");

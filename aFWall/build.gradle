@@ -2,33 +2,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.1'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "dev.ukanth.ufirewall"
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
-        targetSdkVersion 24
-        versionCode 15690
-        versionName "2.7.0-BETA"
+        targetSdkVersion 25
+        versionCode 15800
+        versionName "2.8.0"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
-
-    /*sourceSets {
-        main {
-            jniLibs.srcDir file('jniLibs/')
-
-    }
-
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'x86', 'armeabi', 'mips'
-            universalApk false
-        }
-    }*/
 
     buildTypes {
         debug {
@@ -50,21 +35,15 @@ android {
 
 
 dependencies {
-    //for XPosed moduleA
-    // provided fileTree(dir: 'libs', include: ['*.jar'])
 
     compile 'eu.chainfire:libsuperuser:1.0.0.201602271131'
     compile 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
-    compile 'com.android.support:appcompat-v7:24.+'
+    compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.afollestad.material-dialogs:core:0.8.6.2'
 
-    compile 'com.android.support:design:24.+'
-    compile 'com.android.support:cardview-v7:24.+'
-    compile 'com.android.support:recyclerview-v7:24.+'
-
-    /*compile ('com.afollestad.material-dialogs:commons:0.8.5.8'){
-        exclude module: 'core'h
-    }*/
+    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:cardview-v7:25.0.0'
+    compile 'com.android.support:recyclerview-v7:25.0.0'
 
     apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.1.1'
     compile "com.github.Raizlabs.DBFlow:dbflow-core:3.1.1"

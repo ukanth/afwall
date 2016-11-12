@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.stericson.roottools.Constants;
 import com.stericson.rootshell.RootShell;
 import com.stericson.rootshell.exceptions.RootDeniedException;
 import com.stericson.rootshell.execution.Command;

@@ -116,12 +116,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(ns);
 
-		int icon = R.drawable.question;
-
-		if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-			icon = R.drawable.notification_quest;
-		}
-		
+		int icon = R.drawable.notification_quest;
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 		

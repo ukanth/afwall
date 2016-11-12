@@ -37,7 +37,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +49,7 @@ public class G extends android.app.Application {
 	public static final String TAG = "AFWall";
 	
 	private static final String HAS_ROOT = "hasRoot";
-	private static final String LOG_CHAINS = "logChains";
+	//private static final String LOG_CHAINS = "logChains";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
 	private static final String REG_DO = "ipurchaseddonatekey";
@@ -79,7 +78,7 @@ public class G extends android.app.Application {
 	private static final String SORT_BY = "sort";
 	//private static final String PROFILE_STORED_POSITION = "storedPosition";
 	private static final String LAST_STORED_PROFILE = "storedProfile";
-	private static final String STARTUP_DELAY = "addStartupDelay";
+	private static final String STARTUP_DELAY = "addDelayStart";
 	private static final String SYSTEM_APP_COLOR = "sysColor";
 	private static final String ACTIVE_RULES = "activeRules";
 	private static final String ACTIVE_NOTIFICATION = "activeNotification";
@@ -320,7 +319,7 @@ public class G extends android.app.Application {
 	
 	public static boolean activeRules() { return gPrefs.getBoolean(ACTIVE_RULES, true); }
 
-	public static boolean startupDelay() { return gPrefs.getBoolean(STARTUP_DELAY, true); }
+	public static boolean startupDelay() { return gPrefs.getBoolean(STARTUP_DELAY, false); }
 	
 	//public static boolean usePatterns() { return gPrefs.getBoolean(USE_PASSWORD_PATTERN, false); }
 	//public static boolean setUsePatterns(boolean val) { gPrefs.edit().putBoolean(USE_PASSWORD_PATTERN, val).commit(); return val; }

@@ -22,13 +22,13 @@
 
 package com.stericson.rootshell.execution;
 
-import com.stericson.rootshell.RootShell;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+
+import com.stericson.rootshell.RootShell;
 
 import java.io.IOException;
 

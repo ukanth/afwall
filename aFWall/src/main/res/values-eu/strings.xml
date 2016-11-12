@@ -212,12 +212,12 @@
   <string name="tasker_profile_applied">Tasker: Profila ondo aplikatu da</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
   <!-- IPv4/IPv6 -->
-  <string name="ipv6_title">IPv6 support</string>
+  <string name="ipv6_title">IPv6 euskarria</string>
   <string name="ipv6_summary">Gaitu IPv6 euskarria</string>
-  <string name="block_ipv6_title">Block IPv6</string>
+  <string name="block_ipv6_title">Blokeatu IPv6</string>
   <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
   <string name="ip6unavailable">Errorea: IPv6-k \"/system/bin/ip6tables\" behar du.</string>
-  <string name="switch_ipv6">Switch IPv6 rules</string>
+  <string name="switch_ipv6">Aldatu IPv6 arauak</string>
   <string name="switch_ipv4">Aldatu IPV4 arauak</string>
   <!-- Security Preferences -->
   <string name="sec_prefs_title">Segurtasuna</string>
@@ -236,8 +236,8 @@
   <string name="startup_service">Arauak aplikatzen. Itxaron mesedez.</string>
   <string name="addStartupDelayTitle">Startup Delay</string>
   <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
-  <string name="fixleakTitle">Fix startup data leak</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support.  HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakTitle">Eragotzi abiarazterakoan baimen gabe konektatzea</string>
+  <string name="fixleakSummary">Eragotzi sistema abiatzean baimen gabe konektatu ahal izatea. Zure ROM-ak init.d edo su.d (superSU) euskarria izan behar du. HTC gailuak S-OFF gisa konfiguratu behar dira.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -250,7 +250,7 @@
   <string name="hideicons_pref_title">Ezkutatu aplikazioen ikonoak</string>
   <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
   <string name="hideicons_pref_summary_off">Show App icons in the main view</string>
-  <string name="notify_pref_title">Enable notifications</string>
+  <string name="notify_pref_title">Gaitu jakinarazpenak</string>
   <string name="syscolor_pref_title">System app color</string>
   <string name="syscolor_pref_summary_on">Color for all system apps</string>
   <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
@@ -259,7 +259,7 @@
   <string name="showuid_summary_on">Show app UID\'s in the main view</string>
   <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
   <string name="languages">Hizkuntzak</string>
-  <string name="misc_header">Languages/Plugins</string>
+  <string name="misc_header">Hizkuntzak/Gehigarriak</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Arau aktiboak</string>
   <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/wireless-data/roam/tether)</string>
@@ -269,15 +269,15 @@
   <string name="Donate">Diruz lagundu</string>
   <string name="multi_apply_rules">Aplikatu arauak profila aldatzean</string>
   <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
-  <string name="multi_user_title">Enable multi-user support</string>
+  <string name="multi_user_title">Gaitu hainbat erabiltzailerentzako euskarria</string>
   <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
   <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
-  <string name="traffic_detail_title">Traffic details</string>
+  <string name="traffic_detail_title">Trafikoaren xehetasunak</string>
   <string name="uploaded">Kargatuta</string>
   <string name="downloaded">Deskargatuta</string>
   <string name="app_system_detail">Ireki sistemako xehetasunak</string>
-  <string name="settings_pwd_not_equal">Password mismatch</string>
-  <string name="faq">Frequently Asked Questions</string>
+  <string name="settings_pwd_not_equal">Pasahitzak ez datoz bat</string>
+  <string name="faq">Maiz egindako galderak</string>
   <string name="reverse_all">Invert all the selected apps?</string>
   <string name="unselect_all">Clear all the selected apps?</string>
   <string name="check_all">Markatu guztiak</string>
@@ -303,18 +303,18 @@
   <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
   <string name="enable_dns">Gaitu netd bidezko DNS</string>
   <string name="disable_dns">Ezgaitu netd bidezko DNS</string>
-  <string name="dns_proxy_title">DNS proxy </string>
+  <string name="dns_proxy_title">DNS Proxya </string>
   <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
-  <string name="tasker_lable">AFWall+ Tasker plugin</string>
+  <string name="tasker_lable">AFWall+ Tasker gehigarria</string>
   <string name="enable">Gaitu</string>
   <string name="disable">Ezgaitu</string>
-  <string name="filters_apps_title">Notification filter</string>
-  <string name="apply_color">Select color to apply</string>
+  <string name="filters_apps_title">Jakinarazpen iragazkia</string>
+  <string name="apply_color">Hautatu kolorea aplikatzeko</string>
   <string name="binaries">Bitarrak</string>
   <string name="widgets">Trepetak</string>
   <string name="exports">Esportatu</string>
   <string name="imports">Inportatu</string>
-  <string name="invalid_profile">Invalid profile name</string>
+  <string name="invalid_profile">Baliogabeko profil izena</string>
   <!-- Donate -->
   <string name="donate_only">Ezaugarri hau dohaintza bertsioan besterik ez dago erabilgarri</string>
   <string name="buy_donate">Erosi dohaitza bertsioa edo dohaitza gakoa</string>
@@ -391,7 +391,7 @@
   <string name="log_src">Source :</string>
   <string name="log_proto">Protocol :</string>
   <string name="no_data_available">Please enable log service or no data</string>
-  <string name="loading_data_title">Loading...</string>
+  <string name="loading_data_title">Kargatzen...</string>
   <string name="loading_data">Retrieving log data</string>
   <string name="switch_old">Switch to old view</string>
   <string name="switch_new">Switch to new view</string>

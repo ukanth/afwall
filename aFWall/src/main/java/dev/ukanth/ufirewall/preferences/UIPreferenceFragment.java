@@ -1,12 +1,10 @@
 package dev.ukanth.ufirewall.preferences;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
-import android.widget.BaseAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 

@@ -1,6 +1,5 @@
 package dev.ukanth.ufirewall.preferences;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;

@@ -25,15 +25,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.HashMap;
-
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.util.G;
-import eu.chainfire.libsuperuser.Shell;
-import eu.chainfire.libsuperuser.StreamGobbler;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
@@ -61,8 +57,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-		if(Api.isEnabled(context) && G.activeRules()) {
-			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+		if(Api.isEnabled(context)) {
+			if(G.activeRules()) {
+				InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+			}
 			final Intent logIntent = new Intent(context, LogService.class);
 			if (G.enableLogService()) {
 				//check if the firewall is enabled

@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -194,7 +195,7 @@ public class SlidingTabLayout extends HorizontalScrollView {
                 tabView.setSelected(true);
             }
 
-            tabTitleView.setTextColor(getResources().getColor(R.color.white));
+            tabTitleView.setTextColor(ContextCompat.getColor(context,R.color.white));
             tabTitleView.setTextSize(14);
         }
     }

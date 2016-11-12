@@ -214,8 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suporte ao IPv6</string>
   <string name="ipv6_summary">Habilitar o suporte ao IPv6</string>
-  <string name="block_ipv6_title">Block IPv6</string>
-  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
+  <string name="block_ipv6_title">Bloquear IPv6</string>
+  <string name="block_ipv6_summary">Isto irá bloquear aplicativos que conectam usando IPv6. ATENÇÃO: Use somente se você tiver conexão através de IPv4</string>
   <string name="ip6unavailable">Erro: IPv6 requer \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Mudar regras do IPV6</string>
   <string name="switch_ipv4">Mudar regras do IPV4</string>
@@ -234,8 +234,8 @@
   <string name="exp_prefs_title">Experimental</string>
   <!-- Startup -->
   <string name="startup_service">Aplicando Regras... Por favor, aguarde.</string>
-  <string name="addStartupDelayTitle">Startup Delay</string>
-  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+  <string name="addStartupDelayTitle">Atraso na inicialização</string>
+  <string name="addStartupDelaySummary">AFWall + aguardará 5 segundos antes de aplicar as regras. Habilite esta configuração somente se as regras de inicialização não estão aplicando corretamente durante a inicialização.</string>
   <string name="fixleakTitle">Ajustar vazamento de dados de inicialização</string>
   <string name="fixleakSummary">Previne vazamentos de dados durante a inicialização do sistema. Sua ROM deve possuir suporte ao init.d ou ao su.d(superSU). Dispositivos da HTC devem estar configurados para S-OFF.</string>
   <!--
@@ -286,7 +286,7 @@
   <string name="uncheck_all">Desmarcar Todos</string>
   <string name="select_action">Selecione ação na coluna </string>
   <string name="roam">Roaming</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">Habilitar para controlar dados, enquanto que nas permissões de rede diferentes provedor(roaming) separadamente</string>
   <string name="wifi">WiFi</string>
   <string name="legend_wifi">Ative para controlar as permissões Wi-Fi</string>
   <string name="lan">LAN</string>
@@ -377,9 +377,9 @@
   <string name="yTitleSummary">Sobrescrever manualmente o posicionamento em Y</string>
   <string name="yTitleDialog">Defina a Posição em Y (Número)</string>
   <string name="error_nonsupported">King Root Detectado!</string>
-  <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
+  <string name="error_nonsupported_details">AFWall+ detectou um aplicativo de super usuário suportado que é conhecido por burlar regras de firewall. Por se tratar de um aplicativo de super usuário, AFWall+ não pode resolver este problema.</string>
   <string name="lockNotification">Ocultar o ícone de notificação de lockscreen</string>
-  <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
+  <string name="lockScreenNotification_summary">Esconder a notificação em curso na tela de bloqueio</string>
   <string name="menu_legend">Lendas</string>
   <string name="permissiondenied_importexport">Permissão negada para acesso de leitura/gravação para armazenamento externo. Por favor, dê acesso para regras de exportação/importação.</string>
   <string name="permissiondenied_asset">Permissão negada para acesso de leitura/gravação para o armazenamento. Por favor, dê acesso para copiar os binários para AFWall + </string>
