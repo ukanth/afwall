@@ -60,6 +60,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		if(Api.isEnabled(context)) {
 			if(G.activeRules()) {
 				InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+				//also make sure we default all chains to ACCEPT state
+				Api.allowDefaultChains(context);
 			}
 			final Intent logIntent = new Intent(context, LogService.class);
 			if (G.enableLogService()) {
@@ -75,8 +77,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 				context.stopService(logIntent);
 				Api.cleanupUid();
 			}
-			//also make sure we default all chains to ACCEPT state
-			Api.allowDefaultChains(context);
 		}
 	}
 }
