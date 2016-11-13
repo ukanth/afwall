@@ -81,7 +81,7 @@
         android:largeHeap="true"
         android:icon="@drawable/ic_launcher_free"
         android:label="@string/app_name"
-        android:theme="@style/MyActionBarTheme"
+        android:theme="@style/AppDarkTheme"
         android:launchMode="singleTop"
         android:name="dev.ukanth.ufirewall.util.G" >
 
@@ -271,7 +271,6 @@
             android:label="@string/tasker_lable"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/MyActionBarTheme"
             tools:ignore="ExportedActivity" >
 
             <!-- this Intent filter allows the plug-in to be discovered by Locale -->
