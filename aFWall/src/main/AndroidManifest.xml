@@ -304,6 +304,11 @@
             android:name="dev.ukanth.ufirewall.preferences.ShareProfilePreference"
             android:exported="true">
         </provider>
+
+
+        <service
+            android:name=".service.ApplyRulesService"
+            android:exported="false" />
     </application>
 
 </manifest>

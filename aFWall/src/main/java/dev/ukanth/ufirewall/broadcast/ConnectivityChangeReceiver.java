@@ -29,6 +29,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogService;
+import dev.ukanth.ufirewall.service.ApplyRulesService;
 import dev.ukanth.ufirewall.util.G;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
@@ -57,26 +58,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-		if(Api.isEnabled(context)) {
-			if(G.activeRules()) {
-				InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-				//also make sure we default all chains to ACCEPT state
-				Api.allowDefaultChains(context);
-			}
-			final Intent logIntent = new Intent(context, LogService.class);
-			if (G.enableLogService()) {
-				//check if the firewall is enabled
-				if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
-					//make sure kill all pid
-					context.stopService(logIntent);
-				} else {
-					context.startService(logIntent);
-				}
-			} else {
-				//no internet - stop the service
-				context.stopService(logIntent);
-				Api.cleanupUid();
-			}
-		}
+		Intent applyIntent = new Intent(context, ApplyRulesService.class);
+		context.startService(applyIntent);
 	}
 }
