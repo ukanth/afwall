@@ -249,6 +249,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 			} else {
 				//restart the service
 				context.stopService(logIntent);
+				Api.cleanupUid();
 				context.startService(logIntent);
 			}
 		} else {

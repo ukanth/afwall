@@ -514,7 +514,7 @@ public final class Api {
 			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
 		}
 
-		if (cfg.isTethered) {
+		if (cfg != null && cfg.isTethered) {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
 		} else {
@@ -568,19 +568,7 @@ public final class Api {
 		cmds.add("-P OUTPUT DROP");
 		addInterfaceRouting(ctx, cmds);
 		cmds.add("-P OUTPUT ACCEPT");
-		//deleteWifiForkRules(ctx,cmds);
 	}
-
-	/*private static void deleteWifiForkRules(Context ctx, List<String> cmds) {
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
-		if (G.enableLAN() && !cfg.isTethered) {
-			if (!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")) {
-				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
-				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-				cmds.add("-D " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
-			}
-		}
-	}*/
 
 	/**
      * Purge and re-add all rules (internal implementation).
@@ -607,10 +595,6 @@ public final class Api {
 
 		List<String> cmds = new ArrayList<String>();
 
-		/*if(G.noOtherChains()) {
-			cmds.add("-F");
-			cmds.add("-X");
-		}*/
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 
@@ -708,13 +692,10 @@ public final class Api {
 		addRulesForUidlist(cmds, uidsLAN,  AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
 		addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
-
-
 		cmds.add("-P OUTPUT ACCEPT");
 
-		//deleteWifiForkRules(ctx,cmds);
-
 		iptablesCommands(cmds, out);
+
 		return true;
     }
 
@@ -770,6 +751,7 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
+		Log.i(TAG, "applySavedIptablesRules invoked");
 		initSpecial();
 		
 		final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
@@ -812,13 +794,13 @@ public final class Api {
 
 		rulesUpToDate = true;
 
-		if(G.kingDetected()) {
+		/*if(G.kingDetected()) {
 			try {
 				flushAllRules(ctx, new RootCommand());
 			} catch (Exception e) {
 				Log.d(TAG, "Failed flusing firewall chains");
 			}
-		}
+		}*/
 
 		if (callback != null) {
 			callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
@@ -834,25 +816,13 @@ public final class Api {
 					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
 						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
 					}
-					allowDefaultChains(ctx);
+					//allowDefaultChains(ctx);
 					toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
-				} else {
-					//make sure we check for preference change
-
-					/*if(G.enableIPv6()){
-						allowV6Chains(ctx);
-					} else {
-						if(G.blockIPv6()) {
-							dropV6Chains(ctx);
-						}
-					}*/
-
-					return true;
 				}
 			} catch (Exception e) {
 				//in case of exception rollback to default chains to ACCEPT
 				Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-				allowDefaultChains(ctx);
+				//allowDefaultChains(ctx);
 				if (showErrors) toast(ctx, ctx.getString(R.string.error_refresh) + e);
 			}
 			return false;
@@ -869,6 +839,7 @@ public final class Api {
 		if (!rulesUpToDate) {
 			return applySavedIptablesRules(ctx, true, callback);
 		}
+
 
 		List<String> out = new ArrayList<String>();
 		List<String> cmds;
@@ -1404,7 +1375,7 @@ public final class Api {
 		if(applicationInfo.packageName.equals("com.android.webview") || applicationInfo.packageName.equals("com.google.android.webview")) {
 			return true;
 		}
-		if(details.netEnabled) {
+		if(details!= null && details.netEnabled) {
 			String mode = pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
 			Log.i(TAG,"Calling isAppAllowed method from DM with Mode: " + mode);
 			switch ((details.netType)) {
@@ -2933,30 +2904,15 @@ public final class Api {
     	
     }
 
-	/*public static void dropV6Chains(Context ctx) {
-		List<String> cmds = new ArrayList<String>();
-		cmds.add("-P INPUT DROP");
-		cmds.add("-P FORWARD DROP");
-		cmds.add("-P OUTPUT DROP ");
-		applyIPv6Quick(ctx,cmds, new RootCommand());
-	}
 
-	public static void allowV6Chains(Context ctx) {
-		List<String> cmds = new ArrayList<String>();
-		cmds.add("-P INPUT ACCEPT");
-		cmds.add("-P FORWARD ACCEPT");
-		cmds.add("-P OUTPUT ACCEPT ");
-		applyIPv6Quick(ctx,cmds, new RootCommand());
-	}*/
-
-	public static void allowDefaultChains(Context ctx) {
+	/*public static void allowDefaultChains(Context ctx) {
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 		cmds.add("-P OUTPUT ACCEPT ");
 		applyQuick(ctx,cmds, new RootCommand());
 		applyIPv6Quick(ctx,cmds, new RootCommand());
-	}
+	}*/
 
 	/**
 	 * Delete all firewall rules.  For diagnostic purposes only.

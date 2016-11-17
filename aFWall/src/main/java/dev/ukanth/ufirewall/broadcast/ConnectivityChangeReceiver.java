@@ -25,12 +25,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.log.LogService;
-import dev.ukanth.ufirewall.service.ApplyRulesService;
-import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.service.RulesApplyService;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
@@ -40,8 +36,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 	public static final String WIFI_AP_STATE_CHANGED_ACTION = "android.net.wifi.WIFI_AP_STATE_CHANGED";
 	public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
 	public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
-
-
 
 	/*public static final int WIFI_AP_STATE_DISABLING = 10;
 	public static final int WIFI_AP_STATE_DISABLED = 11;
@@ -58,7 +52,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 		}
 		// NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
 		// This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-		Intent applyIntent = new Intent(context, ApplyRulesService.class);
+		Intent applyIntent = new Intent(context, RulesApplyService.class);
 		context.startService(applyIntent);
 	}
 }

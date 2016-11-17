@@ -307,7 +307,7 @@
 
 
         <service
-            android:name=".service.ApplyRulesService"
+            android:name=".service.RulesApplyService"
             android:exported="false" />
     </application>
 
