@@ -5,14 +5,14 @@
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/ic_search"
-        android:title=""
+        android:title="@string/Search"
         app:showAsAction="always|collapseActionView" />
 
 
     <item
         android:id="@+id/menu_mode"
         android:icon="@drawable/ic_allow"
-        android:title=""
+        android:title="@string/mode"
         app:showAsAction="always">
 
         <menu>
@@ -33,7 +33,7 @@
     <item
         android:id="@+id/menu_sort"
         android:icon="@drawable/ic_sort"
-        android:title=""
+        android:title="@string/access_sort"
         app:showAsAction="always">
 
         <menu>
@@ -63,7 +63,7 @@
     <item
         android:id="@+id/menu_list_item"
         android:icon="@drawable/ic_flow"
-        android:title=""
+        android:title="@string/menu"
         app:showAsAction="always">
         <menu>
             <item

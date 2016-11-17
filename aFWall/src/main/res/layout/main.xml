@@ -156,6 +156,7 @@
                 android:id="@+id/img_lan"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/lan_title"
                 android:clickable="true"
                 android:src="@drawable/ic_lan"
                 android:visibility="gone"></ImageView>
@@ -164,6 +165,7 @@
                 android:id="@+id/img_wifi"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/wifi"
                 android:clickable="true"
                 android:src="@drawable/ic_wifi"></ImageView>
 
@@ -171,6 +173,7 @@
                 android:id="@+id/img_3g"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/data"
                 android:clickable="true"
                 android:src="@drawable/ic_mobiledata"></ImageView>
 
@@ -178,6 +181,7 @@
                 android:id="@+id/img_roam"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/roaming"
                 android:clickable="true"
                 android:src="@drawable/ic_roam"
                 android:visibility="gone"></ImageView>
@@ -187,6 +191,7 @@
                 android:layout_width="32dp"
                 android:layout_height="24dp"
                 android:clickable="true"
+                android:contentDescription="@string/vpn_profile"
                 android:src="@drawable/ic_vpn"
                 android:visibility="gone"></ImageView>
 
@@ -194,6 +199,7 @@
                 android:id="@+id/img_invert"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/invert_all"
                 android:clickable="true"
                 android:src="@drawable/ic_invert"></ImageView>
 
@@ -201,6 +207,7 @@
                 android:id="@+id/img_reset"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/legend_clear"
                 android:clickable="true"
                 android:src="@drawable/ic_clean"></ImageView>
         </LinearLayout>
