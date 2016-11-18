@@ -1,6 +1,16 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.0
+* Bug: Rules are blocked when connection changed
+* Bug: Hang issue with phh super user
+* Bug: Applying rules dialog issue
+* Bug: Old logview clear issue
+* Accessibility improvements
+* Feature: Block IPv6 - block all default chains of IPv6 to prevent leak
+* Feature: Preference enhancements related to rules
+* 
+
 Version 2.8.0
 * Bug: Boot rules are not working on some devices
 * Bug: Logs without active rules issue
