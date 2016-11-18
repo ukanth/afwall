@@ -31,14 +31,9 @@ public class RulesApplyService extends IntentService {
             }
             final Intent logIntent = new Intent(context, LogService.class);
             if (G.enableLogService()) {
-                //check if the firewall is enabled
-                if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
-                    //make sure kill all pid
-                    context.stopService(logIntent);
-                    Api.cleanupUid();
-                } else {
-                    context.startService(logIntent);
-                }
+                context.stopService(logIntent);
+                Api.cleanupUid();
+                context.startService(logIntent);
             } else {
                 //no internet - stop the service
                 context.stopService(logIntent);
