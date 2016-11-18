@@ -210,21 +210,13 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 		}.execute();
 	}
 
-	@SuppressWarnings("deprecation")
-	@SuppressLint({ "NewApi", "NewApi", "NewApi", "NewApi" })
 	private void copy() {
 		try {
-			int sdk = android.os.Build.VERSION.SDK_INT;
 			TextView rulesText = (TextView) findViewById(R.id.rules);
-			if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-				android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-				clipboard.setText(rulesText.getText().toString());
-			} else {
-				android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-				android.content.ClipData clip = android.content.ClipData
-						.newPlainText("", rulesText.getText().toString());
-				clipboard.setPrimaryClip(clip);
-			}
+			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+			android.content.ClipData clip = android.content.ClipData
+					.newPlainText("", rulesText.getText().toString());
+			clipboard.setPrimaryClip(clip);
 			Api.toast(this, this.getString(R.string.copied));
 		} catch (Exception e) {
 			Log.d("AFWall+", "Exception in Clipboard" + e);
