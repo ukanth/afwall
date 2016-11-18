@@ -25,16 +25,22 @@ package dev.ukanth.ufirewall.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.LogData;
+import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
-import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public class OldLogActivity extends DataDumpActivity {
@@ -53,7 +59,7 @@ public class OldLogActivity extends DataDumpActivity {
     }
 
     protected void parseAndSet(List<LogData> logDataList) {
-        String cooked = LogInfo.parseLog(OldLogActivity.this,logDataList);
+        String cooked = LogInfo.parseLog(OldLogActivity.this, logDataList);
         if (cooked == null) {
             setData(getString(R.string.log_parse_error));
         } else {
@@ -62,7 +68,7 @@ public class OldLogActivity extends DataDumpActivity {
     }
 
     protected void populateData(final Context ctx) {
-            parseAndSet(Api.fetchLogs());
+        parseAndSet(Api.fetchLogs());
     }
 
     protected void populateMenu(SubMenu sub) {
@@ -88,18 +94,35 @@ public class OldLogActivity extends DataDumpActivity {
                 finish();
                 return true;
             case MENU_CLEARLOG:
-                Api.clearLog(ctx,
-                        new RootCommand().setReopenShell(true)
-                                .setSuccessToast(R.string.log_cleared)
-                                .setFailureToast(R.string.log_clear_error)
-                                .setCallback(new RootCommand.Callback() {
-                                    public void cbFunc(RootCommand state) {
-                                        populateData(ctx);
-                                    }
-                                }));
+                clearDatabase(OldLogActivity.this);
                 return true;
         }
-        return super.onOptionsItemSelected( item);
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void clearDatabase(final Context ctx) {
+        new MaterialDialog.Builder(this)
+                .title(getApplicationContext().getString(R.string.clear_log) + " ?")
+                .cancelable(true)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        //SQLite.delete(LogData_Table.class);
+                        FlowManager.getDatabase(LogDatabase.NAME).reset(ctx);
+                        Toast.makeText(ctx, ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .positiveText(R.string.Yes)
+                .negativeText(R.string.No)
+                .show();
     }
 
 }
