@@ -55,7 +55,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
@@ -105,6 +104,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
@@ -514,7 +514,7 @@ public final class Api {
 			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
 		}
 
-		if (cfg != null && cfg.isTethered) {
+		if (cfg.isTethered) {
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
 			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
 		} else {
@@ -599,6 +599,7 @@ public final class Api {
 		cmds.add("-P FORWARD ACCEPT");
 
 		// prevent data leaks due to incomplete rules
+		Log.i(TAG, "Setting OUTPUT to Drop");
 		cmds.add("-P OUTPUT DROP");
 
 		for (String s : staticChains) {
@@ -725,6 +726,11 @@ public final class Api {
 				out.add(ipPath + " " + s);
 			}
 		}
+
+		/*for(int i=0;i < out.size(); i++ ){
+			Log.i(TAG,"Rule:" + out.get(i));
+		}*/
+
 	}
 
 	private static void fixupLegacyCmds(List<String> cmds) {
@@ -751,34 +757,25 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
-		Log.i(TAG, "applySavedIptablesRules invoked");
-		initSpecial();
-		
-		final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
-		final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
-		final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
-		final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
-		final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
+		try {
+			Log.i(TAG, "applySavedIptablesRules invoked");
+			initSpecial();
 
-		boolean returnValue = false;
-		List<String> cmds = new ArrayList<String>();
+			final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+			final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
+			final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+			final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
+			final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
 
-		setIpTablePath(ctx,false);
-		returnValue = applyIptablesRulesImpl(ctx,
-					getListFromPref(savedPkg_wifi_uid),
-					getListFromPref(savedPkg_3g_uid),
-					getListFromPref(savedPkg_roam_uid),
-					getListFromPref(savedPkg_vpn_uid),
-					getListFromPref(savedPkg_lan_uid),
-					showErrors,
-					cmds);
-		if (returnValue == false) {
-			return false;
-		}
+			boolean returnValue = false;
+			List<String> cmds = new ArrayList<String>();
 
-		//TODO: InterfaceTracker.isIpV6() -- this is breaking custom script
-		if (G.enableIPv6()) {
-			setIpTablePath(ctx, true);
+			if(G.kingDetected()) {
+				cmds.add("-F");
+				cmds.add("-X");
+			}
+
+			setIpTablePath(ctx,false);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
 					getListFromPref(savedPkg_3g_uid),
@@ -790,41 +787,58 @@ public final class Api {
 			if (returnValue == false) {
 				return false;
 			}
-		}
 
-		rulesUpToDate = true;
-
-		/*if(G.kingDetected()) {
-			try {
-				flushAllRules(ctx, new RootCommand());
-			} catch (Exception e) {
-				Log.d(TAG, "Failed flusing firewall chains");
-			}
-		}*/
-
-		if (callback != null) {
-			callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
-			return true;
-		} else {
-			fixupLegacyCmds(cmds);
-			try {
-				final StringBuilder res = new StringBuilder();
-				int code = runScriptAsRoot(ctx, cmds, res);
-				if (showErrors && code != 0) {
-					String msg = res.toString();
-					// Remove unnecessary help message from output
-					if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
-						msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
-					}
-					//allowDefaultChains(ctx);
-					toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
+			//TODO: InterfaceTracker.isIpV6() -- this is breaking custom script
+			if (G.enableIPv6()) {
+				setIpTablePath(ctx, true);
+				returnValue = applyIptablesRulesImpl(ctx,
+						getListFromPref(savedPkg_wifi_uid),
+						getListFromPref(savedPkg_3g_uid),
+						getListFromPref(savedPkg_roam_uid),
+						getListFromPref(savedPkg_vpn_uid),
+						getListFromPref(savedPkg_lan_uid),
+						showErrors,
+						cmds);
+				if (returnValue == false) {
+					return false;
 				}
-			} catch (Exception e) {
-				//in case of exception rollback to default chains to ACCEPT
-				Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-				//allowDefaultChains(ctx);
-				if (showErrors) toast(ctx, ctx.getString(R.string.error_refresh) + e);
 			}
+
+			rulesUpToDate = true;
+
+			//make sure we set OUTPUT To ACCEPT state
+			Log.i(TAG,"Setting OUTPUT to Accept");
+			cmds.add("-P OUTPUT ACCEPT");
+
+			if (callback != null) {
+				callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+				return true;
+			} else {
+				fixupLegacyCmds(cmds);
+				try {
+					final StringBuilder res = new StringBuilder();
+					int code = runScriptAsRoot(ctx, cmds, res);
+					if (showErrors && code != 0) {
+						String msg = res.toString();
+						// Remove unnecessary help message from output
+						if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
+							msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
+						}
+						allowDefaultChains(ctx);
+						return false;
+						//if (showErrors) toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
+					}
+				} catch (Exception e) {
+					//in case of exception rollback to default chains to ACCEPT
+					Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+					allowDefaultChains(ctx);
+					return false;
+				}
+				return false;
+			}
+		} catch (Exception e) {
+			Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+			allowDefaultChains(ctx);
 			return false;
 		}
 	}
@@ -840,7 +854,6 @@ public final class Api {
 			return applySavedIptablesRules(ctx, true, callback);
 		}
 
-
 		List<String> out = new ArrayList<String>();
 		List<String> cmds;
 
@@ -855,6 +868,7 @@ public final class Api {
 			applyShortRules(ctx, cmds);
 			iptablesCommands(cmds, out);
 		}
+
 		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 		return true;
 	}
@@ -2905,14 +2919,14 @@ public final class Api {
     }
 
 
-	/*public static void allowDefaultChains(Context ctx) {
+	public static void allowDefaultChains(Context ctx) {
 		List<String> cmds = new ArrayList<String>();
 		cmds.add("-P INPUT ACCEPT");
 		cmds.add("-P FORWARD ACCEPT");
 		cmds.add("-P OUTPUT ACCEPT ");
 		applyQuick(ctx,cmds, new RootCommand());
 		applyIPv6Quick(ctx,cmds, new RootCommand());
-	}*/
+	}
 
 	/**
 	 * Delete all firewall rules.  For diagnostic purposes only.
