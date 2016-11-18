@@ -6,6 +6,11 @@
         android:icon="@drawable/ic_menu_pref"
         android:title="@string/ui_prefs_title" />
     <header
+        android:fragment="dev.ukanth.ufirewall.preferences.RulesPreferenceFragment"
+        android:icon="@drawable/ic_rules"
+        android:title="@string/rules_prefs_title" />
+
+    <header
         android:fragment="dev.ukanth.ufirewall.preferences.LogPreferenceFragment"
         android:icon="@drawable/ic_log"
         android:title="@string/log_prefs_title" />

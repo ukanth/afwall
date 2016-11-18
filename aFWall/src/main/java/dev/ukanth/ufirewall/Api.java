@@ -379,7 +379,7 @@ public final class Api {
 		Runtime.getRuntime().exec("chmod "+mode+" "+abspath).waitFor();
 	}
 	
-	public static void replaceAll(StringBuilder builder, String from, String to ) {
+	/*public static void replaceAll(StringBuilder builder, String from, String to ) {
 		int index = builder.indexOf(from);
 	    while (index != -1)
 	    {
@@ -387,7 +387,7 @@ public final class Api {
 	        index += to.length(); // Move to the end of the replacement
 	        index = builder.indexOf(from, index);
 	    }
-	}
+	}*/
 
 	/**
 	 * Look up uid for each user by name, and if he exists, append an iptables rule.
@@ -579,7 +579,7 @@ public final class Api {
      */
 	private static boolean applyIptablesRulesImpl(final Context ctx, List<Integer> uidsWifi, List<Integer> uids3g,
 			List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN, final boolean showErrors,
-			List<String> out) {
+			List<String> out, boolean onlyForIpv6) {
 		if (ctx == null) {
 			return false;
 		}
@@ -693,10 +693,26 @@ public final class Api {
 		addRulesForUidlist(cmds, uidsLAN,  AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
 		addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
+		Log.i(TAG,"Setting OUTPUT to Accept");
 		cmds.add("-P OUTPUT ACCEPT");
 
-		iptablesCommands(cmds, out);
+		if(onlyForIpv6) {
+			if(G.blockIPv6()){
+				setIpTablePath(ctx, true);
+				cmds.add("-P INPUT DROP");
+				cmds.add("-P FORWARD DROP");
+				cmds.add("-P OUTPUT DROP");
+			} else {
+				if(G.enableIPv6()){
+					setIpTablePath(ctx, true);
+					cmds.add("-P INPUT ACCEPT");
+					cmds.add("-P FORWARD ACCEPT");
+					cmds.add("-P OUTPUT ACCEPT");
+				}
+			}
+		}
 
+		iptablesCommands(cmds, out);
 		return true;
     }
 
@@ -783,7 +799,7 @@ public final class Api {
 					getListFromPref(savedPkg_vpn_uid),
 					getListFromPref(savedPkg_lan_uid),
 					showErrors,
-					cmds);
+					cmds, false);
 			if (returnValue == false) {
 				return false;
 			}
@@ -798,17 +814,22 @@ public final class Api {
 						getListFromPref(savedPkg_vpn_uid),
 						getListFromPref(savedPkg_lan_uid),
 						showErrors,
-						cmds);
+						cmds, true);
 				if (returnValue == false) {
 					return false;
+				}
+			} else {
+				if(G.blockIPv6()) {
+					setIpTablePath(ctx, true);
+					List blockRules = new ArrayList<>();
+					blockRules.add("-P INPUT DROP");
+					blockRules.add("-P FORWARD DROP");
+					blockRules.add("-P OUTPUT DROP");
+					iptablesCommands(blockRules,cmds);
 				}
 			}
 
 			rulesUpToDate = true;
-
-			//make sure we set OUTPUT To ACCEPT state
-			Log.i(TAG,"Setting OUTPUT to Accept");
-			cmds.add("-P OUTPUT ACCEPT");
 
 			if (callback != null) {
 				callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
@@ -849,7 +870,7 @@ public final class Api {
 	}
 
 	public static boolean fastApply(Context ctx, RootCommand callback) {
-		
+
 		if (!rulesUpToDate) {
 			return applySavedIptablesRules(ctx, true, callback);
 		}
@@ -866,9 +887,18 @@ public final class Api {
 			setIpTablePath(ctx, true);
 			cmds = new ArrayList<String>();
 			applyShortRules(ctx, cmds);
+			cmds.add("-P INPUT ACCEPT");
+			cmds.add("-P FORWARD ACCEPT");
+			cmds.add("-P OUTPUT ACCEPT");
+			iptablesCommands(cmds, out);
+		} else if(G.blockIPv6()) {
+			setIpTablePath(ctx, true);
+			cmds = new ArrayList<String>();
+			cmds.add("-P INPUT DROP");
+			cmds.add("-P FORWARD DROP");
+			cmds.add("-P OUTPUT DROP");
 			iptablesCommands(cmds, out);
 		}
-
 		callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
 		return true;
 	}
@@ -1036,12 +1066,11 @@ public final class Api {
 	//Cleanup unused shell opened by logservice
 	public static void cleanupUid() {
 		try {
-			Shell.Interactive tempSession = new Shell.Builder()
-					.useSU().open();
+			Shell.Interactive tempSession = new Shell.Builder().useSU().open();
 			Set uids = G.storedPid();
 			if(uids != null && uids.size() > 0) {
 				for(String uid: G.storedPid()) {
-					dev.ukanth.ufirewall.log.Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
+					Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
 					tempSession.addCommand("kill -9 " + uid);
 				}
 				G.storedPid(new HashSet());

@@ -273,6 +273,7 @@
 
     <!-- UI Preferences -->
     <string name="ui_prefs_title">User interface</string>
+    <string name="rules_prefs_title">Rules/Connectivity</string>
     <string name="log_prefs_title">Log</string>
     <string name="hideicons_pref_title">Hide app icons</string>
     <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>

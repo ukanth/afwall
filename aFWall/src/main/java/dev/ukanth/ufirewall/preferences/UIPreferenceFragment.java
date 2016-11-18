@@ -24,16 +24,6 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.ui_preferences);
-
-		//make sure Roaming is disable in Wifi-only Tablets
-		if (!Api.isMobileNetworkSupported(getActivity())) {
-			CheckBoxPreference roamPreference = (CheckBoxPreference) findPreference("enableRoam");
-			roamPreference.setChecked(false);
-			roamPreference.setEnabled(false);
-		} else {
-			CheckBoxPreference roamPreference = (CheckBoxPreference) findPreference("enableRoam");
-			roamPreference.setEnabled(true);
-		}
 	}
 
 	@Override
@@ -62,50 +52,7 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 										  String key) {
 
-		if (key.equals("activeRules")) {
-			if (!G.activeRules()) {
-				//disable service when there is no active rules
-				//stopService(new Intent(PreferencesActivity.this, RootShell.class));
-				CheckBoxPreference enableRoam = (CheckBoxPreference) findPreference("enableRoam");
-				enableRoam.setChecked(false);
-				CheckBoxPreference enableLAN = (CheckBoxPreference) findPreference("enableLAN");
-				enableLAN.setChecked(false);
-				CheckBoxPreference enableVPN = (CheckBoxPreference) findPreference("enableVPN");
-				enableVPN.setChecked(false);
 
-				G.enableRoam(false);
-				G.enableLAN(false);
-				G.enableVPN(false);
 
-			}
-		}
-		if (key.equals("enableIPv6")) { // || key.equals("blockIPv6")) {
-			File defaultIP6TablesPath = new File("/system/bin/ip6tables");
-			if (!defaultIP6TablesPath.exists()) {
-				G.enableIPv6(false);
-				CheckBoxPreference block = (CheckBoxPreference) findPreference("enableIPv6");
-				block.setChecked(false);
-				if(ctx != null) {
-					Api.toast(ctx, getString(R.string.ip6unavailable));
-				}
-			} else {
-				if(key.equals("enableIPv6")) {
-					/*if(G.blockIPv6() && G.enableIPv6()) {
-						CheckBoxPreference block = (CheckBoxPreference) findPreference("blockIPv6");
-						block.setChecked(false);
-					}*/
-					//make sure we don't block IPv6 if it's enables
-					EventBus.getDefault().post(new RulesEvent("",ctx));
-				}
-				/*if(key.equals("blockIPv6")){
-					if(G.blockIPv6() && G.enableIPv6()) {
-						G.blockIPv6(false);
-						CheckBoxPreference block = (CheckBoxPreference) findPreference("enableIPv6");
-						block.setChecked(false);
-						EventBus.getDefault().post(new RulesEvent("",ctx));
-					}
-				}*/
-			}
-		}
 	}
 }
