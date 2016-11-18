@@ -1526,30 +1526,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 				.progress(true, 0)
 				.show();
 
+			if(!Api.applySavedIptablesRules(ctx, true, new RootCommand()
+					.setSuccessToast(R.string.rules_applied)
+					.setFailureToast(R.string.error_apply)
+					.setReopenShell(true)
+					.setCallback(new RootCommand.Callback() {
 
-		Api.applySavedIptablesRules(ctx, true, new RootCommand()
-				.setSuccessToast(R.string.rules_applied)
-				.setFailureToast(R.string.error_apply)
-				.setReopenShell(true)
-				.setCallback(new RootCommand.Callback() {
+						public void cbFunc(RootCommand state) {
+							try {
+								progress.dismiss();
+							} catch (Exception ex) {
+							}
 
-					public void cbFunc(RootCommand state) {
-						try {
-							progress.dismiss();
-						} catch (Exception ex) {
+							boolean result = enabled;
+
+							if (state.exitCode == 0) {
+								setDirty(false);
+							} else {
+								result = false;
+							}
+							menuSetApplyOrSave(MainActivity.this.mainMenu, result);
+							Api.setEnabled(ctx, result, true);
 						}
+					}))) {
+				progress.dismiss();
+				Api.toast(MainActivity.this,getString(R.string.error_apply));
+			}
 
-						boolean result = enabled;
-
-						if (state.exitCode == 0) {
-							setDirty(false);
-						} else {
-							result = false;
-						}
-						menuSetApplyOrSave(MainActivity.this.mainMenu, result);
-						Api.setEnabled(ctx, result, true);
-					}
-				}));
 	}
 
 	/**
