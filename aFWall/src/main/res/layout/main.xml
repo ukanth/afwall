@@ -22,46 +22,6 @@
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize" />
 
-        <!--<ListView
-            android:id="@android:id/list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawSelectorOnTop="false"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:textAlignment="center" />
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
-
-            <TextView
-                android:id="@+id/label_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:paddingLeft="10dp"
-                android:text="@string/mode"
-                android:textStyle="bold" />
-
-
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:textIsSelectable="false" />
-            &lt;!&ndash;
-                    <Spinner
-                        android:id="@+id/filterGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/filters"/>&ndash;&gt;
-
-
-        </LinearLayout>-->
-
         <LinearLayout
             android:id="@+id/profileOption"
             android:layout_width="fill_parent"
@@ -92,20 +52,6 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:visibility="visible">
-
-            <!-- <TextView
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:id="@+id/filerText"
-                 android:paddingLeft="10dp"
-                 android:textStyle="bold"
-                 android:text="@string/filter"/>
-
-             <Spinner
-                 android:id="@+id/filterGroup"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:entries="@array/filters"/>-->
 
             <RadioGroup
                 android:id="@+id/appFilterGroup"
