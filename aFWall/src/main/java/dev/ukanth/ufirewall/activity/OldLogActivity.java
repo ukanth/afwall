@@ -112,6 +112,7 @@ public class OldLogActivity extends DataDumpActivity {
                         FlowManager.getDatabase(LogDatabase.NAME).reset(ctx);
                         Toast.makeText(ctx, ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+                        parseAndSet(Api.fetchLogs());
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
