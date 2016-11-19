@@ -503,43 +503,44 @@ public final class Api {
 	 * @param cmds command list
 	 */
 	private static void addInterfaceRouting(Context ctx ,List<String> cmds) {
-		final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
-		final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
-		for (String s : dynChains) {
-			cmds.add("-F " + AFWALL_CHAIN_NAME + s);
-		}
-
-		if (whitelist) {
-			// always allow the DHCP client full wifi access
-			addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
-		}
-
-		if (cfg.isTethered) {
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
-		} else {
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
-		}
-
-		if (G.enableLAN() && !cfg.isTethered) {
-			Log.i(TAG, "RULES: INSIDE G.enableLAN()" );
-			if(setv6) {
-				if(!cfg.lanMaskV6.equals("")){
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-				}
-			} else {
-				Log.i(TAG, "RULES: INSIDE cfg.lanMaskV4" );
-				if(!cfg.lanMaskV4.equals("")) {
-					Log.i(TAG, "RULES: INSIDE -wifi-fork" );
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-				} else {
-					//ipaddress not found, but still block WIFI rules
-					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-				}
+		try {
+			final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
+			final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
+			for (String s : dynChains) {
+				cmds.add("-F " + AFWALL_CHAIN_NAME + s);
 			}
+
+			if (whitelist) {
+				// always allow the DHCP client full wifi access
+				addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
+			}
+
+			if (cfg.isTethered) {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
+			} else {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
+			}
+
+			if (G.enableLAN() && !cfg.isTethered) {
+				Log.i(TAG, "RULES: INSIDE G.enableLAN()" );
+				if(setv6) {
+					if(!cfg.lanMaskV6.equals("")){
+						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+					}
+				} else {
+					Log.i(TAG, "RULES: INSIDE cfg.lanMaskV4" );
+					if(!cfg.lanMaskV4.equals("")) {
+						Log.i(TAG, "RULES: INSIDE -wifi-fork" );
+						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+					} else {
+						//ipaddress not found, but still block WIFI rules
+						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+					}
+				}
 
 			/*if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
 				// No IP address -> no traffic.  This prevents a data leak between the time
@@ -551,22 +552,28 @@ public final class Api {
 				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
 
 			}*/
-		} else {
-			if(!cfg.isTethered) {
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+			} else {
+				if(!cfg.isTethered) {
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+				}
 			}
+
+			if (G.enableRoam() && cfg.isRoaming) {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-roam");
+			} else {
+				cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-home");
+			}
+		} catch(Exception e) {
+			Log.i(TAG, "Exception while applying shortRules " + e.getMessage());
 		}
 
-		if (G.enableRoam() && cfg.isRoaming) {
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-roam");
-		} else {
-			cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-home");
-		}
 	}
 
 	private static void applyShortRules(Context ctx, List<String> cmds) {
+		Log.i(TAG,"Setting OUTPUT chain to DROP");
 		cmds.add("-P OUTPUT DROP");
 		addInterfaceRouting(ctx, cmds);
+		Log.i(TAG,"Setting OUTPUT chain to ACCEPT");
 		cmds.add("-P OUTPUT ACCEPT");
 	}
 
@@ -874,7 +881,7 @@ public final class Api {
 		if (!rulesUpToDate) {
 			return applySavedIptablesRules(ctx, true, callback);
 		}
-
+		Log.i(TAG,"Using fastApply");
 		List<String> out = new ArrayList<String>();
 		List<String> cmds;
 

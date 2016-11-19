@@ -318,6 +318,7 @@ public final class InterfaceTracker {
                                                                     Log.i(TAG, reason + ": applied rules");
                                                                 } else {
                                                                     errorNotification(ctx);
+                                                                    Api.allowDefaultChains(ctx);
                                                                 }
                                                             }
                                                         }));
@@ -329,6 +330,7 @@ public final class InterfaceTracker {
                 }));
         if (!ret) {
             Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
+            Api.allowDefaultChains(ctx);
             errorNotification(ctx);
         }
     }
