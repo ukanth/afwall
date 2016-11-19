@@ -2869,7 +2869,7 @@ public final class Api {
     public static void showNotification(boolean status, Context context) {
 
 		if(G.activeNotification()) {
-			final int NOTIF_ID = 33341;
+			final int NOTIFICATION_ID = 33341;
 			String notificationText = "";
 
 			NotificationManager mNotificationManager = (NotificationManager) context
@@ -2883,18 +2883,10 @@ public final class Api {
 			stackBuilder.addParentStack(MainActivity.class);
 			stackBuilder.addNextIntent(appIntent);
 
-			/*appIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-					| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			appIntent.setAction(Long.toString(System.currentTimeMillis()));*/
-
-
-			//PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
 			PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 			builder.setContentIntent(resultPendingIntent);
 
-			int icon = R.drawable.notification;
-
+			int icon;
 
 			if(status) {
 				if(G.enableMultiProfile()) {
@@ -2948,7 +2940,7 @@ public final class Api {
 				builder.setVisibility(NotificationCompat.PRIORITY_LOW);
 			}*/
 			//builder.setContentIntent(in);
-			mNotificationManager.notify(NOTIF_ID, notification);
+			mNotificationManager.notify(NOTIFICATION_ID, notification);
 		}
 
     	
