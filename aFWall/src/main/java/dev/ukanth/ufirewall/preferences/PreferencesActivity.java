@@ -53,7 +53,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.events.LogChangeEvent;
 import dev.ukanth.ufirewall.events.RulesEvent;
@@ -192,7 +191,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         super.onPostCreate(savedInstanceState);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this) && !isSimplePreferences(this);
@@ -242,21 +243,12 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         final Context context = logChangeEvent.ctx;
         final Intent logIntent = new Intent(context, LogService.class);
         if (G.enableLogService()) {
-            //check if the firewall is enabled
-            if (!Api.isEnabled(context)) {
-                context.stopService(logIntent);
-                Api.cleanupUid();
-            } else if (!InterfaceTracker.isNetworkUp(context)) {
-                context.stopService(logIntent);
-                Api.cleanupUid();
-            } else {
-                //restart the service
-                context.stopService(logIntent);
-                Api.cleanupUid();
-                context.startService(logIntent);
-            }
+            //restart service
+            context.stopService(logIntent);
+            Api.cleanupUid();
+            context.startService(logIntent);
         } else {
-            //no internet - stop the service
+            //log service disabled
             context.stopService(logIntent);
             Api.cleanupUid();
         }

@@ -43,12 +43,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.events.LogEvent;
+import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
@@ -159,86 +162,106 @@ public class LogService extends Service {
         handler.post(showToastRunnable);
     }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null) {
+            Log.i(TAG, "Restarting LogService");
+            List<String> cmds = new ArrayList<String>();
+            cmds.add("true");
+            new RootShell.RootCommand().setFailureToast(R.string.error_su)
+                    .setReopenShell(true).run(getApplicationContext(), cmds);
+            startLogService();
+            ;
+        }
+        return Service.START_STICKY;
+    }
+
 
     @Override
     public void onCreate() {
-        EventBus.getDefault().register(this);
-        // this method is executed in a background thread
-        // no problem calling su here
-        if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty() && G.enableLogService()) {
-            if(G.logDmsg().isEmpty()) {
-                G.logDmsg("OS");
-            }
-            switch (G.logTarget()) {
-                case "LOG":
-                    switch(G.logDmsg()){
-                        case "OS":
-                            logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
-                            break;
-                        case "BB":
-                            logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
-                            break;
-                        case "TB":
-                            logPath = "echo PID=$$ & while true; do toybox dmesg -c ; sleep 1 ; done";
-                            break;
-                        default:
-                            logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
-                    }
+        startLogService();
+    }
 
-                    break;
-                case "NFLOG":
-                    logPath = Api.getNflogPath(getApplicationContext());
-                    logPath = "echo $$ & " + logPath + " " + QUEUE_NUM;
-                    break;
-            }
-        } else {
-            Log.i(TAG, "Unable to start log service. LogTarget is empty or LogService is not enabled");
-            stopSelf();
-        }
-
-        Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-        handler = new Handler();
-        Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
-
-        if (rootSession != null && rootSession.isRunning()) {
-            try {
-                rootSession.kill();
-                rootSession.close();
-            } catch (Exception e) {
-            }
-        }
-        // kill all previous logged uid
-        Api.cleanupUid();
-
-        rootSession = new Shell.Builder()
-                .useSU()
-                .setMinimalLogging(true)
-                .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
-                    @Override
-                    public void onLine(String line) {
-                        if(line !=null && !line.isEmpty() && line.startsWith("PID=")) {
-                            try {
-                                String uid = line.split("=")[1];
-                                if(uid != null) {
-                                    Set data = G.storedPid();
-                                    if ( data == null || data .isEmpty()) {
-                                        data = new HashSet();
-                                        data.add(uid);
-                                        G.storedPid(data);
-                                    } else if(!data.contains(uid)) {
-                                        data.add(uid);
-                                        G.storedPid(data);
-                                    }
-                                }
-                            } catch (Exception e) {
-                            }
-                        } else {
-                            storeLogInfo(line, getApplicationContext());
+    private void startLogService() {
+        if (!EventBus.getDefault().isRegistered(this) && G.enableLogService()) {
+            EventBus.getDefault().register(this);
+            // this method is executed in a background thread
+            // no problem calling su here
+            if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty()) {
+                if (G.logDmsg().isEmpty()) {
+                    G.logDmsg("OS");
+                }
+                switch (G.logTarget()) {
+                    case "LOG":
+                        switch (G.logDmsg()) {
+                            case "OS":
+                                logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
+                                break;
+                            case "BB":
+                                logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
+                                break;
+                            case "TB":
+                                logPath = "echo PID=$$ & while true; do toybox dmesg -c ; sleep 1 ; done";
+                                break;
+                            default:
+                                logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
 
-                    }
-                }).addCommand(logPath).open();
+                        break;
+                    case "NFLOG":
+                        logPath = Api.getNflogPath(getApplicationContext());
+                        logPath = "echo $$ & " + logPath + " " + QUEUE_NUM;
+                        break;
+                }
+            } else {
+                Log.i(TAG, "Unable to start log service. LogTarget is empty or LogService is not enabled");
+                return;
+                //stopSelf();
+            }
 
+            Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
+            handler = new Handler();
+            Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
+
+            if (rootSession != null && rootSession.isRunning()) {
+                try {
+                    rootSession.kill();
+                    rootSession.close();
+                } catch (Exception e) {
+                }
+            }
+            // kill all previous logged uid
+            Api.cleanupUid();
+
+            rootSession = new Shell.Builder()
+                    .useSU()
+                    .setMinimalLogging(true)
+                    .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
+                        @Override
+                        public void onLine(String line) {
+                            if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
+                                try {
+                                    String uid = line.split("=")[1];
+                                    if (uid != null) {
+                                        Set data = G.storedPid();
+                                        if (data == null || data.isEmpty()) {
+                                            data = new HashSet();
+                                            data.add(uid);
+                                            G.storedPid(data);
+                                        } else if (!data.contains(uid)) {
+                                            data.add(uid);
+                                            G.storedPid(data);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                }
+                            } else {
+                                storeLogInfo(line, getApplicationContext());
+                            }
+
+                        }
+                    }).addCommand(logPath).open();
+        }
     }
 
 
@@ -286,17 +309,17 @@ public class LogService extends Service {
                     data.save(databaseWrapper);
                 }
             }).build().execute();
-        } catch(IllegalStateException e){
-            if(e.getMessage().contains("connection pool has been closed")) {
+        } catch (IllegalStateException e) {
+            if (e.getMessage().contains("connection pool has been closed")) {
                 //reconnect logic
                 try {
                     FlowManager.init(new FlowConfig.Builder(this).build());
-                }catch (Exception de) {
+                } catch (Exception de) {
                     Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
                 }
             }
             Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
-        } catch(Exception e){
+        } catch (Exception e) {
             Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
         }
 
