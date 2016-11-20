@@ -527,6 +527,7 @@ public final class Api {
 			if(setv6) {
 				if(!cfg.lanMaskV6.equals("")){
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d ffx2::/16 -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 				}
 			} else {
@@ -534,6 +535,7 @@ public final class Api {
 				if(!cfg.lanMaskV4.equals("")) {
 					Log.i(TAG, "RULES: INSIDE -wifi-fork" );
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d 224.0.0.0/24" -j " + AFWALL_CHAIN_NAME + "-wifi-lan"
 					cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 				} else {
 					//ipaddress not found, but still block WIFI rules
