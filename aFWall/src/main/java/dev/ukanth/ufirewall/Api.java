@@ -524,16 +524,13 @@ public final class Api {
 			}
 
 			if (G.enableLAN() && !cfg.isTethered) {
-				Log.i(TAG, "RULES: INSIDE G.enableLAN()" );
 				if(setv6) {
 					if(!cfg.lanMaskV6.equals("")){
 						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 					}
 				} else {
-					Log.i(TAG, "RULES: INSIDE cfg.lanMaskV4" );
 					if(!cfg.lanMaskV4.equals("")) {
-						Log.i(TAG, "RULES: INSIDE -wifi-fork" );
 						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
 						cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
 					} else {

@@ -288,16 +288,17 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             boolean enabled = sharedPreferences.getBoolean(key, false);
             if (enabled) {
                 Intent intent = new Intent(ctx, LogService.class);
+                ctx.stopService(intent);
+                Api.cleanupUid();
                 ctx.startService(intent);
             } else {
                 Intent intent = new Intent(ctx, LogService.class);
                 ctx.stopService(intent);
+                Api.cleanupUid();
             }
         }
-
         if (key.equals("enableMultiProfile")) {
             G.reloadProfile();
         }
-
     }
 }

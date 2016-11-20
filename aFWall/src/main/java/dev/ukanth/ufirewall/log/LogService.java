@@ -166,12 +166,7 @@ public class LogService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             Log.i(TAG, "Restarting LogService");
-            List<String> cmds = new ArrayList<String>();
-            cmds.add("true");
-            new RootShell.RootCommand().setFailureToast(R.string.error_su)
-                    .setReopenShell(true).run(getApplicationContext(), cmds);
             startLogService();
-            ;
         }
         return Service.START_STICKY;
     }
@@ -215,8 +210,7 @@ public class LogService extends Service {
                 }
             } else {
                 Log.i(TAG, "Unable to start log service. LogTarget is empty or LogService is not enabled");
-                return;
-                //stopSelf();
+                stopSelf();
             }
 
             Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
