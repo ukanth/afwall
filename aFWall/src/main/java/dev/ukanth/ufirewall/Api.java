@@ -1070,10 +1070,10 @@ public final class Api {
 	//Cleanup unused shell opened by logservice
 	public static void cleanupUid() {
 		try {
-			Set uids = G.storedPid();
+			Set<String> uids = G.storedPid();
 			if(uids != null && uids.size() > 0) {
 				Shell.Interactive tempSession = new Shell.Builder().useSU().open();
-				for(String uid: G.storedPid()) {
+				for(String uid: uids) {
 					Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
 					tempSession.addCommand("kill -9 " + uid);
 				}
@@ -1084,7 +1084,7 @@ public final class Api {
 				}
 			}
 		} catch (Exception e) {
-			Log.e(TAG, "Exception in cleanupUid." + e.getLocalizedMessage());
+			Log.e(TAG, "Exception in cleanupUid: " + e.getMessage());
 		}
 	}
 
