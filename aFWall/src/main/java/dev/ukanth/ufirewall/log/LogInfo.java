@@ -300,17 +300,26 @@ public class LogInfo{
 				}
 				String appName = "";
 				if(uid != unknownUID) {
-					if(!appNameMap.containsKey(uid)) {
-						appName = ctx.getPackageManager().getNameForUid(uid);
-						for (PackageInfoData app : apps) {
-							if (app.uid == uid) {
-								appName = app.names.get(0);
+					//system level packages
+					if(uid < 1024 ) {
+						switch(uid) {
+							case 1020:
+								appName = "mDNS";
 								break;
-							}
 						}
-						appNameMap.put(uid, appName);
 					} else {
-						appName = appNameMap.get(uid);
+						if(!appNameMap.containsKey(uid)) {
+							appName = ctx.getPackageManager().getNameForUid(uid);
+							for (PackageInfoData app : apps) {
+								if (app.uid == uid) {
+									appName = app.names.get(0);
+									break;
+								}
+							}
+							appNameMap.put(uid, appName);
+						} else {
+							appName = appNameMap.get(uid);
+						}
 					}
 				} else {
 					appName = ctx.getString(R.string.kernel_item);
