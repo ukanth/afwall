@@ -1,5 +1,9 @@
 package dev.ukanth.ufirewall;
 
+import android.app.KeyguardManager;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +16,12 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import java.util.List;
 
 import dev.ukanth.ufirewall.util.CustomRule;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.Rule;
 
 public class CustomRulesActivity extends AppCompatActivity {
@@ -27,6 +33,7 @@ public class CustomRulesActivity extends AppCompatActivity {
         final SharedPreferences prefs = getSharedPreferences(Api.CUSTOM_RULE_PREFS, 0);
         final View view = getLayoutInflater().inflate(R.layout.activity_custom_rules, null);
         setTitle(R.string.custom_rules);
+
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.activity_custom_rules);
         try {
             List<Rule> rules = CustomRule.getRules(getApplicationContext());
@@ -68,6 +75,8 @@ public class CustomRulesActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
     }
 
     @Override
