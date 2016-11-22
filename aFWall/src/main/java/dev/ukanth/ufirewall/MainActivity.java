@@ -1045,9 +1045,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.menu_help:
                 showAbout();
                 return true;
-            case R.id.menu_customrules:
+            /*case R.id.menu_customrules:
+                G.hidden()
                 startCustomRules();
-                return true;
+                return true;*/
             case R.id.menu_log:
                 showLog();
                 return true;

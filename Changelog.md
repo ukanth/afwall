@@ -12,7 +12,6 @@ Version 2.9.0
 * Accessibility improvements
 * Feature: Block IPv6 - block all default chains of IPv6 to prevent leak
 * Feature: Preference enhancements related to rules
-* Feature: Toggle based custom rules ( Donate only feature )
 * User reported crashes 
 * Updated Translations
 

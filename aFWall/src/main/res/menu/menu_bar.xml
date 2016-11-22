@@ -8,7 +8,6 @@
         android:title="@string/Search"
         app:showAsAction="always|collapseActionView" />
 
-
     <item
         android:id="@+id/menu_mode"
         android:icon="@drawable/ic_allow"
@@ -55,11 +54,6 @@
         </menu>
     </item>
 
-    <!-- <item
-        android:id="@+id/menu_onoff"
-        android:actionViewClass="android.widget.Switch"
-        app:showAsAction="always"
-        android:title=""/>  -->
     <item
         android:id="@+id/menu_list_item"
         android:icon="@drawable/ic_flow"
@@ -93,21 +87,16 @@
                 android:title="@string/set_custom_script"
                 app:showAsAction="always" />
 
-            <item
+            <!--<item
                 android:id="@+id/menu_customrules"
                 android:icon="@drawable/ic_custom_rules"
                 android:title="@string/custom_rules"
-                app:showAsAction="always" />
+                app:showAsAction="always" />-->
             <item
                 android:id="@+id/menu_preference"
                 android:icon="@drawable/ic_preference"
                 android:title="@string/preferences"
                 app:showAsAction="always" />
-            <!--<item
-                android:id="@+id/menu_reload"
-                android:icon="@drawable/reload"
-                app:showAsAction="always"
-                android:title="@string/reload"/>-->
             <item
                 android:id="@+id/menu_export"
                 android:icon="@drawable/ic_export"
