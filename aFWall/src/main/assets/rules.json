@@ -2,9 +2,17 @@
   "rules": [
     {
       "id": "mDNS",
-      "name": "Enable Multicast DNS",
+      "name": "Allow Multicast DNS",
+      "desc": "DNS based service discovery",
       "v4": "-A afwall-wifi-fork -d 224.0.0.0/24 -j afwall-wifi-lan",
       "v6": "-A afwall-wifi-fork -d ffx2::/16 -j afwall-wifi-lan"
+    },
+    {
+      "id": "forceHTTPS",
+      "name": "Force HTTPS connections",
+      "desc": "Redirect to 443 port",
+      "v4": "-t nat -A OUTPUT -p tcp --dport 443 -j DNAT --to-destination 127.0.0.1:443",
+      "v6": "-t nat -A OUTPUT -p tcp --dport 443 -j DNAT --to-destination 127.0.0.1:443"
     }
   ]
 }

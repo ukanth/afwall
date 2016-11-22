@@ -2,7 +2,6 @@ package dev.ukanth.ufirewall;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -14,62 +13,49 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
+
+import dev.ukanth.ufirewall.util.CustomRule;
+import dev.ukanth.ufirewall.util.Rule;
 
 public class CustomRulesActivity extends AppCompatActivity {
-
-    final SharedPreferences prefs = getSharedPreferences(Api.CUSTOM_RULE_PREFS, 0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final SharedPreferences prefs = getSharedPreferences(Api.CUSTOM_RULE_PREFS, 0);
         final View view = getLayoutInflater().inflate(R.layout.activity_custom_rules, null);
         setTitle(R.string.custom_rules);
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.activity_custom_rules);
-        String data = Api.LoadAssetsFile(getApplicationContext(), "rules.json");
         try {
-
-            if (data != null) {
-                JSONObject jsonObject = new JSONObject(data);
-                JSONArray array = (JSONArray) jsonObject.get("rules");
-                if (array != null) {
-                    for (int i = 0; i < array.length(); i++) {
-                        JSONObject row = array.getJSONObject(i);
-                        String name = row.getString("name");
-                        final String id = row.getString("id");
-
-                        CardView cardView = new CardView(this);
-                        cardView.setRadius(dpToPixels(5));
-                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.height = dpToPixels(40);
-                        //params.gravity = Gravity.CENTER;
-                        int margin = dpToPixels(8);
-                        params.setMargins(margin, margin, margin, margin);
-                        cardView.setLayoutParams(params);
+            List<Rule> rules = CustomRule.getRules(getApplicationContext());
+            for (final Rule rule : rules) {
+                CardView cardView = new CardView(this);
+                cardView.setRadius(dpToPixels(5));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.height = dpToPixels(50);
+                params.gravity = Gravity.CENTER;
+                int margin = dpToPixels(10);
+                params.setMargins(margin, margin, margin, margin);
+                cardView.setLayoutParams(params);
 
 
-                        Switch switchButton = new Switch(this);
-                        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                prefs.edit().putBoolean(id, isChecked).commit();
-                            }
-                        });
-                        switchButton.setChecked(prefs.getBoolean(id, false));
-                        switchButton.setText(name);
-                        switchButton.setTextSize(14);
-
-                        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params.gravity = Gravity.CENTER;
-                        margin = dpToPixels(10);
-                        params.setMargins(margin+4, margin, margin, margin);
-
-                        switchButton.setLayoutParams(params);
-
-                        cardView.addView(switchButton);
-                        linearLayout.addView(cardView);
+                Switch switchButton = new Switch(this);
+                switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        prefs.edit().putBoolean(rule.getId(), isChecked).commit();
                     }
-                }
+                });
+                switchButton.setChecked(prefs.getBoolean(rule.getId(), false));
+                switchButton.setContentDescription(rule.getDesc());
+                switchButton.setText(rule.getName());
+                switchButton.setTextSize(18);
+
+                switchButton.setLayoutParams(params);
+
+                cardView.addView(switchButton);
+                linearLayout.addView(cardView);
             }
         } catch (Exception e) {
 

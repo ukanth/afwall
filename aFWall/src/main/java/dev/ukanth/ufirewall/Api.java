@@ -108,6 +108,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
+import dev.ukanth.ufirewall.util.CustomRule;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell;
@@ -701,7 +702,16 @@ public final class Api {
 		Log.i(TAG,"Setting OUTPUT to Accept");
 		cmds.add("-P OUTPUT ACCEPT");
 
+		//look for custom rules
+
+		for(String str: CustomRule.getAllowedIPv4Rules(ctx)) {
+			cmds.add(str);
+		}
+
 		if(onlyForIpv6) {
+			for(String str: CustomRule.getAllowedIPv6Rules(ctx)) {
+				cmds.add(str);
+			}
 			if(G.blockIPv6()){
 				setIpTablePath(ctx, true);
 				cmds.add("-P INPUT DROP");
@@ -2983,18 +2993,5 @@ public final class Api {
 		return hasRoot[0];
 	}
 
-	public static String LoadAssetsFile(Context ctx,String inFile) {
-		String tContents = "";
-		try {
-			InputStream stream = ctx.getAssets().open(inFile);
-			int size = stream.available();
-			byte[] buffer = new byte[size];
-			stream.read(buffer);
-			stream.close();
-			tContents = new String(buffer);
-		} catch (IOException e) {
-			return null;
-		}
-		return tContents;
-	}
+
 }
