@@ -3,7 +3,7 @@ Changelog AFWall+
 
 Version 2.9.0
 * Bug: Sometimes connection gets blocked
-* Bug: Sometimes logservice doesn't work after service terminated by os
+* Bug: Sometimes logservice does not work after service terminated
 * Bug: Hang issue with phh super user
 * Bug: Applying rules dialog issue
 * Bug: Old logview clear issue
@@ -12,7 +12,8 @@ Version 2.9.0
 * Accessibility improvements
 * Feature: Block IPv6 - block all default chains of IPv6 to prevent leak
 * Feature: Preference enhancements related to rules
-* User reported crashes 
+* Feature: Application Shortcuts - Nougat 7.1
+* User reported crashes
 * Updated Translations
 
 Version 2.8.0

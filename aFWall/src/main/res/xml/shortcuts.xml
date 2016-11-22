@@ -9,7 +9,6 @@
             android:action="android.intent.action.VIEW"
             android:targetClass="dev.ukanth.ufirewall.preferences.PreferencesActivity"
             android:targetPackage="dev.ukanth.ufirewall" />
-        <categories android:name="android.shortcut.conversation" />
     </shortcut>
 
     <shortcut
@@ -22,7 +21,6 @@
             android:action="android.intent.action.VIEW"
             android:targetClass="dev.ukanth.ufirewall.activity.LogActivity"
             android:targetPackage="dev.ukanth.ufirewall" />
-        <categories android:name="android.shortcut.conversation" />
     </shortcut>
 
 
@@ -36,6 +34,5 @@
             android:action="android.intent.action.VIEW"
             android:targetClass="dev.ukanth.ufirewall.activity.RulesActivity"
             android:targetPackage="dev.ukanth.ufirewall" />
-        <categories android:name="android.shortcut.conversation" />
     </shortcut>
 </shortcuts>
