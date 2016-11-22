@@ -50,8 +50,18 @@ public class CustomRule {
                         rule.setName(row.getString("name"));
                         rule.setDesc(row.getString("desc"));
                         rule.setId(row.getString("id"));
-                        rule.setIpv4(row.getString("v4"));
-                        rule.setIpv6(row.getString("v6"));
+                        JSONArray v4Array = row.getJSONArray("v4");
+                        List<String> list4 = new ArrayList<>();
+                        for(int item=0;item < v4Array.length(); item++) {
+                            list4.add(v4Array.getString(item));
+                        }
+                        rule.setIpv4(list4);
+                        JSONArray v6Array = row.getJSONArray("v6");
+                        List<String> list6 = new ArrayList<>();
+                        for(int item=0;item < v4Array.length(); item++) {
+                            list6.add(v6Array.getString(item));
+                        }
+                        rule.setIpv6(list6);
                         listRule.add(rule);
                     }
                 }
@@ -80,7 +90,7 @@ public class CustomRule {
         for (Rule rule : getRules(context)) {
             if (prefs.getBoolean(rule.getId(), false)) {
                 //toggled rule
-                allowedRules.add(rule.getIpv4());
+                allowedRules.addAll(rule.getIpv4());
             }
         }
         return allowedRules;
@@ -93,7 +103,7 @@ public class CustomRule {
         for (Rule rule : getRules(context)) {
             if (prefs.getBoolean(rule.getId(), false)) {
                 //toggled rule
-                allowedRules.add(rule.getIpv6());
+                allowedRules.addAll(rule.getIpv6());
             }
         }
         return allowedRules;
