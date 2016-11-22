@@ -1048,9 +1048,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			case R.id.menu_help:
 				showAbout();
 				return true;
-		/*case R.id.menu_setpwd:
-			setPassword();
-			return true;*/
+			case R.id.menu_customrules:
+				startCustomRules();
+				return true;
 			case R.id.menu_log:
 				showLog();
 				return true;
@@ -1377,6 +1377,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 		Intent intent = new Intent();
 		intent.setClass(this, CustomScriptActivity.class);
 		startActivityForResult(intent, SHOW_CUSTOM_SCRIPT);
+	}
+
+	private void startCustomRules() {
+		Intent intent = new Intent();
+		intent.setClass(this, CustomRulesActivity.class);
+		startActivity(intent);
 	}
 
 	@Override

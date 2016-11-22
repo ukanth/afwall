@@ -146,6 +146,7 @@ public final class Api {
 
 	// Preferences
 	public static String PREFS_NAME 				= "AFWallPrefs";
+	public static final String CUSTOM_RULE_PREFS	= "CustomRulesPrefs";
 	public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
 	public static final String DEFAULT_PREFS_NAME 	= "AFWallPrefs";
 	
@@ -2980,5 +2981,20 @@ public final class Api {
 		} catch (InterruptedException e) {
 		}
 		return hasRoot[0];
+	}
+
+	public static String LoadAssetsFile(Context ctx,String inFile) {
+		String tContents = "";
+		try {
+			InputStream stream = ctx.getAssets().open(inFile);
+			int size = stream.available();
+			byte[] buffer = new byte[size];
+			stream.read(buffer);
+			stream.close();
+			tContents = new String(buffer);
+		} catch (IOException e) {
+			return null;
+		}
+		return tContents;
 	}
 }

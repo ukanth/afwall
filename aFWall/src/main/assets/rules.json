@@ -1,0 +1,10 @@
+{
+  "rules": [
+    {
+      "id": "mDNS",
+      "name": "Enable Multicast DNS",
+      "v4": "-A afwall-wifi-fork -d 224.0.0.0/24 -j afwall-wifi-lan",
+      "v6": "-A afwall-wifi-fork -d ffx2::/16 -j afwall-wifi-lan"
+    }
+  ]
+}

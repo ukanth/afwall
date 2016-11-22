@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!--
        AFWall+ UI - String resource (English)
@@ -112,7 +111,7 @@
 
 
     <!-- Advanced Settings -->
-    
+
     <!-- init.d -->
     <string name="success_initd">Startup script installed</string>
     <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
@@ -184,7 +183,7 @@
     <string name="profile1">Profile 1</string>
     <string name="profile2">Profile 2</string>
     <string name="profile3">Profile 3</string>
-    
+
     <string name="reapply_profile">Reapply profile rules</string>
 
     <!-- Interface -->
@@ -299,31 +298,31 @@
 
     <string name="multi_apply_rules">Apply rules on profile switch</string>
     <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
-   
+
     <string name="multi_user_title">Enable multi-user support</string>
     <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
-    
+
     <!--  -->
     <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
     <string name="traffic_detail_title">Traffic details</string>
     <string name="uploaded">Uploaded</string>
     <string name="downloaded">Downloaded</string>
     <string name="app_system_detail">Open system details</string>
-    
+
     <string name="settings_pwd_not_equal">Password mismatch</string>
-    
+
     <string name="faq">Frequently Asked Questions</string>
-    
+
     <string name="reverse_all">Invert all the selected apps?</string>
     <string name="unselect_all">Clear all the selected apps?</string>
-    
+
     <string name="check_all">Check all</string>
     <string name="invert_all">Invert all</string>
     <string name="legend_invert">Invert all checkboxes on all columns</string>
     <string name="uncheck_all">Uncheck all</string>
 
     <string name="select_action">Select action on column </string>
-    
+
     <string name="roam">Roam</string>
     <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
     <string name="wifi">WiFi</string>
@@ -339,48 +338,48 @@
     <string name="pkg_user">User</string>
     <string name="menu">Menu</string>
     <string name="backup_notexist">No backup exists. Please export from menu.</string>
-    
+
     <string name="showFilter">Show filters</string>
     <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
     <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
-    
+
     <string name="enable_dns">Enable DNS via netd</string>
     <string name="disable_dns">Disable DNS via netd</string>
-    
+
     <string name="dns_proxy_title">DNS proxy </string>
     <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
-    
+
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Enable</string>
     <string name="disable">Disable</string>
-    
+
     <string name="filters_apps_title">Notification filter</string>
     <string name="apply_color">Select color to apply</string>
     <string name="binaries">Binaries</string>
 
     <string name="widgets">Widgets</string>
-    
+
     <string name="exports">Export</string>
     <string name="imports">Import</string>
-    
+
     <string name="invalid_profile">Invalid profile name</string>
-    
+
     <!-- Donate -->
     <string name="donate_only">This feature is available only in the donate version</string>
     <string name="buy_donate">Buy donate version or donate key</string>
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features!</string>
     <string name="donate_thanks">Thanks for your support!</string>
-    
+
     <string name="activeNotification">Show notification icon</string>
     <string name="activeNotification_summary">Display permanent icon in notification bar</string>
-    
+
     <string name="active">Firewall running</string>
     <string name="inactive">Firewall disabled</string>
-    
+
     <string name="About">About</string>
     <string name="FAQ">FAQ</string>
-    
+
     <string name="su_check_title">Status</string>
     <string name="su_check_message">Checking root access</string>
 
@@ -473,5 +472,8 @@
     <string name="switch_new">Switch to new view</string>
     <string name="showlogdetail_title">Application Log Details</string>
     <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
+
+    <string name="custom_rules">Custom Rules</string>
+    <string name="mdns">Enable Mutlicast DNS</string>
 
 </resources>
