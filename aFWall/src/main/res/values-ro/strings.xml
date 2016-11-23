@@ -62,7 +62,7 @@
   <string name="passerror">Eroare la schimbarea parolei de blocare</string>
   <string name="working">În lucru</string>
   <string name="reading_apps">Se obțin aplicațiile instalate</string>
-  <string name="mode">Mod: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">Mod: %s</string>
   <string name="legend_clear">Goliţi toate casetele de selectare pe toate coloanele</string>
   <string name="mode_whitelist">Permite selectate</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed înrudit</string>
   <string name="fixDownloadTitle">Repară pierderi DownloadManager</string>
-  <string name="fixDownloadTitleSummary">Acest lucru va utiliza XPosed pentru a bloca aplicațiile să descarce date folosind managerul de descărcări inclus în android chiar dacă aplicația interzice accesul</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Pierderi detectate</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker înrudit</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Dezactivează AFWall+</string>
   <string name="tasker_apply">Tasker: Aplică regulile firewall-ului</string>
   <string name="tasker_disabled">Tasker: AFWall+ DEZACTIVAT!</string>
-  <string name="tasker_profile_applied">Tasker: Profil aplicat cu succes</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profil dezactivat</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suport IPv6</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Permite conexiuni LAN către telefon (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfață utilizator</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">Jurnal</string>
   <string name="hideicons_pref_title">Ascunde pictograme</string>
   <string name="hideicons_pref_summary_on">Îmbunătățește performanțele prin dezactivarea pictogramelor în ecranul principal</string>
@@ -286,7 +287,7 @@
   <string name="uncheck_all">Deselectează toate</string>
   <string name="select_action">Selectează acțiunea pe coloană </string>
   <string name="roam">Roam</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">Wifi</string>
   <string name="legend_wifi">Activează controlul permisiunilor Wi-Fi</string>
   <string name="lan">LAN</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Nucleu</string>
   <string name="pkg_sys">Sistem</string>
   <string name="pkg_user">Utilizator</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Nu există nicio copie de siguranță. Te rog să exporți una din meniu.</string>
   <string name="showFilter">Arată filtrele</string>
   <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
@@ -351,6 +353,7 @@
   <string name="submit">Trimite</string>
   <string name="dialog_color_picker">Selector de culoare</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">După nume (implicit)</string>
   <string name="lastupdated">După instalare/actualizare</string>
   <string name="uid">După UID</string>

@@ -62,7 +62,7 @@
   <string name="passerror">Fout bij wijzigen wachtwoord</string>
   <string name="working">Toepassen</string>
   <string name="reading_apps">Ophalen van geïnstalleerde applicaties</string>
-  <string name="mode">Modus: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">Modus: %s</string>
   <string name="legend_clear">Selectievakjes op alle kolommen leegmaken</string>
   <string name="mode_whitelist">Selectie toestaan</string>
@@ -202,7 +202,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed gerelateerd</string>
   <string name="fixDownloadTitle">Repareer DownloadManager lek</string>
-  <string name="fixDownloadTitleSummary">Dit zal XPosed gebruiken om het downloaden van data te blokkeren voor applicaties via de ingebouwde Android download-manager, ook wanneer de applicatie hier geen toegang toe geeft</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Lek gedetecteerd</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker gerelateerd</string>
@@ -212,7 +212,7 @@
   <string name="disable_tasker">Uitschakelen AFWall+</string>
   <string name="tasker_apply">Tasker: Firewall-regels worden toegepast</string>
   <string name="tasker_disabled">Tasker: AFWall+ UITGESCHAKELD!</string>
-  <string name="tasker_profile_applied">Tasker: Profiel met succes toegepast</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ meerdere profielen uitgeschakeld</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 ondersteuning</string>
@@ -249,6 +249,7 @@
   <string name="enableInboundSummary">Verbindingen toestaan vanaf het LAN naar de telefoon (Samba, sshd, AirDroid, enz.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Gebruikersinterface</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">Logboek</string>
   <string name="hideicons_pref_title">Applicatie pictogrammen verbergen</string>
   <string name="hideicons_pref_summary_on">Prestaties verbeteren door applicatie pictogrammen uit te schakelen in het hoofdscherm</string>
@@ -300,6 +301,7 @@
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">Systeem</string>
   <string name="pkg_user">Gebruiker</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Geen back-up aanwezig. Exporteer vanuit het menu.</string>
   <string name="showFilter">Filters weergeven</string>
   <string name="showfilter_summary_on">Filters (All/Core/systeem/gebruiker) worden weergegeven in het hoofdscherm</string>
@@ -354,6 +356,7 @@
   <string name="submit">Opslaan</string>
   <string name="dialog_color_picker">Kleurkiezer</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">Op naam (standaard)</string>
   <string name="lastupdated">Op installatie/update datum</string>
   <string name="uid">Op UID</string>

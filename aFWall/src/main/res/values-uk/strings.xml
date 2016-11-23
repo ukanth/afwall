@@ -62,7 +62,7 @@
   <string name="passerror">Помилка зміни пароля блокування</string>
   <string name="working">Йде обробка</string>
   <string name="reading_apps">Отримання встановлених додатків</string>
-  <string name="mode">Режим: </string>
+  <string name="mode">Режим брандмауера</string>
   <string name="mode_header">Режим: %s</string>
   <string name="legend_clear">Зняти усі прапорці на всі стовпці</string>
   <string name="mode_whitelist">Дозволити обрані</string>
@@ -199,23 +199,23 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Пов\'язаний з XPosed</string>
   <string name="fixDownloadTitle">Виправити витік менеджере завантажень</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Витік виправлено</string>
   <!-- Tasker -->
-  <string name="tasker_prefs_title">Tasker Related</string>
+  <string name="tasker_prefs_title">Пов\'язані з Tasker</string>
   <string name="disable_toaster">Вимкнути повідомлення Tasker</string>
-  <string name="disableTasterSummary">Вимкнення спливних повідомлень для втулки Tasker</string>
+  <string name="disableTasterSummary">Вимкнення спливних повідомлень для плагіна Tasker</string>
   <string name="enable_tasker">Увімкнути AFWall +</string>
   <string name="disable_tasker">Вимкнути AFWall +</string>
   <string name="tasker_apply">Завдання: застосовуються правила брандмауера</string>
   <string name="tasker_disabled">Tasker: AFWall + ВИМКНЕНО!</string>
-  <string name="tasker_profile_applied">Завдання: правила застосовано успішно</string>
+  <string name="tasker_profile_applied">Tasker: профіль AFWall+ успішно застосований</string>
   <string name="tasker_muliprofile">Tasker: AFWall + мультипрофіль вимкнений</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Підтримка IPv6</string>
   <string name="ipv6_summary">Увімкнути підтримку IPv6</string>
   <string name="block_ipv6_title">Блокувати IPv6</string>
-  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
+  <string name="block_ipv6_summary">Це буде блокувати підключення додатків з використанням IPv6. УВАГА: Використовуйте лише за наявності IPv4-підключення</string>
   <string name="ip6unavailable">Помилка: IPv6 потребує \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Перемикач IPv6 правил</string>
   <string name="switch_ipv4">Перемикач IPv4 правил</string>
@@ -235,7 +235,7 @@
   <!-- Startup -->
   <string name="startup_service">Застосування правил. Будь ласка, зачекайте.</string>
   <string name="addStartupDelayTitle">Затримка запуску</string>
-  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+  <string name="addStartupDelaySummary">AFWall+ буде очікувати 5 секунд перед застосуванням правил. Увімкніть це налаштування тільки у випадку, коли початкові правила не застосовуються належним чином при завантаженні.</string>
   <string name="fixleakTitle">Виправити витік даних при завантаженні</string>
   <string name="fixleakSummary">Запобігайте витоку даних під час запуску системи.  Ваша прошивка повинна підтримувати init.d або su.d (superSU).  Пристрої HTC необхідно налаштувати на S-OFF.</string>
   <!--
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Дозволити підключення з локальної мережі на телефон (Samba, sshd, AirDroid, і т. д.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Користувацький інтерфейс</string>
+  <string name="rules_prefs_title">Правила/підключення</string>
   <string name="log_prefs_title">Журнал</string>
   <string name="hideicons_pref_title">Приховати піктограми програм</string>
   <string name="hideicons_pref_summary_on">Підвищити продуктивність, вимкнувши піктограми додатків у головному вікні</string>
@@ -256,19 +257,19 @@
   <string name="enableConfirmTitle">Підтвердіть вимкнення AFWall+</string>
   <string name="enableConfirm_summary_on">Брандмауер буде запитувати підтвердження перед відключенням</string>
   <string name="showUid">Показати UID для програм</string>
-  <string name="showuid_summary_on">Show app UID\'s in the main view</string>
-  <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
+  <string name="showuid_summary_on">Показувати UID застосунку у головному вікні</string>
+  <string name="showuid_summary_off">Приховати UID застосунку у головному вікні. Увімкнення може бути корисним для відстеження журналів роботи.</string>
   <string name="languages">Мови</string>
   <string name="misc_header">Мови/втулки</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Задіяні правила</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/wireless-data/roam/tether)</string>
+  <string name="active_rules_summary">Застосувати правила брандмауера при кожній зміні підключення (LAN/Wi-Fi/3G роумінг/тезерінг)</string>
   <string name="profile_add">Додати профіль</string>
   <string name="profile_remove">Видалити профіль</string>
   <string name="profile_rename">Перейменувати профіль</string>
   <string name="Donate">Пожертва</string>
   <string name="multi_apply_rules">Застосувати правила при перемиканні профілю</string>
-  <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
+  <string name="multi_apply_rules_info">Завантажити і застосувати правила при перемиканні профілю</string>
   <string name="multi_user_title">Увімкнути підтримку декількох користувачів</string>
   <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
   <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
@@ -278,15 +279,15 @@
   <string name="app_system_detail">Подробиці відкритої системи</string>
   <string name="settings_pwd_not_equal">Не збігаються паролі</string>
   <string name="faq">Найчастіші питання</string>
-  <string name="reverse_all">Invert all the selected apps?</string>
+  <string name="reverse_all">Інвертувати всі вибрані програми?</string>
   <string name="unselect_all">Очистити всі вибрані програми?</string>
   <string name="check_all">Виділити все</string>
   <string name="invert_all">Інвертувати всі</string>
-  <string name="legend_invert">Invert all checkboxes on all columns</string>
+  <string name="legend_invert">Інвертувати усі позначки на всіх стовпчиках</string>
   <string name="uncheck_all">Зняти всі відмітки</string>
   <string name="select_action">Виберіть дію на стовпчику</string>
   <string name="roam">Роумінг</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">Wi-Fi</string>
   <string name="legend_wifi">Увімкнути для управління Wi-Fi дозволами</string>
   <string name="lan">LAN</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Ядро</string>
   <string name="pkg_sys">Система</string>
   <string name="pkg_user">Користувач</string>
+  <string name="menu">Меню</string>
   <string name="backup_notexist">Резервна копія не існує. Будь ласка, експортуйте із меню.</string>
   <string name="showFilter">Відобразити фільтри</string>
   <string name="showfilter_summary_on">Фільтри (усі/ядро/система/користувач) відображаються в головному вікні</string>
@@ -305,7 +307,7 @@
   <string name="disable_dns">Вимкнути DNS за допомогою netd</string>
   <string name="dns_proxy_title">Проксі-сервер DNS </string>
   <string name="dns_proxy_summary">DNS-запити через netd на Android 4.3 і пізніших версіях. Привимкненні буде блокований інтернет на цих пристроях.</string>
-  <string name="tasker_lable">AFWall + втулка Tasker</string>
+  <string name="tasker_lable">Плагін AFWall+ Tasker</string>
   <string name="enable">Увімкнути</string>
   <string name="disable">Вимкнути</string>
   <string name="filters_apps_title">Фільтр сповіщень</string>
@@ -351,6 +353,7 @@
   <string name="submit">Відправити</string>
   <string name="dialog_color_picker">Палітра кольорів</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Параметри сортування</string>
   <string name="defaultsort">За ім\'ям (усталено)</string>
   <string name="lastupdated">За датою встановлення/оновлення</string>
   <string name="uid">За UID</string>
@@ -390,7 +393,7 @@
   <string name="log_dst">Призначення:</string>
   <string name="log_src">Джерело:</string>
   <string name="log_proto">Протокол:</string>
-  <string name="no_data_available">Please enable log service or no data</string>
+  <string name="no_data_available">Увімкніть службу журналювання або дані про зʼєднання будуть відсутні</string>
   <string name="loading_data_title">Завантаження...</string>
   <string name="loading_data">Отримання даних журналу</string>
   <string name="switch_old">Старий вигляд</string>

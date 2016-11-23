@@ -62,7 +62,7 @@
   <string name="passerror">パスワードロックの設定変更に失敗しました</string>
   <string name="working">作業中</string>
   <string name="reading_apps">インストール済みアプリを取得中</string>
-  <string name="mode">モード:</string>
+  <string name="mode">ファイアウォール モード</string>
   <string name="mode_header">モード: %s</string>
   <string name="legend_clear">すべての列のすべてのチェック ボックスをオフにします</string>
   <string name="mode_whitelist">選択済を許可</string>
@@ -202,7 +202,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed 関連</string>
   <string name="fixDownloadTitle">ダウンロードマネージャーのリークを修正</string>
-  <string name="fixDownloadTitleSummary">これは xposed を使用して、アクセスを拒否するアプリケーションも、Android 内蔵ダウンロード マネージャーを使ってデータをダウンロードするアプリをブロックします</string>
+  <string name="fixDownloadTitleSummary">アクセスを拒否するアプリケーションでも、これは Xposed を使用して、Android 内蔵ダウンロード マネージャーを使ってデータをダウンロードするアプリをブロックします</string>
   <string name="LeakDetected">リークを検出しました</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 関連</string>
@@ -212,7 +212,7 @@
   <string name="disable_tasker">AFWall + を無効化します。</string>
   <string name="tasker_apply">タスカー： ファイアウォールのルールを適用します</string>
   <string name="tasker_disabled">Tasker: AFWall+ を無効にしました!</string>
-  <string name="tasker_profile_applied">タスカー： プロファイルが適用されました</string>
+  <string name="tasker_profile_applied">タスカー： AFWall+ プロファイルが適用されました</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ 複数プロファイルを無効にしました</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 のサポート</string>
@@ -249,6 +249,7 @@
   <string name="enableInboundSummary">LAN から携帯電話への接続を許可します (Samba、sshd、AirDroid、など)。</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">ユーザーインターフェイス</string>
+  <string name="rules_prefs_title">ルール/接続</string>
   <string name="log_prefs_title">ログ</string>
   <string name="hideicons_pref_title">アプリのアイコンを非表示</string>
   <string name="hideicons_pref_summary_on">メイン画面のアプリアイコンを無効にしてパフォーマンスを改善します</string>
@@ -300,6 +301,7 @@
   <string name="pkg_core">コア</string>
   <string name="pkg_sys">システム</string>
   <string name="pkg_user">ユーザー</string>
+  <string name="menu">メニュー</string>
   <string name="backup_notexist">バックアップが存在しません。メニューからエクスポートしてください。</string>
   <string name="showFilter">フィルターを表示</string>
   <string name="showfilter_summary_on">フィルター (すべて/コア/システム/ユーザー) がメイン画面に表示されます</string>
@@ -354,6 +356,7 @@
   <string name="submit">送信</string>
   <string name="dialog_color_picker">色の選択</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">ソートオプション</string>
   <string name="defaultsort">名前順 (デフォルト)</string>
   <string name="lastupdated">インストール/アップデート順</string>
   <string name="uid">UID 順</string>

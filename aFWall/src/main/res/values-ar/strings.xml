@@ -62,7 +62,7 @@
   <string name="passerror">خطأ في تغيير كلمة مرور القفل</string>
   <string name="working">تعمل</string>
   <string name="reading_apps">Retrieving installed apps</string>
-  <string name="mode">الوضع: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">الوضع: %s</string>
   <string name="legend_clear">Clear All checkboxes on all columns</string>
   <string name="mode_whitelist">Allow selected</string>
@@ -197,9 +197,9 @@
   <string name="builtin_ipt">Built-in iptables</string>
   <string name="auto">تلقائي</string>
   <!-- XPOSED -->
-  <string name="XPosed_prefs_title">XPosed Related</string>
+  <string name="XPosed_prefs_title">Xposed Related</string>
   <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Leak Detected</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker Related</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">تعطيل AFWall+</string>
   <string name="tasker_apply">مدير المهام: تطبيق قواعد جدار الحماية</string>
   <string name="tasker_disabled">Tasker: AFWall+ DISABLED!</string>
-  <string name="tasker_profile_applied">مدير المهام: تم تطبيق النمط بنجاح</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 support</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">السماح بالاتصالات من الشبكة المحلية LAN (Samba, sshd, AirDroid, إلخ.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">User interface</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">السجل</string>
   <string name="hideicons_pref_title">Hide app icons</string>
   <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
@@ -286,9 +287,9 @@
   <string name="uncheck_all">Uncheck all</string>
   <string name="select_action">اختر خانة العمل من الجدول </string>
   <string name="roam">تجوال</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Enable to control Wifi permissions</string>
+  <string name="legend_wifi">Enable to control WiFi permissions</string>
   <string name="lan">الشبكة المحلية</string>
   <string name="vpn">VPN</string>
   <string name="data">البيانات</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">النواة</string>
   <string name="pkg_sys">النظام</string>
   <string name="pkg_user">مستخدم</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">لا توجد نسخة احتياطية. الرجاء التصدير من القائمة.</string>
   <string name="showFilter">Show filters</string>
   <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
@@ -351,6 +353,7 @@
   <string name="submit">إرسال</string>
   <string name="dialog_color_picker">إنتقاء اللون</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">By name (default)</string>
   <string name="lastupdated">By install/update</string>
   <string name="uid">حسب المعرف الفريد</string>

@@ -25,15 +25,15 @@
   <string name="error_apply">Erro ao aplicar regras do iptables</string>
   <string name="error_fetch">Erro ao obter as regras iptables</string>
   <string name="error_su">Não foi possível obter o acesso root.\nNecessita de um dispositivo com root para usar o AFWall+.\n\n Se este dispositivo já possui acesso root, certifique-se de que Afwall + tem permissões suficientes para executar o comando \"su\".</string>
-  <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
+  <string name="error_netfilter">Não foi possível localizar os destinos e cadeias iptables.\nO AFWall+ pode não funcionar corretamente em virtude desta limitação.</string>
   <string name="error_common">Erro: </string>
-  <string name="all_item">(Any app) - Same as selecting all apps</string>
+  <string name="all_item">(Qualquer aplicação) - O mesmo que selecionar todas as aplicações</string>
   <string name="kernel_item">(kernel) - Linux kernel</string>
   <string name="unknown_item">Desconhecido</string>
   <string name="tethering_item">(tethering) - Serviços DHCP+DNS</string>
-  <string name="dnsproxy_item">(dns proxy) - DNS lookups via netd</string>
-  <string name="ntp_item">(ntp) - Internet time servers</string>
-  <string name="root_item">(root) - Apps running as root</string>
+  <string name="dnsproxy_item">(proxy dns proxy) - Pesquisas DNS via netd</string>
+  <string name="ntp_item">(ntp) - Servidores de data/hora da Internet</string>
+  <string name="root_item">(root) - Aplicações executadas como root</string>
   <string name="adb_item">(adb) - Android Debug Bridge</string>
   <string name="media_item">(media) - Servidor multimédia</string>
   <string name="vpn_item">(vpn) - Redes VPN</string>
@@ -57,14 +57,14 @@
   <string name="reenterpass">Confirmação</string>
   <string name="error_write_pref">Erro ao guardar as preferências</string>
   <string name="enternewpass">Digite a nova palavra-passe (deixe em branco para remover):</string>
-  <string name="passdefined">Password lock enabled</string>
-  <string name="passremoved">Password lock disabled</string>
+  <string name="passdefined">Bloqueio por palavra-passe ativo</string>
+  <string name="passremoved">Bloqueio por palavra-passe inativo</string>
   <string name="passerror">Erro ao alterar palavra-passe de bloqueio</string>
   <string name="working">A executar</string>
-  <string name="reading_apps">Retrieving installed apps</string>
-  <string name="mode">Modo: </string>
+  <string name="reading_apps">A obter aplicações instaladas</string>
+  <string name="mode">Modo da firewall</string>
   <string name="mode_header">Modo: %s</string>
-  <string name="legend_clear">Clear All checkboxes on all columns</string>
+  <string name="legend_clear">Desmarca todas as caixas de seleção</string>
   <string name="mode_whitelist">Permitir selecionadas</string>
   <string name="legend_whitelist">As aplicações selecionadas podem aceder à Internet</string>
   <string name="mode_blacklist">Bloquear selecionadas</string>
@@ -72,7 +72,7 @@
   <string name="set_custom_script">Definir script personalizado</string>
   <string name="preferences">Preferências</string>
   <string name="reload">Recarregar aplicações</string>
-  <string name="flush">Flush rules</string>
+  <string name="flush">Descarregar regras</string>
   <string name="send_report">Enviar relatório de erros</string>
   <string name="enter_problem">Descreva o seu problema:</string>
   <string name="send_mail">Enviar e-mail</string>
@@ -81,7 +81,7 @@
   <string name="custom_script_defined">Script personalizado definido</string>
   <string name="custom_script_removed">Script personalizado removido</string>
   <string name="custom_script_error">Erro ao guardar o script personalizado</string>
-  <string name="custom_script_info"><b>Enter custom script below.</b>		\n<i>(Leave blank to remove.)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.</string>
+  <string name="custom_script_info"><b>Digite o scripr personalizado em baixo.</b>		\n<i>(Deixe me branco para remover.)</i>		\nPara obter mais informações, clique <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">aqui</a>.</string>
   <string name="custom_script2_info">    \n <b>Script personalizado de encerramento</b> \nTambém pode definir um script personalizado para ser executado quando a firewall for <b>desativada</b>:</string>
   <string name="unsaved_changes">Alterações não guardadas</string>
   <string name="unsaved_changes_message">Existem definições não guardadas.\nDeseja aplicar ou cancelar as alterações?</string>
@@ -89,8 +89,8 @@
   <string name="copy">Copiar</string>
   <string name="copied">Copiado</string>
   <string name="Search">Pesquisa</string>
-  <string name="flushRulesConfirm">Flush all iptables rules?</string>
-  <string name="overrideRules">This will override the existing rules! Do you want to import the rules?</string>
+  <string name="flushRulesConfirm">Descarregar todas as regras iptables?</string>
+  <string name="overrideRules">Irá substituir todas as regras existentes! Deseja mesmo efetuar esta operação?</string>
   <string name="notification_new">Nova aplicação instalada</string>
   <string name="notification_new_package">Configurar permissão de Internet</string>
   <string name="confirmMsg">Desativar completamente a firewall?</string>
@@ -109,14 +109,14 @@
   <!-- Advanced Settings -->
   <!-- init.d -->
   <string name="success_initd">Script de arranque instalado</string>
-  <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
-  <string name="remove_initd">Startup script removed</string>
+  <string name="unable_initd">Não foi possível instalar o script de arranque. Verifique se a sua ROM/ tem suporte a init.d/su.d</string>
+  <string name="remove_initd">Script de arranque removido</string>
   <string name="unable_remove_initd">Não é possível remover o script de inicialização do AFWall +</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall - password protected!</string>
+  <string name="widget_disable_fail">Firewall não desativada. Necessita de uma palavra-passe!</string>
   <string name="widget_label_status">AFWall + Toggle/Status</string>
   <string name="widget_label_settings">Configurações AFWall+</string>
-  <string name="widget_label_settings_old">AFWall+ Settings (Old)</string>
+  <string name="widget_label_settings_old">Definições AFWall+ (antigas)</string>
   <!-- Color Picker -->
   <string name="color_pick">Selecione a cor a aplicar</string>
   <!-- Import/Export -->
@@ -197,25 +197,25 @@
   <string name="builtin_ipt">Iptable nativa</string>
   <string name="auto">Automático</string>
   <!-- XPOSED -->
-  <string name="XPosed_prefs_title">XPosed Related</string>
+  <string name="XPosed_prefs_title">Xposed</string>
   <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
-  <string name="LeakDetected">Leak Detected</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+  <string name="LeakDetected">Detetada falha</string>
   <!-- Tasker -->
-  <string name="tasker_prefs_title">Tasker Related</string>
-  <string name="disable_toaster">Disable Tasker toasts</string>
-  <string name="disableTasterSummary">Disable toast messages for Tasker\'s plugin</string>
+  <string name="tasker_prefs_title">Tasker</string>
+  <string name="disable_toaster">Desativar notificações do Tasker</string>
+  <string name="disableTasterSummary">Desativa as mensagens para o plugin Tasker</string>
   <string name="enable_tasker">Ativar AFWall+</string>
   <string name="disable_tasker">Desativar AFWall+</string>
   <string name="tasker_apply">Tasker: aplicando regras da firewall</string>
-  <string name="tasker_disabled">Tasker: AFWall+ DISABLED!</string>
-  <string name="tasker_profile_applied">Tasker: perfil aplicado com sucesso</string>
-  <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
+  <string name="tasker_disabled">Tasker: AFWall+ desativada!</string>
+  <string name="tasker_profile_applied">Tasker: perfil AFWall+ aplicado com sucesso</string>
+  <string name="tasker_muliprofile">Tasker: multi-perfil AFWall+ desativado</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suporte IPv6</string>
   <string name="ipv6_summary">Ativar suporte a IPv6</string>
-  <string name="block_ipv6_title">Block IPv6</string>
-  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
+  <string name="block_ipv6_title">Bloquear IPv6</string>
+  <string name="block_ipv6_summary">Irá bloquear as aplicações que utilizem o protocolo IPv6. Atenção: apenas deve utilizar se a sua ligação utilizar o protocolo IPv4</string>
   <string name="ip6unavailable">Erro: IPv6 requer \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Trocar regras IPv6</string>
   <string name="switch_ipv4">Trocar regras IPv4</string>
@@ -224,7 +224,7 @@
   <string name="usePattern">Usar padrão de bloqueio em vez de palavra-passe</string>
   <string name="stealthMode">Modo invisível no padrão</string>
   <string name="patternMaxTry">Número máximo de tentativas</string>
-  <string name="resetPattern">Reset the lock pattern?</string>
+  <string name="resetPattern">Repor padrão de bloqueio?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Administrador do dispositivo</string>
   <string name="device_admin_enabled">AFWall+ Device Admin enabled</string>
@@ -234,7 +234,7 @@
   <string name="exp_prefs_title">Experimental</string>
   <!-- Startup -->
   <string name="startup_service">A aplicar regras. Aguarde.</string>
-  <string name="addStartupDelayTitle">Startup Delay</string>
+  <string name="addStartupDelayTitle">Atraso ao arrancar</string>
   <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Fix startup data leak</string>
   <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support.  HTC devices must be configured for S-OFF.</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Permitir conexões de LAN para o telefone (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interface</string>
+  <string name="rules_prefs_title">Regras/Conectividade</string>
   <string name="log_prefs_title">Registo</string>
   <string name="hideicons_pref_title">Ocultar ícones</string>
   <string name="hideicons_pref_summary_on">Melhora o desempenho da aplicação, desativando os ícones na vista principal</string>
@@ -271,7 +272,7 @@
   <string name="multi_apply_rules_info">Carregar e aplicar regras ao trocar de prfil</string>
   <string name="multi_user_title">Ativar suporte a vários utilizadores</string>
   <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
-  <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
+  <string name="device_admin_desc">Segurança adicional - Impedir a desinstalação do AFWall+</string>
   <string name="traffic_detail_title">Detalhes de tráfego</string>
   <string name="uploaded">Carregado</string>
   <string name="downloaded">Transferido</string>
@@ -282,11 +283,11 @@
   <string name="unselect_all">Desmarcar todas as aplicações selecionadas?</string>
   <string name="check_all">Marcar todas</string>
   <string name="invert_all">Inverter todas</string>
-  <string name="legend_invert">Invert all checkboxes on all columns</string>
+  <string name="legend_invert">Inverter seleção em todas as colunas</string>
   <string name="uncheck_all">Desmarcar tudo</string>
   <string name="select_action">Selecione ação na coluna </string>
   <string name="roam">Roam</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">Wi-Fi</string>
   <string name="legend_wifi">Ative para controlar as permissões Wi-Fi</string>
   <string name="lan">LAN</string>
@@ -297,15 +298,16 @@
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Utilizador</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Não existe nenhum backup. Por favor, exporte no menu.</string>
   <string name="showFilter">Mostrar filtros</string>
-  <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
-  <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
+  <string name="showfilter_summary_on">Mostrar filtros (todos/core/sistema/utilizador) na vista principal</string>
+  <string name="showfilter_summary_off">Ocultar filtros (todos/core/sistema/utilizador) na vista principal</string>
   <string name="enable_dns">Habilitar o DNS via netd</string>
   <string name="disable_dns">Desativar DNS via netd</string>
   <string name="dns_proxy_title">Proxy DNS </string>
   <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
-  <string name="tasker_lable">AFWall+ Tasker plugin</string>
+  <string name="tasker_lable">AFWall+ Tasker</string>
   <string name="enable">Ativar</string>
   <string name="disable">Desativar</string>
   <string name="filters_apps_title">Filtrar notificações</string>
@@ -317,7 +319,7 @@
   <string name="invalid_profile">Nome de perfil inválido</string>
   <!-- Donate -->
   <string name="donate_only">Esta funcionalidade apenas está disponível na versão completa</string>
-  <string name="buy_donate">Buy donate version or donate key</string>
+  <string name="buy_donate">Compre a versão ou chave \'donate\'</string>
   <string name="unlock_donate"> toque para desbloquear versão paga</string>
   <string name="donate_support">Você pode agora usar recursos pagos!</string>
   <string name="donate_thanks">Obrigado pelo apoio!</string>
@@ -344,13 +346,14 @@
   <string name="pref_device">Use Device Security Protection</string>
   <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
   <string name="secure_option">Device is not secured with password/pin</string>
-  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
+  <string name="android_version">Esta funcionalidade apenas funciona com versões Android Lollipop+</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Definir</string>
   <string name="wrong_password">Palavra-passe incorreta</string>
   <string name="submit">Submeter</string>
   <string name="dialog_color_picker">Seletor de cores</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Organização</string>
   <string name="defaultsort">Por nome (padrão)</string>
   <string name="lastupdated">Por instalação/atualização</string>
   <string name="uid">Por UID</string>
@@ -371,11 +374,11 @@
   <string name="position">Posição da notificação</string>
   <string name="widget_prefs_title">Posição dos widgets</string>
   <string name="xTitle">Posição X do widget</string>
-  <string name="xTitleSummary">Manual override X position</string>
-  <string name="xTitleDialog">Set X Position (number)</string>
+  <string name="xTitleSummary">Substituição manual da posição X</string>
+  <string name="xTitleDialog">Definir posição X (número)</string>
   <string name="yTitle">Posição Y do widget</string>
-  <string name="yTitleSummary">Manual override Y position</string>
-  <string name="yTitleDialog">Set Y position (number)</string>
+  <string name="yTitleSummary">Substituição manual da posição Y</string>
+  <string name="yTitleDialog">Definir posição Y (número)</string>
   <string name="error_nonsupported">King Root detetado!</string>
   <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
   <string name="lockNotification">Hide lockscreen notification icon</string>
@@ -393,7 +396,7 @@
   <string name="no_data_available">Please enable log service or no data</string>
   <string name="loading_data_title">A carregar...</string>
   <string name="loading_data">A obter dados do registo</string>
-  <string name="switch_old">Switch to old view</string>
+  <string name="switch_old">Trocar para a vista antiga</string>
   <string name="switch_new">Trocar para outra vista</string>
   <string name="showlogdetail_title">Detalhes do registo de aplicações</string>
   <string name="reapply_rules">Kindly reapply the rules due to preference change</string>

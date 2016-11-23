@@ -62,7 +62,7 @@
   <string name="passerror">Hiba a jelszavas védelem megváltoztatásakor</string>
   <string name="working">Folyamatban</string>
   <string name="reading_apps">Telepített alkalmazások lekérése</string>
-  <string name="mode">Mód: </string>
+  <string name="mode">Tűzfal mód</string>
   <string name="mode_header">Mód: %s</string>
   <string name="legend_clear">Összes jelölés törlése az összes oszlopban</string>
   <string name="mode_whitelist">Kiválasztott engedélyezése</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed kapcsolódó</string>
   <string name="fixDownloadTitle">Letöltés kezelő szivárgás javítás</string>
-  <string name="fixDownloadTitleSummary">Ezt fogja használni az Xposed az alkalmazások letöltésének blokkolásához amikor az Android beépített letöltéskezelője megtagadta a kérelmet</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Szivárgás észlelve</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker kapcsolódó</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">AFWall+ letiltása</string>
   <string name="tasker_apply">Tasker: A tűzfal szabályainak alkalmazása</string>
   <string name="tasker_disabled">Tasker: AFWall + LETILTVA!</string>
-  <string name="tasker_profile_applied">Tasker: Profil alkalmazása sikerült</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profil sikeresen alkalmazva</string>
   <string name="tasker_muliprofile">Tasker: AFWall + több profil letiltva</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-támogatás</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Engedélyezi a LAN-ról az eszközre érkező kapcsolatokat (Samba, sshd, AirDroid, stb.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Felhasználói felület</string>
+  <string name="rules_prefs_title">Szabályok/kapcsolódás</string>
   <string name="log_prefs_title">Napló</string>
   <string name="hideicons_pref_title">Alkalmazás ikonok elrejtése</string>
   <string name="hideicons_pref_summary_on">Az alkalmazás ikonok letiltása a fő nézetben javítja a teljesítményt</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Alapvető</string>
   <string name="pkg_sys">Rendszer</string>
   <string name="pkg_user">Felhasználó</string>
+  <string name="menu">Menü</string>
   <string name="backup_notexist">Nincs biztonsági másolat. Kérem exportáljon a menüből.</string>
   <string name="showFilter">Mutassa a szűrőket</string>
   <string name="showfilter_summary_on">A szűrők (Összes/Alapvető/Rendszer/Felhasználói) megjelennek a fő nézetben</string>
@@ -351,6 +353,7 @@
   <string name="submit">Küldés</string>
   <string name="dialog_color_picker">Színválasztó</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Rendezési beállítások</string>
   <string name="defaultsort">Név szerint (alapértelmezett)</string>
   <string name="lastupdated">Telepítés/frissítés szerint</string>
   <string name="uid">UID szerint</string>

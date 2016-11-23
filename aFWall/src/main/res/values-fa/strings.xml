@@ -64,7 +64,7 @@
   <string name="passerror">خطای تغییر رمز قفل</string>
   <string name="working">مشغول</string>
   <string name="reading_apps">بازیابی برنامه‌های نصب شده</string>
-  <string name="mode">حالت: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">حالت: %s</string>
   <string name="legend_clear">Clear All checkboxes on all columns</string>
   <string name="mode_whitelist">اجازه به موارد انتخاب شده</string>
@@ -199,9 +199,9 @@
   <string name="builtin_ipt">Built-in iptables</string>
   <string name="auto">خودكار</string>
   <!-- XPOSED -->
-  <string name="XPosed_prefs_title">XPosed Related</string>
+  <string name="XPosed_prefs_title">Xposed Related</string>
   <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Leak Detected</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker Related</string>
@@ -211,7 +211,7 @@
   <string name="disable_tasker">غیرفعال کردن AFWall+‎</string>
   <string name="tasker_apply">Tasker: اعمال قواعد دیوار آتش</string>
   <string name="tasker_disabled">Tasker: AFWall+ DISABLED!</string>
-  <string name="tasker_profile_applied">Tasker: پروفایل با موفقیت اعمال شد</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 support</string>
@@ -248,6 +248,7 @@
   <string name="enableInboundSummary">اجازه اتصال LAN به تلفن (سامبا.sshd.AirDroid،و غیره.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">رابط کاربری</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">گزارش</string>
   <string name="hideicons_pref_title">پنهان سازی نمادهای برنامه</string>
   <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
@@ -288,9 +289,9 @@
   <string name="uncheck_all">لغو انتخاب همه</string>
   <string name="select_action">انتخاب عمل در ستون </string>
   <string name="roam">پرسه زدن</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">بیسیم</string>
-  <string name="legend_wifi">Enable to control Wifi permissions</string>
+  <string name="legend_wifi">Enable to control WiFi permissions</string>
   <string name="lan">شبکه</string>
   <string name="vpn">شبکه اختصاصی مجازی</string>
   <string name="data">داده ها</string>
@@ -299,6 +300,7 @@
   <string name="pkg_core">هسته</string>
   <string name="pkg_sys">سیستم</string>
   <string name="pkg_user">کاربر</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">هیچ پشتیبانی وجود دارد. لطفا از منوی صادرات انتخاب کنید.</string>
   <string name="showFilter">نمایش فیلترها</string>
   <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
@@ -353,6 +355,7 @@
   <string name="submit">ارسال</string>
   <string name="dialog_color_picker">انتخابگر رنگ</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">By name (default)</string>
   <string name="lastupdated">By install/update</string>
   <string name="uid">بر اساس UID</string>

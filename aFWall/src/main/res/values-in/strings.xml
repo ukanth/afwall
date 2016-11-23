@@ -62,7 +62,7 @@
   <string name="passerror">Gagal mengubah password</string>
   <string name="working">Sedang mengerjakan</string>
   <string name="reading_apps">Membaca aplikasi terinstall</string>
-  <string name="mode">Mode: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">Mode: %s</string>
   <string name="legend_clear">Hapus semua centang pada semua kolom</string>
   <string name="mode_whitelist">Izinkan yg dipilih</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Terkait XPosed</string>
   <string name="fixDownloadTitle">Perbaiki kebocoran DownloadManager</string>
-  <string name="fixDownloadTitleSummary">Gunakan xposed untuk memblokir aplikasi mengunduh menggunakan pengunduh bawaan android</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Terdeteksi kebocoran</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Terkait Tasker</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Matikan AFWall+</string>
   <string name="tasker_apply">Tugas: Menerapkan aturan firewall</string>
   <string name="tasker_disabled">Tasker: AFWall+ DINONAKTIFKAN!</string>
-  <string name="tasker_profile_applied">Tugas: Profil berhasil diterapkan</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile dinonaktifkan</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Dukungan IPv6</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Ijinkan koneksi dari LAN ke perangkat (Samba, sshd, AirDroid, dll.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Antarmuka pengguna</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Sembunyikan ikon aplikasi</string>
   <string name="hideicons_pref_summary_on">Tingkatkan performa dg menonaktifkan ikon aplikasi pada tampilan utama</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Inti</string>
   <string name="pkg_sys">Sistem</string>
   <string name="pkg_user">Pengguna</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Tidak ada cadangan. Mohon ekspor pada menu</string>
   <string name="showFilter">Tampilkan filter</string>
   <string name="showfilter_summary_on">Filter (Semua/core/sistem/pengguna) ditampilkan pada tampilan utama</string>
@@ -351,6 +353,7 @@
   <string name="submit">Kirim</string>
   <string name="dialog_color_picker">Ambil Warna</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">Berdasarkan nama (default)</string>
   <string name="lastupdated">Berdasarkan waktu install/update</string>
   <string name="uid">Berdasarkan UID</string>

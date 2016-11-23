@@ -62,7 +62,7 @@
   <string name="passerror">Erreur de changement du mot de passe de verrouillage</string>
   <string name="working">Opération en cours</string>
   <string name="reading_apps">Récupération des applications installées</string>
-  <string name="mode">Mode : </string>
+  <string name="mode">Mode du pare-feu</string>
   <string name="mode_header">Mode : %s</string>
   <string name="legend_clear">Désactivez toutes les cases à cocher sur toutes les colonnes</string>
   <string name="mode_whitelist">Autoriser la sélection</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Relatif à XPosed</string>
   <string name="fixDownloadTitle">Réparer les fuites de données du gestionnaire de téléchargement</string>
-  <string name="fixDownloadTitleSummary">Ceci utilisera xposed pour bloquer le téléchargement de données des applications au moyen du gestionnaire de téléchargement intégré à android même l’accès refusé aux applications</string>
+  <string name="fixDownloadTitleSummary">Ceci utilisera Xposed pour empêcher les applications de télécharger des données au moyen du gestionnaire de téléchargement intégré à Android même l’accès est refusé à l\'application</string>
   <string name="LeakDetected">Fuite de données détectée</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Associé à Tasker</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Désactiver AFWall+</string>
   <string name="tasker_apply">Tasker : application des règles de pare-feu</string>
   <string name="tasker_disabled">Tasker : AFWall+ désactivé !</string>
-  <string name="tasker_profile_applied">Tasker : profil appliqué avec succès</string>
+  <string name="tasker_profile_applied">Tasker : profil AFWall+ appliqué avec succès</string>
   <string name="tasker_muliprofile">Tasker : AFWall+ multi-profil désactivé</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Support IPv6</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Autoriser les connexions du réseau local (LAN) vers le téléphone (Samba, sshd, AirDroid, etc...)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interface utilisateur</string>
+  <string name="rules_prefs_title">Règles/Connectivité</string>
   <string name="log_prefs_title">Journal</string>
   <string name="hideicons_pref_title">Masquer les icônes des applications</string>
   <string name="hideicons_pref_summary_on">Améliorer les performances en désactivant les icônes des applications dans la vue principale</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Noyau</string>
   <string name="pkg_sys">Système</string>
   <string name="pkg_user">Utilisateur</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Il n\'existe aucune sauvegarde. Veuillez exporter depuis le menu.</string>
   <string name="showFilter">Afficher les filtres</string>
   <string name="showfilter_summary_on">Les filtres (Toutes/Core/Système/Utilisateur) sont affichés dans la vue principale</string>
@@ -351,6 +353,7 @@
   <string name="submit">Envoyer</string>
   <string name="dialog_color_picker">Sélecteur de couleurs</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Option de tri</string>
   <string name="defaultsort">Par nom (défaut)</string>
   <string name="lastupdated">Par date d\'installation/mise à jour</string>
   <string name="uid">Par UID</string>

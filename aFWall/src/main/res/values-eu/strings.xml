@@ -62,7 +62,7 @@
   <string name="passerror">Errorea pasahitz blokeoa aldatzean</string>
   <string name="working">Lanean</string>
   <string name="reading_apps">Instalatutako aplikazioak jasotzen</string>
-  <string name="mode">Modua: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">Modua: %s</string>
   <string name="legend_clear">Garbitu zutabe guztietako koadroak</string>
   <string name="mode_whitelist">Baimendu hautatutakoak</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed aplikazioarekin erlazionatuta</string>
   <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Leak Detected</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker aplikazioarekin erlazionatuta</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Ezgaitu AFWall+</string>
   <string name="tasker_apply">Tasker: Suebaki arauak aplikatzen</string>
   <string name="tasker_disabled">Tasker: AFWall+ DISABLED!</string>
-  <string name="tasker_profile_applied">Tasker: Profila ondo aplikatu da</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 euskarria</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Baimendu LAN saretik telefonorako konexioak (Samba, sshd, AirDroid, etab.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Erabiltzaile interfazea</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">Egunkaria</string>
   <string name="hideicons_pref_title">Ezkutatu aplikazioen ikonoak</string>
   <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
@@ -286,9 +287,9 @@
   <string name="uncheck_all">Desmarkatu guztiak</string>
   <string name="select_action">Aukeratu ekintza zutabean </string>
   <string name="roam">Ibiltaritza</string>
-  <string name="legend_roam">Enable to control data while on different network provider(roaming) permissions separately</string>
+  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Enable to control Wifi permissions</string>
+  <string name="legend_wifi">Enable to control WiFi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Datuak</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Nukleoa</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Erabiltzailea</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Ez dago segurtasun kopiarik. Esportatu menutik.</string>
   <string name="showFilter">Erakutsi iragazkiak</string>
   <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
@@ -351,6 +353,7 @@
   <string name="submit">Bidali</string>
   <string name="dialog_color_picker">Kolore hautatzailea</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">Izenez (lehenetsia)</string>
   <string name="lastupdated">Instalazio/eguneraketa dataz</string>
   <string name="uid">UIDz</string>
