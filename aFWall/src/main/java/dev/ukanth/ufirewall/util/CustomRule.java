@@ -21,7 +21,7 @@ import dev.ukanth.ufirewall.log.Log;
 
 public class CustomRule {
 
-    private static String loadAssetsFile(Context ctx, String inFile) {
+    /*private static String loadAssetsFile(Context ctx, String inFile) {
         String tContents = "";
         try {
             InputStream stream = ctx.getAssets().open(inFile);
@@ -107,6 +107,6 @@ public class CustomRule {
             }
         }
         return allowedRules;
-    }
+    }*/
 
 }

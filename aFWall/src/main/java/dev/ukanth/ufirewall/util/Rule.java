@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public class Rule {
-    String id;
+    /*String id;
     String name;
     String desc;
     List<String> ipv4;
@@ -51,7 +51,7 @@ public class Rule {
 
     public void setIpv6(List<String> ipv6) {
         this.ipv6 = ipv6;
-    }
+    }*/
 
 
 }

@@ -704,14 +704,14 @@ public final class Api {
 
 		//look for custom rules
 
-		for(String str: CustomRule.getAllowedIPv4Rules(ctx)) {
+		/*for(String str: CustomRule.getAllowedIPv4Rules(ctx)) {
 			cmds.add(str);
-		}
+		}*/
 
 		if(onlyForIpv6) {
-			for(String str: CustomRule.getAllowedIPv6Rules(ctx)) {
+			/*for(String str: CustomRule.getAllowedIPv6Rules(ctx)) {
 				cmds.add(str);
-			}
+			}*/
 			if(G.blockIPv6()){
 				setIpTablePath(ctx, true);
 				cmds.add("-P INPUT DROP");

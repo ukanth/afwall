@@ -24,7 +24,7 @@ import dev.ukanth.ufirewall.util.CustomRule;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.Rule;
 
-public class CustomRulesActivity extends AppCompatActivity {
+public class CustomRulesActivity { /*extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,5 +93,5 @@ public class CustomRulesActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         return px;
-    }
+    } */
 }
