@@ -12,7 +12,6 @@ android {
         targetSdkVersion 25
         versionCode 15900
         versionName "2.9.0"
-        vectorDrawables.useSupportLibrary = true
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
     
