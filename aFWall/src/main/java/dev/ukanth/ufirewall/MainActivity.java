@@ -107,11 +107,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         RadioGroup.OnCheckedChangeListener {
 
 
-    //private TextView mSelected;
-    //private DrawerLayout mDrawerLayout;
-    //private ListView mDrawerList;
     private Menu mainMenu;
-    //public boolean isOnPause = false;
     private ListView listview = null;
     public static boolean dirty = false;
     private MaterialDialog plsWait;
@@ -154,20 +150,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //isOnPause = false;
-
-		/*try {
-                *//* enable hardware acceleration on Android >= 3.0 *//*
+		try {
 			final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
 					.getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
 			getWindow().setFlags(FLAG_HARDWARE_ACCELERATED,
 					FLAG_HARDWARE_ACCELERATED);
 		} catch (Exception e) {
-		}*/
+		}
 
         setContentView(R.layout.main);
-
-        //CustomActivityOnCrash.install(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
@@ -201,23 +192,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-        //one time migration of profiles to new logic
-        //migrateProfiles();
-        // Let's do some background stuff
-		/*boolean skipsu = false;
-		Bundle bundle = getIntent().getExtras();
-		if(bundle != null) {
-			skipsu = bundle.getBoolean("SKIPSU");
-		}*/
-
         if (!G.hasRoot()) {
             (new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             startRootShell();
             passCheck();
         }
-
-        //(new CheckingTask()).execute();
     }
 
     @Override
@@ -252,38 +232,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
     }
-
-	/*private void selectFilterGroup() {
-		Spinner spinner1 = (Spinner) findViewById(R.id.filterGroup);
-		spinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-				switch (pos) {
-					case 0:
-						showApplications("", 99, true);
-						break;
-					case 1:
-						showApplications(null, 0, false);
-						break;
-					case 2:
-						showApplications(null, 1, false);
-						break;
-					case 3:
-						showApplications(null, 2, false);
-						break;
-					default:
-						showOrLoadApplications();
-						break;
-				}
-			}
-
-			public void onNothingSelected(AdapterView<?> parent) {
-
-			}
-		});
-		showApplications("", 99, true);
-	}
-*/
-
 
     @Override
     protected void onRestart() {
@@ -1354,17 +1302,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 })
                 .positiveText(R.string.Yes)
                 .negativeText(R.string.No)
-				/*.callback(new MaterialDialog.ButtonCallback() {
-					@Override
-					public void onPositive(MaterialDialog dialog) {
-
-					}
-
-					@Override
-					public void onNegative(MaterialDialog dialog) {
-
-					}
-				})*/
                 .show();
     }
 
@@ -1841,20 +1778,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onKeyUp(keyCode, event);
     }
 
-	/*@Override
-	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-
-		switch (keyCode){
-			case KeyEvent.KEYCODE_BACK:
-
-				}
-				break;
-		}
-		// Handle the back button when dirty
-
-		return super.onKeyDown(keyCode, event);
-
-	}*/
 
     /**
      *
@@ -1976,23 +1899,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }).show();
     }
 
-	/*@Override
-	public void onCheckedChanged(RadioGroup group, int checkedId) {
-		switch (checkedId) {
-			case R.id.rpkg_all:
-				showOrLoadApplications();
-				break;
-			case R.id.rpkg_core:
-				showApplications(null, 0,false);
-				break;
-			case R.id.rpkg_sys:
-				showApplications(null, 1,false);
-				break;
-			case R.id.rpkg_user:
-				showApplications(null, 2,false);
-				break;
-			}
-	}*/
 
     protected boolean isSuPackage(PackageManager pm, String suPackage) {
         boolean found = false;
@@ -2114,44 +2020,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onDestroy();
     }
 
-    /**
-     * Validate donate key is legit or not
-     */
-	/*private class CheckingTask extends AsyncTask<Void, Void, Boolean> {
-
-		private ApplicationInfo mApplicationInfo;
-		private PackageInfo mPackageInfo;
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			try {
-				mApplicationInfo = getPackageManager().getApplicationInfo(
-						"dev.ukanth.ufirewall.donatekey", 0);
-				mPackageInfo = getPackageManager().getPackageInfo(
-						"dev.ukanth.ufirewall.donatekey", 0);
-			} catch (PackageManager.NameNotFoundException ignored) {
-			}
-		}
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			return mApplicationInfo != null && mPackageInfo != null && mPackageInfo.versionCode == 103;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean aBoolean) {
-			super.onPostExecute(aBoolean);
-			if (aBoolean) {
-				Log.i(Api.TAG, "Startning Activity to Verify Donate package");
-				Intent intent = new Intent(Intent.ACTION_MAIN);
-				intent.setComponent(new ComponentName("dev.ukanth.ufirewall.donatekey",
-						"dev.ukanth.ufirewall.donatekey.MainActivity"));
-				startActivityForResult(intent, VERIFY_CHECK);
-			} else {
-				G.isDo(false);
-			}
-		}
-	}*/
 }
 
