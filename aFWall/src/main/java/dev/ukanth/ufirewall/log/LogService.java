@@ -210,6 +210,7 @@ public class LogService extends Service {
                 }
             } else {
                 Log.i(TAG, "Unable to start log service. LogTarget is empty or LogService is not enabled");
+                Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));
                 stopSelf();
             }
 
@@ -257,6 +258,8 @@ public class LogService extends Service {
 
                         }
                     }).addCommand(logPath).open();
+        } else {
+            Log.i(Api.TAG, "Logservice is running.. skipping");
         }
     }
 
