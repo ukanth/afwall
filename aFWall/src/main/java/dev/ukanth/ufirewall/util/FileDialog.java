@@ -70,7 +70,7 @@ public class FileDialog {
         if (selectDirectoryOption) {
             builder.setPositiveButton(activity.getString(R.string.select_dir), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                   // Log.d(TAG, currentPath.getPath());
+                    // Log.d(TAG, currentPath.getPath());
                     fireDirectorySelectedEvent(currentPath);
                 }
             });
@@ -149,7 +149,7 @@ public class FileDialog {
                     if (!sel.canRead()) return false;
                     if (selectDirectoryOption) return sel.isDirectory();
 
-                    //backup.json - [a-z]+.json
+                        //backup.json - [a-z]+.json
                     else {
                         boolean endsWith;
                         if(flag) {
@@ -175,7 +175,7 @@ public class FileDialog {
                                 endsWith = false;
                             }
                         }
-                       // boolean endsWith = fileEndsWith != null ? filename.contains(fileEndsWith) : true;
+                        // boolean endsWith = fileEndsWith != null ? filename.contains(fileEndsWith) : true;
                         return endsWith || sel.isDirectory();
                     }
                 }

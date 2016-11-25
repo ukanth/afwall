@@ -62,7 +62,7 @@
   <string name="passerror">Fehler beim Ändern der Passwortsperre</string>
   <string name="working">Verarbeitung</string>
   <string name="reading_apps">Installierte Apps werden eingelesen</string>
-  <string name="mode">Modus: </string>
+  <string name="mode">Firewall-Modus</string>
   <string name="mode_header">Modus: %s</string>
   <string name="legend_clear">Alle Kontrollkästchen für alle Spalten entfernen</string>
   <string name="mode_whitelist">Auswahl erlauben</string>
@@ -186,7 +186,7 @@
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: Binärdateien installiert</string>
   <string name="toast_enabled">AFWall+: Firewall aktiviert!</string>
-  <string name="toast_error_enabling">AFWall+: FEHLER BEI DER AKTIVIERUNG DER FIREWALL!</string>
+  <string name="toast_error_enabling">AFWall+: FEHLER BEI DER FIREWALL-AKTIVIERUNG!</string>
   <string name="toast_disabled">AFWall+: Firewall DEAKTIVIERT!</string>
   <string name="toast_error_disabling">AFWall+: Fehler beim Deaktivieren der Firewall!</string>
   <!-- Binary -->
@@ -197,19 +197,19 @@
   <string name="builtin_ipt">Integrierte IPTables</string>
   <string name="auto">Auto</string>
   <!-- XPOSED -->
-  <string name="XPosed_prefs_title">Von XPosed abhängig</string>
-  <string name="fixDownloadTitle">DownloadManager-Leck beheben</string>
-  <string name="fixDownloadTitleSummary">Es wird Xposed verwendet, um Apps, denen die Internetzugangsberechtigung verweigert wurde, daran zu hindern, trotzdem Daten über den in Android integrierten Download-Manager herunterzuladen.</string>
+  <string name="XPosed_prefs_title">Von Xposed abhängig</string>
+  <string name="fixDownloadTitle">Download-Manager-Leck beheben</string>
+  <string name="fixDownloadTitleSummary">Xposed wird verwendet, um gesperrte Apps daran zu hindern, Daten über den in Android integrierten Download-Manager herunterzuladen</string>
   <string name="LeakDetected">Leck erkannt</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker</string>
   <string name="disable_toaster">Tasker-Meldungen ausschalten</string>
-  <string name="disableTasterSummary">Popup-Nachrichten des Tasker-Plugins werden nicht angezeigt</string>
+  <string name="disableTasterSummary">Meldungen des Tasker-Moduls werden nicht angezeigt</string>
   <string name="enable_tasker">AFWall+ aktivieren</string>
   <string name="disable_tasker">AFWall+ deaktivieren</string>
   <string name="tasker_apply">Tasker: Firewall-Regeln anwenden</string>
   <string name="tasker_disabled">Tasker: AFWall+ DEAKTIVIERT!</string>
-  <string name="tasker_profile_applied">Tasker: Profile erfolgreich angewendet</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ Profile erfolgreich angewendet</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ Profile deaktiviert</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-Unterstützung</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Verbindungen vom LAN zum Gerät zulassen (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Benutzeroberfläche</string>
+  <string name="rules_prefs_title">Regel/Verbindung</string>
   <string name="log_prefs_title">Protokoll</string>
   <string name="hideicons_pref_title">App-Symbol-Anzeige</string>
   <string name="hideicons_pref_summary_on">Leistungssteigerung durch Ausblenden der App-Symbole in der Hauptansicht</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">System</string>
   <string name="pkg_user">Benutzer</string>
+  <string name="menu">Menü</string>
   <string name="backup_notexist">Keine Sicherung vorhanden. Bitte über das Menü exportieren.</string>
   <string name="showFilter">Filteranzeige</string>
   <string name="showfilter_summary_on">Filter (Alle/Core/System/Benutzer) werden in der Hauptansicht angezeigt</string>
@@ -351,6 +353,7 @@
   <string name="submit">Senden</string>
   <string name="dialog_color_picker">Farbauswahl</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sortieroption</string>
   <string name="defaultsort">Nach Namen (Standard)</string>
   <string name="lastupdated">Nach Installation/Aktualisierung</string>
   <string name="uid">Nach UID</string>
@@ -363,12 +366,12 @@
   <string name="migrate_summary">Es werden alle zusätzlichen Profildaten von Version 1.x zur 2.x migriert</string>
   <string name="insert_profile">Profilname</string>
   <string name="add">Hinzufügen</string>
-  <string name="showlog_toasts">Bei Blockade wird eine Popup-Benachrichtigung eingeblendet</string>
+  <string name="showlog_toasts">Bei Blockade eine Kurzmeldung einblenden</string>
   <string name="enable_show_toasts">Meldungen einblenden</string>
   <string name="top">Oben</string>
   <string name="center">Mittig</string>
   <string name="bottom">Unten</string>
-  <string name="position">Popup-Position</string>
+  <string name="position">Position der Meldung</string>
   <string name="widget_prefs_title">Widget positionieren</string>
   <string name="xTitle">Horizontale Widget-Position</string>
   <string name="xTitleSummary">Manuelles Festlegen der Widget-Position entlang der X-Achse</string>
@@ -391,7 +394,7 @@
   <string name="log_src">Quelle :</string>
   <string name="log_proto">Protokoll :</string>
   <string name="no_data_available">Bitte aktivieren Sie den Protokolldienst, sonst werden keine Daten gespeichert</string>
-  <string name="loading_data_title">Wird geladen...</string>
+  <string name="loading_data_title">Wird geladen …</string>
   <string name="loading_data">Protokoll wird abgerufen ...</string>
   <string name="switch_old">Zur alten Ansicht wechseln</string>
   <string name="switch_new">Zur neuen Ansicht wechseln</string>

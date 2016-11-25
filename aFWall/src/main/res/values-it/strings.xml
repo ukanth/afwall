@@ -62,7 +62,7 @@
   <string name="passerror">Errore durante il cambio Password di blocco</string>
   <string name="working">Elaborando</string>
   <string name="reading_apps">Recupero della lista delle app installate</string>
-  <string name="mode">Modalità: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">Modalità: %s</string>
   <string name="legend_clear">Azzera tutte le caselle di controllo di tutte le colonne</string>
   <string name="mode_whitelist">Permetti selezionati</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Relativo a XPosed</string>
   <string name="fixDownloadTitle">Correggi leak del gestore download</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Rilevato leak</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Relativo a Tasker</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Disabilita AFWall+</string>
   <string name="tasker_apply">Tasker: Applicazione delle regole firewall</string>
   <string name="tasker_disabled">Tasker: AFWall+ DISABILITATO!</string>
-  <string name="tasker_profile_applied">Tasker: Profilo applicato con successo</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profilo disabilitato</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Supporto IPv6</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Consenti connessioni dalla LAN al telefono (Samba, sshd, AirDroid, ecc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfaccia utente</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Nascondi icone app</string>
   <string name="hideicons_pref_summary_on">Migliora le prestazioni disabilitando le icone delle app nella vista principale</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Nucleo</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Utente</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Non ci sono backup. Si prega esportare dal menu.</string>
   <string name="showFilter">Mostra filtri</string>
   <string name="showfilter_summary_on">I filtri (tutto/core/sistema/utente) sono mostrati nella vista principale</string>
@@ -351,6 +353,7 @@
   <string name="submit">Invia</string>
   <string name="dialog_color_picker">Selettore colore</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">Per nome (predefinito)</string>
   <string name="lastupdated">Per installazione/aggiornamento</string>
   <string name="uid">Per UID</string>

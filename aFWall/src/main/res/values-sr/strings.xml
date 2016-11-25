@@ -62,7 +62,7 @@
   <string name="passerror">Грешка при промени лозинке</string>
   <string name="working">Радим</string>
   <string name="reading_apps">Проверавам инсталиране програме</string>
-  <string name="mode">Режим: </string>
+  <string name="mode">Режим ватробрана</string>
   <string name="mode_header">Режим: %s</string>
   <string name="legend_clear">Испразни све кућице у свим колонама</string>
   <string name="mode_whitelist">дозволи изабрано</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Везано за XPosed</string>
   <string name="fixDownloadTitle">Среди цурење за менаџера преузимања</string>
-  <string name="fixDownloadTitleSummary">Користиће се xposed да се осујете блокиране апликације да ипак преузимају податке преко уграђеног Андроидовог менаџера преузимања</string>
+  <string name="fixDownloadTitleSummary">Користиће се Xposed да се осујете блокиране апликације да ипак преузимају податке преко уграђеног Андроидовог менаџера преузимања</string>
   <string name="LeakDetected">Откривено цурење</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Таскер подешавања</string>
@@ -214,8 +214,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 подршка</string>
   <string name="ipv6_summary">Укључује подршку за IPv6</string>
-  <string name="block_ipv6_title">Блокирај ИПв6</string>
-  <string name="block_ipv6_summary">Ово ће да блокира апликације које користе ИПв6. ОПРЕЗ: Користите само ако имате везу преко ИПв4</string>
+  <string name="block_ipv6_title">Блокирај IPv6</string>
+  <string name="block_ipv6_summary">Ово ће блокирати апликације које користе IPv6. ОПРЕЗ: Користите само ако имате везу преко IPv4</string>
   <string name="ip6unavailable">Грешка: IPv6 захтева \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Укључи IPV6 правила</string>
   <string name="switch_ipv4">Укључи IPV4 правила</string>
@@ -235,7 +235,7 @@
   <!-- Startup -->
   <string name="startup_service">Примењујем правила. Сачекајте.</string>
   <string name="addStartupDelayTitle">Одгађање примене</string>
-  <string name="addStartupDelaySummary">АВБран+ ће чекати 5 секунди пре примене правила. Укључите ово само ако се правила не примењују исправно приликом покретања система.</string>
+  <string name="addStartupDelaySummary">AFWall+ ће чекати 5 секунди пре примене правила. Укључите ово само ако се правила не примењују исправно приликом покретања система.</string>
   <string name="fixleakTitle">Среди цурење података при подизању</string>
   <string name="fixleakSummary">Спречава приступ мрежи при покретању. Ваш РОМ мора имати init.d или su.d (superSU) подршку. HTC уређаји подешени за S-OFF.</string>
   <!--
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Допушта везе са локалне мреже (Самба, sshd, KDEConnect, AirDroid)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Корисничко сучеље</string>
+  <string name="rules_prefs_title">Правила/Повезаност</string>
   <string name="log_prefs_title">Дневник</string>
   <string name="hideicons_pref_title">Сакриј иконе</string>
   <string name="hideicons_pref_summary_on">Побољшава перформансе искључивањем приказа икона</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">језгро</string>
   <string name="pkg_sys">систем</string>
   <string name="pkg_user">корисник</string>
+  <string name="menu">Мени</string>
   <string name="backup_notexist">Не постоји резерва. Извезите је из менија.</string>
   <string name="showFilter">Прикажи филтере</string>
   <string name="showfilter_summary_on">Филтери (све/језгро/корисник) ће бити приказани</string>
@@ -351,6 +353,7 @@
   <string name="submit">Пошаљи</string>
   <string name="dialog_color_picker">Бирач боје</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Опција сортирања</string>
   <string name="defaultsort">по називу (подразумевано)</string>
   <string name="lastupdated">по инсталирању/ажурирању</string>
   <string name="uid">по УИД-у</string>

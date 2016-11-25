@@ -9,8 +9,8 @@
   <string name="app_name">AFWall+ </string>
   <string name="app_name_donate">AFWall+ (Doação)</string>
   <string name="title_disabled">AFWall + (desativado)</string>
-  <string name="whitelist_array_item">Autorizar selectionados</string>
-  <string name="blacklist_array_item">Bloquear selectionados</string>
+  <string name="whitelist_array_item">Permitir selecionados</string>
+  <string name="blacklist_array_item">Bloquear selecionados</string>
   <string name="showrules">Mostrar regras</string>
   <string name="applyrules">Aplicar</string>
   <string name="saverules">Salvar</string>
@@ -44,7 +44,7 @@
   <string name="fw_enabled">Ativar firewall</string>
   <string name="fw_disabled">Desativar firewall</string>
   <string name="flushed">Regras descartadas</string>
-  <string name="show_log">Ver Log</string>
+  <string name="show_log">Ver registros</string>
   <string name="clear_log">Limpar registros</string>
   <string name="applying_rules">Aplicando regras do iptables</string>
   <string name="saving_rules">Salvando regras do iptables</string>
@@ -62,12 +62,12 @@
   <string name="passerror">Erro ao alterar senha de bloqueio</string>
   <string name="working">Trabalhando</string>
   <string name="reading_apps">Recuperando aplicativos instalados</string>
-  <string name="mode">Modo: </string>
+  <string name="mode">Modo do Firewall</string>
   <string name="mode_header">Modo: %s</string>
   <string name="legend_clear">Desmarque todas as caixas de seleção em todas as colunas</string>
-  <string name="mode_whitelist">Autorizar selectionados</string>
+  <string name="mode_whitelist">Permitir selecionados</string>
   <string name="legend_whitelist">Aplicativos selecionados terão acesso à internet</string>
-  <string name="mode_blacklist">Bloquear selectionados</string>
+  <string name="mode_blacklist">Bloquear selecionados</string>
   <string name="legend_blacklist">Aplicativos selecionados não terão acesso à internet</string>
   <string name="set_custom_script">Definir script personalizado</string>
   <string name="preferences">Preferências</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed relacionado</string>
   <string name="fixDownloadTitle">Consertar o vazamento do DownloadManager</string>
-  <string name="fixDownloadTitleSummary">This will use xposed to block apps downloading data using android built-in download manager even the application denied access</string>
+  <string name="fixDownloadTitleSummary">Isto irá usar o Xposed para bloquear os aplicativos que transferem dados utilizando o gerenciador de download integrado ao Android, mesmo que o aplicativo tenha acesso negado.</string>
   <string name="LeakDetected">Vazamento detectado</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker relacionado</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Desativar AFWall+</string>
   <string name="tasker_apply">Tasker: Aplicando regras do firewall</string>
   <string name="tasker_disabled">Tasker: AFWall+ DESATIVADO!</string>
-  <string name="tasker_profile_applied">Tasker: Perfil aplicado com sucesso</string>
+  <string name="tasker_profile_applied">Tasker: perfil do AFWall+ aplicado com sucesso</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi perfil desativado</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suporte ao IPv6</string>
@@ -246,10 +246,11 @@
   <string name="enableInboundSummary">Permitir conexões de LAN para o telefone (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interface de usuário</string>
+  <string name="rules_prefs_title">Regras/Conectividade</string>
   <string name="log_prefs_title">Log</string>
-  <string name="hideicons_pref_title">Esconder ícones do App</string>
-  <string name="hideicons_pref_summary_on">Melhora o desempenho do aplicativo, desativando os ícones na vista principal</string>
-  <string name="hideicons_pref_summary_off">Mostrar ícones na vista principal</string>
+  <string name="hideicons_pref_title">Ocultar ícones dos Apps</string>
+  <string name="hideicons_pref_summary_on">Melhorar o desempenho desabilitando os ícones dos apps na vista principal</string>
+  <string name="hideicons_pref_summary_off">Exibir ícones dos Aplicativos na vista principal</string>
   <string name="notify_pref_title">Habilitar notificações</string>
   <string name="syscolor_pref_title">Cor dos aplicativos do sistema</string>
   <string name="syscolor_pref_summary_on">A cor para todas os aplicativoss do sistema</string>
@@ -257,7 +258,7 @@
   <string name="enableConfirm_summary_on">O Firewall irá pedir por confirmação antes de ser desabilitado</string>
   <string name="showUid">Exibir o UID para aplicações</string>
   <string name="showuid_summary_on">Mostrar UID do aplicativo na vista principal</string>
-  <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
+  <string name="showuid_summary_off">Ocultar UID do aplicativo na vista principal. Ativá-lo pode ser útil para acompanhar os logs.</string>
   <string name="languages">Idiomas</string>
   <string name="misc_header">Idiomas/Plugins</string>
   <!-- 1.2.6 -->
@@ -268,7 +269,7 @@
   <string name="profile_rename">Renomear perfil</string>
   <string name="Donate">Doar</string>
   <string name="multi_apply_rules">Aplicar regras na mudança de perfil</string>
-  <string name="multi_apply_rules_info">Carregar e aplicar regras ao trocar de prfil</string>
+  <string name="multi_apply_rules_info">Carregar e aplicar regras ao trocar de perfil</string>
   <string name="multi_user_title">Ativar suporte a vários usuários</string>
   <string name="multi_user_summary">Suporte multi-usuário Android (só funciona no modo onde os itens selecionados são bloqueados)</string>
   <string name="device_admin_desc">Segurança adicional - evitar desinstalar AFWall +</string>
@@ -294,17 +295,18 @@
   <string name="data">Dados</string>
   <string name="legend_data">Ative para controlar as permissões de dados (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Tudo</string>
-  <string name="pkg_core">Centrais</string>
+  <string name="pkg_core">Básico</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Usuário</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Não existem backups. Por favor, exporte pelo menu.</string>
   <string name="showFilter">Mostrar filtros</string>
-  <string name="showfilter_summary_on">Filtros (All/Core/sistema/usuário) são mostrados na exibição principal</string>
-  <string name="showfilter_summary_off">Filtros (All/Core/sistema/usuário) estão escondidos na exibição principal</string>
+  <string name="showfilter_summary_on">Filtros (Tudo/Básico/Sistema/Usuário) são exibidos na vista principal</string>
+  <string name="showfilter_summary_off">Filtros (Tudo/Básico/Sistema/Usuário) são ocultados na vista principal</string>
   <string name="enable_dns">Habilitar o DNS via netd</string>
   <string name="disable_dns">Desativar o DNS via netd</string>
   <string name="dns_proxy_title">Proxy DNS </string>
-  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
+  <string name="dns_proxy_summary">Buscas ao DNS são através de netd no Android 4.3 ou posterior. Ao desabilitar, irá bloquear a internet nesses dispositivos.</string>
   <string name="tasker_lable">AFWall+ Plugin Tasker</string>
   <string name="enable">Ativar</string>
   <string name="disable">Desativar</string>
@@ -337,7 +339,7 @@
   <!--<string name="prefill_profile">Enter profile name</string>-->
   <!--<string name="profile_default">MyProfile</string>-->
   <!--<string name="filter">Filter</string>-->
-  <string name="enable_protection">Ativar Proteção</string>
+  <string name="enable_protection">Ativar proteção</string>
   <string name="pref_none">Nenhum</string>
   <string name="pref_password">Senha</string>
   <string name="pref_pattern">Padrão</string>
@@ -351,6 +353,7 @@
   <string name="submit">Enviar</string>
   <string name="dialog_color_picker">Seletor de Cores</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Opções de ordenação</string>
   <string name="defaultsort">Por Nome(Padrão)</string>
   <string name="lastupdated">Por Instalação/Atualização</string>
   <string name="uid">Por UID</string>
@@ -377,10 +380,10 @@
   <string name="yTitleSummary">Sobrescrever manualmente o posicionamento em Y</string>
   <string name="yTitleDialog">Defina a Posição em Y (Número)</string>
   <string name="error_nonsupported">King Root Detectado!</string>
-  <string name="error_nonsupported_details">AFWall+ detectou um aplicativo de super usuário suportado que é conhecido por burlar regras de firewall. Por se tratar de um aplicativo de super usuário, AFWall+ não pode resolver este problema.</string>
-  <string name="lockNotification">Ocultar o ícone de notificação de lockscreen</string>
-  <string name="lockScreenNotification_summary">Esconder a notificação em curso na tela de bloqueio</string>
-  <string name="menu_legend">Lendas</string>
+  <string name="error_nonsupported_details">AFWall+ detectou um aplicativo de superusuário não suportado que é conhecido por burlar regras de firewall. Por se tratar de um aplicativo de superusuário, AFWall+ não pode resolver este problema.</string>
+  <string name="lockNotification">Ocultar o ícone de notificação na tela de bloqueio</string>
+  <string name="lockScreenNotification_summary">Ocultar a notificação em curso na tela de bloqueio</string>
+  <string name="menu_legend">Legendas</string>
   <string name="permissiondenied_importexport">Permissão negada para acesso de leitura/gravação para armazenamento externo. Por favor, dê acesso para regras de exportação/importação.</string>
   <string name="permissiondenied_asset">Permissão negada para acesso de leitura/gravação para o armazenamento. Por favor, dê acesso para copiar os binários para AFWall + </string>
   <string name="log_deletedapp">Aplicação apagada</string>

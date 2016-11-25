@@ -163,6 +163,7 @@ public final class InterfaceTracker {
     }
 
     private static InterfaceDetails getInterfaceDetails(Context context, boolean checkTether) {
+
         InterfaceDetails ret = new InterfaceDetails();
 
         ConnectivityManager cm = (ConnectivityManager) context
@@ -192,19 +193,15 @@ public final class InterfaceTracker {
                 ret.netEnabled = true;
                 break;
         }
-        //TODO: crashing when calling using xposed
-        if (checkTether) {
-            getTetherStatus(context, ret);
+        try {
+            //TODO: crashing when calling using xposed
+            if (checkTether) {
+                getTetherStatus(context, ret);
+            }
+        } catch (Exception e) {
+            Log.i(Api.TAG, "Exception in  getInterfaceDetails.checkTether" + e.getLocalizedMessage());
         }
-
         NewInterfaceScanner.populateLanMasks(ret);
-
-		/*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
-            OldInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
-		} else {
-			NewInterfaceScanner.populateLanMasks(context, ITFS_WIFI, ret);
-		}*/
-
         return ret;
     }
 
@@ -272,23 +269,6 @@ public final class InterfaceTracker {
         mNotificationManager.notify(ERROR_NOTIFICATION_ID, notification);
     }
 
-    /*public static void notif(Context context) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(context);
-        notiBuilder.setContentTitle(context.getString(R.string.applying_rules))
-                .setContentText(context.getString(R.string.apply))
-                .setPriority(NotificationCompat.PRIORITY_MIN)
-                .setSmallIcon(R.drawable.widget_bg);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(new Intent(context, MainActivity.class));
-        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        notiBuilder.setContentIntent(pendingIntent);
-        notiBuilder.setContentText(context.getString(R.string.rules_applied)).setProgress(0, 0, false);
-        notificationManager.notify(NOTIF_ID, notiBuilder.build());
-    }*/
-
     public static void applyRulesOnChange(Context context, final String reason) {
         final Context ctx = context.getApplicationContext();
 
@@ -304,20 +284,17 @@ public final class InterfaceTracker {
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
 
-        //notif(context, false);
-
         boolean ret = Api.fastApply(ctx, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
                     @Override
                     public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
-                            //notif(ctx);
-                            Log.i(TAG, reason + ": applied rules");
+                            Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
                         } else {
                             // error details are already in logcat
-                            // flush all rules first
                             // but lets try to run the full rules once
+                            Log.i(TAG, reason + ": applying full rules at " + System.currentTimeMillis());
                             Api.applySavedIptablesRules(ctx, false, new RootCommand()
                                     .setFailureToast(R.string.error_apply)
                                     .setCallback(new RootCommand.Callback() {
@@ -327,10 +304,8 @@ public final class InterfaceTracker {
                                                 LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
                                                 Log.d(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
                                                 Log.i(TAG, reason + ": applied rules");
-                                                //notif(ctx);
                                             } else {
-                                                //notif(ctx);
-                                                //start notification again
+                                                Log.i(TAG, reason + ": applying rules with full flush at " + System.currentTimeMillis());
                                                 Api.flushAllRules(ctx, new RootCommand());
                                                 Api.applySavedIptablesRules(ctx, false, new RootCommand()
                                                         .setFailureToast(R.string.error_apply)
@@ -341,11 +316,9 @@ public final class InterfaceTracker {
                                                                     LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
                                                                     Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
                                                                     Log.i(TAG, reason + ": applied rules");
-                                                                    //cleanup the notification after applying rules
-                                                                    //notif(ctx, true);
                                                                 } else {
-                                                                    Api.allowDefaultChains(ctx);
                                                                     errorNotification(ctx);
+                                                                    Api.allowDefaultChains(ctx);
                                                                 }
                                                             }
                                                         }));

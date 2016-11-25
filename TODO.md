@@ -4,16 +4,11 @@ Todo
 List
 --------
 
-- [ ] Fixing Android (M) Marshmallow problems
-- [ ] Get ready for Android N 
 - [ ] Fixing BLuetooth/Thetering related problems
-- [ ] Improve SU and BusyBox logic 
 - [ ] Fixing IPv6 problems which may not allowing any connection or return errors in custom scripts
-- [ ] Possible write an Xposed addon to fix all ROM related problems, since this would work ROM independend (but require Xposed framework)
 - [ ] Uninstall application from list window (or open/manage application from list)
 - [ ] Explain and control Kernel logs and mysterious behind it!
 - [ ] Add a hardware search key
-- [x] Store logs in a separate DB for a detailed report
 - [ ] Offline iptables builder (like blocking websites/ip addresses etc.,)
 - [ ] Reduce Application size (low-prio)
 - [ ] Fixing IPSec and L2TP connection problems
@@ -23,12 +18,11 @@ List
 - [ ] Timer for re-enable firewall after disabling AFWall+
 - [ ] Fix all bugs [you report](https://github.com/ukanth/afwall/issues?state=open)
 
-
-
 Already done:
 --------
 
 - [x] Better GUI <i>(1.0.1a)</i>
+- [x] Store logs in a separate DB for a detailed report
 - [x] Roaming "R" option (like Avast Firewall) <i>(1.0.2a)</i>
 - [x] Flush/Reset iptables rules from UI <i>(1.0.2a)</i>
 - [x] Save & Load Profiles/Rules <i>(1.0.3a)</i>

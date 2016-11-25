@@ -231,7 +231,7 @@ public class LogInfo{
 
 	public static LogInfo parseLogs(String result,final Context ctx) {
 
-		final Integer unknownUID = -11;
+		final int unknownUID = -11;
 		StringBuilder address;
 		int start, end;
 		Integer uid;
@@ -299,19 +299,25 @@ public class LogInfo{
 					logInfo.out = out;
 				}
 				String appName = "";
-				if(uid != unknownUID) {
-					if(!appNameMap.containsKey(uid)) {
-						appName = ctx.getPackageManager().getNameForUid(uid);
-						for (PackageInfoData app : apps) {
-							if (app.uid == uid) {
-								appName = app.names.get(0);
-								break;
-							}
-						}
-						appNameMap.put(uid, appName);
+				if(uid.intValue() != unknownUID) {
+					if(uid == 1020 ) {
+						appName = "mDNS";
 					} else {
-						appName = appNameMap.get(uid);
+						//system level packages
+						if(!appNameMap.containsKey(uid)) {
+							appName = ctx.getPackageManager().getNameForUid(uid);
+							for (PackageInfoData app : apps) {
+								if (app.uid == uid) {
+									appName = app.names.get(0);
+									break;
+								}
+							}
+							appNameMap.put(uid, appName);
+						} else {
+							appName = appNameMap.get(uid);
+						}
 					}
+
 				} else {
 					appName = ctx.getString(R.string.kernel_item);
 				}

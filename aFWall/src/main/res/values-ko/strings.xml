@@ -62,7 +62,7 @@
   <string name="passerror">비밀번호 수정 중 에러</string>
   <string name="working">사용중</string>
   <string name="reading_apps">설치된 앱 가져오는 중</string>
-  <string name="mode">사용모드: </string>
+  <string name="mode">방화벽 모드</string>
   <string name="mode_header">사용모드: %s</string>
   <string name="legend_clear">모든 선택 취소</string>
   <string name="mode_whitelist">선택사항 허용</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">LAN 에서 기기로의 연결을 허용 (Samba, sshd, AirDroid, 등)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">사용자 인터페이스</string>
+  <string name="rules_prefs_title">규칙/연결상태</string>
   <string name="log_prefs_title">기록</string>
   <string name="hideicons_pref_title">앱 아이콘 숨기기</string>
   <string name="hideicons_pref_summary_on">앱 아이콘을 숨겨 사용성능을 최적화합니다.</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">시스템</string>
   <string name="pkg_user">사용자</string>
+  <string name="menu">메뉴</string>
   <string name="backup_notexist">백업이 없습니다.  메뉴에서 내보내주세요.</string>
   <string name="showFilter">필터 보기</string>
   <string name="showfilter_summary_on">필터 (모두/기본기/시스템/사용자) 보기</string>
@@ -351,6 +353,7 @@
   <string name="submit">제치</string>
   <string name="dialog_color_picker">색깔 고르출</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">정렬 순서</string>
   <string name="defaultsort">가나다 정렬 (기본설정)</string>
   <string name="lastupdated">설치한 날짜 정렬</string>
   <string name="uid">UID</string>

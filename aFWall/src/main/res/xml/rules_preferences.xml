@@ -1,0 +1,43 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="uiPrefsScreen">
+
+    <PreferenceCategory android:title="@string/ui_prefs_title">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="activeRules"
+            android:summary="@string/active_rules_summary"
+            android:title="@string/active_rules" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="activeRules"
+            android:icon="@drawable/ic_roam"
+            android:key="enableRoam"
+            android:summary="@string/roamingSummary"
+            android:title="@string/roaming" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="activeRules"
+            android:icon="@drawable/ic_lan"
+            android:key="enableLAN"
+            android:summary="@string/lan_summary"
+            android:title="@string/lan_title" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="activeRules"
+            android:icon="@drawable/ic_vpn"
+            android:key="enableVPN"
+            android:summary="@string/vpnSummary"
+            android:title="@string/vpn_profile" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="blockIPv6"
+            android:summary="@string/block_ipv6_summary"
+            android:title="@string/block_ipv6_title" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enableIPv6"
+            android:summary="@string/ipv6_summary"
+            android:title="@string/ipv6_title" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -62,7 +62,7 @@
   <string name="passerror">Chyba při změně hesla</string>
   <string name="working">Pracuji</string>
   <string name="reading_apps">Načítání nainstalovaných aplikací</string>
-  <string name="mode">Režim: </string>
+  <string name="mode">Režim firewallu</string>
   <string name="mode_header">Režim: %s</string>
   <string name="legend_clear">Zrušit zaškrtnutí všech políček u všech sloupců</string>
   <string name="mode_whitelist">Povolit vybrané</string>
@@ -200,7 +200,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed související</string>
   <string name="fixDownloadTitle">Oprava úniku Správce stahování</string>
-  <string name="fixDownloadTitleSummary">Toto použije xposed pro blokování aplikací stahující data pomocí věstavěného android správce stahování i aplikaci odepře přístup</string>
+  <string name="fixDownloadTitleSummary">Toto použije Xposed na blokování aplikací stahující data pomocí vestavěného správce stahování v Androidu, i pokud je aplikaci odepřen přístup</string>
   <string name="LeakDetected">Únik zjištěn</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker související</string>
@@ -210,7 +210,7 @@
   <string name="disable_tasker">Vypnout AFWall+</string>
   <string name="tasker_apply">Tasker: Aplikace pravidel firewallu</string>
   <string name="tasker_disabled">Tasker: AFWall+ ZAKÁZÁNO!</string>
-  <string name="tasker_profile_applied">Tasker: Profil úspěšně aplikován</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profil úspěšně aplikován</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profil vypnut</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podpora IPv6</string>
@@ -247,6 +247,7 @@
   <string name="enableInboundSummary">Povolit spojení z LAN do telefonu (Samba, sshd, AirDroid, atd.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Uživatelské rozhraní</string>
+  <string name="rules_prefs_title">Pravidla/připojení</string>
   <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Skrýt ikony aplikací</string>
   <string name="hideicons_pref_summary_on">Zvýšit výkon zakázáním ikon aplikací v hlavním okně</string>
@@ -298,6 +299,7 @@
   <string name="pkg_core">Jádro</string>
   <string name="pkg_sys">Systém</string>
   <string name="pkg_user">Uživatel</string>
+  <string name="menu">Nabídka</string>
   <string name="backup_notexist">Neexistuje žádná záloha. Exportujte z menu.</string>
   <string name="showFilter">Zobrazit filtry</string>
   <string name="showfilter_summary_on">Filtry (vše/jádro/systém/uživatel) jsou zobrazeny v hlavním okně</string>
@@ -352,6 +354,7 @@
   <string name="submit">Potvrdit</string>
   <string name="dialog_color_picker">Výběr barvy</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Možnost seřazení</string>
   <string name="defaultsort">Podle názvu (výchozí)</string>
   <string name="lastupdated">Podle instalace/updatu</string>
   <string name="uid">Podle UID</string>

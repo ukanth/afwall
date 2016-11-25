@@ -62,7 +62,7 @@
   <string name="passerror">改變密碼鎖錯誤</string>
   <string name="working">工作中</string>
   <string name="reading_apps">檢查安裝的應用程式</string>
-  <string name="mode">模式：</string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">模式：%s</string>
   <string name="legend_clear">清空全部選擇</string>
   <string name="mode_whitelist">允許所選</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed 相關</string>
   <string name="fixDownloadTitle">修復 下載管理員 漏洞</string>
-  <string name="fixDownloadTitleSummary">使用 xposed 防止：當程式網路權限被拒絕時，轉而使用 Android 內建下載管理器來下載檔案。</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">檢查到漏洞</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 相關</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">停用 AFWall+</string>
   <string name="tasker_apply">Tasker：正在套用防火牆規則</string>
   <string name="tasker_disabled">Tasker: AFWall+ 已禁用！</string>
-  <string name="tasker_profile_applied">Tasker：設定檔案套用已成功</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ 多設定檔已禁用</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">支援 IPv6</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">允許從 LAN 到手機的連接 (Samba、sshd、AirDroid等)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">使用者介面</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">日誌</string>
   <string name="hideicons_pref_title">隱藏圖示</string>
   <string name="hideicons_pref_summary_on">取消程式圖示的顯示可以提升流暢度</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">核心</string>
   <string name="pkg_sys">系統</string>
   <string name="pkg_user">使用者</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">沒有備份存在。請從功能表中匯出。</string>
   <string name="showFilter">顯示過濾器</string>
   <string name="showfilter_summary_on">在首頁中顯示過濾器 (所有/核心/系统/用戶)</string>
@@ -351,6 +353,7 @@
   <string name="submit">確認</string>
   <string name="dialog_color_picker">色彩選擇器</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">依名稱(預設)</string>
   <string name="lastupdated">依安裝/更新</string>
   <string name="uid">依UID</string>

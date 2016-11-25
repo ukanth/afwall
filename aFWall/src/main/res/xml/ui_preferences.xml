@@ -1,6 +1,7 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="uiPrefsScreen">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="uiPrefsScreen">
 
-    <PreferenceCategory android:title="@string/ui_prefs_title" >
+    <PreferenceCategory android:title="@string/ui_prefs_title">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notifyAppInstall"
@@ -31,65 +32,16 @@
             android:title="@string/showUid" />
 
         <net.margaritov.preference.colorpicker.ColorPickerPreference
+            alphaSlider="true"
             android:defaultValue="@color/accent"
             android:key="sysColor"
-            alphaSlider="true"
             android:summary="@string/syscolor_pref_summary_on"
             android:title="@string/syscolor_pref_title" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="activeRules"
-            android:summary="@string/active_rules_summary"
-            android:title="@string/active_rules" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="activeRules"
-            android:key="enableRoam"
-            android:icon="@drawable/ic_roam"
-            android:summary="@string/roamingSummary"
-            android:title="@string/roaming" />
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:dependency="activeRules"
-            android:key="enableLAN"
-            android:icon="@drawable/ic_lan"
-            android:summary="@string/lan_summary"
-            android:title="@string/lan_title" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="activeRules"
-            android:key="enableVPN"
-            android:icon="@drawable/ic_vpn"
-            android:summary="@string/vpnSummary"
-            android:title="@string/vpn_profile" />
-
-        <!--<CheckBoxPreference
-            android:defaultValue="false"
-            android:key="blockIPv6"
-            android:summary="@string/block_ipv6_summary"
-            android:title="@string/block_ipv6_title" />-->
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="enableIPv6"
-            android:summary="@string/ipv6_summary"
-            android:title="@string/ipv6_title" />
 
         <CheckBoxPreference
             android:key="enableConfirm"
             android:summary="@string/enableConfirm_summary_on"
             android:title="@string/enableConfirmTitle" />
 
-
-
-      <!--  <listpreference
-            android:defaultvalue="en"
-            android:entries="@array/supported_languages"
-            android:entryvalues="@array/supported_languages_code"
-            android:key="locale"
-            android:title="@string/languages" >
-        </listpreference>-->
     </PreferenceCategory>
-
 </PreferenceScreen>

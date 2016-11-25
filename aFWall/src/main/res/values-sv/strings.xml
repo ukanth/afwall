@@ -62,7 +62,7 @@
   <string name="passerror">Fel vid ändring av lösenord</string>
   <string name="working">Arbetar</string>
   <string name="reading_apps">Listar installerade appar</string>
-  <string name="mode">Mode: </string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">Mode: %s</string>
   <string name="legend_clear">Avmarkera alla kryssrutor för alla kolumner</string>
   <string name="mode_whitelist">Tillåt markerade</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed-relaterade</string>
   <string name="fixDownloadTitle">Hindra DownloadManager läckage</string>
-  <string name="fixDownloadTitleSummary">Detta kommer att använda XPosed för att blockera appar från att ladda ner data med Androids inbyggda nedladdninghanterare trots att appen har nekats åtkomst</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">Dataläckage upptäcktes</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker-relaterad</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Inaktivera AFWall+</string>
   <string name="tasker_apply">Tasker: Tillämpar brandväggsregler</string>
   <string name="tasker_disabled">Tasker: AFWall+ inaktiverad!</string>
-  <string name="tasker_profile_applied">Tasker: Profilen tillämpades</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multiprofilstöd inaktiverad</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-stöd</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Tillåt anslutningar från LAN till telefonen (Samba, sshd, AirDroid, osv)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Användargränssnitt</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">Loggning</string>
   <string name="hideicons_pref_title">Dölj app ikonerna</string>
   <string name="hideicons_pref_summary_on">Förbättra prestanda genom att inaktivera ikoner på huvudvyn</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Kärnan</string>
   <string name="pkg_sys">System</string>
   <string name="pkg_user">Användare</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">Det finns ingen backup. Exportera från menyn.</string>
   <string name="showFilter">Visa filter</string>
   <string name="showfilter_summary_on">Filter (Allt/Kärnan/System/användare) visas i huvudvyn</string>
@@ -351,6 +353,7 @@
   <string name="submit">Använd</string>
   <string name="dialog_color_picker">Färgväljare</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">Efter namn (default)</string>
   <string name="lastupdated">Efter Installations/uppdateringstillfälle</string>
   <string name="uid">Efter UID</string>
