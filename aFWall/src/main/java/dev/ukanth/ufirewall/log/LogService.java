@@ -243,8 +243,10 @@ public class LogService extends Service {
                                             data.add(uid);
                                             G.storedPid(data);
                                         } else if (!data.contains(uid)) {
-                                            data.add(uid);
-                                            G.storedPid(data);
+                                            Set data2 = new HashSet();
+                                            data2.addAll(data);
+                                            data2.add(uid);
+                                            G.storedPid(data2);
                                         }
                                     }
                                 } catch (Exception e) {
