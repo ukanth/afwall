@@ -9,7 +9,7 @@
   <string name="app_name">AFWall+ </string>
   <string name="app_name_donate">AFWall+ (Doação)</string>
   <string name="title_disabled">AFWall + (desativado)</string>
-  <string name="whitelist_array_item">Autorizar selecionados</string>
+  <string name="whitelist_array_item">Permitir selecionados</string>
   <string name="blacklist_array_item">Bloquear selecionados</string>
   <string name="showrules">Mostrar regras</string>
   <string name="applyrules">Aplicar</string>
@@ -65,7 +65,7 @@
   <string name="mode">Modo do Firewall</string>
   <string name="mode_header">Modo: %s</string>
   <string name="legend_clear">Desmarque todas as caixas de seleção em todas as colunas</string>
-  <string name="mode_whitelist">Autorizar selecionados</string>
+  <string name="mode_whitelist">Permitir selecionados</string>
   <string name="legend_whitelist">Aplicativos selecionados terão acesso à internet</string>
   <string name="mode_blacklist">Bloquear selecionados</string>
   <string name="legend_blacklist">Aplicativos selecionados não terão acesso à internet</string>

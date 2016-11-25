@@ -62,7 +62,7 @@
   <string name="passerror">改变密码锁定出错</string>
   <string name="working">工作中</string>
   <string name="reading_apps">正在检索已安装应用</string>
-  <string name="mode">模式:</string>
+  <string name="mode">Firewall Mode</string>
   <string name="mode_header">模式：%s</string>
   <string name="legend_clear">清除所有列中的所有复选框</string>
   <string name="mode_whitelist">允许所选项</string>
@@ -200,7 +200,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Xposed 相关</string>
   <string name="fixDownloadTitle">修复 DownloadManager 泄漏</string>
-  <string name="fixDownloadTitleSummary">当应用访问权限被拒绝时使用 xposed 防止应用通过 Android 内置下载管理器下载数据</string>
+  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
   <string name="LeakDetected">检测到泄漏</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 相关</string>
@@ -210,7 +210,7 @@
   <string name="disable_tasker">禁用 AFWall+</string>
   <string name="tasker_apply">Tasker：正在应用防火墙规则</string>
   <string name="tasker_disabled">Tasker: AFWall+ 已禁用!</string>
-  <string name="tasker_profile_applied">Tasker：配置文件应用已成功</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ 多配置文件已禁用</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 支持</string>
@@ -247,6 +247,7 @@
   <string name="enableInboundSummary">允许从局域网到手机连接 (Samba，sshd，AirDroid，等。)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">用户界面</string>
+  <string name="rules_prefs_title">Rules/Connectivity</string>
   <string name="log_prefs_title">日志</string>
   <string name="hideicons_pref_title">隐藏应用图标</string>
   <string name="hideicons_pref_summary_on">在主界面中隐藏应用图标以提升性能.</string>
@@ -298,6 +299,7 @@
   <string name="pkg_core">核心</string>
   <string name="pkg_sys">系统</string>
   <string name="pkg_user">用户</string>
+  <string name="menu">Menu</string>
   <string name="backup_notexist">没有备份存在。请从菜单中导出。</string>
   <string name="showFilter">显示过滤器</string>
   <string name="showfilter_summary_on">在主视图中显示过滤器 (所有/核心/系统/用户)</string>
@@ -352,6 +354,7 @@
   <string name="submit">提交</string>
   <string name="dialog_color_picker">颜色选择器</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Sort option</string>
   <string name="defaultsort">按名称 (默认)</string>
   <string name="lastupdated">按安装/更新时间</string>
   <string name="uid">按UID</string>
