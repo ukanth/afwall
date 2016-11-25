@@ -801,11 +801,6 @@ public final class Api {
 			boolean returnValue = false;
 			List<String> cmds = new ArrayList<String>();
 
-			if(G.kingDetected()) {
-				cmds.add("-F");
-				cmds.add("-X");
-			}
-
 			setIpTablePath(ctx,false);
 			returnValue = applyIptablesRulesImpl(ctx,
 					getListFromPref(savedPkg_wifi_uid),
@@ -2346,7 +2341,7 @@ public final class Api {
 			}
 			String data = text.toString();
 			JSONObject object = new JSONObject(data);
-			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains"};
+			String[] ignore = { "appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains", "kingDetect"};
 			List<String> ignoreList = Arrays.asList(ignore);
 			JSONArray prefArray = (JSONArray) object.get("prefs");
 			for(int i = 0 ; i < prefArray.length(); i++){

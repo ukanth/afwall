@@ -10,7 +10,7 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 15900
+        versionCode 15901
         versionName "2.9.0"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
