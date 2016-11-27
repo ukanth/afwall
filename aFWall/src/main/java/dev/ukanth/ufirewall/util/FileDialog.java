@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.view.View;
 
-import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -64,20 +67,31 @@ public class FileDialog {
      */
     public Dialog createFileDialog() {
         Dialog dialog = null;
-        AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(activity);
 
-        builder.setTitle(currentPath.getPath());
+        //MaterialDialog.Builder
+        MaterialDialog.Builder  builder = new MaterialDialog.Builder(activity);
+
+        builder.title(currentPath.getPath());
         if (selectDirectoryOption) {
-            builder.setPositiveButton(activity.getString(R.string.select_dir), new DialogInterface.OnClickListener() {
+
+            builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    fireDirectorySelectedEvent(currentPath);
+                }
+            });
+            /*builder.setPositiveButton(activity.getString(R.string.select_dir), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     // Log.d(TAG, currentPath.getPath());
                     fireDirectorySelectedEvent(currentPath);
                 }
-            });
+            });*/
         }
 
-        builder.setItems(fileList, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+        builder.items(fileList);
+        builder.itemsCallback(new MaterialDialog.ListCallback()  {
+            @Override
+            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                 String fileChosen = fileList[which];
                 File chosenFile = getChosenFile(fileChosen);
                 if (chosenFile.isDirectory()) {

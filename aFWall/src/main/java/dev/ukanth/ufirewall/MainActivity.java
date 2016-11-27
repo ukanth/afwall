@@ -576,9 +576,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
                         .positiveText(R.string.submit)
                         .negativeText(R.string.Cancel)
-                        .callback(new MaterialDialog.ButtonCallback() {
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onNegative(MaterialDialog dialog) {
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 MainActivity.this.finish();
                                 android.os.Process.killProcess(android.os.Process.myPid());
                             }
@@ -1156,9 +1156,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         .positiveText(R.string.Yes)
                                         .negativeText(R.string.No)
                                         .icon(getResources().getDrawable(R.drawable.ic_launcher))
-                                        .callback(new MaterialDialog.ButtonCallback() {
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
-                                            public void onPositive(MaterialDialog dialog) {
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                 if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
                                                     Api.applications = null;
                                                     showOrLoadApplications();
@@ -1167,9 +1167,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                                     Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
                                                 }
                                             }
+                                        })
 
+                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
                                             @Override
-                                            public void onNegative(MaterialDialog dialog) {
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                 dialog.cancel();
                                             }
                                         })
@@ -1745,15 +1747,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 .content(R.string.unsaved_changes_message)
                                 .positiveText(R.string.apply)
                                 .negativeText(R.string.discard)
-                                .callback(new MaterialDialog.ButtonCallback() {
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onPositive(MaterialDialog dialog) {
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                         applyOrSaveRules();
                                         dialog.dismiss();
                                     }
-
+                                })
+                                .onNegative(new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onNegative(MaterialDialog dialog) {
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                         setDirty(false);
                                         Api.applications = null;
                                         finish();
@@ -1791,9 +1794,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .cancelable(true)
                 .positiveText(R.string.OK)
                 .negativeText(R.string.Cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         switch (i) {
                             case R.id.img_invert:
                                 selectRevert();
@@ -1803,9 +1806,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                         dialog.dismiss();
                     }
+                })
 
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onNegative(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                     }
                 })

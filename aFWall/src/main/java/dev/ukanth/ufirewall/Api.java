@@ -51,6 +51,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.UserManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
@@ -58,6 +59,7 @@ import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -1898,16 +1900,18 @@ public final class Api {
 						.positiveText(R.string.buy_donate)
 						.negativeText(R.string.close)
 						.icon(ctx.getResources().getDrawable(R.drawable.ic_launcher))
-						.callback(new MaterialDialog.ButtonCallback() {
+						.onPositive(new MaterialDialog.SingleButtonCallback() {
 							@Override
-							public void onPositive(MaterialDialog dialog) {
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 								Intent intent = new Intent(Intent.ACTION_VIEW);
 								intent.setData(Uri.parse("market://search?q=pub:ukpriya"));
 								ctx.startActivity(intent);
 							}
+						})
 
+						.onNegative(new MaterialDialog.SingleButtonCallback() {
 							@Override
-							public void onNegative(MaterialDialog dialog) {
+							public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 								dialog.cancel();
 								G.isDo(false);
 							}

@@ -17,12 +17,13 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.AlertDialogWrapper;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
@@ -47,8 +48,6 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	private static final int REQ_ENTER_PATTERN = 9755;
 
 	private static final int REQUEST_CODE_ENABLE_ADMIN = 10237; // identifies
-																// our request
-																// ID
 
 	private static ComponentName deviceAdmin;
 	private static DevicePolicyManager mDPM;
@@ -179,9 +178,9 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 	 */
 	private void showPasswordActivity(final ListPreference itemList){
 
-		final AlertDialogWrapper.Builder builder = new AlertDialogWrapper.Builder(getActivity());
+		final MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
 		//you should edit this to fit your needs
-		builder.setTitle(getString(R.string.pass_titleset));
+		builder.title(getString(R.string.pass_titleset));
 
 		final EditText firstPass = new EditText(getActivity());
 		firstPass.setHint(getString(R.string.enterpass));//optional
@@ -196,12 +195,12 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 		lay.setOrientation(LinearLayout.VERTICAL);
 		lay.addView(firstPass);
 		lay.addView(secondPass);
-		builder.setView(lay);
+		builder.customView(lay,false);
 		builder.autoDismiss(false);
 
-		// Set up the buttons
-		builder.setPositiveButton(R.string.set_password, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
+		builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+			@Override
+			public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 				//get the two inputs
 				if(firstPass.getText().toString().equals(secondPass.getText().toString())){
 					setPassword(firstPass.getText().toString());
@@ -210,12 +209,12 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 				} else {
 					Api.toast(getActivity(), getString(R.string.settings_pwd_not_equal));
 				}
-
 			}
 		});
 
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
+		builder.onNegative(new MaterialDialog.SingleButtonCallback() {
+			@Override
+			public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 				itemList.setValueIndex(0);
 				dialog.dismiss();
 			}
