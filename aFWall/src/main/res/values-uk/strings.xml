@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Пов\'язаний з XPosed</string>
   <string name="fixDownloadTitle">Виправити витік менеджере завантажень</string>
-  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+  <string name="fixDownloadTitleSummary">Для блокування додатків, які завантажують дані з використанням вбудованого в Android диспетчера завантажень, буде використовуватися Xposed, навіть якщо доступ додатку заборонений</string>
   <string name="LeakDetected">Витік виправлено</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Пов\'язані з Tasker</string>
@@ -272,7 +272,7 @@
   <string name="multi_apply_rules_info">Завантажити і застосувати правила при перемиканні профілю</string>
   <string name="multi_user_title">Увімкнути підтримку декількох користувачів</string>
   <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
-  <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
+  <string name="device_admin_desc">Додатковий захист - запобігання видаленню AFWall+</string>
   <string name="traffic_detail_title">Подробиці трафіку</string>
   <string name="uploaded">Відвантажено</string>
   <string name="downloaded">Завантажено</string>
