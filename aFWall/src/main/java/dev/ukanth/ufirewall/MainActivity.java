@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (!G.hasRoot()) {
             (new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
-            startRootShell();
+            //startRootShell();
             passCheck();
         }
     }
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void startRootShell() {
+   /* private void startRootShell() {
         Thread rootShell = new Thread() {
             @Override
             public void run() {
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
         rootShell.start();
-    }
+    }*/
 
     @Override
     public void onResume() {
@@ -2010,7 +2010,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 G.hasRoot(hasRoot);
                 passCheck();
-                startRootShell();
+                //startRootShell();
             }
         }
     }

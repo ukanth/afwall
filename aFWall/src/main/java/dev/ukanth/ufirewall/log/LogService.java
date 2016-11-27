@@ -62,7 +62,6 @@ public class LogService extends Service {
 
     public static String logPath;
     private final IBinder mBinder = new Binder();
-    private Shell.Interactive rootSession;
 
     static Handler handler;
 
@@ -166,7 +165,7 @@ public class LogService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             Log.i(TAG, "Restarting LogService");
-            startLogService();
+            startLogService(true);
         }
         return Service.START_STICKY;
     }
@@ -174,12 +173,14 @@ public class LogService extends Service {
 
     @Override
     public void onCreate() {
-        startLogService();
+        startLogService(false);
     }
 
-    private void startLogService() {
-        if (!EventBus.getDefault().isRegistered(this) && G.enableLogService()) {
+    private void startLogService(boolean restart) {
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
+        }
+        if(G.enableLogService()) {
             // this method is executed in a background thread
             // no problem calling su here
             if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty()) {
@@ -216,19 +217,11 @@ public class LogService extends Service {
 
             Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
             handler = new Handler();
-            Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
 
-            if (rootSession != null && rootSession.isRunning()) {
-                try {
-                    rootSession.kill();
-                    rootSession.close();
-                } catch (Exception e) {
-                }
+            if(restart) {
+                Api.cleanupUid();
             }
-            // kill all previous logged uid
-            Api.cleanupUid();
-
-            rootSession = new Shell.Builder()
+            new Shell.Builder()
                     .useSU()
                     .setMinimalLogging(true)
                     .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
@@ -257,7 +250,7 @@ public class LogService extends Service {
                             }
 
                         }
-                    }).addCommand(logPath).open();
+             }).addCommand(logPath).open();
         } else {
             Log.i(Api.TAG, "Logservice is running.. skipping");
         }
@@ -326,14 +319,6 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        if (rootSession != null) {
-            try {
-                rootSession.kill();
-                rootSession.close();
-            } catch (Exception e) {
-            }
-        }
-        Log.d(TAG, "Received request to kill logservice");
         EventBus.getDefault().unregister(this);
         Api.cleanupUid();
         super.onDestroy();
