@@ -193,7 +193,7 @@ public class LogService extends Service {
                             case "OS":
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                                 break;
-                            case "BB":
+                            case "BX":
                                 logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
                                 break;
                             case "TB":
