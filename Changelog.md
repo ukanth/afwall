@@ -1,6 +1,14 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.1
+* Boot/Connectivity change rules hung on some devices
+* Widget always display errors
+* Optimized number of su calls
+* Log Service does not work on some devices (Reboot or enable/disable logservice after install)
+* Update material dialog library
+* Updated translations
+
 Version 2.9.0
 * Bug: Sometimes connection gets blocked
 * Bug: Sometimes logservice does not work after service terminated
