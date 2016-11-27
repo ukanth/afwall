@@ -196,7 +196,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         lay.addView(secondPass);
         builder.customView(lay, false);
         builder.autoDismiss(false);
-        builder.positiveText(R.string.setpwd);
+        builder.positiveText(R.string.set_password);
         builder.negativeText(R.string.Cancel);
 
 
