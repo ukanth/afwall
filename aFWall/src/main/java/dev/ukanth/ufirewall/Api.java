@@ -867,7 +867,7 @@ public final class Api {
 					allowDefaultChains(ctx);
 					return false;
 				}
-				return false;
+				return true;
 			}
 		} catch (Exception e) {
 			Log.d(TAG, "Exception while applying rules: " + e.getMessage());
