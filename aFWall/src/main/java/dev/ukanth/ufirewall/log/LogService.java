@@ -259,11 +259,12 @@ public class LogService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.i(Api.TAG, "Cleanup session");
                 if(rootSession != null) {
                     rootSession.close();
                 }
             }
-        });
+        }).start();
         Api.cleanupUid();
     }
 
