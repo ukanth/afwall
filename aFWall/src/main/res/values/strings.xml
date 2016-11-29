@@ -65,20 +65,20 @@
     <string name="reading_apps">Retrieving installed apps</string>
     <string name="mode">Firewall Mode</string>
     <string name="mode_header">Mode: %s</string>
-    <string name="legend_clear">Clear All checkboxes on all columns</string>
+    <string name="legend_clear">Clear all checkboxes in all columns</string>
     <string name="mode_whitelist">Allow selected</string>
-    <string name="legend_whitelist">Selected apps will be granted to access internet</string>
+    <string name="legend_whitelist">Selected apps will be granted internet access</string>
     <string name="mode_blacklist">Block selected</string>
-    <string name="legend_blacklist">Selected apps will be denied to access internet</string>
+    <string name="legend_blacklist">Selected apps will be denied internet access</string>
     <string name="set_custom_script">Set custom script</string>
     <string name="preferences">Preferences</string>
     <string name="reload">Reload apps</string>
     <string name="flush">Flush rules</string>
     <string name="send_report">Send error report</string>
-    <string name="enter_problem">Please explain the problem:</string>
+    <string name="enter_problem">Please explain the issue:</string>
     <string name="send_mail">Send mail</string>
-    <string name="notify_pref_summary_on">A notification will be sent when a new application is installed</string>
-    <string name="notify_pref_summary_off">No notifications will be sent when a new application is installed</string>
+    <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
+    <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
     <string name="custom_script_defined">Custom script defined</string>
     <string name="custom_script_removed">Custom script removed</string>
     <string name="custom_script_error">Error saving custom script</string>
@@ -92,7 +92,7 @@
     <string name="copied">Copied</string>
     <string name="Search">Search</string>
     <string name="flushRulesConfirm">Flush all iptables rules?</string>
-    <string name="overrideRules">This will override the existing rules! Do you want to import the rules?</string>
+    <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
     <string name="notification_new">New app installed</string>
     <string name="notification_new_package">Configure internet permission</string>
     <string name="confirmMsg">Completely DISABLE the firewall?</string>
@@ -119,7 +119,7 @@
     <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
 
     <!-- Widget -->
-    <string name="widget_disable_fail">Cannot disable firewall - password protected!</string>
+    <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
     <string name="widget_label_status">AFWall+ Toggle/Status</string>
     <string name="widget_label_settings">AFWall+ Settings</string>
     <string name="widget_label_settings_old">AFWall+ Settings (Old)</string>
@@ -138,9 +138,9 @@
     <string name="import_rules_success">Imported from </string>
     <string name="import_rules_fail">Import failed!</string>
     <string name="import_rules_missing">Rules file is missing!</string>
-    <string name="exportConfirm">Export rules to the SD card?</string>
-    <string name="export_logs_fail">Export to SD card failed!</string>
-    <string name="export_to_sd">Export to SD card</string>
+    <string name="exportConfirm">Export rules to storage?</string>
+    <string name="export_logs_fail">Export to storage failed!</string>
+    <string name="export_to_sd">Export to storage</string>
 
     <!-- Logging -->
     <string name="enable_firewall_log">Enable firewall log</string>
@@ -193,7 +193,7 @@
     <string name="vpn_profile">VPN control</string>
     <string name="vpnSummary">Enable to control VPN permissions separately</string>
     <string name="roaming">Roaming control</string>
-    <string name="roamingSummary">Enable to control internet while roaming permissions separately</string>
+    <string name="roamingSummary">Enable to control roaming permissions separately</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
 
@@ -214,9 +214,9 @@
 
     <!-- XPOSED -->
     <string name="XPosed_prefs_title">Xposed Related</string>
-    <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-    <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-    <string name="LeakDetected">Leak Detected</string>
+    <string name="fixDownloadTitle">Fix DownloadManager leak</string>
+    <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+    <string name="LeakDetected">Leak detected!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker Related</string>
     <string name="disable_toaster">Disable Tasker toasts</string>
@@ -244,7 +244,7 @@
     <string name="usePattern">Use lock pattern instead of password</string>
     <string name="stealthMode">Stealth mode on pattern</string>
     <string name="patternMaxTry">Maximum number of attempts</string>
-    <string name="resetPattern">Reset the lock pattern?</string>
+    <string name="resetPattern">Reset lock pattern?</string>
 
     <!-- Device Admin -->
     <string name="enable_device_admin">Device admin</string>
@@ -262,7 +262,7 @@
     <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
 
     <string name="fixleakTitle">Fix startup data leak</string>
-    <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support.  HTC devices must be configured for S-OFF.</string>
+    <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
     <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -290,7 +290,7 @@
     <string name="misc_header">Languages/Plugins</string>
     <!-- 1.2.6 -->
     <string name="active_rules">Active rules</string>
-    <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/wireless-data/roam/tether)</string>
+    <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
     <string name="profile_add">Add profile</string>
     <string name="profile_remove">Remove profile</string>
     <string name="profile_rename">Rename profile</string>
@@ -330,14 +330,14 @@
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
     <string name="data">Data</string>
-    <string name="legend_data">Enable to control data (2G,3G,EDGE,LTE/4G) permissions</string>
+    <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
 
     <string name="pkg_all">All</string>
     <string name="pkg_core">Core</string>
     <string name="pkg_sys">System</string>
     <string name="pkg_user">User</string>
     <string name="menu">Menu</string>
-    <string name="backup_notexist">No backup exists. Please export from menu.</string>
+    <string name="backup_notexist">No backup exists. Please export from the menu.</string>
 
     <string name="showFilter">Show filters</string>
     <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
@@ -374,7 +374,7 @@
     <string name="activeNotification">Show notification icon</string>
     <string name="activeNotification_summary">Display permanent icon in notification bar</string>
 
-    <string name="active">Firewall running</string>
+    <string name="active">Firewall enabled</string>
     <string name="inactive">Firewall disabled</string>
 
     <string name="About">About</string>
@@ -402,9 +402,9 @@
     <string name="pref_password">Password</string>
     <string name="pref_pattern">Pattern</string>
     <string name="pref_device">Use Device Security Protection</string>
-    <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
-    <string name="secure_option">Device is not secured with password/pin</string>
-    <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
+    <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+    <string name="secure_option">Device is not secured with password/PIN</string>
+    <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
     <!--<string name="pref_pin">Pin</string>-->
 
 
@@ -442,7 +442,7 @@
     <string name="widget_prefs_title">Widget positions</string>
     <string name="xTitle">Widget X position</string>
     <string name="xTitleSummary">Manual override X position</string>
-    <string name="xTitleDialog">Set X Position (number)</string>
+    <string name="xTitleDialog">Set X position (number)</string>
 
     <string name="yTitle">Widget Y position</string>
     <string name="yTitleSummary">Manual override Y position</string>
@@ -453,8 +453,8 @@
     <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
     <string name="lockNotification">Hide lockscreen notification icon</string>
     <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-    <string name="menu_legend">Legends</string>
-    <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
+    <string name="menu_legend">Legend</string>
+    <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
     <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
 
     <string name="log_deletedapp">Deleted Application</string>
@@ -471,7 +471,7 @@
     <string name="switch_old">Switch to old view</string>
     <string name="switch_new">Switch to new view</string>
     <string name="showlogdetail_title">Application Log Details</string>
-    <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
+    <string name="reapply_rules">Please reapply the rules due to preference change</string>
 
     <string name="custom_rules">Custom Rules</string>
     <string name="mdns">Enable Mutlicast DNS</string>
