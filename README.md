@@ -19,7 +19,7 @@ Index
 * [Compatibility](#compatibility)
 * [Upgrading](#upgrading)
 * [Permissions](#permissions)
-* [Frequently Asked Questions (FAQ)](#frequently-asked-questions-(FAQ))
+* [Frequently Asked Questions (FAQ)](#frequently-asked-questions-FAQ)
 * [License](#license)
 * [Acknowledgements](#acknowledgements)
 * [Compile AFWall+](#compile-afwall)
