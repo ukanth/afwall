@@ -159,9 +159,12 @@ public class RulesActivity extends DataDumpActivity {
 
 		InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx,true);
 
+		result.append("Android device: " + android.os.Build.DEVICE + "\n");
+		result.append("Android hardware: " + android.os.Build.HARDWARE + "\n");
 		result.append("Android version: " + android.os.Build.VERSION.RELEASE + "\n");
 		result.append("Manufacturer: " + android.os.Build.MANUFACTURER + "\n");
 		result.append("Model: " + android.os.Build.MODEL + "\n");
+		result.append("Codename: " + android.os.VERSION.CODENAME + "\n");
 		result.append("Build: " + android.os.Build.DISPLAY + "\n");
 
 		if (cfg.netType == ConnectivityManager.TYPE_MOBILE) {
