@@ -534,6 +534,10 @@ public class G extends android.app.Application {
 	public static boolean isMigrated() { return gPrefs.getBoolean(IS_MIGRATED, false); }
 	public static boolean isMigrated(boolean val) { gPrefs.edit().putBoolean(IS_MIGRATED, val).commit(); return val; }
 
+
+	public static int ruleTextSize() { return gPrefs.getInt("ruleTextSize", 40); }
+	public static int ruleTextSize(int val) { gPrefs.edit().putInt("ruleTextSize", val).commit(); return val; }
+
 	/*public static boolean logTargetChose(boolean s) { gPrefs.edit().putBoolean(LOG_CHAINS,s).commit(); return s;}
 	public static boolean logTargetChose() { return gPrefs.getBoolean(LOG_CHAINS, false); }*/
 }
