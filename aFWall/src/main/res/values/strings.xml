@@ -183,6 +183,7 @@
     <string name="profile1">Profile 1</string>
     <string name="profile2">Profile 2</string>
     <string name="profile3">Profile 3</string>
+    <string name="profile_hint">ProfileName</string>
 
     <string name="reapply_profile">Reapply profile rules</string>
 
