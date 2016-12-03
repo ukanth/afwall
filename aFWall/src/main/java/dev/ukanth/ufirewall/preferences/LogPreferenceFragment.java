@@ -39,10 +39,11 @@ public class LogPreferenceFragment extends PreferenceFragment  {
 			ar.add("Busybox");
 			val.add("BX");
 		}
-		if(RootTools.isToyboxAvailable()) {
+		
+		/*if(RootTools.isToyboxAvailable()) {
 			ar.add("Toybox");
 			val.add("TB");
-		}
+		}*/
 
 		if(ar.size() != 1 && listPreference != null ) {
 			listPreference.setEntries(ar.toArray(new String[0]));

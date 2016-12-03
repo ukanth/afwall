@@ -330,9 +330,9 @@ public final class Api {
 
 		if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable() && considerSystem) {
 			return "busybox ";
-		} else if( RootTools.isToyboxAvailable()) {
+		} /*else if( RootTools.isToyboxAvailable()) {
 			return "toybox ";
-		} else {
+		} */else {
             String dir = ctx.getDir("bin",0).getAbsolutePath();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 return dir + "/run_pie " +  dir + "/busybox ";
