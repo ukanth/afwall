@@ -42,7 +42,7 @@ The [changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md) documen
 
 Supports
 --------
-* Android versions 4.x/5.x/6.x
+* Android versions 4.x/5.x/6.x/7.x
 * ARM/MIPS/x86 processors
 * IPv4/IPv6 protocols
 * WiFi, mobile data, LAN, VPN, tether, and roaming
@@ -88,15 +88,15 @@ Limitations
 Compatibility
 -------------
 
-AFWall+ has been successfully tested with Android version 4.xx - 6. (ICS, JellyBean, KitKat, Lollipop, Nougat) and is reported to work with most Android variants, including stock ROMs.
+AFWall+ has been successfully tested with Android versions 4.x - 7.x. (ICS, JellyBean, KitKat, Lollipop, Marshmallow, Nougat) and is reported to work with most Android variants, including stock ROMs.
 
 We do not recommend using AFWall+ in combination with any of the similar solutions because this could result in conflicts and potential data leaks (iptables could get overwritten).
 
 Upgrading
 ---------
 
-* **Make a backup** (e.g. make a Nandroid backup or use Titanium Backup).
-* **Do not remove the previous version** (or else your settings might get reset).
+* **Make a backup of the current version** (e.g. using Titanium Backup).
+* **Do not remove the current version** (otherwise your settings might get reset).
 * Download the new version.
 * Install the new version over the previous version.
 * Done!
