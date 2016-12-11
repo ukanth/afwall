@@ -28,6 +28,9 @@ public class ProfileActivity extends AppCompatActivity {
     ProfileAdapter profileAdapter;
 
     protected static final int MENU_ADD = 100;
+    protected static final int MENU_CLONE = 101;
+    protected static final int MENU_DELETE = 102;
+    protected static final int MENU_RENAME = 103;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,20 +84,28 @@ public class ProfileActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
         Profile profile = profileAdapter.getItem(aInfo.position);
         menu.setHeaderTitle(getString(R.string.select) + " " + profile.getProfileName());
-        menu.add(1, 1, 1, getString(R.string.delete));
-
+        //menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
+        //menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
+        menu.add(0, MENU_DELETE, 0, getString(R.string.delete));
     }
 
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        if (aInfo.position > 3) {
-            G.removeAdditionalProfile(profilesList.get(aInfo.position).getProfileName());
-            profilesList.remove(aInfo.position);
-            profileAdapter.notifyDataSetChanged();
+        switch(itemId) {
+            case MENU_DELETE:
+                AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                if (aInfo.position > 3) {
+                    G.removeAdditionalProfile(profilesList.get(aInfo.position).getProfileName());
+                    profilesList.remove(aInfo.position);
+                    profileAdapter.notifyDataSetChanged();
+                }
+                break;
+            //case MENU_CLONE: break;
+            //case MENU_RENAME: break;
         }
+
         return true;
     }
 

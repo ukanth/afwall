@@ -5,6 +5,8 @@ package dev.ukanth.ufirewall.util;
  */
 public class Profile {
 
+    String profileName;
+
     public Profile(String name) {
         this.profileName = name;
     }
@@ -16,6 +18,4 @@ public class Profile {
     public void setProfileName(String profileName) {
         this.profileName = profileName;
     }
-
-    String profileName;
 }
