@@ -99,6 +99,8 @@
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
     <string name="delete">Delete</string>
+    <string name="clone">Clone</string>
+    <string name="rename">Rename</string>
     <string name="Yes">Yes</string>
     <string name="Continue">Continue</string>
     <string name="No">No</string>

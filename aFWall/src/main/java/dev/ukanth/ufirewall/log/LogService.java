@@ -22,6 +22,7 @@
 
 package dev.ukanth.ufirewall.log;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -38,7 +39,6 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
-import com.stericson.rootshell.RootShell;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -74,13 +74,7 @@ public class LogService extends Service {
     public static int toastDefaultYOffset;
     public static int toastYOffset;
     LogData data;
-    LogInfo logInfo;
 
-
-    /*private static final int MAX_ENTRIES = 10;
-
-    private static LinkedList<LogData> circular = new LinkedList<LogData>();
-*/
     private static Runnable showOnlyToastRunnable;
     private static CancelableRunnable showToastRunnable;
     private static View toastLayout;
@@ -165,7 +159,7 @@ public class LogService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             Log.i(TAG, "Restarting LogService");
-            startLogService(true);
+            startLogService();
         }
         return Service.START_STICKY;
     }
@@ -173,10 +167,10 @@ public class LogService extends Service {
 
     @Override
     public void onCreate() {
-        startLogService(false);
+        startLogService();
     }
 
-    private void startLogService(boolean restart) {
+    private void startLogService() {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -209,47 +203,48 @@ public class LogService extends Service {
                         logPath = "echo $$ & " + logPath + " " + QUEUE_NUM;
                         break;
                 }
+
+                Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
+                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
+                handler = new Handler();
+
+                closeSession();
+                rootSession = new Shell.Builder()
+                        .useSU()
+                        .setMinimalLogging(true)
+                        .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
+                            @Override
+                            public void onLine(String line) {
+                                if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
+                                    try {
+                                        String uid = line.split("=")[1];
+                                        if (uid != null) {
+                                            Set data = G.storedPid();
+                                            if (data == null || data.isEmpty()) {
+                                                data = new HashSet();
+                                                data.add(uid);
+                                                G.storedPid(data);
+                                            } else if (!data.contains(uid)) {
+                                                Set data2 = new HashSet();
+                                                data2.addAll(data);
+                                                data2.add(uid);
+                                                G.storedPid(data2);
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                    }
+                                } else {
+                                    storeLogInfo(line, getApplicationContext());
+                                }
+
+                            }
+                        }).addCommand(logPath).open();
             } else {
                 Log.i(TAG, "Unable to start log service. LogTarget is empty");
                 Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));
+                G.enableLogService(false);
                 stopSelf();
             }
-
-            Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-            Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
-            handler = new Handler();
-
-            closeSession();
-            rootSession = new Shell.Builder()
-                    .useSU()
-                    .setMinimalLogging(true)
-                    .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
-                        @Override
-                        public void onLine(String line) {
-                            if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
-                                try {
-                                    String uid = line.split("=")[1];
-                                    if (uid != null) {
-                                        Set data = G.storedPid();
-                                        if (data == null || data.isEmpty()) {
-                                            data = new HashSet();
-                                            data.add(uid);
-                                            G.storedPid(data);
-                                        } else if (!data.contains(uid)) {
-                                            Set data2 = new HashSet();
-                                            data2.addAll(data);
-                                            data2.add(uid);
-                                            G.storedPid(data2);
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                }
-                            } else {
-                                storeLogInfo(line, getApplicationContext());
-                            }
-
-                        }
-                    }).addCommand(logPath).open();
         } else {
             Log.i(Api.TAG, "Logservice is running.. skipping");
         }
@@ -260,7 +255,7 @@ public class LogService extends Service {
             @Override
             public void run() {
                 Log.i(Api.TAG, "Cleanup session");
-                if(rootSession != null) {
+                if (rootSession != null) {
                     rootSession.close();
                 }
             }
@@ -278,6 +273,7 @@ public class LogService extends Service {
             }
         }
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void showMessageToast(LogEvent event) {
