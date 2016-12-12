@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/mp_prefs_title" >
+    <PreferenceCategory android:key="oldprofile_pref" android:title="@string/mp_prefs_title" >
         <CheckBoxPreference
             android:key="enableMultiProfile"
             android:title="@string/multipleProfiles" />
@@ -35,7 +35,8 @@
 
         </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/exp_prefs_title" >
+    <PreferenceCategory android:key="promigrate"
+        android:title="@string/exp_prefs_title" >
         <Preference android:title="@string/migrate_profiles"
             android:key="migrate_profile"
             android:summary="@string/migrate_summary"/>

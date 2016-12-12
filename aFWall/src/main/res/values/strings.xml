@@ -431,7 +431,7 @@
     <string name="profiles">Profile </string>
 
     <string name="migrate_profiles">Migrate profiles</string>
-    <string name="migrate_summary">Migrate all additional profile data from version 1.x to 2.x</string>
+    <string name="migrate_summary">Migrate all profile data</string>
     <string name="insert_profile">Profile name</string>
     <string name="add">Add</string>
     <string name="showlog_toasts">Show toast notification on block</string>
@@ -480,4 +480,5 @@
     <string name="mdns">Enable Mutlicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
     <string name="delete_profile">Unable to delete profile</string>
+    <string name="profile_migrate_msg">Profiles migrated successfully</string>
 </resources>

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -17,16 +18,16 @@ import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.util.Profile;
-import dev.ukanth.ufirewall.util.ProfileAdapter;
-import dev.ukanth.ufirewall.util.ProfileHelper;
+import dev.ukanth.ufirewall.profiles.ProfileAdapter;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 
 /**
  * Created by ukanth on 31/7/15.
  */
 public class ProfileActivity extends AppCompatActivity {
-    List<Profile> profilesList = new ArrayList<Profile>();
+    List<ProfileData> profilesList = new ArrayList<ProfileData>();
     ProfileAdapter profileAdapter;
 
     protected static final int MENU_ADD = 100;
@@ -84,10 +85,12 @@ public class ProfileActivity extends AppCompatActivity {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        Profile profile = profileAdapter.getItem(aInfo.position);
-        menu.setHeaderTitle(getString(R.string.select) + " " + profile.getProfileName());
-        //menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
-        //menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
+        ProfileData profile = profileAdapter.getItem(aInfo.position);
+        menu.setHeaderTitle(getString(R.string.select) +  " " + profile.getName());
+        if(G.isProfileMigrated()) {
+            menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
+            menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
+        }
         menu.add(0, MENU_DELETE, 0, getString(R.string.delete));
     }
 
@@ -98,46 +101,57 @@ public class ProfileActivity extends AppCompatActivity {
         switch (itemId) {
             case MENU_DELETE:
                 AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                if (aInfo.position > 3) {
-                    boolean deleted = G.removeAdditionalProfile(profilesList.get(aInfo.position).getProfileName());
-                    if (deleted) {
+                String profileName = profilesList.get(aInfo.position).getName();
+                if(!G.isProfileMigrated()) {
+                    if (aInfo.position > 3) {
+                        boolean deleted = G.removeAdditionalProfile(profileName);
+                        if (deleted) {
+                            profilesList.remove(aInfo.position);
+                            profileAdapter.notifyDataSetChanged();
+                        } else {
+                            Api.toast(getApplicationContext(), getString(R.string.delete_profile));
+                        }
+                    } else {
+                        //TODO: can't delete default profiles(1,2,3) msg - Use migrate option
+                    }
+                } else {
+                    if(aInfo.position != 0) {
+                        ProfileHelper.deleteProfileByName(profileName);
                         profilesList.remove(aInfo.position);
                         profileAdapter.notifyDataSetChanged();
                     } else {
-                        Api.toast(getApplicationContext(), getString(R.string.delete_profile));
+                        //can't delete default profile
                     }
-
                 }
                 break;
-            //case MENU_CLONE: break;
-            //case MENU_RENAME: break;
+            case MENU_CLONE: break;
+            case MENU_RENAME: break;
         }
-
         return true;
     }
 
 
     private void initList() {
+        profilesList = new ArrayList<>();
         // We populate the Profiles
-
-        profilesList.add(new Profile(G.gPrefs.getString("default", getString(R.string.defaultProfile)),""));
+        profilesList.add(new ProfileData(G.gPrefs.getString("default", getString(R.string.defaultProfile)),""));
 
         if(G.isProfileMigrated()) {
-            List<Profile> profiles = ProfileHelper.getProfiles();
-            for(Profile pro: profiles) {
+            List<ProfileData> profiles = ProfileHelper.getProfiles();
+            for(ProfileData pro: profiles) {
                 profilesList.add(pro);
             }
         } else {
-            /*profilesList.add(new Profile(G.gPrefs.getString("profile1", getString(R.string.profile1)),""));
-            profilesList.add(new Profile(G.gPrefs.getString("profile2", getString(R.string.profile2)),""));
-            profilesList.add(new Profile(G.gPrefs.getString("profile3", getString(R.string.profile3)),""));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile1", getString(R.string.profile1)),""));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile2", getString(R.string.profile2)),""));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile3", getString(R.string.profile3)),""));
 
             List<String> pList = G.getAdditionalProfiles();
             for (String profileName : pList) {
                 if (profileName != null && profileName.length() > 0) {
-                    profilesList.add(new Profile(profileName,profileName));
+                    profilesList.add(new ProfileData(profileName,profileName));
                 }
-            }*/
+            }
         }
     }
 
@@ -154,7 +168,10 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         String profileName = input.toString();
                         String identifier = profileName.replaceAll("\\s+","");
-                        ProfileActivity.this.profilesList.add(new Profile(profileName,identifier));
+                        ProfileData data = new ProfileData();
+                        data.setName(profileName);
+                        data.setIdentifier(identifier);
+                        ProfileActivity.this.profilesList.add(data);
                         G.addAdditionalProfile(profileName);
                         ProfileActivity.this.profileAdapter.notifyDataSetChanged(); // We notify the data model is changed
                     }

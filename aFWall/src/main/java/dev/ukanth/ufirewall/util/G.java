@@ -102,11 +102,11 @@ public class G extends android.app.Application {
 	private static final String BLOCKED_NOTIFICATION = "block_filter_app";
 	/* Profiles */
 	private static final String ADDITIONAL_PROFILES = "plusprofiles";
-	private static final String PROFILES = "profiles_json";
+	//private static final String PROFILES = "profiles_json";
 	private static final String PROFILES_MIGRATED = "profilesmigrated";
 	private static final String WIDGET_X = "widgetX";
 	private static final String WIDGET_Y = "widgetY";
-	private static final String  XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
+	private static final String XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
 
 	private static String AFWALL_PROFILE = "AFWallProfile";
 	private static String SHOW_LOG_TOAST = "showLogToasts";
@@ -126,12 +126,12 @@ public class G extends android.app.Application {
 	public static String profile_pwd() { return gPrefs.getString(PROFILE_PWD, ""); }
 	public static String profile_pwd(String val) { gPrefs.edit().putString(PROFILE_PWD, val).commit(); return val; }
 
-	public static String profilesStored() { return gPrefs.getString(PROFILES, ""); }
+	/*public static String profilesStored() { return gPrefs.getString(PROFILES, ""); }
 	public static String profilesStored(String val) {
 		gPrefs.edit().putString(PROFILES, val).commit();
 		isProfileMigrated(true);
 		return val;
-	}
+	}*/
 
 	public static boolean isProfileMigrated() { return gPrefs.getBoolean(PROFILES_MIGRATED, false); }
 	public static boolean isProfileMigrated(boolean val) { gPrefs.edit().putBoolean(PROFILES_MIGRATED, val).commit(); return val; }

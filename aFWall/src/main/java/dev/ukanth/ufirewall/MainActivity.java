@@ -73,9 +73,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,13 +87,14 @@ import dev.ukanth.ufirewall.activity.OldLogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
+import dev.ukanth.ufirewall.profiles.ProfileData;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
-import dev.ukanth.ufirewall.util.Profile;
 import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
@@ -332,7 +330,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         updateRadioFilter();
         if (G.enableMultiProfile()) {
             setupMultiProfile(true);
-            migrateProfiles();
         }
 
         selectFilterGroup();
@@ -341,36 +338,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * This will be used to migrate the profiles to a better one ( get ridoff of default profile )
      */
-    private void migrateProfiles() {
-        if (!G.isProfileMigrated()) {
-            List<Profile> listProfile = new ArrayList<>();
-            List<String> addProfiles = G.getAdditionalProfiles();
-            List<String> defaultProfiles = G.getDefaultProfiles();
-            if (defaultProfiles != null && addProfiles != null) {
-                for (String profileName : defaultProfiles) {
-                    Profile profile = new Profile(profileName,profileName);
-                    listProfile.add(profile);
-                }
-                for (String profileName : addProfiles) {
-                    Profile profile = new Profile(profileName,profileName);
-                    listProfile.add(profile);
-                }
-            }
-            //now store the migrateProfile
-            try {
-                JSONObject object = new JSONObject();
-                JSONArray array = new JSONArray();
-                for (Profile profile : listProfile) {
-                    array.put(profile.getJSON());
-                }
-                object.put("profiles", array);
-                G.profilesStored(object.getString("profiles"));
-            } catch (Exception e) {
-                e.printStackTrace();
-                G.isProfileMigrated(false);
-            }
-        }
-    }
+
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -447,20 +415,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (reset) {
             mlocalList = new ArrayList<>(new LinkedHashSet<String>());
         }
-        mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
-        mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
-        mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
-        mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
 
-        boolean isAdditionalProfiles = false;
-        List<String> profilesList = G.getAdditionalProfiles();
-        for (String profiles : profilesList) {
-            if (profiles != null && profiles.length() > 0) {
-                isAdditionalProfiles = true;
-                mlocalList.add(profiles);
+        mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
+
+        if(!G.isProfileMigrated()) {
+            mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
+            mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
+            mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
+            List<String> profilesList = G.getAdditionalProfiles();
+            for (String profiles : profilesList) {
+                if (profiles != null && profiles.length() > 0) {
+                    mlocalList.add(profiles);
+                }
+            }
+        } else {
+            List<ProfileData> profilesList = ProfileHelper.getProfiles();
+            for(ProfileData data: profilesList) {
+                mlocalList.add(data.getName());
             }
         }
-
     }
 
     public void deviceCheck() {
