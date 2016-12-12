@@ -73,6 +73,9 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,6 +96,7 @@ import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
+import dev.ukanth.ufirewall.util.Profile;
 import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
@@ -172,10 +176,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.findViewById(R.id.img_reset).setOnClickListener(this);
         this.findViewById(R.id.img_invert).setOnClickListener(this);
 
-
         AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
         AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
-
 
         //make sure we have WRITE_EXTERNAL_STORAGE ACCESS
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -185,9 +187,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
         } else {
             Api.assertBinaries(this, true);
-
         }
-
 
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
@@ -332,11 +332,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         updateRadioFilter();
         if (G.enableMultiProfile()) {
             setupMultiProfile(true);
+            migrateProfiles();
         }
 
         selectFilterGroup();
     }
 
+    /**
+     * This will be used to migrate the profiles to a better one ( get ridoff of default profile )
+     */
+    private void migrateProfiles() {
+        if (!G.isProfileMigrated()) {
+            List<Profile> listProfile = new ArrayList<>();
+            List<String> addProfiles = G.getAdditionalProfiles();
+            List<String> defaultProfiles = G.getDefaultProfiles();
+            if (defaultProfiles != null && addProfiles != null) {
+                for (String profileName : defaultProfiles) {
+                    Profile profile = new Profile(profileName,profileName);
+                    listProfile.add(profile);
+                }
+                for (String profileName : addProfiles) {
+                    Profile profile = new Profile(profileName,profileName);
+                    listProfile.add(profile);
+                }
+            }
+            //now store the migrateProfile
+            try {
+                JSONObject object = new JSONObject();
+                JSONArray array = new JSONArray();
+                for (Profile profile : listProfile) {
+                    array.put(profile.getJSON());
+                }
+                object.put("profiles", array);
+                G.profilesStored(object.getString("profiles"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                G.isProfileMigrated(false);
+            }
+        }
+    }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {

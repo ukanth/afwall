@@ -15,10 +15,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.Profile;
 import dev.ukanth.ufirewall.util.ProfileAdapter;
+import dev.ukanth.ufirewall.util.ProfileHelper;
 
 /**
  * Created by ukanth on 31/7/15.
@@ -93,13 +95,18 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        switch(itemId) {
+        switch (itemId) {
             case MENU_DELETE:
                 AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 if (aInfo.position > 3) {
-                    G.removeAdditionalProfile(profilesList.get(aInfo.position).getProfileName());
-                    profilesList.remove(aInfo.position);
-                    profileAdapter.notifyDataSetChanged();
+                    boolean deleted = G.removeAdditionalProfile(profilesList.get(aInfo.position).getProfileName());
+                    if (deleted) {
+                        profilesList.remove(aInfo.position);
+                        profileAdapter.notifyDataSetChanged();
+                    } else {
+                        Api.toast(getApplicationContext(), getString(R.string.delete_profile));
+                    }
+
                 }
                 break;
             //case MENU_CLONE: break;
@@ -113,19 +120,25 @@ public class ProfileActivity extends AppCompatActivity {
     private void initList() {
         // We populate the Profiles
 
-        profilesList.add(new Profile(G.gPrefs.getString("default", getString(R.string.defaultProfile))));
+        profilesList.add(new Profile(G.gPrefs.getString("default", getString(R.string.defaultProfile)),""));
 
-        profilesList.add(new Profile(G.gPrefs.getString("profile1", getString(R.string.profile1))));
-        profilesList.add(new Profile(G.gPrefs.getString("profile2", getString(R.string.profile2))));
-        profilesList.add(new Profile(G.gPrefs.getString("profile3", getString(R.string.profile3))));
-
-        List<String> pList = G.getAdditionalProfiles();
-        for (String profileName : pList) {
-            if (profileName != null && profileName.length() > 0) {
-                profilesList.add(new Profile(profileName));
+        if(G.isProfileMigrated()) {
+            List<Profile> profiles = ProfileHelper.getProfiles();
+            for(Profile pro: profiles) {
+                profilesList.add(pro);
             }
-        }
+        } else {
+            /*profilesList.add(new Profile(G.gPrefs.getString("profile1", getString(R.string.profile1)),""));
+            profilesList.add(new Profile(G.gPrefs.getString("profile2", getString(R.string.profile2)),""));
+            profilesList.add(new Profile(G.gPrefs.getString("profile3", getString(R.string.profile3)),""));
 
+            List<String> pList = G.getAdditionalProfiles();
+            for (String profileName : pList) {
+                if (profileName != null && profileName.length() > 0) {
+                    profilesList.add(new Profile(profileName,profileName));
+                }
+            }*/
+        }
     }
 
 
@@ -140,7 +153,8 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         String profileName = input.toString();
-                        ProfileActivity.this.profilesList.add(new Profile(profileName));
+                        String identifier = profileName.replaceAll("\\s+","");
+                        ProfileActivity.this.profilesList.add(new Profile(profileName,identifier));
                         G.addAdditionalProfile(profileName);
                         ProfileActivity.this.profileAdapter.notifyDataSetChanged(); // We notify the data model is changed
                     }

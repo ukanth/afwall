@@ -1,7 +1,8 @@
 /**
  * A place to store globals
- * 
- * Copyright (C) 2013  Kevin Cernekee
+ *
+ * Copyright (C) 2013 Kevin Cernekee
+ * Copyright (C) 2016 Umakanthan Chandran
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +19,7 @@
  *
  * @author Kevin Cernekee
  * @version 1.0
+ *
  */
 
 package dev.ukanth.ufirewall.util;
@@ -28,6 +30,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -50,7 +53,7 @@ import dev.ukanth.ufirewall.BuildConfig;
 public class G extends android.app.Application {
 
 	public static final String TAG = "AFWall";
-	
+
 	private static final String HAS_ROOT = "hasRoot";
 	private static final String FIX_START_LEAK = "fixLeak";
 	private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
@@ -66,7 +69,7 @@ public class G extends android.app.Application {
 	private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
 	private static final String ENABLE_CONFIRM = "enableConfirm";
 	private static final String ENABLE_MULTI_PROFILE =  "enableMultiProfile";
-	private static final String SHOW_UID = "showUid"; 
+	private static final String SHOW_UID = "showUid";
 	private static final String NOTIFY_INSTALL = "notifyAppInstall";
 	private static final String DISABLE_ICONS = "disableIcons";
 	private static final String IPTABLES_PATH = "ip_path";
@@ -89,17 +92,18 @@ public class G extends android.app.Application {
 	private static final String MULTI_USER_ID = "multiUserId";
 	private static final String IS_MIGRATED = "isMigrated";
 	private static final String SHOW_FILTER = "showFilter";
-	private static final String USE_PASSWORD_PATTERN = "usePatterns";
 	private static final String PATTERN_MAX_TRY = "patternMax";
 	private static final String PATTERN_STEALTH = "stealthMode";
 	private static final String ISKINGDETECT = "kingDetect";
 	private static final String PWD_ENCRYPT= "pwdEncrypt";
-	private static final String profile_Pwd= "profilePwd";
+	private static final String PROFILE_PWD= "profilePwd";
 	/** FIXME **/
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	private static final String BLOCKED_NOTIFICATION = "block_filter_app";
 	/* Profiles */
 	private static final String ADDITIONAL_PROFILES = "plusprofiles";
+	private static final String PROFILES = "profiles_json";
+	private static final String PROFILES_MIGRATED = "profilesmigrated";
 	private static final String WIDGET_X = "widgetX";
 	private static final String WIDGET_Y = "widgetY";
 	private static final String  XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
@@ -107,6 +111,7 @@ public class G extends android.app.Application {
 	private static String AFWALL_PROFILE = "AFWallProfile";
 	private static String SHOW_LOG_TOAST = "showLogToasts";
 	public static String[] profiles = { "AFWallPrefs" , AFWALL_PROFILE + 1 , AFWALL_PROFILE + 2, AFWALL_PROFILE + 3 };
+	public static String[] default_profiles = { "AFWallProfile1" , "AFWallProfile2", "AFWallProfile3" };
 	public static Context ctx;
 	public static SharedPreferences gPrefs;
 	public static SharedPreferences pPrefs;
@@ -114,12 +119,22 @@ public class G extends android.app.Application {
 
 	public static Set<String> storedPid() { return gPrefs.getStringSet("storedPid", null); }
 	public static void storedPid(Set store) { gPrefs.edit().putStringSet("storedPid", store).commit(); }
-	
+
 	public static boolean isEnc() { return gPrefs.getBoolean(PWD_ENCRYPT, false); }
 	public static boolean isEnc(boolean val) { gPrefs.edit().putBoolean(PWD_ENCRYPT, val).commit(); return val; }
-	
-	public static String profile_pwd() { return gPrefs.getString(profile_Pwd, ""); }
-	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
+
+	public static String profile_pwd() { return gPrefs.getString(PROFILE_PWD, ""); }
+	public static String profile_pwd(String val) { gPrefs.edit().putString(PROFILE_PWD, val).commit(); return val; }
+
+	public static String profilesStored() { return gPrefs.getString(PROFILES, ""); }
+	public static String profilesStored(String val) {
+		gPrefs.edit().putString(PROFILES, val).commit();
+		isProfileMigrated(true);
+		return val;
+	}
+
+	public static boolean isProfileMigrated() { return gPrefs.getBoolean(PROFILES_MIGRATED, false); }
+	public static boolean isProfileMigrated(boolean val) { gPrefs.edit().putBoolean(PROFILES_MIGRATED, val).commit(); return val; }
 
 	public static boolean isXposedDM() { return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false); }
 	public static boolean isXposedDM(boolean val) { gPrefs.edit().putBoolean(XPOSED_FIX_DM_LEAK, val).commit(); return val; }
@@ -302,7 +317,7 @@ public class G extends android.app.Application {
 		// will be used by XPosed to return true
 		return false;
 	}
-	
+
 	public void onCreate() {
 		super.onCreate();
 		FlowManager.init(new FlowConfig.Builder(this)
@@ -337,7 +352,7 @@ public class G extends android.app.Application {
 		reloadProfile();
 		return true;
 	}
-	
+
 	public static void addAdditionalProfile(String profile) {
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
 		StringBuilder builder = new StringBuilder();
@@ -351,62 +366,58 @@ public class G extends android.app.Application {
 				builder.append(profile);
 			}
 			gPrefs.edit().putString(ADDITIONAL_PROFILES, builder.toString()).commit();
+			G.setProfile(G.enableMultiProfile(), profile);
 		}
 	}
 
 
-	public static void clearSharedPreferences(Context ctx, String preferenceName){
+	public static boolean clearSharedPreferences(Context ctx, String preferenceName){
 		File dir = new File(ctx.getFilesDir().getParent() + "/shared_prefs/");
 		String[] children = dir.list();
 		for (int i = 0; i < children.length; i++) {
 			// clear each of the prefrances
 			if(children[i].replace(".xml", "").equals(preferenceName)) {
-				new File(dir, children[i]).delete();
+				return new File(dir, children[i]).delete();
 			}
 		}
+		return true;
 	}
-	
-	public static void removeAdditionalProfile(String profileName) {
+
+	public static boolean removeAdditionalProfile(String profileName) {
 		//after remove clear all the data inside the custom profile
 		if(ctx!= null) {
-			clearSharedPreferences(ctx,profileName);
-		}
-		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
-
-		StringBuilder builder = new StringBuilder();
-		if (!previousProfiles.equals("")) {
-			for (String profile : previousProfiles.split(",")) {
-				if (!profile.equals(profileName)) {
-					builder.append(profile);
-					builder.append(",");
+			//actually delete the file from disk
+			if(clearSharedPreferences(ctx,profileName)) {
+				String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
+				if(!previousProfiles.isEmpty()) {
+					List<String> items = new ArrayList<String>(Arrays.asList(previousProfiles.split("\\s*,\\s*")));
+					if(items.remove(profileName)) {
+						gPrefs.edit().putString(ADDITIONAL_PROFILES, TextUtils.join(",",items)).commit();
+						return true;
+					}
+				} else {
+					return false;
 				}
-			}
+			} else {
+                return false;
+            }
 		}
-		String profile = builder.toString();
-		if (profile.length() > 0 && profile.charAt(profile.length()-1)==',') {
-			profile = profile.substring(0, profile.length()-1);
-		}
-		gPrefs.edit().putString(ADDITIONAL_PROFILES, profile).commit();
-
+		return false;
 	}
-	
+
 	public static List<String> getAdditionalProfiles() {
 		String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
-		List<String> profileList = new ArrayList<>(new LinkedHashSet<String>());
-		if(previousProfiles != null && previousProfiles.length() > 0){
-			profileList = Arrays.asList(previousProfiles.split(","));
-		} 
-		return profileList;
-	}
-
-	public List<Profile> getProfileFromString(String str) {
-		List<Profile> profileList = new ArrayList<>();
-		try {
-			JSONObject jsonObject = new JSONObject(str);
-
-		} catch (JSONException e) {
-			return null;
+		List<String> items = new ArrayList<>();
+		if(!previousProfiles.isEmpty()) {
+			items = new ArrayList<String>(Arrays.asList(previousProfiles.split("\\s*,\\s*")));
 		}
-		return profileList;
+		return items;
 	}
+
+	public static List<String> getDefaultProfiles() {
+		List<String> items = new ArrayList<String>(Arrays.asList(default_profiles));
+		return items;
+	}
+
+
 }

@@ -479,4 +479,5 @@
     <string name="custom_rules">Custom Rules</string>
     <string name="mdns">Enable Mutlicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
+    <string name="delete_profile">Unable to delete profile</string>
 </resources>
