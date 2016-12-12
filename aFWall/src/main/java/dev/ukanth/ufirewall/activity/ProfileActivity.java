@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -18,10 +17,10 @@ import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.profiles.ProfileData;
-import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.profiles.ProfileAdapter;
+import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
+import dev.ukanth.ufirewall.util.G;
 
 /**
  * Created by ukanth on 31/7/15.
@@ -86,8 +85,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
         ProfileData profile = profileAdapter.getItem(aInfo.position);
-        menu.setHeaderTitle(getString(R.string.select) +  " " + profile.getName());
-        if(G.isProfileMigrated()) {
+        menu.setHeaderTitle(getString(R.string.select) + " " + profile.getName());
+        if (G.isProfileMigrated()) {
             menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
             menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
         }
@@ -102,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
             case MENU_DELETE:
                 AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 String profileName = profilesList.get(aInfo.position).getName();
-                if(!G.isProfileMigrated()) {
+                if (!G.isProfileMigrated()) {
                     if (aInfo.position > 3) {
                         boolean deleted = G.removeAdditionalProfile(profileName);
                         if (deleted) {
@@ -115,17 +114,22 @@ public class ProfileActivity extends AppCompatActivity {
                         //TODO: can't delete default profiles(1,2,3) msg - Use migrate option
                     }
                 } else {
-                    if(aInfo.position != 0) {
-                        ProfileHelper.deleteProfileByName(profileName);
-                        profilesList.remove(aInfo.position);
-                        profileAdapter.notifyDataSetChanged();
+                    if (aInfo.position != 0) {
+                        ProfileData data = ProfileHelper.getProfileByName(profileName);
+                        if (data != null && ProfileHelper.deleteProfileByName(profileName)
+                                && G.clearSharedPreferences(getApplicationContext(), data.getIdentifier())) {
+                            profilesList.remove(aInfo.position);
+                            profileAdapter.notifyDataSetChanged();
+                        }
                     } else {
                         //can't delete default profile
                     }
                 }
                 break;
-            case MENU_CLONE: break;
-            case MENU_RENAME: break;
+            case MENU_CLONE:
+                break;
+            case MENU_RENAME:
+                break;
         }
         return true;
     }
@@ -134,22 +138,22 @@ public class ProfileActivity extends AppCompatActivity {
     private void initList() {
         profilesList = new ArrayList<>();
         // We populate the Profiles
-        profilesList.add(new ProfileData(G.gPrefs.getString("default", getString(R.string.defaultProfile)),""));
+        profilesList.add(new ProfileData(G.gPrefs.getString("default", getString(R.string.defaultProfile)), ""));
 
-        if(G.isProfileMigrated()) {
+        if (G.isProfileMigrated()) {
             List<ProfileData> profiles = ProfileHelper.getProfiles();
-            for(ProfileData pro: profiles) {
+            for (ProfileData pro : profiles) {
                 profilesList.add(pro);
             }
         } else {
-            profilesList.add(new ProfileData(G.gPrefs.getString("profile1", getString(R.string.profile1)),""));
-            profilesList.add(new ProfileData(G.gPrefs.getString("profile2", getString(R.string.profile2)),""));
-            profilesList.add(new ProfileData(G.gPrefs.getString("profile3", getString(R.string.profile3)),""));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile1", getString(R.string.profile1)), ""));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile2", getString(R.string.profile2)), ""));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile3", getString(R.string.profile3)), ""));
 
             List<String> pList = G.getAdditionalProfiles();
             for (String profileName : pList) {
                 if (profileName != null && profileName.length() > 0) {
-                    profilesList.add(new ProfileData(profileName,profileName));
+                    profilesList.add(new ProfileData(profileName, profileName));
                 }
             }
         }
@@ -167,12 +171,16 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         String profileName = input.toString();
-                        String identifier = profileName.replaceAll("\\s+","");
-                        ProfileData data = new ProfileData();
-                        data.setName(profileName);
-                        data.setIdentifier(identifier);
+                        String identifier = profileName.replaceAll("\\s+", "");
+                        ProfileData data = new ProfileData(profileName, identifier);
+                        if (G.isProfileMigrated()) {
+                            //store to database
+                            data.save();
+                        } else {
+                            //still use old way
+                            G.addAdditionalProfile(profileName);
+                        }
                         ProfileActivity.this.profilesList.add(data);
-                        G.addAdditionalProfile(profileName);
                         ProfileActivity.this.profileAdapter.notifyDataSetChanged(); // We notify the data model is changed
                     }
                 }).show();

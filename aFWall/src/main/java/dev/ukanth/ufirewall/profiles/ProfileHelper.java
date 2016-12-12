@@ -8,17 +8,11 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -68,7 +62,7 @@ public class ProfileHelper {
 
     public static boolean deleteProfileByName(String profileName) {
         ProfileData data = getProfileByName(profileName);
-        if(data != null) {
+        if (data != null) {
             data.delete();
         }
         return true;

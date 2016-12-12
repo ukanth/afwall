@@ -34,13 +34,21 @@ public class ToggleWidgetOldActivity extends Activity implements
         disableButton = (Button) this
                 .findViewById(R.id.toggle_disable_firewall);
         defaultButton = (Button) this.findViewById(R.id.toggle_default_profile);
+
         profButton1 = (Button) this.findViewById(R.id.toggle_profile1);
         profButton2 = (Button) this.findViewById(R.id.toggle_profile2);
         profButton3 = (Button) this.findViewById(R.id.toggle_profile3);
 
-        profButton1.setText(G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1)));
-        profButton2.setText(G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2)));
-        profButton3.setText(G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3)));
+        if(!G.isProfileMigrated()) {
+            profButton1.setText(G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1)));
+            profButton2.setText(G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2)));
+            profButton3.setText(G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3)));
+        } else {
+            // TODO : USE TOP 3 Profiles instead
+            profButton1.setVisibility(View.GONE);
+            profButton2.setVisibility(View.GONE);
+            profButton2.setVisibility(View.GONE);
+        }
 
         if (Api.isEnabled(getApplicationContext())) {
             enableOthers();
@@ -51,9 +59,12 @@ public class ToggleWidgetOldActivity extends Activity implements
         enableButton.setOnClickListener(this);
         disableButton.setOnClickListener(this);
         defaultButton.setOnClickListener(this);
-        profButton1.setOnClickListener(this);
-        profButton2.setOnClickListener(this);
-        profButton3.setOnClickListener(this);
+
+        if(!G.isProfileMigrated()) {
+            profButton1.setOnClickListener(this);
+            profButton2.setOnClickListener(this);
+            profButton3.setOnClickListener(this);
+        }
 
         if (!G.enableMultiProfile()) {
             profButton1.setEnabled(false);
