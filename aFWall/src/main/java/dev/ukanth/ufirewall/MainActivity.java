@@ -429,10 +429,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         } else {
-            List<ProfileData> profilesList = ProfileHelper.getProfiles();
-            for(ProfileData data: profilesList) {
-                mlocalList.add(data.getName());
-            }
+            Thread getData = new Thread() {
+                @Override
+                public void run() {
+                    List<ProfileData> profilesList = ProfileHelper.getProfiles();
+                    for(ProfileData data: profilesList) {
+                        mlocalList.add(data.getName());
+                    }
+                }
+            };
+            getData.start();
+
         }
     }
 
@@ -671,7 +678,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                     default:
                         if (profileName != null) {
-                            G.setProfile(true, profileName);
+                            ProfileData data = ProfileHelper.getProfileByName(profileName);
+                            G.setProfile(true, data.getIdentifier());
                         }
                 }
                 setDirty(true);

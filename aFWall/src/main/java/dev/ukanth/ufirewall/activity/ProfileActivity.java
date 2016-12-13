@@ -176,6 +176,7 @@ public class ProfileActivity extends AppCompatActivity {
                         if (G.isProfileMigrated()) {
                             //store to database
                             data.save();
+                            G.setProfile(G.enableMultiProfile(), identifier);
                         } else {
                             //still use old way
                             G.addAdditionalProfile(profileName);

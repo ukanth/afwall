@@ -1,7 +1,10 @@
 package dev.ukanth.ufirewall.profiles;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -9,10 +12,15 @@ import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.log.LogData;
+import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -46,6 +54,7 @@ public class ProfileHelper {
     }
 
     public static List<ProfileData> getProfiles() {
+
         List<ProfileData> profileDataList = SQLite.select()
                 .from(ProfileData.class)
                 .queryList();
