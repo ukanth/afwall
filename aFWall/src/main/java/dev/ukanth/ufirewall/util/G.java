@@ -366,7 +366,6 @@ public class G extends android.app.Application {
 				builder.append(profile);
 			}
 			gPrefs.edit().putString(ADDITIONAL_PROFILES, builder.toString()).commit();
-			G.setProfile(G.enableMultiProfile(), profile);
 		}
 	}
 
