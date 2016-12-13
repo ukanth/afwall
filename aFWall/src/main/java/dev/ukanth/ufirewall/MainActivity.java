@@ -643,24 +643,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (initDone > 1) {
             Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
             String profileName = spinner.getSelectedItem().toString();
-            switch (position) {
-                case 0:
-                    G.setProfile(true, "AFWallPrefs");
-                    break;
-                case 1:
-                    G.setProfile(true, "AFWallProfile1");
-                    break;
-                case 2:
-                    G.setProfile(true, "AFWallProfile2");
-                    break;
-                case 3:
-                    G.setProfile(true, "AFWallProfile3");
-                    break;
-                default:
-                    if (profileName != null) {
-                        G.setProfile(true, profileName);
-                    }
+            if(!G.isProfileMigrated()) {
+                switch (position) {
+                    case 0:
+                        G.setProfile(true, "AFWallPrefs");
+                        break;
+                    case 1:
+                        G.setProfile(true, "AFWallProfile1");
+                        break;
+                    case 2:
+                        G.setProfile(true, "AFWallProfile2");
+                        break;
+                    case 3:
+                        G.setProfile(true, "AFWallProfile3");
+                        break;
+                    default:
+                        if (profileName != null) {
+                            G.setProfile(true, profileName);
+                        }
 
+                }
+                setDirty(true);
+            } else {
+                switch (position) {
+                    case 0:
+                        G.setProfile(true, "AFWallPrefs");
+                        break;
+                    default:
+                        if (profileName != null) {
+                            G.setProfile(true, profileName);
+                        }
+                }
+                setDirty(true);
             }
             G.reloadProfile();
             refreshHeader();
