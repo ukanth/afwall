@@ -89,25 +89,6 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         });
 	}
 
-	/*@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putIntArray("S_POS",
-				new int[]{ mScrollView.getScrollX(), mScrollView.getScrollY()});
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		final int[] position = savedInstanceState.getIntArray("S_POS");
-		if(position != null)
-			mScrollView.post(new Runnable() {
-				public void run() {
-					mScrollView.scrollTo(position[0], position[1]);
-				}
-			});
-	}*/
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		//requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
@@ -115,7 +96,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 		setContentView(R.layout.rules);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
-		toolbar.setTitle(getTitle());
+		toolbar.setTitle(getString(R.string.showrules_title));
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

@@ -96,7 +96,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         root.addView(toolbarContainer);
 
         mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.toolbar);
-        mToolBar.setTitle(getTitle());
+        mToolBar.setTitle(R.string.preferences);
         //mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
