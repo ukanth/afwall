@@ -146,19 +146,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MainActivity.dirty = dirty;
     }
 
-    /** Called when the activity is first created
-     * . */
+    /**
+     * Called when the activity is first created
+     * .
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-		try {
-			final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
-					.getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
-			getWindow().setFlags(FLAG_HARDWARE_ACCELERATED,
-					FLAG_HARDWARE_ACCELERATED);
-		} catch (Exception e) {
-		}
+        try {
+            final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
+                    .getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
+            getWindow().setFlags(FLAG_HARDWARE_ACCELERATED,
+                    FLAG_HARDWARE_ACCELERATED);
+        } catch (Exception e) {
+        }
 
         setContentView(R.layout.main);
 
@@ -418,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
 
-        if(!G.isProfileMigrated()) {
+        if (!G.isProfileMigrated()) {
             mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
             mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
             mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
@@ -433,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 @Override
                 public void run() {
                     List<ProfileData> profilesList = ProfileHelper.getProfiles();
-                    for(ProfileData data: profilesList) {
+                    for (ProfileData data : profilesList) {
                         mlocalList.add(data.getName());
                     }
                 }
@@ -650,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (initDone > 1) {
             Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
             String profileName = spinner.getSelectedItem().toString();
-            if(!G.isProfileMigrated()) {
+            if (!G.isProfileMigrated()) {
                 switch (position) {
                     case 0:
                         G.setProfile(true, "AFWallPrefs");
@@ -958,7 +960,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onOptionsItemSelected(item);
         MenuItem menuItem;
         switch (item.getItemId()) {
-		
+
 		/*case android.R.id.home:
 			disableOrEnable();
 	        return true;*/
@@ -1425,10 +1427,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Set a new init script
      *
-     * @param script
-     *            new script (empty to remove)
-     * @param script2
-     *            new "shutdown" script (empty to remove)
+     * @param script  new script (empty to remove)
+     * @param script2 new "shutdown" script (empty to remove)
      */
     private void setCustomScript(String script, String script2) {
         final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
@@ -1812,7 +1812,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     /**
-     *
      * @param i
      */
 
