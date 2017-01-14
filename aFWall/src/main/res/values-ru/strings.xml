@@ -401,4 +401,5 @@
   <string name="switch_new">Переключиться к новому виду</string>
   <string name="showlogdetail_title">Подробности журнала приложения</string>
   <string name="reapply_rules">Просьба повторно применить правила из-за изменения предпочтений</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
 </resources>

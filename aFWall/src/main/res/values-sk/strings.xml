@@ -400,4 +400,5 @@
   <string name="switch_new">Prepnúť na nové zobrazenie</string>
   <string name="showlogdetail_title">Detaily záznamu aplikácie</string>
   <string name="reapply_rules">Prosím, aplikujte znovu pravidlá v dôsledku zmeny nastavení</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
 </resources>

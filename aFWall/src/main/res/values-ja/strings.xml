@@ -403,4 +403,5 @@
   <string name="switch_new">新しいビューに切り替える</string>
   <string name="showlogdetail_title">アプリケーション ログの詳細</string>
   <string name="reapply_rules">設定変更により適切にルールを再適用します</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
 </resources>

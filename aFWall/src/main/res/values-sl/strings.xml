@@ -400,4 +400,5 @@
   <string name="switch_new">Preklopi na novo podobo</string>
   <string name="showlogdetail_title">Podrobnosti dnevnika aplikacij</string>
   <string name="reapply_rules">Prosimo ponovno uveljavite pravila zaradi spremembe nastavitev</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
 </resources>

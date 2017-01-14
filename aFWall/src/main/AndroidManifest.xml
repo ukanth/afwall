@@ -65,6 +65,9 @@
     <!-- <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" /> -->
 
 
+    <!-- Allows ufwall to access information about Fingerprint -->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"
@@ -78,11 +81,11 @@
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher_free"
-        android:roundIcon="@mipmap/round_launcher_free"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:launchMode="singleTop"
         android:resizeableActivity="true"
+        android:roundIcon="@mipmap/round_launcher_free"
         android:supportsRtl="true"
         android:theme="@style/AppDarkTheme"
         tools:ignore="ManifestResource">
@@ -111,7 +114,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
+
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
@@ -125,9 +130,9 @@
         <activity
             android:name=".activity.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
-            android:hardwareAccelerated="true"></activity>
+            android:hardwareAccelerated="true" />
         <activity android:name=".activity.RulesActivity" />
-        <activity android:name=".activity.ProfileActivity"></activity>
+        <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".activity.AppDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -309,13 +314,13 @@
         <provider
             android:name=".preferences.ShareProfilePreference"
             android:authorities="${applicationId}"
-            android:exported="true"></provider>
+            android:exported="true" />
 
         <service
             android:name=".service.RulesApplyService"
             android:exported="false" />
 
-        <!--<activity android:name=".CustomRulesActivity"></activity>-->
+        <!-- <activity android:name=".CustomRulesActivity"></activity> -->
     </application>
 
 </manifest>

@@ -104,6 +104,8 @@ public class G extends android.app.Application {
 	private static final String PWD_ENCRYPT= "pwdEncrypt";
 	
 	private static final String profile_Pwd= "profilePwd";
+	private static final String fingerprint_Enabled = "fingerprintEnabled";
+
 	/** FIXME **/
 	private static final String AFWALL_STATUS = "AFWallStaus";
 	
@@ -148,6 +150,9 @@ public class G extends android.app.Application {
 	
 	public static String profile_pwd() { return gPrefs.getString(profile_Pwd, ""); }
 	public static String profile_pwd(String val) { gPrefs.edit().putString(profile_Pwd, val).commit(); return val; }
+
+	public static Boolean fingerprint_enabled() { return gPrefs.getBoolean(fingerprint_Enabled, false); }
+	public static Boolean fingerprint_enabled(Boolean val) { gPrefs.edit().putBoolean(fingerprint_Enabled, val).commit(); return val; }
 
 	public static boolean isXposedDM() { return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false); }
 	public static boolean isXposedDM(boolean val) { gPrefs.edit().putBoolean(XPOSED_FIX_DM_LEAK, val).commit(); return val; }

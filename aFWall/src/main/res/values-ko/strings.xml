@@ -400,4 +400,5 @@
   <string name="switch_new">새 모냥으로 전환</string>
   <string name="showlogdetail_title">앱 로깅 정보</string>
   <string name="reapply_rules">설정이 바뀌면 자동으로 새로고침</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
 </resources>
