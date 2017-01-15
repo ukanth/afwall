@@ -401,23 +401,4 @@ PRECAUCIÓN: Utilízalo sólo si tienes una conexión IPv4</string>
   <string name="switch_new">Cambiar a la vista nueva</string>
   <string name="showlogdetail_title">Detalles de los registros</string>
   <string name="reapply_rules">Reaplicar amablemente las reglas debido al cambio en las preferencias</string>
-
-  <!-- Fingerprint -->
-
-  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
-  <string name="title_activity_main">MainActivity</string>
-  <string name="title_fingerprint">One-touch Unlock</string>
-  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
-  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-  <string name="title_activity_home">Fingerprint</string>
-  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
-  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
-  <string name="fingerprint_required">Fingerprint required</string>
-  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
-  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
-  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
-  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
-  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
-  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
-  <string name="your_android_version_not_support_fingerprint">Fingerprint requires Android M or newer</string>
 </resources>
