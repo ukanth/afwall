@@ -208,6 +208,8 @@ Contributing
 
 Please fork this repository and contribute back using [pull requests](https://github.com/ukanth/afwall/pulls).
 
+Please make sure PR against *Beta* branch which will under active development !
+
 All contributions, large or small, major features, bug fixes, additional language translations, unit/integration tests are welcomed and appreciated and will be thoroughly reviewed and discussed.
 
 Translating
