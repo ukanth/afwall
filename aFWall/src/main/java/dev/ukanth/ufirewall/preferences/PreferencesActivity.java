@@ -96,16 +96,13 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         root.addView(toolbarContainer);
 
         mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.toolbar);
-        mToolBar.setTitle(getTitle());
-        //mToolBar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        mToolBar.setTitle(getTitle() + " " + getString(R.string.preferences));
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-
-
     }
 
     @Override
@@ -284,14 +281,16 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
 
         if (key.equals("enableLogService")) {
-            Api.setLogging(ctx, G.enableLogService());
             boolean enabled = sharedPreferences.getBoolean(key, false);
             if (enabled) {
+                Api.setLogTarget(ctx, true);
+
                 Intent intent = new Intent(ctx, LogService.class);
                 ctx.stopService(intent);
                 Api.cleanupUid();
                 ctx.startService(intent);
             } else {
+                Api.setLogTarget(ctx, false);
                 Intent intent = new Intent(ctx, LogService.class);
                 ctx.stopService(intent);
                 Api.cleanupUid();

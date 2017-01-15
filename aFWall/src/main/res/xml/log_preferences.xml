@@ -22,7 +22,7 @@
 
         <ListPreference
             android:dependency="enableLogService"
-            android:defaultValue="BB"
+            android:defaultValue="OS"
             android:entries="@array/logDmesgArray"
             android:entryValues="@array/logDmesgValue"
             android:key="logDmesg"

@@ -1,5 +1,22 @@
 Changelog AFWall+
 ==================
+Version 2.9.2-BETA
+
+* Bug: Unable to start logservice error issue on some devices
+* Bug: Optimizing the detection of logTarget
+* Bug: Removed toybox detection, causing lots of ANR issues
+* Preserve Zoom size(+/-) in Firewall rules
+* Revamp of Profiles - Ability to delete default profiles [WIP]
+* Clone and Rename profiles [WIP]
+
+
+Version 2.9.1
+* Boot/Connectivity change rules hung on some devices
+* Widget always display errors
+* Optimized number of su calls
+* Log Service does not work on some devices (Reboot or enable/disable logservice after install)
+* Update material dialog library
+* Updated translations
 
 Version 2.9.0
 * Bug: Sometimes connection gets blocked

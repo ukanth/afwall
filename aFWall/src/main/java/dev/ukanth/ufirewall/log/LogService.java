@@ -22,6 +22,7 @@
 
 package dev.ukanth.ufirewall.log;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -43,15 +44,12 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.events.LogEvent;
-import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
@@ -62,6 +60,7 @@ public class LogService extends Service {
 
     public static String logPath;
     private final IBinder mBinder = new Binder();
+
     private Shell.Interactive rootSession;
 
     static Handler handler;
@@ -75,13 +74,7 @@ public class LogService extends Service {
     public static int toastDefaultYOffset;
     public static int toastYOffset;
     LogData data;
-    LogInfo logInfo;
 
-
-    /*private static final int MAX_ENTRIES = 10;
-
-    private static LinkedList<LogData> circular = new LinkedList<LogData>();
-*/
     private static Runnable showOnlyToastRunnable;
     private static CancelableRunnable showToastRunnable;
     private static View toastLayout;
@@ -178,11 +171,13 @@ public class LogService extends Service {
     }
 
     private void startLogService() {
-        if (!EventBus.getDefault().isRegistered(this) && G.enableLogService()) {
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
+        }
+        if (G.enableLogService()) {
             // this method is executed in a background thread
             // no problem calling su here
-            if (G.logTarget() != null && G.logTarget().length() > 0 && !G.logTarget().isEmpty()) {
+            if (G.logTarget() != null && G.logTarget().length() > 1) {
                 if (G.logDmsg().isEmpty()) {
                     G.logDmsg("OS");
                 }
@@ -192,7 +187,7 @@ public class LogService extends Service {
                             case "OS":
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                                 break;
-                            case "BB":
+                            case "BX":
                                 logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
                                 break;
                             case "TB":
@@ -208,59 +203,64 @@ public class LogService extends Service {
                         logPath = "echo $$ & " + logPath + " " + QUEUE_NUM;
                         break;
                 }
+
+                Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
+                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
+                handler = new Handler();
+
+                closeSession();
+                rootSession = new Shell.Builder()
+                        .useSU()
+                        .setMinimalLogging(true)
+                        .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
+                            @Override
+                            public void onLine(String line) {
+                                if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
+                                    try {
+                                        String uid = line.split("=")[1];
+                                        if (uid != null) {
+                                            Set data = G.storedPid();
+                                            if (data == null || data.isEmpty()) {
+                                                data = new HashSet();
+                                                data.add(uid);
+                                                G.storedPid(data);
+                                            } else if (!data.contains(uid)) {
+                                                Set data2 = new HashSet();
+                                                data2.addAll(data);
+                                                data2.add(uid);
+                                                G.storedPid(data2);
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                    }
+                                } else {
+                                    storeLogInfo(line, getApplicationContext());
+                                }
+
+                            }
+                        }).addCommand(logPath).open();
             } else {
-                Log.i(TAG, "Unable to start log service. LogTarget is empty or LogService is not enabled");
+                Log.i(TAG, "Unable to start log service. LogTarget is empty");
                 Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));
+                G.enableLogService(false);
                 stopSelf();
             }
-
-            Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-            handler = new Handler();
-            Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
-
-            if (rootSession != null && rootSession.isRunning()) {
-                try {
-                    rootSession.kill();
-                    rootSession.close();
-                } catch (Exception e) {
-                }
-            }
-            // kill all previous logged uid
-            Api.cleanupUid();
-
-            rootSession = new Shell.Builder()
-                    .useSU()
-                    .setMinimalLogging(true)
-                    .setOnSTDOUTLineListener(new StreamGobbler.OnLineListener() {
-                        @Override
-                        public void onLine(String line) {
-                            if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
-                                try {
-                                    String uid = line.split("=")[1];
-                                    if (uid != null) {
-                                        Set data = G.storedPid();
-                                        if (data == null || data.isEmpty()) {
-                                            data = new HashSet();
-                                            data.add(uid);
-                                            G.storedPid(data);
-                                        } else if (!data.contains(uid)) {
-                                            Set data2 = new HashSet();
-                                            data2.addAll(data);
-                                            data2.add(uid);
-                                            G.storedPid(data2);
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                }
-                            } else {
-                                storeLogInfo(line, getApplicationContext());
-                            }
-
-                        }
-                    }).addCommand(logPath).open();
         } else {
             Log.i(Api.TAG, "Logservice is running.. skipping");
         }
+    }
+
+    private void closeSession() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(Api.TAG, "Cleanup session");
+                if (rootSession != null) {
+                    rootSession.close();
+                }
+            }
+        }).start();
+        Api.cleanupUid();
     }
 
 
@@ -273,6 +273,7 @@ public class LogService extends Service {
             }
         }
     }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void showMessageToast(LogEvent event) {
@@ -326,16 +327,8 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        if (rootSession != null) {
-            try {
-                rootSession.kill();
-                rootSession.close();
-            } catch (Exception e) {
-            }
-        }
-        Log.d(TAG, "Received request to kill logservice");
         EventBus.getDefault().unregister(this);
-        Api.cleanupUid();
+        closeSession();
         super.onDestroy();
     }
 }

@@ -1,4 +1,4 @@
-package dev.ukanth.ufirewall.util;
+package dev.ukanth.ufirewall.profiles;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,61 +14,56 @@ import dev.ukanth.ufirewall.R;
 /**
  * Created by ukanth on 31/7/15.
  */
-public class ProfileAdapter extends ArrayAdapter<Profile> {
+public class ProfileAdapter extends ArrayAdapter<ProfileData> {
 
-    private List<Profile> ProfileList;
+    private List<ProfileData> profileList;
     private Context context;
 
 
-
-    public ProfileAdapter(List<Profile> ProfileList, Context ctx) {
-        super(ctx, R.layout.profile_layout, ProfileList);
-        this.ProfileList = ProfileList;
+    public ProfileAdapter(List<ProfileData> profileList, Context ctx) {
+        super(ctx, R.layout.profile_layout, profileList);
+        this.profileList = profileList;
         this.context = ctx;
     }
 
     public int getCount() {
-        return ProfileList.size();
+        return profileList.size();
     }
 
-    public Profile getItem(int position) {
-        return ProfileList.get(position);
+    public ProfileData getItem(int position) {
+        return profileList.get(position);
     }
 
     public long getItemId(int position) {
-        return ProfileList.get(position).hashCode();
+        return profileList.get(position).hashCode();
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
-
         ProfileHolder holder = new ProfileHolder();
-
-        // First let's verify the convertView is not null
         if (convertView == null) {
-            // This a new view we inflate the new layout
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.profile_layout, null);
-            // Now we can fill the layout with the right values
             TextView tv = (TextView) v.findViewById(R.id.pro_name);
-            holder.ProfileNameView = tv;
+            holder.profileNameView = tv;
             v.setTag(holder);
-        }
-        else
+        } else {
             holder = (ProfileHolder) v.getTag();
-
-        Profile p = ProfileList.get(position);
-        holder.ProfileNameView.setText(p.getProfileName());
-
+        }
+        ProfileData p = profileList.get(position);
+        holder.profile = p;
+        holder.profileNameView.setText(p.getName());
         return v;
     }
-	
+
 	/* *********************************
-	 * We use the holder pattern        
+     * We use the holder pattern
 	 * It makes the view faster and avoid finding the component
 	 * **********************************/
 
     private static class ProfileHolder {
-        public TextView ProfileNameView;
+        public TextView profileNameView;
+        public ProfileData profile;
+
     }
 }

@@ -8,7 +8,7 @@
   <!-- main -->
   <string name="app_name">AFWall+ </string>
   <string name="app_name_donate">AFWall+ (Doação)</string>
-  <string name="title_disabled">AFWall + (desativado)</string>
+  <string name="title_disabled">AFWall+ (DESATIVADO)</string>
   <string name="whitelist_array_item">Permitir selecionados</string>
   <string name="blacklist_array_item">Bloquear selecionados</string>
   <string name="showrules">Mostrar regras</string>
@@ -50,7 +50,7 @@
   <string name="saving_rules">Salvando regras do iptables</string>
   <string name="rules_applied">Regras aplicadas com sucesso</string>
   <string name="rules_saved">Regras salvas</string>
-  <string name="rules_deleted">Regra excluída</string>
+  <string name="rules_deleted">Regras excluídas</string>
   <string name="pass_titleset">Definir senha de bloqueio</string>
   <string name="pass_titleget">Senha requerida</string>
   <string name="enterpass">Digite a senha</string>
@@ -64,7 +64,7 @@
   <string name="reading_apps">Recuperando aplicativos instalados</string>
   <string name="mode">Modo do Firewall</string>
   <string name="mode_header">Modo: %s</string>
-  <string name="legend_clear">Desmarque todas as caixas de seleção em todas as colunas</string>
+  <string name="legend_clear">Desmarcar todas as caixas de seleção em todas as colunas</string>
   <string name="mode_whitelist">Permitir selecionados</string>
   <string name="legend_whitelist">Aplicativos selecionados terão acesso à internet</string>
   <string name="mode_blacklist">Bloquear selecionados</string>
@@ -137,7 +137,7 @@
   <string name="enable_firewall_log">Ativar registos da firewall</string>
   <string name="enable_firewall_log_service">Ativar serviço de registro</string>
   <string name="showlog_title">Registros de Firewall</string>
-  <string name="showlog_service_summary">Ative esta opção para mostrar mensagens se uma ligação for bloqueada </string>
+  <string name="showlog_service_summary">Ative para exibir mensagens rápidas, quando uma conexão for bloqueada </string>
   <string name="enable_log">Ativar registos</string>
   <string name="disable_log">Desativar registos</string>
   <string name="log_disabled">Registos desativados</string>
@@ -175,19 +175,19 @@
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
   <string name="lan_title">Controle da LAN</string>
-  <string name="lan_summary">Habilite para controlar permissões de LAN separadamente das de WiFi</string>
+  <string name="lan_summary">Ative para controlar separadamente permissões de LAN e de Wi-Fi</string>
   <string name="iptables_pref">Binário iptables</string>
   <string name="vpn_profile">Controle da VPN</string>
-  <string name="vpnSummary">Habilitar para controlar permissões de VPN separadamente</string>
+  <string name="vpnSummary">Ative para controlar separadamente as permissões de VPN</string>
   <string name="roaming">Controle do Roaming</string>
-  <string name="roamingSummary">Habilitar para controlar permissões de internet em roaming separadamente</string>
+  <string name="roamingSummary">Ative para controlar separadamente as permissões de internet e de roaming</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
-  <string name="toast_bin_installed">AFWall +: Arquivos binários instalados</string>
+  <string name="toast_bin_installed">AFWall+: Arquivos binários instalados</string>
   <string name="toast_enabled">AFWall+: firewall ativada</string>
   <string name="toast_error_enabling">AFWall+: erro ao ativar o firewall!</string>
-  <string name="toast_disabled">AFWall+: firewall desativado!</string>
+  <string name="toast_disabled">AFWall+: Firewall DESATIVADO!</string>
   <string name="toast_error_disabling">AFWall+: Erro ao desativar o firewall!</string>
   <!-- Binary -->
   <string name="busybox_pref">Binário Busybox</string>
@@ -280,7 +280,7 @@
   <string name="settings_pwd_not_equal">Senha errada</string>
   <string name="faq">Perguntas frequentes</string>
   <string name="reverse_all">Inverter seleção dos aplicativos?</string>
-  <string name="unselect_all">Limpar cache dos apps selecionados?</string>
+  <string name="unselect_all">Limpar todos os apps selecionados?</string>
   <string name="check_all">Selecionar tudo</string>
   <string name="invert_all">Inverter Todas</string>
   <string name="legend_invert">Inverter todas as caixas de seleção em todas as colunas</string>
@@ -386,7 +386,7 @@
   <string name="menu_legend">Legendas</string>
   <string name="permissiondenied_importexport">Permissão negada para acesso de leitura/gravação para armazenamento externo. Por favor, dê acesso para regras de exportação/importação.</string>
   <string name="permissiondenied_asset">Permissão negada para acesso de leitura/gravação para o armazenamento. Por favor, dê acesso para copiar os binários para AFWall + </string>
-  <string name="log_deletedapp">Aplicação apagada</string>
+  <string name="log_deletedapp">Aplicativo removido</string>
   <string name="log_denied">Recusado:</string>
   <string name="log_times">vezes</string>
   <string name="log_time">vez</string>

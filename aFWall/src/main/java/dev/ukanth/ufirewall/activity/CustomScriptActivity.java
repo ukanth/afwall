@@ -26,6 +26,7 @@ package dev.ukanth.ufirewall.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.LinkMovementMethod;
@@ -37,6 +38,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
@@ -115,44 +117,26 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
 				// Nothing has been changed, just return
 				return super.onKeyDown(keyCode, event);
 			}
-			/*final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					switch (which) {
-					case DialogInterface.BUTTON_POSITIVE:
-						resultOk();
-						break;
-					case DialogInterface.BUTTON_NEGATIVE:
-						// Propagate the event back to perform the desired action
-						CustomScriptActivity.super.onKeyDown(keyCode, event);
-						break;
-					}
-				}
-			};*/
-
 			new MaterialDialog.Builder(this)
 					.title(R.string.unsaved_changes)
 					.content(R.string.unsaved_changes_message)
 					.positiveText(R.string.apply)
 					.negativeText(R.string.discard)
-					.callback(new MaterialDialog.ButtonCallback() {
+					.onPositive(new MaterialDialog.SingleButtonCallback() {
 						@Override
-						public void onPositive(MaterialDialog dialog) {
+						public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 							resultOk();
 						}
+					})
 
+					.onNegative(new MaterialDialog.SingleButtonCallback() {
 						@Override
-						public void onNegative(MaterialDialog dialog) {
+						public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 							onBackPressed();
 							findViewById(R.id.customscript_cancel).performClick();
 						}
 					})
 					.show();
-			/*final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.unsaved_changes).setMessage(R.string.unsaved_changes_message)
-					.setPositiveButton(R.string.apply, dialogClickListener)
-					.setNegativeButton(R.string.discard, dialogClickListener).show();*/
-			// Say that we've consumed the event
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);

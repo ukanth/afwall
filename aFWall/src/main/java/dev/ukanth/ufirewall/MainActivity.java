@@ -87,6 +87,8 @@ import dev.ukanth.ufirewall.activity.OldLogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
+import dev.ukanth.ufirewall.profiles.ProfileData;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -173,10 +175,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         this.findViewById(R.id.img_reset).setOnClickListener(this);
         this.findViewById(R.id.img_invert).setOnClickListener(this);
 
-
         AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
         AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
-
 
         //make sure we have WRITE_EXTERNAL_STORAGE ACCESS
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -186,9 +186,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
         } else {
             Api.assertBinaries(this, true);
-
         }
-
 
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
@@ -196,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (!G.hasRoot()) {
             (new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
-            startRootShell();
+            //startRootShell();
             passCheck();
         }
     }
@@ -247,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void startRootShell() {
+   /* private void startRootShell() {
         Thread rootShell = new Thread() {
             @Override
             public void run() {
@@ -261,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
         rootShell.start();
-    }
+    }*/
 
     @Override
     public void onResume() {
@@ -337,6 +335,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         selectFilterGroup();
     }
+
+    /**
+     * This will be used to migrate the profiles to a better one ( get ridoff of default profile )
+     */
 
 
     @Override
@@ -414,20 +416,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (reset) {
             mlocalList = new ArrayList<>(new LinkedHashSet<String>());
         }
+
         mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
-        mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
-        mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
-        mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
 
-        boolean isAdditionalProfiles = false;
-        List<String> profilesList = G.getAdditionalProfiles();
-        for (String profiles : profilesList) {
-            if (profiles != null && profiles.length() > 0) {
-                isAdditionalProfiles = true;
-                mlocalList.add(profiles);
+        if(!G.isProfileMigrated()) {
+            mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
+            mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
+            mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
+            List<String> profilesList = G.getAdditionalProfiles();
+            for (String profiles : profilesList) {
+                if (profiles != null && profiles.length() > 0) {
+                    mlocalList.add(profiles);
+                }
             }
-        }
+        } else {
+            Thread getData = new Thread() {
+                @Override
+                public void run() {
+                    List<ProfileData> profilesList = ProfileHelper.getProfiles();
+                    for(ProfileData data: profilesList) {
+                        mlocalList.add(data.getName());
+                    }
+                }
+            };
+            getData.start();
 
+        }
     }
 
     public void deviceCheck() {
@@ -476,7 +490,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                     break;
                 case "p3":
-                    requestFingerprint();
+
+                    if(FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()){
+
+                        requestFingerprint();
+                    }
             }
         }
         return false;
@@ -580,9 +598,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
                         .positiveText(R.string.submit)
                         .negativeText(R.string.Cancel)
-                        .callback(new MaterialDialog.ButtonCallback() {
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onNegative(MaterialDialog dialog) {
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 MainActivity.this.finish();
                                 android.os.Process.killProcess(android.os.Process.myPid());
                             }
@@ -655,24 +673,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (initDone > 1) {
             Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
             String profileName = spinner.getSelectedItem().toString();
-            switch (position) {
-                case 0:
-                    G.setProfile(true, "AFWallPrefs");
-                    break;
-                case 1:
-                    G.setProfile(true, "AFWallProfile1");
-                    break;
-                case 2:
-                    G.setProfile(true, "AFWallProfile2");
-                    break;
-                case 3:
-                    G.setProfile(true, "AFWallProfile3");
-                    break;
-                default:
-                    if (profileName != null) {
-                        G.setProfile(true, profileName);
-                    }
+            if(!G.isProfileMigrated()) {
+                switch (position) {
+                    case 0:
+                        G.setProfile(true, "AFWallPrefs");
+                        break;
+                    case 1:
+                        G.setProfile(true, "AFWallProfile1");
+                        break;
+                    case 2:
+                        G.setProfile(true, "AFWallProfile2");
+                        break;
+                    case 3:
+                        G.setProfile(true, "AFWallProfile3");
+                        break;
+                    default:
+                        if (profileName != null) {
+                            G.setProfile(true, profileName);
+                        }
 
+                }
+                setDirty(true);
+            } else {
+                switch (position) {
+                    case 0:
+                        G.setProfile(true, "AFWallPrefs");
+                        break;
+                    default:
+                        if (profileName != null) {
+                            ProfileData data = ProfileHelper.getProfileByName(profileName);
+                            G.setProfile(true, data.getIdentifier());
+                        }
+                }
+                setDirty(true);
             }
             G.reloadProfile();
             refreshHeader();
@@ -1175,9 +1208,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         .positiveText(R.string.Yes)
                                         .negativeText(R.string.No)
                                         .icon(getResources().getDrawable(R.drawable.ic_launcher))
-                                        .callback(new MaterialDialog.ButtonCallback() {
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
-                                            public void onPositive(MaterialDialog dialog) {
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                 if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
                                                     Api.applications = null;
                                                     showOrLoadApplications();
@@ -1186,9 +1219,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                                     Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
                                                 }
                                             }
+                                        })
 
+                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
                                             @Override
-                                            public void onNegative(MaterialDialog dialog) {
+                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                                 dialog.cancel();
                                             }
                                         })
@@ -1764,15 +1799,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 .content(R.string.unsaved_changes_message)
                                 .positiveText(R.string.apply)
                                 .negativeText(R.string.discard)
-                                .callback(new MaterialDialog.ButtonCallback() {
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onPositive(MaterialDialog dialog) {
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                         applyOrSaveRules();
                                         dialog.dismiss();
                                     }
-
+                                })
+                                .onNegative(new MaterialDialog.SingleButtonCallback() {
                                     @Override
-                                    public void onNegative(MaterialDialog dialog) {
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                         setDirty(false);
                                         Api.applications = null;
                                         finish();
@@ -1810,9 +1846,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .cancelable(true)
                 .positiveText(R.string.OK)
                 .negativeText(R.string.Cancel)
-                .callback(new MaterialDialog.ButtonCallback() {
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onPositive(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         switch (i) {
                             case R.id.img_invert:
                                 selectRevert();
@@ -1822,9 +1858,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                         dialog.dismiss();
                     }
+                })
 
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
                     @Override
-                    public void onNegative(MaterialDialog dialog) {
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         dialog.dismiss();
                     }
                 })
@@ -2024,7 +2062,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 G.hasRoot(hasRoot);
                 passCheck();
-                startRootShell();
+                //startRootShell();
             }
         }
     }

@@ -29,10 +29,12 @@ import android.content.Intent;
 import android.os.Handler;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
+import dev.ukanth.ufirewall.log.LogService;
 import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 
@@ -60,6 +62,12 @@ public class BootBroadcast extends BroadcastReceiver {
 			}, 5000);
 		} else {
 			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+			if (G.enableLogService()) {
+				//make sure we cleanup existing uid
+				G.storedPid(new HashSet());
+				final Intent logIntent = new Intent(context, LogService.class);
+				context.startService(logIntent);
+			}
 			if(G.activeNotification()){
 				Api.showNotification(Api.isEnabled(context), context);
 			}

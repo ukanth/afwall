@@ -37,6 +37,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +64,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 	protected static final int MENU_ZOOM_IN = 22;
 	protected static final int MENU_ZOOM_OUT = 23;
 	TextView scaleGesture;
+	ScrollView mScrollView;
 
 	protected Menu mainMenu;
 	protected String dataText;
@@ -82,6 +84,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             {
                 scaleGesture = (TextView) findViewById(R.id.rules);
                 scaleGesture.setText(data);
+				scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
             }
         });
 	}
@@ -93,8 +96,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 		setContentView(R.layout.rules);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
-		toolbar.setTitle(getTitle());
-		//toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+		toolbar.setTitle(getString(R.string.showrules_title));
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -104,13 +106,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
 		setSupportActionBar(toolbar);
 
+		mScrollView = (ScrollView) findViewById(R.id.ruleScrollView);
+
 		// Load partially transparent black background
 		getSupportActionBar().setHomeButtonEnabled(true);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		//TextView text = (TextView) findViewById(R.id.rules);
-		//text.setKeyListener(null);
-		//text.setHorizontallyScrolling(true);
-		
+
 		setData("");
 		populateData(this);
 
@@ -150,10 +151,14 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 			populateData(this);
 			return true;
 		case MENU_ZOOM_IN:
-			scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, scaleGesture.getTextSize() + 2.0f);
+			Float newSize =  scaleGesture.getTextSize() + 2.0f;
+			scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX,newSize);
+			G.ruleTextSize(newSize.intValue());
 			return false;
 		case MENU_ZOOM_OUT:
-			scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, scaleGesture.getTextSize() - 2.0f);
+			newSize =  scaleGesture.getTextSize() - 2.0f;
+			scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+			G.ruleTextSize(newSize.intValue());
 			return false;
 		default:
 			return super.onOptionsItemSelected(item);

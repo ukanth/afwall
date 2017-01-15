@@ -62,7 +62,7 @@
   <string name="passerror">改变密码锁定出错</string>
   <string name="working">工作中</string>
   <string name="reading_apps">正在检索已安装应用</string>
-  <string name="mode">Firewall Mode</string>
+  <string name="mode">防火墙模式</string>
   <string name="mode_header">模式：%s</string>
   <string name="legend_clear">清除所有列中的所有复选框</string>
   <string name="mode_whitelist">允许所选项</string>
@@ -210,7 +210,7 @@
   <string name="disable_tasker">禁用 AFWall+</string>
   <string name="tasker_apply">Tasker：正在应用防火墙规则</string>
   <string name="tasker_disabled">Tasker: AFWall+ 已禁用!</string>
-  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
+  <string name="tasker_profile_applied">Tasker: AFWall + 配置文件已成功应用</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ 多配置文件已禁用</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 支持</string>
@@ -236,7 +236,7 @@
   <!-- Startup -->
   <string name="startup_service">正在应用规则. 请稍后.</string>
   <string name="addStartupDelayTitle">启动延迟</string>
-  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+  <string name="addStartupDelaySummary">AFWall+ 将等待 5 秒后应用规则. 仅当启动规则无法正确在开机过程中应用时启用此设定.</string>
   <string name="fixleakTitle">修复启动数据泄露</string>
   <string name="fixleakSummary">防止系统启动过程中的数据泄漏. 您的 ROM 必须支持 nit.d or su.d(superSU). HTC 设备必须 S-OFF.</string>
   <!--
@@ -247,7 +247,7 @@
   <string name="enableInboundSummary">允许从局域网到手机连接 (Samba，sshd，AirDroid，等。)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">用户界面</string>
-  <string name="rules_prefs_title">Rules/Connectivity</string>
+  <string name="rules_prefs_title">规则/连接</string>
   <string name="log_prefs_title">日志</string>
   <string name="hideicons_pref_title">隐藏应用图标</string>
   <string name="hideicons_pref_summary_on">在主界面中隐藏应用图标以提升性能.</string>
@@ -299,7 +299,7 @@
   <string name="pkg_core">核心</string>
   <string name="pkg_sys">系统</string>
   <string name="pkg_user">用户</string>
-  <string name="menu">Menu</string>
+  <string name="menu">菜单</string>
   <string name="backup_notexist">没有备份存在。请从菜单中导出。</string>
   <string name="showFilter">显示过滤器</string>
   <string name="showfilter_summary_on">在主视图中显示过滤器 (所有/核心/系统/用户)</string>
@@ -354,7 +354,7 @@
   <string name="submit">提交</string>
   <string name="dialog_color_picker">颜色选择器</string>
   <!--<string name="sort">Sort Applications</string>-->
-  <string name="access_sort">Sort option</string>
+  <string name="access_sort">排序选项</string>
   <string name="defaultsort">按名称 (默认)</string>
   <string name="lastupdated">按安装/更新时间</string>
   <string name="uid">按UID</string>

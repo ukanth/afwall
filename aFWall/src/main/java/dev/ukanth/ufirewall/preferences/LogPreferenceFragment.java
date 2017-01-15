@@ -20,10 +20,10 @@ public class LogPreferenceFragment extends PreferenceFragment  {
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.log_preferences);
-		populateLogMessge(findPreference("logDmesg"));
+		populateLogMessage(findPreference("logDmesg"));
 	}
 
-	private void populateLogMessge(Preference logDmesg) {
+	private void populateLogMessage(Preference logDmesg) {
 		if (logDmesg == null) {
 			return;
 		}
@@ -37,18 +37,17 @@ public class LogPreferenceFragment extends PreferenceFragment  {
 
 		if(RootTools.isBusyboxAvailable()){
 			ar.add("Busybox");
-			val.add("BB");
+			val.add("BX");
 		}
-		if(RootTools.isToyboxAvailable()) {
+		
+		/*if(RootTools.isToyboxAvailable()) {
 			ar.add("Toybox");
 			val.add("TB");
-		}
+		}*/
 
-		if(ar.size() >= 1 && listPreference != null ) {
-			String[] array = ar.toArray(new String[0]);
-			String[] values = val.toArray(new String[0]);
-			listPreference.setEntries(array);
-			listPreference.setEntryValues(values);
+		if(ar.size() != 1 && listPreference != null ) {
+			listPreference.setEntries(ar.toArray(new String[0]));
+			listPreference.setEntryValues(val.toArray(new String[0]));
 
 		} else {
 			if(listPreference != null && mCategory != null) {

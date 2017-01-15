@@ -62,11 +62,11 @@
     <!-- Will be default in CyanogenMod Superuser App -->
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
 
-    <!-- <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" /> -->
-
-
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <!-- <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" /> -->
+
 
     <!-- Screen support -->
     <supports-screens
@@ -114,7 +114,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
@@ -130,18 +129,32 @@
         <activity
             android:name=".activity.HelpActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|locale"
-            android:hardwareAccelerated="true" />
-        <activity android:name=".activity.RulesActivity" />
-        <activity android:name=".activity.ProfileActivity" />
-        <activity android:name=".activity.AppDetailActivity">
+            android:hardwareAccelerated="true"></activity>
+        <activity
+            android:name=".activity.RulesActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.AppDetailActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
-        <activity android:name=".activity.LogActivity" />
-        <activity android:name=".activity.OldLogActivity" />
-        <activity android:name=".activity.LogDetailActivity" />
-        <activity android:name=".activity.DataDumpActivity">
+        <activity
+            android:name=".activity.LogActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.OldLogActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.LogDetailActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.DataDumpActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
@@ -165,7 +178,9 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.CustomScriptActivity">
+        <activity
+            android:name=".activity.CustomScriptActivity"
+            android:configChanges="orientation|keyboardHidden|locale|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
@@ -314,13 +329,13 @@
         <provider
             android:name=".preferences.ShareProfilePreference"
             android:authorities="${applicationId}"
-            android:exported="true" />
+            android:exported="true"></provider>
 
         <service
             android:name=".service.RulesApplyService"
             android:exported="false" />
 
-        <!-- <activity android:name=".CustomRulesActivity"></activity> -->
+        <!--<activity android:name=".CustomRulesActivity"></activity>-->
     </application>
 
 </manifest>

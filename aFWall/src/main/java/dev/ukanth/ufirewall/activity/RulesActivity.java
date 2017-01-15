@@ -30,9 +30,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
@@ -316,9 +318,9 @@ public class RulesActivity extends DataDumpActivity {
 				.content(R.string.flushRulesConfirm)
 				.positiveText(R.string.Yes)
 				.negativeText(R.string.No)
-				.callback(new MaterialDialog.ButtonCallback() {
+				.onPositive(new MaterialDialog.SingleButtonCallback() {
 					@Override
-					public void onPositive(MaterialDialog dialog) {
+					public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 						Api.flushAllRules(ctx, new RootCommand()
 								.setReopenShell(true)
 								.setSuccessToast(R.string.flushed)
@@ -328,7 +330,14 @@ public class RulesActivity extends DataDumpActivity {
 										populateData(ctx);
 									}
 								}));
+						dialog.dismiss();
+					}
+				})
 
+				.onNegative(new MaterialDialog.SingleButtonCallback() {
+					@Override
+					public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+						dialog.dismiss();
 					}
 				})
 				.show();
