@@ -82,7 +82,7 @@ Limitations
 -----------
 
 * A firewall cannot protect against attacks that are performed outside the operating point. For example, if there is a Point-to-Point connection to the Internet.
-* A firewall cannot prevent corporate data from being copied to a memory stick or HDD, and having these removed from the building. 
+* A firewall cannot prevent corporate data from being copied to a memory stick or HDD, and having these removed from the building.
 * AFWall+ does not scan for virus/malware that may exist in the files that pass through it, because it is a firewall and not an antivirus solution.
 
 Compatibility
@@ -185,7 +185,7 @@ This project also uses many other open-source libraries such as:
         <td>Root Tools</td>
         <td>Apache License 2.0</td>
         <td>https://github.com/Stericson/RootTools</td>
-    </tr>	
+    </tr>
 </table>
 
 Compile AFWall+
