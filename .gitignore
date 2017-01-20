@@ -48,6 +48,7 @@ obj/
 # IDE related 
 .idea/
 *.iml
+aFWall/*.iml
 .settings/
 
 # Proguard 
