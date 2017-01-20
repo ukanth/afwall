@@ -224,7 +224,7 @@ public class G extends android.app.Application {
 
 	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean(PROFILE_SWITCH, false); }
 
-	public static String logTarget() { return gPrefs.getString(LOG_TARGET, null); }
+	public static String logTarget() { return gPrefs.getString(LOG_TARGET, ""); }
 	public static String logTarget(String val) { gPrefs.edit().putString(LOG_TARGET, val).commit(); return val; }
 
 	public static int appVersion() { return gPrefs.getInt(APP_VERSION, 0); }
