@@ -501,4 +501,5 @@
     <string name="error_or_unknown_category">Error or Unknown Category</string>
     <string name="show_destination_address">Show Destination Address</string>
     <string name="show_source_address">Show Source Address</string>
+    <string name="network_connection_not_available">Network connection not Available</string>
 </resources>

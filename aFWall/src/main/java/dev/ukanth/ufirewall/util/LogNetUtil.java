@@ -75,7 +75,15 @@ public class LogNetUtil {
 
                         try{
 
-                            return output(Runtime.getRuntime().exec(String.format(PING_CMD, params[0].address)));
+                            /* [WIP] looking for ping timeout option */
+                            String result = output(Runtime.getRuntime().exec(String.format(PING_CMD, /*G.logPingTimeout(), */params[0].address)));
+
+                            if(result.isEmpty()){
+
+                                result = context.getString(R.string.network_connection_not_available);
+                            }
+
+                            return result;
 
                         }catch (Exception eex){
 
