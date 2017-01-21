@@ -64,20 +64,20 @@
   <string name="reading_apps">설치된 앱 가져오는 중</string>
   <string name="mode">방화벽 모드</string>
   <string name="mode_header">사용모드: %s</string>
-  <string name="legend_clear">모든 선택 취소</string>
+  <string name="legend_clear">Clear all checkboxes in all columns</string>
   <string name="mode_whitelist">선택사항 허용</string>
-  <string name="legend_whitelist">선택된 앱들은 인터넷을 연결합니다</string>
+  <string name="legend_whitelist">Selected apps will be granted internet access</string>
   <string name="mode_blacklist">선택사항 차단</string>
-  <string name="legend_blacklist">선택된 앱들은 인터넷을 차단합니다</string>
+  <string name="legend_blacklist">Selected apps will be denied internet access</string>
   <string name="set_custom_script">나만의 명령어 설정</string>
   <string name="preferences">설정</string>
   <string name="reload">앱 다시가져오기</string>
   <string name="flush">모든 규칙 삭제</string>
   <string name="send_report">오류정보 보내기</string>
-  <string name="enter_problem">문제사항을 적어주세요:</string>
+  <string name="enter_problem">Please explain the issue:</string>
   <string name="send_mail">이메일 보내기</string>
-  <string name="notify_pref_summary_on">새로운 앱이 설치될 때 알림이 상태바에 뜹니다.</string>
-  <string name="notify_pref_summary_off">새로운 앱이 설치될 때 알림이 상태바에 뜨지 않습니다.</string>
+  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
   <string name="custom_script_defined">나만의 명령어 적용완료</string>
   <string name="custom_script_removed">나만으 명령어 제거완료</string>
   <string name="custom_script_error">나만의 명령어 저장 중 에러</string>
@@ -85,18 +85,21 @@
   <string name="custom_script2_info">    \n<b>나만의 종료 명령어</b> \n방화벽 사용이 <b>중단</b>될 때 실행될 나만의 명령어를 만드실 수도 있습니다.</string>
   <string name="unsaved_changes">수정사항이 저장되지 않음</string>
   <string name="unsaved_changes_message">수정사항이 저장되지 않았습니다.\n적용 혹은 무시하시겠습니까?</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">방화벽 규칙</string>
   <string name="copy">복사</string>
   <string name="copied">복사됨</string>
   <string name="Search">검색</string>
   <string name="flushRulesConfirm">모든 방화벽 규칙을 삭제할까요?</string>
-  <string name="overrideRules">사용하던 규칙은 없어집니다! 새 규칙을 가져오시겠습니까?</string>
+  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
   <string name="notification_new">새로운 앱 설치됨</string>
   <string name="notification_new_package">인터넷 사용기능 설정</string>
   <string name="confirmMsg">방화벽을 정말 중단하시겠습니까?</string>
   <string name="apply">적용</string>
   <string name="discard">저장 안 함</string>
   <string name="delete">삭제</string>
+  <string name="clone">Clone</string>
+  <string name="rename">Rename</string>
   <string name="Yes">네</string>
   <string name="Continue">계속</string>
   <string name="No">아니요</string>
@@ -113,7 +116,7 @@
   <string name="remove_initd">Startup script 제거됨</string>
   <string name="unable_remove_initd">시작명령어 중단 실패</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">방화벽을 중단할 수 없습니다 - 비밀번호로 보호되어있습니다!</string>
+  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
   <string name="widget_label_status">AFWall+ On/Off 상태</string>
   <string name="widget_label_settings">AFWall+ 설정</string>
   <string name="widget_label_settings_old">AFWall+ (예전) 설정</string>
@@ -130,9 +133,9 @@
   <string name="import_rules_success">여기에서 가져오기 </string>
   <string name="import_rules_fail">가져오기 실패!</string>
   <string name="import_rules_missing">규칙 파일을 찾지 못했습니다.</string>
-  <string name="exportConfirm">SD카드로 규칙을 내보낼까요?</string>
-  <string name="export_logs_fail">SD 카드로 내보내지 못했습니다!</string>
-  <string name="export_to_sd">SD카드로 내보내기</string>
+  <string name="exportConfirm">Export rules to storage?</string>
+  <string name="export_logs_fail">Export to storage failed!</string>
+  <string name="export_to_sd">Export to storage</string>
   <!-- Logging -->
   <string name="enable_firewall_log">방화벽 기록기능 켜기</string>
   <string name="enable_firewall_log_service">기록기능 사용</string>
@@ -172,15 +175,16 @@
   <string name="profile1">프로필 1</string>
   <string name="profile2">프로필 2</string>
   <string name="profile3">프로필 3</string>
+  <string name="profile_hint">ProfileName</string>
   <string name="reapply_profile">프로필 규칙 재적용</string>
   <!-- Interface -->
-  <string name="lan_title">LAN 설정</string>
+  <string name="lan_title">LAN control</string>
   <string name="lan_summary">이것을 활성화해서 WIfi 규칙과 다른 LAN 규칙을 설정하세요</string>
   <string name="iptables_pref">방화벽 binary</string>
   <string name="vpn_profile">VPN 설정</string>
   <string name="vpnSummary">VPN 규칙 따로 설정하기</string>
   <string name="roaming">로밍 설정</string>
-  <string name="roamingSummary">로밍 규칙 따로 설정하기</string>
+  <string name="roamingSummary">Enable to control roaming permissions separately</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -198,9 +202,9 @@
   <string name="auto">자동</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed 관련</string>
-  <string name="fixDownloadTitle">DownloadManager 오류 고치기</string>
-  <string name="fixDownloadTitleSummary">Xposed를 이용해서 차단된 앱들이 DownloadManager를 이용해서 인터넷을 연결하는 오류를 차단합니다</string>
-  <string name="LeakDetected">오류가 있습니다</string>
+  <string name="fixDownloadTitle">Fix DownloadManager leak</string>
+  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+  <string name="LeakDetected">Leak detected!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 관련</string>
   <string name="disable_toaster">Tasker 팝업창 뜨지 않게하기</string>
@@ -215,7 +219,7 @@
   <string name="ipv6_title">IPv6 지원</string>
   <string name="ipv6_summary">IPv6 지원하기</string>
   <string name="block_ipv6_title">IPv6 차단</string>
-  <string name="block_ipv6_summary">IPv6를 사용하는 앱들을 차단합니다. 주의사항: IPv4로 연결이 되는 경우에만 사용하세요.</string>
+  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
   <string name="ip6unavailable">에러: IPv6 는 \"/system/bin/ip6tables\" 이 필요합니다.</string>
   <string name="switch_ipv6">IPV6 규칙으로 전환</string>
   <string name="switch_ipv4">IPV4 규칙으로 전환</string>
@@ -224,7 +228,7 @@
   <string name="usePattern">비밀번호말고 패턴쓰기</string>
   <string name="stealthMode">패턴 비밀모드</string>
   <string name="patternMaxTry">최대 시도 가능 숫자</string>
-  <string name="resetPattern">패턴을 다시 그릴까요?</string>
+  <string name="resetPattern">Reset lock pattern?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">기기 관리자</string>
   <string name="device_admin_enabled">AFWall+ 기기관리자 허용됨</string>
@@ -237,7 +241,7 @@
   <string name="addStartupDelayTitle">작동 전 기다리는 시간</string>
   <string name="addStartupDelaySummary">변경내용을 적용하기 전에 5초 동안 기다립니다. 전원을 켜도 작동이 되지 않는 경우에만 이것을 선택하세요.</string>
   <string name="fixleakTitle">시작 시 데이터 유출 막기</string>
-  <string name="fixleakSummary">폰이 부팅할 때 데이터 유출을 방지하세요. 폰의 ROM이 init.d 혹은 su.d(superSU)를 사용하고 있어야 합니다. HTC폰은 S-OFF로 설정되어야 합니다.</string>
+  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -263,7 +267,7 @@
   <string name="misc_header">언어/플러그인</string>
   <!-- 1.2.6 -->
   <string name="active_rules">사용중인 규칙</string>
-  <string name="active_rules_summary">모든 연결사항에 방화벽 규칙 적용 (로밍/LAN/Wifi/3G/테터링)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
   <string name="profile_add">프로필 추가</string>
   <string name="profile_remove">프로필 삭제</string>
   <string name="profile_rename">프로파일 이름 바꾸기</string>
@@ -272,6 +276,7 @@
   <string name="multi_apply_rules_info">프로필 교체시 규칙을 재적용합니다.</string>
   <string name="multi_user_title">다중사용자기능 허용</string>
   <string name="multi_user_summary">안드로이드 멀티유저 지원 (다만, 선택된 앱이 차단될 때만 사용가능)</string>
+  <!--  -->
   <string name="device_admin_desc">기타보호기능 - AFWall+ 삭제 금지하기</string>
   <string name="traffic_detail_title">트래픽 통계</string>
   <string name="uploaded">업로드</string>
@@ -293,13 +298,13 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">데이터</string>
-  <string name="legend_data">데이터 (2G,3G,EDGE,LTE/4G) 권한 허가하기</string>
+  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">모두</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">시스템</string>
   <string name="pkg_user">사용자</string>
   <string name="menu">메뉴</string>
-  <string name="backup_notexist">백업이 없습니다.  메뉴에서 내보내주세요.</string>
+  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
   <string name="showFilter">필터 보기</string>
   <string name="showfilter_summary_on">필터 (모두/기본기/시스템/사용자) 보기</string>
   <string name="showfilter_summary_off">필터 (모두/기본기/시스템/사용자) 숨기기</string>
@@ -325,7 +330,7 @@
   <string name="donate_thanks">지원해 주셔서 감사드립니다!</string>
   <string name="activeNotification">알림아이콘 보이기</string>
   <string name="activeNotification_summary">상태바에 항상 알림창 표시</string>
-  <string name="active">방화벽 사용중</string>
+  <string name="active">Firewall enabled</string>
   <string name="inactive">방화벽 중지됨</string>
   <string name="About">안내</string>
   <string name="FAQ">FAQ</string>
@@ -344,12 +349,13 @@
   <string name="pref_password">비밀번호</string>
   <string name="pref_pattern">패턴</string>
   <string name="pref_device">기기 보호기능 작동</string>
-  <string name="pref_device_desc">기기 보안기능으로 앱 보호 (donation/key 추가 기능)</string>
-  <string name="secure_option">기기가 비밀번호/핀번호로 보호되지 않고 있습니다</string>
-  <string name="android_version">이 기능은 안드로이드 5. 0 version 롤리팝Lollipop 이상에서만 가능합니다.</string>
+  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+  <string name="secure_option">Device is not secured with password/PIN</string>
+  <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">결정</string>
   <string name="wrong_password">비밀번호가 틀립니다</string>
+  <string name="password_empty"></string>
   <string name="submit">제치</string>
   <string name="dialog_color_picker">색깔 고르출</string>
   <!--<string name="sort">Sort Applications</string>-->
@@ -363,7 +369,7 @@
   <string name="manage_profiles_summary">프로필을 추가/제거</string>
   <string name="profiles">프로필 </string>
   <string name="migrate_profiles">프로필 이동</string>
-  <string name="migrate_summary">버전 1.x에서 2.x로 모든 프로필 데이터 이동동</string>
+  <string name="migrate_summary">Migrate all profile data</string>
   <string name="insert_profile">프로필 이름</string>
   <string name="add">추가</string>
   <string name="showlog_toasts">차단할 때 알림을 받도록 허용</string>
@@ -375,7 +381,7 @@
   <string name="widget_prefs_title">위젯 위치</string>
   <string name="xTitle">위젯 가로 위치</string>
   <string name="xTitleSummary">수동으로 가로위치 조정</string>
-  <string name="xTitleDialog">가로 위치 조정 (숫자입력)</string>
+  <string name="xTitleDialog">Set X position (number)</string>
   <string name="yTitle">위젯 세로 위치</string>
   <string name="yTitleSummary">수동으로 세로위치 조정</string>
   <string name="yTitleDialog">세로 위치 조정 (숫자입력)</string>
@@ -383,8 +389,8 @@
   <string name="error_nonsupported_details">현재 사용하시는 슈퍼유저 앱은 방화벽을 무시합니다. 이 문제는 AFWall+이 고칠 수 없습니다.</string>
   <string name="lockNotification">잠금화면 알림 숨기기</string>
   <string name="lockScreenNotification_summary">잠금화면에서 알림 숨기기</string>
-  <string name="menu_legend">설명</string>
-  <string name="permissiondenied_importexport">외부저장장치 읽기/쓰기 권한이 없습니다. 내보내기/가져오기를 하시라면 권한을 허가해 주세요.</string>
+  <string name="menu_legend">Legend</string>
+  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">외부저장장치 읽기/쓰기 권한이 없습니다. AFWall+ binary를 복사하시려면 권한을 허가해 주세요. </string>
   <string name="log_deletedapp">삭제된 앱들</string>
   <string name="log_denied">차단됨 :</string>
@@ -393,11 +399,16 @@
   <string name="log_dst">도착지 :</string>
   <string name="log_src">출발지 :</string>
   <string name="log_proto">프로토콜 :</string>
-  <string name="no_data_available">로깅서비스가 시작되지 않았거나 로깅데이터가 없습니다</string>
+  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
   <string name="loading_data_title">로딩중...</string>
   <string name="loading_data">데이타 가져오기...</string>
   <string name="switch_old">예전 모냥으로 전환</string>
   <string name="switch_new">새 모냥으로 전환</string>
   <string name="showlogdetail_title">앱 로깅 정보</string>
-  <string name="reapply_rules">설정이 바뀌면 자동으로 새로고침</string>
+  <string name="reapply_rules">Please reapply the rules due to preference change</string>
+  <string name="custom_rules">Custom Rules</string>
+  <string name="mdns">Enable Mutlicast DNS</string>
+  <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
+  <string name="delete_profile">Unable to delete profile</string>
+  <string name="profile_migrate_msg">Profiles migrated successfully</string>
 </resources>
