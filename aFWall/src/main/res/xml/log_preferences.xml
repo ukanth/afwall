@@ -51,6 +51,15 @@
             android:key="block_filter_app"
             android:title="@string/filters_apps_title" />
 
+        <EditTextPreference
+            android:dependency="enableLogService"
+            android:dialogTitle="Ping timeout(milliseconds)"
+            android:key="logPingTimeout"
+            android:title="Ping timeout"
+            android:inputType="number"
+            android:defaultValue="10000"
+            />
+
     </PreferenceCategory>
 
 
