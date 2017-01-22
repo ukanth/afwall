@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.util.G;
 
 public class ToggleWidgetOldActivity extends Activity implements
@@ -39,22 +40,35 @@ public class ToggleWidgetOldActivity extends Activity implements
         disableButton.setOnClickListener(this);
         defaultButton.setOnClickListener(this);
 
+        profButton1 = (Button) this.findViewById(R.id.toggle_profile1);
+        profButton2 = (Button) this.findViewById(R.id.toggle_profile2);
+        profButton3 = (Button) this.findViewById(R.id.toggle_profile3);
+
         if (Api.isEnabled(getApplicationContext())) {
             enableOthers();
         } else {
             disableOthers();
         }
 
-        profButton1 = (Button) this.findViewById(R.id.toggle_profile1);
-        profButton2 = (Button) this.findViewById(R.id.toggle_profile2);
-        profButton3 = (Button) this.findViewById(R.id.toggle_profile3);
-
         if (!G.isProfileMigrated()) {
             profButton1.setText(G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1)));
             profButton2.setText(G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2)));
             profButton3.setText(G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3)));
         } else {
-            // TODO : USE TOP 3 Profiles instead
+            //hide by default
+            profButton1.setVisibility(View.INVISIBLE);
+            profButton2.setVisibility(View.INVISIBLE);
+            profButton3.setVisibility(View.INVISIBLE);
+
+            if (ProfileHelper.getProfileByIdentifier("AFWallProfile1") != null) {
+                profButton1.setVisibility(View.VISIBLE);
+            }
+            if (ProfileHelper.getProfileByIdentifier("AFWallProfile2") != null) {
+                profButton2.setVisibility(View.VISIBLE);
+            }
+            if (ProfileHelper.getProfileByIdentifier("AFWallProfile3") != null) {
+                profButton3.setVisibility(View.VISIBLE);
+            }
         }
 
         profButton1.setOnClickListener(this);
@@ -111,9 +125,6 @@ public class ToggleWidgetOldActivity extends Activity implements
             }
         };
         final Context context = getApplicationContext();
-    /*	final String oldPwd = G.profile_pwd();
-        final String newPwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0)
-				.getString("LockPassword", "");*/
         new Thread() {
             @Override
             public void run() {
@@ -127,7 +138,6 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 2:
                         // validation, check for password
-
                         if (G.protectionLevel().equals("p0")) {
                             if (Api.purgeIptables(context, false)) {
                                 msg.arg1 = R.string.toast_disabled;
@@ -181,11 +191,9 @@ public class ToggleWidgetOldActivity extends Activity implements
                 disableButton.setEnabled(true);
                 defaultButton.setEnabled(true);
                 if (G.enableMultiProfile()) {
-                    if (!G.isProfileMigrated()) {
-                        profButton1.setEnabled(true);
-                        profButton2.setEnabled(true);
-                        profButton3.setEnabled(true);
-                    }
+                    profButton1.setEnabled(true);
+                    profButton2.setEnabled(true);
+                    profButton3.setEnabled(true);
                 }
             }
         });
@@ -198,11 +206,9 @@ public class ToggleWidgetOldActivity extends Activity implements
                 enableButton.setEnabled(true);
                 disableButton.setEnabled(false);
                 defaultButton.setEnabled(false);
-                if (!G.isProfileMigrated()) {
-                    profButton1.setEnabled(false);
-                    profButton2.setEnabled(false);
-                    profButton3.setEnabled(false);
-                }
+                profButton1.setEnabled(false);
+                profButton2.setEnabled(false);
+                profButton3.setEnabled(false);
             }
         });
     }
@@ -212,11 +218,9 @@ public class ToggleWidgetOldActivity extends Activity implements
             public void run() {
                 defaultButton.setEnabled(false);
                 if (G.enableMultiProfile()) {
-                    if (!G.isProfileMigrated()) {
-                        profButton1.setEnabled(true);
-                        profButton2.setEnabled(true);
-                        profButton3.setEnabled(true);
-                    }
+                    profButton1.setEnabled(true);
+                    profButton2.setEnabled(true);
+                    profButton3.setEnabled(true);
                 }
             }
         });
@@ -225,26 +229,24 @@ public class ToggleWidgetOldActivity extends Activity implements
     private void disableCustom(final String code) {
         runOnUiThread(new Runnable() {
             public void run() {
-                if (!G.isProfileMigrated()) {
-                    switch (code) {
-                        case "AFWallProfile1":
-                            defaultButton.setEnabled(true);
-                            profButton1.setEnabled(false);
-                            profButton2.setEnabled(true);
-                            profButton3.setEnabled(true);
-                            break;
-                        case "AFWallProfile2":
-                            defaultButton.setEnabled(true);
-                            profButton1.setEnabled(true);
-                            profButton2.setEnabled(false);
-                            profButton3.setEnabled(true);
-                            break;
-                        case "AFWallProfile3":
-                            defaultButton.setEnabled(true);
-                            profButton1.setEnabled(true);
-                            profButton2.setEnabled(true);
-                            profButton3.setEnabled(false);
-                    }
+                switch (code) {
+                    case "AFWallProfile1":
+                        defaultButton.setEnabled(true);
+                        profButton1.setEnabled(false);
+                        profButton2.setEnabled(true);
+                        profButton3.setEnabled(true);
+                        break;
+                    case "AFWallProfile2":
+                        defaultButton.setEnabled(true);
+                        profButton1.setEnabled(true);
+                        profButton2.setEnabled(false);
+                        profButton3.setEnabled(true);
+                        break;
+                    case "AFWallProfile3":
+                        defaultButton.setEnabled(true);
+                        profButton1.setEnabled(true);
+                        profButton2.setEnabled(true);
+                        profButton3.setEnabled(false);
                 }
             }
         });
