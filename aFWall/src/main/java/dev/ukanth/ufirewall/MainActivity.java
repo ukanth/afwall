@@ -488,6 +488,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     } else {
                         requestPassword();
                     }
+                    break;
                 case "p3":
 
                     if(FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()){

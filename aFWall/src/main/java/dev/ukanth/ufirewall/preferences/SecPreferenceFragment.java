@@ -156,8 +156,8 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                     itemList.setValueIndex(2);
                     break;
                 case "p3":
-					itemList.setValueIndex(3);
-					break;
+                    itemList.setValueIndex(3);
+                    break;
                 case "Disable":
                     itemList.setValueIndex(0);
                     break;
@@ -281,19 +281,11 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
             //currentPosition = index;
 
-            // check if device support fingerprint, if so check if one fingerprint already existed at least
+            // check if device support fingerprint,
+            // if so check if one fingerprint already existed at least
             if(FingerprintUtil.isAndroidSupport()){
 
                 checkFingerprintDeviceSupport();
-
-            }else{
-
-                if(itemList != null) {
-
-                    itemList.setValueIndex(0);
-                }
-
-                Api.toast(globalContext, getString(R.string.your_android_version_not_support_fingerprint));
             }
         }
         if (key.equals("enableAdmin")) {

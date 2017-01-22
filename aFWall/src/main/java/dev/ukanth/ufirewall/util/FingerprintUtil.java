@@ -115,26 +115,18 @@ public class FingerprintUtil {
             try{
 
                 WindowManager manager = (WindowManager) getContext().getSystemService(Activity.WINDOW_SERVICE);
-                int width, height;
 
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
-                    width = manager.getDefaultDisplay().getWidth();
-                    height = manager.getDefaultDisplay().getHeight();
-                } else {
-                    Point point = new Point();
-                    manager.getDefaultDisplay().getSize(point);
-                    width = point.x;
-                    height = point.y;
-                }
+                Point point = new Point();
+                manager.getDefaultDisplay().getSize(point);
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
 
                 lp.copyFrom(getWindow().getAttributes());
-                lp.width = width;
-                lp.height = height;
+                lp.width = point.x;
+                lp.height = point.y;
                 getWindow().setAttributes(lp);
 
-            }catch (NullPointerException ex){ ex.printStackTrace(); }
+            }catch (NullPointerException ex){}
         }
 
         @Override
