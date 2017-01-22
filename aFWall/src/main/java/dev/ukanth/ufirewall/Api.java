@@ -2621,7 +2621,7 @@ public final class Api {
             return;
         }
 
-        if (G.logTarget().isEmpty()) {
+        if (G.logTarget() == null || G.logTarget().isEmpty()) {
             LogProbeCallback cb = new LogProbeCallback();
             cb.ctx = ctx;
             // probe for LOG/NFLOG targets (unfortunately the file must be read by root)
