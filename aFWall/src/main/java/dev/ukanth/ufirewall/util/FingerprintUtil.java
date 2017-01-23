@@ -45,11 +45,14 @@ import javax.crypto.SecretKey;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 
 import static android.content.Context.FINGERPRINT_SERVICE;
 import static android.content.Context.KEYGUARD_SERVICE;
 
 public class FingerprintUtil {
+
+    final static String TAG = "AfWall-FingerprintUtil";
 
     // generate key based on pkg name
     public static String GetKey(Context context){
@@ -126,7 +129,10 @@ public class FingerprintUtil {
                 lp.height = point.y;
                 getWindow().setAttributes(lp);
 
-            }catch (NullPointerException ex){}
+            }catch (NullPointerException ex){
+                
+                Log.e(TAG, ex.getMessage());
+            }
         }
 
         @Override
