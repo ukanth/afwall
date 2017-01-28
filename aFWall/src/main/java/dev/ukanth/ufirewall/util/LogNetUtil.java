@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.stream.Collector;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -81,43 +80,53 @@ public class LogNetUtil {
 
                         try{
 
-                            // using libsuperuser
-                            // This will need permission in AFWall+
-                            // "0:(root) Apps running as root"
+                            String shell_result = "";
+                            String command = "";
 
-                            String command = String.format(PING_CMD, Api.getBusyBoxPath(context, true), G.logPingTimeout(), params[0].address);
+                            try{
 
-                            Log.d(TAG, "Execute CMD: " + command);
+                                // This command needs permission to allow
+                                // AFWall+ itself to has access to network
+                                // to work probably
+                                command = String.format(PING_CMD, "", G.logPingTimeout(), params[0].address);
 
-                            String shell_result = parse(Shell.run("su", new String[]{
-                                    command
-                            }, null, true));
+                                Log.d(TAG, "Execute CMD: " + command);
+                                Process process = Runtime.getRuntime().exec(command);
 
-                            if(shell_result.isEmpty()){
+                                // wait command process to finish
+                                process.waitFor();
 
-                                return context.getString(R.string.network_connection_not_available);
+                                // debug exit code
+                                Log.d(TAG, "CMD exit code: " + process.exitValue());
+
+                                // check if ping command does not encounter any errors
+                                if(process.exitValue() == 0){
+
+                                    //The ping was succeeded.
+                                    shell_result = parse(process);
+
+                                }else{
+
+                                    shell_result = su_busyboox_ping(params[0].address);;
+                                }
+
+                            }catch (Exception ping_cmd_ex){
+
+                                Log.e(TAG, "Exception(00): " + ping_cmd_ex.getMessage());
+
+                                shell_result = su_busyboox_ping(params[0].address);
                             }
 
                             return shell_result;
 
                         }catch (Exception eex){
 
-                            Log.e(TAG, eex.getMessage());
+                            Log.e(TAG, "Exception(01): " + eex.getMessage());
 
-                            try{
+                            // final choice is to use Android API
 
-                                if(InetAddress.getByAddress(params[0].address.getBytes()).isReachable(G.logPingTimeout() * 1000)){ // isReachable expect timeout in millisecond
-
-                                    return String.format(context.getString(R.string.reachable_timeout), finish_time());
-                                }
-
-                            }catch(UnknownHostException ex){
-
-                                return String.format("Currently IP(%s) is not Reachable, timeout: %d ms", params[0].address, finish_time());
-                            }
+                            return normal_ping(params[0].address);
                         }
-
-                        break;
 
                     case RESOLVE:
 
@@ -129,13 +138,15 @@ public class LogNetUtil {
 
                         }catch(UnknownHostException ex){
 
+                            Log.e(TAG, "Exception(02): " + ex.getMessage());
+
                             return String.format("Currently can not resolve Host for IP(%s), timeout: %d ms", params[0].address, finish_time());
                         }
                 }
 
             }catch (Exception e){
 
-                Log.e(TAG, e.getMessage());
+                Log.e(TAG, "Exception(03): " + e.getMessage());
             }
 
             return context.getString(R.string.error_or_unknown_category);
@@ -180,10 +191,52 @@ public class LogNetUtil {
                     .show();
         }
 
-        String parse(List<String> output){
+        String normal_ping(String ip){
 
-            Log.d(TAG, "length: " + output.size());
-            Log.d(TAG, "output: " + output);
+            String result = "";
+
+            try {
+
+                if(InetAddress.getByAddress(ip.getBytes()).isReachable(G.logPingTimeout() * 1000)){ // isReachable expect timeout in millisecond
+
+                    result = String.format(context.getString(R.string.reachable_timeout), finish_time());
+                }
+
+            } catch (IOException e) {
+
+                Log.e(TAG, "Exception(04): " + e.getMessage());
+
+                result = String.format("Currently IP(%s) is not Reachable, timeout: %d ms", ip, finish_time());
+            }
+
+            return result;
+        }
+
+        String su_busyboox_ping(String ip){
+
+            // using libsuperuser to perform ping by Busybox,
+            // This will need permission in AFWall+
+            // "0:(root) Apps running as root"
+
+            String result = "";
+
+            String command = String.format(PING_CMD, Api.getBusyBoxPath(context, true), G.logPingTimeout(), ip);
+
+            Log.d(TAG, "Execute CMD: " + command);
+
+            result = parse(Shell.run("su", new String[]{
+                    command
+            }, null, true));
+
+            if(result.isEmpty()){
+
+                return context.getString(R.string.network_connection_not_available);
+            }
+
+            return result;
+        }
+
+        String parse(List<String> output){
 
             String result = "";
 
@@ -197,6 +250,29 @@ public class LogNetUtil {
             }
 
             return result;
+        }
+
+        String parse(Process process){
+
+            try {
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+
+                // Grab the results
+                StringBuilder log = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    log.append(line + "\n");
+                }
+
+                return log.toString();
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
+
+            return context.getString(R.string.output_is_empty);
         }
     }
 
