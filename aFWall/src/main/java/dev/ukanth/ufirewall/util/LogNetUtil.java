@@ -117,6 +117,8 @@ public class LogNetUtil {
                             }
                         }
 
+                        break;
+
                     case RESOLVE:
 
                         // Resolve
