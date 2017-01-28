@@ -494,7 +494,7 @@
     <string name="select_the_action">Select The Action</string>
     <string name="result_copied_to_clipboard">Result copied to clipboard</string>
     <string name="result">Result</string>
-    <string name="output_is_empty">Output is empty</string>
+    <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
     <string name="searching">Searching</string>
     <string name="looking_for_data">Looking for data&#8230;</string>
     <string name="reachable_timeout">Reachable, timeout: %d ms</string>

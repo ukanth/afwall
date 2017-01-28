@@ -241,7 +241,7 @@ public class LogNetUtil {
             String result = "";
 
             for(String line : output){
-                result += line;
+                result += line + " ";
             }
 
             if(result.isEmpty()){
