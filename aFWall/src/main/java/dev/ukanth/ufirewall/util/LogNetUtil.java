@@ -14,9 +14,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
+import java.util.stream.Collector;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
+import eu.chainfire.libsuperuser.Shell;
 
 /**
  * This file was created to simplify Network Function in AfWall+ log system
@@ -25,7 +29,7 @@ import dev.ukanth.ufirewall.R;
 
 public class LogNetUtil {
 
-    private static final String PING_CMD = "/system/bin/ping -q -n -w 1 -c 1 %s";
+    final static String TAG = "afWall-LogNetUtil";
 
     public static class NetTask extends AsyncTask<NetParam, Integer, String>
     {
@@ -34,6 +38,8 @@ public class LogNetUtil {
         MaterialDialog progress;
         Context context;
         String output_result = "";
+
+        private static final String PING_CMD = "%s ping -w 1 -W %d %s";
 
         public NetTask(Context context){
             this.context = context;
@@ -75,24 +81,34 @@ public class LogNetUtil {
 
                         try{
 
-                            /* [WIP] looking for ping timeout option */
-                            String result = output(Runtime.getRuntime().exec(String.format(PING_CMD, /*G.logPingTimeout(), */params[0].address)));
+                            // using libsuperuser
+                            // This will need permission in AFWall+
+                            // "0:(root) Apps running as root"
 
-                            if(result.isEmpty()){
+                            String command = String.format(PING_CMD, Api.getBusyBoxPath(context, true), G.logPingTimeout(), params[0].address);
 
-                                result = context.getString(R.string.network_connection_not_available);
+                            Log.d(TAG, "Execute CMD: " + command);
+
+                            String shell_result = parse(Shell.run("su", new String[]{
+                                    command
+                            }, null, true));
+
+                            if(shell_result.isEmpty()){
+
+                                return context.getString(R.string.network_connection_not_available);
                             }
 
-                            return result;
+                            return shell_result;
 
                         }catch (Exception eex){
 
+                            Log.e(TAG, eex.getMessage());
+
                             try{
 
-                                if(InetAddress.getByAddress(params[0].address.getBytes()).isReachable(G.logPingTimeout())){
+                                if(InetAddress.getByAddress(params[0].address.getBytes()).isReachable(G.logPingTimeout() * 1000)){ // isReachable expect timeout in millisecond
 
                                     return String.format(context.getString(R.string.reachable_timeout), finish_time());
-
                                 }
 
                             }catch(UnknownHostException ex){
@@ -117,7 +133,7 @@ public class LogNetUtil {
 
             }catch (Exception e){
 
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
             }
 
             return context.getString(R.string.error_or_unknown_category);
@@ -136,10 +152,10 @@ public class LogNetUtil {
                     progress.dismiss();
                 }
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
                 // Handle or log or ignore
             } catch (final Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, e.getMessage());
                 // Handle or log or ignore
             } finally {
                 progress = null;
@@ -162,27 +178,23 @@ public class LogNetUtil {
                     .show();
         }
 
-        String output(Process process){
+        String parse(List<String> output){
 
-            try {
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
+            Log.d(TAG, "length: " + output.size());
+            Log.d(TAG, "output: " + output);
 
-                // Grab the results
-                StringBuilder log = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    log.append(line + "\n");
-                }
+            String result = "";
 
-                return log.toString();
-
-            } catch (IOException e) {
-
-                e.printStackTrace();
+            for(String line : output){
+                result += line;
             }
 
-            return context.getString(R.string.output_is_empty);
+            if(result.isEmpty()){
+
+                return context.getString(R.string.output_is_empty);
+            }
+
+            return result;
         }
     }
 

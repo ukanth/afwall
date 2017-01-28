@@ -117,7 +117,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         recyclerViewAdapter = new LogRecyclerViewAdapter(getApplicationContext(),new RecyclerItemClickListener() {
             @Override
             public void onItemClick(LogData logData) {
-                if(G.isDoKey(ctx) || G.isDonate()) {
+                if(G.isDoKey(ctx) || G.isDonate() || true) {
                     Intent intent = new Intent(ctx, LogDetailActivity.class);
                     intent.putExtra("DATA",logData.getUid());
                     startActivity(intent);
