@@ -80,6 +80,8 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
     //protected static final int MENU_TOGGLE_LOG = 27;
 
+    final String TAG = "AFWall-LogDetailActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,9 +196,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                     ).get();
 
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(00): " + e.getMessage());
                 } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(01): " + e.getMessage());
                 }
                 break;
 
@@ -208,9 +210,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                             )
                     ).get();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(03): " + e.getMessage());
                 } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(04): " + e.getMessage());
                 }
                 break;
 
@@ -222,9 +224,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                             )
                     ).get();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(05): " + e.getMessage());
                 } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(06): " + e.getMessage());
                 }
                 break;
 
@@ -236,9 +238,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                             )
                     ).get();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(07): " + e.getMessage());
                 } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Exception(08): " + e.getMessage());
                 }
                 break;
         }
@@ -258,7 +260,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
             catch (UnknownHostException e)
             {
-                e.printStackTrace();
+                Log.e(TAG, "Exception(09): " + e.getMessage());
             }
             return addr.getCanonicalHostName().toString();
         }

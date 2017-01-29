@@ -107,7 +107,7 @@ public class LogNetUtil {
 
                                 }else{
 
-                                    shell_result = su_busyboox_ping(params[0].address);;
+                                    shell_result = su_busyboox_ping(params[0].address);
                                 }
 
                             }catch (Exception ping_cmd_ex){
@@ -202,7 +202,7 @@ public class LogNetUtil {
                     result = String.format(context.getString(R.string.reachable_timeout), finish_time());
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
 
                 Log.e(TAG, "Exception(04): " + e.getMessage());
 
@@ -269,7 +269,7 @@ public class LogNetUtil {
 
             } catch (IOException e) {
 
-                e.printStackTrace();
+                Log.e(TAG, "Exception(05): " + e.getMessage());
             }
 
             return context.getString(R.string.output_is_empty);
