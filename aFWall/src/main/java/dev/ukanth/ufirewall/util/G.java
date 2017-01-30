@@ -65,6 +65,7 @@ public class G extends android.app.Application {
 	private static final String BLOCK_IPV6 = "blockIPv6";
 	private static final String ENABLE_INBOUND = "enableInbound";
 	private static final String ENABLE_LOG_SERVICE = "enableLogService";
+	private static final String LOG_PING_TIMEOUT = "logPingTimeout";
 	private static final String ENABLE_ADMIN = "enableAdmin";
 	private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
 	private static final String ENABLE_CONFIRM = "enableConfirm";
@@ -163,6 +164,8 @@ public class G extends android.app.Application {
 	public static boolean enableLogService() { return gPrefs.getBoolean(ENABLE_LOG_SERVICE, false); }
 	public static boolean enableLogService(boolean val) { gPrefs.edit().putBoolean(ENABLE_LOG_SERVICE, val).commit(); return val; }
 
+	public static int logPingTimeout() { return Integer.valueOf(gPrefs.getString(LOG_PING_TIMEOUT, "10")); }
+
 	public static boolean enableAdmin() { return gPrefs.getBoolean(ENABLE_ADMIN, false); }
 	public static boolean enableAdmin(boolean val) { gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit(); return val; }
 
@@ -224,7 +227,7 @@ public class G extends android.app.Application {
 
 	public static boolean applyOnSwitchProfiles() { return gPrefs.getBoolean(PROFILE_SWITCH, false); }
 
-	public static String logTarget() { return gPrefs.getString(LOG_TARGET, null); }
+	public static String logTarget() { return gPrefs.getString(LOG_TARGET, ""); }
 	public static String logTarget(String val) { gPrefs.edit().putString(LOG_TARGET, val).commit(); return val; }
 
 	public static int appVersion() { return gPrefs.getInt(APP_VERSION, 0); }
