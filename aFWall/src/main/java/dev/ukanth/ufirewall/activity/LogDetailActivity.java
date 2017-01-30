@@ -163,7 +163,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                LogNetUtil.copyToClipboard(LogDetailActivity.this, current_selected_logData.getDst() + ":" + current_selected_logData.getDpt());
+                                Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getDst() + ":" + current_selected_logData.getDpt());
                                 Api.toast(LogDetailActivity.this, getString(R.string.destination_copied));
                             }
                         })
@@ -180,7 +180,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                LogNetUtil.copyToClipboard(LogDetailActivity.this, current_selected_logData.getSrc() + ":" + current_selected_logData.getSpt());
+                                Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getSrc() + ":" + current_selected_logData.getSpt());
                                 Api.toast(LogDetailActivity.this, getString(R.string.source_copied));
                             }
                         })
