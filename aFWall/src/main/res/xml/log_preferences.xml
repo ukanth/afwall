@@ -51,8 +51,16 @@
             android:key="block_filter_app"
             android:title="@string/filters_apps_title" />
 
+        <ListPreference
+            android:dependency="enableLogService"
+            android:dialogTitle="Ping timeout (seconds)"
+            android:key="logPingTimeout"
+            android:title="Ping timeout"
+            android:defaultValue="10"
+            android:entries="@array/prefPingTimeout"
+            android:entryValues="@array/prefPingTimeout">
+        </ListPreference>
+
     </PreferenceCategory>
-
-
-
+    
 </PreferenceScreen>

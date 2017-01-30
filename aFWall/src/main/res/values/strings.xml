@@ -482,4 +482,25 @@
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
     <string name="delete_profile">Unable to delete profile</string>
     <string name="profile_migrate_msg">Profiles migrated successfully</string>
+
+    <string name="destination_address">Destination Address</string>
+    <string name="source_address">Source Address</string>
+    <string name="ping_destination">Ping Destination</string>
+    <string name="ping_source">Ping Source</string>
+    <string name="resolve_destination">Resolve Destination</string>
+    <string name="resolve_source">Resolve Source</string>
+    <string name="copy_text">Copy text</string>
+    <string name="destination_copied">Destination copied</string>
+    <string name="source_copied">Source copied</string>
+    <string name="select_the_action">Select The Action</string>
+    <string name="result_copied_to_clipboard">Result copied to clipboard</string>
+    <string name="result">Result</string>
+    <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+    <string name="searching">Searching</string>
+    <string name="looking_for_data">Looking for data&#8230;</string>
+    <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+    <string name="error_or_unknown_category">Error or Unknown Category</string>
+    <string name="show_destination_address">Show Destination Address</string>
+    <string name="show_source_address">Show Source Address</string>
+    <string name="network_connection_not_available">Network connection not Available</string>
 </resources>
