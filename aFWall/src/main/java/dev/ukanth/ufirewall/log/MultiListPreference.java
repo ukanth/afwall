@@ -1,22 +1,26 @@
 package dev.ukanth.ufirewall.log;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.PackageComparator;
 
 /**
@@ -57,8 +61,38 @@ public class MultiListPreference extends MultiSelectListPreference {
         initializeValues();
         setEntries(entries());
         setEntryValues(entryValues());
-        //setValueIndex(initializeIndex());
         super.showDialog(state);
+
+        AlertDialog dialog = (AlertDialog)getDialog();
+        if (dialog == null)
+            return;
+        //BUG: https://code.google.com/p/android/issues/detail?id=205487
+        if (Build.VERSION.SDK_INT >= 23) {
+            ListView listView = dialog.getListView();
+
+            listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    int size = view.getChildCount();
+                    for (int i = 0; i < size; i++) {
+                        View v = view.getChildAt(i);
+                        if (v instanceof CheckedTextView)
+                            ((CheckedTextView) v).refreshDrawableState();
+                    }
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    int size = view.getChildCount();
+                    for (int i = 0; i < size; i++) {
+                        View v = view.getChildAt(i);
+                        if (v instanceof CheckedTextView)
+                            ((CheckedTextView) v).refreshDrawableState();
+                    }
+                }
+            });
+        }
+
     }
 
     private void initializeValues() {

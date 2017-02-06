@@ -19,7 +19,7 @@ import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.util.PackageComparator;
 
 public class MultiSelectListPreference extends ListPreference {
- 
+
     private String separator;
     private static final String DEFAULT_SEPARATOR = ",";
     private boolean[] entryChecked;
@@ -111,7 +111,7 @@ public class MultiSelectListPreference extends ListPreference {
              };
              builder.setMultiChoiceItems(entries, entryChecked, listener);
          } catch (Exception e) {
-
+             Log.e(Api.TAG, "Exception " + e.getMessage());
          }
 
     }
@@ -211,7 +211,7 @@ public class MultiSelectListPreference extends ListPreference {
         } else {
             value = joinedDefaultValue;
         }
- 
+
         setSummary(prepareSummary(Arrays.asList(unpack(value))));
         setValueAndEvent(value);
     }
