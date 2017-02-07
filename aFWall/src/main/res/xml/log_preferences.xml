@@ -1,66 +1,61 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-   <!-- <PreferenceCategory android:title="@string/log_prefs_title" >
-        <CheckBoxPreference
-            android:key="enableLog"
-            android:summary="@string/showlog_title"
-            android:title="@string/enable_firewall_log" />
-      </PreferenceCategory>-->
+    <!-- <PreferenceCategory android:title="@string/log_prefs_title" >
+         <CheckBoxPreference
+             android:key="enableLog"
+             android:summary="@string/showlog_title"
+             android:title="@string/enable_firewall_log" />
+       </PreferenceCategory>-->
 
-    <PreferenceCategory android:key="logExperimental"
-        android:title="@string/exp_prefs_title" >
+    <PreferenceCategory
+        android:key="logExperimental"
+        android:title="@string/exp_prefs_title">
         <CheckBoxPreference
             android:key="enableLogService"
             android:title="@string/enable_firewall_log_service" />
 
         <CheckBoxPreference
-            android:dependency="enableLogService"
             android:defaultValue="false"
+            android:dependency="enableLogService"
             android:key="showLogToasts"
             android:summary="@string/showlog_toasts"
             android:title="@string/enable_show_toasts" />
 
         <ListPreference
-            android:dependency="enableLogService"
             android:defaultValue="OS"
+            android:dependency="enableLogService"
             android:entries="@array/logDmesgArray"
             android:entryValues="@array/logDmesgValue"
             android:key="logDmesg"
-            android:title="@string/log_dmesg" >
-        </ListPreference>
+            android:title="@string/log_dmesg"></ListPreference>
 
         <ListPreference
-            android:dependency="enableLogService"
             android:defaultValue="bottom"
+            android:dependency="enableLogService"
             android:entries="@array/toast_pos"
             android:entryValues="@array/toast_pos_val"
             android:key="toast_pos"
-            android:title="@string/position" >
-        </ListPreference>
-
-
-        <!--<dev.ukanth.ufirewall.log.MultiSelectListPreference
-            android:dependency="enableLogService"
-            android:dialogTitle="@string/filters_apps_title"
-            android:key="block_filter_app"
-            android:title="@string/filters_apps_title" /> -->
-
-        <dev.ukanth.ufirewall.log.MultiListPreference
-            android:dependency="enableLogService"
-            android:dialogTitle="@string/filters_apps_title"
-            android:key="block_filter_app"
-            android:title="@string/filters_apps_title" />
+            android:title="@string/position"></ListPreference>
 
         <ListPreference
+            android:defaultValue="10"
             android:dependency="enableLogService"
             android:dialogTitle="Ping timeout (seconds)"
-            android:key="logPingTimeout"
-            android:title="Ping timeout"
-            android:defaultValue="10"
             android:entries="@array/prefPingTimeout"
-            android:entryValues="@array/prefPingTimeout">
-        </ListPreference>
+            android:entryValues="@array/prefPingTimeout"
+            android:key="logPingTimeout"
+            android:title="Ping timeout"></ListPreference>
+
+        <Preference
+            android:key="block_filter"
+            android:title="@string/filters_apps_title"></Preference>
+
+        <!--<dev.ukanth.ufirewall.log.MultiListPreference
+            android:dependency="enableLogService"
+            android:dialogTitle="@string/filters_apps_title"
+            android:key="block_filter_app"
+            android:title="@string/filters_apps_title" />-->
 
     </PreferenceCategory>
-    
+
 </PreferenceScreen>
