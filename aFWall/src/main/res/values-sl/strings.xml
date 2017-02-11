@@ -64,20 +64,20 @@
   <string name="reading_apps">Pridobivam podatke</string>
   <string name="mode">Način</string>
   <string name="mode_header">Način: %s</string>
-  <string name="legend_clear">Izbris vseh označb v vseh stolpcih</string>
+  <string name="legend_clear">Clear all checkboxes in all columns</string>
   <string name="mode_whitelist">Dovoli izbrane</string>
-  <string name="legend_whitelist">Označenim aplikacijam bo dovoljen dostop do interneta</string>
+  <string name="legend_whitelist">Selected apps will be granted internet access</string>
   <string name="mode_blacklist">Blokiraj izbrane</string>
-  <string name="legend_blacklist">Označenim aplikacijam ne bo dovoljen dostop do interneta</string>
+  <string name="legend_blacklist">Selected apps will be denied internet access</string>
   <string name="set_custom_script">Dodaj skripte</string>
   <string name="preferences">Nastavitve</string>
   <string name="reload">Osveži seznam</string>
   <string name="flush">Odstrani pravila</string>
   <string name="send_report">Pošlji poročilo o napaki</string>
-  <string name="enter_problem">Prosim pojasnite problem:</string>
+  <string name="enter_problem">Please explain the issue:</string>
   <string name="send_mail">Pošlji sporočilo</string>
-  <string name="notify_pref_summary_on">Ob namestitvi nove aplikacije boste prejeli obvestilo</string>
-  <string name="notify_pref_summary_off">Brez obveščanja ob namestitvi novih aplikacij</string>
+  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
   <string name="custom_script_defined">Skripta nastavljena</string>
   <string name="custom_script_removed">Skripta odstranjena</string>
   <string name="custom_script_error">Napaka pri shranjevanju skripte</string>
@@ -85,18 +85,21 @@
   <string name="custom_script2_info">     \n \n <b>Skripta za zaustavitev sistema</b>\nLahko določite tudi skripto, ki se izvrši, ko je požarni zid <b>onemogočen</b>:</string>
   <string name="unsaved_changes">Spremembe niso shranjene</string>
   <string name="unsaved_changes_message">Spremembe niso shranjene. \nJih želite uporabiti ali zavreči?</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">Pravila iptables</string>
   <string name="copy">Kopiraj</string>
   <string name="copied">Kopirano</string>
   <string name="Search">Iskanje</string>
   <string name="flushRulesConfirm">Odstranim vsa pravila iptables?</string>
-  <string name="overrideRules">To bo povozilo vsa obstoječa pravila! Res želite uvoziti pravila?</string>
+  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
   <string name="notification_new">Nameščena nova aplikacija</string>
   <string name="notification_new_package">Nastavi spletna dovoljenja</string>
   <string name="confirmMsg">Popolnoma IZKLOPIM požarni zid?</string>
   <string name="apply">Uveljavi</string>
   <string name="discard">Zavrzi</string>
   <string name="delete">Izbriši</string>
+  <string name="clone">Clone</string>
+  <string name="rename">Rename</string>
   <string name="Yes">Da</string>
   <string name="Continue">Nadaljuj</string>
   <string name="No">Ne</string>
@@ -113,7 +116,7 @@
   <string name="remove_initd">Zagonska skripta odstranjena</string>
   <string name="unable_remove_initd">Ne morem odstraniti zagonske skripte AFWall+</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Ne morem izključiti požarnega zidu - zaščiteno z geslom!</string>
+  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
   <string name="widget_label_status">Vklop/stanje AFWall+</string>
   <string name="widget_label_settings">Nastavitve AFWall+</string>
   <string name="widget_label_settings_old">Nastavitve AFWall+ (stare)</string>
@@ -130,9 +133,9 @@
   <string name="import_rules_success">Uvoćeno iz </string>
   <string name="import_rules_fail">Uvoz ni uspel!</string>
   <string name="import_rules_missing">Manjka datoteka z nastavitvami!</string>
-  <string name="exportConfirm">Izvozim pravila na kartico SD?</string>
-  <string name="export_logs_fail">Izvoz na kartico SD ni uspel!</string>
-  <string name="export_to_sd">Izvozi na kartico SD</string>
+  <string name="exportConfirm">Export rules to storage?</string>
+  <string name="export_logs_fail">Export to storage failed!</string>
+  <string name="export_to_sd">Export to storage</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Vklopi dnevnik aktivnosti</string>
   <string name="enable_firewall_log_service">Vklop beleženja</string>
@@ -172,15 +175,16 @@
   <string name="profile1">Profil 1</string>
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
+  <string name="profile_hint">ProfileName</string>
   <string name="reapply_profile">Ponovno uveljavi pravila</string>
   <!-- Interface -->
-  <string name="lan_title">LAN nadzor</string>
+  <string name="lan_title">LAN control</string>
   <string name="lan_summary">Označite za nadzor podatkovnega prometa preko lokalnega omrežja (neodvisno od WiFi)</string>
   <string name="iptables_pref">Binarna datoteka Iptables</string>
   <string name="vpn_profile">VPN nadzor</string>
   <string name="vpnSummary">Označite za nadzor podatkovnega prometa preko VPN</string>
   <string name="roaming">Nadzor med gostovanjem</string>
-  <string name="roamingSummary">Označite za nadzor podatkovnega prometa med gostovanjem v tujih omrežjih</string>
+  <string name="roamingSummary">Enable to control roaming permissions separately</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -198,9 +202,9 @@
   <string name="auto">Avtomatsko</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Povezava z ogrodjem Xposed</string>
-  <string name="fixDownloadTitle">Blokada uhajanja preko apl. DownloadManager</string>
-  <string name="fixDownloadTitleSummary">S tem bo preko modula Xposed onemogočeno uhajanje podatkov pri aplikacijah, ki za prenos uporabljajo sistemsko aplikacijo DownloadManager</string>
-  <string name="LeakDetected">Zaznano uhajanje</string>
+  <string name="fixDownloadTitle">Fix DownloadManager leak</string>
+  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+  <string name="LeakDetected">Leak detected!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Povezava z aplikacijo Tasker</string>
   <string name="disable_toaster">Izklop obvestil za Tasker</string>
@@ -215,7 +219,7 @@
   <string name="ipv6_title">Podpora IPv6</string>
   <string name="ipv6_summary">Vklop podpore za IPv6</string>
   <string name="block_ipv6_title">Blokiraj IPv6</string>
-  <string name="block_ipv6_summary">To bo blokiralo aplikacije, ki se povezujejo preko protokola IPv6. POZOR: to možnost uporabite zgolj, če imate povezavo preko protokola IPv4.</string>
+  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
   <string name="ip6unavailable">Napaka: IPv6 zahteva \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Vklopi pravila IPv6</string>
   <string name="switch_ipv4">Vklopi pravila IPv4</string>
@@ -224,7 +228,7 @@
   <string name="usePattern">Vzorec za odklepanje</string>
   <string name="stealthMode">Prikrit vzorec</string>
   <string name="patternMaxTry">Največje število poskusov</string>
-  <string name="resetPattern">Ponastavim vzorec za zaklep naprave?</string>
+  <string name="resetPattern">Reset lock pattern?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Skrbništvo naprave</string>
   <string name="device_admin_enabled">AFWall+ dodan med skrbnike naprave</string>
@@ -237,7 +241,7 @@
   <string name="addStartupDelayTitle">Zakasnitev ob zagonu naprave</string>
   <string name="addStartupDelaySummary">AFWall+ bo počakal 5 sekund, preden bo uveljavil pravila. To možnost uporabite zgolj v primeru, če imate probleme pri uveljavitvi pravil požarnega zidu na vaši napravi ob zagonu.</string>
   <string name="fixleakTitle">Onemogoči zagonsko uhajanje</string>
-  <string name="fixleakSummary">Onemogoči uhajanje podatkov ob zagonu sistema.  Vaš ROM mora imeti podporo za init.d ali su.d (superSU). HTC naprave morajo biti nastavljene na S-OFF.</string>
+  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -263,7 +267,7 @@
   <string name="misc_header">Jezik/vtičniki</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktivna pravila</string>
-  <string name="active_rules_summary">Uveljavi pravila požarnega zidu ob vsaki spremembi povezave (Gostovanje/LAN/Wifi/3G/deljenje povezave)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
   <string name="profile_add">Dodaj profil</string>
   <string name="profile_remove">Odstrani profil</string>
   <string name="profile_rename">Preimenuj profil</string>
@@ -272,6 +276,7 @@
   <string name="multi_apply_rules_info">Uveljavi pravila Iptables ob vsaki zamenjavi profila</string>
   <string name="multi_user_title">Vklopi večuporabniški način</string>
   <string name="multi_user_summary">Podpora za androidni večuporabniški način (deluje le v načinu, kjer so izbrane aplikacije blokirane)</string>
+  <!--  -->
   <string name="device_admin_desc">Varnostna nastavitev - Prepreči odstranitev AFWall+</string>
   <string name="traffic_detail_title">Podatki o prometu</string>
   <string name="uploaded">Preneseno iz naprave</string>
@@ -293,13 +298,13 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Podatkovno omrežje</string>
-  <string name="legend_data">Označite za nadzor podatkovnega prometa (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Vse</string>
   <string name="pkg_core">Jedro</string>
   <string name="pkg_sys">Sistem</string>
   <string name="pkg_user">Uporabnik</string>
   <string name="menu">Meni</string>
-  <string name="backup_notexist">Ni varnostne kopije. Ustvarite jo v meniju.</string>
+  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
   <string name="showFilter">Prikaži filtre</string>
   <string name="showfilter_summary_on">Filtri (vse/jedro/sistem/uporabnik) so prikazani na seznamu</string>
   <string name="showfilter_summary_off">Filtri (vse/jedro/sistem/uporabnik) niso prikazani na seznamu</string>
@@ -325,7 +330,7 @@
   <string name="donate_thanks">Hvala za vašo podporo!</string>
   <string name="activeNotification">Prikaži ikono AFWall+</string>
   <string name="activeNotification_summary">V prostoru za obvestila bo stalno prisotna ikona</string>
-  <string name="active">Požarni zid je vklopljen</string>
+  <string name="active">Firewall enabled</string>
   <string name="inactive">Požarni zid je izklopljen</string>
   <string name="About">O aplikaciji</string>
   <string name="FAQ">Vprašanja in odgovori</string>
@@ -344,12 +349,13 @@
   <string name="pref_password">Geslo</string>
   <string name="pref_pattern">Vzorec</string>
   <string name="pref_device">Uporabi sistemsko zaklepanje</string>
-  <string name="pref_device_desc">Uporabi sistemsko varnostno preverjanje za odpiranje aplikacije</string>
-  <string name="secure_option">Naprava ni zaščitena z geslom/PIN-kodo</string>
-  <string name="android_version">Ta funkcija deluje samo na napravah z različico Androida Lollipop+</string>
+  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+  <string name="secure_option">Device is not secured with password/PIN</string>
+  <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Nastavi</string>
   <string name="wrong_password">Napačno geslo</string>
+  <string name="password_empty"></string>
   <string name="submit">Uveljavi</string>
   <string name="dialog_color_picker">Izbira barv</string>
   <!--<string name="sort">Sort Applications</string>-->
@@ -363,7 +369,7 @@
   <string name="manage_profiles_summary">Dodajanje/odstranjevanje profilov</string>
   <string name="profiles">Profil </string>
   <string name="migrate_profiles">Prenos profilov</string>
-  <string name="migrate_summary">Prenesi vse dodatne profile iz različice 1.x v 2.x</string>
+  <string name="migrate_summary">Migrate all profile data</string>
   <string name="insert_profile">Ime profila</string>
   <string name="add">Dodaj</string>
   <string name="showlog_toasts">To bo omogočilo prikazovanje sporočil ob blokadah</string>
@@ -375,7 +381,7 @@
   <string name="widget_prefs_title">Položaj gradnikov</string>
   <string name="xTitle">Položaj X gradnika</string>
   <string name="xTitleSummary">Ročno spremeni položaj X</string>
-  <string name="xTitleDialog">Določi položaj X (število)</string>
+  <string name="xTitleDialog">Set X position (number)</string>
   <string name="yTitle">Položaj Y gradnika</string>
   <string name="yTitleSummary">Ročno spremeni položaj Y</string>
   <string name="yTitleDialog">Določi položaj Y (število)</string>
@@ -383,8 +389,8 @@
   <string name="error_nonsupported_details">AFWall+ je zaznal nepodprto aplikacijo za korenski dostop, ki je znana po tem, da obide pravila požarnega zidu. Ker ima aplikacija korenski dostop, ji AFWall+ tega ne more preprečiti.</string>
   <string name="lockNotification">Skrij obvestilo na zaslonu za zaklepanje</string>
   <string name="lockScreenNotification_summary">Skrije obvestilo na zaslonu za zaklepanje</string>
-  <string name="menu_legend">Legenda</string>
-  <string name="permissiondenied_importexport">Zavrnjena je bila zahteva za BRANJE/PISANJE v zunanjo shrambo. Prosimo dovolite dostop pravilom za izvoz/uvoz.</string>
+  <string name="menu_legend">Legend</string>
+  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Zavrnjen je bil dostop za BRANJE/PISANJE v shrambo. Prosimo dovolite dostop za kopiranje za izvoz/uvoz.aplikacijo AFWall+. </string>
   <string name="log_deletedapp">Odstranjena aplikacija</string>
   <string name="log_denied">Zavrnjen dostop :</string>
@@ -393,11 +399,16 @@
   <string name="log_dst">Naslov :</string>
   <string name="log_src">Izvor :</string>
   <string name="log_proto">Protokol :</string>
-  <string name="no_data_available">Ni podatkov. Preverite, če je dnevnik vključen.</string>
+  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
   <string name="loading_data_title">Nalagam...</string>
   <string name="loading_data">Pridobivam podatke</string>
   <string name="switch_old">Preklopi na staro podobo</string>
   <string name="switch_new">Preklopi na novo podobo</string>
   <string name="showlogdetail_title">Podrobnosti dnevnika aplikacij</string>
-  <string name="reapply_rules">Prosimo ponovno uveljavite pravila zaradi spremembe nastavitev</string>
+  <string name="reapply_rules">Please reapply the rules due to preference change</string>
+  <string name="custom_rules">Custom Rules</string>
+  <string name="mdns">Enable Mutlicast DNS</string>
+  <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
+  <string name="delete_profile">Unable to delete profile</string>
+  <string name="profile_migrate_msg">Profiles migrated successfully</string>
 </resources>

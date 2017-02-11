@@ -8,6 +8,8 @@
         <item>Asturian</item>
         <item>Basque</item>
         <item>Bengali</item>
+        <item>Bosnian</item>
+        <item>Bulgarian</item>
         <item>Catalin</item>
 
         <item>Czech</item>
@@ -54,6 +56,9 @@
 
         <item>bn</item>
         <item>ca</item>
+
+        <item>bs</item>
+        <item>bg</item>
 
         <item>cs</item>
         <item>nl</item>
@@ -174,13 +179,21 @@
     <string-array name="logDmesgArray">
         <item>System</item>
         <item>Busybox</item>
-        <item>Toybox</item>
+        <!--<item>Toybox</item>-->
     </string-array>
 
     <string-array name="logDmesgValue">
         <item>OS</item>
         <item>BB</item>
-        <item>TB</item>
+        <!--<item>TB</item>-->
+    </string-array>
+
+    <string-array name="prefPingTimeout">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+        <item>30</item>
     </string-array>
 
 </resources>

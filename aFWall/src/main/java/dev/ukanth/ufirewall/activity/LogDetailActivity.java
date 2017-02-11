@@ -32,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -48,6 +49,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -58,6 +60,7 @@ import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
 import dev.ukanth.ufirewall.log.RecyclerItemClickListener;
 import dev.ukanth.ufirewall.util.DateComparator;
+import dev.ukanth.ufirewall.util.LogNetUtil;
 
 public class LogDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -68,6 +71,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private TextView emptyView;
     private SwipeRefreshLayout mSwipeLayout;
     protected Menu mainMenu;
+    private LogData current_selected_logData;
 
     private int uid;
     protected  static final int MENU_TOGGLE = -4;
@@ -75,6 +79,8 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     //protected static final int MENU_EXPORT_LOG = 47;
 
     //protected static final int MENU_TOGGLE_LOG = 27;
+
+    final String TAG = "AFWall-LogDetailActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,9 +128,123 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                     Log.i("AFWall", e.getLocalizedMessage());
                 }*/
 
+                current_selected_logData = logData;
+                recyclerView.showContextMenu();
+            }
+        });
+        recyclerView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                menu.setHeaderTitle(R.string.select_the_action);
+                //groupId, itemId, order, title
+                menu.add(0, v.getId(), 0, R.string.show_destination_address);
+                menu.add(0, v.getId(), 1, R.string.show_source_address);
+                menu.add(0, v.getId(), 2, R.string.ping_destination);
+                menu.add(0, v.getId(), 3, R.string.ping_source);
+                menu.add(0, v.getId(), 4, R.string.resolve_destination);
+                menu.add(0, v.getId(), 5, R.string.resolve_source);
             }
         });
         recyclerView.setAdapter(recyclerViewAdapter);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch(item.getOrder()){
+
+            case 0: // Destination to clipboard
+
+                new MaterialDialog.Builder(this)
+                        .content(current_selected_logData.getDst() + ":" + current_selected_logData.getDpt())
+                        .title(R.string.destination_address)
+                        .neutralText(R.string.OK)
+                        .positiveText(R.string.copy_text)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getDst() + ":" + current_selected_logData.getDpt());
+                                Api.toast(LogDetailActivity.this, getString(R.string.destination_copied));
+                            }
+                        })
+                        .show();
+
+                break;
+
+            case 1: // Source to clipboard
+                new MaterialDialog.Builder(this)
+                        .content(current_selected_logData.getSrc() + ":" + current_selected_logData.getSpt())
+                        .title(R.string.source_address)
+                        .neutralText(R.string.OK)
+                        .positiveText(R.string.copy_text)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getSrc() + ":" + current_selected_logData.getSpt());
+                                Api.toast(LogDetailActivity.this, getString(R.string.source_copied));
+                            }
+                        })
+                        .show();
+                break;
+
+            case 2: // Ping Destination
+                try {
+                    new LogNetUtil.NetTask(this).execute(
+                            new LogNetUtil.NetParam(
+                                    LogNetUtil.JobType.PING, current_selected_logData.getDst()
+                            )
+                    ).get();
+
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Exception(00): " + e.getMessage());
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Exception(01): " + e.getMessage());
+                }
+                break;
+
+            case 3: // Ping Source
+                try {
+                    new LogNetUtil.NetTask(this).execute(
+                            new LogNetUtil.NetParam(
+                                    LogNetUtil.JobType.PING, current_selected_logData.getSrc()
+                            )
+                    ).get();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Exception(03): " + e.getMessage());
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Exception(04): " + e.getMessage());
+                }
+                break;
+
+            case 4: // Resolve Destination
+                try {
+                    new LogNetUtil.NetTask(this).execute(
+                            new LogNetUtil.NetParam(
+                                    LogNetUtil.JobType.RESOLVE, current_selected_logData.getDst()
+                            )
+                    ).get();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Exception(05): " + e.getMessage());
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Exception(06): " + e.getMessage());
+                }
+                break;
+
+            case 5: // Resolve Source
+                try {
+                    new LogNetUtil.NetTask(this).execute(
+                            new LogNetUtil.NetParam(
+                                    LogNetUtil.JobType.RESOLVE, current_selected_logData.getSrc()
+                            )
+                    ).get();
+                } catch (InterruptedException e) {
+                    Log.e(TAG, "Exception(07): " + e.getMessage());
+                } catch (ExecutionException e) {
+                    Log.e(TAG, "Exception(08): " + e.getMessage());
+                }
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 
     public class NetTask extends AsyncTask<String, Integer, String>
@@ -140,7 +260,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
             catch (UnknownHostException e)
             {
-                e.printStackTrace();
+                Log.e(TAG, "Exception(09): " + e.getMessage());
             }
             return addr.getCanonicalHostName().toString();
         }

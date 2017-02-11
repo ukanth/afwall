@@ -64,11 +64,11 @@
   <string name="reading_apps">Recuperando aplicaciones instalaes</string>
   <string name="mode">Mou tornafuéu</string>
   <string name="mode_header">Mou: %s</string>
-  <string name="legend_clear">Llimpia toles caxelles de toles columnes</string>
+  <string name="legend_clear">Clear all checkboxes in all columns</string>
   <string name="mode_whitelist">Permitir lo esbillao</string>
-  <string name="legend_whitelist">Les apps esbillaes concederáse-yos l\'accesu a internet</string>
+  <string name="legend_whitelist">A les aplicaciones esbillaes concederáse-yos l\'accesu a internet</string>
   <string name="mode_blacklist">Bloquiar lo esbillao</string>
-  <string name="legend_blacklist">Les apps esbillaes ñegaráse-yos l\'accesu a internet</string>
+  <string name="legend_blacklist">A les aplicaciones esbillaes ñegaráse-yos l\'accesu a internet</string>
   <string name="set_custom_script">Afitar script personalizáu</string>
   <string name="preferences">Preferencies</string>
   <string name="reload">Recargar aplicaciones</string>
@@ -76,8 +76,8 @@
   <string name="send_report">Unviar informe de fallu</string>
   <string name="enter_problem">Por favor, desplica\'l problema:</string>
   <string name="send_mail">Unviar corréu</string>
-  <string name="notify_pref_summary_on">Unviaráse un avisu al instalase una aplicación nueva</string>
-  <string name="notify_pref_summary_off">Nun s\'unviará avisu dalu al instalese una aplicación nueva</string>
+  <string name="notify_pref_summary_on">Amosaráse un avisu cuando s\'instale una aplicación nueva</string>
+  <string name="notify_pref_summary_off">Nun s\'amosará aplicación dala cuando s\'instale una aplicación nueva</string>
   <string name="custom_script_defined">Definióse\'l script personalizáu</string>
   <string name="custom_script_removed">Desanicióse\'l script personalizáu</string>
   <string name="custom_script_error">Fallu guardando\'l script personalizáu</string>
@@ -85,18 +85,21 @@
   <string name="custom_script2_info">    	\n<b>Script d\'apagáu personalizáu</b>    	\nPues tamién definir un script personalizáu que s\'execute cuando\'l tonafuéu tea <b>deshabilitáu</b>:</string>
   <string name="unsaved_changes">Camudancies ensin guardar</string>
   <string name="unsaved_changes_message">Tienes camudancies ensin guardar.\n¿Quies aplicales o descartales?</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">Regles d\'Iptables</string>
   <string name="copy">Copiar</string>
   <string name="copied">Copiáu</string>
   <string name="Search">Guetar</string>
   <string name="flushRulesConfirm">¿Balerar toles regles d\'iptables?</string>
-  <string name="overrideRules">¡Esto anulará les regles esistentes! ¿Quies importar les regles?</string>
+  <string name="overrideRules">¿Quies importar les regles? ¡Esto anulará les regles esistentes!</string>
   <string name="notification_new">Instaláronse aplicaciones nueves</string>
   <string name="notification_new_package">Configura\'l so permisu a internet</string>
   <string name="confirmMsg">¿Deshabilitar dafechu\'l firmware?</string>
   <string name="apply">Aplicar</string>
   <string name="discard">Descartar</string>
   <string name="delete">Desaniciar</string>
+  <string name="clone">Clone</string>
+  <string name="rename">Rename</string>
   <string name="Yes">Sí</string>
   <string name="Continue">Siguir</string>
   <string name="No">Non</string>
@@ -113,7 +116,7 @@
   <string name="remove_initd">Desinstalóse\'l script d\'aniciu</string>
   <string name="unable_remove_initd">Nun pue desaniciase\'l script d\'aniciu d\'AFWall+</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Nun pue deshabilitase\'l tornafuéu - ¡protexío por contraseña!</string>
+  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
   <string name="widget_label_status">Alternancia/Estáu d\'AFWall+</string>
   <string name="widget_label_settings">Axustes d\'AFWall+</string>
   <string name="widget_label_settings_old">Axustes d\'AFWall+ (vieyo)</string>
@@ -130,9 +133,9 @@
   <string name="import_rules_success">Importóse de </string>
   <string name="import_rules_fail">¡Falló la importación!</string>
   <string name="import_rules_missing">¡Falta\'l ficheru de regles!</string>
-  <string name="exportConfirm">¿Esportar regles de la tarxeta SD?</string>
-  <string name="export_logs_fail">¡Fallu al esportar a la SD!</string>
-  <string name="export_to_sd">Esportar a tarxeta SD</string>
+  <string name="exportConfirm">¿Esportar regles al almacenamientu?</string>
+  <string name="export_logs_fail">Export to storage failed!</string>
+  <string name="export_to_sd">Export to storage</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Habilitar rexistru del tornafuéu</string>
   <string name="enable_firewall_log_service">Prender serviciu de rexistru</string>
@@ -172,15 +175,16 @@
   <string name="profile1">Perfil 1</string>
   <string name="profile2">Perfil 2</string>
   <string name="profile3">Perfil 3</string>
+  <string name="profile_hint">ProfileName</string>
   <string name="reapply_profile">Reaplicar regles de perfiles</string>
   <!-- Interface -->
-  <string name="lan_title">Control de LAN</string>
+  <string name="lan_title">LAN control</string>
   <string name="lan_summary">Habilita\'l control de permisos LAN de mou separtáu de los permisos WiFi</string>
   <string name="iptables_pref">Binariu d\'IPtables</string>
   <string name="vpn_profile">Control de VPN</string>
   <string name="vpnSummary">Habilita\'l control de permisos VPN de mou separtáu</string>
   <string name="roaming">Control de Roaming</string>
-  <string name="roamingSummary">Habilita\'l control de mou separtáu de los permisos d\'itinerancia</string>
+  <string name="roamingSummary">Enable to control roaming permissions separately</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -199,8 +203,8 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Venceyao a XPosed</string>
   <string name="fixDownloadTitle">Iguar escape del xestor de decargues</string>
-  <string name="fixDownloadTitleSummary">Esto usará Xposed pa bloquiar la descarga de datos poles aplicaciones usando\'l xestor de descargues integráu d\'Android incluso si l\'aplicación tien ñegáu l\'accesu</string>
-  <string name="LeakDetected">Deteutóse escape</string>
+  <string name="fixDownloadTitleSummary">Usa Xposed pa bloquiar a les aplicaciones que baxen datos usando\'l xestor de descargues integráu d\'Android magar que l\'aplicación tenga l\'accesu ñegáu</string>
+  <string name="LeakDetected">¡Deteutáronse escapes!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker Related</string>
   <string name="disable_toaster">Deshabilitar avisos emerxentes</string>
@@ -215,7 +219,7 @@
   <string name="ipv6_title">Sofitu d\'IPv6</string>
   <string name="ipv6_summary">Habilita\'l sofitu d\'IPv6</string>
   <string name="block_ipv6_title">Bloquiar IPv6</string>
-  <string name="block_ipv6_summary">Esto bloquiará la conexón d\'aplicaciones usando IPv6. CURIÁU: Usar namái si tienes conexón pente IPv4</string>
+  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
   <string name="ip6unavailable">Fallu: IPv6 rique «/system/bin/ip6tables».</string>
   <string name="switch_ipv6">Cambiar a regles IPv6</string>
   <string name="switch_ipv4">Cambiar a regles IPv</string>
@@ -224,7 +228,7 @@
   <string name="usePattern">Usar patrón de bloquéu en cuantes d\'una contraseña</string>
   <string name="stealthMode">Mou a la callandiella nel patrón</string>
   <string name="patternMaxTry">Númberu máximu d\'intentos</string>
-  <string name="resetPattern">¿Reafitar patrón de bloquéu?</string>
+  <string name="resetPattern">Reset lock pattern?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Xestor de preseos</string>
   <string name="device_admin_enabled">AFWall+ Device Admin enabled</string>
@@ -237,7 +241,7 @@
   <string name="addStartupDelayTitle">Retrasu d\'aniciu</string>
   <string name="addStartupDelaySummary">AFWall+ esperará 5 segundos enantes d\'aplicar les regles. Habilita esti axuste namái si les regles d\'aniciu nun s\'apliquen de mou afayadizu nel arranque.</string>
   <string name="fixleakTitle">Iguar escape de datos nel aniciu</string>
-  <string name="fixleakSummary">Evita los escapes de datos nel aniciu\'l sistema. La to ROM ha tener sofitu d\'Init.d o su.d (superSU). Los preseos HTC tienen de tar configuraos pa S-OFF.</string>
+  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -263,7 +267,7 @@
   <string name="misc_header">Llingües/Complementos</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Activar regles</string>
-  <string name="active_rules_summary">Aplica les regles en cada cambéu de coneutividá (Roaming/LAN/Wifi/3G/tethering)</string>
+  <string name="active_rules_summary">Aplica les regles en cada cambéu de coneutividá (Roaming/LAN/WiFi/3G/tethering/datos móviles)</string>
   <string name="profile_add">Amestar perfil</string>
   <string name="profile_remove">Desaniciar perfil</string>
   <string name="profile_rename">Renomar perfil</string>
@@ -272,6 +276,7 @@
   <string name="multi_apply_rules_info">Carga y aplica les regles al camudar de perfiles</string>
   <string name="multi_user_title">Habilitar sofitu multi-usuariu</string>
   <string name="multi_user_summary">Sofita la carauterística de multi-usuariu d\'Android (namái furrula nel mou u se bloquien los elementos bloquiaos)</string>
+  <!--  -->
   <string name="device_admin_desc">Seguranza adicional - Evita la desinstalación d\'AFWall+</string>
   <string name="traffic_detail_title">Detalles de tráficu</string>
   <string name="uploaded">Xubío</string>
@@ -293,13 +298,13 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Datos</string>
-  <string name="legend_data">Habilita los permisos del control de datos (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Habilita los permisos del control de datos móviles (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Too</string>
   <string name="pkg_core">Nucleu</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Usuariu</string>
   <string name="menu">Menú</string>
-  <string name="backup_notexist">Nun esiste dal respaldu. Esporta ún dende\'l menú, por favor.</string>
+  <string name="backup_notexist">Nun esisten respaldos. Esporta ún dende\'l menú, por favor.</string>
   <string name="showFilter">Amosar peñeres</string>
   <string name="showfilter_summary_on">Les peñeres (Too/Nucleu/Sistema/Usuariu) amuésense na vista principal</string>
   <string name="showfilter_summary_off">Les peñeres (Too/Nucleu/Sistema/Usuariu) anúbrense na vista principal</string>
@@ -325,7 +330,7 @@
   <string name="donate_thanks">¡Gracies pol to sofitu!</string>
   <string name="activeNotification">Amosar iconu d\'avisu</string>
   <string name="activeNotification_summary">Amuesa siempres un iconu na barra d\'avisos</string>
-  <string name="active">Tornafuéu n\'execución</string>
+  <string name="active">Firewall enabled</string>
   <string name="inactive">Tornafuéu deshabilitáu</string>
   <string name="About">Tocante a</string>
   <string name="FAQ">FAQ</string>
@@ -346,10 +351,11 @@
   <string name="pref_device">Usar proteición de seguranza de preséu</string>
   <string name="pref_device_desc">Usa la comprobación de seguranza del preséu p\'abrir AFWall+ (carauterística de donación)</string>
   <string name="secure_option">El preséu nun ta aseguráu con contraseña/PIN</string>
-  <string name="android_version">Esta carauterística namái furrula en versiones d\'Android a partir de Lollipop</string>
+  <string name="android_version">Esta carauterística namái furrula en versiones d\'Android entamando per Lollipop</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Afitar</string>
   <string name="wrong_password">Contraseña incorreuta</string>
+  <string name="password_empty"></string>
   <string name="submit">Unviar</string>
   <string name="dialog_color_picker">Seleutor de color</string>
   <!--<string name="sort">Sort Applications</string>-->
@@ -363,7 +369,7 @@
   <string name="manage_profiles_summary">Amiesta o desanicia perfiles</string>
   <string name="profiles">Perfil </string>
   <string name="migrate_profiles">Migrar perfiles</string>
-  <string name="migrate_summary">Migra tolos datos de perfil adicionales dende la versión 1.x a la 2.X</string>
+  <string name="migrate_summary">Migrate all profile data</string>
   <string name="insert_profile">Nome de perfil</string>
   <string name="add">Amestar</string>
   <string name="showlog_toasts">Amuesa avisos burbuya al bloquiar</string>
@@ -375,7 +381,7 @@
   <string name="widget_prefs_title">Posiciones de widget</string>
   <string name="xTitle">Posición X de widget</string>
   <string name="xTitleSummary">Anulación manual de posición X</string>
-  <string name="xTitleDialog">Afita la posición X (númberu)</string>
+  <string name="xTitleDialog">Set X position (number)</string>
   <string name="yTitle">Posición Y de widget</string>
   <string name="yTitleSummary">Anulación manual de posición Y</string>
   <string name="yTitleDialog">Afita la posición Y (númberu)</string>
@@ -383,8 +389,8 @@
   <string name="error_nonsupported_details">AFWall+ deteutó una aplicación de susperusuariu non sofitada que ye conocida por saltase les regles del tornafuéu. Darréu que ye una aplicación de superusuariu, AFWall+ nun pue iguar esti problema.</string>
   <string name="lockNotification">Anubrir iconu d\'avisu na pantalla de bloquéu</string>
   <string name="lockScreenNotification_summary">Anubre l\'avisu entrante na pantalla de bloquéu</string>
-  <string name="menu_legend">Lleendes</string>
-  <string name="permissiondenied_importexport">Permisu ñegáu pal accesu LLECTURA/ESCRITURA pal almacenamientu internu. Da accesu pa les regles d\'esportación/importación. por favor.</string>
+  <string name="menu_legend">Lleenda</string>
+  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permisu ñegáu al accesu LLECTURA/ESCRITURA pal almacenamientu. Da accesu pa copiar binarios, por favor </string>
   <string name="log_deletedapp">Aplicación desaniciada</string>
   <string name="log_denied">Denied :</string>
@@ -393,11 +399,16 @@
   <string name="log_dst">Destín:</string>
   <string name="log_src">Fonte:</string>
   <string name="log_proto">Protocolu:</string>
-  <string name="no_data_available">Habilita\'l serviciu de rexistru o nun habrá datos, por favor</string>
+  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
   <string name="loading_data_title">Cargando...</string>
   <string name="loading_data">Recibiendo rexistru de datos</string>
   <string name="switch_old">Camudar a vista vieya</string>
   <string name="switch_new">Camudar a vista nueva</string>
   <string name="showlogdetail_title">Application Log Details</string>
-  <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
+  <string name="reapply_rules">Please reapply the rules due to preference change</string>
+  <string name="custom_rules">Custom Rules</string>
+  <string name="mdns">Enable Mutlicast DNS</string>
+  <string name="error_log">Nun pue aniciase\'l serviciu de rexistru. LogTarget ta baleru o LogService nun s\'habilitó.</string>
+  <string name="delete_profile">Unable to delete profile</string>
+  <string name="profile_migrate_msg">Profiles migrated successfully</string>
 </resources>

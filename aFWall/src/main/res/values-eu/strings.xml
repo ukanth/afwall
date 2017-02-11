@@ -64,20 +64,20 @@
   <string name="reading_apps">Instalatutako aplikazioak jasotzen</string>
   <string name="mode">Firewall Mode</string>
   <string name="mode_header">Modua: %s</string>
-  <string name="legend_clear">Garbitu zutabe guztietako koadroak</string>
+  <string name="legend_clear">Clear all checkboxes in all columns</string>
   <string name="mode_whitelist">Baimendu hautatutakoak</string>
-  <string name="legend_whitelist">Hautatutako aplikazioei internet sarbidea emango zaie</string>
+  <string name="legend_whitelist">Selected apps will be granted internet access</string>
   <string name="mode_blacklist">Blokeatu hautatutakoak</string>
-  <string name="legend_blacklist">Hautatutako aplikazioei internet sarbidea ukatuko zaie</string>
+  <string name="legend_blacklist">Selected apps will be denied internet access</string>
   <string name="set_custom_script">Ezarri script propioa</string>
   <string name="preferences">Hobespenak</string>
   <string name="reload">Birkargatu aplikazioak</string>
   <string name="flush">Ezabatu arauak</string>
   <string name="send_report">Bidali errore txostena</string>
-  <string name="enter_problem">Azaldu arazoa, mesedez:</string>
+  <string name="enter_problem">Please explain the issue:</string>
   <string name="send_mail">Bidali posta mezua</string>
-  <string name="notify_pref_summary_on">Jakinarazpen bat bidaliko da aplikazio berri bat instalatzean</string>
-  <string name="notify_pref_summary_off">Ez da jakinarazpenik bidaliko aplikazio berri bat instalatzean</string>
+  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
   <string name="custom_script_defined">Script pertsonalizatua ezarri da</string>
   <string name="custom_script_removed">Script pertsonalizatua kendu da</string>
   <string name="custom_script_error">Errorea script pertsonalizatua gordetzean</string>
@@ -85,18 +85,21 @@
   <string name="custom_script2_info">    \n<b>Itzaltzeko script pertsonalizatua</b> \nSuebakia <b>ezgaitzean</b> abiatuko den script pertsonalizatu bat ere zehaztu dezakezu:</string>
   <string name="unsaved_changes">Gorde gabeko aldaketak</string>
   <string name="unsaved_changes_message">Gorde gabeko aldaketak dituzu.\nAplikatu ala baztertu nahi dituzu?</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">Iptables arauak</string>
   <string name="copy">Kopiatu</string>
   <string name="copied">Kopiatuta</string>
   <string name="Search">Bilatu</string>
   <string name="flushRulesConfirm">Ezabatu iptables arau guztiak?</string>
-  <string name="overrideRules">Honek aurretik dauden arauak gainidatziko ditu! Arauak inportatu nahi dituzu?</string>
+  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
   <string name="notification_new">Aplikazio berria intalatu da</string>
   <string name="notification_new_package">Konfiguratu internet baimena</string>
   <string name="confirmMsg">Guztiz DESGAITU suebakia?</string>
   <string name="apply">Aplikatu</string>
   <string name="discard">Baztertu</string>
   <string name="delete">Ezabatu</string>
+  <string name="clone">Clone</string>
+  <string name="rename">Rename</string>
   <string name="Yes">Bai</string>
   <string name="Continue">Jarraitu</string>
   <string name="No">Ez</string>
@@ -113,7 +116,7 @@
   <string name="remove_initd">Abio scripta kendu da</string>
   <string name="unable_remove_initd">Ezin izan da AFWall+ abio script-a kendu</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Ezin da suebakia ezgaitu - pasahitzez babestua!</string>
+  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
   <string name="widget_label_status">AFWall+ Txandakatu/egoera</string>
   <string name="widget_label_settings">AFWall+ Ezarpenak</string>
   <string name="widget_label_settings_old">AFWall+ Ezarpenak (zaharra)</string>
@@ -130,9 +133,9 @@
   <string name="import_rules_success">Hemendik inportatu da </string>
   <string name="import_rules_fail">Inportazioak huts egin du!</string>
   <string name="import_rules_missing">Arau fitxategia falta da.</string>
-  <string name="exportConfirm">Esportatu arauak SD txartelera?</string>
-  <string name="export_logs_fail">SD txartelera esportatzean huts egin du!</string>
-  <string name="export_to_sd">Esportatu SD txartelera</string>
+  <string name="exportConfirm">Export rules to storage?</string>
+  <string name="export_logs_fail">Export to storage failed!</string>
+  <string name="export_to_sd">Export to storage</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Gaitu suebakiaren egunkaria</string>
   <string name="enable_firewall_log_service">Piztu erregistro zerbitzua</string>
@@ -172,15 +175,16 @@
   <string name="profile1">1 profila</string>
   <string name="profile2">2 profila</string>
   <string name="profile3">3 profila</string>
+  <string name="profile_hint">ProfileName</string>
   <string name="reapply_profile">Berraplikatu profilaren arauak</string>
   <!-- Interface -->
-  <string name="lan_title">LAN kontrola</string>
+  <string name="lan_title">LAN control</string>
   <string name="lan_summary">Gaitu hau alde batetik LAN baimenak eta bestetik WiFi baimenak kudeatzeko</string>
   <string name="iptables_pref">Iptables bitarra</string>
   <string name="vpn_profile">VPN kontrola</string>
   <string name="vpnSummary">Gaitu VPN baimenak berezita kontrolatzeko</string>
   <string name="roaming">Ibiltaritzaren (Roaming-aren) kontrola</string>
-  <string name="roamingSummary">Gaitu ibiltaritzan internet baimenak berezita kontrolatzeko</string>
+  <string name="roamingSummary">Enable to control roaming permissions separately</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -198,9 +202,9 @@
   <string name="auto">Automatikoa</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed aplikazioarekin erlazionatuta</string>
-  <string name="fixDownloadTitle">Fix DownloadManager Leak</string>
-  <string name="fixDownloadTitleSummary">This will use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-  <string name="LeakDetected">Leak Detected</string>
+  <string name="fixDownloadTitle">Fix DownloadManager leak</string>
+  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+  <string name="LeakDetected">Leak detected!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker aplikazioarekin erlazionatuta</string>
   <string name="disable_toaster">Desgaitu Tasker laster-leihoak</string>
@@ -215,7 +219,7 @@
   <string name="ipv6_title">IPv6 euskarria</string>
   <string name="ipv6_summary">Gaitu IPv6 euskarria</string>
   <string name="block_ipv6_title">Blokeatu IPv6</string>
-  <string name="block_ipv6_summary">This will block applications connect using IPv6. CAUTION: Use only if you have connection through IPv4</string>
+  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
   <string name="ip6unavailable">Errorea: IPv6-k \"/system/bin/ip6tables\" behar du.</string>
   <string name="switch_ipv6">Aldatu IPv6 arauak</string>
   <string name="switch_ipv4">Aldatu IPV4 arauak</string>
@@ -224,7 +228,7 @@
   <string name="usePattern">Erabili blokeo eredua pasahitzaren ordez</string>
   <string name="stealthMode">Modu sekretua ereduan</string>
   <string name="patternMaxTry">Gehieneko saiakera kopurua</string>
-  <string name="resetPattern">Berrezarrri blokeo eredua?</string>
+  <string name="resetPattern">Reset lock pattern?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Gailu administratzailea</string>
   <string name="device_admin_enabled">AFWall+ gailu administratzailea gaituta</string>
@@ -237,7 +241,7 @@
   <string name="addStartupDelayTitle">Startup Delay</string>
   <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Eragotzi abiarazterakoan baimen gabe konektatzea</string>
-  <string name="fixleakSummary">Eragotzi sistema abiatzean baimen gabe konektatu ahal izatea. Zure ROM-ak init.d edo su.d (superSU) euskarria izan behar du. HTC gailuak S-OFF gisa konfiguratu behar dira.</string>
+  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -263,7 +267,7 @@
   <string name="misc_header">Hizkuntzak/Gehigarriak</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Arau aktiboak</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/wireless-data/roam/tether)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
   <string name="profile_add">Gehitu profila</string>
   <string name="profile_remove">Ezabatu profila</string>
   <string name="profile_rename">Aldatu izena profilari</string>
@@ -272,6 +276,7 @@
   <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
   <string name="multi_user_title">Gaitu hainbat erabiltzailerentzako euskarria</string>
   <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
+  <!--  -->
   <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
   <string name="traffic_detail_title">Trafikoaren xehetasunak</string>
   <string name="uploaded">Kargatuta</string>
@@ -293,13 +298,13 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Datuak</string>
-  <string name="legend_data">Enable to control data (2G,3G,EDGE,LTE/4G) permissions</string>
+  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Guztiak</string>
   <string name="pkg_core">Nukleoa</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Erabiltzailea</string>
   <string name="menu">Menu</string>
-  <string name="backup_notexist">Ez dago segurtasun kopiarik. Esportatu menutik.</string>
+  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
   <string name="showFilter">Erakutsi iragazkiak</string>
   <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
   <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
@@ -325,7 +330,7 @@
   <string name="donate_thanks">Eskerrik asko zure babesagatik!</string>
   <string name="activeNotification">Bistaratu jakinarazpen ikonoa</string>
   <string name="activeNotification_summary">Bistaratu behin betiko ikonoa jakinarazpen barran</string>
-  <string name="active">Suebakia martxan dago</string>
+  <string name="active">Firewall enabled</string>
   <string name="inactive">Suebakia ezgaituta dago</string>
   <string name="About">Honi buruz</string>
   <string name="FAQ">FAQ (Maiz Egindako Galderak)</string>
@@ -344,12 +349,13 @@
   <string name="pref_password">Pasahitza</string>
   <string name="pref_pattern">Eredua</string>
   <string name="pref_device">Use Device Security Protection</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+(donate/key feature)</string>
-  <string name="secure_option">Device is not secured with password/pin</string>
-  <string name="android_version">This feature only works on Lollipop+ versions of Android</string>
+  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+  <string name="secure_option">Device is not secured with password/PIN</string>
+  <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Ezarri</string>
   <string name="wrong_password">Pasahitz okerra</string>
+  <string name="password_empty"></string>
   <string name="submit">Bidali</string>
   <string name="dialog_color_picker">Kolore hautatzailea</string>
   <!--<string name="sort">Sort Applications</string>-->
@@ -363,7 +369,7 @@
   <string name="manage_profiles_summary">Add or remove profiles</string>
   <string name="profiles">Profila </string>
   <string name="migrate_profiles">Migratu profilak</string>
-  <string name="migrate_summary">Migrate all additional profile data from version 1.x to 2.x</string>
+  <string name="migrate_summary">Migrate all profile data</string>
   <string name="insert_profile">Profilaren izena</string>
   <string name="add">Gehitu</string>
   <string name="showlog_toasts">Show toast notification on block</string>
@@ -375,7 +381,7 @@
   <string name="widget_prefs_title">Trepetaren koordenatuak</string>
   <string name="xTitle">Trepetaren X koordenatua</string>
   <string name="xTitleSummary">Eskuz gainidatzi X koordenatua</string>
-  <string name="xTitleDialog">Ezarri X koordenatua (zenbakia)</string>
+  <string name="xTitleDialog">Set X position (number)</string>
   <string name="yTitle">Trepetaren Y koordenatua</string>
   <string name="yTitleSummary">Eskuz gainidatzi Y koordenatua</string>
   <string name="yTitleDialog">Ezarri Y koordenatua (zenbakia)</string>
@@ -383,8 +389,8 @@
   <string name="error_nonsupported_details">AFWall+ek suebakiaren arauak ezikusi ohi dituen euskarririk gabeko super-erabiltzaile aplikazio bat aurkitu du. Root baimena duenez AFWall+ek ezin du hau eragotzi.</string>
   <string name="lockNotification">Hide lockscreen notification icon</string>
   <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-  <string name="menu_legend">Legendak</string>
-  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for external storage. Please give access for export/import rules.</string>
+  <string name="menu_legend">Legend</string>
+  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
   <string name="log_deletedapp">Deleted Application</string>
   <string name="log_denied">Denied :</string>
@@ -393,11 +399,16 @@
   <string name="log_dst">Destination :</string>
   <string name="log_src">Source :</string>
   <string name="log_proto">Protocol :</string>
-  <string name="no_data_available">Please enable log service or no data</string>
+  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
   <string name="loading_data_title">Kargatzen...</string>
   <string name="loading_data">Retrieving log data</string>
   <string name="switch_old">Switch to old view</string>
   <string name="switch_new">Switch to new view</string>
   <string name="showlogdetail_title">Application Log Details</string>
-  <string name="reapply_rules">Kindly reapply the rules due to preference change</string>
+  <string name="reapply_rules">Please reapply the rules due to preference change</string>
+  <string name="custom_rules">Custom Rules</string>
+  <string name="mdns">Enable Mutlicast DNS</string>
+  <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
+  <string name="delete_profile">Unable to delete profile</string>
+  <string name="profile_migrate_msg">Profiles migrated successfully</string>
 </resources>

@@ -16,6 +16,8 @@ import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.profiles.ProfileData;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.widget.RadialMenuWidget.RadialMenuEntry;
@@ -108,17 +110,22 @@ public class ToggleWidgetActivity extends Activity {
     public class Status implements RadialMenuEntry {
         public String getName() {
             if (G.enableMultiProfile()) {
-                switch (G.storedProfile()) {
-                    case Api.DEFAULT_PREFS_NAME:
-                        return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
-                    case "AFWallProfile1":
-                        return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
-                    case "AFWallProfile2":
-                        return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
-                    case "AFWallProfile3":
-                        return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
-                    default:
-                        return G.storedProfile();
+                if(!G.isProfileMigrated()) {
+                    switch (G.storedProfile()) {
+                        case Api.DEFAULT_PREFS_NAME:
+                            return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+                        case "AFWallProfile1":
+                            return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+                        case "AFWallProfile2":
+                            return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+                        case "AFWallProfile3":
+                            return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+                        default:
+                            return G.storedProfile();
+                    }
+                } else {
+                    //TODO: logic for new profiles
+                    return "";
                 }
             } else {
                 return "";
@@ -127,17 +134,22 @@ public class ToggleWidgetActivity extends Activity {
 
         public String getLabel() {
             if (G.enableMultiProfile()) {
-                switch (G.storedProfile()) {
-                    case Api.DEFAULT_PREFS_NAME:
-                        return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
-                    case "AFWallProfile1":
-                        return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
-                    case "AFWallProfile2":
-                        return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
-                    case "AFWallProfile3":
-                        return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
-                    default:
-                        return G.storedProfile();
+                if(!G.isProfileMigrated()) {
+                    switch (G.storedProfile()) {
+                        case Api.DEFAULT_PREFS_NAME:
+                            return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+                        case "AFWallProfile1":
+                            return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+                        case "AFWallProfile2":
+                            return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+                        case "AFWallProfile3":
+                            return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+                        default:
+                            return G.storedProfile();
+                    }
+                } else {
+                    //TODO: logic for new profiles
+                    return "";
                 }
             } else {
                 return "";
@@ -193,16 +205,27 @@ public class ToggleWidgetActivity extends Activity {
             return 0;
         }
 
-        private List<RadialMenuEntry> children = new ArrayList<RadialMenuEntry>(Arrays.asList(new DefaultProfile(), new Profile1(), new Profile2(), new Profile3()));
+        private List<RadialMenuEntry> children = new ArrayList<RadialMenuEntry>();
 
         public List<RadialMenuEntry> getChildren() {
             return children;
         }
 
         public Profiles() {
-            for (String profileName : G.getAdditionalProfiles()) {
-                RadialMenuEntry entry = new GenericProfile(profileName);
-                children.add(entry);
+            if (!G.isProfileMigrated()) {
+                children.add(new DefaultProfile());
+                children.add(new Profile1());
+                children.add(new Profile2());
+                children.add(new Profile3());
+                for (String profileName : G.getAdditionalProfiles()) {
+                    RadialMenuEntry entry = new GenericProfile(profileName);
+                    children.add(entry);
+                }
+            } else {
+                for (ProfileData data : ProfileHelper.getProfiles()) {
+                    RadialMenuEntry entry = new GenericProfile(data.getName());
+                    children.add(entry);
+                }
             }
         }
 
@@ -271,11 +294,19 @@ public class ToggleWidgetActivity extends Activity {
 
     public class Profile1 implements RadialMenuEntry {
         public String getName() {
-            return G.gPrefs.getString("profile1", getString(R.string.profile1));
+            if(!G.isProfileMigrated()) {
+                return G.gPrefs.getString("profile1", getString(R.string.profile1));
+            } else {
+                return "AFWallProfile1";
+            }
         }
 
         public String getLabel() {
-            return G.gPrefs.getString("profile1", getString(R.string.profile1));
+            if(!G.isProfileMigrated()) {
+                return G.gPrefs.getString("profile1", getString(R.string.profile1));
+            } else {
+                return "AFWallProfile1";
+            }
         }
 
         public int getIcon() {
@@ -293,11 +324,19 @@ public class ToggleWidgetActivity extends Activity {
 
     public class Profile2 implements RadialMenuEntry {
         public String getName() {
-            return G.gPrefs.getString("profile2", getString(R.string.profile2));
+            if(!G.isProfileMigrated()) {
+                return G.gPrefs.getString("profile2", getString(R.string.profile2));
+            } else {
+                return "AFWallProfile2";
+            }
         }
 
         public String getLabel() {
-            return G.gPrefs.getString("profile2", getString(R.string.profile2));
+            if(!G.isProfileMigrated()) {
+                return G.gPrefs.getString("profile2", getString(R.string.profile2));
+            } else {
+                return "AFWallProfile2";
+            }
         }
 
         public int getIcon() {
@@ -315,11 +354,19 @@ public class ToggleWidgetActivity extends Activity {
 
     public class Profile3 implements RadialMenuEntry {
         public String getName() {
-            return G.gPrefs.getString("profile3", getString(R.string.profile3));
+            if(!G.isProfileMigrated()) {
+                return G.gPrefs.getString("profile3", getString(R.string.profile3));
+            } else {
+                return "AFWallProfile3";
+            }
         }
 
         public String getLabel() {
-            return G.gPrefs.getString("profile3", getString(R.string.profile3));
+            if(!G.isProfileMigrated()) {
+                return G.gPrefs.getString("profile3", getString(R.string.profile3));
+            } else {
+                return "AFWallProfile3";
+            }
         }
 
         public int getIcon() {

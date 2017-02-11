@@ -1,14 +1,27 @@
 -keepattributes **
-# Allow obfuscation of android.support.v7.internal.view.menu.**
-# to avoid problem on Samsung 4.2.2 devices with appcompat v21
-# see https://code.google.com/p/android/issues/detail?id=78377
-# Fix bug on Samsung, Wiko (and other) devices running Android 4.2
-# See also: https://code.google.com/p/android/issues/detail?id=78377
 -keep class org.ocpsoft.prettytime.i18n.**
 -keep class !android.support.v7.view.menu.**,!android.support.design.internal.NavigationMenu,!android.support.design.internal.NavigationMenuPresenter,!android.support.design.internal.NavigationSubMenu,** {*;}
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -dontpreverify
 -dontoptimize
 -dontshrink
+-dontobfuscate
 
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+-keep public class android.support.v7.widget.** { *; }
+-keep public class android.support.v7.internal.widget.** { *; }
+-keep public class android.support.v7.internal.view.menu.** { *; }
+
+-keep public class * extends android.support.v4.view.ActionProvider {
+    public <init>(android.content.Context);
+}

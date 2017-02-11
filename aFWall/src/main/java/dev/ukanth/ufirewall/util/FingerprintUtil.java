@@ -252,7 +252,7 @@ public class FingerprintUtil {
             try {
                 keyStore = KeyStore.getInstance("AndroidKeyStore");
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error(0): " + e.getMessage());
             }
 
 
@@ -280,6 +280,7 @@ public class FingerprintUtil {
                     InvalidAlgorithmParameterException
                     | CertificateException | IOException e) {
 //                throw new RuntimeException(e);
+                Log.e(TAG, "Error(1): " + e.getMessage());
             }
         }
 

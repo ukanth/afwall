@@ -69,6 +69,28 @@ public class ProfileHelper {
         return profileData;
     }
 
+    public static ProfileData getProfileByIdentifier(String identifier) {
+        ProfileData profileData = SQLite.select()
+                .from(ProfileData.class).where(ProfileData_Table.identifier.eq(identifier))
+                .querySingle();
+        return profileData;
+    }
+
+    public static void updateProfileName(String identifier,String newName) {
+        ProfileData profileData = SQLite.select()
+                .from(ProfileData.class).where(ProfileData_Table.name.eq(identifier))
+                .querySingle();
+        profileData.setName(newName);
+        profileData.save();
+    }
+
+    public static boolean deleteProfile(String identifier) {
+        ProfileData data = getProfileByIdentifier(identifier);
+        if (data != null) {
+            data.delete();
+        }
+        return true;
+    }
     public static boolean deleteProfileByName(String profileName) {
         ProfileData data = getProfileByName(profileName);
         if (data != null) {

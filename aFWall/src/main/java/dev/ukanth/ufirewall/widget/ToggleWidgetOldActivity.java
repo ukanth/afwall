@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.util.G;
 
 public class ToggleWidgetOldActivity extends Activity implements
@@ -35,20 +36,13 @@ public class ToggleWidgetOldActivity extends Activity implements
                 .findViewById(R.id.toggle_disable_firewall);
         defaultButton = (Button) this.findViewById(R.id.toggle_default_profile);
 
+        enableButton.setOnClickListener(this);
+        disableButton.setOnClickListener(this);
+        defaultButton.setOnClickListener(this);
+
         profButton1 = (Button) this.findViewById(R.id.toggle_profile1);
         profButton2 = (Button) this.findViewById(R.id.toggle_profile2);
         profButton3 = (Button) this.findViewById(R.id.toggle_profile3);
-
-        if(!G.isProfileMigrated()) {
-            profButton1.setText(G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1)));
-            profButton2.setText(G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2)));
-            profButton3.setText(G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3)));
-        } else {
-            // TODO : USE TOP 3 Profiles instead
-            profButton1.setVisibility(View.GONE);
-            profButton2.setVisibility(View.GONE);
-            profButton2.setVisibility(View.GONE);
-        }
 
         if (Api.isEnabled(getApplicationContext())) {
             enableOthers();
@@ -56,15 +50,30 @@ public class ToggleWidgetOldActivity extends Activity implements
             disableOthers();
         }
 
-        enableButton.setOnClickListener(this);
-        disableButton.setOnClickListener(this);
-        defaultButton.setOnClickListener(this);
+        if (!G.isProfileMigrated()) {
+            profButton1.setText(G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1)));
+            profButton2.setText(G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2)));
+            profButton3.setText(G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3)));
+        } else {
+            //hide by default
+            profButton1.setVisibility(View.INVISIBLE);
+            profButton2.setVisibility(View.INVISIBLE);
+            profButton3.setVisibility(View.INVISIBLE);
 
-        if(!G.isProfileMigrated()) {
-            profButton1.setOnClickListener(this);
-            profButton2.setOnClickListener(this);
-            profButton3.setOnClickListener(this);
+            if (ProfileHelper.getProfileByIdentifier("AFWallProfile1") != null) {
+                profButton1.setVisibility(View.VISIBLE);
+            }
+            if (ProfileHelper.getProfileByIdentifier("AFWallProfile2") != null) {
+                profButton2.setVisibility(View.VISIBLE);
+            }
+            if (ProfileHelper.getProfileByIdentifier("AFWallProfile3") != null) {
+                profButton3.setVisibility(View.VISIBLE);
+            }
         }
+
+        profButton1.setOnClickListener(this);
+        profButton2.setOnClickListener(this);
+        profButton3.setOnClickListener(this);
 
         if (!G.enableMultiProfile()) {
             profButton1.setEnabled(false);
@@ -72,7 +81,6 @@ public class ToggleWidgetOldActivity extends Activity implements
             profButton3.setEnabled(false);
         } else {
             if (Api.isEnabled(getApplicationContext())) {
-                //TODO: FIX
                 String profileName = G.storedProfile();
                 if (profileName.equals(Api.DEFAULT_PREFS_NAME)) {
                     disableDefault();
@@ -81,7 +89,6 @@ public class ToggleWidgetOldActivity extends Activity implements
                 }
             }
         }
-
     }
 
     @Override
@@ -118,9 +125,6 @@ public class ToggleWidgetOldActivity extends Activity implements
             }
         };
         final Context context = getApplicationContext();
-    /*	final String oldPwd = G.profile_pwd();
-		final String newPwd = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0)
-				.getString("LockPassword", "");*/
         new Thread() {
             @Override
             public void run() {
@@ -134,7 +138,6 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 2:
                         // validation, check for password
-
                         if (G.protectionLevel().equals("p0")) {
                             if (Api.purgeIptables(context, false)) {
                                 msg.arg1 = R.string.toast_disabled;

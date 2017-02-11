@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -84,8 +85,9 @@ public class ProfileActivity extends AppCompatActivity {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        ProfileData profile = profileAdapter.getItem(aInfo.position);
-        menu.setHeaderTitle(getString(R.string.select) + " " + profile.getName());
+        //ProfileData profile = profileAdapter.getItem(aInfo.position);
+        String name = ((TextView) aInfo.targetView).getText().toString();
+        menu.setHeaderTitle(getString(R.string.select) + " " + name);
         if (G.isProfileMigrated()) {
             menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
             menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
@@ -101,6 +103,8 @@ public class ProfileActivity extends AppCompatActivity {
             case MENU_DELETE:
                 AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 String profileName = profilesList.get(aInfo.position).getName();
+                //String title = item.getTitle().toString();
+                //Api.toast(getApplicationContext(), title);
                 if (!G.isProfileMigrated()) {
                     if (aInfo.position > 3) {
                         boolean deleted = G.removeAdditionalProfile(profileName);
@@ -112,6 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     } else {
                         //TODO: can't delete default profiles(1,2,3) msg - Use migrate option
+                        Api.toast(getApplicationContext(), getString(R.string.profile_notsupport));
                     }
                 } else {
                     if (aInfo.position != 0) {
@@ -176,12 +181,12 @@ public class ProfileActivity extends AppCompatActivity {
                         if (G.isProfileMigrated()) {
                             //store to database
                             data.save();
+                            ProfileActivity.this.profilesList.add(data);
+                            ProfileActivity.this.profileAdapter.notifyDataSetChanged();
                         } else {
-                            //still use old way
-                            G.addAdditionalProfile(profileName);
+                            Api.toast(getApplicationContext(), getString(R.string.profile_notsupport));
                         }
-                        ProfileActivity.this.profilesList.add(data);
-                        ProfileActivity.this.profileAdapter.notifyDataSetChanged(); // We notify the data model is changed
+                        // We notify the data model is changed
                     }
                 }).show();
 

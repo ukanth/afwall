@@ -64,20 +64,20 @@
   <string name="reading_apps">Получение установленных прил.</string>
   <string name="mode">Режим файрвола</string>
   <string name="mode_header">Режим: %s</string>
-  <string name="legend_clear">Очистить все отметки для всех столбцов</string>
+  <string name="legend_clear">Снимите все флажки в столбцах</string>
   <string name="mode_whitelist">Разрешить выбранное</string>
-  <string name="legend_whitelist">Выбранным приложениям будет предоставляться доступ к интернету</string>
+  <string name="legend_whitelist">В выбранных приложениях будет предоставлен доступ в интернет</string>
   <string name="mode_blacklist">Блокировать выбранное</string>
-  <string name="legend_blacklist">Выбранным приложениям будет запрещен доступ к интернету</string>
+  <string name="legend_blacklist">В выбранных приложениях будет запрещен доступ в интернет</string>
   <string name="set_custom_script">Пользовательские скрипты</string>
   <string name="preferences">Настройки</string>
   <string name="reload">Перезагрузка приложений</string>
   <string name="flush">Удалить правила</string>
   <string name="send_report">Отправить отчёт об ошибке</string>
-  <string name="enter_problem">Пожалуйста, опишите проблему:</string>
+  <string name="enter_problem">Пожалуйста, разъясните вопрос:</string>
   <string name="send_mail">Отправить письмо</string>
-  <string name="notify_pref_summary_on">Уведомлять после установки нового приложения</string>
-  <string name="notify_pref_summary_off">Не отправлять уведомления  при установке нового приложения</string>
+  <string name="notify_pref_summary_on">Уведомление будет отображаться при установке нового приложения</string>
+  <string name="notify_pref_summary_off">Никаких уведомлений не будет отображаться при установке новых приложений</string>
   <string name="custom_script_defined">Пользовательский скрипт задан</string>
   <string name="custom_script_removed">Пользовательский скрипт удален</string>
   <string name="custom_script_error">Ошибка сохранения пользовательского скрипта</string>
@@ -86,18 +86,21 @@
   <string name="unsaved_changes">Изменения не сохранены</string>
   <string name="unsaved_changes_message">\"Обнаружены несохраненные изменения
 Вы хотите их применить или отменить?\"</string>
+  <string name="help_dialog_text"></string>
   <string name="showrules_title">Правила iptables</string>
   <string name="copy">Копировать</string>
   <string name="copied">Скопировано</string>
   <string name="Search">Поиск</string>
   <string name="flushRulesConfirm">Обнулить правила iptables?</string>
-  <string name="overrideRules">Существующие правила буду перезаписаны! Продолжить импорт правил?</string>
+  <string name="overrideRules">Вы хотите импортировать правила? Это изменит существующие правила!</string>
   <string name="notification_new">Новое прил. установлено</string>
   <string name="notification_new_package">Настройка интернет-разрешения</string>
   <string name="confirmMsg">Полностью ОТКЛЮЧИТЬ брандмауэр?</string>
   <string name="apply">Применить</string>
   <string name="discard">Отменить</string>
   <string name="delete">Удалить</string>
+  <string name="clone">Clone</string>
+  <string name="rename">Rename</string>
   <string name="Yes">Да</string>
   <string name="Continue">Далее</string>
   <string name="No">Нет</string>
@@ -114,7 +117,7 @@
   <string name="remove_initd">Скрипт запуска удален</string>
   <string name="unable_remove_initd">Невозможно удалить скрипт автозапуска</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Не удается отключить брандмауэр - включена защита паролем!</string>
+  <string name="widget_disable_fail">Не удается отключить брандмауэр. Защищен паролем!</string>
   <string name="widget_label_status">Переключить/Состояние AFWall+</string>
   <string name="widget_label_settings">Настройки AFWall+</string>
   <string name="widget_label_settings_old">AFWall+ настройки (старые)</string>
@@ -131,9 +134,9 @@
   <string name="import_rules_success">Импортировано из </string>
   <string name="import_rules_fail">Ошибка импорта!</string>
   <string name="import_rules_missing">Отсутствует файл правил!</string>
-  <string name="exportConfirm">Экспортировать правила на SD-карту?</string>
-  <string name="export_logs_fail">Ошибка экспорта на SD-карту!</string>
-  <string name="export_to_sd">Экспорт на SD-карту</string>
+  <string name="exportConfirm">Экспортировать правила в хранилище?</string>
+  <string name="export_logs_fail">Ошибка экспорта в хранилище!</string>
+  <string name="export_to_sd">Экспорт в хранилище</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Включить журнал брандмауэра</string>
   <string name="enable_firewall_log_service">Включить службу журнала</string>
@@ -173,15 +176,16 @@
   <string name="profile1">Профиль 1</string>
   <string name="profile2">Профиль 2</string>
   <string name="profile3">Профиль 3</string>
+  <string name="profile_hint">Имя_профиля</string>
   <string name="reapply_profile">Повтор применения правил профиля</string>
   <!-- Interface -->
-  <string name="lan_title">Управление сетью</string>
+  <string name="lan_title">LAN control</string>
   <string name="lan_summary">Включить для раздельного управления разрешениями доступа для мобильных и WiFi сетей</string>
   <string name="iptables_pref">Бинарный файл IPtables</string>
   <string name="vpn_profile">Управление VPN</string>
   <string name="vpnSummary">Включить для раздельного управления разрешениями VPN</string>
   <string name="roaming">Управление роумингом</string>
-  <string name="roamingSummary">Включить для раздельного управления разрешениями интернета в роуминге</string>
+  <string name="roamingSummary">Позволяет управлять разрешением роуминга отдельно</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -199,9 +203,9 @@
   <string name="auto">Автоматически</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Связано с Xposed</string>
-  <string name="fixDownloadTitle">Исправление утечки DownloadManager</string>
-  <string name="fixDownloadTitleSummary">Будет использован Xposed для блокировки приложений, загружающих данные с помощью встроенного менеджера загрузки Андроид, даже если приложению запрещен доступ</string>
-  <string name="LeakDetected">Обнаружена утечка</string>
+  <string name="fixDownloadTitle">Устранена утечка DownloadManager</string>
+  <string name="fixDownloadTitleSummary">Использовать Xposed, чтобы блокировать приложения загрузки данных с помощью встроенного менеджера загрузок Андроид, даже если приложение запрещен доступ</string>
+  <string name="LeakDetected">Обнаружена утечка!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Настройки Tasker</string>
   <string name="disable_toaster">Отключить сообщения Tasker</string>
@@ -216,7 +220,7 @@
   <string name="ipv6_title">Поддержка IPv6</string>
   <string name="ipv6_summary">Разрешить поддержку IPv6</string>
   <string name="block_ipv6_title">Блокировка IPv6</string>
-  <string name="block_ipv6_summary">Блокировка приложений, использующих IPv6. ВНИМАНИЕ: используйте только при наличии соединения через IPv4</string>
+  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
   <string name="ip6unavailable">Ошибка: IPv6 требуется «/system/bin/ip6tables».</string>
   <string name="switch_ipv6">Переключение IPV6 правил</string>
   <string name="switch_ipv4">Переключение IPV46 правил</string>
@@ -264,7 +268,7 @@
   <string name="misc_header">Языки/плагины</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Активные правила</string>
-  <string name="active_rules_summary">Применить правила брандмауэра при каждом изменении подключения (LAN/Wi-Fi/беспров. данные/роуминг/раздача)</string>
+  <string name="active_rules_summary">Применить правила брандмауэра при каждом изменении подключения (LAN/Wi-Fi/мобильные данные/роуминг/раздача)</string>
   <string name="profile_add">Добавить профиль</string>
   <string name="profile_remove">Удалить профиль</string>
   <string name="profile_rename">Переименовать профиль</string>
@@ -273,6 +277,7 @@
   <string name="multi_apply_rules_info">Загрузить и применить правила при переключении профилей</string>
   <string name="multi_user_title">Включить многопользовательскую поддержку</string>
   <string name="multi_user_summary">Поддержка нескольких пользователей Android (работает только в режиме, блокирующем выбранные элементы)</string>
+  <!--  -->
   <string name="device_admin_desc">Дополнительная безопасность - предотвратить удаление AFWall +</string>
   <string name="traffic_detail_title">Подробности траффика</string>
   <string name="uploaded">Выгружено</string>
@@ -326,7 +331,7 @@
   <string name="donate_thanks">Спасибо за Вашу поддержку!</string>
   <string name="activeNotification">Показать значок уведомления</string>
   <string name="activeNotification_summary">Отображение постоянного значка в панели уведомлений</string>
-  <string name="active">Брандмауэр работает</string>
+  <string name="active">Брандмауэр включен</string>
   <string name="inactive">Брандмауэр отключен</string>
   <string name="About">О приложении</string>
   <string name="FAQ">Часто задаваемые вопросы</string>
@@ -345,12 +350,13 @@
   <string name="pref_password">Пароль</string>
   <string name="pref_pattern">Ключ</string>
   <string name="pref_device">Использовать защиту безопасности устройства</string>
-  <string name="pref_device_desc">Использовать проверку безопасности устройства для открытия AFWall + (функция платной версии)</string>
+  <string name="pref_device_desc">Использовать проверку безопасности устройства для открытия AFWall+ (функция платной версии)</string>
   <string name="secure_option">Устройство не защищено паролем/пин-кодом</string>
   <string name="android_version">Эта функция работает только на версиях Андроид Lollipop и выше</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Установить</string>
   <string name="wrong_password">Неправильный пароль</string>
+  <string name="password_empty"></string>
   <string name="submit">Отправить</string>
   <string name="dialog_color_picker">Палитра цветов</string>
   <!--<string name="sort">Sort Applications</string>-->
@@ -364,7 +370,7 @@
   <string name="manage_profiles_summary">Добавление или удаление профилей</string>
   <string name="profiles">Профиль </string>
   <string name="migrate_profiles">Перенос профилей</string>
-  <string name="migrate_summary">Перенести все дополнительные данные профиля из версии 1.x в 2.x</string>
+  <string name="migrate_summary">Migrate all profile data</string>
   <string name="insert_profile">Имя профиля</string>
   <string name="add">Добавить</string>
   <string name="showlog_toasts">Всплывающее уведомление при блокировке</string>
@@ -384,8 +390,8 @@
   <string name="error_nonsupported_details">AFWall+ обнаружил неподдерживаемое приложение суперпользователя, которое обходит правила брандмауэра. Поскольку приложение использует права суперпользователя, AFWall+ не может исправить данную проблему.</string>
   <string name="lockNotification">Скрыть значок уведомления на экр. блокировки</string>
   <string name="lockScreenNotification_summary">Скрыть текущие уведомления на экране блокировки</string>
-  <string name="menu_legend">Условные обозначения</string>
-  <string name="permissiondenied_importexport">Нет разрешений на чтение/запись с внешней карты памяти. Пожалуйста, предоставьте доступ для экспорта/импорта правил.</string>
+  <string name="menu_legend">Легенда</string>
+  <string name="permissiondenied_importexport">Нет разрешений на чтение/запись доступ к внешней карте памяти. Пожалуйста, предоставьте доступ для экспорта/импорта правил.</string>
   <string name="permissiondenied_asset">Нет разрешений на чтение/запись с внутренней карты памяти. Пожалуйста, предоставьте доступ для копирования двоичных файлов AFWall + </string>
   <string name="log_deletedapp">Удалённое приложение</string>
   <string name="log_denied">Отказано:</string>
@@ -394,11 +400,16 @@
   <string name="log_dst">Назначение :</string>
   <string name="log_src">Источник :</string>
   <string name="log_proto">Протокол :</string>
-  <string name="no_data_available">Пожалуйста, включите службу журнала для получения данных</string>
+  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
   <string name="loading_data_title">Загрузка...</string>
   <string name="loading_data">Получение данных журнала</string>
   <string name="switch_old">Переключиться к старому виду</string>
   <string name="switch_new">Переключиться к новому виду</string>
   <string name="showlogdetail_title">Подробности журнала приложения</string>
-  <string name="reapply_rules">Просьба повторно применить правила из-за изменения предпочтений</string>
+  <string name="reapply_rules">Пожалуйста повторно примените правила из-за изменения предпочтений</string>
+  <string name="custom_rules">Собственные Правила</string>
+  <string name="mdns">Включить Mutlicast DNS</string>
+  <string name="error_log">Не удалось запустить службу журнала. LogTarget пуст или LogService не включен.</string>
+  <string name="delete_profile">Unable to delete profile</string>
+  <string name="profile_migrate_msg">Profiles migrated successfully</string>
 </resources>
