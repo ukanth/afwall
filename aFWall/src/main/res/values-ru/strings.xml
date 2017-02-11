@@ -99,8 +99,8 @@
   <string name="apply">Применить</string>
   <string name="discard">Отменить</string>
   <string name="delete">Удалить</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Копировать</string>
+  <string name="rename">Переименовать</string>
   <string name="Yes">Да</string>
   <string name="Continue">Далее</string>
   <string name="No">Нет</string>
@@ -179,7 +179,7 @@
   <string name="profile_hint">Имя_профиля</string>
   <string name="reapply_profile">Повтор применения правил профиля</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Управление сетью</string>
   <string name="lan_summary">Включить для раздельного управления разрешениями доступа для мобильных и WiFi сетей</string>
   <string name="iptables_pref">Бинарный файл IPtables</string>
   <string name="vpn_profile">Управление VPN</string>
@@ -220,7 +220,7 @@
   <string name="ipv6_title">Поддержка IPv6</string>
   <string name="ipv6_summary">Разрешить поддержку IPv6</string>
   <string name="block_ipv6_title">Блокировка IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">Блокировать все подключения по протоколу IPv6. Внимание: используйте только если у вас есть подключение через протокол IPv4</string>
   <string name="ip6unavailable">Ошибка: IPv6 требуется «/system/bin/ip6tables».</string>
   <string name="switch_ipv6">Переключение IPV6 правил</string>
   <string name="switch_ipv4">Переключение IPV46 правил</string>
@@ -370,7 +370,7 @@
   <string name="manage_profiles_summary">Добавление или удаление профилей</string>
   <string name="profiles">Профиль </string>
   <string name="migrate_profiles">Перенос профилей</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">Перенести все данные профиля</string>
   <string name="insert_profile">Имя профиля</string>
   <string name="add">Добавить</string>
   <string name="showlog_toasts">Всплывающее уведомление при блокировке</string>
@@ -400,7 +400,7 @@
   <string name="log_dst">Назначение :</string>
   <string name="log_src">Источник :</string>
   <string name="log_proto">Протокол :</string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">Пожалуйста, включите службу журнала через настройки. Если включена, то нет данных журналов.</string>
   <string name="loading_data_title">Загрузка...</string>
   <string name="loading_data">Получение данных журнала</string>
   <string name="switch_old">Переключиться к старому виду</string>
@@ -410,6 +410,6 @@
   <string name="custom_rules">Собственные Правила</string>
   <string name="mdns">Включить Mutlicast DNS</string>
   <string name="error_log">Не удалось запустить службу журнала. LogTarget пуст или LogService не включен.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="delete_profile">Можете удалить профиль</string>
+  <string name="profile_migrate_msg">Профили успешно перенесены</string>
 </resources>

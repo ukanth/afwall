@@ -98,8 +98,8 @@
   <string name="apply">Appliquer</string>
   <string name="discard">Ignorer</string>
   <string name="delete">Supprimer</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Cloner</string>
+  <string name="rename">Renommer</string>
   <string name="Yes">Oui</string>
   <string name="Continue">Suivant</string>
   <string name="No">Non</string>
@@ -175,16 +175,16 @@
   <string name="profile1">Profil 1</string>
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
-  <string name="profile_hint">ProfileName</string>
+  <string name="profile_hint">Nom du profil</string>
   <string name="reapply_profile">Réappliquer les règles de profil</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Contrôle LAN</string>
   <string name="lan_summary">Cocher pour contrôler les autorisations LAN indépendamment des autorisations Wi-Fi</string>
   <string name="iptables_pref">Binaire iptables</string>
   <string name="vpn_profile">Contrôle de la connexion VPN</string>
   <string name="vpnSummary">Cocher pour contrôler les autorisations de VPN indépendamment</string>
   <string name="roaming">Contrôle de la connexion en itinérance</string>
-  <string name="roamingSummary">Enable to control roaming permissions separately</string>
+  <string name="roamingSummary">Activer pour contrôler les autorisations d\'itinérance séparément</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -204,7 +204,7 @@
   <string name="XPosed_prefs_title">Relatif à XPosed</string>
   <string name="fixDownloadTitle">Fix DownloadManager leak</string>
   <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-  <string name="LeakDetected">Leak detected!</string>
+  <string name="LeakDetected">Fuite de données détectée !</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Associé à Tasker</string>
   <string name="disable_toaster">Désactiver les messages toast de Tasker</string>
@@ -219,7 +219,7 @@
   <string name="ipv6_title">Support IPv6</string>
   <string name="ipv6_summary">Activer la prise en charge de l\'IPv6</string>
   <string name="block_ipv6_title">Bloquer IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">Bloquer toutes les connexions IPv6. ATTENTION : Utiliser uniquement si vous avez des connexions via IPv4</string>
   <string name="ip6unavailable">Erreur : IPv6 nécessite « / system/bin/ip6tables ».</string>
   <string name="switch_ipv6">Passer aux règles IPv6</string>
   <string name="switch_ipv4">Passer aux règles IPv4</string>
@@ -351,7 +351,7 @@
   <string name="pref_device">Utiliser la protection de sécurité de l\'appareil</string>
   <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
   <string name="secure_option">L\'appareil n’est pas protégé par un mot de passe ou un PIN</string>
-  <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
+  <string name="android_version">Cette fonctionnalité ne fonctionne que sur Lollipop et les versions ultérieures d\'Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Définir</string>
   <string name="wrong_password">Mot de passe incorrect</string>
@@ -369,7 +369,7 @@
   <string name="manage_profiles_summary">Ajouter ou supprimer des profils</string>
   <string name="profiles">Profil </string>
   <string name="migrate_profiles">Migrer les profils</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">Migrer toutes les données de profil</string>
   <string name="insert_profile">Nom du profil</string>
   <string name="add">Ajouter</string>
   <string name="showlog_toasts">Afficher une notification toast en cas de blocage</string>
@@ -399,7 +399,7 @@
   <string name="log_dst">Destination :</string>
   <string name="log_src">Source :</string>
   <string name="log_proto">Protocole :</string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">Merci d\'activer le service de journal depuis les préférences. S\'il est activé, alors aucune donnée de journal n\'est présente.</string>
   <string name="loading_data_title">Chargement...</string>
   <string name="loading_data">Récupération des données de journalisation</string>
   <string name="switch_old">Basculer vers l’affichage ancien</string>
@@ -409,6 +409,6 @@
   <string name="custom_rules">Règles Personnalisées</string>
   <string name="mdns">Activez la multidiffusion DNS</string>
   <string name="error_log">Impossible de démarrer le service de journalisation. LogTarget est vide ou LogService n’est pas activé.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="delete_profile">Impossible de supprimer le profil</string>
+  <string name="profile_migrate_msg">Les profils ont été migrés avec succès</string>
 </resources>

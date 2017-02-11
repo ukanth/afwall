@@ -98,8 +98,8 @@
   <string name="apply">Aplicar</string>
   <string name="discard">Descartar</string>
   <string name="delete">Apagar</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Clonar</string>
+  <string name="rename">Renomear</string>
   <string name="Yes">Sim</string>
   <string name="Continue">Continuar</string>
   <string name="No">Não</string>
@@ -133,9 +133,9 @@
   <string name="import_rules_success">Importadas de </string>
   <string name="import_rules_fail">Falha ao importar!</string>
   <string name="import_rules_missing">Ficheiro de regras em falta!</string>
-  <string name="exportConfirm">Export rules to storage?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
-  <string name="export_to_sd">Export to storage</string>
+  <string name="exportConfirm">Exportar para o armazenamento?</string>
+  <string name="export_logs_fail">Falha ao exportar as regras!</string>
+  <string name="export_to_sd">Exportar para o armazenamento</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Ativar registos da firewall</string>
   <string name="enable_firewall_log_service">Ativar serviço de log</string>
@@ -175,10 +175,10 @@
   <string name="profile1">Perfil 1</string>
   <string name="profile2">Perfil 2</string>
   <string name="profile3">Perfil 3</string>
-  <string name="profile_hint">ProfileName</string>
+  <string name="profile_hint">Nome do perfil</string>
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Controlo de LAN</string>
   <string name="lan_summary">Enable to control LAN permissions separately from WiFi permissions</string>
   <string name="iptables_pref">Binário iptables</string>
   <string name="vpn_profile">Controlo VPN</string>
@@ -198,7 +198,7 @@
   <string name="system_bb">Busybox do sistema</string>
   <string name="builtin_bb">Busybox nativa</string>
   <string name="system_ipt">Iptables do sistema</string>
-  <string name="builtin_ipt">Iptable nativa</string>
+  <string name="builtin_ipt">Iptables nativa</string>
   <string name="auto">Automático</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Xposed</string>
@@ -330,7 +330,7 @@
   <string name="donate_thanks">Obrigado pelo apoio!</string>
   <string name="activeNotification">Mostrar o ícone de notificação</string>
   <string name="activeNotification_summary">Exibir ícone permanente na barra de notificação</string>
-  <string name="active">Firewall enabled</string>
+  <string name="active">Firewall ativada</string>
   <string name="inactive">Firewall desativada</string>
   <string name="About">Sobre</string>
   <string name="FAQ">FAQ</string>
@@ -389,7 +389,7 @@
   <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
   <string name="lockNotification">Hide lockscreen notification icon</string>
   <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-  <string name="menu_legend">Legend</string>
+  <string name="menu_legend">Legenda</string>
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
   <string name="log_deletedapp">Aplicação apagada</string>
@@ -409,6 +409,6 @@
   <string name="custom_rules">Custom Rules</string>
   <string name="mdns">Enable Mutlicast DNS</string>
   <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="delete_profile">Incapaz de apagar o perfil</string>
+  <string name="profile_migrate_msg">Perfis migrados com sucesso</string>
 </resources>

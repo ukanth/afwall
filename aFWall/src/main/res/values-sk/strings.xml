@@ -98,8 +98,8 @@
   <string name="apply">Aplikovať</string>
   <string name="discard">Zrušiť</string>
   <string name="delete">Odstrániť</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Klonovať</string>
+  <string name="rename">Premenovať</string>
   <string name="Yes">Áno</string>
   <string name="Continue">Pokračovať</string>
   <string name="No">Nie</string>
@@ -178,7 +178,7 @@
   <string name="profile_hint">Názov profilu</string>
   <string name="reapply_profile">Opätovné aplikovanie pravidiel profilu</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Ovládanie LAN</string>
   <string name="lan_summary">Umožní ovládanie povolení LAN oddelene od povolení Wi-Fi</string>
   <string name="iptables_pref">Binárne súbory iptables</string>
   <string name="vpn_profile">Ovládanie VPN</string>
@@ -219,7 +219,7 @@
   <string name="ipv6_title">Podpora IPv6</string>
   <string name="ipv6_summary">Zapnúť podporu pre IPv6</string>
   <string name="block_ipv6_title">Blokovať IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">Blokovať všetky IPv6 pripojenia. UPOZORNENIE: Použite iba ak máte pripojenie cez IPv4</string>
   <string name="ip6unavailable">Chyba: IPv6 vyžaduje \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Prepnúť IPV6 pravidlá</string>
   <string name="switch_ipv4">Prepnúť IPV4 pravidlá</string>
@@ -368,8 +368,8 @@
   <string name="manage_profiles">Spravovať profily</string>
   <string name="manage_profiles_summary">Pridať alebo odstrániť profily</string>
   <string name="profiles">Profil </string>
-  <string name="migrate_profiles">Migrovať profily</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_profiles">Presunúť profily</string>
+  <string name="migrate_summary">Presunúť všetky profilové dáta</string>
   <string name="insert_profile">Názov profilu</string>
   <string name="add">Pridať</string>
   <string name="showlog_toasts">Zobraziť toast upozornenia pri blokovaní</string>
@@ -399,7 +399,7 @@
   <string name="log_dst">Cieľ:</string>
   <string name="log_src">Zdroj:</string>
   <string name="log_proto">Protokol:</string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">Prosím, povoľte službu záznamu v nastaveniach. Ak je povolené, potom nie sú žiadne dáta v zázname.</string>
   <string name="loading_data_title">Načítavanie...</string>
   <string name="loading_data">Načítavajú sa údaje záznamu</string>
   <string name="switch_old">Prepnúť na staré zobrazenie</string>
@@ -409,6 +409,6 @@
   <string name="custom_rules">Vlastné pravidlá</string>
   <string name="mdns">Povoliť Mutlicast DNS</string>
   <string name="error_log">Nie je možné spustiť službu pre záznam. LogTarget je prázdny alebo LogService nie je povolený.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="delete_profile">Profil sa nedá odstrániť</string>
+  <string name="profile_migrate_msg">Profily úspešne presunuté</string>
 </resources>

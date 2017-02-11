@@ -91,15 +91,15 @@
   <string name="copied">Копирано</string>
   <string name="Search">тражи</string>
   <string name="flushRulesConfirm">Обрисати сва iptables правила?</string>
-  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
+  <string name="overrideRules">Желите ли да увезете правила? Ово ће прегазити постојећа!</string>
   <string name="notification_new">Ново инсталирано</string>
   <string name="notification_new_package">Подесите интернет дозволе</string>
   <string name="confirmMsg">Потпуно ИСКЉУЧИТИ ватробран?</string>
   <string name="apply">Примени</string>
   <string name="discard">Одбаци</string>
   <string name="delete">Обриши</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Клонирај</string>
+  <string name="rename">Преименуј</string>
   <string name="Yes">Да</string>
   <string name="Continue">Настави</string>
   <string name="No">Не</string>
@@ -116,7 +116,7 @@
   <string name="remove_initd">Уклоњена је почетна скрипта</string>
   <string name="unable_remove_initd">Не могу да уклоним почетну скрипту</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
+  <string name="widget_disable_fail">Не могу да искључим ватробран. Заштићен је лозинком!</string>
   <string name="widget_label_status">AFWall+ мењање стања</string>
   <string name="widget_label_settings">Поставке</string>
   <string name="widget_label_settings_old">AFWall+ поставке (старо)</string>
@@ -133,9 +133,9 @@
   <string name="import_rules_success">Увезено из </string>
   <string name="import_rules_fail">Увоз неуспешан!</string>
   <string name="import_rules_missing">Фајл правила недостаје!</string>
-  <string name="exportConfirm">Export rules to storage?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
-  <string name="export_to_sd">Export to storage</string>
+  <string name="exportConfirm">Извоз правила на диск?</string>
+  <string name="export_logs_fail">Неуспешан извоз на диск!</string>
+  <string name="export_to_sd">Извоз на диск</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Укључи дневник</string>
   <string name="enable_firewall_log_service">Укључи сервис дневника</string>
@@ -175,16 +175,16 @@
   <string name="profile1">Профил 1</string>
   <string name="profile2">Профил 2</string>
   <string name="profile3">Профил 3</string>
-  <string name="profile_hint">ProfileName</string>
+  <string name="profile_hint">НазивПрофила</string>
   <string name="reapply_profile">Опет примени правила профила</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Управљање мрежом</string>
   <string name="lan_summary">Укључите да бисте LAN дозволе контролисали одвојено од WiFi дозвола</string>
   <string name="iptables_pref">IPtables програм</string>
   <string name="vpn_profile">Управљање VPN-ом</string>
   <string name="vpnSummary">Укључи да би се VPN подешавања одвојено контролисала</string>
   <string name="roaming">Роминг</string>
-  <string name="roamingSummary">Enable to control roaming permissions separately</string>
+  <string name="roamingSummary">Укључи да би се роминг подешавања одвојено контролисала</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -202,9 +202,9 @@
   <string name="auto">Аутоматски</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Везано за XPosed</string>
-  <string name="fixDownloadTitle">Fix DownloadManager leak</string>
-  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-  <string name="LeakDetected">Leak detected!</string>
+  <string name="fixDownloadTitle">Среди цурење за менаџера преузимања</string>
+  <string name="fixDownloadTitleSummary">Користи се Xposed да се осујете блокиране апликације да ипак преузимају податке преко уграђеног Андроидовог менаџера преузимања</string>
+  <string name="LeakDetected">Откривено цурење!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Таскер подешавања</string>
   <string name="disable_toaster">Искључи поруке Таскера</string>
@@ -219,7 +219,7 @@
   <string name="ipv6_title">IPv6 подршка</string>
   <string name="ipv6_summary">Укључује подршку за IPv6</string>
   <string name="block_ipv6_title">Блокирај IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">Блокира све ИПв6 везе. ПАЖЊА: користите само ако имате везе преко ИПв4</string>
   <string name="ip6unavailable">Грешка: IPv6 захтева \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Укључи IPV6 правила</string>
   <string name="switch_ipv4">Укључи IPV4 правила</string>
@@ -228,7 +228,7 @@
   <string name="usePattern">Потез уместо лозинке за откључавање</string>
   <string name="stealthMode">Невидљиви режим потеза</string>
   <string name="patternMaxTry">Највише покушаја</string>
-  <string name="resetPattern">Reset lock pattern?</string>
+  <string name="resetPattern">Ресетовати потез закључавања?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Администратор уређаја</string>
   <string name="device_admin_enabled">Администратор уређаја укључен</string>
@@ -241,7 +241,7 @@
   <string name="addStartupDelayTitle">Одгађање примене</string>
   <string name="addStartupDelaySummary">AFWall+ ће чекати 5 секунди пре примене правила. Укључите ово само ако се правила не примењују исправно приликом покретања система.</string>
   <string name="fixleakTitle">Среди цурење података при подизању</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Спречава приступ мрежи при покретању. Ваш РОМ мора имати init.d или su.d (superSU) подршку. HTC уређаји подешени за S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -267,7 +267,7 @@
   <string name="misc_header">Језици/прикључци</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Активирање правила</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
+  <string name="active_rules_summary">Примени правила ватробрана при свакој промени начина повезивања</string>
   <string name="profile_add">Додај профил</string>
   <string name="profile_remove">Уклони профил</string>
   <string name="profile_rename">Преименуј профил</string>
@@ -298,13 +298,13 @@
   <string name="lan">ЛАН</string>
   <string name="vpn">VPN</string>
   <string name="data">GPRS</string>
-  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+  <string name="legend_data">Укључите за контролу мобилне мреже (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">све</string>
   <string name="pkg_core">језгро</string>
   <string name="pkg_sys">систем</string>
   <string name="pkg_user">корисник</string>
   <string name="menu">Мени</string>
-  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
+  <string name="backup_notexist">Не постоји резерва. Извезите је из менија.</string>
   <string name="showFilter">Прикажи филтере</string>
   <string name="showfilter_summary_on">Филтери (све/језгро/корисник) ће бити приказани</string>
   <string name="showfilter_summary_off">Филтери (све/језгро/корисник) неће бити приказани</string>
@@ -349,9 +349,9 @@
   <string name="pref_password">лозинка</string>
   <string name="pref_pattern">потез</string>
   <string name="pref_device">Користи заштиту уређаја</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
-  <string name="secure_option">Device is not secured with password/PIN</string>
-  <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
+  <string name="pref_device_desc">Користите проверу безбедности уређаја за отварање AFWall+ (донаторска опција)</string>
+  <string name="secure_option">Уређај није обезбеђен лозинком/ПИН-ом</string>
+  <string name="android_version">Ова могућност ради на Лолипоп и новијим верзијама Андроида</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Постави</string>
   <string name="wrong_password">Погрешна лозинка</string>
@@ -369,7 +369,7 @@
   <string name="manage_profiles_summary">Додај или уклони профиле</string>
   <string name="profiles">Профил </string>
   <string name="migrate_profiles">Пресели профиле</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">Пресели све податке профила</string>
   <string name="insert_profile">Назив профила</string>
   <string name="add">Додај</string>
   <string name="showlog_toasts">Прикажи екранско обавештење при блокирању</string>
@@ -381,7 +381,7 @@
   <string name="widget_prefs_title">Позиција виџета</string>
   <string name="xTitle">X позиција виџета</string>
   <string name="xTitleSummary">Ручно постављање X позиције</string>
-  <string name="xTitleDialog">Set X position (number)</string>
+  <string name="xTitleDialog">Постави X позицију (број)</string>
   <string name="yTitle">Y позиција виџета</string>
   <string name="yTitleSummary">Ручно постављање Y позиције</string>
   <string name="yTitleDialog">Поставка Y позиције (број)</string>
@@ -390,7 +390,7 @@
   <string name="lockNotification">Сакриј икону обавештења на закључаном екрану</string>
   <string name="lockScreenNotification_summary">Сакриј текућа обавештења на закључаном екрану</string>
   <string name="menu_legend">Легенда</string>
-  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
+  <string name="permissiondenied_importexport">Одбијено ЧИТАЊЕ/ПИСАЊЕ у складиште. Омогућите приступ ради извоза/увоза правила.</string>
   <string name="permissiondenied_asset">Одбијено ЧИТАЊЕ/ПИСАЊЕ у складиште. Омогућите приступ ради копирања програма за AFWall+ </string>
   <string name="log_deletedapp">Обрисана апликација</string>
   <string name="log_denied">Одбијено :</string>
@@ -399,16 +399,16 @@
   <string name="log_dst">Одредиште :</string>
   <string name="log_src">Извор :</string>
   <string name="log_proto">Протокол :</string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">Укључите сервис дневника у подешавањима. Ако је већ укључен, онда нема података.</string>
   <string name="loading_data_title">Учитавам...</string>
   <string name="loading_data">Добављам податке дневника</string>
   <string name="switch_old">Пребаци на стари приказ</string>
   <string name="switch_new">Пребаци на нови приказ</string>
   <string name="showlogdetail_title">Детаљи дневника апликације</string>
-  <string name="reapply_rules">Please reapply the rules due to preference change</string>
-  <string name="custom_rules">Custom Rules</string>
-  <string name="mdns">Enable Mutlicast DNS</string>
-  <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="reapply_rules">Молимо поновите примену правила због промене подешавања</string>
+  <string name="custom_rules">Посебна правила</string>
+  <string name="mdns">Укључи мултикаст ДНС</string>
+  <string name="error_log">Не могу да покренем сервис дневника. LogTarget је празан или LogService није укључен.</string>
+  <string name="delete_profile">Не могу да обришем профил</string>
+  <string name="profile_migrate_msg">Профили успешно пресељени</string>
 </resources>

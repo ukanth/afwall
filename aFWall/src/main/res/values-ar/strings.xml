@@ -81,7 +81,7 @@
   <string name="custom_script_defined">تعريف برنامج نصي مخصص</string>
   <string name="custom_script_removed">إزالة برنامج نصي مخصص</string>
   <string name="custom_script_error">حدث خطأ أثناء حفظ البرنامج النصي المخصص</string>
-  <string name="custom_script_info"><b>أدخل السكريبت المعدل أسفله</b> \n<i>(أتركه فارغ لحذفه.)</i> \nلمعلومات حول السكريبتات المعدلة اضغط  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">هنا</a>.</string>
+  <string name="custom_script_info"><b>أدخل السكريبت المعدل أسفله</b> \n>i/>(أتركه فارغ لحذفه.)</i> \nلمعلومات حول السكريبتات المعدلة اضغط  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">هنا</a>.</string>
   <string name="custom_script2_info">     يمكنك أيضا تعريف \n <b>البرنامج النصي المخصص لإيقاف التشغيل</b> \nYou برنامج نصي مخصص ليتم تنفيذها عندما يكون <b>تعطيل</b> جدار الحماية:</string>
   <string name="unsaved_changes">التغييرات غير محفوظة</string>
   <string name="unsaved_changes_message">لم تقم بتطبيق التغييرات. \n هل تريد تطبيقها أو تجاهلها ؟</string>

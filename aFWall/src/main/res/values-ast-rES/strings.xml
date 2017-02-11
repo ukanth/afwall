@@ -99,7 +99,7 @@
   <string name="discard">Descartar</string>
   <string name="delete">Desaniciar</string>
   <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="rename">Renomar</string>
   <string name="Yes">Sí</string>
   <string name="Continue">Siguir</string>
   <string name="No">Non</string>
@@ -116,7 +116,7 @@
   <string name="remove_initd">Desinstalóse\'l script d\'aniciu</string>
   <string name="unable_remove_initd">Nun pue desaniciase\'l script d\'aniciu d\'AFWall+</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
+  <string name="widget_disable_fail">Nun pue deshabilitase\'l tornafuéu. ¡Protexío por contraseña!</string>
   <string name="widget_label_status">Alternancia/Estáu d\'AFWall+</string>
   <string name="widget_label_settings">Axustes d\'AFWall+</string>
   <string name="widget_label_settings_old">Axustes d\'AFWall+ (vieyo)</string>

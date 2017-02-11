@@ -98,8 +98,8 @@
   <string name="apply">Anwenden</string>
   <string name="discard">Verwerfen</string>
   <string name="delete">Löschen</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Duplizieren</string>
+  <string name="rename">Umbenennen</string>
   <string name="Yes">Ja</string>
   <string name="Continue">Fortfahren</string>
   <string name="No">Nein</string>
@@ -178,7 +178,7 @@
   <string name="profile_hint">Profilname</string>
   <string name="reapply_profile">Profilregeln erneut anwenden</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">LAN-Steuerung</string>
   <string name="lan_summary">Aktivieren, um Berechtigungen bei LAN- oder WLAN-Verbindung unabhängig voneinander zu steuern</string>
   <string name="iptables_pref">IPTables-Binärdatei</string>
   <string name="vpn_profile">VPN-Steuerung</string>
@@ -219,7 +219,7 @@
   <string name="ipv6_title">IPv6-Unterstützung</string>
   <string name="ipv6_summary">IPv6-Unterstützung aktivieren</string>
   <string name="block_ipv6_title">IPv6 blockieren</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">Alle IPv6-Verbindungen blockieren. ACHTUNG: Nur verwenden, wenn Sie über IPv4 verbunden sind.</string>
   <string name="ip6unavailable">Fehler: IPv6 benötigt \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">IPv6-Regeln einschalten</string>
   <string name="switch_ipv4">IPv4-Regeln einschalten</string>
@@ -369,7 +369,7 @@
   <string name="manage_profiles_summary">Profile hinzufügen oder entfernen</string>
   <string name="profiles">Profile </string>
   <string name="migrate_profiles">Profile migrieren</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">Alle Profildaten übertragen</string>
   <string name="insert_profile">Profilname</string>
   <string name="add">Hinzufügen</string>
   <string name="showlog_toasts">Bei Blockade eine Kurzmeldung einblenden</string>
@@ -399,7 +399,7 @@
   <string name="log_dst">Ziel :</string>
   <string name="log_src">Quelle :</string>
   <string name="log_proto">Protokoll :</string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">Bitte aktivieren Sie den Protokolldienst über die Einstellungen, sonst werden keine Daten gespeichert.</string>
   <string name="loading_data_title">Wird geladen …</string>
   <string name="loading_data">Protokoll wird abgerufen ...</string>
   <string name="switch_old">Zur alten Ansicht wechseln</string>
@@ -409,6 +409,6 @@
   <string name="custom_rules">Benutzerdefinierte Regeln</string>
   <string name="mdns">Mutlicast DNS aktivieren</string>
   <string name="error_log">Protokolldienst kann nicht gestartet werden. Entweder LogTarget enthält keine Werte oder LogService ist nicht aktiviert.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="delete_profile">Profil kann nicht gelöscht werden</string>
+  <string name="profile_migrate_msg">Profile erfolgreich übertragen</string>
 </resources>

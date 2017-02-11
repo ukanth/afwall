@@ -99,7 +99,7 @@
   <string name="discard">Elvetés</string>
   <string name="delete">Törlés</string>
   <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="rename">Átnevezés</string>
   <string name="Yes">Igen</string>
   <string name="Continue">Folytatás</string>
   <string name="No">Nem</string>
@@ -369,7 +369,7 @@
   <string name="manage_profiles_summary">Profilok hozzáadása vagy eltávolítása</string>
   <string name="profiles">Profil </string>
   <string name="migrate_profiles">Profilok áttelepítése</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">Minden profil adat áttelepítése</string>
   <string name="insert_profile">Profil név</string>
   <string name="add">Hozzáadás</string>
   <string name="showlog_toasts">Toast üzenet mutatása zároláskor</string>
@@ -409,6 +409,6 @@
   <string name="custom_rules">Egyéni szabályok</string>
   <string name="mdns">Mutlicast DNS engedélyezése</string>
   <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="delete_profile">Nem lehet törölni a profilt</string>
+  <string name="profile_migrate_msg">A profilok áttelepítése sikerült</string>
 </resources>

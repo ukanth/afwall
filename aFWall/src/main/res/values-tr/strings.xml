@@ -99,8 +99,8 @@
   <string name="apply">Uygula</string>
   <string name="discard">At</string>
   <string name="delete">Sil</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Klon</string>
+  <string name="rename">Adını değiştir</string>
   <string name="Yes">Evet</string>
   <string name="Continue">Devam et</string>
   <string name="No">Hayır</string>
@@ -179,7 +179,7 @@
   <string name="profile_hint">ProfilAdı</string>
   <string name="reapply_profile">Profil kurallarını yeniden uygula</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">LAN Denetimi</string>
   <string name="lan_summary">Bu seçenek, LAN izinlerini, WiFi izinlerinden ayrı denetlemeyi etkinleştirir</string>
   <string name="iptables_pref">Iptables binaryleri</string>
   <string name="vpn_profile">VPN Denetimi</string>
@@ -220,7 +220,7 @@
   <string name="ipv6_title">IPv6 Desteği</string>
   <string name="ipv6_summary">IPv6 desteğini etkinleştir</string>
   <string name="block_ipv6_title">IPv6 engelle</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">Tüm IPv6 bağlantıları engelle. Dikkat: yalnızca IPv4 üzerinden bağlantılarınız varsa kullanın</string>
   <string name="ip6unavailable">Hata: IPv6 için \"/system/bin/ip6tables\" gerekiyor.</string>
   <string name="switch_ipv6">IPv6 kurallarını değiştir</string>
   <string name="switch_ipv4">IPv4 kurallarını değiştir</string>
@@ -370,7 +370,7 @@
   <string name="manage_profiles_summary">Profilleri Ekle/Kaldır</string>
   <string name="profiles">Profil </string>
   <string name="migrate_profiles">Profilleri taşı</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">Tüm profil verilerini taşı</string>
   <string name="insert_profile">Profil adı</string>
   <string name="add">Ekle</string>
   <string name="showlog_toasts">Engellenmiş tost bildirimlerini göster</string>
@@ -400,7 +400,7 @@
   <string name="log_dst">Hedef :</string>
   <string name="log_src">Kaynak :</string>
   <string name="log_proto">Protokol :</string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">Günlük servisini Tercihler üzerinden etkinleştirin. Etkinleştirilirse, günlük verileri olmayacak.</string>
   <string name="loading_data_title">Yükleniyor...</string>
   <string name="loading_data">Günlük verilerini alma</string>
   <string name="switch_old">Eski görünümüne geçin</string>
@@ -410,6 +410,6 @@
   <string name="custom_rules">Özel Kurallar</string>
   <string name="mdns">Mutlicast DNS\'i etkinleştir</string>
   <string name="error_log">Günlük hizmeti başlatılamıyor. LogTarget boş veya LogService etkin değil.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="delete_profile">Profil silinemiyor</string>
+  <string name="profile_migrate_msg">Profiller başarıyla taşındı</string>
 </resources>
