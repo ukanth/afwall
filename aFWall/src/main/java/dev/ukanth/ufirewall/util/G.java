@@ -93,7 +93,7 @@ public class G extends android.app.Application {
     private static final String ISKINGDETECT = "kingDetect";
     private static final String PWD_ENCRYPT = "pwdEncrypt";
     private static final String PROFILE_PWD = "profilePwd";
-	private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
+    private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
     /** FIXME **/
     private static final String AFWALL_STATUS = "AFWallStaus";
     private static final String BLOCKED_NOTIFICATION = "block_filter_app";
@@ -140,6 +140,15 @@ public class G extends android.app.Application {
         return val;
     }
 
+    public static Boolean isFingerprintEnabled() {
+        return gPrefs.getBoolean(FINGERPRINT_ENABLED, false);
+    }
+
+    public static Boolean isFingerprintEnabled(Boolean val) {
+        gPrefs.edit().putBoolean(FINGERPRINT_ENABLED, val).commit();
+        return val;
+    }
+
 	/*public static String profilesStored() { return gPrefs.getString(PROFILES, ""); }
     public static String profilesStored(String val) {
 		gPrefs.edit().putString(PROFILES, val).commit();
@@ -155,15 +164,6 @@ public class G extends android.app.Application {
         gPrefs.edit().putBoolean(PROFILES_MIGRATED, val).commit();
         return val;
     }
-
-	public static Boolean isFingerprintEnabled() {
-		return gPrefs.getBoolean(FINGERPRINT_ENABLED, false);
-	}
-
-	public static Boolean isFingerprintEnabled(Boolean val) {
-		gPrefs.edit().putBoolean(FINGERPRINT_ENABLED, val).commit();
-		return val;
-	}
 
     public static boolean isXposedDM() {
         return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false);
