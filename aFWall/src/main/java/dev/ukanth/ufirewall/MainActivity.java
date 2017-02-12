@@ -92,6 +92,7 @@ import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootShell.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
+import dev.ukanth.ufirewall.util.FingerprintUtil;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
@@ -489,6 +490,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     } else {
                         requestPassword();
                     }
+                    break;
+                case "p3":
+
+                    if(FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()){
+
+                        requestFingerprint();
+                    }
             }
         }
         return false;
@@ -635,6 +643,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
 
+    }
+
+    /**
+     * Request the fingerprint lock before displayed the main screen.
+     */
+    private void requestFingerprint(){
+        FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(this);
+        dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
+            @Override
+            public void then() {
+                MainActivity.this.finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+        dialog.show();
     }
 
 

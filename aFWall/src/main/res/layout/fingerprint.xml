@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fingerprint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_bg"
+    style="@style/FingerprintTheme"
+    tools:context="dev.ukanth.ufirewall.util.FingerprintUtil">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/headerLayout"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="100dp"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_bg">
+
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/ic_action_fingerprint"
+            android:id="@+id/icon"
+            android:paddingTop="2dp"
+            android:layout_marginBottom="30dp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textPrimary"
+            android:textSize="24sp"
+            android:text="@string/title_fingerprint"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textPrimary"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:id="@+id/desc"
+            android:text="@string/desc_fingerprint"
+            android:layout_margin="16dp"
+            android:paddingEnd="30dp"
+            android:paddingStart="30dp"/>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/errorText"
+            android:textSize="14sp"
+            android:textAlignment="center"
+            android:id="@+id/fingerprintErrorText"
+            android:paddingEnd="30dp"
+            android:paddingStart="30dp"
+            android:layout_marginTop="30dp"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:text="@string/app_name"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/primary_dark"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textPrimaryDark"
+        android:textSize="14sp"
+        android:text="@string/note"
+        android:textAlignment="center"
+        android:layout_marginBottom="24dp"
+        android:id="@+id/textView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

@@ -2401,7 +2401,7 @@ public final class Api {
             }
             String data = text.toString();
             JSONObject object = new JSONObject(data);
-            String[] ignore = {"appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains", "kingDetect"};
+            String[] ignore = {"appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains", "kingDetect", "fingerprintEnabled"};
             List<String> ignoreList = Arrays.asList(ignore);
             JSONArray prefArray = (JSONArray) object.get("prefs");
             for (int i = 0; i < prefArray.length(); i++) {
