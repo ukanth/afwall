@@ -32,7 +32,7 @@ import java.util.HashSet;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.log.LogService;
+import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.util.G;
 
 /**

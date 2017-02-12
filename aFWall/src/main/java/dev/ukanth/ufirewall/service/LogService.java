@@ -20,7 +20,7 @@
  * @version 1.0
  */
 
-package dev.ukanth.ufirewall.log;
+package dev.ukanth.ufirewall.service;
 
 import android.app.ActivityManager;
 import android.app.Service;
@@ -50,6 +50,10 @@ import java.util.Set;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.events.LogEvent;
+import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.log.LogData;
+import dev.ukanth.ufirewall.log.LogDatabase;
+import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
