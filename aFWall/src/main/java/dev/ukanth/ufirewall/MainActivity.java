@@ -89,7 +89,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
-import dev.ukanth.ufirewall.service.RootShell.RootCommand;
+import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.FingerprintUtil;
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (!G.hasRoot()) {
             (new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
-            //startRootShell();
+            startRootShell();
             passCheck();
         }
     }
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-   /* private void startRootShell() {
+    private void startRootShell() {
         Thread rootShell = new Thread() {
             @Override
             public void run() {
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
         rootShell.start();
-    }*/
+    }
 
     @Override
     public void onResume() {
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onStart();
         initDone = 0;
 
-        //startRootShell();
+        startRootShell();
         reloadPreferences();
     }
 

@@ -21,7 +21,7 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles 'proguard-rules.pro'
         }
     }

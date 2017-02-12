@@ -37,7 +37,7 @@ import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.service.RootShell.RootCommand;
+import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 /**

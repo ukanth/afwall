@@ -1,11 +1,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ListPreference
-        android:defaultValue="en"
-        android:entries="@array/supported_languages"
-        android:entryValues="@array/supported_languages_code"
-        android:key="locale"
-        android:title="@string/languages"></ListPreference>
+    <PreferenceCategory android:title="@string/languages">
+        <ListPreference
+            android:defaultValue="en"
+            android:entries="@array/supported_languages"
+            android:entryValues="@array/supported_languages_code"
+            android:key="locale"
+            android:title="@string/change_languages"></ListPreference>
+
+    </PreferenceCategory>
+
+
 
     <PreferenceCategory android:title="@string/tasker_prefs_title">
         <CheckBoxPreference

@@ -155,14 +155,14 @@ public class LogService extends Service {
         handler.post(showToastRunnable);
     }
 
-    @Override
+    /*@Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             Log.i(TAG, "Restarting LogService");
             startLogService();
         }
         return Service.START_STICKY;
-    }
+    }*/
 
 
     @Override

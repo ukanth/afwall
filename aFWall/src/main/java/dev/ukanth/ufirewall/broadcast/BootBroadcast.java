@@ -28,14 +28,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.LogService;
-import dev.ukanth.ufirewall.service.RootShell;
 import dev.ukanth.ufirewall.util.G;
 
 /**

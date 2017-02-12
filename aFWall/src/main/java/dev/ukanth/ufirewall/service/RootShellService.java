@@ -43,9 +43,9 @@ import dev.ukanth.ufirewall.log.Log;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
-import static dev.ukanth.ufirewall.service.RootShell.ShellState.INIT;
+import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
 
-public class RootShell extends Service {
+public class RootShellService extends Service {
 
 	public static final String TAG = "AFWall";
 
@@ -192,7 +192,7 @@ public class RootShell extends Service {
 		 * @param script List of commands to run as root
 		 */
 		public final void run(Context ctx, List<String> script) {
-			RootShell.runScriptAsRoot(ctx, script, this);
+			RootShellService.runScriptAsRoot(ctx, script, this);
 		}
 
 		/**
@@ -204,7 +204,7 @@ public class RootShell extends Service {
 		public final void run(Context ctx, String cmd) {
 			List<String> script = new ArrayList<String>();
 			script.add(cmd);
-			RootShell.runScriptAsRoot(ctx, script, this);
+			RootShellService.runScriptAsRoot(ctx, script, this);
 		}
 	}
 
@@ -227,7 +227,7 @@ public class RootShell extends Service {
 		}
 	}
 
-	@Override
+	/*@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (intent == null) { // if crash restart...
 			Log.i(TAG,"Restarting RootShell");
@@ -237,7 +237,7 @@ public class RootShell extends Service {
 					.setReopenShell(true).run(getApplicationContext(), cmds);
 		}
 		return Service.START_STICKY;
-	}
+	}*/
 
 	private static void runNextSubmission() {
 		do {
@@ -382,7 +382,7 @@ public class RootShell extends Service {
 	private static void reOpenShell(Context ctx) {
 		rootState = ShellState.BUSY;
 		startShellInBackground();
-		Intent intent = new Intent(ctx, RootShell.class);
+		Intent intent = new Intent(ctx, RootShellService.class);
 		ctx.startService(intent);
 	}
 	private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state) {

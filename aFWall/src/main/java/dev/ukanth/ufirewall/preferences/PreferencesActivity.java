@@ -57,7 +57,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.events.LogChangeEvent;
 import dev.ukanth.ufirewall.events.RulesEvent;
 import dev.ukanth.ufirewall.log.LogService;
-import dev.ukanth.ufirewall.service.RootShell;
+import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.util.G;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -220,11 +220,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void preferenceChangeApplyRules(RulesEvent rulesEvent) {
         final Context context = rulesEvent.ctx;
-        Api.applySavedIptablesRules(context, false, new RootShell.RootCommand()
+        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
                 .setFailureToast(R.string.error_apply)
-                .setCallback(new RootShell.RootCommand.Callback() {
+                .setCallback(new RootShellService.RootCommand.Callback() {
                     @Override
-                    public void cbFunc(RootShell.RootCommand state) {
+                    public void cbFunc(RootShellService.RootCommand state) {
                         if (state.exitCode == 0) {
                             Log.i(Api.TAG, "Rules applied successfully during preference change");
                         } else {
