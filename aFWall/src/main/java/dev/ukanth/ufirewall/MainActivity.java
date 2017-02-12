@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void setupMultiProfile() {
-        reloadLocalList(true);
+        reloadProfileList(true);
         mSpinner = (Spinner) findViewById(R.id.profileGroup);
         spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 mlocalList);
@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void reloadLocalList(boolean reset) {
+    private void reloadProfileList(boolean reset) {
         if (reset) {
             mlocalList = new ArrayList<>(new LinkedHashSet<String>());
         }
