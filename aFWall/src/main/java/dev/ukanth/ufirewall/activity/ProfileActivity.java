@@ -89,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
         String name = ((TextView) aInfo.targetView.findViewById(R.id.pro_name)).getText().toString();
         menu.setHeaderTitle(getString(R.string.select) + " " + name);
         if (G.isProfileMigrated()) {
-            menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
+           // menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
             menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
         }
         menu.add(0, MENU_DELETE, 0, getString(R.string.delete));
@@ -99,10 +99,10 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         int itemId = item.getItemId();
+        AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        String profileName = profilesList.get(aInfo.position).getName();
         switch (itemId) {
             case MENU_DELETE:
-                AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                String profileName = profilesList.get(aInfo.position).getName();
                 //String title = item.getTitle().toString();
                 //Api.toast(getApplicationContext(), title);
                 if (!G.isProfileMigrated()) {
@@ -134,6 +134,8 @@ public class ProfileActivity extends AppCompatActivity {
             case MENU_CLONE:
                 break;
             case MENU_RENAME:
+                ProfileData data = ProfileHelper.getProfileByName(profileName);
+                renameProfile(data);
                 break;
         }
         return true;
@@ -164,9 +166,30 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void renameProfile(final ProfileData data) {
+
+        String exitingName = data != null ? data.getName() : "";
+        new MaterialDialog.Builder(this)
+                .cancelable(true)
+                .title(R.string.profile_rename)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input(exitingName,exitingName, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        String profileName = input.toString();
+                        data.setName(profileName);
+                        data.save();
+                        //FIXME: ugly workaround
+                        ProfileActivity.this.profilesList.add(data);
+                        ProfileActivity.this.profilesList.remove(data);
+                        ProfileActivity.this.profileAdapter.notifyDataSetChanged();
+                    }
+                }).show();
+
+    }
 
     // Handle user click
-    public void addNewProfile() {
+    private void addNewProfile() {
 
         new MaterialDialog.Builder(this)
                 .cancelable(true)
