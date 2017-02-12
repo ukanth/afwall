@@ -61,9 +61,9 @@ public class BootBroadcast extends BroadcastReceiver {
 			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 			if (G.enableLogService()) {
 				//make sure we cleanup existing uid
-				G.storedPid(new HashSet());
 				final Intent logIntent = new Intent(context, LogService.class);
 				context.startService(logIntent);
+				G.storedPid(new HashSet());
 			}
 			if(G.activeNotification()){
 				Api.showNotification(Api.isEnabled(context), context);

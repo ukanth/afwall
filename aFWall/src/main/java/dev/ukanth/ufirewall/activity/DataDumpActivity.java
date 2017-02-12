@@ -96,7 +96,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 		setContentView(R.layout.rules);
 
 		Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
-		toolbar.setTitle(getString(R.string.showrules_title));
+		//toolbar.setTitle(getString(R.string.showrules_title));
 		toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

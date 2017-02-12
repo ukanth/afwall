@@ -149,13 +149,6 @@ public class G extends android.app.Application {
         return val;
     }
 
-	/*public static String profilesStored() { return gPrefs.getString(PROFILES, ""); }
-    public static String profilesStored(String val) {
-		gPrefs.edit().putString(PROFILES, val).commit();
-		isProfileMigrated(true);
-		return val;
-	}*/
-
     public static boolean isProfileMigrated() {
         return gPrefs.getBoolean(PROFILES_MIGRATED, false);
     }
@@ -433,7 +426,7 @@ public class G extends android.app.Application {
 
 
     public static int ruleTextSize() {
-        return gPrefs.getInt("ruleTextSize", 40);
+        return gPrefs.getInt("ruleTextSize", 32);
     }
 
     public static int ruleTextSize(int val) {
@@ -568,6 +561,7 @@ public class G extends android.app.Application {
         return data;
     }
 
+    //This method is used for Xposed
     public static boolean isXposedEnabled() {
         // will be used by XPosed to return true
         return false;
@@ -672,6 +666,4 @@ public class G extends android.app.Application {
         List<String> items = new ArrayList<String>(Arrays.asList(default_profiles));
         return items;
     }
-
-
 }
