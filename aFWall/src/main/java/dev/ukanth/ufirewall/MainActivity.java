@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         updateRadioFilter();
         if (G.enableMultiProfile()) {
-            setupMultiProfile(true);
+            setupMultiProfile();
         }
 
         selectFilterGroup();
@@ -382,36 +382,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         view.setOnClickListener(this);
     }
 
-    private void setupMultiProfile(boolean reset) {
-
+    private void setupMultiProfile() {
         reloadLocalList(true);
-
         mSpinner = (Spinner) findViewById(R.id.profileGroup);
         spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 mlocalList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(spinnerAdapter);
-        String currentProfile = G.storedProfile();
-
-        switch (currentProfile) {
-            case Api.DEFAULT_PREFS_NAME:
-                mSpinner.setSelection(0);
-                break;
-            case "AFWallProfile1":
-                mSpinner.setSelection(1);
-                break;
-            case "AFWallProfile2":
-                mSpinner.setSelection(2);
-                break;
-            case "AFWallProfile3":
-                mSpinner.setSelection(3);
-                break;
-            default:
-                if (currentProfile != null) {
-                    mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile));
-                }
-        }
         mSpinner.setOnItemSelectedListener(this);
+        String currentProfile = G.storedProfile();
+        if(!G.isProfileMigrated()) {
+            switch (currentProfile) {
+                case Api.DEFAULT_PREFS_NAME:
+                    mSpinner.setSelection(0);
+                    break;
+                case "AFWallProfile1":
+                    mSpinner.setSelection(1);
+                    break;
+                case "AFWallProfile2":
+                    mSpinner.setSelection(2);
+                    break;
+                case "AFWallProfile3":
+                    mSpinner.setSelection(3);
+                    break;
+                default:
+                    if (currentProfile != null) {
+                        mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile),false);
+                    }
+            }
+        } else {
+            if (currentProfile != null) {
+                mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile));
+            }
+        }
     }
 
     private void reloadLocalList(boolean reset) {
@@ -432,17 +435,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         } else {
-            Thread getData = new Thread() {
-                @Override
-                public void run() {
-                    List<ProfileData> profilesList = ProfileHelper.getProfiles();
-                    for (ProfileData data : profilesList) {
-                        mlocalList.add(data.getName());
-                    }
-                }
-            };
-            getData.start();
-
+            List<ProfileData> profilesList = ProfileHelper.getProfiles();
+            for (ProfileData data : profilesList) {
+                mlocalList.add(data.getName());
+            }
         }
     }
 
