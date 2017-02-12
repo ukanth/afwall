@@ -50,14 +50,10 @@ public class LogPreferenceFragment extends PreferenceFragment {
             val.add("BX");
         }
 
-        if (ar.size() != 1 && listPreference != null) {
+        if (listPreference != null) {
             listPreference.setEntries(ar.toArray(new String[0]));
             listPreference.setEntryValues(val.toArray(new String[0]));
 
-        } else {
-            if (listPreference != null && mCategory != null) {
-                mCategory.removePreference(listPreference);
-            }
         }
     }
 
