@@ -86,7 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         AdapterView.AdapterContextMenuInfo aInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
         //ProfileData profile = profileAdapter.getItem(aInfo.position);
-        String name = ((TextView) aInfo.targetView).getText().toString();
+        String name = ((TextView) aInfo.targetView.findViewById(R.id.pro_name)).getText().toString();
         menu.setHeaderTitle(getString(R.string.select) + " " + name);
         if (G.isProfileMigrated()) {
             menu.add(0, MENU_RENAME, 0, getString(R.string.rename));

@@ -458,82 +458,85 @@ public class RadialMenuWidget extends View {
 				}
 	
 				Rect rf = iconRect2[i];
-				if ((wedge2Data.getChildren().get(i).getIcon() != 0) && (wedge2Data.getChildren().get(i).getLabel() != null)) {
-					
-					//This will look for a "new line" and split into multiple lines					
-					String menuItemName = wedge2Data.getChildren().get(i).getLabel();
-					String[] stringArray = menuItemName.split("\n");
+				if(wedge2Data.getChildren().size() > 0) {
+					if ((wedge2Data.getChildren().get(i).getIcon() != 0) && (wedge2Data.getChildren().get(i).getLabel() != null)) {
 
-			    	paint.setColor(textColor);
-			    	paint.setAlpha(textAlpha); 
-					paint.setStyle(Paint.Style.FILL);
-					paint.setTextSize(animateTextSize);
-					
-					Rect rect = new Rect();
-					float textHeight = 0;
-					for (int j = 0; j < stringArray.length; j++) 
-				    	{
-						paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
-						textHeight = textHeight+(rect.height()+3);
-				    	}
+						//This will look for a "new line" and split into multiple lines
+						String menuItemName = wedge2Data.getChildren().get(i).getLabel();
+						String[] stringArray = menuItemName.split("\n");
 
-					Rect rf2 = new Rect();
-					rf2.set(rf.left, rf.top-((int)textHeight/2), rf.right, rf.bottom-((int)textHeight/2));
-					
-					float textBottom = rf2.bottom;
-					for (int j = 0; j < stringArray.length; j++) 
-				    	{
-						paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
-						float textLeft = rf.centerX() - rect.width()/2;
-						textBottom = textBottom + (rect.height()+3);
-						c.drawText(stringArray[j], textLeft-rect.left, textBottom-rect.bottom, paint);
-				    	}
-					
-					
-					//Puts in the Icon
-				    Drawable drawable = getResources().getDrawable(wedge2Data.getChildren().get(i).getIcon());
-					drawable.setBounds(rf2);
-					drawable.setAlpha(pictureAlpha);
-					drawable.draw(c);					
+						paint.setColor(textColor);
+						paint.setAlpha(textAlpha);
+						paint.setStyle(Paint.Style.FILL);
+						paint.setTextSize(animateTextSize);
 
-			//Icon Only
-				} else if (wedge2Data.getChildren().get(i).getIcon() != 0) {
-					//Puts in the Icon
-				    Drawable drawable = getResources().getDrawable(wedge2Data.getChildren().get(i).getIcon());
-					drawable.setBounds(rf);
-					drawable.setAlpha(pictureAlpha);
-					drawable.draw(c);
+						Rect rect = new Rect();
+						float textHeight = 0;
+						for (int j = 0; j < stringArray.length; j++)
+						{
+							paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
+							textHeight = textHeight+(rect.height()+3);
+						}
 
-			//Text Only					
-				} else {
-					//Puts in the Text if no Icon
-			    	paint.setColor(textColor);
-			    	paint.setAlpha(textAlpha); 
-					paint.setStyle(Paint.Style.FILL);
-					paint.setTextSize(animateTextSize);
-					
-					//This will look for a "new line" and split into multiple lines
-					String menuItemName = wedge2Data.getChildren().get(i).getLabel();
-					String[] stringArray = menuItemName.split("\n");
-	
-					//gets total height
-					Rect rect = new Rect();
-					float textHeight = 0;
-					for (int j = 0; j < stringArray.length; j++) 
-				    	{
-						paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
-						textHeight = textHeight+(rect.height()+3);
-				    	}
+						Rect rf2 = new Rect();
+						rf2.set(rf.left, rf.top-((int)textHeight/2), rf.right, rf.bottom-((int)textHeight/2));
 
-					float textBottom = rf.centerY()-(textHeight/2);
-					for (int j = 0; j < stringArray.length; j++) 
-				    	{
-						paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
-						float textLeft = rf.centerX() - rect.width()/2;
-						textBottom = textBottom + (rect.height()+3);
-						c.drawText(stringArray[j], textLeft-rect.left, textBottom-rect.bottom, paint);
-				    	}	
+						float textBottom = rf2.bottom;
+						for (int j = 0; j < stringArray.length; j++)
+						{
+							paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
+							float textLeft = rf.centerX() - rect.width()/2;
+							textBottom = textBottom + (rect.height()+3);
+							c.drawText(stringArray[j], textLeft-rect.left, textBottom-rect.bottom, paint);
+						}
+
+
+						//Puts in the Icon
+						Drawable drawable = getResources().getDrawable(wedge2Data.getChildren().get(i).getIcon());
+						drawable.setBounds(rf2);
+						drawable.setAlpha(pictureAlpha);
+						drawable.draw(c);
+
+						//Icon Only
+					} else if (wedge2Data.getChildren().get(i).getIcon() != 0) {
+						//Puts in the Icon
+						Drawable drawable = getResources().getDrawable(wedge2Data.getChildren().get(i).getIcon());
+						drawable.setBounds(rf);
+						drawable.setAlpha(pictureAlpha);
+						drawable.draw(c);
+
+						//Text Only
+					} else {
+						//Puts in the Text if no Icon
+						paint.setColor(textColor);
+						paint.setAlpha(textAlpha);
+						paint.setStyle(Paint.Style.FILL);
+						paint.setTextSize(animateTextSize);
+
+						//This will look for a "new line" and split into multiple lines
+						String menuItemName = wedge2Data.getChildren().get(i).getLabel();
+						String[] stringArray = menuItemName.split("\n");
+
+						//gets total height
+						Rect rect = new Rect();
+						float textHeight = 0;
+						for (int j = 0; j < stringArray.length; j++)
+						{
+							paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
+							textHeight = textHeight+(rect.height()+3);
+						}
+
+						float textBottom = rf.centerY()-(textHeight/2);
+						for (int j = 0; j < stringArray.length; j++)
+						{
+							paint.getTextBounds(stringArray[j],0,stringArray[j].length(),rect);
+							float textLeft = rf.centerX() - rect.width()/2;
+							textBottom = textBottom + (rect.height()+3);
+							c.drawText(stringArray[j], textLeft-rect.left, textBottom-rect.bottom, paint);
+						}
+					}
 				}
+
 			}
 		}
 		
@@ -953,11 +956,14 @@ public class RadialMenuWidget extends View {
 
 				int h = MaxIconSize;
 				int w = MaxIconSize;
-				if ( wedge2Data.getChildren().get(i).getIcon() != 0 ) {
-				    Drawable drawable = getResources().getDrawable(wedge2Data.getChildren().get(i).getIcon());
-				    h = getIconSize(drawable.getIntrinsicHeight(),MinIconSize,MaxIconSize);
-				    w = getIconSize(drawable.getIntrinsicWidth(),MinIconSize,MaxIconSize);		
+				if(wedge2Data.getChildren().size() > 0) {
+					if ( wedge2Data.getChildren().get(i).getIcon() != 0 ) {
+						Drawable drawable = getResources().getDrawable(wedge2Data.getChildren().get(i).getIcon());
+						h = getIconSize(drawable.getIntrinsicHeight(),MinIconSize,MaxIconSize);
+						w = getIconSize(drawable.getIntrinsicWidth(),MinIconSize,MaxIconSize);
+					}
 				}
+
 
 				if (r2VariableSize < h) {
 					h = r2VariableSize;
@@ -1004,7 +1010,7 @@ public class RadialMenuWidget extends View {
 
 				int h = MaxIconSize;
 				int w = MaxIconSize;
-				if ( wedge2Data.getChildren().get(i).getIcon() != 0 ) {
+				if ( wedge2Data.getChildren().size() > 0 && wedge2Data.getChildren().get(i).getIcon() != 0 ) {
 				    Drawable drawable = getResources().getDrawable(wedge2Data.getChildren().get(i).getIcon());
 				    h = getIconSize(drawable.getIntrinsicHeight(),MinIconSize,MaxIconSize);
 				    w = getIconSize(drawable.getIntrinsicWidth(),MinIconSize,MaxIconSize);		
@@ -1087,7 +1093,11 @@ public class RadialMenuWidget extends View {
 
 	    int entriesQty = entry.getChildren().size();
 	    wedgeQty2 = entriesQty;
-	   
+
+	   //if only default profile
+	   if(entriesQty == 0 ) {
+		   wedgeQty2 = 1;
+	   }
 		//Wedge 2
 	    float degSlice2 = 360 / wedgeQty2;
 		float start_degSlice2 = 270 - (degSlice2/2);
@@ -1106,12 +1116,14 @@ public class RadialMenuWidget extends View {
 
 			int h = MaxIconSize;
 			int w = MaxIconSize;
-			if ( entry.getChildren().get(i).getIcon() != 0 ) {
-			    Drawable drawable = getResources().getDrawable(entry.getChildren().get(i).getIcon());
-			    h = getIconSize(drawable.getIntrinsicHeight(),MinIconSize,MaxIconSize);
-			    w = getIconSize(drawable.getIntrinsicWidth(),MinIconSize,MaxIconSize);
-			}			
-		    this.iconRect2[i] = new Rect((int) xCenter-w/2, (int) yCenter-h/2, (int) xCenter+w/2, (int) yCenter+h/2);
+			if(wedgeQty2 > 1) {
+				if ( entry.getChildren().get(i).getIcon() != 0 ) {
+					Drawable drawable = getResources().getDrawable(entry.getChildren().get(i).getIcon());
+					h = getIconSize(drawable.getIntrinsicHeight(),MinIconSize,MaxIconSize);
+					w = getIconSize(drawable.getIntrinsicWidth(),MinIconSize,MaxIconSize);
+					this.iconRect2[i] = new Rect((int) xCenter-w/2, (int) yCenter-h/2, (int) xCenter+w/2, (int) yCenter+h/2);
+				}
+			}
 		}
 		this.wedge2Data = entry;
 		invalidate();  //re-draws the picture
