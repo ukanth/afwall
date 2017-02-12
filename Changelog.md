@@ -2,7 +2,8 @@ Changelog AFWall+
 ==================
 Version 2.9.2-BETA
 
-* Feature: Network options on logs ( Copy/resolve hostname from logs - Thanks to @vzool )
+* Feature: Network options for logs (Thanks @vzool)
+* Feature: Added Fingerprint protection (Thanks @vzool)
 * Bug: Unable to start logservice error issue on some devices
 * Bug: Log notification filter button not showing 
 * Bug: Optimizing the detection of logTarget
