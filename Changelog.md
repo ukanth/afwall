@@ -9,7 +9,10 @@ Version 2.9.2-BETA
 * Bug: Optimizing the detection of logTarget
 * Bug: Removed toybox detection, causing lots of ANR issues
 * Preserve Zoom size(+/-) in Firewall rules
-* Revamp of Profiles Ability to delete/rename default profilesVersion 2.9.1
+* Revamp of Profiles Ability to delete/rename default profiles
+
+
+Version 2.9.1 [Nov 27, 2016]
 * Boot/Connectivity change rules hung on some devices
 * Widget always display errors
 * Optimized number of su calls
@@ -17,7 +20,7 @@ Version 2.9.2-BETA
 * Update material dialog library
 * Updated translations
 
-Version 2.9.0
+Version 2.9.0 [Nov 25, 2016]
 * Bug: Sometimes connection gets blocked
 * Bug: Sometimes logservice does not work after service terminated
 * Bug: Hang issue with phh super user
@@ -32,7 +35,7 @@ Version 2.9.0
 * User reported crashes
 * Updated Translations
 
-Version 2.8.0
+Version 2.8.0 [Nov 8, 2016]
 * Bug: Boot rules are not working on some devices
 * Bug: Logs without active rules issue
 * Bug: Rules are blocked completely on some devices
@@ -42,7 +45,7 @@ Version 2.8.0
 * User Reported crash fixes
 * Updated Translations
 
-Version 2.7.0
+Version 2.7.0 [Nov 1, 2016]
 * Bug: Random hang issue with various superuser (phh,cm root)
 * Bug: Added option to add delay applying rules on startup
 * Bug: Minor fixes on preferences on change
@@ -58,7 +61,7 @@ Version 2.6.0.1 [Oct 1, 2016]
 * Bug: Persistent notification not shown after reboot
 * Translation updates
 
-Version 2.6.0
+Version 2.6.0 [Sep 28, 2016]
 * CRITICAL: Connection leak when LAN option is enabled
 * CRITICAL: Multiple su process (su leak) when logservice enabled
 * Feature: Nougat Support
@@ -82,7 +85,7 @@ Version 2.5.2 [Aug 14, 2016]
 * Bug Fix: Fix crash on export and import
 * Update: Translation updates
 
-Version 2.5.1
+Version 2.5.1 [Aug 10, 2016]
 
 * Enhancement: Added Switchback option to Old Log view - Listen to users
 * New Feature (Pro): Donate / Donate Key users can view the ipaddress/src/dst in details view (clicking on from new logview)
