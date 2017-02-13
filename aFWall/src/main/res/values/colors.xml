@@ -7,7 +7,7 @@
 	<drawable name="divider_white_line">#ffffffff</drawable>
 
 
-	<color name="theme">#ff313131</color>
+	<color name="dark_bg">#ff313131</color>
 	<color name="white">#ffffffff</color>
 	<color name="menu">#ffffffff</color>
 	<color name="black">#ff000000</color>

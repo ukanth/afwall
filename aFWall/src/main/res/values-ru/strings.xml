@@ -62,7 +62,7 @@
   <string name="passerror">Ошибка изменения пароля блокировки</string>
   <string name="working">Обработка…</string>
   <string name="reading_apps">Получение установленных прил.</string>
-  <string name="mode">Режим:</string>
+  <string name="mode">Режим файрвола</string>
   <string name="mode_header">Режим: %s</string>
   <string name="legend_clear">Очистить все отметки для всех столбцов</string>
   <string name="mode_whitelist">Разрешить выбранное</string>
@@ -200,7 +200,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Связано с Xposed</string>
   <string name="fixDownloadTitle">Исправление утечки DownloadManager</string>
-  <string name="fixDownloadTitleSummary">Будет использован xposed для блокировки приложений, загружающих данные с помощью встроенного менеджера загрузки Андроид, даже если приложению запрещен доступ</string>
+  <string name="fixDownloadTitleSummary">Будет использован Xposed для блокировки приложений, загружающих данные с помощью встроенного менеджера загрузки Андроид, даже если приложению запрещен доступ</string>
   <string name="LeakDetected">Обнаружена утечка</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Настройки Tasker</string>
@@ -210,7 +210,7 @@
   <string name="disable_tasker">Отключить AFWall +</string>
   <string name="tasker_apply">Tasker: Применяю правила брандмауэра</string>
   <string name="tasker_disabled">Tasker: AFWall + ОТКЛЮЧЕН!</string>
-  <string name="tasker_profile_applied">Tasker: Профиль с успехом применен</string>
+  <string name="tasker_profile_applied">Tasker: профиль AFWall+ profile успешно применен</string>
   <string name="tasker_muliprofile">Tasker: AFWall + мультипрофиль отключен</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Поддержка IPv6</string>
@@ -247,6 +247,7 @@
   <string name="enableInboundSummary">Разрешить подключения из локальной сети к телефону (Samba, sshd, AirDroid, и так далее.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Интерфейс пользователя</string>
+  <string name="rules_prefs_title">Правила/Соединение</string>
   <string name="log_prefs_title">Журнал</string>
   <string name="hideicons_pref_title">Скрыть значки приложения</string>
   <string name="hideicons_pref_summary_on">Повысить производительность, отключив значки приложений в главном окне</string>
@@ -298,6 +299,7 @@
   <string name="pkg_core">Ядро</string>
   <string name="pkg_sys">Система</string>
   <string name="pkg_user">Пользователь</string>
+  <string name="menu">Меню</string>
   <string name="backup_notexist">Нет резервной копии. Пожалуйста, экспортируйте из меню.</string>
   <string name="showFilter">Показать фильтры</string>
   <string name="showfilter_summary_on">Фильтры (все/ядро/система/пользователь) отображаются в главном окне</string>
@@ -352,6 +354,7 @@
   <string name="submit">Отправить</string>
   <string name="dialog_color_picker">Палитра цветов</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Сортировка</string>
   <string name="defaultsort">По имени (по умолчанию)</string>
   <string name="lastupdated">По дате установки/обновления</string>
   <string name="uid">UID</string>

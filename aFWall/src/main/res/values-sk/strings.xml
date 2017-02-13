@@ -62,7 +62,7 @@
   <string name="passerror">Chyba pri zmene hesla zámky</string>
   <string name="working">Prebieha</string>
   <string name="reading_apps">Načítavanie nainštalovaných aplikácií</string>
-  <string name="mode">Režim: </string>
+  <string name="mode">Režim brány Firewall</string>
   <string name="mode_header">Režim: %s</string>
   <string name="legend_clear">Odznačiť všetky políčka vo všetkých stĺpcoch</string>
   <string name="mode_whitelist">Povoliť vybrané</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Zakázať AFWall+</string>
   <string name="tasker_apply">Tasker: aplikovanie pravidiel firewallu</string>
   <string name="tasker_disabled">Tasker: AFWall+ ZAKÁZANÝ!</string>
-  <string name="tasker_profile_applied">Tasker: profil úspešne použitý</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profil úspešne použitý</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ viac profilov zakázané</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podpora IPv6</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Povoliť spojenia z LAN do telefónu (Samba, sshd, AirDroid, atď.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Používateľské rozhranie</string>
+  <string name="rules_prefs_title">Pravidlá/pripojenie</string>
   <string name="log_prefs_title">Záznam</string>
   <string name="hideicons_pref_title">Skryť ikony aplikácií</string>
   <string name="hideicons_pref_summary_on">Zlepšiť výkon zakázaním ikon aplikácií v hlavnom zobrazení</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Jadro</string>
   <string name="pkg_sys">Systém</string>
   <string name="pkg_user">Používateľ</string>
+  <string name="menu">Ponuka</string>
   <string name="backup_notexist">Neexistuje žiadna záloha. Exportujte z menu.</string>
   <string name="showFilter">Zobraziť filtre</string>
   <string name="showfilter_summary_on">Filtre (Všetky/Jadro/Systém/Používateľ) sú zobrazené v hlavnom zobrazení</string>
@@ -351,6 +353,7 @@
   <string name="submit">Potvrdiť</string>
   <string name="dialog_color_picker">Výber farby</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Možnosti zoradenia</string>
   <string name="defaultsort">Podľa mena (predvolené)</string>
   <string name="lastupdated">Podľa času inštalácie/aktualizácie</string>
   <string name="uid">Podľa UID</string>

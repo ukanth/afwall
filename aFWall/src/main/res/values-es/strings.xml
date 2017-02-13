@@ -7,7 +7,7 @@
     -->
   <!-- main -->
   <string name="app_name">AFWall+</string>
-  <string name="app_name_donate">AFWall + (Donacion)</string>
+  <string name="app_name_donate">AFWall + (Donar)</string>
   <string name="title_disabled">AFWall+ (DESACTIVADO)</string>
   <string name="whitelist_array_item">Permitir seleccionados</string>
   <string name="blacklist_array_item">Bloquear seleccionados</string>
@@ -53,7 +53,7 @@
   <string name="rules_deleted">Reglas borradas</string>
   <string name="pass_titleset">Establecer contraseña de bloqueo</string>
   <string name="pass_titleget">Necesita contraseña</string>
-  <string name="enterpass">Introduzca la contraseña</string>
+  <string name="enterpass">Introduce la contraseña</string>
   <string name="reenterpass">Confirmar contraseña</string>
   <string name="error_write_pref">Error al grabar preferencias</string>
   <string name="enternewpass">Ingresar la contraseña nueva (deja en blanco para quitarla):</string>
@@ -62,7 +62,7 @@
   <string name="passerror">Error al cambiar la contraseña de bloqueo</string>
   <string name="working">Trabajando</string>
   <string name="reading_apps">Recuperando aplicaciones instaladas</string>
-  <string name="mode">Modo: </string>
+  <string name="mode">Modo del cortafuegos</string>
   <string name="mode_header">Modo: %s</string>
   <string name="legend_clear">Desactiva todas las casillas de verificación en todas las columnas</string>
   <string name="mode_whitelist">Permitir seleccionados</string>
@@ -199,7 +199,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Relacionado con XPosed</string>
   <string name="fixDownloadTitle">Arreglar fuga de DownloadManager</string>
-  <string name="fixDownloadTitleSummary">Esto utilizará xposed para bloquear las aplicaciones que descargan datos usando el gestor de descargas integrado de android incluso si la aplicación deniega el acceso</string>
+  <string name="fixDownloadTitleSummary">Esto utilizará Xposed para bloquear las aplicaciones que descargan datos usando el gestor de descargas integrado de android incluso si la aplicación deniega el acceso</string>
   <string name="LeakDetected">Fuga detectada</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Relacionado con Tasker</string>
@@ -209,7 +209,7 @@
   <string name="disable_tasker">Desactivar AFWall+</string>
   <string name="tasker_apply">Tasker: Aplicando las reglas del cortafuegos</string>
   <string name="tasker_disabled">Tasker: AFWall+ ¡DESACTIVADO!</string>
-  <string name="tasker_profile_applied">Tasker: Perfil aplicado satisfactoriamente</string>
+  <string name="tasker_profile_applied">Tasker: Perfil AFWall+ aplicado satisfactoriamente</string>
   <string name="tasker_muliprofile">Tasker: multi-perfil AFWall+ deshabilitado</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Compatibilidad con IPv6</string>
@@ -247,6 +247,7 @@ PRECAUCIÓN: Utilízalo sólo si tienes una conexión IPv4</string>
   <string name="enableInboundSummary">Permitir conexiones desde la LAN al teléfono (Samba, sshd, AirDroid, etc..)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfaz de usuario</string>
+  <string name="rules_prefs_title">Reglas/Conectividad</string>
   <string name="log_prefs_title">Registros</string>
   <string name="hideicons_pref_title">Ocultar iconos de aplicaciones</string>
   <string name="hideicons_pref_summary_on">Mejorar rendimiento desactivando iconos de aplicación en la vista principal</string>
@@ -298,6 +299,7 @@ PRECAUCIÓN: Utilízalo sólo si tienes una conexión IPv4</string>
   <string name="pkg_core">Núcleo</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Usuario</string>
+  <string name="menu">Menú</string>
   <string name="backup_notexist">No existe ninguna copia de seguridad. Por favor, exporta desde el menú.</string>
   <string name="showFilter">Mostrar filtros</string>
   <string name="showfilter_summary_on">Los filtros (Todos/Core/Sistema/Usuario) se muestran en la vista principal</string>
@@ -352,6 +354,7 @@ PRECAUCIÓN: Utilízalo sólo si tienes una conexión IPv4</string>
   <string name="submit">Enviar</string>
   <string name="dialog_color_picker">Selector de color</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Opción de organización</string>
   <string name="defaultsort">Por nombre (Predeterminado)</string>
   <string name="lastupdated">Por Instalación/Actualización</string>
   <string name="uid">Por UID</string>

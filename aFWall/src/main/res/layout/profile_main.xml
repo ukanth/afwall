@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:duplicateParentState="false"
-    android:background="@color/theme"
+    android:background="?attr/itemBackground"
     android:orientation="vertical">
 
 

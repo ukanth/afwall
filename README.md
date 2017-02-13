@@ -1,6 +1,6 @@
 ## AFWall+ (Android Firewall+) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
+Bitcoin: 1LBUdALwYXDv38wvnUSGvsFjituaWAHvFo
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
-======
 
 ![AFwall+](https://raw.githubusercontent.com/ukanth/afwall/0502e6f17ceda08069720ff2f260902690e65e9b/screenshots/Main_2.0.png)
 
@@ -207,6 +207,8 @@ Contributing
 ------------
 
 Please fork this repository and contribute back using [pull requests](https://github.com/ukanth/afwall/pulls).
+
+Please make sure PR against *Beta* branch which will under active development !
 
 All contributions, large or small, major features, bug fixes, additional language translations, unit/integration tests are welcomed and appreciated and will be thoroughly reviewed and discussed.
 

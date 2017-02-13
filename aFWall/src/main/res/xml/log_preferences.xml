@@ -39,12 +39,19 @@
         </ListPreference>
 
 
-        <dev.ukanth.ufirewall.log.MultiSelectListPreference
+        <!--<dev.ukanth.ufirewall.log.MultiSelectListPreference
+            android:dependency="enableLogService"
+            android:dialogTitle="@string/filters_apps_title"
+            android:key="block_filter_app"
+            android:title="@string/filters_apps_title" /> -->
+
+        <dev.ukanth.ufirewall.log.MultiListPreference
             android:dependency="enableLogService"
             android:dialogTitle="@string/filters_apps_title"
             android:key="block_filter_app"
             android:title="@string/filters_apps_title" />
-        </PreferenceCategory>
+
+    </PreferenceCategory>
 
 
 

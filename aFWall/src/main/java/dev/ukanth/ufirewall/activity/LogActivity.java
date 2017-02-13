@@ -63,10 +63,8 @@ import dev.ukanth.ufirewall.util.G;
 
 public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected static final int MENU_CLEARLOG = 7;
-
-    RecyclerView recyclerView;
-    LogRecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerView recyclerView;
+    private LogRecyclerViewAdapter recyclerViewAdapter;
     private TextView emptyView;
     private SwipeRefreshLayout mSwipeLayout;
     protected Menu mainMenu;
@@ -74,10 +72,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     protected  static final int MENU_TOGGLE = -4;
     protected static final int MENU_CLEAR = 40;
     protected static final int MENU_SWITCH_OLD = 42;
-
-    //protected static final int MENU_EXPORT_LOG = 47;
-
-    //protected static final int MENU_TOGGLE_LOG = 27;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
@@ -226,6 +227,18 @@ public class RootShell extends Service {
 		}
 	}
 
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if (intent == null) { // if crash restart...
+			Log.i(TAG,"Restarting RootShell");
+			List<String> cmds = new ArrayList<String>();
+			cmds.add("true");
+			new RootCommand().setFailureToast(R.string.error_su)
+					.setReopenShell(true).run(getApplicationContext(), cmds);
+		}
+		return Service.START_STICKY;
+	}
+
 	private static void runNextSubmission() {
 		do {
 			RootCommand state;
@@ -339,6 +352,7 @@ public class RootShell extends Service {
 			}
 		});
 	}
+
 
 	private static void startShellInBackground() {
 		Log.d(TAG, "Starting root shell...");

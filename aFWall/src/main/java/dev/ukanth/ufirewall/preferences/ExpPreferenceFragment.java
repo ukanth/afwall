@@ -29,9 +29,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 
 	private static CheckBoxPreference fixLeakPref;
 
-	private static final String mountPoints[] = { "/system", "/su" };
+	private static final String mountPoints[] = { "/system", "/su" ,"/magisk"};
 	private static final String initDirs[] = { "/system/etc/init.d",
-			"/etc/init.d" , "/system/su.d", "/su/su.d" };
+			"/etc/init.d" , "/system/su.d", "/su/su.d" , "/magisk/phh/su.d"};
 	private static final String initScript = "afwallstart";
 
 	@SuppressLint("NewApi")
@@ -121,9 +121,6 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 						RootTools.remount(mount,"RW");
 					}
 					if(enabled) {
-						for(String mount : mountPoints) {
-							RootTools.remount(mount,"RW");
-						}
 						for (String s : initDirs) {
 							File f = new File(s);
 							if (f.exists() && f.isDirectory()) {
@@ -137,11 +134,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 								break;
 							}
 						}
-
 					} else {
 						returnFlag = deleteFiles(ctx);
 					}
-
 					for(String mount : mountPoints) {
 						RootTools.remount(mount,"RO");
 					}

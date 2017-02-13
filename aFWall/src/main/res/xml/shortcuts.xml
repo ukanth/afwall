@@ -1,0 +1,38 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_menu_pref"
+        android:shortcutId="Preferences"
+        android:shortcutLongLabel="@string/preferences"
+        android:shortcutShortLabel="@string/preferences">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="dev.ukanth.ufirewall.preferences.PreferencesActivity"
+            android:targetPackage="dev.ukanth.ufirewall" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_log"
+        android:shortcutId="Logs"
+        android:shortcutLongLabel="@string/showlog_title"
+        android:shortcutShortLabel="@string/showlog_title">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="dev.ukanth.ufirewall.activity.LogActivity"
+            android:targetPackage="dev.ukanth.ufirewall" />
+    </shortcut>
+
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_rules"
+        android:shortcutId="Rules"
+        android:shortcutLongLabel="@string/showrules_title"
+        android:shortcutShortLabel="@string/showrules_title">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="dev.ukanth.ufirewall.activity.RulesActivity"
+            android:targetPackage="dev.ukanth.ufirewall" />
+    </shortcut>
+</shortcuts>

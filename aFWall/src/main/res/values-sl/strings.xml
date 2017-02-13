@@ -62,7 +62,7 @@
   <string name="passerror">Napaka pri spreminjanju gesla za odklepanje</string>
   <string name="working">Delam</string>
   <string name="reading_apps">Pridobivam podatke</string>
-  <string name="mode">Način: </string>
+  <string name="mode">Način</string>
   <string name="mode_header">Način: %s</string>
   <string name="legend_clear">Izbris vseh označb v vseh stolpcih</string>
   <string name="mode_whitelist">Dovoli izbrane</string>
@@ -246,6 +246,7 @@
   <string name="enableInboundSummary">Omogoči povezovanje iz omrežja LAN do naprave (Samba, sshd, AirDroid, itd.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Uporabniški vmesnik</string>
+  <string name="rules_prefs_title">Pravila/povezljivost</string>
   <string name="log_prefs_title">Dnevnik aktivnosti</string>
   <string name="hideicons_pref_title">Skrij ikone aplikacij</string>
   <string name="hideicons_pref_summary_on">Umik ikon aplikacij iz glavnega seznama lahko izboljša zmogljivost požarnega zidu</string>
@@ -297,6 +298,7 @@
   <string name="pkg_core">Jedro</string>
   <string name="pkg_sys">Sistem</string>
   <string name="pkg_user">Uporabnik</string>
+  <string name="menu">Meni</string>
   <string name="backup_notexist">Ni varnostne kopije. Ustvarite jo v meniju.</string>
   <string name="showFilter">Prikaži filtre</string>
   <string name="showfilter_summary_on">Filtri (vse/jedro/sistem/uporabnik) so prikazani na seznamu</string>
@@ -351,6 +353,7 @@
   <string name="submit">Uveljavi</string>
   <string name="dialog_color_picker">Izbira barv</string>
   <!--<string name="sort">Sort Applications</string>-->
+  <string name="access_sort">Možnosti razvrščanja</string>
   <string name="defaultsort">Po imenu (privzeto)</string>
   <string name="lastupdated">Po času namestitve</string>
   <string name="uid">Po šifri UID</string>

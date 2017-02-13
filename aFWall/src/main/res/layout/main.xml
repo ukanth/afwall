@@ -11,7 +11,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/theme"
+        android:background="?attr/itemBackground"
         android:duplicateParentState="false"
         android:orientation="vertical">
 
@@ -21,46 +21,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize" />
-
-        <!--<ListView
-            android:id="@android:id/list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawSelectorOnTop="false"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:textAlignment="center" />
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp">
-
-            <TextView
-                android:id="@+id/label_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:paddingLeft="10dp"
-                android:text="@string/mode"
-                android:textStyle="bold" />
-
-
-            <TextView
-                android:id="@+id/text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:textIsSelectable="false" />
-            &lt;!&ndash;
-                    <Spinner
-                        android:id="@+id/filterGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:entries="@array/filters"/>&ndash;&gt;
-
-
-        </LinearLayout>-->
 
         <LinearLayout
             android:id="@+id/profileOption"
@@ -92,20 +52,6 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:visibility="visible">
-
-            <!-- <TextView
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:id="@+id/filerText"
-                 android:paddingLeft="10dp"
-                 android:textStyle="bold"
-                 android:text="@string/filter"/>
-
-             <Spinner
-                 android:id="@+id/filterGroup"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:entries="@array/filters"/>-->
 
             <RadioGroup
                 android:id="@+id/appFilterGroup"
@@ -156,6 +102,7 @@
                 android:id="@+id/img_lan"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/lan_title"
                 android:clickable="true"
                 android:src="@drawable/ic_lan"
                 android:visibility="gone"></ImageView>
@@ -164,6 +111,7 @@
                 android:id="@+id/img_wifi"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/wifi"
                 android:clickable="true"
                 android:src="@drawable/ic_wifi"></ImageView>
 
@@ -171,6 +119,7 @@
                 android:id="@+id/img_3g"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/data"
                 android:clickable="true"
                 android:src="@drawable/ic_mobiledata"></ImageView>
 
@@ -178,6 +127,7 @@
                 android:id="@+id/img_roam"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/roaming"
                 android:clickable="true"
                 android:src="@drawable/ic_roam"
                 android:visibility="gone"></ImageView>
@@ -187,6 +137,7 @@
                 android:layout_width="32dp"
                 android:layout_height="24dp"
                 android:clickable="true"
+                android:contentDescription="@string/vpn_profile"
                 android:src="@drawable/ic_vpn"
                 android:visibility="gone"></ImageView>
 
@@ -194,6 +145,7 @@
                 android:id="@+id/img_invert"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/invert_all"
                 android:clickable="true"
                 android:src="@drawable/ic_invert"></ImageView>
 
@@ -201,6 +153,7 @@
                 android:id="@+id/img_reset"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
+                android:contentDescription="@string/legend_clear"
                 android:clickable="true"
                 android:src="@drawable/ic_clean"></ImageView>
         </LinearLayout>
@@ -214,7 +167,8 @@
                 android:id="@+id/listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fastScrollEnabled="true"></ListView>
+                android:fastScrollEnabled="true">
+            </ListView>
 
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
