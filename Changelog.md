@@ -1,16 +1,17 @@
 Changelog AFWall+
 ==================
+
 Version 2.9.2-BETA
-
-* Feature: Network options for logs (Thanks @vzool)
-* Feature: Added Fingerprint protection (Thanks @vzool)
-* Bug: Unable to start logservice error issue on some devices
-* Bug: Log notification filter button not showing 
-* Bug: Optimizing the detection of logTarget
-* Bug: Removed toybox detection, causing lots of ANR issues
-* Preserve Zoom size(+/-) in Firewall rules
-* Revamp of Profiles Ability to delete/rename default profiles
-
+* Features
+ * Network options for logs (Thanks @vzool)
+ * Fingerprint protection (Thanks @vzool)
+ * Preserve Zoom size(+/-) in Firewall rules
+ * Rewritten Profiles - Ability to delete/rename default profiles
+* Bugs
+ * Unable to start logservice error issue on some devices
+ * Log notification filter button not showing 
+ * Optimizing the detection of logTarget
+ * Removed toybox detection, causing lots of ANR issues
 
 Version 2.9.1 [Nov 27, 2016]
 * Boot/Connectivity change rules hung on some devices
@@ -125,7 +126,7 @@ Version 2.2.3 [Mar 15, 2016]
 * Reported crash issues
 * Updated Translations
 
-Version 2.2.2 
+Version 2.2.2 [Mar 11, 2016]
 * Fix: Issue with auto IPv6 from preference
 * Fix: afwall su.d script removal on uncheck preference & Added support for systemless su
 * Fix: additional steps to kill klogripper process.
@@ -488,10 +489,10 @@ Version 1.0.7a
 * Bug Fix: Update of application packages will not be notified with AFwall.
 * Bug Fix: Uninstalling app will reset rule for root application to default.
 
-Version: 1.0.6.1a
+Version: 1.0.6.1a [25 Nov 2012]
 * Bug Fix : Rules for spcial application were not applied after application restart.
 
-Version: 1.0.6a
+Version: 1.0.6a [25 Nov 2012]
 * Now uses Chainfire's SU library, This will get rid of old shell script approach. I feel it's faster and better approach and helps to enable profiles!
   Please Note: If you use afwall.sh outside, starting this version it will not work!
 * Improved menubar and confirmation dialogs
@@ -502,17 +503,17 @@ Version: 1.0.6a
 * German Translation (Thanks to CHEF-KOCH!)
 * Support for 4.2 JB
 
-Version 1.0.5a
+Version 1.0.5a [10 Nov 2012]
 * Enhanced Rules view with additional actions like copy, flush, export to sdcard and network interfaces.
 * Moved flush rules from main menu to enhanced rules view
 * Enhanced Log view with additional copy & clear action
 * Moved clear log from main menu to enhanced log view
 * Fixed FC issues from 1.0.4.x
 
-Version 1.0.4.1a
+Version 1.0.4.1a [9 Nov 2012]
 * Fixed force close on viewlog and view rules pages.
 
-Version 1.0.4a
+Version 1.0.4a [9 Nov 2012]
 * Import/Export Rules (for now it's just a single import & export to external storage)
 * Integrated search bar (application search)
 * Revamped Log & IPTables rules view (you can now view the logs and rules in a clear view and copy them!)
