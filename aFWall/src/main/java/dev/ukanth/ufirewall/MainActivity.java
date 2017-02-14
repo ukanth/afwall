@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (!G.hasRoot()) {
             (new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
-            startRootShell();
+            //startRootShell();
             passCheck();
         }
     }
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void startRootShell() {
+    /*private void startRootShell() {
         Thread rootShell = new Thread() {
             @Override
             public void run() {
@@ -256,12 +256,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 new RootCommand().setFailureToast(R.string.error_su)
                         .setReopenShell(true).run(getApplicationContext(), cmds);
                 if (G.activeNotification()) {
-                    Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                    Api.show`Notification(Api.isEnabled(getApplicationContext()), getApplicationContext());
                 }
             }
         };
         rootShell.start();
-    }
+    }*/
 
     @Override
     public void onResume() {
@@ -366,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onStart();
         initDone = 0;
 
-        startRootShell();
+        //startRootShell();
         reloadPreferences();
     }
 
