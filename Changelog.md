@@ -5,6 +5,7 @@ Version 2.9.2-BETA
 * Features
  * Network options for logs (Thanks @vzool)
  * Fingerprint protection (Thanks @vzool)
+ * Allow multicast on LAN (Thanks @ionum)
  * Preserve Zoom size(+/-) in Firewall rules
  * Rewritten Profiles - Ability to delete/rename default profiles
 * Bugs
