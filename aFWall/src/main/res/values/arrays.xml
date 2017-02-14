@@ -4,15 +4,18 @@
 
     <string-array name="supported_languages">
         <item>English</item>
+
         <item>Arabic</item>
         <item>Asturian</item>
+
         <item>Basque</item>
         <item>Bengali</item>
         <item>Bosnian</item>
         <item>Bulgarian</item>
-        <item>Catalin</item>
 
+        <item>Catalin</item>
         <item>Czech</item>
+
         <item>Dutch</item>
         <item>French</item>
         <item>German</item>
@@ -50,17 +53,18 @@
     <string-array name="supported_languages_code">
 
         <item>en</item>
+
         <item>ar</item>
         <item>ast_ES</item>
+
         <item>eu</item>
-
         <item>bn</item>
-        <item>ca</item>
-
         <item>bs</item>
         <item>bg</item>
 
+        <item>ca</item>
         <item>cs</item>
+
         <item>nl</item>
         <item>fr</item>
         <item>de</item>
