@@ -343,9 +343,7 @@ public final class Api {
 
         if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable() && considerSystem) {
             return "busybox ";
-        } /*else if( RootTools.isToyboxAvailable()) {
-            return "toybox ";
-		} */ else {
+        } else {
             String dir = ctx.getDir("bin", 0).getAbsolutePath();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 return dir + "/run_pie " + dir + "/busybox ";
@@ -524,7 +522,7 @@ public final class Api {
      */
     private static void addInterfaceRouting(Context ctx, List<String> cmds) {
         try {
-            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, true);
+            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
             final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
             for (String s : dynChains) {
                 cmds.add("-F " + AFWALL_CHAIN_NAME + s);
@@ -553,26 +551,26 @@ public final class Api {
                     if (!cfg.lanMaskV4.equals("")) {
                         cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
                         cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                    } else {
+                    }
+
+                    /*else {
                         //ipaddress not found, but still block WIFI rules
                         cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+                    }*/
+                }
+                    if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
+                        Log.i(TAG, "No ipaddress found for LAN");
+                        // No IP address -> no traffic.  This prevents a data leak between the time
+                        // the interface gets an IP address, and the time we process the intent
+                        // (which could be 5+ seconds).  This is likely to catch a little bit of
+                        // legitimate traffic from time to time, so we won't log the failures.
+                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
+                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
+
                     }
-                }
-
-			/*if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
-				// No IP address -> no traffic.  This prevents a data leak between the time
-				// the interface gets an IP address, and the time we process the intent
-				// (which could be 5+ seconds).  This is likely to catch a little bit of
-				// legitimate traffic from time to time, so we won't log the failures.
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-				cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
-
-			}*/
             } else {
-                if (!cfg.isTethered) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                }
+                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
             }
 
             if (G.enableRoam() && cfg.isRoaming) {
@@ -1111,6 +1109,8 @@ public final class Api {
                     tempSession.close();
                 }
             }
+        } catch (ClassCastException e) {
+            Log.e(TAG, "ClassCastException in cleanupUid: " + e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "Exception in cleanupUid: " + e.getMessage());
         }
@@ -1214,7 +1214,7 @@ public final class Api {
      * @param callback Callback for completion status
      */
     public static void runIfconfig(Context ctx, RootCommand callback) {
-        callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
+         callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
     }
 
     public boolean isSuPackage(PackageManager pm, String suPackage) {
@@ -1445,7 +1445,7 @@ public final class Api {
     }
 
     public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo, SharedPreferences pPrefs) {
-        InterfaceDetails details = InterfaceTracker.getCurrentCfg(context, false);
+        InterfaceDetails details = InterfaceTracker.getCurrentCfg(context);
         //allow webview to download since webview requires INTERNET permission
         if (applicationInfo.packageName.equals("com.android.webview") || applicationInfo.packageName.equals("com.google.android.webview")) {
             return true;
