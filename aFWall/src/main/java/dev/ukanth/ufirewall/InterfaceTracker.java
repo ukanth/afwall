@@ -121,7 +121,7 @@ public final class InterfaceTracker {
         }
     }
 
-    public static boolean isIpV6() {
+    /*public static boolean isIpV6() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en != null; en.hasMoreElements()) {
                 NetworkInterface intf = (NetworkInterface) en.nextElement();
@@ -140,7 +140,7 @@ public final class InterfaceTracker {
             Log.e(TAG, "Exception : " + ex.toString());
         }
         return false;
-    }
+    }*/
 
     private static void getTetherStatus(Context context, InterfaceDetails d) {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -162,7 +162,7 @@ public final class InterfaceTracker {
         }
     }
 
-    private static InterfaceDetails getInterfaceDetails(Context context, boolean checkTether) {
+    private static InterfaceDetails getInterfaceDetails(Context context) {
 
         InterfaceDetails ret = new InterfaceDetails();
 
@@ -194,10 +194,7 @@ public final class InterfaceTracker {
                 break;
         }
         try {
-            //TODO: crashing when calling using xposed
-            if (checkTether) {
-                getTetherStatus(context, ret);
-            }
+            getTetherStatus(context, ret);
         } catch (Exception e) {
             Log.i(Api.TAG, "Exception in  getInterfaceDetails.checkTether" + e.getLocalizedMessage());
         }
@@ -206,11 +203,11 @@ public final class InterfaceTracker {
     }
 
     public static boolean isNetworkUp(Context context) {
-        return getInterfaceDetails(context, true).netEnabled;
+        return getInterfaceDetails(context).netEnabled;
     }
 
     public static boolean checkForNewCfg(Context context) {
-        InterfaceDetails newCfg = getInterfaceDetails(context, true);
+        InterfaceDetails newCfg = getInterfaceDetails(context);
 
         //always check for new config
         if (currentCfg != null && currentCfg.equals(newCfg)) {
@@ -239,9 +236,9 @@ public final class InterfaceTracker {
         return true;
     }
 
-    public static InterfaceDetails getCurrentCfg(Context context, boolean checkTether) {
+    public static InterfaceDetails getCurrentCfg(Context context) {
         if (currentCfg == null) {
-            currentCfg = getInterfaceDetails(context, checkTether);
+            currentCfg = getInterfaceDetails(context);
         }
         return currentCfg;
     }
