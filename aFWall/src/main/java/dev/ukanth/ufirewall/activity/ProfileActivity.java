@@ -31,7 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
     ProfileAdapter profileAdapter;
 
     protected static final int MENU_ADD = 100;
-    protected static final int MENU_CLONE = 101;
+    //protected static final int MENU_CLONE = 101;
     protected static final int MENU_DELETE = 102;
     protected static final int MENU_RENAME = 103;
 
@@ -89,8 +89,8 @@ public class ProfileActivity extends AppCompatActivity {
         String name = ((TextView) aInfo.targetView.findViewById(R.id.pro_name)).getText().toString();
         menu.setHeaderTitle(getString(R.string.select) + " " + name);
         if (G.isProfileMigrated()) {
-           // menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
-            menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
+            menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
+           // menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
         }
         menu.add(0, MENU_DELETE, 0, getString(R.string.delete));
     }
@@ -131,8 +131,8 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
                 break;
-            case MENU_CLONE:
-                break;
+            /*case MENU_CLONE:
+                break;*/
             case MENU_RENAME:
                 ProfileData data = ProfileHelper.getProfileByName(profileName);
                 renameProfile(data);
