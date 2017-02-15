@@ -44,6 +44,17 @@ public class BootBroadcast extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
+
+		InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+
+		if (G.enableLogService()) {
+			//make sure we cleanup existing uid
+			final Intent logIntent = new Intent(context, LogService.class);
+			context.startService(logIntent);
+			G.storedPid(new HashSet());
+		}
+
+		//try applying the rule after few seconds if enabled
 		if(G.startupDelay()){
 			//make sure we apply rules after 5 sec
 			Handler handler = new Handler();
@@ -52,22 +63,12 @@ public class BootBroadcast extends BroadcastReceiver {
 				public void run() {
 					// Apply the changes regards if network is up/not
 					InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-					if(G.activeNotification()){
-						Api.showNotification(Api.isEnabled(context), context);
-					}
 				}
 			}, 5000);
-		} else {
-			InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-			if (G.enableLogService()) {
-				//make sure we cleanup existing uid
-				final Intent logIntent = new Intent(context, LogService.class);
-				context.startService(logIntent);
-				G.storedPid(new HashSet());
-			}
-			if(G.activeNotification()){
-				Api.showNotification(Api.isEnabled(context), context);
-			}
+		}
+
+		if(G.activeNotification()){
+			Api.showNotification(Api.isEnabled(context), context);
 		}
 	}
 }
