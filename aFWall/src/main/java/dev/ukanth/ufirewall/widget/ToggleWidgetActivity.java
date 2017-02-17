@@ -109,22 +109,17 @@ public class ToggleWidgetActivity extends Activity {
     public class Status implements RadialMenuEntry {
         public String getName() {
             if (G.enableMultiProfile()) {
-                if(!G.isProfileMigrated()) {
-                    switch (G.storedProfile()) {
-                        case Api.DEFAULT_PREFS_NAME:
-                            return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
-                        case "AFWallProfile1":
-                            return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
-                        case "AFWallProfile2":
-                            return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
-                        case "AFWallProfile3":
-                            return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
-                        default:
-                            return G.storedProfile();
-                    }
-                } else {
-                    //TODO: logic for new profiles
-                    return "";
+                switch (G.storedProfile()) {
+                    case Api.DEFAULT_PREFS_NAME:
+                        return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+                    case "AFWallProfile1":
+                        return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+                    case "AFWallProfile2":
+                        return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+                    case "AFWallProfile3":
+                        return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+                    default:
+                        return G.storedProfile();
                 }
             } else {
                 return "";
@@ -133,22 +128,17 @@ public class ToggleWidgetActivity extends Activity {
 
         public String getLabel() {
             if (G.enableMultiProfile()) {
-                if(!G.isProfileMigrated()) {
-                    switch (G.storedProfile()) {
-                        case Api.DEFAULT_PREFS_NAME:
-                            return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
-                        case "AFWallProfile1":
-                            return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
-                        case "AFWallProfile2":
-                            return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
-                        case "AFWallProfile3":
-                            return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
-                        default:
-                            return G.storedProfile();
-                    }
-                } else {
-                    //TODO: logic for new profiles
-                    return "";
+                switch (G.storedProfile()) {
+                    case Api.DEFAULT_PREFS_NAME:
+                        return G.gPrefs.getString("default", getApplicationContext().getString(R.string.defaultProfile));
+                    case "AFWallProfile1":
+                        return G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1));
+                    case "AFWallProfile2":
+                        return G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2));
+                    case "AFWallProfile3":
+                        return G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3));
+                    default:
+                        return G.storedProfile();
                 }
             } else {
                 return "";
@@ -221,6 +211,7 @@ public class ToggleWidgetActivity extends Activity {
                     children.add(entry);
                 }
             } else {
+                children.add(new DefaultProfile());
                 for (ProfileData data : ProfileHelper.getProfiles()) {
                     RadialMenuEntry entry = new GenericProfile(data.getName());
                     children.add(entry);
@@ -266,6 +257,7 @@ public class ToggleWidgetActivity extends Activity {
             final Context context = getApplicationContext();
             G.setProfile(true, profileName);
             applyProfileRules(context, msg, toaster);
+            Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         }
     }
 
@@ -390,67 +382,67 @@ public class ToggleWidgetActivity extends Activity {
                     Toast.makeText(getApplicationContext(), msg.arg1, Toast.LENGTH_SHORT).show();
             }
         };
-        final Context context = getApplicationContext();
-        new Thread() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                final Message msg = new Message();
-                if (i < 7) {
-                    switch (i) {
-                        case 1:
-                            if (applyProfileRules(context, msg, toaster)) {
-                                Api.setEnabled(context, true, false);
-                            }
+            final Context context = getApplicationContext();
+            new Thread() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    final Message msg = new Message();
+                    if (i < 7) {
+                        switch (i) {
+                            case 1:
+                                if (applyProfileRules(context, msg, toaster)) {
+                                    Api.setEnabled(context, true, false);
+                                }
 
-                            break;
-                        case 2:
-                            //validation, check for password
-                            if (G.protectionLevel().equals("p0")) {
-                                Api.purgeIptables(context, true, new RootCommand()
-                                        .setSuccessToast(R.string.toast_disabled)
-                                        .setFailureToast(R.string.toast_error_disabling)
-                                        .setReopenShell(true)
-                                        .setCallback(new RootCommand.Callback() {
-                                            public void cbFunc(RootCommand state) {
+                                break;
+                            case 2:
+                                //validation, check for password
+                                if (G.protectionLevel().equals("p0")) {
+                                    Api.purgeIptables(context, true, new RootCommand()
+                                            .setSuccessToast(R.string.toast_disabled)
+                                            .setFailureToast(R.string.toast_error_disabling)
+                                            .setReopenShell(true)
+                                            .setCallback(new RootCommand.Callback() {
+                                                public void cbFunc(RootCommand state) {
 
-                                                if (state.exitCode == 0) {
-                                                    msg.arg1 = R.string.toast_disabled;
-                                                    toaster.sendMessage(msg);
-                                                    Api.setEnabled(context, false, false);
-                                                } else {
-                                                    // error details are already in logcat
-                                                    msg.arg1 = R.string.toast_error_disabling;
-                                                    toaster.sendMessage(msg);
+                                                    if (state.exitCode == 0) {
+                                                        msg.arg1 = R.string.toast_disabled;
+                                                        toaster.sendMessage(msg);
+                                                        Api.setEnabled(context, false, false);
+                                                    } else {
+                                                        // error details are already in logcat
+                                                        msg.arg1 = R.string.toast_error_disabling;
+                                                        toaster.sendMessage(msg);
+                                                    }
                                                 }
-                                            }
-                                        }));
-                            } else {
-                                msg.arg1 = R.string.widget_disable_fail;
-                                toaster.sendMessage(msg);
-                            }
-                            break;
-                        case 3:
-                            G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
-                            break;
-                        case 4:
-                            G.setProfile(true, "AFWallProfile1");
-                            break;
-                        case 5:
-                            G.setProfile(true, "AFWallProfile2");
-                            break;
-                        case 6:
-                            G.setProfile(true, "AFWallProfile3");
-                            break;
+                                            }));
+                                } else {
+                                    msg.arg1 = R.string.widget_disable_fail;
+                                    toaster.sendMessage(msg);
+                                }
+                                break;
+                            case 3:
+                                G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
+                                break;
+                            case 4:
+                                G.setProfile(true, "AFWallProfile1");
+                                break;
+                            case 5:
+                                G.setProfile(true, "AFWallProfile2");
+                                break;
+                            case 6:
+                                G.setProfile(true, "AFWallProfile3");
+                                break;
+                        }
+                        if (i > 2) {
+                            applyProfileRules(context, msg, toaster);
+                            G.reloadPrefs();
+                        }
                     }
-                    if (i > 2) {
-                        applyProfileRules(context, msg, toaster);
-                        G.reloadPrefs();
-                    }
+                    Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
                 }
-                Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-            }
-        }.start();
+            }.start();
     }
 
 
