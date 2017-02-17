@@ -11,8 +11,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.List;
+
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.util.G;
 
@@ -69,6 +72,27 @@ public class ToggleWidgetOldActivity extends Activity implements
             if (ProfileHelper.getProfileByIdentifier("AFWallProfile3") != null) {
                 profButton3.setVisibility(View.VISIBLE);
             }
+            List<ProfileData> listData =  ProfileHelper.getProfiles();
+            if(listData.size() <= 3) {
+                switch (listData.size()) {
+                    case 1:
+                        profButton1.setText(listData.get(0).getName());
+                        profButton1.setVisibility(View.VISIBLE);
+                        break;
+                    case 2:
+                        profButton1.setText(listData.get(0).getName());
+                        profButton1.setVisibility(View.VISIBLE);
+                        profButton2.setText(listData.get(1).getName());
+                        profButton2.setVisibility(View.VISIBLE);
+                    case 3:
+                        profButton1.setText(listData.get(0).getName());
+                        profButton1.setVisibility(View.VISIBLE);
+                        profButton2.setText(listData.get(1).getName());
+                        profButton2.setVisibility(View.VISIBLE);
+                        profButton3.setText(listData.get(2).getName());
+                        profButton3.setVisibility(View.VISIBLE);
+                }
+            }
         }
 
         profButton1.setOnClickListener(this);
@@ -92,8 +116,9 @@ public class ToggleWidgetOldActivity extends Activity implements
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onClick(View button) {
+        String profileName = ((Button) button).getText().toString();
+        switch (button.getId()) {
             case R.id.toggle_enable_firewall:
                 startAction(1);
                 break;
@@ -104,15 +129,42 @@ public class ToggleWidgetOldActivity extends Activity implements
                 startAction(3);
                 break;
             case R.id.toggle_profile1:
-                startAction(4);
+                if(!G.isProfileMigrated()){
+                    startAction(4);
+                } else {
+                    runProfile(profileName);
+                }
                 break;
             case R.id.toggle_profile2:
-                startAction(5);
+                if(!G.isProfileMigrated()){
+                    startAction(5);
+                } else {
+                    runProfile(profileName);
+                }
                 break;
             case R.id.toggle_profile3:
-                startAction(6);
+                if(!G.isProfileMigrated()){
+                    startAction(6);
+                } else {
+                    runProfile(profileName);
+                }
                 break;
         }
+    }
+
+    private void runProfile(String profileName) {
+        final Message msg = new Message();
+        final Handler toaster = new Handler() {
+            public void handleMessage(Message msg) {
+                if (msg.arg1 != 0)
+                    Toast.makeText(getApplicationContext(), msg.arg1, Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        final Context context = getApplicationContext();
+        G.setProfile(true, profileName);
+        applyProfileRules(context, msg, toaster);
+        Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
     }
 
     private void startAction(final int i) {
@@ -124,6 +176,9 @@ public class ToggleWidgetOldActivity extends Activity implements
                             Toast.LENGTH_SHORT).show();
             }
         };
+        if(!G.isProfileMigrated()) {
+
+        }
         final Context context = getApplicationContext();
         new Thread() {
             @Override
