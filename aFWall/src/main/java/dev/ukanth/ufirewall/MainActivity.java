@@ -190,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Api.assertBinaries(this, true);
         }
 
+        initDone = 0;
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
@@ -273,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         G.reloadPrefs();
+
         checkPreferences();
         //language
         Api.updateLanguage(getApplicationContext(), G.locale());
@@ -331,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         updateRadioFilter();
+
         if (G.enableMultiProfile()) {
             setupMultiProfile();
         }
@@ -365,7 +368,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onStart() {
         super.onStart();
         initDone = 0;
-
         //startRootShell();
         reloadPreferences();
     }
@@ -412,7 +414,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         } else {
             if (currentProfile != null) {
-                mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile));
+                if(!currentProfile.equals(Api.DEFAULT_PREFS_NAME)){
+                    ProfileData data = ProfileHelper.getProfileByIdentifier(currentProfile);
+                    mSpinner.setSelection(spinnerAdapter.getPosition(data.getName()),false);
+                } else {
+                    mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile),false);
+                }
             }
         }
     }
@@ -559,10 +566,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //labelmode.setText(res.getString(R.string.mode_header, res.getString(resid)));
     }
 
-    /**
-     * Displays a dialog box to select the operation mode (black or white list)
-     */
-    private void selectMode() {
+
+    /*private void selectMode() {
         final Resources res = getResources();
 
         new MaterialDialog.Builder(this)
@@ -582,7 +587,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 })
                 .show();
-    }
+    }*/
 
 
     /**
@@ -712,7 +717,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 applyOrSaveRules();
             }
         }
-
     }
 
     @Override

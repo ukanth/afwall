@@ -72,8 +72,8 @@ public class ToggleWidgetOldActivity extends Activity implements
             if (ProfileHelper.getProfileByIdentifier("AFWallProfile3") != null) {
                 profButton3.setVisibility(View.VISIBLE);
             }
-            List<ProfileData> listData =  ProfileHelper.getProfiles();
-            if(listData.size() <= 3) {
+            List<ProfileData> listData = ProfileHelper.getProfiles();
+            if (listData.size() <= 3) {
                 switch (listData.size()) {
                     case 1:
                         profButton1.setText(listData.get(0).getName());
@@ -129,21 +129,21 @@ public class ToggleWidgetOldActivity extends Activity implements
                 startAction(3);
                 break;
             case R.id.toggle_profile1:
-                if(!G.isProfileMigrated()){
+                if (!G.isProfileMigrated()) {
                     startAction(4);
                 } else {
                     runProfile(profileName);
                 }
                 break;
             case R.id.toggle_profile2:
-                if(!G.isProfileMigrated()){
+                if (!G.isProfileMigrated()) {
                     startAction(5);
                 } else {
                     runProfile(profileName);
                 }
                 break;
             case R.id.toggle_profile3:
-                if(!G.isProfileMigrated()){
+                if (!G.isProfileMigrated()) {
                     startAction(6);
                 } else {
                     runProfile(profileName);
@@ -152,7 +152,7 @@ public class ToggleWidgetOldActivity extends Activity implements
         }
     }
 
-    private void runProfile(String profileName) {
+    private void runProfile(final String profileName) {
         final Message msg = new Message();
         final Handler toaster = new Handler() {
             public void handleMessage(Message msg) {
@@ -162,9 +162,15 @@ public class ToggleWidgetOldActivity extends Activity implements
         };
 
         final Context context = getApplicationContext();
-        G.setProfile(true, profileName);
-        applyProfileRules(context, msg, toaster);
-        Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+        new Thread() {
+            @Override
+            public void run() {
+                ProfileData data = ProfileHelper.getProfileByName(profileName);
+                G.setProfile(true, data.getIdentifier());
+                applyProfileRules(context, msg, toaster);
+                Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+            }
+        }.start();
     }
 
     private void startAction(final int i) {
@@ -176,7 +182,7 @@ public class ToggleWidgetOldActivity extends Activity implements
                             Toast.LENGTH_SHORT).show();
             }
         };
-        if(!G.isProfileMigrated()) {
+        if (!G.isProfileMigrated()) {
 
         }
         final Context context = getApplicationContext();

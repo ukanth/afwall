@@ -44,6 +44,7 @@ import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
+import dev.ukanth.ufirewall.log.Log;
 
 public class G extends android.app.Application {
 
@@ -584,6 +585,8 @@ public class G extends android.app.Application {
         if (enableMultiProfile()) {
             profileName = storedProfile();
         }
+
+        Log.i(Api.TAG,"Selected Profile: "+ profileName);
         Api.PREFS_NAME = profileName;
 
         pPrefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
