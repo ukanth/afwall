@@ -16,6 +16,10 @@ public class ProfileData extends BaseModel {
     @PrimaryKey(autoincrement = true)
     long id;
 
+    public long getId() {
+        return id;
+    }
+
     @Column
     private String name;
 
