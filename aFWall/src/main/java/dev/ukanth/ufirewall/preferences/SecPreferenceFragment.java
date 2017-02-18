@@ -96,8 +96,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         //passOption = G.protectionLevel();
 
         // Hide Fingerprint option if device not support it.
-        if(!FingerprintUtil.isAndroidSupport()) {
-
+        if (!FingerprintUtil.isAndroidSupport()) {
             ListPreference itemList = (ListPreference) findPreference("passSetting");
             itemList.setEntries(new String[]{
                     getString(R.string.pref_none),
@@ -185,7 +184,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                 msg = res.getString(R.string.passdefined);
             }
         } /*else {
-			G.profile_pwd(pwd);
+            G.profile_pwd(pwd);
 			G.isEnc(false);
 			msg = res.getString(R.string.passremoved);
 		}*/
@@ -277,14 +276,9 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 				/*case "p3":
 					break;*/
             }
-            //passOption = "p" + index;
-
-            //currentPosition = index;
-
             // check if device support fingerprint,
             // if so check if one fingerprint already existed at least
-            if(FingerprintUtil.isAndroidSupport()){
-
+            if (FingerprintUtil.isAndroidSupport()) {
                 checkFingerprintDeviceSupport();
             }
         }
@@ -319,57 +313,38 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
     @TargetApi(Build.VERSION_CODES.M)
     private void checkFingerprintDeviceSupport() {
-
         // Initializing both Android Keyguard Manager and Fingerprint Manager
         KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
         FingerprintManager fingerprintManager = (FingerprintManager) globalContext.getSystemService(FINGERPRINT_SERVICE);
 
         // Check whether the device has a Fingerprint sensor.
-        if(!fingerprintManager.isHardwareDetected()){
-            /**
-             * An error message will be displayed if the device does not contain the fingerprint hardware.
-             * However if you plan to implement a default authentication method,
-             * you can redirect the user to a default authentication activity from here.
-             * Example:
-             * Intent intent = new Intent(this, DefaultAuthenticationActivity.class);
-             * startActivity(intent);
-             */
-
+        if (!fingerprintManager.isHardwareDetected()) {
             Api.toast(globalContext, getString(R.string.device_with_no_fingerprint_sensor));
-
-        }else {
+        } else {
             // Checks whether fingerprint permission is set on manifest
             if (ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 Api.toast(globalContext, getString(R.string.fingerprint_permission_manifest_missing));
-            }else{
+            } else {
                 // Check whether at least one fingerprint is registered
                 if (!fingerprintManager.hasEnrolledFingerprints()) {
                     Api.toast(globalContext, getString(R.string.register_at_least_one_fingerprint));
-                }else{
+                } else {
                     // Checks whether lock screen security is enabled or not
                     if (!keyguardManager.isKeyguardSecure()) {
                         Api.toast(globalContext, getString(R.string.lock_screen_not_enabled));
-                    }else{
-
+                    } else {
                         // Anything is ok
-
-                        if(!G.isFingerprintEnabled()){
-
+                        if (!G.isFingerprintEnabled()) {
                             G.isFingerprintEnabled(true);
-
+                            //make sure we set the index
+                            ListPreference itemList = (ListPreference) findPreference("passSetting");
+                            itemList.setValueIndex(3);
                             Api.toast(globalContext, getString(R.string.fingerprint_enabled_successfully));
                         }
-
                         return;
                     }
                 }
             }
-        }
-
-        ListPreference itemList = (ListPreference)findPreference("passSetting");
-
-        if(itemList != null) {
-            itemList.setValueIndex(0);
         }
     }
 
@@ -427,7 +402,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         }
 
         // check if fingerprint enabled and confirm disable by fingerprint itself
-        if(G.isFingerprintEnabled()) {
+        if (G.isFingerprintEnabled()) {
             final FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(globalContext);
             dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
                 @Override
