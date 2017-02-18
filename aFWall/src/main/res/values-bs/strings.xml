@@ -176,6 +176,7 @@
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">NazivProfila</string>
+  <string name="profile_notsupport">Molimo da premjestite podatke profila da bi koristili ovu opciju</string>
   <string name="reapply_profile">Ponovo primjeni pravila profila</string>
   <!-- Interface -->
   <string name="lan_title">LAN kontrola</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">Prikaži UID aplikacije u glavnom prikazu</string>
   <string name="showuid_summary_off">Sakrij UID aplikacija u glavnom prikazu. Uključivanje možete biti korisno za praćenje dnevnika.</string>
   <string name="languages">Jezici</string>
+  <string name="change_languages">Promijeni jezik</string>
   <string name="misc_header">Jezici/Dodatci</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktivna pravila</string>
@@ -411,4 +413,45 @@
   <string name="error_log">Nije moguće pokrenuti servis dnevnika. LogTarget je prazan ili LogService nije uključen.</string>
   <string name="delete_profile">Nije moguće obrisati profil</string>
   <string name="profile_migrate_msg">Profili uspješno premješteni</string>
+  <!-- Log Details -->
+  <string name="destination_address">Adresa odredišta</string>
+  <string name="source_address">Adresa izvora</string>
+  <string name="ping_destination">Odredište ping-a</string>
+  <string name="ping_source">Izvor ping-a</string>
+  <string name="resolve_destination">Rješi odredište</string>
+  <string name="resolve_source">Rješi izvor</string>
+  <string name="copy_text">Kopiraj tekst</string>
+  <string name="destination_copied">Odredište kopirano</string>
+  <string name="source_copied">Izvor kopiran</string>
+  <string name="select_the_action">Odaberite radnju</string>
+  <string name="result_copied_to_clipboard">Rezultat kopiran u međuspremnik</string>
+  <string name="result">Rezultat</string>
+  <string name="output_is_empty">Izlaz je prazan, jer su pristup mreži i SuperSu isključeni</string>
+  <string name="searching">Tražim</string>
+  <string name="looking_for_data">Tražim podatke&#8230;</string>
+  <string name="reachable_timeout">Dostupno, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Greška ili nepoznata kategorija</string>
+  <string name="show_destination_address">Prikaži adresu odredišta</string>
+  <string name="show_source_address">Prikaži adresu izvora</string>
+  <string name="network_connection_not_available">Veza nije dostupna</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Otisak prsta</string>
+  <string name="fingerprint_authentication_error">Greška kod prijave otiskom prsta\n</string>
+  <string name="fingerprint_authentication_help">Pomoć kod prijave otiskom prsta\n</string>
+  <string name="fingerprint_authentication_failed">Nije uspjela prijava otiskom prsta.</string>
+  <string name="fingerprint_authentication_successded">Prijava otiskom prsta uspjela.</string>
+  <string name="title_activity_main">Glavna Aktivnost</string>
+  <string name="title_fingerprint">Otključavanje jednim dodirom</string>
+  <string name="desc_fingerprint">Molimo stavite vaš prst na skener da bi potvrdili vaš identitet</string>
+  <string name="note">(Prijava u aplikaciju je brža korištenjem otiska prsta. Vaš uređaj bi trebao da ima prijavljen bar jedan otisak prsta u postavkama uređaja)</string>
+  <string name="title_activity_home">Otisak prsta</string>
+  <string name="activity_home_desc">Uspješno ste se prijavili otiskom prsta</string>
+  <string name="activity_home_note">Zatvorite i ponovo otvorite aplikaciju da bi ste ponovo vidjeli ekran za prijavu otiskom prsta</string>
+  <string name="fingerprint_required">Otisak prsta neophodan</string>
+  <string name="device_with_no_fingerprint_sensor">Vaš uređaj ne posjeduje čitač otiska prsta</string>
+  <string name="fingerprint_permission_manifest_missing">Dozvola za prijavu otiskom prsta nije uključena</string>
+  <string name="register_at_least_one_fingerprint">Prijavite barem jedan otisak prsta u postavkama</string>
+  <string name="lock_screen_not_enabled">Sigurnosne postavke ekrana zaključavanja nisu uključene u postavkama</string>
+  <string name="fingerprint_enabled_successfully">Otisak prsta uspješno uključen</string>
+  <string name="fingerprint_disabled_successfully">Otisak prsta uspješno isključen</string>
 </resources>

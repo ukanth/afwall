@@ -176,6 +176,7 @@
   <string name="profile2">Профил 2</string>
   <string name="profile3">Профил 3</string>
   <string name="profile_hint">НазивПрофила</string>
+  <string name="profile_notsupport">Преселите податке профила да бисте користили ову опцију</string>
   <string name="reapply_profile">Опет примени правила профила</string>
   <!-- Interface -->
   <string name="lan_title">Управљање мрежом</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">Прикажи УИД апликације</string>
   <string name="showuid_summary_off">Сакрива УИД апликације. Укључивање може бити корисно у праћењу дневника.</string>
   <string name="languages">Језици</string>
+  <string name="change_languages">Промени језик</string>
   <string name="misc_header">Језици/прикључци</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Активирање правила</string>
@@ -411,4 +413,45 @@
   <string name="error_log">Не могу да покренем сервис дневника. LogTarget је празан или LogService није укључен.</string>
   <string name="delete_profile">Не могу да обришем профил</string>
   <string name="profile_migrate_msg">Профили успешно пресељени</string>
+  <!-- Log Details -->
+  <string name="destination_address">Адреса одредишта</string>
+  <string name="source_address">Адреса извора</string>
+  <string name="ping_destination">Одредиште пинга</string>
+  <string name="ping_source">Извор пинга</string>
+  <string name="resolve_destination">Разреши одредиште</string>
+  <string name="resolve_source">Разреши извор</string>
+  <string name="copy_text">Копирај текст</string>
+  <string name="destination_copied">Одредиште копирано</string>
+  <string name="source_copied">Извор копиран</string>
+  <string name="select_the_action">Изаберите радњу</string>
+  <string name="result_copied_to_clipboard">Резултат копиран у клипборд</string>
+  <string name="result">Резултат</string>
+  <string name="output_is_empty">Излаз је празан због мрежног приступа и одбијања SuperSu апликације</string>
+  <string name="searching">Тражим</string>
+  <string name="looking_for_data">Тражим податке&#8230;</string>
+  <string name="reachable_timeout">Чекање доступности: %dms</string>
+  <string name="error_or_unknown_category">Грешка или непозната категорија</string>
+  <string name="show_destination_address">Приказ адресе одредишта</string>
+  <string name="show_source_address">Приказ адресе извора</string>
+  <string name="network_connection_not_available">Мрежна веза није доступна</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Отисак</string>
+  <string name="fingerprint_authentication_error">Грешка аутентификације отиска\n</string>
+  <string name="fingerprint_authentication_help">Помоћ у вези аутентификације отиска\n</string>
+  <string name="fingerprint_authentication_failed">Неуспешна аутентификација отиска.</string>
+  <string name="fingerprint_authentication_successded">Успешна аутентификација отиска.</string>
+  <string name="title_activity_main">Главна активност</string>
+  <string name="title_fingerprint">Откључавање једним додиром</string>
+  <string name="desc_fingerprint">Ставите прст на скенер да потврдите ваш идентитет</string>
+  <string name="note">(Пријава отиском прста је много бржа. Ваш уређај мора имати бар један отисак регистрован у поставкама уређај)</string>
+  <string name="title_activity_home">Отисак прста</string>
+  <string name="activity_home_desc">Успешно сте се пријавили помоћу отиска прста</string>
+  <string name="activity_home_note">Затворите и поново отворите апликацију да поново видите екран за пријаву помоћу отиска</string>
+  <string name="fingerprint_required">Неопходан је отисак прста</string>
+  <string name="device_with_no_fingerprint_sensor">Ваш уређај нема сензор за отисак прста</string>
+  <string name="fingerprint_permission_manifest_missing">Дозвола за пријаву отиском прста није омогућена</string>
+  <string name="register_at_least_one_fingerprint">Региструјте бар један отисак у поставкама</string>
+  <string name="lock_screen_not_enabled">Закључан екран није обезбеђен у поставкама</string>
+  <string name="fingerprint_enabled_successfully">Отисак прста успешно укључен</string>
+  <string name="fingerprint_disabled_successfully">Отисак прста успешно искључен</string>
 </resources>

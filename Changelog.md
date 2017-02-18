@@ -7,9 +7,12 @@ Version 2.9.2-BETA
  * Fingerprint protection (Thanks @vzool)
  * Allow multicast on LAN (Thanks @ionum)
  * Preserve Zoom size(+/-) in Firewall rules
- * Rewritten Profiles - Ability to delete/rename default profiles
+ * Rewritten Profiles - Ability to delete/rename profiles(additional)
 * Bugs
- * Unable to start logservice error issue on some devices
+ * LAN not working on Nougat with few devices
+ * Apply boot rules on few devices
+ * Unable to start logservice error issue on few devices
+ * Statusbar notification glitch on profile switch
  * Log notification filter button not showing 
  * Optimizing the detection of logTarget
  * Removed toybox detection, causing lots of ANR issues

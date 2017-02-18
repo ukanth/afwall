@@ -176,6 +176,7 @@
   <string name="profile2">Perfil 2</string>
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">Nome do perfil</string>
+  <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
   <string name="lan_title">Controlo de LAN</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">Mostrar UID da aplicação na vista principal</string>
   <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
   <string name="languages">Idiomas</string>
+  <string name="change_languages">Alterar idioma</string>
   <string name="misc_header">Idiomas/Plugins</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Regras ativas</string>
@@ -369,7 +371,7 @@
   <string name="manage_profiles_summary">Adicionar/remover perfis</string>
   <string name="profiles">Perfil </string>
   <string name="migrate_profiles">Migrar perfis</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">Migrar todos os dados do perfil</string>
   <string name="insert_profile">Nome do perfil</string>
   <string name="add">Adicionar</string>
   <string name="showlog_toasts">Mostrar notificação ao bloquear</string>
@@ -381,7 +383,7 @@
   <string name="widget_prefs_title">Posição dos widgets</string>
   <string name="xTitle">Posição X do widget</string>
   <string name="xTitleSummary">Substituição manual da posição X</string>
-  <string name="xTitleDialog">Set X position (number)</string>
+  <string name="xTitleDialog">Definir posição X (número)</string>
   <string name="yTitle">Posição Y do widget</string>
   <string name="yTitleSummary">Substituição manual da posição Y</string>
   <string name="yTitleDialog">Definir posição Y (número)</string>
@@ -406,9 +408,50 @@
   <string name="switch_new">Trocar para outra vista</string>
   <string name="showlogdetail_title">Detalhes do registo de aplicações</string>
   <string name="reapply_rules">Please reapply the rules due to preference change</string>
-  <string name="custom_rules">Custom Rules</string>
+  <string name="custom_rules">Regras personalizadas</string>
   <string name="mdns">Enable Mutlicast DNS</string>
   <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
   <string name="delete_profile">Incapaz de apagar o perfil</string>
   <string name="profile_migrate_msg">Perfis migrados com sucesso</string>
+  <!-- Log Details -->
+  <string name="destination_address">Endereço do destino</string>
+  <string name="source_address">Endereço da origem</string>
+  <string name="ping_destination">Ping Destination</string>
+  <string name="ping_source">Ping Source</string>
+  <string name="resolve_destination">Resolve Destination</string>
+  <string name="resolve_source">Resolve Source</string>
+  <string name="copy_text">Copy text</string>
+  <string name="destination_copied">Destination copied</string>
+  <string name="source_copied">Origem copiada</string>
+  <string name="select_the_action">Selecionar ação</string>
+  <string name="result_copied_to_clipboard">Relatório copiado para a área de transferência</string>
+  <string name="result">Resultado</string>
+  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="searching">A procurar</string>
+  <string name="looking_for_data">A procurar dados&#8230;</string>
+  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Erro ou categoria desconhecida</string>
+  <string name="show_destination_address">Mostrar endereço do destino</string>
+  <string name="show_source_address">Mostrar endereço da origem</string>
+  <string name="network_connection_not_available">Ligação de rede não disponível</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Impressão digital</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
+  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
+  <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
+  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">One-touch Unlock</string>
+  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="title_activity_home">Impressão digital</string>
+  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="fingerprint_required">Fingerprint required</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
+  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
+  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
+  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
 </resources>

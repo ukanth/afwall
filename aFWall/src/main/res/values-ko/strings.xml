@@ -66,9 +66,9 @@
   <string name="mode_header">사용모드: %s</string>
   <string name="legend_clear">Clear all checkboxes in all columns</string>
   <string name="mode_whitelist">선택사항 허용</string>
-  <string name="legend_whitelist">Selected apps will be granted internet access</string>
+  <string name="legend_whitelist">선택한 애플리케이션의 인터넷 접근을 승인합니다</string>
   <string name="mode_blacklist">선택사항 차단</string>
-  <string name="legend_blacklist">Selected apps will be denied internet access</string>
+  <string name="legend_blacklist">선택한 애플리케이션의 인터넷 접근을 거부합니다</string>
   <string name="set_custom_script">나만의 명령어 설정</string>
   <string name="preferences">설정</string>
   <string name="reload">앱 다시가져오기</string>
@@ -76,8 +76,8 @@
   <string name="send_report">오류정보 보내기</string>
   <string name="enter_problem">Please explain the issue:</string>
   <string name="send_mail">이메일 보내기</string>
-  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
-  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_on">새로운 애플리케이션을 설치 하는 경우 알림이 표시 됩니다.</string>
+  <string name="notify_pref_summary_off">새로운 애플리케이션을 설치 하는 경우 알림이 표시되지 않습니다</string>
   <string name="custom_script_defined">나만의 명령어 적용완료</string>
   <string name="custom_script_removed">나만으 명령어 제거완료</string>
   <string name="custom_script_error">나만의 명령어 저장 중 에러</string>
@@ -91,15 +91,15 @@
   <string name="copied">복사됨</string>
   <string name="Search">검색</string>
   <string name="flushRulesConfirm">모든 방화벽 규칙을 삭제할까요?</string>
-  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
+  <string name="overrideRules">규칙을 가져오시겠습니까? 현재 존재하는 규칙을 덮어씁니다,</string>
   <string name="notification_new">새로운 앱 설치됨</string>
   <string name="notification_new_package">인터넷 사용기능 설정</string>
   <string name="confirmMsg">방화벽을 정말 중단하시겠습니까?</string>
   <string name="apply">적용</string>
   <string name="discard">저장 안 함</string>
   <string name="delete">삭제</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">복사</string>
+  <string name="rename">이름 바꾸기</string>
   <string name="Yes">네</string>
   <string name="Continue">계속</string>
   <string name="No">아니요</string>
@@ -116,7 +116,7 @@
   <string name="remove_initd">Startup script 제거됨</string>
   <string name="unable_remove_initd">시작명령어 중단 실패</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
+  <string name="widget_disable_fail">방화벽을 중단할 수 없습니다 - 비밀번호로 보호되어 있습니다!</string>
   <string name="widget_label_status">AFWall+ On/Off 상태</string>
   <string name="widget_label_settings">AFWall+ 설정</string>
   <string name="widget_label_settings_old">AFWall+ (예전) 설정</string>
@@ -133,9 +133,9 @@
   <string name="import_rules_success">여기에서 가져오기 </string>
   <string name="import_rules_fail">가져오기 실패!</string>
   <string name="import_rules_missing">규칙 파일을 찾지 못했습니다.</string>
-  <string name="exportConfirm">Export rules to storage?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
-  <string name="export_to_sd">Export to storage</string>
+  <string name="exportConfirm">규칙을 저장소로 내보내시겠습니까?</string>
+  <string name="export_logs_fail">저장소로 내보내지 못하였습니다.</string>
+  <string name="export_to_sd">저장소로 내보내기</string>
   <!-- Logging -->
   <string name="enable_firewall_log">방화벽 기록기능 켜기</string>
   <string name="enable_firewall_log_service">기록기능 사용</string>
@@ -176,6 +176,7 @@
   <string name="profile2">프로필 2</string>
   <string name="profile3">프로필 3</string>
   <string name="profile_hint">ProfileName</string>
+  <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">프로필 규칙 재적용</string>
   <!-- Interface -->
   <string name="lan_title">LAN control</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">앱 UID 보이기</string>
   <string name="showuid_summary_off">앱 UID를 가립니다. 표시하면 로깅logging 에 유용합니다.</string>
   <string name="languages">언어</string>
+  <string name="change_languages">Change Language</string>
   <string name="misc_header">언어/플러그인</string>
   <!-- 1.2.6 -->
   <string name="active_rules">사용중인 규칙</string>
@@ -330,7 +332,7 @@
   <string name="donate_thanks">지원해 주셔서 감사드립니다!</string>
   <string name="activeNotification">알림아이콘 보이기</string>
   <string name="activeNotification_summary">상태바에 항상 알림창 표시</string>
-  <string name="active">Firewall enabled</string>
+  <string name="active">방화벽 활성화</string>
   <string name="inactive">방화벽 중지됨</string>
   <string name="About">안내</string>
   <string name="FAQ">FAQ</string>
@@ -349,9 +351,9 @@
   <string name="pref_password">비밀번호</string>
   <string name="pref_pattern">패턴</string>
   <string name="pref_device">기기 보호기능 작동</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
-  <string name="secure_option">Device is not secured with password/PIN</string>
-  <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
+  <string name="pref_device_desc">기기 보안기능으로 앱 보호 (donation/key 추가 기능)</string>
+  <string name="secure_option">기기가 비밀번호/핀번호로 보호되지 않고 있습니다</string>
+  <string name="android_version">이 기능은 Lollipop 혹은 안드로이드의 최신 버전에서만 동작합니다</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">결정</string>
   <string name="wrong_password">비밀번호가 틀립니다</string>
@@ -381,7 +383,7 @@
   <string name="widget_prefs_title">위젯 위치</string>
   <string name="xTitle">위젯 가로 위치</string>
   <string name="xTitleSummary">수동으로 가로위치 조정</string>
-  <string name="xTitleDialog">Set X position (number)</string>
+  <string name="xTitleDialog">가로 위치 조정 (숫자 입력)</string>
   <string name="yTitle">위젯 세로 위치</string>
   <string name="yTitleSummary">수동으로 세로위치 조정</string>
   <string name="yTitleDialog">세로 위치 조정 (숫자입력)</string>
@@ -390,7 +392,7 @@
   <string name="lockNotification">잠금화면 알림 숨기기</string>
   <string name="lockScreenNotification_summary">잠금화면에서 알림 숨기기</string>
   <string name="menu_legend">Legend</string>
-  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
+  <string name="permissiondenied_importexport">저장장치 읽기/쓰기 권한이 없습니다. 내보내기/가져오기를 하시라면 권한을 허가해 주세요.</string>
   <string name="permissiondenied_asset">외부저장장치 읽기/쓰기 권한이 없습니다. AFWall+ binary를 복사하시려면 권한을 허가해 주세요. </string>
   <string name="log_deletedapp">삭제된 앱들</string>
   <string name="log_denied">차단됨 :</string>
@@ -399,16 +401,57 @@
   <string name="log_dst">도착지 :</string>
   <string name="log_src">출발지 :</string>
   <string name="log_proto">프로토콜 :</string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">환경 설정을 통해 로그 서비스를 활성화하십시오. 활성화 되었다면, 아직 로그 데이터가 존재하지 않습니다.</string>
   <string name="loading_data_title">로딩중...</string>
   <string name="loading_data">데이타 가져오기...</string>
   <string name="switch_old">예전 모냥으로 전환</string>
   <string name="switch_new">새 모냥으로 전환</string>
   <string name="showlogdetail_title">앱 로깅 정보</string>
-  <string name="reapply_rules">Please reapply the rules due to preference change</string>
-  <string name="custom_rules">Custom Rules</string>
-  <string name="mdns">Enable Mutlicast DNS</string>
-  <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
-  <string name="delete_profile">Unable to delete profile</string>
-  <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <string name="reapply_rules">환경 설정이 변경되었습니다. 규칙을 다시 적용하십시오.</string>
+  <string name="custom_rules">사용자 지정 규칙</string>
+  <string name="mdns">Mutlicast DNS를 사용하도록 설정</string>
+  <string name="error_log">로그 서비스를 시작할 수 없습니다. LogTarget이 비었거나 LogService가 활성화되지 않았습니다.</string>
+  <string name="delete_profile">프로필을 삭제하는데 실패하였습니다</string>
+  <string name="profile_migrate_msg">프로필이 성공적으로 마이그레이션 되었습니다.</string>
+  <!-- Log Details -->
+  <string name="destination_address">목적지 주소</string>
+  <string name="source_address">출발지 주소</string>
+  <string name="ping_destination">Ping 목적지</string>
+  <string name="ping_source">Ping 출발지</string>
+  <string name="resolve_destination">Resolve Destination</string>
+  <string name="resolve_source">Resolve Source</string>
+  <string name="copy_text">텍스트 복사</string>
+  <string name="destination_copied">Destination copied</string>
+  <string name="source_copied">Source copied</string>
+  <string name="select_the_action">작업 선택</string>
+  <string name="result_copied_to_clipboard">결과가 클립보드에 복사되었습니다.</string>
+  <string name="result">결과</string>
+  <string name="output_is_empty">출력이 비었습니다. 네트워크 접근이나 SuperSu가 거부되었습니다.</string>
+  <string name="searching">검색 중</string>
+  <string name="looking_for_data">데이터를 찾고 있습니다....</string>
+  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Error or Unknown Category</string>
+  <string name="show_destination_address">목적지 주소 보이기</string>
+  <string name="show_source_address">출발지 주소 보이기</string>
+  <string name="network_connection_not_available">네트워크 연결을 사용할 수 없습니다</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">지문</string>
+  <string name="fingerprint_authentication_error">지문 인증에 오류가 발생하였습니다.\n</string>
+  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
+  <string name="fingerprint_authentication_failed">지문 인증이 실패 했습니다.</string>
+  <string name="fingerprint_authentication_successded">지문 인증 성공.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">One-touch 잠금 해제</string>
+  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="title_activity_home">Fingerprint</string>
+  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="fingerprint_required">Fingerprint required</string>
+  <string name="device_with_no_fingerprint_sensor">장치에 지문 인식 센서가 없습니다.</string>
+  <string name="fingerprint_permission_manifest_missing">지문 인증 권한을 사용할 수 없습니다</string>
+  <string name="register_at_least_one_fingerprint">적어도 하나의 지문을 설정에 등록하십시오</string>
+  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
 </resources>

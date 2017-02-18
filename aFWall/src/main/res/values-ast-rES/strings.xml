@@ -176,6 +176,7 @@
   <string name="profile2">Perfil 2</string>
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">ProfileName</string>
+  <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Reaplicar regles de perfiles</string>
   <!-- Interface -->
   <string name="lan_title">LAN control</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">Amuesa les UIDs d\'aplicaciones na vista principal</string>
   <string name="showuid_summary_off">Anubre les UIDs d\'aplicación an vista principal. Habilitalo pue ser útil pa rastrexar rexistros.</string>
   <string name="languages">Llingües</string>
+  <string name="change_languages">Change Language</string>
   <string name="misc_header">Llingües/Complementos</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Activar regles</string>
@@ -409,6 +411,47 @@
   <string name="custom_rules">Custom Rules</string>
   <string name="mdns">Enable Mutlicast DNS</string>
   <string name="error_log">Nun pue aniciase\'l serviciu de rexistru. LogTarget ta baleru o LogService nun s\'habilitó.</string>
-  <string name="delete_profile">Unable to delete profile</string>
+  <string name="delete_profile">Nun pue desaniciase\'l perfil</string>
   <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <!-- Log Details -->
+  <string name="destination_address">Destination Address</string>
+  <string name="source_address">Direición fonte</string>
+  <string name="ping_destination">Ping Destination</string>
+  <string name="ping_source">Ping Source</string>
+  <string name="resolve_destination">Resolve Destination</string>
+  <string name="resolve_source">Resolve Source</string>
+  <string name="copy_text">Copy text</string>
+  <string name="destination_copied">Destination copied</string>
+  <string name="source_copied">Source copied</string>
+  <string name="select_the_action">Select The Action</string>
+  <string name="result_copied_to_clipboard">Result copied to clipboard</string>
+  <string name="result">Result</string>
+  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="searching">Guetando</string>
+  <string name="looking_for_data">Guetando datos&#8230;</string>
+  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Fallu o estaya desconocida</string>
+  <string name="show_destination_address">Amosar direición de destín</string>
+  <string name="show_source_address">Amosar direición fonte</string>
+  <string name="network_connection_not_available">Conexón de rede non disponible</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Buelga</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
+  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
+  <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
+  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">One-touch Unlock</string>
+  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="title_activity_home">Buelga</string>
+  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="fingerprint_required">Fingerprint required</string>
+  <string name="device_with_no_fingerprint_sensor">El to preséu nun tien un sensor de buelgues</string>
+  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
+  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
+  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
 </resources>

@@ -179,6 +179,7 @@
   <string name="profile2">プロファイル 2</string>
   <string name="profile3">プロファイル 3</string>
   <string name="profile_hint">プロファイル名</string>
+  <string name="profile_notsupport">このオプションを使用して、プロファイルデータを移行してください</string>
   <string name="reapply_profile">プロファイルのルールを再適用</string>
   <!-- Interface -->
   <string name="lan_title">LAN 制御</string>
@@ -267,6 +268,7 @@
   <string name="showuid_summary_on">メイン画面にアプリ UID を表示します</string>
   <string name="showuid_summary_off">メイン画面のアプリ UID を非表示にします。有効にするとログの追跡に便利です。</string>
   <string name="languages">言語設定</string>
+  <string name="change_languages">言語の変更</string>
   <string name="misc_header">言語/プラグイン</string>
   <!-- 1.2.6 -->
   <string name="active_rules">有効なルール</string>
@@ -414,4 +416,45 @@
   <string name="error_log">ログ サービスを開始できません。LogTarget が空か、LogService が有効ではありません。</string>
   <string name="delete_profile">プロファイルを削除できません</string>
   <string name="profile_migrate_msg">プロファイルが正常に移行されました</string>
+  <!-- Log Details -->
+  <string name="destination_address">宛先アドレス</string>
+  <string name="source_address">送信元アドレス</string>
+  <string name="ping_destination">Pingの宛先</string>
+  <string name="ping_source">Pingの送信元</string>
+  <string name="resolve_destination">宛先を解決</string>
+  <string name="resolve_source">送信元を解決</string>
+  <string name="copy_text">テキストをコピー</string>
+  <string name="destination_copied">宛先をコピーしました</string>
+  <string name="source_copied">送信元をコピーしました</string>
+  <string name="select_the_action">アクションを選択します</string>
+  <string name="result_copied_to_clipboard">結果をクリップボードにコピーしました</string>
+  <string name="result">結果</string>
+  <string name="output_is_empty">出力は空です。ネットワークアクセス、SuperSu が拒否されました。</string>
+  <string name="searching">検索中</string>
+  <string name="looking_for_data">データを探しています&#8230;</string>
+  <string name="reachable_timeout">到達、タイムアウト: %d ms</string>
+  <string name="error_or_unknown_category">エラーまたは不明なカテゴリー</string>
+  <string name="show_destination_address">宛先アドレスを表示</string>
+  <string name="show_source_address">送信元アドレスを表示</string>
+  <string name="network_connection_not_available">ネットワーク接続が利用できません</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">指紋</string>
+  <string name="fingerprint_authentication_error">指紋認証エラー\n</string>
+  <string name="fingerprint_authentication_help">指紋認証のヘルプ\n</string>
+  <string name="fingerprint_authentication_failed">指紋認証に失敗しました。</string>
+  <string name="fingerprint_authentication_successded">指紋認証に成功しました。</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">ワンタッチのロック解除</string>
+  <string name="desc_fingerprint">身元を確認するために、スキャナーに指先を置いてください</string>
+  <string name="note">(指紋認証で高速にアプリにログインできます。お使いのデバイスで、デバイスの設定に少なくとも 1 つ指紋を登録する必要があります)</string>
+  <string name="title_activity_home">指紋</string>
+  <string name="activity_home_desc">指紋認証でログインに成功しました</string>
+  <string name="activity_home_note">アプリを閉じて再度開くと、もう一度指紋認証画面を表示します</string>
+  <string name="fingerprint_required">指紋が必要です</string>
+  <string name="device_with_no_fingerprint_sensor">お使いのデバイスに、指紋センサーがありません</string>
+  <string name="fingerprint_permission_manifest_missing">指紋認証のアクセス許可が有効になっていません</string>
+  <string name="register_at_least_one_fingerprint">設定で、少なくとも一つ指紋を登録してください</string>
+  <string name="lock_screen_not_enabled">設定で、ロック画面セキュリティが有効になっていません</string>
+  <string name="fingerprint_enabled_successfully">指紋を有効にしました</string>
+  <string name="fingerprint_disabled_successfully">指紋を無効にしました</string>
 </resources>

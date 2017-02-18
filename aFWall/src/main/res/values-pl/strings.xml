@@ -98,8 +98,8 @@
   <string name="apply">Zastosuj</string>
   <string name="discard">Odrzuć</string>
   <string name="delete">Usuń</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Sklonuj</string>
+  <string name="rename">Zmień nazwę</string>
   <string name="Yes">Tak</string>
   <string name="Continue">Kontynuuj</string>
   <string name="No">Nie</string>
@@ -176,9 +176,10 @@
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">ProfileName</string>
+  <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Zaaplikuj ponownie reguły profili</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Ustawienia LAN</string>
   <string name="lan_summary">Włącz, aby sterować uprawnieniami sieci LAN oddzielnie od uprawnień WiFI</string>
   <string name="iptables_pref">Plik wykonywalny iptables</string>
   <string name="vpn_profile">Ustawienia VPN</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">Show app UID\'s in the main view</string>
   <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
   <string name="languages">Zmiana języka</string>
+  <string name="change_languages">Change Language</string>
   <string name="misc_header">Języki/Dodatki</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktywne reguły</string>
@@ -283,13 +285,13 @@
   <string name="downloaded">Pobrano</string>
   <string name="app_system_detail">Pokaż szczegóły systemu</string>
   <string name="settings_pwd_not_equal">Password mismatch</string>
-  <string name="faq">Frequently Asked Questions</string>
+  <string name="faq">Często zadawane pytania</string>
   <string name="reverse_all">Invert all the selected apps?</string>
   <string name="unselect_all">Clear all the selected apps?</string>
   <string name="check_all">Zaznacz wszystko</string>
-  <string name="invert_all">Invert all</string>
+  <string name="invert_all">Odwróć wszystko</string>
   <string name="legend_invert">Odwraca zaznaczenie wszystkich pól wyboru we wszystkich kolumnach</string>
-  <string name="uncheck_all">Uncheck all</string>
+  <string name="uncheck_all">Odznacz wszystko</string>
   <string name="select_action">Wybierz opcję Akcja w kolumnie </string>
   <string name="roam">Roaming</string>
   <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
@@ -321,17 +323,17 @@
   <string name="widgets">Widgets</string>
   <string name="exports">Eksport</string>
   <string name="imports">Import</string>
-  <string name="invalid_profile">Invalid profile name</string>
+  <string name="invalid_profile">Nieprawidłowa nazwa profilu</string>
   <!-- Donate -->
-  <string name="donate_only">This feature is available only in the donate version</string>
-  <string name="buy_donate">Buy donate version or donate key</string>
+  <string name="donate_only">Funkcja dostępna tylko w wersji płatnej</string>
+  <string name="buy_donate">Kup wersję z darowizną lub klucz z darowizną</string>
   <string name="unlock_donate"> dotknij aby odblokować dotacje</string>
   <string name="donate_support">Możesz teraz używać dotacji!</string>
-  <string name="donate_thanks">Thanks for your support!</string>
+  <string name="donate_thanks">Dziękujemy za wsparcie!</string>
   <string name="activeNotification">Pokaż ikonę powiadomień</string>
   <string name="activeNotification_summary">Pokazuj ikonę powiadomienia na pasku powiadomień</string>
   <string name="active">Firewall enabled</string>
-  <string name="inactive">Firewall disabled</string>
+  <string name="inactive">Zapora wyłączona</string>
   <string name="About">O programie</string>
   <string name="FAQ">Najczęściej Zadawane Pytania</string>
   <string name="su_check_title">Status</string>
@@ -339,12 +341,12 @@
   <!-- choose file -->
   <!-- <string name="fileSize">File Size</string>-->
   <!--<string name="currentDir">Current Dir</string>-->
-  <string name="selectMode">Firewall mode</string>
+  <string name="selectMode">Tryb zapory</string>
   <string name="confirmation">Potwierdzenie</string>
   <!--<string name="prefill_profile">Enter profile name</string>-->
   <!--<string name="profile_default">MyProfile</string>-->
   <!--<string name="filter">Filter</string>-->
-  <string name="enable_protection">Enable protection</string>
+  <string name="enable_protection">Włącz ochronę</string>
   <string name="pref_none">Żaden</string>
   <string name="pref_password">Hasło</string>
   <string name="pref_pattern">Wzór</string>
@@ -354,7 +356,7 @@
   <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Wybierz</string>
-  <string name="wrong_password">Incorrect password</string>
+  <string name="wrong_password">Nieprawidłowe hasło</string>
   <string name="password_empty"></string>
   <string name="submit">Zatwierdź</string>
   <string name="dialog_color_picker">Próbnik kolorów</string>
@@ -365,12 +367,12 @@
   <string name="uid">Wg UID</string>
   <string name="select_dir">Wybierz katalog</string>
   <string name="select">Wybierz akcję dla</string>
-  <string name="manage_profiles">Manage profiles</string>
-  <string name="manage_profiles_summary">Add or remove profiles</string>
-  <string name="profiles">Profile </string>
-  <string name="migrate_profiles">Migrate profiles</string>
+  <string name="manage_profiles">Zarządzaj profilami</string>
+  <string name="manage_profiles_summary">Dodaj lub usuń profile</string>
+  <string name="profiles">Profil </string>
+  <string name="migrate_profiles">Migruj profile</string>
   <string name="migrate_summary">Migrate all profile data</string>
-  <string name="insert_profile">Profile name</string>
+  <string name="insert_profile">Nazwa profilu</string>
   <string name="add">Dodaj</string>
   <string name="showlog_toasts">Show toast notification on block</string>
   <string name="enable_show_toasts">Enable show toasts</string>
@@ -411,4 +413,45 @@
   <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
   <string name="delete_profile">Unable to delete profile</string>
   <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <!-- Log Details -->
+  <string name="destination_address">Destination Address</string>
+  <string name="source_address">Source Address</string>
+  <string name="ping_destination">Cel Pingu</string>
+  <string name="ping_source">Źródło Pingu</string>
+  <string name="resolve_destination">Resolve Destination</string>
+  <string name="resolve_source">Resolve Source</string>
+  <string name="copy_text">Skopiuj tekst</string>
+  <string name="destination_copied">Cel skopiowany</string>
+  <string name="source_copied">Źródło skopiowane</string>
+  <string name="select_the_action">Wybierz akcję</string>
+  <string name="result_copied_to_clipboard">Wynik skopiowany do schowka</string>
+  <string name="result">Wynik</string>
+  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="searching">Wyszukiwanie</string>
+  <string name="looking_for_data">Wyszukiwanie danych&#8230;</string>
+  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Error or Unknown Category</string>
+  <string name="show_destination_address">Pokaż adres docelowy</string>
+  <string name="show_source_address">Pokaż adres źródłowy</string>
+  <string name="network_connection_not_available">Połączenie z Internetem niedostępne</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Odcisk palca</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
+  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
+  <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
+  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">One-touch Unlock</string>
+  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="title_activity_home">Odcisk palca</string>
+  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="fingerprint_required">Wymagany odcisk palca</string>
+  <string name="device_with_no_fingerprint_sensor">Twoje urządzenie nie posiada czytnika linii papilarnych</string>
+  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
+  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
+  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
 </resources>

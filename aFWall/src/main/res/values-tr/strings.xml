@@ -177,6 +177,7 @@
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">ProfilAdı</string>
+  <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Profil kurallarını yeniden uygula</string>
   <!-- Interface -->
   <string name="lan_title">LAN Denetimi</string>
@@ -265,6 +266,7 @@
   <string name="showuid_summary_on">Uygulama UID\'ini ana görünümde göster</string>
   <string name="showuid_summary_off">Uygulama UID\'ini ana görünümde gizle. Etkinleştirme günlükleri izlemede yararlı olabilir.</string>
   <string name="languages">Diller</string>
+  <string name="change_languages">Dili Değiştir</string>
   <string name="misc_header">Diller/Eklentiler</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Etkin Kurallar</string>
@@ -412,4 +414,45 @@
   <string name="error_log">Günlük hizmeti başlatılamıyor. LogTarget boş veya LogService etkin değil.</string>
   <string name="delete_profile">Profil silinemiyor</string>
   <string name="profile_migrate_msg">Profiller başarıyla taşındı</string>
+  <!-- Log Details -->
+  <string name="destination_address">Hedef Adres</string>
+  <string name="source_address">Kaynak Adres</string>
+  <string name="ping_destination">Ping Hedefi</string>
+  <string name="ping_source">Ping Kaynağı</string>
+  <string name="resolve_destination">Resolve Destination</string>
+  <string name="resolve_source">Resolve Source</string>
+  <string name="copy_text">Metni kopyala</string>
+  <string name="destination_copied">Hedef kopyalandı</string>
+  <string name="source_copied">Kaynak kopyalandı</string>
+  <string name="select_the_action">Eylemi Seçin</string>
+  <string name="result_copied_to_clipboard">Sonuç panoya kopyalandı</string>
+  <string name="result">Sonuç</string>
+  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="searching">Aranıyor</string>
+  <string name="looking_for_data">Looking for data&#8230;</string>
+  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Error or Unknown Category</string>
+  <string name="show_destination_address">Hedef Adresi Göster</string>
+  <string name="show_source_address">Kaynak Adresi Göster</string>
+  <string name="network_connection_not_available">Network connection not Available</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Fingerprint</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
+  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
+  <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
+  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">One-touch Unlock</string>
+  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="title_activity_home">Parmak izi</string>
+  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="fingerprint_required">Parmak izi gerekli</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
+  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
+  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
+  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
+  <string name="fingerprint_enabled_successfully">Parmak İzi Başarıyla Etkinleştirildi</string>
+  <string name="fingerprint_disabled_successfully">Parmak İzi Başarıyla Devre Dışı Bırakıldı</string>
 </resources>

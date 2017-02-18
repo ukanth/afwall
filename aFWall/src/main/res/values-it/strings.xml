@@ -62,21 +62,21 @@
   <string name="passerror">Errore durante il cambio Password di blocco</string>
   <string name="working">Elaborando</string>
   <string name="reading_apps">Recupero della lista delle app installate</string>
-  <string name="mode">Firewall Mode</string>
+  <string name="mode">Modalità firewall</string>
   <string name="mode_header">Modalità: %s</string>
-  <string name="legend_clear">Clear all checkboxes in all columns</string>
+  <string name="legend_clear">Azzera tutte le caselle di controllo in tutte le colonne</string>
   <string name="mode_whitelist">Permetti selezionati</string>
-  <string name="legend_whitelist">Selected apps will be granted internet access</string>
+  <string name="legend_whitelist">Verrà concesso l\'accesso a internet alle app selezionate</string>
   <string name="mode_blacklist">Blocca selezionati</string>
-  <string name="legend_blacklist">Selected apps will be denied internet access</string>
+  <string name="legend_blacklist">Verrà negato l\'accesso a internet alle app selezionate</string>
   <string name="set_custom_script">Imposta uno script personalizzato</string>
   <string name="preferences">Preferenze</string>
   <string name="reload">Ricarica app</string>
   <string name="flush">Applica regole</string>
   <string name="send_report">Invia report di errore</string>
-  <string name="enter_problem">Please explain the issue:</string>
+  <string name="enter_problem">Descrivere il problema:</string>
   <string name="send_mail">Invia email</string>
-  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_on">Verrà mostrata una notifica quando una nuova applicazione viene installata</string>
   <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
   <string name="custom_script_defined">Script personalizzato definito</string>
   <string name="custom_script_removed">Script personalizzato rimosso</string>
@@ -91,15 +91,15 @@
   <string name="copied">Copiato</string>
   <string name="Search">Ricerca</string>
   <string name="flushRulesConfirm">Applicare tutte le regole iptables?</string>
-  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
+  <string name="overrideRules">Importare le regole? Le regole esistenti verranno sovrascritte!</string>
   <string name="notification_new">Nuova app installata</string>
   <string name="notification_new_package">Configura i permessi Internet</string>
   <string name="confirmMsg">Disabilitare COMPLETAMENTE il firewall?</string>
   <string name="apply">Applica</string>
   <string name="discard">Scarta</string>
   <string name="delete">Elimina</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Duplica</string>
+  <string name="rename">Rinomina</string>
   <string name="Yes">Si</string>
   <string name="Continue">Continua</string>
   <string name="No">No</string>
@@ -116,7 +116,7 @@
   <string name="remove_initd">Script di avvio rimosso</string>
   <string name="unable_remove_initd">Impossibile rimuovere lo script di avvio AFWall+</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
+  <string name="widget_disable_fail">Non è possibile disabilitare il firewall: è protetto da password!</string>
   <string name="widget_label_status">AFWall+ Olivetta/Stato</string>
   <string name="widget_label_settings">Impostazioni AFWall+</string>
   <string name="widget_label_settings_old">Impostazioni AFWall+ (vecchie)</string>
@@ -133,9 +133,9 @@
   <string name="import_rules_success">Importato da </string>
   <string name="import_rules_fail">Importazione fallita!</string>
   <string name="import_rules_missing">Manca il file delle regole!</string>
-  <string name="exportConfirm">Export rules to storage?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
-  <string name="export_to_sd">Export to storage</string>
+  <string name="exportConfirm">Esportare le regole nell\'archivio?</string>
+  <string name="export_logs_fail">L\'esportazione nell\'archivio è fallita!</string>
+  <string name="export_to_sd">Esporta nell\'archivio</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Abilita registro del firewall</string>
   <string name="enable_firewall_log_service">Attivare il servizio Registro</string>
@@ -149,7 +149,7 @@
   <string name="log_toggle_failed">Errore durante la disattivazione/attivazione dei log</string>
   <string name="log_target_failed">Errore: manca il supporto a LOG/NFLOG nel kernel</string>
   <string name="log_cleared">Registro eliminato</string>
-  <string name="log_dmesg">Log fetch method</string>
+  <string name="log_dmesg">Modalità di recupero del registro</string>
   <string name="log_clear_error">Errore durante l\'eliminazione dei log</string>
   <string name="log_fetch_error">Errore durante il recupero dei log</string>
   <string name="log_parse_error">Errore durante l\'analisi dei log</string>
@@ -175,16 +175,17 @@
   <string name="profile1">Profilo 1</string>
   <string name="profile2">Profilo 2</string>
   <string name="profile3">Profilo 3</string>
-  <string name="profile_hint">ProfileName</string>
+  <string name="profile_hint">NomeProfilo</string>
+  <string name="profile_notsupport">Migrare i dati del profilo per utilizzare questa opzione</string>
   <string name="reapply_profile">Applica nuovamente le regole</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Controllo LAN</string>
   <string name="lan_summary">Abilita il controllo delle autorizzazioni LAN separatamente dalle autorizzazioni WiFi</string>
   <string name="iptables_pref">Binario di iptables</string>
   <string name="vpn_profile">Controllo VPN</string>
   <string name="vpnSummary">Abilita il controllo delle autorizzazioni VPN separatamente</string>
   <string name="roaming">Controllo roaming</string>
-  <string name="roamingSummary">Enable to control roaming permissions separately</string>
+  <string name="roamingSummary">Abilita il controllo separato delle autorizzazioni del roaming</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -203,8 +204,8 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Relativo a XPosed</string>
   <string name="fixDownloadTitle">Fix DownloadManager leak</string>
-  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-  <string name="LeakDetected">Leak detected!</string>
+  <string name="fixDownloadTitleSummary">Usa Xposed per bloccare le app che scaricano dati utilizzando il gestore dei download standard di Android, anche se all\'applicazione viene negato l\'accesso</string>
+  <string name="LeakDetected">Rilevato leak!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Relativo a Tasker</string>
   <string name="disable_toaster">Disabilita i toast di Tasker</string>
@@ -213,13 +214,13 @@
   <string name="disable_tasker">Disabilita AFWall+</string>
   <string name="tasker_apply">Tasker: Applicazione delle regole firewall</string>
   <string name="tasker_disabled">Tasker: AFWall+ DISABILITATO!</string>
-  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
+  <string name="tasker_profile_applied">Tasker: profilo AFWall+ applicato con successo</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profilo disabilitato</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Supporto IPv6</string>
   <string name="ipv6_summary">Abilita supporto IPv6</string>
-  <string name="block_ipv6_title">Block IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_title">Blocca IPv6</string>
+  <string name="block_ipv6_summary">Blocca tutte le connessioni IPv6. ATTENZIONE: usare solo se ci sono connessioni con IPv4</string>
   <string name="ip6unavailable">Errore: IPv6 richiede \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Cambia regole IPv6</string>
   <string name="switch_ipv4">Cambia regole IPv4</string>
@@ -228,7 +229,7 @@
   <string name="usePattern">Usa una combinazione al posto della password</string>
   <string name="stealthMode">Modalità stealth su modello</string>
   <string name="patternMaxTry">Numero massimo di tentativi</string>
-  <string name="resetPattern">Reset lock pattern?</string>
+  <string name="resetPattern">Azzerare lo schema di blocco?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Amministratore dispositivo</string>
   <string name="device_admin_enabled">Amministratore dispositivo AFWall+ abilitato</string>
@@ -238,10 +239,10 @@
   <string name="exp_prefs_title">Sperimentale</string>
   <!-- Startup -->
   <string name="startup_service">Applicazione delle regole. Attendere.</string>
-  <string name="addStartupDelayTitle">Startup Delay</string>
-  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+  <string name="addStartupDelayTitle">Ritardo all\'avvio</string>
+  <string name="addStartupDelaySummary">AFWall+ attenderà 5 secondi prima di applicare le regole. Abilitare questa opzione solo se le regole all\'avvio non vengono applicate correttamente all\'avvio.</string>
   <string name="fixleakTitle">Correggi leak nei dati di avvio</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Previene la perdita di dati durante l\'avvio del sistema. La ROM deve supportare init.d o su.d (superSU). I dispositivi HTC devono essere configurati per S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -250,7 +251,7 @@
   <string name="enableInboundSummary">Consenti connessioni dalla LAN al telefono (Samba, sshd, AirDroid, ecc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfaccia utente</string>
-  <string name="rules_prefs_title">Rules/Connectivity</string>
+  <string name="rules_prefs_title">Regole/connettività</string>
   <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Nascondi icone app</string>
   <string name="hideicons_pref_summary_on">Migliora le prestazioni disabilitando le icone delle app nella vista principale</string>
@@ -264,10 +265,11 @@
   <string name="showuid_summary_on">Mostra l\'UID dell\'app nella vista principale</string>
   <string name="showuid_summary_off">Nascondere l\'UID dell\'app nella vista principale. La sua abilitazione può essere utile per tracciare i registri.</string>
   <string name="languages">Lingue</string>
+  <string name="change_languages">Cambia lingua</string>
   <string name="misc_header">Lingue/estensioni</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Regole attive</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
+  <string name="active_rules_summary">Applica le regole del firewall ad ogni cambio di connettività (LAN/WiFi/dati mobili/roaming/tethering)</string>
   <string name="profile_add">Aggiungi profili</string>
   <string name="profile_remove">Rimuovi profilo</string>
   <string name="profile_rename">Rinomina profilo</string>
@@ -298,13 +300,13 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Dati</string>
-  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+  <string name="legend_data">Abilita per controllare le autorizzazioni dei dati mobili (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Tutto</string>
   <string name="pkg_core">Nucleo</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Utente</string>
   <string name="menu">Menu</string>
-  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
+  <string name="backup_notexist">Non esiste alcun backup. Effettuare l\'esportazione dal menu.</string>
   <string name="showFilter">Mostra filtri</string>
   <string name="showfilter_summary_on">I filtri (tutto/core/sistema/utente) sono mostrati nella vista principale</string>
   <string name="showfilter_summary_off">I filtri (tutto/core/sistema/utente) sono nascosti dalla vista principale</string>
@@ -330,7 +332,7 @@
   <string name="donate_thanks">Grazie per il tuo supporto!</string>
   <string name="activeNotification">Mostra l\'icona di notifica</string>
   <string name="activeNotification_summary">Mostra un\'icona permanente nella barra delle notifiche</string>
-  <string name="active">Firewall enabled</string>
+  <string name="active">Firewall abilitato</string>
   <string name="inactive">Firewall disabilitato</string>
   <string name="About">Su di noi</string>
   <string name="FAQ">Domande più frequenti</string>
@@ -348,7 +350,7 @@
   <string name="pref_none">Nessuno</string>
   <string name="pref_password">Password</string>
   <string name="pref_pattern">Modello</string>
-  <string name="pref_device">Use Device Security Protection</string>
+  <string name="pref_device">Usare la protezione della sicurezza del dispositivo</string>
   <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
   <string name="secure_option">Device is not secured with password/PIN</string>
   <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
@@ -411,4 +413,45 @@
   <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
   <string name="delete_profile">Unable to delete profile</string>
   <string name="profile_migrate_msg">Profiles migrated successfully</string>
+  <!-- Log Details -->
+  <string name="destination_address">Destination Address</string>
+  <string name="source_address">Source Address</string>
+  <string name="ping_destination">Ping Destination</string>
+  <string name="ping_source">Ping Source</string>
+  <string name="resolve_destination">Resolve Destination</string>
+  <string name="resolve_source">Resolve Source</string>
+  <string name="copy_text">Copy text</string>
+  <string name="destination_copied">Destination copied</string>
+  <string name="source_copied">Source copied</string>
+  <string name="select_the_action">Select The Action</string>
+  <string name="result_copied_to_clipboard">Result copied to clipboard</string>
+  <string name="result">Result</string>
+  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="searching">Searching</string>
+  <string name="looking_for_data">Looking for data&#8230;</string>
+  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Error or Unknown Category</string>
+  <string name="show_destination_address">Show Destination Address</string>
+  <string name="show_source_address">Show Source Address</string>
+  <string name="network_connection_not_available">Network connection not Available</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Fingerprint</string>
+  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
+  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
+  <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
+  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">One-touch Unlock</string>
+  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="title_activity_home">Fingerprint</string>
+  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="fingerprint_required">Fingerprint required</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
+  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
+  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
+  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
 </resources>

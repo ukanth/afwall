@@ -176,6 +176,7 @@
   <string name="profile2">Perfil 2</string>
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">NomePerfil</string>
+  <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
   <string name="lan_title">Controle da LAN</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">Mostrar UID do aplicativo na vista principal</string>
   <string name="showuid_summary_off">Ocultar UID do aplicativo na vista principal. Ativá-lo pode ser útil para acompanhar os logs.</string>
   <string name="languages">Idiomas</string>
+  <string name="change_languages">Alterar Idioma</string>
   <string name="misc_header">Idiomas/Plugins</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Regras ativas</string>
@@ -411,4 +413,45 @@
   <string name="error_log">Não é possível iniciar o serviço de log. LogTarget está vazio ou LogService não está habilitado.</string>
   <string name="delete_profile">Não foi possível excluir o perfil</string>
   <string name="profile_migrate_msg">Perfis migrados com sucesso</string>
+  <!-- Log Details -->
+  <string name="destination_address">Endereço de Destino</string>
+  <string name="source_address">Endereço de Origem</string>
+  <string name="ping_destination">Destino de ping</string>
+  <string name="ping_source">Fonte de ping</string>
+  <string name="resolve_destination">Resolver o destino</string>
+  <string name="resolve_source">Resolver a fonte</string>
+  <string name="copy_text">Copiar texto</string>
+  <string name="destination_copied">Destino copiado</string>
+  <string name="source_copied">Origem copiada</string>
+  <string name="select_the_action">Selecionar a Ação</string>
+  <string name="result_copied_to_clipboard">Resultado copiado para a área de transferência</string>
+  <string name="result">Resultado</string>
+  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="searching">Pesquisando</string>
+  <string name="looking_for_data">Procurando dados&#8230;</string>
+  <string name="reachable_timeout">Alcançável, tempo limite: %d ms</string>
+  <string name="error_or_unknown_category">Erro ou categoria desconhecida</string>
+  <string name="show_destination_address">Mostrar Endereço de Destino</string>
+  <string name="show_source_address">Mostrar Endereço de Origem</string>
+  <string name="network_connection_not_available">Conexão de rede não está disponível</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Impressão digital</string>
+  <string name="fingerprint_authentication_error">Erro na autenticação de impressão digital\n</string>
+  <string name="fingerprint_authentication_help">Ajuda na autenticação de impressão digital\n</string>
+  <string name="fingerprint_authentication_failed">Falha de autenticação de impressão digital.</string>
+  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">Um toque para desbloquear</string>
+  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="title_activity_home">Impressão digital</string>
+  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="fingerprint_required">Impressão digital necessária</string>
+  <string name="device_with_no_fingerprint_sensor">Seu dispositivo não possui um Sensor de Impressão Digital</string>
+  <string name="fingerprint_permission_manifest_missing">Permissão para autenticação de impressão digital não está habilitada</string>
+  <string name="register_at_least_one_fingerprint">Registre pelo menos uma impressão digital nas Configurações</string>
+  <string name="lock_screen_not_enabled">Segurança da tela de bloqueio não está habilitada nas Configurações</string>
+  <string name="fingerprint_enabled_successfully">Impressão digital habilitada com êxito</string>
+  <string name="fingerprint_disabled_successfully">Impressão digital desativada com êxito</string>
 </resources>

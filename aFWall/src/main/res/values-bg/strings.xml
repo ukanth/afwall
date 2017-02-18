@@ -13,7 +13,7 @@
   <string name="blacklist_array_item">Забрани избраните</string>
   <string name="showrules">Покажи правила</string>
   <string name="applyrules">Приложи</string>
-  <string name="saverules">Запази</string>
+  <string name="saverules">Приложи правила</string>
   <string name="setpwd">Задай парола</string>
   <string name="help">Помощ</string>
   <string name="close">Затвори</string>
@@ -27,7 +27,7 @@
   <string name="error_su">Не можа да се придобие root достъп. \nВашето устройство трябва да е руутнато, за да използвате AFWall+.\n\nАко това устройство вече е руутнато, проверете дали AFWall + има разрешение да изпълнява командата \"su\".</string>
   <string name="error_netfilter">Не може да намери поддръжка за iptables дестинации и вериги. \nAFWall+ може да не работи както се очаква поради това ограничение.</string>
   <string name="error_common">Грешка: </string>
-  <string name="all_item">(Всяко приложение) - същото като изберете всички приложения</string>
+  <string name="all_item">(Всяко приложение) - същото като да изберете всички приложения</string>
   <string name="kernel_item">(ядро) - Linux ядро</string>
   <string name="unknown_item">Неизвестен</string>
   <string name="tethering_item">(тетъринг) - DHCP + DNS услуги</string>
@@ -41,8 +41,8 @@
   <string name="gps_item">(gps) - GPS</string>
   <string name="shell_item">(shell) - ГНУ/Линукс обвивка</string>
   <!-- <string name="operation_timeout">Operation timed out</string> -->
-  <string name="fw_enabled">Разреши ЗС</string>
-  <string name="fw_disabled">Забрани ЗС</string>
+  <string name="fw_enabled">Разреши Защитната стена</string>
+  <string name="fw_disabled">Забрани Защитната стена</string>
   <string name="flushed">Правилата са изчистени</string>
   <string name="show_log">Виж журнал</string>
   <string name="clear_log">Изчисти журнал</string>
@@ -62,26 +62,26 @@
   <string name="passerror">Грешка при промяна парола за заключване</string>
   <string name="working">Работа...</string>
   <string name="reading_apps">Извличане на инсталирани приложения</string>
-  <string name="mode">Режим на ЗС</string>
+  <string name="mode">Режим на Защитната стена</string>
   <string name="mode_header">Режим: %s</string>
   <string name="legend_clear">Изчистите всички отметки във всички колони</string>
   <string name="mode_whitelist">Позволи избраните</string>
   <string name="legend_whitelist">На избрани приложения ще се предоставя достъп до интернет</string>
   <string name="mode_blacklist">Забрани избраните</string>
   <string name="legend_blacklist">На избраните приложения ще се забрани достъпа до интернет</string>
-  <string name="set_custom_script">Задайте потребителски скрипт</string>
+  <string name="set_custom_script">Потребителски скрипт</string>
   <string name="preferences">Настройки</string>
   <string name="reload">Презареди приложения</string>
   <string name="flush">Изчистване на правила</string>
   <string name="send_report">Изпратете репорт с грешки</string>
   <string name="enter_problem">Моля обяснете проблема:</string>
   <string name="send_mail">Изпрати имейл</string>
-  <string name="notify_pref_summary_on">Известие ще бъде показано когато е инсталирано ново приложение</string>
-  <string name="notify_pref_summary_off">Няма да се показва известие при инсталация на ново приложение</string>
+  <string name="notify_pref_summary_on">Уведомление ще бъде показано когато е инсталирано ново приложение</string>
+  <string name="notify_pref_summary_off">Няма да се показва уведомление при инсталация на ново приложение</string>
   <string name="custom_script_defined">Потребителски скрипт дефиниран</string>
   <string name="custom_script_removed">Потребителски скрипт премахнат</string>
   <string name="custom_script_error">Грешка при записване на потребителски скрипт</string>
-  <string name="custom_script_info"><b>Въведете потребителски скрипт по-долу.</b> \n <i>(Оставете празно, за да се премахне.)</i> \nЗа информация за потребителски скриптове, натиснете <a href="https://github.com/ukanth/afwall/wiki/CustomScripts"> тук</a>.</string>
+  <string name="custom_script_info"><b>Въведете потребителски скрипт по-долу.</b> \n <i>(Оставете празно, за да се премахне.)</i> \nЗа информация за потребителски скриптове, натиснете <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">тук</a>.</string>
   <string name="custom_script2_info">    \n <b>Потребителски скрипт при изключване</b> \nМожете също да дефинирате потребителски скрипт да се изпълнява, когато защитната стена се <b>забранява</b>:</string>
   <string name="unsaved_changes">Незапазени промени</string>
   <string name="unsaved_changes_message">Имате незапазени промени.\nИскате да ги приложите или отхвърлите?</string>
@@ -137,9 +137,9 @@
   <string name="export_logs_fail">Изнасянето в хранилището се провали!</string>
   <string name="export_to_sd">Изнасяне в хранилище</string>
   <!-- Logging -->
-  <string name="enable_firewall_log">Включване на журнала на ЗС</string>
-  <string name="enable_firewall_log_service">Включване на журналния сървис</string>
-  <string name="showlog_title">Журнали на ЗС</string>
+  <string name="enable_firewall_log">Включване на журнала на Защитната стена</string>
+  <string name="enable_firewall_log_service">Включи на журналния сървис</string>
+  <string name="showlog_title">Журнали на Защитната стена</string>
   <string name="showlog_service_summary">Позволи да покаже тост съобщения, когато връзка бива блокирана </string>
   <string name="enable_log">Разрешаване на журнал</string>
   <string name="disable_log">Забраняване на журнал</string>
@@ -164,8 +164,8 @@
   <string name="custom_title2">Потребителско име за профил 1</string>
   <string name="custom_title3">Потребителско име за профила 2</string>
   <string name="custom_title4">Потребителско име за профила 3</string>
-  <string name="toggle_enable">Разреши ЗС</string>
-  <string name="toggle_disable">Забрани ЗС</string>
+  <string name="toggle_enable">Разреши Защитната стена</string>
+  <string name="toggle_disable">Забрани Защитната стена</string>
   <string name="toggle_default">Активиране на профила по подразбиране</string>
   <string name="toggle_profile1">Активирайте профил 1</string>
   <string name="toggle_profile2">Активирайте профил 2</string>
@@ -176,13 +176,14 @@
   <string name="profile2">Профил 2</string>
   <string name="profile3">Профил 3</string>
   <string name="profile_hint">Име на профил</string>
+  <string name="profile_notsupport">Моля мигрирайте данни за профила, за да използвате тази опция</string>
   <string name="reapply_profile">Приложи наново профилни правила</string>
   <!-- Interface -->
   <string name="lan_title">LAN контрол</string>
-  <string name="lan_summary">Разреши контрол на LAN разрешенията отделно от WiFi разрешения</string>
+  <string name="lan_summary">Разрешава контрола на LAN разрешенията отделно от WiFi разрешения</string>
   <string name="iptables_pref">Iptables изпълним файл</string>
   <string name="vpn_profile">VPN контрол</string>
-  <string name="vpnSummary">Позволи да контролирате VPN разрешения отделно</string>
+  <string name="vpnSummary">Позволява да контролирате VPN разрешения отделно</string>
   <string name="roaming">Роуминг контрол</string>
   <string name="roamingSummary">Позволи контрола на роуминг разрешения отделно</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
@@ -202,7 +203,7 @@
   <string name="auto">Автоматично</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Xposed свързани</string>
-  <string name="fixDownloadTitle">Поправи DownloadManager теч</string>
+  <string name="fixDownloadTitle">DownloadManager теч</string>
   <string name="fixDownloadTitleSummary">Използвайте Xposed, за да блокирате приложения от сваляне на данни с помощта на андроид вградения download мениджър дори ако приложението е с отказан достъп</string>
   <string name="LeakDetected">Открит е теч!</string>
   <!-- Tasker -->
@@ -240,8 +241,8 @@
   <string name="startup_service">Прилагане на правилата. Моля, изчакайте.</string>
   <string name="addStartupDelayTitle">Забавяне при стартиране</string>
   <string name="addStartupDelaySummary">AFWall + ще чака 5 секунди преди прилагането на правилата. Разрешете тази настройка само ако правилата при стартиране не се прилагат правилно по време на зареждане.</string>
-  <string name="fixleakTitle">Поправи теч на данни при стартиране</string>
-  <string name="fixleakSummary">Предотвратяване течове на данни по време на стартиране на системата. Вашият ROM трябва да има init.d или su.d (superSU) поддръжка. HTC устройствата трябва да бъдат конфигурирани за S-OFF.</string>
+  <string name="fixleakTitle">Поправи изтичане на данни</string>
+  <string name="fixleakSummary">Предотвратяване изтичането на данни по време на стартиране на системата. Вашият ROM трябва да има init.d или su.d (superSU) поддръжка. HTC устройствата трябва да бъдат конфигурирани за S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -252,18 +253,19 @@
   <string name="ui_prefs_title">Потребителски интерфейс</string>
   <string name="rules_prefs_title">Правила/свързаност</string>
   <string name="log_prefs_title">Журнал</string>
-  <string name="hideicons_pref_title">Скриване на икони на приложения</string>
-  <string name="hideicons_pref_summary_on">Подобряване на производителността чрез скриване на икони в главния изглед</string>
+  <string name="hideicons_pref_title">Скриване на икони</string>
+  <string name="hideicons_pref_summary_on">Подобряване на производителността чрез скриване на иконите на приложенията в основния изглед</string>
   <string name="hideicons_pref_summary_off">Показване на икони на приложения в основния екран</string>
-  <string name="notify_pref_title">Разрешаване на известията</string>
+  <string name="notify_pref_title">Разрешаване на уведомленията</string>
   <string name="syscolor_pref_title">Цвят на системно приложение</string>
   <string name="syscolor_pref_summary_on">Цвят за всички системни приложения</string>
-  <string name="enableConfirmTitle">Потвърдете забраняванет на AFWall+</string>
+  <string name="enableConfirmTitle">Потвърдете забраняването</string>
   <string name="enableConfirm_summary_on">Защитна стена ще поиска потвърждение преди да бъде забранена</string>
   <string name="showUid">Покажи UID за приложенията</string>
   <string name="showuid_summary_on">Покажи UID на приложение в основния екран</string>
   <string name="showuid_summary_off">Скрий UID на приложение в основния екран. Разрешаването може да бъде полезно при проследяване в журнала.</string>
   <string name="languages">Езици</string>
+  <string name="change_languages">Промяна на езика</string>
   <string name="misc_header">Езици/плъгини</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Активни правила</string>
@@ -272,9 +274,9 @@
   <string name="profile_remove">Премахване на профил</string>
   <string name="profile_rename">Преименуване на профил</string>
   <string name="Donate">Дари</string>
-  <string name="multi_apply_rules">Прилагай правилата при смяна на профил</string>
+  <string name="multi_apply_rules">Прилагай при смяна</string>
   <string name="multi_apply_rules_info">Зареждане и прилагане правила при превключване между профили</string>
-  <string name="multi_user_title">Разреши поддръжка на мулти-потребители</string>
+  <string name="multi_user_title">Разреши многопотребителски режим</string>
   <string name="multi_user_summary">Поддръжка на Андроид многопотребителски режим (работи само в режим, където избраните елементи са блокирани)</string>
   <!--  -->
   <string name="device_admin_desc">Допълнителна защита - предотвратява деинсталирането на AFWall +</string>
@@ -298,7 +300,7 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Данни</string>
-  <string name="legend_data">Разреши контрола на мобилни данни (2G, 3 G, EDGE, LTE / 4G)</string>
+  <string name="legend_data">Разрешава контрола на мобилни данни (2G, 3 G, EDGE, LTE / 4G)</string>
   <string name="pkg_all">Всички</string>
   <string name="pkg_core">Основни</string>
   <string name="pkg_sys">Системни</string>
@@ -315,7 +317,7 @@
   <string name="tasker_lable">AFWall + Tasker плъгин</string>
   <string name="enable">Разреши</string>
   <string name="disable">Изключи</string>
-  <string name="filters_apps_title">Филтър за уведомявания</string>
+  <string name="filters_apps_title">Филтър за уведомления</string>
   <string name="apply_color">Изберете цвят за прилагане</string>
   <string name="binaries">Изпълними файлове</string>
   <string name="widgets">Притурки</string>
@@ -329,7 +331,7 @@
   <string name="donate_support">Сега можете да изполвате всички функции!</string>
   <string name="donate_thanks">Благодаря за подкрепата!</string>
   <string name="activeNotification">Покажи уведомяваща икона</string>
-  <string name="activeNotification_summary">Покажи постоянно иконата в лентата за известия</string>
+  <string name="activeNotification_summary">Покажи постоянно иконата в лентата за уведомления</string>
   <string name="active">Защитната стена е разрешена</string>
   <string name="inactive">Защитната стена е забранена</string>
   <string name="About">Относно</string>
@@ -347,7 +349,7 @@
   <string name="enable_protection">Разрешаване на защита</string>
   <string name="pref_none">Няма</string>
   <string name="pref_password">Парола</string>
-  <string name="pref_pattern">Модел</string>
+  <string name="pref_pattern">Шаблон</string>
   <string name="pref_device">Използвайте защита от устройствoто</string>
   <string name="pref_device_desc">Използвайте проверка за сигурност на устройство, за да отворите AFWall + (про/ключ функция)</string>
   <string name="secure_option">Устройството не е защитено с парола/ПИН</string>
@@ -372,7 +374,7 @@
   <string name="migrate_summary">Мигриране на всички данни за профила</string>
   <string name="insert_profile">Име на профил</string>
   <string name="add">Добави</string>
-  <string name="showlog_toasts">Покажи тост уведомяване при блокиране</string>
+  <string name="showlog_toasts">Покажи тост уведомление при блокиране</string>
   <string name="enable_show_toasts">Разреши показване на тост съобщения</string>
   <string name="top">Отгоре</string>
   <string name="center">В средата</string>
@@ -388,7 +390,7 @@
   <string name="error_nonsupported">Засечен е King Root!</string>
   <string name="error_nonsupported_details">AFWall + откри неподдържано superuser приложение, за което е известно че заобиколя правилата на защитната стена. Тъй като е superuser приложение, AFWall + не може да поправи този проблем.</string>
   <string name="lockNotification">Скрий уведомяваща икона при заключен екран</string>
-  <string name="lockScreenNotification_summary">Скрий текущо известие при заключен екран</string>
+  <string name="lockScreenNotification_summary">Скрий текущо уведомление при заключен екран</string>
   <string name="menu_legend">Легенда</string>
   <string name="permissiondenied_importexport">Разрешението за ЧЕТЕНЕ/ПИСАНЕ в хранилището е отказан. Моля дайте достъп, за да се изнасят/внасят правила.</string>
   <string name="permissiondenied_asset">Разрешението за ЧЕТЕНЕ/ПИСАНЕ в хранилището е отказан. Моля дайте достъп, за да се копират изпълними файлове за AFWall+ </string>
@@ -402,7 +404,7 @@
   <string name="no_data_available">Моля разрешете журналния сървис от Настройки. Ако е разрешен, то тогава няма данни.</string>
   <string name="loading_data_title">Зареждане...</string>
   <string name="loading_data">Извличане на данни от журнала</string>
-  <string name="switch_old">Превключи към старт изглед</string>
+  <string name="switch_old">Превключи към стар изглед</string>
   <string name="switch_new">Превключи към нов изглед</string>
   <string name="showlogdetail_title">Подробности от журнала на приложение</string>
   <string name="reapply_rules">Моля приложете наново правилата поради промяна в настройките</string>
@@ -411,4 +413,45 @@
   <string name="error_log">Не може да се стартира журналния сървис. LogTarget е празен или LogService не е разрешен.</string>
   <string name="delete_profile">Не може да изтрие профил</string>
   <string name="profile_migrate_msg">Профилите са мигрирани успешно</string>
+  <!-- Log Details -->
+  <string name="destination_address">Адрес на дестинация</string>
+  <string name="source_address">Изходен адрес</string>
+  <string name="ping_destination">Пинг дестинация</string>
+  <string name="ping_source">Пинг източник</string>
+  <string name="resolve_destination">Резолв на дестинация</string>
+  <string name="resolve_source">Резолв на източник</string>
+  <string name="copy_text">Копирай текста</string>
+  <string name="destination_copied">Дестинацията копирана</string>
+  <string name="source_copied">Източник копиран</string>
+  <string name="select_the_action">Изберете действие</string>
+  <string name="result_copied_to_clipboard">Резултатът е копиран в клипборда</string>
+  <string name="result">Резултат</string>
+  <string name="output_is_empty">Изходът е празен заради забранени Мрежови достъп и SuperSu</string>
+  <string name="searching">Търсене</string>
+  <string name="looking_for_data">Търсене на данни&#8230;</string>
+  <string name="reachable_timeout">Достъпен, изтекло време: %d ms</string>
+  <string name="error_or_unknown_category">Грешка или неизвестна категория</string>
+  <string name="show_destination_address">Покажи адрес на дестинация</string>
+  <string name="show_source_address">Покажи изходен адрес</string>
+  <string name="network_connection_not_available">Не е налична мрежова връзка</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Пръстов отпечатък</string>
+  <string name="fingerprint_authentication_error">Грешка при удостоверяване с пръстов отпечатък\n</string>
+  <string name="fingerprint_authentication_help">Помощ за удостоверяване с пръстов отпечатък\n</string>
+  <string name="fingerprint_authentication_failed">Неуспешно удостоверяване с пръстов отпечатък.</string>
+  <string name="fingerprint_authentication_successded">Успешно удостоверявавне с пръстов отпечатък.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">Отключване с едно докосване</string>
+  <string name="desc_fingerprint">Моля, поставете пръст върху скенера, за да потвърдите самоличността си</string>
+  <string name="note">(Влизането с пръстов отпечатък в програмата е много по-бързо. Вашето устройство трябва да има поне един регистриран пръстов отпечатък в настройките)</string>
+  <string name="title_activity_home">Пръстови отпечатъци</string>
+  <string name="activity_home_desc">Успешно сте влезли с удостоверяване на пръстови отпечатъци</string>
+  <string name="activity_home_note">Затворете и отново отворете програмата, за да видите екрана за удостоверяване чрез пръстови отпечатъци отново</string>
+  <string name="fingerprint_required">Изисква се пръстов отпечатък</string>
+  <string name="device_with_no_fingerprint_sensor">Устройството не разполага със сензор за пръстов отпечатък</string>
+  <string name="fingerprint_permission_manifest_missing">Не е дадено разшрешение за удостоверяване с пръстов отпечатък</string>
+  <string name="register_at_least_one_fingerprint">Регистрирайте най-малко един отпечатък в настройки</string>
+  <string name="lock_screen_not_enabled">Екрана за заключване не е разрешен в настройките</string>
+  <string name="fingerprint_enabled_successfully">Пръстов отпечатък активиран успешно</string>
+  <string name="fingerprint_disabled_successfully">Пръстов отпечатък деактивиран успешно</string>
 </resources>

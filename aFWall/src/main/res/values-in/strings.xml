@@ -66,9 +66,9 @@
   <string name="mode_header">Mode: %s</string>
   <string name="legend_clear">Hapus semua kotak centang di Semua kolom</string>
   <string name="mode_whitelist">Izinkan yg dipilih</string>
-  <string name="legend_whitelist">Aplikasi yang dipilih akan diberikan akses internet</string>
+  <string name="legend_whitelist">Aplikasi yang dipilih akan diizinkan mengakses internet</string>
   <string name="mode_blacklist">Blokir yg dipilih</string>
-  <string name="legend_blacklist">Aplikasi yang dipilih akan ditolak akses internet</string>
+  <string name="legend_blacklist">Aplikasi yang dipilih tidak diizinkan mengakses internet</string>
   <string name="set_custom_script">Atur skrip sendiri</string>
   <string name="preferences">Preferensi</string>
   <string name="reload">Muat ulang aplikasi</string>
@@ -98,7 +98,7 @@
   <string name="apply">Terapkan</string>
   <string name="discard">Buang</string>
   <string name="delete">Hapus</string>
-  <string name="clone">Klon</string>
+  <string name="clone">Salin</string>
   <string name="rename">Ubah nama</string>
   <string name="Yes">Ya</string>
   <string name="Continue">Lanjutkan</string>
@@ -116,7 +116,7 @@
   <string name="remove_initd">Script permulaan telah terhapus</string>
   <string name="unable_remove_initd">Gagal menghapus skrip permulaan</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Tidak dapat menonaktifkan firewall. Kata sandi terlindungi!</string>
+  <string name="widget_disable_fail">Tidak dapat menonaktifkan firewall. Dilindungi kata sandi!</string>
   <string name="widget_label_status">AFWall+ Toggle/Status</string>
   <string name="widget_label_settings">Pengaturan AFWall+</string>
   <string name="widget_label_settings_old">Pengaturan AFWall+ (lama)</string>
@@ -133,7 +133,7 @@
   <string name="import_rules_success">Diimpor dari </string>
   <string name="import_rules_fail">Gagal mengimpor!</string>
   <string name="import_rules_missing">File peraturan hilang!</string>
-  <string name="exportConfirm">Ekspor aturan untuk penyimpanan?</string>
+  <string name="exportConfirm">Ekspor aturan ke penyimpanan telepon?</string>
   <string name="export_logs_fail">Ekspor ke Penyimpanan gagal!</string>
   <string name="export_to_sd">Ekspor ke Penyimpanan</string>
   <!-- Logging -->
@@ -176,6 +176,7 @@
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">NamaProfil</string>
+  <string name="profile_notsupport">Harap pindahkan data profile untuk menggunakan pilihan ini</string>
   <string name="reapply_profile">Terapkan kembali aturan profil</string>
   <!-- Interface -->
   <string name="lan_title">Kontrol LAN</string>
@@ -184,7 +185,7 @@
   <string name="vpn_profile">Kontrol VPN</string>
   <string name="vpnSummary">Pisahkan perizinan kontrol VPN</string>
   <string name="roaming">Kontrol roaming</string>
-  <string name="roamingSummary">Dimungkinkan untuk mengatur izin menjelajah secara terpisah</string>
+  <string name="roamingSummary">Aktifkan untuk mengendalikan perizinan roaming secara terpisah</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -203,7 +204,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Terkait XPosed</string>
   <string name="fixDownloadTitle">Perbaiki kebocoran DownloadManager</string>
-  <string name="fixDownloadTitleSummary">Gunakan Xposed untuk memblokir aplikasi unduh data menggunakan akses Android built-in download manager bahkan jika aplikasi ditolak</string>
+  <string name="fixDownloadTitleSummary">Gunakan Xposed untuk memblokir aplikasi mengunduh data menggunakan download manager bawaan bahkan jika aplikasi ditolak</string>
   <string name="LeakDetected">Terdeteksi kebocoran!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Terkait Tasker</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">Tampilkan UID aplikasi pada tampilan utama</string>
   <string name="showuid_summary_off">Sembunyikan UID aplikasi pada tampilan utama. Aktifkan untuk membantu pelacakan log.</string>
   <string name="languages">Bahasa</string>
+  <string name="change_languages">Ubah bahasa</string>
   <string name="misc_header">Bahasa/Plugin</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aturan yg aktif</string>
@@ -298,7 +300,7 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Data</string>
-  <string name="legend_data">Memungkinkan untuk mengatur izin data seluler (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Aktifkan untuk mengatur izin data seluler (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Semua</string>
   <string name="pkg_core">Inti</string>
   <string name="pkg_sys">Sistem</string>
@@ -349,7 +351,7 @@
   <string name="pref_password">Sandi</string>
   <string name="pref_pattern">Pola</string>
   <string name="pref_device">Gunakan Perlindungan Keamanan Perangkat</string>
-  <string name="pref_device_desc">Gunakan pengecekan keamanan perangkat untuk membuka AFWall+ (donasi/fitur kunci)</string>
+  <string name="pref_device_desc">Gunakan pengecekan keamanan perangkat untuk membuka AFWall+ (fitur donasi/key)</string>
   <string name="secure_option">Perangkat tidak dilindungi dengan password/PIN</string>
   <string name="android_version">Fitur ini hanya bekerja pada Lollipop dan versi Android terbaru</string>
   <!--<string name="pref_pin">Pin</string>-->
@@ -411,4 +413,45 @@
   <string name="error_log">Tidak dapat memulai layanan log. LogTarget kosong atau LogService tidak diaktifkan.</string>
   <string name="delete_profile">Tidak dapat menghapus profil</string>
   <string name="profile_migrate_msg">Profil telah berhasil dimigrasi</string>
+  <!-- Log Details -->
+  <string name="destination_address">Alamat tujuan</string>
+  <string name="source_address">Alamat sumber</string>
+  <string name="ping_destination">Tujuan Ping</string>
+  <string name="ping_source">Sumber Ping</string>
+  <string name="resolve_destination">Menyelesaikan masalah alamat tujuan</string>
+  <string name="resolve_source">Menyelesaikan masalah alamat sumber</string>
+  <string name="copy_text">Saling teks</string>
+  <string name="destination_copied">Alamat tujuan disalin</string>
+  <string name="source_copied">Alamat sumber disalin</string>
+  <string name="select_the_action">Pilih tindakan</string>
+  <string name="result_copied_to_clipboard">Hasil disalin ke clipboard</string>
+  <string name="result">Hasil</string>
+  <string name="output_is_empty">Output kosong, dikarenakan jaringan dan akses SuperSU ditolak</string>
+  <string name="searching">Mencari</string>
+  <string name="looking_for_data">Mencari data&#8230;</string>
+  <string name="reachable_timeout">Terjangkau, timeout: %d ms</string>
+  <string name="error_or_unknown_category">Eror atau kategori tidak diketahui</string>
+  <string name="show_destination_address">Tampilkan Alamat Tujuan</string>
+  <string name="show_source_address">Tampilkan Alamat Sumber</string>
+  <string name="network_connection_not_available">Koneksi jaringan tidak tersedia</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Sidik jari</string>
+  <string name="fingerprint_authentication_error">Kesalahan mengotentikasi sidik jari\n</string>
+  <string name="fingerprint_authentication_help">Bantuan otentikasi sidik jari\n</string>
+  <string name="fingerprint_authentication_failed">Gagal mengotentikasi sidik jari.</string>
+  <string name="fingerprint_authentication_successded">Sukses menotentikasi sidik jari.</string>
+  <string name="title_activity_main">MainActivity</string>
+  <string name="title_fingerprint">Buka dengan Sekali Sentuh</string>
+  <string name="desc_fingerprint">Harap tempatkan sidik jari Anda pada scanner untuk memverifikasi identitas Anda</string>
+  <string name="note">(Otentikasi sidik jari mempercepat login aplikasi. Perangkat Anda setidaknya harus memiliki satu sidik jari tersimpan pada perangkat)</string>
+  <string name="title_activity_home">Sidik jadi</string>
+  <string name="activity_home_desc">Berhasil login dengan otentikasi sidik jari</string>
+  <string name="activity_home_note">Tutup dan buka aplikasi kembali untuk menampilkan layar otentikasi sidik jari</string>
+  <string name="fingerprint_required">Dibutuhkan sidik jari</string>
+  <string name="device_with_no_fingerprint_sensor">Perangkat Anda tidak mempunyai sensor sidik jari</string>
+  <string name="fingerprint_permission_manifest_missing">Perizinan otentikasi sidik jari tidak diaktifkan</string>
+  <string name="register_at_least_one_fingerprint">Atur setidaknya satu sidik jari di Pengaturan</string>
+  <string name="lock_screen_not_enabled">Kunci layar tidak diaktifkan pada Pengaturan</string>
+  <string name="fingerprint_enabled_successfully">Otentikasi sidik jari berhasil diaktifkan</string>
+  <string name="fingerprint_disabled_successfully">Otentikasi sidik jari telah dinonaktifkan</string>
 </resources>

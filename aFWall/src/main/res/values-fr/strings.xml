@@ -64,7 +64,7 @@
   <string name="reading_apps">Récupération des applications installées</string>
   <string name="mode">Mode du pare-feu</string>
   <string name="mode_header">Mode : %s</string>
-  <string name="legend_clear">Désactivez toutes les cases à cocher sur toutes les colonnes</string>
+  <string name="legend_clear">Désactiver toutes les cases à cocher sur toutes les colonnes</string>
   <string name="mode_whitelist">Autoriser la sélection</string>
   <string name="legend_whitelist">Les applications sélectionnées auront accès à internet</string>
   <string name="mode_blacklist">Bloquer la sélection</string>
@@ -76,7 +76,7 @@
   <string name="send_report">Envoyer un rapport d\'erreur</string>
   <string name="enter_problem">Merci d\'expliquer le problème :</string>
   <string name="send_mail">Envoyer un mail</string>
-  <string name="notify_pref_summary_on">Une notification sera affichée lorsqu’une nouvelle application est installée</string>
+  <string name="notify_pref_summary_on">Une notification sera affichée lorsqu’une nouvelle application sera installée</string>
   <string name="notify_pref_summary_off">Aucune notification ne sera affichée lorsqu’une nouvelle application sera installée</string>
   <string name="custom_script_defined">Script personnalisé défini</string>
   <string name="custom_script_removed">Script personnalisé supprimé</string>
@@ -91,7 +91,7 @@
   <string name="copied">Copié</string>
   <string name="Search">Rechercher</string>
   <string name="flushRulesConfirm">Effacer toutes les règles iptables ?</string>
-  <string name="overrideRules">Voulez-vous importer les règles ? Ceci écrasera les règles existantes !</string>
+  <string name="overrideRules">Voulez-vous importer les règles ? Ceci effacera les règles existantes !</string>
   <string name="notification_new">Nouvelle application installée</string>
   <string name="notification_new_package">Configurer les autorisations internet</string>
   <string name="confirmMsg">Désactiver totalement le pare-feu ?</string>
@@ -116,7 +116,7 @@
   <string name="remove_initd">Script de démarrage supprimé</string>
   <string name="unable_remove_initd">Impossible de supprimer le script de démarrage AFWall+</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Impossible de désactiver le pare-feu - protection par mot de passe!</string>
+  <string name="widget_disable_fail">Impossible de désactiver le pare-feu. Protection par mot de passe !</string>
   <string name="widget_label_status">AFWall+ Activer/Désactiver</string>
   <string name="widget_label_settings">AFWall+ Paramètres</string>
   <string name="widget_label_settings_old">AFWall+ Paramètres (ancien)</string>
@@ -176,6 +176,7 @@
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Nom du profil</string>
+  <string name="profile_notsupport">Veuillez migrer les données de profil pour utiliser cette option</string>
   <string name="reapply_profile">Réappliquer les règles de profil</string>
   <!-- Interface -->
   <string name="lan_title">Contrôle LAN</string>
@@ -202,8 +203,8 @@
   <string name="auto">Auto</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Relatif à XPosed</string>
-  <string name="fixDownloadTitle">Fix DownloadManager leak</string>
-  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+  <string name="fixDownloadTitle">Réparer les fuites de données du gestionnaire de téléchargement</string>
+  <string name="fixDownloadTitleSummary">Utiliser Xposed pour empêcher les applications de télécharger des données au moyen du gestionnaire de téléchargement intégré à Android même l’accès est refusé à l\'application</string>
   <string name="LeakDetected">Fuite de données détectée !</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Associé à Tasker</string>
@@ -241,7 +242,7 @@
   <string name="addStartupDelayTitle">Retard de démarrage</string>
   <string name="addStartupDelaySummary">AFWall+ attendra 5 secondes avant d\'appliquer les règles. Activez ce paramètre seulement si les règles de démarrage ne s\'appliquent pas correctement pendant le démarrage de l\'appareil.</string>
   <string name="fixleakTitle">Corriger les fuites de données au démarrage</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Empêcher les fuites de données lors du démarrage du système. Votre ROM doit prendre en charge init.d ou su.d (superSU). Les appareils HTC doivent être configurés en S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -264,10 +265,11 @@
   <string name="showuid_summary_on">Afficher l\'UID des applications dans la vue principale</string>
   <string name="showuid_summary_off">Cacher l\'UID des application dans la vue principale. L\'activation peut être utile pour le suivi dans les logs.</string>
   <string name="languages">Langues</string>
+  <string name="change_languages">Changer de langue</string>
   <string name="misc_header">Langues/Plugins</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Règles actives</string>
-  <string name="active_rules_summary">Appliquer les règles de pare-feu à chaque changement de connectivité (LAN/Wi-Fi/2G-3G-4G/Itinérance/Tethering)</string>
+  <string name="active_rules_summary">Appliquer les règles de pare-feu à chaque changement de connectivité (LAN/Wi-Fi/2G-3G-4G/Itinérance/Partage)</string>
   <string name="profile_add">Ajouter un profil</string>
   <string name="profile_remove">Supprimer le profil</string>
   <string name="profile_rename">Renommer le profil</string>
@@ -330,7 +332,7 @@
   <string name="donate_thanks">Merci pour votre soutien !</string>
   <string name="activeNotification">Afficher l\'icône de notification</string>
   <string name="activeNotification_summary">Affiche en permanence l\'icône dans la barre de notification</string>
-  <string name="active">Pare-feu actif</string>
+  <string name="active">Pare-feu activé</string>
   <string name="inactive">Le pare-feu est désactivé</string>
   <string name="About">A propos</string>
   <string name="FAQ">FAQ</string>
@@ -349,7 +351,7 @@
   <string name="pref_password">Mot de passe</string>
   <string name="pref_pattern">Motif</string>
   <string name="pref_device">Utiliser la protection de sécurité de l\'appareil</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+  <string name="pref_device_desc">Utiliser la vérification de sécurité de l\'appareil pour ouvrir AFWall+ (fonctionnalité Donateur/avec clé)</string>
   <string name="secure_option">L\'appareil n’est pas protégé par un mot de passe ou un PIN</string>
   <string name="android_version">Cette fonctionnalité ne fonctionne que sur Lollipop et les versions ultérieures d\'Android</string>
   <!--<string name="pref_pin">Pin</string>-->
@@ -406,9 +408,50 @@
   <string name="switch_new">Basculer vers l’affichage récent</string>
   <string name="showlogdetail_title">Détails du journal de l\'application</string>
   <string name="reapply_rules">Merci de ré-appliquer les règles en raison du changement de préférence</string>
-  <string name="custom_rules">Règles Personnalisées</string>
-  <string name="mdns">Activez la multidiffusion DNS</string>
+  <string name="custom_rules">Règles personnalisées</string>
+  <string name="mdns">Activer la multidiffusion DNS</string>
   <string name="error_log">Impossible de démarrer le service de journalisation. LogTarget est vide ou LogService n’est pas activé.</string>
   <string name="delete_profile">Impossible de supprimer le profil</string>
   <string name="profile_migrate_msg">Les profils ont été migrés avec succès</string>
+  <!-- Log Details -->
+  <string name="destination_address">Adresse de destination</string>
+  <string name="source_address">Adresse source</string>
+  <string name="ping_destination">Ping de la destination</string>
+  <string name="ping_source">Ping de la source</string>
+  <string name="resolve_destination">Résoudre la destination</string>
+  <string name="resolve_source">Résoudre la source</string>
+  <string name="copy_text">Copier le texte</string>
+  <string name="destination_copied">Destination copiée</string>
+  <string name="source_copied">Source copiée</string>
+  <string name="select_the_action">Sélectionner une action</string>
+  <string name="result_copied_to_clipboard">Résultat copié dans le presse-papiers</string>
+  <string name="result">Résultat</string>
+  <string name="output_is_empty">Le résultat est vide car l\'accès au réseau et SuperSu a été refusé</string>
+  <string name="searching">Recherche en cours</string>
+  <string name="looking_for_data">Recherche de données&#8230;</string>
+  <string name="reachable_timeout">Accessible, délai d’attente : %d ms</string>
+  <string name="error_or_unknown_category">Erreur ou catégorie inconnue</string>
+  <string name="show_destination_address">Afficher l’adresse de destination</string>
+  <string name="show_source_address">Afficher l\'adresse source</string>
+  <string name="network_connection_not_available">Connexion réseau non disponible</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Empreinte digitale</string>
+  <string name="fingerprint_authentication_error">Erreur\n d’authentification par empreinte digitale</string>
+  <string name="fingerprint_authentication_help">Aide\n sur l’authentification par empreinte digitale</string>
+  <string name="fingerprint_authentication_failed">Échec de l’authentification par empreinte digitale.</string>
+  <string name="fingerprint_authentication_successded">Authentification par empreinte digitale réussie.</string>
+  <string name="title_activity_main">Activité principale</string>
+  <string name="title_fingerprint">Déverrouillage avec un tap</string>
+  <string name="desc_fingerprint">Veuillez placer votre doigt sur le scanner pour vérifier votre identité</string>
+  <string name="note">(L\'identification par empreinte digitale rend votre connexion à l\'application beaucoup plus rapide. Votre appareil doit avoir au moins une empreinte digitale enregistrée dans les paramètres de périphérique)</string>
+  <string name="title_activity_home">Empreinte digitale</string>
+  <string name="activity_home_desc">Vous avez réussi à vous connecter avec l’authentification par empreinte digitale</string>
+  <string name="activity_home_note">Fermez et rouvrez l’application pour afficher de nouveau l’écran d’authentification par empreinte digitale</string>
+  <string name="fingerprint_required">Empreinte digitale requise</string>
+  <string name="device_with_no_fingerprint_sensor">Votre appareil ne dispose pas d’un capteur d’empreinte digitale</string>
+  <string name="fingerprint_permission_manifest_missing">Autorisation d’authentification par empreinte digitale non activée</string>
+  <string name="register_at_least_one_fingerprint">Enregistrer au moins une empreinte digitale dans les paramètres</string>
+  <string name="lock_screen_not_enabled">La sécurité de verrouillage d\'écran n\'est pas activée dans les paramètres</string>
+  <string name="fingerprint_enabled_successfully">Empreinte digitale activée avec succès</string>
+  <string name="fingerprint_disabled_successfully">Empreinte digitale désactivée avec succès</string>
 </resources>

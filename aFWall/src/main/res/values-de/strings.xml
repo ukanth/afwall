@@ -176,6 +176,7 @@
   <string name="profile2">Profil 2</string>
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Profilname</string>
+  <string name="profile_notsupport">Bitte Datenprofil migrieren, um diese Option verwenden zu können</string>
   <string name="reapply_profile">Profilregeln erneut anwenden</string>
   <!-- Interface -->
   <string name="lan_title">LAN-Steuerung</string>
@@ -264,6 +265,7 @@
   <string name="showuid_summary_on">App-User-Identifier (UID) werden in der Hauptansicht angezeigt</string>
   <string name="showuid_summary_off">App-User-Identifier (UID) sind in der Hauptansicht ausgeblendet. Ihre Anzeige kann aber nützlich sein, um Protokolleinträge zu verfolgen.</string>
   <string name="languages">Sprache</string>
+  <string name="change_languages">Sprache ändern</string>
   <string name="misc_header">Sprachen/Erweiterungen</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktive Regeln</string>
@@ -411,4 +413,45 @@
   <string name="error_log">Protokolldienst kann nicht gestartet werden. Entweder LogTarget enthält keine Werte oder LogService ist nicht aktiviert.</string>
   <string name="delete_profile">Profil kann nicht gelöscht werden</string>
   <string name="profile_migrate_msg">Profile erfolgreich übertragen</string>
+  <!-- Log Details -->
+  <string name="destination_address">Zieladresse</string>
+  <string name="source_address">Herkunftsadresse</string>
+  <string name="ping_destination">Ziel des Ping</string>
+  <string name="ping_source">Herkunftsadresse anpingen</string>
+  <string name="resolve_destination">Ziel auflösen</string>
+  <string name="resolve_source">Herkunftsadresse auflösen</string>
+  <string name="copy_text">Text kopieren</string>
+  <string name="destination_copied">Ziel kopiert</string>
+  <string name="source_copied">Herkunft kopiert</string>
+  <string name="select_the_action">Aktion auswählen</string>
+  <string name="result_copied_to_clipboard">Ergebnis in Zwischenablage kopiert</string>
+  <string name="result">Ergebnis</string>
+  <string name="output_is_empty">Ausgabe ist leer, da Netzwerk- und Root-Zugriff verweigert wurden</string>
+  <string name="searching">Wird gesucht</string>
+  <string name="looking_for_data">Daten suchen &#8230;</string>
+  <string name="reachable_timeout">Erreichbar, nach: %d ms</string>
+  <string name="error_or_unknown_category">Fehler oder unbekannte Kategorie</string>
+  <string name="show_destination_address">Zieladresse anzeigen</string>
+  <string name="show_source_address">Herkunftsadresse anzeigen</string>
+  <string name="network_connection_not_available">Keine Netzwerk-Verbindung verfügbar</string>
+  <!-- Fingerprint -->
+  <string name="pref_fingerprint">Fingerabdruck</string>
+  <string name="fingerprint_authentication_error">Fehler bei Fingerabdruck-Authentifizierung\n</string>
+  <string name="fingerprint_authentication_help">Hilfe zur Fingerabdruck-Authentifizierung\n</string>
+  <string name="fingerprint_authentication_failed">Fingerabdruck-Authentifizierung fehlgeschlagen.</string>
+  <string name="fingerprint_authentication_successded">Fingerabdruck-Authentifizierung erfolgreich.</string>
+  <string name="title_activity_main">Hauptaktivität</string>
+  <string name="title_fingerprint">Mit Fingerabdruck entsperren</string>
+  <string name="desc_fingerprint">Bitte legen Sie zur Identitätsüberprüfung Ihre Fingerspitze auf den Sensor</string>
+  <string name="note">(Die Fingerabdruck-Anmeldung beschleunigt das Entsperren der App. Sie müssen in den Geräteeinstellungen mindestens einen Fingerabdruck registriert haben.)</string>
+  <string name="title_activity_home">Fingerabdruck</string>
+  <string name="activity_home_desc">Sie haben sich erfolgreich mit der Fingerabdruck-Authentifizierung angemeldet</string>
+  <string name="activity_home_note">Starten Sie die App neu, damit der Bildschirm mit der Fingerabdruck-Authentifizierung wieder angezeigt wird</string>
+  <string name="fingerprint_required">Fingerabdruck erforderlich</string>
+  <string name="device_with_no_fingerprint_sensor">Ihr Gerät besitzt keinen Fingerabdruck-Sensor</string>
+  <string name="fingerprint_permission_manifest_missing">Fingerabdruck-Authentifizierung nicht aktiviert</string>
+  <string name="register_at_least_one_fingerprint">Registrieren Sie mindestens einen Fingerabdruck in den Geräteeinstellungen</string>
+  <string name="lock_screen_not_enabled">Keine Sperrbildschirm-Sicherheitseinstellungen aktiviert</string>
+  <string name="fingerprint_enabled_successfully">Fingerabdruck-Authentifizierung aktiviert</string>
+  <string name="fingerprint_disabled_successfully">Fingerabdruck-Authentifizierung deaktiviert</string>
 </resources>
