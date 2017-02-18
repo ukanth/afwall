@@ -10,6 +10,7 @@ Index
 -----
 
 * [Description](#description)
+* [Availability](#availability)
 * [Features](#features)
 * [Changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md)
 * [Bug Reports](#bug-reports)
@@ -28,11 +29,15 @@ Index
 Description
 -----------
 
-Android Firewall+ is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to access the network.
+Android Firewall+ (AFWall+) is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to access the network.
 
 The original codebase was derived from [DroidWall](http://code.google.com/p/droidwall) by Rodrigo Rosauro. DroidWall was sold to AVAST in December 2011, and is no longer actively maintained.
 
 For more information and community discussions, please visit the [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or [our Wiki](https://github.com/ukanth/afwall/wiki).
+
+Availability
+------------
+Download the latest release from [Google Play Store](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall), [GitHub](https://github.com/ukanth/afwall/releases), or [F-Droid](https://f-droid.org/repository/browse/?fdid=dev.ukanth.ufirewall).
 
 Features
 --------
@@ -50,7 +55,7 @@ Features
 * Device Admin Support (to protect AFWall+ from uninstall)
 * Easy to manage your rules with a custom script
 * IPv4/IPv6 support
-* WiFi, wireless data, LAN, VPN, tether, and roaming support
+* WiFi, mobile data, LAN, VPN, tether, and roaming support
 * Tasker and Locale support
 * Firewall Logs service
 * Multi-User (multiple-profiles) support
@@ -63,7 +68,7 @@ Bug Reports
 --------
 
 Please see the [issues](https://github.com/ukanth/afwall/issues) section to
-report any bugs or feature requests and to see the list of known issues. Before you report a bug, please take a look [here](https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug).  
+report any bugs or feature requests and to see the list of known issues. Before you report a bug, please take a look [here](https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug).
 
 Limitations
 -----------
