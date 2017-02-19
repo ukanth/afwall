@@ -2453,7 +2453,7 @@ public final class Api {
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
                     try {
-                        JSONObject obj = profileObject.getJSONObject(key);
+                        JSONObject obj = customProfileObject.getJSONObject(key);
                         updateRulesFromJson(ctx, obj, key);
                     } catch (JSONException e) {
                         if (e.getMessage().contains("No value")) {
