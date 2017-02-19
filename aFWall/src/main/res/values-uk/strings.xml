@@ -7,7 +7,7 @@
     -->
   <!-- main -->
   <string name="app_name">AFWall + </string>
-  <string name="app_name_donate">AFWall + (Пожертва)</string>
+  <string name="app_name_donate">AFWall+ (Пожертва)</string>
   <string name="title_disabled">AFWall+ (НЕ АКТИВНИЙ)</string>
   <string name="whitelist_array_item">Дозволити обрані</string>
   <string name="blacklist_array_item">Блокувати обрані</string>
@@ -91,7 +91,7 @@
   <string name="copied">Копіювання</string>
   <string name="Search">Пошук</string>
   <string name="flushRulesConfirm">Видалити всі правила iptables?</string>
-  <string name="overrideRules">Ви хочете імпортувати ці правила? Це перевизначитьі чинні правила!</string>
+  <string name="overrideRules">Ви хочете імпортувати ці правила? Це перевизначить чинні правила!</string>
   <string name="notification_new">Встановлено новий додаток</string>
   <string name="notification_new_package">Налаштувати дозволи інтернету</string>
   <string name="confirmMsg">Повністю відключити брандмауер?</string>
@@ -156,7 +156,7 @@
   <string name="no_log">Журнал порожній</string>
   <string name="LogAppName">Назва застосунка</string>
   <string name="LogPackBlock">Всього заблокованих пакетів</string>
-  <string name="blocked">AFWall + заблоковані:</string>
+  <string name="blocked">AFWall+ заблоковані:</string>
   <string name="refresh">Оновити</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Профілі</string>
@@ -171,7 +171,7 @@
   <string name="toggle_profile2">Активувати профіль 2</string>
   <string name="toggle_profile3">Активувати профіль 3</string>
   <string name="multipleProfiles">Декілька профілів</string>
-  <string name="defaultProfile">За промовчанням</string>
+  <string name="defaultProfile">Типовий</string>
   <string name="profile1">Профіль 1</string>
   <string name="profile2">Профіль 2</string>
   <string name="profile3">Профіль 3</string>
@@ -189,11 +189,11 @@
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
-  <string name="toast_bin_installed">AFWall +: Двійкові файли встановлено</string>
-  <string name="toast_enabled">AFWall +: Брандмауер увімкнено</string>
-  <string name="toast_error_enabling">AFWall +: ПОМИЛКА УВІМКНЕННЯ БРАНДМАУЕРА!</string>
-  <string name="toast_disabled">AFWall +: Брандмауер вимкнено!</string>
-  <string name="toast_error_disabling">AFWall +: Помилка під час увімкнення брандмауера!</string>
+  <string name="toast_bin_installed">AFWall+: Двійкові файли встановлено</string>
+  <string name="toast_enabled">AFWall+: Брандмауер увімкнено</string>
+  <string name="toast_error_enabling">AFWall+: ПОМИЛКА УВІМКНЕННЯ БРАНДМАУЕРА!</string>
+  <string name="toast_disabled">AFWall+: Брандмауер вимкнено!</string>
+  <string name="toast_error_disabling">AFWall+: Помилка під час увімкнення брандмауера!</string>
   <!-- Binary -->
   <string name="busybox_pref">Двійковий файл BusyBox</string>
   <string name="system_bb">Системний файл BusyBox</string>
@@ -429,7 +429,7 @@
   <string name="output_is_empty">Вивід порожній, через доступу до мережі і SuperSu заборонений</string>
   <string name="searching">Пошук</string>
   <string name="looking_for_data">Пошук даних&#8230;</string>
-  <string name="reachable_timeout">Доступний час очікування: %d, ms</string>
+  <string name="reachable_timeout">Доступний час очікування: %d, мс</string>
   <string name="error_or_unknown_category">Помилка або невідома категорія</string>
   <string name="show_destination_address">Показати адресу призначення</string>
   <string name="show_source_address">Показати адресу джерела</string>

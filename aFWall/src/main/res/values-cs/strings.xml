@@ -24,7 +24,7 @@
   <string name="error_refresh">Chyba aktualizace iptables</string>
   <string name="error_apply">Chyba aplikování pravidel iptables</string>
   <string name="error_fetch">Chyba načítání pravidel iptables</string>
-  <string name="error_su">Nelze získat root přístup\nPro používání AFWall+ potřebujete root telefonu.\n\nPokud je tento telefon již rootnutý, prosím ujistěte se, že má AFWall+ dostatečná oprávnění pro spustění \"su\" příkazu.</string>
+  <string name="error_su">Nelze získat root přístup\nPro používání AFWall+ potřebujete root telefonu.\n\nPokud je tento telefon již rootnutý, prosím ujistěte se, že má AFWall+ dostatečná oprávnění pro spustění příkazu \"su\".</string>
   <string name="error_netfilter">Nelze najít podporu pro cíle a řetězce iptables.\nAFWall+ nemusí pracovat podle očekávání v důsledku tohoto omezení.</string>
   <string name="error_common">Chyba: </string>
   <string name="all_item">(Každá aplikace) - Stejně jako výběr všech aplikací</string>

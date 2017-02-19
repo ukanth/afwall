@@ -176,7 +176,7 @@
   <string name="profile2">Perfil 2</string>
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">NomePerfil</string>
-  <string name="profile_notsupport">Please migrate profile data to use this option</string>
+  <string name="profile_notsupport">Por favor, migre os dados de perfil para usar esta opção</string>
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
   <string name="lan_title">Controle da LAN</string>
@@ -426,7 +426,7 @@
   <string name="select_the_action">Selecionar a Ação</string>
   <string name="result_copied_to_clipboard">Resultado copiado para a área de transferência</string>
   <string name="result">Resultado</string>
-  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="output_is_empty">A Saída está vazia, porque foram negados o acesso à Rede e modo Superusuário</string>
   <string name="searching">Pesquisando</string>
   <string name="looking_for_data">Procurando dados&#8230;</string>
   <string name="reachable_timeout">Alcançável, tempo limite: %d ms</string>
@@ -439,14 +439,14 @@
   <string name="fingerprint_authentication_error">Erro na autenticação de impressão digital\n</string>
   <string name="fingerprint_authentication_help">Ajuda na autenticação de impressão digital\n</string>
   <string name="fingerprint_authentication_failed">Falha de autenticação de impressão digital.</string>
-  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="fingerprint_authentication_successded">Autenticação de impressão digital realizada com sucesso.</string>
   <string name="title_activity_main">MainActivity</string>
   <string name="title_fingerprint">Um toque para desbloquear</string>
-  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
-  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+  <string name="desc_fingerprint">Por favor, coloque a ponta do dedo no leitor para verificar a sua identidade</string>
+  <string name="note">(O início da sessão com a impressão digital torna o acesso ao aplicativo muito mais rápido. Seu dispositivo deve ter, pelo menos, uma impressão digital registrada nas configurações do dispositivo)</string>
   <string name="title_activity_home">Impressão digital</string>
-  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
-  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
+  <string name="activity_home_desc">Sessão com autenticação de impressão digital iniciada com êxito</string>
+  <string name="activity_home_note">Feche e abra novamente o app para ver a tela de autenticação de impressão digital</string>
   <string name="fingerprint_required">Impressão digital necessária</string>
   <string name="device_with_no_fingerprint_sensor">Seu dispositivo não possui um Sensor de Impressão Digital</string>
   <string name="fingerprint_permission_manifest_missing">Permissão para autenticação de impressão digital não está habilitada</string>
