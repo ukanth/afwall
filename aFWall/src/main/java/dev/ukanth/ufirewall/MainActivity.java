@@ -393,7 +393,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSpinner.setAdapter(spinnerAdapter);
         mSpinner.setOnItemSelectedListener(this);
         String currentProfile = G.storedProfile();
-        if(!G.isProfileMigrated()) {
+        if (!G.isProfileMigrated()) {
             switch (currentProfile) {
                 case Api.DEFAULT_PREFS_NAME:
                     mSpinner.setSelection(0);
@@ -409,16 +409,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
                 default:
                     if (currentProfile != null) {
-                        mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile),false);
+                        mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile), false);
                     }
             }
         } else {
             if (currentProfile != null) {
-                if(!currentProfile.equals(Api.DEFAULT_PREFS_NAME)){
+                if (!currentProfile.equals(Api.DEFAULT_PREFS_NAME)) {
                     ProfileData data = ProfileHelper.getProfileByIdentifier(currentProfile);
-                    mSpinner.setSelection(spinnerAdapter.getPosition(data.getName()),false);
+                    mSpinner.setSelection(spinnerAdapter.getPosition(data.getName()), false);
                 } else {
-                    mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile),false);
+                    mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile), false);
                 }
             }
         }
@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
                 case "p3":
 
-                    if(FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()){
+                    if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
 
                         requestFingerprint();
                     }
@@ -649,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Request the fingerprint lock before displayed the main screen.
      */
-    private void requestFingerprint(){
+    private void requestFingerprint() {
         FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(this);
         dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
             @Override
@@ -902,6 +902,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    @Override
+    public boolean onSearchRequested() {
+        MenuItem menuItem = mainMenu.findItem(R.id.menu_search); // R.string.search is the id of the searchview
+        if (menuItem != null) {
+            if (menuItem.isActionViewExpanded()) {
+                menuItem.collapseActionView();
+            } else {
+                menuItem.expandActionView();
+                search(menuItem);
+            }
+        }
+        return super.onSearchRequested();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -985,7 +999,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (item.getItemId()) {
 
 		/*case android.R.id.home:
-			disableOrEnable();
+            disableOrEnable();
 	        return true;*/
             case R.id.menu_legend:
                 LayoutInflater inflater = LayoutInflater.from(this);
@@ -1068,37 +1082,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 			showOrLoadApplications();
 			return true;*/
             case R.id.menu_search:
-
-
-                item.setActionView(R.layout.searchbar);
-                final EditText filterText = (EditText) item.getActionView().findViewById(
-                        R.id.searchApps);
-                filterText.addTextChangedListener(filterTextWatcher);
-                filterText.setEllipsize(TruncateAt.END);
-                filterText.setSingleLine();
-
-                MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem item) {
-                        // Do something when collapsed
-                        showApplications("", 0, true);
-                        return true;  // Return true to collapse action view
-                    }
-
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem item) {
-                        filterText.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                filterText.requestFocus();
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
-                            }
-                        });
-                        return true;  // Return true to expand action view
-                    }
-                });
-
+                search(item);
                 return true;
             case R.id.menu_export:
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -1129,6 +1113,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void search(MenuItem item) {
+        item.setActionView(R.layout.searchbar);
+        final EditText filterText = (EditText) item.getActionView().findViewById(
+                R.id.searchApps);
+        filterText.addTextChangedListener(filterTextWatcher);
+        filterText.setEllipsize(TruncateAt.END);
+        filterText.setSingleLine();
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                showApplications("", 0, true);
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                filterText.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        filterText.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                });
+                return true;  // Return true to expand action view
+            }
+        });
     }
 
     private void showImportDialog() {
