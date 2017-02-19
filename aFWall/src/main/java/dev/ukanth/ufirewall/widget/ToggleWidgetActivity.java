@@ -258,9 +258,14 @@ public class ToggleWidgetActivity extends Activity {
             new Thread() {
                 @Override
                 public void run() {
-                    ProfileData data = ProfileHelper.getProfileByName(profileName);
-                    G.setProfile(true, data.getIdentifier());
-                    applyProfileRules(context, msg, toaster);
+                    if(G.isProfileMigrated()) {
+                        ProfileData data = ProfileHelper.getProfileByName(profileName);
+                        G.setProfile(true, data.getIdentifier());
+                    } else {
+                        G.setProfile(true, profileName);
+
+                    }
+                    applyProfileRules(context,msg,toaster);
                     Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
                 }
             }.start();
