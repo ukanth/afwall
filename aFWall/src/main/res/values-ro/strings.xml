@@ -98,7 +98,7 @@
   <string name="apply">Aplică</string>
   <string name="discard">Renunță</string>
   <string name="delete">Șterge</string>
-  <string name="clone">Clone</string>
+  <string name="clone">Clonează</string>
   <string name="rename">Redenumește</string>
   <string name="Yes">Da</string>
   <string name="Continue">Continuă</string>
@@ -176,7 +176,7 @@
   <string name="profile2">Profilul 2</string>
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Nume Profil</string>
-  <string name="profile_notsupport">Please migrate profile data to use this option</string>
+  <string name="profile_notsupport">Migrează datele profilului pentru a folosi această opțiune</string>
   <string name="reapply_profile">Reaplică regulile profilului</string>
   <!-- Interface -->
   <string name="lan_title">Control LAN</string>
@@ -204,7 +204,7 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed înrudit</string>
   <string name="fixDownloadTitle">Repară pierderile DownloadManager</string>
-  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+  <string name="fixDownloadTitleSummary">Folosește Xposed pentru a împiedica aplicațiile să descarce date folosind managerul de descărcări inclus în Android chiar dacă aplicația are accesul la internet blocat</string>
   <string name="LeakDetected">Pierderi detectate!</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker înrudit</string>
@@ -220,7 +220,7 @@
   <string name="ipv6_title">Suport IPv6</string>
   <string name="ipv6_summary">Activează suportul pentru IPv6</string>
   <string name="block_ipv6_title">Blochează IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">Blochează toate conexiunile IPv6. ATENȚIE: Utilizează această opțiune doar dacă folosești o conexiune IPv4</string>
   <string name="ip6unavailable">Eroare: IPv6 necesită „/system/bin/ip6tables”.</string>
   <string name="switch_ipv6">Comută regulile IPv6</string>
   <string name="switch_ipv4">Comută regulile IPv4</string>
@@ -242,7 +242,7 @@
   <string name="addStartupDelayTitle">Întârziere lansare</string>
   <string name="addStartupDelaySummary">AFWall + va aştepta 5 secunde înainte de a aplica regulile. Activaţi această setare numai în cazul în care normele de lansare nu sunt aplicate corespunzător la pornire.</string>
   <string name="fixleakTitle">Repară pierderile de date la pornire</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Previne pierderile de date la pornirea sistemului. ROM-ul trebuie să suporte init.d sau su.d (superSU). Dispozitivele HTC trebuie să fie configurate pentru S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -269,7 +269,7 @@
   <string name="misc_header">Limbi/plugin-uri</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Reguli active</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
+  <string name="active_rules_summary">Aplică regulile firewall-ului la fiecare modificare de conectivitate (LAN/Wi-Fi/wireless-date/roaming/tether)</string>
   <string name="profile_add">Adaugă profil</string>
   <string name="profile_remove">Elimină profil</string>
   <string name="profile_rename">Redenumește profil</string>
@@ -294,26 +294,26 @@
   <string name="uncheck_all">Deselectează toate</string>
   <string name="select_action">Selectează acțiunea pe coloană </string>
   <string name="roam">Roam</string>
-  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
+  <string name="legend_roam">Permite controlul separat al permisiunilor de date când ai furnizori de rețea diferiți (Roaming)</string>
   <string name="wifi">Wifi</string>
   <string name="legend_wifi">Activează controlul permisiunilor Wi-Fi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">Date</string>
-  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+  <string name="legend_data">Activează controlul permisiunilor de date mobile (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Toate</string>
   <string name="pkg_core">Nucleu</string>
   <string name="pkg_sys">Sistem</string>
   <string name="pkg_user">Utilizator</string>
   <string name="menu">Meniu</string>
-  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
+  <string name="backup_notexist">Nu există nicio copie de rezervă. Te rog să exporți una din meniu.</string>
   <string name="showFilter">Arată filtrele</string>
-  <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
-  <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
+  <string name="showfilter_summary_on">Filtrele (Toate/Nucleu/Sistem/Utilizator) sunt afișate în ecranul principal</string>
+  <string name="showfilter_summary_off">Filtrele (Toate/Nucleu/Sistem/Utilizator) sunt ascunse în ecranul principal</string>
   <string name="enable_dns">Activează DNS prin intermediul netd</string>
   <string name="disable_dns">Dezactivează DNS prin intermediul netd</string>
   <string name="dns_proxy_title">Proxy DNS </string>
-  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
+  <string name="dns_proxy_summary">Interogările DNS sunt prin netd în versiunile Android 4.3 sau mai recente. Dezactivând acest lucru va bloca accesul la internet pe dispozitivele respective.</string>
   <string name="tasker_lable">AFWall + Tasker Plugin</string>
   <string name="enable">Activează</string>
   <string name="disable">Dezactivează</string>
@@ -351,7 +351,7 @@
   <string name="pref_password">Parola</string>
   <string name="pref_pattern">Model</string>
   <string name="pref_device">Utilizează protecţia de securitate a dispozitivului</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+  <string name="pref_device_desc">Utilizează controlul de securitate al dispozitivului pentru a deschide AFWall+ (doar în versiunea donat/cod)</string>
   <string name="secure_option">Dispozitivul nu este protejat cu parolă/PIN</string>
   <string name="android_version">Această caracteristică funcţionează numai pe Lollipop și versiunile mai recente de Android</string>
   <!--<string name="pref_pin">Pin</string>-->
@@ -388,12 +388,12 @@
   <string name="yTitleSummary">Reglare manuală a poziției Y</string>
   <string name="yTitleDialog">Setează poziţia Y (număr)</string>
   <string name="error_nonsupported">King Root detectat!</string>
-  <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
+  <string name="error_nonsupported_details">AFWall+ a detectat o aplicație superuser neacceptată, care este cunoscută pentru ocolirea regulilor firewall-ului. Deoarece este o aplicație superuser, AFWall+ nu poate remedia această problemă.</string>
   <string name="lockNotification">Ascunde pictograma de notificare în ecranul de blocare</string>
   <string name="lockScreenNotification_summary">Ascunde notificarile actuale în ecranul de blocare</string>
   <string name="menu_legend">Legendă</string>
-  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
-  <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
+  <string name="permissiondenied_importexport">Permisiune SCRIERE/CITIRE refuzată la accesarea mediului de stocare. Te rog, acordă acces pentru exportul/importul regulilor.</string>
+  <string name="permissiondenied_asset">Permisiune SCRIERE/CITIRE refuzată la accesarea mediului de stocare. Te rog, acordă acces pentru copierea fișierelor binare pentru AFWall+ </string>
   <string name="log_deletedapp">Aplicație eliminată</string>
   <string name="log_denied">Refuzat:</string>
   <string name="log_times">ori</string>
@@ -401,7 +401,7 @@
   <string name="log_dst">Destinație: </string>
   <string name="log_src">Sursă: </string>
   <string name="log_proto">Protocol: </string>
-  <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+  <string name="no_data_available">Te rog, activează serviciul pentru înregistrări din Preferințe. Dacă este activat, atunci nu sunt înregistrări în jurnal.</string>
   <string name="loading_data_title">Încărcare...</string>
   <string name="loading_data">Preluarea datelor de jurnal</string>
   <string name="switch_old">Comută la vizualizarea veche</string>
@@ -418,40 +418,40 @@
   <string name="source_address">Adresa sursei</string>
   <string name="ping_destination">Destinația Ping-ului</string>
   <string name="ping_source">Sursa Ping-ului</string>
-  <string name="resolve_destination">Resolve Destination</string>
-  <string name="resolve_source">Resolve Source</string>
+  <string name="resolve_destination">Alege destinația</string>
+  <string name="resolve_source">Alege sursa</string>
   <string name="copy_text">Copiază textul</string>
-  <string name="destination_copied">Destination copied</string>
-  <string name="source_copied">Source copied</string>
+  <string name="destination_copied">Destinație copiată</string>
+  <string name="source_copied">Sursă copiată</string>
   <string name="select_the_action">Selectează acțiunea</string>
   <string name="result_copied_to_clipboard">Rezultat copiat în memoria temporară</string>
   <string name="result">Rezultat</string>
-  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="output_is_empty">Ieșirea este goală, deoarece accesul la rețea și SuperSu este respins</string>
   <string name="searching">Căutare</string>
-  <string name="looking_for_data">Looking for data&#8230;</string>
-  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
-  <string name="error_or_unknown_category">Error or Unknown Category</string>
-  <string name="show_destination_address">Show Destination Address</string>
-  <string name="show_source_address">Show Source Address</string>
-  <string name="network_connection_not_available">Network connection not Available</string>
+  <string name="looking_for_data">În căutarea de date&#8230;</string>
+  <string name="reachable_timeout">Accesibil, în: %d ms</string>
+  <string name="error_or_unknown_category">Eroare sau categorie necunoscută</string>
+  <string name="show_destination_address">Afișează adresa destinației</string>
+  <string name="show_source_address">Afișează adresa sursei</string>
+  <string name="network_connection_not_available">Conexiune indisponibilă</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Amprentă</string>
-  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
-  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
-  <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
-  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="fingerprint_authentication_error">Eroare autentificare amprentă digitală\n</string>
+  <string name="fingerprint_authentication_help">Ajutor autentificare cu amprentă digitală\n</string>
+  <string name="fingerprint_authentication_failed">Autentificarea cu amprentă digitală a eșuat.</string>
+  <string name="fingerprint_authentication_successded">Autentificarea cu amprentă digitală a reușit.</string>
   <string name="title_activity_main">Activitate Principală</string>
   <string name="title_fingerprint">Deblocare o singură atingere</string>
   <string name="desc_fingerprint">Te rog pune degetul pe scaner pentru verificarea identității</string>
-  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-  <string name="title_activity_home">Fingerprint</string>
-  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
-  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
-  <string name="fingerprint_required">Fingerprint required</string>
-  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
-  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
-  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
-  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
-  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
-  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+  <string name="note">(Autentificarea cu amprentă digitală face lansarea aplicației mai rapidă. Dispozitivul tău trebuie să aibă cel puțin o amprentă digitală înregistrată în setări)</string>
+  <string name="title_activity_home">Amprentă</string>
+  <string name="activity_home_desc">Te-ai autentificat cu succes folosind amprenta digitală</string>
+  <string name="activity_home_note">Închide și redeschide aplicația pentru a vedea ecranul de autentificare cu amprentă digitală</string>
+  <string name="fingerprint_required">Este necesară amprenta digitală</string>
+  <string name="device_with_no_fingerprint_sensor">Dispozitivul tău nu are senzor pentru amprentă digitală</string>
+  <string name="fingerprint_permission_manifest_missing">Autentificarea cu amprentă digitală nu este activată</string>
+  <string name="register_at_least_one_fingerprint">Înregistrează cel puțin o amprentă digitală în Setări</string>
+  <string name="lock_screen_not_enabled">Blocarea ecranului nu este activată în Setări</string>
+  <string name="fingerprint_enabled_successfully">Amprenta digitală activată cu succes</string>
+  <string name="fingerprint_disabled_successfully">Amprenta digitală dezactivată cu succes</string>
 </resources>
