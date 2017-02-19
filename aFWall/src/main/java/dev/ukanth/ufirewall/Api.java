@@ -2937,7 +2937,11 @@ public final class Api {
             NotificationManager mNotificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
 
-            mNotificationManager.cancel(NOTIFICATION_ID);
+            //refresh notification on profile switch
+            if(G.enableMultiProfile()){
+                mNotificationManager.cancel(NOTIFICATION_ID);
+            }
+
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
