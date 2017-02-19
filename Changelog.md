@@ -2,13 +2,14 @@ Changelog AFWall+
 ==================
 
 Version 2.9.2-BETA
-* Features
+Features
  * Network options for logs (Thanks @vzool)
  * Fingerprint protection (Thanks @vzool)
  * Allow multicast on LAN (Thanks @ionum)
  * Preserve Zoom size(+/-) in Firewall rules
- * Rewritten Profiles - Ability to delete/rename profiles(additional)
-* Bugs
+ * Rewritten Profiles - Ability to delete/rename profiles(additional) 
+ * Hardware search key
+Bugs
  * LAN not working on Nougat with few devices
  * Apply boot rules on few devices
  * Unable to start logservice error issue on few devices
@@ -16,6 +17,8 @@ Version 2.9.2-BETA
  * Log notification filter button not showing 
  * Optimizing the detection of logTarget
  * Removed toybox detection, causing lots of ANR issues
+Misc
+ * Support libraries and translation updates
 
 Version 2.9.1 [Nov 27, 2016]
 * Boot/Connectivity change rules hung on some devices
