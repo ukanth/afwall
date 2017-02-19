@@ -58,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         // Common options: Copy, Export to SD Card, Refresh
-        menu.add(0, MENU_ADD, 0, getString(R.string.profile_add)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.add(0, MENU_ADD, 0, getString(R.string.profile_add)).setIcon(R.drawable.plus).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         super.onCreateOptionsMenu(menu);
         return true;
     }
@@ -90,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
         menu.setHeaderTitle(getString(R.string.select) + " " + name);
         if (G.isProfileMigrated()) {
             menu.add(0, MENU_RENAME, 0, getString(R.string.rename));
-           // menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
+            // menu.add(0, MENU_CLONE, 0, getString(R.string.clone));
         }
         menu.add(0, MENU_DELETE, 0, getString(R.string.delete));
     }
@@ -103,8 +103,6 @@ public class ProfileActivity extends AppCompatActivity {
         String profileName = profilesList.get(aInfo.position).getName();
         switch (itemId) {
             case MENU_DELETE:
-                //String title = item.getTitle().toString();
-                //Api.toast(getApplicationContext(), title);
                 if (!G.isProfileMigrated()) {
                     if (aInfo.position > 3) {
                         boolean deleted = G.removeAdditionalProfile(profileName);
@@ -135,7 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
                 break;*/
             case MENU_RENAME:
                 ProfileData data = ProfileHelper.getProfileByName(profileName);
-                renameProfile(data);
+                renameProfile(data, aInfo.position);
                 break;
         }
         return true;
@@ -153,9 +151,9 @@ public class ProfileActivity extends AppCompatActivity {
                 profilesList.add(pro);
             }
         } else {
-            profilesList.add(new ProfileData(G.gPrefs.getString("profile1", getString(R.string.profile1)), ""));
-            profilesList.add(new ProfileData(G.gPrefs.getString("profile2", getString(R.string.profile2)), ""));
-            profilesList.add(new ProfileData(G.gPrefs.getString("profile3", getString(R.string.profile3)), ""));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile1", getString(R.string.profile1)), "AFWallProfile1"));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile2", getString(R.string.profile2)), "AFWallProfile2"));
+            profilesList.add(new ProfileData(G.gPrefs.getString("profile3", getString(R.string.profile3)), "AFWallProfile3"));
 
             List<String> pList = G.getAdditionalProfiles();
             for (String profileName : pList) {
@@ -166,23 +164,27 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void renameProfile(final ProfileData data) {
+    private void renameProfile(final ProfileData data, final int position) {
 
         String exitingName = data != null ? data.getName() : "";
         new MaterialDialog.Builder(this)
                 .cancelable(true)
                 .title(R.string.profile_rename)
                 .inputType(InputType.TYPE_CLASS_TEXT)
-                .input(exitingName,exitingName, new MaterialDialog.InputCallback() {
+                .input(exitingName, exitingName, new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         String profileName = input.toString();
-                        data.setName(profileName);
-                        data.save();
-                        //FIXME: ugly workaround
-                        ProfileActivity.this.profilesList.add(data);
-                        ProfileActivity.this.profilesList.remove(data);
-                        ProfileActivity.this.profileAdapter.notifyDataSetChanged();
+                        if (isNotDuplicate(profileName)) {
+                            profilesList.remove(position);
+                            data.setName(profileName);
+                            data.save();
+                            profilesList.add(position, data);
+                            profileAdapter.notifyDataSetChanged();
+                        } else {
+                            Api.toast(getApplicationContext(), getString(R.string.profile_duplicate));
+                        }
+
                     }
                 }).show();
 
@@ -199,19 +201,32 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         String profileName = input.toString();
-                        String identifier = profileName.replaceAll("\\s+", "");
-                        ProfileData data = new ProfileData(profileName, identifier);
-                        if (G.isProfileMigrated()) {
-                            //store to database
-                            data.save();
-                            ProfileActivity.this.profilesList.add(data);
-                            ProfileActivity.this.profileAdapter.notifyDataSetChanged();
+                        if (isNotDuplicate(profileName)) {
+                            String identifier = profileName.replaceAll("\\s+", "");
+                            ProfileData data = new ProfileData(profileName, identifier);
+                            if (G.isProfileMigrated()) {
+                                //store to database
+                                data.save();
+                                ProfileActivity.this.profilesList.add(data);
+                                ProfileActivity.this.profileAdapter.notifyDataSetChanged();
+                            } else {
+                                Api.toast(getApplicationContext(), getString(R.string.profile_notsupport));
+                            }
                         } else {
-                            Api.toast(getApplicationContext(), getString(R.string.profile_notsupport));
+                            Api.toast(getApplicationContext(), getString(R.string.profile_duplicate));
                         }
                         // We notify the data model is changed
                     }
                 }).show();
 
+    }
+
+    private boolean isNotDuplicate(String profileName) {
+        for (ProfileData data : profilesList) {
+            if (data.getName().equals(profileName)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

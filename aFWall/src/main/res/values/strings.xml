@@ -187,6 +187,7 @@
     <string name="profile3">Profile 3</string>
     <string name="profile_hint">ProfileName</string>
     <string name="profile_notsupport">Please migrate profile data to use this option</string>
+    <string name="profile_duplicate">Profile exists already !</string>
 
     <string name="reapply_profile">Reapply profile rules</string>
 
