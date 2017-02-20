@@ -73,7 +73,8 @@ public class ToggleWidgetOldActivity extends Activity implements
                 profButton3.setVisibility(View.VISIBLE);
             }
             List<ProfileData> listData = ProfileHelper.getProfiles();
-            if (listData.size() <= 3) {
+            //worst case 10 !
+            if (listData.size() <= 20) {
                 switch (listData.size()) {
                     case 1:
                         profButton1.setText(listData.get(0).getName());
@@ -91,6 +92,15 @@ public class ToggleWidgetOldActivity extends Activity implements
                         profButton2.setVisibility(View.VISIBLE);
                         profButton3.setText(listData.get(2).getName());
                         profButton3.setVisibility(View.VISIBLE);
+                    default:
+                        //enable first 3
+                        profButton1.setText(listData.get(0).getName());
+                        profButton1.setVisibility(View.VISIBLE);
+                        profButton2.setText(listData.get(1).getName());
+                        profButton2.setVisibility(View.VISIBLE);
+                        profButton3.setText(listData.get(2).getName());
+                        profButton3.setVisibility(View.VISIBLE);
+
                 }
             }
         }
@@ -165,12 +175,27 @@ public class ToggleWidgetOldActivity extends Activity implements
         new Thread() {
             @Override
             public void run() {
+                Looper.prepare();
                 ProfileData data = ProfileHelper.getProfileByName(profileName);
                 G.setProfile(true, data.getIdentifier());
                 applyProfileRules(context, msg, toaster);
                 Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
             }
         }.start();
+        defaultButton.setEnabled(true);
+        if(profButton1.getText().equals(profileName)) {
+            profButton1.setEnabled(false);
+            profButton2.setEnabled(true);
+            profButton3.setEnabled(true);
+        } else if(profButton2.getText().equals(profileName)) {
+            profButton1.setEnabled(true);
+            profButton2.setEnabled(false);
+            profButton3.setEnabled(true);
+        } else if(profButton3.getText().equals(profileName)) {
+            profButton1.setEnabled(true);
+            profButton2.setEnabled(true);
+            profButton3.setEnabled(false);
+        }
     }
 
     private void startAction(final int i) {
@@ -182,9 +207,6 @@ public class ToggleWidgetOldActivity extends Activity implements
                             Toast.LENGTH_SHORT).show();
             }
         };
-        if (!G.isProfileMigrated()) {
-
-        }
         final Context context = getApplicationContext();
         new Thread() {
             @Override
