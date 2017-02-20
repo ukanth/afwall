@@ -1077,7 +1077,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.menu_preference:
                 showPreferences();
                 return true;
-		/*case R.id.menu_reload:
+        /*case R.id.menu_reload:
 			Api.applications = null;
 			showOrLoadApplications();
 			return true;*/
@@ -1269,11 +1269,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                         switch (which) {
                             case 0:
-
-                                Api.saveSharedPreferencesToFileConfirm(MainActivity.this);
+                                Api.exportRulesToFileConfirm(MainActivity.this);
                                 break;
                             case 1:
-                                Api.saveAllPreferencesToFileConfirm(MainActivity.this);
+                                Api.exportAllPreferencesToFileConfirm(MainActivity.this);
                                 break;
                         }
                         return true;

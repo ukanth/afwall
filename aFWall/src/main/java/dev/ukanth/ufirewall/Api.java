@@ -110,6 +110,8 @@ import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
+import dev.ukanth.ufirewall.profiles.ProfileData;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
@@ -2061,18 +2063,18 @@ public final class Api {
 
     }
 
-    public static void saveSharedPreferencesToFileConfirm(final Context ctx) {
+    public static void exportRulesToFileConfirm(final Context ctx) {
         String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-        if (saveSharedPreferencesToFile(ctx, fileName)) {
+        if (exportRules(ctx, fileName)) {
             Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
         }
     }
 
-    public static void saveAllPreferencesToFileConfirm(final Context ctx) {
+    public static void exportAllPreferencesToFileConfirm(final Context ctx) {
         String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-        if (saveAllPreferencesToFile(ctx, fileName)) {
+        if (exportAll(ctx, fileName)) {
             Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
@@ -2133,7 +2135,7 @@ public final class Api {
         return exportMap;
     }
 
-    public static boolean saveAllPreferencesToFile(Context ctx, final String fileName) {
+    public static boolean exportAll(Context ctx, final String fileName) {
         boolean res = false;
         File sdCard = Environment.getExternalStorageDirectory();
         if (isExternalStorageWritable()) {
@@ -2148,36 +2150,59 @@ public final class Api {
                 JSONObject exportObject = new JSONObject();
                 //if multiprofile is enabled
                 if (G.enableMultiProfile()) {
-                    JSONObject profileObject = new JSONObject();
-                    //store all the profile settings
-                    for (String profile : G.profiles) {
-                        Map<String, JSONObject> exportMap = new HashMap<>();
-                        SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
-                        updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
-                        profileObject.put(profile, new JSONObject(exportMap));
-                    }
-                    exportObject.put("profiles", profileObject);
+                    if(!G.isProfileMigrated()) {
+                        JSONObject profileObject = new JSONObject();
+                        //store all the profile settings
+                        for (String profile : G.profiles) {
+                            Map<String, JSONObject> exportMap = new HashMap<>();
+                            SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
+                            updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
+                            profileObject.put(profile, new JSONObject(exportMap));
+                        }
+                        exportObject.put("profiles", profileObject);
 
-                    //if any additional profiles
-                    //int defaultProfileCount = 3;
-                    JSONObject addProfileObject = new JSONObject();
-                    for (String profile : G.getAdditionalProfiles()) {
-                        Map<String, JSONObject> exportMap = new HashMap<>();
-                        SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
-                        updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
-                        updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
-                        addProfileObject.put(profile, new JSONObject(exportMap));
+                        //if any additional profiles
+                        //int defaultProfileCount = 3;
+                        JSONObject addProfileObject = new JSONObject();
+                        for (String profile : G.getAdditionalProfiles()) {
+                            Map<String, JSONObject> exportMap = new HashMap<>();
+                            SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
+                            updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
+                            addProfileObject.put(profile, new JSONObject(exportMap));
+                        }
+                        //support for new profiles
+                        exportObject.put("additional_profiles", addProfileObject);
+                    } else {
+                        //update for new profile logic
+                        JSONObject profileObject = new JSONObject();
+                        List<ProfileData> profileDataList = ProfileHelper.getProfiles();
+                        //store all the profile settings
+                        for (ProfileData profile: profileDataList) {
+                            String profileName = profile.getName();
+                            if(profile.getIdentifier().startsWith("AFWallProfile")) {
+                                profileName = profile.getIdentifier();
+                            }
+                            Map<String, JSONObject> exportMap = new HashMap<>();
+                            SharedPreferences prefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
+                            updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
+                            updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
+                            profileObject.put(profile.getName(), new JSONObject(exportMap));
+                        }
+                        exportObject.put("_profiles", profileObject);
                     }
-                    //support for new profiles
 
-                    exportObject.put("additional_profiles", addProfileObject);
+
                 } else {
                     //default Profile - current one
                     JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
@@ -2216,7 +2241,7 @@ public final class Api {
         return arr;
     }
 
-    public static boolean saveSharedPreferencesToFile(Context ctx, final String fileName) {
+    public static boolean exportRules(Context ctx, final String fileName) {
         boolean res = false;
         File sdCard = Environment.getExternalStorageDirectory();
         if (isExternalStorageWritable()) {
@@ -2434,34 +2459,52 @@ public final class Api {
                 }
             }
             if (G.enableMultiProfile()) {
-                JSONObject profileObject = object.getJSONObject("profiles");
-                Iterator<?> keys = profileObject.keys();
-                while (keys.hasNext()) {
-                    String key = (String) keys.next();
-                    try {
-                        JSONObject obj = profileObject.getJSONObject(key);
-                        updateRulesFromJson(ctx, obj, key);
-                    } catch (JSONException e) {
-                        if (e.getMessage().contains("No value")) {
-                            continue;
+                if(G.isProfileMigrated()){
+                    JSONObject profileObject = object.getJSONObject("_profiles");
+                    Iterator<?> keys = profileObject.keys();
+                    while (keys.hasNext()) {
+                        String key = (String) keys.next();
+                        String identifier = key.replaceAll("\\s+", "");
+                        ProfileData profileData = new ProfileData(key,identifier);
+                        profileData.save();
+                        try {
+                            JSONObject obj = profileObject.getJSONObject(key);
+                            updateRulesFromJson(ctx, obj, key);
+                        } catch (JSONException e) {
+                            if (e.getMessage().contains("No value")) {
+                                continue;
+                            }
+                        }
+                    }
+                } else  {
+                    JSONObject profileObject = object.getJSONObject("profiles");
+                    Iterator<?> keys = profileObject.keys();
+                    while (keys.hasNext()) {
+                        String key = (String) keys.next();
+                        try {
+                            JSONObject obj = profileObject.getJSONObject(key);
+                            updateRulesFromJson(ctx, obj, key);
+                        } catch (JSONException e) {
+                            if (e.getMessage().contains("No value")) {
+                                continue;
+                            }
+                        }
+                    }
+                    //handle custom/additional profiles
+                    JSONObject customProfileObject = object.getJSONObject("additional_profiles");
+                    keys = customProfileObject.keys();
+                    while (keys.hasNext()) {
+                        String key = (String) keys.next();
+                        try {
+                            JSONObject obj = customProfileObject.getJSONObject(key);
+                            updateRulesFromJson(ctx, obj, key);
+                        } catch (JSONException e) {
+                            if (e.getMessage().contains("No value")) {
+                                continue;
+                            }
                         }
                     }
                 }
-                //handle custom/additional profiles
-                JSONObject customProfileObject = object.getJSONObject("additional_profiles");
-                keys = customProfileObject.keys();
-                while (keys.hasNext()) {
-                    String key = (String) keys.next();
-                    try {
-                        JSONObject obj = customProfileObject.getJSONObject(key);
-                        updateRulesFromJson(ctx, obj, key);
-                    } catch (JSONException e) {
-                        if (e.getMessage().contains("No value")) {
-                            continue;
-                        }
-                    }
-                }
-
             } else {
                 //now restore the default profile
                 JSONObject defaultRules = object.getJSONObject("default");
@@ -2485,52 +2528,6 @@ public final class Api {
         }
         return returnVal;
     }
-
-    @Deprecated
-	/*private static boolean importRulesOld(Context ctx, File file) {
-		boolean res = false;
-		ObjectInputStream input = null;
-		try {
-			input = new ObjectInputStream(new FileInputStream(file));
-			Editor prefEdit = ctx.getSharedPreferences(PREFS_NAME,Context.MODE_PRIVATE).edit();
-			prefEdit.clear();
-			Map<String, ?> entries = (Map<String, ?>) input.readObject();
-			for (Entry<String, ?> entry : entries.entrySet()) {
-				Object v = entry.getValue();
-				String key = entry.getKey();
-				if (v instanceof Boolean)
-					prefEdit.putBoolean(key, ((Boolean) v).booleanValue());
-				else if (v instanceof Float)
-					prefEdit.putFloat(key, ((Float) v).floatValue());
-				else if (v instanceof Integer)
-					prefEdit.putInt(key, ((Integer) v).intValue());
-				else if (v instanceof Long)
-					prefEdit.putLong(key, ((Long) v).longValue());
-				else if (v instanceof String)
-					prefEdit.putString(key, ((String) v));
-			}
-			prefEdit.commit();
-			res = true;
-		} catch (FileNotFoundException e) {
-			// toast(ctx, "Missing back.rules file");
-			Log.e(TAG, e.getLocalizedMessage());
-		} catch (IOException e) {
-			// toast(ctx, "Error reading the backup file");
-			Log.e(TAG, e.getLocalizedMessage());
-		} catch (ClassNotFoundException e) {
-			Log.e(TAG, e.getLocalizedMessage());
-		} finally {
-			try {
-				if (input != null) {
-					input.close();
-				}
-			} catch (IOException ex) {
-				Log.e(TAG, ex.getLocalizedMessage());
-			}
-		}
-		return res;
-	}
-*/
 
     @SuppressWarnings("unchecked")
     public static boolean loadSharedPreferencesFromFile(Context ctx, StringBuilder builder, String fileName, boolean loadAll) {
