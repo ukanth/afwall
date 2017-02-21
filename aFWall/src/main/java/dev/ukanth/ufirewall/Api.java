@@ -2154,50 +2154,31 @@ public final class Api {
                         JSONObject profileObject = new JSONObject();
                         //store all the profile settings
                         for (String profile : G.profiles) {
-                            Map<String, JSONObject> exportMap = new HashMap<>();
-                            SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
-                            updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
-                            profileObject.put(profile, new JSONObject(exportMap));
+                            profileObject.put(profile, new JSONObject(getRulesForProfile(ctx,profile)));
                         }
                         exportObject.put("profiles", profileObject);
-
                         //if any additional profiles
                         //int defaultProfileCount = 3;
                         JSONObject addProfileObject = new JSONObject();
                         for (String profile : G.getAdditionalProfiles()) {
-                            Map<String, JSONObject> exportMap = new HashMap<>();
-                            SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
-                            updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
-                            addProfileObject.put(profile, new JSONObject(exportMap));
+                            addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx,profile)));
                         }
                         //support for new profiles
                         exportObject.put("additional_profiles", addProfileObject);
                     } else {
-                        //update for new profile logic
                         JSONObject profileObject = new JSONObject();
+                        //add default profile
+                        String profileName = "AFWallPrefs";
+                        profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx,profileName)));
+                        //update for new profile logic
                         List<ProfileData> profileDataList = ProfileHelper.getProfiles();
                         //store all the profile settings
                         for (ProfileData profile: profileDataList) {
-                            String profileName = profile.getName();
+                            profileName = profile.getName();
                             if(profile.getIdentifier().startsWith("AFWallProfile")) {
                                 profileName = profile.getIdentifier();
                             }
-                            Map<String, JSONObject> exportMap = new HashMap<>();
-                            SharedPreferences prefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);
-                            updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
-                            updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
-                            profileObject.put(profile.getName(), new JSONObject(exportMap));
+                            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx,profileName)));
                         }
                         exportObject.put("_profiles", profileObject);
                     }
@@ -2228,6 +2209,17 @@ public final class Api {
         }
 
         return res;
+    }
+
+    private static Map<String, JSONObject> getRulesForProfile(Context ctx, String profile) throws JSONException {
+        Map<String, JSONObject> exportMap = new HashMap<>();
+        SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
+        updatePackage(ctx, prefs.getString(PREF_WIFI_PKG_UIDS, ""), exportMap, WIFI_EXPORT);
+        updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
+        updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
+        updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
+        updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
+        return exportMap;
     }
 
     private static JSONArray getAllAppPreferences(Context ctx, SharedPreferences gPrefs) throws JSONException {
