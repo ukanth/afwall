@@ -23,7 +23,7 @@ addons:
     - automake
     - libtool
     - expect
-    - 7z	
+    - p7zip-full	
 
 notifications:
   email:
