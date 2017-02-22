@@ -1,0 +1,32 @@
+From: Tias Guns <tias@ulyssis.org>
+Date: Sun, 5 Aug 2012 16:00:19 +0200
+Subject: [PATCH] fix readahead, add syscall
+
+fix readahead, add simple syscall
+Can only be tested with LFS support (not patched yet)
+
+from 'misc-syscalls' by Dan Drown
+http://dan.drown.org/android/src/busybox/
+---
+ libbb/missing_syscalls.c |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/libbb/missing_syscalls.c b/libbb/missing_syscalls.c
+index 474accb..913f00e 100644
+--- a/libbb/missing_syscalls.c
++++ b/libbb/missing_syscalls.c
+@@ -75,6 +75,11 @@ int semget(key_t key, int nsems, int semflg)
+   return syscall(__NR_semget, key, nsems, semflg);
+ }
+ 
++ssize_t readahead(int fd, off64_t offset, size_t count)
++{
++  return syscall(__NR_readahead, fd, offset, count);
++}
++
+ struct msqid_ds; /* #include <linux/msg.h> */
+ int msgctl(int msqid, int cmd, struct msqid_ds *buf)
+ {
+-- 
+1.7.10.4
+

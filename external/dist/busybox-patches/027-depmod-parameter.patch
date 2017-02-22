@@ -1,0 +1,31 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Mon, 12 Sep 2016 16:55:01 -0300
+Subject: [PATCH] depmod: fix syntax with modules in parameter
+
+Patch by Tanguy Pruvot <tanguy.pruvot@gmail.com>
+Change-Id: I21b8664db01cf0132db82f8d6caa1a0e77e71004
+from https://github.com/tpruvot/android_external_busybox
+Rebased for busybox 1.25.0 by Chris Renshaw <osm0sis@outlook.com>
+---
+ modutils/depmod.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/modutils/depmod.c b/modutils/depmod.c
+index 9713aef..4050494 100644
+--- a/modutils/depmod.c
++++ b/modutils/depmod.c
+@@ -37,7 +37,10 @@ static int FAST_FUNC parse_module(const char *fname, struct stat *sb UNUSED_PARA
+ 	image = xmalloc_open_zipped_read_close(fname, &len);
+ 
+ 	e = moddb_get_or_create(modules, bb_get_last_path_component_nostrip(fname));
+-	e->name = xstrdup(fname + 2); /* skip "./" */
++	if (strncmp(fname, "./", 2) == 0)
++		e->name = xstrdup(fname + 2);
++	else
++		e->name = xstrdup(fname);
+ 
+ 	for (ptr = image; ptr < image + len - 10; ptr++) {
+ 		if (is_prefixed_with(ptr, "depends=")) {
+-- 
+2.8.3
+

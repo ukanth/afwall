@@ -4,10 +4,11 @@
 
 NDK     := /opt/android-ndk-r10e
 ARCH    := arm
-GCCVER  := 4.8
+GCCVER  := 4.9
 
 # You should be able to just 'make ARCH=x86' and it should DTRT.
-ARCH_LIST := arm x86 mips
+#ARCH_LIST := arm x86 mips
+ARCH_LIST := arm
 ifeq ($(ARCH),arm)
 TRIPLET := arm-linux-androideabi
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
@@ -88,7 +89,7 @@ iptables-unpack: $(IPTABLES_SRC)/configure
 #
 # Build busybox
 #
-BUSYBOX_VER := 1.21.1
+BUSYBOX_VER := 1.26.2
 BUSYBOX_BUILD := $(TRIPLET)/busybox
 
 dist/busybox-$(BUSYBOX_VER).tar.bz2:
@@ -106,7 +107,7 @@ $(BUSYBOX_BUILD)/.unpacked: dist/busybox-$(BUSYBOX_VER).tar.bz2
 	touch $@
 
 $(BUSYBOX_BUILD)/.configured: $(BUSYBOX_BUILD)/.unpacked
-	cp -f dist/busybox-defconfig $(BUSYBOX_BUILD)/.config
+	cp -f dist/busybox-config $(BUSYBOX_BUILD)/.config
 	echo "CONFIG_CROSS_COMPILER_PREFIX=\"$(TRIPLET)-\"" >> $(BUSYBOX_BUILD)/.config
 	echo "CONFIG_SYSROOT=\"$(NDK_SYSROOT)\"" >> $(BUSYBOX_BUILD)/.config
 	touch $@

@@ -1,0 +1,83 @@
+From: Tias Guns <tias@ulyssis.org>
+Date: Sun, 5 Aug 2012 15:25:34 +0200
+Subject: [PATCH] android syscall (non-trivial): semctl
+
+needed by ipcs and ipcrm, also needed (but not sufficient) for syslogd and logread
+
+semctl from glibc
+patch from 'no-sys-shm,msg,sem' by Dan Drown
+http://dan.drown.org/android/src/busybox/
+
+Signed-off-by: Tias Guns <tias@ulyssis.org>
+---
+ libbb/semctl.c |   58 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+ create mode 100644 libbb/semctl.c
+
+diff --git a/libbb/semctl.c b/libbb/semctl.c
+new file mode 100644
+index 0000000..68f846a
+--- /dev/null
++++ b/libbb/semctl.c
+@@ -0,0 +1,58 @@
++/* Copyright (C) 1995,1997,1998,2000,2003,2004,2006
++        Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@gnu.ai.mit.edu>, August 1995.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++/* originally from glibc-2.14/sysdeps/unix/sysv/linux/semctl.c, modified */
++
++// syscall used by syslogd, ipcrm, ipcs
++//kbuild:lib-y += semctl.o
++
++#include <sys/syscall.h>   /* For __NR_xxx definitions */
++#include <stdarg.h>
++#include <linux/sem.h>
++#include "libbb.h"
++
++/* code from GLIBC */
++int semctl(int semid, int semnum, int cmd, ...) {
++  union semun arg;
++  va_list ap;
++
++  va_start (ap, cmd);
++
++  /* Get the argument only if required.  */
++  arg.buf = NULL;
++  switch (cmd)
++  {
++    case SETVAL:        /* arg.val */
++    case GETALL:        /* arg.array */
++    case SETALL:
++    case IPC_STAT:      /* arg.buf */
++    case IPC_SET:
++    case SEM_STAT:
++    case IPC_INFO:      /* arg.__buf */
++    case SEM_INFO:
++      va_start (ap, cmd);
++      arg = va_arg (ap, union semun);
++      va_end (ap);
++      break;
++  }
++
++  va_end (ap);
++
++  return syscall(__NR_semctl, semid, semnum, cmd, arg);
++}
+-- 
+1.7.10.4
+

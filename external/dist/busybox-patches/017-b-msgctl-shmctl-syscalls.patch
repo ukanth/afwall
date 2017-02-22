@@ -1,0 +1,35 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Mon, 12 Sep 2016 14:46:40 -0300
+Subject: [PATCH] android syscalls: msgctl shmctl
+
+Patch by Tias Guns <tias@ulyssis.org>
+Rebased for busybox 1.25.0 by Chris Renshaw <osm0sis@outlook.com>
+---
+ libbb/missing_syscalls.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/libbb/missing_syscalls.c b/libbb/missing_syscalls.c
+index a75a332..ac75829 100644
+--- a/libbb/missing_syscalls.c
++++ b/libbb/missing_syscalls.c
+@@ -64,4 +64,17 @@ int semget(key_t key, int nsems, int semflg)
+ {
+   return syscall(__NR_semget, key, nsems, semflg);
+ }
++
++struct msqid_ds; /* #include <linux/msg.h> */
++int msgctl(int msqid, int cmd, struct msqid_ds *buf)
++{
++  return syscall(__NR_msgctl, msqid, cmd, buf);
++}
++
++struct shmid_ds; /* #include <linux/shm.h> */
++// NOTE: IPC_INFO takes a struct shminfo64
++int shmctl(int shmid, int cmd, struct shmid_ds *buf)
++{
++  return syscall(__NR_shmctl, shmid, cmd, buf);
++}
+ 
+-- 
+2.8.3
+

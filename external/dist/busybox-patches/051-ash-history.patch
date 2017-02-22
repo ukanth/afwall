@@ -1,0 +1,87 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Sat, 28 Nov 2015 06:33:57 -0400
+Subject: [PATCH] ash history
+
+allows ash history to work on Android
+
+Patch modified by Tias Guns <tias@ulyssis.org> from 'busybox-android.patch' by Alexandre Courbot
+https://github.com/Gnurou/busybox-android
+Rebased for busybox 1.24.1 by Chris Renshaw <osm0sis@outlook.com>
+---
+ include/libbb.h | 4 ++--
+ init/init.c     | 2 +-
+ shell/ash.c     | 8 +++++++-
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/include/libbb.h b/include/libbb.h
+index a8ceb44..b78a99a 100644
+--- a/include/libbb.h
++++ b/include/libbb.h
+@@ -1844,12 +1844,12 @@ extern struct globals *const ptr_to_globals;
+  * use bb_default_login_shell and following defines.
+  * If you change LIBBB_DEFAULT_LOGIN_SHELL,
+  * don't forget to change increment constant. */
+-#define LIBBB_DEFAULT_LOGIN_SHELL  "-/bin/sh"
++#define LIBBB_DEFAULT_LOGIN_SHELL  "-/sbin/sh"
+ extern const char bb_default_login_shell[] ALIGN1;
+ /* "/bin/sh" */
+ #define DEFAULT_SHELL              (bb_default_login_shell+1)
+ /* "sh" */
+-#define DEFAULT_SHELL_SHORT_NAME   (bb_default_login_shell+6)
++#define DEFAULT_SHELL_SHORT_NAME   (bb_default_login_shell+7)
+ 
+ /* The following devices are the same on all systems.  */
+ #define CURRENT_TTY "/dev/tty"
+diff --git a/init/init.c b/init/init.c
+index 80c5d0f..5299c4f 100644
+--- a/init/init.c
++++ b/init/init.c
+@@ -1072,7 +1072,7 @@ int init_main(int argc UNUSED_PARAM, char **argv)
+ 	/* Make sure environs is set to something sane */
+ 	putenv((char *) "HOME=/");
+ 	putenv((char *) bb_PATH_root_path);
+-	putenv((char *) "SHELL=/bin/sh");
++	putenv((char *) "SHELL=/sbin/sh");
+ 	putenv((char *) "USER=root"); /* needed? why? */
+ 
+ 	if (argv[1])
+diff --git a/shell/ash.c b/shell/ash.c
+index 8a1628e..d69cfff 100644
+--- a/shell/ash.c
++++ b/shell/ash.c
+@@ -13154,11 +13154,13 @@ int ash_main(int argc UNUSED_PARAM, char **argv)
+ 
+ 	if (argv[0] && argv[0][0] == '-')
+ 		isloginsh = 1;
++	else
++		isloginsh = 1;
+ 	if (isloginsh) {
+ 		const char *hp;
+ 
+ 		state = 1;
+-		read_profile("/etc/profile");
++		read_profile("/system/etc/profile");
+  state1:
+ 		state = 2;
+ 		hp = lookupvar("HOME");
+@@ -13199,6 +13201,9 @@ int ash_main(int argc UNUSED_PARAM, char **argv)
+ 		if (iflag) {
+ 			const char *hp = lookupvar("HISTFILE");
+ 			if (!hp) {
++#ifdef __ANDROID__
++				setvar("HISTFILE", "/mnt/sdcard/ash_history", 0);
++#else
+ 				hp = lookupvar("HOME");
+ 				if (hp) {
+ 					hp = concat_path_file(hp, ".ash_history");
+@@ -13206,6 +13211,7 @@ int ash_main(int argc UNUSED_PARAM, char **argv)
+ 					free((char*)hp);
+ 					hp = lookupvar("HISTFILE");
+ 				}
++#endif
+ 			}
+ 			if (hp)
+ 				line_input_state->hist_file = hp;
+-- 
+2.5.3
+

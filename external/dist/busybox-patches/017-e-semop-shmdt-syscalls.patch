@@ -1,0 +1,45 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Mon, 12 Sep 2016 14:48:30 -0300
+Subject: [PATCH] android syscalls: shmdt shmat sembuf
+
+Patch by Tias Guns <tias@ulyssis.org>
+Rebased for busybox 1.25.0 by Chris Renshaw <osm0sis@outlook.com>
+---
+ libbb/missing_syscalls.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/libbb/missing_syscalls.c b/libbb/missing_syscalls.c
+index ac75829..474accb 100644
+--- a/libbb/missing_syscalls.c
++++ b/libbb/missing_syscalls.c
+@@ -55,6 +55,16 @@ int shmget(key_t key, size_t size, int shmflg)
+   return syscall(__NR_shmget, key, size, shmflg);
+ }
+ 
++int shmdt(const void *shmaddr)
++{
++  return syscall(__NR_shmdt, shmaddr);
++}
++
++void *shmat(int shmid, const void *shmaddr, int shmflg)
++{
++  return (void *)syscall(__NR_shmat, shmid, shmaddr, shmflg);
++}
++
+ int msgget(key_t key, int msgflg)
+ {
+   return syscall(__NR_msgget, key, msgflg);
+@@ -77,4 +87,10 @@ int shmctl(int shmid, int cmd, struct shmid_ds *buf)
+ {
+   return syscall(__NR_shmctl, shmid, cmd, buf);
+ }
++
++struct sembuf; /* #include <linux/sem.h> */
++int semop(int semid, struct sembuf *sops, unsigned nsops)
++{
++  return syscall(__NR_semop, semid, sops, nsops);
++}
+ 
+-- 
+2.8.3
+

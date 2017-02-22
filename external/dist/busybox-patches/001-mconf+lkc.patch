@@ -1,0 +1,26 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Fri, 27 Nov 2015 11:40:52 -0400
+Subject: [PATCH 2/2] Fix mconf/lkc host "warning statement with no effect"
+
+---
+ scripts/kconfig/lkc.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+index 527f60c..1972cb9 100644
+--- a/scripts/kconfig/lkc.h
++++ b/scripts/kconfig/lkc.h
+@@ -12,8 +12,8 @@
+ # include <libintl.h>
+ #else
+ # define gettext(Msgid) ((const char *) (Msgid))
+-# define textdomain(Domainname) ((const char *) (Domainname))
+-# define bindtextdomain(Domainname, Dirname) ((const char *) (Dirname))
++# define textdomain(Domainname)
++# define bindtextdomain(Domainname, Dirname)
+ #endif
+ 
+ #ifdef __cplusplus
+-- 
+2.5.3
+

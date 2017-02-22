@@ -1,0 +1,64 @@
+From: Tias Guns <tias@ulyssis.org>
+Date: Tue, 20 Mar 2012 21:26:07 +0000
+Subject: [PATCH] fix ipcs, ipcrm no sys/sem-shm-msg, use linux/sem.h etc
+
+patch from 'no-sys-shm,msg,sem' by Dan Drown
+http://dan.drown.org/android/src/busybox/
+
+Signed-off-by: Tias Guns <tias@ulyssis.org>
+---
+ util-linux/ipcrm.c |    9 +++++----
+ util-linux/ipcs.c  |    9 +++++----
+ 2 files changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/util-linux/ipcrm.c b/util-linux/ipcrm.c
+index 274050c..b65e8ef 100644
+--- a/util-linux/ipcrm.c
++++ b/util-linux/ipcrm.c
+@@ -22,11 +22,12 @@
+ /* X/OPEN tells us to use <sys/{types,ipc,sem}.h> for semctl() */
+ /* X/OPEN tells us to use <sys/{types,ipc,msg}.h> for msgctl() */
+ #include <sys/ipc.h>
+-#include <sys/shm.h>
+-#include <sys/msg.h>
+-#include <sys/sem.h>
++#include <linux/shm.h>
++#include <linux/msg.h>
++#include <linux/sem.h>
+ 
+-#if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)
++#if (defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)) || \
++    defined(__ANDROID__)
+ /* union semun is defined by including <sys/sem.h> */
+ #else
+ /* according to X/OPEN we have to define it ourselves */
+diff --git a/util-linux/ipcs.c b/util-linux/ipcs.c
+index ee7df5e..fafe4e3 100644
+--- a/util-linux/ipcs.c
++++ b/util-linux/ipcs.c
+@@ -29,9 +29,9 @@
+ /* X/OPEN tells us to use <sys/{types,ipc,shm}.h> for shmctl() */
+ #include <sys/types.h>
+ #include <sys/ipc.h>
+-#include <sys/sem.h>
+-#include <sys/msg.h>
+-#include <sys/shm.h>
++#include <linux/sem.h>
++#include <linux/msg.h>
++#include <linux/shm.h>
+ 
+ #include "libbb.h"
+ 
+@@ -77,7 +77,8 @@ struct shm_info {
+ /* The last arg of semctl is a union semun, but where is it defined?
+    X/OPEN tells us to define it ourselves, but until recently
+    Linux include files would also define it. */
+-#if defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)
++#if (defined(__GNU_LIBRARY__) && !defined(_SEM_SEMUN_UNDEFINED)) || \
++    defined(__ANDROID__)
+ /* union semun is defined by including <sys/sem.h> */
+ #else
+ /* according to X/OPEN we have to define it ourselves */
+-- 
+1.7.10.4
+

@@ -1,0 +1,38 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Tue, 15 Mar 2016 11:21:17 -0300
+Subject: [PATCH] Fix mntent patch linking error "multiple definition of `getmntent'"
+
+---
+ include/platform.h | 1 +
+ libbb/mntent_r.c   | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/platform.h b/include/platform.h
+index 0fb8f7b..0f3a688 100644
+--- a/include/platform.h
++++ b/include/platform.h
+@@ -481,6 +481,7 @@ typedef unsigned smalluint;
+ #endif
+ 
+ #if defined(ANDROID) || defined(__ANDROID__)
++# define getmntent bb_getmntent
+ # if __ANDROID_API__ < 8
+ #  undef HAVE_DPRINTF
+ # else
+diff --git a/libbb/mntent_r.c b/libbb/mntent_r.c
+index 1077487..146b917 100644
+--- a/libbb/mntent_r.c
++++ b/libbb/mntent_r.c
+@@ -168,7 +168,8 @@ struct mntent *getmntent_r (FILE *stream, struct mntent *mp, char *buffer, int b
+   return mp;
+ }
+ 
+-struct mntent *getmntent (FILE *stream)
++/* override getmntent definition in bionic/stubs.c using platform.h */
++struct mntent *bb_getmntent (FILE *stream)
+ {
+   static struct mntent m;
+   static char *getmntent_buffer;
+-- 
+2.7.0
+

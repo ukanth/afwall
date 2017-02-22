@@ -1,0 +1,23 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Tue, 10 Jan 2017 13:38:38 -0400
+Subject: [PATCH] Fix checklist host "warning implicit declaration of function 'strcasecmp'"
+
+---
+ scripts/kconfig/lxdialog/checklist.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/kconfig/lxdialog/checklist.c b/scripts/kconfig/lxdialog/checklist.c
+index be0200e..934fbf2 100644
+--- a/scripts/kconfig/lxdialog/checklist.c
++++ b/scripts/kconfig/lxdialog/checklist.c
+@@ -21,6 +21,7 @@
+  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+ 
++#include <strings.h>
+ #include "dialog.h"
+ 
+ static int list_width, check_x, item_x;
+-- 
+2.8.3
+

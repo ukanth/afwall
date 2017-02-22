@@ -1,0 +1,251 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Tue, 10 Jan 2017 10:24:29 -0400
+Subject: [PATCH] fix udhcpd and nameif, add ether_ntoa_r and ether_aton_r from glibc
+
+this patch also fixes part of arping and ether-wake, but not sufficiently yet
+
+Patch modified by Tias Guns <tias@ulyssis.org> from 'ether_XtoY-from-glibc' by Dan Drown
+http://dan.drown.org/android/src/busybox/
+Rebased for busybox 1.26.1 by Chris Renshaw <osm0sis@outlook.com>
+---
+ networking/arping.c         |  1 +
+ networking/ether-wake.c     |  6 +++--
+ networking/ether_aton_r.c   | 63 +++++++++++++++++++++++++++++++++++++++++++++
+ networking/ether_ntoa_r.c   | 33 ++++++++++++++++++++++++
+ networking/ether_port.h     | 29 +++++++++++++++++++++
+ networking/nameif.c         |  1 +
+ networking/udhcp/Kbuild.src |  1 +
+ networking/udhcp/dhcpd.c    |  4 +++
+ 8 files changed, 136 insertions(+), 2 deletions(-)
+ create mode 100644 networking/ether_aton_r.c
+ create mode 100644 networking/ether_ntoa_r.c
+ create mode 100644 networking/ether_port.h
+
+diff --git a/networking/arping.c b/networking/arping.c
+index 5bfeb1b..1980620 100644
+--- a/networking/arping.c
++++ b/networking/arping.c
+@@ -16,6 +16,7 @@
+ //applet:IF_ARPING(APPLET(arping, BB_DIR_USR_SBIN, BB_SUID_DROP))
+ 
+ //kbuild:lib-$(CONFIG_ARPING) += arping.o
++//kbuild:lib-$(CONFIG_ARPING) += ether_ntoa_r.o
+ 
+ //usage:#define arping_trivial_usage
+ //usage:       "[-fqbDUA] [-c CNT] [-w TIMEOUT] [-I IFACE] [-s SRC_IP] DST_IP"
+diff --git a/networking/ether-wake.c b/networking/ether-wake.c
+index d7d6917..7a1fc45 100644
+--- a/networking/ether-wake.c
++++ b/networking/ether-wake.c
+@@ -73,6 +73,7 @@
+ //applet:IF_ETHER_WAKE(APPLET_ODDNAME(ether-wake, ether_wake, BB_DIR_USR_SBIN, BB_SUID_DROP, ether_wake))
+ 
+ //kbuild:lib-$(CONFIG_ETHER_WAKE) += ether-wake.o
++//kbuild:lib-$(CONFIG_ETHER_WAKE) += ether_aton_r.o ether_ntoa_r.o
+ 
+ //usage:#define ether_wake_trivial_usage
+ //usage:       "[-b] [-i IFACE] [-p aa:bb:cc:dd[:ee:ff]/a.b.c.d] MAC"
+@@ -127,13 +128,14 @@ void bb_debug_dump_packet(unsigned char *outpack, int pktsize)
+ static void get_dest_addr(const char *hostid, struct ether_addr *eaddr)
+ {
+ 	struct ether_addr *eap;
++	char ether_buf[20];
+ 
+ 	eap = ether_aton_r(hostid, eaddr);
+ 	if (eap) {
+-		bb_debug_msg("The target station address is %s\n\n", ether_ntoa(eap));
++		bb_debug_msg("The target station address is %s\n\n", ether_ntoa_r(eap, ether_buf));
+ #if !defined(__UCLIBC__) || UCLIBC_VERSION >= KERNEL_VERSION(0, 9, 30)
+ 	} else if (ether_hostton(hostid, eaddr) == 0) {
+-		bb_debug_msg("Station address for hostname %s is %s\n\n", hostid, ether_ntoa(eaddr));
++		bb_debug_msg("Station address for hostname %s is %s\n\n", hostid, ether_ntoa_r(eaddr, ether_buf));
+ #endif
+ 	} else {
+ 		bb_show_usage();
+diff --git a/networking/ether_aton_r.c b/networking/ether_aton_r.c
+new file mode 100644
+index 0000000..0215f16
+--- /dev/null
++++ b/networking/ether_aton_r.c
+@@ -0,0 +1,63 @@
++/* Copyright (C) 1996,97,98,99,2002 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <ctype.h>
++#include <sys/types.h>
++#include <netinet/ether.h>
++#include <netinet/if_ether.h>
++
++
++struct ether_addr *
++ether_aton_r (const char *asc, struct ether_addr *addr)
++{
++  size_t cnt;
++
++  for (cnt = 0; cnt < 6; ++cnt)
++    {
++      unsigned int number;
++      char ch;
++
++      ch = tolower (*asc++);
++      if ((ch < '0' || ch > '9') && (ch < 'a' || ch > 'f'))
++        return NULL;
++      number = isdigit (ch) ? (ch - '0') : (ch - 'a' + 10);
++
++      ch = tolower (*asc);
++      if ((cnt < 5 && ch != ':') || (cnt == 5 && ch != '\0' && !isspace (ch)))
++        {
++          ++asc;
++          if ((ch < '0' || ch > '9') && (ch < 'a' || ch > 'f'))
++            return NULL;
++          number <<= 4;
++          number += isdigit (ch) ? (ch - '0') : (ch - 'a' + 10);
++
++          ch = *asc;
++          if (cnt < 5 && ch != ':')
++            return NULL;
++        }
++
++      /* Store result.  */
++      addr->ether_addr_octet[cnt] = (unsigned char) number;
++
++      /* Skip ':'.  */
++      ++asc;
++    }
++
++  return addr;
++}
+diff --git a/networking/ether_ntoa_r.c b/networking/ether_ntoa_r.c
+new file mode 100644
+index 0000000..cd50614
+--- /dev/null
++++ b/networking/ether_ntoa_r.c
+@@ -0,0 +1,33 @@
++/* Copyright (C) 1996,97,2002 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#include <stdio.h>
++#include <netinet/ether.h>
++#include <netinet/if_ether.h>
++
++
++char *
++ether_ntoa_r (const struct ether_addr *addr, char *buf)
++{
++  sprintf (buf, "%x:%x:%x:%x:%x:%x",
++           addr->ether_addr_octet[0], addr->ether_addr_octet[1],
++           addr->ether_addr_octet[2], addr->ether_addr_octet[3],
++           addr->ether_addr_octet[4], addr->ether_addr_octet[5]);
++  return buf;
++}
+diff --git a/networking/ether_port.h b/networking/ether_port.h
+new file mode 100644
+index 0000000..5e0146b
+--- /dev/null
++++ b/networking/ether_port.h
+@@ -0,0 +1,29 @@
++/* Copyright (C) 1996,97,98,99,2002 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1996.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, write to the Free
++   Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307 USA.  */
++
++#ifndef ETHER_PORT_H
++#define ETHER_PORT_H 1
++
++#include <netinet/ether.h>
++#include <netinet/if_ether.h>
++
++struct ether_addr * ether_aton_r (const char *asc, struct ether_addr *addr);
++char * ether_ntoa_r (const struct ether_addr *addr, char *buf);
++
++#endif /* ETHER_PORT_H */
+diff --git a/networking/nameif.c b/networking/nameif.c
+index cffd5bf..f634375 100644
+--- a/networking/nameif.c
++++ b/networking/nameif.c
+@@ -43,6 +43,7 @@
+ //applet:IF_NAMEIF(APPLET(nameif, BB_DIR_SBIN, BB_SUID_DROP))
+ 
+ //kbuild:lib-$(CONFIG_NAMEIF) += nameif.o
++//kbuild:lib-$(CONFIG_NAMEIF) += ether_aton_r.o
+ 
+ //usage:#define nameif_trivial_usage
+ //usage:	IF_NOT_FEATURE_NAMEIF_EXTENDED(
+diff --git a/networking/udhcp/Kbuild.src b/networking/udhcp/Kbuild.src
+index fcb725f..2d5739c 100644
+--- a/networking/udhcp/Kbuild.src
++++ b/networking/udhcp/Kbuild.src
+@@ -14,6 +14,7 @@ lib-$(CONFIG_UDHCPD)     += common.o packet.o signalpipe.o socket.o
+ 
+ lib-$(CONFIG_UDHCPC)     += dhcpc.o
+ lib-$(CONFIG_UDHCPD)     += dhcpd.o arpping.o
++lib-$(CONFIG_UDHCPD)     += ../ether_aton_r.o ../ether_ntoa_r.o
+ lib-$(CONFIG_DUMPLEASES) += dumpleases.o
+ lib-$(CONFIG_DHCPRELAY)  += dhcprelay.o common.o socket.o packet.o
+ 
+diff --git a/networking/udhcp/dhcpd.c b/networking/udhcp/dhcpd.c
+index e116ba3..ef5024c 100644
+--- a/networking/udhcp/dhcpd.c
++++ b/networking/udhcp/dhcpd.c
+@@ -38,8 +38,12 @@
+ //usage:     "\n	-P N	Use port N (default 67)"
+ //usage:	)
+ 
++#include <sys/types.h>
+ #include <netinet/ether.h>
+ #include <syslog.h>
++
++#include "../ether_port.h"
++
+ #include "common.h"
+ #include "dhcpc.h"
+ #include "dhcpd.h"
+-- 
+2.8.3
+

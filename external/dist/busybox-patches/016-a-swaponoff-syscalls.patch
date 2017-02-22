@@ -1,0 +1,32 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Mon, 12 Sep 2016 14:31:31 -0300
+Subject: [PATCH 1/2] add swapoff/swapon syscalls for android
+
+Patch by Tias Guns <tias@ulyssis.org>
+Rebased for busybox 1.25.0 by Chris Renshaw <osm0sis@outlook.com>
+---
+ libbb/missing_syscalls.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/libbb/missing_syscalls.c b/libbb/missing_syscalls.c
+index dd430e3..235f4b8 100644
+--- a/libbb/missing_syscalls.c
++++ b/libbb/missing_syscalls.c
+@@ -39,4 +39,14 @@ int pivot_root(const char *new_root, const char *put_old)
+ {
+ 	return syscall(__NR_pivot_root, new_root, put_old);
+ }
++
++int swapoff(const char *path)
++{
++  return syscall(__NR_swapoff, path);
++}
++
++int swapon(const char *path, int swapflags)
++{
++  return syscall(__NR_swapon, path, swapflags);
++}
+ 
+-- 
+2.8.3
+

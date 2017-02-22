@@ -1,0 +1,82 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Thu, 3 Dec 2015 18:02:41 -0400
+Subject: [PATCH] ifconfig_slip: add missing headers
+
+Imported from dorimanx's combined ported header toolchain:
+https://github.com/dorimanx/android-busybox-ndk
+---
+ include/linux/if_slip.h | 30 ++++++++++++++++++++++++++++++
+ include/net/if_slip.h   | 24 ++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+)
+ create mode 100644 include/linux/if_slip.h
+ create mode 100644 include/net/if_slip.h
+
+diff --git a/include/linux/if_slip.h b/include/linux/if_slip.h
+new file mode 100644
+index 0000000..1eb4e3a
+--- /dev/null
++++ b/include/linux/if_slip.h
+@@ -0,0 +1,30 @@
++/*
++ *	Swansea University Computer Society	NET3
++ *	
++ *	This file declares the constants of special use with the SLIP/CSLIP/
++ *	KISS TNC driver.
++ */
++ 
++#ifndef __LINUX_SLIP_H
++#define __LINUX_SLIP_H
++
++#define		SL_MODE_SLIP		0
++#define		SL_MODE_CSLIP		1
++#define 	SL_MODE_KISS		4
++
++#define		SL_OPT_SIXBIT		2
++#define		SL_OPT_ADAPTIVE		8
++
++/*
++ *	VSV = ioctl for keepalive & outfill in SLIP driver 
++ */
++ 
++#define SIOCSKEEPALIVE	(SIOCDEVPRIVATE)		/* Set keepalive timeout in sec */
++#define SIOCGKEEPALIVE	(SIOCDEVPRIVATE+1)		/* Get keepalive timeout */
++#define SIOCSOUTFILL	(SIOCDEVPRIVATE+2)		/* Set outfill timeout */
++#define	SIOCGOUTFILL	(SIOCDEVPRIVATE+3)		/* Get outfill timeout */
++#define SIOCSLEASE	(SIOCDEVPRIVATE+4)		/* Set "leased" line type */
++#define	SIOCGLEASE	(SIOCDEVPRIVATE+5)		/* Get line type */
++
++
++#endif
+diff --git a/include/net/if_slip.h b/include/net/if_slip.h
+new file mode 100644
+index 0000000..b29b964
+--- /dev/null
++++ b/include/net/if_slip.h
+@@ -0,0 +1,24 @@
++/* Copyright (C) 1997-2015 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library; if not, see
++   <http://www.gnu.org/licenses/>.  */
++
++#ifndef _NET_IF_SLIP_H
++#define _NET_IF_SLIP_H 1
++
++/* We can use the kernel header.  */
++#include <linux/if_slip.h>
++
++#endif	/* net/if_slip.h.  */
+-- 
+2.5.3
+

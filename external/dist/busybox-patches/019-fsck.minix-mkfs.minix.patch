@@ -1,0 +1,46 @@
+From: Tias Guns <tias@ulyssis.org>
+Date: Tue, 20 Mar 2012 22:05:07 +0000
+Subject: [PATCH] fix fsck.minix, mkfs.minix: undef HAVE_SETBIT,
+ MINIX2_SUPER_MAGIC, MINIX2_SUPER_MAGIC
+
+from 'no-setbit' by Dan Drown
+"there is no setbit/clrbit in bionic"
+from 'undefine-minix2-magic-to-use-in-enum' by Dan Drown
+"MINIX2_SUPER_MAGIC / MINIX2_SUPER_MAGIC2 defined in sys/vfs.h, undefine
+it to use it in the enum"
+http://dan.drown.org/android/src/busybox/
+
+Signed-off-by: Tias Guns <tias@ulyssis.org>
+---
+ include/platform.h |    1 +
+ util-linux/minix.h |    2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/include/platform.h b/include/platform.h
+index 3e101ba..30bcff6 100644
+--- a/include/platform.h
++++ b/include/platform.h
+@@ -449,6 +449,7 @@ typedef unsigned smalluint;
+ # undef HAVE_STRVERSCMP
+ # undef HAVE_UNLOCKED_LINE_OPS
+ # undef HAVE_NET_ETHERNET_H
++# undef HAVE_SETBIT
+ #endif
+ 
+ /*
+diff --git a/util-linux/minix.h b/util-linux/minix.h
+index e0fbcf7..060fab0 100644
+--- a/util-linux/minix.h
++++ b/util-linux/minix.h
+@@ -54,6 +54,8 @@ struct minix_dir_entry {
+ /* Believe it or not, but mount.h has this one #defined */
+ #undef BLOCK_SIZE
+ 
++#undef MINIX2_SUPER_MAGIC
++#undef MINIX2_SUPER_MAGIC2
+ enum {
+ 	BLOCK_SIZE              = 1024,
+ 	BITS_PER_BLOCK          = BLOCK_SIZE << 3,
+-- 
+1.7.10.4
+

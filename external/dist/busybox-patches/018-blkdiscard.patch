@@ -1,0 +1,29 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Tue, 13 Sep 2016 00:24:56 -0300
+Subject: [PATCH] blkdiscard; add missing linux/fs.h defines to libbb.h for ANDROID API <21
+
+Imported from dorimanx's combined ported header toolchain:
+https://github.com/dorimanx/android-busybox-ndk
+---
+ include/libbb.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/include/libbb.h b/include/libbb.h
+index 657fff1..e55e575 100644
+--- a/include/libbb.h
++++ b/include/libbb.h
+@@ -65,6 +65,11 @@
+ #if defined(ANDROID) || defined(__ANDROID__)
+ # define endpwent() ((void)0)
+ # define endgrent() ((void)0)
++# if __ANDROID_API__ < 21
++#  define BLKDISCARD _IO(0x12,119)
++#  define BLKDISCARDZEROES _IO(0x12,124)
++#  define BLKSECDISCARD _IO(0x12,125)
++# endif
+ #endif
+ #ifdef HAVE_MNTENT_H
+ # include <mntent.h>
+-- 
+2.8.3
+

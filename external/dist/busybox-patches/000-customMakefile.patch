@@ -1,0 +1,24 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Tue, 10 Jan 2017 13:51:10 -0400
+Subject: [PATCH] Add custom busybox version tagging
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index ea9dd3d..c378593 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ VERSION = 1
+ PATCHLEVEL = 26
+ SUBLEVEL = 2
+-EXTRAVERSION =
++EXTRAVERSION = -osm0sis
+ NAME = Unnamed
+ 
+ # *DOCUMENTATION*
+-- 
+2.5.3
+

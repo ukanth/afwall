@@ -1,0 +1,151 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Mon, 12 Sep 2016 16:25:51 -0300
+Subject: [PATCH] modinfo/modprobe: use ifdef block for android without-utsrel modules path
+
+and fixes the modules.dep requirement, it is now optional...
+
+Patch by Tanguy Pruvot <tanguy.pruvot@gmail.com>
+Change-Id: Ifccb530fa23b021fd12e2395f5d0c66600b25c04
+from https://github.com/tpruvot/android_external_busybox
+
+and commit 2df42d3971f1e260e67c3fa4831cb9195fb276c4
+from https://github.com/tpruvot/android_external_busybox
+
+Rebased for busybox 1.25.0 by Chris Renshaw <osm0sis@outlook.com>
+---
+ modutils/modinfo.c  | 33 +++++++++++++++++++++++++++++----
+ modutils/modprobe.c | 18 +++++++++++++++++-
+ 2 files changed, 46 insertions(+), 5 deletions(-)
+
+diff --git a/modutils/modinfo.c b/modutils/modinfo.c
+index aa641ad..dbc679a 100644
+--- a/modutils/modinfo.c
++++ b/modutils/modinfo.c
+@@ -21,6 +21,10 @@
+ #include "libbb.h"
+ #include "modutils.h"
+ 
++#if defined(ANDROID) || defined(__ANDROID__)
++#define DONT_USE_UTS_REL_FOLDER
++#endif
++
+ static const char *const shortcuts[] = {
+ 	"filename",	// -n
+ 	"author",	// -a
+@@ -64,7 +68,7 @@ static void modinfo(const char *path, const char *version,
+ {
+ 	size_t len;
+ 	int j;
+-	char *ptr, *the_module;
++	char *ptr, *fullpath, *the_module;
+ 	char *allocated;
+ 	int tags = option_mask32;
+ 
+@@ -75,8 +79,14 @@ static void modinfo(const char *path, const char *version,
+ 		if (path[0] == '/')
+ 			return;
+ 		/* Newer depmod puts relative paths in modules.dep */
+-		path = allocated = xasprintf("%s/%s/%s", CONFIG_DEFAULT_MODULES_DIR, version, path);
+-		the_module = xmalloc_open_zipped_read_close(path, &len);
++		fullpath = allocated = xasprintf("%s/%s/%s", CONFIG_DEFAULT_MODULES_DIR, version, path);
++		the_module = xmalloc_open_zipped_read_close(fullpath, &len);
++#ifdef DONT_USE_UTS_REL_FOLDER
++		if (!the_module) {
++			fullpath = allocated = xasprintf("%s/%s", CONFIG_DEFAULT_MODULES_DIR, path);
++			the_module = xmalloc_open_zipped_read_close(fullpath, &len);
++		}
++#endif
+ 		if (!the_module) {
+ 			bb_error_msg("module '%s' not found", path);
+ 			goto ret;
+@@ -158,9 +168,23 @@ int modinfo_main(int argc UNUSED_PARAM, char **argv)
+ 	uname(&uts);
+ 	parser = config_open2(
+ 		xasprintf("%s/%s/%s", CONFIG_DEFAULT_MODULES_DIR, uts.release, CONFIG_DEFAULT_DEPMOD_FILE),
+-		xfopen_for_read
++		fopen_for_read
+ 	);
+ 
++#ifdef DONT_USE_UTS_REL_FOLDER
++	if (!parser) {
++		parser = config_open2(
++			xasprintf("%s/%s", CONFIG_DEFAULT_MODULES_DIR, CONFIG_DEFAULT_DEPMOD_FILE),
++			fopen_for_read
++		);
++	}
++
++	if (!parser) {
++		strcpy(uts.release,"");
++		goto no_modules_dep;
++	}
++#endif
++
+ 	while (config_read(parser, tokens, 2, 1, "# \t", PARSE_NORMAL)) {
+ 		colon = last_char_is(tokens[0], ':');
+ 		if (colon == NULL)
+@@ -177,6 +201,7 @@ int modinfo_main(int argc UNUSED_PARAM, char **argv)
+ 	if (ENABLE_FEATURE_CLEAN_UP)
+ 		config_close(parser);
+ 
++no_modules_dep:
+ 	for (i = 0; argv[i]; i++) {
+ 		if (argv[i][0]) {
+ 			modinfo(argv[i], uts.release, field);
+diff --git a/modutils/modprobe.c b/modutils/modprobe.c
+index 8130c40..585de5c 100644
+--- a/modutils/modprobe.c
++++ b/modutils/modprobe.c
+@@ -150,6 +150,10 @@ static const char modprobe_longopts[] ALIGN1 =
+ #define MODULE_FLAG_FOUND_IN_MODDEP     0x0004
+ #define MODULE_FLAG_BLACKLISTED         0x0008
+ 
++#if defined(ANDROID) || defined(__ANDROID__)
++#define DONT_USE_UTS_REL_FOLDER
++#endif
++
+ struct globals {
+ 	llist_t *probes; /* MEs of module(s) requested on cmdline */
+ 	char *cmdline_mopts; /* module options from cmdline */
+@@ -440,10 +444,17 @@ static int do_modprobe(struct module_entry *m)
+ 			options = gather_options_str(options, G.cmdline_mopts);
+ 
+ 		if (option_mask32 & OPT_SHOW_DEPS) {
++#ifndef DONT_USE_UTS_REL_FOLDER
+ 			printf(options ? "insmod %s/%s/%s %s\n"
+ 					: "insmod %s/%s/%s\n",
+ 				CONFIG_DEFAULT_MODULES_DIR, G.uts.release, fn,
+ 				options);
++#else
++			printf(options ? "insmod %s/%s %s\n"
++					: "insmod %s/%s\n",
++				CONFIG_DEFAULT_MODULES_DIR, fn,
++				options);
++#endif
+ 			free(options);
+ 			continue;
+ 		}
+@@ -525,6 +536,7 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
+ 	int rc;
+ 	unsigned opt;
+ 	struct module_entry *me;
++	struct stat info;
+ 
+ 	INIT_G();
+ 
+@@ -535,8 +547,12 @@ int modprobe_main(int argc UNUSED_PARAM, char **argv)
+ 
+ 	/* Goto modules location */
+ 	xchdir(CONFIG_DEFAULT_MODULES_DIR);
++#ifndef DONT_USE_UTS_REL_FOLDER
+ 	uname(&G.uts);
+-	xchdir(G.uts.release);
++	if (stat(G.uts.release, &info) == 0) {
++		xchdir(G.uts.release);
++	}
++#endif
+ 
+ 	if (opt & OPT_LIST_ONLY) {
+ 		int i;
+-- 
+2.8.3
+

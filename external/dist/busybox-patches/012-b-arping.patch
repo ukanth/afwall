@@ -1,0 +1,27 @@
+From: Tias Guns <tias@ulyssis.org>
+Date: Mon, 19 Mar 2012 18:03:19 +0000
+Subject: [PATCH] fix arping: include if_arp.h (for arphdr) and add mempcpy.c
+
+fixing arping also requires adding ether_ntoa_r, see 'fix udhcpd' patch
+
+patch from 'struct-arphdr' and 'mempcpy-function' by Dan Drown
+http://dan.drown.org/android/src/busybox/
+---
+ networking/arping.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/networking/arping.c b/networking/arping.c
+index 37dfec1..c34e002 100644
+--- a/networking/arping.c
++++ b/networking/arping.c
+@@ -26,6 +26,7 @@
+ #include <net/if.h>
+ #include <netinet/ether.h>
+ #include <netpacket/packet.h>
++#include <linux/if_arp.h> /* for arphdr */
+ 
+ #include "libbb.h"
+ 
+-- 
+1.7.10.4
+

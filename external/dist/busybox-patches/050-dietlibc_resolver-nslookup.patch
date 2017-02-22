@@ -1,0 +1,1243 @@
+From: Tias Guns <tias@ulyssis.org>
+Date: Tue, 20 Mar 2012 23:10:18 +0000
+Subject: [PATCH] fix nslookup, add libres, a dietlibc resolver
+
+patches from 'dietlibc-resolver' by Dan Drown
+"""
+use the bionic's resolver functions do not allow changing the dns
+server.  Use
+dietlibc's resolver code instead (see package libres-devel)
+"""
+http://dan.drown.org/android/src/busybox/
+
+libres from 'libres-0.32-1' also by Dan Drown:
+http://dan.drown.org/android/src/libres/
+---
+ Makefile                  |    1 +
+ libres/Kbuild.src         |   11 +++
+ libres/Makefile           |   32 ++++++++
+ libres/README             |    5 ++
+ libres/dietdns.h          |  189 +++++++++++++++++++++++++++++++++++++++++++++
+ libres/dn_expand.c        |   12 +++
+ libres/dnscruft.c         |  119 ++++++++++++++++++++++++++++
+ libres/dnscruft2.c        |  132 +++++++++++++++++++++++++++++++
+ libres/dnscruft3.c        |    6 ++
+ libres/freeaddrinfo.c     |   14 ++++
+ libres/gai_strerror.c     |   14 ++++
+ libres/getaddrinfo.c      |  137 ++++++++++++++++++++++++++++++++
+ libres/gethostbyname2_r.c |   35 +++++++++
+ libres/h_errno.c          |    1 +
+ libres/res_init.c         |   12 +++
+ libres/res_mkquery.c      |   85 ++++++++++++++++++++
+ libres/res_query.c        |   81 +++++++++++++++++++
+ libres/test.c             |  105 +++++++++++++++++++++++++
+ networking/nslookup.c     |   25 +++---
+ 19 files changed, 1005 insertions(+), 11 deletions(-)
+ create mode 100644 libres/Kbuild.src
+ create mode 100644 libres/Makefile
+ create mode 100644 libres/README
+ create mode 100644 libres/dietdns.h
+ create mode 100644 libres/dn_expand.c
+ create mode 100644 libres/dnscruft.c
+ create mode 100644 libres/dnscruft2.c
+ create mode 100644 libres/dnscruft3.c
+ create mode 100644 libres/freeaddrinfo.c
+ create mode 100644 libres/gai_strerror.c
+ create mode 100644 libres/getaddrinfo.c
+ create mode 100644 libres/gethostbyname2_r.c
+ create mode 100644 libres/h_errno.c
+ create mode 100644 libres/res_init.c
+ create mode 100644 libres/res_mkquery.c
+ create mode 100644 libres/res_query.c
+ create mode 100644 libres/test.c
+
+diff --git a/Makefile b/Makefile
+index c31ca89..8e0226a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -476,6 +476,7 @@ libs-y		:= \
+ 		init/ \
+ 		libbb/ \
+ 		libpwdgrp/ \
++		libres/ \
+ 		loginutils/ \
+ 		mailutils/ \
+ 		miscutils/ \
+diff --git a/libres/Kbuild.src b/libres/Kbuild.src
+new file mode 100644
+index 0000000..abd4194
+--- /dev/null
++++ b/libres/Kbuild.src
+@@ -0,0 +1,11 @@
++# Makefile for busybox
++#
++# Copyright (C) 2012-2012 by Tias Guns <tias@ulyssis.org>
++#
++# Licensed under GPLv2, see file LICENSE in this source tree.
++
++lib-$(CONFIG_NSLOOKUP) += getaddrinfo.o gethostbyname2_r.o freeaddrinfo.o
++lib-$(CONFIG_NSLOOKUP) += dnscruft.o dnscruft2.o dnscruft3.o
++lib-$(CONFIG_NSLOOKUP) += res_init.o res_query.o res_mkquery.o
++lib-$(CONFIG_NSLOOKUP) += h_errno.o gai_strerror.o
++lib-$(CONFIG_NSLOOKUP) += dn_expand.o
+diff --git a/libres/Makefile b/libres/Makefile
+new file mode 100644
+index 0000000..4a56888
+--- /dev/null
++++ b/libres/Makefile
+@@ -0,0 +1,32 @@
++CC=agcc
++
++OBJECTS=getaddrinfo.o
++OBJECTS+=gethostbyname2_r.o
++OBJECTS+=dnscruft.o
++OBJECTS+=dnscruft2.o
++OBJECTS+=dnscruft3.o
++OBJECTS+=h_errno.o
++OBJECTS+=res_query.o
++OBJECTS+=res_mkquery.o
++OBJECTS+=gai_strerror.o
++OBJECTS+=freeaddrinfo.o
++OBJECTS+=res_init.o
++OBJECTS+=dn_expand.o
++
++CFLAGS+=-Wall
++
++all: libres.a test
++clean:
++	rm -f $(OBJECTS) libres.a test.o test
++
++test: libres.a test.o
++	$(CC) $(CFLAGS) -o test test.o libres.a
++
++libres.a: $(OBJECTS)
++	ar r libres.a $(OBJECTS)
++	ranlib libres.a
++
++.PHONY: all clean
++
++%.o: %.c dietdns.h
++	$(CC) $(CFLAGS) -c $<
+diff --git a/libres/README b/libres/README
+new file mode 100644
+index 0000000..cab8e47
+--- /dev/null
++++ b/libres/README
+@@ -0,0 +1,5 @@
++all these files are from dietlibc, modified to fit as a plug-in resolver
++
++Work by Dan Drown, called libres-0.32-1
++available at:
++http://dan.drown.org/android/src/libres/
+diff --git a/libres/dietdns.h b/libres/dietdns.h
+new file mode 100644
+index 0000000..9ae0b4d
+--- /dev/null
++++ b/libres/dietdns.h
+@@ -0,0 +1,189 @@
++#ifndef __DIETDNS_H_
++#define __DIETDNS_H_
++
++#define DIET_MAXDNAME     1025    /* maximum domain name */
++#define DIET_PACKETSZ 512
++
++#define	DIET_MAXNS			8	/* max # name servers we'll track */
++#define	DIET_MAXDNSRCH		6	/* max # domains in search path */
++#define	DIET_MAXRESOLVSORT		10	/* number of net to sort on */
++
++struct diet_res_state {
++  int   retrans;                /* retransmission time interval */
++  int   retry;                  /* number of times to retransmit */
++  unsigned long options;                /* option flags - see below. */
++  int   nscount;                /* number of name servers */
++  struct sockaddr_in
++    nsaddr_list[DIET_MAXNS];   /* address of name server */
++#define nsaddr  nsaddr_list[0]          /* for backward compatibility */
++  unsigned short        id;                     /* current message id */
++  char  *dnsrch[DIET_MAXDNSRCH+1];   /* components of domain to search */
++  char  defdname[256];          /* default domain (deprecated) */
++  unsigned long pfcode;                 /* RES_PRF_ flags - see below. */
++  unsigned ndots:4;             /* threshold for initial abs. query */
++  unsigned nsort:4;             /* number of elements in sort_list[] */
++  char  unused[3];
++  struct {
++    struct in_addr      addr;
++    uint32_t    mask;
++  } sort_list[DIET_MAXRESOLVSORT];
++  char  pad[72];
++};
++
++/*
++ * Values for class field
++ */
++enum diet_ns_class {
++  diet_ns_c_invalid = 0,       /* Cookie. */
++  diet_ns_c_in = 1,            /* Internet. */
++  diet_ns_c_2 = 2,             /* unallocated/unsupported. */
++  diet_ns_c_chaos = 3,         /* MIT Chaos-net. */
++  diet_ns_c_hs = 4,            /* MIT Hesiod. */
++  /* Query class values which do not appear in resource records */
++  diet_ns_c_none = 254,        /* for prereq. sections in update requests */
++  diet_ns_c_any = 255,         /* Wildcard match. */
++  diet_ns_c_max = 65536
++};
++
++#define DIET_C_IN diet_ns_c_in
++
++/*
++ * Currently defined opcodes.
++ */
++enum diet_ns_opcode {
++  diet_ns_o_query = 0,         /* Standard query. */
++  diet_ns_o_iquery = 1,        /* Inverse query (deprecated/unsupported). */
++  diet_ns_o_status = 2,        /* Name server status query (unsupported). */
++  /* Opcode 3 is undefined/reserved. */
++  diet_ns_o_notify = 4,        /* Zone change notification. */
++  diet_ns_o_update = 5,        /* Zone update message. */
++  diet_ns_o_max = 6
++};
++
++#define DIET_QUERY diet_ns_o_query
++
++/*
++ * Currently defined type values for resources and queries.
++ */
++enum diet_ns_type {
++        diet_ns_t_invalid = 0,       /* Cookie. */
++        diet_ns_t_a = 1,             /* Host address. */
++        diet_ns_t_ns = 2,            /* Authoritative server. */
++        diet_ns_t_md = 3,            /* Mail destination. */
++        diet_ns_t_mf = 4,            /* Mail forwarder. */
++        diet_ns_t_cname = 5,         /* Canonical name. */
++        diet_ns_t_soa = 6,           /* Start of authority zone. */
++        diet_ns_t_mb = 7,            /* Mailbox domain name. */
++        diet_ns_t_mg = 8,            /* Mail group member. */
++        diet_ns_t_mr = 9,            /* Mail rename name. */
++        diet_ns_t_null = 10,         /* Null resource record. */
++        diet_ns_t_wks = 11,          /* Well known service. */
++        diet_ns_t_ptr = 12,          /* Domain name pointer. */
++        diet_ns_t_hinfo = 13,        /* Host information. */
++        diet_ns_t_minfo = 14,        /* Mailbox information. */
++        diet_ns_t_mx = 15,           /* Mail routing information. */
++        diet_ns_t_txt = 16,          /* Text strings. */
++        diet_ns_t_rp = 17,           /* Responsible person. */
++        diet_ns_t_afsdb = 18,        /* AFS cell database. */
++        diet_ns_t_x25 = 19,          /* X_25 calling address. */
++        diet_ns_t_isdn = 20,         /* ISDN calling address. */
++        diet_ns_t_rt = 21,           /* Router. */
++        diet_ns_t_nsap = 22,         /* NSAP address. */
++        diet_ns_t_nsap_ptr = 23,     /* Reverse NSAP lookup (deprecated). */
++        diet_ns_t_sig = 24,          /* Security signature. */
++        diet_ns_t_key = 25,          /* Security key. */
++        diet_ns_t_px = 26,           /* X.400 mail mapping. */
++        diet_ns_t_gpos = 27,         /* Geographical position (withdrawn). */
++        diet_ns_t_aaaa = 28,         /* Ip6 Address. */
++        diet_ns_t_loc = 29,          /* Location Information. */
++        diet_ns_t_nxt = 30,          /* Next domain (security). */
++        diet_ns_t_eid = 31,          /* Endpoint identifier. */
++        diet_ns_t_nimloc = 32,       /* Nimrod Locator. */
++        diet_ns_t_srv = 33,          /* Server Selection. */
++        diet_ns_t_atma = 34,         /* ATM Address */
++        diet_ns_t_naptr = 35,        /* Naming Authority PoinTeR */
++        diet_ns_t_kx = 36,           /* Key Exchange */
++        diet_ns_t_cert = 37,         /* Certification record */
++        diet_ns_t_a6 = 38,           /* IPv6 address (deprecates AAAA) */
++        diet_ns_t_dname = 39,        /* Non-terminal DNAME (for IPv6) */
++        diet_ns_t_sink = 40,         /* Kitchen sink (experimentatl) */
++        diet_ns_t_opt = 41,          /* EDNS0 option (meta-RR) */
++        diet_ns_t_tsig = 250,        /* Transaction signature. */
++        diet_ns_t_ixfr = 251,        /* Incremental zone transfer. */
++        diet_ns_t_axfr = 252,        /* Transfer zone of authority. */
++        diet_ns_t_mailb = 253,       /* Transfer mailbox records. */
++        diet_ns_t_maila = 254,       /* Transfer mail agent records. */
++        diet_ns_t_any = 255,         /* Wildcard match. */
++        diet_ns_t_zxfr = 256,        /* BIND-specific, nonstandard. */
++        diet_ns_t_max = 65536
++};
++
++#define DIET_T_A             diet_ns_t_a
++#define DIET_T_NS            diet_ns_t_ns
++#define DIET_T_CNAME         diet_ns_t_cname
++#define DIET_T_SOA           diet_ns_t_soa
++#define DIET_T_PTR           diet_ns_t_ptr
++#define DIET_T_MX            diet_ns_t_mx
++#define DIET_T_TXT           diet_ns_t_txt
++#define DIET_T_AAAA          diet_ns_t_aaaa
++#define DIET_T_ANY           diet_ns_t_any
++
++/*
++ * Currently defined response codes.
++ */
++enum diet_ns_rcode {
++        diet_ns_r_noerror = 0,       /* No error occurred. */
++        diet_ns_r_formerr = 1,       /* Format error. */
++        diet_ns_r_servfail = 2,      /* Server failure. */
++        diet_ns_r_nxdomain = 3,      /* Name error. */
++        diet_ns_r_notimpl = 4,       /* Unimplemented. */
++        diet_ns_r_refused = 5,       /* Operation refused. */
++        /* these are for BIND_UPDATE */
++        diet_ns_r_yxdomain = 6,      /* Name exists */
++        diet_ns_r_yxrrset = 7,       /* RRset exists */
++        diet_ns_r_nxrrset = 8,       /* RRset does not exist */
++        diet_ns_r_notauth = 9,       /* Not authoritative for zone */
++        diet_ns_r_notzone = 10,      /* Zone of record different from zone section */
++        diet_ns_r_max = 11,
++        /* The following are TSIG extended errors */
++        diet_ns_r_badsig = 16,
++        diet_ns_r_badkey = 17,
++        diet_ns_r_badtime = 18
++};
++
++
++
++#define DIET_NOERROR         diet_ns_r_noerror
++#define DIET_FORMERR         diet_ns_r_formerr
++#define DIET_SERVFAIL        diet_ns_r_servfail
++#define DIET_NXDOMAIN        diet_ns_r_nxdomain
++#define DIET_NOTIMP          diet_ns_r_notimpl
++#define DIET_REFUSED         diet_ns_r_refused
++#define DIET_YXDOMAIN        diet_ns_r_yxdomain
++#define DIET_YXRRSET         diet_ns_r_yxrrset
++#define DIET_NXRRSET         diet_ns_r_nxrrset
++#define DIET_NOTAUTH         diet_ns_r_notauth
++#define DIET_NOTZONE         diet_ns_r_notzone
++
++
++#define DIET_RES_RECURSE	0x00000040	/* recursion desired */
++
++extern struct diet_res_state _diet_res;
++extern int diet_h_errno;
++
++int __dns_gethostbyx_r(const char* name, struct hostent* result,
++			char *buf, size_t buflen,
++			struct hostent **RESULT, int *h_errnop, int lookfor);
++int diet_gethostbyname2_r(const char* name, int AF, struct hostent* result,
++				char *buf, size_t buflen,
++				struct hostent **RESULT, int *h_errnop);
++int diet_res_query(const char *dname, int class, int type, unsigned char *answer, int anslen);
++int diet_res_mkquery(int op, const char *dname, int class, int type, char* data,
++        int datalen, const unsigned char* newrr, char* buf, int buflen);
++const char* diet_gai_strerror(int error);
++int diet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res);
++void diet_freeaddrinfo(struct addrinfo *res);
++int diet_res_init(void);
++int diet_dn_expand(const unsigned char *msg, const unsigned char *eomorig, const unsigned char *comp_dn, unsigned char *exp_dn, int length);
++
++#endif
+diff --git a/libres/dn_expand.c b/libres/dn_expand.c
+new file mode 100644
+index 0000000..9eb4587
+--- /dev/null
++++ b/libres/dn_expand.c
+@@ -0,0 +1,12 @@
++#include <netinet/in.h>
++#include <arpa/nameser.h>
++#include <resolv.h>
++#include <netdb.h>
++#include "dietdns.h"
++
++extern int __dns_decodename(const unsigned char *packet,unsigned int ofs,unsigned char *dest,
++			    unsigned int maxlen,const unsigned char* behindpacket);
++
++int diet_dn_expand(const unsigned char *msg, const unsigned char *eomorig, const unsigned char *comp_dn, unsigned char *exp_dn, int length) {
++  return __dns_decodename(msg,comp_dn-msg,exp_dn,length,eomorig)-(comp_dn-msg);
++}
+diff --git a/libres/dnscruft.c b/libres/dnscruft.c
+new file mode 100644
+index 0000000..142ffec
+--- /dev/null
++++ b/libres/dnscruft.c
+@@ -0,0 +1,119 @@
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <sys/socket.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <arpa/inet.h>
++#include <string.h>
++#include <ctype.h>
++#include <stdlib.h>
++#include <resolv.h>
++#include <net/if.h>
++#include <netdb.h>
++#include "dietdns.h"
++
++#ifdef __BIONIC__
++#include <sys/system_properties.h>
++#endif
++
++
++/* needs:
++ * _res
++ */
++
++int __dns_fd=-1;
++
++/* the ad-hoc internal API from hell ;-) */
++void __dns_make_fd(void);
++void __dns_make_fd6(void);
++void __dns_readstartfiles(void);
++int __dns_decodename(const unsigned char *packet,unsigned int offset,unsigned char *dest,
++		     unsigned int maxlen,const unsigned char* behindpacket);
++
++void __dns_make_fd(void) {
++  int tmp;
++  struct sockaddr_in si;
++  if (__dns_fd>=0) return;
++  tmp=socket(PF_INET,SOCK_DGRAM,IPPROTO_UDP);
++  if (tmp<0) return;
++  fcntl(tmp,F_SETFD,FD_CLOEXEC);
++  si.sin_family=AF_INET;
++  si.sin_port=0;
++  si.sin_addr.s_addr=INADDR_ANY;
++  if (bind(tmp,(struct sockaddr*)&si,sizeof(si))) return;
++  __dns_fd=tmp;
++}
++
++static int parsesockaddr(const char* c,void* x) {
++  struct sockaddr_in to;
++  if (inet_aton(c,&to.sin_addr)) {
++    to.sin_port=htons(53);
++    to.sin_family=AF_INET;
++    memmove(x,&to,sizeof(struct sockaddr_in));
++    return 1;
++  }
++  return 0;
++}
++
++#define MAX_DNS_PROPERTIES 8
++#define DNS_PROP_NAME_PREFIX "net.dns"
++void __dns_readstartfiles(void) {
++#ifdef __BIONIC__
++  char propvalue[PROP_VALUE_MAX];
++  char propname[PROP_NAME_MAX];
++  int i;
++#endif
++
++  if (_diet_res.nscount>0)
++    return;
++
++  _diet_res.options=DIET_RES_RECURSE;
++
++#ifdef __BIONIC__
++  for(i = 1; i <= MAX_DNS_PROPERTIES; i++) {
++    snprintf(propname, sizeof(propname), "%s%d", DNS_PROP_NAME_PREFIX, i);
++    if(__system_property_get(propname, propvalue) < 1) {
++      break;
++    }
++
++    if (parsesockaddr(propvalue,&_diet_res.nsaddr_list[_diet_res.nscount]))
++      if (_diet_res.nscount<DIET_MAXNS)
++        ++_diet_res.nscount;
++  }
++#else
++  /* testing */
++  parsesockaddr("127.0.0.1",&_diet_res.nsaddr_list[_diet_res.nscount]);
++  ++_diet_res.nscount;
++#endif
++}
++
++/* return length of decoded data or -1 */
++int __dns_decodename(const unsigned char *packet,unsigned int offset,unsigned char *dest,
++		     unsigned int maxlen,const unsigned char* behindpacket) {
++  const unsigned char *tmp;
++  const unsigned char *max=dest+maxlen;
++  const unsigned char *after=packet+offset;
++  int ok=0;
++  for (tmp=after; maxlen>0&&*tmp; ) {
++    if (tmp>=behindpacket) return -1;
++    if ((*tmp>>6)==3) {		/* goofy DNS decompression */
++      unsigned int ofs=((unsigned int)(*tmp&0x3f)<<8)|*(tmp+1);
++      if (ofs>=(unsigned int)offset) return -1;	/* RFC1035: "pointer to a _prior_ occurrance" */
++      if (after<tmp+2) after=tmp+2;
++      tmp=packet+ofs;
++      ok=0;
++    } else {
++      unsigned int duh;
++      if (dest+*tmp+1>max) return -1;
++      if (tmp+*tmp+1>=behindpacket) return -1;
++      for (duh=*tmp; duh>0; --duh)
++	*dest++=*++tmp;
++      *dest++='.'; ok=1;
++      ++tmp;
++      if (tmp>after) { after=tmp; if (!*tmp) ++after; }
++    }
++  }
++  if (ok) --dest;
++  *dest=0;
++  return after-packet;
++}
+diff --git a/libres/dnscruft2.c b/libres/dnscruft2.c
+new file mode 100644
+index 0000000..db9782f
+--- /dev/null
++++ b/libres/dnscruft2.c
+@@ -0,0 +1,132 @@
++#include <string.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <netdb.h>
++#include <stdlib.h>
++#include <arpa/inet.h>
++#include <unistd.h>
++#include <errno.h>
++#include <arpa/nameser.h>
++#include <resolv.h>
++#include "dietdns.h"
++
++/* needs:
++ * __dns_decodename
++ * res_query
++ */
++
++extern int __dns_decodename(unsigned char *packet,unsigned int offset,unsigned char *dest,
++			    unsigned int maxlen,unsigned char* behindpacket);
++
++/* Oh boy, this interface sucks so badly, there are no words for it.
++ * Not one, not two, but _three_ error signalling methods!  (*h_errnop
++ * nonzero?  return value nonzero?  *RESULT zero?)  The glibc goons
++ * really outdid themselves with this one. */
++int __dns_gethostbyx_r(const char* name, struct hostent* result,
++			char *buf, size_t buflen,
++			struct hostent **RESULT, int *h_errnop, int lookfor) {
++  int names,ips;
++  char *cur;
++  char *max;
++  char inpkg[1500];
++  char* tmp;
++  int size;
++
++  if (lookfor==1) {
++    result->h_addrtype=AF_INET;
++    result->h_length=4;
++  } else {
++    result->h_addrtype=AF_INET6;
++    result->h_length=16;
++  }
++  result->h_aliases=(char**)(buf+8*sizeof(char*));
++  result->h_addr_list=(char**)buf;
++  result->h_aliases[0]=0;
++
++  cur=buf+16*sizeof(char*);
++  max=buf+buflen;
++  names=ips=0;
++
++  if ((size=diet_res_query(name,DIET_C_IN,lookfor,(unsigned char*)inpkg,512))<0) {
++invalidpacket:
++    *h_errnop=HOST_NOT_FOUND;
++    return -1;
++  }
++  {
++    tmp=inpkg+12;
++    {
++      unsigned char Name[257];
++      unsigned short q=((unsigned short)inpkg[4]<<8)+inpkg[5];
++      while (q>0) {
++	if (tmp>(char*)inpkg+size) goto invalidpacket;
++	while (*tmp) { tmp+=*tmp+1; if (tmp>(char*)inpkg+size) goto invalidpacket; }
++	tmp+=5;
++	--q;
++      }
++      if (tmp>inpkg+size) goto invalidpacket;
++      q=((unsigned short)inpkg[6]<<8)+inpkg[7];
++      if (q<1) goto nodata;
++      while (q>0) {
++	int decofs=__dns_decodename((unsigned char*)inpkg,(size_t)(tmp-(char*)inpkg),Name,256,(unsigned char*)inpkg+size);
++	if (decofs<0) break;
++	tmp=inpkg+decofs;
++	--q;
++	if (tmp[0]!=0 || tmp[1]!=lookfor ||	/* TYPE != A */
++	    tmp[2]!=0 || tmp[3]!=1) {		/* CLASS != IN */
++	  if (tmp[1]==5) {	/* CNAME */
++	    tmp+=10;
++	    decofs=__dns_decodename((unsigned char*)inpkg,(size_t)(tmp-(char*)inpkg),Name,256,(unsigned char*)inpkg+size);
++	    if (decofs<0) break;
++	    tmp=inpkg+decofs;
++	  } else
++	    break;
++	  continue;
++	}
++	tmp+=10;	/* skip type, class, TTL and length */
++	{
++	  int slen;
++	  if (lookfor==1 || lookfor==28) /* A or AAAA*/ {
++	    slen=strlen((char*)Name);
++	    if (cur+slen+8+(lookfor==28?12:0)>=max) { *h_errnop=NO_RECOVERY; return -1; }
++	  } else {
++	    if (lookfor==12) /* PTR */ {
++	      decofs=__dns_decodename((unsigned char*)inpkg,(size_t)(tmp-(char*)inpkg),Name,256,(unsigned char*)inpkg+size);
++	      if (decofs<0) break;
++	      tmp=inpkg+decofs;
++	    }
++	    slen=strlen((char*)Name);
++	  }
++	  strcpy(cur,(char*)Name);
++	  if (names==0)
++	    result->h_name=cur;
++	  else
++	    result->h_aliases[names-1]=cur;
++	  result->h_aliases[names]=0;
++	  if (names<8) ++names;
++/*		cur+=slen+1; */
++	  cur+=(slen|3)+1;
++	  result->h_addr_list[ips++] = cur;
++	  if (lookfor==1) /* A */ {
++	    memcpy(cur,tmp,4);
++	    cur+=4; tmp+=4;
++	    result->h_addr_list[ips]=0;
++	  } else if (lookfor==28) /* AAAA */ {
++	    memcpy(cur,tmp,16);
++	    cur+=16; tmp+=16;
++	    result->h_addr_list[ips]=0;
++	  }
++	}
++/*	      puts(Name); */
++      }
++    }
++  }
++  if (!names) {
++nodata:
++    *h_errnop=NO_DATA;
++    return -1;
++  }
++  *h_errnop=0;
++  *RESULT=result;
++  return 0;
++}
+diff --git a/libres/dnscruft3.c b/libres/dnscruft3.c
+new file mode 100644
+index 0000000..379dc8b
+--- /dev/null
++++ b/libres/dnscruft3.c
+@@ -0,0 +1,6 @@
++#include <netinet/in.h>
++#include <resolv.h>
++#include <netdb.h>
++#include "dietdns.h"
++
++struct diet_res_state _diet_res; /* don't ask. */
+diff --git a/libres/freeaddrinfo.c b/libres/freeaddrinfo.c
+new file mode 100644
+index 0000000..f525d2c
+--- /dev/null
++++ b/libres/freeaddrinfo.c
+@@ -0,0 +1,14 @@
++#include <sys/socket.h>
++#include <stdlib.h>
++#include <netdb.h>
++#include <netinet/in.h>
++#include "dietdns.h"
++
++void diet_freeaddrinfo(struct addrinfo *res) {
++  while (res) {
++    struct addrinfo *duh;
++    duh=res;
++    res=res->ai_next;
++    free(duh);
++  }
++}
+diff --git a/libres/gai_strerror.c b/libres/gai_strerror.c
+new file mode 100644
+index 0000000..311777e
+--- /dev/null
++++ b/libres/gai_strerror.c
+@@ -0,0 +1,14 @@
++#include <sys/socket.h>
++#include <netdb.h>
++
++const char* diet_gai_strerror(int error) {
++  switch (error) {
++  case EAI_FAMILY: return "family not supported";
++  case EAI_SOCKTYPE: return "socket type not supported";
++  case EAI_NONAME: return "unknown host";
++  case EAI_SERVICE: return "unknown service";
++  case EAI_MEMORY: return "memory allocation failure";
++  case EAI_AGAIN: return "temporary failure";
++  }
++  return "DNS error. Sorry.";
++}
+diff --git a/libres/getaddrinfo.c b/libres/getaddrinfo.c
+new file mode 100644
+index 0000000..3c6f7ee
+--- /dev/null
++++ b/libres/getaddrinfo.c
+@@ -0,0 +1,137 @@
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <stdlib.h>
++#include <string.h>
++#include <netdb.h>
++#include <net/if.h>
++#include <arpa/inet.h>
++#include "dietdns.h"
++
++/* XXX TODO FIXME */
++
++/* needs:
++ * gethostbyname2_r
++ */
++
++int diet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints, struct addrinfo **res) {
++  struct addrinfo **tmp;
++  int family;
++  tmp=res; *res=0;
++  if (hints) {
++    if (hints->ai_family && hints->ai_family != PF_INET6 && hints->ai_family != PF_INET) return EAI_FAMILY;
++    if (hints->ai_socktype && hints->ai_socktype != SOCK_STREAM && hints->ai_socktype != SOCK_DGRAM) return EAI_SOCKTYPE;
++  }
++  for (family=PF_INET6; ; family=PF_INET) {
++    if (!hints || hints->ai_family==family || hints->ai_family==AF_UNSPEC) {	/* IPv6 addresses are OK */
++      struct hostent h;
++      struct hostent *H;
++      int herrno=0;
++      char buf[4096];
++      int lookupok=0, i;
++      char* interface;
++      h.h_addr_list=(char**)buf+16;
++      h.h_addr_list[1]=0;
++      if (node) {
++	if ((interface=strchr(node,'%'))) ++interface;
++	if (family==PF_INET6 && inet_pton(AF_INET,node,buf)) continue;
++	if (inet_pton(family,node,buf)>0) {
++	  h.h_name=(char*)node;
++	  h.h_addr_list[0]=buf;
++	  lookupok=1;
++	} else if ((!hints || !(hints->ai_flags&AI_NUMERICHOST)) &&
++		   !diet_gethostbyname2_r(node,family,&h,buf,4096,&H,&herrno)) {
++	  lookupok=1;
++	} else {
++	  if (herrno==TRY_AGAIN) { diet_freeaddrinfo(*res); return EAI_AGAIN; }
++	}
++      } else {
++	h.h_name=0;
++	h.h_addr_list[0]=buf;
++	interface=0;
++	memset(buf,0,16);
++	if (!hints || !(hints->ai_flags&AI_PASSIVE)) {
++	  if (family==AF_INET) {
++	    buf[0]=127; buf[3]=1;
++	  } else
++	    buf[15]=1;
++	}
++	lookupok=1;
++      }
++      if (lookupok) {
++
++	for (i=0; h.h_addr_list[i]; ++i) {
++	  struct ai_v6 {
++	    struct addrinfo ai;
++	    union {
++	      struct sockaddr_in6 ip6;
++	      struct sockaddr_in ip4;
++	    } ip;
++	    char name[1];
++	  } *foo;
++	  unsigned short port;
++	  int len;
++
++	  len=sizeof(struct ai_v6)+(h.h_name?strlen(h.h_name):0);
++
++	  if (!(foo=malloc(len))) goto error;
++	  foo->ai.ai_next=0;
++	  foo->ai.ai_addrlen=family==PF_INET6?sizeof(struct sockaddr_in6):sizeof(struct sockaddr_in);
++	  foo->ai.ai_addr=(struct sockaddr*)&foo->ip;
++	  if (family==PF_INET6) {
++	    memset(&foo->ip,0,sizeof(foo->ip));
++	    memmove(&foo->ip.ip6.sin6_addr,h.h_addr_list[i],16);
++	    if (interface) foo->ip.ip6.sin6_scope_id=if_nametoindex(interface);
++	  } else {
++	    memmove(&foo->ip.ip4.sin_addr,h.h_addr_list[i],4);
++	  }
++	  foo->ip.ip6.sin6_family=foo->ai.ai_family=family;
++	  if (h.h_name) {
++	    foo->ai.ai_canonname=foo->name;
++	    memmove(foo->name,h.h_name,strlen(h.h_name)+1);
++	  } else
++	    foo->ai.ai_canonname=0;
++
++	  for (foo->ai.ai_socktype=SOCK_STREAM; ; foo->ai.ai_socktype=SOCK_DGRAM) {
++	    char* type,* x;
++	    if (foo->ai.ai_socktype==SOCK_STREAM) {	/* TCP */
++	      if (hints && hints->ai_socktype==SOCK_DGRAM) continue;
++	      foo->ai.ai_protocol=IPPROTO_TCP;
++	      type="tcp";
++	    } else {	/* UDP */
++	      if (hints && hints->ai_socktype==SOCK_STREAM) break;
++	      foo->ai.ai_protocol=IPPROTO_UDP;
++	      type="udp";
++	    }
++	    port=htons(strtol(service?service:"0",&x,0));
++	    if (*x) {	/* service is not numeric :-( */
++              free(foo);
++              /* no getservbyname on android */
++              diet_freeaddrinfo(*res);
++              return EAI_SERVICE;
++	    }
++	    if (family==PF_INET6)
++	      foo->ip.ip6.sin6_port=port;
++	    else
++	      foo->ip.ip4.sin_port=port;
++	    if (!*tmp) *tmp=&(foo->ai); else (*tmp)->ai_next=&(foo->ai);
++	    if (!(foo=malloc(len))) goto error;
++	    memmove(foo,*tmp,len);
++	    tmp=&(*tmp)->ai_next;
++	    foo->ai.ai_addr=(struct sockaddr*)&foo->ip;
++	    if (foo->ai.ai_canonname)
++	      foo->ai.ai_canonname=foo->name;
++	    if (foo->ai.ai_socktype==SOCK_DGRAM) break;
++	  }
++	  free(foo);
++	}
++      }
++    }
++    if (family==PF_INET) break;
++  }
++  if (*res==0) return EAI_NONAME; /* kludge kludge... */
++  return 0;
++error:
++  diet_freeaddrinfo(*res);
++  return EAI_MEMORY;
++}
+diff --git a/libres/gethostbyname2_r.c b/libres/gethostbyname2_r.c
+new file mode 100644
+index 0000000..2558e5d
+--- /dev/null
++++ b/libres/gethostbyname2_r.c
+@@ -0,0 +1,35 @@
++#include <string.h>
++#include <strings.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <netdb.h>
++#include <stdlib.h>
++#include <arpa/inet.h>
++#include <unistd.h>
++#include <errno.h>
++#include "dietdns.h"
++
++/* needs:
++ * __dns_gethostbyx_r
++ */
++
++/* Oh boy, this interface sucks so badly, there are no words for it.
++ * Not one, not two, but _three_ error signalling methods!  (*h_errnop
++ * nonzero?  return value nonzero?  *RESULT zero?)  The glibc goons
++ * really outdid themselves with this one. */
++int diet_gethostbyname2_r(const char* name, int AF, struct hostent* result,
++				char *buf, size_t buflen,
++				struct hostent **RESULT, int *h_errnop) {
++  size_t L=strlen(name);
++  int lookfor=0;
++  switch (AF) {
++  case AF_INET: lookfor=1; break;
++  case AF_INET6: lookfor=28; break;
++  default: *h_errnop=EINVAL; return 1;
++  }
++  result->h_name=buf;
++  if (buflen<L) { *h_errnop=ERANGE; return 1; }
++  strcpy(buf,name);
++  return __dns_gethostbyx_r(name,result,buf+L,buflen-L,RESULT,h_errnop,lookfor);
++}
+diff --git a/libres/h_errno.c b/libres/h_errno.c
+new file mode 100644
+index 0000000..fbdfd23
+--- /dev/null
++++ b/libres/h_errno.c
+@@ -0,0 +1 @@
++int diet_h_errno;
+diff --git a/libres/res_init.c b/libres/res_init.c
+new file mode 100644
+index 0000000..c3a7e6d
+--- /dev/null
++++ b/libres/res_init.c
+@@ -0,0 +1,12 @@
++#include <resolv.h>
++#include <netdb.h>
++#include <netinet/in.h>
++#include "dietdns.h"
++
++extern void __dns_readstartfiles(void);
++
++int diet_res_init(void) {
++  _diet_res.nscount=0;
++  __dns_readstartfiles();
++  return 0;
++}
+diff --git a/libres/res_mkquery.c b/libres/res_mkquery.c
+new file mode 100644
+index 0000000..a8cece6
+--- /dev/null
++++ b/libres/res_mkquery.c
+@@ -0,0 +1,85 @@
++#include <resolv.h>
++#include <string.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <netdb.h>
++#include <stdlib.h>
++#include <arpa/inet.h>
++#include <unistd.h>
++#include <errno.h>
++#include <arpa/nameser.h>
++#include "dietdns.h"
++
++/* needs:
++ * _res
++ */
++
++static char dnspacket[]="\xfe\xfe\001\000\000\001\000\000\000\000\000\000";
++
++/*
++                                    1  1  1  1  1  1
++      0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
++    |                      ID                       |
++    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
++    |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
++    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
++    |                    QDCOUNT                    |
++    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
++    |                    ANCOUNT                    |
++    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
++    |                    NSCOUNT                    |
++    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
++    |                    ARCOUNT                    |
++    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
++*/
++
++extern void __dns_make_fd(void);
++extern int __dns_fd;
++
++extern int __dns_servers;
++extern struct sockaddr __dns_server_ips[];
++
++extern void __dns_readstartfiles(void);
++
++int diet_res_mkquery(int op, const char *dname, int class, int type, char* data,
++		int datalen, const unsigned char* newrr, char* buf, int buflen) {
++  unsigned char packet[512];
++  unsigned long len;
++
++  memcpy(packet,dnspacket,12);
++  len=rand();
++  packet[0]=len;
++  packet[1]=len>>8;
++  len=0;
++  if ((_diet_res.options&DIET_RES_RECURSE)==0) packet[2]=0;
++  {
++    unsigned char* x;
++    const char* y,* tmp;
++    x=packet+12; y=dname;
++    while (*y) {
++      while (*y=='.') ++y;
++      for (tmp=y; *tmp && *tmp!='.'; ++tmp) ;
++      if (tmp-y > 63) return -1;
++      *x=tmp-y;
++      if (!(tmp-y)) break;
++      if ((len+=*x+1) > 254) return -1;
++      ++x;
++//      if (x>=packet+510-(tmp-y)) { return -1; }
++      memmove(x,y,tmp-y);
++      x+=tmp-y;
++      if (!*tmp) {
++	*x=0;
++	break;
++      }
++      y=tmp;
++    }
++    *++x= 0; *++x= type;	/* A */
++    *++x= 0; *++x= class;	/* IN */
++    ++x;
++    if (x-packet>buflen) return -1;
++    memmove(buf,packet,x-packet);
++    return x-packet;
++  }
++}
+diff --git a/libres/res_query.c b/libres/res_query.c
+new file mode 100644
+index 0000000..19898b7
+--- /dev/null
++++ b/libres/res_query.c
+@@ -0,0 +1,81 @@
++#include <resolv.h>
++#include <string.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <netdb.h>
++#include <stdlib.h>
++#include <arpa/inet.h>
++#include <poll.h>
++#include <unistd.h>
++#include <errno.h>
++#include <arpa/nameser.h>
++#include <fcntl.h>
++#include <sys/time.h>
++#include "dietdns.h"
++
++/* needs:
++ * __dns_fd
++ * __dns_make_fd
++ * __dns_readstartfiles
++ * h_errno
++ * diet_res_mkquery
++ * _res
++ */
++
++extern void __dns_make_fd(void);
++extern int __dns_fd;
++
++extern void __dns_readstartfiles(void);
++
++int diet_res_query(const char *dname, int class, int type, unsigned char *answer, int anslen) {
++  unsigned char packet[512];
++  int size;
++  struct pollfd duh[2];
++  __dns_make_fd();
++
++  __dns_readstartfiles();
++  if ((size=diet_res_mkquery(DIET_QUERY,dname,class,type,0,0,0,(char*)packet,512))<0) { diet_h_errno=NO_RECOVERY; return -1; }
++  {
++    {
++      int i;	/* current server */
++      int j;	/* timeout count down */
++      struct timeval last,now;
++
++      i=0;
++      duh[0].events=POLLIN;
++      duh[0].fd=0;
++      last.tv_sec=0;
++      for (j=20; j>0; --j) {
++	gettimeofday(&now,0);
++	if (now.tv_sec-last.tv_sec>10) {
++	  duh[0].fd=__dns_fd;
++	  sendto(__dns_fd,packet,size,0,(struct sockaddr*)&(_diet_res.nsaddr_list[i]),sizeof(struct sockaddr));
++	  last=now;
++	}
++	if (++i >= _diet_res.nscount) i=0;
++	if (poll(duh,1,1000) == 1) {
++	  /* read and parse answer */
++	  unsigned char inpkg[1500];
++	  int len=read(duh[0].fd,inpkg,sizeof(inpkg));
++	  /* header, question, answer, authority, additional */
++	  if (inpkg[0]!=packet[0] || inpkg[1]!=packet[1]) continue;	/* wrong ID */
++	  if ((inpkg[2]&0xf9) != (_diet_res.options&DIET_RES_RECURSE?0x81:0x80)) continue;	/* not answer */
++	  if ((inpkg[3]&0x0f) != 0) {
++	    diet_h_errno=HOST_NOT_FOUND;
++	    return -1;
++	  }		/* error */
++	  if (len>anslen) {
++	    diet_h_errno=NO_RECOVERY;
++	    return -1;
++	  }
++	  memcpy(answer,inpkg,len);
++	  return len;
++	}
++/*kaputt:*/
++      }
++    }
++  }
++  diet_h_errno=TRY_AGAIN;
++  return -1;
++}
+diff --git a/libres/test.c b/libres/test.c
+new file mode 100644
+index 0000000..45095d8
+--- /dev/null
++++ b/libres/test.c
+@@ -0,0 +1,105 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <sys/socket.h>
++#include <sys/poll.h>
++#include <netinet/icmp6.h>
++#include <netinet/ip_icmp.h>
++#include <netinet/in.h>
++#include <netinet/ip6.h>
++#include <netdb.h>
++#include <arpa/inet.h>
++#include "dietdns.h"
++
++union common_sockaddr {
++  struct sockaddr sa;
++  struct sockaddr_in sin;
++  struct sockaddr_in6 sin6;
++};
++typedef union common_sockaddr sockaddr_any;
++
++static int getaddr (const char *name, sockaddr_any *addr, int af) {
++	int ret;
++	struct addrinfo hints, *ai, *res = NULL;
++
++	memset (&hints, 0, sizeof (hints));
++	hints.ai_family = af;
++        hints.ai_socktype = SOCK_DGRAM;
++        hints.ai_flags = AI_ADDRCONFIG;
++
++	ret = diet_getaddrinfo (name, NULL, &hints, &res);
++	if (ret) {
++		fprintf (stderr, "%s: %s\n", name, diet_gai_strerror (ret));
++		return -1;
++	}
++
++	for (ai = res; ai; ai = ai->ai_next) {
++	    if (ai->ai_family == af)  break;
++	}
++	if (!ai)  ai = res;	/*  anything...  */
++
++	if (ai->ai_addrlen > sizeof (*addr))
++		return -1;	/*  paranoia   */
++	memcpy (addr, ai->ai_addr, ai->ai_addrlen);
++
++        if(res != NULL)
++          diet_freeaddrinfo (res);
++
++	return 0;
++}
++
++static void printaddr(sockaddr_any *addr) {
++  char addr_str[INET6_ADDRSTRLEN];
++
++  if(addr->sa.sa_family == AF_INET) {
++    printf("family = AF_INET\n");
++    if(inet_ntop(addr->sin.sin_family, &addr->sin.sin_addr, (char *)&addr_str, sizeof(addr_str)) == NULL) {
++      perror("inet_ntop failed");
++      return;
++    }
++    printf("addr = %s\n", addr_str);
++  } else if(addr->sa.sa_family == AF_INET6) {
++    printf("family = AF_INET6\n");
++    if(inet_ntop(addr->sin6.sin6_family, &addr->sin6.sin6_addr, (char *)&addr_str, sizeof(addr_str)) == NULL) {
++      perror("inet_ntop failed");
++      return;
++    }
++    printf("addr = %s\n", addr_str);
++  } else {
++    printf("unknown family = %d\n",addr->sa.sa_family);
++  }
++}
++
++int main() {
++  sockaddr_any dst_addr = {{ 0, }, };
++  struct sockaddr_in lsa_u;
++
++  if (getaddr("www.datapipe.net", &dst_addr, AF_INET) < 0) {
++    fprintf(stderr, "getaddr failed\n");
++  } else {
++    printaddr(&dst_addr);
++  }
++
++  if (getaddr("www.datapipe.net", &dst_addr, AF_INET6) < 0) {
++    fprintf(stderr, "getaddr failed\n");
++  } else {
++    printaddr(&dst_addr);
++  }
++
++  inet_aton("127.0.0.1",&lsa_u.sin_addr);
++  lsa_u.sin_port=htons(53);
++  lsa_u.sin_family=AF_INET;
++
++  _diet_res.nscount = 1;
++  _diet_res.nsaddr_list[0] = lsa_u;
++
++  if (getaddr("www.datapipe.net", &dst_addr, AF_INET6) < 0) {
++    fprintf(stderr, "getaddr failed\n");
++  } else {
++    printaddr(&dst_addr);
++  }
++
++  return 0;
++}
+diff --git a/networking/nslookup.c b/networking/nslookup.c
+index f4fd407..465f4b4 100644
+--- a/networking/nslookup.c
++++ b/networking/nslookup.c
+@@ -26,6 +26,9 @@
+ //usage:       "Address:    127.0.0.1\n"
+ 
+ #include <resolv.h>
++#include <netinet/in.h>
++#include <netdb.h>
++#include "../libres/dietdns.h"
+ #include "libbb.h"
+ 
+ /*
+@@ -78,7 +81,7 @@ static int print_host(const char *hostname, const char *header)
+ 	 * for each possible socket type (tcp,udp,raw...): */
+ 	hint.ai_socktype = SOCK_STREAM;
+ 	// hint.ai_flags = AI_CANONNAME;
+-	rc = getaddrinfo(hostname, NULL /*service*/, &hint, &result);
++	rc = diet_getaddrinfo(hostname, NULL /*service*/, &hint, &result);
+ 
+ 	if (rc == 0) {
+ 		struct addrinfo *cur = result;
+@@ -109,7 +112,7 @@ static int print_host(const char *hostname, const char *header)
+ #endif
+ 	}
+ 	if (ENABLE_FEATURE_CLEAN_UP && result)
+-		freeaddrinfo(result);
++		diet_freeaddrinfo(result);
+ 	return (rc != 0);
+ }
+ 
+@@ -119,11 +122,11 @@ static void server_print(void)
+ 	char *server;
+ 	struct sockaddr *sa;
+ 
+-#if ENABLE_FEATURE_IPV6
+-	sa = (struct sockaddr*)_res._u._ext.nsaddrs[0];
++#if 0
++	sa = (struct sockaddr*)_diet_res._u._ext.nsaddrs[0];
+ 	if (!sa)
+ #endif
+-		sa = (struct sockaddr*)&_res.nsaddr_list[0];
++		sa = (struct sockaddr*)&_diet_res.nsaddr_list[0];
+ 	server = xmalloc_sockaddr2dotted_noport(sa);
+ 
+ 	print_host(server, "Server:");
+@@ -142,11 +145,11 @@ static void set_default_dns(const char *server)
+ 	lsa = xhost2sockaddr(server, 53);
+ 
+ 	if (lsa->u.sa.sa_family == AF_INET) {
+-		_res.nscount = 1;
++		_diet_res.nscount = 1;
+ 		/* struct copy */
+-		_res.nsaddr_list[0] = lsa->u.sin;
++		_diet_res.nsaddr_list[0] = lsa->u.sin;
+ 	}
+-#if ENABLE_FEATURE_IPV6
++#if 0
+ 	/* Hoped libc can cope with IPv4 address there too.
+ 	 * No such luck, glibc 2.4 segfaults even with IPv6,
+ 	 * maybe I misunderstand how to make glibc use IPv6 addr?
+@@ -155,9 +158,9 @@ static void set_default_dns(const char *server)
+ 		// glibc neither SEGVs nor sends any dgrams with this
+ 		// (strace shows no socket ops):
+ 		//_res.nscount = 0;
+-		_res._u._ext.nscount = 1;
++		_diet_res._u._ext.nscount = 1;
+ 		/* store a pointer to part of malloc'ed lsa */
+-		_res._u._ext.nsaddrs[0] = &lsa->u.sin6;
++		_diet_res._u._ext.nsaddrs[0] = &lsa->u.sin6;
+ 		/* must not free(lsa)! */
+ 	}
+ #endif
+@@ -176,7 +179,7 @@ int nslookup_main(int argc, char **argv)
+ 
+ 	/* initialize DNS structure _res used in printing the default
+ 	 * name server and in the explicit name server option feature. */
+-	res_init();
++	diet_res_init();
+ 	/* rfc2133 says this enables IPv6 lookups */
+ 	/* (but it also says "may be enabled in /etc/resolv.conf") */
+ 	/*_res.options |= RES_USE_INET6;*/
+-- 
+1.7.10.4
+

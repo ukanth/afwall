@@ -1,0 +1,21 @@
+From: Chris Renshaw <osm0sis@outlook.com>
+Date: Fri, 27 Nov 2015 09:47:41 -0400
+Subject: [PATCH] Fix "invalid number" stderr during build despite printf stdout being as expected
+
+---
+ scripts/gcc-version.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/gcc-version.sh b/scripts/gcc-version.sh
+index 3451080..d7bf002 100755
+--- a/scripts/gcc-version.sh
++++ b/scripts/gcc-version.sh
+@@ -9,4 +9,4 @@
+ compiler="$*"
+ 
+ MAJ_MIN=$(echo __GNUC__ __GNUC_MINOR__ | $compiler -E -xc - | tail -n 1)
+-printf '%02d%02d\n' $MAJ_MIN
++printf '%02d%02d\n' $MAJ_MIN 2>/dev/null
+-- 
+2.5.3
+
