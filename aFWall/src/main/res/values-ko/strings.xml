@@ -64,7 +64,7 @@
   <string name="reading_apps">설치된 앱 가져오는 중</string>
   <string name="mode">방화벽 모드</string>
   <string name="mode_header">사용모드: %s</string>
-  <string name="legend_clear">Clear all checkboxes in all columns</string>
+  <string name="legend_clear">모든 선택 취소</string>
   <string name="mode_whitelist">선택사항 허용</string>
   <string name="legend_whitelist">선택한 애플리케이션의 인터넷 접근을 승인합니다</string>
   <string name="mode_blacklist">선택사항 차단</string>
@@ -74,7 +74,7 @@
   <string name="reload">앱 다시가져오기</string>
   <string name="flush">모든 규칙 삭제</string>
   <string name="send_report">오류정보 보내기</string>
-  <string name="enter_problem">Please explain the issue:</string>
+  <string name="enter_problem">문제사항을 적어주세요:</string>
   <string name="send_mail">이메일 보내기</string>
   <string name="notify_pref_summary_on">새로운 애플리케이션을 설치 하는 경우 알림이 표시 됩니다.</string>
   <string name="notify_pref_summary_off">새로운 애플리케이션을 설치 하는 경우 알림이 표시되지 않습니다</string>
@@ -175,17 +175,17 @@
   <string name="profile1">프로필 1</string>
   <string name="profile2">프로필 2</string>
   <string name="profile3">프로필 3</string>
-  <string name="profile_hint">ProfileName</string>
-  <string name="profile_notsupport">Please migrate profile data to use this option</string>
+  <string name="profile_hint">프로필 이름</string>
+  <string name="profile_notsupport">이 옵션을 사용하시려면 프로필 정보를 옮겨 주세요.</string>
   <string name="reapply_profile">프로필 규칙 재적용</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">LAN 설정</string>
   <string name="lan_summary">이것을 활성화해서 WIfi 규칙과 다른 LAN 규칙을 설정하세요</string>
   <string name="iptables_pref">방화벽 binary</string>
   <string name="vpn_profile">VPN 설정</string>
   <string name="vpnSummary">VPN 규칙 따로 설정하기</string>
   <string name="roaming">로밍 설정</string>
-  <string name="roamingSummary">Enable to control roaming permissions separately</string>
+  <string name="roamingSummary">로밍 규칙 따로 설정하기</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -203,9 +203,9 @@
   <string name="auto">자동</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">XPosed 관련</string>
-  <string name="fixDownloadTitle">Fix DownloadManager leak</string>
-  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-  <string name="LeakDetected">Leak detected!</string>
+  <string name="fixDownloadTitle">DownloadManager 오류 고치기</string>
+  <string name="fixDownloadTitleSummary">Xposed를 이용해서 차단된 앱들이 DownloadManager를 이용해서 인터넷을 연결하는 오류를 금지합니다</string>
+  <string name="LeakDetected">오류가 있습니다</string>
   <!-- Tasker -->
   <string name="tasker_prefs_title">Tasker 관련</string>
   <string name="disable_toaster">Tasker 팝업창 뜨지 않게하기</string>
@@ -220,7 +220,7 @@
   <string name="ipv6_title">IPv6 지원</string>
   <string name="ipv6_summary">IPv6 지원하기</string>
   <string name="block_ipv6_title">IPv6 차단</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="block_ipv6_summary">모든 IPv6 연결을 차단하기. 주의사항: IPv4로 연결이 되어있는 상태에만 사용해주세요</string>
   <string name="ip6unavailable">에러: IPv6 는 \"/system/bin/ip6tables\" 이 필요합니다.</string>
   <string name="switch_ipv6">IPV6 규칙으로 전환</string>
   <string name="switch_ipv4">IPV4 규칙으로 전환</string>
@@ -229,7 +229,7 @@
   <string name="usePattern">비밀번호말고 패턴쓰기</string>
   <string name="stealthMode">패턴 비밀모드</string>
   <string name="patternMaxTry">최대 시도 가능 숫자</string>
-  <string name="resetPattern">Reset lock pattern?</string>
+  <string name="resetPattern">패턴을 다시 그릴까요?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">기기 관리자</string>
   <string name="device_admin_enabled">AFWall+ 기기관리자 허용됨</string>
@@ -242,7 +242,7 @@
   <string name="addStartupDelayTitle">작동 전 기다리는 시간</string>
   <string name="addStartupDelaySummary">변경내용을 적용하기 전에 5초 동안 기다립니다. 전원을 켜도 작동이 되지 않는 경우에만 이것을 선택하세요.</string>
   <string name="fixleakTitle">시작 시 데이터 유출 막기</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">폰이 부팅할 때 데이터 유출을 방지하세요. 폰의 ROM이 init.d 혹은 su.d(superSU)를 사용하고 있어야 합니다. HTC폰은 S-OFF로 설정되어야 합니다.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -265,11 +265,11 @@
   <string name="showuid_summary_on">앱 UID 보이기</string>
   <string name="showuid_summary_off">앱 UID를 가립니다. 표시하면 로깅logging 에 유용합니다.</string>
   <string name="languages">언어</string>
-  <string name="change_languages">Change Language</string>
+  <string name="change_languages">언어 선택</string>
   <string name="misc_header">언어/플러그인</string>
   <!-- 1.2.6 -->
   <string name="active_rules">사용중인 규칙</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
+  <string name="active_rules_summary">모든 연결사항에 방화벽 규칙 적용 (로밍/LAN/Wifi/3G/테터링)</string>
   <string name="profile_add">프로필 추가</string>
   <string name="profile_remove">프로필 삭제</string>
   <string name="profile_rename">프로파일 이름 바꾸기</string>
@@ -300,13 +300,13 @@
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="data">데이터</string>
-  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+  <string name="legend_data">데이터 (2G,3G,EDGE,LTE/4G) 권한 허가하기</string>
   <string name="pkg_all">모두</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">시스템</string>
   <string name="pkg_user">사용자</string>
   <string name="menu">메뉴</string>
-  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
+  <string name="backup_notexist">백업이 없습니다. 메뉴에서 가져와주세요.</string>
   <string name="showFilter">필터 보기</string>
   <string name="showfilter_summary_on">필터 (모두/기본기/시스템/사용자) 보기</string>
   <string name="showfilter_summary_off">필터 (모두/기본기/시스템/사용자) 숨기기</string>
@@ -371,7 +371,7 @@
   <string name="manage_profiles_summary">프로필을 추가/제거</string>
   <string name="profiles">프로필 </string>
   <string name="migrate_profiles">프로필 이동</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">프로필 정보 옮기기</string>
   <string name="insert_profile">프로필 이름</string>
   <string name="add">추가</string>
   <string name="showlog_toasts">차단할 때 알림을 받도록 허용</string>
@@ -391,7 +391,7 @@
   <string name="error_nonsupported_details">현재 사용하시는 슈퍼유저 앱은 방화벽을 무시합니다. 이 문제는 AFWall+이 고칠 수 없습니다.</string>
   <string name="lockNotification">잠금화면 알림 숨기기</string>
   <string name="lockScreenNotification_summary">잠금화면에서 알림 숨기기</string>
-  <string name="menu_legend">Legend</string>
+  <string name="menu_legend">범례</string>
   <string name="permissiondenied_importexport">저장장치 읽기/쓰기 권한이 없습니다. 내보내기/가져오기를 하시라면 권한을 허가해 주세요.</string>
   <string name="permissiondenied_asset">외부저장장치 읽기/쓰기 권한이 없습니다. AFWall+ binary를 복사하시려면 권한을 허가해 주세요. </string>
   <string name="log_deletedapp">삭제된 앱들</string>
@@ -418,40 +418,40 @@
   <string name="source_address">출발지 주소</string>
   <string name="ping_destination">Ping 목적지</string>
   <string name="ping_source">Ping 출발지</string>
-  <string name="resolve_destination">Resolve Destination</string>
-  <string name="resolve_source">Resolve Source</string>
+  <string name="resolve_destination">도착지점 연결실험</string>
+  <string name="resolve_source">출발지점 연결실험</string>
   <string name="copy_text">텍스트 복사</string>
-  <string name="destination_copied">Destination copied</string>
-  <string name="source_copied">Source copied</string>
+  <string name="destination_copied">도착지점 복사됨</string>
+  <string name="source_copied">출발지점 복사됨</string>
   <string name="select_the_action">작업 선택</string>
   <string name="result_copied_to_clipboard">결과가 클립보드에 복사되었습니다.</string>
   <string name="result">결과</string>
   <string name="output_is_empty">출력이 비었습니다. 네트워크 접근이나 SuperSu가 거부되었습니다.</string>
   <string name="searching">검색 중</string>
   <string name="looking_for_data">데이터를 찾고 있습니다....</string>
-  <string name="reachable_timeout">Reachable, timeout: %d ms</string>
-  <string name="error_or_unknown_category">Error or Unknown Category</string>
+  <string name="reachable_timeout">연결가능. 타임아웃: %d ms</string>
+  <string name="error_or_unknown_category">오류 혹은 알 수 없는 동작</string>
   <string name="show_destination_address">목적지 주소 보이기</string>
   <string name="show_source_address">출발지 주소 보이기</string>
   <string name="network_connection_not_available">네트워크 연결을 사용할 수 없습니다</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">지문</string>
   <string name="fingerprint_authentication_error">지문 인증에 오류가 발생하였습니다.\n</string>
-  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
+  <string name="fingerprint_authentication_help">지문인식기능 도움말\n</string>
   <string name="fingerprint_authentication_failed">지문 인증이 실패 했습니다.</string>
   <string name="fingerprint_authentication_successded">지문 인증 성공.</string>
   <string name="title_activity_main">MainActivity</string>
   <string name="title_fingerprint">One-touch 잠금 해제</string>
-  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
-  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-  <string name="title_activity_home">Fingerprint</string>
-  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
-  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
-  <string name="fingerprint_required">Fingerprint required</string>
+  <string name="desc_fingerprint">스캐너에 지문을 대주세요</string>
+  <string name="note">(설정에서 지문을 등록하면, 지문인식기능을 사용하여 더 빠르게 앱으로 들어올 수 있습니다.)</string>
+  <string name="title_activity_home">지문</string>
+  <string name="activity_home_desc">지문인식으로 로그인 완료되었습니다</string>
+  <string name="activity_home_note">앱을 닫고 다시 열어서 지문인식화면을 보아주세요.</string>
+  <string name="fingerprint_required">지문이 필요합니다</string>
   <string name="device_with_no_fingerprint_sensor">장치에 지문 인식 센서가 없습니다.</string>
   <string name="fingerprint_permission_manifest_missing">지문 인증 권한을 사용할 수 없습니다</string>
   <string name="register_at_least_one_fingerprint">적어도 하나의 지문을 설정에 등록하십시오</string>
-  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
-  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
-  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+  <string name="lock_screen_not_enabled">폰 설정에서 잠금화면을 사용하지 않고 있습니다,</string>
+  <string name="fingerprint_enabled_successfully">지문인식사용</string>
+  <string name="fingerprint_disabled_successfully">지문인식 사용하지않기</string>
 </resources>
