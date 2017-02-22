@@ -23,7 +23,7 @@ addons:
     - automake
     - libtool
     - expect
-    - unzip	
+    - 7z	
 
 notifications:
   email:
@@ -36,7 +36,7 @@ before_install:
     #- sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
     #- curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
     - curl -L https://dl.google.com/android/repository/android-ndk-r10e-linux-x86_64.zip > ndk.zip
-    - unzip ndk.zip -d /tmp	
+    - 7z x ndk.zip -o/tmp	
     #- tar -C /tmp -jxf ndk.tar.bz2
     - export NDK_PROJECT_PATH=$PWD
 install:
