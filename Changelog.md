@@ -3,23 +3,24 @@ Changelog AFWall+
 
 Version 2.9.2
 Features
- * Network log options-Donate (TX @vzool)
- * Fingerprint protection (TX @vzool)
- * Preserve Zoom size(+/-)
- * Profiles-delete/rename profiles(+) 
- * Hardware search key
+	* Log- Network options-Donate(TX @vzool)
+	* Fingerprint support (TX @vzool)
+	* Preserve Zoom size(+/-)
+	* Profiles-delete/rename profiles(+) 
+	* Hardware search key
 Bugs
- * LAN issue on Nougat
- * Boot rules issue
- * Logservice start issue
- * Notification glitch on profile switch
- * Log notification filter button not showing 
- * Optimizing logTarget detection
- * Removed toybox check due to ANR
- and many..
+	* LAN issue on Nougat
+	* Boot rules issue
+	* Logservice start issue
+	* Notification glitch on profile switch
+	* Log notification filter button not showing 
+	* Optimizing logTarget detection
+	* Removed toybox check due to ANR 
+	  + etc.
 Misc
- * Busybox to latest
- * Support libraries,translation updates
+	* Busybox to latest
+	* Removed x86/mips support
+	* Support libraries,translation updates
 
 Version 2.9.1 [Nov 27, 2016]
 * Boot/Connectivity change rules hung on some devices
