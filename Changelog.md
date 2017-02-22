@@ -5,7 +5,6 @@ Version 2.9.2-BETA
 Features
  * Network options for logs (Thanks @vzool)
  * Fingerprint protection (Thanks @vzool)
- * Allow multicast on LAN (Thanks @ionum)
  * Preserve Zoom size(+/-) in Firewall rules
  * Rewritten Profiles - Ability to delete/rename profiles(additional) 
  * Hardware search key
@@ -17,7 +16,9 @@ Bugs
  * Log notification filter button not showing 
  * Optimizing the detection of logTarget
  * Removed toybox detection, causing lots of ANR issues
+ * Listing network interface in show rules
 Misc
+ * Updated busybox to latest
  * Support libraries and translation updates
 
 Version 2.9.1 [Nov 27, 2016]

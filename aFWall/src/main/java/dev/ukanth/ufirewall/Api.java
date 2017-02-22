@@ -1219,7 +1219,11 @@ public final class Api {
          callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
     }
 
-    public boolean isSuPackage(PackageManager pm, String suPackage) {
+    public static void runNetworkInterface(Context ctx, RootCommand callback) {
+        callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
+    }
+
+   /* public boolean isSuPackage(PackageManager pm, String suPackage) {
         boolean found = false;
         try {
             PackageInfo info = pm.getPackageInfo(suPackage, 0);
@@ -1230,7 +1234,7 @@ public final class Api {
         } catch (NameNotFoundException e) {
         }
         return found;
-    }
+    }*/
 
 
     /**
@@ -2535,9 +2539,8 @@ public final class Api {
         return res;
     }
 
-    public static List<String> interfaceInfo(boolean showMatches) {
+    /*public static List<String> interfaceInfo(boolean showMatches) {
         List<String> ret = new ArrayList<String>();
-
         try {
             for (File f : new File("/sys/class/net").listFiles()) {
                 String name = f.getName();
@@ -2560,7 +2563,7 @@ public final class Api {
             Log.e(TAG, "can't list network interfaces: " + e.getLocalizedMessage());
         }
         return ret;
-    }
+    }*/
 
     private static class LogProbeCallback extends RootCommand.Callback {
         private Context ctx;
