@@ -553,8 +553,10 @@ public class G extends android.app.Application {
             String[] list = blockedApps.split(",");
             if (list.length > 0) {
                 for (String s : list) {
-                    if (s != null) {
-                        data.add(Integer.parseInt(s.trim()));
+                    if (s != null && s.trim().length() > 0) {
+                        try {
+                            data.add(Integer.parseInt(s.trim()));
+                        } catch(Exception e) {}
                     }
                 }
             }
