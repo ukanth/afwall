@@ -1,6 +1,11 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.3 [24 Feb, 2017]
+* Fix crash on log preferences.
+* Traffic stats always shown empty.
+* Zoom icons.
+
 Version 2.9.2 [22 Feb, 2017]
 Features
 * Log- Network options-Donate(TX @vzool)
