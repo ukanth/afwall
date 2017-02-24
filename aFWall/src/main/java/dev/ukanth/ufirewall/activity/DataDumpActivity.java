@@ -123,7 +123,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 		// Common options: Copy, Export to SD Card, Refresh
 		SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.ic_flow);
 		sub.add(0, MENU_ZOOM_IN, 0, getString(R.string.label_zoom) + " (+)").setIcon(R.drawable.zoomin).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		sub.add(0, MENU_ZOOM_OUT, 0, getString(R.string.label_zoom) + " (-)").setIcon(R.drawable.zoomin).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		sub.add(0, MENU_ZOOM_OUT, 0, getString(R.string.label_zoom) + " (-)").setIcon(R.drawable.zoomout).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		sub.add(0, MENU_COPY, 0, R.string.copy).setIcon(R.drawable.ic_copy);
 		sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.ic_export);
 		sub.add(0, MENU_REFRESH, 0, R.string.refresh).setIcon(R.drawable.ic_refresh);
