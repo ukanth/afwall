@@ -529,4 +529,7 @@
     <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
     <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
     <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+
+
+    <string name="label_zoom">Zoom</string>
 </resources>
