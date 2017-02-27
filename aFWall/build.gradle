@@ -11,7 +11,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 15930
-        versionName "2.9.3"
+        versionName "2.9.4-BETA"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
     

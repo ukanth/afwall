@@ -25,7 +25,7 @@ Bugs
   + etc.
 Misc
 * Busybox to latest
-* Removed x86/mips support
+* Removed x86/mips supported
 * Support libraries,translation updates
 
 Version 2.9.1 [Nov 27, 2016]
