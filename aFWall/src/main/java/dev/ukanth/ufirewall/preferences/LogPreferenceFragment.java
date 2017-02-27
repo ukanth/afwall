@@ -1,5 +1,6 @@
 package dev.ukanth.ufirewall.preferences;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -28,9 +29,13 @@ public class LogPreferenceFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.log_preferences);
-        populateLogMessage(findPreference("logDmesg"));
-        populateAppList(findPreference("block_filter"));
+        try {
+            addPreferencesFromResource(R.xml.log_preferences);
+            populateLogMessage(findPreference("logDmesg"));
+            populateAppList(findPreference("block_filter"));
+        } catch (ClassCastException c) {
+            Api.toast((Context) getActivity(), getString(R.string.exception_pref));
+        }
     }
 
     private void populateLogMessage(Preference logDmesg) {

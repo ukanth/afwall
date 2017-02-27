@@ -95,7 +95,9 @@ public class G extends android.app.Application {
     private static final String PWD_ENCRYPT = "pwdEncrypt";
     private static final String PROFILE_PWD = "profilePwd";
     private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
-    /** FIXME **/
+    /**
+     * FIXME
+     **/
     private static final String AFWALL_STATUS = "AFWallStaus";
     private static final String BLOCKED_NOTIFICATION = "block_filter_app";
     /* Profiles */
@@ -547,19 +549,25 @@ public class G extends android.app.Application {
     }
 
     public static List<Integer> getBlockedNotifyList() {
-        String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
         List<Integer> data = new ArrayList<Integer>();
-        if (blockedApps != null) {
-            String[] list = blockedApps.split(",");
-            if (list.length > 0) {
-                for (String s : list) {
-                    if (s != null && s.trim().length() > 0) {
-                        try {
-                            data.add(Integer.parseInt(s.trim()));
-                        } catch(Exception e) {}
+        try {
+            String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
+            if (blockedApps != null) {
+                String[] list = blockedApps.split(",");
+                if (list.length > 0) {
+                    for (String s : list) {
+                        if (s != null && s.trim().length() > 0) {
+                            try {
+                                if (android.text.TextUtils.isDigitsOnly(s.trim())) {
+                                    data.add(Integer.parseInt(s.trim()));
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
         }
         return data;
     }
@@ -588,7 +596,7 @@ public class G extends android.app.Application {
             profileName = storedProfile();
         }
 
-        Log.i(Api.TAG,"Selected Profile: "+ profileName);
+        Log.i(Api.TAG, "Selected Profile: " + profileName);
         Api.PREFS_NAME = profileName;
 
         pPrefs = ctx.getSharedPreferences(profileName, Context.MODE_PRIVATE);

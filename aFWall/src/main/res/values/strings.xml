@@ -531,5 +531,7 @@
     <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
 
 
-    <string name="label_zoom">Zoom</string>
+    <string name="label_zoomin">Zoom In</string>
+    <string name="label_zoomout">Zoom Out</string>
+    <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
 </resources>
