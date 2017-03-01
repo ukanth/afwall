@@ -37,8 +37,8 @@ RESDIR := $(shell pwd)/../aFWall/src/main/res/raw/
 DESTDIR := $(shell pwd)/$(TRIPLET)/out
 
 CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
-		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O3 -fPIE" \
-                  LDFLAGS="-pie" \
+		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2 -fvisibility=default -fPIE" \
+                  LDFLAGS="-rdynamic -pie" \
 
 PER_ARCH_TARGETS := iptables busybox nflog run_pie
 
