@@ -1,0 +1,67 @@
+diff -Naur busybox-1.26.2-orig/libbb/missing_syscalls.c busybox-1.26.2/libbb/missing_syscalls.c
+--- busybox-1.26.2-orig/libbb/missing_syscalls.c	2016-09-27 22:23:50.000000000 +0530
++++ busybox-1.26.2/libbb/missing_syscalls.c	2017-03-01 21:20:34.367667904 +0530
+@@ -10,6 +10,50 @@
+ #include <sys/syscall.h>
+ #include "libbb.h"
+ 
++#ifndef __NR_shmget
++#define __NR_shmget 29
++#endif
++
++#ifndef __NR_shmat
++#define __NR_shmat 30
++#endif
++
++#ifndef __NR_shmctl
++#define __NR_shmctl 31
++#endif
++
++#ifndef __NR_semget
++#define __NR_semget 64
++#endif
++
++#ifndef __NR_semop
++#define __NR_semop 65
++#endif
++
++#ifndef __NR_semctl
++#define __NR_semctl 66
++#endif
++
++#ifndef __NR_shmdt
++#define __NR_shmdt 67
++#endif
++
++#ifndef __NR_msgget
++#define __NR_msgget 68
++#endif
++
++#ifndef __NR_msgsnd
++#define __NR_msgsnd 69
++#endif
++
++#ifndef __NR_msgrcv
++#define __NR_msgrcv 70
++#endif
++
++#ifndef __NR_msgctl
++#define __NR_msgctl 71
++#endif
++ 
+ #if defined(ANDROID) || defined(__ANDROID__)
+ pid_t getsid(pid_t pid)
+ {
+diff -Naur busybox-1.26.2-orig/libbb/semctl.c busybox-1.26.2/libbb/semctl.c
+--- busybox-1.26.2-orig/libbb/semctl.c	2017-03-01 21:13:12.851652181 +0530
++++ busybox-1.26.2/libbb/semctl.c	2017-02-28 08:35:47.947890893 +0530
+@@ -27,6 +27,9 @@
+ #include <linux/sem.h>
+ #include "libbb.h"
+ 
++#ifndef __NR_semctl
++#define __NR_semctl 66
++#endif
+ /* code from GLIBC */
+ int semctl(int semid, int semnum, int cmd, ...) {
+   union semun arg;

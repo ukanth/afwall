@@ -7,8 +7,8 @@ ARCH    := arm
 GCCVER  := 4.9
 
 # You should be able to just 'make ARCH=x86' and it should DTRT.
-#ARCH_LIST := arm x86 mips
-ARCH_LIST := arm
+ARCH_LIST := arm x86 mips
+#ARCH_LIST := arm
 ifeq ($(ARCH),arm)
 TRIPLET := arm-linux-androideabi
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
@@ -37,8 +37,8 @@ RESDIR := $(shell pwd)/../aFWall/src/main/res/raw/
 DESTDIR := $(shell pwd)/$(TRIPLET)/out
 
 CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
-		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2 -fvisibility=default -fPIE" \
-                  LDFLAGS="-rdynamic -pie" \
+		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O3 -fPIE" \
+                  LDFLAGS="-pie" \
 
 PER_ARCH_TARGETS := iptables busybox nflog run_pie
 
