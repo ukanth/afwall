@@ -2054,7 +2054,9 @@ public final class Api {
         public String toStringWithUID() {
             if (tostr == null) {
                 StringBuilder s = new StringBuilder();
-                s.append(uid + ": ");
+                s.append("[ ");
+                s.append(uid);
+                s.append(" ] ");
                 for (int i = 0; i < names.size(); i++) {
                     if (i != 0) s.append(", ");
                     s.append(names.get(i));
