@@ -4,6 +4,8 @@ Changelog AFWall+
 Version 2.9.4
 * Fix log notification stops after sometime
 * Fix crash on log preferences.
+* mDNS notification can be turned-off
+* Bug in notification filterering
 * Added back x86/mips support for built-in binaries
 * Minor UI change for UID
 * Updated support Libraries
