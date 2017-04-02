@@ -97,7 +97,7 @@
   <string name="confirmMsg">Desativar completamente o firewall?</string>
   <string name="apply">Aplicar</string>
   <string name="discard">Descartar</string>
-  <string name="delete">Deletar</string>
+  <string name="delete">Excluir</string>
   <string name="clone">Cópia</string>
   <string name="rename">Renomear</string>
   <string name="Yes">Sim</string>
@@ -137,23 +137,23 @@
   <string name="export_logs_fail">Falha ao exportar as regras!</string>
   <string name="export_to_sd">Exportar para o armazenamento</string>
   <!-- Logging -->
-  <string name="enable_firewall_log">Ativar registos da firewall</string>
+  <string name="enable_firewall_log">Ativar registros do firewall</string>
   <string name="enable_firewall_log_service">Ativar serviço de registro</string>
   <string name="showlog_title">Registros de Firewall</string>
   <string name="showlog_service_summary">Ative para exibir mensagens rápidas, quando uma conexão for bloqueada </string>
-  <string name="enable_log">Ativar registos</string>
-  <string name="disable_log">Desativar registos</string>
-  <string name="log_disabled">Registos desativados</string>
-  <string name="log_was_enabled">Registos ativados</string>
-  <string name="log_was_disabled">Registos desativados</string>
+  <string name="enable_log">Ativar registros</string>
+  <string name="disable_log">Desativar registros</string>
+  <string name="log_disabled">Registros desativados</string>
+  <string name="log_was_enabled">Registros ativados</string>
+  <string name="log_was_disabled">Registros desativados</string>
   <string name="log_toggle_failed">Erro ao alternar o estado do registro</string>
   <string name="log_target_failed">Erro: o kernel não tem suporte LOG/NFLOG</string>
   <string name="log_cleared">Registro limpo</string>
-  <string name="log_dmesg">Método de busca de log</string>
+  <string name="log_dmesg">Método de busca do registro</string>
   <string name="log_clear_error">Erro ao limpar os registros</string>
   <string name="log_fetch_error">Erro ao buscar os registros</string>
   <string name="log_parse_error">Erro ao analisar os registros</string>
-  <string name="no_log">Registo vazio</string>
+  <string name="no_log">Registro vazio</string>
   <string name="LogAppName">Nome do aplicativo</string>
   <string name="LogPackBlock">Número de pacotes bloqueados</string>
   <string name="blocked">AFWall+ bloqueou:</string>
@@ -231,14 +231,14 @@
   <string name="patternMaxTry">Número máximo de tentativas</string>
   <string name="resetPattern">Redefinir padrão de bloqueio?</string>
   <!-- Device Admin -->
-  <string name="enable_device_admin">Administrador do Dispositivo</string>
+  <string name="enable_device_admin">Administrador do dispositivo</string>
   <string name="device_admin_enabled">AFWall+ habilitado como administrador do dispositivo</string>
   <string name="device_admin_disabled">AFWall+ desabilitado como administrador do dispositivo</string>
   <string name="device_admin_on_disable">Por favor, vá até as configurações de administrador do dispositivo para desativar AFWall+</string>
   <!-- Experimental Preferences -->
   <string name="exp_prefs_title">Experimental</string>
   <!-- Startup -->
-  <string name="startup_service">Aplicando Regras... Por favor, aguarde.</string>
+  <string name="startup_service">Aplicando regras... Por favor, aguarde.</string>
   <string name="addStartupDelayTitle">Atraso na inicialização</string>
   <string name="addStartupDelaySummary">AFWall + aguardará 5 segundos antes de aplicar as regras. Habilite esta configuração somente se as regras de inicialização não estão aplicando corretamente durante a inicialização.</string>
   <string name="fixleakTitle">Ajustar vazamento de dados de inicialização</string>
@@ -252,18 +252,18 @@
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interface de usuário</string>
   <string name="rules_prefs_title">Regras/Conectividade</string>
-  <string name="log_prefs_title">Log</string>
-  <string name="hideicons_pref_title">Ocultar ícones dos Apps</string>
+  <string name="log_prefs_title">Registro</string>
+  <string name="hideicons_pref_title">Ocultar ícones dos aplicativos</string>
   <string name="hideicons_pref_summary_on">Melhorar o desempenho desabilitando os ícones dos apps na vista principal</string>
   <string name="hideicons_pref_summary_off">Exibir ícones dos Aplicativos na vista principal</string>
   <string name="notify_pref_title">Habilitar notificações</string>
   <string name="syscolor_pref_title">Cor dos aplicativos do sistema</string>
-  <string name="syscolor_pref_summary_on">A cor para todas os aplicativoss do sistema</string>
+  <string name="syscolor_pref_summary_on">A cor para todas os aplicativos do sistema</string>
   <string name="enableConfirmTitle">Confirmar desativação do firewall</string>
   <string name="enableConfirm_summary_on">O Firewall irá pedir por confirmação antes de ser desabilitado</string>
-  <string name="showUid">Exibir o UID para aplicações</string>
+  <string name="showUid">Exibir o UID para aplicativos</string>
   <string name="showuid_summary_on">Mostrar UID do aplicativo na vista principal</string>
-  <string name="showuid_summary_off">Ocultar UID do aplicativo na vista principal. Ativá-lo pode ser útil para acompanhar os logs.</string>
+  <string name="showuid_summary_off">Ocultar UID do aplicativo na vista principal. Ativá-lo pode ser útil para acompanhar os registros.</string>
   <string name="languages">Idiomas</string>
   <string name="change_languages">Alterar Idioma</string>
   <string name="misc_header">Idiomas/Plugins</string>
@@ -276,13 +276,13 @@
   <string name="Donate">Doar</string>
   <string name="multi_apply_rules">Aplicar regras na mudança de perfil</string>
   <string name="multi_apply_rules_info">Carregar e aplicar regras ao trocar de perfil</string>
-  <string name="multi_user_title">Ativar suporte a vários usuários</string>
+  <string name="multi_user_title">Ativar suporte multi-usuário</string>
   <string name="multi_user_summary">Suporte multi-usuário Android (só funciona no modo onde os itens selecionados são bloqueados)</string>
   <!--  -->
   <string name="device_admin_desc">Segurança adicional - evitar desinstalar AFWall +</string>
   <string name="traffic_detail_title">Detalhes de tráfego</string>
   <string name="uploaded">Enviado</string>
-  <string name="downloaded">Transferido</string>
+  <string name="downloaded">Baixado</string>
   <string name="app_system_detail">Abrir detalhes do sistema</string>
   <string name="settings_pwd_not_equal">Senha errada</string>
   <string name="faq">Perguntas frequentes</string>
@@ -306,7 +306,7 @@
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Usuário</string>
   <string name="menu">Menu</string>
-  <string name="backup_notexist">Não existem backups. Por favor, exporte através do menu.</string>
+  <string name="backup_notexist">Não existe nenhuma cópia de segurança. Por favor, exporte através do menu.</string>
   <string name="showFilter">Mostrar filtros</string>
   <string name="showfilter_summary_on">Filtros (Tudo/Básico/Sistema/Usuário) são exibidos na vista principal</string>
   <string name="showfilter_summary_off">Filtros (Tudo/Básico/Sistema/Usuário) são ocultados na vista principal</string>
@@ -359,7 +359,7 @@
   <string name="wrong_password">Erro de Senha</string>
   <string name="password_empty"></string>
   <string name="submit">Enviar</string>
-  <string name="dialog_color_picker">Seletor de Cores</string>
+  <string name="dialog_color_picker">Seletor de cores</string>
   <!--<string name="sort">Sort Applications</string>-->
   <string name="access_sort">Opções de ordenação</string>
   <string name="defaultsort">Por Nome(Padrão)</string>
@@ -401,20 +401,20 @@
   <string name="log_dst">Destino:</string>
   <string name="log_src">Origem:</string>
   <string name="log_proto">Protocolo:</string>
-  <string name="no_data_available">Por favor, ative o serviço de log por meio das Preferências. Caso esteja habilitado, então não há dados de log.</string>
+  <string name="no_data_available">Por favor, ative o serviço do registro por meio das Preferências. Caso esteja habilitado, então não há dados de registro.</string>
   <string name="loading_data_title">Carregando...</string>
-  <string name="loading_data">Recuperando dados de log</string>
+  <string name="loading_data">Recuperando dados do registro</string>
   <string name="switch_old">Alterne para modo de exibição antigo</string>
   <string name="switch_new">Alterne para modo de exibição</string>
-  <string name="showlogdetail_title">Detalhes do registo de aplicativos</string>
+  <string name="showlogdetail_title">Detalhes do registro de aplicativos</string>
   <string name="reapply_rules">Por favor, reaplique as regras devido a mudança de preferência</string>
-  <string name="custom_rules">Regras Personalizadas</string>
+  <string name="custom_rules">Regras personalizadas</string>
   <string name="mdns">Habilitar o DNS Mutlicast</string>
-  <string name="error_log">Não é possível iniciar o serviço de log. LogTarget está vazio ou LogService não está habilitado.</string>
+  <string name="error_log">Não é possível iniciar o serviço do registro. LogTarget está vazio ou LogService não está habilitado.</string>
   <string name="delete_profile">Não foi possível excluir o perfil</string>
   <string name="profile_migrate_msg">Perfis migrados com sucesso</string>
   <!-- Log Details -->
-  <string name="destination_address">Endereço de Destino</string>
+  <string name="destination_address">Endereço do destino</string>
   <string name="source_address">Endereço de Origem</string>
   <string name="ping_destination">Destino de ping</string>
   <string name="ping_source">Fonte de ping</string>

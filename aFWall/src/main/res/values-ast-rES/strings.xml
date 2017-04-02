@@ -64,7 +64,7 @@
   <string name="reading_apps">Recuperando aplicaciones instalaes</string>
   <string name="mode">Mou tornafuéu</string>
   <string name="mode_header">Mou: %s</string>
-  <string name="legend_clear">Clear all checkboxes in all columns</string>
+  <string name="legend_clear">Llimpia tolos caxellos en toles columnes</string>
   <string name="mode_whitelist">Permitir lo esbillao</string>
   <string name="legend_whitelist">A les aplicaciones esbillaes concederáse-yos l\'accesu a internet</string>
   <string name="mode_blacklist">Bloquiar lo esbillao</string>
@@ -134,7 +134,7 @@
   <string name="import_rules_fail">¡Falló la importación!</string>
   <string name="import_rules_missing">¡Falta\'l ficheru de regles!</string>
   <string name="exportConfirm">¿Esportar regles al almacenamientu?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
+  <string name="export_logs_fail">¡Fallu al esportar al almacenamientu!</string>
   <string name="export_to_sd">Export to storage</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Habilitar rexistru del tornafuéu</string>
@@ -179,7 +179,7 @@
   <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Reaplicar regles de perfiles</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">Control de LAN</string>
   <string name="lan_summary">Habilita\'l control de permisos LAN de mou separtáu de los permisos WiFi</string>
   <string name="iptables_pref">Binariu d\'IPtables</string>
   <string name="vpn_profile">Control de VPN</string>
@@ -229,7 +229,7 @@
   <string name="usePattern">Usar patrón de bloquéu en cuantes d\'una contraseña</string>
   <string name="stealthMode">Mou a la callandiella nel patrón</string>
   <string name="patternMaxTry">Númberu máximu d\'intentos</string>
-  <string name="resetPattern">Reset lock pattern?</string>
+  <string name="resetPattern">¿Reafitar patrón de bloquéu?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Xestor de preseos</string>
   <string name="device_admin_enabled">AFWall+ Device Admin enabled</string>
@@ -265,7 +265,7 @@
   <string name="showuid_summary_on">Amuesa les UIDs d\'aplicaciones na vista principal</string>
   <string name="showuid_summary_off">Anubre les UIDs d\'aplicación an vista principal. Habilitalo pue ser útil pa rastrexar rexistros.</string>
   <string name="languages">Llingües</string>
-  <string name="change_languages">Change Language</string>
+  <string name="change_languages">Camudar llingua</string>
   <string name="misc_header">Llingües/Complementos</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Activar regles</string>
@@ -414,15 +414,15 @@
   <string name="delete_profile">Nun pue desaniciase\'l perfil</string>
   <string name="profile_migrate_msg">Profiles migrated successfully</string>
   <!-- Log Details -->
-  <string name="destination_address">Destination Address</string>
+  <string name="destination_address">Direición destín</string>
   <string name="source_address">Direición fonte</string>
-  <string name="ping_destination">Ping Destination</string>
-  <string name="ping_source">Ping Source</string>
+  <string name="ping_destination">Destín de ping</string>
+  <string name="ping_source">Fonte de ping</string>
   <string name="resolve_destination">Resolve Destination</string>
   <string name="resolve_source">Resolve Source</string>
-  <string name="copy_text">Copy text</string>
-  <string name="destination_copied">Destination copied</string>
-  <string name="source_copied">Source copied</string>
+  <string name="copy_text">Copiar testu</string>
+  <string name="destination_copied">Copióse\'l destín</string>
+  <string name="source_copied">Copióse la fonte</string>
   <string name="select_the_action">Select The Action</string>
   <string name="result_copied_to_clipboard">Result copied to clipboard</string>
   <string name="result">Result</string>
@@ -442,16 +442,16 @@
   <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
   <string name="title_activity_main">MainActivity</string>
   <string name="title_fingerprint">One-touch Unlock</string>
-  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
+  <string name="desc_fingerprint">Pon la to buelga nel escáner pa verificar la to identidá</string>
   <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
   <string name="title_activity_home">Buelga</string>
   <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
-  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
-  <string name="fingerprint_required">Fingerprint required</string>
+  <string name="activity_home_note">Zarra y reabri l\'aplicación pa ver de nueves la pantalla d\'autenticación de buelga</string>
+  <string name="fingerprint_required">Ríquese la buelga</string>
   <string name="device_with_no_fingerprint_sensor">El to preséu nun tien un sensor de buelgues</string>
-  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
-  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
-  <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
+  <string name="fingerprint_permission_manifest_missing">Nun s\'habilitó\'l permisu d\'autenticación de buelgues</string>
+  <string name="register_at_least_one_fingerprint">Rexistra polo menos una buelga n\'Axustes</string>
+  <string name="lock_screen_not_enabled">Nun s\'habilitó n\'Axustes la seguranza de bloquéu de pantalla</string>
   <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
   <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
 </resources>

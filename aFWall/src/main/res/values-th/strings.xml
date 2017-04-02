@@ -7,11 +7,11 @@
     -->
   <!-- main -->
   <string name="app_name">AFWall+ </string>
-  <string name="app_name_donate">AFWall+ (Donate)</string>
-  <string name="title_disabled">AFWall+ (DISABLED)</string>
-  <string name="whitelist_array_item">Allow selected</string>
-  <string name="blacklist_array_item">Block selected</string>
-  <string name="showrules">Show rules</string>
+  <string name="app_name_donate">AFWall+ (สนับสนุน)</string>
+  <string name="title_disabled">AFWall+ (ปิดใช้งาน)</string>
+  <string name="whitelist_array_item">อนุญาตที่เลือก</string>
+  <string name="blacklist_array_item">ปิดกั้นที่เลือก</string>
+  <string name="showrules">แสดงกฎ</string>
   <string name="applyrules">นำไปใช้</string>
   <string name="saverules">บันทึก</string>
   <string name="setpwd">ตั้งค่ารหัสผ่าน</string>
@@ -26,10 +26,10 @@
   <string name="error_fetch">Error fetching iptables rules</string>
   <string name="error_su">Could not acquire root access.\nYour device must be rooted to use AFWall+.\n\nIf this device is already rooted, please ensure AFWall+ has permission to execute the \"su\" command.</string>
   <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
-  <string name="error_common">Error: </string>
+  <string name="error_common">ข้อผิดพลาด: </string>
   <string name="all_item">(Any app) - Same as selecting all apps</string>
   <string name="kernel_item">(kernel) - Linux kernel</string>
-  <string name="unknown_item">Unknown</string>
+  <string name="unknown_item">ไม่​รู้จัก</string>
   <string name="tethering_item">(tethering) - DHCP+DNS services</string>
   <string name="dnsproxy_item">(dns proxy) - DNS lookups via netd</string>
   <string name="ntp_item">(ntp) - Internet time servers</string>
@@ -60,7 +60,7 @@
   <string name="passdefined">Password lock enabled</string>
   <string name="passremoved">Password lock disabled</string>
   <string name="passerror">Error changing password lock</string>
-  <string name="working">Working</string>
+  <string name="working">กำลังทำงาน</string>
   <string name="reading_apps">Retrieving installed apps</string>
   <string name="mode">Firewall Mode</string>
   <string name="mode_header">โหมด: %s</string>
