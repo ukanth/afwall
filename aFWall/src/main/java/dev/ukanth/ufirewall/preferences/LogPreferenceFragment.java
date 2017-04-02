@@ -1,6 +1,7 @@
 package dev.ukanth.ufirewall.preferences;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -83,6 +84,17 @@ public class LogPreferenceFragment extends PreferenceFragment {
             apps = Api.applications;
         }
 
+        Api.PackageInfoData info = new Api.PackageInfoData();
+        info.uid = 1020;
+        info.pkgName="dev.afwall.special.mDNS";
+        info.names = new ArrayList<String>();
+        info.names.add("mDNS");
+        info.appinfo = new ApplicationInfo();
+        //TODO: better way to handle this
+        //manually add mDNS for now
+        if(!apps.contains(info)) {
+            apps.add(info);
+        }
         try {
             Collections.sort(apps, new PackageComparator());
         } catch (Exception e) {

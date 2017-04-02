@@ -169,13 +169,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                     .cancelable(false)
                     .content(getString(R.string.loading_data))
                     .progress(true, 0).show();
-                    //.progress(false, getCount(), true).show();
-            //doProgress(0);
         }
-
-        /*public void doProgress(int value) {
-            publishProgress(value);
-        }*/
 
         @Override
         protected Boolean doInBackground(Void... params) {

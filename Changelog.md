@@ -1,6 +1,14 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.4
+* Fix log notification stops after sometime
+* Fix crash on log preferences.
+* Added back x86/mips support for built-in binaries
+* Minor UI change for UID
+* Updated support Libraries
+* Updated translations
+
 Version 2.9.3 [24 Feb, 2017]
 * Fix crash on log preferences.
 * Traffic stats always shown empty.
