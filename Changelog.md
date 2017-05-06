@@ -1,6 +1,12 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.5
+* Mobile data support for newer devices
+* Custom interval for startup delay
+* Custom interval for ping timeout
+* Fixed issue with import preference crashes Log/Experimental preference
+
 Version 2.9.4
 * Fix log notification stops after sometime
 * Fix crash on log preferences.
