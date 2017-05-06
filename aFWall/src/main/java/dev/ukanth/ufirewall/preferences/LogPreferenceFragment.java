@@ -31,10 +31,13 @@ public class LogPreferenceFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
         try {
+            //fix for the mess
+            //G.logPingTimeout(G.logPingTimeout());
             addPreferencesFromResource(R.xml.log_preferences);
             populateLogMessage(findPreference("logDmesg"));
             populateAppList(findPreference("block_filter"));
         } catch (ClassCastException c) {
+            Log.i(Api.TAG, c.getMessage());
             Api.toast((Context) getActivity(), getString(R.string.exception_pref));
         }
     }

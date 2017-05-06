@@ -37,24 +37,17 @@
             android:key="toast_pos"
             android:title="@string/position"></ListPreference>
 
-        <ListPreference
-            android:defaultValue="10"
+        <EditTextPreference
             android:dependency="enableLogService"
+            android:inputType="number"
+            android:title="@string/pingDelayTitle"
             android:dialogTitle="Ping timeout (seconds)"
-            android:entries="@array/prefPingTimeout"
-            android:entryValues="@array/prefPingTimeout"
-            android:key="logPingTimeout"
-            android:title="Ping timeout"></ListPreference>
+            android:dialogMessage="Default - 10s"
+            android:key="logPingTime"/>
 
         <Preference
             android:key="block_filter"
             android:title="@string/filters_apps_title"></Preference>
-
-        <!--<dev.ukanth.ufirewall.log.MultiListPreference
-            android:dependency="enableLogService"
-            android:dialogTitle="@string/filters_apps_title"
-            android:key="block_filter_app"
-            android:title="@string/filters_apps_title" />-->
 
     </PreferenceCategory>
 

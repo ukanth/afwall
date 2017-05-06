@@ -539,4 +539,6 @@
     <string name="delayTitle">Custom Seconds Delay</string>
     <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
     <string name="delayDialog">Set delay in seconds</string>
+
+    <string name="pingDelayTitle">Ping timeout</string>
 </resources>

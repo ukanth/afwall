@@ -61,7 +61,7 @@ public class G extends android.app.Application {
     private static final String BLOCK_IPV6 = "blockIPv6";
     private static final String ENABLE_INBOUND = "enableInbound";
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
-    private static final String LOG_PING_TIMEOUT = "logPingTimeout";
+    private static final String LOG_PING_TIMEOUT = "logPingTime";
     private static final String ENABLE_ADMIN = "enableAdmin";
     private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
     private static final String ENABLE_CONFIRM = "enableConfirm";
@@ -241,6 +241,11 @@ public class G extends android.app.Application {
     public static int logPingTimeout() {
         return Integer.valueOf(gPrefs.getString(LOG_PING_TIMEOUT, "10"));
     }
+
+    /*public static void logPingTimeout(int logPingTimeout) {
+        gPrefs.edit().remove(LOG_PING_TIMEOUT);
+        gPrefs.edit().putString(LOG_PING_TIMEOUT, logPingTimeout+"");
+    }*/
 
     public static boolean enableAdmin() {
         return gPrefs.getBoolean(ENABLE_ADMIN, false);
