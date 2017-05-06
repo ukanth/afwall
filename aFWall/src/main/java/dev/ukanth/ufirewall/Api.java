@@ -2415,7 +2415,9 @@ public final class Api {
             String data = text.toString();
             JSONObject object = new JSONObject(data);
             String[] ignore = {"appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains", "kingDetect", "fingerprintEnabled"};
+            String[] intType = { "logPingTime","customDelay","patternMax", "widgetX", "widgetY" };
             List<String> ignoreList = Arrays.asList(ignore);
+            List<String> intList = Arrays.asList(intType);
             JSONArray prefArray = (JSONArray) object.get("prefs");
             for (int i = 0; i < prefArray.length(); i++) {
                 JSONObject prefObj = (JSONObject) prefArray.get(i);
@@ -2433,7 +2435,7 @@ public final class Api {
                                 //handle Long
                                 if (key.equals("multiUserId")) {
                                     G.gPrefs.edit().putLong(key, Long.parseLong(value)).commit();
-                                } else if (key.equals("patternMax") || key.equals("widgetX") || key.equals("widgetY")) {
+                                } else if (intList.contains(key)) {
                                     G.gPrefs.edit().putString(key, value).commit();
                                 } else {
                                     Integer intValue = Integer.parseInt(value);
