@@ -264,7 +264,7 @@
     <string name="startup_service">Applying rules. Please wait.</string>
 
     <string name="addStartupDelayTitle">Startup Delay</string>
-    <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+    <string name="addStartupDelaySummary">AFWall+ will wait for \'n\' seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
 
     <string name="fixleakTitle">Fix startup data leak</string>
     <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
@@ -534,4 +534,9 @@
     <string name="label_zoomin">Zoom In</string>
     <string name="label_zoomout">Zoom Out</string>
     <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+    <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+
+    <string name="delayTitle">Custom Seconds Delay</string>
+    <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+    <string name="delayDialog">Set delay in seconds</string>
 </resources>

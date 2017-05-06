@@ -64,7 +64,7 @@ public class BootBroadcast extends BroadcastReceiver {
 					// Apply the changes regards if network is up/not
 					InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 				}
-			}, 5000);
+			}, G.getCustomDelay());
 		}
 
 		if(G.activeNotification()){

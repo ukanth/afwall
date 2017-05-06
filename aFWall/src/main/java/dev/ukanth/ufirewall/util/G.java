@@ -95,6 +95,8 @@ public class G extends android.app.Application {
     private static final String PWD_ENCRYPT = "pwdEncrypt";
     private static final String PROFILE_PWD = "profilePwd";
     private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
+    private static final String CUSTOM_DELAY_SECONDS = "customDelay";
+
     /**
      * FIXME
      **/
@@ -509,6 +511,10 @@ public class G extends android.app.Application {
         } catch (Exception exception) {
         }
         return defaultX;
+    }
+
+    public static int getCustomDelay() {
+        return gPrefs.getInt(CUSTOM_DELAY_SECONDS, 5) * 1000;
     }
 
     public static int getWidgetY(Context ctx) {

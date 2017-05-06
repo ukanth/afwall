@@ -4,6 +4,14 @@
             android:key="addStartupDelay"
             android:summary="@string/addStartupDelaySummary"
             android:title="@string/addStartupDelayTitle" />
+        <EditTextPreference
+            android:dependency="addStartupDelay"
+            android:inputType="number"
+            android:title="@string/delayTitle"
+            android:summary="@string/delaySummary"
+            android:dialogTitle="@string/delayDialog"
+            android:dialogMessage="Default - 5s"
+            android:key="customDelay"/>
         <CheckBoxPreference
             android:key="fixLeak"
             android:summary="@string/fixleakSummary"

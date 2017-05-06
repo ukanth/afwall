@@ -34,6 +34,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.format.Formatter;
 
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -58,7 +59,7 @@ public final class InterfaceTracker {
     public static final String ITFS_3G[] = {"rmnet+", "pdp+", "uwbr+", "wimax+", "vsnet+",
             "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", "ccemni+",
             "wwan+", "cdma_rmnet+", "usb+", "rmnet_usb+", "clat4+", "cc2mni+", "bond1+", "rmnet_smux+", "ccinet+",
-            "v4-rmnet+", "seth_w+", "v4-rmnet_data+","rmnet_ipa+", "rmnet_data+"};
+            "v4-rmnet+", "seth_w+", "v4-rmnet_data+", "rmnet_ipa+", "rmnet_data+"};
 
     public static final String ITFS_VPN[] = {"tun+", "ppp+", "tap+"};
 
@@ -72,11 +73,11 @@ public final class InterfaceTracker {
     private static final int NOTIF_ID = 10221;
     private static InterfaceDetails currentCfg = null;
 
-    private static class NewInterfaceScanner {
+    private static String truncAfter(String in, String regexp) {
+        return in.split(regexp)[0];
+    }
 
-        private static String truncAfter(String in, String regexp) {
-            return in.split(regexp)[0];
-        }
+    private static class NewInterfaceScanner {
 
         public static void populateLanMasks(InterfaceDetails ret) {
             try {
@@ -122,16 +123,20 @@ public final class InterfaceTracker {
         }
     }
 
-    /*public static boolean isIpV6() {
+    /*public static boolean isIPv6() {
         try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en != null; en.hasMoreElements()) {
-                NetworkInterface intf = (NetworkInterface) en.nextElement();
-                if (intf != null && intf.isUp()) {
-                    for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                        InetAddress inetAddress = enumIpAddr.nextElement();
-                        if (inetAddress != null && !inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
-                            return true;
-                        }
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                if (!intf.isUp() || intf.isLoopback()) {
+                    continue;
+                }
+                Iterator<InterfaceAddress> addrList = intf.getInterfaceAddresses().iterator();
+                while (addrList.hasNext()) {
+                    InterfaceAddress addr = addrList.next();
+                    InetAddress ip = addr.getAddress();
+                    if (ip instanceof Inet6Address) {
+                       Log.i(TAG, "Found ipv6 type: "  + ip);
+                       return true;
                     }
                 }
             }

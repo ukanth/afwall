@@ -24,9 +24,11 @@ package dev.ukanth.ufirewall.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
@@ -64,24 +66,14 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
         if (Api.isEnabled(context)) {
             if (G.activeRules()) {
                 InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-                //Api.allowDefaultChains(context);
             }
-            /*final Intent logIntent = new Intent(context, LogService.class);
-            if (G.enableLogService()) {
-                //check if the firewall is enabled
-                if (!Api.isEnabled(context) || !InterfaceTracker.isNetworkUp(context)) {
-                    //make sure kill all pid
-                    context.stopService(logIntent);
-                } else {
-                    context.startService(logIntent);
+            //detect connection type and warn users
+            /*try {
+                if (!G.enableIPv6() && !G.blockIPv6() && InterfaceTracker.isIPv6()) {
+                    Api.toast(context, context.getString(R.string.ipdetect), Toast.LENGTH_LONG);
                 }
-            } else {
-                //no internet - stop the service
-                context.stopService(logIntent);
-                Api.cleanupUid();
+            } catch (Exception e) {
             }*/
-
-
         }
     }
 }
