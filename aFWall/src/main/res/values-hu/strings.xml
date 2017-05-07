@@ -66,9 +66,9 @@
   <string name="mode_header">Mód: %s</string>
   <string name="legend_clear">Összes kijelölés az összes oszlopban</string>
   <string name="mode_whitelist">Kiválasztott engedélyezése</string>
-  <string name="legend_whitelist">Selected apps will be granted internet access</string>
+  <string name="legend_whitelist">A kiválasztott alkalmazások internet-hozzáféréssel rendelkeznek</string>
   <string name="mode_blacklist">Kiválasztott blokkolása</string>
-  <string name="legend_blacklist">Selected apps will be denied internet access</string>
+  <string name="legend_blacklist">A kiválasztott alkalmazások nem rendelkeznek internet-hozzáféréssel</string>
   <string name="set_custom_script">Egyéni script beállítása</string>
   <string name="preferences">Beállítások</string>
   <string name="reload">Alkalmazások újratöltése</string>
@@ -76,8 +76,8 @@
   <string name="send_report">Hibajelentés küldése</string>
   <string name="enter_problem">Kérjük, írja le a problémát:</string>
   <string name="send_mail">Email küldése</string>
-  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
-  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_on">Az új alkalmazás telepítésekor értesítés jelenik meg</string>
+  <string name="notify_pref_summary_off">Nem jelenik meg értesítés az új alkalmazás telepítésekor</string>
   <string name="custom_script_defined">Egyéni script beállítva</string>
   <string name="custom_script_removed">Egyéni script eltávolítva</string>
   <string name="custom_script_error">Hiba az egyéni script mentése közben</string>
@@ -91,14 +91,14 @@
   <string name="copied">Lemásolva</string>
   <string name="Search">Keresés</string>
   <string name="flushRulesConfirm">Kiüríti az összes iptables szabályt?</string>
-  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
+  <string name="overrideRules">Szeretné importálni a szabályokat? Ez felülírja a meglévő szabályokat!</string>
   <string name="notification_new">Új alkalmazás telepítve</string>
   <string name="notification_new_package">Internet engedély konfigurálása</string>
   <string name="confirmMsg">Teljesen LETILTJA a tűzfalat?</string>
   <string name="apply">Alkamaz</string>
   <string name="discard">Elvetés</string>
   <string name="delete">Törlés</string>
-  <string name="clone">Clone</string>
+  <string name="clone">Klón</string>
   <string name="rename">Átnevezés</string>
   <string name="Yes">Igen</string>
   <string name="Continue">Folytatás</string>
@@ -133,8 +133,8 @@
   <string name="import_rules_success">Importálás innen: </string>
   <string name="import_rules_fail">Az importálás sikertelen!</string>
   <string name="import_rules_missing">A szabály fájl hiányzik!</string>
-  <string name="exportConfirm">Export rules to storage?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
+  <string name="exportConfirm">Exportálja a szabályokat a tárolóra?</string>
+  <string name="export_logs_fail">A tárolóra exportálás nem sikerült!</string>
   <string name="export_to_sd">Exportálás tárhelyre</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Tűzfal naplózás engedélyezése</string>
@@ -179,7 +179,7 @@
   <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Profil szabályok újraalkalmazása</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">LAN szabályzás</string>
   <string name="lan_summary">LAN és a WiFi engedélyek külön-külön szabályozása</string>
   <string name="iptables_pref">Iptables bináris</string>
   <string name="vpn_profile">VPN szabályzás</string>
@@ -265,7 +265,7 @@
   <string name="showuid_summary_on">Mutassa az alkalmazások UID-jét a fő nézetben</string>
   <string name="showuid_summary_off">Ne mutassa az alkalmazások UID-jét a fő nézetben. Az engedélyezése hasznos lehet naplózásnál.</string>
   <string name="languages">Nyelvek</string>
-  <string name="change_languages">Change Language</string>
+  <string name="change_languages">Nyelv változtatása</string>
   <string name="misc_header">Nyelvek/Bővítmények</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktív szabályok</string>
@@ -414,20 +414,20 @@
   <string name="delete_profile">Nem lehet törölni a profilt</string>
   <string name="profile_migrate_msg">A profilok áttelepítése sikerült</string>
   <!-- Log Details -->
-  <string name="destination_address">Destination Address</string>
-  <string name="source_address">Source Address</string>
-  <string name="ping_destination">Ping Destination</string>
-  <string name="ping_source">Ping Source</string>
+  <string name="destination_address">Cél cím</string>
+  <string name="source_address">Forrás cím</string>
+  <string name="ping_destination">Ping cél</string>
+  <string name="ping_source">Ping forrás</string>
   <string name="resolve_destination">Resolve Destination</string>
   <string name="resolve_source">Resolve Source</string>
-  <string name="copy_text">Copy text</string>
+  <string name="copy_text">Szöveg másolása</string>
   <string name="destination_copied">Destination copied</string>
   <string name="source_copied">Source copied</string>
   <string name="select_the_action">Select The Action</string>
   <string name="result_copied_to_clipboard">Result copied to clipboard</string>
-  <string name="result">Result</string>
+  <string name="result">Eredmény</string>
   <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
-  <string name="searching">Searching</string>
+  <string name="searching">Keresés</string>
   <string name="looking_for_data">Looking for data&#8230;</string>
   <string name="reachable_timeout">Reachable, timeout: %d ms</string>
   <string name="error_or_unknown_category">Error or Unknown Category</string>
@@ -435,7 +435,7 @@
   <string name="show_source_address">Show Source Address</string>
   <string name="network_connection_not_available">Network connection not Available</string>
   <!-- Fingerprint -->
-  <string name="pref_fingerprint">Fingerprint</string>
+  <string name="pref_fingerprint">Ujjlenyomat</string>
   <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
   <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
   <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
@@ -444,7 +444,7 @@
   <string name="title_fingerprint">One-touch Unlock</string>
   <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
   <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-  <string name="title_activity_home">Fingerprint</string>
+  <string name="title_activity_home">Ujjlenyomat</string>
   <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
   <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
   <string name="fingerprint_required">Fingerprint required</string>

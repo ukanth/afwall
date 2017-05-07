@@ -81,7 +81,7 @@
   <string name="custom_script_defined">تعريف برنامج نصي مخصص</string>
   <string name="custom_script_removed">إزالة برنامج نصي مخصص</string>
   <string name="custom_script_error">حدث خطأ أثناء حفظ البرنامج النصي المخصص</string>
-  <string name="custom_script_info"><b>أدخل السكريبت المعدل أسفله</b> \n (أتركه فارغ لحذفه.) \nلمعلومات حول السكريبتات المعدلة اضغط  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">هنا</a>.</string>
+  <string name="custom_script_info"><b>أدخل السكريبت المعدل أسفله</b> n\ <i>(أتركه فارغ لحذفه.)</i> \nلمعلومات حول السكريبتات المعدلة اضغط  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">هنا</a>.</string>
   <string name="custom_script2_info">     يمكنك أيضا تعريف \n <b>البرنامج النصي المخصص لإيقاف التشغيل</b> \nYou برنامج نصي مخصص ليتم تنفيذها عندما يكون <b>تعطيل</b> جدار الحماية:</string>
   <string name="unsaved_changes">التغييرات غير محفوظة</string>
   <string name="unsaved_changes_message">لم تقم بتطبيق التغييرات. \n هل تريد تطبيقها أو تجاهلها ؟</string>
@@ -325,7 +325,7 @@
   <string name="imports">إستيراد</string>
   <string name="invalid_profile">اسم الوضع غير صالح</string>
   <!-- Donate -->
-  <string name="donate_only">This feature is available only in the donate version</string>
+  <string name="donate_only">تتوفر هذه الميزة فقط في نسخة التبرع</string>
   <string name="buy_donate">شراء الإصدار الرئيسي او شراء مفتاح</string>
   <string name="unlock_donate"> اضغط لفتح التبرع</string>
   <string name="donate_support">يمكنك الآن إستخدام ميزات نسخة التبرع!</string>
@@ -362,8 +362,8 @@
   <string name="dialog_color_picker">إنتقاء اللون</string>
   <!--<string name="sort">Sort Applications</string>-->
   <string name="access_sort">خيار الفرز</string>
-  <string name="defaultsort">By name (default)</string>
-  <string name="lastupdated">By install/update</string>
+  <string name="defaultsort">حسب الاسم (إفتراضي)</string>
+  <string name="lastupdated">حسب التثبيت و التحديث</string>
   <string name="uid">حسب المعرف الفريد</string>
   <string name="select_dir">تحديد الدليل</string>
   <string name="select">تحديد المراد لـ</string>
@@ -372,9 +372,9 @@
   <string name="profiles">ملف التعريف </string>
   <string name="migrate_profiles">ترحيل الأوضاع</string>
   <string name="migrate_summary">Migrate all profile data</string>
-  <string name="insert_profile">Profile name</string>
+  <string name="insert_profile">اسم الملف الشخصي</string>
   <string name="add">إضافة</string>
-  <string name="showlog_toasts">Show toast notification on block</string>
+  <string name="showlog_toasts">تمكين اظهار الاشعار على المانع</string>
   <string name="enable_show_toasts">Enable show toasts</string>
   <string name="top">الأعلى</string>
   <string name="center">في المنتصف</string>
@@ -395,7 +395,7 @@
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
   <string name="log_deletedapp">حذف تطبيق</string>
-  <string name="log_denied">Denied :</string>
+  <string name="log_denied">مرفوض :</string>
   <string name="log_times">مرات</string>
   <string name="log_time">الساعة</string>
   <string name="log_dst">الوجهة :</string>
@@ -414,20 +414,20 @@
   <string name="delete_profile">Unable to delete profile</string>
   <string name="profile_migrate_msg">Profiles migrated successfully</string>
   <!-- Log Details -->
-  <string name="destination_address">Destination Address</string>
-  <string name="source_address">Source Address</string>
+  <string name="destination_address">عنوان الوجهة</string>
+  <string name="source_address">عنوان المصدر</string>
   <string name="ping_destination">Ping Destination</string>
   <string name="ping_source">Ping Source</string>
-  <string name="resolve_destination">Resolve Destination</string>
-  <string name="resolve_source">Resolve Source</string>
-  <string name="copy_text">Copy text</string>
+  <string name="resolve_destination">حل الوجهة</string>
+  <string name="resolve_source">حل المصدر</string>
+  <string name="copy_text">نسخ النص</string>
   <string name="destination_copied">Destination copied</string>
   <string name="source_copied">Source copied</string>
   <string name="select_the_action">Select The Action</string>
   <string name="result_copied_to_clipboard">Result copied to clipboard</string>
-  <string name="result">Result</string>
+  <string name="result">النتيجة</string>
   <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
-  <string name="searching">Searching</string>
+  <string name="searching">جاري البحث</string>
   <string name="looking_for_data">البحث عن البيانات جارٍ ...</string>
   <string name="reachable_timeout">Reachable, timeout: %d ms</string>
   <string name="error_or_unknown_category">Error or Unknown Category</string>

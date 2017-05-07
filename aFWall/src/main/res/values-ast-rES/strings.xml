@@ -34,7 +34,7 @@
   <string name="dnsproxy_item">(Proxy DNS) - Guetes DNS per netd</string>
   <string name="ntp_item">(ntp) - Sirvidores d\'hora de rede</string>
   <string name="root_item">(root) - Aplicaciones executándose como root</string>
-  <string name="adb_item">(adb) - ADB (Android Debug Bridge)</string>
+  <string name="adb_item">(adb) - Android Debug Bridge</string>
   <string name="media_item">(media) - Sirvidor multimedia</string>
   <string name="vpn_item">(vpn) - Rede VPN</string>
   <string name="drm_item">(drm) - Serviciu de xestión de drechos dixitales</string>
@@ -76,8 +76,8 @@
   <string name="send_report">Unviar informe de fallu</string>
   <string name="enter_problem">Por favor, desplica\'l problema:</string>
   <string name="send_mail">Unviar corréu</string>
-  <string name="notify_pref_summary_on">Amosaráse un avisu cuando s\'instale una aplicación nueva</string>
-  <string name="notify_pref_summary_off">Nun s\'amosará aplicación dala cuando s\'instale una aplicación nueva</string>
+  <string name="notify_pref_summary_on">Amosaráse un avisu al instalase una aplicación nueva</string>
+  <string name="notify_pref_summary_off">Nun s\'amosará avisu dalu al instalase una aplicación nueva</string>
   <string name="custom_script_defined">Definióse\'l script personalizáu</string>
   <string name="custom_script_removed">Desanicióse\'l script personalizáu</string>
   <string name="custom_script_error">Fallu guardando\'l script personalizáu</string>
@@ -91,12 +91,12 @@
   <string name="copied">Copiáu</string>
   <string name="Search">Guetar</string>
   <string name="flushRulesConfirm">¿Balerar toles regles d\'iptables?</string>
-  <string name="overrideRules">¿Quies importar les regles? ¡Esto anulará les regles esistentes!</string>
+  <string name="overrideRules">¿Quies importar les regles? ¡Esto anulará les esistentes!</string>
   <string name="notification_new">Instaláronse aplicaciones nueves</string>
   <string name="notification_new_package">Configura\'l so permisu a internet</string>
   <string name="confirmMsg">¿Deshabilitar dafechu\'l firmware?</string>
   <string name="apply">Aplicar</string>
-  <string name="discard">Descartar</string>
+  <string name="discard">Escartar</string>
   <string name="delete">Desaniciar</string>
   <string name="clone">Clone</string>
   <string name="rename">Renomar</string>
@@ -195,9 +195,9 @@
   <string name="toast_disabled">AFWall+: ¡Tornafuéu DESHABILITÁU!</string>
   <string name="toast_error_disabling">AFWall+: ¡Fallu deshabilitando\'l tornafuéu!</string>
   <!-- Binary -->
-  <string name="busybox_pref">Binariu Busybox</string>
-  <string name="system_bb">Busybox del sistema</string>
-  <string name="builtin_bb">Busybox integráu</string>
+  <string name="busybox_pref">Binariu BusyBox</string>
+  <string name="system_bb">BusyBox del sistema</string>
+  <string name="builtin_bb">BusyBox integráu</string>
   <string name="system_ipt">iptables del sistema</string>
   <string name="builtin_ipt">iptables integráu</string>
   <string name="auto">Auto</string>
@@ -260,7 +260,7 @@
   <string name="syscolor_pref_title">Color d\'aplicaciones del sistema</string>
   <string name="syscolor_pref_summary_on">Color pa toles aplicaciones del sistema</string>
   <string name="enableConfirmTitle">Confirmar el deshabilitar AFWall+</string>
-  <string name="enableConfirm_summary_on">El tornafuéu entrugará pola to confirmación enantes de deshabilitase</string>
+  <string name="enableConfirm_summary_on">El tornafuéu pidirá la to confirmación enantes de deshabilitase</string>
   <string name="showUid">Amosar UID p\'aplicaciones</string>
   <string name="showuid_summary_on">Amuesa les UIDs d\'aplicaciones na vista principal</string>
   <string name="showuid_summary_off">Anubre les UIDs d\'aplicación an vista principal. Habilitalo pue ser útil pa rastrexar rexistros.</string>
@@ -269,7 +269,7 @@
   <string name="misc_header">Llingües/Complementos</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Activar regles</string>
-  <string name="active_rules_summary">Aplica les regles en cada cambéu de coneutividá (Roaming/LAN/WiFi/3G/tethering/datos móviles)</string>
+  <string name="active_rules_summary">Aplica les regles en cada cambéu de coneutividá (itinerancia/LAN/WiFi/3G/tethering/datos móviles)</string>
   <string name="profile_add">Amestar perfil</string>
   <string name="profile_remove">Desaniciar perfil</string>
   <string name="profile_rename">Renomar perfil</string>
