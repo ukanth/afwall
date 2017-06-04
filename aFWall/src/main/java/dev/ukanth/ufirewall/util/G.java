@@ -44,6 +44,7 @@ import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 
 public class G extends android.app.Application {
@@ -96,6 +97,7 @@ public class G extends android.app.Application {
     private static final String PROFILE_PWD = "profilePwd";
     private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
     private static final String CUSTOM_DELAY_SECONDS = "customDelay";
+    private static final String NOTIFICATION_PRIORITY = "notification_priority";
 
     /**
      * FIXME
@@ -144,6 +146,11 @@ public class G extends android.app.Application {
         gPrefs.edit().putString(PROFILE_PWD, val).commit();
         return val;
     }
+
+    public static int getNotificationPriority() {
+        return Integer.parseInt(gPrefs.getString(NOTIFICATION_PRIORITY, "0"));
+    }
+
 
     public static Boolean isFingerprintEnabled() {
         return gPrefs.getBoolean(FINGERPRINT_ENABLED, false);

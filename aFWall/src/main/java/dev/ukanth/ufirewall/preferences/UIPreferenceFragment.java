@@ -1,5 +1,6 @@
 package dev.ukanth.ufirewall.preferences;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -51,8 +52,10 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 										  String key) {
-
-
-
+		if (key.equals("notification_priority")) {
+			NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancel(33341);
+			Api.showNotification(Api.isEnabled(ctx), ctx);
+		}
 	}
 }

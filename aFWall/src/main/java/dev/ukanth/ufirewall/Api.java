@@ -2415,7 +2415,7 @@ public final class Api {
             String data = text.toString();
             JSONObject object = new JSONObject(data);
             String[] ignore = {"appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains", "kingDetect", "fingerprintEnabled"};
-            String[] intType = { "logPingTime","customDelay","patternMax", "widgetX", "widgetY" };
+            String[] intType = { "logPingTime","customDelay","patternMax", "widgetX", "widgetY","notification_priority"};
             List<String> ignoreList = Arrays.asList(ignore);
             List<String> intList = Arrays.asList(intType);
             JSONArray prefArray = (JSONArray) object.get("prefs");
@@ -2983,12 +2983,13 @@ public final class Api {
                     .setContentTitle(context.getString(R.string.app_name))
                     //keep the priority as low ,so it's not visible on lockscreen
                     .setTicker(context.getString(R.string.app_name))
+                    .setPriority(G.getNotificationPriority())
                     //.addAction(R.drawable.apply, "", pendingIntentCancel)
                     //.addAction(R.drawable.exit, "", pendingIntentCancel)
                     .setContentText(notificationText);
 
             Notification notification = builder.build();
-            notification.flags = Notification.FLAG_ONGOING_EVENT;
+            //notification.flags = Notification.FLAG_ONGOING_EVENT;
 
 			/*if(G.lockNotification() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 				builder.setVisibility(NotificationCompat.PRIORITY_LOW);

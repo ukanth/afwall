@@ -19,6 +19,13 @@
             android:key="activeNotification"
             android:summary="@string/activeNotification_summary"
             android:title="@string/activeNotification" />
+        <ListPreference
+            android:defaultValue="0"
+            android:dependency="activeNotification"
+            android:entries="@array/notification_type"
+            android:entryValues="@array/notification_type_val"
+            android:key="notification_priority"
+            android:title="@string/notification_priority"></ListPreference>
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="showFilter"

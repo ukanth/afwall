@@ -541,4 +541,7 @@
     <string name="delayDialog">Set delay in seconds</string>
 
     <string name="pingDelayTitle">Ping timeout</string>
+    <string name="notification_priority">Notification Priority</string>
+    <string name="defaultPriority">Default Priority</string>
+    <string name="lowPriority">Low Priority</string>
 </resources>
