@@ -52,10 +52,15 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 										  String key) {
-		if (key.equals("notification_priority")) {
-			NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-			notificationManager.cancel(33341);
-			Api.showNotification(Api.isEnabled(ctx), ctx);
+		if(ctx == null) {
+			ctx = (Context) getActivity();
+		}
+		if(ctx != null) {
+			if (key.equals("notification_priority")) {
+				NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.cancel(33341);
+				Api.showNotification(Api.isEnabled(ctx), ctx);
+			}
 		}
 	}
 }
