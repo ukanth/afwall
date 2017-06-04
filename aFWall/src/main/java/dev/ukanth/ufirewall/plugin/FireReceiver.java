@@ -187,7 +187,10 @@ public final class FireReceiver extends BroadcastReceiver {
                         default:
                             if (multimode) {
                                 ProfileData data = ProfileHelper.getProfileByName(profileName);
-                                G.setProfile(true, data.getIdentifier());
+                                if(data != null) {
+                                    G.setProfile(true, data.getIdentifier());
+                                }
+
                             }
                             break;
                     }

@@ -133,7 +133,9 @@ public class ProfileActivity extends AppCompatActivity {
                 break;*/
             case MENU_RENAME:
                 ProfileData data = ProfileHelper.getProfileByName(profileName);
-                renameProfile(data, aInfo.position);
+                if (data != null) {
+                    renameProfile(data, aInfo.position);
+                }
                 break;
         }
         return true;
@@ -165,8 +167,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void renameProfile(final ProfileData data, final int position) {
-
-        String exitingName = data != null ? data.getName() : "";
+        String exitingName = data.getName();
         new MaterialDialog.Builder(this)
                 .cancelable(true)
                 .title(R.string.profile_rename)
@@ -187,7 +188,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 }).show();
-
     }
 
     // Handle user click

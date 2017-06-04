@@ -158,7 +158,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 						}
 						fixLeakPref.setChecked(isFixLeakInstalled());
 					}
-					Api.toast(ctx, getString(msgid), Toast.LENGTH_SHORT);
+					if (getStatus() != Status.RUNNING) {
+						Api.toast(ctx, getString(msgid), Toast.LENGTH_SHORT);
+					}
 				}
 			}.execute();
 		}

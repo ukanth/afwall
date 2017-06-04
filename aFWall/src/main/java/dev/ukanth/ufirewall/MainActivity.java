@@ -949,9 +949,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void menuSetApplyOrSave(final Menu menu, final boolean isEnabled) {
-        if (menu == null) {
-            return;
-        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -972,7 +969,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onPrepareOptionsMenu(final Menu menu) {
         //language
         Api.updateLanguage(getApplicationContext(), G.locale());
-        menuSetApplyOrSave(menu, Api.isEnabled(MainActivity.this));
+        if(menu != null) {
+            menuSetApplyOrSave(menu, Api.isEnabled(MainActivity.this));
+        }
         return true;
     }
 
