@@ -35,7 +35,7 @@
             android:summary="@string/block_ipv6_summary"
             android:title="@string/block_ipv6_title" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="enableIPv6"
             android:summary="@string/ipv6_summary"
             android:title="@string/ipv6_title" />
