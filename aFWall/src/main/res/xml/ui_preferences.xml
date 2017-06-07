@@ -46,6 +46,7 @@
             android:title="@string/syscolor_pref_title" />
 
         <CheckBoxPreference
+            android:defaultValue="true"
             android:key="enableConfirm"
             android:summary="@string/enableConfirm_summary_on"
             android:title="@string/enableConfirmTitle" />
