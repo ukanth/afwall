@@ -1,0 +1,8 @@
+title: AFWall+
+description: Android Firewall - IPTables GUI
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-architect
+
+gems:
+  - jekyll-mentions
