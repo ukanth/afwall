@@ -29,9 +29,9 @@ doit() {
   do
     if [ -x "$i" ]
     then
-      "$i" -wP INPUT DROP
-      "$i" -wP OUTPUT DROP
-      "$i" -wP FORWARD DROP
+      "$i" -w -P INPUT DROP
+      "$i" -w -P OUTPUT DROP
+      "$i" -w -P FORWARD DROP
       return
     fi
   done
