@@ -99,6 +99,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
@@ -534,33 +535,19 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isTethered) {
-                if (setv6) {
-                    if (!cfg.lanMaskV6.equals("")) {
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                    }
+                if(setv6 && !cfg.lanMaskV6.equals("")) {
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+                } else if(!setv6 && !cfg.lanMaskV4.equals("")) {
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d "+ cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
                 } else {
-                    if (!cfg.lanMaskV4.equals("")) {
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                    }
-
-                    /*else {
-                        //ipaddress not found, but still block WIFI rules
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                    }*/
+                    // No IP address -> no traffic.  This prevents a data leak between the time
+                    // the interface gets an IP address, and the time we process the intent
+                    // (which could be 5+ seconds).  This is likely to catch a little bit of
+                    // legitimate traffic from time to time, so we won't log the failures.
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
                 }
-                    if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
-                        Log.i(TAG, "No ipaddress found for LAN");
-                        // No IP address -> no traffic.  This prevents a data leak between the time
-                        // the interface gets an IP address, and the time we process the intent
-                        // (which could be 5+ seconds).  This is likely to catch a little bit of
-                        // legitimate traffic from time to time, so we won't log the failures.
-                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
-                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
-
-                    }
             } else {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
             }
