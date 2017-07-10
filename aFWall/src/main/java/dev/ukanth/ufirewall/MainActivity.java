@@ -667,7 +667,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void showOrLoadApplications() {
         //nocache!!
-        (new GetAppList()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        GetAppList getAppList = new GetAppList();
+        if (plsWait == null && (getAppList.getStatus() == AsyncTask.Status.PENDING || getAppList.getStatus() == AsyncTask.Status.FINISHED)) {
+            getAppList.setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     @Override
@@ -724,12 +727,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-
     public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
-        boolean started = false;
         Context context = null;
-        AsyncTask<Void, Integer, Void> myAsyncTaskInstance = null;
 
         public GetAppList setContext(Context context) {
             this.context = context;
@@ -748,43 +748,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             publishProgress(value);
         }
 
-        public AsyncTask<Void, Integer, Void> getInstance() {
-            // if the current async task is already running, return null: no new
-            // async task
-            // shall be created if an instance is already running
-            if ((myAsyncTaskInstance != null)
-                    && myAsyncTaskInstance.getStatus() == Status.RUNNING) {
-                // it can be running but cancelled, in that case, return a new
-                // instance
-                if (myAsyncTaskInstance.isCancelled()) {
-                    myAsyncTaskInstance = new GetAppList();
-                } else {
-                    return null;
-                }
-            }
-
-            // if the current async task is pending, it can be executed return
-            // this instance
-            if ((myAsyncTaskInstance != null)
-                    && myAsyncTaskInstance.getStatus() == Status.PENDING) {
-                return myAsyncTaskInstance;
-            }
-
-            // if the current async task is finished, it can't be executed
-            // another time, so return a new instance
-            if ((myAsyncTaskInstance != null)
-                    && myAsyncTaskInstance.getStatus() == Status.FINISHED) {
-                myAsyncTaskInstance = new GetAppList();
-            }
-
-            // if the current async task is null, create a new instance
-            if (myAsyncTaskInstance == null) {
-                myAsyncTaskInstance = new GetAppList();
-            }
-            // return the current instance
-            return myAsyncTaskInstance;
-        }
-
         @Override
         protected Void doInBackground(Void... params) {
             Api.getApps(MainActivity.this, this);
@@ -799,9 +762,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             selectFilterGroup();
             doProgress(-1);
             try {
-                started = false;
                 try {
-                    if ((plsWait != null) && plsWait.isShowing()) {
+                    if (plsWait != null && plsWait.isShowing()) {
                         plsWait.dismiss();
                     }
                 } catch (final IllegalArgumentException e) {
@@ -809,11 +771,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (final Exception e) {
                     // Handle or log or ignore
                 } finally {
+                    plsWait.dismiss();
                     plsWait = null;
                 }
                 mSwipeLayout.setRefreshing(false);
             } catch (Exception e) {
                 // nothing
+                if (plsWait != null) {
+                    plsWait.dismiss();
+                    plsWait = null;
+                }
             }
         }
 
@@ -969,7 +936,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onPrepareOptionsMenu(final Menu menu) {
         //language
         Api.updateLanguage(getApplicationContext(), G.locale());
-        if(menu != null) {
+        if (menu != null) {
             menuSetApplyOrSave(menu, Api.isEnabled(MainActivity.this));
         }
         return true;
@@ -1077,7 +1044,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 showPreferences();
                 return true;
         /*case R.id.menu_reload:
-			Api.applications = null;
+            Api.applications = null;
 			showOrLoadApplications();
 			return true;*/
             case R.id.menu_search:
@@ -1595,8 +1562,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onClick(View v) {
 
         switch (v.getId()) {
-			/*case R.id.label_mode:
-				selectMode();
+            /*case R.id.label_mode:
+                selectMode();
 				break;*/
             case R.id.img_wifi:
                 selectActionConfirmation(v.getId());
