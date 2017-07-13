@@ -93,17 +93,7 @@ public class RootShellService extends Service {
         public StringBuilder lastCommandResult;
         public int exitCode;
         public boolean done = false;
-        /*private boolean startCheck = false;
 
-
-		public boolean isStartCheck() {
-			return startCheck;
-		}
-
-		public RootCommand setStartCheck(boolean startCheck) {
-			this.startCheck = startCheck;
-			return this;
-		}*/
 
         public static abstract class Callback {
 
@@ -268,16 +258,16 @@ public class RootShellService extends Service {
     }
 
     private static void submitNextCommand(final RootCommand state) {
-        String s = state.script.get(state.commandIndex);
+        String command = state.script.get(state.commandIndex);
 
-        if (s != null) {
-            if (s.startsWith("#NOCHK# ")) {
-                s = s.replaceFirst("#NOCHK# ", "");
+        if (command != null) {
+            if (command.startsWith("#NOCHK# ")) {
+                command = command.replaceFirst("#NOCHK# ", "");
                 state.ignoreExitCode = true;
             } else {
                 state.ignoreExitCode = false;
             }
-            state.lastCommand = s;
+            state.lastCommand = command;
             state.lastCommandResult = new StringBuilder();
 
             Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
@@ -330,9 +320,9 @@ public class RootShellService extends Service {
                     }
                 }
             };
-            if (listener != null && s != null) {
+            if (listener != null) {
                 try {
-                    rootSession.addCommand(s, 0, listener);
+                    rootSession.addCommand(command, 0, listener);
                 } catch (NullPointerException e) {
                     Log.d(TAG, "Unable to add commands to session");
                 }
@@ -412,28 +402,33 @@ public class RootShellService extends Service {
     }
 
     private static void showToastUIThread(final String msg, final Context mContext) {
-        Thread thread = new Thread() {
-            public void run() {
-                Looper.prepare();
+        try {
+            Thread thread = new Thread() {
+                public void run() {
+                    Looper.prepare();
 
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            if (mContext != null && msg != null) {
-                                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (mContext != null && msg != null) {
+                                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                                }
+                                handler.removeCallbacks(this);
+                                Looper.myLooper().quit();
+                            } catch (Exception e) {
+                                Log.i(TAG, "Exception in showToastUIThread: " + e.getLocalizedMessage());
                             }
-                            handler.removeCallbacks(this);
-                            Looper.myLooper().quit();
-                        } catch (Exception e) {
-                            Log.i(TAG, "Exception in showToastUIThread: " + e.getLocalizedMessage());
                         }
-                    }
-                }, 2000);
-                Looper.loop();
-            }
-        };
-        thread.start();
+                    }, 2000);
+                    Looper.loop();
+                }
+            };
+            thread.start();
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in showing toast");
+        }
+
     }
 }
