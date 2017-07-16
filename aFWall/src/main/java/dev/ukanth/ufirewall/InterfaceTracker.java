@@ -123,31 +123,6 @@ public final class InterfaceTracker {
         }
     }
 
-    /*public static boolean isIPv6() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-                NetworkInterface intf = en.nextElement();
-                if (!intf.isUp() || intf.isLoopback()) {
-                    continue;
-                }
-                Iterator<InterfaceAddress> addrList = intf.getInterfaceAddresses().iterator();
-                while (addrList.hasNext()) {
-                    InterfaceAddress addr = addrList.next();
-                    InetAddress ip = addr.getAddress();
-                    if (ip instanceof Inet6Address) {
-                       Log.i(TAG, "Found ipv6 type: "  + ip);
-                       return true;
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            Log.e(TAG, "Exception in Get IP Address: " + ex.toString());
-        } catch (Exception ex) {
-            Log.e(TAG, "Exception : " + ex.toString());
-        }
-        return false;
-    }*/
-
     private static void getTetherStatus(Context context, InterfaceDetails d) {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         Method[] wmMethods = wifi.getClass().getDeclaredMethods();
