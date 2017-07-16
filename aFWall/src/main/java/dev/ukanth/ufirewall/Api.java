@@ -168,9 +168,6 @@ public final class Api {
     //for import/export rules
     public static final String PREF_3G_PKG = "AllowedPKG3G";
     public static final String PREF_WIFI_PKG = "AllowedPKGWifi";
-    //public static final String PREF_ROAMING_PKG		= "AllowedPKGRoaming";
-    //public static final String PREF_VPN_PKG			= "AllowedPKGVPN";
-    //public static final String PREF_LAN_PKG			= "AllowedPKGLAN";
 
     //revertback to old approach for performance
     public static final String PREF_3G_PKG_UIDS = "AllowedPKG3G_UIDS";
@@ -209,9 +206,8 @@ public final class Api {
 
     private static final String dynChains[] = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
 
-    private static final String staticChains[] = {"", "-3g", "-wifi",
-            "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam",
-            "-wifi-tether", "-wifi-wan", "-wifi-lan"};
+    private static final String staticChains[] = {"", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether",
+            "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan"};
 
     // Cached applications
     public static List<PackageInfoData> applications = null;
@@ -534,33 +530,22 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isTethered) {
-                if (setv6) {
-                    if (!cfg.lanMaskV6.equals("")) {
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                    }
+                if (setv6 && !cfg.lanMaskV6.equals("")) {
+                    cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
+                    cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
+                } else if (!setv6 && !cfg.lanMaskV4.equals("")) {
+                    cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
+                    cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
                 } else {
-                    if (!cfg.lanMaskV4.equals("")) {
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-lan");
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                    }
-
-                    /*else {
-                        //ipaddress not found, but still block WIFI rules
-                        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
-                    }*/
+                    Log.i(TAG, "No ipaddress found for LAN");
+                    // No IP address -> no traffic.  This prevents a data leak between the time
+                    // the interface gets an IP address, and the time we process the intent
+                    // (which could be 5+ seconds).  This is likely to catch a little bit of
+                    // legitimate traffic from time to time, so we won't log the failures.
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
                 }
-                    if(!setv6 && !cfg.lanMaskV4.equals("") && !cfg.lanMaskV6.equals("")){
-                        Log.i(TAG, "No ipaddress found for LAN");
-                        // No IP address -> no traffic.  This prevents a data leak between the time
-                        // the interface gets an IP address, and the time we process the intent
-                        // (which could be 5+ seconds).  This is likely to catch a little bit of
-                        // legitimate traffic from time to time, so we won't log the failures.
-                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
-                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-                        //cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");
-
-                    }
             } else {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
             }
@@ -712,15 +697,7 @@ public final class Api {
         cmds.add("-P OUTPUT ACCEPT");
 
         //look for custom rules
-
-		/*for(String str: CustomRule.getAllowedIPv4Rules(ctx)) {
-			cmds.add(str);
-		}*/
-
         if (onlyForIpv6) {
-			/*for(String str: CustomRule.getAllowedIPv6Rules(ctx)) {
-				cmds.add(str);
-			}*/
             if (G.blockIPv6()) {
                 setIpTablePath(ctx, true);
                 cmds.add("-P INPUT DROP");
@@ -824,7 +801,6 @@ public final class Api {
                 return false;
             }
 
-            //TODO: InterfaceTracker.isIpV6() -- this is breaking custom script
             if (G.enableIPv6()) {
                 setIpTablePath(ctx, true);
                 returnValue = applyIptablesRulesImpl(ctx,
@@ -1206,7 +1182,7 @@ public final class Api {
      * @param callback Callback for completion status
      */
     public static void runIfconfig(Context ctx, RootCommand callback) {
-         callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
+        callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
     }
 
     public static void runNetworkInterface(Context ctx, RootCommand callback) {
@@ -2146,18 +2122,18 @@ public final class Api {
                 JSONObject exportObject = new JSONObject();
                 //if multiprofile is enabled
                 if (G.enableMultiProfile()) {
-                    if(!G.isProfileMigrated()) {
+                    if (!G.isProfileMigrated()) {
                         JSONObject profileObject = new JSONObject();
                         //store all the profile settings
                         for (String profile : G.profiles) {
-                            profileObject.put(profile, new JSONObject(getRulesForProfile(ctx,profile)));
+                            profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
                         }
                         exportObject.put("profiles", profileObject);
                         //if any additional profiles
                         //int defaultProfileCount = 3;
                         JSONObject addProfileObject = new JSONObject();
                         for (String profile : G.getAdditionalProfiles()) {
-                            addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx,profile)));
+                            addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
                         }
                         //support for new profiles
                         exportObject.put("additional_profiles", addProfileObject);
@@ -2165,16 +2141,16 @@ public final class Api {
                         JSONObject profileObject = new JSONObject();
                         //add default profile
                         String profileName = "AFWallPrefs";
-                        profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx,profileName)));
+                        profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
                         //update for new profile logic
                         List<ProfileData> profileDataList = ProfileHelper.getProfiles();
                         //store all the profile settings
-                        for (ProfileData profile: profileDataList) {
+                        for (ProfileData profile : profileDataList) {
                             profileName = profile.getName();
-                            if(profile.getIdentifier().startsWith("AFWallProfile")) {
+                            if (profile.getIdentifier().startsWith("AFWallProfile")) {
                                 profileName = profile.getIdentifier();
                             }
-                            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx,profileName)));
+                            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
                         }
                         exportObject.put("_profiles", profileObject);
                     }
@@ -2415,7 +2391,7 @@ public final class Api {
             String data = text.toString();
             JSONObject object = new JSONObject(data);
             String[] ignore = {"appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains", "kingDetect", "fingerprintEnabled"};
-            String[] intType = { "logPingTime","customDelay","patternMax", "widgetX", "widgetY","notification_priority"};
+            String[] intType = {"logPingTime", "customDelay", "patternMax", "widgetX", "widgetY", "notification_priority"};
             List<String> ignoreList = Arrays.asList(ignore);
             List<String> intList = Arrays.asList(intType);
             JSONArray prefArray = (JSONArray) object.get("prefs");
@@ -2449,13 +2425,13 @@ public final class Api {
                 }
             }
             if (G.enableMultiProfile()) {
-                if(G.isProfileMigrated()){
+                if (G.isProfileMigrated()) {
                     JSONObject profileObject = object.getJSONObject("_profiles");
                     Iterator<?> keys = profileObject.keys();
                     while (keys.hasNext()) {
                         String key = (String) keys.next();
                         String identifier = key.replaceAll("\\s+", "");
-                        ProfileData profileData = new ProfileData(key,identifier);
+                        ProfileData profileData = new ProfileData(key, identifier);
                         profileData.save();
                         try {
                             JSONObject obj = profileObject.getJSONObject(key);
@@ -2466,7 +2442,7 @@ public final class Api {
                             }
                         }
                     }
-                } else  {
+                } else {
                     JSONObject profileObject = object.getJSONObject("profiles");
                     Iterator<?> keys = profileObject.keys();
                     while (keys.hasNext()) {
@@ -2924,7 +2900,7 @@ public final class Api {
                     .getSystemService(Context.NOTIFICATION_SERVICE);
 
             //refresh notification on profile switch
-            if(G.enableMultiProfile()){
+            if (G.enableMultiProfile()) {
                 mNotificationManager.cancel(NOTIFICATION_ID);
             }
 
