@@ -24,5 +24,10 @@
             android:key="multiUser"
             android:summary="@string/multi_user_summary"
             android:title="@string/multi_user_title" />
+
+        <CheckBoxPreference
+            android:key="fasterApplyRules"
+            android:summary="@string/applyRulesFaster"
+            android:title="@string/applyRulesFasterTitle" />
     </PreferenceCategory>
 </PreferenceScreen>
