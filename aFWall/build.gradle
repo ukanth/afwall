@@ -36,20 +36,20 @@ android {
 
 dependencies {
 
-    compile 'eu.chainfire:libsuperuser:1.0.0.201602271131'
+    compile 'eu.chainfire:libsuperuser:1.0.0.201704021214'
     compile 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     compile 'com.android.support:appcompat-v7:25.2.0'
     //compile 'com.afollestad.material-dialogs:core:0.8.6.2'
-    compile 'com.afollestad.material-dialogs:core:0.9.4.1'
+    compile 'com.afollestad.material-dialogs:core:0.9.4.5'
 
 
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support:cardview-v7:25.2.0'
     compile 'com.android.support:recyclerview-v7:25.2.0'
 
-    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:3.1.1'
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:3.1.1"
-    compile "com.github.Raizlabs.DBFlow:dbflow:3.1.1"
+    apt 'com.github.Raizlabs.DBFlow:dbflow-processor:4.0.4'
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:4.0.4"
+    compile "com.github.Raizlabs.DBFlow:dbflow:4.0.4"
 
     compile 'org.greenrobot:eventbus:3.0.0'
 
