@@ -24,6 +24,7 @@
 package dev.ukanth.ufirewall.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -46,6 +47,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.service.ConnectivityChangeService;
 
 public class G extends android.app.Application {
 
@@ -604,6 +606,7 @@ public class G extends android.app.Application {
                 .openDatabasesOnInit(true).build());
         ctx = this.getApplicationContext();
         reloadPrefs();
+        startService(new Intent(this, ConnectivityChangeService.class));
     }
 
     public static void reloadPrefs() {
