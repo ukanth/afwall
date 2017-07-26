@@ -1,6 +1,12 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.6
+* LAN/Data leak issues on 7.x
+* Application list refresh issue
+* Updated libraries
+* Reported crash fixes
+
 Version 2.9.5
 * Mobile data support for newer devices
 * Custom interval for startup delay
