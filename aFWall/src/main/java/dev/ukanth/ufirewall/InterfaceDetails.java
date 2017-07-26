@@ -34,6 +34,7 @@ public class InterfaceDetails {
 	// supplementary info
 	String wifiName = "";
 	boolean netEnabled = false;
+	boolean noIP = false;
 	public int netType = -1;
 
 	public boolean equals(InterfaceDetails that) {
@@ -44,7 +45,8 @@ public class InterfaceDetails {
 			!this.lanMaskV6.equals(that.lanMaskV6) ||
 			!this.wifiName.equals(that.wifiName) ||
 			this.netEnabled != that.netEnabled ||
-			this.netType != that.netType)
+			this.netType != that.netType ||
+			this.noIP != that.noIP)
 			return false;
 		return true;
 	}

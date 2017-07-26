@@ -114,6 +114,9 @@ public final class InterfaceTracker {
                             ret.lanMaskV6 = mask;
                         }
                     }
+                    if(ret.lanMaskV4.equals("") && ret.lanMaskV6.equals("")){
+                        ret.noIP = true;
+                    }
                 }
             } catch (SocketException e) {
                 Log.e(TAG, "Error fetching network interface list");
@@ -212,6 +215,9 @@ public final class InterfaceTracker {
             }
             if (!newCfg.lanMaskV6.equals("")) {
                 Log.i(TAG, "IPv6 LAN netmask on " + newCfg.wifiName + ": " + newCfg.lanMaskV6);
+            }
+            if(newCfg.lanMaskV6.equals("") && newCfg.lanMaskV4.equals("")) {
+                Log.i(TAG, "No ipaddress found");
             }
         }
         return true;
