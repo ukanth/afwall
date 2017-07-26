@@ -99,7 +99,7 @@ public class G extends android.app.Application {
     private static final String CUSTOM_DELAY_SECONDS = "customDelay";
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
 
-    private static final String FASTER_RULES = "fasterApplyRules";
+    //private static final String FASTER_RULES = "fasterApplyRules";
     /**
      * FIXME
      **/
@@ -130,14 +130,14 @@ public class G extends android.app.Application {
         gPrefs.edit().putStringSet("storedPid", store).commit();
     }
 
-    public static boolean isFaster() {
+  /*  public static boolean isFaster() {
         return gPrefs.getBoolean(FASTER_RULES, false);
     }
 
     public static boolean isFaster(boolean val) {
         gPrefs.edit().putBoolean(FASTER_RULES, val).commit();
         return val;
-    }
+    }*/
 
 
     public static boolean isEnc() {
