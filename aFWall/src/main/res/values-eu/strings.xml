@@ -62,22 +62,22 @@
   <string name="passerror">Errorea pasahitz blokeoa aldatzean</string>
   <string name="working">Lanean</string>
   <string name="reading_apps">Instalatutako aplikazioak jasotzen</string>
-  <string name="mode">Firewall Mode</string>
+  <string name="mode">Suebaki modua</string>
   <string name="mode_header">Modua: %s</string>
-  <string name="legend_clear">Clear all checkboxes in all columns</string>
+  <string name="legend_clear">Garbitu zutabe guztietako koadroak</string>
   <string name="mode_whitelist">Baimendu hautatutakoak</string>
-  <string name="legend_whitelist">Selected apps will be granted internet access</string>
+  <string name="legend_whitelist">Hautatuko aplikazioei Internetera sarbidea emango zaie</string>
   <string name="mode_blacklist">Blokeatu hautatutakoak</string>
-  <string name="legend_blacklist">Selected apps will be denied internet access</string>
+  <string name="legend_blacklist">Hautatuko aplikazioei Internetera sarbidea ukatuko zaie</string>
   <string name="set_custom_script">Ezarri script propioa</string>
   <string name="preferences">Hobespenak</string>
   <string name="reload">Birkargatu aplikazioak</string>
   <string name="flush">Ezabatu arauak</string>
   <string name="send_report">Bidali errore txostena</string>
-  <string name="enter_problem">Please explain the issue:</string>
+  <string name="enter_problem">Azaldu arazoa mesedez:</string>
   <string name="send_mail">Bidali posta mezua</string>
-  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
-  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_on">Jakinarazpen bat erakutsiko da aplikazio berri bat instalatzean</string>
+  <string name="notify_pref_summary_off">Ez da jakinarazpenik erakutsiko aplikazio berri bat instalatzean</string>
   <string name="custom_script_defined">Script pertsonalizatua ezarri da</string>
   <string name="custom_script_removed">Script pertsonalizatua kendu da</string>
   <string name="custom_script_error">Errorea script pertsonalizatua gordetzean</string>
@@ -98,8 +98,8 @@
   <string name="apply">Aplikatu</string>
   <string name="discard">Baztertu</string>
   <string name="delete">Ezabatu</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">Klonatu</string>
+  <string name="rename">Aldatu izena</string>
   <string name="Yes">Bai</string>
   <string name="Continue">Jarraitu</string>
   <string name="No">Ez</string>
@@ -116,7 +116,7 @@
   <string name="remove_initd">Abio scripta kendu da</string>
   <string name="unable_remove_initd">Ezin izan da AFWall+ abio script-a kendu</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
+  <string name="widget_disable_fail">Ezin da suebakia ezgaitu - Pasahitzez babestua!</string>
   <string name="widget_label_status">AFWall+ Txandakatu/egoera</string>
   <string name="widget_label_settings">AFWall+ Ezarpenak</string>
   <string name="widget_label_settings_old">AFWall+ Ezarpenak (zaharra)</string>
@@ -133,9 +133,9 @@
   <string name="import_rules_success">Hemendik inportatu da </string>
   <string name="import_rules_fail">Inportazioak huts egin du!</string>
   <string name="import_rules_missing">Arau fitxategia falta da.</string>
-  <string name="exportConfirm">Export rules to storage?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
-  <string name="export_to_sd">Export to storage</string>
+  <string name="exportConfirm">Esportatu arauan biltegira?</string>
+  <string name="export_logs_fail">Biltegira esportatzean huts egin du!</string>
+  <string name="export_to_sd">Esportatu biltegiratzera</string>
   <!-- Logging -->
   <string name="enable_firewall_log">Gaitu suebakiaren egunkaria</string>
   <string name="enable_firewall_log_service">Piztu erregistro zerbitzua</string>
@@ -175,17 +175,17 @@
   <string name="profile1">1 profila</string>
   <string name="profile2">2 profila</string>
   <string name="profile3">3 profila</string>
-  <string name="profile_hint">ProfileName</string>
+  <string name="profile_hint">ProfilIzena</string>
   <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="reapply_profile">Berraplikatu profilaren arauak</string>
   <!-- Interface -->
-  <string name="lan_title">LAN control</string>
+  <string name="lan_title">LAN kontrola</string>
   <string name="lan_summary">Gaitu hau alde batetik LAN baimenak eta bestetik WiFi baimenak kudeatzeko</string>
   <string name="iptables_pref">Iptables bitarra</string>
   <string name="vpn_profile">VPN kontrola</string>
-  <string name="vpnSummary">Gaitu VPN baimenak berezita kontrolatzeko</string>
+  <string name="vpnSummary">Gaitu VPN baimenak bereizita kontrolatzeko</string>
   <string name="roaming">Ibiltaritzaren (Roaming-aren) kontrola</string>
-  <string name="roamingSummary">Enable to control roaming permissions separately</string>
+  <string name="roamingSummary">Gaitu ibiltaritza baimenak bereizita kontrolatzeko</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -229,7 +229,7 @@
   <string name="usePattern">Erabili blokeo eredua pasahitzaren ordez</string>
   <string name="stealthMode">Modu sekretua ereduan</string>
   <string name="patternMaxTry">Gehieneko saiakera kopurua</string>
-  <string name="resetPattern">Reset lock pattern?</string>
+  <string name="resetPattern">Berrezarrri blokeo eredua?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Gailu administratzailea</string>
   <string name="device_admin_enabled">AFWall+ gailu administratzailea gaituta</string>
@@ -239,10 +239,10 @@
   <string name="exp_prefs_title">Esperimentala</string>
   <!-- Startup -->
   <string name="startup_service">Arauak aplikatzen. Itxaron mesedez.</string>
-  <string name="addStartupDelayTitle">Startup Delay</string>
+  <string name="addStartupDelayTitle">Abioaren atzeratzea</string>
   <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Eragotzi abiarazterakoan baimen gabe konektatzea</string>
-  <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
+  <string name="fixleakSummary">Eragotzi sistema abiatzean baimen gabe konektatu ahal izatea. Zure ROM-ak init.d edo su.d (superSU) euskarria izan behar du. HTC gailuak S-OFF gisa konfiguratu behar dira.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -251,14 +251,14 @@
   <string name="enableInboundSummary">Baimendu LAN saretik telefonorako konexioak (Samba, sshd, AirDroid, etab.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Erabiltzaile interfazea</string>
-  <string name="rules_prefs_title">Rules/Connectivity</string>
+  <string name="rules_prefs_title">Arauak/Konektibitatea</string>
   <string name="log_prefs_title">Egunkaria</string>
   <string name="hideicons_pref_title">Ezkutatu aplikazioen ikonoak</string>
-  <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
-  <string name="hideicons_pref_summary_off">Show App icons in the main view</string>
+  <string name="hideicons_pref_summary_on">Hobetu errendimendua ikuspegi nagusian aplikazioen ikonoak desgaituz</string>
+  <string name="hideicons_pref_summary_off">Erakutsi aplikazioen ikonoak ikuspegi nagusian</string>
   <string name="notify_pref_title">Gaitu jakinarazpenak</string>
-  <string name="syscolor_pref_title">System app color</string>
-  <string name="syscolor_pref_summary_on">Color for all system apps</string>
+  <string name="syscolor_pref_title">Sistemako aplikazioen kolorea</string>
+  <string name="syscolor_pref_summary_on">Sistemako aplikazio guztien kolorea</string>
   <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
   <string name="enableConfirm_summary_on">Suebakiak berrespena eskatuko du ezgaitu aurretik</string>
   <string name="showUid">Bistaratu aplikazioen UIDa</string>
@@ -305,8 +305,8 @@
   <string name="pkg_core">Nukleoa</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Erabiltzailea</string>
-  <string name="menu">Menu</string>
-  <string name="backup_notexist">No backup exists. Please export from the menu.</string>
+  <string name="menu">Menua</string>
+  <string name="backup_notexist">Ez dago segurtasun kopiarik. Esportatu menutik.</string>
   <string name="showFilter">Erakutsi iragazkiak</string>
   <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
   <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
@@ -332,7 +332,7 @@
   <string name="donate_thanks">Eskerrik asko zure babesagatik!</string>
   <string name="activeNotification">Bistaratu jakinarazpen ikonoa</string>
   <string name="activeNotification_summary">Bistaratu behin betiko ikonoa jakinarazpen barran</string>
-  <string name="active">Firewall enabled</string>
+  <string name="active">Suebakia gaituta</string>
   <string name="inactive">Suebakia ezgaituta dago</string>
   <string name="About">Honi buruz</string>
   <string name="FAQ">FAQ (Maiz Egindako Galderak)</string>
@@ -363,7 +363,7 @@
   <!--<string name="sort">Sort Applications</string>-->
   <string name="access_sort">Sort option</string>
   <string name="defaultsort">Izenez (lehenetsia)</string>
-  <string name="lastupdated">Instalazio/eguneraketa dataz</string>
+  <string name="lastupdated">Instalazio/eguneratze dataz</string>
   <string name="uid">UIDz</string>
   <string name="select_dir">Hautatu direktorioa</string>
   <string name="select">Hautatu ekintza</string>
@@ -383,7 +383,7 @@
   <string name="widget_prefs_title">Trepetaren koordenatuak</string>
   <string name="xTitle">Trepetaren X koordenatua</string>
   <string name="xTitleSummary">Eskuz gainidatzi X koordenatua</string>
-  <string name="xTitleDialog">Set X position (number)</string>
+  <string name="xTitleDialog">Ezarri X koordenatua (zenbakia)</string>
   <string name="yTitle">Trepetaren Y koordenatua</string>
   <string name="yTitleSummary">Eskuz gainidatzi Y koordenatua</string>
   <string name="yTitleDialog">Ezarri Y koordenatua (zenbakia)</string>
@@ -391,12 +391,12 @@
   <string name="error_nonsupported_details">AFWall+ek suebakiaren arauak ezikusi ohi dituen euskarririk gabeko super-erabiltzaile aplikazio bat aurkitu du. Root baimena duenez AFWall+ek ezin du hau eragotzi.</string>
   <string name="lockNotification">Hide lockscreen notification icon</string>
   <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-  <string name="menu_legend">Legend</string>
+  <string name="menu_legend">Legenda</string>
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
   <string name="log_deletedapp">Deleted Application</string>
-  <string name="log_denied">Denied :</string>
-  <string name="log_times">times</string>
+  <string name="log_denied">Ukatua:</string>
+  <string name="log_times">aldi</string>
   <string name="log_time">time</string>
   <string name="log_dst">Destination :</string>
   <string name="log_src">Source :</string>
@@ -405,10 +405,10 @@
   <string name="loading_data_title">Kargatzen...</string>
   <string name="loading_data">Retrieving log data</string>
   <string name="switch_old">Switch to old view</string>
-  <string name="switch_new">Switch to new view</string>
+  <string name="switch_new">Aldatu ikuspegi berrira</string>
   <string name="showlogdetail_title">Application Log Details</string>
   <string name="reapply_rules">Please reapply the rules due to preference change</string>
-  <string name="custom_rules">Custom Rules</string>
+  <string name="custom_rules">Arau pertsonalizatuak</string>
   <string name="mdns">Enable Mutlicast DNS</string>
   <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
   <string name="delete_profile">Unable to delete profile</string>
@@ -420,38 +420,38 @@
   <string name="ping_source">Ping Source</string>
   <string name="resolve_destination">Resolve Destination</string>
   <string name="resolve_source">Resolve Source</string>
-  <string name="copy_text">Copy text</string>
+  <string name="copy_text">Kopiatu testua</string>
   <string name="destination_copied">Destination copied</string>
   <string name="source_copied">Source copied</string>
   <string name="select_the_action">Select The Action</string>
   <string name="result_copied_to_clipboard">Result copied to clipboard</string>
-  <string name="result">Result</string>
+  <string name="result">Emaitza</string>
   <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
-  <string name="searching">Searching</string>
-  <string name="looking_for_data">Looking for data&#8230;</string>
+  <string name="searching">Bilatzen</string>
+  <string name="looking_for_data">Datuak bilatzen&#8230;</string>
   <string name="reachable_timeout">Reachable, timeout: %d ms</string>
   <string name="error_or_unknown_category">Error or Unknown Category</string>
   <string name="show_destination_address">Show Destination Address</string>
   <string name="show_source_address">Show Source Address</string>
   <string name="network_connection_not_available">Network connection not Available</string>
   <!-- Fingerprint -->
-  <string name="pref_fingerprint">Fingerprint</string>
-  <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
-  <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
-  <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
-  <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
+  <string name="pref_fingerprint">Hatz-marka</string>
+  <string name="fingerprint_authentication_error">Hatz-marka bidezko egiaztaketaren errorea\n</string>
+  <string name="fingerprint_authentication_help">Hatz-marka bidezko egiaztaketaren laguntza\n</string>
+  <string name="fingerprint_authentication_failed">Hatz-marka bidezko egiaztaketak huts egin du.</string>
+  <string name="fingerprint_authentication_successded">Hatz-marka bidezko egiaztaketak aurrera egin du.</string>
   <string name="title_activity_main">MainActivity</string>
-  <string name="title_fingerprint">One-touch Unlock</string>
-  <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
-  <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-  <string name="title_activity_home">Fingerprint</string>
-  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
-  <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
-  <string name="fingerprint_required">Fingerprint required</string>
-  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
-  <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
-  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
+  <string name="title_fingerprint">Behin ukitu eta desblokeatu</string>
+  <string name="desc_fingerprint">Jarri zure atzamarra eskanerrean zure identitatea egiaztatzeko</string>
+  <string name="note">(Hatz marka bidezko sinadurak aplikazioan saioa hastea azkartzen du. Zure gailuak gutxienez hatz-marka baten erregistroa izan behar du gailuaren ezarpenetan)</string>
+  <string name="title_activity_home">Hatz-marka</string>
+  <string name="activity_home_desc">Ongi hasi duzu saioa hatz-marka bidez egiaztatuz</string>
+  <string name="activity_home_note">Itxi eta berriro ireki aplikazioa hatz-marka bidezko egiaztaketaren pantaila berriro ikusteko</string>
+  <string name="fingerprint_required">Hatz-marka ezinbestekoa</string>
+  <string name="device_with_no_fingerprint_sensor">Zure gailuak ez du hatz-marka sentsorerik</string>
+  <string name="fingerprint_permission_manifest_missing">Hatz-marka bidezko egiaztaketarako baimena gaitu gabe</string>
+  <string name="register_at_least_one_fingerprint">Erregistratu gutxienez hatz-marka bat ezarpenetan</string>
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
-  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
-  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+  <string name="fingerprint_enabled_successfully">Hatz-marka ongi gaitu da</string>
+  <string name="fingerprint_disabled_successfully">Hatz-marka ongi desgaitu da</string>
 </resources>

@@ -401,7 +401,7 @@
   <string name="log_dst">Ziel :</string>
   <string name="log_src">Quelle :</string>
   <string name="log_proto">Protokoll :</string>
-  <string name="no_data_available">Bitte aktivieren Sie den Protokolldienst über die Einstellungen, sonst werden keine Daten gespeichert.</string>
+  <string name="no_data_available">Es liegen keine Protokolldaten vor. Bitte überprüfen Sie, ob der Protokolldienst in den Einstellungen aktiviert ist.</string>
   <string name="loading_data_title">Wird geladen …</string>
   <string name="loading_data">Protokoll wird abgerufen ...</string>
   <string name="switch_old">Zur alten Ansicht wechseln</string>

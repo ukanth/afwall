@@ -27,7 +27,7 @@
   <string name="error_su">Не вдалося отримати root-доступ.\nДля роботи AFWall+ потрібен пристрій з правами root.\n\nЯкщо цей пристрій вже має права root, переконайтеся, що AFWall+ має дозвіл на виконання команди \"su\".</string>
   <string name="error_netfilter">Не вдалося знайти підтримку для цілей та ланцюгів iptables. \nAFWall+ може працювати неналежним чином через це обмеження.</string>
   <string name="error_common">Помилка: </string>
-  <string name="all_item">(Будь-який додаток) - Подібно вибору усіх додатків</string>
+  <string name="all_item">(Будь-який застосунок) - Подібно вибору всіх застосунків</string>
   <string name="kernel_item">(Ядро) - ядро Linux</string>
   <string name="unknown_item">Невідомо</string>
   <string name="tethering_item">(тетерінг) - служби DHCP+DNS</string>

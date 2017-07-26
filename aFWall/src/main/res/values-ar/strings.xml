@@ -81,10 +81,10 @@
   <string name="custom_script_defined">تعريف برنامج نصي مخصص</string>
   <string name="custom_script_removed">إزالة برنامج نصي مخصص</string>
   <string name="custom_script_error">حدث خطأ أثناء حفظ البرنامج النصي المخصص</string>
-  <string name="custom_script_info"><b>أدخل السكريبت المعدل أسفله</b> n\ <i>(أتركه فارغ لحذفه.)</i> \nلمعلومات حول السكريبتات المعدلة اضغط  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">هنا</a>.</string>
+  <string name="custom_script_info"><b>أدخل السكريبت المعدل أسفله</b> \n<i>(أتركه فارغ لحذفه.)</i> \nلمعلومات حول السكريبتات المعدلة اضغط  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">هنا</a>.</string>
   <string name="custom_script2_info">     يمكنك أيضا تعريف \n <b>البرنامج النصي المخصص لإيقاف التشغيل</b> \nYou برنامج نصي مخصص ليتم تنفيذها عندما يكون <b>تعطيل</b> جدار الحماية:</string>
   <string name="unsaved_changes">التغييرات غير محفوظة</string>
-  <string name="unsaved_changes_message">لم تقم بتطبيق التغييرات. \n هل تريد تطبيقها أو تجاهلها ؟</string>
+  <string name="unsaved_changes_message">لم تقم بتطبيق التغييرات. n\ هل تريد تطبيقها أو تجاهلها ؟</string>
   <string name="help_dialog_text"></string>
   <string name="showrules_title">قواعد iptables</string>
   <string name="copy">نسخ</string>
@@ -296,7 +296,7 @@
   <string name="roam">تجوال</string>
   <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">واي فاي</string>
-  <string name="legend_wifi">Enable to control WiFi permissions</string>
+  <string name="legend_wifi">تمكين التحكم بأذونات واي فاي</string>
   <string name="lan">الشبكة المحلية</string>
   <string name="vpn">VPN</string>
   <string name="data">البيانات</string>
@@ -308,13 +308,13 @@
   <string name="menu">القائمة</string>
   <string name="backup_notexist">لا توجد نسخة احتياطية. الرجاء التصدير من القائمة.</string>
   <string name="showFilter">إظهار الفلاتر</string>
-  <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
-  <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
+  <string name="showfilter_summary_on">إظهار التصفية في طريقة العرض الأساسية حسب (الكل\الأساسية\النظام\المستخدم)</string>
+  <string name="showfilter_summary_off">إخفاء التصفية في طريقة العرض الأساسية حسب (الكل\الأساسية\النظام\المستخدم)</string>
   <string name="enable_dns">تمكين DNS عبر netd</string>
   <string name="disable_dns">تعطيل DNS عبر netd</string>
   <string name="dns_proxy_title">وكيل خدمة أسماء النطاقات DNS</string>
-  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
-  <string name="tasker_lable">AFWall+ Tasker plugin</string>
+  <string name="dns_proxy_summary">عمليات البحث عن DNS تتم عن طريق neted على أندرويد 4.3 وما بعده. تعطيلها سيحجب الانترنت على تلك الأجهزة.</string>
+  <string name="tasker_lable">إضافة مستخدمي المهام AFWall+</string>
   <string name="enable">تمكين</string>
   <string name="disable">تعطيل</string>
   <string name="filters_apps_title">تصفية الإشعارات</string>
@@ -351,7 +351,7 @@
   <string name="pref_password">كلمة المرور</string>
   <string name="pref_pattern">نمط</string>
   <string name="pref_device">استخدام حماية أمن الجهاز</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+  <string name="pref_device_desc">استخدم جهاز الفحص الأمني لفتح AFWall+ (تبرع\الميزة الرئيسية)</string>
   <string name="secure_option">الجهاز غير محمي لا بكلمة مرور ولا برقم التعريف الشخصي PIN.</string>
   <string name="android_version">تعمل هذه الميزة فقط على لولي بوب والإصدارات الحديثة لأوندرويد.</string>
   <!--<string name="pref_pin">Pin</string>-->
@@ -371,23 +371,23 @@
   <string name="manage_profiles_summary">إضافة أو إزالة ملفات تعريف</string>
   <string name="profiles">ملف التعريف </string>
   <string name="migrate_profiles">ترحيل الأوضاع</string>
-  <string name="migrate_summary">Migrate all profile data</string>
+  <string name="migrate_summary">ترحيل كافة البيانات الشخصية</string>
   <string name="insert_profile">اسم الملف الشخصي</string>
   <string name="add">إضافة</string>
   <string name="showlog_toasts">تمكين اظهار الاشعار على المانع</string>
-  <string name="enable_show_toasts">Enable show toasts</string>
+  <string name="enable_show_toasts">تمكين إظهار toasts</string>
   <string name="top">الأعلى</string>
   <string name="center">في المنتصف</string>
   <string name="bottom">في الأسفل</string>
-  <string name="position">Toasts Position</string>
-  <string name="widget_prefs_title">Widget positions</string>
-  <string name="xTitle">Widget X position</string>
-  <string name="xTitleSummary">Manual override X position</string>
+  <string name="position">موضع Toasts</string>
+  <string name="widget_prefs_title">موقع التطبيق المصغر</string>
+  <string name="xTitle">الموضع X للتطبيق المصغر</string>
+  <string name="xTitleSummary">التجاوز اليدوي للموضع X</string>
   <string name="xTitleDialog">حدد X الموضع (عدد)</string>
-  <string name="yTitle">Widget Y position</string>
-  <string name="yTitleSummary">Manual override Y position</string>
-  <string name="yTitleDialog">Set Y position (number)</string>
-  <string name="error_nonsupported">King Root detected!</string>
+  <string name="yTitle">الموضع ع للتطبيق المصغر</string>
+  <string name="yTitleSummary">التجاوز اليدوي للموضع Y</string>
+  <string name="yTitleDialog">ضبط الموقع Y (رقم)</string>
+  <string name="error_nonsupported">تم الكشف عن King Root!</string>
   <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
   <string name="lockNotification">Hide lockscreen notification icon</string>
   <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
@@ -445,7 +445,7 @@
   <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
   <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
   <string name="title_activity_home">البصمة</string>
-  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_desc">تم تسجيل الدخول بنجاح باستخدام مصادقة بصمة الأصابع</string>
   <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
   <string name="fingerprint_required">البصمة مطلوبة</string>
   <string name="device_with_no_fingerprint_sensor">لا يتوفر جهازك على \"استشعار بصمات الأصابع\"</string>
@@ -453,5 +453,5 @@
   <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
   <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
-  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+  <string name="fingerprint_disabled_successfully">تم تعطيل بصمة الإصبع بنجاح</string>
 </resources>
