@@ -339,7 +339,7 @@ public final class Api {
      */
     public static String getBusyBoxPath(Context ctx, boolean considerSystem) {
 
-        if (G.bb_path().equals("system") && RootTools.isBusyboxAvailable() && considerSystem) {
+        if (G.bb_path().equals("system") && considerSystem) {
             return "busybox ";
         } else {
             String dir = ctx.getDir("bin", 0).getAbsolutePath();
