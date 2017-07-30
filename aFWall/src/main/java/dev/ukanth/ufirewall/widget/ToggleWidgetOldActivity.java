@@ -339,7 +339,7 @@ public class ToggleWidgetOldActivity extends Activity implements
 
     private boolean applyRules(Context context, Message msg, Handler toaster) {
         boolean success = false;
-        if (Api.applySavedIptablesRules(context, false)) {
+        if (Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand())) {
             msg.arg1 = R.string.toast_enabled;
             toaster.sendMessage(msg);
             enableOthers();
@@ -351,18 +351,25 @@ public class ToggleWidgetOldActivity extends Activity implements
         return success;
     }
 
-    private boolean applyProfileRules(Context context, Message msg,
-                                      Handler toaster) {
+    private boolean applyProfileRules(final Context context, final Message msg,
+                                      final Handler toaster) {
         boolean success = false;
-        if (Api.applySavedIptablesRules(context, false)) {
-            msg.arg1 = R.string.rules_applied;
-            toaster.sendMessage(msg);
-            enableOthers();
-            success = true;
-        } else {
-            msg.arg1 = R.string.error_apply;
-            toaster.sendMessage(msg);
-        }
+        success = Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                .setFailureToast(R.string.error_apply)
+                .setCallback(new RootShellService.RootCommand.Callback() {
+                    @Override
+                    public void cbFunc(RootShellService.RootCommand state) {
+                        if (state.exitCode == 0) {
+                            msg.arg1 = R.string.rules_applied;
+                            toaster.sendMessage(msg);
+                            enableOthers();
+                        } else {
+                            // error details are already in logcat
+                            msg.arg1 = R.string.error_apply;
+                            toaster.sendMessage(msg);
+                        }
+                    }
+                }));
         return success;
     }
 }

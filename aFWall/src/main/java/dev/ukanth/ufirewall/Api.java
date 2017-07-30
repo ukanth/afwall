@@ -826,7 +826,10 @@ public final class Api {
 
             rulesUpToDate = true;
 
-            if (callback != null) {
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            return true;
+
+            /*if (callback != null) {
                 callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
                 return true;
             } else {
@@ -851,7 +854,7 @@ public final class Api {
                     return false;
                 }
                 return true;
-            }
+            }*/
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
             allowDefaultChains(ctx);
@@ -859,10 +862,10 @@ public final class Api {
         }
     }
 
-    @Deprecated
+    /*@Deprecated
     public static boolean applySavedIptablesRules(Context ctx, boolean showErrors) {
         return applySavedIptablesRules(ctx, showErrors, null);
-    }
+    }*/
 
     public static boolean fastApply(Context ctx, RootCommand callback) {
 
