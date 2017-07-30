@@ -23,10 +23,12 @@
 
 package dev.ukanth.ufirewall.util;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -47,7 +49,7 @@ import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 
-public class G extends android.app.Application {
+public class G extends Application {
 
     public static final String TAG = "AFWall";
 
@@ -611,8 +613,12 @@ public class G extends android.app.Application {
 
     public void onCreate() {
         super.onCreate();
-        FlowManager.init(new FlowConfig.Builder(this)
-                .openDatabasesOnInit(true).build());
+        try {
+            FlowManager.init(new FlowConfig.Builder(this)
+                    .openDatabasesOnInit(true).build());
+        } catch (SQLiteCantOpenDatabaseException e) {
+            Log.i(TAG, "unable to open database - exception");
+        }
         ctx = this.getApplicationContext();
         reloadPrefs();
     }
