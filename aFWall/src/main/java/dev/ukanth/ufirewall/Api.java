@@ -1013,11 +1013,11 @@ public final class Api {
         }
     }
 
-    @Deprecated
+    /*@Deprecated
     public static boolean purgeIptables(Context ctx, boolean showErrors) {
         // warning: this is a blocking call
         return purgeIptables(ctx, showErrors, null);
-    }
+    }*/
 
     /**
      * Retrieve the current set of IPv4 or IPv6 rules and pass it to a callback

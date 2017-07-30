@@ -17,6 +17,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
+import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.util.G;
 
 public class ToggleWidgetOldActivity extends Activity implements
@@ -183,15 +184,15 @@ public class ToggleWidgetOldActivity extends Activity implements
             }
         }.start();
         defaultButton.setEnabled(true);
-        if(profButton1.getText().equals(profileName)) {
+        if (profButton1.getText().equals(profileName)) {
             profButton1.setEnabled(false);
             profButton2.setEnabled(true);
             profButton3.setEnabled(true);
-        } else if(profButton2.getText().equals(profileName)) {
+        } else if (profButton2.getText().equals(profileName)) {
             profButton1.setEnabled(true);
             profButton2.setEnabled(false);
             profButton3.setEnabled(true);
-        } else if(profButton3.getText().equals(profileName)) {
+        } else if (profButton3.getText().equals(profileName)) {
             profButton1.setEnabled(true);
             profButton2.setEnabled(true);
             profButton3.setEnabled(false);
@@ -222,15 +223,16 @@ public class ToggleWidgetOldActivity extends Activity implements
                     case 2:
                         // validation, check for password
                         if (G.protectionLevel().equals("p0")) {
-                            if (Api.purgeIptables(context, false)) {
-                                msg.arg1 = R.string.toast_disabled;
-                                toaster.sendMessage(msg);
-                                disableOthers();
-                                Api.setEnabled(context, false, false);
-                            } else {
-                                msg.arg1 = R.string.toast_error_disabling;
-                                toaster.sendMessage(msg);
-                            }
+                            Api.purgeIptables(context, true, new RootShellService.RootCommand()
+                                    .setReopenShell(true)
+                                    .setCallback(new RootShellService.RootCommand.Callback() {
+                                        public void cbFunc(RootShellService.RootCommand state) {
+                                            boolean nowEnabled = state.exitCode != 0;
+                                            msg.arg1 = R.string.toast_disabled;
+                                            toaster.sendMessage(msg);
+                                            Api.setEnabled(context, false, false);
+                                        }
+                                    }));
                         } else {
                             msg.arg1 = R.string.widget_disable_fail;
                             toaster.sendMessage(msg);
