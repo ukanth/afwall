@@ -7,33 +7,34 @@
     android:background="@color/primary_dark_material_light"
     android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:orientation="vertical">
 
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/tasker_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize" />
 
         <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <RadioGroup
                     android:id="@+id/radioProfiles"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:divider="@color/black"
-                    android:layout_height="wrap_content" >
+                    android:divider="@color/black">
 
                     <RadioButton
                         android:id="@+id/tasker_enable"

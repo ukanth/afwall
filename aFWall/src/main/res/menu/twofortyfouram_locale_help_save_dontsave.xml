@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 ** Copyright 2012 two forty four a.m. LLC <http://www.twofortyfouram.com>
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,33 +12,23 @@
 ** limitations under the License.
 -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="UnusedResources">
 
     <!-- Menu item to cancel the result. This should set the Activity result to RESULT_CANCELED and immediately finish the Activity. -->
 
     <item
         android:id="@id/twofortyfouram_locale_menu_dontsave"
         android:icon="@drawable/twofortyfouram_locale_ic_menu_dontsave"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/Cancel"/>
-
-    <!--
-         Menu item to save the result. This should set the Activity result to RESULT_OK, with proper blurb and bundle extras, 
-        and immediately finish the Activity.
-    -->
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/Cancel" />
 
     <item
         android:id="@id/twofortyfouram_locale_menu_save"
         android:icon="@drawable/twofortyfouram_locale_ic_menu_save"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/saverules"/>
-
-    <!-- Menu item to launch the Help. It should launch the web browser using ACTION_VIEW with the data set to a URL. -->
-
-    <item
-        android:id="@id/twofortyfouram_locale_menu_help"
-        android:icon="@drawable/twofortyfouram_locale_ic_menu_help"
-        android:showAsAction="never"
-        android:title="@string/help"/>
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/saverules" />
 
 </menu>
