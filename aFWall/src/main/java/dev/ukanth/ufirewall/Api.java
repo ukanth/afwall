@@ -64,7 +64,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -960,6 +959,20 @@ public final class Api {
 
     }
 
+    /*public static void checkPermission(Context ctx) {
+        int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 5469;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.canDrawOverlays(ctx)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + ctx.getPackageName()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //((Activity)ctx).startActivityForResult(intent, ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE);
+                ctx.startActivity(intent);
+            }
+        }
+    }*/
+
     /**
      * Purge all iptables rules.
      *
@@ -1363,7 +1376,7 @@ public final class Api {
             if (changed) {
                 edit.commit();
             }
-			/* convert the map into an array */
+            /* convert the map into an array */
             applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
             for (int i = 0; i < syncMap.size(); i++) {
                 applications.add(syncMap.valueAt(i));

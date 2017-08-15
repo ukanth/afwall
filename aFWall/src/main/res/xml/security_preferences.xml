@@ -34,9 +34,9 @@
             android:summary="@string/pref_device_desc"
             android:title="@string/pref_device" />
 
-        <CheckBoxPreference
+       <!-- <CheckBoxPreference
             android:key="enableAdmin"
-            android:title="@string/enable_device_admin" />
+            android:title="@string/enable_device_admin" />-->
     </PreferenceCategory>
 
 </PreferenceScreen>

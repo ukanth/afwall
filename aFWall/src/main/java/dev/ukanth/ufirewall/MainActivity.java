@@ -36,10 +36,12 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -114,6 +116,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListView listview = null;
     public static boolean dirty = false;
     private MaterialDialog plsWait;
+    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
+
     private ArrayAdapter<String> spinnerAdapter = null;
     private SwipeRefreshLayout mSwipeLayout;
     private int index;
@@ -121,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<String> mlocalList = new ArrayList<>(new LinkedHashSet<String>());
     private int initDone = 0;
     private Spinner mSpinner;
+    private static int OVERLAY_PERMISSION_REQ_CODE = 1234;
+
 
     private static final int REQ_ENTER_PATTERN = 9755;
     private static final int SHOW_ABOUT_RESULT = 1200;
@@ -201,6 +207,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             passCheck();
         }
     }
+
+
 
     @Override
     public void onRefresh() {

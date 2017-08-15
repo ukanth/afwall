@@ -31,7 +31,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 
 	private static final String mountPoints[] = { "/system", "/su" ,"/magisk"};
 	private static final String initDirs[] = { "/system/etc/init.d",
-			"/etc/init.d" , "/system/su.d", "/su/su.d" , "/magisk/phh/su.d"};
+			"/etc/init.d" , "/system/su.d", "/su/su.d" , "/magisk/phh/su.d", "/magisk/.core/service.d"};
 	private static final String initScript = "afwallstart";
 
 	@SuppressLint("NewApi")

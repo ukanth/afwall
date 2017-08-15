@@ -194,9 +194,9 @@ public class LogService extends Service {
                             case "BX":
                                 logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
                                 break;
-                            case "TB":
-                                logPath = "echo PID=$$ & while true; do toybox dmesg -c ; sleep 1 ; done";
-                                break;
+                            /*case "TB":
+                                logPath = "echo PID=$$ & while true; do x dmesg -c ; sleep 1 ; done";
+                                break;*/
                             default:
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
