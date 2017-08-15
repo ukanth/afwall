@@ -65,7 +65,7 @@ public class G extends Application {
     private static final String ENABLE_INBOUND = "enableInbound";
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
     private static final String LOG_PING_TIMEOUT = "logPingTime";
-    private static final String ENABLE_ADMIN = "enableAdmin";
+    //private static final String ENABLE_ADMIN = "enableAdmin";
     private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
     private static final String ENABLE_CONFIRM = "enableConfirm";
     private static final String ENABLE_MULTI_PROFILE = "enableMultiProfile";
@@ -267,14 +267,14 @@ public class G extends Application {
         gPrefs.edit().putString(LOG_PING_TIMEOUT, logPingTimeout+"");
     }*/
 
-    public static boolean enableAdmin() {
+   /* public static boolean enableAdmin() {
         return gPrefs.getBoolean(ENABLE_ADMIN, false);
     }
 
     public static boolean enableAdmin(boolean val) {
         gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit();
         return val;
-    }
+    }*/
 
     public static boolean enableDeviceCheck() {
         return gPrefs.getBoolean(ENABLE_DEVICE_CHECK, false);
