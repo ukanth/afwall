@@ -1,6 +1,14 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.6.1
+
+* Removed BIND_ADMIN permission and related device admin feature as per Google - Will be introduced after sometime
+* ANR issues due to busybox detection
+* Minor UI changes in tasker plugin
+* Tasker plugin related bugs related to disable/enable firewall
+* User reported crash fixes 
+
 Version 2.9.6
 * LAN/Data leak issues on 7.x
 * Application list refresh issue
