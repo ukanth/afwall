@@ -1,29 +1,5 @@
 package dev.ukanth.ufirewall;
 
-import android.app.KeyguardManager;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.Switch;
-import android.widget.Toast;
-
-import java.util.List;
-
-import dev.ukanth.ufirewall.util.CustomRule;
-import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.util.Rule;
-
 public class CustomRulesActivity { /*extends AppCompatActivity {
 
     @Override

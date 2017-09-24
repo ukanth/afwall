@@ -34,7 +34,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.text.format.Formatter;
 
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -59,7 +58,7 @@ public final class InterfaceTracker {
     public static final String ITFS_3G[] = {"rmnet+", "pdp+", "uwbr+", "wimax+", "vsnet+",
             "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", "ccemni+",
             "wwan+", "cdma_rmnet+", "usb+", "rmnet_usb+", "clat4+", "cc2mni+", "bond1+", "rmnet_smux+", "ccinet+",
-            "v4-rmnet+", "seth_w+", "v4-rmnet_data+", "rmnet_ipa+", "rmnet_data+"};
+            "v4-rmnet+", "seth_w+", "v4-rmnet_data+", "rmnet_ipa+", "rmnet_data+", "r_rmnet_data+"};
 
     public static final String ITFS_VPN[] = {"tun+", "ppp+", "tap+"};
 

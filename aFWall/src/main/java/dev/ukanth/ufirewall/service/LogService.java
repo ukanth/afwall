@@ -22,7 +22,6 @@
 
 package dev.ukanth.ufirewall.service;
 
-import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;

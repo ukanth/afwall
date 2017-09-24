@@ -1,25 +1,10 @@
 package dev.ukanth.ufirewall.util;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.log.Log;
-
 /**
  * Created by ukanth on 22/11/16.
  */
 
-public class CustomRule {
+public class CustomRuleOld {
 
     /*private static String loadAssetsFile(Context ctx, String inFile) {
         String tContents = "";

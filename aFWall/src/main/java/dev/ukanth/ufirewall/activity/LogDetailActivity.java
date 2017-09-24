@@ -74,7 +74,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private LogData current_selected_logData;
 
     private int uid;
-    protected  static final int MENU_TOGGLE = -4;
+    protected static final int MENU_TOGGLE = -4;
     protected static final int MENU_CLEAR = 40;
     //protected static final int MENU_EXPORT_LOG = 47;
 
@@ -118,16 +118,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private void initializeRecyclerView(final Context ctx) {
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerViewAdapter = new LogDetailRecyclerViewAdapter(getApplicationContext(),new RecyclerItemClickListener() {
+        recyclerViewAdapter = new LogDetailRecyclerViewAdapter(getApplicationContext(), new RecyclerItemClickListener() {
             @Override
             public void onItemClick(LogData logData) {
-                // do what ever you want to do with it
-                /*try {
-                    Log.i("AFWall",new NetTask().execute(logData.getDst()).get());
-                } catch (ExecutionException | InterruptedException e) {
-                    Log.i("AFWall", e.getLocalizedMessage());
-                }*/
-
                 current_selected_logData = logData;
                 recyclerView.showContextMenu();
             }
@@ -137,12 +130,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 menu.setHeaderTitle(R.string.select_the_action);
                 //groupId, itemId, order, title
-                menu.add(0, v.getId(), 0, R.string.show_destination_address);
-                menu.add(0, v.getId(), 1, R.string.show_source_address);
-                menu.add(0, v.getId(), 2, R.string.ping_destination);
-                menu.add(0, v.getId(), 3, R.string.ping_source);
-                menu.add(0, v.getId(), 4, R.string.resolve_destination);
-                menu.add(0, v.getId(), 5, R.string.resolve_source);
+                menu.add(0, v.getId(), 0, R.string.add_ip_rule);
+                menu.add(0, v.getId(), 1, R.string.show_destination_address);
+                menu.add(0, v.getId(), 2, R.string.show_source_address);
+                menu.add(0, v.getId(), 3, R.string.ping_destination);
+                menu.add(0, v.getId(), 4, R.string.ping_source);
+                menu.add(0, v.getId(), 5, R.string.resolve_destination);
+                menu.add(0, v.getId(), 6, R.string.resolve_source);
             }
         });
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -151,9 +145,22 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        switch(item.getOrder()){
+        switch (item.getOrder()) {
 
             case 0: // Destination to clipboard
+                String[] items = {current_selected_logData.getDst(), current_selected_logData.getSrc()};
+                new MaterialDialog.Builder(this)
+                        .items(items)
+                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                return true;
+                            }
+                        })
+                        .positiveText(R.string.choose)
+                        .show();
+                break;
+            case 1: // Destination to clipboard
 
                 new MaterialDialog.Builder(this)
                         .content(current_selected_logData.getDst() + ":" + current_selected_logData.getDpt())
@@ -171,7 +178,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
                 break;
 
-            case 1: // Source to clipboard
+            case 2: // Source to clipboard
                 new MaterialDialog.Builder(this)
                         .content(current_selected_logData.getSrc() + ":" + current_selected_logData.getSpt())
                         .title(R.string.source_address)
@@ -187,7 +194,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                         .show();
                 break;
 
-            case 2: // Ping Destination
+            case 3: // Ping Destination
                 try {
                     new LogNetUtil.NetTask(this).execute(
                             new LogNetUtil.NetParam(
@@ -202,7 +209,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 }
                 break;
 
-            case 3: // Ping Source
+            case 4: // Ping Source
                 try {
                     new LogNetUtil.NetTask(this).execute(
                             new LogNetUtil.NetParam(
@@ -216,7 +223,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 }
                 break;
 
-            case 4: // Resolve Destination
+            case 5: // Resolve Destination
                 try {
                     new LogNetUtil.NetTask(this).execute(
                             new LogNetUtil.NetParam(
@@ -230,7 +237,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 }
                 break;
 
-            case 5: // Resolve Source
+            case 6: // Resolve Source
                 try {
                     new LogNetUtil.NetTask(this).execute(
                             new LogNetUtil.NetParam(
@@ -247,19 +254,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         return super.onContextItemSelected(item);
     }
 
-    public class NetTask extends AsyncTask<String, Integer, String>
-    {
+    public class NetTask extends AsyncTask<String, Integer, String> {
         @Override
-        protected String doInBackground(String... params)
-        {
+        protected String doInBackground(String... params) {
             InetAddress addr = null;
-            try
-            {
+            try {
                 addr = InetAddress.getByName(params[0]);
-            }
-
-            catch (UnknownHostException e)
-            {
+            } catch (UnknownHostException e) {
                 Log.e(TAG, "Exception(09): " + e.getMessage());
             }
             return addr.getCanonicalHostName().toString();
@@ -284,6 +285,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private class CollectDetailLog extends AsyncTask<Void, Integer, Boolean> {
         private Context context = null;
         MaterialDialog loadDialog = null;
+
         public CollectDetailLog() {
         }
         //private boolean suAvailable = false;
@@ -308,15 +310,15 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         protected Boolean doInBackground(Void... params) {
             List<LogData> logData = getLogData(uid);
             try {
-                if(logData != null && logData.size() > 0) {
+                if (logData != null && logData.size() > 0) {
                     Collections.sort(logData, new DateComparator());
                     recyclerViewAdapter.updateData(logData);
                     return true;
                 } else {
                     return false;
                 }
-            } catch(Exception e) {
-                Log.e(Api.TAG,"Exception while retrieving  data" + e.getLocalizedMessage());
+            } catch (Exception e) {
+                Log.e(Api.TAG, "Exception while retrieving  data" + e.getLocalizedMessage());
                 return null;
             }
 
@@ -325,7 +327,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         @Override
         protected void onProgressUpdate(Integer... progress) {
 
-            if (progress[0] == 0 ||  progress[0] == -1) {
+            if (progress[0] == 0 || progress[0] == -1) {
                 //do nothing
             } else {
                 loadDialog.incrementProgress(progress[0]);
@@ -371,7 +373,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         sub.add(0, MENU_CLEAR, 0, R.string.clear_log).setIcon(R.drawable.ic_clearlog);
         //sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
         //populateMenu(sub);
-        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         super.onCreateOptionsMenu(menu);
         mainMenu = menu;
         return true;
@@ -427,7 +429,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     }
 
 	/*@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
 		// setupLogMenuItem(menu, G.enableFirewallLog());
 		return super.onPrepareOptionsMenu(menu);
 	}*/

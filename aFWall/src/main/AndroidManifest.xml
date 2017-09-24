@@ -25,33 +25,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.ukanth.ufirewall">
 
-    <!-- Android 4.0.3 up -->
-    <!--
-        <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="22" />
-    -->
-
-
-    <!-- Permissions -->
-    <!--
-         Allows AFWall+ to receive the ACTION_BOOT_COMPLETED that is broadcast 
-         after the system finishes booting. If you don't request this permission, 
-         you will not receive the broadcast at that time. Though holding this 
-         permission does not have any security implications, it can have 
-         a negative impact on the user experience by increasing the amount 
-         of time it takes the system to start and allowing applications 
-         to have themselves running without the user being aware of them. 
-         As such, you must explicitly declare your use of this facility to make
-         that visible to the user.
-    -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Allows ufwall to access information about networks -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- Allows ufwall to change network connectivity state -->
-    <!-- <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> -->
-    <!-- Allows low-level access to power management -->
-    <!-- <uses-permission android:name="android.permission.DEVICE_POWER" /> -->
+
     <!-- Allows ufwall to write to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -64,9 +41,6 @@
 
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-
-    <!-- <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" /> -->
-
 
     <!-- Screen support -->
     <supports-screens
@@ -89,8 +63,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppDarkTheme"
         tools:ignore="ManifestResource">
-
-        <!-- WIP: uncomment following to get XPOSED working -->
 
         <meta-data
             android:name="xposedmodule"

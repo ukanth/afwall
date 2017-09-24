@@ -508,6 +508,11 @@
     <string name="show_source_address">Show Source Address</string>
     <string name="network_connection_not_available">Network connection not Available</string>
 
+
+    <!-- Custom Rules -->
+
+    <string name="add_ip_rule">Add to custom rule</string>
+
     <!-- Fingerprint -->
 
     <string name="pref_fingerprint">Fingerprint</string>
@@ -546,4 +551,5 @@
     <string name="lowPriority">Low Priority</string>
     <string name="applyRulesFasterTitle">Apply Rules Faster</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+    <string name="choose">Choose</string>
 </resources>

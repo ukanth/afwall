@@ -537,15 +537,7 @@ public final class Api {
                     cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
                 } else {
                     Log.i(TAG, "No ipaddress found for LAN");
-                    //lets find one more time
-                    // No IP address -> no traffic.  This prevents a data leak between the time
-                    // the interface gets an IP address, and the time we process the intent
-                    // (which could be 5+ seconds).  This is likely to catch a little bit of
-                    // legitimate traffic from time to time, so we won't log the failures.
-                    /*cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner root -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -m owner --uid-owner system -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j REJECT");*/
-
+                    // lets find one more time
                     //atleast allow internet - don't block completely
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
                 }

@@ -36,12 +36,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -74,6 +72,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.stericson.roottools.RootTools;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -98,7 +97,6 @@ import dev.ukanth.ufirewall.util.FingerprintUtil;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
-import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
@@ -116,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ListView listview = null;
     public static boolean dirty = false;
     private MaterialDialog plsWait;
-    private static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 5469;
 
     private ArrayAdapter<String> spinnerAdapter = null;
     private SwipeRefreshLayout mSwipeLayout;
@@ -125,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<String> mlocalList = new ArrayList<>(new LinkedHashSet<String>());
     private int initDone = 0;
     private Spinner mSpinner;
-    private static int OVERLAY_PERMISSION_REQ_CODE = 1234;
-
 
     private static final int REQ_ENTER_PATTERN = 9755;
     private static final int SHOW_ABOUT_RESULT = 1200;
@@ -137,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static final int LOCK_VERIFICATION = 1212;
     private static final int VERIFY_CHECK = 10000;
-
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
@@ -200,14 +194,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-        if (!G.hasRoot()) {
-            (new Startup()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (!G.hasRoot() || !RootTools.isAccessGiven()) {
+            (new StartCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             startRootShell();
             passCheck();
         }
     }
-
 
 
     @Override
@@ -1958,13 +1951,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return found;
     }
 
-    private class Startup extends AsyncTask<Void, Void, Void> {
+    private class StartCheck extends AsyncTask<Void, Void, Void> {
         private Context context = null;
         MaterialDialog suDialog = null;
-        boolean hasRoot = false;
+        boolean accessGiven = false;
         //private boolean suAvailable = false;
 
-        public Startup setContext(Context context) {
+        public StartCheck setContext(Context context) {
             this.context = context;
             return this;
         }
@@ -1979,7 +1972,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Void doInBackground(Void... params) {
             // Let's do some SU stuff
-            hasRoot = Shell.SU.available();
+            accessGiven = RootTools.isAccessGiven();
             return null;
         }
 
@@ -2025,7 +2018,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
                 G.kingDetected(true);
             }
-            if (!hasRoot && !isSuPackage(getPackageManager(), "com.kingouser.com") && !isFinishing()) {
+            if (!accessGiven && !isSuPackage(getPackageManager(), "com.kingouser.com") && !isFinishing()) {
                 new MaterialDialog.Builder(MainActivity.this).cancelable(false)
                         .title(R.string.error_common)
                         .content(R.string.error_su)
@@ -2047,9 +2040,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .negativeText(R.string.exit)
                         .show();
             } else {
-                G.hasRoot(hasRoot);
+                G.hasRoot(accessGiven);
+
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
+                } else {
+                    Api.assertBinaries(getApplicationContext(), true);
+                }
                 passCheck();
-                //startRootShell();
+                startRootShell();
             }
         }
     }
