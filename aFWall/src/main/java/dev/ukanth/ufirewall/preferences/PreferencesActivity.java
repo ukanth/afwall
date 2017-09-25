@@ -46,9 +46,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 
 import java.util.List;
 
@@ -64,6 +64,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private Toolbar mToolBar;
+    public static Bus bus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +72,18 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         Api.updateLanguage(getApplicationContext(), G.locale());
         super.onCreate(savedInstanceState);
         prepareLayout();
+        bus = new Bus(ThreadEnforcer.MAIN);
+
     }
 
     @Override
     public void onStart() {
-        EventBus.getDefault().register(this);
+        bus.register(this);
         super.onStart();
     }
 
     @Override
     public void onStop() {
-        EventBus.getDefault().unregister(this);
         super.onStop();
     }
 
@@ -217,38 +219,43 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 || !isXLargeTablet(context);
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe
     public void preferenceChangeApplyRules(RulesEvent rulesEvent) {
-        final Context context = rulesEvent.ctx;
-        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
-                .setFailureToast(R.string.error_apply)
-                .setCallback(new RootShellService.RootCommand.Callback() {
-                    @Override
-                    public void cbFunc(RootShellService.RootCommand state) {
-                        if (state.exitCode == 0) {
-                            Log.i(Api.TAG, "Rules applied successfully during preference change");
-                        } else {
-                            // error details are already in logcat
-                            Log.i(Api.TAG, "Error applying rules during preference change");
+        if (rulesEvent != null) {
+            final Context context = rulesEvent.ctx;
+            Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                    .setFailureToast(R.string.error_apply)
+                    .setCallback(new RootShellService.RootCommand.Callback() {
+                        @Override
+                        public void cbFunc(RootShellService.RootCommand state) {
+                            if (state.exitCode == 0) {
+                                Log.i(Api.TAG, "Rules applied successfully during preference change");
+                            } else {
+                                // error details are already in logcat
+                                Log.i(Api.TAG, "Error applying rules during preference change");
+                            }
                         }
-                    }
-                }));
+                    }));
+        }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe
     public void logDmesgChangeApplyRules(LogChangeEvent logChangeEvent) {
-        final Context context = logChangeEvent.ctx;
-        final Intent logIntent = new Intent(context, LogService.class);
-        if (G.enableLogService()) {
-            //restart service
-            context.stopService(logIntent);
-            Api.cleanupUid();
-            context.startService(logIntent);
-        } else {
-            //log service disabled
-            context.stopService(logIntent);
-            Api.cleanupUid();
+        if (logChangeEvent != null) {
+            final Context context = logChangeEvent.ctx;
+            final Intent logIntent = new Intent(context, LogService.class);
+            if (G.enableLogService()) {
+                //restart service
+                context.stopService(logIntent);
+                Api.cleanupUid();
+                context.startService(logIntent);
+            } else {
+                //log service disabled
+                context.stopService(logIntent);
+                Api.cleanupUid();
+            }
         }
+
     }
 
     @Override
@@ -263,11 +270,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
 
         if (key.equals("ip_path") || key.equals("dns_value")) {
-            EventBus.getDefault().post(new RulesEvent("", ctx));
+            bus.post(new RulesEvent("", ctx));
         }
 
         if (key.equals("logDmesg")) {
-            EventBus.getDefault().post(new LogChangeEvent("", ctx));
+            bus.post(new LogChangeEvent("", ctx));
         }
 
         if (key.equals("activeNotification")) {
@@ -299,5 +306,13 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         if (key.equals("enableMultiProfile")) {
             G.reloadProfile();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (bus != null) {
+            bus.unregister(this);
+        }
+        super.onDestroy();
     }
 }

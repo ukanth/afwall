@@ -25,10 +25,10 @@ package dev.ukanth.ufirewall.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -394,11 +394,10 @@ public class RootShellService extends Service {
         }
     }
 
-    private final IBinder mBinder = new Binder();
-
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        return null;
     }
 
     private static void showToastUIThread(final String msg, final Context mContext) {

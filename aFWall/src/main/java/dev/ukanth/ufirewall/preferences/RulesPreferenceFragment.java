@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceFragment;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.io.File;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.events.RulesEvent;
 import dev.ukanth.ufirewall.util.G;
 
 public class RulesPreferenceFragment extends PreferenceFragment  implements

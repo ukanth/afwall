@@ -276,7 +276,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.RootShellService" />
+        <service android:name=".service.RootShellService" android:exported="false"/>
         <service android:name=".service.LogService" />
 
         <!-- Samsung MultiWindow Support -->

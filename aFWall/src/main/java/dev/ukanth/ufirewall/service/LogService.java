@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +39,9 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -65,6 +65,7 @@ public class LogService extends Service {
     private final IBinder mBinder = new Binder();
 
     private Shell.Interactive rootSession;
+    public static Bus bus;
 
     static Handler handler;
 
@@ -86,12 +87,11 @@ public class LogService extends Service {
         public boolean cancel;
     }
 
-
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        return null;
     }
-
 
     public static void showToast(final Context context, final Handler handler, final CharSequence text, boolean cancel) {
         if (showToastRunnable == null) {
@@ -174,9 +174,8 @@ public class LogService extends Service {
     }
 
     private void startLogService() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        bus = new Bus(ThreadEnforcer.ANY);
+        bus.register(this);
         if (G.enableLogService()) {
             // this method is executed in a background thread
             // no problem calling su here
@@ -271,25 +270,27 @@ public class LogService extends Service {
         if (G.enableLogService()) {
             if (line != null && line.trim().length() > 0) {
                 if (line.contains("AFL")) {
-                    EventBus.getDefault().post(new LogEvent(LogInfo.parseLogs(line, context), context));
+                    bus.post(new LogEvent(LogInfo.parseLogs(line, context), context));
                 }
             }
         }
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe
     public void showMessageToast(LogEvent event) {
-        if (event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+        if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
             if (G.showLogToasts()) {
                 showToast(event.ctx, handler, event.logInfo.uidString, false);
             }
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe
     public void storeDataToDB(LogEvent event) {
-        store(event.logInfo);
+        if (event != null) {
+            store(event.logInfo);
+        }
     }
 
     private void store(final LogInfo logInfo) {
@@ -330,7 +331,9 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().unregister(this);
+        if (bus != null) {
+            bus.unregister(this);
+        }
         closeSession();
         super.onDestroy();
     }
