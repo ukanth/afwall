@@ -7,17 +7,16 @@
 -dontshrink
 -dontobfuscate
 
--keepattributes *Annotation*
--keepclassmembers class ** {
-    @org.greenrobot.eventbus.Subscribe <methods>;
-}
+#-keepattributes *Annotation*
+#-keepclassmembers class ** {
+#    @org.greenrobot.eventbus.Subscribe <methods>;
+#}
 
--keepattributes *Annotation*
--keepclassmembers class ** {
-    @com.squareup.otto.Subscribe public *;
-    @com.squareup.otto.Produce public *;
-}
-
+#-keepattributes *Annotation*
+#-keepclassmembers class ** {
+#    @com.squareup.otto.Subscribe public *;
+#    @com.squareup.otto.Produce public *;
+#}
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
 # Only required if you use AsyncExecutor

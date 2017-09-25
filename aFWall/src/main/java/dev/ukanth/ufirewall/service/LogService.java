@@ -39,9 +39,6 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -53,9 +50,11 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
+import dev.ukanth.ufirewall.log.LogRxEvent;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
+import io.reactivex.functions.Consumer;
 
 public class LogService extends Service {
 
@@ -65,7 +64,7 @@ public class LogService extends Service {
     private final IBinder mBinder = new Binder();
 
     private Shell.Interactive rootSession;
-    public static Bus bus;
+    public static LogRxEvent logRx;
 
     static Handler handler;
 
@@ -174,8 +173,20 @@ public class LogService extends Service {
     }
 
     private void startLogService() {
-        bus = new Bus(ThreadEnforcer.ANY);
-        bus.register(this);
+        LogRxEvent.subscribe((new Consumer<LogEvent>() {
+                    @Override
+                    public void accept(LogEvent event) throws Exception {
+                        if (event != null) {
+                            store(event.logInfo);
+                            if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+                                if (G.showLogToasts()) {
+                                    showToast(event.ctx, handler, event.logInfo.uidString, false);
+                                }
+                            }
+                        }
+                    }
+                })
+        );
         if (G.enableLogService()) {
             // this method is executed in a background thread
             // no problem calling su here
@@ -192,9 +203,6 @@ public class LogService extends Service {
                             case "BX":
                                 logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
                                 break;
-                            /*case "TB":
-                                logPath = "echo PID=$$ & while true; do x dmesg -c ; sleep 1 ; done";
-                                break;*/
                             default:
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
@@ -270,28 +278,29 @@ public class LogService extends Service {
         if (G.enableLogService()) {
             if (line != null && line.trim().length() > 0) {
                 if (line.contains("AFL")) {
-                    bus.post(new LogEvent(LogInfo.parseLogs(line, context), context));
+                    //bus.post(new LogEvent(LogInfo.parseLogs(line, context), context));
+                    LogRxEvent.publish(new LogEvent(LogInfo.parseLogs(line, context), context));
                 }
             }
         }
     }
 
+    //@Subscribe
+   /* public void showMessageToast(LogEvent event) {
 
-    @Subscribe
-    public void showMessageToast(LogEvent event) {
         if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
             if (G.showLogToasts()) {
                 showToast(event.ctx, handler, event.logInfo.uidString, false);
             }
         }
-    }
+    }*/
 
-    @Subscribe
-    public void storeDataToDB(LogEvent event) {
+    // @Subscribe
+   /* public void storeDataToDB(LogEvent event) {
         if (event != null) {
             store(event.logInfo);
         }
-    }
+    }*/
 
     private void store(final LogInfo logInfo) {
         try {
@@ -331,9 +340,6 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        if (bus != null) {
-            bus.unregister(this);
-        }
         closeSession();
         super.onDestroy();
     }
