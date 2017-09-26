@@ -45,7 +45,7 @@ public class RootShell {
 
     public static boolean debugMode = false;
 
-    public static final String version = "RootShell v1.3";
+    public static final String version = "RootShell v1.4";
 
     /**
      * Setting this to false will disable the handler that is used
@@ -141,6 +141,7 @@ public class RootShell {
             commandWait(RootShell.getShell(false), command);
 
         } catch (Exception e) {
+            RootShell.log("Exception: " + e);
             return false;
         }
 
@@ -152,11 +153,22 @@ public class RootShell {
 
         result.clear();
 
+        command = new Command(0, false, cmdToExecute + file) {
+            @Override
+            public void commandOutput(int id, String line) {
+                RootShell.log(line);
+                result.add(line);
+
+                super.commandOutput(id, line);
+            }
+        };
+
         try {
             RootShell.getShell(true).add(command);
             commandWait(RootShell.getShell(true), command);
 
         } catch (Exception e) {
+            RootShell.log("Exception: " + e);
             return false;
         }
 
@@ -176,24 +188,29 @@ public class RootShell {
 
     /**
      * @param binaryName String that represent the binary to find.
+     * @param singlePath boolean that represents whether to return a single path or multiple.
+     *
      * @return <code>List<String></code> containing the locations the binary was found at.
      */
-    public static List<String> findBinary(final String binaryName) {
-        return findBinary(binaryName, null);
+    public static List<String> findBinary(String binaryName, boolean singlePath) {
+        return findBinary(binaryName, null, singlePath);
     }
 
     /**
-     * @param binaryName  <code>String</code> that represent the binary to find.
+     * @param binaryName <code>String</code> that represent the binary to find.
      * @param searchPaths <code>List<String></code> which contains the paths to search for this binary in.
+     * @param singlePath boolean that represents whether to return a single path or multiple.
+     *
      * @return <code>List<String></code> containing the locations the binary was found at.
      */
-    public static List<String> findBinary(final String binaryName, List<String> searchPaths) {
+    public static List<String> findBinary(final String binaryName, List<String> searchPaths, boolean singlePath) {
 
         final List<String> foundPaths = new ArrayList<String>();
 
         boolean found = false;
 
-        if (searchPaths == null) {
+        if(searchPaths == null)
+        {
             searchPaths = RootShell.getPath();
         }
 
@@ -203,7 +220,8 @@ public class RootShell {
         try {
             for (String path : searchPaths) {
 
-                if (!path.endsWith("/")) {
+                if(!path.endsWith("/"))
+                {
                     path += "/";
                 }
 
@@ -224,12 +242,16 @@ public class RootShell {
                     }
                 };
 
-                RootShell.getShell(false).add(cc);
+                cc = RootShell.getShell(false).add(cc);
                 commandWait(RootShell.getShell(false), cc);
 
+                if(foundPaths.size() > 0 && singlePath) {
+                    break;
+                }
             }
 
             found = !foundPaths.isEmpty();
+
         } catch (Exception e) {
             RootShell.log(binaryName + " was not found, more information MAY be available with Debugging on.");
         }
@@ -239,13 +261,19 @@ public class RootShell {
 
             for (String path : searchPaths) {
 
-                if (!path.endsWith("/")) {
+                if(!path.endsWith("/"))
+                {
                     path += "/";
                 }
 
                 if (RootShell.exists(path + binaryName)) {
                     RootShell.log(binaryName + " was found here: " + path);
                     foundPaths.add(path);
+
+                    if(foundPaths.size() > 0 && singlePath) {
+                        break;
+                    }
+
                 } else {
                     RootShell.log(binaryName + " was NOT found here: " + path);
                 }
@@ -267,7 +295,8 @@ public class RootShell {
      * @throws com.stericson.RootShell.exceptions.RootDeniedException
      * @throws IOException
      */
-    public static Shell getCustomShell(String shellPath, int timeout) throws IOException, TimeoutException, RootDeniedException {
+    public static Shell getCustomShell(String shellPath, int timeout) throws IOException, TimeoutException, RootDeniedException
+    {
         return RootShell.getCustomShell(shellPath, timeout);
     }
 
@@ -384,21 +413,18 @@ public class RootShell {
     }
 
     /**
-     * @return <code>true</code> if BusyBox was found.
+     * @return <code>true</code> if BusyBox or Toybox was found.
      */
-    public static boolean isBusyboxAvailable() {
-        return (findBinary("busybox")).size() > 0;
-    }
-
-    public static boolean isToyboxAvailable() {
-        return (findBinary("toybox")).size() > 0;
+    public static boolean isBusyboxAvailable()
+    {
+        return (findBinary("busybox", true)).size() > 0 || (findBinary("toybox", true)).size() > 0;
     }
 
     /**
      * @return <code>true</code> if su was found.
      */
     public static boolean isRootAvailable() {
-        return (findBinary("su")).size() > 0;
+        return (findBinary("su", true)).size() > 0;
     }
 
     /**

@@ -21,6 +21,7 @@
  */
 package com.stericson.rootshell.execution;
 
+
 import android.content.Context;
 
 import com.stericson.rootshell.RootShell;
@@ -92,7 +93,7 @@ public class Shell {
 
     private ShellType shellType = null;
 
-    private ShellContext shellContext = Shell.ShellContext.NORMAL;
+    private ShellContext shellContext = ShellContext.NORMAL;
 
     private String error = "";
 
@@ -250,12 +251,16 @@ public class Shell {
                     "Unable to add commands to a closed shell");
         }
 
+        if(command.used) {
+            //The command has been used, don't re-use...
+            throw new IllegalStateException(
+                    "This command has already been executed. (Don't re-use command instances.)");
+        }
+
         while (this.isCleaning) {
             //Don't add commands while cleaning
             ;
         }
-
-        command.resetCommand();
 
         this.commands.add(command);
 
@@ -593,10 +598,15 @@ public class Shell {
                         cmd.startExecution();
                         RootShell.log("Executing: " + cmd.getCommand() + " with context: " + shellContext);
 
+                        //write the command
                         outputStream.write(cmd.getCommand());
+                        outputStream.flush();
+
+                        //write the token...
                         String line = "\necho " + token + " " + totalExecuted + " $?\n";
                         outputStream.write(line);
                         outputStream.flush();
+
                         write++;
                         totalExecuted++;
                     } else if (close) {
@@ -610,11 +620,10 @@ public class Shell {
                         return;
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 RootShell.log(e.getMessage(), RootShell.LogLevel.ERROR, e);
-            } catch (InterruptedException e) {
-                RootShell.log(e.getMessage(), RootShell.LogLevel.ERROR, e);
-            } finally {
+            }
+            finally {
                 write = 0;
                 closeQuietly(outputStream);
             }
@@ -686,6 +695,7 @@ public class Shell {
                         /**
                          * token is suffix of output, send output part to implementer
                          */
+                        RootShell.log("Found token, line: " + outputLine);
                         command.output(command.id, outputLine.substring(0, pos));
                     }
 
@@ -740,6 +750,7 @@ public class Shell {
 
                                 command.setExitCode(exitCode);
                                 command.commandFinished();
+
                                 command = null;
 
                                 read++;
@@ -813,12 +824,12 @@ public class Shell {
         }
     }
 
-    public static void runRootCommand(Command command) throws IOException, TimeoutException, RootDeniedException {
-        Shell.startRootShell().add(command);
+    public static Command runRootCommand(Command command) throws IOException, TimeoutException, RootDeniedException {
+        return Shell.startRootShell().add(command);
     }
 
-    public static void runCommand(Command command) throws IOException, TimeoutException {
-        Shell.startShell().add(command);
+    public static Command runCommand(Command command) throws IOException, TimeoutException {
+        return Shell.startShell().add(command);
     }
 
     public static Shell startRootShell() throws IOException, TimeoutException, RootDeniedException {

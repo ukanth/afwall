@@ -1,5 +1,5 @@
 /* 
- * This file is part of the RootTools Project: http://code.google.com/p/roottools/
+ * This file is part of the RootTools Project: http://code.google.com/p/RootTools/
  *  
  * Copyright (c) 2012 Stephen Erickson, Chris Ravenscroft, Dominik Schuermann, Adam Shanks
  *  
@@ -31,6 +31,7 @@ import com.stericson.roottools.containers.Mount;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 
 public class Remounter
 {
@@ -120,8 +121,11 @@ public class Remounter
                             true,
                             "busybox mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath(),
                             "toolbox mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath(),
+                            "toybox mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath(),
                             "mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath(),
-                            "/system/bin/toolbox mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath()
+                            "mount -o remount," + mountType.toLowerCase() + " " + file,
+                            "/system/bin/toolbox mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath(),
+                            "/system/bin/toybox mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath()
                     );
                     Shell.startRootShell().add(command);
                     commandWait(command);

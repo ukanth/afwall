@@ -1,5 +1,5 @@
 /* 
- * This file is part of the RootTools Project: http://code.google.com/p/roottools/
+ * This file is part of the RootTools Project: http://code.google.com/p/RootTools/
  *  
  * Copyright (c) 2012 Stephen Erickson, Chris Ravenscroft, Dominik Schuermann, Adam Shanks
  *  
@@ -41,9 +41,7 @@ import com.stericson.roottools.containers.Permissions;
 import com.stericson.roottools.containers.Symlink;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -62,42 +60,6 @@ public final class RootToolsInternalMethods {
     public static void getInstance() {
         //this will allow RootTools to be the only one to get an instance of this class.
         RootTools.setRim(new RootToolsInternalMethods());
-    }
-
-    public ArrayList<Symlink> getSymLinks() throws IOException {
-
-        LineNumberReader lnr = null;
-        FileReader fr = null;
-
-        try {
-
-            fr = new FileReader("/data/local/symlinks.txt");
-            lnr = new LineNumberReader(fr);
-
-            String line;
-            ArrayList<Symlink> symlink = new ArrayList<Symlink>();
-
-            while ((line = lnr.readLine()) != null) {
-
-                RootTools.log(line);
-
-                String[] fields = line.split(" ");
-                symlink.add(new Symlink(new File(fields[fields.length - 3]), // file
-                        new File(fields[fields.length - 1]) // SymlinkPath
-                ));
-            }
-            return symlink;
-        } finally {
-            try {
-                fr.close();
-            } catch (Exception e) {
-            }
-
-            try {
-                lnr.close();
-            } catch (Exception e) {
-            }
-        }
     }
 
     public Permissions getPermissions(String line) {
@@ -312,7 +274,7 @@ public final class RootToolsInternalMethods {
      * appropriate permissions.
      */
     public boolean checkUtil(String util) {
-        List<String> foundPaths = RootShell.findBinary(util);
+        List<String> foundPaths = RootShell.findBinary(util, true);
         if (foundPaths.size() > 0) {
 
             for (String path : foundPaths) {
@@ -409,7 +371,7 @@ public final class RootToolsInternalMethods {
         try {
             RootTools.remount("/system", "rw");
 
-            List<String> foundPaths = RootShell.findBinary(util);
+            List<String> foundPaths = RootShell.findBinary(util, true);
 
             if (foundPaths.size() > 0) {
                 for (String path : foundPaths) {
@@ -483,7 +445,6 @@ public final class RootToolsInternalMethods {
         final List<String> results = new ArrayList<String>();
 
         Command command = new Command(Constants.BBA, false, path + "busybox --list") {
-
             @Override
             public void commandOutput(int id, String line) {
                 if (id == Constants.BBA) {
@@ -502,6 +463,20 @@ public final class RootToolsInternalMethods {
 
         if (results.size() <= 0) {
             //try with root...
+
+            command = new Command(Constants.BBA, false, path + "busybox --list") {
+                @Override
+                public void commandOutput(int id, String line) {
+                    if (id == Constants.BBA) {
+                        if (!line.trim().equals("") && !line.trim().contains("not found") && !line.trim().contains("file busy")) {
+                            results.add(line);
+                        }
+                    }
+
+                    super.commandOutput(id, line);
+                }
+            };
+
             RootShell.getShell(true).add(command);
             commandWait(RootShell.getShell(true), command);
         }
@@ -514,11 +489,11 @@ public final class RootToolsInternalMethods {
      */
     public String getBusyBoxVersion(String path) {
 
+        final StringBuilder version = new StringBuilder();
+
         if (!path.equals("") && !path.endsWith("/")) {
             path += "/";
         }
-
-        InternalVariables.busyboxVersion = "";
 
         try {
             Command command = new Command(Constants.BBV, false, path + "busybox") {
@@ -535,8 +510,8 @@ public final class RootToolsInternalMethods {
 
                         if (temp.length > 1 && temp[1].contains("v1.") && !foundVersion) {
                             foundVersion = true;
-                            InternalVariables.busyboxVersion = temp[1];
-                            RootTools.log("Found Version: " + InternalVariables.busyboxVersion);
+                            version.append(temp[1]);
+                            RootTools.log("Found Version: " + version.toString());
                         }
                     }
 
@@ -550,7 +525,31 @@ public final class RootToolsInternalMethods {
             shell.add(command);
             commandWait(shell, command);
 
-            if (InternalVariables.busyboxVersion.length() <= 0) {
+            if (version.length() <= 0) {
+
+                command = new Command(Constants.BBV, false, path + "busybox") {
+                    @Override
+                    public void commandOutput(int id, String line) {
+                        line = line.trim();
+
+                        boolean foundVersion = false;
+
+                        if (id == Constants.BBV) {
+                            RootTools.log("Version Output: " + line);
+
+                            String[] temp = line.split(" ");
+
+                            if (temp.length > 1 && temp[1].contains("v1.") && !foundVersion) {
+                                foundVersion = true;
+                                version.append(temp[1]);
+                                RootTools.log("Found Version: " + version.toString());
+                            }
+                        }
+
+                        super.commandOutput(id, line);
+                    }
+                };
+
                 RootTools.log("Getting BusyBox Version with root");
                 Shell rootShell = RootTools.getShell(true);
                 //Now look for it...
@@ -563,7 +562,8 @@ public final class RootToolsInternalMethods {
             return "";
         }
 
-        return InternalVariables.busyboxVersion;
+        RootTools.log("Returning found version: " + version.toString());
+        return version.toString();
     }
 
     /**
@@ -724,52 +724,36 @@ public final class RootToolsInternalMethods {
      */
     public ArrayList<Mount> getMounts() throws Exception {
 
-        Shell shell = RootTools.getShell(true);
+        InternalVariables.mounts = new ArrayList<>();
 
-        Command cmd = new Command(0,
-                false,
-                "cat /proc/mounts > /data/local/RootToolsMounts",
-                "chmod 0777 /data/local/RootToolsMounts");
-        shell.add(cmd);
-        this.commandWait(shell, cmd);
+        if(null == InternalVariables.mounts || InternalVariables.mounts.isEmpty()) {
+            Shell shell = RootTools.getShell(true);
 
-        LineNumberReader lnr = null;
-        FileReader fr = null;
+            Command cmd = new Command(Constants.GET_MOUNTS,
+                    false,
+                    "cat /proc/mounts") {
 
-        try {
-            fr = new FileReader("/data/local/RootToolsMounts");
-            lnr = new LineNumberReader(fr);
-            String line;
-            ArrayList<Mount> mounts = new ArrayList<Mount>();
-            while ((line = lnr.readLine()) != null) {
+                @Override
+                public void commandOutput(int id, String line) {
+                    if (id == Constants.GET_MOUNTS) {
+                        RootTools.log(line);
 
-                RootTools.log(line);
+                        String[] fields = line.split(" ");
+                        InternalVariables.mounts.add(new Mount(new File(fields[0]), // device
+                                new File(fields[1]), // mountPoint
+                                fields[2], // fstype
+                                fields[3] // flags
+                        ));
+                    }
 
-                String[] fields = line.split(" ");
-                mounts.add(new Mount(new File(fields[0]), // device
-                        new File(fields[1]), // mountPoint
-                        fields[2], // fstype
-                        fields[3] // flags
-                ));
-            }
-            InternalVariables.mounts = mounts;
-
-            if (InternalVariables.mounts != null) {
-                return InternalVariables.mounts;
-            } else {
-                throw new Exception();
-            }
-        } finally {
-            try {
-                fr.close();
-            } catch (Exception e) {
-            }
-
-            try {
-                lnr.close();
-            } catch (Exception e) {
-            }
+                    super.commandOutput(id, line);
+                }
+            };
+            shell.add(cmd);
+            this.commandWait(shell, cmd);
         }
+
+        return InternalVariables.mounts;
     }
 
     /**
@@ -917,7 +901,7 @@ public final class RootToolsInternalMethods {
 
                 if (!symlink[symlink.length - 1].equals("") && !symlink[symlink.length - 1].contains("/")) {
                     //We assume that we need to get the path for this symlink as it is probably not absolute.
-                    List<String> paths = RootShell.findBinary(symlink[symlink.length - 1]);
+                    List<String> paths = RootShell.findBinary(symlink[symlink.length - 1], true);
                     if (paths.size() > 0) {
                         //We return the first found location.
                         final_symlink = paths.get(0) + symlink[symlink.length - 1];
@@ -958,15 +942,27 @@ public final class RootToolsInternalMethods {
             throw new Exception();
         }
 
-        Command command = new Command(0, false, "dd if=/dev/zero of=/data/local/symlinks.txt bs=1024 count=1", "chmod 0777 /data/local/symlinks.txt");
+        InternalVariables.symlinks = new ArrayList<>();
+
+        Command command = new Command(0, false, "find " + path + " -type l -exec ls -l {} \\;") {
+            @Override
+            public void commandOutput(int id, String line) {
+                if (id == Constants.GET_SYMLINKS) {
+                    RootTools.log(line);
+
+                    String[] fields = line.split(" ");
+                    InternalVariables.symlinks.add(new Symlink(new File(fields[fields.length - 3]), // file
+                            new File(fields[fields.length - 1]) // SymlinkPath
+                    ));
+
+                }
+
+                super.commandOutput(id, line);
+            }
+        };
         Shell.startRootShell().add(command);
         commandWait(Shell.startRootShell(), command);
 
-        command = new Command(0, false, "find " + path + " -type l -exec ls -l {} \\; > /data/local/symlinks.txt");
-        Shell.startRootShell().add(command);
-        commandWait(Shell.startRootShell(), command);
-
-        InternalVariables.symlinks = getSymLinks();
         if (InternalVariables.symlinks != null) {
             return InternalVariables.symlinks;
         } else {

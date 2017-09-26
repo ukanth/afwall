@@ -1,5 +1,5 @@
 /* 
- * This file is part of the RootTools Project: http://code.google.com/p/roottools/
+ * This file is part of the RootTools Project: http://code.google.com/p/RootTools/
  *  
  * Copyright (c) 2012 Stephen Erickson, Chris Ravenscroft, Dominik Schuermann, Adam Shanks
  *  
@@ -228,10 +228,12 @@ public final class RootTools {
 
     /**
      * @param binaryName String that represent the binary to find.
+     * @param singlePath boolean that represents whether to return a single path or multiple.
+     *
      * @return <code>List<String></code> containing the paths the binary was found at.
      */
-    public static List<String> findBinary(String binaryName) {
-        return RootShell.findBinary(binaryName);
+    public static List<String> findBinary(String binaryName, boolean singlePath) {
+        return RootShell.findBinary(binaryName, singlePath);
     }
 
     /**
@@ -562,7 +564,6 @@ public final class RootTools {
     public static boolean isAppletAvailable(String applet) {
         return RootTools.isAppletAvailable(applet, "");
     }
-
     /**
      * @return <code>true</code> if your app has been given root access.
      * @throws TimeoutException if this operation times out. (cannot determine if access is given)
@@ -572,17 +573,23 @@ public final class RootTools {
     }
 
     /**
+     * Control how many time of retries should request
+     *
+     * @param timeout The timeout
+     * @param retries The number of retries
+     *
+     * @return <code>true</code> if your app has been given root access.
+     * @throws TimeoutException if this operation times out. (cannot determine if access is given)
+     */
+    /*public static boolean isAccessGiven(int timeout, int retries) {
+        return RootShell.isAccessGiven(timeout, retries);
+    }*/
+
+    /**
      * @return <code>true</code> if BusyBox was found.
      */
     public static boolean isBusyboxAvailable() {
         return RootShell.isBusyboxAvailable();
-    }
-
-    /**
-     * @return <code>true</code> if Toybox was found.
-     */
-    public static boolean isToyboxAvailable() {
-        return RootShell.isToyboxAvailable();
     }
 
     public static boolean isNativeToolsReady(int nativeToolsId, Context context) {
@@ -715,6 +722,7 @@ public final class RootTools {
      *
      * @param shell   The shell to execute the command on, this can be a root shell or a standard shell.
      * @param command The command to execute in the shell
+     *
      * @throws IOException
      */
     public static void runShellCommand(Shell shell, Command command) throws IOException {

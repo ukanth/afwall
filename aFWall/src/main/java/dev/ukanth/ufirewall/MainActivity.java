@@ -194,12 +194,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-        if (!G.hasRoot() || !RootTools.isAccessGiven()) {
-            (new StartCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            startRootShell();
-            passCheck();
-        }
+        (new StartCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        passCheck();
     }
 
 
@@ -2050,8 +2046,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } else {
                     Api.assertBinaries(getApplicationContext(), true);
                 }
-                passCheck();
-                startRootShell();
+                //startRootShell();
             }
         }
     }

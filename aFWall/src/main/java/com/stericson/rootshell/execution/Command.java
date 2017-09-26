@@ -22,6 +22,7 @@
 
 package com.stericson.rootshell.execution;
 
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,9 @@ public class Command {
     ExecutionMonitor executionMonitor = null;
 
     Handler mHandler = null;
+
+    //Has this command already been used?
+    protected boolean used = false;
 
     boolean executing = false;
 
@@ -159,8 +163,8 @@ public class Command {
     }
 
     protected final void finishCommand() {
-        executing = false;
-        finished = true;
+        this.executing = false;
+        this.finished = true;
         this.notifyAll();
     }
 
@@ -202,7 +206,8 @@ public class Command {
     }
 
     protected final void startExecution() {
-        executionMonitor = new ExecutionMonitor();
+        this.used = true;
+        executionMonitor = new ExecutionMonitor(this);
         executionMonitor.setPriority(Thread.MIN_PRIORITY);
         executionMonitor.start();
         executing = true;
@@ -259,34 +264,28 @@ public class Command {
         }
     }
 
-    public final void resetCommand()
-    {
-        this.finished = false;
-        this.totalOutput = 0;
-        this.totalOutputProcessed = 0;
-        this.executing = false;
-        this.terminated = false;
-        this.exitCode = -1;
-    }
-
     private class ExecutionMonitor extends Thread {
+
+        private final Command command;
+
+        public ExecutionMonitor(Command command) {
+            this.command = command;
+        }
 
         public void run() {
 
-            if(timeout > 0)
+            if(command.timeout > 0)
             {
-                //We need to kill the command after the given timeout
-                while (!finished) {
-
-                    synchronized (Command.this) {
-                        try {
-                            Command.this.wait(timeout);
-                        } catch (InterruptedException e) {
-                        }
+                synchronized (command) {
+                    try {
+                        RootShell.log("Command " + command.id + " is waiting for: " + command.timeout);
+                        command.wait(command.timeout);
+                    } catch (InterruptedException e) {
+                        RootShell.log("Exception: " + e);
                     }
 
-                    if (!finished) {
-                        RootShell.log("Timeout Exception has occurred.");
+                    if (!command.isFinished()) {
+                        RootShell.log("Timeout Exception has occurred for command: " + command.id + ".");
                         terminate("Timeout Exception");
                     }
                 }
