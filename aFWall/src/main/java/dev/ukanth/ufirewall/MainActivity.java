@@ -72,7 +72,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stericson.roottools.RootTools;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -97,6 +96,7 @@ import dev.ukanth.ufirewall.util.FingerprintUtil;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
+import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
@@ -1940,8 +1940,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (info.applicationInfo != null) {
                 found = true;
             }
-            //found = s + " v" + info.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
         } catch (Exception e) {
         }
         return found;
@@ -1951,6 +1949,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         private Context context = null;
         MaterialDialog suDialog = null;
         boolean accessGiven = false;
+        boolean unsupportedSU = false;
         //private boolean suAvailable = false;
 
         public StartCheck setContext(Context context) {
@@ -1960,34 +1959,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPreExecute() {
-            suDialog = new MaterialDialog.Builder(context).
-                    cancelable(false).title(getString(R.string.su_check_title)).progress(true, 0).content(context.getString(R.string.su_check_message))
-                    .show();
+            if (!G.hasRoot()) {
+                suDialog = new MaterialDialog.Builder(context).
+                        cancelable(false).title(getString(R.string.su_check_title)).progress(true, 0).content(context.getString(R.string.su_check_message))
+                        .show();
+            }
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            // Let's do some SU stuff
-            accessGiven = RootTools.isAccessGiven();
+            accessGiven = Shell.SU.available();
+            unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            try {
-                if (suDialog != null) {
-                    suDialog.dismiss();
+            if (!G.hasRoot()) {
+                try {
+                    if (suDialog != null) {
+                        suDialog.dismiss();
+                    }
+                } catch (final IllegalArgumentException e) {
+                    // Handle or log or ignore
+                } catch (final Exception e) {
+                    // Handle or log or ignore
+                } finally {
+                    suDialog = null;
                 }
-            } catch (final IllegalArgumentException e) {
-                // Handle or log or ignore
-            } catch (final Exception e) {
-                // Handle or log or ignore
-            } finally {
-                suDialog = null;
             }
-
-
             if (!Api.isNetfilterSupported() && !isFinishing()) {
                 new MaterialDialog.Builder(MainActivity.this).cancelable(false)
                         .title(R.string.error_common)
@@ -2010,11 +2011,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .negativeText(R.string.exit)
                         .show();
             }
-            // more details on https://github.com/ukanth/afwall/issues/501
+            /*// more details on https://github.com/ukanth/afwall/issues/501
             if (isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
                 G.kingDetected(true);
-            }
-            if (!accessGiven && !isSuPackage(getPackageManager(), "com.kingouser.com") && !isFinishing()) {
+            }*/
+            if (!accessGiven && !unsupportedSU && !isFinishing()) {
                 new MaterialDialog.Builder(MainActivity.this).cancelable(false)
                         .title(R.string.error_common)
                         .content(R.string.error_su)
@@ -2037,16 +2038,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .show();
             } else {
                 G.hasRoot(accessGiven);
-
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
-                } else {
-                    Api.assertBinaries(getApplicationContext(), true);
-                }
-                //startRootShell();
             }
         }
     }

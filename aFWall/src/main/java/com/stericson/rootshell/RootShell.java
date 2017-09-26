@@ -375,6 +375,9 @@ public class RootShell {
      * @throws TimeoutException if this operation times out. (cannot determine if access is given)
      */
     public static boolean isAccessGiven() {
+        return isAccessGiven(0,3);
+    }
+    public static boolean isAccessGiven(int timeout, int retry) {
         final Set<String> ID = new HashSet<String>();
         final int IAG = 158;
 
@@ -387,7 +390,6 @@ public class RootShell {
                     if (id == IAG) {
                         ID.addAll(Arrays.asList(line.split(" ")));
                     }
-
                     super.commandOutput(id, line);
                 }
             };
