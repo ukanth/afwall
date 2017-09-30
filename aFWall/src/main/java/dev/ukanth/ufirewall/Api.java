@@ -160,7 +160,6 @@ public final class Api {
 
     // Preferences
     public static String PREFS_NAME = "AFWallPrefs";
-    public static final String CUSTOM_RULE_PREFS = "CustomRulesPrefs";
     public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
 
@@ -176,7 +175,6 @@ public final class Api {
     public static final String PREF_LAN_PKG_UIDS = "AllowedPKGLAN_UIDS";
 
 
-    public static final String PREF_PASSWORD = "Password";
     public static final String PREF_CUSTOMSCRIPT = "CustomScript";
     public static final String PREF_CUSTOMSCRIPT2 = "CustomScript2"; // Executed on shutdown
     public static final String PREF_MODE = "BlockMode";
@@ -205,8 +203,7 @@ public final class Api {
 
     private static final String dynChains[] = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
 
-    private static final String staticChains[] = {"", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether",
-            "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan"};
+    private static final String staticChains[] = {"", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan"};
 
     // Cached applications
     public static List<PackageInfoData> applications = null;
@@ -257,10 +254,6 @@ public final class Api {
         String pkg = c.getPackageName();
         int rid = r.getIdentifier(acct + "_item", "string", pkg);
         return c.getString(rid);
-    }
-
-    public static String getIpPath() {
-        return ipPath;
     }
 
     /**
@@ -816,7 +809,7 @@ public final class Api {
             }
 
             rulesUpToDate = true;
-
+            // update UI
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
 
@@ -1651,7 +1644,7 @@ public final class Api {
     }
 
 	/*public static void displayToasts(Context context, int id, int length) {
-		Toast.makeText(context, context.getString(id), length).show();
+        Toast.makeText(context, context.getString(id), length).show();
 	}
 
 	public static void displayToasts(Context context, String text, int length) {
@@ -2647,7 +2640,7 @@ public final class Api {
     }
 
 	/*public static void showAlertDialogActivity(Context ctx,String title, String message) {
-		Intent dialog = new Intent(ctx,AlertDialogActivity.class);
+        Intent dialog = new Intent(ctx,AlertDialogActivity.class);
 		dialog.putExtra("title", title);
 		dialog.putExtra("message", message);
 		dialog.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -2852,7 +2845,7 @@ public final class Api {
     }
 
 	/*public static void killLogProcess(final Context ctx,final String klogPath){
-		Thread thread = new Thread(){
+        Thread thread = new Thread(){
 		    @Override
 		    public void run() {
 				//use built-in busybox to kill the process
@@ -2974,7 +2967,7 @@ public final class Api {
             //notification.flags = Notification.FLAG_ONGOING_EVENT;
 
 			/*if(G.lockNotification() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-				builder.setVisibility(NotificationCompat.PRIORITY_LOW);
+                builder.setVisibility(NotificationCompat.PRIORITY_LOW);
 			}*/
             //builder.setContentIntent(in);
             mNotificationManager.notify(NOTIFICATION_ID, notification);

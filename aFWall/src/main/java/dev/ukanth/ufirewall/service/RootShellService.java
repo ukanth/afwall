@@ -22,6 +22,8 @@
 
 package dev.ukanth.ufirewall.service;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +31,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,8 +44,10 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
@@ -54,6 +62,9 @@ public class RootShellService extends Service {
 
     private static Shell.Interactive rootSession;
     private static Context mContext;
+    public static MaterialDialog progress;
+    private static NotificationManager manager;
+    private static final int NOTIFICATION_ID = 33347;
 
     public enum ShellState {
         INIT,
@@ -93,7 +104,6 @@ public class RootShellService extends Service {
         public StringBuilder lastCommandResult;
         public int exitCode;
         public boolean done = false;
-
 
         public static abstract class Callback {
 
@@ -209,7 +219,12 @@ public class RootShellService extends Service {
         if (state.cb != null) {
             state.cb.cbFunc(state);
         }
+        //explicitly make it null
+        RootShellService.progress = null;
 
+        if(manager != null) {
+            manager.cancel(NOTIFICATION_ID);
+        }
         if (exitCode == 0 && state.successToast != NO_TOAST) {
             showToastUIThread(mContext.getString(state.successToast), mContext);
         } else if (exitCode != 0 && state.failureToast != NO_TOAST) {
@@ -230,6 +245,7 @@ public class RootShellService extends Service {
     }
 
     private static void runNextSubmission() {
+
         do {
             RootCommand state;
             try {
@@ -252,6 +268,7 @@ public class RootShellService extends Service {
                 continue;
             } else if (rootState == ShellState.READY) {
                 rootState = ShellState.BUSY;
+                manager = createNotification(mContext);
                 submitNextCommand(state);
             }
         } while (false);
@@ -260,6 +277,9 @@ public class RootShellService extends Service {
     private static void submitNextCommand(final RootCommand state) {
         String command = state.script.get(state.commandIndex);
 
+        if (progress != null) {
+            progress.setContent("Applyting rule of " + state.commandIndex + " of total: " + state.script.size());
+        }
         if (command != null) {
             if (command.startsWith("#NOCHK# ")) {
                 command = command.replaceFirst("#NOCHK# ", "");
@@ -429,5 +449,28 @@ public class RootShellService extends Service {
             Log.e(TAG, "Exception in showing toast");
         }
 
+    }
+
+    private static NotificationManager createNotification(Context context) {
+
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+        Intent appIntent = new Intent(context, MainActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(appIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
+        builder.setOngoing(true).setSmallIcon(R.drawable.notification)
+                .setAutoCancel(false)
+                .setContentTitle("Applying rules")
+                //keep the priority as low ,so it's not visible on lockscreen
+                .setTicker(context.getString(R.string.app_name))
+                .setPriority(G.getNotificationPriority())
+                .setContentText("please wait.");
+        mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+        return mNotificationManager;
     }
 }

@@ -89,6 +89,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
+import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -1501,6 +1502,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .progress(true, 0)
                 .show();
 
+        RootShellService.progress = progress;
         if (!Api.applySavedIptablesRules(ctx, true, new RootCommand()
                 .setSuccessToast(R.string.rules_applied)
                 .setFailureToast(R.string.error_apply)
