@@ -475,7 +475,7 @@ public final class Api {
         }
     }
 
-    private static void addRejectRules(List<String> cmds, Context ctx) {
+    private static void addRejectRules(List<String> cmds) {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
 
@@ -489,7 +489,7 @@ public final class Api {
         cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
     }
 
-    private static void addCustomRules(Context ctx, String prefName, List<String> cmds) {
+    private static void addCustomRules(String prefName, List<String> cmds) {
         String[] customRules = G.pPrefs.getString(prefName, "").split("[\\r\\n]+");
         for (String s : customRules) {
             if (s.matches(".*\\S.*")) {
@@ -610,10 +610,10 @@ public final class Api {
         cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
         // custom rules in afwall-{3g,wifi,reject} supersede everything else
-        addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT, cmds);
+        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
         cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g -j " + AFWALL_CHAIN_NAME + "-3g-postcustom");
         cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi -j " + AFWALL_CHAIN_NAME + "-wifi-postcustom");
-        addRejectRules(cmds, ctx);
+        addRejectRules(cmds);
 
         if (G.enableInbound()) {
             // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
@@ -990,7 +990,7 @@ public final class Api {
         //Delete only when the afwall chain exist !
         cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
 
-        addCustomRules(ctx, Api.PREF_CUSTOMSCRIPT2, cmds);
+        addCustomRules(Api.PREF_CUSTOMSCRIPT2, cmds);
 
         try {
             assertBinaries(ctx, showErrors);
@@ -1139,7 +1139,7 @@ public final class Api {
         List<String> cmds = new ArrayList<String>();
         cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + "-reject");
         cmds.add("-F " + AFWALL_CHAIN_NAME + "-reject");
-        addRejectRules(cmds, ctx);
+        addRejectRules(cmds);
         apply46(ctx, cmds, callback);
     }
 
@@ -1649,11 +1649,11 @@ public final class Api {
 
         return ret;
     }
-	
+
 	/*public static void displayToasts(Context context, int id, int length) {
 		Toast.makeText(context, context.getString(id), length).show();
 	}
-	
+
 	public static void displayToasts(Context context, String text, int length) {
 		Toast.makeText(context, text, length).show();
 	}*/
@@ -1695,7 +1695,7 @@ public final class Api {
         if (G.activeNotification()) {
             showNotification(Api.isEnabled(ctx), ctx);
         }
-		
+
 		/* notify */
         Intent message = new Intent(Api.STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
@@ -2645,7 +2645,7 @@ public final class Api {
         }
         context.startActivity(intent);
     }
-	
+
 	/*public static void showAlertDialogActivity(Context ctx,String title, String message) {
 		Intent dialog = new Intent(ctx,AlertDialogActivity.class);
 		dialog.putExtra("title", title);
@@ -2850,7 +2850,7 @@ public final class Api {
         }
         return decryptStr;
     }
-	
+
 	/*public static void killLogProcess(final Context ctx,final String klogPath){
 		Thread thread = new Thread(){
 		    @Override
