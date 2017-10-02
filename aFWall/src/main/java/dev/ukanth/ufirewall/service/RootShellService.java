@@ -222,7 +222,7 @@ public class RootShellService extends Service {
         //explicitly make it null
         RootShellService.progress = null;
 
-        if(manager != null) {
+        if (manager != null) {
             manager.cancel(NOTIFICATION_ID);
         }
         if (exitCode == 0 && state.successToast != NO_TOAST) {
@@ -278,8 +278,11 @@ public class RootShellService extends Service {
         String command = state.script.get(state.commandIndex);
 
         if (progress != null) {
-            progress.setContent("Applyting rule of " + state.commandIndex + " of total: " + state.script.size());
+            progress.setContent("Applying " + state.commandIndex + " of total: " + state.script.size());
         }
+
+        Log.i(TAG, command);
+
         if (command != null) {
             if (command.startsWith("#NOCHK# ")) {
                 command = command.replaceFirst("#NOCHK# ", "");
