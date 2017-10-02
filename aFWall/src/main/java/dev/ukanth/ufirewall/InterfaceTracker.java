@@ -41,7 +41,6 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -119,10 +118,8 @@ public final class InterfaceTracker {
                         ret.noIP = true;
                     }
                 }
-            } catch (SocketException e) {
-                Log.e(TAG, "Error fetching network interface list");
             } catch (Exception e) {
-                Log.e(TAG, "Error fetching network interface list");
+                Log.i(TAG, "Error fetching network interface list: " + android.util.Log.getStackTraceString(e));
             }
         }
     }
@@ -141,7 +138,7 @@ public final class InterfaceTracker {
                     d.tetherStatusKnown = true;
                     Log.d(TAG, "isWifiApEnabled is " + d.isTethered);
                 } catch (Exception e) {
-                    Log.e(Api.TAG, e.getMessage());
+                    Log.e(Api.TAG, android.util.Log.getStackTraceString(e));
                 }
             }
         }
@@ -185,10 +182,6 @@ public final class InterfaceTracker {
         }
         NewInterfaceScanner.populateLanMasks(ret);
         return ret;
-    }
-
-    public static boolean isNetworkUp(Context context) {
-        return getInterfaceDetails(context).netEnabled;
     }
 
     public static boolean checkForNewCfg(Context context) {
@@ -256,7 +249,6 @@ public final class InterfaceTracker {
 
     public static void applyRulesOnChange(Context context, final String reason) {
         final Context ctx = context.getApplicationContext();
-
         if (!checkForNewCfg(ctx)) {
             Log.d(TAG, reason + ": interface state has not changed, ignoring");
             return;
@@ -264,11 +256,9 @@ public final class InterfaceTracker {
             Log.d(TAG, reason + ": firewall is disabled, ignoring");
             return;
         }
-
         // update Api.PREFS_NAME so we pick up the right profile
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
-
         applyRules(reason);
     }
 
@@ -300,30 +290,5 @@ public final class InterfaceTracker {
                         }
                     }
                 }));
-    }
-
-
-    public static String matchName(String[] patterns, String name) {
-        for (String p : patterns) {
-            int minLen = Math.min(p.length(), name.length());
-
-            for (int i = 0; ; i++) {
-                if (i == minLen) {
-                    if (name.length() == p.length()) {
-                        // exact match
-                        return p;
-                    }
-                    break;
-                }
-                if (name.charAt(i) != p.charAt(i)) {
-                    if (p.charAt(i) == '+') {
-                        // wildcard match
-                        return p;
-                    }
-                    break;
-                }
-            }
-        }
-        return null;
     }
 }

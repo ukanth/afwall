@@ -212,7 +212,6 @@ public final class Api {
     //for custom scripts
     public static String ipPath = null;
     public static String bbPath = null;
-    public static boolean setv6 = false;
     private static Map<String, Integer> specialApps = null;
 
     public static void setRulesUpToDate(boolean rulesUpToDate) {
@@ -290,33 +289,20 @@ public final class Api {
         }
     }
 
-    public static void setIpTablePath(Context ctx, boolean setv6) {
-        boolean builtin;
+    public static void setBinaryPath(Context ctx, boolean setv6) {
+        boolean builtin = true;
         String pref = G.ip_path();
 
-        if (pref.equals("system")) {
+        if (pref.equals("system") || !setv6) {
             builtin = false;
-        } else if (pref.equals("builtin")) {
-            builtin = true;
-        } else {
-            // auto setting:
-            // IPv4 iptables on ICS+ devices is mostly sane, so we'll use it by default
-            // IPv6 ip6tables can return the wrong exit status (bug #215) so default to our fixed version
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !setv6) {
-                builtin = false;
-            } else {
-                builtin = true;
-            }
         }
 
         String dir = "";
         if (builtin) {
             dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
         }
-
-        Api.setv6 = setv6;
-
         Api.ipPath = dir + (setv6 ? "ip6tables" : "iptables");
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
             Api.ipPath = dir + "run_pie " + dir + (setv6 ? "ip6tables" : "iptables");
@@ -504,7 +490,7 @@ public final class Api {
      * @param ctx  application context
      * @param cmds command list
      */
-    private static void addInterfaceRouting(Context ctx, List<String> cmds) {
+    private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6) {
         try {
             final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
             final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
@@ -526,10 +512,10 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isTethered) {
-                if (setv6 && !cfg.lanMaskV6.equals("")) {
+                if (ipv6 && !cfg.lanMaskV6.equals("")) {
                     cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
                     cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
-                } else if (!setv6 && !cfg.lanMaskV4.equals("")) {
+                } else if (!ipv6 && !cfg.lanMaskV4.equals("")) {
                     cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
                     cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
                 } else {
@@ -553,10 +539,10 @@ public final class Api {
 
     }
 
-    private static void applyShortRules(Context ctx, List<String> cmds) {
+    private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
-        addInterfaceRouting(ctx, cmds);
+        addInterfaceRouting(ctx, cmds, ipv6);
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
         cmds.add("-P OUTPUT ACCEPT");
     }
@@ -571,7 +557,7 @@ public final class Api {
      */
     private static boolean applyIptablesRulesImpl(final Context ctx, List<Integer> uidsWifi, List<Integer> uids3g,
                                                   List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN, final boolean showErrors,
-                                                  List<String> out, boolean onlyForIpv6) {
+                                                  List<String> out, boolean ipv6) {
         if (ctx == null) {
             return false;
         }
@@ -618,7 +604,7 @@ public final class Api {
             cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
         }
 
-        addInterfaceRouting(ctx, cmds);
+        addInterfaceRouting(ctx, cmds, ipv6);
 
         // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
         if (G.enableVPN()) {
@@ -689,15 +675,15 @@ public final class Api {
         cmds.add("-P OUTPUT ACCEPT");
 
         //look for custom rules
-        if (onlyForIpv6) {
+        if (ipv6) {
             if (G.blockIPv6()) {
-                setIpTablePath(ctx, true);
+                setBinaryPath(ctx, true);
                 cmds.add("-P INPUT DROP");
                 cmds.add("-P FORWARD DROP");
                 cmds.add("-P OUTPUT DROP");
             } else {
                 if (G.enableIPv6()) {
-                    setIpTablePath(ctx, true);
+                    setBinaryPath(ctx, true);
                     cmds.add("-P INPUT ACCEPT");
                     cmds.add("-P FORWARD ACCEPT");
                     cmds.add("-P OUTPUT ACCEPT");
@@ -705,7 +691,7 @@ public final class Api {
             }
         }
 
-        iptablesCommands(cmds, out);
+        iptablesCommands(cmds, out, ipv6);
         return true;
     }
 
@@ -715,7 +701,7 @@ public final class Api {
      * @param in  Commands in the format: "-A foo ...", "#NOCHK# -A foo ...", or "#LITERAL# <UNIX command>"
      * @param out A list of UNIX commands to execute
      */
-    private static void iptablesCommands(List<String> in, List<String> out) {
+    private static void iptablesCommands(List<String> in, List<String> out, boolean ipv6) {
         boolean firstLit = true;
         for (String s : in) {
             if (s.matches("#LITERAL# .*")) {
@@ -725,7 +711,7 @@ public final class Api {
                     firstLit = false;
                     out.add("export IPTABLES=\"" + ipPath + "\"; "
                             + "export BUSYBOX=\"" + bbPath + "\"; "
-                            + "export IPV6=" + (setv6 ? "1" : "0") + "; "
+                            + "export IPV6=" + (ipv6 ? "1" : "0") + "; "
                             + "true");
                 }
                 out.add(s.replaceFirst("^#LITERAL# ", ""));
@@ -775,7 +761,7 @@ public final class Api {
             boolean returnValue = false;
             List<String> cmds = new ArrayList<String>();
 
-            setIpTablePath(ctx, false);
+            setBinaryPath(ctx, false);
             returnValue = applyIptablesRulesImpl(ctx,
                     getListFromPref(savedPkg_wifi_uid),
                     getListFromPref(savedPkg_3g_uid),
@@ -789,7 +775,7 @@ public final class Api {
             }
 
             if (G.enableIPv6()) {
-                setIpTablePath(ctx, true);
+                setBinaryPath(ctx, true);
                 returnValue = applyIptablesRulesImpl(ctx,
                         getListFromPref(savedPkg_wifi_uid),
                         getListFromPref(savedPkg_3g_uid),
@@ -803,12 +789,12 @@ public final class Api {
                 }
             } else {
                 if (G.blockIPv6()) {
-                    setIpTablePath(ctx, true);
+                    setBinaryPath(ctx, true);
                     List blockRules = new ArrayList<>();
                     blockRules.add("-P INPUT DROP");
                     blockRules.add("-P FORWARD DROP");
                     blockRules.add("-P OUTPUT DROP");
-                    iptablesCommands(blockRules, cmds);
+                    iptablesCommands(blockRules, cmds, true);
                 }
             }
 
@@ -865,24 +851,24 @@ public final class Api {
         List<String> cmds;
 
         cmds = new ArrayList<String>();
-        setIpTablePath(ctx, false);
-        applyShortRules(ctx, cmds);
-        iptablesCommands(cmds, out);
+        setBinaryPath(ctx, false);
+        applyShortRules(ctx, cmds, false);
+        iptablesCommands(cmds, out, false);
         if (G.enableIPv6()) {
-            setIpTablePath(ctx, true);
+            setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
-            applyShortRules(ctx, cmds);
+            applyShortRules(ctx, cmds, true);
             cmds.add("-P INPUT ACCEPT");
             cmds.add("-P FORWARD ACCEPT");
             cmds.add("-P OUTPUT ACCEPT");
-            iptablesCommands(cmds, out);
+            iptablesCommands(cmds, out, true);
         } else if (G.blockIPv6()) {
-            setIpTablePath(ctx, true);
+            setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
             cmds.add("-P INPUT DROP");
             cmds.add("-P FORWARD DROP");
             cmds.add("-P OUTPUT DROP");
-            iptablesCommands(cmds, out);
+            iptablesCommands(cmds, out, true);
         }
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
         return true;
@@ -993,13 +979,13 @@ public final class Api {
             assertBinaries(ctx, showErrors);
 
             // IPv4
-            setIpTablePath(ctx, false);
-            iptablesCommands(cmds, out);
+            setBinaryPath(ctx, false);
+            iptablesCommands(cmds, out, false);
 
             // IPv6
             if (G.enableIPv6()) {
-                setIpTablePath(ctx, true);
-                iptablesCommands(cmds, out);
+                setBinaryPath(ctx, true);
+                iptablesCommands(cmds, out, true);
             }
 
             if (callback != null) {
@@ -1035,12 +1021,12 @@ public final class Api {
         List<String> cmds = new ArrayList<String>();
         List<String> out = new ArrayList<String>();
         cmds.add("-n -v -L");
+        setBinaryPath(ctx, false);
+        iptablesCommands(cmds, out, false);
         if (useIPV6) {
-            setIpTablePath(ctx, true);
-        } else {
-            setIpTablePath(ctx, false);
+            setBinaryPath(ctx, true);
+            iptablesCommands(cmds, out, true);
         }
-        iptablesCommands(cmds, out);
         callback.run(ctx, out);
     }
 
@@ -1054,12 +1040,12 @@ public final class Api {
     public static void apply46(Context ctx, List<String> cmds, RootCommand callback) {
         List<String> out = new ArrayList<String>();
 
-        setIpTablePath(ctx, false);
-        iptablesCommands(cmds, out);
+        setBinaryPath(ctx, false);
+        iptablesCommands(cmds, out, false);
 
         if (G.enableIPv6()) {
-            setIpTablePath(ctx, true);
-            iptablesCommands(cmds, out);
+            setBinaryPath(ctx, true);
+            iptablesCommands(cmds, out, true);
         }
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
@@ -1090,21 +1076,21 @@ public final class Api {
 
     public static void applyIPv6Quick(Context ctx, List<String> cmds, RootCommand callback) {
         List<String> out = new ArrayList<String>();
-        setIpTablePath(ctx, true);
-        iptablesCommands(cmds, out);
+        setBinaryPath(ctx, true);
+        iptablesCommands(cmds, out, true);
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
 
     public static void applyQuick(Context ctx, List<String> cmds, RootCommand callback) {
         List<String> out = new ArrayList<String>();
 
-        setIpTablePath(ctx, false);
-        iptablesCommands(cmds, out);
+        setBinaryPath(ctx, false);
+        iptablesCommands(cmds, out, false);
 
         //related to #511, disable ipv6 but use startup leak.
         if (G.enableIPv6() || G.fixLeak()) {
-            setIpTablePath(ctx, true);
-            iptablesCommands(cmds, out);
+            setBinaryPath(ctx, true);
+            iptablesCommands(cmds, out, true);
         }
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
