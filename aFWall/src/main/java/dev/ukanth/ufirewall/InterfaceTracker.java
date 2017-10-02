@@ -49,6 +49,8 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
+import static dev.ukanth.ufirewall.util.G.ctx;
+
 public final class InterfaceTracker {
 
     public static final String TAG = "AFWall";
@@ -113,7 +115,7 @@ public final class InterfaceTracker {
                             ret.lanMaskV6 = mask;
                         }
                     }
-                    if(ret.lanMaskV4.equals("") && ret.lanMaskV6.equals("")){
+                    if (ret.lanMaskV4.equals("") && ret.lanMaskV6.equals("")) {
                         ret.noIP = true;
                     }
                 }
@@ -215,7 +217,7 @@ public final class InterfaceTracker {
             if (!newCfg.lanMaskV6.equals("")) {
                 Log.i(TAG, "IPv6 LAN netmask on " + newCfg.wifiName + ": " + newCfg.lanMaskV6);
             }
-            if(newCfg.lanMaskV6.equals("") && newCfg.lanMaskV4.equals("")) {
+            if (newCfg.lanMaskV6.equals("") && newCfg.lanMaskV4.equals("")) {
                 Log.i(TAG, "No ipaddress found");
             }
         }
@@ -267,7 +269,11 @@ public final class InterfaceTracker {
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
 
-        boolean ret = Api.fastApply(ctx, new RootCommand()
+        applyRules(reason);
+    }
+
+    public static void applyRules(final String reason) {
+        Api.fastApply(ctx, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
                     @Override
@@ -275,48 +281,27 @@ public final class InterfaceTracker {
                         if (state.exitCode == 0) {
                             Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
                         } else {
-                            // error details are already in logcat
-                            // but lets try to run the full rules once
-                            Log.i(TAG, reason + ": applying full rules at " + System.currentTimeMillis());
-                            Api.applySavedIptablesRules(ctx, false, new RootCommand()
+                            //lets try applying all rules
+                            Api.setRulesUpToDate(false);
+                            Api.fastApply(ctx, new RootCommand()
                                     .setFailureToast(R.string.error_apply)
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
                                             if (state.exitCode == 0) {
-                                                LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
-                                                Log.d(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
-                                                Log.i(TAG, reason + ": applied rules");
+                                                Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
                                             } else {
-                                                Log.i(TAG, reason + ": applying rules with full flush at " + System.currentTimeMillis());
-                                                Api.flushAllRules(ctx, new RootCommand());
-                                                Api.applySavedIptablesRules(ctx, false, new RootCommand()
-                                                        .setFailureToast(R.string.error_apply)
-                                                        .setCallback(new RootCommand.Callback() {
-                                                            @Override
-                                                            public void cbFunc(RootCommand state) {
-                                                                if (state.exitCode == 0) {
-                                                                    LAST_APPLIED_TIMESTAMP = System.currentTimeMillis();
-                                                                    Log.i(TAG, LAST_APPLIED_TIMESTAMP + " time of apply");
-                                                                    Log.i(TAG, reason + ": applied rules");
-                                                                } else {
-                                                                    errorNotification(ctx);
-                                                                    Api.allowDefaultChains(ctx);
-                                                                }
-                                                            }
-                                                        }));
+                                                Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
+                                                Api.allowDefaultChains(ctx);
+                                                errorNotification(ctx);
                                             }
                                         }
                                     }));
                         }
                     }
                 }));
-        if (!ret) {
-            Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
-            Api.allowDefaultChains(ctx);
-            errorNotification(ctx);
-        }
     }
+
 
     public static String matchName(String[] patterns, String name) {
         for (String p : patterns) {

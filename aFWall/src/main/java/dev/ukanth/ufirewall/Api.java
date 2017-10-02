@@ -215,6 +215,10 @@ public final class Api {
     public static boolean setv6 = false;
     private static Map<String, Integer> specialApps = null;
 
+    public static void setRulesUpToDate(boolean rulesUpToDate) {
+        Api.rulesUpToDate = rulesUpToDate;
+    }
+
     private static boolean rulesUpToDate = false;
 
     /**
