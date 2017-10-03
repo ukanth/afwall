@@ -174,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         setSupportActionBar(toolbar);
 
+        (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         this.findViewById(R.id.img_wifi).setOnClickListener(this);
         this.findViewById(R.id.img_reset).setOnClickListener(this);
         this.findViewById(R.id.img_invert).setOnClickListener(this);
@@ -195,8 +197,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-        (new StartCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         passCheck();
+
     }
 
 
@@ -247,19 +250,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void startRootShell() {
-        Thread rootShell = new Thread() {
+       /* Thread rootShell = new Thread() {
             @Override
             public void run() {
-                List<String> cmds = new ArrayList<String>();
-                cmds.add("true");
-                new RootCommand().setFailureToast(R.string.error_su)
-                        .setReopenShell(true).run(getApplicationContext(), cmds);
-                if (G.activeNotification()) {
-                    Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-                }
             }
         };
-        rootShell.start();
+        rootShell.start();*/
+
+        List<String> cmds = new ArrayList<String>();
+        cmds.add("true");
+        new RootCommand().setFailureToast(R.string.error_su)
+                .setReopenShell(true).run(getApplicationContext(), cmds);
+        if (G.activeNotification()) {
+            Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+        }
     }
 
     @Override
@@ -1947,49 +1951,48 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return found;
     }
 
-    private class StartCheck extends AsyncTask<Void, Void, Void> {
+    private class RootCheck extends AsyncTask<Void, Void, Void> {
         private Context context = null;
         MaterialDialog suDialog = null;
         boolean accessGiven = false;
         boolean unsupportedSU = false;
         //private boolean suAvailable = false;
 
-        public StartCheck setContext(Context context) {
+        public RootCheck setContext(Context context) {
             this.context = context;
             return this;
         }
 
         @Override
         protected void onPreExecute() {
-            if (!G.hasRoot()) {
-                suDialog = new MaterialDialog.Builder(context).
-                        cancelable(false).title(getString(R.string.su_check_title)).progress(true, 0).content(context.getString(R.string.su_check_message))
-                        .show();
-            }
+            suDialog = new MaterialDialog.Builder(context).
+                    cancelable(false).title(getString(R.string.su_check_title)).progress(true, 0).content(context.getString(R.string.su_check_message))
+                    .show();
         }
 
         @Override
         protected Void doInBackground(Void... params) {
             accessGiven = Shell.SU.available();
             unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
+            if(accessGiven) {
+                startRootShell();
+            }
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (!G.hasRoot()) {
-                try {
-                    if (suDialog != null) {
-                        suDialog.dismiss();
-                    }
-                } catch (final IllegalArgumentException e) {
-                    // Handle or log or ignore
-                } catch (final Exception e) {
-                    // Handle or log or ignore
-                } finally {
-                    suDialog = null;
+            try {
+                if (suDialog != null) {
+                    suDialog.dismiss();
                 }
+            } catch (final IllegalArgumentException e) {
+                // Handle or log or ignore
+            } catch (final Exception e) {
+                // Handle or log or ignore
+            } finally {
+                suDialog = null;
             }
             if (!Api.isNetfilterSupported() && !isFinishing()) {
                 new MaterialDialog.Builder(MainActivity.this).cancelable(false)
