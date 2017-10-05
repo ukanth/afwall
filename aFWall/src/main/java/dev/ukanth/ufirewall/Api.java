@@ -671,7 +671,7 @@ public final class Api {
         addRulesForUidlist(cmds, uidsLAN, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
         addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
-        Log.i(TAG, "Setting OUTPUT to Accept");
+        Log.i(TAG, "Setting OUTPUT to Accept State");
         cmds.add("-P OUTPUT ACCEPT");
 
         //look for custom rules
@@ -690,7 +690,6 @@ public final class Api {
                 }
             }
         }
-
         iptablesCommands(cmds, out, ipv6);
         return true;
     }
@@ -831,7 +830,7 @@ public final class Api {
         if (G.enableIPv6()) {
             setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
-            applyShortRules(ctx, cmds, true);
+            addInterfaceRouting(ctx, cmds, true);
             cmds.add("-P INPUT ACCEPT");
             cmds.add("-P FORWARD ACCEPT");
             cmds.add("-P OUTPUT ACCEPT");
