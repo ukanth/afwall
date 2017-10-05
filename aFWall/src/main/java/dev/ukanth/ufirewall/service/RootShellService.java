@@ -513,8 +513,12 @@ public class RootShellService extends Service {
             try {
                 List<Future<IpCmd>> results =
                         executor.invokeAll(callables);
+
                 for (Future<IpCmd> future : results) {
-                    if (future.isDone()) {
+                    if (future.isDone() && future.get().getExitCode() != 0) {
+                        //failed to execute this command
+                        // TODO: implement retry logic for those rules.
+                        state.exitCode = -1;
                         Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
                     }
                 }
