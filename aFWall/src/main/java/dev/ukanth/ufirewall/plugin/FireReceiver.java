@@ -85,9 +85,20 @@ public final class FireReceiver extends BroadcastReceiver {
                     //int id = Integer.parseInt(index);
                     switch (index) {
                         case "0":
-                            if (applyRules(context, msg, toaster)) {
-                                Api.setEnabled(context, true, false);
-                            }
+                            Api.applySavedIptablesRules(context, false, new RootCommand()
+                                    .setFailureToast(R.string.error_apply)
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode == 0) {
+                                                msg.arg1 = R.string.rules_applied;
+                                                Api.setEnabled(context, true, false);
+                                            } else {
+                                                // error details are already in logcat
+                                                msg.arg1 = R.string.error_apply;
+                                            }
+                                        }
+                                    }));
                             break;
                         case "1":
                             if (G.protectionLevel().equals("p0")) {
@@ -139,10 +150,20 @@ public final class FireReceiver extends BroadcastReceiver {
                                 if (!disableToasts) {
                                     Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();
                                 }
-                                if (applyRules(context, msg, toaster)) {
-                                    msg.arg1 = R.string.tasker_profile_applied;
-                                    if (!disableToasts) toaster.sendMessage(msg);
-                                }
+                                Api.applySavedIptablesRules(context, false, new RootCommand()
+                                        .setFailureToast(R.string.error_apply)
+                                        .setCallback(new RootCommand.Callback() {
+                                            @Override
+                                            public void cbFunc(RootCommand state) {
+                                                if (state.exitCode == 0) {
+                                                    msg.arg1 = R.string.tasker_profile_applied;
+                                                    if (!disableToasts) toaster.sendMessage(msg);
+                                                } else {
+                                                    // error details are already in logcat
+                                                    msg.arg1 = R.string.error_apply;
+                                                }
+                                            }
+                                        }));
                             } else {
                                 msg.arg1 = R.string.tasker_disabled;
                                 toaster.sendMessage(msg);
@@ -162,9 +183,20 @@ public final class FireReceiver extends BroadcastReceiver {
                     //int id = Integer.parseInt(index);
                     switch (index) {
                         case "0":
-                            if (applyRules(context, msg, toaster)) {
-                                Api.setEnabled(context, true, false);
-                            }
+                            Api.applySavedIptablesRules(context, false, new RootCommand()
+                                    .setFailureToast(R.string.error_apply)
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode == 0) {
+                                                msg.arg1 = R.string.rules_applied;
+                                                Api.setEnabled(context, true, false);
+                                            } else {
+                                                // error details are already in logcat
+                                                msg.arg1 = R.string.error_apply;
+                                            }
+                                        }
+                                    }));
                             break;
                         case "1":
                             if (G.protectionLevel().equals("p0")) {
@@ -182,59 +214,69 @@ public final class FireReceiver extends BroadcastReceiver {
                                 msg.arg1 = R.string.toast_error_disabling;
                                 toaster.sendMessage(msg);
                             }*/
-                            } else{
+                            } else {
                                 msg.arg1 = R.string.widget_disable_fail;
                                 toaster.sendMessage(msg);
                             }
-                    break;
-                    case "2":
-                        if (multimode) {
-                            G.setProfile(true, "AFWallPrefs");
-                        }
-                        break;
-                    default:
-                        if (multimode) {
-                            ProfileData data = ProfileHelper.getProfileByName(profileName);
-                            if (data != null) {
-                                G.setProfile(true, data.getIdentifier());
+                            break;
+                        case "2":
+                            if (multimode) {
+                                G.setProfile(true, "AFWallPrefs");
                             }
+                            break;
+                        default:
+                            if (multimode) {
+                                ProfileData data = ProfileHelper.getProfileByName(profileName);
+                                if (data != null) {
+                                    G.setProfile(true, data.getIdentifier());
+                                }
 
-                        }
-                        break;
-                }
-
-                if (Integer.parseInt(index) > 1) {
-                    if (multimode) {
-                        if (Api.isEnabled(context)) {
-                            if (!disableToasts) {
-                                Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();
                             }
-                            if (applyRules(context, msg, toaster)) {
-                                msg.arg1 = R.string.tasker_profile_applied;
-                                if (!disableToasts) toaster.sendMessage(msg);
+                            break;
+                    }
+
+                    if (Integer.parseInt(index) > 1) {
+                        if (multimode) {
+                            if (Api.isEnabled(context)) {
+                                if (!disableToasts) {
+                                    Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();
+                                }
+                                Api.applySavedIptablesRules(context, false, new RootCommand()
+                                        .setFailureToast(R.string.error_apply)
+                                        .setCallback(new RootCommand.Callback() {
+                                            @Override
+                                            public void cbFunc(RootCommand state) {
+                                                if (state.exitCode == 0) {
+                                                    msg.arg1 = R.string.tasker_profile_applied;
+                                                    if (!disableToasts) toaster.sendMessage(msg);
+                                                } else {
+                                                    // error details are already in logcat
+                                                    msg.arg1 = R.string.error_apply;
+                                                }
+                                            }
+                                        }));
+                            } else {
+                                msg.arg1 = R.string.tasker_disabled;
+                                toaster.sendMessage(msg);
                             }
                         } else {
-                            msg.arg1 = R.string.tasker_disabled;
+                            msg.arg1 = R.string.tasker_muliprofile;
                             toaster.sendMessage(msg);
                         }
-                    } else {
-                        msg.arg1 = R.string.tasker_muliprofile;
-                        toaster.sendMessage(msg);
-                    }
-                    G.reloadPrefs();
-                    if (G.activeNotification()) {
-                        Api.showNotification(Api.isEnabled(context), context);
+                        G.reloadPrefs();
+                        if (G.activeNotification()) {
+                            Api.showNotification(Api.isEnabled(context), context);
+                        }
                     }
                 }
+
+
             }
-
-
         }
+
     }
 
-}
-
-    private boolean applyRules(final Context context, final Message msg, final Handler toaster) {
+    /*private boolean applyRules(final Context context, final Message msg, final Handler toaster) {
         boolean ret = Api.applySavedIptablesRules(context, false, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
@@ -249,5 +291,5 @@ public final class FireReceiver extends BroadcastReceiver {
                     }
                 }));
         return ret;
-    }
+    }*/
 }
