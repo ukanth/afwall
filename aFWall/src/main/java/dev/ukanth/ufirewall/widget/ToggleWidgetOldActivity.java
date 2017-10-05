@@ -179,7 +179,21 @@ public class ToggleWidgetOldActivity extends Activity implements
                 Looper.prepare();
                 ProfileData data = ProfileHelper.getProfileByName(profileName);
                 G.setProfile(true, data.getIdentifier());
-                applyProfileRules(context, msg, toaster);
+                Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                        .setCallback(new RootShellService.RootCommand.Callback() {
+                            @Override
+                            public void cbFunc(RootShellService.RootCommand state) {
+                                if (state.exitCode == 0) {
+                                    msg.arg1 = R.string.rules_applied;
+                                    toaster.sendMessage(msg);
+                                    enableOthers();
+                                } else {
+                                    // error details are already in logcat
+                                    msg.arg1 = R.string.error_apply;
+                                    toaster.sendMessage(msg);
+                                }
+                            }
+                        }));
                 Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
             }
         }.start();
@@ -216,9 +230,22 @@ public class ToggleWidgetOldActivity extends Activity implements
                 final Message msg = new Message();
                 switch (i) {
                     case 1:
-                        if (applyRules(context, msg, toaster)) {
-                            Api.setEnabled(context, true, false);
-                        }
+                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                                .setCallback(new RootShellService.RootCommand.Callback() {
+                                    @Override
+                                    public void cbFunc(RootShellService.RootCommand state) {
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.rules_applied;
+                                            toaster.sendMessage(msg);
+                                            enableOthers();
+                                            Api.setEnabled(context, true, false);
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.error_apply;
+                                            toaster.sendMessage(msg);
+                                        }
+                                    }
+                                }));
                         break;
                     case 2:
                         // validation, check for password
@@ -230,7 +257,8 @@ public class ToggleWidgetOldActivity extends Activity implements
                                             boolean nowEnabled = state.exitCode != 0;
                                             msg.arg1 = R.string.toast_disabled;
                                             toaster.sendMessage(msg);
-                                            Api.setEnabled(context, false, false);
+                                            disableOthers();
+                                            Api.setEnabled(context, nowEnabled, false);
                                         }
                                     }));
                         } else {
@@ -241,27 +269,91 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 3:
                         G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
-                        if (applyProfileRules(context, msg, toaster)) {
+                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                                .setCallback(new RootShellService.RootCommand.Callback() {
+                                    @Override
+                                    public void cbFunc(RootShellService.RootCommand state) {
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.rules_applied;
+                                            toaster.sendMessage(msg);
+                                            enableOthers();
+                                            disableDefault();
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.error_apply;
+                                            toaster.sendMessage(msg);
+                                        }
+                                    }
+                                }));
+                       /* if (applyProfileRules(context, msg, toaster)) {
                             disableDefault();
-                        }
+                        }*/
                         break;
                     case 4:
                         G.setProfile(true, "AFWallProfile1");
-                        if (applyProfileRules(context, msg, toaster)) {
+                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                                .setCallback(new RootShellService.RootCommand.Callback() {
+                                    @Override
+                                    public void cbFunc(RootShellService.RootCommand state) {
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.rules_applied;
+                                            toaster.sendMessage(msg);
+                                            enableOthers();
+                                            disableCustom("AFWallProfile1");
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.error_apply;
+                                            toaster.sendMessage(msg);
+                                        }
+                                    }
+                                }));
+                        /*if (applyProfileRules(context, msg, toaster)) {
                             disableCustom("AFWallProfile1");
-                        }
+                        }*/
                         break;
                     case 5:
                         G.setProfile(true, "AFWallProfile2");
-                        if (applyProfileRules(context, msg, toaster)) {
+                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                                .setCallback(new RootShellService.RootCommand.Callback() {
+                                    @Override
+                                    public void cbFunc(RootShellService.RootCommand state) {
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.rules_applied;
+                                            toaster.sendMessage(msg);
+                                            enableOthers();
+                                            disableCustom("AFWallProfile2");
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.error_apply;
+                                            toaster.sendMessage(msg);
+                                        }
+                                    }
+                                }));
+                        /*if (applyProfileRules(context, msg, toaster)) {
                             disableCustom("AFWallProfile2");
-                        }
+                        }*/
                         break;
                     case 6:
                         G.setProfile(true, "AFWallProfile3");
-                        if (applyProfileRules(context, msg, toaster)) {
+                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+                                .setCallback(new RootShellService.RootCommand.Callback() {
+                                    @Override
+                                    public void cbFunc(RootShellService.RootCommand state) {
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.rules_applied;
+                                            toaster.sendMessage(msg);
+                                            enableOthers();
+                                            disableCustom("AFWallProfile3");
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.error_apply;
+                                            toaster.sendMessage(msg);
+                                        }
+                                    }
+                                }));
+                       /* if (applyProfileRules(context, msg, toaster)) {
                             disableCustom("AFWallProfile3");
-                        }
+                        }*/
                         break;
                 }
                 Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
@@ -337,7 +429,7 @@ public class ToggleWidgetOldActivity extends Activity implements
         });
     }
 
-    private boolean applyRules(Context context, Message msg, Handler toaster) {
+   /* private boolean applyRules(Context context, Message msg, Handler toaster) {
         boolean success = false;
         if (Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand())) {
             msg.arg1 = R.string.toast_enabled;
@@ -371,5 +463,5 @@ public class ToggleWidgetOldActivity extends Activity implements
                     }
                 }));
         return success;
-    }
+    }*/
 }
