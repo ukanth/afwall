@@ -800,35 +800,8 @@ public final class Api {
 
             rulesUpToDate = true;
             // update UI
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, cmds);
             return true;
-
-            /*if (callback != null) {
-                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
-                return true;
-            } else {
-                fixupLegacyCmds(cmds);
-                try {
-                    final StringBuilder res = new StringBuilder();
-                    int code = runScriptAsRoot(ctx, cmds, res);
-                    if (showErrors && code != 0) {
-                        String msg = res.toString();
-                        // Remove unnecessary help message from output
-                        if (msg.indexOf("\nTry `iptables -h' or 'iptables --help' for more information.") != -1) {
-                            msg = msg.replace("\nTry `iptables -h' or 'iptables --help' for more information.", "");
-                        }
-                        allowDefaultChains(ctx);
-                        return false;
-                        //if (showErrors) toast(ctx, ctx.getString(R.string.error_apply)  + code + "\n\n" + msg.trim() );
-                    }
-                } catch (Exception e) {
-                    //in case of exception rollback to default chains to ACCEPT
-                    Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-                    allowDefaultChains(ctx);
-                    return false;
-                }
-                return true;
-            }*/
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
             allowDefaultChains(ctx);
@@ -870,7 +843,7 @@ public final class Api {
             cmds.add("-P OUTPUT DROP");
             iptablesCommands(cmds, out, true);
         }
-        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
         return true;
     }
 

@@ -43,6 +43,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
@@ -78,8 +83,6 @@ public class RootShellService extends Service {
     private final static int MAX_RETRIES = 10;
 
     private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
-
-    //private SynchronousQueue workingCommand = new SynchronousQueue();
 
     public final static int EXIT_NO_ROOT_ACCESS = -1;
 
@@ -192,7 +195,17 @@ public class RootShellService extends Service {
          * @param script List of commands to run as root
          */
         public final void run(Context ctx, List<String> script) {
-            RootShellService.runScriptAsRoot(ctx, script, this);
+            RootShellService.runScriptAsRoot(ctx, script, this, false);
+        }
+
+        /**
+         * Run a series of commands as root; call cb.cbFunc() when complete
+         *
+         * @param ctx    Context object used to create toasts
+         * @param script List of commands to run as root
+         */
+        public final void runThread(Context ctx, List<String> script) {
+            RootShellService.runScriptAsRoot(ctx, script, this, true);
         }
 
         /**
@@ -204,7 +217,7 @@ public class RootShellService extends Service {
         public final void run(Context ctx, String cmd) {
             List<String> script = new ArrayList<String>();
             script.add(cmd);
-            RootShellService.runScriptAsRoot(ctx, script, this);
+            RootShellService.runScriptAsRoot(ctx, script, this, false);
         }
     }
 
@@ -235,7 +248,7 @@ public class RootShellService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) { // if crash restart...
-            Log.i(TAG, "Restarting RootShell");
+            Log.i(TAG, "Restarting RootShell...");
             List<String> cmds = new ArrayList<String>();
             cmds.add("true");
             new RootCommand().setFailureToast(R.string.error_su)
@@ -245,7 +258,6 @@ public class RootShellService extends Service {
     }
 
     private static void runNextSubmission() {
-
         do {
             RootCommand state;
             try {
@@ -399,21 +411,141 @@ public class RootShellService extends Service {
         ctx.startService(intent);
     }
 
-    private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state) {
-        state.script = script;
-        state.commandIndex = 0;
-        state.retryCount = 0;
+    static class ExecuteCommand implements Callable<IpCmd> {
+        private String command;
 
-        if (mContext == null) {
-            mContext = ctx.getApplicationContext();
+        ExecuteCommand(String command) {
+            this.command = command;
         }
 
-        waitQueue.add(state);
+        @Override
+        public IpCmd call() throws Exception {
+            final IpCmd ip = new IpCmd(command);
+            final StringBuilder builder = new StringBuilder();
+            if (command != null) {
+                if (command.startsWith("#NOCHK# ")) {
+                    command = command.replaceFirst("#NOCHK# ", "");
+                } else {
+                }
+                Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
+                    @Override
+                    public void onCommandResult(int commandCode, int exitCode,
+                                                List<String> output) {
+                        if (output != null) {
+                            ListIterator<String> iter = output.listIterator();
+                            while (iter.hasNext()) {
+                                String line = iter.next();
+                                if (line != null && !line.equals("")) {
+                                    if (builder != null) {
+                                        builder.append(line + "\n");
+                                    }
+                                }
+                            }
+                            ip.setOutput(builder.toString());
+                            ip.setExitCode(exitCode);
+                        }
+                    }
+                };
+                if (listener != null) {
+                    try {
+                        rootSession.addCommand(command, 0, listener);
+                    } catch (NullPointerException e) {
+                        Log.d(TAG, "Unable to add commands to session");
+                    }
+                }
+            }
+            return ip;
+        }
+    }
 
-        if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
-            reOpenShell(ctx);
-        } else if (rootState != ShellState.BUSY) {
-            runNextSubmission();
+    static class IpCmd {
+
+        IpCmd(String command) {
+            this.command = command;
+        }
+
+        public String getCommand() {
+            return command;
+        }
+
+        public void setCommand(String command) {
+            this.command = command;
+        }
+
+        public String getOutput() {
+            return output;
+        }
+
+        public void setOutput(String output) {
+            this.output = output;
+        }
+
+        public int getExitCode() {
+            return exitCode;
+        }
+
+        public void setExitCode(int exitCode) {
+            this.exitCode = exitCode;
+        }
+
+        String command;
+        String output;
+        int exitCode;
+    }
+
+    private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state, boolean useThread) {
+
+        if (useThread) {
+            if (mContext == null) {
+                mContext = ctx.getApplicationContext();
+            }
+
+            if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
+                reOpenShell(ctx);
+            }
+
+            ExecutorService executor = Executors.newFixedThreadPool(2);
+            List<Future<IpCmd>> resultList = new ArrayList<Future<IpCmd>>();
+
+            for (final String str : script) {
+                ExecuteCommand execute = new ExecuteCommand(str);
+                Future<IpCmd> result = executor.submit(execute);
+                resultList.add(result);
+            }
+
+            for (Future<IpCmd> future : resultList) {
+                try {
+                    Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            state.exitCode = 0;
+            state.done = true;
+            if (state.cb != null) {
+                state.cb.cbFunc(state);
+            }
+
+            //shut down the executor service now
+            executor.shutdown();
+
+        } else {
+            state.script = script;
+            state.commandIndex = 0;
+            state.retryCount = 0;
+
+            if (mContext == null) {
+                mContext = ctx.getApplicationContext();
+            }
+
+            waitQueue.add(state);
+
+            if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
+                reOpenShell(ctx);
+            } else if (rootState != ShellState.BUSY) {
+                runNextSubmission();
+            }
         }
     }
 

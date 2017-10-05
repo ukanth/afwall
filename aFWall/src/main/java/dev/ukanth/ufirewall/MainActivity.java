@@ -174,8 +174,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         setSupportActionBar(toolbar);
 
-        (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         this.findViewById(R.id.img_wifi).setOnClickListener(this);
         this.findViewById(R.id.img_reset).setOnClickListener(this);
         this.findViewById(R.id.img_invert).setOnClickListener(this);
@@ -197,9 +195,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-
-        passCheck();
-
+        if (!G.hasRoot()) {
+            (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            startRootShell();
+            passCheck();
+        }
     }
 
 
@@ -250,20 +251,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void startRootShell() {
-       /* Thread rootShell = new Thread() {
-            @Override
-            public void run() {
-            }
-        };
-        rootShell.start();*/
-
         List<String> cmds = new ArrayList<String>();
         cmds.add("true");
         new RootCommand().setFailureToast(R.string.error_su)
-                .setReopenShell(true).run(getApplicationContext(), cmds);
+                .setReopenShell(true)
+                .setCallback(new RootCommand.Callback() {
+                    public void cbFunc(RootCommand state) {
+                        //failed to acquire root
+                        if (state.exitCode != 0) {
+                            showRootNotFoundMessage();
+                        }
+                    }
+                }).run(getApplicationContext(), cmds);
         if (G.activeNotification()) {
             Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         }
+    }
+
+    private void showRootNotFoundMessage() {
+        new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+                .title(R.string.error_common)
+                .content(R.string.error_su)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        MainActivity.this.finish();
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        dialog.dismiss();
+                    }
+                })
+                .positiveText(R.string.Continue)
+                .negativeText(R.string.exit)
+                .show();
     }
 
     @Override
@@ -1507,15 +1532,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .show();
 
         RootShellService.progress = progress;
-        if (!Api.applySavedIptablesRules(ctx, true, new RootCommand()
+        boolean status = Api.applySavedIptablesRules(ctx, true, new RootCommand()
                 .setSuccessToast(R.string.rules_applied)
                 .setFailureToast(R.string.error_apply)
                 .setReopenShell(true)
                 .setCallback(new RootCommand.Callback() {
-
                     public void cbFunc(RootCommand state) {
                         try {
                             progress.dismiss();
+                            Api.toast(getApplicationContext(),getString(R.string.rules_applied));
                         } catch (Exception ex) {
                         }
 
@@ -1529,11 +1554,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         menuSetApplyOrSave(MainActivity.this.mainMenu, result);
                         Api.setEnabled(ctx, result, true);
                     }
-                }))) {
+                }));
+        if (!status) {
             progress.dismiss();
             Api.toast(MainActivity.this, getString(R.string.error_apply));
         }
-
     }
 
     /**
@@ -1974,9 +1999,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected Void doInBackground(Void... params) {
             accessGiven = Shell.SU.available();
             unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
-            if(accessGiven) {
-                startRootShell();
-            }
             return null;
         }
 
@@ -2021,28 +2043,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 G.kingDetected(true);
             }*/
             if (!accessGiven && !unsupportedSU && !isFinishing()) {
-                new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                        .title(R.string.error_common)
-                        .content(R.string.error_su)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                MainActivity.this.finish();
-                                android.os.Process.killProcess(android.os.Process.myPid());
-                                dialog.dismiss();
-                            }
-                        })
-                        .positiveText(R.string.Continue)
-                        .negativeText(R.string.exit)
-                        .show();
+                showRootNotFoundMessage();
             } else {
                 G.hasRoot(accessGiven);
+                startRootShell();
+                passCheck();
             }
         }
     }
