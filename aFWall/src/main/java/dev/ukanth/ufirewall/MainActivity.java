@@ -89,7 +89,6 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
-import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -101,6 +100,7 @@ import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
+import static dev.ukanth.ufirewall.util.G.ctx;
 import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
@@ -1515,6 +1515,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final Context ctx = getApplicationContext();
 
         Api.saveRules(ctx);
+
         if (!enabled) {
             Api.setEnabled(ctx, false, true);
             Api.toast(ctx, ctx.getString(R.string.rules_saved));
@@ -1522,42 +1523,66 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+        new RunApply().setContext(ctx).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
 
-        final MaterialDialog progress = new MaterialDialog.Builder(this)
-                .title(R.string.working)
-                .cancelable(false)
-                .content(enabled ? R.string.applying_rules
-                        : R.string.saving_rules)
-                .progress(true, 0)
-                .show();
 
-        RootShellService.progress = progress;
-        boolean status = Api.applySavedIptablesRules(ctx, true, new RootCommand()
-                .setSuccessToast(R.string.rules_applied)
-                .setFailureToast(R.string.error_apply)
-                .setReopenShell(true)
-                .setCallback(new RootCommand.Callback() {
-                    public void cbFunc(RootCommand state) {
-                        try {
-                            progress.dismiss();
-                            Api.toast(getApplicationContext(),getString(R.string.rules_applied));
-                        } catch (Exception ex) {
+    private class RunApply extends AsyncTask<Void, Long, Void> {
+        private Context context = null;
+        MaterialDialog progress = null;
+        boolean enabled = Api.isEnabled(getApplicationContext());
+        long start;
+
+        public RunApply setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progress = new MaterialDialog.Builder(MainActivity.this)
+                    .title(R.string.working)
+                    .cancelable(false)
+                    .content(enabled ? R.string.applying_rules
+                            : R.string.saving_rules)
+                    .progress(true, 0)
+                    .show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (!Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
+                    .setSuccessToast(R.string.rules_applied)
+                    .setFailureToast(R.string.error_apply)
+                    .setReopenShell(true)
+                    .setCallback(new RootCommand.Callback() {
+
+                        public void cbFunc(RootCommand state) {
+                            try {
+                                progress.dismiss();
+                            } catch (Exception ex) {
+                            }
+
+                            boolean result = enabled;
+
+                            if (state.exitCode == 0) {
+                                setDirty(false);
+                            } else {
+                                result = false;
+                            }
+                            menuSetApplyOrSave(MainActivity.this.mainMenu, result);
+                            Api.setEnabled(ctx, result, true);
                         }
+                    }))) {
+                progress.dismiss();
+                Api.toast(MainActivity.this, getString(R.string.error_apply));
+            }
+            return null;
+        }
 
-                        boolean result = enabled;
-
-                        if (state.exitCode == 0) {
-                            setDirty(false);
-                        } else {
-                            result = false;
-                        }
-                        menuSetApplyOrSave(MainActivity.this.mainMenu, result);
-                        Api.setEnabled(ctx, result, true);
-                    }
-                }));
-        if (!status) {
-            progress.dismiss();
-            Api.toast(MainActivity.this, getString(R.string.error_apply));
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 

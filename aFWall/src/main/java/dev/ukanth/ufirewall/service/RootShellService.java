@@ -505,28 +505,32 @@ public class RootShellService extends Service {
             }
 
             ExecutorService executor = Executors.newFixedThreadPool(2);
-            List<Future<IpCmd>> resultList = new ArrayList<Future<IpCmd>>();
+            List<Callable<IpCmd>> callables = new ArrayList<>();
 
             for (final String str : script) {
-                ExecuteCommand execute = new ExecuteCommand(str);
-                Future<IpCmd> result = executor.submit(execute);
-                resultList.add(result);
+                callables.add(new ExecuteCommand(str));
             }
-
-            for (Future<IpCmd> future : resultList) {
-                try {
-                    Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
+            try {
+                List<Future<IpCmd>> results =
+                        executor.invokeAll(callables);
+                for (Future<IpCmd> future : results) {
+                    if (future.isDone()) {
+                        Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
+                    }
                 }
+                if (results.size() != script.size()) {
+                    state.exitCode = -1;
+                } else {
+                    state.exitCode = 0;
+                }
+
+            } catch (InterruptedException | ExecutionException e) {
             }
 
-            state.exitCode = 0;
             state.done = true;
             if (state.cb != null) {
                 state.cb.cbFunc(state);
             }
-
             //shut down the executor service now
             executor.shutdown();
 

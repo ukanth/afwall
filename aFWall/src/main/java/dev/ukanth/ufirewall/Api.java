@@ -758,7 +758,7 @@ public final class Api {
             final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
             final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
 
-            boolean returnValue = false;
+            boolean returnValue;
             List<String> cmds = new ArrayList<String>();
 
             setBinaryPath(ctx, false);
@@ -827,6 +827,7 @@ public final class Api {
         setBinaryPath(ctx, false);
         applyShortRules(ctx, cmds, false);
         iptablesCommands(cmds, out, false);
+
         if (G.enableIPv6()) {
             setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
