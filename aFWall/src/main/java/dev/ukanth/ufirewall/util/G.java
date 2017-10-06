@@ -114,6 +114,13 @@ public class G extends Application {
     private static final String WIDGET_Y = "widgetY";
     private static final String XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
 
+    //ippreference
+    private static final String IP4_INPUT = "input_chain";
+    private static final String IP4_OUTPUT = "output_chain";
+
+    private static final String IP6_INPUT = "input_chain_v6";
+    private static final String IP6_OUTPUT = "output_chain_v6";
+
     private static String AFWALL_PROFILE = "AFWallProfile";
     private static String SHOW_LOG_TOAST = "showLogToasts";
     public static String[] profiles = {"AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3};
@@ -131,12 +138,49 @@ public class G extends Application {
         gPrefs.edit().putStringSet("storedPid", store).commit();
     }
 
-   public static boolean isFaster() {
+    public static boolean isFaster() {
         return gPrefs.getBoolean(FASTER_RULES, false);
     }
 
     public static boolean isFaster(boolean val) {
         gPrefs.edit().putBoolean(FASTER_RULES, val).commit();
+        return val;
+    }
+
+
+    public static boolean ipv4Input() {
+        return gPrefs.getBoolean(IP4_INPUT, true);
+    }
+
+    public static boolean ipv4Input(boolean val) {
+        gPrefs.edit().putBoolean(IP4_INPUT, val).commit();
+        return val;
+    }
+
+    public static boolean ipv4Output() {
+        return gPrefs.getBoolean(IP4_OUTPUT, true);
+    }
+
+    public static boolean ipv4Output(boolean val) {
+        gPrefs.edit().putBoolean(IP4_OUTPUT, val).commit();
+        return val;
+    }
+
+    public static boolean ipv6Input() {
+        return gPrefs.getBoolean(IP6_INPUT, true);
+    }
+
+    public static boolean ipv6Input(boolean val) {
+        gPrefs.edit().putBoolean(IP6_INPUT, val).commit();
+        return val;
+    }
+
+    public static boolean ipv6Output() {
+        return gPrefs.getBoolean(IP6_OUTPUT, true);
+    }
+
+    public static boolean ipv6Output(boolean val) {
+        gPrefs.edit().putBoolean(IP6_OUTPUT, val).commit();
         return val;
     }
 
@@ -573,7 +617,7 @@ public class G extends Application {
         String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
         List<String> data = new ArrayList<String>();
         if (blockedApps != null) {
-            for(String id: blockedApps.split(",")) {
+            for (String id : blockedApps.split(",")) {
                 data.add(id.trim());
             }
         }

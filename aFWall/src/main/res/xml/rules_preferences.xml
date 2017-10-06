@@ -29,15 +29,47 @@
             android:key="enableVPN"
             android:summary="@string/vpnSummary"
             android:title="@string/vpn_profile" />
+
+        <!--<SwitchPreference
+            android:defaultValue="true"
+            android:key="input_chain"
+            android:summaryOn="@string/input_chain_summary_on"
+            android:summaryOff="@string/input_chain_summary_off"
+            android:title="@string/input_chain" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="output_chain"
+            android:summaryOn="@string/output_chain_summary_on"
+            android:summaryOff="@string/output_chain_summary_off"
+            android:title="@string/output_chain" />-->
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="blockIPv6"
             android:summary="@string/block_ipv6_summary"
             android:title="@string/block_ipv6_title" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enableIPv6"
             android:summary="@string/ipv6_summary"
             android:title="@string/ipv6_title" />
+
+       <!-- <SwitchPreference
+            android:defaultValue="true"
+            android:key="input_chain_v6"
+            android:summaryOn="@string/input_chain_summary_on"
+            android:summaryOff="@string/input_chain_summary_off"
+            android:title="@string/input_chain_v6" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="output_chain_v6"
+            android:summaryOn="@string/output_chain_summary_on"
+            android:summaryOff="@string/output_chain_summary_off"
+            android:title="@string/output_chain_v6" />-->
+
+
     </PreferenceCategory>
 </PreferenceScreen>

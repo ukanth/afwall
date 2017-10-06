@@ -195,7 +195,17 @@ public class RootShellService extends Service {
          * @param script List of commands to run as root
          */
         public final void run(Context ctx, List<String> script) {
-            RootShellService.runScriptAsRoot(ctx, script, this);
+            RootShellService.runScriptAsRoot(ctx, script, this, false);
+        }
+
+        /**
+         * Run a series of commands as root in thread mode; call cb.cbFunc() when complete
+         *
+         * @param ctx    Context object used to create toasts
+         * @param script List of commands to run as root
+         */
+        public final void runThread(Context ctx, List<String> script) {
+            RootShellService.runScriptAsRoot(ctx, script, this, true);
         }
 
         /**
@@ -207,7 +217,7 @@ public class RootShellService extends Service {
         public final void run(Context ctx, String cmd) {
             List<String> script = new ArrayList<String>();
             script.add(cmd);
-            RootShellService.runScriptAsRoot(ctx, script, this);
+            RootShellService.runScriptAsRoot(ctx, script, this, false);
         }
     }
 
@@ -485,9 +495,9 @@ public class RootShellService extends Service {
         int exitCode;
     }
 
-    private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state) {
+    private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state, boolean useThreads) {
 
-        if (G.isFaster()) {
+        if (useThreads) {
             if (mContext == null) {
                 mContext = ctx.getApplicationContext();
             }
@@ -530,7 +540,7 @@ public class RootShellService extends Service {
             } catch (Exception e) {
                 Log.e(e.getClass().getName(), e.getMessage(), e);
             }
-            if(manager != null) {
+            if (manager != null) {
                 manager.cancel(NOTIFICATION_ID);
             }
             state.done = true;
@@ -544,7 +554,6 @@ public class RootShellService extends Service {
             state.script = script;
             state.commandIndex = 0;
             state.retryCount = 0;
-
             if (mContext == null) {
                 mContext = ctx.getApplicationContext();
             }

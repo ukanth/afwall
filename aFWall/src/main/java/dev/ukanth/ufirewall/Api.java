@@ -803,8 +803,11 @@ public final class Api {
             }
 
             rulesUpToDate = true;
-            // update UI
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            if (G.isFaster()) {
+                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, cmds);
+            } else {
+                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            }
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -844,7 +847,13 @@ public final class Api {
             cmds.add("-P OUTPUT DROP");
             iptablesCommands(cmds, out, true);
         }
-        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+
+        if (G.isFaster()) {
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
+        } else {
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+        }
+
         return true;
     }
 
@@ -1419,6 +1428,25 @@ public final class Api {
         }
 
         return true;
+    }
+
+    public static void ruleStatus(Context ctx, boolean showErrors, RootCommand callback) {
+        List<String> cmds = new ArrayList<String>();
+        cmds.add("-S INPUT");
+        cmds.add("-S OUTPUT");
+        List<String> out = new ArrayList<>();
+
+        setBinaryPath(ctx, false);
+        iptablesCommands(cmds, out, false);
+
+        if (G.enableIPv6() || G.blockIPv6()) {
+            setBinaryPath(ctx, true);
+            ArrayList base = new ArrayList<String>();
+            base.add("-S INPUT");
+            base.add("-S OUTPUT");
+            iptablesCommands(base, out, true);
+        }
+        callback.run(ctx, out);
     }
 
 
