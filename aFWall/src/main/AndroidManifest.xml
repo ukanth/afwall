@@ -175,12 +175,6 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".broadcast.ConnectivityChangeReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".widget.StatusWidget"
             android:icon="@drawable/preview_toggle"
@@ -278,6 +272,7 @@
 
         <service android:name=".service.RootShellService" android:exported="false"/>
         <service android:name=".service.LogService" />
+	<service android:name=".service.ConnectivityChangeService" />
 
         <!-- Samsung MultiWindow Support -->
         <uses-library
