@@ -24,11 +24,9 @@ package dev.ukanth.ufirewall.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
@@ -61,19 +59,8 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
             int oldState = intent.getIntExtra(EXTRA_PREVIOUS_WIFI_AP_STATE, -1);
             Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
         }
-        // NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
-        // This will prevent applying rules when the user disable the option in preferences. This is for low end devices
-        if (Api.isEnabled(context)) {
-            if (G.activeRules()) {
-                InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-            }
-            //detect connection type and warn users
-            /*try {
-                if (!G.enableIPv6() && !G.blockIPv6() && InterfaceTracker.isIPv6()) {
-                    Api.toast(context, context.getString(R.string.ipdetect), Toast.LENGTH_LONG);
-                }
-            } catch (Exception e) {
-            }*/
+        if (Api.isEnabled(context) && G.activeRules()) {
+            InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
         }
     }
 }

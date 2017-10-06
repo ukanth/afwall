@@ -195,17 +195,7 @@ public class RootShellService extends Service {
          * @param script List of commands to run as root
          */
         public final void run(Context ctx, List<String> script) {
-            RootShellService.runScriptAsRoot(ctx, script, this, false);
-        }
-
-        /**
-         * Run a series of commands as root; call cb.cbFunc() when complete
-         *
-         * @param ctx    Context object used to create toasts
-         * @param script List of commands to run as root
-         */
-        public final void runThread(Context ctx, List<String> script) {
-            RootShellService.runScriptAsRoot(ctx, script, this, true);
+            RootShellService.runScriptAsRoot(ctx, script, this);
         }
 
         /**
@@ -217,7 +207,7 @@ public class RootShellService extends Service {
         public final void run(Context ctx, String cmd) {
             List<String> script = new ArrayList<String>();
             script.add(cmd);
-            RootShellService.runScriptAsRoot(ctx, script, this, false);
+            RootShellService.runScriptAsRoot(ctx, script, this);
         }
     }
 
@@ -289,11 +279,13 @@ public class RootShellService extends Service {
     private static void submitNextCommand(final RootCommand state) {
         String command = state.script.get(state.commandIndex);
 
-        if (progress != null) {
-            progress.setContent("Applying " + state.commandIndex + " of total: " + state.script.size());
+        try {
+            if (progress != null) {
+                progress.setContent("Applying " + state.commandIndex + " of total: " + state.script.size());
+            }
+        } catch (Exception e) {
+            Log.e(e.getClass().getName(), e.getMessage(), e);
         }
-
-        Log.i(TAG, command);
 
         if (command != null) {
             if (command.startsWith("#NOCHK# ")) {
@@ -493,9 +485,9 @@ public class RootShellService extends Service {
         int exitCode;
     }
 
-    private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state, boolean useThread) {
+    private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state) {
 
-        if (useThread) {
+        if (G.isFaster()) {
             if (mContext == null) {
                 mContext = ctx.getApplicationContext();
             }
@@ -511,26 +503,36 @@ public class RootShellService extends Service {
                 callables.add(new ExecuteCommand(str));
             }
             try {
-                List<Future<IpCmd>> results =
-                        executor.invokeAll(callables);
+                if (script.size() > 0) {
+                    manager = createNotification(mContext);
+                    List<Future<IpCmd>> results =
+                            executor.invokeAll(callables);
 
-                for (Future<IpCmd> future : results) {
-                    if (future.isDone() && future.get().getExitCode() != 0) {
-                        //failed to execute this command
-                        // TODO: implement retry logic for those rules.
+                    for (Future<IpCmd> future : results) {
+                        if (future.isDone()) {
+                            if (future.get().getExitCode() != 0) {
+                                //failed to execute this command
+                                // TODO: implement retry logic for those rules.
+                                state.exitCode = -1;
+                                Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
+                            } else {
+
+                            }
+                        }
+                    }
+                    if (results.size() != script.size()) {
                         state.exitCode = -1;
-                        Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
+                    } else {
+                        state.exitCode = 0;
                     }
                 }
-                if (results.size() != script.size()) {
-                    state.exitCode = -1;
-                } else {
-                    state.exitCode = 0;
-                }
-
             } catch (InterruptedException | ExecutionException e) {
+            } catch (Exception e) {
+                Log.e(e.getClass().getName(), e.getMessage(), e);
             }
-
+            if(manager != null) {
+                manager.cancel(NOTIFICATION_ID);
+            }
             state.done = true;
             if (state.cb != null) {
                 state.cb.cbFunc(state);
@@ -606,7 +608,7 @@ public class RootShellService extends Service {
         stackBuilder.addNextIntent(appIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
-        builder.setOngoing(true).setSmallIcon(R.drawable.notification)
+        builder.setSmallIcon(R.drawable.notification)
                 .setAutoCancel(false)
                 .setContentTitle("Applying rules")
                 //keep the priority as low ,so it's not visible on lockscreen

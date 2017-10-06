@@ -549,7 +549,7 @@
     <string name="notification_priority">Notification Priority</string>
     <string name="defaultPriority">Default Priority</string>
     <string name="lowPriority">Low Priority</string>
-    <string name="applyRulesFasterTitle">Apply Rules Faster</string>
+    <string name="applyRulesFasterTitle">Instant Apply</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="choose">Choose</string>
 </resources>

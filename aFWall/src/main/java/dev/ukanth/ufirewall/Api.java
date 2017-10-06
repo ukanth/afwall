@@ -576,120 +576,125 @@ public final class Api {
         cmds.add("-P INPUT ACCEPT");
         cmds.add("-P FORWARD ACCEPT");
 
-        // prevent data leaks due to incomplete rules
-        Log.i(TAG, "Setting OUTPUT to Drop");
-        cmds.add("-P OUTPUT DROP");
+        try {
+            // prevent data leaks due to incomplete rules
+            Log.i(TAG, "Setting OUTPUT to Drop");
+            cmds.add("-P OUTPUT DROP");
 
-        for (String s : staticChains) {
-            cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
-            cmds.add("-F " + AFWALL_CHAIN_NAME + s);
-        }
-        for (String s : dynChains) {
-            cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
-            // addInterfaceRouting() will flush these chains, but not create them
-        }
-
-        cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
-        cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
-
-        // custom rules in afwall-{3g,wifi,reject} supersede everything else
-        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
-        cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g -j " + AFWALL_CHAIN_NAME + "-3g-postcustom");
-        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi -j " + AFWALL_CHAIN_NAME + "-wifi-postcustom");
-        addRejectRules(cmds);
-
-        if (G.enableInbound()) {
-            // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
-            // local processes can't reply to half-open connections without this rule
-            cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
-        }
-
-        addInterfaceRouting(ctx, cmds, ipv6);
-
-        // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
-        if (G.enableVPN()) {
-            // if !enableVPN then we ignore those interfaces (pass all traffic)
-            for (final String itf : ITFS_VPN) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-vpn");
+            for (String s : staticChains) {
+                cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
+                cmds.add("-F " + AFWALL_CHAIN_NAME + s);
             }
-            // KitKat policy based routing - see:
-            // http://forum.xda-developers.com/showthread.php?p=48703545
-            // This covers mark range 0x3c - 0x47.  The official range is believed to be
-            // 0x3c - 0x45 but this is close enough.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x3c/0xfffc -g " + AFWALL_CHAIN_NAME + "-vpn");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x40/0xfff8 -g " + AFWALL_CHAIN_NAME + "-vpn");
+            for (String s : dynChains) {
+                cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
+                // addInterfaceRouting() will flush these chains, but not create them
             }
-        }
-        for (final String itf : ITFS_WIFI) {
-            cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-wifi");
-        }
 
-        for (final String itf : ITFS_3G) {
-            cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
-        }
+            cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+            cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
-        final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
-        final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
+            // custom rules in afwall-{3g,wifi,reject} supersede everything else
+            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g -j " + AFWALL_CHAIN_NAME + "-3g-postcustom");
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi -j " + AFWALL_CHAIN_NAME + "-wifi-postcustom");
+            addRejectRules(cmds);
 
-        // special rules to allow 3G<->wifi tethering
-        // note that this can only blacklist DNS/DHCP services, not all tethered traffic
-        if (((!whitelist && (any_wifi || any_3g)) ||
-                (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
+            if (G.enableInbound()) {
+                // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
+                // local processes can't reply to half-open connections without this rule
+                cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
+            }
 
-            String users[] = {"root", "nobody"};
-            String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
+            addInterfaceRouting(ctx, cmds, ipv6);
 
-            // DHCP replies to client
-            addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
-
-            // DNS replies to client
-            addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
-            addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
-
-            // DNS requests to upstream servers
-            addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
-            addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
-        }
-
-        // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
-        // normal 3G/wifi rules
-        cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-tether -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
-        cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-tether -j " + AFWALL_CHAIN_NAME + "-3g-fork");
-
-        // NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
-        // on the LAN
-        if (whitelist) {
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
-        }
-
-        // now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
-        // in whitelist mode the last rule in the list routes everything else to afwall-reject
-        addRulesForUidlist(cmds, uids3g, AFWALL_CHAIN_NAME + "-3g-home", whitelist);
-        addRulesForUidlist(cmds, uidsRoam, AFWALL_CHAIN_NAME + "-3g-roam", whitelist);
-        addRulesForUidlist(cmds, uidsWifi, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
-        addRulesForUidlist(cmds, uidsLAN, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
-        addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
-
-        Log.i(TAG, "Setting OUTPUT to Accept State");
-        cmds.add("-P OUTPUT ACCEPT");
-
-        //look for custom rules
-        if (ipv6) {
-            if (G.blockIPv6()) {
-                setBinaryPath(ctx, true);
-                cmds.add("-P INPUT DROP");
-                cmds.add("-P FORWARD DROP");
-                cmds.add("-P OUTPUT DROP");
-            } else {
-                if (G.enableIPv6()) {
-                    setBinaryPath(ctx, true);
-                    cmds.add("-P INPUT ACCEPT");
-                    cmds.add("-P FORWARD ACCEPT");
-                    cmds.add("-P OUTPUT ACCEPT");
+            // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
+            if (G.enableVPN()) {
+                // if !enableVPN then we ignore those interfaces (pass all traffic)
+                for (final String itf : ITFS_VPN) {
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-vpn");
+                }
+                // KitKat policy based routing - see:
+                // http://forum.xda-developers.com/showthread.php?p=48703545
+                // This covers mark range 0x3c - 0x47.  The official range is believed to be
+                // 0x3c - 0x45 but this is close enough.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x3c/0xfffc -g " + AFWALL_CHAIN_NAME + "-vpn");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x40/0xfff8 -g " + AFWALL_CHAIN_NAME + "-vpn");
                 }
             }
+            for (final String itf : ITFS_WIFI) {
+                cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-wifi");
+            }
+
+            for (final String itf : ITFS_3G) {
+                cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
+            }
+
+            final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
+            final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
+
+            // special rules to allow 3G<->wifi tethering
+            // note that this can only blacklist DNS/DHCP services, not all tethered traffic
+            if (((!whitelist && (any_wifi || any_3g)) ||
+                    (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
+
+                String users[] = {"root", "nobody"};
+                String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
+
+                // DHCP replies to client
+                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+
+                // DNS replies to client
+                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
+                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
+
+                // DNS requests to upstream servers
+                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
+                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
+            }
+
+            // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
+            // normal 3G/wifi rules
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-tether -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-tether -j " + AFWALL_CHAIN_NAME + "-3g-fork");
+
+            // NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
+            // on the LAN
+            if (whitelist) {
+                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
+            }
+
+            // now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
+            // in whitelist mode the last rule in the list routes everything else to afwall-reject
+            addRulesForUidlist(cmds, uids3g, AFWALL_CHAIN_NAME + "-3g-home", whitelist);
+            addRulesForUidlist(cmds, uidsRoam, AFWALL_CHAIN_NAME + "-3g-roam", whitelist);
+            addRulesForUidlist(cmds, uidsWifi, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
+            addRulesForUidlist(cmds, uidsLAN, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
+            addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
+
+            Log.i(TAG, "Setting OUTPUT to Accept State");
+            cmds.add("-P OUTPUT ACCEPT");
+
+            //look for custom rules
+            if (ipv6) {
+                if (G.blockIPv6()) {
+                    setBinaryPath(ctx, true);
+                    cmds.add("-P INPUT DROP");
+                    cmds.add("-P FORWARD DROP");
+                    cmds.add("-P OUTPUT DROP");
+                } else {
+                    if (G.enableIPv6()) {
+                        setBinaryPath(ctx, true);
+                        cmds.add("-P INPUT ACCEPT");
+                        cmds.add("-P FORWARD ACCEPT");
+                        cmds.add("-P OUTPUT ACCEPT");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(e.getClass().getName(), e.getMessage(), e);
         }
+
         iptablesCommands(cmds, out, ipv6);
         return true;
     }
@@ -748,7 +753,7 @@ public final class Api {
             return false;
         }
         try {
-            Log.i(TAG, "applySavedIptablesRules invoked");
+            Log.i(TAG, "Using fullApply(applySavedIptablesRules)");
             initSpecial();
 
             final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
@@ -799,7 +804,7 @@ public final class Api {
 
             rulesUpToDate = true;
             // update UI
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, cmds);
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -808,10 +813,6 @@ public final class Api {
         }
     }
 
-    /*@Deprecated
-    public static boolean applySavedIptablesRules(Context ctx, boolean showErrors) {
-        return applySavedIptablesRules(ctx, showErrors, null);
-    }*/
 
     public static boolean fastApply(Context ctx, RootCommand callback) {
 
@@ -830,7 +831,7 @@ public final class Api {
         if (G.enableIPv6()) {
             setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
-            addInterfaceRouting(ctx, cmds, true);
+            applyShortRules(ctx, cmds, true);
             cmds.add("-P INPUT ACCEPT");
             cmds.add("-P FORWARD ACCEPT");
             cmds.add("-P OUTPUT ACCEPT");
@@ -843,7 +844,7 @@ public final class Api {
             cmds.add("-P OUTPUT DROP");
             iptablesCommands(cmds, out, true);
         }
-        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
+        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
         return true;
     }
 
@@ -2806,29 +2807,6 @@ public final class Api {
         }
         return decryptStr;
     }
-
-	/*public static void killLogProcess(final Context ctx,final String klogPath){
-        Thread thread = new Thread(){
-		    @Override
-		    public void run() {
-				//use built-in busybox to kill the process
-				try {
-					new RootCommand().run(ctx, Api.getBusyBoxPath(ctx, false) + " pkill klogripper");
-				}catch(Exception e) {
-					//another attempt to use killall command from system busybox
-					try {
-						new RootCommand().run(ctx, Api.getBusyBoxPath(ctx,true) + " killall klogripper");
-					}catch(Exception ee) {
-						// what if this also failed ? try using normal android way
-						new RootCommand().run(ctx, "echo $(ps | grep klogripper) | cut -d' ' -f2 | xargs kill");
-						Log.e(TAG,ee.getMessage());
-					}
-				}
-
-		    }
-		};
-		thread.start();
-	}*/
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
         boolean hasMobileData = true;

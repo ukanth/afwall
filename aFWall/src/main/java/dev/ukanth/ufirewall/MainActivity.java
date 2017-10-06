@@ -89,6 +89,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
+import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -1523,20 +1524,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-        new RunApply().setContext(ctx).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new RunApply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 
     private class RunApply extends AsyncTask<Void, Long, Void> {
-        private Context context = null;
         MaterialDialog progress = null;
         boolean enabled = Api.isEnabled(getApplicationContext());
         long start;
 
-        public RunApply setContext(Context context) {
-            this.context = context;
-            return this;
-        }
 
         @Override
         protected void onPreExecute() {
@@ -1551,6 +1547,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Void doInBackground(Void... params) {
+            //set the progress
+            RootShellService.progress = progress;
             if (!Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
                     .setSuccessToast(R.string.rules_applied)
                     .setFailureToast(R.string.error_apply)

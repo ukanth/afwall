@@ -46,7 +46,6 @@ import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
-import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 
 public class G extends Application {
@@ -101,7 +100,7 @@ public class G extends Application {
     private static final String CUSTOM_DELAY_SECONDS = "customDelay";
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
 
-    //private static final String FASTER_RULES = "fasterApplyRules";
+    private static final String FASTER_RULES = "fasterApplyRules";
     /**
      * FIXME
      **/
@@ -132,14 +131,14 @@ public class G extends Application {
         gPrefs.edit().putStringSet("storedPid", store).commit();
     }
 
-  /*  public static boolean isFaster() {
+   public static boolean isFaster() {
         return gPrefs.getBoolean(FASTER_RULES, false);
     }
 
     public static boolean isFaster(boolean val) {
         gPrefs.edit().putBoolean(FASTER_RULES, val).commit();
         return val;
-    }*/
+    }
 
 
     public static boolean isEnc() {
