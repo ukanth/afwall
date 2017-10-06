@@ -258,14 +258,26 @@ public class ToggleWidgetActivity extends Activity {
             new Thread() {
                 @Override
                 public void run() {
-                    if(G.isProfileMigrated()) {
+                    if (G.isProfileMigrated()) {
                         ProfileData data = ProfileHelper.getProfileByName(profileName);
                         G.setProfile(true, data.getIdentifier());
                     } else {
                         G.setProfile(true, profileName);
 
                     }
-                    applyProfileRules(context,msg,toaster);
+                    Api.applySavedIptablesRules(context, false, new RootCommand()
+                            .setFailureToast(R.string.error_apply)
+                            .setCallback(new RootCommand.Callback() {
+                                @Override
+                                public void cbFunc(RootCommand state) {
+                                    if (state.exitCode == 0) {
+                                        msg.arg1 = R.string.rules_applied;
+                                    } else {
+                                        // error details are already in logcat
+                                        msg.arg1 = R.string.error_apply;
+                                    }
+                                }
+                            }));
                     Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
                 }
             }.start();
@@ -296,7 +308,7 @@ public class ToggleWidgetActivity extends Activity {
 
     public class Profile1 implements RadialMenuEntry {
         public String getName() {
-            if(!G.isProfileMigrated()) {
+            if (!G.isProfileMigrated()) {
                 return G.gPrefs.getString("profile1", getString(R.string.profile1));
             } else {
                 return "AFWallProfile1";
@@ -304,7 +316,7 @@ public class ToggleWidgetActivity extends Activity {
         }
 
         public String getLabel() {
-            if(!G.isProfileMigrated()) {
+            if (!G.isProfileMigrated()) {
                 return G.gPrefs.getString("profile1", getString(R.string.profile1));
             } else {
                 return "AFWallProfile1";
@@ -326,7 +338,7 @@ public class ToggleWidgetActivity extends Activity {
 
     public class Profile2 implements RadialMenuEntry {
         public String getName() {
-            if(!G.isProfileMigrated()) {
+            if (!G.isProfileMigrated()) {
                 return G.gPrefs.getString("profile2", getString(R.string.profile2));
             } else {
                 return "AFWallProfile2";
@@ -334,7 +346,7 @@ public class ToggleWidgetActivity extends Activity {
         }
 
         public String getLabel() {
-            if(!G.isProfileMigrated()) {
+            if (!G.isProfileMigrated()) {
                 return G.gPrefs.getString("profile2", getString(R.string.profile2));
             } else {
                 return "AFWallProfile2";
@@ -356,7 +368,7 @@ public class ToggleWidgetActivity extends Activity {
 
     public class Profile3 implements RadialMenuEntry {
         public String getName() {
-            if(!G.isProfileMigrated()) {
+            if (!G.isProfileMigrated()) {
                 return G.gPrefs.getString("profile3", getString(R.string.profile3));
             } else {
                 return "AFWallProfile3";
@@ -364,7 +376,7 @@ public class ToggleWidgetActivity extends Activity {
         }
 
         public String getLabel() {
-            if(!G.isProfileMigrated()) {
+            if (!G.isProfileMigrated()) {
                 return G.gPrefs.getString("profile3", getString(R.string.profile3));
             } else {
                 return "AFWallProfile3";
@@ -393,71 +405,94 @@ public class ToggleWidgetActivity extends Activity {
                     Toast.makeText(getApplicationContext(), msg.arg1, Toast.LENGTH_SHORT).show();
             }
         };
-            final Context context = getApplicationContext();
-            new Thread() {
-                @Override
-                public void run() {
-                    Looper.prepare();
-                    final Message msg = new Message();
-                    if (i < 7) {
-                        switch (i) {
-                            case 1:
-                                if (applyProfileRules(context, msg, toaster)) {
-                                    Api.setEnabled(context, true, false);
-                                }
+        final Context context = getApplicationContext();
+        new Thread() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                final Message msg = new Message();
+                if (i < 7) {
+                    switch (i) {
+                        case 1:
 
-                                break;
-                            case 2:
-                                //validation, check for password
-                                if (G.protectionLevel().equals("p0")) {
-                                    Api.purgeIptables(context, true, new RootCommand()
-                                            .setSuccessToast(R.string.toast_disabled)
-                                            .setFailureToast(R.string.toast_error_disabling)
-                                            .setReopenShell(true)
-                                            .setCallback(new RootCommand.Callback() {
-                                                public void cbFunc(RootCommand state) {
+                            Api.applySavedIptablesRules(context, false, new RootCommand()
+                                    .setFailureToast(R.string.error_apply)
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode == 0) {
+                                                msg.arg1 = R.string.rules_applied;
+                                                Api.setEnabled(context, true, false);
+                                            } else {
+                                                // error details are already in logcat
+                                                msg.arg1 = R.string.error_apply;
+                                            }
+                                        }
+                                    }));
+                            break;
+                        case 2:
+                            //validation, check for password
+                            if (G.protectionLevel().equals("p0")) {
+                                Api.purgeIptables(context, true, new RootCommand()
+                                        .setSuccessToast(R.string.toast_disabled)
+                                        .setFailureToast(R.string.toast_error_disabling)
+                                        .setReopenShell(true)
+                                        .setCallback(new RootCommand.Callback() {
+                                            public void cbFunc(RootCommand state) {
 
-                                                    if (state.exitCode == 0) {
-                                                        msg.arg1 = R.string.toast_disabled;
-                                                        toaster.sendMessage(msg);
-                                                        Api.setEnabled(context, false, false);
-                                                    } else {
-                                                        // error details are already in logcat
-                                                        msg.arg1 = R.string.toast_error_disabling;
-                                                        toaster.sendMessage(msg);
-                                                    }
+                                                if (state.exitCode == 0) {
+                                                    msg.arg1 = R.string.toast_disabled;
+                                                    toaster.sendMessage(msg);
+                                                    Api.setEnabled(context, false, false);
+                                                } else {
+                                                    // error details are already in logcat
+                                                    msg.arg1 = R.string.toast_error_disabling;
+                                                    toaster.sendMessage(msg);
                                                 }
-                                            }));
-                                } else {
-                                    msg.arg1 = R.string.widget_disable_fail;
-                                    toaster.sendMessage(msg);
-                                }
-                                break;
-                            case 3:
-                                G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
-                                break;
-                            case 4:
-                                G.setProfile(true, "AFWallProfile1");
-                                break;
-                            case 5:
-                                G.setProfile(true, "AFWallProfile2");
-                                break;
-                            case 6:
-                                G.setProfile(true, "AFWallProfile3");
-                                break;
-                        }
-                        if (i > 2) {
-                            applyProfileRules(context, msg, toaster);
-                            G.reloadPrefs();
-                        }
+                                            }
+                                        }));
+                            } else {
+                                msg.arg1 = R.string.widget_disable_fail;
+                                toaster.sendMessage(msg);
+                            }
+                            break;
+                        case 3:
+                            G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
+                            break;
+                        case 4:
+                            G.setProfile(true, "AFWallProfile1");
+                            break;
+                        case 5:
+                            G.setProfile(true, "AFWallProfile2");
+                            break;
+                        case 6:
+                            G.setProfile(true, "AFWallProfile3");
+                            break;
                     }
-                    Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                    if (i > 2) {
+                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                                .setFailureToast(R.string.error_apply)
+                                .setCallback(new RootCommand.Callback() {
+                                    @Override
+                                    public void cbFunc(RootCommand state) {
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.rules_applied;
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.error_apply;
+                                        }
+                                    }
+                                }));
+                        G.reloadPrefs();
+                    }
                 }
-            }.start();
+                Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+            }
+        }.start();
     }
 
 
-    private boolean applyProfileRules(final Context context, final Message msg, final Handler toaster) {
+    /*private boolean applyProfileRules(final Context context, final Message msg, final Handler toaster) {
         boolean ret = Api.applySavedIptablesRules(context, false, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
@@ -472,5 +507,5 @@ public class ToggleWidgetActivity extends Activity {
                     }
                 }));
         return ret;
-    }
+    }*/
 }
