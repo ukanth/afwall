@@ -676,21 +676,14 @@ public final class Api {
             cmds.add("-P OUTPUT ACCEPT");
 
             //look for custom rules
-            if (ipv6) {
-                if (G.blockIPv6()) {
+            /*if (ipv6) {
+                if (G.enableIPv6()) {
                     setBinaryPath(ctx, true);
-                    cmds.add("-P INPUT DROP");
-                    cmds.add("-P FORWARD DROP");
-                    cmds.add("-P OUTPUT DROP");
-                } else {
-                    if (G.enableIPv6()) {
-                        setBinaryPath(ctx, true);
-                        cmds.add("-P INPUT ACCEPT");
-                        cmds.add("-P FORWARD ACCEPT");
-                        cmds.add("-P OUTPUT ACCEPT");
-                    }
+                    cmds.add("-P INPUT ACCEPT");
+                    cmds.add("-P FORWARD ACCEPT");
+                    cmds.add("-P OUTPUT ACCEPT");
                 }
-            }
+            }*/
         } catch (Exception e) {
             Log.e(e.getClass().getName(), e.getMessage(), e);
         }
@@ -791,7 +784,7 @@ public final class Api {
                 if (returnValue == false) {
                     return false;
                 }
-            } else {
+            } /*else {
                 if (G.blockIPv6()) {
                     setBinaryPath(ctx, true);
                     List blockRules = new ArrayList<>();
@@ -800,7 +793,7 @@ public final class Api {
                     blockRules.add("-P OUTPUT DROP");
                     iptablesCommands(blockRules, cmds, true);
                 }
-            }
+            }*/
 
             rulesUpToDate = true;
             if (G.isFaster()) {
@@ -835,18 +828,18 @@ public final class Api {
             setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
             applyShortRules(ctx, cmds, true);
-            cmds.add("-P INPUT ACCEPT");
+            /*cmds.add("-P INPUT ACCEPT");
             cmds.add("-P FORWARD ACCEPT");
-            cmds.add("-P OUTPUT ACCEPT");
+            cmds.add("-P OUTPUT ACCEPT");*/
             iptablesCommands(cmds, out, true);
-        } else if (G.blockIPv6()) {
+        } /*else if (G.blockIPv6()) {
             setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
             cmds.add("-P INPUT DROP");
             cmds.add("-P FORWARD DROP");
             cmds.add("-P OUTPUT DROP");
             iptablesCommands(cmds, out, true);
-        }
+        }*/
 
         if (G.isFaster()) {
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
@@ -1434,18 +1427,28 @@ public final class Api {
         List<String> cmds = new ArrayList<String>();
         cmds.add("-S INPUT");
         cmds.add("-S OUTPUT");
+        cmds.add("-S FORWARD");
         List<String> out = new ArrayList<>();
 
         setBinaryPath(ctx, false);
         iptablesCommands(cmds, out, false);
 
-        if (G.enableIPv6() || G.blockIPv6()) {
-            setBinaryPath(ctx, true);
-            ArrayList base = new ArrayList<String>();
-            base.add("-S INPUT");
-            base.add("-S OUTPUT");
-            iptablesCommands(base, out, true);
-        }
+        setBinaryPath(ctx, true);
+        ArrayList base = new ArrayList<String>();
+        base.add("-S INPUT");
+        base.add("-S OUTPUT");
+        cmds.add("-S FORWARD");
+        iptablesCommands(base, out, true);
+
+        callback.run(ctx, out);
+    }
+
+    public static void applyRule(Context ctx, String rule, boolean isIpv6, RootCommand callback) {
+        List<String> cmds = new ArrayList<String>();
+        cmds.add(rule);
+        setBinaryPath(ctx, isIpv6);
+        List<String> out = new ArrayList<>();
+        iptablesCommands(cmds, out, isIpv6);
         callback.run(ctx, out);
     }
 
@@ -2948,9 +2951,17 @@ public final class Api {
 
     public static void allowDefaultChains(Context ctx) {
         List<String> cmds = new ArrayList<String>();
-        cmds.add("-P INPUT ACCEPT");
+        if (G.ipv4Input()) {
+            cmds.add("-P INPUT ACCEPT");
+        } else {
+            cmds.add("-P INPUT DROP");
+        }
         cmds.add("-P FORWARD ACCEPT");
-        cmds.add("-P OUTPUT ACCEPT ");
+        if (G.ipv4Output()) {
+            cmds.add("-P OUTPUT ACCEPT ");
+        } else {
+            cmds.add("-P OUTPUT DROP ");
+        }
         applyQuick(ctx, cmds, new RootCommand());
         applyIPv6Quick(ctx, cmds, new RootCommand());
     }

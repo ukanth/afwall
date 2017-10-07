@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="uiPrefsScreen">
 
-    <PreferenceCategory android:title="@string/ui_prefs_title">
+    <PreferenceCategory android:title="@string/rule_prefs_title">
 
         <CheckBoxPreference
             android:defaultValue="true"
@@ -29,47 +29,62 @@
             android:key="enableVPN"
             android:summary="@string/vpnSummary"
             android:title="@string/vpn_profile" />
+    </PreferenceCategory>
 
-        <!--<SwitchPreference
+    <PreferenceCategory android:title="@string/ui_chains_title">
+        <SwitchPreference
             android:defaultValue="true"
             android:key="input_chain"
-            android:summaryOn="@string/input_chain_summary_on"
             android:summaryOff="@string/input_chain_summary_off"
+            android:summaryOn="@string/input_chain_summary_on"
             android:title="@string/input_chain" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="output_chain"
-            android:summaryOn="@string/output_chain_summary_on"
             android:summaryOff="@string/output_chain_summary_off"
-            android:title="@string/output_chain" />-->
+            android:summaryOn="@string/output_chain_summary_on"
+            android:title="@string/output_chain" />
 
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="blockIPv6"
-            android:summary="@string/block_ipv6_summary"
-            android:title="@string/block_ipv6_title" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="forward_chain"
+            android:summaryOff="@string/forward_chain_summary_off"
+            android:summaryOn="@string/forward_chain_summary_on"
+            android:title="@string/forward_chain" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/ui_chains6_title">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="enableIPv6"
             android:summary="@string/ipv6_summary"
             android:title="@string/ipv6_title" />
 
-       <!-- <SwitchPreference
+        <SwitchPreference
             android:defaultValue="true"
+            android:dependency="enableIPv6"
             android:key="input_chain_v6"
-            android:summaryOn="@string/input_chain_summary_on"
             android:summaryOff="@string/input_chain_summary_off"
+            android:summaryOn="@string/input_chain_summary_on"
             android:title="@string/input_chain_v6" />
 
         <SwitchPreference
             android:defaultValue="true"
+            android:dependency="enableIPv6"
             android:key="output_chain_v6"
-            android:summaryOn="@string/output_chain_summary_on"
             android:summaryOff="@string/output_chain_summary_off"
-            android:title="@string/output_chain_v6" />-->
+            android:summaryOn="@string/output_chain_summary_on"
+            android:title="@string/output_chain_v6" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="enableIPv6"
+            android:key="forward_chain_v6"
+            android:summaryOff="@string/forward_chain_summary_off"
+            android:summaryOn="@string/forward_chain_summary_on"
+            android:title="@string/forward_chain_v6" />
 
     </PreferenceCategory>
 </PreferenceScreen>

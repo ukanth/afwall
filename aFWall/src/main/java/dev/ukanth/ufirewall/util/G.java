@@ -60,7 +60,7 @@ public class G extends Application {
     private static final String ENABLE_VPN = "enableVPN";
     private static final String ENABLE_LAN = "enableLAN";
     private static final String ENABLE_IPV6 = "enableIPv6";
-    private static final String BLOCK_IPV6 = "blockIPv6";
+    //private static final String BLOCK_IPV6 = "blockIPv6";
     private static final String ENABLE_INBOUND = "enableInbound";
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
     private static final String LOG_PING_TIMEOUT = "logPingTime";
@@ -117,9 +117,12 @@ public class G extends Application {
     //ippreference
     private static final String IP4_INPUT = "input_chain";
     private static final String IP4_OUTPUT = "output_chain";
+    private static final String IP4_FWD = "forward_chain";
 
     private static final String IP6_INPUT = "input_chain_v6";
     private static final String IP6_OUTPUT = "output_chain_v6";
+    private static final String IP6_FWD = "forward_chain_v6";
+
 
     private static String AFWALL_PROFILE = "AFWallProfile";
     private static String SHOW_LOG_TOAST = "showLogToasts";
@@ -157,12 +160,30 @@ public class G extends Application {
         return val;
     }
 
+    public static boolean ipv4Fwd() {
+        return gPrefs.getBoolean(IP4_FWD, true);
+    }
+
+    public static boolean ipv4Fwd(boolean val) {
+        gPrefs.edit().putBoolean(IP4_FWD, val).commit();
+        return val;
+    }
+
     public static boolean ipv4Output() {
         return gPrefs.getBoolean(IP4_OUTPUT, true);
     }
 
     public static boolean ipv4Output(boolean val) {
         gPrefs.edit().putBoolean(IP4_OUTPUT, val).commit();
+        return val;
+    }
+
+    public static boolean ipv6Fwd() {
+        return gPrefs.getBoolean(IP6_FWD, true);
+    }
+
+    public static boolean ipv6Fwd(boolean val) {
+        gPrefs.edit().putBoolean(IP6_FWD, val).commit();
         return val;
     }
 
@@ -279,14 +300,14 @@ public class G extends Application {
         return val;
     }
 
-    public static boolean blockIPv6() {
+   /* public static boolean blockIPv6() {
         return gPrefs.getBoolean(BLOCK_IPV6, false);
     }
 
     public static boolean blockIPv6(boolean val) {
         gPrefs.edit().putBoolean(BLOCK_IPV6, val).commit();
         return val;
-    }
+    }*/
 
     public static boolean enableInbound() {
         return gPrefs.getBoolean(ENABLE_INBOUND, false);

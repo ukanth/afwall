@@ -276,7 +276,10 @@
     <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
 
     <!-- UI Preferences -->
-    <string name="ui_prefs_title">User interface</string>
+    <string name="ui_prefs_title">UI Preferences</string>
+    <string name="rule_prefs_title">Rules Behaviour</string>
+    <string name="ui_chains_title">IPv4 Chains</string>
+    <string name="ui_chains6_title">IPv6 Chains</string>
     <string name="rules_prefs_title">Rules/Connectivity</string>
     <string name="log_prefs_title">Log</string>
     <string name="hideicons_pref_title">Hide app icons</string>
@@ -555,6 +558,7 @@
 
     <string name="input_chain">INPUT Chain (IPv4)</string>
     <string name="output_chain">OUTPUT Chain (IPv4)</string>
+    <string name="forward_chain">FORWARD Chain (IPv4)</string>
 
     <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
     <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
@@ -562,6 +566,10 @@
     <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
     <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
 
+    <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+    <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+
     <string name="input_chain_v6">INPUT Chain (IPv6)</string>
     <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+    <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
 </resources>
