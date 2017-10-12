@@ -1423,7 +1423,13 @@ public final class Api {
         return true;
     }
 
-    public static void ruleStatus(Context ctx, boolean showErrors, RootCommand callback) {
+    /**
+     * Get Default Chain status
+     *
+     * @param ctx
+     * @param callback
+     */
+    public static void getChainStatus(Context ctx, RootCommand callback) {
         List<String> cmds = new ArrayList<String>();
         cmds.add("-S INPUT");
         cmds.add("-S OUTPUT");
@@ -1443,6 +1449,14 @@ public final class Api {
         callback.run(ctx, out);
     }
 
+    /**
+     * Apply single rule
+     *
+     * @param ctx
+     * @param rule
+     * @param isIpv6
+     * @param callback
+     */
     public static void applyRule(Context ctx, String rule, boolean isIpv6, RootCommand callback) {
         List<String> cmds = new ArrayList<String>();
         cmds.add(rule);
@@ -1451,6 +1465,7 @@ public final class Api {
         iptablesCommands(cmds, out, isIpv6);
         callback.run(ctx, out);
     }
+
 
 
     private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
@@ -1542,7 +1557,7 @@ public final class Api {
         }
     }
 
-    private static boolean migrateSettings(Context ctx, int lastVer, int currentVer) {
+    /*private static boolean migrateSettings(Context ctx, int lastVer, int currentVer) {
         if (lastVer <= 138) {
             // migrate busybox/iptables path settings from <= 1.2.7-BETA
             if (G.bb_path().equals("1")) {
@@ -1557,7 +1572,7 @@ public final class Api {
             }
         }
         return true;
-    }
+    }*/
 
     /**
      * Asserts that the binary files are installed in the cache directory.
@@ -1624,11 +1639,11 @@ public final class Api {
             }
         }
 
-        if (currentVer > 0) {
+        /*if (currentVer > 0) {
             if (migrateSettings(ctx, lastVer, currentVer) == false && showErrors) {
                 toast(ctx, ctx.getString(R.string.error_migration));
             }
-        }
+        }*/
 
         if (ret == true && currentVer > 0) {
             // this indicates that migration from the old version was successful.

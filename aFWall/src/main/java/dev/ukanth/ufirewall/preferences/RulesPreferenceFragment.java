@@ -67,7 +67,7 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
             forward_chain_v6.setEnabled(false);
         }
 
-        Api.ruleStatus(ctx, false, new RootShellService.RootCommand()
+        Api.getChainStatus(ctx,  new RootShellService.RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setLogging(true)
                 .setCallback(new RootShellService.RootCommand.Callback() {
