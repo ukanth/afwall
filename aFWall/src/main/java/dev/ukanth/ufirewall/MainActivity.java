@@ -76,6 +76,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -834,6 +835,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         setDirty(false);
         List<PackageInfoData> searchApp = new ArrayList<>();
+        HashSet<Integer> unique = new HashSet<>();
         final List<PackageInfoData> apps = Api.getApps(this, null);
         boolean isResultsFound = false;
         if (searchStr != null && searchStr.length() > 1) {
@@ -841,8 +843,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 for (String str : app.names) {
                     if (str != null && searchStr != null) {
                         if (str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())
-                                && !searchApp.contains(app)) {
+                                && !searchApp.contains(app) || (G.showUid() && (str + " " + app.uid).contains(searchStr) && !unique.contains(app.uid))) {
                             searchApp.add(app);
+                            unique.add(app.uid);
                             isResultsFound = true;
                         }
                     }
