@@ -62,9 +62,14 @@
             android:summary="@string/ipv6_summary"
             android:title="@string/ipv6_title" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="controlIPv6"
+            android:summary="@string/control_ipv6_title"/>
+
         <SwitchPreference
             android:defaultValue="true"
-            android:dependency="enableIPv6"
+            android:dependency="controlIPv6"
             android:key="input_chain_v6"
             android:summaryOff="@string/input_chain_summary_off"
             android:summaryOn="@string/input_chain_summary_on"
@@ -72,7 +77,7 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:dependency="enableIPv6"
+            android:dependency="controlIPv6"
             android:key="output_chain_v6"
             android:summaryOff="@string/output_chain_summary_off"
             android:summaryOn="@string/output_chain_summary_on"
@@ -80,7 +85,7 @@
 
         <SwitchPreference
             android:defaultValue="true"
-            android:dependency="enableIPv6"
+            android:dependency="controlIPv6"
             android:key="forward_chain_v6"
             android:summaryOff="@string/forward_chain_summary_off"
             android:summaryOn="@string/forward_chain_summary_on"

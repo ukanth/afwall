@@ -270,7 +270,7 @@ public final class InterfaceTracker {
                     public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
                             Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
-                            Api.allowDefaultChains(ctx);
+                            Api.applyDefaultChains(ctx);
                         } else {
                             //lets try applying all rules
                             Api.setRulesUpToDate(false);
@@ -285,7 +285,7 @@ public final class InterfaceTracker {
                                                 Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
                                                 errorNotification(ctx);
                                             }
-                                            Api.allowDefaultChains(ctx);
+                                            Api.applyDefaultChains(ctx);
                                         }
                                     }));
                         }

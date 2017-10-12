@@ -60,6 +60,7 @@ public class G extends Application {
     private static final String ENABLE_VPN = "enableVPN";
     private static final String ENABLE_LAN = "enableLAN";
     private static final String ENABLE_IPV6 = "enableIPv6";
+    private static final String CONTROL_IPV6 = "controlIPv6";
     //private static final String BLOCK_IPV6 = "blockIPv6";
     private static final String ENABLE_INBOUND = "enableInbound";
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
@@ -179,7 +180,7 @@ public class G extends Application {
     }
 
     public static boolean ipv6Fwd() {
-        return gPrefs.getBoolean(IP6_FWD, true);
+        return gPrefs.getBoolean(IP6_FWD, false);
     }
 
     public static boolean ipv6Fwd(boolean val) {
@@ -188,7 +189,7 @@ public class G extends Application {
     }
 
     public static boolean ipv6Input() {
-        return gPrefs.getBoolean(IP6_INPUT, true);
+        return gPrefs.getBoolean(IP6_INPUT, false);
     }
 
     public static boolean ipv6Input(boolean val) {
@@ -197,7 +198,7 @@ public class G extends Application {
     }
 
     public static boolean ipv6Output() {
-        return gPrefs.getBoolean(IP6_OUTPUT, true);
+        return gPrefs.getBoolean(IP6_OUTPUT, false);
     }
 
     public static boolean ipv6Output(boolean val) {
@@ -299,6 +300,12 @@ public class G extends Application {
         gPrefs.edit().putBoolean(ENABLE_IPV6, val).commit();
         return val;
     }
+
+    public static boolean controlIPv6() {
+        return gPrefs.getBoolean(CONTROL_IPV6, false);
+    }
+
+
 
    /* public static boolean blockIPv6() {
         return gPrefs.getBoolean(BLOCK_IPV6, false);

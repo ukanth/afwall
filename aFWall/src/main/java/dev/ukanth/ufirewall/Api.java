@@ -804,7 +804,7 @@ public final class Api {
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            allowDefaultChains(ctx);
+            applyDefaultChains(ctx);
             return false;
         }
     }
@@ -828,18 +828,8 @@ public final class Api {
             setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
             applyShortRules(ctx, cmds, true);
-            /*cmds.add("-P INPUT ACCEPT");
-            cmds.add("-P FORWARD ACCEPT");
-            cmds.add("-P OUTPUT ACCEPT");*/
             iptablesCommands(cmds, out, true);
-        } /*else if (G.blockIPv6()) {
-            setBinaryPath(ctx, true);
-            cmds = new ArrayList<String>();
-            cmds.add("-P INPUT DROP");
-            cmds.add("-P FORWARD DROP");
-            cmds.add("-P OUTPUT DROP");
-            iptablesCommands(cmds, out, true);
-        }*/
+        }
 
         if (G.isFaster()) {
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
@@ -1465,7 +1455,6 @@ public final class Api {
         iptablesCommands(cmds, out, isIpv6);
         callback.run(ctx, out);
     }
-
 
 
     private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
@@ -2964,21 +2953,52 @@ public final class Api {
     }
 
 
-    public static void allowDefaultChains(Context ctx) {
+    /**
+     * Apply default chains based on preference
+     *
+     * @param ctx
+     */
+    public static void applyDefaultChains(Context ctx) {
         List<String> cmds = new ArrayList<String>();
         if (G.ipv4Input()) {
             cmds.add("-P INPUT ACCEPT");
         } else {
             cmds.add("-P INPUT DROP");
         }
-        cmds.add("-P FORWARD ACCEPT");
-        if (G.ipv4Output()) {
-            cmds.add("-P OUTPUT ACCEPT ");
+        if (G.ipv4Fwd()) {
+            cmds.add("-P FORWARD ACCEPT");
         } else {
-            cmds.add("-P OUTPUT DROP ");
+            cmds.add("-P FORWARD DROP");
+        }
+        if (G.ipv4Output()) {
+            cmds.add("-P OUTPUT ACCEPT");
+        } else {
+            cmds.add("-P OUTPUT DROP");
         }
         applyQuick(ctx, cmds, new RootCommand());
-        applyIPv6Quick(ctx, cmds, new RootCommand());
+        applyDefaultChainsv6(ctx);
+    }
+
+    public static void applyDefaultChainsv6(Context ctx) {
+        if (G.controlIPv6()) {
+            List<String> cmds = new ArrayList<String>();
+            if (G.ipv6Input()) {
+                cmds.add("-P INPUT ACCEPT");
+            } else {
+                cmds.add("-P INPUT DROP");
+            }
+            if (G.ipv6Fwd()) {
+                cmds.add("-P FORWARD ACCEPT");
+            } else {
+                cmds.add("-P FORWARD DROP");
+            }
+            if (G.ipv6Output()) {
+                cmds.add("-P OUTPUT ACCEPT");
+            } else {
+                cmds.add("-P OUTPUT DROP");
+            }
+            applyIPv6Quick(ctx, cmds, new RootCommand());
+        }
     }
 
     /**

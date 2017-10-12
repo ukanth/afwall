@@ -237,8 +237,7 @@
     <string name="ipv6_title">IPv6 support</string>
     <string name="ipv6_summary">Enable support for IPv6</string>
 
-    <string name="block_ipv6_title">Block IPv6</string>
-    <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+    <string name="control_ipv6_title">Only Control IPv6 Chains</string>
 
     <string name="ip6unavailable">Error: IPv6 requires \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Switch IPv6 rules</string>
