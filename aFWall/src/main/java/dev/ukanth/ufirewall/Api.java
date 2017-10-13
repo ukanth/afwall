@@ -784,17 +784,7 @@ public final class Api {
                 if (returnValue == false) {
                     return false;
                 }
-            } /*else {
-                if (G.blockIPv6()) {
-                    setBinaryPath(ctx, true);
-                    List blockRules = new ArrayList<>();
-                    blockRules.add("-P INPUT DROP");
-                    blockRules.add("-P FORWARD DROP");
-                    blockRules.add("-P OUTPUT DROP");
-                    iptablesCommands(blockRules, cmds, true);
-                }
-            }*/
-
+            }
             rulesUpToDate = true;
             if (G.isFaster()) {
                 callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, cmds);
@@ -1926,6 +1916,7 @@ public final class Api {
      * Small structure to hold an application info
      */
     public static final class PackageInfoData {
+
         /**
          * linux user id
          */

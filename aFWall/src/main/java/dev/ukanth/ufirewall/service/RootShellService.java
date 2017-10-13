@@ -48,11 +48,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
@@ -495,6 +495,20 @@ public class RootShellService extends Service {
         int exitCode;
     }
 
+    private static void shutdownAndAwaitTermination(ExecutorService pool) {
+        pool.shutdown();
+        try {
+            if (!pool.awaitTermination(20, TimeUnit.SECONDS)) {
+                pool.shutdownNow();
+                if (!pool.awaitTermination(20, TimeUnit.SECONDS))
+                    Log.e(TAG, "thread pool did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            pool.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
     private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state, boolean useThreads) {
 
         if (useThreads) {
@@ -506,12 +520,14 @@ public class RootShellService extends Service {
                 reOpenShell(ctx);
             }
 
-            ExecutorService executor = Executors.newFixedThreadPool(2);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
             List<Callable<IpCmd>> callables = new ArrayList<>();
 
             for (final String str : script) {
                 callables.add(new ExecuteCommand(str));
             }
+
+            Log.i(TAG, "Total rules waiting to be applied: " + script.size() + " , " + callables.size());
             try {
                 if (script.size() > 0) {
                     manager = createNotification(mContext);
@@ -519,15 +535,12 @@ public class RootShellService extends Service {
                             executor.invokeAll(callables);
 
                     for (Future<IpCmd> future : results) {
-                        if (future.isDone()) {
-                            if (future.get().getExitCode() != 0) {
-                                //failed to execute this command
-                                // TODO: implement retry logic for those rules.
-                                state.exitCode = -1;
-                                Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
-                            } else {
-
-                            }
+                        if (future.get().getExitCode() != 0) {
+                            //failed to execute this command
+                            // TODO: implement retry logic for those rules.
+                            state.exitCode = -1;
+                            Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
+                        } else {
                         }
                     }
                     if (results.size() != script.size()) {
@@ -537,6 +550,7 @@ public class RootShellService extends Service {
                     }
                 }
             } catch (InterruptedException | ExecutionException e) {
+                Log.e(e.getClass().getName(), e.getMessage(), e);
             } catch (Exception e) {
                 Log.e(e.getClass().getName(), e.getMessage(), e);
             }
@@ -548,7 +562,7 @@ public class RootShellService extends Service {
                 state.cb.cbFunc(state);
             }
             //shut down the executor service now
-            executor.shutdown();
+            shutdownAndAwaitTermination(executor);
 
         } else {
             state.script = script;
@@ -557,9 +571,7 @@ public class RootShellService extends Service {
             if (mContext == null) {
                 mContext = ctx.getApplicationContext();
             }
-
             waitQueue.add(state);
-
             if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
                 reOpenShell(ctx);
             } else if (rootState != ShellState.BUSY) {
@@ -619,11 +631,11 @@ public class RootShellService extends Service {
         builder.setContentIntent(resultPendingIntent);
         builder.setSmallIcon(R.drawable.notification)
                 .setAutoCancel(false)
-                .setContentTitle("Applying rules")
+                .setContentTitle(context.getString(R.string.applying_rules))
                 //keep the priority as low ,so it's not visible on lockscreen
                 .setTicker(context.getString(R.string.app_name))
-                .setPriority(G.getNotificationPriority())
-                .setContentText("please wait.");
+                .setPriority(-2)
+                .setContentText("");
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
         return mNotificationManager;
     }
