@@ -169,6 +169,9 @@
     <string name="blocked">AFWall+ Blocked:</string>
     <string name="refresh">Refresh</string>
 
+    <string name="block_ipv6_title">delete</string>
+    <string name="block_ipv6_summary">delete</string>
+
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profiles</string>
     <string name="custom_title1">Custom name for Default Profile</string>
