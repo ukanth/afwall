@@ -48,6 +48,7 @@
     <string name="show_log">View log</string>
     <string name="clear_log">Clear log</string>
     <string name="applying_rules">Applying iptables rules</string>
+    <string name="applying">Applying</string>
     <string name="saving_rules">Saving iptables rules</string>
     <string name="rules_applied">Rules applied with success</string>
     <string name="rules_saved">Rules saved</string>

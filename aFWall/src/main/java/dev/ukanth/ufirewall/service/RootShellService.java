@@ -53,7 +53,6 @@ import java.util.concurrent.TimeUnit;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
 import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
@@ -281,17 +280,16 @@ public class RootShellService extends Service {
             } else if (rootState == ShellState.READY) {
                 rootState = ShellState.BUSY;
                 manager = createNotification(mContext);
-                submitNextCommand(state);
+                processCommands(state);
             }
         } while (false);
     }
 
-    private static void submitNextCommand(final RootCommand state) {
+    private static void processCommands(final RootCommand state) {
         String command = state.script.get(state.commandIndex);
-
         try {
             if (progress != null) {
-                progress.setContent("Applying " + state.commandIndex + " of total: " + state.script.size());
+                progress.setContent(mContext.getString(R.string.applying) + " " + state.commandIndex + "/" + state.script.size());
             }
         } catch (Exception e) {
             Log.e(e.getClass().getName(), e.getMessage(), e);
@@ -308,11 +306,9 @@ public class RootShellService extends Service {
             state.lastCommandResult = new StringBuilder();
 
             Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
-
                 @Override
                 public void onCommandResult(int commandCode, int exitCode,
                                             List<String> output) {
-
                     if (output != null) {
                         ListIterator<String> iter = output.listIterator();
                         while (iter.hasNext()) {
@@ -325,13 +321,11 @@ public class RootShellService extends Service {
                             }
                         }
                     }
-
-
                     if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
                         state.retryCount++;
                         Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
                                 ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-                        submitNextCommand(state);
+                        processCommands(state);
                         return;
                     }
 
@@ -353,7 +347,7 @@ public class RootShellService extends Service {
                         }
                         runNextSubmission();
                     } else {
-                        submitNextCommand(state);
+                        processCommands(state);
                     }
                 }
             };
@@ -368,16 +362,16 @@ public class RootShellService extends Service {
     }
 
     private static void setupLogging() {
-        Debug.setDebug(true);
+       /* Debug.setDebug(false);
         Debug.setLogTypeEnabled(Debug.LOG_ALL, false);
-        Debug.setLogTypeEnabled(Debug.LOG_GENERAL, true);
-        Debug.setSanityChecksEnabled(true);
+        Debug.setLogTypeEnabled(Debug.LOG_GENERAL, false);
+        Debug.setSanityChecksEnabled(false);
         Debug.setOnLogListener(new Debug.OnLogListener() {
             @Override
             public void onLog(int type, String typeIndicator, String message) {
                 Log.i(TAG, "[libsuperuser] " + message);
             }
-        });
+        });*/
     }
 
 
@@ -511,15 +505,15 @@ public class RootShellService extends Service {
 
     private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state, boolean useThreads) {
 
+        if (mContext == null) {
+            mContext = ctx.getApplicationContext();
+        }
+
+        if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
+            reOpenShell(ctx);
+        }
+
         if (useThreads) {
-            if (mContext == null) {
-                mContext = ctx.getApplicationContext();
-            }
-
-            if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
-                reOpenShell(ctx);
-            }
-
             ExecutorService executor = Executors.newSingleThreadExecutor();
             List<Callable<IpCmd>> callables = new ArrayList<>();
 
@@ -572,9 +566,7 @@ public class RootShellService extends Service {
                 mContext = ctx.getApplicationContext();
             }
             waitQueue.add(state);
-            if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
-                reOpenShell(ctx);
-            } else if (rootState != ShellState.BUSY) {
+            if (rootState != ShellState.BUSY) {
                 runNextSubmission();
             }
         }

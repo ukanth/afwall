@@ -1,6 +1,22 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.7 - WIP
+
+Features:
+Control default chains for ipv4 and ipv6 as preference
+Quick apply when only applying from main screen - using floating apply button - Donate Version Only
+Showing rules count on apply
+Search using UID
+Improved detection on su/superuser
+
+Bug Fixes:
+Widgets for profile & toggle issue
+Tasker profile switch issue
+Possible fix for starup rule
+Library updates
+User reported crash fixes
+
 Version 2.9.6.1
 
 * Removed BIND_ADMIN permission and related device admin feature as per Google - Will be introduced after sometime
