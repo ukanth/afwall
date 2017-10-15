@@ -53,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
 import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
@@ -286,83 +287,85 @@ public class RootShellService extends Service {
     }
 
     private static void processCommands(final RootCommand state) {
-        String command = state.script.get(state.commandIndex);
-        try {
-            if (progress != null) {
-                progress.setContent(mContext.getString(R.string.applying) + " " + state.commandIndex + "/" + state.script.size());
-            }
-        } catch (Exception e) {
-            Log.e(e.getClass().getName(), e.getMessage(), e);
-        }
-
-        if (command != null) {
-            if (command.startsWith("#NOCHK# ")) {
-                command = command.replaceFirst("#NOCHK# ", "");
-                state.ignoreExitCode = true;
-            } else {
-                state.ignoreExitCode = false;
-            }
-            state.lastCommand = command;
-            state.lastCommandResult = new StringBuilder();
-
-            Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
-                @Override
-                public void onCommandResult(int commandCode, int exitCode,
-                                            List<String> output) {
-                    if (output != null) {
-                        ListIterator<String> iter = output.listIterator();
-                        while (iter.hasNext()) {
-                            String line = iter.next();
-                            if (line != null && !line.equals("")) {
-                                if (state.res != null) {
-                                    state.res.append(line + "\n");
-                                }
-                                state.lastCommandResult.append(line + "\n");
-                            }
-                        }
-                    }
-                    if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
-                        state.retryCount++;
-                        Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-                        processCommands(state);
-                        return;
-                    }
-
-                    state.commandIndex++;
-                    state.retryCount = 0;
-
-                    boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
-                    if (state.commandIndex >= state.script.size() || errorExit) {
-                        complete(state, exitCode);
-                        if (exitCode < 0) {
-                            rootState = ShellState.FAIL;
-                            Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
-                        } else {
-                            if (errorExit) {
-                                Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                        "\nOutput:\n" + state.lastCommandResult);
-                            }
-                            rootState = ShellState.READY;
-                        }
-                        runNextSubmission();
-                    } else {
-                        processCommands(state);
-                    }
+        if (state.commandIndex < state.script.size()) {
+            String command = state.script.get(state.commandIndex);
+            try {
+                if (progress != null) {
+                    progress.setContent(mContext.getString(R.string.applying) + " " + state.commandIndex + "/" + state.script.size());
                 }
-            };
-            if (listener != null) {
-                try {
-                    rootSession.addCommand(command, 0, listener);
-                } catch (NullPointerException e) {
-                    Log.d(TAG, "Unable to add commands to session");
+            } catch (Exception e) {
+                Log.e(e.getClass().getName(), e.getMessage(), e);
+            }
+
+            if (command != null) {
+                if (command.startsWith("#NOCHK# ")) {
+                    command = command.replaceFirst("#NOCHK# ", "");
+                    state.ignoreExitCode = true;
+                } else {
+                    state.ignoreExitCode = false;
+                }
+                state.lastCommand = command;
+                state.lastCommandResult = new StringBuilder();
+
+                Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
+                    @Override
+                    public void onCommandResult(int commandCode, int exitCode,
+                                                List<String> output) {
+                        if (output != null) {
+                            ListIterator<String> iter = output.listIterator();
+                            while (iter.hasNext()) {
+                                String line = iter.next();
+                                if (line != null && !line.equals("")) {
+                                    if (state.res != null) {
+                                        state.res.append(line + "\n");
+                                    }
+                                    state.lastCommandResult.append(line + "\n");
+                                }
+                            }
+                        }
+                        if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
+                            state.retryCount++;
+                            Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                    ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+                            processCommands(state);
+                            return;
+                        }
+
+                        state.commandIndex++;
+                        state.retryCount = 0;
+
+                        boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
+                        if (state.commandIndex >= state.script.size() || errorExit) {
+                            complete(state, exitCode);
+                            if (exitCode < 0) {
+                                rootState = ShellState.FAIL;
+                                Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
+                            } else {
+                                if (errorExit) {
+                                    Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                            "\nOutput:\n" + state.lastCommandResult);
+                                }
+                                rootState = ShellState.READY;
+                            }
+                            runNextSubmission();
+                        } else {
+                            processCommands(state);
+                        }
+                    }
+                };
+                if (listener != null) {
+                    try {
+                        rootSession.addCommand(command, 0, listener);
+                    } catch (NullPointerException e) {
+                        Log.d(TAG, "Unable to add commands to session");
+                    }
                 }
             }
         }
     }
 
     private static void setupLogging() {
-       /* Debug.setDebug(false);
+        Debug.setDebug(true);
         Debug.setLogTypeEnabled(Debug.LOG_ALL, false);
         Debug.setLogTypeEnabled(Debug.LOG_GENERAL, false);
         Debug.setSanityChecksEnabled(false);
@@ -371,7 +374,7 @@ public class RootShellService extends Service {
             public void onLog(int type, String typeIndicator, String message) {
                 Log.i(TAG, "[libsuperuser] " + message);
             }
-        });*/
+        });
     }
 
 
