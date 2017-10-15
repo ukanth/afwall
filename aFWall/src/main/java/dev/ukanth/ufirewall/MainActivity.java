@@ -464,30 +464,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSpinner.setAdapter(spinnerAdapter);
         mSpinner.setOnItemSelectedListener(this);
         String currentProfile = G.storedProfile();
-        if (!G.isProfileMigrated()) {
-            switch (currentProfile) {
-                case Api.DEFAULT_PREFS_NAME:
-                    mSpinner.setSelection(0);
-                    break;
-                case "AFWallProfile1":
-                    mSpinner.setSelection(1);
-                    break;
-                case "AFWallProfile2":
-                    mSpinner.setSelection(2);
-                    break;
-                case "AFWallProfile3":
-                    mSpinner.setSelection(3);
-                    break;
-                default:
-                    if (currentProfile != null) {
+        if (currentProfile != null) {
+            if (!G.isProfileMigrated()) {
+                switch (currentProfile) {
+                    case Api.DEFAULT_PREFS_NAME:
+                        mSpinner.setSelection(0);
+                        break;
+                    case "AFWallProfile1":
+                        mSpinner.setSelection(1);
+                        break;
+                    case "AFWallProfile2":
+                        mSpinner.setSelection(2);
+                        break;
+                    case "AFWallProfile3":
+                        mSpinner.setSelection(3);
+                        break;
+                    default:
                         mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile), false);
-                    }
-            }
-        } else {
-            if (currentProfile != null) {
+                }
+            } else {
                 if (!currentProfile.equals(Api.DEFAULT_PREFS_NAME)) {
                     ProfileData data = ProfileHelper.getProfileByIdentifier(currentProfile);
-                    mSpinner.setSelection(spinnerAdapter.getPosition(data.getName()), false);
+                    if (data != null) {
+                        mSpinner.setSelection(spinnerAdapter.getPosition(data.getName()), false);
+                    }
                 } else {
                     mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile), false);
                 }
