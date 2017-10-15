@@ -539,6 +539,25 @@ public final class Api {
 
     }
 
+    static class RuleDataSet {
+
+        RuleDataSet(List<Integer> uidsWifi, List<Integer> uids3g,
+                    List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN) {
+            this.wifiList = uidsWifi;
+            this.dataList = uids3g;
+            this.roamList = uidsRoam;
+            this.vpnList = uidsVPN;
+            this.lanList = uidsLAN;
+        }
+
+        List<Integer> wifiList;
+        List<Integer> dataList;
+        List<Integer> lanList;
+        List<Integer> roamList;
+        List<Integer> vpnList;
+
+    }
+
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
@@ -551,12 +570,9 @@ public final class Api {
      * Purge and re-add all rules (internal implementation).
      *
      * @param ctx        application context (mandatory)
-     * @param uidsWifi   list of selected UIDs for WIFI to allow or disallow (depending on the working mode)
-     * @param uids3g     list of selected UIDs for 2G/3G to allow or disallow (depending on the working mode)
      * @param showErrors indicates if errors should be alerted
      */
-    private static boolean applyIptablesRulesImpl(final Context ctx, List<Integer> uidsWifi, List<Integer> uids3g,
-                                                  List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN, final boolean showErrors,
+    private static boolean applyIptablesRulesImpl(final Context ctx, RuleDataSet ruleDataSet, final boolean showErrors,
                                                   List<String> out, boolean ipv6) {
         if (ctx == null) {
             return false;
@@ -630,13 +646,13 @@ public final class Api {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
             }
 
-            final boolean any_wifi = uidsWifi.indexOf(SPECIAL_UID_ANY) >= 0;
-            final boolean any_3g = uids3g.indexOf(SPECIAL_UID_ANY) >= 0;
+            final boolean any_wifi = ruleDataSet.wifiList.indexOf(SPECIAL_UID_ANY) >= 0;
+            final boolean any_3g = ruleDataSet.dataList.indexOf(SPECIAL_UID_ANY) >= 0;
 
             // special rules to allow 3G<->wifi tethering
             // note that this can only blacklist DNS/DHCP services, not all tethered traffic
             if (((!whitelist && (any_wifi || any_3g)) ||
-                    (uids3g.indexOf(SPECIAL_UID_TETHER) >= 0) || (uidsWifi.indexOf(SPECIAL_UID_TETHER) >= 0))) {
+                    (ruleDataSet.dataList.indexOf(SPECIAL_UID_TETHER) >= 0) || (ruleDataSet.wifiList.indexOf(SPECIAL_UID_TETHER) >= 0))) {
 
                 String users[] = {"root", "nobody"};
                 String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
@@ -666,24 +682,15 @@ public final class Api {
 
             // now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
             // in whitelist mode the last rule in the list routes everything else to afwall-reject
-            addRulesForUidlist(cmds, uids3g, AFWALL_CHAIN_NAME + "-3g-home", whitelist);
-            addRulesForUidlist(cmds, uidsRoam, AFWALL_CHAIN_NAME + "-3g-roam", whitelist);
-            addRulesForUidlist(cmds, uidsWifi, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
-            addRulesForUidlist(cmds, uidsLAN, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
-            addRulesForUidlist(cmds, uidsVPN, AFWALL_CHAIN_NAME + "-vpn", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.dataList, AFWALL_CHAIN_NAME + "-3g-home", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.roamList, AFWALL_CHAIN_NAME + "-3g-roam", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.wifiList, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
             Log.i(TAG, "Setting OUTPUT to Accept State");
             cmds.add("-P OUTPUT ACCEPT");
 
-            //look for custom rules
-            /*if (ipv6) {
-                if (G.enableIPv6()) {
-                    setBinaryPath(ctx, true);
-                    cmds.add("-P INPUT ACCEPT");
-                    cmds.add("-P FORWARD ACCEPT");
-                    cmds.add("-P OUTPUT ACCEPT");
-                }
-            }*/
         } catch (Exception e) {
             Log.e(e.getClass().getName(), e.getMessage(), e);
         }
@@ -746,7 +753,7 @@ public final class Api {
             return false;
         }
         try {
-            Log.i(TAG, "Using fullApply(applySavedIptablesRules)");
+            Log.i(TAG, "Using applySavedIptablesRules");
             initSpecial();
 
             final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
@@ -759,26 +766,25 @@ public final class Api {
             List<String> cmds = new ArrayList<String>();
 
             setBinaryPath(ctx, false);
-            returnValue = applyIptablesRulesImpl(ctx,
-                    getListFromPref(savedPkg_wifi_uid),
+            RuleDataSet dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
                     getListFromPref(savedPkg_3g_uid),
                     getListFromPref(savedPkg_roam_uid),
                     getListFromPref(savedPkg_vpn_uid),
-                    getListFromPref(savedPkg_lan_uid),
-                    showErrors,
-                    cmds, false);
+                    getListFromPref(savedPkg_lan_uid));
+            returnValue = applyIptablesRulesImpl(ctx, dataSet, showErrors, cmds, false);
             if (returnValue == false) {
                 return false;
             }
 
             if (G.enableIPv6()) {
                 setBinaryPath(ctx, true);
-                returnValue = applyIptablesRulesImpl(ctx,
-                        getListFromPref(savedPkg_wifi_uid),
+                dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
                         getListFromPref(savedPkg_3g_uid),
                         getListFromPref(savedPkg_roam_uid),
                         getListFromPref(savedPkg_vpn_uid),
-                        getListFromPref(savedPkg_lan_uid),
+                        getListFromPref(savedPkg_lan_uid));
+
+                returnValue = applyIptablesRulesImpl(ctx, dataSet,
                         showErrors,
                         cmds, true);
                 if (returnValue == false) {
@@ -786,11 +792,49 @@ public final class Api {
                 }
             }
             rulesUpToDate = true;
-           /* if (G.isFaster()) {
-                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, cmds);
-            } else {
-                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
-            }*/
+
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            return true;
+        } catch (Exception e) {
+            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+            applyDefaultChains(ctx, callback);
+            return false;
+        }
+    }
+
+
+    public static boolean applyQuickSavedIptablesRules(Context ctx, RuleDataSet dataSet, boolean showErrors, RootCommand callback) {
+        if (ctx == null) {
+            return false;
+        }
+        try {
+            Log.i(TAG, "Using applyQuickSavedIptablesRules");
+            initSpecial();
+
+            boolean returnValue;
+            List<String> cmds = new ArrayList<String>();
+            List<String> out = new ArrayList<String>();
+            setBinaryPath(ctx, false);
+            returnValue = applyIptablesRulesImpl(ctx, dataSet, showErrors, cmds, false);
+            if (returnValue == false) {
+                return false;
+            }
+
+            iptablesCommands(cmds, out, false);
+
+            if (G.enableIPv6()) {
+                setBinaryPath(ctx, true);
+                returnValue = applyIptablesRulesImpl(ctx, dataSet,
+                        showErrors,
+                        cmds, true);
+                if (returnValue == false) {
+                    return false;
+                }
+
+                iptablesCommands(cmds, out, true);
+
+            }
+            rulesUpToDate = true;
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
@@ -822,13 +866,6 @@ public final class Api {
                 applyShortRules(ctx, cmds, true);
                 iptablesCommands(cmds, out, true);
             }
-
-           /* if (G.isFaster()) {
-                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
-            } else {
-                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
-            }*/
-
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -842,12 +879,11 @@ public final class Api {
      *
      * @param ctx application context (mandatory)
      */
-    public static void saveRules(Context ctx) {
+    public static RuleDataSet saveRules(Context ctx, List<PackageInfoData> apps, boolean store) {
 
         rulesUpToDate = false;
 
-        SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        List<PackageInfoData> apps = getApps(ctx, null);
+        RuleDataSet dataSet = null;
 
         if (apps != null) {
             // Builds a pipe-separated list of names
@@ -885,15 +921,24 @@ public final class Api {
                 }
             }
             // save the new list of UIDs
-            Editor edit = prefs.edit();
-            edit.putString(PREF_WIFI_PKG_UIDS, newpkg_wifi.toString());
-            edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
-            edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
-            edit.putString(PREF_VPN_PKG_UIDS, newpkg_vpn.toString());
-            edit.putString(PREF_LAN_PKG_UIDS, newpkg_lan.toString());
-
-            edit.commit();
+            if (store) {
+                SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                Editor edit = prefs.edit();
+                edit.putString(PREF_WIFI_PKG_UIDS, newpkg_wifi.toString());
+                edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
+                edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
+                edit.putString(PREF_VPN_PKG_UIDS, newpkg_vpn.toString());
+                edit.putString(PREF_LAN_PKG_UIDS, newpkg_lan.toString());
+                edit.commit();
+            } else {
+                dataSet = new RuleDataSet(getListFromPref(newpkg_wifi.toString()),
+                        getListFromPref(newpkg_3g.toString()),
+                        getListFromPref(newpkg_roam.toString()),
+                        getListFromPref(newpkg_vpn.toString()),
+                        getListFromPref(newpkg_vpn.toString()));
+            }
         }
+        return dataSet;
 
     }
 

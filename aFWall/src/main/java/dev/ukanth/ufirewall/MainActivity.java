@@ -218,6 +218,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startRootShell();
             passCheck();
         }
+        addQuickApply();
+    }
+
+    private void addQuickApply() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         if (showQuickButton()) {
             fab.setVisibility(View.VISIBLE);
@@ -227,10 +231,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("AFWall", queue.size() + "");
+                //lets save the rules
+                if (queue != null && queue.size() > 0) {
+                    List<PackageInfoData> apps = new ArrayList<PackageInfoData>(queue);
+                    Api.RuleDataSet ruleData = Api.saveRules(getApplicationContext(), apps, false);
+                    RunApply runApply = new RunApply();
+                    runApply.setDataSet(ruleData);
+                    runApply.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    //save the rules
+                    Api.saveRules(getApplicationContext(), Api.getApps(getApplicationContext(), null), true);
+                }
             }
         });
-
     }
 
 
@@ -1547,7 +1559,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final boolean enabled = Api.isEnabled(this);
         final Context ctx = getApplicationContext();
 
-        Api.saveRules(ctx);
+        Api.saveRules(ctx, Api.getApps(ctx, null), true);
 
         if (!enabled) {
             Api.setEnabled(ctx, false, true);
@@ -1564,6 +1576,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MaterialDialog progress = null;
         boolean enabled = Api.isEnabled(getApplicationContext());
         long start;
+        Api.RuleDataSet dataSet = null;
+
+        RunApply() {
+
+        }
+
+        private RunApply setDataSet(Api.RuleDataSet data) {
+            this.dataSet = data;
+            return this;
+        }
 
 
         @Override
@@ -1581,32 +1603,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected Void doInBackground(Void... params) {
             //set the progress
             RootShellService.progress = progress;
-            if (!Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
-                    .setSuccessToast(R.string.rules_applied)
-                    .setFailureToast(R.string.error_apply)
-                    .setReopenShell(true)
-                    .setCallback(new RootCommand.Callback() {
+            if (dataSet == null) {
+                Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
+                        .setSuccessToast(R.string.rules_applied)
+                        .setFailureToast(R.string.error_apply)
+                        .setReopenShell(true)
+                        .setCallback(new RootCommand.Callback() {
 
-                        public void cbFunc(RootCommand state) {
-                            try {
-                                progress.dismiss();
-                            } catch (Exception ex) {
+                            public void cbFunc(RootCommand state) {
+                                try {
+                                    progress.dismiss();
+                                } catch (Exception ex) {
+                                }
+                                boolean result = enabled;
+                                if (state.exitCode == 0) {
+                                    setDirty(false);
+                                } else {
+                                    result = false;
+                                }
+                                menuSetApplyOrSave(MainActivity.this.mainMenu, result);
+                                Api.setEnabled(ctx, result, true);
                             }
+                        }));
+            } else {
+                Api.applyQuickSavedIptablesRules(getApplicationContext(), dataSet, true, new RootCommand()
+                        .setSuccessToast(R.string.rules_applied)
+                        .setFailureToast(R.string.error_apply)
+                        .setReopenShell(true)
+                        .setCallback(new RootCommand.Callback() {
+                            public void cbFunc(RootCommand state) {
+                                try {
+                                    progress.dismiss();
+                                } catch (Exception ex) {
+                                }
 
-                            boolean result = enabled;
+                                queue.clear();
 
-                            if (state.exitCode == 0) {
-                                setDirty(false);
-                            } else {
-                                result = false;
+                                if (state.exitCode == 0) {
+                                    setDirty(false);
+                                    getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                }
                             }
-                            menuSetApplyOrSave(MainActivity.this.mainMenu, result);
-                            Api.setEnabled(ctx, result, true);
-                        }
-                    }))) {
-                progress.dismiss();
-                Api.toast(MainActivity.this, getString(R.string.error_apply));
+                        }));
             }
+
             return null;
         }
 
