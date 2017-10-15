@@ -170,6 +170,24 @@
                 android:fastScrollEnabled="true">
             </ListView>
 
+
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@drawable/ic_apply" />
+
+    </LinearLayout>
+
 </FrameLayout>

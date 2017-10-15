@@ -41,6 +41,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -140,7 +141,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
+    private FloatingActionButton fab;
+
     private AlertDialog dialogLegend = null;
+
+    private static HashSet<PackageInfoData> queue;
 
     public boolean isDirty() {
         return dirty;
@@ -197,12 +202,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
+        queue = new HashSet<>();
+
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             startRootShell();
             passCheck();
         }
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("AFWall", queue.size() + "");
+            }
+        });
+
     }
 
 
@@ -299,11 +314,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void reloadPreferences() {
-
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         G.reloadPrefs();
-
         checkPreferences();
         //language
         Api.updateLanguage(getApplicationContext(), G.locale());
@@ -1514,7 +1526,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Apply or save iptables rules, showing a visual indication
      */
     private void applyOrSaveRules() {
-        final Resources res = getResources();
         final boolean enabled = Api.isEnabled(this);
         final Context ctx = getApplicationContext();
 
@@ -1598,7 +1609,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .setFailureToast(R.string.error_purge)
                 .setReopenShell(true)
                 .setCallback(new RootCommand.Callback() {
-
                     public void cbFunc(RootCommand state) {
                         // error exit -> assume the rules are still enabled
                         // we shouldn't wind up in this situation, but if we do, the user's
@@ -1657,11 +1667,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_lan = flag;
+                    addToQueue(data);
                 }
                 setDirty(true);
             }
             ((BaseAdapter) adapter).notifyDataSetChanged();
         }
+    }
+
+    /**
+     * Cache any batch event by user
+     * @param data
+     */
+    public static void addToQueue(@NonNull PackageInfoData data) {
+        if (queue == null) {
+            queue = new HashSet<>();
+        }
+        //add or update based on new data
+        queue.add(data);
     }
 
     private void selectAllVPN(boolean flag) {
@@ -1675,6 +1698,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_vpn = flag;
+                    addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1709,6 +1733,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             data.selected_lan = !data.selected_lan;
                             break;
                     }
+                    addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1731,6 +1756,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     data.selected_roam = !data.selected_roam;
                     data.selected_vpn = !data.selected_vpn;
                     data.selected_lan = !data.selected_lan;
+                    addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1750,6 +1776,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_roam = flag;
+                    addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1771,6 +1798,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 data.selected_roam = false;
                 data.selected_vpn = false;
                 data.selected_lan = false;
+                addToQueue(data);
                 setDirty(true);
             }
             ((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1788,7 +1816,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_3g = flag;
+                    addToQueue(data);
                 }
+                addToQueue(data);
                 setDirty(true);
             }
             ((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1807,6 +1837,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_wifi = flag;
+                    addToQueue(data);
                 }
                 setDirty(true);
             }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
 import android.os.AsyncTask;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +27,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.activity.AppDetailActivity;
 import dev.ukanth.ufirewall.log.Log;
 
-public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implements OnCheckedChangeListener {
+public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
     public static final String TAG = "AFWall";
     private final Context context;
@@ -49,14 +47,13 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        AppStateHolder holder;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             // Inflate a new view
             convertView = inflater.inflate(R.layout.main_list, parent, false);
-            holder = new ViewHolder();
+            holder = new AppStateHolder();
             holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
-            holder.box_wifi.setOnCheckedChangeListener(this);
 
             if (Api.isMobileNetworkSupported(context)) {
                 holder.box_3g = addSupport(convertView, true, R.id.itemcheck_3g);
@@ -84,7 +81,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
             convertView.setTag(holder);
         } else {
             // Convert an existing view
-            holder = (ViewHolder) convertView.getTag();
+            holder = (AppStateHolder) convertView.getTag();
             holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
             if (Api.isMobileNetworkSupported(context)) {
                 holder.box_3g = addSupport(convertView, true, R.id.itemcheck_3g);
@@ -109,6 +106,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
             }
         }
 
+
         holder.app = listApps.get(position);
 
         if (G.showUid()) {
@@ -132,7 +130,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
 
         ApplicationInfo info = holder.app.appinfo;
         if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-            holder.text.setTextColor(ContextCompat.getColor(context,R.color.white));
+            holder.text.setTextColor(ContextCompat.getColor(context, R.color.white));
         } else {
             holder.text.setTextColor(G.sysColor());
         }
@@ -164,7 +162,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
         }
 
         if (G.enableRoam()) {
-            holder.box_roam = addSupport(holder.box_roam,  holder.app, 0);
+            holder.box_roam = addSupport(holder.box_roam, holder.app, 0);
         }
         if (G.enableVPN()) {
             holder.box_vpn = addSupport(holder.box_vpn, holder.app, 1);
@@ -173,7 +171,97 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
             holder.box_lan = addSupport(holder.box_lan, holder.app, 2);
         }
 
+        addEventListenter(holder);
+
         return convertView;
+    }
+
+    private void addEventListenter(final AppStateHolder holder) {
+        if (holder.box_lan != null) {
+            holder.box_lan.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if(compoundButton.isPressed()) {
+                        if (holder.app.selected_lan != isChecked) {
+                            holder.app.selected_lan = isChecked;
+                            MainActivity.dirty = true;
+                            notifyDataSetChanged();
+                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            MainActivity.addToQueue(holder.app);
+                        }
+                    }
+
+                }
+            });
+        }
+
+        if (holder.box_wifi != null) {
+            holder.box_wifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if(compoundButton.isPressed()) {
+                        if (holder.app.selected_wifi != isChecked) {
+                            holder.app.selected_wifi = isChecked;
+                            MainActivity.dirty = true;
+                            notifyDataSetChanged();
+                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            MainActivity.addToQueue(holder.app);
+                        }
+                    }
+                }
+            });
+        }
+
+        if (holder.box_3g != null) {
+            holder.box_3g.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if(compoundButton.isPressed()) {
+                        if (holder.app.selected_3g != isChecked) {
+                            holder.app.selected_3g = isChecked;
+                            MainActivity.dirty = true;
+                            notifyDataSetChanged();
+                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            MainActivity.addToQueue(holder.app);
+                        }
+                    }
+                }
+            });
+        }
+
+        if (holder.box_roam != null) {
+            holder.box_roam.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if(compoundButton.isPressed()) {
+                        if (holder.app.selected_roam != isChecked) {
+                            holder.app.selected_roam = isChecked;
+                            MainActivity.dirty = true;
+                            notifyDataSetChanged();
+                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            MainActivity.addToQueue(holder.app);
+                        }
+                    }
+                }
+            });
+        }
+
+        if (holder.box_vpn != null) {
+            holder.box_vpn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if(compoundButton.isPressed()) {
+                        if (holder.app.selected_vpn != isChecked) {
+                            holder.app.selected_vpn = isChecked;
+                            MainActivity.dirty = true;
+                            notifyDataSetChanged();
+                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            MainActivity.addToQueue(holder.app);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private CheckBox addSupport(CheckBox check, PackageInfoData app, int flag) {
@@ -197,9 +285,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
     private CheckBox addSupport(View convertView, boolean action, int id) {
         CheckBox check = (CheckBox) convertView.findViewById(id);
         check.setVisibility(View.VISIBLE);
-        if (action) {
+       /* if (action) {
             check.setOnCheckedChangeListener(this);
-        }
+        }*/
         return check;
     }
 
@@ -210,7 +298,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
     }
 
 
-    static class ViewHolder {
+    static class AppStateHolder {
         private CheckBox box_lan;
         private CheckBox box_wifi;
         private CheckBox box_3g;
@@ -252,7 +340,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
                 // This is executed in the UI thread, so it is safe to use
                 // viewToUpdate.getTag()
                 // and modify the UI
-                final ViewHolder entryToUpdate = (ViewHolder) viewToUpdate.getTag();
+                final AppStateHolder entryToUpdate = (AppStateHolder) viewToUpdate.getTag();
                 entryToUpdate.icon.setImageDrawable(entryToUpdate.app.cached_icon);
             } catch (Exception e) {
                 Log.e(TAG, "Error showing icon", e);
@@ -265,7 +353,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
     /**
      * Called an application is check/unchecked
      */
-    @Override
+    /*@Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         final PackageInfoData app = (PackageInfoData) buttonView.getTag();
         if (app != null) {
@@ -306,7 +394,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> implement
                     }
                     break;
             }
+            if(buttonView.isPressed()) {
+                Log.i(TAG, "Application state changed: " + app.pkgName);
+                MainActivity.addToQueue(app);
+            }
         }
-    }
+    }*/
 
 }
