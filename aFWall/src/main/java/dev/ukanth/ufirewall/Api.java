@@ -786,47 +786,54 @@ public final class Api {
                 }
             }
             rulesUpToDate = true;
-            if (G.isFaster()) {
+           /* if (G.isFaster()) {
                 callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, cmds);
             } else {
                 callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
-            }
+            }*/
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx);
+            applyDefaultChains(ctx, callback);
             return false;
         }
     }
 
 
     public static boolean fastApply(Context ctx, RootCommand callback) {
+        try {
 
-        if (!rulesUpToDate) {
-            return applySavedIptablesRules(ctx, true, callback);
-        }
-        Log.i(TAG, "Using fastApply");
-        List<String> out = new ArrayList<String>();
-        List<String> cmds;
+            if (!rulesUpToDate) {
+                return applySavedIptablesRules(ctx, true, callback);
+            }
+            Log.i(TAG, "Using fastApply");
+            List<String> out = new ArrayList<String>();
+            List<String> cmds;
 
-        cmds = new ArrayList<String>();
-        setBinaryPath(ctx, false);
-        applyShortRules(ctx, cmds, false);
-        iptablesCommands(cmds, out, false);
-
-        if (G.enableIPv6()) {
-            setBinaryPath(ctx, true);
             cmds = new ArrayList<String>();
-            applyShortRules(ctx, cmds, true);
-            iptablesCommands(cmds, out, true);
-        }
+            setBinaryPath(ctx, false);
+            applyShortRules(ctx, cmds, false);
+            iptablesCommands(cmds, out, false);
 
-        if (G.isFaster()) {
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
-        } else {
+            if (G.enableIPv6()) {
+                setBinaryPath(ctx, true);
+                cmds = new ArrayList<String>();
+                applyShortRules(ctx, cmds, true);
+                iptablesCommands(cmds, out, true);
+            }
+
+           /* if (G.isFaster()) {
+                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).runThread(ctx, out);
+            } else {
+                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+            }*/
+
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+        } catch (Exception e) {
+            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+            applyDefaultChains(ctx, callback);
         }
-
         return true;
     }
 
@@ -1792,7 +1799,7 @@ public final class Api {
      *
      * @param ctx mandatory app context
      */
-    public static void applicationRemoved(Context ctx, int pkgRemoved) {
+    public static void applicationRemoved(Context ctx, int pkgRemoved, RootCommand callback) {
         SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         Editor editor = prefs.edit();
         // allowed application names separated by pipe '|' (persisted)
@@ -1817,7 +1824,7 @@ public final class Api {
             editor.commit();
             if (isEnabled(ctx)) {
                 // .. and also re-apply the rules if the firewall is enabled
-                applySavedIptablesRules(ctx, false, new RootCommand());
+                applySavedIptablesRules(ctx, false, callback);
             }
         }
 
@@ -1916,6 +1923,25 @@ public final class Api {
      * Small structure to hold an application info
      */
     public static final class PackageInfoData {
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PackageInfoData that = (PackageInfoData) o;
+
+            if (uid != that.uid) return false;
+            return pkgName.equals(that.pkgName);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = uid;
+            result = 31 * result + pkgName.hashCode();
+            return result;
+        }
 
         /**
          * linux user id
@@ -2949,7 +2975,7 @@ public final class Api {
      *
      * @param ctx
      */
-    public static void applyDefaultChains(Context ctx) {
+    public static void applyDefaultChains(Context ctx, RootCommand callback) {
         List<String> cmds = new ArrayList<String>();
         if (G.ipv4Input()) {
             cmds.add("-P INPUT ACCEPT");
@@ -2966,11 +2992,11 @@ public final class Api {
         } else {
             cmds.add("-P OUTPUT DROP");
         }
-        applyQuick(ctx, cmds, new RootCommand());
-        applyDefaultChainsv6(ctx);
+        applyQuick(ctx, cmds, callback);
+        applyDefaultChainsv6(ctx, callback);
     }
 
-    public static void applyDefaultChainsv6(Context ctx) {
+    public static void applyDefaultChainsv6(Context ctx, RootCommand callback) {
         if (G.controlIPv6()) {
             List<String> cmds = new ArrayList<String>();
             if (G.ipv6Input()) {
@@ -2988,7 +3014,7 @@ public final class Api {
             } else {
                 cmds.add("-P OUTPUT DROP");
             }
-            applyIPv6Quick(ctx, cmds, new RootCommand());
+            applyIPv6Quick(ctx, cmds, callback);
         }
     }
 

@@ -270,12 +270,19 @@ public final class InterfaceTracker {
                     public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
                             Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
-                            Api.applyDefaultChains(ctx);
+                            Api.applyDefaultChains(ctx, new RootCommand()
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode != 0) {
+                                                errorNotification(ctx);
+                                            }
+                                        }
+                                    }));
                         } else {
                             //lets try applying all rules
                             Api.setRulesUpToDate(false);
                             Api.fastApply(ctx, new RootCommand()
-                                    .setFailureToast(R.string.error_apply)
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
@@ -285,7 +292,16 @@ public final class InterfaceTracker {
                                                 Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
                                                 errorNotification(ctx);
                                             }
-                                            Api.applyDefaultChains(ctx);
+                                            Api.applyDefaultChains(ctx, new RootCommand()
+                                                    .setFailureToast(R.string.error_apply)
+                                                    .setCallback(new RootCommand.Callback() {
+                                                        @Override
+                                                        public void cbFunc(RootCommand state) {
+                                                            if (state.exitCode != 0) {
+                                                                errorNotification(ctx);
+                                                            }
+                                                        }
+                                                    }));
                                         }
                                     }));
                         }
