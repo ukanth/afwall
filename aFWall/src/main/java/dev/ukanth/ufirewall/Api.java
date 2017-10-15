@@ -2907,11 +2907,15 @@ public final class Api {
 
     public static boolean isMobileNetworkSupported(final Context ctx) {
         boolean hasMobileData = true;
-        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm != null) {
-            if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE) == null) {
-                hasMobileData = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm != null) {
+                if (cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE) == null) {
+                    hasMobileData = false;
+                }
             }
+        } catch (SecurityException e) {
+            Log.e(TAG, e.getMessage(), e);
         }
         return hasMobileData;
     }
