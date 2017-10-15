@@ -35,7 +35,9 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -104,6 +106,8 @@ import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
+import static dev.ukanth.ufirewall.util.G.isDonate;
+import static dev.ukanth.ufirewall.util.G.showQuickButton;
 import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
@@ -141,7 +145,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
-    private FloatingActionButton fab;
+    public static FloatingActionButton getFab() {
+        return fab;
+    }
+
+    private static FloatingActionButton fab;
 
     private AlertDialog dialogLegend = null;
 
@@ -211,6 +219,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             passCheck();
         }
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (showQuickButton()) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -311,6 +324,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
+        if (showQuickButton()) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
     }
 
     private void reloadPreferences() {
@@ -492,7 +510,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void deviceCheck() {
         if (Build.VERSION.SDK_INT >= 21) {
-            if ((G.isDoKey(getApplicationContext()) || G.isDonate())) {
+            if ((G.isDoKey(getApplicationContext()) || isDonate())) {
                 KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
                 if (keyguardManager.isKeyguardSecure()) {
                     Intent createConfirmDeviceCredentialIntent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
@@ -1195,7 +1213,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 break;
                             case 1:
 
-                                if (G.isDoKey(getApplicationContext()) || G.isDonate()) {
+                                if (G.isDoKey(getApplicationContext()) || isDonate()) {
 
                                     File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                                     FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
@@ -1394,7 +1412,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void startCustomRules() {
-        if ((G.isDoKey(getApplicationContext()) || G.isDonate())) {
+        if ((G.isDoKey(getApplicationContext()) || isDonate())) {
             Intent intent = new Intent();
             intent.setClass(this, CustomRulesActivity.class);
             startActivity(intent);
@@ -1677,6 +1695,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     /**
      * Cache any batch event by user
+     *
      * @param data
      */
     public static void addToQueue(@NonNull PackageInfoData data) {
@@ -1685,6 +1704,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         //add or update based on new data
         queue.add(data);
+        getFab().setBackgroundTintList(ColorStateList.valueOf(Color.RED));
     }
 
     private void selectAllVPN(boolean flag) {

@@ -8,6 +8,13 @@
             android:summaryOff="@string/notify_pref_summary_off"
             android:summaryOn="@string/notify_pref_summary_on"
             android:title="@string/notify_pref_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="quickApply"
+            android:enabled="false"
+            android:summary="@string/quick_apply_summary"
+            android:title="@string/quick_apply_title" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="disableIcons"
