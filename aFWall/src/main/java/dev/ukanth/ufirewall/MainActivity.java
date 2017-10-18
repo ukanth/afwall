@@ -158,7 +158,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private static HashSet<PackageInfoData> queue;
 
-    private BroadcastReceiver uiProgress;
+    private BroadcastReceiver uiProgressReceiver;
+    private BroadcastReceiver toastReceiver;
 
     public boolean isDirty() {
         return dirty;
@@ -225,20 +226,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         registerQuickApply();
         registerUIbroadcast();
+        registerToastbroadcast();
+    }
+
+    private void registerToastbroadcast() {
+        IntentFilter filter = new IntentFilter("TOAST");
+        toastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Api.toast(getApplicationContext(), intent.getExtras().get("MSG") != null ? intent.getExtras().get("MSG").toString() : "", Toast.LENGTH_SHORT);
+            }
+        };
+        registerReceiver(toastReceiver, filter);
     }
 
 
     private void registerUIbroadcast() {
         IntentFilter filter = new IntentFilter("UPDATEUI");
-        uiProgress = new BroadcastReceiver() {
+        uiProgressReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(progress != null) {
+                if (progress != null) {
                     progress.setContent(context.getString(R.string.applying) + " " + intent.getExtras().get("INDEX") + "/" + intent.getExtras().get("SIZE"));
                 }
+
             }
         };
-        registerReceiver(uiProgress, filter);
+        registerReceiver(uiProgressReceiver, filter);
     }
 
     /**
@@ -2216,10 +2230,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             dialogLegend.dismiss();
             dialogLegend = null;
         }
-        if (uiProgress != null) {
-            unregisterReceiver(uiProgress);
+        if (uiProgressReceiver != null) {
+            unregisterReceiver(uiProgressReceiver);
+        }
+        if (toastReceiver != null) {
+            unregisterReceiver(toastReceiver);
         }
     }
-
 }
 

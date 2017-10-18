@@ -263,9 +263,9 @@ public class ToggleWidgetActivity extends Activity {
                         G.setProfile(true, data.getIdentifier());
                     } else {
                         G.setProfile(true, profileName);
-
                     }
-                    Api.applySavedIptablesRules(context, false, new RootCommand()
+                    Api.applySavedIptablesRules(context, true, new RootCommand()
+                            .setSuccessToast(R.string.rules_applied)
                             .setFailureToast(R.string.error_apply)
                             .setCallback(new RootCommand.Callback() {
                                 @Override
@@ -415,7 +415,8 @@ public class ToggleWidgetActivity extends Activity {
                     switch (i) {
                         case 1:
 
-                            Api.applySavedIptablesRules(context, false, new RootCommand()
+                            Api.applySavedIptablesRules(context, true, new RootCommand()
+                                    .setSuccessToast(R.string.rules_applied)
                                     .setFailureToast(R.string.error_apply)
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
@@ -470,7 +471,8 @@ public class ToggleWidgetActivity extends Activity {
                             break;
                     }
                     if (i > 2) {
-                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                        Api.applySavedIptablesRules(context, true, new RootCommand()
+                                .setSuccessToast(R.string.rules_applied)
                                 .setFailureToast(R.string.error_apply)
                                 .setCallback(new RootCommand.Callback() {
                                     @Override

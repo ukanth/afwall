@@ -41,12 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
@@ -62,11 +56,11 @@ public class RootShellService extends Service {
     public static final String TAG = "AFWall";
 
     /* write command completion times to logcat */
-    private static final boolean enableProfiling = false;
+    private static final boolean enableProfiling = true;
 
     private static Shell.Interactive rootSession;
     private static Context mContext;
-    private static NotificationManager manager;
+    private static NotificationManager notificationManager;
     private static final int NOTIFICATION_ID = 33347;
 
     public enum ShellState {
@@ -87,7 +81,7 @@ public class RootShellService extends Service {
     public final static int NO_TOAST = -1;
 
     public static class RootCommand {
-        private List<String> script;
+        private List<String> commmands;
 
         private Callback cb = null;
         private int successToast = NO_TOAST;
@@ -221,24 +215,30 @@ public class RootShellService extends Service {
 
     private static void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
-            Log.d(TAG, "RootShell: " + state.script.size() + " commands completed in " +
+            Log.d(TAG, "RootShell: " + state.commmands.size() + " commands completed in " +
                     (new Date().getTime() - state.startTime.getTime()) + " ms");
         }
-
         state.exitCode = exitCode;
         state.done = true;
         if (state.cb != null) {
             state.cb.cbFunc(state);
         }
+        if (notificationManager != null) {
+            notificationManager.cancel(NOTIFICATION_ID);
+        }
 
-        if (manager != null) {
-            manager.cancel(NOTIFICATION_ID);
-        }
         if (exitCode == 0 && state.successToast != NO_TOAST) {
-            showToastUIThread(mContext.getString(state.successToast), mContext);
+            sendToastBroadcast(mContext.getString(state.successToast));
         } else if (exitCode != 0 && state.failureToast != NO_TOAST) {
-            showToastUIThread(mContext.getString(state.failureToast), mContext);
+            sendToastBroadcast(mContext.getString(state.failureToast));
         }
+    }
+
+    private static void sendToastBroadcast(String message) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("TOAST");
+        broadcastIntent.putExtra("MSG", message);
+        ctx.sendBroadcast(broadcastIntent);
     }
 
     @Override
@@ -276,93 +276,94 @@ public class RootShellService extends Service {
                 continue;
             } else if (rootState == ShellState.READY) {
                 rootState = ShellState.BUSY;
-                manager = createNotification(mContext);
+                notificationManager = createNotification(mContext);
                 processCommands(state);
             }
         } while (false);
     }
 
     private static void processCommands(final RootCommand state) {
-        if (state.commandIndex < state.script.size()) {
-            String command = state.script.get(state.commandIndex);
+        if (state.commandIndex < state.commmands.size()) {
+            String command = state.commmands.get(state.commandIndex);
             sendUpdate(state);
             if (command != null) {
+                state.ignoreExitCode = false;
+
                 if (command.startsWith("#NOCHK# ")) {
                     command = command.replaceFirst("#NOCHK# ", "");
                     state.ignoreExitCode = true;
-                } else {
-                    state.ignoreExitCode = false;
                 }
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
-
-                Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
-                    @Override
-                    public void onCommandResult(int commandCode, int exitCode,
-                                                List<String> output) {
-                        if (output != null) {
-                            ListIterator<String> iter = output.listIterator();
-                            while (iter.hasNext()) {
-                                String line = iter.next();
-                                if (line != null && !line.equals("")) {
-                                    if (state.res != null) {
-                                        state.res.append(line + "\n");
+                try {
+                    rootSession.addCommand(command, 0, new Shell.OnCommandResultListener() {
+                        @Override
+                        public void onCommandResult(int commandCode, int exitCode,
+                                                    List<String> output) {
+                            if (output != null) {
+                                ListIterator<String> iter = output.listIterator();
+                                while (iter.hasNext()) {
+                                    String line = iter.next();
+                                    if (line != null && !line.equals("")) {
+                                        if (state.res != null) {
+                                            state.res.append(line + "\n");
+                                        }
+                                        state.lastCommandResult.append(line + "\n");
                                     }
-                                    state.lastCommandResult.append(line + "\n");
                                 }
                             }
-                        }
-                        if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
-                            state.retryCount++;
-                            Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                    ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-                            processCommands(state);
-                            return;
-                        }
+                            if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
+                                state.retryCount++;
+                                Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                        ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+                                processCommands(state);
+                                return;
+                            }
 
-                        state.commandIndex++;
-                        state.retryCount = 0;
+                            state.commandIndex++;
+                            state.retryCount = 0;
 
-                        boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
-                        if (state.commandIndex >= state.script.size() || errorExit) {
-                            complete(state, exitCode);
-                            if (exitCode < 0) {
-                                rootState = ShellState.FAIL;
-                                Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
+                            boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
+                            if (state.commandIndex >= state.commmands.size() || errorExit) {
+                                complete(state, exitCode);
+                                if (exitCode < 0) {
+                                    rootState = ShellState.FAIL;
+                                    Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
+                                } else {
+                                    if (errorExit) {
+                                        Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                                "\nOutput:\n" + state.lastCommandResult);
+                                    }
+                                    rootState = ShellState.READY;
+                                }
+                                runNextSubmission();
                             } else {
-                                if (errorExit) {
-                                    Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                            "\nOutput:\n" + state.lastCommandResult);
-                                }
-                                rootState = ShellState.READY;
+                                processCommands(state);
                             }
-                            runNextSubmission();
-                        } else {
-                            processCommands(state);
                         }
-                    }
-                };
-                if (listener != null) {
-                    try {
-                        rootSession.addCommand(command, 0, listener);
-                    } catch (NullPointerException e) {
-                        Log.d(TAG, "Unable to add commands to session");
-                    }
+                    });
+                } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
+                    Log.e(TAG, e.getMessage(), e);
                 }
             }
         }
     }
 
-    private static void sendUpdate(RootCommand state) {
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("UPDATEUI");
-        broadcastIntent.putExtra("SIZE", state.script.size());
-        broadcastIntent.putExtra("INDEX", state.commandIndex);
-        ctx.sendBroadcast(broadcastIntent);
+    private static void sendUpdate(final RootCommand state) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Intent broadcastIntent = new Intent();
+                broadcastIntent.setAction("UPDATEUI");
+                broadcastIntent.putExtra("SIZE", state.commmands.size());
+                broadcastIntent.putExtra("INDEX", state.commandIndex);
+                ctx.sendBroadcast(broadcastIntent);
+            }
+        }).start();
     }
 
     private static void setupLogging() {
-        Debug.setDebug(true);
+        Debug.setDebug(false);
         Debug.setLogTypeEnabled(Debug.LOG_ALL, false);
         Debug.setLogTypeEnabled(Debug.LOG_GENERAL, false);
         Debug.setSanityChecksEnabled(false);
@@ -407,7 +408,7 @@ public class RootShellService extends Service {
         ctx.startService(intent);
     }
 
-    static class ExecuteCommand implements Callable<IpCmd> {
+    /*static class ExecuteCommand implements Callable<IpCmd> {
         private String command;
 
         ExecuteCommand(String command) {
@@ -501,19 +502,28 @@ public class RootShellService extends Service {
             pool.shutdownNow();
             Thread.currentThread().interrupt();
         }
-    }
+    }*/
 
-    private static void runScriptAsRoot(Context ctx, List<String> script, RootCommand state, boolean useThreads) {
+    private static void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state, boolean useThreads) {
 
         if (mContext == null) {
             mContext = ctx.getApplicationContext();
         }
-
         if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
             reOpenShell(ctx);
         }
+        state.commmands = cmds;
+        state.commandIndex = 0;
+        state.retryCount = 0;
+        if (mContext == null) {
+            mContext = ctx.getApplicationContext();
+        }
+        waitQueue.add(state);
+        if (rootState != ShellState.BUSY) {
+            runNextSubmission();
+        }
 
-        if (useThreads) {
+       /* if (useThreads) {
             ExecutorService executor = Executors.newSingleThreadExecutor();
             List<Callable<IpCmd>> callables = new ArrayList<>();
 
@@ -524,7 +534,7 @@ public class RootShellService extends Service {
             Log.i(TAG, "Total rules waiting to be applied: " + script.size() + " , " + callables.size());
             try {
                 if (script.size() > 0) {
-                    manager = createNotification(mContext);
+                    notificationManager = createNotification(mContext);
                     List<Future<IpCmd>> results =
                             executor.invokeAll(callables);
 
@@ -548,8 +558,8 @@ public class RootShellService extends Service {
             } catch (Exception e) {
                 Log.e(e.getClass().getName(), e.getMessage(), e);
             }
-            if (manager != null) {
-                manager.cancel(NOTIFICATION_ID);
+            if (notificationManager != null) {
+                notificationManager.cancel(NOTIFICATION_ID);
             }
             state.done = true;
             if (state.cb != null) {
@@ -558,18 +568,7 @@ public class RootShellService extends Service {
             //shut down the executor service now
             shutdownAndAwaitTermination(executor);
 
-        } else {
-            state.script = script;
-            state.commandIndex = 0;
-            state.retryCount = 0;
-            if (mContext == null) {
-                mContext = ctx.getApplicationContext();
-            }
-            waitQueue.add(state);
-            if (rootState != ShellState.BUSY) {
-                runNextSubmission();
-            }
-        }
+        } else { } */
     }
 
     @Nullable
@@ -583,7 +582,6 @@ public class RootShellService extends Service {
             Thread thread = new Thread() {
                 public void run() {
                     Looper.prepare();
-
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
