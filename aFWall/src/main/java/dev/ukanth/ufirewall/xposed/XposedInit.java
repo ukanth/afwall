@@ -34,6 +34,8 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     public static final String MY_APP = BuildConfig.APPLICATION_ID;
 
+    private static final boolean IS_ABOVE_N = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
     public static String MODULE_PATH = null;
     public static final String TAG = "AFWallXPosed";
     private static Context context;
@@ -68,7 +70,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         }
     }
 
-    private void hookLockScreen(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+   /* private void hookLockScreen(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (loadPackageParam.packageName.equals("com.android.systemui")) {
 
             XC_MethodHook xNotificationHook = new XC_MethodHook() {
@@ -90,7 +92,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             };
             XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.BaseStatusBar", loadPackageParam.classLoader, "shouldShowOnKeyguard", new Object[]{StatusBarNotification.class, xNotificationHook});
         }
-    }
+    }*/
 
     //Check if AFWall is hooked to make sure XPosed works fine.
     private void interceptAFWall(XC_LoadPackage.LoadPackageParam loadPackageParam) {

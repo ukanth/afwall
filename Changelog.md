@@ -15,7 +15,9 @@ Bug Fixes:
 * Tasker profile switch issue
 * Possible fix for starup rule
 * Library updates
-* User reported crash fixes
+* Out of memory crashes when enabled logging
+* Native crash fixes due to incompatible libraries
+
 
 Version 2.9.6.1
 
@@ -24,6 +26,7 @@ Version 2.9.6.1
 * Minor UI changes in tasker plugin
 * Tasker plugin related bugs related to disable/enable firewall
 * User reported crash fixes 
+
 
 Version 2.9.6
 * LAN/Data leak issues on 7.x

@@ -556,6 +556,16 @@ public final class Api {
         List<Integer> roamList;
         List<Integer> vpnList;
 
+        @Override
+        public String toString(){
+            StringBuilder builder = new StringBuilder();
+            builder.append(wifiList != null ? android.text.TextUtils.join(",", wifiList): "");
+            builder.append(dataList != null ? android.text.TextUtils.join(",", dataList): "");
+            builder.append(lanList != null ? android.text.TextUtils.join(",", lanList): "");
+            builder.append(roamList != null ? android.text.TextUtils.join(",", roamList): "");
+            builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList): "");
+            return builder.toString().trim();
+        }
     }
 
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {

@@ -35,8 +35,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -57,6 +55,7 @@ import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
 import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
+import static dev.ukanth.ufirewall.util.G.ctx;
 
 public class RootShellService extends Service {
 
@@ -67,7 +66,6 @@ public class RootShellService extends Service {
 
     private static Shell.Interactive rootSession;
     private static Context mContext;
-    public static MaterialDialog progress;
     private static NotificationManager manager;
     private static final int NOTIFICATION_ID = 33347;
 
@@ -232,8 +230,6 @@ public class RootShellService extends Service {
         if (state.cb != null) {
             state.cb.cbFunc(state);
         }
-        //explicitly make it null
-        RootShellService.progress = null;
 
         if (manager != null) {
             manager.cancel(NOTIFICATION_ID);
@@ -289,14 +285,7 @@ public class RootShellService extends Service {
     private static void processCommands(final RootCommand state) {
         if (state.commandIndex < state.script.size()) {
             String command = state.script.get(state.commandIndex);
-            try {
-                if (progress != null) {
-                    progress.setContent(mContext.getString(R.string.applying) + " " + state.commandIndex + "/" + state.script.size());
-                }
-            } catch (Exception e) {
-                Log.e(e.getClass().getName(), e.getMessage(), e);
-            }
-
+            sendUpdate(state);
             if (command != null) {
                 if (command.startsWith("#NOCHK# ")) {
                     command = command.replaceFirst("#NOCHK# ", "");
@@ -362,6 +351,14 @@ public class RootShellService extends Service {
                 }
             }
         }
+    }
+
+    private static void sendUpdate(RootCommand state) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("UPDATEUI");
+        broadcastIntent.putExtra("SIZE", state.script.size());
+        broadcastIntent.putExtra("INDEX", state.commandIndex);
+        ctx.sendBroadcast(broadcastIntent);
     }
 
     private static void setupLogging() {
