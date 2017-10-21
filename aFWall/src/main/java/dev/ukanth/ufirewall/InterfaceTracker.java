@@ -45,7 +45,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
+import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 import static dev.ukanth.ufirewall.util.G.ctx;

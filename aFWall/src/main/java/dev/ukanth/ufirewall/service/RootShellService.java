@@ -27,13 +27,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +53,7 @@ public class RootShellService extends Service {
     public static final String TAG = "AFWall";
 
     /* write command completion times to logcat */
-    private static final boolean enableProfiling = true;
+    private static final boolean enableProfiling = false;
 
     private static Shell.Interactive rootSession;
     private static Context mContext;
@@ -81,142 +78,9 @@ public class RootShellService extends Service {
 
     public final static int NO_TOAST = -1;
 
-    public static class RootCommand {
-        private List<String> commmands;
-
-        private Callback cb = null;
-        private int successToast = NO_TOAST;
-        private int failureToast = NO_TOAST;
-        private boolean reopenShell = false;
-        private int retryExitCode = -1;
-
-        private int commandIndex;
-        private boolean ignoreExitCode;
-        private Date startTime;
-        private int retryCount;
-
-        public StringBuilder res;
-        public String lastCommand;
-        public StringBuilder lastCommandResult;
-        public int exitCode;
-        public boolean done = false;
-
-        public static abstract class Callback {
-
-            /**
-             * Optional user-specified callback
-             */
-            public abstract void cbFunc(RootCommand state);
-        }
-
-        /**
-         * Set callback to run after command completion
-         *
-         * @param cb Callback object, with cbFunc() populated
-         * @return RootCommand builder object
-         */
-        public RootCommand setCallback(Callback cb) {
-            this.cb = cb;
-            return this;
-        }
-
-        /**
-         * Tell RootShell to display a toast message on success
-         *
-         * @param resId Resource ID of the toast string
-         * @return RootCommand builder object
-         */
-        public RootCommand setSuccessToast(int resId) {
-            this.successToast = resId;
-            return this;
-        }
-
-        /**
-         * Tell RootShell to display a toast message on failure
-         *
-         * @param resId Resource ID of the toast string
-         * @return RootCommand builder object
-         */
-        public RootCommand setFailureToast(int resId) {
-            this.failureToast = resId;
-            return this;
-        }
-
-        /**
-         * Tell RootShell whether or not it should try to open a new root shell if the last attempt
-         * died.  To avoid "thrashing" it might be best to only try this in response to a user
-         * request
-         *
-         * @param reopenShell true to attempt reopening a failed shell
-         * @return RootCommand builder object
-         */
-        public RootCommand setReopenShell(boolean reopenShell) {
-            this.reopenShell = reopenShell;
-            return this;
-        }
-
-        /**
-         * Capture the command output in this.res
-         *
-         * @param enableLog true to enable logging
-         * @return RootCommand builder object
-         */
-        public RootCommand setLogging(boolean enableLog) {
-            if (enableLog) {
-                this.res = new StringBuilder();
-            } else {
-                this.res = null;
-            }
-            return this;
-        }
-
-        /**
-         * Retry a failed command on a specific exit code
-         *
-         * @param retryExitCode code that indicates a transient failure
-         * @return RootCommand builder object
-         */
-        public RootCommand setRetryExitCode(int retryExitCode) {
-            this.retryExitCode = retryExitCode;
-            return this;
-        }
-
-        /**
-         * Run a series of commands as root; call cb.cbFunc() when complete
-         *
-         * @param ctx    Context object used to create toasts
-         * @param script List of commands to run as root
-         */
-        public final void run(Context ctx, List<String> script) {
-            RootShellService.runScriptAsRoot(ctx, script, this, false);
-        }
-
-        /**
-         * Run a series of commands as root in thread mode; call cb.cbFunc() when complete
-         *
-         * @param ctx    Context object used to create toasts
-         * @param script List of commands to run as root
-         */
-        public final void runThread(Context ctx, List<String> script) {
-            RootShellService.runScriptAsRoot(ctx, script, this, true);
-        }
-
-        /**
-         * Run a single command as root; call cb.cbFunc() when complete
-         *
-         * @param ctx Context object used to create toasts
-         * @param cmd Command to run as root
-         */
-        public final void run(Context ctx, String cmd) {
-            List<String> script = new ArrayList<String>();
-            script.add(cmd);
-            RootShellService.runScriptAsRoot(ctx, script, this, false);
-        }
-    }
-
     private static void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
-            Log.d(TAG, "RootShell: " + state.commmands.size() + " commands completed in " +
+            Log.d(TAG, "RootShell: " + state.getCommmands().size() + " commands completed in " +
                     (new Date().getTime() - state.startTime.getTime()) + " ms");
         }
         state.exitCode = exitCode;
@@ -227,7 +91,6 @@ public class RootShellService extends Service {
         if (notificationManager != null) {
             notificationManager.cancel(NOTIFICATION_ID);
         }
-
         if (exitCode == 0 && state.successToast != NO_TOAST) {
             sendToastBroadcast(mContext.getString(state.successToast));
         } else if (exitCode != 0 && state.failureToast != NO_TOAST) {
@@ -284,8 +147,8 @@ public class RootShellService extends Service {
     }
 
     private static void processCommands(final RootCommand state) {
-        if (state.commandIndex < state.commmands.size()) {
-            String command = state.commmands.get(state.commandIndex);
+        if (state.commandIndex < state.getCommmands().size()) {
+            String command = state.getCommmands().get(state.commandIndex);
             sendUpdate(state);
             if (command != null) {
                 state.ignoreExitCode = false;
@@ -325,7 +188,7 @@ public class RootShellService extends Service {
                             state.retryCount = 0;
 
                             boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
-                            if (state.commandIndex >= state.commmands.size() || errorExit) {
+                            if (state.commandIndex >= state.getCommmands().size() || errorExit) {
                                 complete(state, exitCode);
                                 if (exitCode < 0) {
                                     rootState = ShellState.FAIL;
@@ -356,7 +219,7 @@ public class RootShellService extends Service {
             public void run() {
                 Intent broadcastIntent = new Intent();
                 broadcastIntent.setAction("UPDATEUI");
-                broadcastIntent.putExtra("SIZE", state.commmands.size());
+                broadcastIntent.putExtra("SIZE", state.getCommmands().size());
                 broadcastIntent.putExtra("INDEX", state.commandIndex);
                 mContext.sendBroadcast(broadcastIntent);
             }
@@ -505,7 +368,7 @@ public class RootShellService extends Service {
         }
     }*/
 
-    private static void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state, boolean useThreads) {
+    public static void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state, boolean useThreads) {
 
         if (mContext == null) {
             mContext = ctx.getApplicationContext();
@@ -513,7 +376,7 @@ public class RootShellService extends Service {
         if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
             reOpenShell(ctx);
         }
-        state.commmands = cmds;
+        state.setCommmands(cmds);
         state.commandIndex = 0;
         state.retryCount = 0;
         if (mContext == null) {
@@ -523,89 +386,12 @@ public class RootShellService extends Service {
         if (rootState != ShellState.BUSY) {
             runNextSubmission();
         }
-
-       /* if (useThreads) {
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            List<Callable<IpCmd>> callables = new ArrayList<>();
-
-            for (final String str : script) {
-                callables.add(new ExecuteCommand(str));
-            }
-
-            Log.i(TAG, "Total rules waiting to be applied: " + script.size() + " , " + callables.size());
-            try {
-                if (script.size() > 0) {
-                    notificationManager = createNotification(mContext);
-                    List<Future<IpCmd>> results =
-                            executor.invokeAll(callables);
-
-                    for (Future<IpCmd> future : results) {
-                        if (future.get().getExitCode() != 0) {
-                            //failed to execute this command
-                            // TODO: implement retry logic for those rules.
-                            state.exitCode = -1;
-                            Log.i(TAG, future.get().getCommand() + " : " + future.get().getExitCode());
-                        } else {
-                        }
-                    }
-                    if (results.size() != script.size()) {
-                        state.exitCode = -1;
-                    } else {
-                        state.exitCode = 0;
-                    }
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                Log.e(e.getClass().getName(), e.getMessage(), e);
-            } catch (Exception e) {
-                Log.e(e.getClass().getName(), e.getMessage(), e);
-            }
-            if (notificationManager != null) {
-                notificationManager.cancel(NOTIFICATION_ID);
-            }
-            state.done = true;
-            if (state.cb != null) {
-                state.cb.cbFunc(state);
-            }
-            //shut down the executor service now
-            shutdownAndAwaitTermination(executor);
-
-        } else { } */
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    private static void showToastUIThread(final String msg, final Context mContext) {
-        try {
-            Thread thread = new Thread() {
-                public void run() {
-                    Looper.prepare();
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (mContext != null && msg != null) {
-                                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
-                                }
-                                handler.removeCallbacks(this);
-                                Looper.myLooper().quit();
-                            } catch (Exception e) {
-                                Log.i(TAG, "Exception in showToastUIThread: " + e.getLocalizedMessage());
-                            }
-                        }
-                    }, 2000);
-                    Looper.loop();
-                }
-            };
-            thread.start();
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in showing toast");
-        }
-
     }
 
     private static NotificationManager createNotification(Context context) {
@@ -623,7 +409,6 @@ public class RootShellService extends Service {
         builder.setSmallIcon(R.drawable.notification)
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
-                //keep the priority as low ,so it's not visible on lockscreen
                 .setTicker(context.getString(R.string.app_name))
                 .setPriority(-2)
                 .setContentText("");

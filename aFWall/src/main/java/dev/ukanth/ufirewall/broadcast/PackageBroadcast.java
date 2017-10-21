@@ -42,7 +42,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.service.RootShellService.RootCommand;
+import dev.ukanth.ufirewall.service.RootCommand;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled

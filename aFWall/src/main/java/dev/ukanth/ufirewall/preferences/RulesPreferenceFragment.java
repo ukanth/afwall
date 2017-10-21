@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.service.RootShellService;
+import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public class RulesPreferenceFragment extends PreferenceFragment implements
@@ -67,12 +67,12 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
             forward_chain_v6.setEnabled(false);
         }
 
-        Api.getChainStatus(ctx,  new RootShellService.RootCommand()
+        Api.getChainStatus(ctx,  new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setLogging(true)
-                .setCallback(new RootShellService.RootCommand.Callback() {
+                .setCallback(new RootCommand.Callback() {
                     @Override
-                    public void cbFunc(RootShellService.RootCommand state) {
+                    public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
                             StringBuilder result = state.res;
                             if (result != null) {
@@ -171,11 +171,11 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
         switch (key) {
             case "input_chain": {
                 String rule = "-P INPUT " + (G.ipv4Input() ? "ACCEPT" : "DROP");
-                Api.applyRule(ctx, rule, false, new RootShellService.RootCommand()
+                Api.applyRule(ctx, rule, false, new RootCommand()
                         .setFailureToast(R.string.error_apply)
-                        .setCallback(new RootShellService.RootCommand.Callback() {
+                        .setCallback(new RootCommand.Callback() {
                             @Override
-                            public void cbFunc(RootShellService.RootCommand state) {
+                            public void cbFunc(RootCommand state) {
                                 if (state.exitCode == 0) {
                                 } else {
                                 }
@@ -185,11 +185,11 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
             }
             case "output_chain": {
                 String rule = "-P OUTPUT " + (G.ipv4Output() ? "ACCEPT" : "DROP");
-                Api.applyRule(ctx, rule, false, new RootShellService.RootCommand()
+                Api.applyRule(ctx, rule, false, new RootCommand()
                         .setFailureToast(R.string.error_apply)
-                        .setCallback(new RootShellService.RootCommand.Callback() {
+                        .setCallback(new RootCommand.Callback() {
                             @Override
-                            public void cbFunc(RootShellService.RootCommand state) {
+                            public void cbFunc(RootCommand state) {
                                 if (state.exitCode == 0) {
                                 } else {
                                 }
@@ -199,11 +199,11 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
             }
             case "forward_chain": {
                 String rule = "-P FORWARD " + (G.ipv4Fwd() ? "ACCEPT" : "DROP");
-                Api.applyRule(ctx, rule, false, new RootShellService.RootCommand()
+                Api.applyRule(ctx, rule, false, new RootCommand()
                         .setFailureToast(R.string.error_apply)
-                        .setCallback(new RootShellService.RootCommand.Callback() {
+                        .setCallback(new RootCommand.Callback() {
                             @Override
-                            public void cbFunc(RootShellService.RootCommand state) {
+                            public void cbFunc(RootCommand state) {
                                 if (state.exitCode == 0) {
                                 } else {
                                 }
@@ -213,11 +213,11 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
             }
             case "input_chain_v6": {
                 String rule = "-P INPUT " + (G.ipv6Input() ? "ACCEPT" : "DROP");
-                Api.applyRule(ctx, rule, true, new RootShellService.RootCommand()
+                Api.applyRule(ctx, rule, true, new RootCommand()
                         .setFailureToast(R.string.error_apply)
-                        .setCallback(new RootShellService.RootCommand.Callback() {
+                        .setCallback(new RootCommand.Callback() {
                             @Override
-                            public void cbFunc(RootShellService.RootCommand state) {
+                            public void cbFunc(RootCommand state) {
                                 if (state.exitCode == 0) {
                                 } else {
                                 }
@@ -227,11 +227,11 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
             }
             case "output_chain_v6": {
                 String rule = "-P OUTPUT " + (G.ipv6Output() ? "ACCEPT" : "DROP");
-                Api.applyRule(ctx, rule, true, new RootShellService.RootCommand()
+                Api.applyRule(ctx, rule, true, new RootCommand()
                         .setFailureToast(R.string.error_apply)
-                        .setCallback(new RootShellService.RootCommand.Callback() {
+                        .setCallback(new RootCommand.Callback() {
                             @Override
-                            public void cbFunc(RootShellService.RootCommand state) {
+                            public void cbFunc(RootCommand state) {
                                 if (state.exitCode == 0) {
                                 } else {
                                 }
@@ -241,11 +241,11 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
             }
             case "forward_chain_v6": {
                 String rule = "-P FORWARD " + (G.ipv6Fwd() ? "ACCEPT" : "DROP");
-                Api.applyRule(ctx, rule, true, new RootShellService.RootCommand()
+                Api.applyRule(ctx, rule, true, new RootCommand()
                         .setFailureToast(R.string.error_apply)
-                        .setCallback(new RootShellService.RootCommand.Callback() {
+                        .setCallback(new RootCommand.Callback() {
                             @Override
-                            public void cbFunc(RootShellService.RootCommand state) {
+                            public void cbFunc(RootCommand state) {
                                 if (state.exitCode == 0) {
                                 } else {
                                 }

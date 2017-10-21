@@ -21,7 +21,7 @@ import java.io.File;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.service.RootShellService;
+import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public class ExpPreferenceFragment extends PreferenceFragment implements
@@ -125,7 +125,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 							File f = new File(s);
 							if (f.exists() && f.isDirectory()) {
 								//make sure it's executable
-								new RootShellService.RootCommand()
+								new RootCommand()
 										.setReopenShell(true)
 										.setLogging(true)
 										.run(ctx, "chmod 755 " + f.getAbsolutePath());
@@ -176,10 +176,10 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 			File f = new File(s);
 			if (f.exists() && f.isDirectory()) {
 				String filePath  = s + "/" + initScript;
-					new RootShellService.RootCommand()
-						.setReopenShell(true).setCallback(new RootShellService.RootCommand.Callback() {
+					new RootCommand()
+						.setReopenShell(true).setCallback(new RootCommand.Callback() {
 						@Override
-						public void cbFunc(RootShellService.RootCommand state) {
+						public void cbFunc(RootCommand state) {
 							if (state.exitCode == 0) {
 								returnFlag[0] = true;
 							}

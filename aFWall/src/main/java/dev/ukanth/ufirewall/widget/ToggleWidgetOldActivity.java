@@ -17,7 +17,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
-import dev.ukanth.ufirewall.service.RootShellService;
+import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public class ToggleWidgetOldActivity extends Activity implements
@@ -179,10 +179,10 @@ public class ToggleWidgetOldActivity extends Activity implements
                 Looper.prepare();
                 ProfileData data = ProfileHelper.getProfileByName(profileName);
                 G.setProfile(true, data.getIdentifier());
-                Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
-                        .setCallback(new RootShellService.RootCommand.Callback() {
+                Api.applySavedIptablesRules(context, false, new RootCommand()
+                        .setCallback(new RootCommand.Callback() {
                             @Override
-                            public void cbFunc(RootShellService.RootCommand state) {
+                            public void cbFunc(RootCommand state) {
                                 if (state.exitCode == 0) {
                                     msg.arg1 = R.string.rules_applied;
                                     toaster.sendMessage(msg);
@@ -230,10 +230,10 @@ public class ToggleWidgetOldActivity extends Activity implements
                 final Message msg = new Message();
                 switch (i) {
                     case 1:
-                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
-                                .setCallback(new RootShellService.RootCommand.Callback() {
+                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                                .setCallback(new RootCommand.Callback() {
                                     @Override
-                                    public void cbFunc(RootShellService.RootCommand state) {
+                                    public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
@@ -250,10 +250,10 @@ public class ToggleWidgetOldActivity extends Activity implements
                     case 2:
                         // validation, check for password
                         if (G.protectionLevel().equals("p0")) {
-                            Api.purgeIptables(context, true, new RootShellService.RootCommand()
+                            Api.purgeIptables(context, true, new RootCommand()
                                     .setReopenShell(true)
-                                    .setCallback(new RootShellService.RootCommand.Callback() {
-                                        public void cbFunc(RootShellService.RootCommand state) {
+                                    .setCallback(new RootCommand.Callback() {
+                                        public void cbFunc(RootCommand state) {
                                             boolean nowEnabled = state.exitCode != 0;
                                             msg.arg1 = R.string.toast_disabled;
                                             toaster.sendMessage(msg);
@@ -269,10 +269,10 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 3:
                         G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
-                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
-                                .setCallback(new RootShellService.RootCommand.Callback() {
+                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                                .setCallback(new RootCommand.Callback() {
                                     @Override
-                                    public void cbFunc(RootShellService.RootCommand state) {
+                                    public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
@@ -291,10 +291,10 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 4:
                         G.setProfile(true, "AFWallProfile1");
-                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
-                                .setCallback(new RootShellService.RootCommand.Callback() {
+                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                                .setCallback(new RootCommand.Callback() {
                                     @Override
-                                    public void cbFunc(RootShellService.RootCommand state) {
+                                    public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
@@ -313,10 +313,10 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 5:
                         G.setProfile(true, "AFWallProfile2");
-                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
-                                .setCallback(new RootShellService.RootCommand.Callback() {
+                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                                .setCallback(new RootCommand.Callback() {
                                     @Override
-                                    public void cbFunc(RootShellService.RootCommand state) {
+                                    public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
@@ -335,10 +335,10 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 6:
                         G.setProfile(true, "AFWallProfile3");
-                        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
-                                .setCallback(new RootShellService.RootCommand.Callback() {
+                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                                .setCallback(new RootCommand.Callback() {
                                     @Override
-                                    public void cbFunc(RootShellService.RootCommand state) {
+                                    public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
@@ -431,7 +431,7 @@ public class ToggleWidgetOldActivity extends Activity implements
 
    /* private boolean applyRules(Context context, Message msg, Handler toaster) {
         boolean success = false;
-        if (Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand())) {
+        if (Api.applySavedIptablesRules(context, false, new RootCommand())) {
             msg.arg1 = R.string.toast_enabled;
             toaster.sendMessage(msg);
             enableOthers();
@@ -446,11 +446,11 @@ public class ToggleWidgetOldActivity extends Activity implements
     private boolean applyProfileRules(final Context context, final Message msg,
                                       final Handler toaster) {
         boolean success = false;
-        success = Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+        success = Api.applySavedIptablesRules(context, false, new RootCommand()
                 .setFailureToast(R.string.error_apply)
-                .setCallback(new RootShellService.RootCommand.Callback() {
+                .setCallback(new RootCommand.Callback() {
                     @Override
-                    public void cbFunc(RootShellService.RootCommand state) {
+                    public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
                             msg.arg1 = R.string.rules_applied;
                             toaster.sendMessage(msg);

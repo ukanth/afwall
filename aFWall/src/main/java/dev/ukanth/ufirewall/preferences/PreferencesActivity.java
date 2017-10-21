@@ -54,7 +54,7 @@ import dev.ukanth.ufirewall.events.LogChangeEvent;
 import dev.ukanth.ufirewall.events.RulesEvent;
 import dev.ukanth.ufirewall.events.RxEvent;
 import dev.ukanth.ufirewall.service.LogService;
-import dev.ukanth.ufirewall.service.RootShellService;
+import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import io.reactivex.functions.Consumer;
 
@@ -88,11 +88,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     private void ruleChangeApplyRules(RulesEvent rulesEvent) {
         final Context context = rulesEvent.ctx;
-        Api.applySavedIptablesRules(context, false, new RootShellService.RootCommand()
+        Api.applySavedIptablesRules(context, false, new RootCommand()
                 .setFailureToast(R.string.error_apply)
-                .setCallback(new RootShellService.RootCommand.Callback() {
+                .setCallback(new RootCommand.Callback() {
                     @Override
-                    public void cbFunc(RootShellService.RootCommand state) {
+                    public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
                             Log.i(Api.TAG, "Rules applied successfully during preference change");
                         } else {
