@@ -49,7 +49,7 @@ import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
 import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
-import static dev.ukanth.ufirewall.util.G.ctx;
+
 
 public class RootShellService extends Service {
 
@@ -72,7 +72,8 @@ public class RootShellService extends Service {
 
     private static ShellState rootState = INIT;
 
-    private final static int MAX_RETRIES = 10;
+    //number of retries
+    private final static int MAX_RETRIES = 5;
 
     private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
 
@@ -238,7 +239,7 @@ public class RootShellService extends Service {
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("TOAST");
         broadcastIntent.putExtra("MSG", message);
-        ctx.sendBroadcast(broadcastIntent);
+        mContext.sendBroadcast(broadcastIntent);
     }
 
     @Override
@@ -357,7 +358,7 @@ public class RootShellService extends Service {
                 broadcastIntent.setAction("UPDATEUI");
                 broadcastIntent.putExtra("SIZE", state.commmands.size());
                 broadcastIntent.putExtra("INDEX", state.commandIndex);
-                ctx.sendBroadcast(broadcastIntent);
+                mContext.sendBroadcast(broadcastIntent);
             }
         }).start();
     }
@@ -401,11 +402,11 @@ public class RootShellService extends Service {
 
     }
 
-    private static void reOpenShell(Context ctx) {
+    private static void reOpenShell(Context context) {
         rootState = ShellState.BUSY;
         startShellInBackground();
-        Intent intent = new Intent(ctx, RootShellService.class);
-        ctx.startService(intent);
+        Intent intent = new Intent(context, RootShellService.class);
+        context.startService(intent);
     }
 
     /*static class ExecuteCommand implements Callable<IpCmd> {
