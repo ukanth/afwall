@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
@@ -92,18 +93,12 @@ public class RootShellService extends Service {
             notificationManager.cancel(NOTIFICATION_ID);
         }
         if (exitCode == 0 && state.successToast != NO_TOAST) {
-            sendToastBroadcast(mContext.getString(state.successToast));
+            Api.sendToastBroadcast(mContext, mContext.getString(state.successToast));
         } else if (exitCode != 0 && state.failureToast != NO_TOAST) {
-            sendToastBroadcast(mContext.getString(state.failureToast));
+            Api.sendToastBroadcast(mContext, mContext.getString(state.failureToast));
         }
     }
 
-    private static void sendToastBroadcast(String message) {
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("TOAST");
-        broadcastIntent.putExtra("MSG", message);
-        mContext.sendBroadcast(broadcastIntent);
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

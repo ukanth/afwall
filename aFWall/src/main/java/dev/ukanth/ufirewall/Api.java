@@ -117,6 +117,8 @@ import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
 
+import static android.R.id.message;
+
 /**
  * Contains shared programming interfaces.
  * All iptables "communication" is handled by this class.
@@ -3113,5 +3115,11 @@ public final class Api {
         clipboard.setPrimaryClip(clip);
     }
 
+    public static void sendToastBroadcast(Context ctx, String message) {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("TOAST");
+        broadcastIntent.putExtra("MSG", message);
+        ctx.sendBroadcast(broadcastIntent);
+    }
 
 }
