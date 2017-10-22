@@ -419,7 +419,7 @@ public class RootShell {
      */
     public static boolean isBusyboxAvailable()
     {
-        return (findBinary("busybox", true)).size() > 0 || (findBinary("toybox", true)).size() > 0;
+        return (findBinary("busybox", true)).size() > 0;
     }
 
     /**
