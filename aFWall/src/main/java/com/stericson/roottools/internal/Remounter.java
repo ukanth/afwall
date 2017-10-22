@@ -32,10 +32,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.log.Log;
+
 
 public class Remounter
 {
 
+    private String customPath;
+
+    public Remounter() {
+    }
+
+    public Remounter(String path) {
+        this.customPath = path;
+    }
     //-------------
     //# Remounter #
     //-------------
@@ -55,10 +66,8 @@ public class Remounter
      * @return a <code>boolean</code> which indicates whether or not the partition
      * has been remounted as specified.
      */
-
     public boolean remount(String file, String mountType)
     {
-
         //if the path has a trailing slash get rid of it.
         if (file.endsWith("/") && !file.equals("/"))
         {
@@ -66,7 +75,6 @@ public class Remounter
         }
         //Make sure that what we are trying to remount is in the mount list.
         boolean foundMount = false;
-
         while (!foundMount)
         {
             try
@@ -86,7 +94,7 @@ public class Remounter
             {
                 if (RootTools.debugMode)
                 {
-                    e.printStackTrace();
+                    Log.d(Api.TAG, e.getMessage(), e);
                 }
                 return false;
             }
@@ -98,7 +106,7 @@ public class Remounter
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    Log.e(Api.TAG, e.getMessage(), e);
                     return false;
                 }
             }
@@ -130,6 +138,13 @@ public class Remounter
                     Shell.startRootShell().add(command);
                     commandWait(command);
 
+                    if(customPath != null) {
+                        command = new Command(0,
+                                true,
+                                customPath + " mount -o remount," + mountType.toLowerCase() + " " + mountPoint.getDevice().getAbsolutePath() + " " + mountPoint.getMountPoint().getAbsolutePath());
+                        Shell.startRootShell().add(command);
+                        commandWait(command);
+                    }
                 }
                 catch (Exception e)
                 {
