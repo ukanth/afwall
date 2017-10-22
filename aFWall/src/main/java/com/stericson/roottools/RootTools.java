@@ -689,6 +689,13 @@ public final class RootTools {
         return (remounter.remount(file, mountType));
     }
 
+    public static boolean remount(String file, String mountType, String customPath) {
+        // Recieved a request, get an instance of Remounter
+        Remounter remounter = new Remounter(customPath);
+        // send the request.
+        return (remounter.remount(file, mountType));
+    }
+
     /**
      * This restarts only Android OS without rebooting the whole device. This does NOT work on all
      * devices. This is done by killing the main init process named zygote. Zygote is restarted
@@ -696,10 +703,10 @@ public final class RootTools {
      *
      * @throws TimeoutException
      */
-    public static void restartAndroid() {
+   /* public static void restartAndroid() {
         RootTools.log("Restart Android");
         killProcess("zygote");
-    }
+    }*/
 
     /**
      * Executes binary in a separated process. Before using this method, the binary has to be
