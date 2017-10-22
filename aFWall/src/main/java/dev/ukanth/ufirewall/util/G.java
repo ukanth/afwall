@@ -125,6 +125,7 @@ public class G extends Application {
     private static final String IP6_OUTPUT = "output_chain_v6";
     private static final String IP6_FWD = "forward_chain_v6";
 
+    private static final String INITPATH = "initPath";
 
     private static String AFWALL_PROFILE = "AFWallProfile";
     private static String SHOW_LOG_TOAST = "showLogToasts";
@@ -220,6 +221,16 @@ public class G extends Application {
         gPrefs.edit().putBoolean(PWD_ENCRYPT, val).commit();
         return val;
     }
+
+    public static String initPath() {
+        return gPrefs.getString(INITPATH, null);
+    }
+
+    public static String initPath(String val) {
+        gPrefs.edit().putString(INITPATH, val).commit();
+        return val;
+    }
+
 
     public static String profile_pwd() {
         return gPrefs.getString(PROFILE_PWD, "");

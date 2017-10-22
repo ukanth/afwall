@@ -12,10 +12,20 @@
             android:dialogTitle="@string/delayDialog"
             android:dialogMessage="Default - 5s"
             android:key="customDelay"/>
+
+        <ListPreference
+            android:entries="@array/initDir"
+            android:entryValues="@array/initValue"
+            android:key="initPath"
+            android:title="@string/init_d"></ListPreference>
+
         <CheckBoxPreference
             android:key="fixLeak"
             android:summary="@string/fixleakSummary"
             android:title="@string/fixleakTitle" />
+
+
+
         <CheckBoxPreference
             android:key="enableInbound"
             android:summary="@string/enableInboundSummary"
