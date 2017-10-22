@@ -161,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private BroadcastReceiver uiProgressReceiver;
     private BroadcastReceiver toastReceiver;
 
+    private Shell.Interactive rootShell = null;
+
     public boolean isDirty() {
         return dirty;
     }
@@ -202,15 +204,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
         AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 
-        //make sure we have WRITE_EXTERNAL_STORAGE ACCESS
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
-        } else {
-            Api.assertBinaries(this, true);
-        }
+        Api.assertBinaries(this, true);
 
         initDone = 0;
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
@@ -221,12 +215,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
-            startRootShell();
+            startRootShell(rootShell);
             passCheck();
         }
         registerQuickApply();
         registerUIbroadcast();
         registerToastbroadcast();
+    }
+
+    private void requestPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
+        }
     }
 
     private void registerToastbroadcast() {
@@ -328,19 +331,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void startRootShell() {
-        List<String> cmds = new ArrayList<String>();
-        cmds.add("true");
-        new RootCommand().setFailureToast(R.string.error_su)
-                .setReopenShell(true)
-                .setCallback(new RootCommand.Callback() {
-                    public void cbFunc(RootCommand state) {
-                        //failed to acquire root
-                        if (state.exitCode != 0) {
-                            showRootNotFoundMessage();
+    private void startRootShell(Shell.Interactive rootShell) {
+        if(rootShell == null) {
+            List<String> cmds = new ArrayList<String>();
+            cmds.add("true");
+            new RootCommand().setFailureToast(R.string.error_su)
+                    .setReopenShell(true)
+                    .setCallback(new RootCommand.Callback() {
+                        public void cbFunc(RootCommand state) {
+                            //failed to acquire root
+                            if (state.exitCode != 0) {
+                                showRootNotFoundMessage();
+                            }
                         }
-                    }
-                }).run(getApplicationContext(), cmds);
+                    }).run(getApplicationContext(), cmds);
+        }
+
         if (G.activeNotification()) {
             Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         }
@@ -1166,13 +1172,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     ActivityCompat.requestPermissions(MainActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-
                 } else {
                     showExportDialog();
                 }
                 return true;
             case R.id.menu_import:
-
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
                     // permissions have not been granted.
@@ -1183,7 +1187,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } else {
                     showImportDialog();
                 }
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -2150,8 +2153,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class RootCheck extends AsyncTask<Void, Void, Void> {
         private Context context = null;
         MaterialDialog suDialog = null;
-        boolean accessGiven = false;
         boolean unsupportedSU = false;
+        boolean[] suGranted = { false };
         //private boolean suAvailable = false;
 
         public RootCheck setContext(Context context) {
@@ -2168,7 +2171,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Void doInBackground(Void... params) {
-            accessGiven = Shell.SU.available();
+            rootShell = (new Shell.Builder())
+                    .useSU()
+                    .addCommand("id", 0, new Shell.OnCommandResultListener() {
+                        @Override
+                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+                            synchronized (suGranted) {
+                                suGranted[0] = true;
+                            }
+                        }
+                    })
+                    .open(new Shell.OnCommandResultListener() {
+                        @Override
+                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
+                        }
+                    });
+            rootShell.waitForIdle();
             unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
             return null;
         }
@@ -2213,11 +2231,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
                 G.kingDetected(true);
             }*/
-            if (!accessGiven && !unsupportedSU && !isFinishing()) {
+            if (!suGranted[0] && !unsupportedSU && !isFinishing()) {
                 showRootNotFoundMessage();
             } else {
-                G.hasRoot(accessGiven);
-                startRootShell();
+                G.hasRoot(suGranted[0]);
+                startRootShell(rootShell);
                 passCheck();
             }
         }
