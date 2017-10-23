@@ -580,4 +580,5 @@
 
     <string name="init_d">Init.d directory path for startup leak</string>
     <string name="mount_initd_error">Unable to mount the directory</string>
+    <string name="delete_initd_error">Unable to delete the file</string>
 </resources>

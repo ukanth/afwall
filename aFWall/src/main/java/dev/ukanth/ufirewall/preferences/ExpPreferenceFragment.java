@@ -95,8 +95,8 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             }
         }
 
-        if(key.equals("initPath")) {
-            if(G.initPath() != null) {
+        if (key.equals("initPath")) {
+            if (G.initPath() != null) {
                 CheckBoxPreference fixPath = (CheckBoxPreference) findPreference("fixLeak");
                 fixPath.setEnabled(true);
             }
@@ -205,7 +205,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         return false;
     }
 
-    private Boolean deleteFiles(Context ctx) {
+    private Boolean deleteFiles(final Context ctx) {
         final boolean[] returnFlag = {false};
         String path = G.initPath();
         File f = new File(path);
@@ -219,6 +219,8 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                         if (state.exitCode == 0) {
                             returnFlag[0] = true;
                             mountDir(getFixLeakPath(), "RO");
+                        } else {
+                            Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
                         }
                     }
                 }).setLogging(true).run(ctx, "rm -f " + filePath);
