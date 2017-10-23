@@ -274,6 +274,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //lets save the rules
                 if (queue != null && !queue.isEmpty()) {
                     List<PackageInfoData> apps = new ArrayList<>(queue);
+                    for(PackageInfoData data: apps) {
+                        Log.i(TAG, data.pkgName + " " + data.uid);
+                    }
                     Api.RuleDataSet ruleData = Api.saveRules(getApplicationContext(), apps, false);
                     Log.i(TAG, "Generated RuleIDs: " + ruleData.toString());
                     new RunQuickApply().setDataSet(ruleData).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

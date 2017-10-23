@@ -117,8 +117,6 @@ import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
 
-import static android.R.id.message;
-
 /**
  * Contains shared programming interfaces.
  * All iptables "communication" is handled by this class.
@@ -559,13 +557,13 @@ public final class Api {
         List<Integer> vpnList;
 
         @Override
-        public String toString(){
+        public String toString() {
             StringBuilder builder = new StringBuilder();
-            builder.append(wifiList != null ? android.text.TextUtils.join(",", wifiList): "");
-            builder.append(dataList != null ? android.text.TextUtils.join(",", dataList): "");
-            builder.append(lanList != null ? android.text.TextUtils.join(",", lanList): "");
-            builder.append(roamList != null ? android.text.TextUtils.join(",", roamList): "");
-            builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList): "");
+            builder.append(wifiList != null ? android.text.TextUtils.join(",", wifiList) : "");
+            builder.append(dataList != null ? android.text.TextUtils.join(",", dataList) : "");
+            builder.append(lanList != null ? android.text.TextUtils.join(",", lanList) : "");
+            builder.append(roamList != null ? android.text.TextUtils.join(",", roamList) : "");
+            builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList) : "");
             return builder.toString().trim();
         }
     }
@@ -899,55 +897,53 @@ public final class Api {
 
         if (apps != null) {
             // Builds a pipe-separated list of names
-            StringBuilder newpkg_wifi = new StringBuilder();
-            StringBuilder newpkg_3g = new StringBuilder();
-            StringBuilder newpkg_roam = new StringBuilder();
-            StringBuilder newpkg_vpn = new StringBuilder();
-            StringBuilder newpkg_lan = new StringBuilder();
+            HashSet newpkg_wifi = new HashSet();
+            HashSet newpkg_3g = new HashSet();
+            HashSet newpkg_roam = new HashSet();
+            HashSet newpkg_vpn = new HashSet();
+            HashSet newpkg_lan = new HashSet();
 
             for (int i = 0; i < apps.size(); i++) {
                 if (apps.get(i) != null) {
                     if (apps.get(i).selected_wifi) {
-                        if (newpkg_wifi.length() != 0) newpkg_wifi.append('|');
-                        newpkg_wifi.append(apps.get(i).uid);
-
+                        newpkg_wifi.add(apps.get(i).uid);
                     }
                     if (apps.get(i).selected_3g) {
-                        if (newpkg_3g.length() != 0) newpkg_3g.append('|');
-                        newpkg_3g.append(apps.get(i).uid);
+                        newpkg_3g.add(apps.get(i).uid);
                     }
                     if (G.enableRoam() && apps.get(i).selected_roam) {
-                        if (newpkg_roam.length() != 0) newpkg_roam.append('|');
-                        newpkg_roam.append(apps.get(i).uid);
+                        newpkg_roam.add(apps.get(i).uid);
                     }
-
                     if (G.enableVPN() && apps.get(i).selected_vpn) {
-                        if (newpkg_vpn.length() != 0) newpkg_vpn.append('|');
-                        newpkg_vpn.append(apps.get(i).uid);
+                        newpkg_vpn.add(apps.get(i).uid);
                     }
-
                     if (G.enableLAN() && apps.get(i).selected_lan) {
-                        if (newpkg_lan.length() != 0) newpkg_lan.append('|');
-                        newpkg_lan.append(apps.get(i).uid);
+                        newpkg_lan.add(apps.get(i).uid);
                     }
                 }
             }
+
+            String wifi = android.text.TextUtils.join("|", newpkg_wifi);
+            String data = android.text.TextUtils.join("|", newpkg_3g);
+            String roam = android.text.TextUtils.join("|", newpkg_roam);
+            String vpn = android.text.TextUtils.join("|", newpkg_vpn);
+            String lan = android.text.TextUtils.join("|", newpkg_lan);
             // save the new list of UIDs
             if (store) {
                 SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
                 Editor edit = prefs.edit();
-                edit.putString(PREF_WIFI_PKG_UIDS, newpkg_wifi.toString());
-                edit.putString(PREF_3G_PKG_UIDS, newpkg_3g.toString());
-                edit.putString(PREF_ROAMING_PKG_UIDS, newpkg_roam.toString());
-                edit.putString(PREF_VPN_PKG_UIDS, newpkg_vpn.toString());
-                edit.putString(PREF_LAN_PKG_UIDS, newpkg_lan.toString());
+                edit.putString(PREF_WIFI_PKG_UIDS, wifi);
+                edit.putString(PREF_3G_PKG_UIDS, data);
+                edit.putString(PREF_ROAMING_PKG_UIDS, roam);
+                edit.putString(PREF_VPN_PKG_UIDS, vpn);
+                edit.putString(PREF_LAN_PKG_UIDS, lan);
                 edit.commit();
             } else {
-                dataSet = new RuleDataSet(getListFromPref(newpkg_wifi.toString()),
-                        getListFromPref(newpkg_3g.toString()),
-                        getListFromPref(newpkg_roam.toString()),
-                        getListFromPref(newpkg_vpn.toString()),
-                        getListFromPref(newpkg_vpn.toString()));
+                dataSet = new RuleDataSet(new ArrayList<>(newpkg_wifi),
+                        new ArrayList<>(newpkg_3g),
+                        new ArrayList<>(newpkg_roam),
+                        new ArrayList<>(newpkg_vpn),
+                        new ArrayList<>(newpkg_lan));
             }
         }
         return dataSet;
@@ -1270,7 +1266,7 @@ public final class Api {
             ApplicationInfo apinfo = null;
 
             Date install = new Date();
-            install.setTime(System.currentTimeMillis() - (120000));
+            install.setTime(System.currentTimeMillis() - (180000));
 
             for (int i = 0; i < installed.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
@@ -1980,25 +1976,6 @@ public final class Api {
      * Small structure to hold an application info
      */
     public static final class PackageInfoData {
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            PackageInfoData that = (PackageInfoData) o;
-
-            if (uid != that.uid) return false;
-            return pkgName.equals(that.pkgName);
-
-        }
-
-        @Override
-        public int hashCode() {
-            int result = uid;
-            result = 31 * result + pkgName.hashCode();
-            return result;
-        }
 
         /**
          * linux user id
