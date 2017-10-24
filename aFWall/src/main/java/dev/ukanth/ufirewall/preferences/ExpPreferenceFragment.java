@@ -13,7 +13,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.widget.Toast;
 
 import com.stericson.roottools.RootTools;
 
@@ -25,6 +24,9 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+
+import static dev.ukanth.ufirewall.Api.getFixLeakPath;
+import static dev.ukanth.ufirewall.Api.mountDir;
 
 public class ExpPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
@@ -121,7 +123,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         if (fixLeakPref.isEnabled()) {
             // gray out the fixLeak preference if the ROM doesn't support init.d
             fixLeakPref.setChecked(isFixLeakInstalled());
-            fixLeakPref.setEnabled(getFixLeakPath() != null && !isPackageInstalled("com.androguide.universal.init.d", ctx));
+            fixLeakPref.setEnabled(getFixLeakPath(initScript) != null && !isPackageInstalled("com.androguide.universal.init.d", ctx));
         }
     }
 
@@ -136,7 +138,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
     }
 
     private static boolean isFixLeakInstalled() {
-        String path = getFixLeakPath();
+        String path = getFixLeakPath(initScript);
         return path != null && new File(path).exists();
     }
 
@@ -147,96 +149,73 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             final String srcPath = new File(ctx.getDir("bin", 0), initScript)
                     .getAbsolutePath();
 
-            new AsyncTask<Void, Void, Boolean>() {
+            new AsyncTask<Void, Void, Void>() {
                 @Override
-                public Boolean doInBackground(Void... args) {
-                    boolean returnFlag = false;
+                public Void doInBackground(Void... args) {
                     String path = G.initPath();
                     if (path != null) {
                         if (enabled) {
                             File f = new File(path);
-                            if (mountDir(getFixLeakPath(), "RW")) {
+                            if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
                                 //make sure it's executable
                                 new RootCommand()
                                         .setReopenShell(true)
-                                        .setLogging(true)
                                         .run(ctx, "chmod 755 " + f.getAbsolutePath());
-                                returnFlag = RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
-                                        true, false);
-                                mountDir(getFixLeakPath(), "RO");
+                                if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
+                                        true, false)) {
+                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
+                                }
+                                mountDir(ctx, getFixLeakPath(initScript), "RO");
+                                updateLeakCheckbox();
                             } else {
                                 Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                             }
                         } else {
-                            returnFlag = deleteFiles(ctx);
+                            deleteFiles(ctx);
                         }
                     }
-                    return returnFlag;
-                }
-
-                @Override
-                public void onPostExecute(Boolean success) {
-                    int msgid;
-
-                    if (success) {
-                        msgid = enabled ? R.string.success_initd
-                                : R.string.remove_initd;
-                    } else {
-                        msgid = enabled ? R.string.unable_initd
-                                : R.string.unable_remove_initd;
-                        if (fixLeakPref == null) {
-                            fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
-                        }
-                        fixLeakPref.setChecked(isFixLeakInstalled());
-                    }
-                    if (getStatus() != Status.RUNNING) {
-                        Api.toast(ctx, getString(msgid), Toast.LENGTH_SHORT);
-                    }
+                    return null;
                 }
             }.execute();
         }
     }
 
-    private boolean mountDir(String path, String mountType) {
-        if (path != null) {
-            String busyboxPath = Api.getBusyBoxPath(this.getActivity().getApplicationContext(), false);
-            return RootTools.remount(path, mountType, busyboxPath);
+    private void updateLeakCheckbox() {
+        if (fixLeakPref == null) {
+            fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
         }
-        return false;
+        fixLeakPref.setChecked(isFixLeakInstalled());
     }
 
-    private Boolean deleteFiles(final Context ctx) {
-        final boolean[] returnFlag = {false};
+
+    private void deleteFiles(final Context ctx) {
         String path = G.initPath();
         File f = new File(path);
         if (f.exists() && f.isDirectory()) {
-            String filePath = path + "/" + initScript;
-            if (mountDir(getFixLeakPath(), "RW")) {
-                new RootCommand()
-                        .setReopenShell(true).setCallback(new RootCommand.Callback() {
-                    @Override
-                    public void cbFunc(RootCommand state) {
-                        if (state.exitCode == 0) {
-                            returnFlag[0] = true;
-                            mountDir(getFixLeakPath(), "RO");
-                        } else {
-                            Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
-                        }
+            final String filePath = path + "/" + initScript;
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                public Void doInBackground(Void... args) {
+                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                        new RootCommand()
+                                .setReopenShell(true).setCallback(new RootCommand.Callback() {
+                            @Override
+                            public void cbFunc(RootCommand state) {
+                                if (state.exitCode == 0) {
+                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
+                                } else {
+                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
+                                }
+                                updateLeakCheckbox();
+                            }
+                        }).setLogging(true).run(ctx, "rm -f " + filePath);
+                        mountDir(ctx, getFixLeakPath(initScript), "RO");
+                    } else {
+                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                     }
-                }).setLogging(true).run(ctx, "rm -f " + filePath);
-            } else {
-                Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
-            }
-
+                    return null;
+                }
+            }.execute();
         }
-        return returnFlag[0];
     }
-
-    private static String getFixLeakPath() {
-        if (G.initPath() != null) {
-            return G.initPath() + "/" + initScript;
-        }
-        return null;
-    }
-
 }

@@ -64,6 +64,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -116,6 +117,8 @@ import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
+
+import static dev.ukanth.ufirewall.util.G.ctx;
 
 /**
  * Contains shared programming interfaces.
@@ -538,6 +541,7 @@ public final class Api {
         }
 
     }
+
 
     static class RuleDataSet {
 
@@ -3099,4 +3103,56 @@ public final class Api {
         ctx.sendBroadcast(broadcastIntent);
     }
 
+    public static String getFixLeakPath(String fileName) {
+        if (G.initPath() != null) {
+            return G.initPath() + "/" + fileName;
+        }
+        return null;
+    }
+
+    public static boolean isFixPathFileExist(String fileName) {
+        String path = getFixLeakPath(fileName);
+        if (path != null) {
+            File file = new File(path);
+            return file.exists();
+        }
+        return false;
+    }
+
+
+    public static boolean mountDir(Context context, String path, String mountType) {
+        if (path != null) {
+            String busyboxPath = Api.getBusyBoxPath(context, false);
+            return RootTools.remount(path, mountType, busyboxPath);
+        }
+        return false;
+    }
+
+    public static void checkAndCopyFixLeak(final Context context, final String fileName) {
+        if (G.initPath() != null && G.fixLeak() && !isFixPathFileExist(fileName)) {
+            final String srcPath = new File(ctx.getDir("bin", 0), fileName)
+                    .getAbsolutePath();
+            new AsyncTask<Void, Void, Boolean>() {
+                @Override
+                public Boolean doInBackground(Void... args) {
+                    boolean returnFlag = false;
+                    String path = G.initPath();
+                    if (path != null) {
+                        File f = new File(path);
+                        if (mountDir(context, getFixLeakPath(fileName), "RW")) {
+                            //make sure it's executable
+                            new RootCommand()
+                                    .setReopenShell(true)
+                                    .setLogging(true)
+                                    .run(ctx, "chmod 755 " + f.getAbsolutePath());
+                            returnFlag = RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName),
+                                    true, false);
+                            mountDir(context, getFixLeakPath(fileName), "RO");
+                        }
+                    }
+                    return returnFlag;
+                }
+            }.execute();
+        }
+    }
 }

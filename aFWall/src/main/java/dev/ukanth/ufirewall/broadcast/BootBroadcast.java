@@ -70,5 +70,8 @@ public class BootBroadcast extends BroadcastReceiver {
 		if(G.activeNotification()){
 			Api.showNotification(Api.isEnabled(context), context);
 		}
+
+		//check if startup script is copied
+		Api.checkAndCopyFixLeak(context, "afwallstart");
 	}
 }
