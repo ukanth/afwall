@@ -4,19 +4,23 @@ Changelog AFWall+
 Version 2.9.7 - WIP
 
 Features:
-* Control default chains for ipv4 and ipv6 as preference
-* Quick apply when only applying from main screen - using floating apply button - Donate Version Only
+* Control default chains for ipv4 and ipv6(preference)
+* Quick apply from main UI - using floating apply button - Donate Version Only
 * Showing rules count on apply
 * Search using UID
-* Improved detection on su/superuser
+* Improved detection for su binaries
+* Ability to choose init.d path
+* Removed storage permission from start (used only when export/import)
+* Xposed plugin updated to Nougat
 
 Bug Fixes:
-* Widgets for profile & toggle issue
-* Tasker profile switch issue
+* Added mount applet for busybox to fix mount issue for init.d
+* Widgets & tasker toggle issue for profiles
 * Possible fix for starup rule
 * Library updates
 * Out of memory crashes when enabled logging
 * Native crash fixes due to incompatible libraries
+* Lots of minor bug fixes and underhood changes to introduce new features.
 
 
 Version 2.9.6.1
