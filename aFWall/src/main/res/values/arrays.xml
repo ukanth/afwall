@@ -27,6 +27,8 @@
         <item>Japanese</item>
         <item>Korean</item>
 
+        <item>Malay</item>
+
         <item>Polish</item>
         <item>Portuguese</item>
         <item>Portuguese(Brazilian)</item>
@@ -74,6 +76,9 @@
         <item>it</item>
         <item>ja</item>
         <item>ko</item>
+
+        <item>ms</item>
+
         <item>pl</item>
         <item>pt</item>
         <item>pt_BR</item>

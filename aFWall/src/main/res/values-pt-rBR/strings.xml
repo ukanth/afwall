@@ -47,6 +47,7 @@
   <string name="show_log">Ver registros</string>
   <string name="clear_log">Limpar registros</string>
   <string name="applying_rules">Aplicando regras do iptables</string>
+  <string name="applying">Aplicando</string>
   <string name="saving_rules">Salvando regras do iptables</string>
   <string name="rules_applied">Regras aplicadas com sucesso</string>
   <string name="rules_saved">Regras salvas</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Número de pacotes bloqueados</string>
   <string name="blocked">AFWall+ bloqueou:</string>
   <string name="refresh">Atualizar</string>
+  <string name="block_ipv6_title">excluir</string>
+  <string name="block_ipv6_summary">excluir</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Perfis</string>
   <string name="custom_title1">Nome personalizado para o Perfil Padrão</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">NomePerfil</string>
   <string name="profile_notsupport">Por favor, migre os dados de perfil para usar esta opção</string>
+  <string name="profile_duplicate">Perfil já existente !</string>
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
   <string name="lan_title">Controle da LAN</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suporte ao IPv6</string>
   <string name="ipv6_summary">Habilitar o suporte ao IPv6</string>
-  <string name="block_ipv6_title">Bloquear IPv6</string>
-  <string name="block_ipv6_summary">Bloquear todas as conexões IPv6. ATENÇÃO: Use apenas se você não tiver conexões através do IPv4</string>
+  <string name="control_ipv6_title">Apenas cadeias IPv6 de controle</string>
   <string name="ip6unavailable">Erro: IPv6 requer \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Mudar regras do IPV6</string>
   <string name="switch_ipv4">Mudar regras do IPV4</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Permitir conexões de LAN para o telefone (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interface de usuário</string>
+  <string name="rule_prefs_title">Atuação das Regras</string>
+  <string name="ui_chains_title">Correntes de IPv4</string>
+  <string name="ui_chains6_title">Correntes de IPv6</string>
   <string name="rules_prefs_title">Regras/Conectividade</string>
   <string name="log_prefs_title">Registro</string>
   <string name="hideicons_pref_title">Ocultar ícones dos aplicativos</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Mostrar Endereço de Destino</string>
   <string name="show_source_address">Mostrar Endereço de Origem</string>
   <string name="network_connection_not_available">Conexão de rede não está disponível</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Adicionar às regras personalizadas</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Impressão digital</string>
   <string name="fingerprint_authentication_error">Erro na autenticação de impressão digital\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Segurança da tela de bloqueio não está habilitada nas Configurações</string>
   <string name="fingerprint_enabled_successfully">Impressão digital habilitada com êxito</string>
   <string name="fingerprint_disabled_successfully">Impressão digital desativada com êxito</string>
+  <string name="label_zoomin">Zoom +</string>
+  <string name="label_zoomout">Zoom -</string>
+  <string name="exception_pref">Não é possível iniciar a atividade devido a preferências corrompidas, Limpe os dados do aplicativo</string>
+  <string name="ipdetect">AFWall+ conexão IPv6 detectada. Por favor, habilite em Preferências-Regras/Conectividade e reaplique</string>
+  <string name="delayTitle">Atraso personalizado em segundos</string>
+  <string name="delaySummary">AFWall + aguarda segundos após a inicialização antes de aplicar as regras</string>
+  <string name="delayDialog">Definir o atraso em segundos</string>
+  <string name="pingDelayTitle">Tempo de espera de ping</string>
+  <string name="notification_priority">Prioridade de notificação</string>
+  <string name="defaultPriority">Prioridade padrão</string>
+  <string name="lowPriority">Baixa Prioridade</string>
+  <string name="applyRulesFasterTitle">Aplicar de imediato</string>
+  <string name="applyRulesFaster">Use somente se as regras de aplicativo forem mais lentas - Altamente Experimental</string>
+  <string name="choose">Selecionar</string>
+  <string name="input_chain">Corrente de entrada (IPv4)</string>
+  <string name="output_chain">Corrente de saída (IPv4)</string>
+  <string name="forward_chain">Corrente direta (IPv4)</string>
+  <string name="input_chain_summary_on">Atualmente <b>admitidos</b> conexões de entrada</string>
+  <string name="input_chain_summary_off">Atualmente <b>bloqueado</b> conexões de entrada</string>
+  <string name="output_chain_summary_on">Atualmente <b>admitidos</b> conexões de saída</string>
+  <string name="output_chain_summary_off">Atualmente <b>bloqueado</b>, conexões de saída</string>
+  <string name="forward_chain_summary_on">Atualmente <b>admitidos</b> ligações de encaminhamento</string>
+  <string name="forward_chain_summary_off">Atualmente <b>bloqueado</b>, ligações de encaminhamento</string>
+  <string name="input_chain_v6">Corrente de entrada (IPv6)</string>
+  <string name="output_chain_v6">Corrente de saída (IPv6)</string>
+  <string name="forward_chain_v6">Corrente direta (IPv6)</string>
+  <string name="quick_apply_title">Aplicar o programa rápido</string>
+  <string name="quick_apply_summary">Doe apenas! Mostrar flutuante aplicar botão para aplicar as regras rapidamente</string>
 </resources>

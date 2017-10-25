@@ -47,6 +47,7 @@
   <string name="show_log">Ogled dnevnika</string>
   <string name="clear_log">Pobriši</string>
   <string name="applying_rules">Uveljavljam pravila iptables</string>
+  <string name="applying">Uveljavljam</string>
   <string name="saving_rules">Shranjujem pravila iptables</string>
   <string name="rules_applied">Pravila uspešno uveljavljena</string>
   <string name="rules_saved">Pravila shranjena</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Skupaj blokiranih paketov</string>
   <string name="blocked">AFWall+ je blokiral:</string>
   <string name="refresh">Osveži</string>
+  <string name="block_ipv6_title">izbriši</string>
+  <string name="block_ipv6_summary">izbriši</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profili</string>
   <string name="custom_title1">Ime po meri za Osnovni profil</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">ImeProfila</string>
   <string name="profile_notsupport">Za uporabo te opcije morate prej izvesti selitev profilnih podatkov</string>
+  <string name="profile_duplicate">Profil že obstaja!</string>
   <string name="reapply_profile">Ponovno uveljavi pravila</string>
   <!-- Interface -->
   <string name="lan_title">LAN nadzor</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podpora IPv6</string>
   <string name="ipv6_summary">Vklop podpore za IPv6</string>
-  <string name="block_ipv6_title">Blokiraj IPv6</string>
-  <string name="block_ipv6_summary">To bo blokiralo vse povezave preko protokola IPv6. POZOR: to možnost uporabite zgolj, če uporabljate povezavo preko protokola IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Napaka: IPv6 zahteva \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Vklopi pravila IPv6</string>
   <string name="switch_ipv4">Vklopi pravila IPv4</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Omogoči povezovanje iz omrežja LAN do naprave (Samba, sshd, AirDroid, itd.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Uporabniški vmesnik</string>
+  <string name="rule_prefs_title">Obnašanje pravil</string>
+  <string name="ui_chains_title">IPv4 Chains</string>
+  <string name="ui_chains6_title">IPv6 Chains</string>
   <string name="rules_prefs_title">Pravila/povezljivost</string>
   <string name="log_prefs_title">Dnevnik aktivnosti</string>
   <string name="hideicons_pref_title">Skrij ikone aplikacij</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Prikaži ciljni naslov</string>
   <string name="show_source_address">Prikaži naslov vira</string>
   <string name="network_connection_not_available">Omrežna povezava ni na voljo</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Dodaj k pravilom po meri</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Prstni odtis</string>
   <string name="fingerprint_authentication_error">Napaka pri preverjanju prstnega odtisa\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Zaklepanje aplikacije ni vključeno</string>
   <string name="fingerprint_enabled_successfully">Prijava s prstnim odtisom je bila vključena</string>
   <string name="fingerprint_disabled_successfully">Prijava s prstnim odtisom je bila izključena</string>
+  <string name="label_zoomin">Povečaj</string>
+  <string name="label_zoomout">Oddalji</string>
+  <string name="exception_pref">Zaradi okvarjene nastavitve ne morem začeti z aktivnostjo. Prosimo izbrišite podatke aplikacije.</string>
+  <string name="ipdetect">AFWall+ je zaznal povezavo preko protokola IPv6. Prosimo vklopite podporo za IPv&amp; na Nastavitve-Pravila/povezljivost in ponovno uveljavite pravila</string>
+  <string name="delayTitle">Zakasnitev pri uveljavljanju pravil</string>
+  <string name="delaySummary">AFWall+ bo počakal n-sekund po zagonu, preden bo uveljavil pravila</string>
+  <string name="delayDialog">Nastavitve zamika v sekundah</string>
+  <string name="pingDelayTitle">Časovna omejitev za ping</string>
+  <string name="notification_priority">Prioriteta obvestila</string>
+  <string name="defaultPriority">Privzeta prioriteta</string>
+  <string name="lowPriority">Nizka prioriteta</string>
+  <string name="applyRulesFasterTitle">Uveljavi takoj</string>
+  <string name="applyRulesFaster">Eksperimentalna funkcija - uporabiti kadar je uveljavljanje pravil zelo počasno</string>
+  <string name="choose">Izberi</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Prikaži gumb za hitro uveljavitev</string>
+  <string name="quick_apply_summary">Samo v plačljivi različici! Prikaži gumb za hitro uveljavitev sprememb</string>
 </resources>

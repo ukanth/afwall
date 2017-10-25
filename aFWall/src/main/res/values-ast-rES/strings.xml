@@ -47,6 +47,7 @@
   <string name="show_log">Ver rexistru</string>
   <string name="clear_log">Llimpiar rexistru</string>
   <string name="applying_rules">Aplicando regles d\'IPtables</string>
+  <string name="applying">Applying</string>
   <string name="saving_rules">Guardando regles d\'IPtables</string>
   <string name="rules_applied">Aplicáronse con ésitu les regles</string>
   <string name="rules_saved">Guardáronse les regles</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Paquetes totales bloquiaos</string>
   <string name="blocked">AFWall+ Blocked:</string>
   <string name="refresh">Refrescar</string>
+  <string name="block_ipv6_title">delete</string>
+  <string name="block_ipv6_summary">delete</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Perfiles</string>
   <string name="custom_title1">Nome personalizáu pal perfil por defeutu</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">ProfileName</string>
   <string name="profile_notsupport">Please migrate profile data to use this option</string>
+  <string name="profile_duplicate">Profile exists already !</string>
   <string name="reapply_profile">Reaplicar regles de perfiles</string>
   <!-- Interface -->
   <string name="lan_title">Control de LAN</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Sofitu d\'IPv6</string>
   <string name="ipv6_summary">Habilita\'l sofitu d\'IPv6</string>
-  <string name="block_ipv6_title">Bloquiar IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Fallu: IPv6 rique «/system/bin/ip6tables».</string>
   <string name="switch_ipv6">Cambiar a regles IPv6</string>
   <string name="switch_ipv4">Cambiar a regles IPv</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Permite les conexones dende la LAN hasta\'l teléfonu (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfaz d\'usuariu</string>
+  <string name="rule_prefs_title">Rules Behaviour</string>
+  <string name="ui_chains_title">IPv4 Chains</string>
+  <string name="ui_chains6_title">IPv6 Chains</string>
   <string name="rules_prefs_title">Regles/Coneutividá</string>
   <string name="log_prefs_title">Rexistru</string>
   <string name="hideicons_pref_title">Anubrir iconos d\'aplicaciones</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Amosar direición de destín</string>
   <string name="show_source_address">Amosar direición fonte</string>
   <string name="network_connection_not_available">Conexón de rede non disponible</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Add to custom rule</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Buelga</string>
   <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Nun s\'habilitó n\'Axustes la seguranza de bloquéu de pantalla</string>
   <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
   <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+  <string name="label_zoomin">Zoom In</string>
+  <string name="label_zoomout">Zoom Out</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Set delay in seconds</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Notification Priority</string>
+  <string name="defaultPriority">Default Priority</string>
+  <string name="lowPriority">Low Priority</string>
+  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Choose</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

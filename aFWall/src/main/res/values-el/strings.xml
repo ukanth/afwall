@@ -47,6 +47,7 @@
   <string name="show_log">Προβολή αρχείων καταγραφής</string>
   <string name="clear_log">Καθαρισμός αρχείου καταγραφής</string>
   <string name="applying_rules">Εφαρμογή κανόνων iptables</string>
+  <string name="applying">Applying</string>
   <string name="saving_rules">Αποθήκευση κανόνων iptables</string>
   <string name="rules_applied">Οι κανόνες εφαρμόστηκαν επιτυχώς</string>
   <string name="rules_saved">Οι κανόνες αποθηκεύτηκαν</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Σύνολο μπλοκαρισμένων πακέτων</string>
   <string name="blocked">AFWall+ Αποκλεισμένα:</string>
   <string name="refresh">Ανανέωση</string>
+  <string name="block_ipv6_title">delete</string>
+  <string name="block_ipv6_summary">delete</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Προφίλ</string>
   <string name="custom_title1">Προσαρμοσμένο όνομα για το προεπιλεγμένο προφίλ</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Προφίλ 3</string>
   <string name="profile_hint">Όνομα Προφίλ</string>
   <string name="profile_notsupport">Παρακαλώ μετεγκαταστήσετε τα δεδομένα του προφίλ για να χρησιμοποιήσετε αυτήν την επιλογή</string>
+  <string name="profile_duplicate">Profile exists already !</string>
   <string name="reapply_profile">Επανάληψη εφαρμογής κανόνων προφίλ</string>
   <!-- Interface -->
   <string name="lan_title">Έλεγχος LAN</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Υποστήριξη IPv6</string>
   <string name="ipv6_summary">Ενεργοποίηση υποστήριξης IPv6</string>
-  <string name="block_ipv6_title">Αποκλεισμός IPv6</string>
-  <string name="block_ipv6_summary">Αποκλεισμός όλων των συνδέσεων IPv6. ΠΡΟΣΟΧΗ: Η χρήση μόνο αν έχετε συνδέσεις μέσω IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Σφάλμα: Το IPv6 απαιτεί την ύπαρξη του \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Μετάβαση στους κανόνες IPv6</string>
   <string name="switch_ipv4">Μετάβαση στους κανόνες IPv4</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Να επιτρέπονται συνδέσεις από το LAN στο τηλέφωνο (Samba, sshd, AirDroid, κλπ.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Περιβάλλον χρήστη</string>
+  <string name="rule_prefs_title">Rules Behaviour</string>
+  <string name="ui_chains_title">IPv4 Chains</string>
+  <string name="ui_chains6_title">IPv6 Chains</string>
   <string name="rules_prefs_title">Κανόνες/Συνδεσιμότητα</string>
   <string name="log_prefs_title">Αρχείο καταγραφής</string>
   <string name="hideicons_pref_title">Απόκρυψη εικονιδίων εφαρμογών</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Εμφάνιση διεύθυνσης προορισμού</string>
   <string name="show_source_address">Εμφάνιση διεύθυνση προέλευσης</string>
   <string name="network_connection_not_available">Σύνδεση δικτύου μη διαθέσιμη</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Add to custom rule</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Δακτυλικό αποτύπωμα</string>
   <string name="fingerprint_authentication_error">Σφάλμα ελέγχου ταυτότητας δακτυλικών αποτυπωμάτων\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Η ασφάλεια της οθόνης κλειδώματος δεν είναι ενεργοποιημένη στις ρυθμίσεις</string>
   <string name="fingerprint_enabled_successfully">Το δακτυλικό αποτύπωμα ενεργοποιήθηκε με επιτυχία</string>
   <string name="fingerprint_disabled_successfully">Το δακτυλικό αποτύπωμα απενεργοποιήθηκε με επιτυχία</string>
+  <string name="label_zoomin">Zoom In</string>
+  <string name="label_zoomout">Zoom Out</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Set delay in seconds</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Notification Priority</string>
+  <string name="defaultPriority">Default Priority</string>
+  <string name="lowPriority">Low Priority</string>
+  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Choose</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

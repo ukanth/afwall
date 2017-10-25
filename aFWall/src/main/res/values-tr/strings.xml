@@ -47,6 +47,7 @@
   <string name="show_log">Log\'u göster</string>
   <string name="clear_log">Günlüğü temizle</string>
   <string name="applying_rules">Iptables kuralları uygulanıyor</string>
+  <string name="applying">Uygulanıyor</string>
   <string name="saving_rules">Iptables kuralları kaydediliyor</string>
   <string name="rules_applied">Kurallar başarıyla uygulandı</string>
   <string name="rules_saved">Kural kaydedildi</string>
@@ -159,6 +160,8 @@
   <string name="LogPackBlock">Tüm Paketler Engellendi</string>
   <string name="blocked">AFWall+ Engelledi:</string>
   <string name="refresh">Yenile</string>
+  <string name="block_ipv6_title">sil</string>
+  <string name="block_ipv6_summary">sil</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profiller</string>
   <string name="custom_title1">Varsayılan profil için isim belirle</string>
@@ -178,6 +181,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">ProfilAdı</string>
   <string name="profile_notsupport">Bu seçeneği kullanmak için lütfen profil verinizi paylaşınız</string>
+  <string name="profile_duplicate">Profil zaten var!</string>
   <string name="reapply_profile">Profil kurallarını yeniden uygula</string>
   <!-- Interface -->
   <string name="lan_title">LAN Denetimi</string>
@@ -220,8 +224,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 Desteği</string>
   <string name="ipv6_summary">IPv6 desteğini etkinleştir</string>
-  <string name="block_ipv6_title">IPv6 engelle</string>
-  <string name="block_ipv6_summary">Tüm IPv6 bağlantıları engelle. Dikkat: yalnızca IPv4 üzerinden bağlantılarınız varsa kullanın</string>
+  <string name="control_ipv6_title">Yalnızca IPv6 zincirlerini kontrol et</string>
   <string name="ip6unavailable">Hata: IPv6 için \"/system/bin/ip6tables\" gerekiyor.</string>
   <string name="switch_ipv6">IPv6 kurallarını değiştir</string>
   <string name="switch_ipv4">IPv4 kurallarını değiştir</string>
@@ -252,6 +255,9 @@
   <string name="enableInboundSummary">LAN üzerinden telefona gelen (Samba, sshd, AirDroid, etc.) bağlantılara izin ver</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Kullanıcı Arayüzü</string>
+  <string name="rule_prefs_title">Davranış kuralları</string>
+  <string name="ui_chains_title">IPv4 zincirleri</string>
+  <string name="ui_chains6_title">IPv6 zincirleri</string>
   <string name="rules_prefs_title">Kurallar/bağlantı</string>
   <string name="log_prefs_title">Kayıtlar</string>
   <string name="hideicons_pref_title">Uygulama ikonunu gizle</string>
@@ -435,6 +441,8 @@
   <string name="show_destination_address">Hedef Adresi Göster</string>
   <string name="show_source_address">Kaynak Adresi Göster</string>
   <string name="network_connection_not_available">İnternet bağlantısı bulunmamaktadır</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Özel kurala ekle</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Parmak izi</string>
   <string name="fingerprint_authentication_error">Parmak izi doğrulaması hatalı\n</string>
@@ -455,4 +463,32 @@
   <string name="lock_screen_not_enabled">Ayarlarda, kilit ekran güvenliği devre dışı</string>
   <string name="fingerprint_enabled_successfully">Parmak İzi Başarıyla Etkinleştirildi</string>
   <string name="fingerprint_disabled_successfully">Parmak İzi Başarıyla Devre Dışı Bırakıldı</string>
+  <string name="label_zoomin">Yakınlaştır</string>
+  <string name="label_zoomout">Uzaklaştır</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Set delay in seconds</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Notification Priority</string>
+  <string name="defaultPriority">Default Priority</string>
+  <string name="lowPriority">Low Priority</string>
+  <string name="applyRulesFasterTitle">Anlık Uygulama</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Seç</string>
+  <string name="input_chain">GİRİŞ zinciri (IPv4)</string>
+  <string name="output_chain">ÇIKIŞ zinciri (IPv4)</string>
+  <string name="forward_chain">İLERİ zinciri (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">GİRİŞ zinciri (IPv6)</string>
+  <string name="output_chain_v6">ÇIKIŞ zinciri (IPv6)</string>
+  <string name="forward_chain_v6">İLERİ zinciri (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

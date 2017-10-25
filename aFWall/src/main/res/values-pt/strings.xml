@@ -47,6 +47,7 @@
   <string name="show_log">Ver registos</string>
   <string name="clear_log">Limpar registos</string>
   <string name="applying_rules">A aplicar regras iptables</string>
+  <string name="applying">A aplicar</string>
   <string name="saving_rules">A guardar regras iptables</string>
   <string name="rules_applied">Regras aplicadas com sucesso</string>
   <string name="rules_saved">Regras guardadas</string>
@@ -64,20 +65,20 @@
   <string name="reading_apps">A obter aplicações instaladas</string>
   <string name="mode">Modo da firewall</string>
   <string name="mode_header">Modo: %s</string>
-  <string name="legend_clear">Clear all checkboxes in all columns</string>
+  <string name="legend_clear">Marcar todas as caixas das colunas</string>
   <string name="mode_whitelist">Permitir selecionadas</string>
-  <string name="legend_whitelist">Selected apps will be granted internet access</string>
+  <string name="legend_whitelist">As aplicações selecionadas podem aceder à Internet</string>
   <string name="mode_blacklist">Bloquear selecionadas</string>
-  <string name="legend_blacklist">Selected apps will be denied internet access</string>
+  <string name="legend_blacklist">As aplicações selecionadas não podem aceder à Internet</string>
   <string name="set_custom_script">Definir script personalizado</string>
   <string name="preferences">Preferências</string>
   <string name="reload">Recarregar aplicações</string>
   <string name="flush">Descarregar regras</string>
   <string name="send_report">Enviar relatório de erros</string>
-  <string name="enter_problem">Please explain the issue:</string>
+  <string name="enter_problem">Por favor explique o seu problema:</string>
   <string name="send_mail">Enviar e-mail</string>
-  <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
-  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_on">Mostrar uma notificação sempre que seja instalada uma nova aplicação</string>
+  <string name="notify_pref_summary_off">Não mostrar uma notificação sempre que seja instalada uma nova aplicação</string>
   <string name="custom_script_defined">Script personalizado definido</string>
   <string name="custom_script_removed">Script personalizado removido</string>
   <string name="custom_script_error">Erro ao guardar o script personalizado</string>
@@ -91,7 +92,7 @@
   <string name="copied">Copiado</string>
   <string name="Search">Pesquisa</string>
   <string name="flushRulesConfirm">Descarregar todas as regras iptables?</string>
-  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
+  <string name="overrideRules">Deseja importar as regras? Esta ação substitui as regras existentes!</string>
   <string name="notification_new">Nova aplicação instalada</string>
   <string name="notification_new_package">Configurar permissão de Internet</string>
   <string name="confirmMsg">Desativar completamente a firewall?</string>
@@ -116,7 +117,7 @@
   <string name="remove_initd">Script de arranque removido</string>
   <string name="unable_remove_initd">Não é possível remover o script de inicialização do AFWall +</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
+  <string name="widget_disable_fail">Firewall não desativada. Protegida por palavra-passe!</string>
   <string name="widget_label_status">AFWall + Toggle/Status</string>
   <string name="widget_label_settings">Configurações AFWall+</string>
   <string name="widget_label_settings_old">Definições AFWall+ (antigas)</string>
@@ -149,7 +150,7 @@
   <string name="log_toggle_failed">Erro ao alternar o estado do log</string>
   <string name="log_target_failed">Erro: o kernel não tem suporte LOG/NFLOG</string>
   <string name="log_cleared">Log limpo</string>
-  <string name="log_dmesg">Log fetch method</string>
+  <string name="log_dmesg">Método de obtenção de registos</string>
   <string name="log_clear_error">Erro ao limpar o log</string>
   <string name="log_fetch_error">Erro ao percorrer o log</string>
   <string name="log_parse_error">Erro ao analisar o log</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Total de pacotes bloqueados</string>
   <string name="blocked">AFWall+ bloqueou:</string>
   <string name="refresh">Atualizar</string>
+  <string name="block_ipv6_title">apagar</string>
+  <string name="block_ipv6_summary">apagar</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Perfis</string>
   <string name="custom_title1">Nome personalizado para o perfil padrão</string>
@@ -176,7 +179,8 @@
   <string name="profile2">Perfil 2</string>
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">Nome do perfil</string>
-  <string name="profile_notsupport">Please migrate profile data to use this option</string>
+  <string name="profile_notsupport">Efetue a migração dos dados para poder usar esta opção</string>
+  <string name="profile_duplicate">Perfil existente!</string>
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
   <string name="lan_title">Controlo de LAN</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suporte IPv6</string>
   <string name="ipv6_summary">Ativar suporte a IPv6</string>
-  <string name="block_ipv6_title">Bloquear IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Erro: IPv6 requer \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Trocar regras IPv6</string>
   <string name="switch_ipv4">Trocar regras IPv4</string>
@@ -240,7 +243,7 @@
   <!-- Startup -->
   <string name="startup_service">A aplicar regras. Aguarde.</string>
   <string name="addStartupDelayTitle">Atraso ao arrancar</string>
-  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for \'n\' seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Fix startup data leak</string>
   <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
   <!--
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Permitir conexões de LAN para o telefone (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interface</string>
+  <string name="rule_prefs_title">Rules Behaviour</string>
+  <string name="ui_chains_title">Cadeias IPv4</string>
+  <string name="ui_chains6_title">Cadeias IPv6</string>
   <string name="rules_prefs_title">Regras/Conectividade</string>
   <string name="log_prefs_title">Registo</string>
   <string name="hideicons_pref_title">Ocultar ícones</string>
@@ -420,8 +426,8 @@
   <string name="ping_source">Ping Source</string>
   <string name="resolve_destination">Resolve Destination</string>
   <string name="resolve_source">Resolve Source</string>
-  <string name="copy_text">Copy text</string>
-  <string name="destination_copied">Destination copied</string>
+  <string name="copy_text">Copiar texto</string>
+  <string name="destination_copied">Destino copiado</string>
   <string name="source_copied">Origem copiada</string>
   <string name="select_the_action">Selecionar ação</string>
   <string name="result_copied_to_clipboard">Relatório copiado para a área de transferência</string>
@@ -434,13 +440,15 @@
   <string name="show_destination_address">Mostrar endereço do destino</string>
   <string name="show_source_address">Mostrar endereço da origem</string>
   <string name="network_connection_not_available">Ligação de rede não disponível</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Adicionar a regra personalizada</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Impressão digital</string>
   <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
   <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
   <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
   <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
-  <string name="title_activity_main">MainActivity</string>
+  <string name="title_activity_main">AtividadePrincipal</string>
   <string name="title_fingerprint">One-touch Unlock</string>
   <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
   <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
   <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
   <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+  <string name="label_zoomin">Ampliar</string>
+  <string name="label_zoomout">Reduzir</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Definir atraso em segundos</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Prioridade da notificação</string>
+  <string name="defaultPriority">Padrão</string>
+  <string name="lowPriority">Baixa</string>
+  <string name="applyRulesFasterTitle">Imediata</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Escolha</string>
+  <string name="input_chain">Cadeia INPUT (IPv4)</string>
+  <string name="output_chain">Cadeia OUTPUT (IPv4)</string>
+  <string name="forward_chain">Cadeia FORWARD (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">Cadeia INPUT (IPv6)</string>
+  <string name="output_chain_v6">Cadeia OUTPUT (IPv6)</string>
+  <string name="forward_chain_v6">Cadeia FORWARD (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

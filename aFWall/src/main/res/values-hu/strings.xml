@@ -47,6 +47,7 @@
   <string name="show_log">Napló megtekintése</string>
   <string name="clear_log">Napló (log) törlése</string>
   <string name="applying_rules">Iptables szabályok alkalmazása</string>
+  <string name="applying">Applying</string>
   <string name="saving_rules">Iptables szabályok mentése</string>
   <string name="rules_applied">A szabályok sikeresen alkalmazva</string>
   <string name="rules_saved">Szabály mentve</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Összes csomag blokkolva</string>
   <string name="blocked">AFWall+ blokkolva:</string>
   <string name="refresh">Frissítés</string>
+  <string name="block_ipv6_title">delete</string>
+  <string name="block_ipv6_summary">delete</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profilok</string>
   <string name="custom_title1">Egyéni név az alapértelmezett profilhoz</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Profil neve</string>
   <string name="profile_notsupport">Please migrate profile data to use this option</string>
+  <string name="profile_duplicate">Profile exists already !</string>
   <string name="reapply_profile">Profil szabályok újraalkalmazása</string>
   <!-- Interface -->
   <string name="lan_title">LAN szabályzás</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-támogatás</string>
   <string name="ipv6_summary">Az IPv6-támogatás engedélyezése</string>
-  <string name="block_ipv6_title">IPv6 blokkolás</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Hiba: az IPv6 hoz szükséges \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Átkapcsolás IPv6 szabályokra</string>
   <string name="switch_ipv4">Átkapcsolás IPv4 szabályokra</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Engedélyezi a LAN-ról az eszközre érkező kapcsolatokat (Samba, sshd, AirDroid, stb.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Felhasználói felület</string>
+  <string name="rule_prefs_title">Rules Behaviour</string>
+  <string name="ui_chains_title">IPv4 Chains</string>
+  <string name="ui_chains6_title">IPv6 Chains</string>
   <string name="rules_prefs_title">Szabályok/kapcsolódás</string>
   <string name="log_prefs_title">Napló</string>
   <string name="hideicons_pref_title">Alkalmazás ikonok elrejtése</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Mutassa a cél címet</string>
   <string name="show_source_address">Mutassa a forrás címet</string>
   <string name="network_connection_not_available">Hálózati kapcsolat nem érhető el</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Add to custom rule</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Ujjlenyomat</string>
   <string name="fingerprint_authentication_error">Ujjlenyomat hitelesítés hiba\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
   <string name="fingerprint_enabled_successfully">Ujjlenyomat engedélyezés sikerült</string>
   <string name="fingerprint_disabled_successfully">Ujjlenyomat letiltás sikerült</string>
+  <string name="label_zoomin">Zoom In</string>
+  <string name="label_zoomout">Zoom Out</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Set delay in seconds</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Notification Priority</string>
+  <string name="defaultPriority">Default Priority</string>
+  <string name="lowPriority">Low Priority</string>
+  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Choose</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

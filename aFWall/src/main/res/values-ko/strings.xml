@@ -47,6 +47,7 @@
   <string name="show_log">통계 보기</string>
   <string name="clear_log">기록 삭제</string>
   <string name="applying_rules">방화벽 규칙 적용중</string>
+  <string name="applying">적용 중</string>
   <string name="saving_rules">방화벽 규칙 저장중</string>
   <string name="rules_applied">규칙 적용 완료</string>
   <string name="rules_saved">규칙 저장됨</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">차단된 데이터패킷</string>
   <string name="blocked">AFWall+이 차단:</string>
   <string name="refresh">새로고침</string>
+  <string name="block_ipv6_title">삭제</string>
+  <string name="block_ipv6_summary">삭제</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">프로필</string>
   <string name="custom_title1">기본프로필 이름 바꾸기</string>
@@ -177,6 +180,7 @@
   <string name="profile3">프로필 3</string>
   <string name="profile_hint">프로필 이름</string>
   <string name="profile_notsupport">이 옵션을 사용하시려면 프로필 정보를 옮겨 주세요.</string>
+  <string name="profile_duplicate">프로파일이 이미 존재합니다.</string>
   <string name="reapply_profile">프로필 규칙 재적용</string>
   <!-- Interface -->
   <string name="lan_title">LAN 설정</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 지원</string>
   <string name="ipv6_summary">IPv6 지원하기</string>
-  <string name="block_ipv6_title">IPv6 차단</string>
-  <string name="block_ipv6_summary">모든 IPv6 연결을 차단하기. 주의사항: IPv4로 연결이 되어있는 상태에만 사용해주세요</string>
+  <string name="control_ipv6_title">IPv6 체인만 제어</string>
   <string name="ip6unavailable">에러: IPv6 는 \"/system/bin/ip6tables\" 이 필요합니다.</string>
   <string name="switch_ipv6">IPV6 규칙으로 전환</string>
   <string name="switch_ipv4">IPV4 규칙으로 전환</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">LAN 에서 기기로의 연결을 허용 (Samba, sshd, AirDroid, 등)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">사용자 인터페이스</string>
+  <string name="rule_prefs_title">규칙 동작</string>
+  <string name="ui_chains_title">IPv4 체인</string>
+  <string name="ui_chains6_title">IPv6 체인</string>
   <string name="rules_prefs_title">규칙/연결상태</string>
   <string name="log_prefs_title">기록</string>
   <string name="hideicons_pref_title">앱 아이콘 숨기기</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">목적지 주소 보이기</string>
   <string name="show_source_address">출발지 주소 보이기</string>
   <string name="network_connection_not_available">네트워크 연결을 사용할 수 없습니다</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">사용자 지정 규칙에 추가</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">지문</string>
   <string name="fingerprint_authentication_error">지문 인증에 오류가 발생하였습니다.\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">폰 설정에서 잠금화면을 사용하지 않고 있습니다,</string>
   <string name="fingerprint_enabled_successfully">지문인식사용</string>
   <string name="fingerprint_disabled_successfully">지문인식 사용하지않기</string>
+  <string name="label_zoomin">확대</string>
+  <string name="label_zoomout">축소</string>
+  <string name="exception_pref">손상된 설정때문에 액티비티를 실행할 수 없습니다. 애플리케이션 데이터를 지운 뒤 다시 시도하십시오</string>
+  <string name="ipdetect">AFWall+ 이 IPv6 연결을 감지했습니다. IPv6 연결 설정을 활성화한 뒤 다시 적용하십시오</string>
+  <string name="delayTitle">사용자 정의 시간 단위 지연</string>
+  <string name="delaySummary">AFWall+ 이 활성화된 뒤, 규칙을 적용하기 전에 주어진 시간만큼 기다립니다.</string>
+  <string name="delayDialog">초 단위 대기 시간 설정</string>
+  <string name="pingDelayTitle">핑 타임 아웃</string>
+  <string name="notification_priority">알림 우선 순위</string>
+  <string name="defaultPriority">기본 우선 순위</string>
+  <string name="lowPriority">낮은 우선순위</string>
+  <string name="applyRulesFasterTitle">즉시 적용</string>
+  <string name="applyRulesFaster">규칙을 적용하는 것이 느릴 때만 사용하십시오 - 매우 실험적 기능입니다</string>
+  <string name="choose">선택</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

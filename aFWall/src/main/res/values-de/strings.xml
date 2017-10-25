@@ -47,6 +47,7 @@
   <string name="show_log">Protokoll anzeigen</string>
   <string name="clear_log">Protokoll löschen</string>
   <string name="applying_rules">IPTables-Regeln werden angewendet</string>
+  <string name="applying">Anwenden</string>
   <string name="saving_rules">IPTables-Regeln werden gespeichert</string>
   <string name="rules_applied">Regeln erfolgreich angewendet</string>
   <string name="rules_saved">Regeln gespeichert</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Gesamt blockierte Pakete</string>
   <string name="blocked">AFWall+ blockierte:</string>
   <string name="refresh">Aktualisieren</string>
+  <string name="block_ipv6_title">entfernen</string>
+  <string name="block_ipv6_summary">löschen</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profile</string>
   <string name="custom_title1">Benutzerdefinierter Name für Standardprofil</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Profilname</string>
   <string name="profile_notsupport">Bitte Datenprofil migrieren, um diese Option verwenden zu können</string>
+  <string name="profile_duplicate">Profil existiert bereits !</string>
   <string name="reapply_profile">Profilregeln erneut anwenden</string>
   <!-- Interface -->
   <string name="lan_title">LAN-Steuerung</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-Unterstützung</string>
   <string name="ipv6_summary">IPv6-Unterstützung aktivieren</string>
-  <string name="block_ipv6_title">IPv6 blockieren</string>
-  <string name="block_ipv6_summary">Alle IPv6-Verbindungen blockieren. ACHTUNG: Nur verwenden, wenn Sie über IPv4 verbunden sind.</string>
+  <string name="control_ipv6_title">Nur IPv6-Ketten überwachen</string>
   <string name="ip6unavailable">Fehler: IPv6 benötigt \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">IPv6-Regeln einschalten</string>
   <string name="switch_ipv4">IPv4-Regeln einschalten</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Verbindungen vom LAN zum Gerät zulassen (Samba, sshd, AirDroid, etc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Benutzeroberfläche</string>
+  <string name="rule_prefs_title">Regeln</string>
+  <string name="ui_chains_title">IPv4-Ketten</string>
+  <string name="ui_chains6_title">IPv6-Ketten</string>
   <string name="rules_prefs_title">Regel/Verbindung</string>
   <string name="log_prefs_title">Protokoll</string>
   <string name="hideicons_pref_title">App-Symbol-Anzeige</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Zieladresse anzeigen</string>
   <string name="show_source_address">Herkunftsadresse anzeigen</string>
   <string name="network_connection_not_available">Keine Netzwerk-Verbindung verfügbar</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Zu benutzerdefiniertem Filter hinzufügen</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Fingerabdruck</string>
   <string name="fingerprint_authentication_error">Fehler bei Fingerabdruck-Authentifizierung\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Keine Sperrbildschirm-Sicherheitseinstellungen aktiviert</string>
   <string name="fingerprint_enabled_successfully">Fingerabdruck-Authentifizierung aktiviert</string>
   <string name="fingerprint_disabled_successfully">Fingerabdruck-Authentifizierung deaktiviert</string>
+  <string name="label_zoomin">Vergrößern</string>
+  <string name="label_zoomout">Verkleinern</string>
+  <string name="exception_pref">Aktivität kann aufgrund fehlerhafter Einstellungen nicht gestartet werden. Bitte Anwendungsdaten löschen.</string>
+  <string name="ipdetect">AFWall+ hat eine IPv6-Verbindung erkannt. Bitte unter Einstellungen-Regel/Verbindung IPv6-Unterstützung aktivieren und erneut anwenden</string>
+  <string name="delayTitle">Startverzögerung (in Sekunden)</string>
+  <string name="delaySummary">AFWall+ wartet für die angegebene Zeit nach dem Gerätestart, bevor die Regeln angewendet werden</string>
+  <string name="delayDialog">Startverzögerung (in Sekunden) festlegen</string>
+  <string name="pingDelayTitle">Ping-Zeitüberschreitung</string>
+  <string name="notification_priority">Benachrichtigungspriorität</string>
+  <string name="defaultPriority">Standardpriorität</string>
+  <string name="lowPriority">Niedrige Priorität</string>
+  <string name="applyRulesFasterTitle">Sofort anwenden</string>
+  <string name="applyRulesFaster">Nur verwenden, wenn die Anwendung der Regeln langsam ist - Hoch experimentell</string>
+  <string name="choose">Auswählen</string>
+  <string name="input_chain">EINGABE-Kette (IPv4)</string>
+  <string name="output_chain">AUSGABE-Kette (IPv4)</string>
+  <string name="forward_chain">WEITERLEITUNGS-Kette (IPv4)</string>
+  <string name="input_chain_summary_on">Derzeit <b>ERLAUBTE</b> eingehende Verbindungen</string>
+  <string name="input_chain_summary_off">Derzeit <b>BLOCKIERTE</b> eingehende Verbindungen</string>
+  <string name="output_chain_summary_on">Derzeit <b>ERLAUBTE</b> ausgehende Verbindungen</string>
+  <string name="output_chain_summary_off">Derzeit <b>BLOCKIERTE</b> ausgehende Verbindungen</string>
+  <string name="forward_chain_summary_on">Derzeit <b>ERLAUBTE</b> weitergeleitete Verbindungen</string>
+  <string name="forward_chain_summary_off">Derzeit <b>BLOCKIERTE</b> weitergeleitete Verbindungen</string>
+  <string name="input_chain_v6">EINGABE-Kette (IPv6)</string>
+  <string name="output_chain_v6">AUSGABE-Kette (IPv6)</string>
+  <string name="forward_chain_v6">WEITERLEITUNGS-Kette (IPv6)</string>
+  <string name="quick_apply_title">\"Sofort anwenden\" anzeigen</string>
+  <string name="quick_apply_summary">Nur in der Spendenversion! Schwebende Anwenden-Taste einblenden, um Regeln schnell anzuwenden.</string>
 </resources>

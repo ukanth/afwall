@@ -47,6 +47,7 @@
   <string name="show_log">Pogledaj dnevnik</string>
   <string name="clear_log">Očisti dnevnik</string>
   <string name="applying_rules">Primjenjujem iptables pravila</string>
+  <string name="applying">Applying</string>
   <string name="saving_rules">Spremam iptables pravila</string>
   <string name="rules_applied">Pravila uspješno primjenjena</string>
   <string name="rules_saved">Pravila sačuvana</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Ukupno blokiranih paketa</string>
   <string name="blocked">AFWall+ Blokirao:</string>
   <string name="refresh">Osvježi</string>
+  <string name="block_ipv6_title">delete</string>
+  <string name="block_ipv6_summary">delete</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profili</string>
   <string name="custom_title1">Lični naziv za Zadani Profil</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">NazivProfila</string>
   <string name="profile_notsupport">Molimo da premjestite podatke profila da bi koristili ovu opciju</string>
+  <string name="profile_duplicate">Profile exists already !</string>
   <string name="reapply_profile">Ponovo primjeni pravila profila</string>
   <!-- Interface -->
   <string name="lan_title">LAN kontrola</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podrška za IPv6</string>
   <string name="ipv6_summary">Omogući podršku za IPv6</string>
-  <string name="block_ipv6_title">Blokiraj IPv6</string>
-  <string name="block_ipv6_summary">Blokiraj sve IPv6 konekcije. UPOZORENJE: Koristite samo ako imate vezu kroz IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Greška: IPv6 zahtjeva \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Prebacivanje IPv6 pravila</string>
   <string name="switch_ipv4">Prebacivanje IPv4 pravila</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Dozvoli konekcije iz LAN-a na mobitel (Samba, sshd, AirDroid, itd.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Korisnički interfejs</string>
+  <string name="rule_prefs_title">Rules Behaviour</string>
+  <string name="ui_chains_title">IPv4 Chains</string>
+  <string name="ui_chains6_title">IPv6 Chains</string>
   <string name="rules_prefs_title">Pravila/Spajanje</string>
   <string name="log_prefs_title">Dnevnik</string>
   <string name="hideicons_pref_title">Sakrij ikone aplikacija</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Prikaži adresu odredišta</string>
   <string name="show_source_address">Prikaži adresu izvora</string>
   <string name="network_connection_not_available">Veza nije dostupna</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Add to custom rule</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Otisak prsta</string>
   <string name="fingerprint_authentication_error">Greška kod prijave otiskom prsta\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Sigurnosne postavke ekrana zaključavanja nisu uključene u postavkama</string>
   <string name="fingerprint_enabled_successfully">Otisak prsta uspješno uključen</string>
   <string name="fingerprint_disabled_successfully">Otisak prsta uspješno isključen</string>
+  <string name="label_zoomin">Zoom In</string>
+  <string name="label_zoomout">Zoom Out</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Set delay in seconds</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Notification Priority</string>
+  <string name="defaultPriority">Default Priority</string>
+  <string name="lowPriority">Low Priority</string>
+  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Choose</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

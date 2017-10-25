@@ -47,6 +47,7 @@
   <string name="show_log">Ikusi egunkaria</string>
   <string name="clear_log">Garbitu erregistroa</string>
   <string name="applying_rules">Iptables arauak aplikatzen</string>
+  <string name="applying">Applying</string>
   <string name="saving_rules">Iptables arauak gordetzen</string>
   <string name="rules_applied">Arauak ondo aplikatu dira</string>
   <string name="rules_saved">Arauak gorde dira</string>
@@ -91,7 +92,7 @@
   <string name="copied">Kopiatuta</string>
   <string name="Search">Bilatu</string>
   <string name="flushRulesConfirm">Ezabatu iptables arau guztiak?</string>
-  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
+  <string name="overrideRules">Arauak inportatu nahi dituzu? Honek dauden arauak gainidatziko ditu!</string>
   <string name="notification_new">Aplikazio berria intalatu da</string>
   <string name="notification_new_package">Konfiguratu internet baimena</string>
   <string name="confirmMsg">Guztiz DESGAITU suebakia?</string>
@@ -149,7 +150,7 @@
   <string name="log_toggle_failed">Errorea erregistroaren egoera txandakatzean</string>
   <string name="log_target_failed">Errorea: Kernelak ez du LOG/NFLOG euskarririk</string>
   <string name="log_cleared">Erregistroa garbitu da</string>
-  <string name="log_dmesg">Log fetch method</string>
+  <string name="log_dmesg">Egunkaria eskuratzeko metodoa</string>
   <string name="log_clear_error">Errorea erregistroa garbitzean</string>
   <string name="log_fetch_error">Errorea erregistroa eskuratzean</string>
   <string name="log_parse_error">Errorea erregistroa aztertzean</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Blokeatutako paketeak guztira</string>
   <string name="blocked">AFWall+ suebakiak blokeatuta:</string>
   <string name="refresh">Berritu</string>
+  <string name="block_ipv6_title">delete</string>
+  <string name="block_ipv6_summary">delete</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profilak</string>
   <string name="custom_title1">Lehenetsitako profilaren izen pertsonalizatua</string>
@@ -176,7 +179,8 @@
   <string name="profile2">2 profila</string>
   <string name="profile3">3 profila</string>
   <string name="profile_hint">ProfilIzena</string>
-  <string name="profile_notsupport">Please migrate profile data to use this option</string>
+  <string name="profile_notsupport">Migratu profileko datuak aukera hau erabiltzeko</string>
+  <string name="profile_duplicate">Profile exists already !</string>
   <string name="reapply_profile">Berraplikatu profilaren arauak</string>
   <!-- Interface -->
   <string name="lan_title">LAN kontrola</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 euskarria</string>
   <string name="ipv6_summary">Gaitu IPv6 euskarria</string>
-  <string name="block_ipv6_title">Blokeatu IPv6</string>
-  <string name="block_ipv6_summary">Block all IPv6 connections. CAUTION: Use only if you have connections through IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Errorea: IPv6-k \"/system/bin/ip6tables\" behar du.</string>
   <string name="switch_ipv6">Aldatu IPv6 arauak</string>
   <string name="switch_ipv4">Aldatu IPV4 arauak</string>
@@ -240,7 +243,7 @@
   <!-- Startup -->
   <string name="startup_service">Arauak aplikatzen. Itxaron mesedez.</string>
   <string name="addStartupDelayTitle">Abioaren atzeratzea</string>
-  <string name="addStartupDelaySummary">AFWall+ will wait for 5 seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+  <string name="addStartupDelaySummary">AFWall+ will wait for \'n\' seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
   <string name="fixleakTitle">Eragotzi abiarazterakoan baimen gabe konektatzea</string>
   <string name="fixleakSummary">Eragotzi sistema abiatzean baimen gabe konektatu ahal izatea. Zure ROM-ak init.d edo su.d (superSU) euskarria izan behar du. HTC gailuak S-OFF gisa konfiguratu behar dira.</string>
   <!--
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Baimendu LAN saretik telefonorako konexioak (Samba, sshd, AirDroid, etab.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Erabiltzaile interfazea</string>
+  <string name="rule_prefs_title">Rules Behaviour</string>
+  <string name="ui_chains_title">IPv4 Chains</string>
+  <string name="ui_chains6_title">IPv6 Chains</string>
   <string name="rules_prefs_title">Arauak/Konektibitatea</string>
   <string name="log_prefs_title">Egunkaria</string>
   <string name="hideicons_pref_title">Ezkutatu aplikazioen ikonoak</string>
@@ -287,7 +293,7 @@
   <string name="settings_pwd_not_equal">Pasahitzak ez datoz bat</string>
   <string name="faq">Maiz egindako galderak</string>
   <string name="reverse_all">Invert all the selected apps?</string>
-  <string name="unselect_all">Clear all the selected apps?</string>
+  <string name="unselect_all">Garbitu hautatutako aplikazio guztiak?</string>
   <string name="check_all">Markatu guztiak</string>
   <string name="invert_all">Alderantzikatu guztiak</string>
   <string name="legend_invert">Invert all checkboxes on all columns</string>
@@ -361,7 +367,7 @@
   <string name="submit">Bidali</string>
   <string name="dialog_color_picker">Kolore hautatzailea</string>
   <!--<string name="sort">Sort Applications</string>-->
-  <string name="access_sort">Sort option</string>
+  <string name="access_sort">Ordenatze aukera</string>
   <string name="defaultsort">Izenez (lehenetsia)</string>
   <string name="lastupdated">Instalazio/eguneratze dataz</string>
   <string name="uid">UIDz</string>
@@ -394,17 +400,17 @@
   <string name="menu_legend">Legenda</string>
   <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
   <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
-  <string name="log_deletedapp">Deleted Application</string>
+  <string name="log_deletedapp">Ezabatutako aplikazioa</string>
   <string name="log_denied">Ukatua:</string>
   <string name="log_times">aldi</string>
-  <string name="log_time">time</string>
-  <string name="log_dst">Destination :</string>
-  <string name="log_src">Source :</string>
-  <string name="log_proto">Protocol :</string>
+  <string name="log_time">aldi</string>
+  <string name="log_dst">Helburua :</string>
+  <string name="log_src">Iturria :</string>
+  <string name="log_proto">Protokoloa :</string>
   <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
   <string name="loading_data_title">Kargatzen...</string>
   <string name="loading_data">Retrieving log data</string>
-  <string name="switch_old">Switch to old view</string>
+  <string name="switch_old">Aldatu ikuspegi zaharrera</string>
   <string name="switch_new">Aldatu ikuspegi berrira</string>
   <string name="showlogdetail_title">Application Log Details</string>
   <string name="reapply_rules">Please reapply the rules due to preference change</string>
@@ -421,10 +427,10 @@
   <string name="resolve_destination">Resolve Destination</string>
   <string name="resolve_source">Resolve Source</string>
   <string name="copy_text">Kopiatu testua</string>
-  <string name="destination_copied">Destination copied</string>
-  <string name="source_copied">Source copied</string>
-  <string name="select_the_action">Select The Action</string>
-  <string name="result_copied_to_clipboard">Result copied to clipboard</string>
+  <string name="destination_copied">Helburua kopiatuta</string>
+  <string name="source_copied">Iturria kopiatuta</string>
+  <string name="select_the_action">Hautatu ekintza</string>
+  <string name="result_copied_to_clipboard">Emaitza arbelera kopiatuta</string>
   <string name="result">Emaitza</string>
   <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
   <string name="searching">Bilatzen</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Show Destination Address</string>
   <string name="show_source_address">Show Source Address</string>
   <string name="network_connection_not_available">Network connection not Available</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Add to custom rule</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Hatz-marka</string>
   <string name="fingerprint_authentication_error">Hatz-marka bidezko egiaztaketaren errorea\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
   <string name="fingerprint_enabled_successfully">Hatz-marka ongi gaitu da</string>
   <string name="fingerprint_disabled_successfully">Hatz-marka ongi desgaitu da</string>
+  <string name="label_zoomin">Zoom In</string>
+  <string name="label_zoomout">Zoom Out</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Set delay in seconds</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Notification Priority</string>
+  <string name="defaultPriority">Default Priority</string>
+  <string name="lowPriority">Low Priority</string>
+  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Choose</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

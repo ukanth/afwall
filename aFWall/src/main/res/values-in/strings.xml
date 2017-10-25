@@ -47,6 +47,7 @@
   <string name="show_log">Lihat log</string>
   <string name="clear_log">Hapus log</string>
   <string name="applying_rules">Menerapkan aturan iptables</string>
+  <string name="applying">Menerapkan</string>
   <string name="saving_rules">Menyimpan aturan iptable</string>
   <string name="rules_applied">Pengaturan berhasil diterapkan</string>
   <string name="rules_saved">Aturan sudah disimpan</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Total Paket yg Diblok</string>
   <string name="blocked">AFWall+ Diblok:</string>
   <string name="refresh">Segarkan</string>
+  <string name="block_ipv6_title">hapus</string>
+  <string name="block_ipv6_summary">hapus</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profil</string>
   <string name="custom_title1">Atur nama profil default</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">NamaProfil</string>
   <string name="profile_notsupport">Harap pindahkan data profile untuk menggunakan pilihan ini</string>
+  <string name="profile_duplicate">Profil sudah ada!</string>
   <string name="reapply_profile">Terapkan kembali aturan profil</string>
   <!-- Interface -->
   <string name="lan_title">Kontrol LAN</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Dukungan IPv6</string>
   <string name="ipv6_summary">Hidupkan support IPv6</string>
-  <string name="block_ipv6_title">Blokir IPv6</string>
-  <string name="block_ipv6_summary">Blokir semua koneksi IPv6. PERHATIAN: Digunakan jika Anda memiliki koneksi melalui IPv4</string>
+  <string name="control_ipv6_title">Hanya mengontrol chain IPv6</string>
   <string name="ip6unavailable">Eror: IPv6 perlu \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Ganti aturan IPv6</string>
   <string name="switch_ipv4">Ganti aturan IPv4</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Ijinkan koneksi dari LAN ke perangkat (Samba, sshd, AirDroid, dll.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Antarmuka pengguna</string>
+  <string name="rule_prefs_title">Perilaku Aturan</string>
+  <string name="ui_chains_title">Chain IPv4</string>
+  <string name="ui_chains6_title">Chain IPv6</string>
   <string name="rules_prefs_title">Aturan/konektivitas</string>
   <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Sembunyikan ikon aplikasi</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Tampilkan Alamat Tujuan</string>
   <string name="show_source_address">Tampilkan Alamat Sumber</string>
   <string name="network_connection_not_available">Koneksi jaringan tidak tersedia</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Tambah ke aturan kustom</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Sidik jari</string>
   <string name="fingerprint_authentication_error">Kesalahan mengotentikasi sidik jari\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Kunci layar tidak diaktifkan pada Pengaturan</string>
   <string name="fingerprint_enabled_successfully">Otentikasi sidik jari berhasil diaktifkan</string>
   <string name="fingerprint_disabled_successfully">Otentikasi sidik jari telah dinonaktifkan</string>
+  <string name="label_zoomin">Perbesar</string>
+  <string name="label_zoomout">Perkecil</string>
+  <string name="exception_pref">Tidak dapat memulai activity karena preferensi korup, Silakan hapus data aplikasi</string>
+  <string name="ipdetect">AFWall+ mendeteksi koneksi IPv6. Silakan aktifkan dari Preferensi-Aturan/Konektifitas dan terapkan kembali</string>
+  <string name="delayTitle">Kustom detik jeda</string>
+  <string name="delaySummary">AFWall+ menunggu selama sesuai waktu yang diatur setelah perangkat memulai sebelum menerapkan aturan</string>
+  <string name="delayDialog">Atur jeda dalam detik</string>
+  <string name="pingDelayTitle">Timeout ping</string>
+  <string name="notification_priority">Prioritas Pemberitahuan</string>
+  <string name="defaultPriority">Prioritas Bawaan</string>
+  <string name="lowPriority">Prioritas Rendah</string>
+  <string name="applyRulesFasterTitle">Menerapkan secara Instan</string>
+  <string name="applyRulesFaster">Hanya digunakan jika aturan terpasang berjalan lamban - Fitur Percobaan</string>
+  <string name="choose">Pilih</string>
+  <string name="input_chain">Chain INPUT (IPv4)</string>
+  <string name="output_chain">Chain OUTPUT (IPv4)</string>
+  <string name="forward_chain">Chain FORWARD (IPv4)</string>
+  <string name="input_chain_summary_on">Saat ini <b>PERBOLEHKAN</b> koneksi masuk</string>
+  <string name="input_chain_summary_off">Saat ini <b>BLOKIR</b> koneksi masuk</string>
+  <string name="output_chain_summary_on">Saat ini <b>PERBOLEHKAN</b> koneksi keluar</string>
+  <string name="output_chain_summary_off">Saat ini <b>BLOKIR</b> koneksi keluar</string>
+  <string name="forward_chain_summary_on">Saat ini <b>PERBOLEHKAN</b> forwarding koneksi</string>
+  <string name="forward_chain_summary_off">Saat ini <b>BLOKIR</b> forwarding koneksi</string>
+  <string name="input_chain_v6">Chain INPUT (IPv6)</string>
+  <string name="output_chain_v6">Chain OUTPUT (IPv6)</string>
+  <string name="forward_chain_v6">Chain FORWARD (IPv6)</string>
+  <string name="quick_apply_title">Tunjukkan Akses Cepat</string>
+  <string name="quick_apply_summary">Hanya Donasi! Tampilkan tombol terapkan melayang untuk menerapkan aturan secara cepat</string>
 </resources>

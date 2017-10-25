@@ -47,6 +47,7 @@
   <string name="show_log">Zobrazit log</string>
   <string name="clear_log">Vymazat protokol</string>
   <string name="applying_rules">Aplikování iptables pravidel</string>
+  <string name="applying">Applying</string>
   <string name="saving_rules">Ukládání iptables pravidel</string>
   <string name="rules_applied">Pravidla úspěšně aplikována</string>
   <string name="rules_saved">Pravidla uložena</string>
@@ -159,6 +160,8 @@
   <string name="LogPackBlock">Celkový počet zablokovaných paketů</string>
   <string name="blocked">AFWall + blokované:</string>
   <string name="refresh">Aktualizovat</string>
+  <string name="block_ipv6_title">delete</string>
+  <string name="block_ipv6_summary">delete</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profily</string>
   <string name="custom_title1">Vlastní název pro výchozí profil</string>
@@ -178,6 +181,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Název_profilu</string>
   <string name="profile_notsupport">Pro tuto možnost prosím migrujte profilové data</string>
+  <string name="profile_duplicate">Profile exists already !</string>
   <string name="reapply_profile">Znova aplikovat pravidla profilu</string>
   <!-- Interface -->
   <string name="lan_title">Řízení LAN</string>
@@ -220,8 +224,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podpora IPv6</string>
   <string name="ipv6_summary">Povolit podporu pro IPv6</string>
-  <string name="block_ipv6_title">Blokovat IPv6</string>
-  <string name="block_ipv6_summary">Blokovat všechna připojení IPv6. Upozornění: Používejte pouze v případě, že jste připojeni přes IPv4</string>
+  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
   <string name="ip6unavailable">Chyba: IPv6 vyžaduje \"/ system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Přepnout pravidla IPv6</string>
   <string name="switch_ipv4">Přepnout pravidla IPv4</string>
@@ -252,6 +255,9 @@
   <string name="enableInboundSummary">Povolit spojení z LAN do telefonu (Samba, sshd, AirDroid, atd.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Uživatelské rozhraní</string>
+  <string name="rule_prefs_title">Rules Behaviour</string>
+  <string name="ui_chains_title">IPv4 Chains</string>
+  <string name="ui_chains6_title">IPv6 Chains</string>
   <string name="rules_prefs_title">Pravidla/připojení</string>
   <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Skrýt ikony aplikací</string>
@@ -435,6 +441,8 @@
   <string name="show_destination_address">Ukázat cílovou adresu</string>
   <string name="show_source_address">Ukázat zdrojovou adresu</string>
   <string name="network_connection_not_available">Síťové připojení není k dispozici</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Add to custom rule</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Otisk prstu</string>
   <string name="fingerprint_authentication_error">Chyba ověřování otisku prstu\n</string>
@@ -455,4 +463,32 @@
   <string name="lock_screen_not_enabled">Zabezpečení zamykací obrazovky není povoleno v nastavení</string>
   <string name="fingerprint_enabled_successfully">Otisk prstu úspěšně povolen</string>
   <string name="fingerprint_disabled_successfully">Otisk prstu úspěšně zakázán</string>
+  <string name="label_zoomin">Zoom In</string>
+  <string name="label_zoomout">Zoom Out</string>
+  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
+  <string name="delayDialog">Set delay in seconds</string>
+  <string name="pingDelayTitle">Ping timeout</string>
+  <string name="notification_priority">Notification Priority</string>
+  <string name="defaultPriority">Default Priority</string>
+  <string name="lowPriority">Low Priority</string>
+  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="choose">Choose</string>
+  <string name="input_chain">INPUT Chain (IPv4)</string>
+  <string name="output_chain">OUTPUT Chain (IPv4)</string>
+  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
+  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
+  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
+  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
+  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
+  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
+  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
+  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
+  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="quick_apply_title">Show Quick Apply</string>
+  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 </resources>

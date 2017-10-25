@@ -47,6 +47,7 @@
   <string name="show_log">Wyświetl zdarzenia</string>
   <string name="clear_log">Wyczyść zapisane zdarzenia</string>
   <string name="applying_rules">Stosowanie reguł zapory</string>
+  <string name="applying">Stosowanie</string>
   <string name="saving_rules">Zapisywannie reguł zapory</string>
   <string name="rules_applied">Reguły zostały zastosowane</string>
   <string name="rules_saved">Reguły zapisane</string>
@@ -158,6 +159,8 @@
   <string name="LogPackBlock">Ilość zablokowanych pakietów</string>
   <string name="blocked">AFWall+ zablokował:</string>
   <string name="refresh">Odśwież</string>
+  <string name="block_ipv6_title">usuń</string>
+  <string name="block_ipv6_summary">usuń</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profile</string>
   <string name="custom_title1">Zmiana nazwy domyślnego profilu</string>
@@ -177,6 +180,7 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">NazwaProfilu</string>
   <string name="profile_notsupport">Proszę przenieść dane profilu, aby skorzystać z tej opcji</string>
+  <string name="profile_duplicate">Profil już istnieje!</string>
   <string name="reapply_profile">Zaaplikuj ponownie reguły profili</string>
   <!-- Interface -->
   <string name="lan_title">Ustawienia LAN</string>
@@ -219,8 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Wsparcie IPv6</string>
   <string name="ipv6_summary">Włącz wsparcie IPv6</string>
-  <string name="block_ipv6_title">Blokuj IPv6</string>
-  <string name="block_ipv6_summary">Blokuj wszystkie połączenia IPv6. UWAGA: Należy używać tylko jeśli masz połączenie za pośrednictwem protokołu IPv4</string>
+  <string name="control_ipv6_title">Kontroluj tylko łańcuchy IPv6</string>
   <string name="ip6unavailable">Błąd: IPv6 wymaga \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Przełącz reguły IPv6</string>
   <string name="switch_ipv4">Przełącz reguły IPv4</string>
@@ -251,6 +254,9 @@
   <string name="enableInboundSummary">Zezwalaj na połączenia z sieci LAN do telefonu (Samba, sshd, AirDroid, itp.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfejs użytkownika</string>
+  <string name="rule_prefs_title">Zasady reguł</string>
+  <string name="ui_chains_title">Łańcuchy IPv4</string>
+  <string name="ui_chains6_title">Łańcuchy IPv6</string>
   <string name="rules_prefs_title">Reguły/łączność</string>
   <string name="log_prefs_title">Dziennik zdarzeń</string>
   <string name="hideicons_pref_title">Ukryj ikony aplikacji</string>
@@ -434,6 +440,8 @@
   <string name="show_destination_address">Pokaż adres docelowy</string>
   <string name="show_source_address">Pokaż adres źródłowy</string>
   <string name="network_connection_not_available">Połączenie z Internetem niedostępne</string>
+  <!-- Custom Rules -->
+  <string name="add_ip_rule">Dodaj do własnej reguły</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Odcisk palca</string>
   <string name="fingerprint_authentication_error">Błąd uwierzytelniania odciskiem palca\n</string>
@@ -454,4 +462,32 @@
   <string name="lock_screen_not_enabled">Blokada ekranu nie jest włączona w ustawieniach</string>
   <string name="fingerprint_enabled_successfully">Sprawdzanie linii papilarnych włączone</string>
   <string name="fingerprint_disabled_successfully">Sprawdzanie linii papilarnych wyłączone</string>
+  <string name="label_zoomin">Powiększ</string>
+  <string name="label_zoomout">Pomniejsz</string>
+  <string name="exception_pref">Nie można uruchomić aktywności z powodu uszkodzonych ustawień. Proszę wyczyść dane aplikacji</string>
+  <string name="ipdetect">AFWall + wykrył połączenie IPv6. Proszę włączyć wsparcie w Ustawienia-Reguły/Łączność i ponownie zastosować</string>
+  <string name="delayTitle">Własne opóźnienie w sekundach</string>
+  <string name="delaySummary">AFWall + zaczeka przez podany czas po starcie przed zastosowaniem reguł</string>
+  <string name="delayDialog">Ustaw opóźnienie w sekundach</string>
+  <string name="pingDelayTitle">Limit czasu Ping</string>
+  <string name="notification_priority">Priorytet powiadomień</string>
+  <string name="defaultPriority">Priorytet domyślny</string>
+  <string name="lowPriority">Niski priorytet</string>
+  <string name="applyRulesFasterTitle">Zastosuj natychmiast</string>
+  <string name="applyRulesFaster">Używaj tylko jeśli stosowanie reguł jest wolne - Bardzo eksperymentalne</string>
+  <string name="choose">Wybierz</string>
+  <string name="input_chain">Łańcuch INPUT (IPv4)</string>
+  <string name="output_chain">Łańcuch OUTPUT (IPv4)</string>
+  <string name="forward_chain">Łańcuch FORWARD (IPv4)</string>
+  <string name="input_chain_summary_on">Obecnie <b> DOZWOLONE </b> przychodzące połączenia</string>
+  <string name="input_chain_summary_off">Obecnie <b> ZABLOKOWANE </b> przychodzące połączenia</string>
+  <string name="output_chain_summary_on">Obecnie <b> DOZWOLONE </b> połączenia wychodzące</string>
+  <string name="output_chain_summary_off">Obecnie <b> ZABLOKOWANE </b> połączenia wychodzące</string>
+  <string name="forward_chain_summary_on">Obecnie <b> DOZWOLONE </b> przekazywanie połączeń</string>
+  <string name="forward_chain_summary_off">Obecnie <b> ZABLOKOWANE </b> przekazywanie połączeń</string>
+  <string name="input_chain_v6">Łańcuch INPUT (IPv6)</string>
+  <string name="output_chain_v6">Łańcuch OUTPUT (IPv6)</string>
+  <string name="forward_chain_v6">Łańcuch FORWARD (IPv6)</string>
+  <string name="quick_apply_title">Pokaż Szybkie stosowanie</string>
+  <string name="quick_apply_summary">Tylko w wersji płatnej! Pokaż pływający przycisk Zastosuj, aby szybko zastosować reguły</string>
 </resources>
