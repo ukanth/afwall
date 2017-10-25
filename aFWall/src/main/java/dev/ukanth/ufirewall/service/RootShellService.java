@@ -27,6 +27,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -59,7 +60,7 @@ public class RootShellService extends Service {
     private static Shell.Interactive rootSession;
     private static Context mContext;
     private static NotificationManager notificationManager;
-    private static final int NOTIFICATION_ID = 33347;
+    public static final int NOTIFICATION_ID = 33347;
 
     public enum ShellState {
         INIT,
@@ -79,6 +80,8 @@ public class RootShellService extends Service {
 
     public final static int NO_TOAST = -1;
 
+    private static NotificationCompat.Builder builder;
+
     private static void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
             Log.d(TAG, "RootShell: " + state.getCommmands().size() + " commands completed in " +
@@ -89,13 +92,15 @@ public class RootShellService extends Service {
         if (state.cb != null) {
             state.cb.cbFunc(state);
         }
-        if (notificationManager != null) {
-            notificationManager.cancel(NOTIFICATION_ID);
-        }
+
         if (exitCode == 0 && state.successToast != NO_TOAST) {
             Api.sendToastBroadcast(mContext, mContext.getString(state.successToast));
         } else if (exitCode != 0 && state.failureToast != NO_TOAST) {
             Api.sendToastBroadcast(mContext, mContext.getString(state.failureToast));
+        }
+
+        if (notificationManager != null) {
+            notificationManager.cancel(NOTIFICATION_ID);
         }
     }
 
@@ -113,6 +118,7 @@ public class RootShellService extends Service {
     }
 
     private static void runNextSubmission() {
+
         do {
             RootCommand state;
             try {
@@ -125,6 +131,7 @@ public class RootShellService extends Service {
                 break;
             }
 
+            Log.i(TAG, "Start processing next state");
             if (enableProfiling) {
                 state.startTime = new Date();
             }
@@ -134,8 +141,9 @@ public class RootShellService extends Service {
                 complete(state, EXIT_NO_ROOT_ACCESS);
                 continue;
             } else if (rootState == ShellState.READY) {
+                Log.i(TAG, "Total commamds: #" + state.getCommmands().size());
                 rootState = ShellState.BUSY;
-                notificationManager = createNotification(mContext);
+                createNotification(mContext);
                 processCommands(state);
             }
         } while (false);
@@ -205,6 +213,8 @@ public class RootShellService extends Service {
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
+        } else {
+            complete(state, 0);
         }
     }
 
@@ -217,6 +227,11 @@ public class RootShellService extends Service {
                 broadcastIntent.putExtra("SIZE", state.getCommmands().size());
                 broadcastIntent.putExtra("INDEX", state.commandIndex);
                 mContext.sendBroadcast(broadcastIntent);
+
+               /* if (builder != null) {
+                    builder.setProgress(state.getCommmands().size(), state.commandIndex, false);
+                    notificationManager.notify(NOTIFICATION_ID, builder.build());
+                }*/
             }
         }).start();
     }
@@ -261,116 +276,20 @@ public class RootShellService extends Service {
     }
 
     private static void reOpenShell(Context context) {
-        rootState = ShellState.BUSY;
-        startShellInBackground();
-        Intent intent = new Intent(context, RootShellService.class);
-        context.startService(intent);
-    }
-
-    /*static class ExecuteCommand implements Callable<IpCmd> {
-        private String command;
-
-        ExecuteCommand(String command) {
-            this.command = command;
-        }
-
-        @Override
-        public IpCmd call() throws Exception {
-            final IpCmd ip = new IpCmd(command);
-            final StringBuilder builder = new StringBuilder();
-            if (command != null) {
-                if (command.startsWith("#NOCHK# ")) {
-                    command = command.replaceFirst("#NOCHK# ", "");
-                } else {
-                }
-                Shell.OnCommandResultListener listener = new Shell.OnCommandResultListener() {
-                    @Override
-                    public void onCommandResult(int commandCode, int exitCode,
-                                                List<String> output) {
-                        if (output != null) {
-                            ListIterator<String> iter = output.listIterator();
-                            while (iter.hasNext()) {
-                                String line = iter.next();
-                                if (line != null && !line.equals("")) {
-                                    if (builder != null) {
-                                        builder.append(line + "\n");
-                                    }
-                                }
-                            }
-                            ip.setOutput(builder.toString());
-                            ip.setExitCode(exitCode);
-                        }
-                    }
-                };
-                if (listener != null) {
-                    try {
-                        rootSession.addCommand(command, 0, listener);
-                    } catch (NullPointerException e) {
-                        Log.d(TAG, "Unable to add commands to session");
-                    }
-                }
+        if(rootState == null || rootState != ShellState.READY || rootState == ShellState.FAIL) {
+            if (notificationManager != null) {
+                notificationManager.cancel(NOTIFICATION_ID);
             }
-            return ip;
+            rootState = ShellState.BUSY;
+            startShellInBackground();
+            Intent intent = new Intent(context, RootShellService.class);
+            context.startService(intent);
         }
     }
 
-    static class IpCmd {
-
-        IpCmd(String command) {
-            this.command = command;
-        }
-
-        public String getCommand() {
-            return command;
-        }
-
-        public void setCommand(String command) {
-            this.command = command;
-        }
-
-        public String getOutput() {
-            return output;
-        }
-
-        public void setOutput(String output) {
-            this.output = output;
-        }
-
-        public int getExitCode() {
-            return exitCode;
-        }
-
-        public void setExitCode(int exitCode) {
-            this.exitCode = exitCode;
-        }
-
-        String command;
-        String output;
-        int exitCode;
-    }
-
-    private static void shutdownAndAwaitTermination(ExecutorService pool) {
-        pool.shutdown();
-        try {
-            if (!pool.awaitTermination(20, TimeUnit.SECONDS)) {
-                pool.shutdownNow();
-                if (!pool.awaitTermination(20, TimeUnit.SECONDS))
-                    Log.e(TAG, "thread pool did not terminate");
-            }
-        } catch (InterruptedException ie) {
-            pool.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
-    }*/
 
     public static void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state, boolean useThreads) {
-
-        if (mContext == null) {
-            mContext = ctx.getApplicationContext();
-        }
-        if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
-            reOpenShell(ctx);
-        }
+        Log.i(TAG, "Received cmds: #" + cmds.size());
         state.setCommmands(cmds);
         state.commandIndex = 0;
         state.retryCount = 0;
@@ -378,8 +297,24 @@ public class RootShellService extends Service {
             mContext = ctx.getApplicationContext();
         }
         waitQueue.add(state);
-        if (rootState != ShellState.BUSY) {
+        if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
+            reOpenShell(ctx);
+        } else if (rootState != ShellState.BUSY) {
             runNextSubmission();
+        } else {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i(TAG, "State of rootShell" + rootState);
+                    if(rootState == ShellState.BUSY) {
+                        //try resetting state to READY forecefully
+                        Log.i(TAG, "Forcefully changing the state " + rootState);
+                        rootState = ShellState.READY;
+                    }
+                    runNextSubmission();
+                }
+            }, 2000);
         }
     }
 
@@ -389,10 +324,10 @@ public class RootShellService extends Service {
         return null;
     }
 
-    private static NotificationManager createNotification(Context context) {
+    private static void createNotification(Context context) {
 
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        builder = new NotificationCompat.Builder(context);
 
         Intent appIntent = new Intent(context, MainActivity.class);
 
@@ -407,7 +342,7 @@ public class RootShellService extends Service {
                 .setTicker(context.getString(R.string.app_name))
                 .setPriority(-2)
                 .setContentText("");
-        mNotificationManager.notify(NOTIFICATION_ID, builder.build());
-        return mNotificationManager;
+        builder.setProgress(0, 0, true);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }
