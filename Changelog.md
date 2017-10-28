@@ -1,7 +1,7 @@
 Changelog AFWall+
 ==================
 
-Version 2.9.7 - WIP
+Version 2.9.7 - BETA - 28-OCT-2017
 
 Features:
 * Control default chains for ipv4 and ipv6(preference)
@@ -19,7 +19,7 @@ Bug Fixes:
 * Possible fix for starup rule
 * Library updates
 * Out of memory crashes when enabled logging
-* Native crash fixes due to incompatible libraries
+* Runtime crash fixes due to incompatible libraries
 * Lots of minor bug fixes and underhood changes to introduce new features.
 
 
