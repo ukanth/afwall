@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 15977
-        versionName "2.9.7"
+        versionName "2.9.7-BETA"
         //buildConfigField 'boolean', 'DONATE', 'true'
         /*jac0kOptions {
             enabled true
