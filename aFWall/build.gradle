@@ -9,7 +9,7 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 15977
+        versionCode 15978
         versionName "2.9.7-BETA"
         //buildConfigField 'boolean', 'DONATE', 'true'
         /*jac0kOptions {
