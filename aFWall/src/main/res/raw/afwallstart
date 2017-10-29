@@ -3,12 +3,20 @@
 export PATH=/system/bin
 
 startDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
+#use maximum 500 iterations before call it 
+i=0
 while :
 do
-  if [ -d /data/data/com.android.providers.downloads ]
+  if [ -d /data/data/com.android.providers.downloads ] || [ -d /data/data/com.android.providers.downloads ]
   then
     break
   fi
+  i=$((i+1))
+  if [ "$i" -gt 500 ]
+  then 	
+  	echo "Couldn't detect data directory "
+  	break
+  fi 
   sleep 1
 done
 endDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
