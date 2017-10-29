@@ -27,7 +27,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -39,6 +38,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
@@ -150,7 +151,7 @@ public class RootShellService extends Service {
     }
 
     private static void processCommands(final RootCommand state) {
-        if (state.commandIndex < state.getCommmands().size()) {
+        if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
             sendUpdate(state);
             if (command != null) {
@@ -276,7 +277,7 @@ public class RootShellService extends Service {
     }
 
     private static void reOpenShell(Context context) {
-        if(rootState == null || rootState != ShellState.READY || rootState == ShellState.FAIL) {
+        if (rootState == null || rootState != ShellState.READY || rootState == ShellState.FAIL) {
             if (notificationManager != null) {
                 notificationManager.cancel(NOTIFICATION_ID);
             }
@@ -302,19 +303,18 @@ public class RootShellService extends Service {
         } else if (rootState != ShellState.BUSY) {
             runNextSubmission();
         } else {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
+            new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     Log.i(TAG, "State of rootShell" + rootState);
-                    if(rootState == ShellState.BUSY) {
-                        //try resetting state to READY forecefully
+                    if (rootState == ShellState.BUSY) {
+                        //try resetting state to READY forcefully
                         Log.i(TAG, "Forcefully changing the state " + rootState);
                         rootState = ShellState.READY;
                     }
                     runNextSubmission();
                 }
-            }, 2000);
+            }, 5000);
         }
     }
 
