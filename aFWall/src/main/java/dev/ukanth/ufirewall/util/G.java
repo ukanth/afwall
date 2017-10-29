@@ -604,7 +604,7 @@ public class G extends Application {
                     gPrefs.edit().putBoolean(REG_DO, true).commit();
                 }
 
-            } catch (PackageManager.NameNotFoundException e) {
+            } catch (PackageManager.NameNotFoundException | NullPointerException e ) {
                 gPrefs.edit().putBoolean(REG_DO, false).commit();
             }
         }
