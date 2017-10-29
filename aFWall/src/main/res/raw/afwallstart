@@ -7,7 +7,7 @@ startDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
 i=0
 while :
 do
-  if [ -d /data/data/com.android.providers.downloads ] || [ -d /data/data/com.android.providers.downloads ]
+  if [ -d /data/data/com.android.providers.downloads ]
   then
     break
   fi
