@@ -223,7 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Compatibilidad con IPv6</string>
   <string name="ipv6_summary">Activa la compatibilidad con IPv6</string>
-  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
+  <string name="control_ipv6_title">Sólo controlar cadenas IPv6</string>
   <string name="ip6unavailable">Error: IPv6 necesita \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Cambiar a reglas IPV6</string>
   <string name="switch_ipv4">Cambiar a reglas IPV4</string>
@@ -255,8 +255,8 @@
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfaz de usuario</string>
   <string name="rule_prefs_title">Comportamiento de las Reglas</string>
-  <string name="ui_chains_title">IPv4 Chains</string>
-  <string name="ui_chains6_title">IPv6 Chains</string>
+  <string name="ui_chains_title">Cadenas IPv4</string>
+  <string name="ui_chains6_title">Cadenas IPv6</string>
   <string name="rules_prefs_title">Reglas/Conectividad</string>
   <string name="log_prefs_title">Registros</string>
   <string name="hideicons_pref_title">Ocultar iconos de aplicaciones</string>
@@ -476,18 +476,18 @@
   <string name="applyRulesFasterTitle">Aplicar Instantáneamente</string>
   <string name="applyRulesFaster">Utilizar sólo si toma mucho tiempo en aplicar las reglas - Altamente Experimental</string>
   <string name="choose">Elegir</string>
-  <string name="input_chain">INPUT Chain (IPv4)</string>
-  <string name="output_chain">OUTPUT Chain (IPv4)</string>
-  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain">Cadena de ENTRADA (IPv4)</string>
+  <string name="output_chain">Cadena de SALIDA (IPv4)</string>
+  <string name="forward_chain">Cadena DE AVANCE (IPv4)</string>
   <string name="input_chain_summary_on">Conexiones entrantes actualmente <b>PERMITIDAS</b></string>
   <string name="input_chain_summary_off">Conexiones entrantes actualmente <b>BLOQUEADAS</b></string>
   <string name="output_chain_summary_on">Conexiones salientes actualmente <b>PERMITIDAS</b></string>
   <string name="output_chain_summary_off">Conexiones salientes actualmente <b>BLOQUEADAS</b></string>
   <string name="forward_chain_summary_on">Reenvío de conexiones actualmente <b>PERMITIDAS</b></string>
   <string name="forward_chain_summary_off">Reenvío de conexiones actualmente <b>BLOQUEADAS</b></string>
-  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
-  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
-  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="input_chain_v6">Cadena de ENTRADA (IPv6)</string>
+  <string name="output_chain_v6">Cadena de SALIDA (IPv6)</string>
+  <string name="forward_chain_v6">Cadena DE AVANCE (IPv6)</string>
   <string name="quick_apply_title">Mostrar Aplicado Rápido</string>
   <string name="quick_apply_summary">Sólo para donadores! Muestra un botón flotante para aplicar las reglas rápidamente</string>
 </resources>

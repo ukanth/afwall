@@ -47,7 +47,7 @@
   <string name="show_log">Προβολή αρχείων καταγραφής</string>
   <string name="clear_log">Καθαρισμός αρχείου καταγραφής</string>
   <string name="applying_rules">Εφαρμογή κανόνων iptables</string>
-  <string name="applying">Applying</string>
+  <string name="applying">Εφαρμογή</string>
   <string name="saving_rules">Αποθήκευση κανόνων iptables</string>
   <string name="rules_applied">Οι κανόνες εφαρμόστηκαν επιτυχώς</string>
   <string name="rules_saved">Οι κανόνες αποθηκεύτηκαν</string>
@@ -159,8 +159,8 @@
   <string name="LogPackBlock">Σύνολο μπλοκαρισμένων πακέτων</string>
   <string name="blocked">AFWall+ Αποκλεισμένα:</string>
   <string name="refresh">Ανανέωση</string>
-  <string name="block_ipv6_title">delete</string>
-  <string name="block_ipv6_summary">delete</string>
+  <string name="block_ipv6_title">διαγραφή</string>
+  <string name="block_ipv6_summary">διαγραφή</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Προφίλ</string>
   <string name="custom_title1">Προσαρμοσμένο όνομα για το προεπιλεγμένο προφίλ</string>
@@ -462,8 +462,8 @@
   <string name="lock_screen_not_enabled">Η ασφάλεια της οθόνης κλειδώματος δεν είναι ενεργοποιημένη στις ρυθμίσεις</string>
   <string name="fingerprint_enabled_successfully">Το δακτυλικό αποτύπωμα ενεργοποιήθηκε με επιτυχία</string>
   <string name="fingerprint_disabled_successfully">Το δακτυλικό αποτύπωμα απενεργοποιήθηκε με επιτυχία</string>
-  <string name="label_zoomin">Zoom In</string>
-  <string name="label_zoomout">Zoom Out</string>
+  <string name="label_zoomin">Μεγέθυνση</string>
+  <string name="label_zoomout">Σμίκρυνση</string>
   <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
   <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
   <string name="delayTitle">Custom Seconds Delay</string>
@@ -472,8 +472,8 @@
   <string name="pingDelayTitle">Ping timeout</string>
   <string name="notification_priority">Notification Priority</string>
   <string name="defaultPriority">Default Priority</string>
-  <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="lowPriority">Χαμηλή προτεραιότητα</string>
+  <string name="applyRulesFasterTitle">Άμεση εφαρμογή</string>
   <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
   <string name="choose">Choose</string>
   <string name="input_chain">INPUT Chain (IPv4)</string>

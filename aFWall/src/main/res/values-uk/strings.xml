@@ -47,7 +47,7 @@
   <string name="show_log">Переглянути журнал</string>
   <string name="clear_log">Очистити журнал</string>
   <string name="applying_rules">Застосування правил iptables</string>
-  <string name="applying">Applying</string>
+  <string name="applying">Застосування</string>
   <string name="saving_rules">Збереження правил iptables</string>
   <string name="rules_applied">Правила застосовані успішно</string>
   <string name="rules_saved">Правила збережено</string>
@@ -159,8 +159,8 @@
   <string name="LogPackBlock">Всього заблокованих пакетів</string>
   <string name="blocked">AFWall+ заблоковані:</string>
   <string name="refresh">Оновити</string>
-  <string name="block_ipv6_title">delete</string>
-  <string name="block_ipv6_summary">delete</string>
+  <string name="block_ipv6_title">видалити</string>
+  <string name="block_ipv6_summary">видалити</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Профілі</string>
   <string name="custom_title1">Власне ім\'я для типового профілю</string>
@@ -180,7 +180,7 @@
   <string name="profile3">Профіль 3</string>
   <string name="profile_hint">Назва профілю</string>
   <string name="profile_notsupport">Будь ласка, перенесіть дані профілю, щоб використовувати цю опцію</string>
-  <string name="profile_duplicate">Profile exists already !</string>
+  <string name="profile_duplicate">Профіль вже існує!</string>
   <string name="reapply_profile">Повторне застосування правил профілю</string>
   <!-- Interface -->
   <string name="lan_title">Управління LAN</string>
@@ -462,8 +462,8 @@
   <string name="lock_screen_not_enabled">Блокування екрану безпеки не увімкнено в Налаштуваннях</string>
   <string name="fingerprint_enabled_successfully">Успішно увімкнено датчик відбитків</string>
   <string name="fingerprint_disabled_successfully">Успішно вимкнено датчик відбитків</string>
-  <string name="label_zoomin">Zoom In</string>
-  <string name="label_zoomout">Zoom Out</string>
+  <string name="label_zoomin">Збільшити</string>
+  <string name="label_zoomout">Зменшити</string>
   <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
   <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
   <string name="delayTitle">Custom Seconds Delay</string>

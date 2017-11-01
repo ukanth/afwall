@@ -47,7 +47,7 @@
   <string name="show_log">عرض السجل</string>
   <string name="clear_log">مسح  السجل</string>
   <string name="applying_rules">تطبيق قواعد iptables</string>
-  <string name="applying">Applying</string>
+  <string name="applying">تطبيق</string>
   <string name="saving_rules">حفظ قواعد iptables</string>
   <string name="rules_applied">تم تطبيق القواعد بنجاح</string>
   <string name="rules_saved">تم حفظ القواعد</string>
