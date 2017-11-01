@@ -1617,6 +1617,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class RunQuickApply extends AsyncTask<Void, Long, Void> {
         boolean enabled = Api.isEnabled(getApplicationContext());
         Api.RuleDataSet dataSet = null;
+        boolean returnStatus = false;
 
         RunQuickApply() {
         }
@@ -1650,12 +1651,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 progress.dismiss();
                             } catch (Exception ex) {
                             }
-
                             queue.clear();
-
                             if (state.exitCode == 0) {
-                                setDirty(false);
-                                getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                //make sure we run on UI thread
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setDirty(false);
+                                        getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                    }
+                                });
                             }
                         }
                     }));
