@@ -344,7 +344,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         public void cbFunc(RootCommand state) {
                             //failed to acquire root
                             if (state.exitCode != 0) {
-                                showRootNotFoundMessage();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showRootNotFoundMessage();
+                                    }
+                                });
+
                             }
                         }
                     }).run(getApplicationContext(), cmds);
