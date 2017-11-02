@@ -270,17 +270,23 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
                     Api.toast(ctx, getString(R.string.ip6unavailable));
                 }*/
             } else {
-                /*switch (key) {
+                switch (key) {
                     case "enableIPv6":
-                        CheckBoxPreference block = (CheckBoxPreference) findPreference("blockIPv6");
+                        CheckBoxPreference block = (CheckBoxPreference) findPreference("controlIPv6");
                         block.setChecked(false);
                         break;
-                   *//* case "blockIPv6":
+                    case "controlIPv6":
                         CheckBoxPreference allow = (CheckBoxPreference) findPreference("enableIPv6");
                         allow.setChecked(false);
-                        break;*//*
-                }*/
+                        break;
+                }
             }
         }
+
+        if (key.equals("controlIPv6")) {
+            CheckBoxPreference allow = (CheckBoxPreference) findPreference("enableIPv6");
+            allow.setChecked(false);
+        }
+
     }
 }
