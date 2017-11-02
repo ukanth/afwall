@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.KeyguardManager;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,7 +30,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.FingerprintUtil;
 import dev.ukanth.ufirewall.util.G;
 import haibison.android.lockpattern.LockPatternActivity;
@@ -141,6 +138,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         //remove other option
         if (Build.VERSION.SDK_INT < 21) {
             itemList.setEntries(itemList.getEntries());
+            itemList.setEntryValues(itemList.getEntryValues());
         }
         if (itemList != null) {
             switch (G.protectionLevel()) {
