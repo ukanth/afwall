@@ -3,7 +3,7 @@ package dev.ukanth.ufirewall.activity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -11,7 +11,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.ui.about.ViewPagerAdapter;
 import dev.ukanth.ufirewall.util.SlidingTabLayout;
 
-public class HelpActivity extends ActionBarActivity {
+public class HelpActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;

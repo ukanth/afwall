@@ -2212,10 +2212,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if (suDialog != null) {
                     suDialog.dismiss();
                 }
-            } catch (final IllegalArgumentException e) {
-                // Handle or log or ignore
             } catch (final Exception e) {
-                // Handle or log or ignore
             } finally {
                 suDialog = null;
             }
