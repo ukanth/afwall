@@ -41,10 +41,14 @@ dependencies {
     compile 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     compile 'com.afollestad.material-dialogs:core:0.9.4.5'
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.0.2'
+    compile 'com.android.support:design:26.0.2'
+    compile 'com.android.support:cardview-v7:26.0.2'
+    compile 'com.android.support:recyclerview-v7:26.0.2'
+    compile 'com.android.support:support-annotations:26.0.2'
+    compile 'com.android.support:support-compat:26.0.2'
+    compile 'com.android.support:appcompat-v7:26.0.2'
+    compile 'com.android.support:support-v13:26.0.2'
 
     annotationProcessor 'com.github.Raizlabs.DBFlow:dbflow-processor:4.1.1'
     compile "com.github.Raizlabs.DBFlow:dbflow-core:4.1.1"
@@ -55,4 +59,6 @@ dependencies {
 
     compile "org.ocpsoft.prettytime:prettytime:4.0.1.Final"
     provided 'de.robv.android.xposed:api:82'
+
+
 }
