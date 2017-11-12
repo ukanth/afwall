@@ -92,6 +92,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -2702,42 +2703,64 @@ public final class Api {
 	}*/
 
     public static boolean isNetfilterSupported() {
-        if ((new File("/proc/config.gz")).exists() == false) {
-            if ((new File("/proc/net/netfilter")).exists() == false)
-                return false;
-            if ((new File("/proc/net/ip_tables_targets")).exists() == false)
-                return false;
-        } else {
-            if (!hasKernelFeature("CONFIG_NETFILTER=") ||
-                    !hasKernelFeature("CONFIG_IP_NF_IPTABLES=") ||
-                    !hasKernelFeature("CONFIG_NF_NAT"))
-                return false;
-        }
+        if (!new File("/proc/config.gz").exists() || !new File("/proc/net/netfilter").exists()
+                || !new File("/proc/net/ip_tables_targets").exists()) {
+            return false;
+        } /*else {
+            String[] features = new String[]{"CONFIG_NETFILTER=", "CONFIG_IP_NF_IPTABLES=", "CONFIG_NF_NAT"};
+            return hasKernelFeature(features, getKernelFeatures("/proc/config.gz"));
+        }*/
         return true;
     }
 
-    public static boolean hasKernelFeature(String feature) {
-        try {
-            File cfg = new File("/proc/config.gz");
-            if (cfg.exists() == false) {
-                return true;
+
+    public static LinkedList<String> getKernelFeatures(String location) {
+        LinkedList<String> list = new LinkedList<String>();
+
+        if (hasKernelConfig()) {
+            try {
+                File cfg = new File(location);
+                FileInputStream fis = new FileInputStream(cfg);
+                GZIPInputStream gzip = new GZIPInputStream(fis);
+                BufferedReader in = null;
+                String line = "";
+
+                in = new BufferedReader(new InputStreamReader(gzip));
+                while ((line = in.readLine()) != null) {
+                    if (!line.startsWith("#")) {
+                        list.add(line);
+                    }
+                }
+                in.close();
+                gzip.close();
+                fis.close();
+
+            } catch (Exception e) {
+
             }
-            FileInputStream fis = new FileInputStream(cfg);
-            GZIPInputStream gzip = new GZIPInputStream(fis);
-            BufferedReader in = null;
-            String line = "";
-            in = new BufferedReader(new InputStreamReader(gzip));
-            while ((line = in.readLine()) != null) {
-                if (line.startsWith(feature)) {
-                    gzip.close();
-                    return true;
+        }
+        return list;
+    }
+
+    public static boolean hasKernelFeature(String[] features,
+                                           LinkedList<String> location) {
+        if (location.isEmpty()) {
+            return false;
+        }
+        boolean[] results = new boolean[features.length];
+        for (int i = 0; i < features.length; i++) {
+            for (String test : location) {
+                if (test.startsWith(features[i])) {
+                    results[i] = true;
                 }
             }
-            gzip.close();
-        } catch (IOException e) {
-            //e.printStackTrace();
         }
-        return false;
+        for (boolean b : results) if (!b) return false;
+        return true;
+    }
+
+    public static boolean hasKernelConfig() {
+        return new File("/proc/config.gz").exists();
     }
 
     private static void initSpecial() {
