@@ -581,4 +581,6 @@
     <string name="init_d">Init.d directory path for startup leak</string>
     <string name="mount_initd_error">Unable to mount the directory</string>
     <string name="delete_initd_error">Unable to delete the startup script</string>
+    <string name="runNotification_summary">Notification will be shown when applying rules</string>
+    <string name="runNotification">Run Notification</string>
 </resources>

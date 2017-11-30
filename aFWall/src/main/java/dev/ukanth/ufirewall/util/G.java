@@ -100,6 +100,7 @@ public class G extends Application {
     private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
     private static final String CUSTOM_DELAY_SECONDS = "customDelay";
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
+    private static final String RUN_NOTIFICATION = "runNotification";
 
     private static final String FASTER_RULES = "fasterApplyRules";
     private static final String QUICK_RULES = "quickApply";
@@ -150,6 +151,16 @@ public class G extends Application {
 
     public static boolean isFaster(boolean val) {
         gPrefs.edit().putBoolean(FASTER_RULES, val).commit();
+        return val;
+    }
+
+
+    public static boolean isRun() {
+        return gPrefs.getBoolean(RUN_NOTIFICATION, false);
+    }
+
+    public static boolean isRun(boolean val) {
+        gPrefs.edit().putBoolean(RUN_NOTIFICATION, val).commit();
         return val;
     }
 

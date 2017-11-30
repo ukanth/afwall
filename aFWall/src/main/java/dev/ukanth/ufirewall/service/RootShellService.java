@@ -45,6 +45,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
@@ -144,7 +145,9 @@ public class RootShellService extends Service {
             } else if (rootState == ShellState.READY) {
                 Log.i(TAG, "Total commamds: #" + state.getCommmands().size());
                 rootState = ShellState.BUSY;
-                createNotification(mContext);
+                if(G.isRun()) {
+                    createNotification(mContext);
+                }
                 processCommands(state);
             }
         } while (false);

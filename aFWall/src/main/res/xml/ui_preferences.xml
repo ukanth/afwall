@@ -26,6 +26,11 @@
             android:key="activeNotification"
             android:summary="@string/activeNotification_summary"
             android:title="@string/activeNotification" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="runNotification"
+            android:summary="@string/runNotification_summary"
+            android:title="@string/runNotification" />
         <ListPreference
             android:defaultValue="0"
             android:dependency="activeNotification"
