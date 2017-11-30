@@ -23,13 +23,15 @@
 
 package dev.ukanth.ufirewall.activity;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
@@ -75,6 +77,10 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 	protected abstract void populateMenu(SubMenu sub);
 
 	protected abstract void populateData(final Context ctx);
+
+	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
+	private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
+	private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
 	protected void setData(final String data) {
 		this.dataText = data;
@@ -166,53 +172,62 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 	}
 
 	private void exportToSD() {
-		final Context ctx = this;
 
-		new AsyncTask<Void, Void, Boolean>() {
-			public String filename = "";
+		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+				!= PackageManager.PERMISSION_GRANTED) {
+			// permissions have not been granted.
+			ActivityCompat.requestPermissions(DataDumpActivity.this,
+					new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+					MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+		} else {
+			final Context ctx = this;
 
-			@Override
-			public Boolean doInBackground(Void... args) {
-				FileOutputStream output = null;
-				boolean res = false;
+			new AsyncTask<Void, Void, Boolean>() {
+				public String filename = "";
 
-				try {
-					File sdCard = Environment.getExternalStorageDirectory();
-					File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-					dir.mkdirs();
+				@Override
+				public Boolean doInBackground(Void... args) {
+					FileOutputStream output = null;
+					boolean res = false;
 
-					File file = new File(dir, sdDumpFile);
-					output = new FileOutputStream(file);
-
-					output.write(dataText.getBytes());
-					filename = file.getAbsolutePath();
-					res = true;
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
 					try {
-						if (output != null) {
-							output.flush();
-							output.close();
+						File sdCard = Environment.getExternalStorageDirectory();
+						File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+						dir.mkdirs();
+
+						File file = new File(dir, sdDumpFile);
+						output = new FileOutputStream(file);
+
+						output.write(dataText.getBytes());
+						filename = file.getAbsolutePath();
+						res = true;
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						try {
+							if (output != null) {
+								output.flush();
+								output.close();
+							}
+						} catch (IOException ex) {
+							ex.printStackTrace();
 						}
-					} catch (IOException ex) {
-						ex.printStackTrace();
+					}
+					return res;
+				}
+
+				@Override
+				public void onPostExecute(Boolean res) {
+					if (res == true) {
+						Api.toast(ctx,getString(R.string.export_rules_success) + filename,Toast.LENGTH_LONG);
+					} else {
+						Api.toast(ctx, getString(R.string.export_logs_fail),Toast.LENGTH_LONG);
 					}
 				}
-				return res;
-			}
-
-			@Override
-			public void onPostExecute(Boolean res) {
-				if (res == true) {
-					Api.toast(ctx,getString(R.string.export_rules_success) + filename,Toast.LENGTH_LONG);
-				} else {
-					Api.toast(ctx, getString(R.string.export_logs_fail),Toast.LENGTH_LONG);
-				}
-			}
-		}.execute();
+			}.execute();
+		}
 	}
 
 	private void copy() {
