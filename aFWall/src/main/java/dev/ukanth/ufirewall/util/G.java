@@ -103,7 +103,7 @@ public class G extends Application {
     private static final String RUN_NOTIFICATION = "runNotification";
 
     private static final String FASTER_RULES = "fasterApplyRules";
-    private static final String QUICK_RULES = "quickApply";
+    //private static final String QUICK_RULES = "quickApply";
     /**
      * FIXME
      **/
@@ -165,9 +165,9 @@ public class G extends Application {
     }
 
 
-    public static boolean showQuickButton() {
+   /* public static boolean showQuickButton() {
         return gPrefs.getBoolean(QUICK_RULES, false);
-    }
+    }*/
 
     public static boolean ipv4Input() {
         return gPrefs.getBoolean(IP4_INPUT, true);

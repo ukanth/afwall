@@ -37,15 +37,12 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -106,10 +103,8 @@ import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
-import static dev.ukanth.ufirewall.util.G.TAG;
 import static dev.ukanth.ufirewall.util.G.ctx;
 import static dev.ukanth.ufirewall.util.G.isDonate;
-import static dev.ukanth.ufirewall.util.G.showQuickButton;
 import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
@@ -148,15 +143,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
-    public static FloatingActionButton getFab() {
+   /* public static FloatingActionButton getFab() {
         return fab;
     }
 
-    private static FloatingActionButton fab;
+    private static FloatingActionButton fab;*/
 
     private AlertDialog dialogLegend = null;
 
-    private static HashSet<PackageInfoData> queue;
+    //private static HashSet<PackageInfoData> queue;
 
     private BroadcastReceiver uiProgressReceiver;
     private BroadcastReceiver toastReceiver;
@@ -210,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-        queue = new HashSet<>();
+        //queue = new HashSet<>();
 
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -218,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startRootShell(rootShell);
             passCheck();
         }
-        registerQuickApply();
+        //registerQuickApply();
         registerUIbroadcast();
         registerToastbroadcast();
     }
@@ -262,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Register quick apply from main screen
      */
     private void registerQuickApply() {
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+       /* fab = (FloatingActionButton) findViewById(R.id.fab);
         if (showQuickButton()) {
             fab.setVisibility(View.VISIBLE);
         } else {
@@ -274,17 +269,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 //lets save the rules
                 if (queue != null && !queue.isEmpty()) {
                     List<PackageInfoData> apps = new ArrayList<>(queue);
-                    for(PackageInfoData data: apps) {
+                    for (PackageInfoData data : apps) {
                         Log.i(TAG, data.pkgName + " " + data.uid);
                     }
-                    Api.RuleDataSet ruleData = Api.saveRules(getApplicationContext(), apps, false);
-                    Log.i(TAG, "Generated RuleIDs: " + ruleData.toString());
-                    new RunQuickApply().setDataSet(ruleData).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    Api.RuleDataSet existingRuleSet  = Api.getExistingRuleSet();
+                    Api.RuleDataSet ruleData = Api.generateRules(getApplicationContext(), apps, false);
+                    Api.RuleDataSet merged = Api.merge(existingRuleSet, ruleData);
+                    Log.i(TAG, "Generated RuleIDs: " + merged.toString());
+
+                    queue.clear();
+                    new RunQuickApply().setDataSet(merged).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     //save the rules
-                    Api.saveRules(getApplicationContext(), Api.getApps(getApplicationContext(), null), true);
+                    Api.generateRules(getApplicationContext(),  Api.getApps(getApplicationContext(),null), true);
                 }
             }
-        });
+        });*/
     }
 
 
@@ -335,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void startRootShell(Shell.Interactive rootShell) {
-        if(rootShell == null) {
+        if (rootShell == null) {
             List<String> cmds = new ArrayList<String>();
             cmds.add("true");
             new RootCommand().setFailureToast(R.string.error_su)
@@ -387,11 +386,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        if (showQuickButton()) {
+        /*if (showQuickButton()) {
             fab.setVisibility(View.VISIBLE);
         } else {
             fab.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     private void reloadPreferences() {
@@ -1607,7 +1606,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         final boolean enabled = Api.isEnabled(this);
         final Context ctx = getApplicationContext();
 
-        Api.saveRules(ctx, Api.getApps(ctx, null), true);
+        Api.generateRules(ctx, Api.getApps(ctx, null), true);
 
         if (!enabled) {
             Api.setEnabled(ctx, false, true);
@@ -1657,14 +1656,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 progress.dismiss();
                             } catch (Exception ex) {
                             }
-                            queue.clear();
+                            //queue.clear();
                             if (state.exitCode == 0) {
                                 //make sure we run on UI thread
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         setDirty(false);
-                                        getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                        //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
                                     }
                                 });
                             }
@@ -1708,14 +1707,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 progress.dismiss();
                             } catch (Exception ex) {
                             }
-                            boolean result = enabled;
                             if (state.exitCode == 0) {
                                 setDirty(false);
-                            } else {
-                                result = false;
                             }
-                            menuSetApplyOrSave(MainActivity.this.mainMenu, result);
-                            Api.setEnabled(ctx, result, true);
+
+                            //queue.clear();
+                            runOnUiThread(() -> {
+                                setDirty(false);
+                                //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
+                                Api.setEnabled(ctx, enabled, true);
+                            });
+
                         }
                     }));
             return null;
@@ -1796,7 +1799,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_lan = flag;
-                    addToQueue(data);
+                    //addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1807,16 +1810,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Cache any batch event by user
      *
-     * @param data
+     * @param
      */
-    public static void addToQueue(@NonNull PackageInfoData data) {
-        if (queue == null) {
+    /*public static void addToQueue(@NonNull PackageInfoData data) {
+        *//*if (queue == null) {
             queue = new HashSet<>();
         }
         //add or update based on new data
         queue.add(data);
-        getFab().setBackgroundTintList(ColorStateList.valueOf(Color.RED));
-    }
+        getFab().setBackgroundTintList(ColorStateList.valueOf(Color.RED));*//*
+    }*/
 
     private void selectAllVPN(boolean flag) {
         if (this.listview == null) {
@@ -1829,7 +1832,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_vpn = flag;
-                    addToQueue(data);
+                    //addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1864,7 +1867,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             data.selected_lan = !data.selected_lan;
                             break;
                     }
-                    addToQueue(data);
+                    //addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1887,7 +1890,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     data.selected_roam = !data.selected_roam;
                     data.selected_vpn = !data.selected_vpn;
                     data.selected_lan = !data.selected_lan;
-                    addToQueue(data);
+                    //addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1907,7 +1910,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_roam = flag;
-                    addToQueue(data);
+                    //addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -1929,7 +1932,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 data.selected_roam = false;
                 data.selected_vpn = false;
                 data.selected_lan = false;
-                addToQueue(data);
+                //addToQueue(data);
                 setDirty(true);
             }
             ((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1947,9 +1950,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_3g = flag;
-                    addToQueue(data);
+                    //addToQueue(data);
                 }
-                addToQueue(data);
+               // addToQueue(data);
                 setDirty(true);
             }
             ((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1968,7 +1971,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_wifi = flag;
-                    addToQueue(data);
+                   // addToQueue(data);
                 }
                 setDirty(true);
             }
@@ -2168,7 +2171,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         private Context context = null;
         MaterialDialog suDialog = null;
         boolean unsupportedSU = false;
-        boolean[] suGranted = { false };
+        boolean[] suGranted = {false};
         //private boolean suAvailable = false;
 
         public RootCheck setContext(Context context) {

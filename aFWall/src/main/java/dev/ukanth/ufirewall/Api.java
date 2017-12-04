@@ -573,6 +573,56 @@ public final class Api {
         }
     }
 
+
+    public static RuleDataSet merge(RuleDataSet original, RuleDataSet modified) {
+        if(modified.dataList.size() > 0) {
+            for(Integer integer: modified.dataList) {
+                if(integer > 0) {
+                    original.dataList.add(integer);
+                } else {
+                    original.dataList.remove(Integer.valueOf(-integer));
+                }
+            }
+        }
+        if(modified.roamList.size() > 0) {
+            for(Integer integer: modified.roamList) {
+                if(integer > 0) {
+                    original.roamList.add(integer);
+                } else {
+                    original.roamList.remove(Integer.valueOf(-integer));
+                }
+            }
+        }
+        if(modified.lanList.size() > 0) {
+            for(Integer integer: modified.lanList) {
+                if(integer > 0) {
+                    original.lanList.add(integer);
+                } else {
+                    original.lanList.remove(Integer.valueOf(-integer));
+                }
+            }
+        }
+        if(modified.vpnList.size() > 0) {
+            for(Integer integer: modified.vpnList) {
+                if(integer > 0) {
+                    original.vpnList.add(integer);
+                } else {
+                    original.vpnList.remove(Integer.valueOf(-integer));
+                }
+            }
+        }
+        if(modified.wifiList.size() > 0) {
+            for(Integer integer: modified.wifiList) {
+                if(integer > 0) {
+                    original.wifiList.add(integer);
+                } else {
+                    original.wifiList.remove(Integer.valueOf(-integer));
+                }
+            }
+        }
+        return original;
+    }
+
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
@@ -894,7 +944,7 @@ public final class Api {
      *
      * @param ctx application context (mandatory)
      */
-    public static RuleDataSet saveRules(Context ctx, List<PackageInfoData> apps, boolean store) {
+    public static RuleDataSet generateRules(Context ctx, List<PackageInfoData> apps, boolean store) {
 
         rulesUpToDate = false;
 
@@ -912,18 +962,35 @@ public final class Api {
                 if (apps.get(i) != null) {
                     if (apps.get(i).selected_wifi) {
                         newpkg_wifi.add(apps.get(i).uid);
+                    } else {
+                       if(!store) newpkg_wifi.add(-apps.get(i).uid);
                     }
                     if (apps.get(i).selected_3g) {
                         newpkg_3g.add(apps.get(i).uid);
+                    } else {
+                        if(!store)  newpkg_3g.add(-apps.get(i).uid);
                     }
-                    if (G.enableRoam() && apps.get(i).selected_roam) {
-                        newpkg_roam.add(apps.get(i).uid);
+                    if (G.enableRoam()) {
+                        if (apps.get(i).selected_roam) {
+                            newpkg_roam.add(apps.get(i).uid);
+                        } else {
+                            if(!store) newpkg_roam.add(-apps.get(i).uid);
+                        }
                     }
-                    if (G.enableVPN() && apps.get(i).selected_vpn) {
-                        newpkg_vpn.add(apps.get(i).uid);
+                    if (G.enableVPN()) {
+                        if (apps.get(i).selected_vpn) {
+                            newpkg_vpn.add(apps.get(i).uid);
+                        } else {
+                            if(!store) newpkg_vpn.add(-apps.get(i).uid);
+                        }
                     }
-                    if (G.enableLAN() && apps.get(i).selected_lan) {
-                        newpkg_lan.add(apps.get(i).uid);
+
+                    if (G.enableLAN()) {
+                        if (apps.get(i).selected_lan) {
+                            newpkg_lan.add(apps.get(i).uid);
+                        } else {
+                            if(!store) newpkg_lan.add(-apps.get(i).uid);
+                        }
                     }
                 }
             }
@@ -2703,7 +2770,8 @@ public final class Api {
 	}*/
 
     public static boolean isNetfilterSupported() {
-        if (!new File("/proc/config.gz").exists() || !new File("/proc/net/netfilter").exists()
+        //!new File("/proc/config.gz").exists() ||
+        if (!new File("/proc/net/netfilter").exists()
                 || !new File("/proc/net/ip_tables_targets").exists()) {
             return false;
         } /*else {
@@ -2740,6 +2808,23 @@ public final class Api {
             }
         }
         return list;
+    }
+
+    public static RuleDataSet getExistingRuleSet() {
+        initSpecial();
+
+        final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+        final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
+        final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+        final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
+        final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
+
+        Api.RuleDataSet dataSet = new Api.RuleDataSet(getListFromPref(savedPkg_wifi_uid),
+                getListFromPref(savedPkg_3g_uid),
+                getListFromPref(savedPkg_roam_uid),
+                getListFromPref(savedPkg_vpn_uid),
+                getListFromPref(savedPkg_lan_uid));
+        return dataSet;
     }
 
     public static boolean hasKernelFeature(String[] features,

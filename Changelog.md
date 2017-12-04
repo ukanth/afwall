@@ -1,7 +1,19 @@
 Changelog AFWall+
 ==================
 
-Version 2.9.7 - BETA - 28-OCT-2017
+Version 2.9.8
+
+* Option to disable notification when applying rules - It's recommended to apply rules without getting killed.
+* Added magisk related information in the error report
+* Fixed storage permission on export from rules
+* Pixel 2 bug on netfilter error on start
+* Rare preference crash on some devices
+* Upgraded runtime to Java 8
+* Fixed crashes upon loading
+* Fixed user reported bugs
+* Removed buggy quick apply -- Apologies! I will add it after thorough testing with various usecase.
+
+Version 2.9.7 
 
 Features:
 * Control default chains for ipv4 and ipv6(preference)

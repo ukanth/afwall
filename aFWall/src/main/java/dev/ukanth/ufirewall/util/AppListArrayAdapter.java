@@ -186,8 +186,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                             holder.app.selected_lan = isChecked;
                             MainActivity.dirty = true;
                             notifyDataSetChanged();
-                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            MainActivity.addToQueue(holder.app);
+                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            //MainActivity.addToQueue(holder.app);
                         }
                     }
 
@@ -204,8 +204,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                             holder.app.selected_wifi = isChecked;
                             MainActivity.dirty = true;
                             notifyDataSetChanged();
-                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            MainActivity.addToQueue(holder.app);
+                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            //MainActivity.addToQueue(holder.app);
                         }
                     }
                 }
@@ -221,8 +221,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                             holder.app.selected_3g = isChecked;
                             MainActivity.dirty = true;
                             notifyDataSetChanged();
-                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            MainActivity.addToQueue(holder.app);
+                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            //MainActivity.addToQueue(holder.app);
                         }
                     }
                 }
@@ -238,8 +238,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                             holder.app.selected_roam = isChecked;
                             MainActivity.dirty = true;
                             notifyDataSetChanged();
-                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            MainActivity.addToQueue(holder.app);
+                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                            //MainActivity.addToQueue(holder.app);
                         }
                     }
                 }
@@ -255,8 +255,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                             holder.app.selected_vpn = isChecked;
                             MainActivity.dirty = true;
                             notifyDataSetChanged();
-                            Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            MainActivity.addToQueue(holder.app);
+                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                           //MainActivity.addToQueue(holder.app);
                         }
                     }
                 }

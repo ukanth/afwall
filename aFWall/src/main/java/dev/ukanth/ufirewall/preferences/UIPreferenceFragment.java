@@ -8,7 +8,6 @@ import android.preference.PreferenceFragment;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.util.G;
 
 public class UIPreferenceFragment extends PreferenceFragment  implements
 		SharedPreferences.OnSharedPreferenceChangeListener {
@@ -19,9 +18,9 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.ui_preferences);
-		if(G.isDoKey(ctx) || G.isDonate()) {
+		/*if(G.isDoKey(ctx) || G.isDonate()) {
 			findPreference("quickApply").setEnabled(true);
-		}
+		}*/
 	}
 
 	@Override
