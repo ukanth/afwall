@@ -9,7 +9,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
-import android.util.Log;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -28,7 +27,6 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.e("RulesPreferenceFragment", "onCreate");
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.rules_preferences);
