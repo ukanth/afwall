@@ -1,12 +1,15 @@
 package dev.ukanth.ufirewall.preferences;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
+import android.util.Log;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -25,6 +28,7 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.e("RulesPreferenceFragment", "onCreate");
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.rules_preferences);
@@ -129,6 +133,13 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
         ctx = context;
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            ctx = activity;
+        }
+    }
 
     @Override
     public void onResume() {
