@@ -31,7 +31,7 @@ notifications:
     on_failure: always
 
 before_install:
-  # Install base Android SDK
+    # Install base Android SDK
     #- sudo apt-get update -qq
     #- sudo apt-get install -qq libstdc++6:i386 lib32z1 build-essential autoconf automake libtool expect
     #- curl -L http://dl.google.com/android/ndk/android-ndk-r9-linux-x86_64.tar.bz2 > ndk.tar.bz2
@@ -39,6 +39,11 @@ before_install:
     - 7z x ndk.zip -o/tmp > nul 
     #- tar -C /tmp -jxf ndk.tar.bz2
     - export NDK_PROJECT_PATH=$PWD
+    - mkdir "$ANDROID_HOME/licenses" || true
+    - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+    - echo -e "\n504667f4c0de7af1a06de9f4b1727b84351f2910" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+
+
 install:
   # Ensure Gradle wrapper is executable, download wrapper and show version
     - chmod +x ./gradlew; ls -l gradlew; ./gradlew wrapper -v
