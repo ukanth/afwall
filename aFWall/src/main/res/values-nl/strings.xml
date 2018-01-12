@@ -47,7 +47,7 @@
   <string name="show_log">Bekijk log</string>
   <string name="clear_log">Leeg log</string>
   <string name="applying_rules">Toepassen iptables regels</string>
-  <string name="applying">Applying</string>
+  <string name="applying">Toepassen</string>
   <string name="saving_rules">Opslaan iptables regels</string>
   <string name="rules_applied">Regels succesvol toegepast</string>
   <string name="rules_saved">Regels opgeslagen</string>
@@ -162,8 +162,8 @@
   <string name="LogPackBlock">Totaal aantal packets geblokkeerd</string>
   <string name="blocked">AFWall+ blokkeerde:</string>
   <string name="refresh">Ververs</string>
-  <string name="block_ipv6_title">delete</string>
-  <string name="block_ipv6_summary">delete</string>
+  <string name="block_ipv6_title">verwijder</string>
+  <string name="block_ipv6_summary">verwijder</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profielen</string>
   <string name="custom_title1">Aangepaste naam voor standaardprofiel</string>
@@ -183,7 +183,7 @@
   <string name="profile3">Profiel 3</string>
   <string name="profile_hint">Profiel naam</string>
   <string name="profile_notsupport">Migreer profieldata om deze optie te gebruiken</string>
-  <string name="profile_duplicate">Profile exists already !</string>
+  <string name="profile_duplicate">Profiel bestaat al!</string>
   <string name="reapply_profile">Profiel regels opnieuw toepassen</string>
   <!-- Interface -->
   <string name="lan_title">LAN beheer</string>
@@ -465,20 +465,20 @@
   <string name="lock_screen_not_enabled">Schermbeveiliging niet ingeschakeld in instellingen</string>
   <string name="fingerprint_enabled_successfully">Vingerafdruk authenticatie ingeschakeld</string>
   <string name="fingerprint_disabled_successfully">Vingerafdruk authenticatie uitgeschakeld</string>
-  <string name="label_zoomin">Zoom In</string>
-  <string name="label_zoomout">Zoom Out</string>
+  <string name="label_zoomin">Inzoomen</string>
+  <string name="label_zoomout">Uitzoomen</string>
   <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
   <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
-  <string name="delayTitle">Custom Seconds Delay</string>
+  <string name="delayTitle">Aangepaste vertraging</string>
   <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
-  <string name="delayDialog">Set delay in seconds</string>
+  <string name="delayDialog">Vertraging in seconden</string>
   <string name="pingDelayTitle">Ping timeout</string>
-  <string name="notification_priority">Notification Priority</string>
-  <string name="defaultPriority">Default Priority</string>
-  <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="notification_priority">Notificatie prioriteit</string>
+  <string name="defaultPriority">Standaardprioriteit</string>
+  <string name="lowPriority">Lage Prioriteit</string>
+  <string name="applyRulesFasterTitle">Onmiddellijke toepassen</string>
   <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
-  <string name="choose">Choose</string>
+  <string name="choose">Kies</string>
   <string name="input_chain">INPUT Chain (IPv4)</string>
   <string name="output_chain">OUTPUT Chain (IPv4)</string>
   <string name="forward_chain">FORWARD Chain (IPv4)</string>

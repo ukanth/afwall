@@ -47,7 +47,7 @@
   <string name="show_log">Ikusi egunkaria</string>
   <string name="clear_log">Garbitu erregistroa</string>
   <string name="applying_rules">Iptables arauak aplikatzen</string>
-  <string name="applying">Applying</string>
+  <string name="applying">Aplikatzen</string>
   <string name="saving_rules">Iptables arauak gordetzen</string>
   <string name="rules_applied">Arauak ondo aplikatu dira</string>
   <string name="rules_saved">Arauak gorde dira</string>
@@ -159,8 +159,8 @@
   <string name="LogPackBlock">Blokeatutako paketeak guztira</string>
   <string name="blocked">AFWall+ suebakiak blokeatuta:</string>
   <string name="refresh">Berritu</string>
-  <string name="block_ipv6_title">delete</string>
-  <string name="block_ipv6_summary">delete</string>
+  <string name="block_ipv6_title">ezabatu</string>
+  <string name="block_ipv6_summary">ezabatu</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profilak</string>
   <string name="custom_title1">Lehenetsitako profilaren izen pertsonalizatua</string>
@@ -180,7 +180,7 @@
   <string name="profile3">3 profila</string>
   <string name="profile_hint">ProfilIzena</string>
   <string name="profile_notsupport">Migratu profileko datuak aukera hau erabiltzeko</string>
-  <string name="profile_duplicate">Profile exists already !</string>
+  <string name="profile_duplicate">Profila badago aurretik!</string>
   <string name="reapply_profile">Berraplikatu profilaren arauak</string>
   <!-- Interface -->
   <string name="lan_title">LAN kontrola</string>

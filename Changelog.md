@@ -3,7 +3,7 @@ Changelog AFWall+
 
 Version 2.9.8
 
-* Option to disable notification when applying rules - It's recommended to apply rules without getting killed.
+* Option to disable notification when applying rules - Recommended to turn on !
 * Added magisk related information in the error report
 * Fixed storage permission on export from rules
 * Pixel 2 bug on netfilter error on start
@@ -11,7 +11,7 @@ Version 2.9.8
 * Upgraded runtime to Java 8
 * Fixed crashes upon loading
 * Fixed user reported bugs
-* Removed buggy quick apply -- Apologies! I will add it after thorough testing with various usecase.
+* Removed buggy quick apply -- Sincere Apologies! will add it after testing with various usecases
 
 Version 2.9.7 
 

@@ -223,7 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Підтримка IPv6</string>
   <string name="ipv6_summary">Увімкнути підтримку IPv6</string>
-  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
+  <string name="control_ipv6_title">Управляти лише ланцюгами IPv6</string>
   <string name="ip6unavailable">Помилка: IPv6 потребує \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Перемикач IPv6 правил</string>
   <string name="switch_ipv4">Перемикач IPv4 правил</string>
@@ -254,9 +254,9 @@
   <string name="enableInboundSummary">Дозволити підключення з локальної мережі на телефон (Samba, sshd, AirDroid, і т. д.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Користувацький інтерфейс</string>
-  <string name="rule_prefs_title">Rules Behaviour</string>
-  <string name="ui_chains_title">IPv4 Chains</string>
-  <string name="ui_chains6_title">IPv6 Chains</string>
+  <string name="rule_prefs_title">Правила поведінки</string>
+  <string name="ui_chains_title">Ланцюги IPv4</string>
+  <string name="ui_chains6_title">Ланцюги IPv6</string>
   <string name="rules_prefs_title">Правила/підключення</string>
   <string name="log_prefs_title">Журнал</string>
   <string name="hideicons_pref_title">Приховати піктограми програм</string>
@@ -441,7 +441,7 @@
   <string name="show_source_address">Показати адресу джерела</string>
   <string name="network_connection_not_available">Мережеве з\'єднання не доступне</string>
   <!-- Custom Rules -->
-  <string name="add_ip_rule">Add to custom rule</string>
+  <string name="add_ip_rule">Додати до ручного правила</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Відбиток пальця</string>
   <string name="fingerprint_authentication_error">Помилка розпізнавання відбитку\n</string>
@@ -464,30 +464,30 @@
   <string name="fingerprint_disabled_successfully">Успішно вимкнено датчик відбитків</string>
   <string name="label_zoomin">Збільшити</string>
   <string name="label_zoomout">Зменшити</string>
-  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
-  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
-  <string name="delayTitle">Custom Seconds Delay</string>
-  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
-  <string name="delayDialog">Set delay in seconds</string>
-  <string name="pingDelayTitle">Ping timeout</string>
-  <string name="notification_priority">Notification Priority</string>
-  <string name="defaultPriority">Default Priority</string>
-  <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">Instant Apply</string>
-  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
-  <string name="choose">Choose</string>
-  <string name="input_chain">INPUT Chain (IPv4)</string>
-  <string name="output_chain">OUTPUT Chain (IPv4)</string>
-  <string name="forward_chain">FORWARD Chain (IPv4)</string>
-  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
-  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
-  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
-  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
-  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
-  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
-  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
-  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
-  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
-  <string name="quick_apply_title">Show Quick Apply</string>
-  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
+  <string name="exception_pref">Не вдалося розпочати діяльність через пошкоджену опцiю, будь ласка зніміть застосування даних</string>
+  <string name="ipdetect">AFWall + виявив IPv6 з\'єднання. Будь ласка, увімкніть Опцii-Правила/Підключення і відновiть</string>
+  <string name="delayTitle">Ручка затримка в секундах</string>
+  <string name="delaySummary">AFWall + чекає, враховуючи наданi секунди після запуску, перед застосуванням правила</string>
+  <string name="delayDialog">Установити тривалість у секундах</string>
+  <string name="pingDelayTitle">Пінг очікування</string>
+  <string name="notification_priority">Пріоритет повідомлення</string>
+  <string name="defaultPriority">Пріоритет за умовчанням</string>
+  <string name="lowPriority">Низький Пріорітет</string>
+  <string name="applyRulesFasterTitle">Миттєве Застосування</string>
+  <string name="applyRulesFaster">Використовувати тільки якщо застосування правил повільно - Дуже Експериментально</string>
+  <string name="choose">Обрати</string>
+  <string name="input_chain">ВВЕДЕННЯ ланцюга (IPv4)</string>
+  <string name="output_chain">ВИВЕДЕННЯ ланцюга (IPv4)</string>
+  <string name="forward_chain">Перенаправлення Ланцюга (IPv4)</string>
+  <string name="input_chain_summary_on">В даний час <b>ДОЗВОЛЕНО</b> вхідні підключення</string>
+  <string name="input_chain_summary_off">В даний час <b>ЗАБОРОНЕНО</b> вхідні підключення</string>
+  <string name="output_chain_summary_on">В даний час <b>ДОЗВОЛЕНО</b> вихідні підключення</string>
+  <string name="output_chain_summary_off">В даний час <b>ЗАБОРОНЕНО</b> вихідні підключення</string>
+  <string name="forward_chain_summary_on">В даний час <b>ДОЗВОЛЕНО</b> пересилання підключень</string>
+  <string name="forward_chain_summary_off">В даний час <b>ЗАБОРОНЕНО</b> пересилання підключень</string>
+  <string name="input_chain_v6">ВВЕДЕННЯ ланцюга (IPv6)</string>
+  <string name="output_chain_v6">ВИВЕДЕННЯ ланцюга (IPv6)</string>
+  <string name="forward_chain_v6">Перенаправлення Ланцюга (IPv6)</string>
+  <string name="quick_apply_title">Показати швидке застосування</string>
+  <string name="quick_apply_summary">Пожертвування тільки! Показати плаваючу кнопку застосування, щоб застосувати швидко правила</string>
 </resources>

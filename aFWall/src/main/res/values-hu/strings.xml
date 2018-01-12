@@ -47,7 +47,7 @@
   <string name="show_log">Napló megtekintése</string>
   <string name="clear_log">Napló (log) törlése</string>
   <string name="applying_rules">Iptables szabályok alkalmazása</string>
-  <string name="applying">Applying</string>
+  <string name="applying">Alkalmazás</string>
   <string name="saving_rules">Iptables szabályok mentése</string>
   <string name="rules_applied">A szabályok sikeresen alkalmazva</string>
   <string name="rules_saved">Szabály mentve</string>
@@ -159,8 +159,8 @@
   <string name="LogPackBlock">Összes csomag blokkolva</string>
   <string name="blocked">AFWall+ blokkolva:</string>
   <string name="refresh">Frissítés</string>
-  <string name="block_ipv6_title">delete</string>
-  <string name="block_ipv6_summary">delete</string>
+  <string name="block_ipv6_title">törlés</string>
+  <string name="block_ipv6_summary">törlés</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Profilok</string>
   <string name="custom_title1">Egyéni név az alapértelmezett profilhoz</string>
@@ -255,8 +255,8 @@
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Felhasználói felület</string>
   <string name="rule_prefs_title">Rules Behaviour</string>
-  <string name="ui_chains_title">IPv4 Chains</string>
-  <string name="ui_chains6_title">IPv6 Chains</string>
+  <string name="ui_chains_title">IPv4 láncok</string>
+  <string name="ui_chains6_title">IPv6 láncok</string>
   <string name="rules_prefs_title">Szabályok/kapcsolódás</string>
   <string name="log_prefs_title">Napló</string>
   <string name="hideicons_pref_title">Alkalmazás ikonok elrejtése</string>
@@ -462,20 +462,20 @@
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
   <string name="fingerprint_enabled_successfully">Ujjlenyomat engedélyezés sikerült</string>
   <string name="fingerprint_disabled_successfully">Ujjlenyomat letiltás sikerült</string>
-  <string name="label_zoomin">Zoom In</string>
-  <string name="label_zoomout">Zoom Out</string>
+  <string name="label_zoomin">Nagyítás</string>
+  <string name="label_zoomout">Kicsinyítés</string>
   <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
   <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
   <string name="delayTitle">Custom Seconds Delay</string>
   <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
   <string name="delayDialog">Set delay in seconds</string>
   <string name="pingDelayTitle">Ping timeout</string>
-  <string name="notification_priority">Notification Priority</string>
-  <string name="defaultPriority">Default Priority</string>
-  <string name="lowPriority">Low Priority</string>
+  <string name="notification_priority">Értesítés priorítása</string>
+  <string name="defaultPriority">Alapértelmezett prioritású</string>
+  <string name="lowPriority">Alacsony prioritású</string>
   <string name="applyRulesFasterTitle">Instant Apply</string>
   <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
-  <string name="choose">Choose</string>
+  <string name="choose">Választ</string>
   <string name="input_chain">INPUT Chain (IPv4)</string>
   <string name="output_chain">OUTPUT Chain (IPv4)</string>
   <string name="forward_chain">FORWARD Chain (IPv4)</string>

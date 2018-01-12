@@ -47,7 +47,7 @@
   <string name="show_log">Vedi registro</string>
   <string name="clear_log">Svuota registro</string>
   <string name="applying_rules">Applicazione delle regole iptables</string>
-  <string name="applying">Applying</string>
+  <string name="applying">Applicazione</string>
   <string name="saving_rules">Salvataggio delle regole iptables</string>
   <string name="rules_applied">Regole applicate con successo</string>
   <string name="rules_saved">Regole salvate</string>
@@ -207,7 +207,7 @@
   <string name="auto">Automatico</string>
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Relativo a XPosed</string>
-  <string name="fixDownloadTitle">Fix DownloadManager leak</string>
+  <string name="fixDownloadTitle">Correggi leak del Gestore Download</string>
   <string name="fixDownloadTitleSummary">Usa Xposed per bloccare le app che scaricano dati utilizzando il gestore dei download standard di Android, anche se all\'applicazione viene negato l\'accesso</string>
   <string name="LeakDetected">Rilevato leak!</string>
   <!-- Tasker -->
@@ -223,7 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Supporto IPv6</string>
   <string name="ipv6_summary">Abilita supporto IPv6</string>
-  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
+  <string name="control_ipv6_title">Controlla solo catene IPv6</string>
   <string name="ip6unavailable">Errore: IPv6 richiede \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Cambia regole IPv6</string>
   <string name="switch_ipv4">Cambia regole IPv4</string>
@@ -254,9 +254,9 @@
   <string name="enableInboundSummary">Consenti connessioni dalla LAN al telefono (Samba, sshd, AirDroid, ecc.)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Interfaccia utente</string>
-  <string name="rule_prefs_title">Rules Behaviour</string>
-  <string name="ui_chains_title">IPv4 Chains</string>
-  <string name="ui_chains6_title">IPv6 Chains</string>
+  <string name="rule_prefs_title">Regole di comportamento</string>
+  <string name="ui_chains_title">Catene IPv4</string>
+  <string name="ui_chains6_title">Catene IPv6</string>
   <string name="rules_prefs_title">Regole/connettività</string>
   <string name="log_prefs_title">Log</string>
   <string name="hideicons_pref_title">Nascondi icone app</string>
@@ -357,7 +357,7 @@
   <string name="pref_password">Password</string>
   <string name="pref_pattern">Modello</string>
   <string name="pref_device">Usare la protezione della sicurezza del dispositivo</string>
-  <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
+  <string name="pref_device_desc">Usa il controllo di sicurezza del dispositivo per aprire AFWall + (Donazione/Chiave)</string>
   <string name="secure_option">Il dispositivo non è protetto con password/PIN</string>
   <string name="android_version">Questa caratteristica funziona solo su Lollipop e versioni successive di Android</string>
   <!--<string name="pref_pin">Pin</string>-->
@@ -367,7 +367,7 @@
   <string name="submit">Invia</string>
   <string name="dialog_color_picker">Selettore colore</string>
   <!--<string name="sort">Sort Applications</string>-->
-  <string name="access_sort">Sort option</string>
+  <string name="access_sort">Opzioni di ordinamento</string>
   <string name="defaultsort">Per nome (predefinito)</string>
   <string name="lastupdated">Per installazione/aggiornamento</string>
   <string name="uid">Per UID</string>
@@ -413,7 +413,7 @@
   <string name="switch_old">Passare alla visualizzazione precedente</string>
   <string name="switch_new">Passare alla nuova visualizzazione</string>
   <string name="showlogdetail_title">File di log dell\'applicazione</string>
-  <string name="reapply_rules">Please reapply the rules due to preference change</string>
+  <string name="reapply_rules">Le preferenze sono cambiate, applica di nuovo le regole</string>
   <string name="custom_rules">Regole personalizzate</string>
   <string name="mdns">Abilitare il DNS multicast</string>
   <string name="error_log">Impossibile avviare il servizio Registro. LogTarget è vuoto o LogService non è abilitato.</string>
@@ -432,7 +432,7 @@
   <string name="select_the_action">Selezionare l\'azione</string>
   <string name="result_copied_to_clipboard">Risultato copiato negli Appunti</string>
   <string name="result">Risultato</string>
-  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="output_is_empty">Output vuoto perchè è stato negato l\'accesso alla rete e SuperSu</string>
   <string name="searching">Ricerca</string>
   <string name="looking_for_data">Ricerca di dati&#8230;</string>
   <string name="reachable_timeout">Raggiungibile, timeout: %d ms</string>
@@ -441,7 +441,7 @@
   <string name="show_source_address">Mostra l\'indirizzo di origine</string>
   <string name="network_connection_not_available">Connessione di rete non disponibile</string>
   <!-- Custom Rules -->
-  <string name="add_ip_rule">Add to custom rule</string>
+  <string name="add_ip_rule">Aggiungi regola personalizzata</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Impronta digitale</string>
   <string name="fingerprint_authentication_error">Errore di autenticazione dell\'impronta digitale\n</string>
@@ -462,32 +462,32 @@
   <string name="lock_screen_not_enabled">Blocco di sicurezza dello schermo non abilitato nelle impostazioni</string>
   <string name="fingerprint_enabled_successfully">Impronta digitale attivata correttamente</string>
   <string name="fingerprint_disabled_successfully">Impronta digitale disattivata correttamente</string>
-  <string name="label_zoomin">Zoom In</string>
-  <string name="label_zoomout">Zoom Out</string>
-  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
-  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
-  <string name="delayTitle">Custom Seconds Delay</string>
-  <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
-  <string name="delayDialog">Set delay in seconds</string>
+  <string name="label_zoomin">Ingrandisci</string>
+  <string name="label_zoomout">Riduci</string>
+  <string name="exception_pref">Impossibile avviare a causa di un errore nelle preferenze, elimina i dati dell\'applicazione</string>
+  <string name="ipdetect">AFWall+ ha rilevato una connessione IPv6. Abilitala da Preferenze-Regole/Connettività e riprova</string>
+  <string name="delayTitle">Ritardo personalizzato (in sec.)</string>
+  <string name="delaySummary">Dopo l\'avvio AFWall+ attende i secondi impostati prima di applicare le regole</string>
+  <string name="delayDialog">Imposta ritardo in secondi</string>
   <string name="pingDelayTitle">Ping timeout</string>
-  <string name="notification_priority">Notification Priority</string>
-  <string name="defaultPriority">Default Priority</string>
-  <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">Instant Apply</string>
-  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
-  <string name="choose">Choose</string>
-  <string name="input_chain">INPUT Chain (IPv4)</string>
-  <string name="output_chain">OUTPUT Chain (IPv4)</string>
-  <string name="forward_chain">FORWARD Chain (IPv4)</string>
-  <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
-  <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
-  <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
-  <string name="output_chain_summary_off">Currently <b>BLOCKED</b> outgoing connections</string>
-  <string name="forward_chain_summary_on">Currently <b>ALLOWED</b> forwarding connections</string>
-  <string name="forward_chain_summary_off">Currently <b>BLOCKED</b> forwarding connections</string>
-  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
-  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
-  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
-  <string name="quick_apply_title">Show Quick Apply</string>
-  <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
+  <string name="notification_priority">Priorità notifiche</string>
+  <string name="defaultPriority">Priorità predefinita</string>
+  <string name="lowPriority">Bassa priorità</string>
+  <string name="applyRulesFasterTitle">Applica subito</string>
+  <string name="applyRulesFaster">Usare solo se l\'applicazione delle regole è lenta - molto sperimentale</string>
+  <string name="choose">Scegli</string>
+  <string name="input_chain">Catena INPUT (IPv4)</string>
+  <string name="output_chain">Catena OUTPUT (IPv4)</string>
+  <string name="forward_chain">Catena FORWARD (IPv4)</string>
+  <string name="input_chain_summary_on">Sono <b>CONSENTITE</b> le connessioni in ingresso</string>
+  <string name="input_chain_summary_off">Sono <b>BLOCCATE</b> le connessioni in ingresso</string>
+  <string name="output_chain_summary_on">Sono <b>CONSENTITE</b> le connessioni in uscita</string>
+  <string name="output_chain_summary_off">Sono <b>BLOCCATE</b> le connessioni in uscita</string>
+  <string name="forward_chain_summary_on">Sono <b>CONSENTITE</b> le connessioni di inoltro</string>
+  <string name="forward_chain_summary_off">Sono <b>BLOCCATE</b> le connessioni di inoltro</string>
+  <string name="input_chain_v6">Catena INPUT (IPv6)</string>
+  <string name="output_chain_v6">Catena OUTPUT (IPv6)</string>
+  <string name="forward_chain_v6">Catena FORWARD (IPv6)</string>
+  <string name="quick_apply_title">Mostra applicazione rapida</string>
+  <string name="quick_apply_summary">Solo donatori! Mostra tasto fluttuante per applicare velocemente le regole</string>
 </resources>

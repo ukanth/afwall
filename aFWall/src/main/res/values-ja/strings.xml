@@ -76,7 +76,7 @@
   <string name="flush">ルールをフラッシュ</string>
   <string name="send_report">エラーレポートを送信</string>
   <string name="enter_problem">問題を説明して下さい:</string>
-  <string name="send_mail">メールを送信</string>
+  <string name="send_mail">メール送信</string>
   <string name="notify_pref_summary_on">新しいアプリがインストールされた際に通知を表示します</string>
   <string name="notify_pref_summary_off">新しいアプリがインストールされた際に通知を表示しません</string>
   <string name="custom_script_defined">カスタムスクリプトは定義されました</string>
@@ -291,7 +291,7 @@
   <string name="device_admin_desc">追加のセキュリティ - AFWall+ のアンインストールを防止します</string>
   <string name="traffic_detail_title">トラフィック詳細</string>
   <string name="uploaded">アップロードされました</string>
-  <string name="downloaded">ダウンロードしました</string>
+  <string name="downloaded">ダウンロード済</string>
   <string name="app_system_detail">システム詳細を開く</string>
   <string name="settings_pwd_not_equal">パスワードが一致しません</string>
   <string name="faq">よくある質問と回答(FAQ)</string>

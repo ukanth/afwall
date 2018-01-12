@@ -47,7 +47,7 @@
   <string name="show_log">Прикажи дневник</string>
   <string name="clear_log">Очисти дневник</string>
   <string name="applying_rules">Примењујем iptables правила</string>
-  <string name="applying">Applying</string>
+  <string name="applying">Примењујем</string>
   <string name="saving_rules">Снимам iptables правила</string>
   <string name="rules_applied">Правила успешно примењена</string>
   <string name="rules_saved">Правила сачувана</string>
@@ -159,8 +159,8 @@
   <string name="LogPackBlock">Укупно блокираних пакета</string>
   <string name="blocked">Блокирани:</string>
   <string name="refresh">Освежи</string>
-  <string name="block_ipv6_title">delete</string>
-  <string name="block_ipv6_summary">delete</string>
+  <string name="block_ipv6_title">обриши</string>
+  <string name="block_ipv6_summary">обриши</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Профили</string>
   <string name="custom_title1">Посебно име за подразумевани профил</string>
@@ -180,7 +180,7 @@
   <string name="profile3">Профил 3</string>
   <string name="profile_hint">НазивПрофила</string>
   <string name="profile_notsupport">Преселите податке профила да бисте користили ову опцију</string>
-  <string name="profile_duplicate">Profile exists already !</string>
+  <string name="profile_duplicate">Профил већ постоји !</string>
   <string name="reapply_profile">Опет примени правила профила</string>
   <!-- Interface -->
   <string name="lan_title">Управљање мрежом</string>
@@ -223,7 +223,7 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 подршка</string>
   <string name="ipv6_summary">Укључује подршку за IPv6</string>
-  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
+  <string name="control_ipv6_title">Контролиши само ИПв6 ланце</string>
   <string name="ip6unavailable">Грешка: IPv6 захтева \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Укључи IPV6 правила</string>
   <string name="switch_ipv4">Укључи IPV4 правила</string>
@@ -254,9 +254,9 @@
   <string name="enableInboundSummary">Допушта везе са локалне мреже (Самба, sshd, KDEConnect, AirDroid)</string>
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Корисничко сучеље</string>
-  <string name="rule_prefs_title">Rules Behaviour</string>
-  <string name="ui_chains_title">IPv4 Chains</string>
-  <string name="ui_chains6_title">IPv6 Chains</string>
+  <string name="rule_prefs_title">Понашање правила</string>
+  <string name="ui_chains_title">ИПв4 ланци</string>
+  <string name="ui_chains6_title">ИПв6 ланци</string>
   <string name="rules_prefs_title">Правила/Повезаност</string>
   <string name="log_prefs_title">Дневник</string>
   <string name="hideicons_pref_title">Сакриј иконе</string>
@@ -441,7 +441,7 @@
   <string name="show_source_address">Приказ адресе извора</string>
   <string name="network_connection_not_available">Мрежна веза није доступна</string>
   <!-- Custom Rules -->
-  <string name="add_ip_rule">Add to custom rule</string>
+  <string name="add_ip_rule">Додај у посебно правило</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Отисак</string>
   <string name="fingerprint_authentication_error">Грешка аутентификације отиска\n</string>
@@ -462,9 +462,9 @@
   <string name="lock_screen_not_enabled">Закључан екран није обезбеђен у поставкама</string>
   <string name="fingerprint_enabled_successfully">Отисак прста успешно укључен</string>
   <string name="fingerprint_disabled_successfully">Отисак прста успешно искључен</string>
-  <string name="label_zoomin">Zoom In</string>
-  <string name="label_zoomout">Zoom Out</string>
-  <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+  <string name="label_zoomin">Увеличај</string>
+  <string name="label_zoomout">Умањи</string>
+  <string name="exception_pref">Не могу да покренем радње због оштећених поставки. Обришите податке апликације</string>
   <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
   <string name="delayTitle">Custom Seconds Delay</string>
   <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
@@ -473,7 +473,7 @@
   <string name="notification_priority">Notification Priority</string>
   <string name="defaultPriority">Default Priority</string>
   <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFasterTitle">Тренутна примена</string>
   <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
   <string name="choose">Choose</string>
   <string name="input_chain">INPUT Chain (IPv4)</string>
