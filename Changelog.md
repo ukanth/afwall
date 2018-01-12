@@ -9,6 +9,7 @@ Version 2.9.8
 * Pixel 2 bug on netfilter error on start
 * Rare preference crash on some devices
 * Upgraded runtime to Java 8
+* Updated support libraries
 * Fixed crashes upon loading
 * Fixed user reported bugs
 * Removed buggy quick apply -- Sincere Apologies! will add it after testing with various usecases
