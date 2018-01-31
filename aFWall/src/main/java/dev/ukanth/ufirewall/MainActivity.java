@@ -74,6 +74,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -174,6 +175,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(G.getInstance());
+
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
                     .getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
@@ -216,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //registerQuickApply();
         registerUIbroadcast();
         registerToastbroadcast();
+
+
 
     }
 

@@ -61,5 +61,8 @@ dependencies {
     compile "org.ocpsoft.prettytime:prettytime:4.0.1.Final"
     provided 'de.robv.android.xposed:api:82'
 
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
 
 }

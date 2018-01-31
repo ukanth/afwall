@@ -50,6 +50,16 @@ import dev.ukanth.ufirewall.log.Log;
 
 public class G extends Application {
 
+    private static G instance;
+
+    public static G getInstance() {
+        return instance;
+    }
+
+    public static Context getContext() {
+        return instance;
+    }
+
     public static final String TAG = "AFWall";
 
     private static final String HAS_ROOT = "hasRoot";
@@ -710,6 +720,7 @@ public class G extends Application {
     }
 
     public void onCreate() {
+        instance = this;
         super.onCreate();
         try {
             FlowManager.init(new FlowConfig.Builder(this)

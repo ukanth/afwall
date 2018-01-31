@@ -102,6 +102,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
@@ -1268,6 +1270,8 @@ public final class Api {
         callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
     }
 
+    private static final Pattern p = Pattern.compile("UserHandle\\{(.*)\\}");
+
    /* public boolean isSuPackage(PackageManager pm, String suPackage) {
         boolean found = false;
         try {
@@ -1336,9 +1340,12 @@ public final class Api {
                 List<UserHandle> list = um.getUserProfiles();
 
                 for (UserHandle user : list) {
-                    long u = um.getSerialNumberForUser(user);
-                    if (u > 0) {
-                        uid.add((int) u);
+                    Matcher m = p.matcher(user.toString());
+                    if (m.find()) {
+                        int id = Integer.parseInt(m.group(1));
+                        if (id > 0) {
+                            uid.add(id);
+                        }
                     }
                 }
             }
