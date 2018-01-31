@@ -42,6 +42,7 @@
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
+
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"

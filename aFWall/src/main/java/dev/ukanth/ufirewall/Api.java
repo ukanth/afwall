@@ -40,6 +40,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -50,6 +51,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -575,45 +577,45 @@ public final class Api {
 
 
     public static RuleDataSet merge(RuleDataSet original, RuleDataSet modified) {
-        if(modified.dataList.size() > 0) {
-            for(Integer integer: modified.dataList) {
-                if(integer > 0) {
+        if (modified.dataList.size() > 0) {
+            for (Integer integer : modified.dataList) {
+                if (integer > 0) {
                     original.dataList.add(integer);
                 } else {
                     original.dataList.remove(Integer.valueOf(-integer));
                 }
             }
         }
-        if(modified.roamList.size() > 0) {
-            for(Integer integer: modified.roamList) {
-                if(integer > 0) {
+        if (modified.roamList.size() > 0) {
+            for (Integer integer : modified.roamList) {
+                if (integer > 0) {
                     original.roamList.add(integer);
                 } else {
                     original.roamList.remove(Integer.valueOf(-integer));
                 }
             }
         }
-        if(modified.lanList.size() > 0) {
-            for(Integer integer: modified.lanList) {
-                if(integer > 0) {
+        if (modified.lanList.size() > 0) {
+            for (Integer integer : modified.lanList) {
+                if (integer > 0) {
                     original.lanList.add(integer);
                 } else {
                     original.lanList.remove(Integer.valueOf(-integer));
                 }
             }
         }
-        if(modified.vpnList.size() > 0) {
-            for(Integer integer: modified.vpnList) {
-                if(integer > 0) {
+        if (modified.vpnList.size() > 0) {
+            for (Integer integer : modified.vpnList) {
+                if (integer > 0) {
                     original.vpnList.add(integer);
                 } else {
                     original.vpnList.remove(Integer.valueOf(-integer));
                 }
             }
         }
-        if(modified.wifiList.size() > 0) {
-            for(Integer integer: modified.wifiList) {
-                if(integer > 0) {
+        if (modified.wifiList.size() > 0) {
+            for (Integer integer : modified.wifiList) {
+                if (integer > 0) {
                     original.wifiList.add(integer);
                 } else {
                     original.wifiList.remove(Integer.valueOf(-integer));
@@ -963,25 +965,25 @@ public final class Api {
                     if (apps.get(i).selected_wifi) {
                         newpkg_wifi.add(apps.get(i).uid);
                     } else {
-                       if(!store) newpkg_wifi.add(-apps.get(i).uid);
+                        if (!store) newpkg_wifi.add(-apps.get(i).uid);
                     }
                     if (apps.get(i).selected_3g) {
                         newpkg_3g.add(apps.get(i).uid);
                     } else {
-                        if(!store)  newpkg_3g.add(-apps.get(i).uid);
+                        if (!store) newpkg_3g.add(-apps.get(i).uid);
                     }
                     if (G.enableRoam()) {
                         if (apps.get(i).selected_roam) {
                             newpkg_roam.add(apps.get(i).uid);
                         } else {
-                            if(!store) newpkg_roam.add(-apps.get(i).uid);
+                            if (!store) newpkg_roam.add(-apps.get(i).uid);
                         }
                     }
                     if (G.enableVPN()) {
                         if (apps.get(i).selected_vpn) {
                             newpkg_vpn.add(apps.get(i).uid);
                         } else {
-                            if(!store) newpkg_vpn.add(-apps.get(i).uid);
+                            if (!store) newpkg_vpn.add(-apps.get(i).uid);
                         }
                     }
 
@@ -989,7 +991,7 @@ public final class Api {
                         if (apps.get(i).selected_lan) {
                             newpkg_lan.add(apps.get(i).uid);
                         } else {
-                            if(!store) newpkg_lan.add(-apps.get(i).uid);
+                            if (!store) newpkg_lan.add(-apps.get(i).uid);
                         }
                     }
                 }
@@ -1326,8 +1328,27 @@ public final class Api {
 
         int count = 0;
         try {
+            List<Integer> uid = new ArrayList<>();
             PackageManager pkgmanager = ctx.getPackageManager();
-            List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                //this code will be executed on devices running ICS or later
+                final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
+                List<UserHandle> list = um.getUserProfiles();
+
+                for (UserHandle user : list) {
+                    long u = um.getSerialNumberForUser(user);
+                    if (u > 0) {
+                        uid.add((int) u);
+                    }
+                }
+            }
+
+
+            Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+            mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            List<ResolveInfo> pkgAppsList = ctx.getPackageManager().queryIntentActivities(mainIntent, 0);
+
+            //List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
@@ -1340,10 +1361,10 @@ public final class Api {
             Date install = new Date();
             install.setTime(System.currentTimeMillis() - (180000));
 
-            for (int i = 0; i < installed.size(); i++) {
+            for (int i = 0; i < pkgAppsList.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
                 count = count + 1;
-                apinfo = installed.get(i);
+                apinfo = pkgAppsList.get(i).activityInfo.applicationInfo;
 
                 if (appList != null) {
                     appList.doProgress(count);
@@ -1374,6 +1395,7 @@ public final class Api {
                     app.appinfo = apinfo;
                     app.pkgName = apinfo.packageName;
                     syncMap.put(apinfo.uid, app);
+                    partOfMultiUser(apinfo, name, uid, pkgmanager,syncMap);
                 } else {
                     app.names.add(name);
                 }
@@ -1394,8 +1416,8 @@ public final class Api {
                 if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                     app.selected_lan = true;
                 }
-
             }
+
 
             List<PackageInfoData> specialData = new ArrayList<>();
             specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
@@ -1447,9 +1469,27 @@ public final class Api {
 
             return applications;
         } catch (Exception e) {
-            //toast(ctx, ctx.getString(R.string.error_common) + e);
+            e.printStackTrace();
+            toast(ctx, ctx.getString(R.string.error_common) + e);
         }
         return null;
+    }
+
+    private static void partOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, PackageManager pkgmanager, SparseArray<PackageInfoData> syncMap) {
+        for (Integer integer : uid1) {
+            int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
+            String[] pkgs = pkgmanager.getPackagesForUid(appUid);
+            if(pkgs != null) {
+                PackageInfoData app  = new PackageInfoData();
+                app.uid = appUid;
+                app.installTime = new File(apinfo.sourceDir).lastModified();
+                app.names = new ArrayList<String>();
+                app.names.add(name + "(M)");
+                app.appinfo = apinfo;
+                app.pkgName = apinfo.packageName;
+                syncMap.put(appUid, app);
+            }
+        }
     }
 
     private static boolean isRecentlyInstalled(String packageName) {

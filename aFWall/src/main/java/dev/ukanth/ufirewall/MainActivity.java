@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //registerQuickApply();
         registerUIbroadcast();
         registerToastbroadcast();
+
     }
 
     private void requestPermission() {
