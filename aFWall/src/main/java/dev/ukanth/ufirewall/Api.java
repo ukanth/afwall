@@ -40,7 +40,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -1351,11 +1350,7 @@ public final class Api {
             }
 
 
-            Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-            mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            List<ResolveInfo> pkgAppsList = ctx.getPackageManager().queryIntentActivities(mainIntent, 0);
-
-            //List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
+            List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
@@ -1368,10 +1363,12 @@ public final class Api {
             Date install = new Date();
             install.setTime(System.currentTimeMillis() - (180000));
 
-            for (int i = 0; i < pkgAppsList.size(); i++) {
+            SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
+
+            for (int i = 0; i < installed.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
                 count = count + 1;
-                apinfo = pkgAppsList.get(i).activityInfo.applicationInfo;
+                apinfo = installed.get(i);
 
                 if (appList != null) {
                     appList.doProgress(count);
@@ -1402,10 +1399,10 @@ public final class Api {
                     app.appinfo = apinfo;
                     app.pkgName = apinfo.packageName;
                     syncMap.put(apinfo.uid, app);
-                    partOfMultiUser(apinfo, name, uid, pkgmanager,syncMap);
                 } else {
                     app.names.add(name);
                 }
+
                 app.firstseen = firstseen;
                 // check if this application is selected
                 if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
@@ -1423,8 +1420,29 @@ public final class Api {
                 if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                     app.selected_lan = true;
                 }
+                checkPartOfMultiUser(apinfo, name, uid, pkgmanager,multiUserAppsMap);
             }
 
+            //run through multi user map
+            for (int i = 0; i < multiUserAppsMap.size(); i++) {
+                app = multiUserAppsMap.valueAt(i);
+                if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
+                    app.selected_wifi = true;
+                }
+                if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
+                    app.selected_3g = true;
+                }
+                if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
+                    app.selected_roam = true;
+                }
+                if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
+                    app.selected_vpn = true;
+                }
+                if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+                    app.selected_lan = true;
+                }
+                syncMap.put(app.uid, app);
+            }
 
             List<PackageInfoData> specialData = new ArrayList<>();
             specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
@@ -1482,20 +1500,24 @@ public final class Api {
         return null;
     }
 
-    private static void partOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, PackageManager pkgmanager, SparseArray<PackageInfoData> syncMap) {
-        for (Integer integer : uid1) {
-            int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
-            String[] pkgs = pkgmanager.getPackagesForUid(appUid);
-            if(pkgs != null) {
-                PackageInfoData app  = new PackageInfoData();
-                app.uid = appUid;
-                app.installTime = new File(apinfo.sourceDir).lastModified();
-                app.names = new ArrayList<String>();
-                app.names.add(name + "(M)");
-                app.appinfo = apinfo;
-                app.pkgName = apinfo.packageName;
-                syncMap.put(appUid, app);
+    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, PackageManager pkgmanager, SparseArray<PackageInfoData> syncMap) {
+        try {
+            for (Integer integer : uid1) {
+                int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
+                String[] pkgs = pkgmanager.getPackagesForUid(appUid);
+                if (pkgs != null) {
+                    PackageInfoData app = new PackageInfoData();
+                    app.uid = appUid;
+                    app.installTime = new File(apinfo.sourceDir).lastModified();
+                    app.names = new ArrayList<String>();
+                    app.names.add(name + "(M)");
+                    app.appinfo = apinfo;
+                    app.pkgName = apinfo.packageName;
+                    syncMap.put(appUid, app);
+                }
             }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
