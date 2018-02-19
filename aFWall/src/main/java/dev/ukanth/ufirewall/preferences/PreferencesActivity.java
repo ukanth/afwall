@@ -56,12 +56,12 @@ import dev.ukanth.ufirewall.events.RxEvent;
 import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
-import io.reactivex.functions.Consumer;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private Toolbar mToolBar;
+    RxEvent rxEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +73,14 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     }
 
     private void subscribe() {
-        RxEvent.subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object event) throws Exception {
-                if (event instanceof RulesEvent) {
-                    ruleChangeApplyRules((RulesEvent) event);
-                } else if (event instanceof LogChangeEvent) {
-                    logDmesgChangeApplyRules((LogChangeEvent) event);
-                }
+        rxEvent = new RxEvent();
+        rxEvent.subscribe(event -> {
+            if (event instanceof RulesEvent) {
+                ruleChangeApplyRules((RulesEvent) event);
+            } else if (event instanceof LogChangeEvent) {
+                logDmesgChangeApplyRules((LogChangeEvent) event);
             }
         });
-
     }
 
     private void ruleChangeApplyRules(RulesEvent rulesEvent) {
@@ -275,11 +272,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
 
         if (key.equals("ip_path") || key.equals("dns_value")) {
-            RxEvent.publish(new RulesEvent("", ctx));
+            rxEvent.publish(new RulesEvent("", ctx));
         }
 
         if (key.equals("logDmesg")) {
-            RxEvent.publish(new LogChangeEvent("", ctx));
+            rxEvent.publish(new LogChangeEvent("", ctx));
         }
 
         if (key.equals("activeNotification")) {
@@ -315,5 +312,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     @Override
     public void onDestroy() {
         super.onDestroy();
+
     }
 }

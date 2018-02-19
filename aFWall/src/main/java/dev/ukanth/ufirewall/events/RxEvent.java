@@ -10,17 +10,17 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class RxEvent {
-    private static PublishSubject<Object> sSubject = PublishSubject.create();
+    private PublishSubject<Object> sSubject = PublishSubject.create();
 
-    private RxEvent() {
+    public RxEvent() {
         // hidden constructor
     }
 
-    public static Disposable subscribe(@NonNull Consumer<Object> action) {
+    public Disposable subscribe(@NonNull Consumer<Object> action) {
         return sSubject.subscribe(action);
     }
 
-    public static void publish(@NonNull Object message) {
+    public void publish(@NonNull Object message) {
         sSubject.onNext(message);
     }
 

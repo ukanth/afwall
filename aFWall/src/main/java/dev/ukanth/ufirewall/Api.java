@@ -1420,28 +1420,32 @@ public final class Api {
                 if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                     app.selected_lan = true;
                 }
-                checkPartOfMultiUser(apinfo, name, uid, pkgmanager,multiUserAppsMap);
+                if(G.supportDual()) {
+                    checkPartOfMultiUser(apinfo, name, uid, pkgmanager,multiUserAppsMap);
+                }
             }
 
-            //run through multi user map
-            for (int i = 0; i < multiUserAppsMap.size(); i++) {
-                app = multiUserAppsMap.valueAt(i);
-                if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
-                    app.selected_wifi = true;
+            if(G.supportDual()) {
+                //run through multi user map
+                for (int i = 0; i < multiUserAppsMap.size(); i++) {
+                    app = multiUserAppsMap.valueAt(i);
+                    if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
+                        app.selected_wifi = true;
+                    }
+                    if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
+                        app.selected_3g = true;
+                    }
+                    if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
+                        app.selected_roam = true;
+                    }
+                    if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
+                        app.selected_vpn = true;
+                    }
+                    if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
+                        app.selected_lan = true;
+                    }
+                    syncMap.put(app.uid, app);
                 }
-                if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
-                    app.selected_3g = true;
-                }
-                if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
-                    app.selected_roam = true;
-                }
-                if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
-                    app.selected_vpn = true;
-                }
-                if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
-                    app.selected_lan = true;
-                }
-                syncMap.put(app.uid, app);
             }
 
             List<PackageInfoData> specialData = new ArrayList<>();

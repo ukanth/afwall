@@ -76,6 +76,7 @@ public class G extends Application {
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
     private static final String LOG_PING_TIMEOUT = "logPingTime";
     //private static final String ENABLE_ADMIN = "enableAdmin";
+    private static final String DUAL_APPS = "supportDualApps";
     private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
     private static final String ENABLE_CONFIRM = "enableConfirm";
     private static final String ENABLE_MULTI_PROFILE = "enableMultiProfile";
@@ -154,6 +155,16 @@ public class G extends Application {
     public static void storedPid(Set store) {
         gPrefs.edit().putStringSet("storedPid", store).commit();
     }
+
+    public static boolean supportDual() {
+        return gPrefs.getBoolean(DUAL_APPS, false);
+    }
+
+    public static boolean supportDual(boolean val) {
+        gPrefs.edit().putBoolean(DUAL_APPS, val).commit();
+        return val;
+    }
+
 
     public static boolean isFaster() {
         return gPrefs.getBoolean(FASTER_RULES, false);
