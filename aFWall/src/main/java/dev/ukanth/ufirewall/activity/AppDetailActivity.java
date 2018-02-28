@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.net.TrafficStats;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,22 +11,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Arrays;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.log.LogPreference;
+import dev.ukanth.ufirewall.log.LogPreference_Table;
+import dev.ukanth.ufirewall.util.G;
 
 public class AppDetailActivity extends AppCompatActivity {
     public static final String TAG = "AFWall";
     private static String packageName = "";
+    private CheckBox logOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +40,31 @@ public class AppDetailActivity extends AppCompatActivity {
         setTitle(getString(R.string.traffic_detail_title));
         setContentView(R.layout.app_detail);
 
+        int appid = getIntent().getIntExtra("appid", -1);
+
+        try {
+            logOption = (CheckBox) findViewById(R.id.notification_p);
+
+            LogPreference logPreference = SQLite.select()
+                    .from(LogPreference.class)
+                    .where(LogPreference_Table.uid.eq(appid)).querySingle();
+
+            if(logPreference != null) {
+                logOption.setChecked(logPreference.isDisable());
+            }
+
+            logOption.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                //only use when triggered by user
+                if (buttonView.isPressed()) {
+                    // write the logic here
+                    G.updateLogNotification(appid, isChecked);
+                }
+            });
+        } catch (Exception e) {
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
-
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -52,8 +79,7 @@ public class AppDetailActivity extends AppCompatActivity {
         
         /**/
 
-        int appid = getIntent().getIntExtra("appid", -1);
-        if (appid > 0) {
+        if (appid >= 0) {
 
             final PackageManager packageManager = getApplicationContext().getPackageManager();
             final String[] packageNameList = ctx.getPackageManager().getPackagesForUid(appid);
@@ -96,7 +122,7 @@ public class AppDetailActivity extends AppCompatActivity {
         File dir = new File("/proc/uid_stat/");
         down.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
         up.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
-        if(dir.exists()) {
+        if (dir.exists()) {
             String[] children = dir.list();
             if (!Arrays.asList(children).contains(String.valueOf(localUid))) {
                 down.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
@@ -104,13 +130,13 @@ public class AppDetailActivity extends AppCompatActivity {
                 return;
             }
             File uidFileDir = new File("/proc/uid_stat/" + String.valueOf(localUid));
-            if(uidFileDir.exists()) {
+            if (uidFileDir.exists()) {
                 File uidActualFileReceived = new File(uidFileDir, "tcp_rcv");
                 File uidActualFileSent = new File(uidFileDir, "tcp_snd");
                 String textReceived = "0";
                 String textSent = "0";
                 try {
-                    if(uidActualFileReceived.exists() && uidActualFileSent.exists() ) {
+                    if (uidActualFileReceived.exists() && uidActualFileSent.exists()) {
                         BufferedReader brReceived = new BufferedReader(new FileReader(uidActualFileReceived));
                         BufferedReader brSent = new BufferedReader(new FileReader(uidActualFileSent));
                         String receivedLine;
@@ -131,7 +157,7 @@ public class AppDetailActivity extends AppCompatActivity {
                 }
             }
         }
-       // return Long.valueOf(textReceived).longValue() + Long.valueOf(textReceived).longValue();
+        // return Long.valueOf(textReceived).longValue() + Long.valueOf(textReceived).longValue();
     }
 
     public static String humanReadableByteCount(long bytes, boolean si) {

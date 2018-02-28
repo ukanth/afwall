@@ -22,6 +22,8 @@
 
 package dev.ukanth.ufirewall.service;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -54,7 +56,6 @@ import dev.ukanth.ufirewall.log.LogRxEvent;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
-import io.reactivex.functions.Consumer;
 
 public class LogService extends Service {
 
@@ -163,7 +164,7 @@ public class LogService extends Service {
             Log.i(TAG, "Restarting LogService");
             startLogService();
         }
-        return Service.START_STICKY;
+        return START_STICKY;
     }
 
 
@@ -173,19 +174,16 @@ public class LogService extends Service {
     }
 
     private void startLogService() {
-        LogRxEvent.subscribe((new Consumer<LogEvent>() {
-                    @Override
-                    public void accept(LogEvent event) throws Exception {
-                        if (event != null) {
-                            store(event.logInfo);
-                            if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-                                if (G.showLogToasts()) {
-                                    showToast(event.ctx, handler, event.logInfo.uidString, false);
-                                }
-                            }
-                        }
+        LogRxEvent.subscribe((event -> {
+            if (event != null) {
+                store(event.logInfo);
+                if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+                    if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
+                        showToast(event.ctx, handler, event.logInfo.uidString, false);
                     }
-                })
+                }
+            }
+        })
         );
         if (G.enableLogService()) {
             // this method is executed in a background thread
@@ -285,23 +283,6 @@ public class LogService extends Service {
         }
     }
 
-    //@Subscribe
-   /* public void showMessageToast(LogEvent event) {
-
-        if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-            if (G.showLogToasts()) {
-                showToast(event.ctx, handler, event.logInfo.uidString, false);
-            }
-        }
-    }*/
-
-    // @Subscribe
-   /* public void storeDataToDB(LogEvent event) {
-        if (event != null) {
-            store(event.logInfo);
-        }
-    }*/
-
     private void store(final LogInfo logInfo) {
         try {
             data = new LogData();
@@ -343,4 +324,21 @@ public class LogService extends Service {
         closeSession();
         super.onDestroy();
     }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        Log.d(TAG, "Log service removed");
+
+        PendingIntent service = PendingIntent.getService(
+                getApplicationContext(),
+                1001,
+                new Intent(getApplicationContext(), LogService.class),
+                PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 1000, service);
+    }
+
+
 }

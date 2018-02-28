@@ -45,9 +45,9 @@
             android:dialogMessage="Default - 10s"
             android:key="logPingTime"/>
 
-        <Preference
+        <!--<Preference
             android:key="block_filter"
-            android:title="@string/filters_apps_title"></Preference>
+            android:title="@string/filters_apps_title"></Preference>-->
 
     </PreferenceCategory>
 

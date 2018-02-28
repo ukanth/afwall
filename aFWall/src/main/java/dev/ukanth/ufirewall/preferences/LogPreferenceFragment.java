@@ -35,7 +35,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
             //G.logPingTimeout(G.logPingTimeout());
             addPreferencesFromResource(R.xml.log_preferences);
             populateLogMessage(findPreference("logDmesg"));
-            populateAppList(findPreference("block_filter"));
+            //populateAppList(findPreference("block_filter"));
         } catch (ClassCastException c) {
             Log.i(Api.TAG, c.getMessage());
             Api.toast((Context) getActivity(), getString(R.string.exception_pref));

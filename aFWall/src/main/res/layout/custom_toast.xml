@@ -13,6 +13,13 @@
         android:layout_marginRight="8dp"
         android:src="@drawable/notification_warn" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:id="@+id/toastDisable"
+        android:src="@drawable/ic_block_black_24dp" />
+
     <TextView
         android:id="@+id/toasttext"
         android:layout_width="wrap_content"
@@ -22,4 +29,6 @@
         android:shadowDy="2"
         android:shadowRadius="3"
         android:textColor="@color/white" />
+
+
 </LinearLayout>

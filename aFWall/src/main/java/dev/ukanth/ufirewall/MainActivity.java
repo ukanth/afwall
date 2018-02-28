@@ -74,6 +74,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.io.File;
@@ -90,6 +91,8 @@ import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.activity.OldLogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.log.LogPreference;
+import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
@@ -144,15 +147,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
-   /* public static FloatingActionButton getFab() {
-        return fab;
-    }
-
-    private static FloatingActionButton fab;*/
-
     private AlertDialog dialogLegend = null;
-
-    //private static HashSet<PackageInfoData> queue;
 
     private BroadcastReceiver uiProgressReceiver;
     private BroadcastReceiver toastReceiver;
@@ -225,8 +220,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerUIbroadcast();
         registerToastbroadcast();
 
+        migrateNotification();
+    }
 
-
+    private void migrateNotification() {
+        if(!G.isNotificationMigrated()){
+            List<Integer> idList = G.getBlockedNotifyList();
+            for(Integer uid: idList) {
+                LogPreference preference = new LogPreference();
+                preference.setUid(uid);
+                preference.setTimestamp(System.currentTimeMillis());
+                preference.setDisable(true);
+                FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+            }
+            G.isNotificationMigrated(true);
+        }
     }
 
     private void requestPermission() {

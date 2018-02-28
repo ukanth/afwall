@@ -35,8 +35,6 @@
                 android:id="@+id/app_title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:maxLines="1"
                 android:textColor="@color/white"
                 android:textSize="18.0sp" />
 
@@ -68,7 +66,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6.0dip"
-            android:background="@color/black"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -145,6 +142,20 @@
             android:layout_marginLeft="10.0dip"
             android:layout_weight="1.0"
             android:text="@string/app_system_detail" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/notification_p"
+            android:layout_width="0.0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_weight="1.0"
+            android:text="@string/displayBlockNotification" />
     </LinearLayout>
 
 </LinearLayout>

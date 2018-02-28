@@ -37,6 +37,9 @@ import android.view.WindowManager;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -47,6 +50,9 @@ import java.util.Set;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.log.LogPreference;
+import dev.ukanth.ufirewall.log.LogPreferenceDB;
+import dev.ukanth.ufirewall.log.LogPreference_Table;
 
 public class G extends Application {
 
@@ -636,7 +642,7 @@ public class G extends Application {
                     gPrefs.edit().putBoolean(REG_DO, true).commit();
                 }
 
-            } catch (PackageManager.NameNotFoundException | NullPointerException e ) {
+            } catch (PackageManager.NameNotFoundException | NullPointerException e) {
                 gPrefs.edit().putBoolean(REG_DO, false).commit();
             }
         }
@@ -730,8 +736,13 @@ public class G extends Application {
         return false;
     }
 
+
+    @Override
     public void onCreate() {
         instance = this;
+        //Shell.setFlags(Shell.ROOT_SHELL);
+        //Shell.setFlags(Shell.FLAG_REDIRECT_STDERR);
+        //Shell.verboseLogging(BuildConfig.DEBUG);
         super.onCreate();
         try {
             FlowManager.init(new FlowConfig.Builder(this)
@@ -835,5 +846,40 @@ public class G extends Application {
     public static List<String> getDefaultProfiles() {
         List<String> items = new ArrayList<String>(Arrays.asList(default_profiles));
         return items;
+    }
+
+    public static void updateLogNotification(int uid, boolean isChecked) {
+        //update logic here
+        LogPreference preference = new LogPreference();
+        preference.setUid(uid);
+        preference.setTimestamp(System.currentTimeMillis());
+        preference.setDisable(isChecked);
+        FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                preference.save(databaseWrapper);
+            }
+        }).build().execute();
+    }
+
+    public static void isNotificationMigrated(boolean b) {
+        gPrefs.edit().putBoolean("NewDBNotification", b).commit();
+        gPrefs.edit().putString(BLOCKED_NOTIFICATION, "").commit();
+    }
+
+    public static boolean isNotificationMigrated() {
+        return gPrefs.getBoolean("NewDBNotification", false);
+    }
+
+    public static boolean canShow(int uid) {
+        LogPreference logPreference = SQLite.select()
+                .from(LogPreference.class)
+                .where(LogPreference_Table.uid.eq(uid)).querySingle();
+
+        if (logPreference != null) {
+            return !logPreference.isDisable();
+        } else {
+            return false;
+        }
     }
 }
