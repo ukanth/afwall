@@ -5,7 +5,6 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -23,8 +22,6 @@ import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.PackageComparator;
 
 public class LogPreferenceFragment extends PreferenceFragment {
-
-    private static ListPreference listPreference;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,9 +48,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
         ar.add("System");
         val.add("OS");
 
-        listPreference = (ListPreference) logDmesg;
-        PreferenceCategory mCategory = (PreferenceCategory) findPreference("logExperimental");
-
+        ListPreference listPreference = (ListPreference) logDmesg;
         if (RootTools.isBusyboxAvailable()) {
             ar.add("Busybox");
             val.add("BX");
@@ -62,7 +57,6 @@ public class LogPreferenceFragment extends PreferenceFragment {
         if (listPreference != null) {
             listPreference.setEntries(ar.toArray(new String[0]));
             listPreference.setEntryValues(val.toArray(new String[0]));
-
         }
     }
 
@@ -89,13 +83,13 @@ public class LogPreferenceFragment extends PreferenceFragment {
 
         Api.PackageInfoData info = new Api.PackageInfoData();
         info.uid = 1020;
-        info.pkgName="dev.afwall.special.mDNS";
+        info.pkgName = "dev.afwall.special.mDNS";
         info.names = new ArrayList<String>();
         info.names.add("mDNS");
         info.appinfo = new ApplicationInfo();
         //TODO: better way to handle this
         //manually add mDNS for now
-        if(!apps.contains(info)) {
+        if (!apps.contains(info)) {
             apps.add(info);
         }
         try {
