@@ -875,11 +875,6 @@ public class G extends Application {
         LogPreference logPreference = SQLite.select()
                 .from(LogPreference.class)
                 .where(LogPreference_Table.uid.eq(uid)).querySingle();
-
-        if (logPreference != null) {
-            return !logPreference.isDisable();
-        } else {
-            return false;
-        }
+        return (logPreference == null) || !logPreference.isDisable();
     }
 }
