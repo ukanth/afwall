@@ -224,9 +224,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void migrateNotification() {
-        if(!G.isNotificationMigrated()){
+        if (!G.isNotificationMigrated()) {
             List<Integer> idList = G.getBlockedNotifyList();
-            for(Integer uid: idList) {
+            for (Integer uid : idList) {
                 LogPreference preference = new LogPreference();
                 preference.setUid(uid);
                 preference.setTimestamp(System.currentTimeMillis());
@@ -380,26 +380,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void showRootNotFoundMessage() {
-        new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                .title(R.string.error_common)
-                .content(R.string.error_su)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        dialog.dismiss();
-                    }
-                })
-                .positiveText(R.string.Continue)
-                .negativeText(R.string.exit)
-                .show();
+        if (G.isActivityVisible()) {
+            try {
+                new MaterialDialog.Builder(this).cancelable(false)
+                        .title(R.string.error_common)
+                        .content(R.string.error_su)
+                        .onPositive((dialog, which) -> dialog.dismiss())
+                        .onNegative((dialog, which) -> {
+                            MainActivity.this.finish();
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                            dialog.dismiss();
+                        })
+                        .positiveText(R.string.Continue)
+                        .negativeText(R.string.exit)
+                        .show();
+            } catch (Exception e) {
+                Api.toast(this, getString(R.string.error_su), Toast.LENGTH_LONG);
+            }
+        }
     }
 
     @Override
@@ -410,6 +408,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             fab.setVisibility(View.GONE);
         }*/
+        G.activityResumed();
     }
 
     private void reloadPreferences() {
@@ -667,6 +666,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         index = this.listview.getFirstVisiblePosition();
         View v = this.listview.getChildAt(0);
         top = (v == null) ? 0 : v.getTop();
+        G.activityPaused();
     }
 
     /**
@@ -1839,7 +1839,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         queue.add(data);
         getFab().setBackgroundTintList(ColorStateList.valueOf(Color.RED));*//*
     }*/
-
     private void selectAllVPN(boolean flag) {
         if (this.listview == null) {
             this.listview = (ListView) this.findViewById(R.id.listview);
@@ -1971,7 +1970,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     data.selected_3g = flag;
                     //addToQueue(data);
                 }
-               // addToQueue(data);
+                // addToQueue(data);
                 setDirty(true);
             }
             ((BaseAdapter) adapter).notifyDataSetChanged();
@@ -1990,7 +1989,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_wifi = flag;
-                   // addToQueue(data);
+                    // addToQueue(data);
                 }
                 setDirty(true);
             }

@@ -877,4 +877,18 @@ public class G extends Application {
                 .where(LogPreference_Table.uid.eq(uid)).querySingle();
         return (logPreference == null) || !logPreference.isDisable();
     }
+
+    public static boolean isActivityVisible() {
+        return activityVisible;
+    }
+
+    public static void activityResumed() {
+        activityVisible = true;
+    }
+
+    public static void activityPaused() {
+        activityVisible = false;
+    }
+
+    private static boolean activityVisible;
 }
