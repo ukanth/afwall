@@ -39,8 +39,6 @@ import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -297,12 +295,7 @@ public class LogService extends Service {
             data.setSpt(logInfo.spt);
             data.setUid(logInfo.uid);
             data.setAppName(logInfo.appName);
-            FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(new ITransaction() {
-                @Override
-                public void execute(DatabaseWrapper databaseWrapper) {
-                    data.save(databaseWrapper);
-                }
-            }).build().execute();
+            FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(databaseWrapper -> data.save(databaseWrapper)).build().execute();
         } catch (IllegalStateException e) {
             if (e.getMessage().contains("connection pool has been closed")) {
                 //reconnect logic

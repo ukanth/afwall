@@ -3304,7 +3304,11 @@ public final class Api {
     public static boolean mountDir(Context context, String path, String mountType) {
         if (path != null) {
             String busyboxPath = Api.getBusyBoxPath(context, false);
-            return RootTools.remount(path, mountType, busyboxPath);
+            if(busyboxPath != null && !busyboxPath.trim().isEmpty()) {
+                return RootTools.remount(path, mountType, busyboxPath);
+            } else {
+                return false;
+            }
         }
         return false;
     }
