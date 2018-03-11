@@ -9,7 +9,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  * Created by ukanth on 17/1/16.
  */
 
-@Table(database = LogDatabase.class)
+@Table(database = LogDatabase.class,cachingEnabled = true)
 //,indexGroups = { @IndexGroup(number = 1, name = "uidIndex"),})
 public class LogData extends BaseModel {
     @Column
