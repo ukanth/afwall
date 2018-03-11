@@ -38,6 +38,8 @@ android {
 dependencies {
 
     compile 'eu.chainfire:libsuperuser:1.0.0.201704021214'
+    //implementation 'com.github.topjohnwu:libsu:1.0.1'
+
     compile 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     compile 'com.afollestad.material-dialogs:core:0.9.6.0'
 
