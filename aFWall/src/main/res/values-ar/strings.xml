@@ -473,8 +473,6 @@
   <string name="notification_priority">Notification Priority</string>
   <string name="defaultPriority">Default Priority</string>
   <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">Instant Apply</string>
-  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
   <string name="choose">Choose</string>
   <string name="input_chain">INPUT Chain (IPv4)</string>
   <string name="output_chain">OUTPUT Chain (IPv4)</string>

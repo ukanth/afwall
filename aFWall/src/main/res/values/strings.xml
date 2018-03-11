@@ -585,4 +585,7 @@
     <string name="runNotification">Run Notification</string>
 
     <string name="displayBlockNotification">disable log alert notification</string>
+
+    <string name="applyRulesFasterTitle">Instant Apply</string>
+    <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
 </resources>
