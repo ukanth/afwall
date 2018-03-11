@@ -1,13 +1,12 @@
 package dev.ukanth.ufirewall.xposed;
 
 import android.app.Activity;
+import android.app.AndroidAppHelper;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
-import android.os.Build;
-import android.service.notification.StatusBarNotification;
 import android.widget.Toast;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -22,7 +21,6 @@ import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.SharePreference;
 
-import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
 import static de.robv.android.xposed.XposedHelpers.findClass;
 
@@ -33,8 +31,6 @@ import static de.robv.android.xposed.XposedHelpers.findClass;
 public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     public static final String MY_APP = BuildConfig.APPLICATION_ID;
-
-    private static final boolean IS_ABOVE_N = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
 
     public static String MODULE_PATH = null;
     public static final String TAG = "AFWallXPosed";
@@ -116,7 +112,8 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             if (context == null) {
                 Object activityThread = callStaticMethod(
                         findClass("android.app.ActivityThread", null), "currentActivityThread");
-                context = (Context) callMethod(activityThread, "getSystemContext");
+                //context = (Context) callMethod(activityThread, "getSystemContext");
+                context = (Context) AndroidAppHelper.currentApplication();
             }
             if (prefs == null) {
                 prefs = new XSharedPreferences(MY_APP);
@@ -232,7 +229,8 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         if (context == null) {
             Object activityThread = callStaticMethod(
                     findClass("android.app.ActivityThread", null), "currentActivityThread");
-            context = (Context) callMethod(activityThread, "getSystemContext");
+            //context = (Context) callMethod(activityThread, "getSystemContext");
+            context = (Context) AndroidAppHelper.currentApplication();
         }
 
         Class<?> inetAddress = findClass("java.net.InetAddress", loadPackageParam.classLoader);
