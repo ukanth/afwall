@@ -171,8 +171,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
             return;
         }
         LeakCanary.install(G.getInstance());
@@ -224,17 +222,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void migrateNotification() {
-        if (!G.isNotificationMigrated()) {
-            List<Integer> idList = G.getBlockedNotifyList();
-            for (Integer uid : idList) {
-                LogPreference preference = new LogPreference();
-                preference.setUid(uid);
-                preference.setTimestamp(System.currentTimeMillis());
-                preference.setDisable(true);
-                FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+        try {
+            if (!G.isNotificationMigrated()) {
+                List<Integer> idList = G.getBlockedNotifyList();
+                for (Integer uid : idList) {
+                    LogPreference preference = new LogPreference();
+                    preference.setUid(uid);
+                    preference.setTimestamp(System.currentTimeMillis());
+                    preference.setDisable(true);
+                    FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+                }
+                G.isNotificationMigrated(true);
             }
-            G.isNotificationMigrated(true);
+        } catch (Exception e) {
+            Log.e(G.TAG, "Unable to migrate notification", e);
         }
+
     }
 
     private void requestPermission() {

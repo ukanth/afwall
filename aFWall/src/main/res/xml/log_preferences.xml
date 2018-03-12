@@ -39,15 +39,15 @@
 
         <EditTextPreference
             android:dependency="enableLogService"
-            android:inputType="number"
-            android:title="@string/pingDelayTitle"
-            android:dialogTitle="Ping timeout (seconds)"
             android:dialogMessage="Default - 10s"
-            android:key="logPingTime"/>
+            android:dialogTitle="Ping timeout (seconds)"
+            android:inputType="number"
+            android:key="logPingTime"
+            android:title="@string/pingDelayTitle" />
 
-        <!--<Preference
+        <Preference
             android:key="block_filter"
-            android:title="@string/filters_apps_title"></Preference>-->
+            android:title="@string/filters_apps_title"></Preference>
 
     </PreferenceCategory>
 

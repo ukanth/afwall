@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -32,7 +33,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
             //G.logPingTimeout(G.logPingTimeout());
             addPreferencesFromResource(R.xml.log_preferences);
             populateLogMessage(findPreference("logDmesg"));
-            //populateAppList(findPreference("block_filter"));
+            populateAppList(findPreference("block_filter"));
         } catch (ClassCastException c) {
             Log.i(Api.TAG, c.getMessage());
             Api.toast((Context) getActivity(), getString(R.string.exception_pref));
@@ -70,67 +71,71 @@ public class LogPreferenceFragment extends PreferenceFragment {
     }
 
     private void populateAppList(Preference list) {
+        if(!G.isNotificationMigrated()){
+            final ArrayList<CharSequence> entriesList = new ArrayList<CharSequence>();
+            final ArrayList<Integer> entryValuesList = new ArrayList<Integer>();
 
-        final ArrayList<CharSequence> entriesList = new ArrayList<CharSequence>();
-        final ArrayList<Integer> entryValuesList = new ArrayList<Integer>();
-
-        List<Api.PackageInfoData> apps;
-        if (Api.applications == null) {
-            apps = Api.getApps(getActivity(), null);
-        } else {
-            apps = Api.applications;
-        }
-
-        Api.PackageInfoData info = new Api.PackageInfoData();
-        info.uid = 1020;
-        info.pkgName = "dev.afwall.special.mDNS";
-        info.names = new ArrayList<String>();
-        info.names.add("mDNS");
-        info.appinfo = new ApplicationInfo();
-        //TODO: better way to handle this
-        //manually add mDNS for now
-        if (!apps.contains(info)) {
-            apps.add(info);
-        }
-        try {
-            Collections.sort(apps, new PackageComparator());
-        } catch (Exception e) {
-            Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
-        }
-        for (int i = 0; i < apps.size(); i++) {
-            entriesList.add(apps.get(i).toStringWithUID());
-            entryValuesList.add(apps.get(i).uid);
-        }
-
-        list.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                //open browser or intent here
-
-                MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                        .title(R.string.filters_apps_title)
-                        .itemsIds(convertIntegers(entryValuesList))
-                        .items(entriesList)
-                        .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-                                List<Integer> blockedList = new ArrayList<Integer>();
-                                for (int i : which) {
-                                    blockedList.add(entryValuesList.get(i));
-                                }
-                                G.setBlockedNotifyApps(blockedList);
-                                return true;
-                            }
-                        })
-                        .positiveText(R.string.OK)
-                        .negativeText(R.string.close)
-                        .show();
-
-                if (G.getBlockedNotifyList().size() > 0) {
-                    dialog.setSelectedIndices(selectItems(entryValuesList));
-                }
-                return true;
+            List<Api.PackageInfoData> apps;
+            if (Api.applications == null) {
+                apps = Api.getApps(getActivity(), null);
+            } else {
+                apps = Api.applications;
             }
-        });
+
+            Api.PackageInfoData info = new Api.PackageInfoData();
+            info.uid = 1020;
+            info.pkgName = "dev.afwall.special.mDNS";
+            info.names = new ArrayList<String>();
+            info.names.add("mDNS");
+            info.appinfo = new ApplicationInfo();
+            //TODO: better way to handle this
+            //manually add mDNS for now
+            if (!apps.contains(info)) {
+                apps.add(info);
+            }
+            try {
+                Collections.sort(apps, new PackageComparator());
+            } catch (Exception e) {
+                Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
+            }
+            for (int i = 0; i < apps.size(); i++) {
+                entriesList.add(apps.get(i).toStringWithUID());
+                entryValuesList.add(apps.get(i).uid);
+            }
+
+            list.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    //open browser or intent here
+
+                    MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                            .title(R.string.filters_apps_title)
+                            .itemsIds(convertIntegers(entryValuesList))
+                            .items(entriesList)
+                            .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                                    List<Integer> blockedList = new ArrayList<Integer>();
+                                    for (int i : which) {
+                                        blockedList.add(entryValuesList.get(i));
+                                    }
+                                    G.setBlockedNotifyApps(blockedList);
+                                    return true;
+                                }
+                            })
+                            .positiveText(R.string.OK)
+                            .negativeText(R.string.close)
+                            .show();
+
+                    if (G.getBlockedNotifyList().size() > 0) {
+                        dialog.setSelectedIndices(selectItems(entryValuesList));
+                    }
+                    return true;
+                }
+            });
+        } else {
+            PreferenceCategory mCategory = (PreferenceCategory) findPreference("logExperimental");
+            mCategory.removePreference(list);
+        }
     }
 
     private Integer[] selectItems(ArrayList<Integer> entryValuesList) {
