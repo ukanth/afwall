@@ -359,7 +359,7 @@ public class RulesActivity extends DataDumpActivity {
                 .show();
     }
 
-    public void deviceCheck() {
+    private void deviceCheck() {
         if (Build.VERSION.SDK_INT >= 21) {
             if ((G.isDoKey(getApplicationContext()) || isDonate())) {
                 KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
