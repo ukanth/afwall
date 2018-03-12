@@ -57,7 +57,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
-import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.widget.Toast;
 
@@ -2938,16 +2937,23 @@ public final class Api {
     }
 
     public static void updateLanguage(Context context, String lang) {
-        if (!"".equals(lang)) {
+        if(lang.equals("sys")){
+           Locale defaultLocale = Resources.getSystem().getConfiguration().locale;
+           Locale.setDefault(defaultLocale);
+            Resources res = context.getResources();
+            Configuration conf = res.getConfiguration();
+            conf.locale = defaultLocale;
+            res.updateConfiguration(conf, res.getDisplayMetrics());
+        } else if (!"".equals(lang)) {
             Locale locale = new Locale(lang);
             if (lang.contains("_")) {
                 locale = new Locale(lang.split("_")[0], lang.split("_")[1]);
             }
+            Locale.setDefault(locale);
             Resources res = context.getResources();
-            DisplayMetrics dm = res.getDisplayMetrics();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
-            res.updateConfiguration(conf, dm);
+            res.updateConfiguration(conf, res.getDisplayMetrics());
         }
     }
 

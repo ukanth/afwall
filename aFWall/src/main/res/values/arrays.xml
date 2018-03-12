@@ -3,8 +3,8 @@
     tools:ignore="MissingTranslation">
 
     <string-array name="supported_languages">
+        <item>System</item>
         <item>English</item>
-
         <item>Arabic</item>
         <item>Asturian</item>
 
@@ -53,7 +53,7 @@
     </string-array>
     
     <string-array name="supported_languages_code">
-
+        <item>sys</item>
         <item>en</item>
 
         <item>ar</item>
