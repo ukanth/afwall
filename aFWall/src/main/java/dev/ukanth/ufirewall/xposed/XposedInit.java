@@ -57,39 +57,12 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 Log.i(TAG, "Matched Package and now hooking: " + loadPackageParam.packageName);
                 reloadPreference();
                 interceptAFWall(loadPackageParam);
-                //hide lockscreen notification
-                //hookLockScreen(loadPackageParam);
             }
             interceptDownloadManager(loadPackageParam);
         } catch (XposedHelpers.ClassNotFoundError e) {
             Log.d(TAG, e.getLocalizedMessage());
         }
     }
-
-   /* private void hookLockScreen(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        if (loadPackageParam.packageName.equals("com.android.systemui")) {
-
-            XC_MethodHook xNotificationHook = new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    StatusBarNotification notification = (StatusBarNotification) param.args[0];
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && notification.getPackageName().equals(MY_APP)) {
-                        reloadPreference();
-                        if(prefs.getBoolean("lockScreenNotification", false)) {
-                            if (param.getResult() != Boolean.valueOf(false)) {
-                                param.setResult(Boolean.valueOf(false));
-                            }
-                        }
-                    }
-                }
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                }
-            };
-            XposedHelpers.findAndHookMethod("com.android.systemui.statusbar.BaseStatusBar", loadPackageParam.classLoader, "shouldShowOnKeyguard", new Object[]{StatusBarNotification.class, xNotificationHook});
-        }
-    }*/
-
     //Check if AFWall is hooked to make sure XPosed works fine.
     private void interceptAFWall(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         Class<?> afwallHook = findClass("dev.ukanth.ufirewall.util.G", loadPackageParam.classLoader);
@@ -112,7 +85,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             if (context == null) {
                 Object activityThread = callStaticMethod(
                         findClass("android.app.ActivityThread", null), "currentActivityThread");
-                //context = (Context) callMethod(activityThread, "getSystemContext");
                 context = (Context) AndroidAppHelper.currentApplication();
             }
             if (prefs == null) {
@@ -133,8 +105,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         } catch (Exception e) {
             Log.d(TAG, "Exception in reloading preferences" + e.getLocalizedMessage());
         }
-
-
     }
 
 
@@ -213,9 +183,9 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
     }
 
-    private void interceptNet(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    /*private void interceptNet(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         final String packageName = loadPackageParam.packageName;
-         /* Reference taken from XPrivacy */
+         *//* Reference taken from XPrivacy *//*
         // public static InetAddress[] getAllByName(String host)
         // public static InetAddress[] getAllByNameOnNet(String host, int netId)
         // public static InetAddress getByAddress(byte[] ipAddress)
@@ -237,9 +207,9 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         Class<?> inetSocketAddress = XposedHelpers.findClass(" java.net.InetSocketAddress", loadPackageParam.classLoader);
         final Class<?> socket = XposedHelpers.findClass("java.net.Socket", loadPackageParam.classLoader);
 
-            /*if(context != null) {
+            *//*if(context != null) {
                 Log.d(TAG, "Calling Package ----> " + Api.getPackageDetails(context,packageName));
-            }*/
+            }*//*
 
         XposedBridge.hookAllConstructors(socket, new XC_MethodHook() {
             @Override
@@ -270,13 +240,13 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                   /* String host = (String) param.args[0];
+                   *//* String host = (String) param.args[0];
 
                     if(Main.patterns.contains(host)) {
                         Log.d("inet_after_host", host);
                         param.setResult(new Object());
                         param.setThrowable(new UnknownHostException(UNABLE_TO_RESOLVE_HOST));
-                    }*/
+                    }*//*
             }
         };
 
@@ -288,7 +258,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
 
         XposedBridge.hookAllMethods(inetSocketAddress, "createUnresolved", inetAddrHookSingleResult);
-    }
+    }*/
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {

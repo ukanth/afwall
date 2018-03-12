@@ -103,34 +103,29 @@ public class LogPreferenceFragment extends PreferenceFragment {
                 entryValuesList.add(apps.get(i).uid);
             }
 
-            list.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    //open browser or intent here
+            list.setOnPreferenceClickListener(preference -> {
+                //open browser or intent here
 
-                    MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                            .title(R.string.filters_apps_title)
-                            .itemsIds(convertIntegers(entryValuesList))
-                            .items(entriesList)
-                            .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
-                                @Override
-                                public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-                                    List<Integer> blockedList = new ArrayList<Integer>();
-                                    for (int i : which) {
-                                        blockedList.add(entryValuesList.get(i));
-                                    }
-                                    G.setBlockedNotifyApps(blockedList);
-                                    return true;
-                                }
-                            })
-                            .positiveText(R.string.OK)
-                            .negativeText(R.string.close)
-                            .show();
+                MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                        .title(R.string.filters_apps_title)
+                        .itemsIds(convertIntegers(entryValuesList))
+                        .items(entriesList)
+                        .itemsCallbackMultiChoice(null, (dialog1, which, text) -> {
+                            List<Integer> blockedList = new ArrayList<Integer>();
+                            for (int i : which) {
+                                blockedList.add(entryValuesList.get(i));
+                            }
+                            G.setBlockedNotifyApps(blockedList);
+                            return true;
+                        })
+                        .positiveText(R.string.OK)
+                        .negativeText(R.string.close)
+                        .show();
 
-                    if (G.getBlockedNotifyList().size() > 0) {
-                        dialog.setSelectedIndices(selectItems(entryValuesList));
-                    }
-                    return true;
+                if (G.getBlockedNotifyList().size() > 0) {
+                    dialog.setSelectedIndices(selectItems(entryValuesList));
                 }
+                return true;
             });
         } else {
             PreferenceCategory mCategory = (PreferenceCategory) findPreference("logExperimental");
