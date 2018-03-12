@@ -68,16 +68,16 @@
     <string name="mode_header">Mode: %s</string>
     <string name="legend_clear">Clear all checkboxes in all columns</string>
     <string name="mode_whitelist">Allow selected</string>
-    <string name="legend_whitelist">Selected apps will be granted internet access</string>
+    <string name="legend_whitelist">Selected apps will be granted Internet access</string>
     <string name="mode_blacklist">Block selected</string>
-    <string name="legend_blacklist">Selected apps will be denied internet access</string>
+    <string name="legend_blacklist">Selected apps will be denied Internet access</string>
     <string name="set_custom_script">Set custom script</string>
     <string name="preferences">Preferences</string>
     <string name="reload">Reload apps</string>
     <string name="flush">Flush rules</string>
     <string name="send_report">Send error report</string>
     <string name="enter_problem">Please explain the issue:</string>
-    <string name="send_mail">Send mail</string>
+    <string name="send_mail">Send e-mail</string>
     <string name="notify_pref_summary_on">A notification will be displayed when a new application is installed</string>
     <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
     <string name="custom_script_defined">Custom script defined</string>
@@ -95,7 +95,7 @@
     <string name="flushRulesConfirm">Flush all iptables rules?</string>
     <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
     <string name="notification_new">New app installed</string>
-    <string name="notification_new_package">Configure internet permission</string>
+    <string name="notification_new_package">Configure Internet permission</string>
     <string name="confirmMsg">Completely DISABLE the firewall?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
@@ -191,19 +191,19 @@
     <string name="profile3">Profile 3</string>
     <string name="profile_hint">ProfileName</string>
     <string name="profile_notsupport">Please migrate profile data to use this option</string>
-    <string name="profile_duplicate">Profile exists already !</string>
+    <string name="profile_duplicate">Profile exists already!</string>
 
     <string name="reapply_profile">Reapply profile rules</string>
 
     <!-- Interface -->
     <string name="lan_title">LAN control</string>
-    <string name="lan_summary">Enable to control LAN permissions separately from WiFi permissions</string>
+    <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
     <string name="iptables_pref">Iptables binary</string>
     <string name="vpn_profile">VPN control</string>
     <string name="vpnSummary">Enable to control VPN permissions separately</string>
     <string name="roaming">Roaming control</string>
     <string name="roamingSummary">Enable to control roaming permissions separately</string>
-    <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+    <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
 
     <!-- Toast Messages -->
@@ -234,7 +234,7 @@
     <string name="disable_tasker">Disable AFWall+</string>
     <string name="tasker_apply">Tasker: Applying firewall rules</string>
     <string name="tasker_disabled">Tasker: AFWall+ DISABLED!</string>
-    <string name="tasker_profile_applied">Tasker: AFWall+ profile applied with success</string>
+    <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
     <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
 
     <!-- IPv4/IPv6 -->
@@ -302,7 +302,7 @@
     <string name="misc_header">Languages/Plugins</string>
     <!-- 1.2.6 -->
     <string name="active_rules">Active rules</string>
-    <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
+    <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
     <string name="profile_add">Add profile</string>
     <string name="profile_remove">Remove profile</string>
     <string name="profile_rename">Rename profile</string>
@@ -336,13 +336,13 @@
     <string name="select_action">Select action on column </string>
 
     <string name="roam">Roam</string>
-    <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
-    <string name="wifi">WiFi</string>
-    <string name="legend_wifi">Enable to control WiFi permissions</string>
+    <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
     <string name="data">Data</string>
-    <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+    <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
 
     <string name="pkg_all">All</string>
     <string name="pkg_core">Core</string>
@@ -359,7 +359,7 @@
     <string name="disable_dns">Disable DNS via netd</string>
 
     <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
+    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
 
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Enable</string>
@@ -380,8 +380,8 @@
     <string name="donate_only">This feature is available only in the donate version</string>
     <string name="buy_donate">Buy donate version or donate key</string>
     <string name="unlock_donate"> tap to unlock donate</string>
-    <string name="donate_support">You can now use donate features!</string>
-    <string name="donate_thanks">Thanks for your support!</string>
+    <string name="donate_support">You can now use donate features.</string>
+    <string name="donate_thanks">Thanks for your support.</string>
 
     <string name="activeNotification">Show notification icon</string>
     <string name="activeNotification_summary">Display permanent icon in notification bar</string>
@@ -466,18 +466,18 @@
     <string name="lockNotification">Hide lockscreen notification icon</string>
     <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
     <string name="menu_legend">Legend</string>
-    <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
-    <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
+    <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+    <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
 
-    <string name="log_deletedapp">Deleted Application</string>
-    <string name="log_denied">Denied :</string>
+    <string name="log_deletedapp">Deleted App</string>
+    <string name="log_denied">Denied:</string>
     <string name="log_times">times</string>
     <string name="log_time">time</string>
-    <string name="log_dst">Destination :</string>
-    <string name="log_src">Source :</string>
-    <string name="log_proto">Protocol :</string>
+    <string name="log_dst">Destination:</string>
+    <string name="log_src">Source:</string>
+    <string name="log_proto">Protocol:</string>
     <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
-    <string name="loading_data_title">Loading...</string>
+    <string name="loading_data_title">Loading…</string>
     <string name="loading_data">Retrieving log data</string>
 
     <string name="switch_old">Switch to old view</string>
@@ -489,7 +489,7 @@
     <string name="mdns">Enable Mutlicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
     <string name="delete_profile">Unable to delete profile</string>
-    <string name="profile_migrate_msg">Profiles migrated successfully</string>
+    <string name="profile_migrate_msg">Profiles migrated</string>
 
     <!-- Log Details -->
 
@@ -505,7 +505,7 @@
     <string name="select_the_action">Select The Action</string>
     <string name="result_copied_to_clipboard">Result copied to clipboard</string>
     <string name="result">Result</string>
-    <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+    <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
     <string name="searching">Searching</string>
     <string name="looking_for_data">Looking for data&#8230;</string>
     <string name="reachable_timeout">Reachable, timeout: %d ms</string>
@@ -531,15 +531,15 @@
     <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
     <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
     <string name="title_activity_home">Fingerprint</string>
-    <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+    <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
     <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
     <string name="fingerprint_required">Fingerprint required</string>
-    <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
+    <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
     <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
     <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
     <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
-    <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
-    <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+    <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+    <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
 
 
     <string name="label_zoomin">Zoom In</string>
