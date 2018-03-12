@@ -8,7 +8,9 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="dev.ukanth.ufirewall.preferences.PreferencesActivity"
-            android:targetPackage="dev.ukanth.ufirewall" />
+            android:targetPackage="dev.ukanth.ufirewall" >
+            <extra android:name="validate" android:value="true" />
+        </intent>
     </shortcut>
 
     <shortcut
@@ -20,7 +22,9 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="dev.ukanth.ufirewall.activity.LogActivity"
-            android:targetPackage="dev.ukanth.ufirewall" />
+            android:targetPackage="dev.ukanth.ufirewall">
+            <extra android:name="validate" android:value="true" />
+        </intent>
     </shortcut>
 
 
@@ -33,6 +37,8 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetClass="dev.ukanth.ufirewall.activity.RulesActivity"
-            android:targetPackage="dev.ukanth.ufirewall" />
+            android:targetPackage="dev.ukanth.ufirewall" >
+            <extra android:name="validate" android:value="yes" />
+        </intent>
     </shortcut>
 </shortcuts>
