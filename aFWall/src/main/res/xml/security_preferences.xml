@@ -12,9 +12,6 @@
             android:title="@string/enable_protection" >
         </ListPreference>
 
-        <!-- <CheckBoxPreference
-            android:key="usePatterns"
-            android:title="@string/usePattern" />-->
         <CheckBoxPreference
             android:enabled="false"
             android:key="stealthMode"

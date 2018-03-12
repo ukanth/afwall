@@ -92,7 +92,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         //passOption = G.protectionLevel();
 
         // Hide Fingerprint option if device not support it.
-        if (!FingerprintUtil.isAndroidSupport()) {
+        if (!FingerprintUtil.isAndroidSupport() || !canUserFingerPrint()) {
             ListPreference itemList = (ListPreference) findPreference("passSetting");
             itemList.setEntries(new String[]{
                     getString(R.string.pref_none),
@@ -232,12 +232,9 @@ public class SecPreferenceFragment extends PreferenceFragment implements
             }
         });
 
-        builder.onNegative(new MaterialDialog.SingleButtonCallback() {
-            @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                itemList.setValueIndex(0);
-                dialog.dismiss();
-            }
+        builder.onNegative((dialog, which) -> {
+            itemList.setValueIndex(0);
+            dialog.dismiss();
         });
         builder.show();
     }
@@ -270,14 +267,17 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                     //use the existing method to protect password
                     showPatternActivity();
                     break;
-				/*case "p3":
-					break;*/
+				case "p3":
+                    if (FingerprintUtil.isAndroidSupport()) {
+                        checkFingerprintDeviceSupport();
+                    }
+					break;
             }
             // check if device support fingerprint,
             // if so check if one fingerprint already existed at least
-            if (FingerprintUtil.isAndroidSupport()) {
+           /* if (FingerprintUtil.isAndroidSupport()) {
                 checkFingerprintDeviceSupport();
-            }
+            }*/
         }
         /*if (key.equals("enableAdmin")) {
             boolean value = G.enableAdmin();
@@ -308,33 +308,49 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         }
     }
 
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean canUserFingerPrint() {
+        KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
+        FingerprintManager fingerprintManager = (FingerprintManager) globalContext.getSystemService(FINGERPRINT_SERVICE);
+
+        return fingerprintManager.isHardwareDetected() &&
+                ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED &&
+                fingerprintManager.hasEnrolledFingerprints() &&
+                keyguardManager.isKeyguardSecure();
+
+    }
     @TargetApi(Build.VERSION_CODES.M)
     private void checkFingerprintDeviceSupport() {
         // Initializing both Android Keyguard Manager and Fingerprint Manager
         KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
         FingerprintManager fingerprintManager = (FingerprintManager) globalContext.getSystemService(FINGERPRINT_SERVICE);
+        ListPreference itemList = (ListPreference) findPreference("passSetting");
 
         // Check whether the device has a Fingerprint sensor.
         if (!fingerprintManager.isHardwareDetected()) {
             Api.toast(globalContext, getString(R.string.device_with_no_fingerprint_sensor));
+            itemList.setValueIndex(0);
         } else {
             // Checks whether fingerprint permission is set on manifest
             if (ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 Api.toast(globalContext, getString(R.string.fingerprint_permission_manifest_missing));
+                itemList.setValueIndex(0);
             } else {
                 // Check whether at least one fingerprint is registered
                 if (!fingerprintManager.hasEnrolledFingerprints()) {
                     Api.toast(globalContext, getString(R.string.register_at_least_one_fingerprint));
+                    itemList.setValueIndex(0);
                 } else {
                     // Checks whether lock screen security is enabled or not
                     if (!keyguardManager.isKeyguardSecure()) {
                         Api.toast(globalContext, getString(R.string.lock_screen_not_enabled));
+                        itemList.setValueIndex(0);
                     } else {
                         // Anything is ok
                         if (!G.isFingerprintEnabled()) {
                             G.isFingerprintEnabled(true);
                             //make sure we set the index
-                            ListPreference itemList = (ListPreference) findPreference("passSetting");
                             itemList.setValueIndex(3);
                             Api.toast(globalContext, getString(R.string.fingerprint_enabled_successfully));
                         }
