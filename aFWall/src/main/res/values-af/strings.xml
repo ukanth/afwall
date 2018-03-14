@@ -234,4 +234,5 @@
   <string name="disable_dns">Disable</string>
   <string name="dns_proxy_title">DNS Proxy</string>
   <string name="dns_proxy_summary">DNS proxy option was added to support DNS lookups via netd on JB 4.3+. Disable this will block the internet on Android 4.3+</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

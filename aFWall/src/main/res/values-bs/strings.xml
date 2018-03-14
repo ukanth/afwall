@@ -490,4 +490,5 @@
   <string name="forward_chain_v6">PROSLJEDNI lanac (IPv6)</string>
   <string name="quick_apply_title">Prikaži brzu primjenu</string>
   <string name="quick_apply_summary">Samo donacija! Prikaži lebdeće dugme za brzu primjenu pravila</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

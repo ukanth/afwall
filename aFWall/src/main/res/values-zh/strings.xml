@@ -491,4 +491,5 @@
   <string name="forward_chain_v6">FORWARD 链（IPv6）</string>
   <string name="quick_apply_title">显示快速应用</string>
   <string name="quick_apply_summary">捐赠版功能！显示浮动应用按钮以便快速应用规则</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

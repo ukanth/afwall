@@ -491,4 +491,5 @@
   <string name="forward_chain_v6">İLERİ zinciri (IPv6)</string>
   <string name="quick_apply_title">Hızlı Onayla\'yı Göster</string>
   <string name="quick_apply_summary">Sadece Bağış! Kuralları hızlı uygulamak için dalgalanan onay butonunu göster</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

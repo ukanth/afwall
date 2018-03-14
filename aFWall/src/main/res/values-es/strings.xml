@@ -490,4 +490,5 @@
   <string name="forward_chain_v6">Cadena DE AVANCE (IPv6)</string>
   <string name="quick_apply_title">Mostrar Aplicado Rápido</string>
   <string name="quick_apply_summary">Sólo para donadores! Muestra un botón flotante para aplicar las reglas rápidamente</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

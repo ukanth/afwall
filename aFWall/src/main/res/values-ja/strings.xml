@@ -493,4 +493,5 @@
   <string name="forward_chain_v6">転送チェーン (IPv6)</string>
   <string name="quick_apply_title">クイック適用を表示</string>
   <string name="quick_apply_summary">寄付の場合のみ! すぐにルールを適用するフローティング適用ボタンを表示します</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

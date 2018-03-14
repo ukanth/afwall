@@ -365,13 +365,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         public void cbFunc(RootCommand state) {
                             //failed to acquire root
                             if (state.exitCode != 0) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        showRootNotFoundMessage();
-                                    }
+                                runOnUiThread(() -> {
+                                    disableFirewall();
+                                    showRootNotFoundMessage();
                                 });
-
                             }
                         }
                     }).run(getApplicationContext(), cmds);
@@ -398,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .negativeText(R.string.exit)
                         .show();
             } catch (Exception e) {
-                Api.toast(this, getString(R.string.error_su), Toast.LENGTH_LONG);
+                Api.toast(this, getString(R.string.error_su_toast), Toast.LENGTH_SHORT);
             }
         }
     }
@@ -1087,6 +1084,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return true;
     }
 
+    private void disableFirewall() {
+        Api.setEnabled(this, false, true);
+        menuSetApplyOrSave(MainActivity.this.mainMenu, false);
+    }
+
     private void disableOrEnable() {
         final boolean enabled = !Api.isEnabled(this);
         Api.setEnabled(this, enabled, true);
@@ -1638,6 +1640,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         new RunApply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
     }
 
 
@@ -1701,7 +1704,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private class RunApply extends AsyncTask<Void, Long, Void> {
+    private class RunApply extends AsyncTask<Void, Long, Boolean> {
         boolean enabled = Api.isEnabled(getApplicationContext());
 
         @Override
@@ -1716,39 +1719,52 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             //set the progress
-            Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
-                    .setSuccessToast(R.string.rules_applied)
-                    .setFailureToast(R.string.error_apply)
-                    .setReopenShell(true)
-                    .setCallback(new RootCommand.Callback() {
+            if (G.hasRoot() && Shell.SU.available()) {
+                Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
+                        .setSuccessToast(R.string.rules_applied)
+                        .setFailureToast(R.string.error_apply)
+                        .setReopenShell(true)
+                        .setCallback(new RootCommand.Callback() {
 
-                        public void cbFunc(RootCommand state) {
-                            try {
-                                progress.dismiss();
-                            } catch (Exception ex) {
+                            public void cbFunc(RootCommand state) {
+
+                                try {
+                                    progress.dismiss();
+                                } catch (Exception ex) {
+                                }
+                                if (state.exitCode == 0) {
+                                    setDirty(false);
+                                }
+
+                                //queue.clear();
+                                runOnUiThread(() -> {
+                                    setDirty(false);
+                                    //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                    menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
+                                    Api.setEnabled(ctx, enabled, true);
+                                });
+
                             }
-                            if (state.exitCode == 0) {
-                                setDirty(false);
-                            }
-
-                            //queue.clear();
-                            runOnUiThread(() -> {
-                                setDirty(false);
-                                //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
-                                menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
-                                Api.setEnabled(ctx, enabled, true);
-                            });
-
-                        }
-                    }));
-            return null;
+                        }));
+                return true;
+            } else {
+                return false;
+            }
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
+            if (!aVoid) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                disableFirewall();
+                try {
+                    progress.dismiss();
+                } catch (Exception ex) {
+                }
+            }
         }
     }
 
@@ -1756,23 +1772,65 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Purge iptables rules, showing a visual indication
      */
     private void purgeRules() {
+
         final Context ctx = getApplicationContext();
 
-        Api.purgeIptables(ctx, true, new RootCommand()
-                .setSuccessToast(R.string.rules_deleted)
-                .setFailureToast(R.string.error_purge)
-                .setReopenShell(true)
-                .setCallback(new RootCommand.Callback() {
-                    public void cbFunc(RootCommand state) {
-                        // error exit -> assume the rules are still enabled
-                        // we shouldn't wind up in this situation, but if we do, the user's
-                        // best bet is to click Apply then toggle Enabled again
-                        boolean nowEnabled = state.exitCode != 0;
+        new AsyncTask<Void, Void, Boolean>() {
 
-                        Api.setEnabled(ctx, nowEnabled, true);
-                        menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
+
+            @Override
+            protected void onPreExecute() {
+                progress = new MaterialDialog.Builder(MainActivity.this)
+                        .title(R.string.working)
+                        .cancelable(false)
+                        .content(R.string.purging_rules)
+                        .progress(true, 0)
+                        .show();
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                if (G.hasRoot() && Shell.SU.available()) {
+                    Api.purgeIptables(ctx, true, new RootCommand()
+                            .setSuccessToast(R.string.rules_deleted)
+                            .setFailureToast(R.string.error_purge)
+                            .setReopenShell(true)
+                            .setCallback(new RootCommand.Callback() {
+                                public void cbFunc(RootCommand state) {
+                                    // error exit -> assume the rules are still enabled
+                                    // we shouldn't wind up in this situation, but if we do, the user's
+                                    // best bet is to click Apply then toggle Enabled again
+                                    try {
+                                        progress.dismiss();
+                                    } catch (Exception ex) {
+                                    }
+                                    boolean nowEnabled = state.exitCode != 0;
+
+                                    Api.setEnabled(ctx, nowEnabled, true);
+                                    menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
+                                }
+                            }));
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aVoid) {
+                super.onPostExecute(aVoid);
+                if (!aVoid) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                    try {
+                        progress.dismiss();
+                    } catch (Exception ex) {
                     }
-                }));
+                }
+            }
+
+        }.execute();
+
+
     }
 
 
@@ -2211,18 +2269,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected Void doInBackground(Void... params) {
             rootShell = (new Shell.Builder())
                     .useSU()
-                    .addCommand("id", 0, new Shell.OnCommandResultListener() {
-                        @Override
-                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                            synchronized (suGranted) {
-                                suGranted[0] = true;
-                            }
+                    .addCommand("id", 0, (commandCode, exitCode, output) -> {
+                        synchronized (suGranted) {
+                            suGranted[0] = true;
                         }
-                    })
-                    .open(new Shell.OnCommandResultListener() {
-                        @Override
-                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                        }
+                    }).open((commandCode, exitCode, output) -> {
                     });
             rootShell.waitForIdle();
             unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
@@ -2267,6 +2318,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 G.kingDetected(true);
             }*/
             if (!suGranted[0] && !unsupportedSU && !isFinishing()) {
+                disableFirewall();
                 showRootNotFoundMessage();
             } else {
                 G.hasRoot(suGranted[0]);

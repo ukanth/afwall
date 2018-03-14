@@ -490,4 +490,5 @@
   <string name="forward_chain_v6">Catena FORWARD (IPv6)</string>
   <string name="quick_apply_title">Mostra applicazione rapida</string>
   <string name="quick_apply_summary">Solo donatori! Mostra tasto fluttuante per applicare velocemente le regole</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

@@ -490,4 +490,5 @@
   <string name="forward_chain_v6">WEITERLEITUNGS-Kette (IPv6)</string>
   <string name="quick_apply_title">\"Sofort anwenden\" anzeigen</string>
   <string name="quick_apply_summary">Nur in der Spendenversion! Schwebende Anwenden-Taste einblenden, um Regeln schnell anzuwenden.</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

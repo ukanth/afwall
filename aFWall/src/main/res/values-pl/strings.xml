@@ -490,4 +490,5 @@
   <string name="forward_chain_v6">Łańcuch FORWARD (IPv6)</string>
   <string name="quick_apply_title">Pokaż Szybkie stosowanie</string>
   <string name="quick_apply_summary">Tylko w wersji płatnej! Pokaż pływający przycisk Zastosuj, aby szybko zastosować reguły</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

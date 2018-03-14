@@ -490,4 +490,5 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Prikaži gumb za hitro uveljavitev</string>
   <string name="quick_apply_summary">Samo v plačljivi različici! Prikaži gumb za hitro uveljavitev sprememb</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

@@ -490,4 +490,5 @@
   <string name="forward_chain_v6">Chuỗi CHUYỂN (IPv6)</string>
   <string name="quick_apply_title">Hiện Áp dụng nhanh</string>
   <string name="quick_apply_summary">Chỉ ở bản đóng góp! Hiện nổi nút áp dụng để có thể áp dụng nhanh</string>
+    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>
