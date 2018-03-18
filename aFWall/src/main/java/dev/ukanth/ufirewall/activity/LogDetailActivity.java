@@ -32,7 +32,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -58,7 +57,6 @@ import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
-import dev.ukanth.ufirewall.log.RecyclerItemClickListener;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.LogNetUtil;
 
@@ -108,26 +106,20 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private void initializeRecyclerView(final Context ctx) {
         recyclerView.hasFixedSize();
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerViewAdapter = new LogDetailRecyclerViewAdapter(getApplicationContext(), new RecyclerItemClickListener() {
-            @Override
-            public void onItemClick(LogData logData) {
-                current_selected_logData = logData;
-                recyclerView.showContextMenu();
-            }
+        recyclerViewAdapter = new LogDetailRecyclerViewAdapter(getApplicationContext(), logData -> {
+            current_selected_logData = logData;
+            recyclerView.showContextMenu();
         });
-        recyclerView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                menu.setHeaderTitle(R.string.select_the_action);
-                //groupId, itemId, order, title
-                menu.add(0, v.getId(), 0, R.string.add_ip_rule);
-                menu.add(0, v.getId(), 1, R.string.show_destination_address);
-                menu.add(0, v.getId(), 2, R.string.show_source_address);
-                menu.add(0, v.getId(), 3, R.string.ping_destination);
-                menu.add(0, v.getId(), 4, R.string.ping_source);
-                menu.add(0, v.getId(), 5, R.string.resolve_destination);
-                menu.add(0, v.getId(), 6, R.string.resolve_source);
-            }
+        recyclerView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+            menu.setHeaderTitle(R.string.select_the_action);
+            //groupId, itemId, order, title
+            menu.add(0, v.getId(), 0, R.string.add_ip_rule);
+            menu.add(0, v.getId(), 1, R.string.show_destination_address);
+            menu.add(0, v.getId(), 2, R.string.show_source_address);
+            menu.add(0, v.getId(), 3, R.string.ping_destination);
+            menu.add(0, v.getId(), 4, R.string.ping_source);
+            menu.add(0, v.getId(), 5, R.string.resolve_destination);
+            menu.add(0, v.getId(), 6, R.string.resolve_source);
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }
