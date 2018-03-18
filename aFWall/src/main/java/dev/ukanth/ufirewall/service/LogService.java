@@ -27,6 +27,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -54,6 +55,7 @@ import dev.ukanth.ufirewall.log.LogRxEvent;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.StreamGobbler;
+import io.reactivex.disposables.Disposable;
 
 public class LogService extends Service {
 
@@ -80,6 +82,8 @@ public class LogService extends Service {
     private static Runnable showOnlyToastRunnable;
     private static CancelableRunnable showToastRunnable;
     private static View toastLayout;
+
+    private Disposable disposable;
 
     private static abstract class CancelableRunnable implements Runnable {
         public boolean cancel;
@@ -172,16 +176,16 @@ public class LogService extends Service {
     }
 
     private void startLogService() {
-        LogRxEvent.subscribe((event -> {
-            if (event != null) {
-                store(event.logInfo);
-                if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-                    if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
-                        showToast(event.ctx, handler, event.logInfo.uidString, false);
+        disposable = LogRxEvent.subscribe((event -> {
+                    if (event != null) {
+                        store(event.logInfo);
+                        if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+                            if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
+                                showToast(event.ctx, handler, event.logInfo.uidString, false);
+                            }
+                        }
                     }
-                }
-            }
-        })
+                })
         );
         if (G.enableLogService()) {
             // this method is executed in a background thread
@@ -274,8 +278,19 @@ public class LogService extends Service {
         if (G.enableLogService()) {
             if (line != null && line.trim().length() > 0) {
                 if (line.contains("AFL")) {
-                    //bus.post(new LogEvent(LogInfo.parseLogs(line, context), context));
-                    LogRxEvent.publish(new LogEvent(LogInfo.parseLogs(line, context), context));
+                    new AsyncTask<Void, Void, LogInfo>() {
+                        @Override
+                        protected LogInfo doInBackground(Void... voids) {
+                            return LogInfo.parseLogs(line, context);
+                        }
+
+                        @Override
+                        protected void onPostExecute(LogInfo a) {
+                            if (a != null) {
+                                LogRxEvent.publish(new LogEvent(a, context));
+                            }
+                        }
+                    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             }
         }
@@ -315,6 +330,10 @@ public class LogService extends Service {
     @Override
     public void onDestroy() {
         closeSession();
+        if (disposable != null) {
+            disposable.dispose();
+            ;
+        }
         super.onDestroy();
     }
 
