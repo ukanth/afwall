@@ -64,10 +64,8 @@ import dev.ukanth.ufirewall.util.LogNetUtil;
 
 public class LogDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected static final int MENU_CLEARLOG = 7;
-
-    RecyclerView recyclerView;
-    LogDetailRecyclerViewAdapter recyclerViewAdapter;
+    private RecyclerView recyclerView;
+    private LogDetailRecyclerViewAdapter recyclerViewAdapter;
     private TextView emptyView;
     private SwipeRefreshLayout mSwipeLayout;
     protected Menu mainMenu;
@@ -76,11 +74,8 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private int uid;
     protected static final int MENU_TOGGLE = -4;
     protected static final int MENU_CLEAR = 40;
-    //protected static final int MENU_EXPORT_LOG = 47;
 
-    //protected static final int MENU_TOGGLE_LOG = 27;
-
-    final String TAG = "AFWall-LogDetailActivity";
+    final String TAG = "AFWall";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,18 +83,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         setContentView(R.layout.logdetail_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
         setTitle(getString(R.string.showlogdetail_title));
-        //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
 
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         uid = intent.getIntExtra("DATA", -1);
+
         // Load partially transparent black background
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

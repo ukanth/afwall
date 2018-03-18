@@ -119,22 +119,16 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
                 final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
-                Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
+                Log.d(TAG, "isXposedEnabled: " + isXposedEnabled);
                 if (isXposedEnabled) {
                     final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
-                    Log.i(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
+                    Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
                     if (!isAppAllowed) {
-                        //showNotification(context,"Package: " + pPrefs.getString("cache.label." + applicationInfo.packageName,applicationInfo.packageName) + " trying to use download manager has been blocked successfully");
                         param.setResult(0);
                         DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                         dm.remove(0);
                         if (getActivity() != null) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(), "AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")", Toast.LENGTH_LONG).show();
-                                }
-                            });
+                            getActivity().runOnUiThread(() -> Toast.makeText(getActivity().getApplicationContext(), "AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")", Toast.LENGTH_LONG).show());
                         }
                     }
                 }
@@ -149,18 +143,13 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
                 if (isXposedEnabled) {
                     final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
-                    Log.i(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
+                    Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
                     if (!isAppAllowed) {
                         final Uri uri = (Uri) param.args[0];
-                        Log.i(TAG, "Attempted URL via DM Leak : " + uri.toString());
+                        Log.d(TAG, "Attempted URL via DM Leak : " + uri.toString());
                         XposedHelpers.setObjectField(param.thisObject, "mUri", Uri.parse("http://localhost/dummy.txt"));
                         if (getActivity() != null) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(), "Download Manager is attempting to download : " + uri.toString(), Toast.LENGTH_LONG).show();
-                                }
-                            });
+                            getActivity().runOnUiThread(() -> Toast.makeText(getActivity().getApplicationContext(), "Download Manager is attempting to download : " + uri.toString(), Toast.LENGTH_LONG).show());
                         }
                     }
                 }
