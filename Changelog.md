@@ -1,7 +1,7 @@
 Changelog AFWall+
 ==================
 
-Version 2.9.9-BETA
+Version 2.9.9-BETA(WIP)
 
 * Support for dual apps (experimental)
 * DNS Hostname option on log toast(donate feature)
