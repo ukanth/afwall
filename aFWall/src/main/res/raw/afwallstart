@@ -3,7 +3,10 @@
 export PATH=/system/bin
 
 startDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
-#use maximum 500 iterations before call it 
+
+supolicy --live "allow sdcardd unlabeled dir getattr"
+
+#use maximum 500 iterations before call it
 i=0
 while :
 do
