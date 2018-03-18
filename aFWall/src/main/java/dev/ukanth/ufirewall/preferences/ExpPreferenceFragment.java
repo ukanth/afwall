@@ -31,7 +31,6 @@ import static dev.ukanth.ufirewall.Api.mountDir;
 public class ExpPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
 
-    private static CheckBoxPreference fixLeakPref;
     private static final String initDirs[] = {"/magisk/.core/service.d", "/magisk/phh/su.d", "/su/su.d", "/system/su.d", "/system/etc/init.d", "/etc/init.d"};
     private static final String initScript = "afwallstart";
 
@@ -42,6 +41,11 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.experimental_preferences);
         setupInitDir(findPreference("initPath"));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     private void setupInitDir(Preference initd) {
@@ -118,7 +122,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         if (pref == null) {
             return;
         }
-        fixLeakPref = (CheckBoxPreference) pref;
+        CheckBoxPreference fixLeakPref = (CheckBoxPreference) pref;
 
         if (fixLeakPref.isEnabled()) {
             // gray out the fixLeak preference if the ROM doesn't support init.d
@@ -181,9 +185,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
     }
 
     private void updateLeakCheckbox() {
-        if (fixLeakPref == null) {
-            fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
-        }
+        CheckBoxPreference fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
         fixLeakPref.setChecked(isFixLeakInstalled());
     }
 
