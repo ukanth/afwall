@@ -50,7 +50,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -99,18 +98,17 @@ import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
-import dev.ukanth.ufirewall.util.FingerprintUtil;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
+import dev.ukanth.ufirewall.util.SecurityUtil;
 import eu.chainfire.libsuperuser.Shell;
-import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
 import static dev.ukanth.ufirewall.util.G.isDonate;
-import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
-import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
+import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
+import static dev.ukanth.ufirewall.util.SecurityUtil.REQ_ENTER_PATTERN;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
 import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
@@ -133,14 +131,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner mSpinner;
     private MaterialDialog progress;
 
-    private static final int REQ_ENTER_PATTERN = 9755;
     private static final int SHOW_ABOUT_RESULT = 1200;
     private static final int PREFERENCE_RESULT = 1205;
     private static final int SHOW_CUSTOM_SCRIPT = 1201;
     private static final int SHOW_RULES_ACTIVITY = 1202;
     private static final int SHOW_LOGS_ACTIVITY = 1203;
 
-    private static final int LOCK_VERIFICATION = 1212;
     private static final int VERIFY_CHECK = 10000;
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
@@ -212,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             startRootShell(rootShell);
-            passCheck();
+            new SecurityUtil(getApplicationContext(), MainActivity.this).passCheck();
         }
         //registerQuickApply();
         registerUIbroadcast();
@@ -609,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private boolean passCheck() {
+   /* private boolean passCheck() {
         if (G.enableDeviceCheck()) {
             deviceCheck();
         } else {
@@ -643,7 +639,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         return false;
     }
-
+*/
     @Override
     protected void onPause() {
         super.onPause();
@@ -733,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Request the password lock before displayed the main screen.
      */
-    private void requestPassword() {
+    /*private void requestPassword() {
         switch (G.protectionLevel()) {
             case "p1":
                 new MaterialDialog.Builder(MainActivity.this).cancelable(false)
@@ -786,9 +782,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    /**
+    *//**
      * Request the fingerprint lock before displayed the main screen.
-     */
+     *//*
     private void requestFingerprint() {
         FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(this);
         dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
@@ -799,7 +795,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
         dialog.show();
-    }
+    }*/
 
 
     /**
@@ -2323,7 +2319,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 G.hasRoot(suGranted[0]);
                 startRootShell(rootShell);
-                passCheck();
+                new SecurityUtil(getApplicationContext(), MainActivity.this).passCheck();
             }
         }
     }

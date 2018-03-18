@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +20,12 @@ import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.SecurityUtil;
+
+import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
+import static dev.ukanth.ufirewall.util.SecurityUtil.REQ_ENTER_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 public class ToggleWidgetOldActivity extends Activity implements
         OnClickListener {
@@ -29,6 +36,9 @@ public class ToggleWidgetOldActivity extends Activity implements
     private static Button profButton1;
     private static Button profButton2;
     private static Button profButton3;
+
+    private String profileName;
+    private int buttonId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,10 +136,8 @@ public class ToggleWidgetOldActivity extends Activity implements
         }
     }
 
-    @Override
-    public void onClick(View button) {
-        String profileName = ((Button) button).getText().toString();
-        switch (button.getId()) {
+    private void switchAction() {
+        switch (buttonId) {
             case R.id.toggle_enable_firewall:
                 startAction(1);
                 break;
@@ -161,6 +169,57 @@ public class ToggleWidgetOldActivity extends Activity implements
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case LOCK_VERIFICATION: {
+                switch (resultCode) {
+                    case RESULT_OK:
+                        switchAction();
+                        break;
+                    default:
+                        ToggleWidgetOldActivity.this.finish();
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        break;
+                }
+            }
+            break;
+            case REQ_ENTER_PATTERN: {
+                switch (resultCode) {
+                    case RESULT_OK:
+                        switchAction();
+                        break;
+                    case RESULT_CANCELED:
+                        ToggleWidgetOldActivity.this.finish();
+                        break;
+                    case RESULT_FAILED:
+                        ToggleWidgetOldActivity.this.finish();
+                        break;
+                    case RESULT_FORGOT_PATTERN:
+                        ToggleWidgetOldActivity.this.finish();
+                        break;
+                    default:
+                        ToggleWidgetOldActivity.this.finish();
+                        break;
+                }
+            }
+            break;
+        }
+    }
+
+    @Override
+    public void onClick(View button) {
+        profileName = ((Button) button).getText().toString();
+        buttonId = button.getId();
+
+        boolean isprotected = new SecurityUtil(getApplicationContext(), ToggleWidgetOldActivity.this).passCheck();
+        if (!isprotected) {
+            switchAction();
+        }
+
     }
 
     private void runProfile(final String profileName) {
@@ -249,22 +308,17 @@ public class ToggleWidgetOldActivity extends Activity implements
                         break;
                     case 2:
                         // validation, check for password
-                        if (G.protectionLevel().equals("p0")) {
-                            Api.purgeIptables(context, true, new RootCommand()
-                                    .setReopenShell(true)
-                                    .setCallback(new RootCommand.Callback() {
-                                        public void cbFunc(RootCommand state) {
-                                            boolean nowEnabled = state.exitCode != 0;
-                                            msg.arg1 = R.string.toast_disabled;
-                                            toaster.sendMessage(msg);
-                                            disableOthers();
-                                            Api.setEnabled(context, nowEnabled, false);
-                                        }
-                                    }));
-                        } else {
-                            msg.arg1 = R.string.widget_disable_fail;
-                            toaster.sendMessage(msg);
-                        }
+                        Api.purgeIptables(context, true, new RootCommand()
+                                .setReopenShell(true)
+                                .setCallback(new RootCommand.Callback() {
+                                    public void cbFunc(RootCommand state) {
+                                        boolean nowEnabled = state.exitCode != 0;
+                                        msg.arg1 = R.string.toast_disabled;
+                                        toaster.sendMessage(msg);
+                                        disableOthers();
+                                        Api.setEnabled(context, nowEnabled, false);
+                                    }
+                                }));
 
                         break;
                     case 3:

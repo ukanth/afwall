@@ -66,32 +66,32 @@ public class StatusWidget extends AppWidgetProvider {
 			final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 
 			Log.d(Api.TAG, "Protection Level: " + G.protectionLevel());
-			if (!G.protectionLevel().equals("p0")) {
+			if (!G.protectionLevel().equals("p0") || G.enableDeviceCheck()) {
 				Toast.makeText(context, R.string.widget_disable_fail,Toast.LENGTH_SHORT).show();
 				return;
-			}
-
-			if (enabled) {
-				Api.applySavedIptablesRules(context, true, new RootCommand()
-					.setSuccessToast(R.string.toast_enabled)
-					.setFailureToast(R.string.toast_error_enabling)
-					.setReopenShell(true)
-					.setCallback(new RootCommand.Callback() {
-						public void cbFunc(RootCommand state) {
-							// setEnabled always sends us a STATUS_CHANGED_MSG intent to update the icon
-							Api.setEnabled(context, state.exitCode == 0, true);
-						}
-					}));
 			} else {
-				Api.purgeIptables(context, true, new RootCommand()
-					.setSuccessToast(R.string.toast_disabled)
-					.setFailureToast(R.string.toast_error_disabling)
-					.setReopenShell(true)
-					.setCallback(new RootCommand.Callback() {
-						public void cbFunc(RootCommand state) {
-							Api.setEnabled(context, state.exitCode != 0, true);
-						}
-				}));
+				if (enabled) {
+					Api.applySavedIptablesRules(context, true, new RootCommand()
+							.setSuccessToast(R.string.toast_enabled)
+							.setFailureToast(R.string.toast_error_enabling)
+							.setReopenShell(true)
+							.setCallback(new RootCommand.Callback() {
+								public void cbFunc(RootCommand state) {
+									// setEnabled always sends us a STATUS_CHANGED_MSG intent to update the icon
+									Api.setEnabled(context, state.exitCode == 0, true);
+								}
+							}));
+				} else {
+					Api.purgeIptables(context, true, new RootCommand()
+							.setSuccessToast(R.string.toast_disabled)
+							.setFailureToast(R.string.toast_error_disabling)
+							.setReopenShell(true)
+							.setCallback(new RootCommand.Callback() {
+								public void cbFunc(RootCommand state) {
+									Api.setEnabled(context, state.exitCode != 0, true);
+								}
+							}));
+				}
 			}
 		}
 	}

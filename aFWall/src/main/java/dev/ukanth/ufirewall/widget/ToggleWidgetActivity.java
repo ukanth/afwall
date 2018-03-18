@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,12 +20,20 @@ import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.SecurityUtil;
 import dev.ukanth.ufirewall.widget.RadialMenuWidget.RadialMenuEntry;
+
+import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
+import static dev.ukanth.ufirewall.util.SecurityUtil.REQ_ENTER_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 public class ToggleWidgetActivity extends Activity {
 
     private RadialMenuWidget pieMenu;
     private RelativeLayout relativeLayout;
+
+    private int actionType = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +111,7 @@ public class ToggleWidgetActivity extends Activity {
         }
 
         public void menuActiviated() {
+            actionType = 1;
             startAction(1);
         }
     }
@@ -176,6 +186,7 @@ public class ToggleWidgetActivity extends Activity {
         }
 
         public void menuActiviated() {
+            actionType = 2;
             startAction(2);
         }
     }
@@ -396,9 +407,55 @@ public class ToggleWidgetActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case LOCK_VERIFICATION: {
+                switch (resultCode) {
+                    case RESULT_OK:
+                        invokeAction();
+                        break;
+                    default:
+                        ToggleWidgetActivity.this.finish();
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        break;
+                }
+            }
+            break;
+            case REQ_ENTER_PATTERN: {
+                switch (resultCode) {
+                    case RESULT_OK:
+                        invokeAction();
+                        break;
+                    case RESULT_CANCELED:
+                        ToggleWidgetActivity.this.finish();
+                        break;
+                    case RESULT_FAILED:
+                        ToggleWidgetActivity.this.finish();
+                        break;
+                    case RESULT_FORGOT_PATTERN:
+                        ToggleWidgetActivity.this.finish();
+                        break;
+                    default:
+                        ToggleWidgetActivity.this.finish();
+                        break;
+                }
+            }
+            break;
+        }
+    }
+
 
     private void startAction(final int i) {
+        actionType = i;
+        boolean isProtected = new SecurityUtil(getApplicationContext(), ToggleWidgetActivity.this).passCheck();
+        if (!isProtected) {
+            invokeAction();
+        }
+    }
 
+    private void invokeAction() {
         final Handler toaster = new Handler() {
             public void handleMessage(Message msg) {
                 if (msg.arg1 != 0)
@@ -411,10 +468,9 @@ public class ToggleWidgetActivity extends Activity {
             public void run() {
                 Looper.prepare();
                 final Message msg = new Message();
-                if (i < 7) {
-                    switch (i) {
+                if (actionType < 7) {
+                    switch (actionType) {
                         case 1:
-
                             Api.applySavedIptablesRules(context, true, new RootCommand()
                                     .setSuccessToast(R.string.rules_applied)
                                     .setFailureToast(R.string.error_apply)
@@ -433,29 +489,24 @@ public class ToggleWidgetActivity extends Activity {
                             break;
                         case 2:
                             //validation, check for password
-                            if (G.protectionLevel().equals("p0")) {
-                                Api.purgeIptables(context, true, new RootCommand()
-                                        .setSuccessToast(R.string.toast_disabled)
-                                        .setFailureToast(R.string.toast_error_disabling)
-                                        .setReopenShell(true)
-                                        .setCallback(new RootCommand.Callback() {
-                                            public void cbFunc(RootCommand state) {
+                            Api.purgeIptables(context, true, new RootCommand()
+                                    .setSuccessToast(R.string.toast_disabled)
+                                    .setFailureToast(R.string.toast_error_disabling)
+                                    .setReopenShell(true)
+                                    .setCallback(new RootCommand.Callback() {
+                                        public void cbFunc(RootCommand state) {
 
-                                                if (state.exitCode == 0) {
-                                                    msg.arg1 = R.string.toast_disabled;
-                                                    toaster.sendMessage(msg);
-                                                    Api.setEnabled(context, false, false);
-                                                } else {
-                                                    // error details are already in logcat
-                                                    msg.arg1 = R.string.toast_error_disabling;
-                                                    toaster.sendMessage(msg);
-                                                }
+                                            if (state.exitCode == 0) {
+                                                msg.arg1 = R.string.toast_disabled;
+                                                toaster.sendMessage(msg);
+                                                Api.setEnabled(context, false, false);
+                                            } else {
+                                                // error details are already in logcat
+                                                msg.arg1 = R.string.toast_error_disabling;
+                                                toaster.sendMessage(msg);
                                             }
-                                        }));
-                            } else {
-                                msg.arg1 = R.string.widget_disable_fail;
-                                toaster.sendMessage(msg);
-                            }
+                                        }
+                                    }));
                             break;
                         case 3:
                             G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
@@ -470,7 +521,7 @@ public class ToggleWidgetActivity extends Activity {
                             G.setProfile(true, "AFWallProfile3");
                             break;
                     }
-                    if (i > 2) {
+                    if (actionType > 2) {
                         Api.applySavedIptablesRules(context, true, new RootCommand()
                                 .setSuccessToast(R.string.rules_applied)
                                 .setFailureToast(R.string.error_apply)
