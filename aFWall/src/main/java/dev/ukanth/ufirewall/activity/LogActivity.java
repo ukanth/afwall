@@ -60,6 +60,7 @@ import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.log.RecyclerItemClickListener;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.SecurityUtil;
 
 public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -92,6 +93,17 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         // Load partially transparent black background
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            Object data = bundle.get("validate");
+            if(data != null){
+                String check = (String) data;
+                if(check.equals("yes")) {
+                    new SecurityUtil(getApplicationContext(), LogActivity.this).passCheck();
+                }
+            }
+        }
 
         mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         mSwipeLayout.setOnRefreshListener(this);

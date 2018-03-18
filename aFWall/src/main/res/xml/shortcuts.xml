@@ -23,6 +23,7 @@
             android:action="android.intent.action.VIEW"
             android:targetClass="dev.ukanth.ufirewall.activity.LogActivity"
             android:targetPackage="dev.ukanth.ufirewall">
+            <extra android:name="validate" android:value="yes" />
         </intent>
     </shortcut>
 
