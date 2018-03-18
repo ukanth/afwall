@@ -1,6 +1,21 @@
 Changelog AFWall+
 ==================
 
+Version 2.9.9-BETA
+
+* Support for dual apps (experimental)
+* Multiple memory leaks across screens.
+* Block log notification now moved under individual app detail screen
+* Enabled log cache for faster load.
+* Widgets now ask for password if enabled (except status widget)
+Bugs:
+* shortcut open rules & preference screen without password.
+* fingerprint related issues
+* selinux deny for startup script
+* User reported crash fixes.
+* Updated string translations
+* Added default system language option.
+
 Version 2.9.8
 
 * Option to disable notification when applying rules - Recommended to turn on !
