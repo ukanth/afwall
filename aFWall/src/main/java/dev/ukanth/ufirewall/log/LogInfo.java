@@ -27,12 +27,16 @@ import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 
+import org.xbill.DNS.Address;
+
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 public class LogInfo {
     public String uidString;
@@ -231,7 +235,7 @@ public class LogInfo {
 
     public static LogInfo parseLogs(String result, final Context ctx) {
 
-        final int unknownUID = -11;
+        final int unknownUID = -1;
         StringBuilder address;
         int start, end;
         Integer uid;
@@ -254,9 +258,7 @@ public class LogInfo {
                     uid = Integer.parseInt(result.substring(start + 4, end));
                     if (uid != null) logInfo.uid = uid;
                 }
-
                 //logInfo = new LogInfo();
-
                 if (((start = result.indexOf("DST=")) != -1)
                         && ((end = result.indexOf(" ", start)) != -1)) {
                     dst = result.substring(start + 4, end);
@@ -319,7 +321,7 @@ public class LogInfo {
                     }
 
                 } else {
-                    appName = ctx.getString(R.string.kernel_item);
+                    appName = ctx.getString(R.string.unknown_item);
                 }
                 logInfo.appName = appName;
                 address = new StringBuilder();
@@ -330,6 +332,7 @@ public class LogInfo {
                 address.append(logInfo.dst);
                 address.append(":");
                 address.append(logInfo.dpt);
+                if(G.showHost()) address.append("(" + Address.getHostName(InetAddress.getByName(logInfo.dst)) + ") ");
                 address.append("\n");
                 logInfo.uidString = address.toString();
                 return logInfo;
@@ -337,7 +340,7 @@ public class LogInfo {
 
             }
         } catch (Exception e) {
-            Log.e(Api.TAG, e.getMessage());
+            Log.e(Api.TAG, "Exception in LogService", e);
         }
         return logInfo;
     }
