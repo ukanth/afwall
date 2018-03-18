@@ -57,13 +57,15 @@ import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import io.reactivex.disposables.Disposable;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private Toolbar mToolBar;
 
-    RxEvent rxEvent;
+    private RxEvent rxEvent;
+    private Disposable disposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +89,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     private void subscribe() {
         rxEvent = new RxEvent();
-        rxEvent.subscribe(event -> {
+        disposable = rxEvent.subscribe(event -> {
             if (event instanceof RulesEvent) {
                 ruleChangeApplyRules((RulesEvent) event);
             } else if (event instanceof LogChangeEvent) {
@@ -324,7 +326,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     @Override
     public void onDestroy() {
+        if(rxEvent != null && disposable != null) {
+            disposable.dispose();
+        }
         super.onDestroy();
+
     }
 
 }
