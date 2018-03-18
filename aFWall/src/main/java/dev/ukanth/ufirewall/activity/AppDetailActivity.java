@@ -31,8 +31,6 @@ import dev.ukanth.ufirewall.util.G;
 
 public class AppDetailActivity extends AppCompatActivity {
     public static final String TAG = "AFWall";
-    private static String packageName = "";
-    private CheckBox logOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +41,13 @@ public class AppDetailActivity extends AppCompatActivity {
         int appid = getIntent().getIntExtra("appid", -1);
 
         try {
-            logOption = (CheckBox) findViewById(R.id.notification_p);
+            CheckBox logOption = (CheckBox) findViewById(R.id.notification_p);
 
             LogPreference logPreference = SQLite.select()
                     .from(LogPreference.class)
                     .where(LogPreference_Table.uid.eq(appid)).querySingle();
 
-            if(logPreference != null) {
+            if (logPreference != null) {
                 logOption.setChecked(logPreference.isDisable());
             }
 
@@ -76,7 +74,8 @@ public class AppDetailActivity extends AppCompatActivity {
         TextView textView2 = (TextView) findViewById(R.id.app_package);
         TextView up = (TextView) findViewById(R.id.up);
         TextView down = (TextView) findViewById(R.id.down);
-        
+
+        String packageName;
         /**/
 
         if (appid >= 0) {
