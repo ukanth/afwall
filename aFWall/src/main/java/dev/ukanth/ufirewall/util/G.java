@@ -56,6 +56,7 @@ import dev.ukanth.ufirewall.log.LogPreference_Table;
 
 public class G extends Application {
 
+
     private static G instance;
 
     public static G getInstance() {
@@ -103,6 +104,7 @@ public class G extends Application {
     private static final String ACTIVE_NOTIFICATION = "activeNotification";
     private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
     private static final String LOG_TARGET = "logTarget";
+    private static final String SHOW_HOST = "showHostName";
     private static final String APP_VERSION = "appVersion";
     private static final String DNS_PROXY = "dns_value";
     private static final String MULTI_USER = "multiUser";
@@ -400,6 +402,16 @@ public class G extends Application {
         gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit();
         return val;
     }*/
+
+    public static boolean showHost() {
+        return gPrefs.getBoolean(SHOW_HOST, false);
+    }
+
+    public static boolean showHost(boolean val) {
+        gPrefs.edit().putBoolean(SHOW_HOST, val).commit();
+        return val;
+    }
+
 
     public static boolean enableDeviceCheck() {
         return gPrefs.getBoolean(ENABLE_DEVICE_CHECK, false);

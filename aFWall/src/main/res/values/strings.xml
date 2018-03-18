@@ -590,4 +590,6 @@
     <string name="applyRulesFasterTitle">Instant Apply</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
+    <string name="showhost_desc">Display resolved hostname from DNS - AFWall+ (donate/key feature)</string>
+    <string name="show_host">Show hostname</string>
 </resources>

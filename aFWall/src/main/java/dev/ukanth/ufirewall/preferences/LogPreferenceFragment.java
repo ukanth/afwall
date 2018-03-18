@@ -3,6 +3,7 @@ package dev.ukanth.ufirewall.preferences;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
@@ -34,9 +35,17 @@ public class LogPreferenceFragment extends PreferenceFragment {
             addPreferencesFromResource(R.xml.log_preferences);
             populateLogMessage(findPreference("logDmesg"));
             populateAppList(findPreference("block_filter"));
+            setupLogHostname(findPreference("showHostName"));
         } catch (ClassCastException c) {
             Log.i(Api.TAG, c.getMessage());
             Api.toast((Context) getActivity(), getString(R.string.exception_pref));
+        }
+    }
+
+    private void setupLogHostname(Preference showHostName) {
+        CheckBoxPreference showHost = (CheckBoxPreference) showHostName;
+        if (G.isDoKey(getActivity()) || G.isDonate()) {
+            showHost.setEnabled(true);
         }
     }
 
@@ -71,7 +80,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
     }
 
     private void populateAppList(Preference list) {
-        if(!G.isNotificationMigrated()){
+        if (!G.isNotificationMigrated()) {
             final ArrayList<CharSequence> entriesList = new ArrayList<CharSequence>();
             final ArrayList<Integer> entryValuesList = new ArrayList<Integer>();
 
