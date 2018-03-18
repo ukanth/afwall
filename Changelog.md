@@ -4,12 +4,14 @@ Changelog AFWall+
 Version 2.9.9-BETA
 
 * Support for dual apps (experimental)
+* DNS Hostname option on log toast(donate feature)
 * Multiple memory leaks across screens.
 * Block log notification now moved under individual app detail screen
 * Enabled log cache for faster load.
 * Widgets now ask for password if enabled (except status widget)
+
 Bugs:
-* shortcut open rules & preference screen without password.
+* Shortcut open rules & preference screen without password.
 * fingerprint related issues
 * selinux deny for startup script
 * User reported crash fixes.
