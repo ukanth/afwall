@@ -4,7 +4,11 @@ export PATH=/system/bin
 
 startDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
 
-supolicy --live "allow sdcardd unlabeled dir getattr"
+ENFORCE=echo `getenforce`
+if [ "$ENFORCE" == "Enforcing" ]
+then
+   supolicy --live "allow sdcardd unlabeled dir getattr"
+fi
 
 #use maximum 500 iterations before call it
 i=0
