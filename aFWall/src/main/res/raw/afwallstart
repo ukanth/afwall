@@ -1,11 +1,10 @@
 #!/system/bin/sh
 
 export PATH=/system/bin
-
 startDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
 
-ENFORCE=echo `getenforce`
-if [ "$ENFORCE" == "Enforcing" ]
+ENFORCE=`getenforce`
+if [ "$ENFORCE" == 'Enforcing' ]
 then
    supolicy --live "allow sdcardd unlabeled dir getattr"
 fi
@@ -20,10 +19,10 @@ do
   fi
   i=$((i+1))
   if [ "$i" -gt 500 ]
-  then 	
-  	echo "Couldn't detect data directory "
-  	break
-  fi 
+  then
+    echo "Couldn't detect data directory "
+    break
+  fi
   sleep 1
 done
 endDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
@@ -55,3 +54,4 @@ doit() {
 doit /system/bin/iptables /data/data/$path/app_bin/iptables
 doit /system/bin/ip6tables /data/data/$path/app_bin/ip6tables
 log -p i -t afwall "IPv4/6 policy set to DROP"
+
