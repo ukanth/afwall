@@ -41,6 +41,9 @@ import android.widget.Toast;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+import org.xbill.DNS.Address;
+
+import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,8 +68,6 @@ public class LogService extends Service {
     private final IBinder mBinder = new Binder();
 
     private Shell.Interactive rootSession;
-    public static LogRxEvent logRx;
-
     static Handler handler;
 
     public static final int QUEUE_NUM = 40;
@@ -178,12 +179,22 @@ public class LogService extends Service {
     private void startLogService() {
         disposable = LogRxEvent.subscribe((event -> {
                     if (event != null) {
-                        store(event.logInfo);
-                        if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-                            if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
-                                showToast(event.ctx, handler, event.logInfo.uidString, false);
+                        new AsyncTask<Void, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+                                store(event.logInfo,event.ctx);
+                                return null;
                             }
-                        }
+
+                            @Override
+                            protected void onPostExecute(Void a) {
+                                if (event != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+                                    if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
+                                        showToast(event.ctx, handler, event.logInfo.uidString, false);
+                                    }
+                                }
+                            }
+                        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
                 })
         );
@@ -296,7 +307,7 @@ public class LogService extends Service {
         }
     }
 
-    private void store(final LogInfo logInfo) {
+    private void store(final LogInfo logInfo, Context context) {
         try {
             data = new LogData();
             data.setDst(logInfo.dst);
@@ -310,6 +321,10 @@ public class LogService extends Service {
             data.setSpt(logInfo.spt);
             data.setUid(logInfo.uid);
             data.setAppName(logInfo.appName);
+            if(G.isDoKey(context) || G.isDonate()) {
+                data.setHostname(Address.getHostName(InetAddress.getByName(logInfo.dst)));
+            }
+            data.setType(0);
             FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(databaseWrapper -> data.save(databaseWrapper)).build().execute();
         } catch (IllegalStateException e) {
             if (e.getMessage().contains("connection pool has been closed")) {

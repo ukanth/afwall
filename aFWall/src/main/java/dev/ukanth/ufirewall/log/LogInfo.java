@@ -63,7 +63,6 @@ public class LogInfo {
     public static String parseLog(Context ctx, List<LogData> listLogData) {
 
         //final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-        final Integer unknownUID = -11;
         StringBuilder res = new StringBuilder();
         Integer appid;
         final SparseArray<LogInfo> map = new SparseArray<LogInfo>();
@@ -102,7 +101,7 @@ public class LogInfo {
             for (int i = 0; i < map.size(); i++) {
                 StringBuilder address = new StringBuilder();
                 id = map.keyAt(i);
-                if (id != unknownUID) {
+                if (id != -1) {
                     for (PackageInfoData app : apps) {
                         if (app.uid == id) {
                             appId = id;
@@ -111,7 +110,7 @@ public class LogInfo {
                         }
                     }
                 } else {
-                    appName = ctx.getString(R.string.kernel_item);
+                    appName = ctx.getString(R.string.unknown_item);
                 }
                 loginfo = map.valueAt(i);
                 totalBlocked = loginfo.totalBlocked;

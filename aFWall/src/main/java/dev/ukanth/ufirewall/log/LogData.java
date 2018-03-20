@@ -41,6 +41,28 @@ public class LogData extends BaseModel {
     @Column
     private long timestamp;
 
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    @Column
+    private String hostname;
+
+    @Column
+    private int type;
+
     public long getCount() {
         return count;
     }

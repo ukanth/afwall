@@ -46,10 +46,18 @@
                 android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/data_src"
+                android:id="@+id/data_host"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/data_dest"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/data_src"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/data_host"
                 android:layout_marginTop="6dp"
                 android:textColor="@color/white" />
 

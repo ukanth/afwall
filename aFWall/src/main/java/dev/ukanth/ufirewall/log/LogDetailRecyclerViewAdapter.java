@@ -59,6 +59,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         holder.dataDest.setText(context.getResources().getString(R.string.log_dst)+ data.getDst() + ":" +data.getDpt());
         holder.dataSrc.setText(context.getResources().getString(R.string.log_src)+ data.getSrc() +":" + data.getSpt());
         holder.dataProto.setText(context.getResources().getString(R.string.log_proto)+ data.getProto());
+        holder.dataHost.setText(context.getResources().getString(R.string.host) + data.getHostname());
     }
 
     public static String pretty(Long timestamp) {
@@ -80,6 +81,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         final TextView dataDest;
         final TextView dataSrc;
         final TextView dataProto;
+        final TextView dataHost;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -90,6 +92,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
             dataDest = (TextView)itemView.findViewById(R.id.data_dest);
             dataSrc = (TextView)itemView.findViewById(R.id.data_src);
             dataProto = (TextView)itemView.findViewById(R.id.data_proto);
+            dataHost = itemView.findViewById(R.id.data_host);
         }
 
         public void bind(final LogData item, final RecyclerItemClickListener listener) {
