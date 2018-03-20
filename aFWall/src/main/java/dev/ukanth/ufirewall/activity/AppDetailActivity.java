@@ -94,7 +94,7 @@ public class AppDetailActivity extends AppCompatActivity {
                 }
             } else {
                 image.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_android_white_24dp));
-                if(appid > 0) {
+                if(appid >= 0) {
                     textView.setText(Api.getSpecialDescription(getApplicationContext(), packageName.replace("dev.afwall.special.", "")));
                 } else {
                     textView.setText(Api.getSpecialDescriptionSystem(getApplicationContext(), packageName.replace("dev.afwall.special.", "")));

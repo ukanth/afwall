@@ -135,17 +135,21 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }
 
         if (!G.disableIcons()) {
-
-            holder.icon.setImageDrawable(holder.app.cached_icon);
-            if (!holder.app.icon_loaded && info != null) {
-                // this icon has not been loaded yet - load it on a
-                // separated thread
-                try {
-                    new LoadIconTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, holder.app,
-                            context.getPackageManager(), convertView);
-                } catch (Exception r) {
+            if(holder.app.pkgName.startsWith("dev.afwall.special.")) {
+                holder.icon.setImageDrawable(convertView.getContext().getResources().getDrawable(R.drawable.ic_android_white_24dp));
+            } else {
+                holder.icon.setImageDrawable(holder.app.cached_icon);
+                if (!holder.app.icon_loaded && info != null) {
+                    // this icon has not been loaded yet - load it on a
+                    // separated thread
+                    try {
+                        new LoadIconTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, holder.app,
+                                context.getPackageManager(), convertView);
+                    } catch (Exception r) {
+                    }
                 }
             }
+
         } else {
             holder.icon.setVisibility(View.GONE);
             activity.findViewById(R.id.imageHolder).setVisibility(View.GONE);
