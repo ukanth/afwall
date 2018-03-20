@@ -258,11 +258,23 @@ public final class Api {
     };
 
     // returns c.getString(R.string.<acct>_item)
-    private static String getSpecialDescription(Context c, String acct) {
-        Resources r = c.getResources();
-        String pkg = c.getPackageName();
-        int rid = r.getIdentifier(acct + "_item", "string", pkg);
-        return c.getString(rid);
+    public static String getSpecialDescription(Context ctx, String acct) {
+        int rid = ctx.getResources().getIdentifier(acct + "_item", "string", ctx.getPackageName());
+        return ctx.getString(rid);
+    }
+
+    public static String getSpecialDescriptionSystem(Context ctx, String packageName) {
+        switch (packageName){
+            case "any":
+                return ctx.getString(R.string.all_item);
+            case "kernel":
+                return ctx.getString(R.string.kernel_item);
+            case "tether":
+                return ctx.getString(R.string.tethering_item);
+            case "ntp":
+                return ctx.getString(R.string.ntp_item);
+        }
+        return "";
     }
 
     /**
@@ -1447,16 +1459,7 @@ public final class Api {
                 }
             }
 
-            List<PackageInfoData> specialData = new ArrayList<>();
-            specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
-            specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
-            specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
-            specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
-            for (String acct : specialAndroidAccounts) {
-                String dsc = getSpecialDescription(ctx, acct);
-                String pkg = "dev.afwall.special." + acct;
-                specialData.add(new PackageInfoData(acct, dsc, pkg));
-            }
+            List<PackageInfoData> specialData = getSpecialData(false);
 
             if (specialApps == null) {
                 specialApps = new HashMap<String, Integer>();
@@ -1501,6 +1504,23 @@ public final class Api {
             toast(ctx, ctx.getString(R.string.error_common) + e);
         }
         return null;
+    }
+
+    public static List<PackageInfoData> getSpecialData(boolean additional) {
+        List<PackageInfoData> specialData = new ArrayList<>();
+        specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
+        specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
+        specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
+        specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
+        if(additional) {
+            specialData.add(new PackageInfoData(1020, "mDNS", "dev.afwall.special.mDNS"));
+        }
+        for (String acct : specialAndroidAccounts) {
+            String dsc = getSpecialDescription(ctx, acct);
+            String pkg = "dev.afwall.special." + acct;
+            specialData.add(new PackageInfoData(acct, dsc, pkg));
+        }
+        return specialData;
     }
 
     private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, PackageManager pkgmanager, SparseArray<PackageInfoData> syncMap) {
@@ -1770,9 +1790,9 @@ public final class Api {
         try {
             currentVer = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
             lastVer = G.appVersion();
-            if (lastVer == currentVer) {
+           /* if (lastVer == currentVer) {
                 return true;
-            }
+            }*/
         } catch (NameNotFoundException e) {
             Log.e(TAG, "packageManager can't look up versionCode");
         }
@@ -2935,6 +2955,8 @@ public final class Api {
             }
         }
     }
+
+
 
     public static void updateLanguage(Context context, String lang) {
         if(lang.equals("sys")){

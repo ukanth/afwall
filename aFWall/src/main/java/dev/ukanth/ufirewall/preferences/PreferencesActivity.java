@@ -324,6 +324,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
     }
 
+
     @Override
     public void onDestroy() {
         if(rxEvent != null && disposable != null) {

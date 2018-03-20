@@ -116,17 +116,16 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }
 
         final int id = holder.app.uid;
-        if (id > 0) {
-            holder.text.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, AppDetailActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("appid", id);
-                    context.startActivity(intent);
-                }
-            });
-        }
+        holder.text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AppDetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("package", holder.app.pkgName);
+                intent.putExtra("appid", id);
+                context.startActivity(intent);
+            }
+        });
 
         ApplicationInfo info = holder.app.appinfo;
         if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {

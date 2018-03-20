@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -39,7 +37,7 @@ public class AppDetailActivity extends AppCompatActivity {
         setContentView(R.layout.app_detail);
 
         int appid = getIntent().getIntExtra("appid", -1);
-
+        String packageName = getIntent().getStringExtra("package");
         try {
             CheckBox logOption = (CheckBox) findViewById(R.id.notification_p);
 
@@ -75,45 +73,48 @@ public class AppDetailActivity extends AppCompatActivity {
         TextView up = (TextView) findViewById(R.id.up);
         TextView down = (TextView) findViewById(R.id.down);
 
-        String packageName;
         /**/
 
-        if (appid >= 0) {
+        final PackageManager packageManager = getApplicationContext().getPackageManager();
+        final String[] packageNameList = ctx.getPackageManager().getPackagesForUid(appid);
 
-            final PackageManager packageManager = getApplicationContext().getPackageManager();
-            final String[] packageNameList = ctx.getPackageManager().getPackagesForUid(appid);
+        final String pName = packageName;
+        Button button = findViewById(R.id.app_settings);
+        button.setOnClickListener(v -> Api.showInstalledAppDetails(getApplicationContext(), pName));
+        ApplicationInfo applicationInfo;
 
-            if (packageNameList != null) {
-                packageName = packageNameList.length > 0 ? packageNameList[0] : ctx.getPackageManager().getNameForUid(appid);
-            } else {
-                packageName = ctx.getPackageManager().getNameForUid(appid);
-            }
-
-
-            Button button = (Button) findViewById(R.id.app_settings);
-            button.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    Api.showInstalledAppDetails(getApplicationContext(), packageName);
-                }
-            });
-            ApplicationInfo applicationInfo;
-
-            try {
+        try {
+            if (!packageName.startsWith("dev.afwall.special.")) {
                 applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-                image.setImageDrawable(applicationInfo.loadIcon(packageManager));
-                textView.setText(packageManager.getApplicationLabel(applicationInfo));
-                if (packageNameList.length > 1) {
-                    textView2.setText(Arrays.toString(packageNameList));
-                    button.setEnabled(false);
-                } else {
-                    textView2.setText(packageName);
+                if (applicationInfo != null) {
+                    image.setImageDrawable(applicationInfo.loadIcon(packageManager));
+                    String name = packageManager.getApplicationLabel(applicationInfo).toString();
+                    textView.setText(name);
+                    setTotalBytesManual(down, up, applicationInfo.uid);
                 }
-                setTotalBytesManual(down, up, applicationInfo.uid);
-            } catch (final NameNotFoundException e) {
+            } else {
+                image.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_android_white_24dp));
+                if(appid > 0) {
+                    textView.setText(Api.getSpecialDescription(getApplicationContext(), packageName.replace("dev.afwall.special.", "")));
+                } else {
+                    textView.setText(Api.getSpecialDescriptionSystem(getApplicationContext(), packageName.replace("dev.afwall.special.", "")));
+                }
                 down.setText(" : " + humanReadableByteCount(0, false));
                 up.setText(" : " + humanReadableByteCount(0, false));
                 button.setEnabled(false);
             }
+
+            if (packageNameList != null && packageNameList.length > 1) {
+                textView2.setText(Arrays.toString(packageNameList));
+                button.setEnabled(false);
+            } else {
+                textView2.setText(packageName);
+            }
+
+        } catch (final NameNotFoundException e) {
+            down.setText(" : " + humanReadableByteCount(0, false));
+            up.setText(" : " + humanReadableByteCount(0, false));
+            button.setEnabled(false);
         }
     }
 

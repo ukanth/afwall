@@ -38,8 +38,6 @@ import android.view.WindowManager;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -707,7 +705,32 @@ public class G extends Application {
         gPrefs.edit().putString(BLOCKED_NOTIFICATION, listString).commit();
     }
 
-    public static List<String> getBlockedNotifyApps() {
+
+    public static void storeBlockedApps(List<Integer> list) {
+        // store to DB
+        for (Integer uid : list) {
+            LogPreference preference = new LogPreference();
+            preference.setUid(uid);
+            preference.setTimestamp(System.currentTimeMillis());
+            preference.setDisable(true);
+            FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+        }
+    }
+
+    public static List<Integer> readBlockedApps() {
+        List<LogPreference> list = SQLite.select()
+                .from(LogPreference.class)
+                .queryList();
+        List<Integer> listSelected = new ArrayList<>();
+        for (LogPreference pref : list) {
+            if (pref.isDisable()) {
+                listSelected.add(pref.getUid());
+            }
+        }
+        return listSelected;
+    }
+
+   /* public static List<String> getBlockedNotifyApps() {
         String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
         List<String> data = new ArrayList<String>();
         if (blockedApps != null) {
@@ -716,7 +739,7 @@ public class G extends Application {
             }
         }
         return data;
-    }
+    }*/
 
     public static List<Integer> getBlockedNotifyList() {
         List<Integer> data = new ArrayList<Integer>();
@@ -866,12 +889,7 @@ public class G extends Application {
         preference.setUid(uid);
         preference.setTimestamp(System.currentTimeMillis());
         preference.setDisable(isChecked);
-        FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(new ITransaction() {
-            @Override
-            public void execute(DatabaseWrapper databaseWrapper) {
-                preference.save(databaseWrapper);
-            }
-        }).build().execute();
+        FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
     }
 
     public static void isNotificationMigrated(boolean b) {
