@@ -54,7 +54,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         listPreference.setOnPreferenceChangeListener((preference, newValue) -> {
             String selected = newValue.toString();
             // fix leak enabled - but user trying to change the path
-            if(!G.initPath().equals(selected) && G.fixLeak()){
+            if(!selected.equals(G.initPath()) && G.fixLeak()){
                 deleteFiles(ctx,false);
                 G.initPath(selected);
                 updateFixLeakScript(true);
