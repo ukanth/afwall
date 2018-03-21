@@ -73,8 +73,8 @@ public class RootShellService extends Service {
 
     private static ShellState rootState = INIT;
 
-    //number of retries
-    private final static int MAX_RETRIES = 5;
+    //number of retries - increase the count
+    private final static int MAX_RETRIES = 10;
 
     private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
 
