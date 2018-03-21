@@ -18,6 +18,8 @@
 #    @com.squareup.otto.Produce public *;
 #}
 
+-dontnote org.xbill.DNS.spi.DNSJavaNameServiceDescriptor
+-dontwarn org.xbill.DNS.spi.DNSJavaNameServiceDescriptor
 
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
@@ -33,3 +35,5 @@
 -keep public class * extends android.support.v4.view.ActionProvider {
     public <init>(android.content.Context);
 }
+
+-optimizations !code/allocation/variable

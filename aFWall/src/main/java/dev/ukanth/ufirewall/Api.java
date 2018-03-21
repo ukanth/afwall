@@ -264,7 +264,7 @@ public final class Api {
     }
 
     public static String getSpecialDescriptionSystem(Context ctx, String packageName) {
-        switch (packageName){
+        switch (packageName) {
             case "any":
                 return ctx.getString(R.string.all_item);
             case "kernel":
@@ -1431,12 +1431,12 @@ public final class Api {
                 if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                     app.selected_lan = true;
                 }
-                if(G.supportDual()) {
-                    checkPartOfMultiUser(apinfo, name, uid, pkgmanager,multiUserAppsMap);
+                if (G.supportDual()) {
+                    checkPartOfMultiUser(apinfo, name, uid, pkgmanager, multiUserAppsMap);
                 }
             }
 
-            if(G.supportDual()) {
+            if (G.supportDual()) {
                 //run through multi user map
                 for (int i = 0; i < multiUserAppsMap.size(); i++) {
                     app = multiUserAppsMap.valueAt(i);
@@ -1512,7 +1512,7 @@ public final class Api {
         specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
         specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
         specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
-        if(additional) {
+        if (additional) {
             specialData.add(new PackageInfoData(1020, "mDNS", "dev.afwall.special.mDNS"));
         }
         for (String acct : specialAndroidAccounts) {
@@ -1760,22 +1760,66 @@ public final class Api {
         }
     }
 
-    /*private static boolean migrateSettings(Context ctx, int lastVer, int currentVer) {
-        if (lastVer <= 138) {
-            // migrate busybox/iptables path settings from <= 1.2.7-BETA
-            if (G.bb_path().equals("1")) {
-                G.bb_path("system");
-            } else if (G.bb_path().equals("2")) {
-                G.bb_path("builtin");
-            }
-            if (G.ip_path().equals("1")) {
-                G.ip_path("system");
-            } else if (G.ip_path().equals("2")) {
-                G.ip_path("auto");
-            }
+    private static void deleteStartFixFiles(final Context ctx) {
+        String path = G.initPath();
+        File f = new File(path);
+        final String initScript = "afwallstart";
+        if (f.exists() && f.isDirectory()) {
+            final String filePath = path + "/" + initScript;
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                public Void doInBackground(Void... args) {
+                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                        new RootCommand()
+                                .setReopenShell(true).setCallback(new RootCommand.Callback() {
+                            @Override
+                            public void cbFunc(RootCommand state) {
+                                if (state.exitCode == 0) {
+                                    sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
+                                } else {
+                                    sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
+                                }
+                            }
+                        }).setLogging(true).run(ctx, "rm -f " + filePath);
+                        mountDir(ctx, getFixLeakPath(initScript), "RO");
+                    } else {
+                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
+                    }
+                    return null;
+                }
+            }.execute();
         }
-        return true;
-    }*/
+    }
+
+    private static void updateFixLeakScript(Context ctx) {
+        final String initScript = "afwallstart";
+        final String srcPath = new File(ctx.getDir("bin", 0), initScript)
+                .getAbsolutePath();
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            public Void doInBackground(Void... args) {
+                String path = G.initPath();
+                if (path != null) {
+                    File f = new File(path);
+                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                        //make sure it's executable
+                        new RootCommand()
+                                .setReopenShell(true)
+                                .run(ctx, "chmod 755 " + f.getAbsolutePath());
+                        if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
+                                true, false)) {
+                            Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
+                        }
+                        mountDir(ctx, getFixLeakPath(initScript), "RO");
+                    } else {
+                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
+                    }
+                }
+                return null;
+            }
+        }.execute();
+    }
 
     /**
      * Asserts that the binary files are installed in the cache directory.
@@ -1832,6 +1876,7 @@ public final class Api {
         ret &= installBinary(ctx, R.raw.afwallstart, "afwallstart");
         //Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
 
+
         if (showErrors) {
             if (ret) {
                 toast(ctx, ctx.getString(R.string.toast_bin_installed));
@@ -1850,6 +1895,17 @@ public final class Api {
             // this indicates that migration from the old version was successful.
             G.appVersion(currentVer);
         }
+
+        //make sure we update afwall script as well
+        if (!G.initPath().isEmpty() && G.fixLeak()) {
+            try {
+                deleteStartFixFiles(ctx);
+                updateFixLeakScript(ctx);
+            }catch (Exception e) {
+                
+            }
+        }
+
 
         return ret;
     }
@@ -2955,11 +3011,10 @@ public final class Api {
     }
 
 
-
     public static void updateLanguage(Context context, String lang) {
-        if(lang.equals("sys")){
-           Locale defaultLocale = Resources.getSystem().getConfiguration().locale;
-           Locale.setDefault(defaultLocale);
+        if (lang.equals("sys")) {
+            Locale defaultLocale = Resources.getSystem().getConfiguration().locale;
+            Locale.setDefault(defaultLocale);
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = defaultLocale;
@@ -3330,7 +3385,7 @@ public final class Api {
     public static boolean mountDir(Context context, String path, String mountType) {
         if (path != null) {
             String busyboxPath = Api.getBusyBoxPath(context, false);
-            if(busyboxPath != null && !busyboxPath.trim().isEmpty()) {
+            if (busyboxPath != null && !busyboxPath.trim().isEmpty()) {
                 return RootTools.remount(path, mountType, busyboxPath);
             } else {
                 return false;
