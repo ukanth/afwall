@@ -44,8 +44,8 @@ import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 public class SecPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
 
-    private static CheckBoxPreference enableAdminPref;
-    private static CheckBoxPreference enableDeviceCheckPref;
+    private CheckBoxPreference enableAdminPref;
+    private CheckBoxPreference enableDeviceCheckPref;
 
     private static final int REQ_CREATE_PATTERN = 9877;
     private static final int REQ_ENTER_PATTERN = 9755;
