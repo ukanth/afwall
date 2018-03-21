@@ -51,19 +51,16 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
     private void setupInitDir(Preference initd) {
         ListPreference listPreference = (ListPreference) initd;
         final Context ctx = getActivity().getApplicationContext();
-        listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                String selected = newValue.toString();
-                // fix leak enabled - but user trying to change the path
-                if(!G.initPath().equals(selected) && G.fixLeak()){
-                    deleteFiles(ctx,false);
-                    G.initPath(selected);
-                    updateFixLeakScript(true);
-                    return true;
-                }
+        listPreference.setOnPreferenceChangeListener((preference, newValue) -> {
+            String selected = newValue.toString();
+            // fix leak enabled - but user trying to change the path
+            if(!G.initPath().equals(selected) && G.fixLeak()){
+                deleteFiles(ctx,false);
+                G.initPath(selected);
+                updateFixLeakScript(true);
                 return true;
             }
+            return true;
         });
         List<String> listSupportedDir = new ArrayList<>();
         //going through the list of known initDirectories
