@@ -1,6 +1,7 @@
 package dev.ukanth.ufirewall.preferences;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -11,7 +12,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.stericson.roottools.RootTools;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +19,6 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.util.PackageComparator;
 
 public class LogPreferenceFragment extends PreferenceFragment {
 
@@ -87,24 +86,25 @@ public class LogPreferenceFragment extends PreferenceFragment {
                 apps = Api.applications;
             }*/
 
-        List<Api.PackageInfoData> apps = Api.getSpecialData(true);
+        List<Api.PackageInfoData> apps = new ArrayList<>();
+        //List<Api.PackageInfoData> apps = Api.getSpecialData(true);
 
-            /*Api.PackageInfoData info = new Api.PackageInfoData();
-            info.uid = 1020;
-            info.pkgName = "dev.afwall.special.mDNS";
-            info.names = new ArrayList<String>();
-            info.names.add("mDNS");
-            info.appinfo = new ApplicationInfo();*//*
-            //TODO: better way to handle this
-            //manually add mDNS for now
-            if (!apps.contains(info)) {
-                apps.add(info);
-            }*/
-        try {
+        Api.PackageInfoData info = new Api.PackageInfoData();
+        info.uid = 1020;
+        info.pkgName = "dev.afwall.special.mDNS";
+        info.names = new ArrayList<String>();
+        info.names.add("mDNS");
+        info.appinfo = new ApplicationInfo();
+        //TODO: better way to handle this
+        //manually add mDNS for now
+        if (!apps.contains(info)) {
+            apps.add(info);
+        }
+       /* try {
             Collections.sort(apps, new PackageComparator());
         } catch (Exception e) {
             Log.e(Api.TAG, "Exception on Sort " + e.getMessage());
-        }
+        }*/
         for (int i = 0; i < apps.size(); i++) {
             entriesList.add(apps.get(i).toStringWithUID());
             entryValuesList.add(apps.get(i).uid);
