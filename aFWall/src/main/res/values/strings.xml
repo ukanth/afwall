@@ -579,7 +579,7 @@
     <string name="quick_apply_title">Show Quick Apply</string>
     <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 
-    <string name="init_d">Init.d directory path for startup leak</string>
+    <string name="init_d">Startup directory path for script</string>
     <string name="mount_initd_error">Unable to mount the directory</string>
     <string name="delete_initd_error">Unable to delete the startup script</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>

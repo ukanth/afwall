@@ -31,8 +31,8 @@ import static dev.ukanth.ufirewall.Api.mountDir;
 public class ExpPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
 
-    private static final String initDirs[] = {"/magisk/.core/service.d", "/magisk/phh/su.d", "/su/su.d", "/system/su.d", "/system/etc/init.d", "/etc/init.d"};
-    private static final String initScript = "afwallstart";
+    private final String initDirs[] = {"/magisk/.core/service.d", "/magisk/phh/su.d", "/su/su.d", "/system/su.d", "/system/etc/init.d", "/etc/init.d"};
+    private final String initScript = "afwallstart";
 
     @SuppressLint("NewApi")
     @Override
@@ -50,6 +50,21 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 
     private void setupInitDir(Preference initd) {
         ListPreference listPreference = (ListPreference) initd;
+        final Context ctx = getActivity().getApplicationContext();
+        listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                String selected = newValue.toString();
+                // fix leak enabled - but user trying to change the path
+                if(!G.initPath().equals(selected) && G.fixLeak()){
+                    deleteFiles(ctx,false);
+                    G.initPath(selected);
+                    updateFixLeakScript(true);
+                    return true;
+                }
+                return true;
+            }
+        });
         List<String> listSupportedDir = new ArrayList<>();
         //going through the list of known initDirectories
         for (String dir : initDirs) {
@@ -118,7 +133,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         }
     }
 
-    public static void setupFixLeak(Preference pref, Context ctx) {
+    public void setupFixLeak(Preference pref, Context ctx) {
         if (pref == null) {
             return;
         }
@@ -131,7 +146,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         }
     }
 
-    private static boolean isPackageInstalled(String packagename, Context ctx) {
+    private boolean isPackageInstalled(String packagename, Context ctx) {
         PackageManager pm = ctx.getPackageManager();
         try {
             pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
@@ -141,7 +156,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         }
     }
 
-    private static boolean isFixLeakInstalled() {
+    private boolean isFixLeakInstalled() {
         String path = getFixLeakPath(initScript);
         return path != null && new File(path).exists();
     }
@@ -175,7 +190,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                                 Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                             }
                         } else {
-                            deleteFiles(ctx);
+                            deleteFiles(ctx, true);
                         }
                     }
                     return null;
@@ -190,7 +205,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
     }
 
 
-    private void deleteFiles(final Context ctx) {
+    private void deleteFiles(final Context ctx, final boolean updateCheckbox) {
         String path = G.initPath();
         File f = new File(path);
         if (f.exists() && f.isDirectory()) {
@@ -208,7 +223,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                                 } else {
                                     Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
                                 }
-                                updateLeakCheckbox();
+                                if(updateCheckbox) {
+                                    updateLeakCheckbox();
+                                }
                             }
                         }).setLogging(true).run(ctx, "rm -f " + filePath);
                         mountDir(ctx, getFixLeakPath(initScript), "RO");

@@ -1786,13 +1786,11 @@ public final class Api {
      */
     public static boolean assertBinaries(Context ctx, boolean showErrors) {
         int currentVer = -1, lastVer = -1;
-
         try {
             currentVer = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
-            lastVer = G.appVersion();
-           /* if (lastVer == currentVer) {
+            if (G.appVersion() == currentVer) {
                 return true;
-            }*/
+            }
         } catch (NameNotFoundException e) {
             Log.e(TAG, "packageManager can't look up versionCode");
         }
