@@ -1,31 +1,6 @@
 #!/system/bin/sh
 
 export PATH=/system/bin
-startDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
-
-ENFORCE=`getenforce`
-if [ "$ENFORCE" == 'Enforcing' ]
-then
-   supolicy --live "allow sdcardd unlabeled dir getattr"
-fi
-
-#use maximum 500 iterations before call it
-i=0
-while :
-do
-  if [ -d /data/data/com.android.providers.downloads ]
-  then
-    break
-  fi
-  i=$((i+1))
-  if [ "$i" -gt 500 ]
-  then
-    echo "Couldn't detect data directory "
-    break
-  fi
-  sleep 1
-done
-endDt="$(head -n 1 /proc/uptime | cut -d . -f 1)"
 
 if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables ]; then
   path="dev.ukanth.ufirewall"
@@ -35,8 +10,6 @@ else
   log -p i -t afwall "AFWall does not seem to be installed, waited for $((endDt-startDt)) seconds."
   exit
 fi
-
-log -p i -t afwall "Waited $((endDt-startDt)) seconds for /data/data."
 
 doit() {
   for i in "$@"
