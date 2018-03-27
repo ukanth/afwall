@@ -16,7 +16,7 @@ import dev.ukanth.ufirewall.R;
 /**
  * Created by ukanth on 25/7/16.
  */
-public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetailRecyclerViewAdapter.ViewHolder>{
+public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetailRecyclerViewAdapter.ViewHolder> {
 
 
     private List<LogData> logData;
@@ -25,7 +25,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
     private RecyclerItemClickListener recyclerItemClickListener;
 
 
-    public LogDetailRecyclerViewAdapter(final Context context, RecyclerItemClickListener recyclerItemClickListener){
+    public LogDetailRecyclerViewAdapter(final Context context, RecyclerItemClickListener recyclerItemClickListener) {
         this.context = context;
         logData = new ArrayList<>();
         this.recyclerItemClickListener = recyclerItemClickListener;
@@ -38,28 +38,26 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.logdetail_recycle_item,parent,false);
+        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.logdetail_recycle_item, parent, false);
         return new ViewHolder(mView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
-        holder.bind(logData.get(position),recyclerItemClickListener);
-        if(data.getOut().contains("lan") || data.getOut().startsWith("eth")  || data.getOut().startsWith("ra") ||  data.getOut().startsWith("bnep")) {
-            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_wifi));
-        } else {
-            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_mobiledata));
+        if (data != null) {
+            holder.bind(logData.get(position), recyclerItemClickListener);
+            if (data.getOut() != null && (data.getOut().contains("lan") || data.getOut().startsWith("eth") || data.getOut().startsWith("ra") || data.getOut().startsWith("bnep"))) {
+                holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_wifi));
+                holder.deniedTime.setText(pretty(data.getTimestamp()) + "(" + data.getOut() + ")");
+            } else {
+                holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_mobiledata));
+            }
+            holder.dataDest.setText(context.getResources().getString(R.string.log_dst) + data.getDst() + ":" + data.getDpt());
+            holder.dataSrc.setText(context.getResources().getString(R.string.log_src) + data.getSrc() + ":" + data.getSpt());
+            holder.dataProto.setText(context.getResources().getString(R.string.log_proto) + data.getProto());
+            holder.dataHost.setText(context.getResources().getString(R.string.host) + data.getHostname());
         }
-       // if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
-            holder.deniedTime.setText(pretty(data.getTimestamp()) + "(" + data.getOut() + ")");
-       // }
-        //holder.appName.setText(data.getAppName() != null ? data.getAppName() + "(" + data.getUid() + ")" : context.getString(R.string.log_deletedapp));
-        //holder.dataInterface.setText();
-        holder.dataDest.setText(context.getResources().getString(R.string.log_dst)+ data.getDst() + ":" +data.getDpt());
-        holder.dataSrc.setText(context.getResources().getString(R.string.log_src)+ data.getSrc() +":" + data.getSpt());
-        holder.dataProto.setText(context.getResources().getString(R.string.log_proto)+ data.getProto());
-        holder.dataHost.setText(context.getResources().getString(R.string.host) + data.getHostname());
     }
 
     public static String pretty(Long timestamp) {
@@ -72,7 +70,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
     }
 
 
-    public class ViewHolder  extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView icon;
         //final TextView appName;
@@ -85,19 +83,20 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
 
         public ViewHolder(View itemView) {
             super(itemView);
-            icon = (ImageView )itemView.findViewById(R.id.data_icon);
+            icon = (ImageView) itemView.findViewById(R.id.data_icon);
             //appName = (TextView)itemView.findViewById(R.id.app_name);
-            deniedTime = (TextView)itemView.findViewById(R.id.denied_time);
+            deniedTime = (TextView) itemView.findViewById(R.id.denied_time);
             //dataInterface = (TextView)itemView.findViewById(R.id.data_interface);
-            dataDest = (TextView)itemView.findViewById(R.id.data_dest);
-            dataSrc = (TextView)itemView.findViewById(R.id.data_src);
-            dataProto = (TextView)itemView.findViewById(R.id.data_proto);
+            dataDest = (TextView) itemView.findViewById(R.id.data_dest);
+            dataSrc = (TextView) itemView.findViewById(R.id.data_src);
+            dataProto = (TextView) itemView.findViewById(R.id.data_proto);
             dataHost = itemView.findViewById(R.id.data_host);
         }
 
         public void bind(final LogData item, final RecyclerItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
                     listener.onItemClick(item);
                 }
             });

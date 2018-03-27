@@ -278,7 +278,9 @@
         </receiver>
 
         <service android:name=".service.RootShellService" android:exported="false"/>
-        <service android:name=".service.LogService" />
+        <service android:name=".service.LogService"
+            android:label="AFWallLogService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
 
         <!-- Samsung MultiWindow Support -->
         <uses-library

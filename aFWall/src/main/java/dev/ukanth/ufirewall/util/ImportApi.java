@@ -50,57 +50,71 @@ public class ImportApi {
         }
     }
 
-    public static boolean loadSharedPreferencesFromDroidWall(Context ctx) {
+    private static class LoadTask extends AsyncTask<Void, Void, Boolean> {
+        private final Context ctx;
         boolean[] result = {false};
-        try {
-            new AsyncTask<Void, Void, Boolean>() {
-                @Override
-                protected Boolean doInBackground(Void... voids) {
-                    File sdCard = Environment.getExternalStorageDirectory();
-                    File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-                    dir.mkdirs();
-                    File shared_prefs = new File(getDataDir(ctx, "com.googlecode.droidwall.free") + File.separator + "shared_prefs" + File.separator + "DroidWallPrefs.xml");
-                    File file = new File(dir, "DroidWallPrefs.xml");
-                    RootTools.copyFile(shared_prefs.getPath(), dir.getPath(), true, false);
-                    final Editor prefEdit = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).edit();
-                    // write the logic to read the copied xml
-                    String wifi = null, g = null;
-                    try {
-                        String xmlStr = readTextFile(new FileInputStream(file));
-                        Document doc = XMLfromString(xmlStr);
-                        NodeList nodes = doc.getElementsByTagName("string");
 
-                        for (int i = 0; i < nodes.getLength(); i++) {
-                            Element e = (Element) nodes.item(i);
-                            if (e.getAttribute("name").equals("AllowedUidsWifi")) {
-                                wifi = getElementValue(e);
-                                Log.d("AllowedUidsWifi", wifi);
-                            } else if (e.getAttribute("name").equals("AllowedUids3G")) {
-                                g = getElementValue(e);
-                                Log.d("AllowedUids3G", g);
-                            }
-                        }
-
-                    } catch (FileNotFoundException e) {
-                    }
-
-                    if (wifi != null) {
-                        prefEdit.putString(Api.PREF_WIFI_PKG, getPackageListFromUID(ctx, wifi));
-                        prefEdit.putString(Api.PREF_WIFI_PKG_UIDS, wifi);
-                    }
-                    if (g != null) {
-                        prefEdit.putString(Api.PREF_3G_PKG, getPackageListFromUID(ctx, g));
-                        prefEdit.putString(Api.PREF_3G_PKG_UIDS, g);
-                    }
-                    prefEdit.commit();
-                    result[0] = true;
-                    return null;
-                }
-            };
-        } catch (Exception e) {
-
+        private LoadTask(Context context) {
+            this.ctx = context;
         }
-        return result[0];
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            File sdCard = Environment.getExternalStorageDirectory();
+            File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
+            dir.mkdirs();
+            File shared_prefs = new File(getDataDir(ctx, "com.googlecode.droidwall.free") + File.separator + "shared_prefs" + File.separator + "DroidWallPrefs.xml");
+            File file = new File(dir, "DroidWallPrefs.xml");
+            RootTools.copyFile(shared_prefs.getPath(), dir.getPath(), true, false);
+            final Editor prefEdit = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).edit();
+            // write the logic to read the copied xml
+            String wifi = null, g = null;
+            try {
+                String xmlStr = readTextFile(new FileInputStream(file));
+                Document doc = XMLfromString(xmlStr);
+                NodeList nodes = doc.getElementsByTagName("string");
+
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    Element e = (Element) nodes.item(i);
+                    if (e.getAttribute("name").equals("AllowedUidsWifi")) {
+                        wifi = getElementValue(e);
+                        Log.d("AllowedUidsWifi", wifi);
+                    } else if (e.getAttribute("name").equals("AllowedUids3G")) {
+                        g = getElementValue(e);
+                        Log.d("AllowedUids3G", g);
+                    }
+                }
+
+            } catch (FileNotFoundException e) {
+            }
+
+            if (wifi != null) {
+                prefEdit.putString(Api.PREF_WIFI_PKG, getPackageListFromUID(ctx, wifi));
+                prefEdit.putString(Api.PREF_WIFI_PKG_UIDS, wifi);
+            }
+            if (g != null) {
+                prefEdit.putString(Api.PREF_3G_PKG, getPackageListFromUID(ctx, g));
+                prefEdit.putString(Api.PREF_3G_PKG_UIDS, g);
+            }
+            prefEdit.commit();
+            result[0] = true;
+            return result[0];
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            // result holds what you return from doInBackground
+        }
+    }
+
+    public static boolean loadSharedPreferencesFromDroidWall(Context ctx) {
+        try {
+            LoadTask task = new LoadTask(ctx);
+            task.execute();
+            return task.result[0];
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     private static String getElementValue(Node elem) {

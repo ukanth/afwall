@@ -50,6 +50,8 @@ public class LogInfo {
     public int len;
     public String src;
     public int dpt;
+    public String host = "";
+    public int type;
     public String timestamp;
     int totalBlocked;
 
@@ -143,96 +145,7 @@ public class LogInfo {
         return res.toString();
     }
 
-	/*public static void parseLog(Context ctx, String dmesg, TextView textView) {
-        final BufferedReader r = new BufferedReader(new StringReader(dmesg.toString()));
-		final Integer unknownUID = -1;
-		StringBuilder address = new StringBuilder();
-		String line;
-		int start, end;
-		Integer uid;
-		String out, src, dst, proto, spt, dpt, len;
-		HashMap<Integer,String> appNameMap = new HashMap<Integer, String>();
-		LogInfo logInfo = null;
-		
-		final List<PackageInfoData> apps = Api.getApps(ctx,null);
-		try {
-			while ((line = r.readLine()) != null) {
-				if (line.indexOf("{AFL}") == -1) continue;
-				uid = unknownUID;
-				if (((start=line.indexOf("UID=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					uid = Integer.parseInt(line.substring(start+4, end));
-					if(uid != null) logInfo.uid = uid+"";
-				}
-				
-				logInfo = new LogInfo();
-				
-				if (((start=line.indexOf("DST=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dst = line.substring(start+4, end);
-					logInfo.dst = dst;
-				}
-				
-				
-				if (((start=line.indexOf("DPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					dpt = line.substring(start+4, end);
-					logInfo.dpt = dpt;
-				}
-				
-				if (((start=line.indexOf("SPT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					spt = line.substring(start+4, end);
-					logInfo.spt = spt;
-				}
-				
-				if (((start=line.indexOf("PROTO=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					proto = line.substring(start+6, end);
-					logInfo.proto = proto;
-				}
-				
-				if (((start=line.indexOf("LEN=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					len = line.substring(start+4, end);
-					logInfo.len = len;
-				}
-				
-				if (((start=line.indexOf("SRC=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					src = line.substring(start+4, end);
-					logInfo.src = src;
-				}
-				
-				if (((start=line.indexOf("OUT=")) != -1) && ((end=line.indexOf(" ", start)) != -1)) {
-					out = line.substring(start+4, end);
-					logInfo.out = out;
-				}
-
-				String appName = "";
-				if(uid != -1) {
-					if(!appNameMap.containsKey(uid)) {
-						appName = ctx.getPackageManager().getNameForUid(uid);
-						for (PackageInfoData app : apps) {
-							if (app.uid == uid) {
-								appName = app.names.get(0);
-								break;
-							}
-						}
-						appNameMap.put(uid, appName);
-					} else {
-						appName = appNameMap.get(uid);
-					}
-				} else {
-					appName = ctx.getString(R.string.unknown_item);
-				}
-				logInfo.appName = appName;
-				address = new StringBuilder();
-				address.append(" " + appName + "(" + uid  + ")" + " ");
-				address.append(logInfo.dst + ":" +  logInfo.dpt + "\n" );
-				textView.append(address.toString());
-			}
-		} catch (Exception e) {
-			Log.e(Api.TAG, e.getMessage());
-		}
-		
-	}*/
-
-
-    public static LogInfo parseLogs(String result, final Context ctx) {
+    public static LogInfo parseLogs(String result, final Context ctx, String pattern, int type) {
 
         final int unknownUID = -1;
         StringBuilder address;
@@ -247,8 +160,8 @@ public class LogInfo {
 
         int pos = 0;
         try {
-            while ((pos = result.indexOf("{AFL}", pos)) > -1) {
-                if (result.indexOf("{AFL}") == -1)
+            while ((pos = result.indexOf(pattern, pos)) > -1) {
+                if (result.indexOf(pattern) == -1)
                     continue;
                 uid = unknownUID;
 
@@ -299,6 +212,10 @@ public class LogInfo {
                     out = result.substring(start + 4, end);
                     logInfo.out = out;
                 }
+
+                if (uid == android.os.Process.myUid()) {
+                    return null;
+                }
                 String appName = "";
                 if (uid.intValue() != unknownUID) {
                     if (uid == 1020) {
@@ -331,12 +248,20 @@ public class LogInfo {
                 address.append(logInfo.dst);
                 address.append(":");
                 address.append(logInfo.dpt);
-                if(G.showHost()) address.append("(" + Address.getHostName(InetAddress.getByName(logInfo.dst)) + ") ");
+                logInfo.type = type;
+                if (G.showHost()) {
+                    try {
+                        String add = Address.getHostName(InetAddress.getByName(logInfo.dst));
+                        if (add != null) {
+                            logInfo.host = add;
+                            address.append("(" + add + ") ");
+                        }
+                    } catch (Exception e) {
+                    }
+                }
                 address.append("\n");
                 logInfo.uidString = address.toString();
                 return logInfo;
-                //return address.toString();
-
             }
         } catch (Exception e) {
             Log.e(Api.TAG, "Exception in LogService", e);

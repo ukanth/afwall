@@ -309,7 +309,7 @@ public class RootShellService extends Service {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Log.i(TAG, "State of rootShell" + rootState);
+                    Log.i(TAG, "State of rootShell: " + rootState);
                     if (rootState == ShellState.BUSY) {
                         //try resetting state to READY forcefully
                         Log.i(TAG, "Forcefully changing the state " + rootState);

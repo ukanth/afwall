@@ -24,13 +24,18 @@
 package dev.ukanth.ufirewall.util;
 
 import android.app.Application;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
@@ -51,6 +56,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
+import dev.ukanth.ufirewall.service.LogService;
 
 public class G extends Application {
 
@@ -921,4 +927,6 @@ public class G extends Application {
     }
 
     private static boolean activityVisible;
+
+
 }

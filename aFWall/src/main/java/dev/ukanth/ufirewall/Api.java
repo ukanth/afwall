@@ -482,8 +482,10 @@ public final class Api {
 
         if (G.enableLogService() && G.logTarget() != null) {
             if (G.logTarget().equals("LOG")) {
+                //cmds.add("-A " + AFWALL_CHAIN_NAME  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
             } else if (G.logTarget().equals("NFLOG")) {
+                //cmds.add("-A " + AFWALL_CHAIN_NAME + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
             }
         }
@@ -1766,28 +1768,25 @@ public final class Api {
         final String initScript = "afwallstart";
         if (f.exists() && f.isDirectory()) {
             final String filePath = path + "/" + initScript;
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                public Void doInBackground(Void... args) {
-                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
-                        new RootCommand()
-                                .setReopenShell(true).setCallback(new RootCommand.Callback() {
-                            @Override
-                            public void cbFunc(RootCommand state) {
-                                if (state.exitCode == 0) {
-                                    sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
-                                } else {
-                                    sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
-                                }
+
+            new Thread(() -> {
+                if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                    new RootCommand()
+                            .setReopenShell(true).setCallback(new RootCommand.Callback() {
+                        @Override
+                        public void cbFunc(RootCommand state) {
+                            if (state.exitCode == 0) {
+                                sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
+                            } else {
+                                sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
                             }
-                        }).setLogging(true).run(ctx, "rm -f " + filePath);
-                        mountDir(ctx, getFixLeakPath(initScript), "RO");
-                    } else {
-                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
-                    }
-                    return null;
+                        }
+                    }).setLogging(true).run(ctx, "rm -f " + filePath);
+                    mountDir(ctx, getFixLeakPath(initScript), "RO");
+                } else {
+                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                 }
-            }.execute();
+            }).start();
         }
     }
 
@@ -1796,29 +1795,25 @@ public final class Api {
         final String srcPath = new File(ctx.getDir("bin", 0), initScript)
                 .getAbsolutePath();
 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            public Void doInBackground(Void... args) {
-                String path = G.initPath();
-                if (path != null) {
-                    File f = new File(path);
-                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
-                        //make sure it's executable
-                        new RootCommand()
-                                .setReopenShell(true)
-                                .run(ctx, "chmod 755 " + f.getAbsolutePath());
-                        if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
-                                true, false)) {
-                            Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
-                        }
-                        mountDir(ctx, getFixLeakPath(initScript), "RO");
-                    } else {
-                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
+        new Thread(() -> {
+            String path = G.initPath();
+            if (path != null) {
+                File f = new File(path);
+                if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                    //make sure it's executable
+                    new RootCommand()
+                            .setReopenShell(true)
+                            .run(ctx, "chmod 755 " + f.getAbsolutePath());
+                    if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
+                            true, false)) {
+                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
                     }
+                    mountDir(ctx, getFixLeakPath(initScript), "RO");
+                } else {
+                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                 }
-                return null;
             }
-        }.execute();
+        }).start();
     }
 
     /**
@@ -1901,8 +1896,8 @@ public final class Api {
             try {
                 deleteStartFixFiles(ctx);
                 updateFixLeakScript(ctx);
-            }catch (Exception e) {
-                
+            } catch (Exception e) {
+
             }
         }
 
@@ -3398,27 +3393,24 @@ public final class Api {
         if (G.initPath() != null && G.fixLeak() && !isFixPathFileExist(fileName)) {
             final String srcPath = new File(ctx.getDir("bin", 0), fileName)
                     .getAbsolutePath();
-            new AsyncTask<Void, Void, Boolean>() {
-                @Override
-                public Boolean doInBackground(Void... args) {
-                    boolean returnFlag = false;
-                    String path = G.initPath();
-                    if (path != null) {
-                        File f = new File(path);
-                        if (mountDir(context, getFixLeakPath(fileName), "RW")) {
-                            //make sure it's executable
-                            new RootCommand()
-                                    .setReopenShell(true)
-                                    .setLogging(true)
-                                    .run(ctx, "chmod 755 " + f.getAbsolutePath());
-                            returnFlag = RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName),
-                                    true, false);
-                            mountDir(context, getFixLeakPath(fileName), "RO");
-                        }
+
+            new Thread(() -> {
+                boolean returnFlag = false;
+                String path = G.initPath();
+                if (path != null) {
+                    File f = new File(path);
+                    if (mountDir(context, getFixLeakPath(fileName), "RW")) {
+                        //make sure it's executable
+                        new RootCommand()
+                                .setReopenShell(true)
+                                .setLogging(true)
+                                .run(ctx, "chmod 755 " + f.getAbsolutePath());
+                        RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName),
+                                true, false);
+                        mountDir(context, getFixLeakPath(fileName), "RO");
                     }
-                    return returnFlag;
                 }
-            }.execute();
+            }).start();
         }
     }
 }

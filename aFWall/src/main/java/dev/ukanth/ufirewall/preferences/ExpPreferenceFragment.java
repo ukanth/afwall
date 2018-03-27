@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -164,35 +163,30 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             final Context ctx = activity.getApplicationContext();
             final String srcPath = new File(ctx.getDir("bin", 0), initScript)
                     .getAbsolutePath();
-
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                public Void doInBackground(Void... args) {
-                    String path = G.initPath();
-                    if (path != null) {
-                        if (enabled) {
-                            File f = new File(path);
-                            if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
-                                //make sure it's executable
-                                new RootCommand()
-                                        .setReopenShell(true)
-                                        .run(ctx, "chmod 755 " + f.getAbsolutePath());
-                                if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
-                                        true, false)) {
-                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
-                                }
-                                mountDir(ctx, getFixLeakPath(initScript), "RO");
-                                updateLeakCheckbox();
-                            } else {
-                                Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
+            new Thread(() -> {
+                String path = G.initPath();
+                if (path != null) {
+                    if (enabled) {
+                        File f = new File(path);
+                        if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                            //make sure it's executable
+                            new RootCommand()
+                                    .setReopenShell(true)
+                                    .run(ctx, "chmod 755 " + f.getAbsolutePath());
+                            if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
+                                    true, false)) {
+                                Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
                             }
+                            mountDir(ctx, getFixLeakPath(initScript), "RO");
+                            updateLeakCheckbox();
                         } else {
-                            deleteFiles(ctx, true);
+                            Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                         }
+                    } else {
+                        deleteFiles(ctx, true);
                     }
-                    return null;
                 }
-            }.execute();
+            }).start();
         }
     }
 
@@ -207,31 +201,28 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         File f = new File(path);
         if (f.exists() && f.isDirectory()) {
             final String filePath = path + "/" + initScript;
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                public Void doInBackground(Void... args) {
-                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
-                        new RootCommand()
-                                .setReopenShell(true).setCallback(new RootCommand.Callback() {
-                            @Override
-                            public void cbFunc(RootCommand state) {
-                                if (state.exitCode == 0) {
-                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
-                                } else {
-                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
-                                }
-                                if(updateCheckbox) {
-                                    updateLeakCheckbox();
-                                }
+
+            new Thread(() -> {
+                if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                    new RootCommand()
+                            .setReopenShell(true).setCallback(new RootCommand.Callback() {
+                        @Override
+                        public void cbFunc(RootCommand state) {
+                            if (state.exitCode == 0) {
+                                Api.sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
+                            } else {
+                                Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
                             }
-                        }).setLogging(true).run(ctx, "rm -f " + filePath);
-                        mountDir(ctx, getFixLeakPath(initScript), "RO");
-                    } else {
-                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
-                    }
-                    return null;
+                            if(updateCheckbox) {
+                                updateLeakCheckbox();
+                            }
+                        }
+                    }).setLogging(true).run(ctx, "rm -f " + filePath);
+                    mountDir(ctx, getFixLeakPath(initScript), "RO");
+                } else {
+                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                 }
-            }.execute();
+            }).start();
         }
     }
 }

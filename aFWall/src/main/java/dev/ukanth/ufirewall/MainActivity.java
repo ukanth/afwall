@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         RadioGroup.OnCheckedChangeListener {
 
 
-    private Menu mainMenu;
+    private static Menu mainMenu;
     private ListView listview = null;
     public static boolean dirty = false;
     private MaterialDialog plsWait;
@@ -605,41 +605,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-   /* private boolean passCheck() {
-        if (G.enableDeviceCheck()) {
-            deviceCheck();
-        } else {
-            switch (G.protectionLevel()) {
-                case "p0":
-                    return true;
-                case "p1":
-                    final String oldpwd = G.profile_pwd();
-                    if (oldpwd.length() == 0) {
-                        return true;
-                    } else {
-                        // Check the password
-                        requestPassword();
-                    }
-                    break;
-                case "p2":
-                    final String pwd = G.sPrefs.getString("LockPassword", "");
-                    if (pwd.length() == 0) {
-                        return true;
-                    } else {
-                        requestPassword();
-                    }
-                    break;
-                case "p3":
+    /* private boolean passCheck() {
+         if (G.enableDeviceCheck()) {
+             deviceCheck();
+         } else {
+             switch (G.protectionLevel()) {
+                 case "p0":
+                     return true;
+                 case "p1":
+                     final String oldpwd = G.profile_pwd();
+                     if (oldpwd.length() == 0) {
+                         return true;
+                     } else {
+                         // Check the password
+                         requestPassword();
+                     }
+                     break;
+                 case "p2":
+                     final String pwd = G.sPrefs.getString("LockPassword", "");
+                     if (pwd.length() == 0) {
+                         return true;
+                     } else {
+                         requestPassword();
+                     }
+                     break;
+                 case "p3":
 
-                    if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
+                     if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
 
-                        requestFingerprint();
-                    }
-            }
-        }
-        return false;
-    }
-*/
+                         requestFingerprint();
+                     }
+             }
+         }
+         return false;
+     }
+ */
     @Override
     protected void onPause() {
         super.onPause();
@@ -1054,18 +1054,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void menuSetApplyOrSave(final Menu menu, final boolean isEnabled) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (isEnabled) {
-                    menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
-                    menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);
-                    getSupportActionBar().setIcon(R.drawable.notification);
-                } else {
-                    menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
-                    menu.findItem(R.id.menu_apply).setTitle(R.string.saverules);
-                    getSupportActionBar().setIcon(R.drawable.notification_error);
-                }
+        runOnUiThread(() -> {
+            if (isEnabled) {
+                menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
+                menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);
+                getSupportActionBar().setIcon(R.drawable.notification);
+            } else {
+                menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
+                menu.findItem(R.id.menu_apply).setTitle(R.string.saverules);
+                getSupportActionBar().setIcon(R.drawable.notification_error);
             }
         });
     }
@@ -1764,69 +1761,71 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+
+    private static class PurgeTask extends AsyncTask<Void, Void, Boolean> {
+
+        private MaterialDialog progress;
+        private Context ctx;
+
+        private PurgeTask(Context context) {
+            this.ctx = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progress = new MaterialDialog.Builder(ctx)
+                    .title(R.string.working)
+                    .cancelable(false)
+                    .content(R.string.purging_rules)
+                    .progress(true, 0)
+                    .show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            if (G.hasRoot() && Shell.SU.available()) {
+                Api.purgeIptables(ctx, true, new RootCommand()
+                        .setSuccessToast(R.string.rules_deleted)
+                        .setFailureToast(R.string.error_purge)
+                        .setReopenShell(true)
+                        .setCallback(new RootCommand.Callback() {
+                            public void cbFunc(RootCommand state) {
+                                // error exit -> assume the rules are still enabled
+                                // we shouldn't wind up in this situation, but if we do, the user's
+                                // best bet is to click Apply then toggle Enabled again
+                                try {
+                                    progress.dismiss();
+                                } catch (Exception ex) {
+                                }
+                                boolean nowEnabled = state.exitCode != 0;
+                                Api.setEnabled(ctx, nowEnabled, true);
+                            }
+                        }));
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+            if (!aVoid) {
+                Toast.makeText(ctx, ctx.getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                try {
+                    progress.dismiss();
+                } catch (Exception ex) {
+                }
+            }
+        }
+    }
+
     /**
      * Purge iptables rules, showing a visual indication
      */
     private void purgeRules() {
-
-        final Context ctx = getApplicationContext();
-
-        new AsyncTask<Void, Void, Boolean>() {
-
-
-            @Override
-            protected void onPreExecute() {
-                progress = new MaterialDialog.Builder(MainActivity.this)
-                        .title(R.string.working)
-                        .cancelable(false)
-                        .content(R.string.purging_rules)
-                        .progress(true, 0)
-                        .show();
-            }
-
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                if (G.hasRoot() && Shell.SU.available()) {
-                    Api.purgeIptables(ctx, true, new RootCommand()
-                            .setSuccessToast(R.string.rules_deleted)
-                            .setFailureToast(R.string.error_purge)
-                            .setReopenShell(true)
-                            .setCallback(new RootCommand.Callback() {
-                                public void cbFunc(RootCommand state) {
-                                    // error exit -> assume the rules are still enabled
-                                    // we shouldn't wind up in this situation, but if we do, the user's
-                                    // best bet is to click Apply then toggle Enabled again
-                                    try {
-                                        progress.dismiss();
-                                    } catch (Exception ex) {
-                                    }
-                                    boolean nowEnabled = state.exitCode != 0;
-
-                                    Api.setEnabled(ctx, nowEnabled, true);
-                                    menuSetApplyOrSave(MainActivity.this.mainMenu, nowEnabled);
-                                }
-                            }));
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aVoid) {
-                super.onPostExecute(aVoid);
-                if (!aVoid) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
-                    try {
-                        progress.dismiss();
-                    } catch (Exception ex) {
-                    }
-                }
-            }
-
-        }.execute();
-
-
+        new PurgeTask(MainActivity.this).execute();
+        menuSetApplyOrSave(mainMenu, Api.isEnabled(getApplicationContext()));
     }
 
 
