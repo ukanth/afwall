@@ -1891,17 +1891,16 @@ public final class Api {
             G.appVersion(currentVer);
         }
 
-        //make sure we update afwall script as well
-        if (!G.initPath().isEmpty() && G.fixLeak()) {
-            try {
-                deleteStartFixFiles(ctx);
-                updateFixLeakScript(ctx);
-            } catch (Exception e) {
+      /*  try {
+            if (G.initPath() != null && !G.initPath().isEmpty() && G.fixLeak()) {
+                try {
+                    deleteStartFixFiles(ctx);
+                    updateFixLeakScript(ctx);
+                } catch (Exception e) {
 
+                }
             }
-        }
-
-
+        }*/
         return ret;
     }
 
