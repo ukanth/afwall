@@ -74,7 +74,6 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -166,10 +165,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        /*if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }
-        LeakCanary.install(G.getInstance());
+        LeakCanary.install(G.getInstance());*/
 
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
