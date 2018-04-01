@@ -53,8 +53,8 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         listPreference.setOnPreferenceChangeListener((preference, newValue) -> {
             String selected = newValue.toString();
             // fix leak enabled - but user trying to change the path
-            if(!selected.equals(G.initPath()) && G.fixLeak()){
-                deleteFiles(ctx,false);
+            if (!selected.equals(G.initPath()) && G.fixLeak()) {
+                deleteFiles(ctx, false);
                 G.initPath(selected);
                 updateFixLeakScript(true);
                 return true;
@@ -77,7 +77,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             listPreference.setEntryValues(entries);
         }
 
-        if (G.initPath() != null) {
+        if (G.initPath() != null && !G.initPath().isEmpty()) {
             listPreference.setValue(G.initPath());
         } else {
             CheckBoxPreference fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
@@ -213,7 +213,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                             } else {
                                 Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
                             }
-                            if(updateCheckbox) {
+                            if (updateCheckbox) {
                                 updateLeakCheckbox();
                             }
                         }
