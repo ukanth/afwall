@@ -215,11 +215,10 @@ public class ToggleWidgetOldActivity extends Activity implements
         profileName = ((Button) button).getText().toString();
         buttonId = button.getId();
 
-        boolean isprotected = new SecurityUtil(ToggleWidgetOldActivity.this).passCheck();
-        if (!isprotected) {
+        boolean passCheck = new SecurityUtil(ToggleWidgetOldActivity.this).checkPasswordProtect();
+        if (!passCheck) {
             switchAction();
         }
-
     }
 
     private void runProfile(final String profileName) {

@@ -94,6 +94,43 @@ public class SecurityUtil {
         return false;
     }
 
+
+    public boolean checkPasswordProtect() {
+        if (G.enableDeviceCheck()) {
+            deviceCheck();
+            return true;
+        } else {
+            switch (G.protectionLevel()) {
+                case "p0":
+                    return false;
+                case "p1":
+                    final String oldpwd = G.profile_pwd();
+                    if (oldpwd.length() == 0) {
+                        return false;
+                    } else {
+                        // Check the password
+                        requestPassword();
+                        return true;
+                    }
+                case "p2":
+                    final String pwd = G.sPrefs.getString("LockPassword", "");
+                    if (pwd.length() == 0) {
+                        return false;
+                    } else {
+                        requestPassword();
+                        return true;
+                    }
+                case "p3":
+                    if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
+                        requestFingerprint();
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
+    }
+
     private void requestFingerprint() {
         FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(context);
         dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
