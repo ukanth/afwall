@@ -72,7 +72,7 @@ public class RulesActivity extends DataDumpActivity {
             if (data != null) {
                 String check = (String) data;
                 if (check.equals("yes")) {
-                   new SecurityUtil(getApplicationContext(), RulesActivity.this).passCheck();
+                   new SecurityUtil( RulesActivity.this).passCheck();
                 }
             }
         }

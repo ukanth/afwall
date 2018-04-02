@@ -100,7 +100,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             if(data != null){
                 String check = (String) data;
                 if(check.equals("yes")) {
-                    new SecurityUtil(getApplicationContext(), LogActivity.this).passCheck();
+                    new SecurityUtil(LogActivity.this).passCheck();
                 }
             }
         }

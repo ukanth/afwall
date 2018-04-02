@@ -6,11 +6,9 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
@@ -26,7 +24,7 @@ import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
  */
 
 public class SecurityUtil {
-    
+
     private Context context;
 
     public static final int REQ_ENTER_PATTERN = 9755;
@@ -34,11 +32,11 @@ public class SecurityUtil {
 
     private Activity activity;
 
-    public  SecurityUtil(Context ctx, Activity activity) {
-         this.context = ctx;
-         this.activity = activity;
-     }   
-    
+    public SecurityUtil(Activity activity) {
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
+    }
+
     private void deviceCheck() {
         if (Build.VERSION.SDK_INT >= 21) {
             if ((G.isDoKey(context) || isDonate())) {
@@ -111,44 +109,39 @@ public class SecurityUtil {
     private void requestPassword() {
         switch (G.protectionLevel()) {
             case "p1":
-                new MaterialDialog.Builder(context).cancelable(false)
+
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(activity).cancelable(false)
                         .title(R.string.pass_titleget).autoDismiss(false)
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
                         .positiveText(R.string.submit)
                         .negativeText(R.string.Cancel)
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                activity.finish();
-                                android.os.Process.killProcess(android.os.Process.myPid());
-                            }
+                        .onNegative((dialog, which) -> {
+                            activity.finish();
+                            android.os.Process.killProcess(android.os.Process.myPid());
                         })
-                        .input(R.string.enterpass, R.string.password_empty, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
-                                String pass = input.toString();
-                                boolean isAllowed = false;
-                                if (G.isEnc()) {
-                                    String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
-                                    if (decrypt != null) {
-                                        if (decrypt.equals(pass)) {
-                                            isAllowed = true;
-                                        }
-                                    }
-                                } else {
-                                    if (pass.equals(G.profile_pwd())) {
+                        .input(R.string.enterpass, R.string.password_empty, (dialog, input) -> {
+                            String pass = input.toString();
+                            boolean isAllowed = false;
+                            if (G.isEnc()) {
+                                String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
+                                if (decrypt != null) {
+                                    if (decrypt.equals(pass)) {
                                         isAllowed = true;
                                     }
                                 }
-                                if (isAllowed) {
-                                    dialog.dismiss();
-                                } else {
-                                    Api.toast(activity, context.getString(R.string.wrong_password));
+                            } else {
+                                if (pass.equals(G.profile_pwd())) {
+                                    isAllowed = true;
                                 }
-
-
                             }
-                        }).show();
+                            if (isAllowed) {
+                                dialog.dismiss();
+                            } else {
+                                Api.toast(activity, context.getString(R.string.wrong_password));
+                            }
+                        });
+
+                builder.show();
                 break;
             case "p2":
                 Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, context, LockPatternActivity.class);

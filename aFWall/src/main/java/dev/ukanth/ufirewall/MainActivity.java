@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             startRootShell(rootShell);
-            new SecurityUtil(getApplicationContext(), MainActivity.this).passCheck();
+            new SecurityUtil(MainActivity.this).passCheck();
         }
         //registerQuickApply();
         registerUIbroadcast();
@@ -2317,7 +2317,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 G.hasRoot(suGranted[0]);
                 startRootShell(rootShell);
-                new SecurityUtil(getApplicationContext(), MainActivity.this).passCheck();
+                new SecurityUtil(MainActivity.this).passCheck();
             }
         }
     }

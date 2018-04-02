@@ -81,7 +81,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             if(data != null){
                 String check = (String) data;
                 if(check.equals("yes")) {
-                    new SecurityUtil(getApplicationContext(), PreferencesActivity.this).passCheck();
+                    new SecurityUtil(PreferencesActivity.this).passCheck();
                 }
             }
         }
