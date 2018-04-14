@@ -449,9 +449,12 @@ public class ToggleWidgetActivity extends Activity {
 
     private void startAction(final int i) {
         actionType = i;
-        boolean isProtected = new SecurityUtil(ToggleWidgetActivity.this).checkPasswordProtect();
+        SecurityUtil util = new SecurityUtil(ToggleWidgetActivity.this);
+        boolean isProtected = util.isPasswordProtected();
         if (!isProtected) {
             invokeAction();
+        } else {
+            util.passCheck();
         }
     }
 

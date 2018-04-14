@@ -95,10 +95,13 @@ public class SecurityUtil {
     }
 
 
-    public boolean checkPasswordProtect() {
-        if (G.enableDeviceCheck()) {
+    public boolean isPasswordProtected() {
+        return (G.enableDeviceCheck() || (G.protectionLevel().equals("p1") && G.profile_pwd().length() > 0)
+                || G.sPrefs.getString("LockPassword", "").length() > 0 || (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()));
+
+    }
+       /* if (G.enableDeviceCheck()) {
             deviceCheck();
-            return true;
         } else {
             switch (G.protectionLevel()) {
                 case "p0":
@@ -129,7 +132,7 @@ public class SecurityUtil {
             }
         }
         return false;
-    }
+    } */
 
     private void requestFingerprint() {
         FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(context);
