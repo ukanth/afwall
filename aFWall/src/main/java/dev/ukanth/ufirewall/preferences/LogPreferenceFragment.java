@@ -44,6 +44,9 @@ public class LogPreferenceFragment extends PreferenceFragment {
         if (G.isDoKey(getActivity()) || G.isDonate()) {
             showHost.setEnabled(true);
         }
+       /* if(!Api.isAFWallAllowed((Context) getActivity())){
+            showHost.setChecked(false);
+        }*/
     }
 
     private void populateLogMessage(Preference logDmesg) {

@@ -1950,7 +1950,7 @@ public final class Api {
             showNotification(Api.isEnabled(ctx), ctx);
         }
 
-		/* notify */
+        /* notify */
         Intent message = new Intent(Api.STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
         ctx.sendBroadcast(message);
@@ -3410,6 +3410,26 @@ public final class Api {
                     }
                 }
             }).start();
+        }
+    }
+
+    public static boolean isAFWallAllowed(Context context) {
+        try {
+            int uid = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).uid;
+            SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            List<Integer> selected_wifi = getListFromPref(prefs.getString(PREF_WIFI_PKG_UIDS, ""));
+            List<Integer> selected_3g = getListFromPref(prefs.getString(PREF_3G_PKG_UIDS, ""));
+            List<Integer> selected_roam = new ArrayList<>();
+            List<Integer> selected_vpn = new ArrayList<>();
+            if (G.enableRoam()) {
+                selected_roam = getListFromPref(prefs.getString(PREF_ROAMING_PKG_UIDS, ""));
+            }
+            if (G.enableVPN()) {
+                selected_vpn = getListFromPref(prefs.getString(PREF_VPN_PKG_UIDS, ""));
+            }
+            return (selected_wifi.contains(uid) && selected_3g.contains(uid)) || selected_roam.contains(uid) || selected_vpn.contains(uid);
+        } catch (NameNotFoundException e) {
+            return false;
         }
     }
 }

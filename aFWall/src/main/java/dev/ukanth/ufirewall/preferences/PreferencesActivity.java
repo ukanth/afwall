@@ -214,7 +214,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 || LanguagePreferenceFragment.class.getName().equals(fragmentName)) {
             return (true);
         }
-
         return (false);
     }
 
