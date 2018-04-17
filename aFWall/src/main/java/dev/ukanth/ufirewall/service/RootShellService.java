@@ -27,6 +27,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -184,11 +185,14 @@ public class RootShellService extends Service {
                                 }
                             }
                             if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
-                                state.retryCount++;
-                                Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                        ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-                                processCommands(state);
-                                return;
+                                //lets wait for few ms before trying ?
+                                new Handler().postDelayed(() -> {
+                                    state.retryCount++;
+                                    Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                            ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+                                    processCommands(state);
+                                    return;
+                                }, 1000L);
                             }
 
                             state.commandIndex++;
