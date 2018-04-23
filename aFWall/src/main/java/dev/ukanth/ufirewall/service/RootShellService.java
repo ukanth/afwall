@@ -146,7 +146,7 @@ public class RootShellService extends Service {
             } else if (rootState == ShellState.READY) {
                 Log.i(TAG, "Total commamds: #" + state.getCommmands().size());
                 rootState = ShellState.BUSY;
-                if(G.isRun()) {
+                if (G.isRun()) {
                     createNotification(mContext);
                 }
                 processCommands(state);
@@ -186,13 +186,11 @@ public class RootShellService extends Service {
                             }
                             if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
                                 //lets wait for few ms before trying ?
-                                new Handler().postDelayed(() -> {
-                                    state.retryCount++;
-                                    Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                            ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-                                    processCommands(state);
-                                    return;
-                                }, 1000L);
+                                state.retryCount++;
+                                Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                        ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+                                processCommands(state);
+                                return;
                             }
 
                             state.commandIndex++;
