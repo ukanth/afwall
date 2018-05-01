@@ -1,7 +1,7 @@
 Changelog AFWall+
 ==================
 
-Version 2.9.9-BETA(WIP)
+Version 2.9.9
 
 * Support for dual apps (experimental)
 * DNS Hostname option on log toast(donate feature)
@@ -17,6 +17,7 @@ Bugs:
 * User reported crash fixes.
 * Updated string translations
 * Added default system language option.
+* Log notification name issue
 
 Version 2.9.8
 
