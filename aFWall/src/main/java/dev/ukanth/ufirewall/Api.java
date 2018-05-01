@@ -27,6 +27,7 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -80,6 +81,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -557,6 +559,16 @@ public final class Api {
             Log.i(TAG, "Exception while applying shortRules " + e.getMessage());
         }
 
+    }
+
+    public static String getSpecialAppName(int uid) {
+        List<PackageInfoData> packageInfoData = getSpecialData(true);
+        for (PackageInfoData infoData : packageInfoData) {
+            if (infoData.uid == uid) {
+                return infoData.names.get(0);
+            }
+        }
+        return ctx.getString(R.string.unknown_item);
     }
 
 
@@ -3432,4 +3444,5 @@ public final class Api {
             return false;
         }
     }
+
 }

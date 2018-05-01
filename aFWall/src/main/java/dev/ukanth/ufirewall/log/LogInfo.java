@@ -29,6 +29,8 @@ import android.util.SparseArray;
 
 import org.xbill.DNS.Address;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
@@ -145,12 +147,12 @@ public class LogInfo {
         return res.toString();
     }
 
-    public static LogInfo parseLogs(String result, final Context ctx, String pattern, int type) {
 
-        final int unknownUID = -1;
+    public static LogInfo parseLogs(String result, final Context ctx, String pattern, int type) {
         StringBuilder address;
         int start, end;
-        Integer uid;
+        Integer uid = -11;
+        Integer strUid;
         String out, src, dst, proto, spt, dpt, len;
         LogInfo logInfo = new LogInfo();
 
@@ -163,12 +165,14 @@ public class LogInfo {
             while ((pos = result.indexOf(pattern, pos)) > -1) {
                 if (result.indexOf(pattern) == -1)
                     continue;
-                uid = unknownUID;
 
                 if (((start = result.indexOf("UID=")) != -1)
                         && ((end = result.indexOf(" ", start)) != -1)) {
-                    uid = Integer.parseInt(result.substring(start + 4, end));
-                    if (uid != null) logInfo.uid = uid;
+                    strUid = Integer.parseInt(result.substring(start + 4, end));
+                    if (strUid != null) {
+                        uid = strUid;
+                        logInfo.uid = strUid;
+                    }
                 }
                 //logInfo = new LogInfo();
                 if (((start = result.indexOf("DST=")) != -1)
@@ -217,28 +221,35 @@ public class LogInfo {
                     return null;
                 }
                 String appName = "";
-                if (uid.intValue() != unknownUID) {
-                    if (uid == 1020) {
-                        appName = "mDNS";
+                if(uid == -11) {
+                    appName = ctx.getString(R.string.kernel_item);
+                    logInfo.uid = uid;
+                } else {
+                    if (uid < 2000) {
+                        appName = Api.getSpecialAppName(uid);
                     } else {
                         //system level packages
-                        if (!appNameMap.containsKey(uid)) {
-                            appName = ctx.getPackageManager().getNameForUid(uid);
-                            for (PackageInfoData app : apps) {
-                                if (app.uid == uid) {
-                                    appName = app.names.get(0);
-                                    break;
+                        try {
+                            if (!appNameMap.containsKey(uid)) {
+                                appName = ctx.getPackageManager().getNameForUid(uid);
+                                for (PackageInfoData app : apps) {
+                                    if (app.uid == uid) {
+                                        appName = app.names.get(0);
+                                        break;
+                                    }
                                 }
+                            } else {
+                                appName = appNameMap.get(uid);
                             }
-                            appNameMap.put(uid, appName);
-                        } else {
-                            appName = appNameMap.get(uid);
+                        } catch (Exception e) {
+                            //could be kernel
+                            Log.e(Api.TAG, "Exception in LogInfo when trying to find name for uid " + uid + "");
+                            logInfo.uid = uid;
+                            appName = ctx.getString(R.string.unknown_item);
                         }
                     }
-
-                } else {
-                    appName = ctx.getString(R.string.unknown_item);
                 }
+
                 logInfo.appName = appName;
                 address = new StringBuilder();
                 //address.append(ctx.getString(R.string.blocked));
