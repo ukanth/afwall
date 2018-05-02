@@ -100,48 +100,12 @@ public class SecurityUtil {
                 || G.sPrefs.getString("LockPassword", "").length() > 0 || (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()));
 
     }
-       /* if (G.enableDeviceCheck()) {
-            deviceCheck();
-        } else {
-            switch (G.protectionLevel()) {
-                case "p0":
-                    return false;
-                case "p1":
-                    final String oldpwd = G.profile_pwd();
-                    if (oldpwd.length() == 0) {
-                        return false;
-                    } else {
-                        // Check the password
-                        requestPassword();
-                        return true;
-                    }
-                case "p2":
-                    final String pwd = G.sPrefs.getString("LockPassword", "");
-                    if (pwd.length() == 0) {
-                        return false;
-                    } else {
-                        requestPassword();
-                        return true;
-                    }
-                case "p3":
-                    if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
-                        requestFingerprint();
-                        return true;
-                    }
-                    break;
-            }
-        }
-        return false;
-    } */
 
     private void requestFingerprint() {
-        FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(context);
-        dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
-            @Override
-            public void then() {
-                activity.finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
-            }
+        FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(activity);
+        dialog.setOnFingerprintFailureListener(() -> {
+            activity.finish();
+            android.os.Process.killProcess(android.os.Process.myPid());
         });
         dialog.show();
     }

@@ -1071,7 +1071,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //language
         Api.updateLanguage(getApplicationContext(), G.locale());
         if (menu != null) {
-            menuSetApplyOrSave(menu, Api.isEnabled(MainActivity.this));
+            menuSetApplyOrSave(mainMenu, Api.isEnabled(MainActivity.this));
         }
         return true;
     }
@@ -1887,7 +1887,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param
      */
     /*public static void addToQueue(@NonNull PackageInfoData data) {
-        *//*if (queue == null) {
+     *//*if (queue == null) {
             queue = new HashSet<>();
         }
         //add or update based on new data
