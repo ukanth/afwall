@@ -227,6 +227,9 @@ public class LogInfo {
                 } else {
                     if (uid < 2000) {
                         appName = Api.getSpecialAppName(uid);
+                        if(uid == 1000) {
+                            appName = ctx.getString(R.string.android_system);
+                        }
                     } else {
                         //system level packages
                         try {
