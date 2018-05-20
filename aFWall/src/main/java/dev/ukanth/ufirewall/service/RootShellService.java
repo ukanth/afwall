@@ -134,23 +134,27 @@ public class RootShellService extends Service {
                 break;
             }
 
-            Log.i(TAG, "Start processing next state");
-            if (enableProfiling) {
-                state.startTime = new Date();
+            if (state != null) {
+                Log.i(TAG, "Start processing next state");
+                if (enableProfiling) {
+                    state.startTime = new Date();
+                }
+
+                if (rootState == ShellState.FAIL) {
+                    // if we don't have root, abort all queued commands
+                    complete(state, EXIT_NO_ROOT_ACCESS);
+                    continue;
+                } else if (rootState == ShellState.READY) {
+                    //Log.i(TAG, "Total commamds: #" + state.getCommmands().size());
+                    rootState = ShellState.BUSY;
+                    if (G.isRun()) {
+                        createNotification(mContext);
+                    }
+                    processCommands(state);
+                }
             }
 
-            if (rootState == ShellState.FAIL) {
-                // if we don't have root, abort all queued commands
-                complete(state, EXIT_NO_ROOT_ACCESS);
-                continue;
-            } else if (rootState == ShellState.READY) {
-                Log.i(TAG, "Total commamds: #" + state.getCommmands().size());
-                rootState = ShellState.BUSY;
-                if (G.isRun()) {
-                    createNotification(mContext);
-                }
-                processCommands(state);
-            }
+
         } while (false);
     }
 

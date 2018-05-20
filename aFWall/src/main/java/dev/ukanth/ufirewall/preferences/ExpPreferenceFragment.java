@@ -198,31 +198,36 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 
     private void deleteFiles(final Context ctx, final boolean updateCheckbox) {
         String path = G.initPath();
-        File f = new File(path);
-        if (f.exists() && f.isDirectory()) {
-            final String filePath = path + "/" + initScript;
+        if(path != null) {
+            File f = new File(path);
+            if (f.exists() && f.isDirectory()) {
+                final String filePath = path + "/" + initScript;
 
-            new Thread(() -> {
-                if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
-                    new RootCommand()
-                            .setReopenShell(true).setCallback(new RootCommand.Callback() {
-                        @Override
-                        public void cbFunc(RootCommand state) {
-                            if (state.exitCode == 0) {
-                                Api.sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
-                            } else {
-                                Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
+                new Thread(() -> {
+                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                        new RootCommand()
+                                .setReopenShell(true).setCallback(new RootCommand.Callback() {
+                            @Override
+                            public void cbFunc(RootCommand state) {
+                                if (state.exitCode == 0) {
+                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
+                                } else {
+                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
+                                }
+                                if (updateCheckbox) {
+                                    updateLeakCheckbox();
+                                }
                             }
-                            if (updateCheckbox) {
-                                updateLeakCheckbox();
-                            }
-                        }
-                    }).setLogging(true).run(ctx, "rm -f " + filePath);
-                    mountDir(ctx, getFixLeakPath(initScript), "RO");
-                } else {
-                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
-                }
-            }).start();
+                        }).setLogging(true).run(ctx, "rm -f " + filePath);
+                        mountDir(ctx, getFixLeakPath(initScript), "RO");
+                    } else {
+                        Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
+                    }
+                }).start();
+            }
+        } else {
+            Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
         }
+
     }
 }
