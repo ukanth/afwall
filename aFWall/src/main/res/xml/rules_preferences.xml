@@ -29,6 +29,13 @@
             android:key="enableVPN"
             android:summary="@string/vpnSummary"
             android:title="@string/vpn_profile" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="activeRules"
+            android:icon="@drawable/ic_tor"
+            android:key="enableTor"
+            android:summary="@string/torSummary"
+            android:title="@string/tor_profile" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/ui_chains_title">

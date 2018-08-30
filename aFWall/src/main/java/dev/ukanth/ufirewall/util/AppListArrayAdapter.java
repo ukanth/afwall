@@ -70,6 +70,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             if (G.enableLAN()) {
                 holder.box_lan = addSupport(convertView, true, R.id.itemcheck_lan);
             }
+            if (G.enableTor()) {
+                holder.box_tor = addSupport(convertView, true, R.id.itemcheck_tor);
+            }
 
             holder.text = (TextView) convertView.findViewById(R.id.itemtext);
             holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
@@ -96,6 +99,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             }
             if (G.enableLAN()) {
                 addSupport(convertView, false, R.id.itemcheck_lan);
+            }
+            if (G.enableTor()) {
+                addSupport(convertView, false, R.id.itemcheck_tor);
             }
 
             holder.text = (TextView) convertView.findViewById(R.id.itemtext);
@@ -172,6 +178,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }
         if (G.enableLAN()) {
             holder.box_lan = addSupport(holder.box_lan, holder.app, 2);
+        }
+        if (G.enableTor()) {
+            holder.box_tor = addSupport(holder.box_tor, holder.app, 3);
         }
 
         addEventListenter(holder);
@@ -265,6 +274,23 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 }
             });
         }
+
+        if (holder.box_tor != null) {
+            holder.box_tor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if(compoundButton.isPressed()) {
+                        if (holder.app.selected_tor != isChecked) {
+                            holder.app.selected_tor = isChecked;
+                            MainActivity.dirty = true;
+                            notifyDataSetChanged();
+                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+                           //MainActivity.addToQueue(holder.app);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     private CheckBox addSupport(CheckBox check, PackageInfoData app, int flag) {
@@ -279,6 +305,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     break;
                 case 2:
                     check.setChecked(app.selected_lan);
+                    break;
+                case 3:
+                    check.setChecked(app.selected_tor);
                     break;
             }
         }
@@ -307,6 +336,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         private CheckBox box_3g;
         private CheckBox box_roam;
         private CheckBox box_vpn;
+        private CheckBox box_tor;
         private TextView text;
         private ImageView icon;
         private PackageInfoData app;
@@ -392,6 +422,13 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 case R.id.itemcheck_lan:
                     if (app.selected_lan != isChecked) {
                         app.selected_lan = isChecked;
+                        MainActivity.dirty = true;
+                        notifyDataSetChanged();
+                    }
+                    break;
+                case R.id.itemcheck_tor:
+                    if (app.selected_tor != isChecked) {
+                        app.selected_tor = isChecked;
                         MainActivity.dirty = true;
                         notifyDataSetChanged();
                     }
