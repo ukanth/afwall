@@ -27,7 +27,6 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -81,7 +80,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -124,6 +122,10 @@ import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
+import static dev.ukanth.ufirewall.util.G.ipv4Fwd;
+import static dev.ukanth.ufirewall.util.G.ipv4Input;
+import static dev.ukanth.ufirewall.util.G.ipv6Fwd;
+import static dev.ukanth.ufirewall.util.G.ipv6Input;
 
 /**
  * Contains shared programming interfaces.
@@ -682,8 +684,14 @@ public final class Api {
 
         List<String> cmds = new ArrayList<String>();
 
-        cmds.add("-P INPUT ACCEPT");
-        cmds.add("-P FORWARD ACCEPT");
+        //check before make them ACCEPT state
+        if(ipv4Input() || (ipv6 && ipv6Input())) {
+            cmds.add("-P INPUT ACCEPT");
+        }
+
+        if(ipv4Fwd() || (ipv6 && ipv6Fwd())) {
+            cmds.add("-P FORWARD ACCEPT");
+        }
 
         try {
             // prevent data leaks due to incomplete rules
