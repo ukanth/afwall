@@ -24,13 +24,14 @@ package dev.ukanth.ufirewall.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
-import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.util.G;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
+
+    private ConnectivityReceiverListener mConnectivityReceiverListener;
 
     public static final String TAG = "AFWall";
 
@@ -39,11 +40,9 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
     public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
 
-	/*public static final int WIFI_AP_STATE_DISABLING = 10;
-    public static final int WIFI_AP_STATE_DISABLED = 11;
-	public static final int WIFI_AP_STATE_ENABLING = 12;
-	public static final int WIFI_AP_STATE_ENABLED = 13;
-	public static final int WIFI_AP_STATE_FAILED = 14;*/
+    public ConnectivityChangeReceiver(ConnectivityReceiverListener listener) {
+        mConnectivityReceiverListener = listener;
+    }
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -59,8 +58,18 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
             int oldState = intent.getIntExtra(EXTRA_PREVIOUS_WIFI_AP_STATE, -1);
             Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
         }
-        if (Api.isEnabled(context) && G.activeRules()) {
-            InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
-        }
+        Log.i(TAG, "Network change captured.");
+        mConnectivityReceiverListener.onNetworkConnectionChanged(isConnected(context));
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    public interface ConnectivityReceiverListener {
+        void onNetworkConnectionChanged(boolean isConnected);
     }
 }

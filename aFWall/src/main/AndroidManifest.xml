@@ -42,6 +42,9 @@
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
+    <!-- uses for job schedulers -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
 
     <!-- Screen support -->
     <supports-screens
@@ -159,6 +162,7 @@
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
 
+        <!-- still will work in android 7 above -->
         <receiver android:name=".broadcast.BootBroadcast">
             <intent-filter android:priority="500">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -168,20 +172,35 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".broadcast.PackageBroadcast">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".broadcast.ConnectivityChangeReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
+        <!--
+                <receiver android:name=".broadcast.PackageBroadcast">
+                    <intent-filter>
+                        <action android:name="android.intent.action.PACKAGE_ADDED" />
+                        <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                        <data android:scheme="package" />
+                    </intent-filter>
+                </receiver>
+
+
+                <receiver android:name=".broadcast.ConnectivityChangeReceiver">
+                    <intent-filter>
+                        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                        <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
+                    </intent-filter>
+                </receiver> -->
+
+        <service
+            android:name=".service.NetworkSchedulerService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <service
+            android:name=".service.PackageService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
         <receiver
             android:name=".widget.StatusWidget"
             android:icon="@drawable/preview_toggle"

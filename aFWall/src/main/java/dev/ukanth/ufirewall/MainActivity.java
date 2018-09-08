@@ -27,8 +27,11 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -94,6 +97,8 @@ import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
+import dev.ukanth.ufirewall.service.NetworkSchedulerService;
+import dev.ukanth.ufirewall.service.PackageService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -203,6 +208,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //queue = new HashSet<>();
 
+        registerNetwork();
+        registerPackage();
+
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
@@ -214,6 +222,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerToastbroadcast();
 
         migrateNotification();
+    }
+
+    private void registerNetwork() {
+        JobInfo myJob = new JobInfo.Builder(1102, new ComponentName(this, NetworkSchedulerService.class))
+                .setRequiresCharging(false)
+                .setPeriodic(2000)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .build();
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(myJob);
+    }
+
+    private void registerPackage() {
+        JobInfo myJob = new JobInfo.Builder(0, new ComponentName(this, PackageService.class))
+                .setRequiresCharging(true)
+                .setMinimumLatency(1000)
+                .setOverrideDeadline(2000)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .build();
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(myJob);
     }
 
     private void migrateNotification() {
@@ -335,6 +366,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 showApplications("", 99, true);
                 break;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopService(new Intent(this, NetworkSchedulerService.class));
+        stopService(new Intent(this, PackageService.class));
     }
 
     @Override
@@ -504,6 +542,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initDone = 0;
         //startRootShell();
         reloadPreferences();
+        Intent startNetServiceIntent = new Intent(getApplicationContext(), NetworkSchedulerService.class);
+        startService(startNetServiceIntent);
+
+        Intent startPackageServiceIntent = new Intent(getApplicationContext(), PackageService.class);
+        startService(startPackageServiceIntent);
     }
 
     private void addColumns(int id) {
@@ -1887,7 +1930,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param
      */
     /*public static void addToQueue(@NonNull PackageInfoData data) {
-        *//*if (queue == null) {
+     *//*if (queue == null) {
             queue = new HashSet<>();
         }
         //add or update based on new data
