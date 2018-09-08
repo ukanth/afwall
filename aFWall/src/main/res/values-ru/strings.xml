@@ -398,7 +398,7 @@
   <string name="error_nonsupported_details">AFWall+ обнаружил неподдерживаемое приложение суперпользователя, которое обходит правила брандмауэра. Поскольку приложение использует права суперпользователя, AFWall+ не может исправить данную проблему.</string>
   <string name="lockNotification">Скрыть значок уведомления на экр. блокировки</string>
   <string name="lockScreenNotification_summary">Скрыть текущие уведомления на экране блокировки</string>
-  <string name="menu_legend">Легенда</string>
+  <string name="menu_legend">Условные обозначения</string>
   <string name="permissiondenied_importexport">Нет разрешений на чтение/запись доступ к внешней карте памяти. Пожалуйста, предоставьте доступ для экспорта/импорта правил.</string>
   <string name="permissiondenied_asset">Нет разрешений на чтение/запись с внутренней карты памяти. Пожалуйста, предоставьте доступ для копирования двоичных файлов AFWall + </string>
   <string name="log_deletedapp">Удалённое приложение</string>
@@ -491,5 +491,4 @@
   <string name="forward_chain_v6">ПЕРЕНАПРАВЛЕНИЕ цепочки (IPv6)</string>
   <string name="quick_apply_title">Показать быстрое применение</string>
   <string name="quick_apply_summary">Только в платной версии! Показать плавающую кнопку для быстрого применения правил</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

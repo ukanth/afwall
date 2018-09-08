@@ -323,7 +323,7 @@
   <string name="disable_dns">netd 経由で DNS を無効にします</string>
   <string name="dns_proxy_title">DNS プロキシ </string>
   <string name="dns_proxy_summary">DNS ルックアップは Android 4.3 およびそれ以降、netd 経由です。これを無効にすると、それらのデバイスでインターネットがブロックされます。</string>
-  <string name="tasker_lable">AFWall+ Tasker プラグイン</string>
+  <string name="tasker_lable">AFWall+ タスカー プラグイン</string>
   <string name="enable">有効</string>
   <string name="disable">無効</string>
   <string name="filters_apps_title">通知フィルター</string>
@@ -446,7 +446,7 @@
   <!-- Custom Rules -->
   <string name="add_ip_rule">カスタムルールを追加</string>
   <!-- Fingerprint -->
-  <string name="pref_fingerprint">指紋</string>
+  <string name="pref_fingerprint">指紋認証</string>
   <string name="fingerprint_authentication_error">指紋認証エラー\n</string>
   <string name="fingerprint_authentication_help">指紋認証のヘルプ\n</string>
   <string name="fingerprint_authentication_failed">指紋認証に失敗しました。</string>
@@ -454,11 +454,11 @@
   <string name="title_activity_main">MainActivity</string>
   <string name="title_fingerprint">ワンタッチのロック解除</string>
   <string name="desc_fingerprint">身元を確認するために、スキャナーに指先を置いてください</string>
-  <string name="note">(指紋認証で高速にアプリにログインできます。お使いのデバイスで、デバイスの設定に少なくとも 1 つ指紋を登録する必要があります)</string>
+  <string name="note">（指紋認証で高速にアプリにログインできます。お使いのデバイスで、少なくとも１つ指紋を登録する必要があります）</string>
   <string name="title_activity_home">指紋</string>
   <string name="activity_home_desc">指紋認証でログインに成功しました</string>
   <string name="activity_home_note">アプリを閉じて再度開くと、もう一度指紋認証画面を表示します</string>
-  <string name="fingerprint_required">指紋が必要です</string>
+  <string name="fingerprint_required">指紋認証が必要です</string>
   <string name="device_with_no_fingerprint_sensor">お使いのデバイスに、指紋センサーがありません</string>
   <string name="fingerprint_permission_manifest_missing">指紋認証のアクセス許可が有効になっていません</string>
   <string name="register_at_least_one_fingerprint">設定で、少なくとも一つ指紋を登録してください</string>
@@ -493,5 +493,4 @@
   <string name="forward_chain_v6">転送チェーン (IPv6)</string>
   <string name="quick_apply_title">クイック適用を表示</string>
   <string name="quick_apply_summary">寄付の場合のみ! すぐにルールを適用するフローティング適用ボタンを表示します</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

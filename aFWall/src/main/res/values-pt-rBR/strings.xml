@@ -490,5 +490,4 @@
   <string name="forward_chain_v6">Corrente direta (IPv6)</string>
   <string name="quick_apply_title">Aplicar o programa rápido</string>
   <string name="quick_apply_summary">Doe apenas! Mostrar flutuante aplicar botão para aplicar as regras rapidamente</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

@@ -261,7 +261,7 @@
   <string name="rules_prefs_title">规则/连接</string>
   <string name="log_prefs_title">日志</string>
   <string name="hideicons_pref_title">隐藏应用图标</string>
-  <string name="hideicons_pref_summary_on">在主界面中隐藏应用图标以提升性能.</string>
+  <string name="hideicons_pref_summary_on">在主视图中隐藏应用图标以提升性能</string>
   <string name="hideicons_pref_summary_off">在主视图中显示应用图标</string>
   <string name="notify_pref_title">启用通知</string>
   <string name="syscolor_pref_title">系统应用颜色</string>
@@ -467,7 +467,7 @@
   <string name="label_zoomout">缩小</string>
   <string name="exception_pref">由于首选项损坏，无法启动应用，请清除应用数据</string>
   <string name="ipdetect">AFWall+ 检测到 IPv6 连接。请从首选项 - 规则/连接中启用后重新应用</string>
-  <string name="delayTitle">自定义延迟（秒）</string>
+  <string name="delayTitle">自定义延迟秒数</string>
   <string name="delaySummary">AFWall+ 将等待若干秒后应用规则</string>
   <string name="delayDialog">设置延迟（秒）</string>
   <string name="pingDelayTitle">ping 时间</string>
@@ -491,5 +491,4 @@
   <string name="forward_chain_v6">FORWARD 链（IPv6）</string>
   <string name="quick_apply_title">显示快速应用</string>
   <string name="quick_apply_summary">捐赠版功能！显示浮动应用按钮以便快速应用规则</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>
