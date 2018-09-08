@@ -31,6 +31,7 @@
     <string name="error_common">Error: </string>
     <string name="all_item">(Any app) - Same as selecting all apps</string>
     <string name="kernel_item">(kernel) - Linux kernel</string>
+    <string name="android_system">Android System</string>
     <string name="unknown_item">Unknown</string>
     <string name="tethering_item">(tethering) - DHCP+DNS services</string>
     <string name="dnsproxy_item">(dns proxy) - DNS lookups via netd</string>

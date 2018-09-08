@@ -1097,14 +1097,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void menuSetApplyOrSave(final Menu menu, final boolean isEnabled) {
         runOnUiThread(() -> {
-            if (isEnabled) {
-                menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
-                menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);
-                getSupportActionBar().setIcon(R.drawable.notification);
-            } else {
-                menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
-                menu.findItem(R.id.menu_apply).setTitle(R.string.saverules);
-                getSupportActionBar().setIcon(R.drawable.notification_error);
+            if(menu != null) {
+                if (isEnabled) {
+                    menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
+                    menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);
+                    getSupportActionBar().setIcon(R.drawable.notification);
+                } else {
+                    menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_enabled).setIcon(R.drawable.notification);
+                    menu.findItem(R.id.menu_apply).setTitle(R.string.saverules);
+                    getSupportActionBar().setIcon(R.drawable.notification_error);
+                }
             }
         });
     }
@@ -1114,7 +1116,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //language
         Api.updateLanguage(getApplicationContext(), G.locale());
         if (menu != null) {
-            menuSetApplyOrSave(menu, Api.isEnabled(MainActivity.this));
+            menuSetApplyOrSave(mainMenu, Api.isEnabled(MainActivity.this));
         }
         return true;
     }

@@ -113,7 +113,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         recyclerView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
             menu.setHeaderTitle(R.string.select_the_action);
             //groupId, itemId, order, title
-            menu.add(0, v.getId(), 0, R.string.add_ip_rule);
+            //menu.add(0, v.getId(), 0, R.string.add_ip_rule);
             menu.add(0, v.getId(), 1, R.string.show_destination_address);
             menu.add(0, v.getId(), 2, R.string.show_source_address);
             menu.add(0, v.getId(), 3, R.string.ping_destination);

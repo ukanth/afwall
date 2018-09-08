@@ -4,8 +4,7 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        applicationId "dev.ukanth.ufirewall.beta"
-        //applicationId "dev.ukanth.ufirewall.donate"
+        applicationId "dev.ukanth.ufirewall"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 15992
