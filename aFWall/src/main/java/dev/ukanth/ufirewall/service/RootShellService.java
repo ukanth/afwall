@@ -22,12 +22,13 @@
 
 package dev.ukanth.ufirewall.service;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -335,10 +336,20 @@ public class RootShellService extends Service {
 
     private static void createNotification(Context context) {
 
+        String CHANNEL_ID = "AFWall+ Apply Notitication";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        builder = new NotificationCompat.Builder(context);
+        builder = new NotificationCompat.Builder(context,CHANNEL_ID);
 
         Intent appIntent = new Intent(context, MainActivity.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /* Create or update. */
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,context.getString(R.string.runNotification),
+                    NotificationManager.IMPORTANCE_MIN);
+            channel.setDescription("");
+            channel.setShowBadge(true);
+            notificationManager.createNotificationChannel(channel);
+        }
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);
@@ -349,6 +360,7 @@ public class RootShellService extends Service {
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
                 .setTicker(context.getString(R.string.app_name))
+                .setChannelId(CHANNEL_ID)
                 .setPriority(-2)
                 .setContentText("");
         builder.setProgress(0, 0, true);

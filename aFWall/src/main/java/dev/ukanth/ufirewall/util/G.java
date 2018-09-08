@@ -23,19 +23,16 @@
 
 package dev.ukanth.ufirewall.util;
 
+import android.app.Activity;
 import android.app.Application;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
-import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
@@ -52,16 +49,17 @@ import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
-import dev.ukanth.ufirewall.service.LogService;
 
-public class G extends Application {
-
+public class G extends Application implements Application.ActivityLifecycleCallbacks{
 
     private static G instance;
+
+    private static boolean isActivityVisible;
 
     public static G getInstance() {
         return instance;
@@ -784,6 +782,7 @@ public class G extends Application {
         //Shell.setFlags(Shell.ROOT_SHELL);
         //Shell.setFlags(Shell.FLAG_REDIRECT_STDERR);
         //Shell.verboseLogging(BuildConfig.DEBUG);
+        registerActivityLifecycleCallbacks(this);
         super.onCreate();
         try {
             FlowManager.init(new FlowConfig.Builder(this)
@@ -929,4 +928,43 @@ public class G extends Application {
     private static boolean activityVisible;
 
 
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onActivityStarted(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) {
+        if (activity instanceof MainActivity) {
+            isActivityVisible = true;
+        }
+    }
+
+    @Override
+    public void onActivityPaused(Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+        if (activity instanceof MainActivity) {
+            isActivityVisible = false;
+        }
+
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+
+    }
 }

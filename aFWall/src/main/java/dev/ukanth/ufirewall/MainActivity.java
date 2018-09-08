@@ -45,6 +45,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -222,29 +224,65 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerToastbroadcast();
 
         migrateNotification();
+
+        //checkAndAskForBatteryOptimization();
+    }
+
+
+    private void checkAndAskForBatteryOptimization() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(POWER_SERVICE);
+            if (!powerManager.isIgnoringBatteryOptimizations(getPackageName())) {
+                new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+                        .title(R.string.battery_optimization_title)
+                        .content(R.string.battery_optimization_desc)
+                        .onPositive((dialog, which) -> {
+                            try {
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                                startActivity(intent);
+                            } catch (ActivityNotFoundException e) {
+                                Toast.makeText(getApplicationContext(), "Unable to open battery optimisation screen. Please add it manually", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .onNegative((dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .positiveText(R.string.Continue)
+                        .negativeText(R.string.exit)
+                        .show();
+            }
+        }
     }
 
     private void registerNetwork() {
-        JobInfo myJob = new JobInfo.Builder(1102, new ComponentName(this, NetworkSchedulerService.class))
-                .setRequiresCharging(false)
-                .setPeriodic(2000)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPersisted(true)
-                .build();
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.schedule(myJob);
+        JobInfo myJob = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            myJob = new JobInfo.Builder(1102, new ComponentName(this, NetworkSchedulerService.class))
+                    .setRequiresCharging(false)
+                    .setPeriodic(2000)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPersisted(true)
+                    .build();
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.schedule(myJob);
+        }
+
     }
 
     private void registerPackage() {
-        JobInfo myJob = new JobInfo.Builder(0, new ComponentName(this, PackageService.class))
-                .setRequiresCharging(true)
-                .setMinimumLatency(1000)
-                .setOverrideDeadline(2000)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                .setPersisted(true)
-                .build();
-        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.schedule(myJob);
+        JobInfo myJob = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            myJob = new JobInfo.Builder(0, new ComponentName(this, PackageService.class))
+                    .setRequiresCharging(true)
+                    .setMinimumLatency(1000)
+                    .setOverrideDeadline(2000)
+                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                    .setPersisted(true)
+                    .build();
+            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+            jobScheduler.schedule(myJob);
+        }
     }
 
     private void migrateNotification() {
@@ -1097,7 +1135,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void menuSetApplyOrSave(final Menu menu, final boolean isEnabled) {
         runOnUiThread(() -> {
-            if(menu != null) {
+            if (menu != null) {
                 if (isEnabled) {
                     menu.findItem(R.id.menu_toggle).setTitle(R.string.fw_disabled).setIcon(R.drawable.notification_error);
                     menu.findItem(R.id.menu_apply).setTitle(R.string.applyrules);

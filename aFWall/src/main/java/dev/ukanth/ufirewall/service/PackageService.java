@@ -53,7 +53,9 @@ public class PackageService extends JobService {
     //ensure that we unregister the receiver once it's done.
     @Override
     public void onDestroy() {
-        unregisterReceiver(receiver);
+        if(receiver != null) {
+            unregisterReceiver(receiver);
+        }
     }
 
 }

@@ -27,8 +27,8 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ClipData;
@@ -81,7 +81,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -3194,6 +3193,8 @@ public final class Api {
 
     public static void showNotification(boolean status, Context context) {
 
+        String CHANNEL_ID = "afwall_ongoing";
+
         if (G.activeNotification()) {
             final int NOTIFICATION_ID = 33341;
             String notificationText = "";
@@ -3207,7 +3208,7 @@ public final class Api {
             }
 
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"default");
 
             Intent appIntent = new Intent(context, MainActivity.class);
 
@@ -3251,6 +3252,16 @@ public final class Api {
                 icon = R.drawable.notification_error;
             }
 
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                /* Create or update. */
+                NotificationChannel channel = new NotificationChannel(CHANNEL_ID,context.getString(R.string.activeNotification),
+                        NotificationManager.IMPORTANCE_LOW);
+                channel.setDescription(notificationText);
+                channel.setShowBadge(true);
+                mNotificationManager.createNotificationChannel(channel);
+            }
+
             //TODO: Action button's on notification
             //Intent deleteIntent = new Intent(context, BootBroadcast.class);
             //PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -3262,6 +3273,7 @@ public final class Api {
                     //keep the priority as low ,so it's not visible on lockscreen
                     .setTicker(context.getString(R.string.app_name))
                     .setPriority(G.getNotificationPriority())
+                    .setChannelId(CHANNEL_ID)
                     //.addAction(R.drawable.apply, "", pendingIntentCancel)
                     //.addAction(R.drawable.exit, "", pendingIntentCancel)
                     .setContentText(notificationText);

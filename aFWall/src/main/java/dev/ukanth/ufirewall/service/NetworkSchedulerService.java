@@ -4,14 +4,17 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.broadcast.ConnectivityChangeReceiver;
 import dev.ukanth.ufirewall.util.G;
 
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class NetworkSchedulerService extends JobService implements
         ConnectivityChangeReceiver.ConnectivityReceiverListener {
 
@@ -24,6 +27,13 @@ public class NetworkSchedulerService extends JobService implements
         super.onCreate();
         Log.i(TAG, "Service created");
         mConnectivityReceiver = new ConnectivityChangeReceiver(this);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "Service destroyed");
     }
 
     /**
@@ -40,7 +50,7 @@ public class NetworkSchedulerService extends JobService implements
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.i(TAG, "onStartJob" + mConnectivityReceiver);
-        registerReceiver(mConnectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        registerReceiver(mConnectivityReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
         return true;
     }
 
@@ -54,8 +64,10 @@ public class NetworkSchedulerService extends JobService implements
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.i(TAG, "Network is available" + isConnected);
-        if (isConnected) {
+
+        if (!G.isActivityVisible() && isConnected) {
             Log.i(TAG, "Network is available.. applying rules");
+            Toast.makeText(getApplicationContext(), "Change in connectivity, applying rules", Toast.LENGTH_SHORT).show();
             if (Api.isEnabled(getApplicationContext()) && G.activeRules()) {
                 InterfaceTracker.applyRulesOnChange(getApplicationContext(), InterfaceTracker.CONNECTIVITY_CHANGE);
             }
