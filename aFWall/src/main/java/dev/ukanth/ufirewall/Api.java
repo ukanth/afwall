@@ -3016,6 +3016,7 @@ public final class Api {
     }
 
 
+
     public static void updateLanguage(Context context, String lang) {
         if (lang.equals("sys")) {
             Locale defaultLocale = Resources.getSystem().getConfiguration().locale;
@@ -3023,7 +3024,7 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = defaultLocale;
-            res.updateConfiguration(conf, res.getDisplayMetrics());
+            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
         } else if (!"".equals(lang)) {
             Locale locale = new Locale(lang);
             if (lang.contains("_")) {
@@ -3033,7 +3034,7 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
-            res.updateConfiguration(conf, res.getDisplayMetrics());
+            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
         }
     }
 
@@ -3208,7 +3209,7 @@ public final class Api {
             }
 
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"default");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
 
             Intent appIntent = new Intent(context, MainActivity.class);
 
@@ -3255,7 +3256,7 @@ public final class Api {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 /* Create or update. */
-                NotificationChannel channel = new NotificationChannel(CHANNEL_ID,context.getString(R.string.activeNotification),
+                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.activeNotification),
                         NotificationManager.IMPORTANCE_LOW);
                 channel.setDescription(notificationText);
                 channel.setShowBadge(true);

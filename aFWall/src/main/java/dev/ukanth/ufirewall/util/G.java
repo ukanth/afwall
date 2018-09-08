@@ -496,7 +496,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static String locale() {
-        return gPrefs.getString(LANGUAGE, "en");
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(LANGUAGE, "en");
     }
 
     public static String locale(String val) {
@@ -960,11 +960,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
     }
 
     @Override
-    public void onActivityDestroyed(Activity activity) {
+    public void onActivityDestroyed(Activity activity) { }
 
-    }
+
 }

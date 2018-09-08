@@ -311,13 +311,17 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
     @TargetApi(Build.VERSION_CODES.M)
     private boolean canUserFingerPrint() {
-        KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
-        FingerprintManager fingerprintManager = (FingerprintManager) globalContext.getSystemService(FINGERPRINT_SERVICE);
+        try {
+            KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
+            FingerprintManager fingerprintManager = (FingerprintManager) globalContext.getSystemService(FINGERPRINT_SERVICE);
 
-        return fingerprintManager.isHardwareDetected() &&
-                ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED &&
-                fingerprintManager.hasEnrolledFingerprints() &&
-                keyguardManager.isKeyguardSecure();
+            return fingerprintManager.isHardwareDetected() &&
+                    ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED &&
+                    fingerprintManager.hasEnrolledFingerprints() &&
+                    keyguardManager.isKeyguardSecure();
+        } catch (Exception e) {
+            return  false;
+        }
 
     }
     @TargetApi(Build.VERSION_CODES.M)
