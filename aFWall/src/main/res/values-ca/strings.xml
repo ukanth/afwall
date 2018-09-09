@@ -8,10 +8,10 @@
   <!-- main -->
   <string name="app_name">AFWall+ </string>
   <string name="app_name_donate">AFWall + (Donació)</string>
-  <string name="title_disabled">AFWall+ (DISABLED)</string>
+  <string name="title_disabled">AFWall + (INHABILITAT)</string>
   <string name="whitelist_array_item">Allow selected</string>
   <string name="blacklist_array_item">Block selected</string>
-  <string name="showrules">Show rules</string>
+  <string name="showrules">Mostra les normes</string>
   <string name="applyrules">Aplica</string>
   <string name="saverules">Desa</string>
   <string name="setpwd">Estableix la contrasenya</string>
@@ -29,7 +29,7 @@
   <string name="error_common">Error: </string>
   <string name="all_item">(Any app) - Same as selecting all apps</string>
   <string name="kernel_item">(kernel) - Linux kernel</string>
-  <string name="unknown_item">Unknown</string>
+  <string name="unknown_item">Desconegut</string>
   <string name="tethering_item">(tethering) - DHCP+DNS services</string>
   <string name="dnsproxy_item">(dns proxy) - DNS lookups via netd</string>
   <string name="ntp_item">(ntp) - Internet time servers</string>
@@ -41,10 +41,10 @@
   <string name="gps_item">(gps) - GPS</string>
   <string name="shell_item">(intèrpret d\'ordres) - intèrpret d\'ordres de Linux</string>
   <!-- <string name="operation_timeout">Operation timed out</string> -->
-  <string name="fw_enabled">Enable firewall</string>
-  <string name="fw_disabled">Disable firewall</string>
+  <string name="fw_enabled">Activa el tallafocs</string>
+  <string name="fw_disabled">Desactiva el tallafocs</string>
   <string name="flushed">S\'han buidat les regles</string>
-  <string name="show_log">View log</string>
+  <string name="show_log">Mostrar registre</string>
   <string name="clear_log">Esborra el registre</string>
   <string name="applying_rules">Applying iptables rules</string>
   <string name="applying">Applying</string>
@@ -55,7 +55,7 @@
   <string name="pass_titleset">Estableix el bloqueig amb contrasenya</string>
   <string name="pass_titleget">Es requereix la contrasenya</string>
   <string name="enterpass">Introduïu la contrasenya</string>
-  <string name="reenterpass">Confirm password</string>
+  <string name="reenterpass">Confirma contrasenya</string>
   <string name="error_write_pref">Error saving preferences</string>
   <string name="enternewpass">Enter new password (leave blank to remove):</string>
   <string name="passdefined">Password lock enabled</string>
@@ -124,15 +124,15 @@
   <!-- Color Picker -->
   <string name="color_pick">Select color to apply</string>
   <!-- Import/Export -->
-  <string name="import_rules_droidwall">Import DroidWall rules</string>
-  <string name="export_rules">Export rules only</string>
+  <string name="import_rules_droidwall">Importa les regles de Droidwall</string>
+  <string name="export_rules">Exporta només les regles</string>
   <string name="export_all">Export rules, profile settings, and preferences</string>
   <string name="import_rules">Import rules only</string>
   <string name="import_all">Import rules, profile settings, and preferences</string>
-  <string name="export_rules_success">Exported to </string>
-  <string name="export_rules_fail">Export failed!</string>
-  <string name="import_rules_success">Imported from </string>
-  <string name="import_rules_fail">Import failed!</string>
+  <string name="export_rules_success">Exportat a </string>
+  <string name="export_rules_fail">Exportació fallida!</string>
+  <string name="import_rules_success">Importat des de </string>
+  <string name="import_rules_fail">Importarció fallida!</string>
   <string name="import_rules_missing">No es troba el fitxer de regles!</string>
   <string name="exportConfirm">Export rules to storage?</string>
   <string name="export_logs_fail">Export to storage failed!</string>
@@ -142,11 +142,11 @@
   <string name="enable_firewall_log_service">Engega el servei de registre</string>
   <string name="showlog_title">Registres del tallafocs</string>
   <string name="showlog_service_summary">Enable to show toast messages when a connection gets blocked </string>
-  <string name="enable_log">Enable log</string>
-  <string name="disable_log">Disable log</string>
-  <string name="log_disabled">Log disabled</string>
-  <string name="log_was_enabled">Log enabled</string>
-  <string name="log_was_disabled">Log disabled</string>
+  <string name="enable_log">Habilita el registre</string>
+  <string name="disable_log">Desactiva el registre</string>
+  <string name="log_disabled">Registre desactivat</string>
+  <string name="log_was_enabled">Registre activat</string>
+  <string name="log_was_disabled">Registre desactivat</string>
   <string name="log_toggle_failed">S\'ha produït un error en conmutar l\'estat del registre</string>
   <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
   <string name="log_cleared">S\'ha esborrat el registre</string>
@@ -159,8 +159,8 @@
   <string name="LogPackBlock">Total de paquets bloquejats</string>
   <string name="blocked">AFWall+ Blocked:</string>
   <string name="refresh">Refresca</string>
-  <string name="block_ipv6_title">delete</string>
-  <string name="block_ipv6_summary">delete</string>
+  <string name="block_ipv6_title">suprimir</string>
+  <string name="block_ipv6_summary">suprimir</string>
   <!-- Multi-User-Interface (MUI) -->
   <string name="mp_prefs_title">Perfils</string>
   <string name="custom_title1">Nom personalitzat per al perfil Predeterminat</string>
@@ -175,9 +175,9 @@
   <string name="toggle_profile3">Activa el Perfil3</string>
   <string name="multipleProfiles">Multiple profiles</string>
   <string name="defaultProfile">Predeterminat</string>
-  <string name="profile1">Profile 1</string>
-  <string name="profile2">Profile 2</string>
-  <string name="profile3">Profile 3</string>
+  <string name="profile1">Perfil 1</string>
+  <string name="profile2">Perfil 2</string>
+  <string name="profile3">Perfil 3</string>
   <string name="profile_hint">ProfileName</string>
   <string name="profile_notsupport">Please migrate profile data to use this option</string>
   <string name="profile_duplicate">Profile exists already !</string>
@@ -490,5 +490,4 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Show Quick Apply</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

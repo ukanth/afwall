@@ -476,9 +476,9 @@
   <string name="applyRulesFasterTitle">즉시 적용</string>
   <string name="applyRulesFaster">규칙을 적용하는 것이 느릴 때만 사용하십시오 - 매우 실험적 기능입니다</string>
   <string name="choose">선택</string>
-  <string name="input_chain">INPUT Chain (IPv4)</string>
-  <string name="output_chain">OUTPUT Chain (IPv4)</string>
-  <string name="forward_chain">FORWARD Chain (IPv4)</string>
+  <string name="input_chain">체인 (IPv4) 입력</string>
+  <string name="output_chain">체인 (IPv4) 출력</string>
+  <string name="forward_chain">체인 (IPv4) 전달</string>
   <string name="input_chain_summary_on">Currently <b>ALLOWED</b> incoming connections</string>
   <string name="input_chain_summary_off">Currently <b>BLOCKED</b> incoming connections</string>
   <string name="output_chain_summary_on">Currently <b>ALLOWED</b> outgoing connections</string>
@@ -490,5 +490,4 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Show Quick Apply</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

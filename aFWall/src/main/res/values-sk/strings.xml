@@ -490,5 +490,4 @@
   <string name="forward_chain_v6">PRESMEROVAŤ (IPv6)</string>
   <string name="quick_apply_title">Zobraziť Rýchle Aplikovanie</string>
   <string name="quick_apply_summary">Len zaplatené! Zobraziť tlačidlo plávajúceho uplatnenia na rýchle uplatnenie pravidiel</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

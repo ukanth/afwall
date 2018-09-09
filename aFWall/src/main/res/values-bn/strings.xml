@@ -490,5 +490,4 @@
   <string name="forward_chain_v6">ইনপুট চেইন (IPv6)</string>
   <string name="quick_apply_title">দ্রুত প্রয়োগ করুন</string>
   <string name="quick_apply_summary">শুধু দান করুন! আবেদন দ্রুত আইন প্রয়োগ করার বোতাম</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>
