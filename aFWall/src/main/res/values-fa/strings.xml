@@ -80,7 +80,7 @@
   <string name="enter_problem">لطفا موضوع را توضیح دهید:</string>
   <string name="send_mail">ارسال ایمیل</string>
   <string name="notify_pref_summary_on">هنگام نصب یک برنامه جدید اطلاعیه ای نمایش داده میشود</string>
-  <string name="notify_pref_summary_off">No notification will be displayed when a new application is installed</string>
+  <string name="notify_pref_summary_off">هیچ اعلانی پس از نصب برنامه جدید نمایش داده نمی شود.</string>
   <string name="custom_script_defined">اسکریپت سفارشی تعریف شده</string>
   <string name="custom_script_removed">اسکریپت سفارشی حذف شده</string>
   <string name="custom_script_error">خطا در ذخیره اسکریپت سفارشی</string>
@@ -94,15 +94,15 @@
   <string name="copied">کپی شد</string>
   <string name="Search">جستجو</string>
   <string name="flushRulesConfirm">Flush all iptables rules?</string>
-  <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
+  <string name="overrideRules">ایا شما می خواهید که قانون جدیدی وضع کنید؟این عمل شما خلاف قوانین موجود است!</string>
   <string name="notification_new">برنامه‌ی جدید نصب شد</string>
   <string name="notification_new_package">پیکربندی مجوز اینترنت</string>
   <string name="confirmMsg">آیا میخواهید فایروال کاملا غیر فعال شود؟</string>
   <string name="apply">اجرا</string>
   <string name="discard">لغو</string>
   <string name="delete">حذف</string>
-  <string name="clone">Clone</string>
-  <string name="rename">Rename</string>
+  <string name="clone">شبیه سازی</string>
+  <string name="rename">تغییر نام</string>
   <string name="Yes">بله</string>
   <string name="Continue">ادامه</string>
   <string name="No">خیر</string>
@@ -119,7 +119,7 @@
   <string name="remove_initd">Startup script removed</string>
   <string name="unable_remove_initd">AFWall+‎ قادر به حذف  اسکریپت راه‌اندازی نیست</string>
   <!-- Widget -->
-  <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
+  <string name="widget_disable_fail">دیوار اتش غیر فعال نمیشود. با گذر واژه محافظت شده است!</string>
   <string name="widget_label_status">AFWall + تبدیل/وضعیت</string>
   <string name="widget_label_settings">تنظیمات AFWall+‎</string>
   <string name="widget_label_settings_old">تنظیمات AFWall+‎ (قدیمی)</string>
@@ -136,8 +136,8 @@
   <string name="import_rules_success">وارد شد از </string>
   <string name="import_rules_fail">فراخوانی ناموفق!</string>
   <string name="import_rules_missing">فایل قوانین گم شده است!</string>
-  <string name="exportConfirm">Export rules to storage?</string>
-  <string name="export_logs_fail">Export to storage failed!</string>
+  <string name="exportConfirm">انتقال به محل ذخیره?</string>
+  <string name="export_logs_fail">انتقال به محل ذخیره ناموفق بود!</string>
   <string name="export_to_sd">Export to storage</string>
   <!-- Logging -->
   <string name="enable_firewall_log">فعالسازی گزارش های مربوط به فایروال</string>
@@ -210,12 +210,12 @@
   <!-- XPOSED -->
   <string name="XPosed_prefs_title">Xposed Related</string>
   <string name="fixDownloadTitle">Fix DownloadManager leak</string>
-  <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-  <string name="LeakDetected">Leak detected!</string>
+  <string name="fixDownloadTitleSummary">از اکسپوزد جهت جلوگیری از بارگیری داده ها بوسیله برنامه، که برمبنای مدیر بارگیری اندروید عمل میکند،استفاده کنید.حتی اگر برنامه مورد نظر اجازه دسترسی نداشته باشد‌</string>
+  <string name="LeakDetected">نشتی پیدا شد!</string>
   <!-- Tasker -->
-  <string name="tasker_prefs_title">Tasker Related</string>
-  <string name="disable_toaster">Disable Tasker toasts</string>
-  <string name="disableTasterSummary">Disable toast messages for Tasker\'s plugin</string>
+  <string name="tasker_prefs_title">مرتبط با عملکرد</string>
+  <string name="disable_toaster">غیر فعال کردن نشانگر عملکرد</string>
+  <string name="disableTasterSummary">نشانگر پیام را برای افزونه عملکرد غیر فعال کنید</string>
   <string name="enable_tasker">فعال کردن AFWall+‎</string>
   <string name="disable_tasker">غیرفعال کردن AFWall+‎</string>
   <string name="tasker_apply">Tasker: اعمال قواعد دیوار آتش</string>
@@ -492,5 +492,4 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Show Quick Apply</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

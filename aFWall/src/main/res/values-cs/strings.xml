@@ -491,5 +491,4 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Show Quick Apply</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

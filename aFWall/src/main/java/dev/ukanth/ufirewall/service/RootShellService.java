@@ -22,6 +22,7 @@
 
 package dev.ukanth.ufirewall.service;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -348,6 +349,7 @@ public class RootShellService extends Service {
                     NotificationManager.IMPORTANCE_MIN);
             channel.setDescription("");
             channel.setShowBadge(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
             notificationManager.createNotificationChannel(channel);
         }
 

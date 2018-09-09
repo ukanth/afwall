@@ -123,6 +123,10 @@ import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
+import static dev.ukanth.ufirewall.util.G.ipv4Fwd;
+import static dev.ukanth.ufirewall.util.G.ipv4Input;
+import static dev.ukanth.ufirewall.util.G.ipv6Fwd;
+import static dev.ukanth.ufirewall.util.G.ipv6Input;
 
 /**
  * Contains shared programming interfaces.
@@ -681,8 +685,14 @@ public final class Api {
 
         List<String> cmds = new ArrayList<String>();
 
-        cmds.add("-P INPUT ACCEPT");
-        cmds.add("-P FORWARD ACCEPT");
+        //check before make them ACCEPT state
+        if(ipv4Input() || (ipv6 && ipv6Input())) {
+            cmds.add("-P INPUT ACCEPT");
+        }
+
+        if(ipv4Fwd() || (ipv6 && ipv6Fwd())) {
+            cmds.add("-P FORWARD ACCEPT");
+        }
 
         try {
             // prevent data leaks due to incomplete rules
@@ -3259,6 +3269,7 @@ public final class Api {
                 NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.activeNotification),
                         NotificationManager.IMPORTANCE_LOW);
                 channel.setDescription(notificationText);
+                channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
                 channel.setShowBadge(true);
                 mNotificationManager.createNotificationChannel(channel);
             }

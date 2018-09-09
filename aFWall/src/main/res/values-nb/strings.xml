@@ -188,7 +188,7 @@
   <string name="iptables_pref">iptables-binærfil</string>
   <string name="vpn_profile">VPN-kontroll</string>
   <string name="vpnSummary">Aktiver for å kontrollere VPN-tillatelser separat</string>
-  <string name="roaming">Roaming-kontroll</string>
+  <string name="roaming">Gjesting-kontroll</string>
   <string name="roamingSummary">Aktiver for å kontrollere roaming-tillatelser separat</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
@@ -223,8 +223,8 @@
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-støtte</string>
   <string name="ipv6_summary">Aktiver støtte for IPv6</string>
-  <string name="control_ipv6_title">Only Control IPv6 Chains</string>
-  <string name="ip6unavailable">Error: IPv6 requires \"/system/bin/ip6tables\".</string>
+  <string name="control_ipv6_title">Kontroller kun IPv6-kjeder</string>
+  <string name="ip6unavailable">Feil: IPv6 krever \"/system/bin/ip6tables\".</string>
   <string name="switch_ipv6">Bytt IPv6-regelsett</string>
   <string name="switch_ipv4">Bytt IPv4-regelsett</string>
   <!-- Security Preferences -->
@@ -244,7 +244,7 @@
   <string name="startup_service">Tar regler i bruk. Vent.</string>
   <string name="addStartupDelayTitle">Oppstartsforsinkelse</string>
   <string name="addStartupDelaySummary">AFWall+ will wait for \'n\' seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
-  <string name="fixleakTitle">Fix startup data leak</string>
+  <string name="fixleakTitle">Fiks datalekkasje ved oppstart</string>
   <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
@@ -255,8 +255,8 @@
   <!-- UI Preferences -->
   <string name="ui_prefs_title">Brukerflateinnstillinger</string>
   <string name="rule_prefs_title">Regelvirkemåte</string>
-  <string name="ui_chains_title">IPv4 Chains</string>
-  <string name="ui_chains6_title">IPv6 Chains</string>
+  <string name="ui_chains_title">IPv4-kjeder</string>
+  <string name="ui_chains6_title">IPv6-kjeder</string>
   <string name="rules_prefs_title">Regler/Tilkobling</string>
   <string name="log_prefs_title">Logg</string>
   <string name="hideicons_pref_title">Skjul app-ikoner</string>
@@ -341,7 +341,7 @@
   <string name="active">Brannmur aktivert</string>
   <string name="inactive">Brannmur deaktivert</string>
   <string name="About">Om</string>
-  <string name="FAQ">Ofte stil. spørsm.</string>
+  <string name="FAQ">Ofte stilte spørsmål</string>
   <string name="su_check_title">Status</string>
   <string name="su_check_message">Sjekker root-tilgang</string>
   <!-- choose file -->
@@ -429,7 +429,7 @@
   <string name="copy_text">Kopier tekst</string>
   <string name="destination_copied">Mål kopiert</string>
   <string name="source_copied">Kilde kopiert</string>
-  <string name="select_the_action">Velg Handling</string>
+  <string name="select_the_action">Velg handling</string>
   <string name="result_copied_to_clipboard">Resultat kopiert til utklippstavle</string>
   <string name="result">Resultat</string>
   <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
@@ -456,16 +456,16 @@
   <string name="activity_home_desc">Vellykket innlogging med fingeravtrykksautentisering</string>
   <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
   <string name="fingerprint_required">Fingeravtrykk påkrevd</string>
-  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
+  <string name="device_with_no_fingerprint_sensor">Enheten din har ingen fingeravtrykksensor</string>
   <string name="fingerprint_permission_manifest_missing">Tillatelse for fingeravtrykksautentisering er ikke aktivert</string>
-  <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
+  <string name="register_at_least_one_fingerprint">Registrer minst ett fingeravtrykk i Innstillinger</string>
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
   <string name="fingerprint_enabled_successfully">Fingeravtrykk aktivert vellykket</string>
   <string name="fingerprint_disabled_successfully">Fingeravtrykk deaktivert vellykket</string>
   <string name="label_zoomin">Forstørr</string>
   <string name="label_zoomout">Forminsk</string>
   <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
-  <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
+  <string name="ipdetect">AFWall+ oppdaget IPv6-forbindelse. Aktiver fra Innstillinger-Regler/Tilkobling og ta i bruk på nytt</string>
   <string name="delayTitle">Tilpasset sekundforsinkelse</string>
   <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
   <string name="delayDialog">Angi forsinkelse i sekunder</string>
@@ -476,19 +476,18 @@
   <string name="applyRulesFasterTitle">Umiddelbar bruk</string>
   <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
   <string name="choose">Velg</string>
-  <string name="input_chain">INPUT Chain (IPv4)</string>
-  <string name="output_chain">OUTPUT Chain (IPv4)</string>
-  <string name="forward_chain">FORWARD Chain (IPv4)</string>
-  <string name="input_chain_summary_on">Gjeldende <b>TILLATTE</b> innkommende forbindelser</string>
-  <string name="input_chain_summary_off">Gjeldende <b>BLOKKERTE</b> innkommende forbindelser</string>
-  <string name="output_chain_summary_on">Gjeldende <b>TILLATTE</b> utgående forbindelser</string>
-  <string name="output_chain_summary_off">Gjeldende <b>BLOKKERTE</b> utgående forbindelser</string>
-  <string name="forward_chain_summary_on">Gjeldende <b>TILLATTE</b> videresendingsforbindelser</string>
-  <string name="forward_chain_summary_off">Gjeldende <b>BLOKKERTE</b> videresendingsforbindelser</string>
-  <string name="input_chain_v6">INPUT Chain (IPv6)</string>
-  <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
-  <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
+  <string name="input_chain">Inndata-kjede (IPv4)</string>
+  <string name="output_chain">Utdata-kjede (IPv4)</string>
+  <string name="forward_chain">Videresend-kjede (IPv4)</string>
+  <string name="input_chain_summary_on">Gjeldende: <b>TILLATTE</b> innkommende forbindelser</string>
+  <string name="input_chain_summary_off">Gjeldende: <b>BLOKKERTE</b> innkommende forbindelser</string>
+  <string name="output_chain_summary_on">Gjeldende: <b>TILLATTE</b> utgående forbindelser</string>
+  <string name="output_chain_summary_off">Gjeldende: <b>BLOKKERTE</b> utgående forbindelser</string>
+  <string name="forward_chain_summary_on">Gjeldende: <b>TILLATTE</b> videresendingsforbindelser</string>
+  <string name="forward_chain_summary_off">Gjeldende: <b>BLOKKERTE</b> videresendingsforbindelser</string>
+  <string name="input_chain_v6">Inndata-kjede (IPv6)</string>
+  <string name="output_chain_v6">Utdata-kjede (IPv6)</string>
+  <string name="forward_chain_v6">Videresend-kjede (IPv6)</string>
   <string name="quick_apply_title">Vis Hurtigbruk</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>

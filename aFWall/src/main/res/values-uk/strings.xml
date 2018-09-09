@@ -476,19 +476,18 @@
   <string name="applyRulesFasterTitle">Миттєве Застосування</string>
   <string name="applyRulesFaster">Використовувати тільки якщо застосування правил повільно - Дуже Експериментально</string>
   <string name="choose">Обрати</string>
-  <string name="input_chain">ВВЕДЕННЯ ланцюга (IPv4)</string>
-  <string name="output_chain">ВИВЕДЕННЯ ланцюга (IPv4)</string>
-  <string name="forward_chain">Перенаправлення Ланцюга (IPv4)</string>
+  <string name="input_chain">Ланцюг INPUT (IPv4)</string>
+  <string name="output_chain">Ланцюг OUTPUT (IPv4)</string>
+  <string name="forward_chain">Ланцюг FORWARD (IPv4)</string>
   <string name="input_chain_summary_on">В даний час <b>ДОЗВОЛЕНО</b> вхідні підключення</string>
   <string name="input_chain_summary_off">В даний час <b>ЗАБОРОНЕНО</b> вхідні підключення</string>
   <string name="output_chain_summary_on">В даний час <b>ДОЗВОЛЕНО</b> вихідні підключення</string>
   <string name="output_chain_summary_off">В даний час <b>ЗАБОРОНЕНО</b> вихідні підключення</string>
   <string name="forward_chain_summary_on">В даний час <b>ДОЗВОЛЕНО</b> пересилання підключень</string>
   <string name="forward_chain_summary_off">В даний час <b>ЗАБОРОНЕНО</b> пересилання підключень</string>
-  <string name="input_chain_v6">ВВЕДЕННЯ ланцюга (IPv6)</string>
-  <string name="output_chain_v6">ВИВЕДЕННЯ ланцюга (IPv6)</string>
-  <string name="forward_chain_v6">Перенаправлення Ланцюга (IPv6)</string>
+  <string name="input_chain_v6">Ланцюг INPUT (IPv6)</string>
+  <string name="output_chain_v6">Ланцюг OUTPUT (IPv6)</string>
+  <string name="forward_chain_v6">Ланцюг FORWARD (IPv6)</string>
   <string name="quick_apply_title">Показати швидке застосування</string>
   <string name="quick_apply_summary">Пожертвування тільки! Показати плаваючу кнопку застосування, щоб застосувати швидко правила</string>
-    <string name="purging_rules">Removing all firewall iptables rules</string>
 </resources>
