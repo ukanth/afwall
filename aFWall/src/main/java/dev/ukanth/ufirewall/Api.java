@@ -3258,6 +3258,7 @@ public final class Api {
                 NotificationChannel channel = new NotificationChannel(CHANNEL_ID,context.getString(R.string.activeNotification),
                         NotificationManager.IMPORTANCE_LOW);
                 channel.setDescription(notificationText);
+                channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
                 channel.setShowBadge(true);
                 mNotificationManager.createNotificationChannel(channel);
             }

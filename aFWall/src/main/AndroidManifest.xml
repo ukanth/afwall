@@ -163,7 +163,7 @@
         </activity>
 
         <!-- still will work in android 7 above -->
-        <receiver android:name=".broadcast.BootBroadcast">
+       <!-- <receiver android:name=".broadcast.BootBroadcast">
             <intent-filter android:priority="500">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -171,7 +171,20 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </receiver>-->
+
+
+        <receiver
+            android:name=".broadcast.OnBootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </receiver>
+
+        <service android:name=".service.ApplyOnBootService" />
 
         <!--
                 <receiver android:name=".broadcast.PackageBroadcast">
