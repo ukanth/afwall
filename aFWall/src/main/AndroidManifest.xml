@@ -58,12 +58,11 @@
         android:name=".util.G"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher_free"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:launchMode="singleTop"
         android:resizeableActivity="true"
-        android:roundIcon="@mipmap/round_launcher_free"
         android:supportsRtl="true"
         android:theme="@style/AppDarkTheme"
         tools:ignore="ManifestResource">
