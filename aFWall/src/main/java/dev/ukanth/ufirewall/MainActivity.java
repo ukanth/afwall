@@ -27,11 +27,8 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -99,8 +96,7 @@ import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
-import dev.ukanth.ufirewall.service.NetworkSchedulerService;
-import dev.ukanth.ufirewall.service.PackageService;
+import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -123,11 +119,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         RadioGroup.OnCheckedChangeListener {
 
 
+    private static final int SHOW_ABOUT_RESULT = 1200;
+    private static final int PREFERENCE_RESULT = 1205;
+    private static final int SHOW_CUSTOM_SCRIPT = 1201;
+    private static final int SHOW_RULES_ACTIVITY = 1202;
+    private static final int SHOW_LOGS_ACTIVITY = 1203;
+    private static final int VERIFY_CHECK = 10000;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
+    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
+    public static boolean dirty = false;
     private static Menu mainMenu;
     private ListView listview = null;
-    public static boolean dirty = false;
     private MaterialDialog plsWait;
-
     private ArrayAdapter<String> spinnerAdapter = null;
     private SwipeRefreshLayout mSwipeLayout;
     private int index;
@@ -136,25 +140,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private int initDone = 0;
     private Spinner mSpinner;
     private MaterialDialog progress;
-
-    private static final int SHOW_ABOUT_RESULT = 1200;
-    private static final int PREFERENCE_RESULT = 1205;
-    private static final int SHOW_CUSTOM_SCRIPT = 1201;
-    private static final int SHOW_RULES_ACTIVITY = 1202;
-    private static final int SHOW_LOGS_ACTIVITY = 1203;
-
-    private static final int VERIFY_CHECK = 10000;
-
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
-    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
-
     private AlertDialog dialogLegend = null;
 
     private BroadcastReceiver uiProgressReceiver;
     private BroadcastReceiver toastReceiver;
 
     private Shell.Interactive rootShell = null;
+    private TextWatcher filterTextWatcher = new TextWatcher() {
+
+        public void afterTextChanged(Editable s) {
+            showApplications(s.toString(), -1, false);
+        }
+
+
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+            showApplications(s.toString(), -1, false);
+        }
+
+    };
 
     public boolean isDirty() {
         return dirty;
@@ -210,9 +218,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //queue = new HashSet<>();
 
-        registerNetwork();
-        registerPackage();
-
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
@@ -224,10 +229,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerToastbroadcast();
 
         migrateNotification();
+        registerNetwork();
 
         //checkAndAskForBatteryOptimization();
     }
 
+    private void registerNetwork() {
+        startService(new Intent(getApplicationContext(), FirewallService.class));
+    }
 
     private void checkAndAskForBatteryOptimization() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -252,36 +261,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .negativeText(R.string.exit)
                         .show();
             }
-        }
-    }
-
-    private void registerNetwork() {
-        JobInfo myJob = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            myJob = new JobInfo.Builder(1102, new ComponentName(this, NetworkSchedulerService.class))
-                    .setRequiresCharging(false)
-                    .setPeriodic(2000)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPersisted(true)
-                    .build();
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.schedule(myJob);
-        }
-
-    }
-
-    private void registerPackage() {
-        JobInfo myJob = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            myJob = new JobInfo.Builder(0, new ComponentName(this, PackageService.class))
-                    .setRequiresCharging(true)
-                    .setMinimumLatency(1000)
-                    .setOverrideDeadline(2000)
-                    .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                    .setPersisted(true)
-                    .build();
-            JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            jobScheduler.schedule(myJob);
         }
     }
 
@@ -323,7 +302,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         };
         registerReceiver(toastReceiver, filter);
     }
-
 
     private void registerUIbroadcast() {
         IntentFilter filter = new IntentFilter("UPDATEUI");
@@ -372,7 +350,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         });*/
     }
 
-
     @Override
     public void onRefresh() {
         index = 0;
@@ -386,7 +363,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
         radioGroup.setOnCheckedChangeListener(this);
     }
-
 
     private void selectFilterGroup() {
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
@@ -409,8 +385,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStop() {
         super.onStop();
-        stopService(new Intent(this, NetworkSchedulerService.class));
-        stopService(new Intent(this, PackageService.class));
+        stopService(new Intent(this, FirewallService.class));
     }
 
     @Override
@@ -580,11 +555,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initDone = 0;
         //startRootShell();
         reloadPreferences();
-        Intent startNetServiceIntent = new Intent(getApplicationContext(), NetworkSchedulerService.class);
-        startService(startNetServiceIntent);
-
-        Intent startPackageServiceIntent = new Intent(getApplicationContext(), PackageService.class);
-        startService(startPackageServiceIntent);
+        registerNetwork();
     }
 
     private void addColumns(int id) {
@@ -759,29 +730,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             editor.commit();
     }
 
-    /**
-     * Refresh informative header
-     */
-    private void refreshHeader() {
-        final String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-        //final TextView labelmode = (TextView) this.findViewById(R.id.label_mode);
-        final Resources res = getResources();
-
-        if (mode.equals(Api.MODE_WHITELIST)) {
-            if (mainMenu != null) {
-                mainMenu.findItem(R.id.allowmode).setChecked(true);
-                mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_allow);
-            }
-        } else {
-            if (mainMenu != null) {
-                mainMenu.findItem(R.id.blockmode).setChecked(true);
-                mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_deny);
-            }
-        }
-        //int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist: R.string.mode_blacklist);
-        //labelmode.setText(res.getString(R.string.mode_header, res.getString(resid)));
-    }
-
 
     /*private void selectMode() {
         final Resources res = getResources();
@@ -877,6 +825,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dialog.show();
     }*/
 
+    /**
+     * Refresh informative header
+     */
+    private void refreshHeader() {
+        final String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+        //final TextView labelmode = (TextView) this.findViewById(R.id.label_mode);
+        final Resources res = getResources();
+
+        if (mode.equals(Api.MODE_WHITELIST)) {
+            if (mainMenu != null) {
+                mainMenu.findItem(R.id.allowmode).setChecked(true);
+                mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_allow);
+            }
+        } else {
+            if (mainMenu != null) {
+                mainMenu.findItem(R.id.blockmode).setChecked(true);
+                mainMenu.findItem(R.id.menu_mode).setIcon(R.drawable.ic_deny);
+            }
+        }
+        //int resid = (mode.equals(Api.MODE_WHITELIST) ? R.string.mode_whitelist: R.string.mode_blacklist);
+        //labelmode.setText(res.getString(R.string.mode_header, res.getString(resid)));
+    }
 
     /**
      * If the applications are cached, just show them, otherwise load and show
@@ -941,76 +911,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    public class GetAppList extends AsyncTask<Void, Integer, Void> {
-
-        Context context = null;
-
-        public GetAppList setContext(Context context) {
-            this.context = context;
-            return this;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            plsWait = new MaterialDialog.Builder(context).cancelable(false).
-                    title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
-                    .size(), true).show();
-            doProgress(0);
-        }
-
-        public void doProgress(int value) {
-            publishProgress(value);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            Api.getApps(MainActivity.this, this);
-            if (isCancelled())
-                return null;
-            //publishProgress(-1);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            selectFilterGroup();
-            doProgress(-1);
-            try {
-                try {
-                    if (plsWait != null && plsWait.isShowing()) {
-                        plsWait.dismiss();
-                    }
-                } catch (final IllegalArgumentException e) {
-                    // Handle or log or ignore
-                } catch (final Exception e) {
-                    // Handle or log or ignore
-                } finally {
-                    plsWait.dismiss();
-                    plsWait = null;
-                }
-                mSwipeLayout.setRefreshing(false);
-            } catch (Exception e) {
-                // nothing
-                if (plsWait != null) {
-                    plsWait.dismiss();
-                    plsWait = null;
-                }
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-
-            if (progress[0] == 0 || progress[0] == -1) {
-                //do nothing
-            } else {
-                if (plsWait != null) {
-                    plsWait.incrementProgress(progress[0]);
-                }
-            }
-        }
     }
 
     ;
@@ -1467,24 +1367,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .show();
     }
 
-    private TextWatcher filterTextWatcher = new TextWatcher() {
-
-        public void afterTextChanged(Editable s) {
-            showApplications(s.toString(), -1, false);
-        }
-
-
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
-        }
-
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-            showApplications(s.toString(), -1, false);
-        }
-
-    };
-
     private void showPreferences() {
         Intent i = new Intent(this, PreferencesActivity.class);
         //startActivity(i);
@@ -1697,7 +1579,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-
     /**
      * Apply or save iptables rules, showing a visual indication
      */
@@ -1718,190 +1599,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-
-    private class RunQuickApply extends AsyncTask<Void, Long, Void> {
-        boolean enabled = Api.isEnabled(getApplicationContext());
-        Api.RuleDataSet dataSet = null;
-        boolean returnStatus = false;
-
-        RunQuickApply() {
-        }
-
-        private RunQuickApply setDataSet(Api.RuleDataSet data) {
-            this.dataSet = data;
-            return this;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progress = new MaterialDialog.Builder(MainActivity.this)
-                    .title(R.string.working)
-                    .cancelable(false)
-                    .content(enabled ? R.string.applying_rules
-                            : R.string.saving_rules)
-                    .progress(true, 0)
-                    .show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            //set the progress
-            Api.applyQuickSavedIptablesRules(getApplicationContext(), dataSet, true, new RootCommand()
-                    .setSuccessToast(R.string.rules_applied)
-                    .setFailureToast(R.string.error_apply)
-                    .setReopenShell(true)
-                    .setCallback(new RootCommand.Callback() {
-                        public void cbFunc(RootCommand state) {
-                            try {
-                                progress.dismiss();
-                            } catch (Exception ex) {
-                            }
-                            //queue.clear();
-                            if (state.exitCode == 0) {
-                                //make sure we run on UI thread
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        setDirty(false);
-                                        //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
-                                    }
-                                });
-                            }
-                        }
-                    }));
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
-
-    private class RunApply extends AsyncTask<Void, Long, Boolean> {
-        boolean enabled = Api.isEnabled(getApplicationContext());
-
-        @Override
-        protected void onPreExecute() {
-            progress = new MaterialDialog.Builder(MainActivity.this)
-                    .title(R.string.working)
-                    .cancelable(false)
-                    .content(enabled ? R.string.applying_rules
-                            : R.string.saving_rules)
-                    .progress(true, 0)
-                    .show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            //set the progress
-            if (G.hasRoot() && Shell.SU.available()) {
-                Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
-                        .setSuccessToast(R.string.rules_applied)
-                        .setFailureToast(R.string.error_apply)
-                        .setReopenShell(true)
-                        .setCallback(new RootCommand.Callback() {
-
-                            public void cbFunc(RootCommand state) {
-
-                                try {
-                                    progress.dismiss();
-                                } catch (Exception ex) {
-                                }
-                                if (state.exitCode == 0) {
-                                    setDirty(false);
-                                }
-
-                                //queue.clear();
-                                runOnUiThread(() -> {
-                                    setDirty(false);
-                                    //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
-                                    menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
-                                    Api.setEnabled(ctx, enabled, true);
-                                });
-
-                            }
-                        }));
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aVoid) {
-            super.onPostExecute(aVoid);
-            if (!aVoid) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
-                disableFirewall();
-                try {
-                    progress.dismiss();
-                } catch (Exception ex) {
-                }
-            }
-        }
-    }
-
-
-    private static class PurgeTask extends AsyncTask<Void, Void, Boolean> {
-
-        private MaterialDialog progress;
-        private Context ctx;
-
-        private PurgeTask(Context context) {
-            this.ctx = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progress = new MaterialDialog.Builder(ctx)
-                    .title(R.string.working)
-                    .cancelable(false)
-                    .content(R.string.purging_rules)
-                    .progress(true, 0)
-                    .show();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            if (G.hasRoot() && Shell.SU.available()) {
-                Api.purgeIptables(ctx, true, new RootCommand()
-                        .setSuccessToast(R.string.rules_deleted)
-                        .setFailureToast(R.string.error_purge)
-                        .setReopenShell(true)
-                        .setCallback(new RootCommand.Callback() {
-                            public void cbFunc(RootCommand state) {
-                                // error exit -> assume the rules are still enabled
-                                // we shouldn't wind up in this situation, but if we do, the user's
-                                // best bet is to click Apply then toggle Enabled again
-                                try {
-                                    progress.dismiss();
-                                } catch (Exception ex) {
-                                }
-                                boolean nowEnabled = state.exitCode != 0;
-                                Api.setEnabled(ctx, nowEnabled, true);
-                            }
-                        }));
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aVoid) {
-            super.onPostExecute(aVoid);
-            if (!aVoid) {
-                Toast.makeText(ctx, ctx.getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
-                try {
-                    progress.dismiss();
-                } catch (Exception ex) {
-                }
-            }
-        }
-    }
-
     /**
      * Purge iptables rules, showing a visual indication
      */
@@ -1909,7 +1606,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         new PurgeTask(MainActivity.this).execute();
         menuSetApplyOrSave(mainMenu, Api.isEnabled(getApplicationContext()));
     }
-
 
     @Override
     public void onClick(View v) {
@@ -2054,7 +1750,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-
     private void selectAllRoam(boolean flag) {
         if (this.listview == null) {
             this.listview = (ListView) this.findViewById(R.id.listview);
@@ -2188,7 +1883,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onKeyUp(keyCode, event);
     }
 
-
     /**
      * @param i
      */
@@ -2310,7 +2004,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }).show();
     }
 
-
     protected boolean isSuPackage(PackageManager pm, String suPackage) {
         boolean found = false;
         try {
@@ -2323,11 +2016,279 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return found;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialogLegend != null) {
+            dialogLegend.dismiss();
+            dialogLegend = null;
+        }
+        if (uiProgressReceiver != null) {
+            unregisterReceiver(uiProgressReceiver);
+        }
+        if (toastReceiver != null) {
+            unregisterReceiver(toastReceiver);
+        }
+
+    }
+
+    private static class PurgeTask extends AsyncTask<Void, Void, Boolean> {
+
+        private MaterialDialog progress;
+        private Context ctx;
+
+        private PurgeTask(Context context) {
+            this.ctx = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progress = new MaterialDialog.Builder(ctx)
+                    .title(R.string.working)
+                    .cancelable(false)
+                    .content(R.string.purging_rules)
+                    .progress(true, 0)
+                    .show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            if (G.hasRoot() && Shell.SU.available()) {
+                Api.purgeIptables(ctx, true, new RootCommand()
+                        .setSuccessToast(R.string.rules_deleted)
+                        .setFailureToast(R.string.error_purge)
+                        .setReopenShell(true)
+                        .setCallback(new RootCommand.Callback() {
+                            public void cbFunc(RootCommand state) {
+                                // error exit -> assume the rules are still enabled
+                                // we shouldn't wind up in this situation, but if we do, the user's
+                                // best bet is to click Apply then toggle Enabled again
+                                try {
+                                    progress.dismiss();
+                                } catch (Exception ex) {
+                                }
+                                boolean nowEnabled = state.exitCode != 0;
+                                Api.setEnabled(ctx, nowEnabled, true);
+                            }
+                        }));
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+            if (!aVoid) {
+                Toast.makeText(ctx, ctx.getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                try {
+                    progress.dismiss();
+                } catch (Exception ex) {
+                }
+            }
+        }
+    }
+
+    public class GetAppList extends AsyncTask<Void, Integer, Void> {
+
+        Context context = null;
+
+        public GetAppList setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            plsWait = new MaterialDialog.Builder(context).cancelable(false).
+                    title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
+                    .size(), true).show();
+            doProgress(0);
+        }
+
+        public void doProgress(int value) {
+            publishProgress(value);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Api.getApps(MainActivity.this, this);
+            if (isCancelled())
+                return null;
+            //publishProgress(-1);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            selectFilterGroup();
+            doProgress(-1);
+            try {
+                try {
+                    if (plsWait != null && plsWait.isShowing()) {
+                        plsWait.dismiss();
+                    }
+                } catch (final IllegalArgumentException e) {
+                    // Handle or log or ignore
+                } catch (final Exception e) {
+                    // Handle or log or ignore
+                } finally {
+                    plsWait.dismiss();
+                    plsWait = null;
+                }
+                mSwipeLayout.setRefreshing(false);
+            } catch (Exception e) {
+                // nothing
+                if (plsWait != null) {
+                    plsWait.dismiss();
+                    plsWait = null;
+                }
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+
+            if (progress[0] == 0 || progress[0] == -1) {
+                //do nothing
+            } else {
+                if (plsWait != null) {
+                    plsWait.incrementProgress(progress[0]);
+                }
+            }
+        }
+    }
+
+    private class RunQuickApply extends AsyncTask<Void, Long, Void> {
+        boolean enabled = Api.isEnabled(getApplicationContext());
+        Api.RuleDataSet dataSet = null;
+        boolean returnStatus = false;
+
+        RunQuickApply() {
+        }
+
+        private RunQuickApply setDataSet(Api.RuleDataSet data) {
+            this.dataSet = data;
+            return this;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progress = new MaterialDialog.Builder(MainActivity.this)
+                    .title(R.string.working)
+                    .cancelable(false)
+                    .content(enabled ? R.string.applying_rules
+                            : R.string.saving_rules)
+                    .progress(true, 0)
+                    .show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            //set the progress
+            Api.applyQuickSavedIptablesRules(getApplicationContext(), dataSet, true, new RootCommand()
+                    .setSuccessToast(R.string.rules_applied)
+                    .setFailureToast(R.string.error_apply)
+                    .setReopenShell(true)
+                    .setCallback(new RootCommand.Callback() {
+                        public void cbFunc(RootCommand state) {
+                            try {
+                                progress.dismiss();
+                            } catch (Exception ex) {
+                            }
+                            //queue.clear();
+                            if (state.exitCode == 0) {
+                                //make sure we run on UI thread
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        setDirty(false);
+                                        //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                    }
+                                });
+                            }
+                        }
+                    }));
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    private class RunApply extends AsyncTask<Void, Long, Boolean> {
+        boolean enabled = Api.isEnabled(getApplicationContext());
+
+        @Override
+        protected void onPreExecute() {
+            progress = new MaterialDialog.Builder(MainActivity.this)
+                    .title(R.string.working)
+                    .cancelable(false)
+                    .content(enabled ? R.string.applying_rules
+                            : R.string.saving_rules)
+                    .progress(true, 0)
+                    .show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            //set the progress
+            if (G.hasRoot() && Shell.SU.available()) {
+                Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
+                        .setSuccessToast(R.string.rules_applied)
+                        .setFailureToast(R.string.error_apply)
+                        .setReopenShell(true)
+                        .setCallback(new RootCommand.Callback() {
+
+                            public void cbFunc(RootCommand state) {
+
+                                try {
+                                    progress.dismiss();
+                                } catch (Exception ex) {
+                                }
+                                if (state.exitCode == 0) {
+                                    setDirty(false);
+                                }
+
+                                //queue.clear();
+                                runOnUiThread(() -> {
+                                    setDirty(false);
+                                    //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
+                                    menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
+                                    Api.setEnabled(ctx, enabled, true);
+                                });
+
+                            }
+                        }));
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aVoid) {
+            super.onPostExecute(aVoid);
+            if (!aVoid) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                disableFirewall();
+                try {
+                    progress.dismiss();
+                } catch (Exception ex) {
+                }
+            }
+        }
+    }
+
     private class RootCheck extends AsyncTask<Void, Void, Void> {
-        private Context context = null;
         MaterialDialog suDialog = null;
         boolean unsupportedSU = false;
         boolean[] suGranted = {false};
+        private Context context = null;
         //private boolean suAvailable = false;
 
         public RootCheck setContext(Context context) {
@@ -2402,21 +2363,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startRootShell(rootShell);
                 new SecurityUtil(MainActivity.this).passCheck();
             }
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (dialogLegend != null) {
-            dialogLegend.dismiss();
-            dialogLegend = null;
-        }
-        if (uiProgressReceiver != null) {
-            unregisterReceiver(uiProgressReceiver);
-        }
-        if (toastReceiver != null) {
-            unregisterReceiver(toastReceiver);
         }
     }
 }

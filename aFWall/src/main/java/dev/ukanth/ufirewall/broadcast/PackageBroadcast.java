@@ -50,12 +50,6 @@ import dev.ukanth.ufirewall.service.RootCommand;
  */
 public class PackageBroadcast extends BroadcastReceiver {
 
-    enum NotificationType {
-        newinstall, update
-    }
-
-    ;
-
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
@@ -121,6 +115,8 @@ public class PackageBroadcast extends BroadcastReceiver {
         }
     }
 
+    ;
+
     //@SuppressWarnings("deprecation")
     public void notifyApp(Context context, Intent intent2, String label) {
         String ns = Context.NOTIFICATION_SERVICE;
@@ -149,5 +145,4 @@ public class PackageBroadcast extends BroadcastReceiver {
         mNotificationManager.notify(Api.NOTIFICATION_ID, builder.build());
 
     }
-
 }

@@ -24,14 +24,13 @@ package dev.ukanth.ufirewall.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.G;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
-
-    private ConnectivityReceiverListener mConnectivityReceiverListener;
 
     public static final String TAG = "AFWall";
 
@@ -39,10 +38,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     public static final String WIFI_AP_STATE_CHANGED_ACTION = "android.net.wifi.WIFI_AP_STATE_CHANGED";
     public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
     public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
-
-    public ConnectivityChangeReceiver(ConnectivityReceiverListener listener) {
-        mConnectivityReceiverListener = listener;
-    }
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -58,18 +53,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
             int oldState = intent.getIntExtra(EXTRA_PREVIOUS_WIFI_AP_STATE, -1);
             Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
         }
-        Log.i(TAG, "Network change captured.");
-        mConnectivityReceiverListener.onNetworkConnectionChanged(isConnected(context));
-    }
 
-    public static boolean isConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
-    public interface ConnectivityReceiverListener {
-        void onNetworkConnectionChanged(boolean isConnected);
+        if (Api.isEnabled(context) && G.activeRules()) {
+            Log.i(TAG, "Network change captured.");
+            InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+        }
     }
 }
