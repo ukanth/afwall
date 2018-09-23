@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void registerNetwork() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Api.showNotification(Api.isEnabled(ctx), ctx);
             startForegroundService(new Intent(getApplicationContext(), FirewallService.class));
         } else {
             startService(new Intent(getApplicationContext(), FirewallService.class));
