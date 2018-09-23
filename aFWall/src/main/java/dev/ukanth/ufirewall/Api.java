@@ -3020,11 +3020,6 @@ public final class Api {
                 mNotificationManager.createNotificationChannel(channel);
             }
 
-            //TODO: Action button's on notification
-            //Intent deleteIntent = new Intent(context, BootBroadcast.class);
-            //PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-
             builder.setSmallIcon(icon).setOngoing(true)
                     .setAutoCancel(false)
                     .setContentTitle(context.getString(R.string.app_name))

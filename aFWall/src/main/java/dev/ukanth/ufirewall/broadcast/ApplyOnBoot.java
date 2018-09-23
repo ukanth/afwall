@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.service.ApplyOnBootService;
+import dev.ukanth.ufirewall.service.FirewallService;
 
 public class ApplyOnBoot {
 
@@ -14,18 +15,19 @@ public class ApplyOnBoot {
 
     private static boolean sCancel;
 
-
-    public interface ApplyOnBootListener {
-        void onFinish();
-    }
-
     public static void apply(ApplyOnBootService service, final ApplyOnBootListener listener) {
         InterfaceTracker.applyRulesOnChange(service, InterfaceTracker.BOOT_COMPLETED);
+        service.startService(new Intent(service, FirewallService.class));
+
         if (sCancel) {
             sCancel = false;
             listener.onFinish();
             return;
         }
+    }
+
+    public interface ApplyOnBootListener {
+        void onFinish();
     }
 
     public static class CancelReceiver extends BroadcastReceiver {

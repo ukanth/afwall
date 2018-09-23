@@ -26,54 +26,27 @@ package dev.ukanth.ufirewall.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 
-import java.util.HashSet;
-
-import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.service.LogService;
-import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.log.Log;
 
 /**
  * Broadcast receiver that set iptables rules on system startup. This is
  * necessary because the rules are not persistent.
  */
 public class BootBroadcast extends BroadcastReceiver {
+    public static final String TAG = "AFWall";
+    static final String CHANNEL_ID = "afwall_onboot_apply";
     // private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
+        Log.i(TAG,"Starting boot received intent");
+
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-            InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+            Log.i(TAG,"Performing ACTION_BOOT_COMPLETED");
 
-            if (G.enableLogService()) {
-                //make sure we cleanup existing uid
-                final Intent logIntent = new Intent(context, LogService.class);
-                context.startService(logIntent);
-                G.storedPid(new HashSet());
-            }
 
-            //try applying the rule after few seconds if enabled
-            if (G.startupDelay()) {
-                //make sure we apply rules after 5 sec
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Apply the changes regards if network is up/not
-                        InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-                    }
-                }, G.getCustomDelay());
-            }
-
-            if (G.activeNotification()) {
-                Api.showNotification(Api.isEnabled(context), context);
-            }
-
-            //check if startup script is copied
-            Api.checkAndCopyFixLeak(context, "afwallstart");
         }
     }
 }

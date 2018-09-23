@@ -196,6 +196,9 @@ public class LogService extends Service {
     }
 
     private void startLogService() {
+        if (disposable != null) {
+            disposable.dispose();
+        }
         disposable = LogRxEvent.subscribe((event -> {
                     if (event != null) {
                         try {
@@ -388,7 +391,6 @@ public class LogService extends Service {
         closeSession();
         if (disposable != null) {
             disposable.dispose();
-            ;
         }
         super.onDestroy();
     }

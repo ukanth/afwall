@@ -43,7 +43,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <!-- uses for job schedulers -->
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
     <!-- Screen support -->
@@ -162,18 +162,19 @@
         </activity>
 
         <!-- still will work in android 7 above -->
-       <!-- <receiver android:name=".broadcast.BootBroadcast">
-            <intent-filter android:priority="500">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+        <receiver android:name=".broadcast.OnBootReceiver">
+             <intent-filter android:priority="500">
+                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>-->
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
+         </receiver>
+        <service android:name=".service.ApplyOnBootService" />
 
 
-        <receiver
+        <!--<receiver
             android:name=".broadcast.OnBootReceiver"
             android:enabled="true"
             android:exported="true">
@@ -183,7 +184,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.ApplyOnBootService" />
+        <service android:name=".service.ApplyOnBootService" />-->
 
         <!--
                 <receiver android:name=".broadcast.PackageBroadcast">
@@ -205,8 +206,7 @@
 
         <service
             android:name=".service.FirewallService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+            android:exported="true" />
 
         <receiver
             android:name=".widget.StatusWidget"
@@ -303,10 +303,13 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.RootShellService" android:exported="false"/>
-        <service android:name=".service.LogService"
-            android:label="AFWallLogService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service
+            android:name=".service.RootShellService"
+            android:exported="false" />
+        <service
+            android:name=".service.LogService"
+            android:enabled="true"
+            android:label="AFWallLogService" />
 
         <!-- Samsung MultiWindow Support -->
         <uses-library
