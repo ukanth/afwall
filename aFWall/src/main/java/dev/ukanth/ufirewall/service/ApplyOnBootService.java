@@ -70,10 +70,12 @@ public class ApplyOnBootService extends Service {
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
         }
 
-
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(getApplicationContext(), FirewallService.class));
+        } else {
+            startService(new Intent(getApplicationContext(), FirewallService.class));
+        }
         InterfaceTracker.applyRulesOnChange(this, InterfaceTracker.BOOT_COMPLETED);
-        startService(new Intent(this, FirewallService.class));
-
 
         if (G.enableLogService()) {
             //make sure we cleanup existing uid

@@ -235,7 +235,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void registerNetwork() {
-        startService(new Intent(getApplicationContext(), FirewallService.class));
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(getApplicationContext(), FirewallService.class));
+        } else {
+            startService(new Intent(getApplicationContext(), FirewallService.class));
+        }
     }
 
     private void checkAndAskForBatteryOptimization() {
