@@ -229,19 +229,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerToastbroadcast();
 
         migrateNotification();
-        registerNetwork();
+        //registerNetwork();
 
         //checkAndAskForBatteryOptimization();
     }
 
-    private void registerNetwork() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Api.showNotification(Api.isEnabled(ctx), ctx);
-            startForegroundService(new Intent(getApplicationContext(), FirewallService.class));
-        } else {
-            startService(new Intent(getApplicationContext(), FirewallService.class));
-        }
-    }
+
 
     private void checkAndAskForBatteryOptimization() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -560,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initDone = 0;
         //startRootShell();
         reloadPreferences();
-        registerNetwork();
+        //registerNetwork();
     }
 
     private void addColumns(int id) {

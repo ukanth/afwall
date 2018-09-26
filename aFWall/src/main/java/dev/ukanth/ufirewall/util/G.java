@@ -26,11 +26,13 @@ package dev.ukanth.ufirewall.util;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -54,6 +56,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
+import dev.ukanth.ufirewall.service.FirewallService;
 
 public class G extends Application implements Application.ActivityLifecycleCallbacks{
 
@@ -792,6 +795,11 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
         ctx = this.getApplicationContext();
         reloadPrefs();
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(getContext(), FirewallService.class));
+        } else {
+            startService(new Intent(getApplicationContext(), FirewallService.class));
+        }
     }
 
     public static void reloadPrefs() {
@@ -966,4 +974,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public void onActivityDestroyed(Activity activity) { }
 
 
+    private void registerNetwork() {
+
+    }
 }
