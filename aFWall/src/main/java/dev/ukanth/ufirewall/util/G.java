@@ -974,7 +974,5 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public void onActivityDestroyed(Activity activity) { }
 
 
-    private void registerNetwork() {
 
-    }
 }

@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="uiPrefsScreen">
 
-    <PreferenceCategory android:title="@string/ui_prefs_title">
+    <PreferenceCategory android:title="@string/ui_prefs_title" android:key="uiscreen">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="notifyAppInstall"
@@ -22,18 +22,17 @@
             android:summaryOn="@string/hideicons_pref_summary_on"
             android:title="@string/hideicons_pref_title" />
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="activeNotification"
             android:summary="@string/activeNotification_summary"
-            android:title="@string/activeNotification" />
+            android:title="@string/activeNotification"/>
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="runNotification"
             android:summary="@string/runNotification_summary"
-            android:title="@string/runNotification" />
+            android:title="@string/runNotification"/>
         <ListPreference
             android:defaultValue="0"
-            android:dependency="activeNotification"
             android:entries="@array/notification_type"
             android:entryValues="@array/notification_type_val"
             android:key="notification_priority"

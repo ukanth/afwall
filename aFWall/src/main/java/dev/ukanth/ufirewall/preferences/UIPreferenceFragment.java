@@ -3,7 +3,9 @@ package dev.ukanth.ufirewall.preferences;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
 import dev.ukanth.ufirewall.Api;
@@ -18,9 +20,12 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 		super.onCreate(savedInstanceState);
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.ui_preferences);
-		/*if(G.isDoKey(ctx) || G.isDonate()) {
-			findPreference("quickApply").setEnabled(true);
-		}*/
+		//remove persistent notification option since it's enforced.
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			PreferenceCategory mCategory = (PreferenceCategory) findPreference("uiscreen");
+			mCategory.removePreference(findPreference("activeNotification"));
+			//mCategory.removePreference(findPreference("runNotification"));
+		}
 	}
 
 	@Override

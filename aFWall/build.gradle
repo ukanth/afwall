@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 16000
-        versionName "3.0.0-ALPHA"
+        versionName "3.0.0-ALPHA2"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 

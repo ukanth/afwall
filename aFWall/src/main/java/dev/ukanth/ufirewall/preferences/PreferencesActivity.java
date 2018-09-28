@@ -67,6 +67,27 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     private RxEvent rxEvent;
     private Disposable disposable;
 
+    /**
+     * Helper method to determine if the device has an extra-large screen. For
+     * example, 10" tablets are extra-large.
+     */
+    private static boolean isXLargeTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
+    }
+
+    /**
+     * Determines whether the simplified settings UI should be shown. This is
+     * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
+     * doesn't have newer APIs like {@link PreferenceFragment}, or the device
+     * doesn't have an extra-large screen. In these cases, a single-pane
+     * "simplified" settings UI should be shown.
+     */
+    private static boolean isSimplePreferences(Context context) {
+        return ALWAYS_SIMPLE_PREFS
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
+                || !isXLargeTablet(context);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // set language
@@ -76,11 +97,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         subscribe();
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
+        if (bundle != null) {
             Object data = bundle.get("validate");
-            if(data != null){
+            if (data != null) {
                 String check = (String) data;
-                if(check.equals("yes")) {
+                if (check.equals("yes")) {
                     new SecurityUtil(PreferencesActivity.this).passCheck();
                 }
             }
@@ -124,7 +145,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     public void onStop() {
         super.onStop();
     }
-
 
     private void prepareLayout() {
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
@@ -173,7 +193,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         return null;
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -188,7 +207,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 .unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -233,27 +251,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     @Override
     public boolean onIsMultiPane() {
         return isXLargeTablet(this) && !isSimplePreferences(this);
-    }
-
-    /**
-     * Helper method to determine if the device has an extra-large screen. For
-     * example, 10" tablets are extra-large.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-    /**
-     * Determines whether the simplified settings UI should be shown. This is
-     * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
-     * doesn't have newer APIs like {@link PreferenceFragment}, or the device
-     * doesn't have an extra-large screen. In these cases, a single-pane
-     * "simplified" settings UI should be shown.
-     */
-    private static boolean isSimplePreferences(Context context) {
-        return ALWAYS_SIMPLE_PREFS
-                || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
-                || !isXLargeTablet(context);
     }
 
     public void logDmesgChangeApplyRules(LogChangeEvent logChangeEvent) {
@@ -326,7 +323,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     @Override
     public void onDestroy() {
-        if(rxEvent != null && disposable != null) {
+        if (rxEvent != null && disposable != null) {
             disposable.dispose();
         }
         super.onDestroy();

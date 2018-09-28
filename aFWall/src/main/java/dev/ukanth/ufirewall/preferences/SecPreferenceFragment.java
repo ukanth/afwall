@@ -50,7 +50,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
     private static final int REQ_CREATE_PATTERN = 9877;
     private static final int REQ_ENTER_PATTERN = 9755;
 
-    private static final int REQUEST_CODE_ENABLE_ADMIN = 10237; // identifies
+    //private static final int REQUEST_CODE_ENABLE_ADMIN = 10237; // identifies
 
     /*private static ComponentName deviceAdmin;
     private static DevicePolicyManager mDPM;*/
@@ -82,6 +82,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.security_preferences);
+
 
         //backward compatibility
         preSelectListForBackward();

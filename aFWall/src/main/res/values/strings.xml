@@ -596,4 +596,5 @@
     <string name="host">Host:</string>
     <string name="battery_optimization_title">Whitelist afwall+ doze</string>
     <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+    <string name="firewall_service">Firewall running</string>
 </resources>

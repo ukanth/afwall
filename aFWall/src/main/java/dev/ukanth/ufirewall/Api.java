@@ -439,6 +439,8 @@ public final class Api {
                 }
             }
 
+
+
             // NTP service runs as "system" user
             if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
                 addRuleForUsers(cmds, new String[]{"system"}, "-A " + chain + " -p udp --dport 123", action);
@@ -740,6 +742,10 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.wifiList, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+                cmds.add("-A " + AFWALL_CHAIN_NAME + " -p udp --dport 53 -j ACCEPT" );
+            }
 
             Log.i(TAG, "Setting OUTPUT to Accept State");
             cmds.add("-P OUTPUT ACCEPT");

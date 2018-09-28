@@ -3,6 +3,7 @@ package dev.ukanth.ufirewall.service;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -16,21 +17,22 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import java.util.List;
 
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.broadcast.ConnectivityChangeReceiver;
 import dev.ukanth.ufirewall.broadcast.PackageBroadcast;
+import dev.ukanth.ufirewall.util.G;
 
 public class FirewallService extends Service {
 
+    private static final int NOTIFICATION_ID = 1000;
     BroadcastReceiver connectivityReciver;
     BroadcastReceiver packageInstallReceiver;
     BroadcastReceiver packageUninstallReceiver;
-
-    private static final int NOTIFICATION_ID = 1000;
-
     IntentFilter filter;
 
     private static void sendImplicitBroadcast(Context ctxt, Intent i) {
@@ -75,11 +77,24 @@ public class FirewallService extends Service {
             manager.createNotificationChannel(chan);
         }
 
+
+        Intent appIntent = new Intent(this, MainActivity.class);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(appIntent);
+
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+
+        notificationBuilder.setContentIntent(resultPendingIntent);
+
         Notification notification = notificationBuilder.setOngoing(true)
-                .setContentTitle("Firewall running")
-                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
+                .setContentTitle(getString(R.string.app_name))
+                .setTicker(getString(R.string.app_name))
+                .setPriority(G.getNotificationPriority())
                 .setCategory(Notification.CATEGORY_SERVICE)
+                .setContentText(getString(R.string.firewall_service))
                 .setSmallIcon(R.drawable.notification)
                 .build();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -87,6 +102,7 @@ public class FirewallService extends Service {
             startForeground(NOTIFICATION_ID, notification);
         }
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Let it continue running until it is stopped.
