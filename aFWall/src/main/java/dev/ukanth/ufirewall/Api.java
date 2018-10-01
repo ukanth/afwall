@@ -27,10 +27,7 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -45,6 +42,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -55,8 +53,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -440,7 +436,6 @@ public final class Api {
             }
 
 
-
             // NTP service runs as "system" user
             if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
                 addRuleForUsers(cmds, new String[]{"system"}, "-A " + chain + " -p udp --dport 123", action);
@@ -744,7 +739,7 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -p udp --dport 53 -j ACCEPT" );
+                cmds.add("-A " + AFWALL_CHAIN_NAME + " -p udp --dport 53 -j ACCEPT");
             }
 
             Log.i(TAG, "Setting OUTPUT to Accept State");
@@ -2953,9 +2948,28 @@ public final class Api {
         return pInfo.packageName;
     }
 
+    public static int getConnectivityStatus(Context context) {
+
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (null != activeNetwork) {
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return 1;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return 2;
+        }
+        return 0;
+    }
+
     public static void showNotification(boolean status, Context context) {
 
-        final int NOTIFICATION_ID = 33341;
+        /*final int NOTIFICATION_ID = 33341;
         String CHANNEL_ID = "afwall_service";
 
         if (G.activeNotification()) {
@@ -3017,7 +3031,6 @@ public final class Api {
 
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                /* Create or update. */
                 NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.activeNotification),
                         NotificationManager.IMPORTANCE_LOW);
                 channel.setDescription(notificationText);
@@ -3040,7 +3053,7 @@ public final class Api {
             Notification notification = builder.build();
             mNotificationManager.notify(NOTIFICATION_ID, notification);
 
-        }
+        }*/
     }
 
     /**
@@ -3214,6 +3227,7 @@ public final class Api {
         List<Integer> lanList;
         List<Integer> roamList;
         List<Integer> vpnList;
+
         RuleDataSet(List<Integer> uidsWifi, List<Integer> uids3g,
                     List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN) {
             this.wifiList = uidsWifi;

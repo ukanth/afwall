@@ -6,20 +6,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
-
-import java.util.List;
 
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
@@ -29,13 +23,13 @@ import dev.ukanth.ufirewall.util.G;
 
 public class FirewallService extends Service {
 
-    private static final int NOTIFICATION_ID = 1000;
+    private static final int NOTIFICATION_ID = 1;
     BroadcastReceiver connectivityReciver;
     BroadcastReceiver packageInstallReceiver;
     BroadcastReceiver packageUninstallReceiver;
     IntentFilter filter;
 
-    private static void sendImplicitBroadcast(Context ctxt, Intent i) {
+    /*private static void sendImplicitBroadcast(Context ctxt, Intent i) {
         PackageManager pm = ctxt.getPackageManager();
         List<ResolveInfo> matches = pm.queryBroadcastReceivers(i, 0);
 
@@ -48,7 +42,7 @@ public class FirewallService extends Service {
             explicit.setComponent(cn);
             ctxt.sendBroadcast(explicit);
         }
-    }
+    }*/
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -58,7 +52,6 @@ public class FirewallService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         addNotification();
     }
 
@@ -68,6 +61,7 @@ public class FirewallService extends Service {
         String channelName = "Firewall Service";
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(NOTIFICATION_ID);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
@@ -79,27 +73,34 @@ public class FirewallService extends Service {
 
 
         Intent appIntent = new Intent(this, MainActivity.class);
+        appIntent.setAction(Intent.ACTION_MAIN);
+        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+        /*TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(appIntent);
+        stackBuilder.addNextIntent(appIntent);*/
 
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-
-        notificationBuilder.setContentIntent(resultPendingIntent);
+        notificationBuilder.setContentIntent(notifyPendingIntent);
 
         Notification notification = notificationBuilder.setOngoing(true)
                 .setContentTitle(getString(R.string.app_name))
                 .setTicker(getString(R.string.app_name))
-                .setPriority(G.getNotificationPriority())
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_MIN: NotificationManager.IMPORTANCE_LOW)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setContentText(getString(R.string.firewall_service))
                 .setSmallIcon(R.drawable.notification)
                 .build();
+        notification.flags  |= Notification.FLAG_ONGOING_EVENT |  Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
+
+        manager.notify(NOTIFICATION_ID, notification);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            manager.notify(NOTIFICATION_ID, notification);
-            startForeground(NOTIFICATION_ID, notification);
+           startForeground(NOTIFICATION_ID, notification);
         }
     }
 
@@ -107,7 +108,7 @@ public class FirewallService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Let it continue running until it is stopped.
 
-        if (connectivityReciver != null) {
+      /*  if (connectivityReciver != null) {
             unregisterReceiver(connectivityReciver);
         }
 
@@ -117,7 +118,7 @@ public class FirewallService extends Service {
 
         if (packageUninstallReceiver != null) {
             unregisterReceiver(packageUninstallReceiver);
-        }
+        }*/
 
         connectivityReciver = new ConnectivityChangeReceiver();
         filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -136,6 +137,9 @@ public class FirewallService extends Service {
         intentFilter.addDataScheme("package");
 
         registerReceiver(packageUninstallReceiver, intentFilter);
+
+
+        //addNotification();
 
         return START_STICKY;
     }

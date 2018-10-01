@@ -206,6 +206,7 @@
 
         <service
             android:name=".service.FirewallService"
+            android:launchMode="singleTop"
             android:exported="true" />
 
         <receiver

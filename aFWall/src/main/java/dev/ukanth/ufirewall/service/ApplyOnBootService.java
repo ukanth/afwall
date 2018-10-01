@@ -25,8 +25,6 @@ import dev.ukanth.ufirewall.util.G;
 
 public class ApplyOnBootService extends Service {
 
-    static final String CHANNEL_ID = "afwall_onboot_apply";
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -37,21 +35,24 @@ public class ApplyOnBootService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        String NOTIFICATION_CHANNEL_ID = "com.firewall.boot";
+        String channelName = "Boot Service";
+
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
-                    getString(R.string.applying_rules), NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                   channelName, NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setSound(null, null);
             notificationManager.createNotificationChannel(notificationChannel);
 
         }
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
 
         builder.setContentTitle(getString(R.string.applying_rules))
-                .setSmallIcon(R.mipmap.round_launcher_free);
-        startForeground(15000, builder.build());
+                .setSmallIcon(R.drawable.notification);
+        startForeground(1, builder.build());
     }
 
     @Override
