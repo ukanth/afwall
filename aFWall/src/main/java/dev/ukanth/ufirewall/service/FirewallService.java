@@ -57,7 +57,7 @@ public class FirewallService extends Service {
 
 
     private void addNotification() {
-        String NOTIFICATION_CHANNEL_ID = "com.firewall";
+        String NOTIFICATION_CHANNEL_ID = "firewall.service";
         String channelName = "Firewall Service";
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -90,7 +90,7 @@ public class FirewallService extends Service {
                 .setContentTitle(getString(R.string.app_name))
                 .setTicker(getString(R.string.app_name))
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_MIN: NotificationManager.IMPORTANCE_LOW)
+                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setContentText(getString(R.string.firewall_service))
                 .setSmallIcon(R.drawable.notification)

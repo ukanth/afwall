@@ -1866,9 +1866,9 @@ public final class Api {
             return;
         }
 
-        if (G.activeNotification()) {
+       /* if (G.activeNotification()) {
             showNotification(Api.isEnabled(ctx), ctx);
-        }
+        }*/
 
         /* notify */
         Intent message = new Intent(Api.STATUS_CHANGED_MSG);

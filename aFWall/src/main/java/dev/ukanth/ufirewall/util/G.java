@@ -26,13 +26,11 @@ package dev.ukanth.ufirewall.util;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -56,7 +54,6 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
-import dev.ukanth.ufirewall.service.FirewallService;
 
 public class G extends Application implements Application.ActivityLifecycleCallbacks{
 
@@ -83,6 +80,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String ENABLE_LAN = "enableLAN";
     private static final String ENABLE_IPV6 = "enableIPv6";
     private static final String CONTROL_IPV6 = "controlIPv6";
+    private static final String SELECTED_FILTER = "selectedFilter";
     //private static final String BLOCK_IPV6 = "blockIPv6";
     private static final String ENABLE_INBOUND = "enableInbound";
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
@@ -327,14 +325,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static boolean activeNotification() {
+   /* public static boolean activeNotification() {
         return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false);
     }
 
     public static boolean activeNotification(boolean val) {
         gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit();
         return val;
-    }
+    }*/
 
     public static boolean showLogToasts() {
         return gPrefs.getBoolean(SHOW_LOG_TOAST, false);
@@ -578,6 +576,16 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+    public static void saveSelectedFilter(int i) {
+        gPrefs.edit().putInt(SELECTED_FILTER, i).commit();
+    }
+
+    public static int selectedFilter() {
+        return gPrefs.getInt(SELECTED_FILTER, 99);
+    }
+
+
+
     public static int appVersion() {
         return gPrefs.getInt(APP_VERSION, 0);
     }
@@ -795,12 +803,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
         ctx = this.getApplicationContext();
         reloadPrefs();
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(new Intent(getContext(), FirewallService.class));
-        } else {
-            startService(new Intent(getApplicationContext(), FirewallService.class));
-        }
+
+        //registerNetworkObserver();
     }
+
 
     public static void reloadPrefs() {
         gPrefs = PreferenceManager.getDefaultSharedPreferences(ctx);

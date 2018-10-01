@@ -35,8 +35,8 @@ public class ApplyOnBootService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        String NOTIFICATION_CHANNEL_ID = "com.firewall.boot";
-        String channelName = "Boot Service";
+        String NOTIFICATION_CHANNEL_ID = "firewall.boot";
+        String channelName = getString(R.string.boot_notification);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -51,7 +51,7 @@ public class ApplyOnBootService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
 
         builder.setContentTitle(getString(R.string.applying_rules))
-                .setSmallIcon(R.drawable.notification);
+                .setSmallIcon(R.drawable.ic_apply_notification);
         startForeground(1, builder.build());
     }
 
@@ -95,10 +95,10 @@ public class ApplyOnBootService extends Service {
             }, G.getCustomDelay());
         }
 
-        if (G.activeNotification()) {
+       /* if (G.activeNotification()) {
             Api.showNotification(Api.isEnabled(this), this);
         }
-
+*/
         //check if startup script is copied
         Api.checkAndCopyFixLeak(this, "afwallstart");
         stopSelf();

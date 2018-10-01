@@ -457,9 +457,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }).run(getApplicationContext(), cmds);
         }
 
-        if (G.activeNotification()) {
+       /* if (G.activeNotification()) {
             Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-        }
+        }*/
     }
 
     private void showRootNotFoundMessage() {
@@ -1467,9 +1467,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         purgeRules();
-                        if (G.activeNotification()) {
+                       /* if (G.activeNotification()) {
                             Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-                        }
+                        }*/
                         dialog.dismiss();
                     }
                 })

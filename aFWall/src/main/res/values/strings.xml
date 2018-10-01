@@ -584,7 +584,7 @@
     <string name="mount_initd_error">Unable to mount the directory</string>
     <string name="delete_initd_error">Unable to delete the startup script</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
-    <string name="runNotification">Run Notification</string>
+    <string name="runNotification">Rules Progress</string>
 
     <string name="displayBlockNotification">disable log alert notification</string>
 
@@ -597,4 +597,5 @@
     <string name="battery_optimization_title">Whitelist afwall+ doze</string>
     <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
     <string name="firewall_service">Firewall running</string>
+    <string name="boot_notification">Boot Service</string>
 </resources>

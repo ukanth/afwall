@@ -173,9 +173,9 @@ public final class FireReceiver extends BroadcastReceiver {
                             toaster.sendMessage(msg);
                         }
                         G.reloadPrefs();
-                        if (G.activeNotification()) {
+                        /*if (G.activeNotification()) {
                             Api.showNotification(Api.isEnabled(context), context);
-                        }
+                        }*/
                     }
                 }
             } else {
@@ -264,9 +264,9 @@ public final class FireReceiver extends BroadcastReceiver {
                             toaster.sendMessage(msg);
                         }
                         G.reloadPrefs();
-                        if (G.activeNotification()) {
+                       /* if (G.activeNotification()) {
                             Api.showNotification(Api.isEnabled(context), context);
-                        }
+                        }*/
                     }
                 }
 
