@@ -295,7 +295,7 @@
   <string name="data">Dati</string>
   <string name="legend_data">Abilita il controllo dei dati (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Tutto</string>
-  <string name="pkg_core">Nucleo</string>
+  <string name="pkg_core">Kernel</string>
   <string name="pkg_sys">Sistema</string>
   <string name="pkg_user">Utente</string>
   <string name="menu">Menu</string>
