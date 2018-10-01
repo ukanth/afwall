@@ -229,11 +229,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerToastbroadcast();
 
         migrateNotification();
-        //registerNetwork();
-
+        registerNetworkObserver();
         //checkAndAskForBatteryOptimization();
     }
 
+
+    private void registerNetworkObserver() {
+        /*if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(getBaseContext(), FirewallService.class));
+        } else {
+            startService(new Intent(getBaseContext(), FirewallService.class));
+        }*/
+        startService(new Intent(getBaseContext(), FirewallService.class));
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        String action = intent.getAction();
+        if (action == null) {
+            return;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 
 
     private void checkAndAskForBatteryOptimization() {
@@ -360,6 +382,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void updateRadioFilter() {
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
         radioGroup.setOnCheckedChangeListener(this);
+        if(G.showFilter()) {
+            switch (G.selectedFilter()) {
+                case 0:
+                    radioGroup.check(R.id.rpkg_core);
+                    break;
+                case 1:
+                    radioGroup.check(R.id.rpkg_sys);
+                    break;
+                case 2:
+                    radioGroup.check(R.id.rpkg_user);
+                    break;
+                default:
+                    radioGroup.check(R.id.rpkg_all);
+                    break;
+            }
+        } else {
+            radioGroup.check(R.id.rpkg_all);
+        }
     }
 
     private void selectFilterGroup() {
@@ -383,7 +423,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onStop() {
         super.onStop();
-        stopService(new Intent(this, FirewallService.class));
     }
 
     @Override
@@ -515,6 +554,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             hideColumns(R.id.img_lan);
         }
 
+
         updateRadioFilter();
 
         if (G.enableMultiProfile()) {
@@ -534,15 +574,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (checkedId) {
             case R.id.rpkg_all:
                 showOrLoadApplications();
+                G.saveSelectedFilter(99);
                 break;
             case R.id.rpkg_core:
                 showApplications(null, 0, false);
+                G.saveSelectedFilter(0);
                 break;
             case R.id.rpkg_sys:
                 showApplications(null, 1, false);
+                G.saveSelectedFilter(1);
                 break;
             case R.id.rpkg_user:
                 showApplications(null, 2, false);
+                G.saveSelectedFilter(2);
+
                 break;
         }
     }
@@ -1141,8 +1186,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 applyOrSaveRules();
                 return true;
             case R.id.menu_exit:
-                finish();
-                System.exit(0);
+                //finish();
+                //System.exit(0);
                 return false;
             case R.id.menu_help:
                 showAbout();
@@ -1859,8 +1904,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                         setDirty(false);
                                         Api.applications = null;
-                                        finish();
-                                        System.exit(0);
+                                        //finish();
+                                        //System.exit(0);
                                         //force reload rules.
                                         MainActivity.super.onKeyDown(keyCode, event);
                                         dialog.dismiss();
@@ -1871,8 +1916,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     } else {
                         setDirty(false);
-                        finish();
-                        System.exit(0);
+                        //finish();
+                        //System.exit(0);
                     }
 
 
