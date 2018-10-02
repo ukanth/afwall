@@ -46,7 +46,6 @@ import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
-import dev.ukanth.ufirewall.util.G;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled
@@ -152,16 +151,15 @@ public class PackageBroadcast extends BroadcastReceiver {
             notificationText = label + "-" + context.getString(R.string.notification_new_package);
         }
 
-        Notification notification = notificationBuilder.setOngoing(true)
+        Notification notification = notificationBuilder.setOngoing(false)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
+                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setSmallIcon(R.drawable.notification)
                 .setContentTitle(context.getString(R.string.notification_title))
                 .setTicker(context.getString(R.string.notification_title))
                 .setContentText(notificationText)
                 .build();
-        notification.flags  |= Notification.FLAG_ONGOING_EVENT |  Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
         manager.notify(NOTIFICATION_ID, notification);
     }
 
