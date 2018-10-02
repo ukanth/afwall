@@ -1,23 +1,18 @@
 package dev.ukanth.ufirewall.service;
 
-import android.app.Service;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.os.IBinder;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class StatusToggleService extends TileService {
+public class ToggleTileService extends TileService {
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -36,25 +31,25 @@ public class StatusToggleService extends TileService {
     @Override
     public void onStartListening() {
         super.onStartListening();
-
-        final SharedPreferences prefs = getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
-        final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
-
+        boolean status = Api.isEnabled(this);
         Tile tile = getQsTile(); // this is getQsTile() method form java, used in Kotlin as a property
-        tile.setLabel(enabled + "");
-        if (!enabled) {
+        if (!status) {
+            tile.setLabel(getString(R.string.inactive));
             tile.setIcon(Icon.createWithResource(this, R.drawable.notification_error));
             tile.setState(Tile.STATE_INACTIVE);
         } else {
+            tile.setLabel(getString(R.string.active));
             tile.setIcon(Icon.createWithResource(this, R.drawable.notification));
             tile.setState(Tile.STATE_ACTIVE);
         }
+        tile.updateTile();
     }
 
     @Override
     public void onStopListening() {
         super.onStopListening();
     }
+
 
     @Override
     public void onClick() {
@@ -63,6 +58,9 @@ public class StatusToggleService extends TileService {
         //Start main activity
         final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
         final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
+
+
+        Tile tile = getQsTile();
 
         if (enabled) {
             Api.applySavedIptablesRules(context, true, new RootCommand()
@@ -74,10 +72,10 @@ public class StatusToggleService extends TileService {
                             // setEnabled always sends us a STATUS_CHANGED_MSG intent to update the icon
                             Api.setEnabled(context, state.exitCode == 0, true);
 
-                            Tile tile = getQsTile(); // this is getQsTile() method form java, used in Kotlin as a property
                             tile.setState(Tile.STATE_ACTIVE);
-                            tile.setLabel(true + "");
+                            tile.setLabel(getString(R.string.active));
                             tile.setIcon(Icon.createWithResource(context, R.drawable.notification));
+                            tile.updateTile();
                         }
                     }));
         } else {
@@ -88,10 +86,10 @@ public class StatusToggleService extends TileService {
                     .setCallback(new RootCommand.Callback() {
                         public void cbFunc(RootCommand state) {
                             Api.setEnabled(context, state.exitCode != 0, true);
-                            Tile tile = getQsTile(); // this is getQsTil
                             tile.setState(Tile.STATE_INACTIVE);// e() method form java, used in Kotlin as a property
-                            tile.setLabel(false + "");
+                            tile.setLabel(getString(R.string.inactive));
                             tile.setIcon(Icon.createWithResource(context, R.drawable.notification_error));
+                            tile.updateTile();
                         }
                     }));
         }

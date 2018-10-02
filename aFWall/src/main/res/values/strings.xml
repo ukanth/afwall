@@ -125,7 +125,7 @@
 
     <!-- Widget -->
     <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
-    <string name="widget_label_status">AFWall+ Toggle/Status</string>
+    <string name="widget_label_status">AFWall+ Toggle</string>
     <string name="widget_label_settings">AFWall+ Settings</string>
     <string name="widget_label_settings_old">AFWall+ Settings (Old)</string>
 

@@ -210,8 +210,8 @@
             android:exported="true" />
 
         <service
-            android:name=".service.StatusToggleService"
-            android:icon="@drawable/notification"
+            android:name=".service.ToggleTileService"
+            android:icon="@drawable/notification_quest"
             android:label="@string/widget_label_status"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
