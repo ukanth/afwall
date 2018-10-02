@@ -176,6 +176,7 @@ public final class FireReceiver extends BroadcastReceiver {
                         /*if (G.activeNotification()) {
                             Api.showNotification(Api.isEnabled(context), context);
                         }*/
+                        Api.updateNotification(Api.isEnabled(ctx), ctx);
                     }
                 }
             } else {
