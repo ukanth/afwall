@@ -9,11 +9,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
+import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.broadcast.ConnectivityChangeReceiver;
@@ -26,6 +28,8 @@ public class FirewallService extends Service {
     BroadcastReceiver connectivityReciver;
     BroadcastReceiver packageInstallReceiver;
     BroadcastReceiver packageUninstallReceiver;
+
+    BroadcastReceiver widgetReceiver;
     IntentFilter filter;
 
     /*private static void sendImplicitBroadcast(Context ctxt, Intent i) {
@@ -80,6 +84,41 @@ public class FirewallService extends Service {
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(appIntent);*/
 
+        int icon;
+        String notificationText = "";
+
+        if (Api.isEnabled(this)) {
+            if (G.enableMultiProfile()) {
+                String profile = "";
+                switch (G.storedProfile()) {
+                    case "AFWallPrefs":
+                        profile = G.gPrefs.getString("default", getString(R.string.defaultProfile));
+                        break;
+                    case "AFWallProfile1":
+                        profile = G.gPrefs.getString("profile1", getString(R.string.profile1));
+                        break;
+                    case "AFWallProfile2":
+                        profile = G.gPrefs.getString("profile2", getString(R.string.profile2));
+                        break;
+                    case "AFWallProfile3":
+                        profile = G.gPrefs.getString("profile3", getString(R.string.profile3));
+                        break;
+                    default:
+                        profile = G.storedProfile();
+                        break;
+                }
+                notificationText = getString(R.string.active) + " (" + profile + ")";
+            } else {
+                notificationText = getString(R.string.active);
+            }
+            //notificationText = context.getString(R.string.active);
+            icon = R.drawable.notification;
+        } else {
+            notificationText = getString(R.string.inactive);
+            icon = R.drawable.notification_error;
+        }
+
+
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setContentIntent(notifyPendingIntent);
@@ -90,8 +129,8 @@ public class FirewallService extends Service {
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setContentText(getString(R.string.firewall_service))
-                .setSmallIcon(R.drawable.notification)
+                .setContentText(notificationText)
+                .setSmallIcon(icon)
                 .build();
         notification.flags  |= Notification.FLAG_ONGOING_EVENT |  Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
 
@@ -125,7 +164,6 @@ public class FirewallService extends Service {
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         intentFilter.addDataScheme("package");
-
         packageInstallReceiver = new PackageBroadcast();
         registerReceiver(packageInstallReceiver, intentFilter);
 
@@ -133,7 +171,6 @@ public class FirewallService extends Service {
         intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_REMOVED);
         packageUninstallReceiver = new PackageBroadcast();
         intentFilter.addDataScheme("package");
-
         registerReceiver(packageUninstallReceiver, intentFilter);
 
 
