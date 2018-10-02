@@ -209,6 +209,17 @@
             android:launchMode="singleTop"
             android:exported="true" />
 
+        <service
+            android:name=".service.StatusToggleService"
+            android:icon="@drawable/notification"
+            android:label="@string/widget_label_status"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action
+                    android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".widget.StatusWidget"
             android:icon="@drawable/preview_toggle"

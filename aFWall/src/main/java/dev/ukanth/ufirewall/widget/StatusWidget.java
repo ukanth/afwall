@@ -1,6 +1,6 @@
 /**
  * ON/OFF Widget implementation
- * 
+ *
  * Copyright (C) 2009-2011  Rodrigo Zechin Rosauro
  * Copyright (C) 2012 Umakanthan Chandran
  *
@@ -58,7 +58,7 @@ public class StatusWidget extends AppWidgetProvider {
 			}
 		} else if (Api.TOGGLE_REQUEST_MSG.equals(intent.getAction())) {
 			// Broadcast sent to request toggling DroidWall's status
-			
+
 			/*final String oldPwd = G.profile_pwd();
 			final String newPwd = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString("LockPassword", "");
 			*/

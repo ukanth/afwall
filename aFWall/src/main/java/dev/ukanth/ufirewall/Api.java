@@ -27,7 +27,10 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -53,6 +56,7 @@ import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -153,7 +157,7 @@ public final class Api {
      */
     public static final int SPECIAL_UID_NTP = -14;
 
-    public static final int NOTIFICATION_ID = 24556;
+    public static final int NOTIFICATION_ID = 1;
     public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
     //for import/export rules
@@ -1546,7 +1550,7 @@ public final class Api {
         return listUids;
     }
 
-    public static void removeNotification(Context context) {
+    /*public static void removeNotification(Context context) {
 
         final int NOTIF_ID = 33341;
         String notificationText = "";
@@ -1555,7 +1559,7 @@ public final class Api {
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.cancel(NOTIF_ID);
-    }
+    }*/
 
     public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo, SharedPreferences pPrefs) {
         InterfaceDetails details = InterfaceTracker.getCurrentCfg(context);
@@ -1870,10 +1874,90 @@ public final class Api {
             showNotification(Api.isEnabled(ctx), ctx);
         }*/
 
+        updateNotification(Api.isEnabled(ctx), ctx);
         /* notify */
         Intent message = new Intent(Api.STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
         ctx.sendBroadcast(message);
+    }
+
+    public static void updateNotification(boolean status, Context ctx) {
+
+        String NOTIFICATION_CHANNEL_ID = "firewall.service";
+        String channelName = "Firewall Service";
+
+        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(NOTIFICATION_ID);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            assert manager != null;
+            manager.createNotificationChannel(chan);
+        }
+
+
+        Intent appIntent = new Intent(ctx, MainActivity.class);
+        appIntent.setAction(Intent.ACTION_MAIN);
+        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
+        /*TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(appIntent);*/
+
+        int icon;
+        String notificationText = "";
+
+        if (status) {
+            if (G.enableMultiProfile()) {
+                String profile = "";
+                switch (G.storedProfile()) {
+                    case "AFWallPrefs":
+                        profile = G.gPrefs.getString("default", ctx.getString(R.string.defaultProfile));
+                        break;
+                    case "AFWallProfile1":
+                        profile = G.gPrefs.getString("profile1", ctx.getString(R.string.profile1));
+                        break;
+                    case "AFWallProfile2":
+                        profile = G.gPrefs.getString("profile2", ctx.getString(R.string.profile2));
+                        break;
+                    case "AFWallProfile3":
+                        profile = G.gPrefs.getString("profile3", ctx.getString(R.string.profile3));
+                        break;
+                    default:
+                        profile = G.storedProfile();
+                        break;
+                }
+                notificationText = ctx.getString(R.string.active) + " (" + profile + ")";
+            } else {
+                notificationText = ctx.getString(R.string.active);
+            }
+            //notificationText = context.getString(R.string.active);
+            icon = R.drawable.notification;
+        } else {
+            notificationText = ctx.getString(R.string.inactive);
+            icon = R.drawable.notification_error;
+        }
+
+
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder.setContentIntent(notifyPendingIntent);
+
+        Notification notification = notificationBuilder.setOngoing(true)
+                .setContentTitle(ctx.getString(R.string.app_name))
+                .setTicker(ctx.getString(R.string.app_name))
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setContentText(notificationText)
+                .setSmallIcon(icon)
+                .build();
+        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
+        manager.notify(NOTIFICATION_ID, notification);
+
     }
 
 	/*public static void displayToasts(Context context, int id, int length) {
