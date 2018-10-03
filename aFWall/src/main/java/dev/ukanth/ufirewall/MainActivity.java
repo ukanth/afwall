@@ -46,7 +46,6 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ServiceCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -1641,7 +1640,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             setDirty(false);
             return;
         }
-        Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+        //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+        Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         new RunApply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }

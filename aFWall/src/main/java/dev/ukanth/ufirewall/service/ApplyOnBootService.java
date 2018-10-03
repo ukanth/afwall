@@ -95,10 +95,6 @@ public class ApplyOnBootService extends Service {
             }, G.getCustomDelay());
         }
 
-       /* if (G.activeNotification()) {
-            Api.showNotification(Api.isEnabled(this), this);
-        }
-*/
         //check if startup script is copied
         Api.checkAndCopyFixLeak(this, "afwallstart");
         stopSelf();

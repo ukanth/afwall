@@ -289,7 +289,8 @@ public class ToggleWidgetActivity extends Activity {
                                     }
                                 }
                             }));
-                    Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                    //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                    Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
                 }
             }.start();
         }
@@ -542,7 +543,8 @@ public class ToggleWidgetActivity extends Activity {
                         G.reloadPrefs();
                     }
                 }
-                Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
             }
         }.start();
     }
