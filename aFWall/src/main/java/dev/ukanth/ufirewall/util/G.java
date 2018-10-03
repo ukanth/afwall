@@ -137,7 +137,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String PROFILES_MIGRATED = "profilesmigrated";
     private static final String WIDGET_X = "widgetX";
     private static final String WIDGET_Y = "widgetY";
-    private static final String XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
+    //private static final String XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
 
     //ippreference
     private static final String IP4_INPUT = "input_chain";
@@ -307,14 +307,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static boolean isXposedDM() {
+  /*  public static boolean isXposedDM() {
         return gPrefs.getBoolean(XPOSED_FIX_DM_LEAK, false);
     }
 
     public static boolean isXposedDM(boolean val) {
         gPrefs.edit().putBoolean(XPOSED_FIX_DM_LEAK, val).commit();
         return val;
-    }
+    }*/
 
     public static boolean hasRoot() {
         return gPrefs.getBoolean(HAS_ROOT, false);

@@ -21,21 +21,13 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/XPosed_prefs_title">
+    <!--<PreferenceCategory android:title="@string/XPosed_prefs_title">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="fixDownloadManagerLeak"
             android:summary="@string/fixDownloadTitleSummary"
             android:title="@string/fixDownloadTitle" />
-        <!--<CheckBoxPreference
-            android:defaultValue="false"
-            android:key="lockScreenNotification"
-            android:summary="@string/lockScreenNotification_summary"
-            android:title="@string/lockNotification" />
-        <CheckBoxPreference
-            android:key="fixLeakXPosed"
-            android:title="@string/fixleakTitle" />-->
 
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 
 </PreferenceScreen>
