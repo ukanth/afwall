@@ -2412,5 +2412,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(Api.updateBaseContextLocale(base));
+    }
+
+
 }
 

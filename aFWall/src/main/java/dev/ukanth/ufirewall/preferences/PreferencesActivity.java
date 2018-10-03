@@ -327,7 +327,14 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             disposable.dispose();
         }
         super.onDestroy();
-
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(Api.updateBaseContextLocale(base));
+    }
+
+
+
 
 }

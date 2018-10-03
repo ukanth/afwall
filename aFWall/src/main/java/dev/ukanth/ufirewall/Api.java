@@ -3304,6 +3304,32 @@ public final class Api {
         }
     }
 
+    public static Context updateBaseContextLocale(Context context) {
+        String language = G.locale(); // Helper method to get saved language from SharedPreferences
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return updateResourcesLocale(context, locale);
+        }
+        return updateResourcesLocaleLegacy(context, locale);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private static Context updateResourcesLocale(Context context, Locale locale) {
+        Configuration configuration = context.getResources().getConfiguration();
+        configuration.setLocale(locale);
+        return context.createConfigurationContext(configuration);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Context updateResourcesLocaleLegacy(Context context, Locale locale) {
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        return context;
+    }
+
     static class RuleDataSet {
 
         List<Integer> wifiList;
