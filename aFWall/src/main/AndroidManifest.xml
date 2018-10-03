@@ -222,6 +222,7 @@
 
         <receiver
             android:name=".widget.StatusWidget"
+            android:enabled="@bool/widgetVisible"
             android:icon="@drawable/preview_toggle"
             android:label="@string/widget_label_status">
             <meta-data

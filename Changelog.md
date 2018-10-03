@@ -1,6 +1,18 @@
 Changelog AFWall+
 ==================
 
+Version 3.0.0 - BETA
+
+* Now better compatible with Nougat/Oreo and Pie 
+* Firewall toggle tile
+* Adaptive Icon
+* Language selection bug for Nougat/Oreo
+* Filter selection bug
+* Compatible with new magisk (startup leak)
+* Better handling of background process
+* Update languages
+* Updated libraries
+
 Version 2.9.9
 
 * Support for dual apps (experimental)
