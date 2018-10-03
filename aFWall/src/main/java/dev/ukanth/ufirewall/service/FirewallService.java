@@ -9,7 +9,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
@@ -61,7 +60,7 @@ public class FirewallService extends Service {
 
     private void addNotification() {
         String NOTIFICATION_CHANNEL_ID = "firewall.service";
-        String channelName = "Firewall Service";
+        String channelName = getString(R.string.firewall_service);
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(NOTIFICATION_ID);

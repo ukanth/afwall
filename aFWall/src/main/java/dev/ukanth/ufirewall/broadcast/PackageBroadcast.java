@@ -46,6 +46,7 @@ import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
+import dev.ukanth.ufirewall.util.G;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled
@@ -122,10 +123,11 @@ public class PackageBroadcast extends BroadcastReceiver {
 
 
     private void addNotification(Context context, String label) {
-        final int NOTIFICATION_ID = 2;
+        final int NOTIFICATION_ID = 3;
         String NOTIFICATION_CHANNEL_ID = "firewall.app.notification";
         String channelName = context.getString(R.string.app_notification);
 
+        //cancel existing notification
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(NOTIFICATION_ID);
 
@@ -153,42 +155,14 @@ public class PackageBroadcast extends BroadcastReceiver {
 
         Notification notification = notificationBuilder.setOngoing(false)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
+                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setSmallIcon(R.drawable.notification)
+                .setSmallIcon(R.drawable.notification_quest)
                 .setContentTitle(context.getString(R.string.notification_title))
                 .setTicker(context.getString(R.string.notification_title))
                 .setContentText(notificationText)
                 .build();
+
         manager.notify(NOTIFICATION_ID, notification);
-    }
-
-    //@SuppressWarnings("deprecation")
-    public void notifyApp(Context context, String label) {
-        String ns = Context.NOTIFICATION_SERVICE;
-
-        NotificationManager mNotificationManager = (NotificationManager) context
-                .getSystemService(ns);
-
-        int icon = R.drawable.notification_quest;
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-
-        Intent appIntent = new Intent(context, MainActivity.class);
-        PendingIntent in = PendingIntent.getActivity(context, 0, appIntent, 0);
-
-        String notificationText = context.getString(R.string.notification_new);
-        if (label != null) {
-            notificationText = label + "-" + context.getString(R.string.notification_new_package);
-        }
-        builder.setSmallIcon(icon)
-                .setAutoCancel(true)
-                .setContentTitle(context.getString(R.string.notification_title))
-                .setTicker(context.getString(R.string.notification_title))
-                .setContentText(notificationText);
-        builder.setContentIntent(in);
-
-        mNotificationManager.notify(Api.NOTIFICATION_ID, builder.build());
-
     }
 }
