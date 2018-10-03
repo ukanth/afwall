@@ -223,23 +223,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             startRootShell(rootShell);
             new SecurityUtil(MainActivity.this).passCheck();
+            registerNetworkObserver();
         }
         //registerQuickApply();
         registerUIbroadcast();
         registerToastbroadcast();
-
         migrateNotification();
-        registerNetworkObserver();
         //checkAndAskForBatteryOptimization();
     }
 
-
     private void registerNetworkObserver() {
-        /*if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(new Intent(getBaseContext(), FirewallService.class));
-        } else {
-            startService(new Intent(getBaseContext(), FirewallService.class));
-        }*/
         startService(new Intent(getBaseContext(), FirewallService.class));
     }
 
