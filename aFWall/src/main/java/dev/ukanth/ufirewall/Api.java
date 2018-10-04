@@ -28,6 +28,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ClipData;
@@ -44,6 +45,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -55,7 +57,6 @@ import android.os.UserManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -156,35 +157,18 @@ public final class Api {
      */
     public static final int SPECIAL_UID_NTP = -14;
 
-    public static final int NOTIFICATION_ID = 24556;
-
-    private static String charsetName = "UTF8";
-    private static String algorithm = "DES";
-    private static int base64Mode = Base64.DEFAULT;
-
-    private static final int WIFI_EXPORT = 0;
-    private static final int DATA_EXPORT = 1;
-    private static final int ROAM_EXPORT = 2;
-    private static final int VPN_EXPORT = 3;
-    private static final int LAN_EXPORT = 4;
-
-    // Preferences
-    public static String PREFS_NAME = "AFWallPrefs";
+    public static final int NOTIFICATION_ID = 1;
     public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
-
     //for import/export rules
     public static final String PREF_3G_PKG = "AllowedPKG3G";
     public static final String PREF_WIFI_PKG = "AllowedPKGWifi";
-
     //revertback to old approach for performance
     public static final String PREF_3G_PKG_UIDS = "AllowedPKG3G_UIDS";
     public static final String PREF_WIFI_PKG_UIDS = "AllowedPKGWifi_UIDS";
     public static final String PREF_ROAMING_PKG_UIDS = "AllowedPKGRoaming_UIDS";
     public static final String PREF_VPN_PKG_UIDS = "AllowedPKGVPN_UIDS";
     public static final String PREF_LAN_PKG_UIDS = "AllowedPKGLAN_UIDS";
-
-
     public static final String PREF_CUSTOMSCRIPT = "CustomScript";
     public static final String PREF_CUSTOMSCRIPT2 = "CustomScript2"; // Executed on shutdown
     public static final String PREF_MODE = "BlockMode";
@@ -192,8 +176,6 @@ public final class Api {
     // Modes
     public static final String MODE_WHITELIST = "whitelist";
     public static final String MODE_BLACKLIST = "blacklist";
-    // Messages
-
     public static final String STATUS_CHANGED_MSG = "dev.ukanth.ufirewall.intent.action.STATUS_CHANGED";
     public static final String TOGGLE_REQUEST_MSG = "dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST";
     public static final String CUSTOM_SCRIPT_MSG = "dev.ukanth.ufirewall.intent.action.CUSTOM_SCRIPT";
@@ -201,35 +183,19 @@ public final class Api {
     public static final String STATUS_EXTRA = "dev.ukanth.ufirewall.intent.extra.STATUS";
     public static final String SCRIPT_EXTRA = "dev.ukanth.ufirewall.intent.extra.SCRIPT";
     public static final String SCRIPT2_EXTRA = "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
-
+    private static final int WIFI_EXPORT = 0;
+    private static final int DATA_EXPORT = 1;
+    private static final int ROAM_EXPORT = 2;
+    // Messages
+    private static final int VPN_EXPORT = 3;
+    private static final int LAN_EXPORT = 4;
     private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
     private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
     private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
-
     // iptables can exit with status 4 if two processes tried to update the same table
     private static final int IPTABLES_TRY_AGAIN = 4;
-
-    private static String AFWALL_CHAIN_NAME = "afwall";
-
     private static final String dynChains[] = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
-
     private static final String staticChains[] = {"", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan"};
-
-    // Cached applications
-    public static List<PackageInfoData> applications = null;
-    public static Set<String> recentlyInstalled = new HashSet<>();
-
-    //for custom scripts
-    public static String ipPath = null;
-    public static String bbPath = null;
-    private static Map<String, Integer> specialApps = null;
-
-    public static void setRulesUpToDate(boolean rulesUpToDate) {
-        Api.rulesUpToDate = rulesUpToDate;
-    }
-
-    private static boolean rulesUpToDate = false;
-
     /**
      * @brief Special user/group IDs that aren't associated with
      * any particular app.
@@ -260,6 +226,25 @@ public final class Api {
             "gps",
             "shell",
     };
+    private static final Pattern p = Pattern.compile("UserHandle\\{(.*)\\}");
+    // Preferences
+    public static String PREFS_NAME = "AFWallPrefs";
+    // Cached applications
+    public static List<PackageInfoData> applications = null;
+    public static Set<String> recentlyInstalled = new HashSet<>();
+    //for custom scripts
+    public static String ipPath = null;
+    public static String bbPath = null;
+    private static String charsetName = "UTF8";
+    private static String algorithm = "DES";
+    private static int base64Mode = Base64.DEFAULT;
+    private static String AFWALL_CHAIN_NAME = "afwall";
+    private static Map<String, Integer> specialApps = null;
+    private static boolean rulesUpToDate = false;
+
+    public static void setRulesUpToDate(boolean rulesUpToDate) {
+        Api.rulesUpToDate = rulesUpToDate;
+    }
 
     // returns c.getString(R.string.<acct>_item)
     public static String getSpecialDescription(Context ctx, String acct) {
@@ -333,7 +318,6 @@ public final class Api {
         Api.bbPath = getBusyBoxPath(ctx, true);
     }
 
-
     /**
      * Determine toybox/busybox or built in
      *
@@ -354,7 +338,6 @@ public final class Api {
             }
         }
     }
-
 
     /**
      * Get NFLog Path
@@ -455,6 +438,7 @@ public final class Api {
                     addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
                 }
             }
+
 
             // NTP service runs as "system" user
             if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
@@ -573,37 +557,6 @@ public final class Api {
         return ctx.getString(R.string.unknown_item);
     }
 
-
-    static class RuleDataSet {
-
-        RuleDataSet(List<Integer> uidsWifi, List<Integer> uids3g,
-                    List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN) {
-            this.wifiList = uidsWifi;
-            this.dataList = uids3g;
-            this.roamList = uidsRoam;
-            this.vpnList = uidsVPN;
-            this.lanList = uidsLAN;
-        }
-
-        List<Integer> wifiList;
-        List<Integer> dataList;
-        List<Integer> lanList;
-        List<Integer> roamList;
-        List<Integer> vpnList;
-
-        @Override
-        public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append(wifiList != null ? android.text.TextUtils.join(",", wifiList) : "");
-            builder.append(dataList != null ? android.text.TextUtils.join(",", dataList) : "");
-            builder.append(lanList != null ? android.text.TextUtils.join(",", lanList) : "");
-            builder.append(roamList != null ? android.text.TextUtils.join(",", roamList) : "");
-            builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList) : "");
-            return builder.toString().trim();
-        }
-    }
-
-
     public static RuleDataSet merge(RuleDataSet original, RuleDataSet modified) {
         if (modified.dataList.size() > 0) {
             for (Integer integer : modified.dataList) {
@@ -685,11 +638,11 @@ public final class Api {
         List<String> cmds = new ArrayList<String>();
 
         //check before make them ACCEPT state
-        if(ipv4Input() || (ipv6 && ipv6Input())) {
+        if (ipv4Input() || (ipv6 && ipv6Input())) {
             cmds.add("-P INPUT ACCEPT");
         }
 
-        if(ipv4Fwd() || (ipv6 && ipv6Fwd())) {
+        if (ipv4Fwd() || (ipv6 && ipv6Fwd())) {
             cmds.add("-P FORWARD ACCEPT");
         }
 
@@ -788,6 +741,10 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.wifiList, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+                cmds.add("-A " + AFWALL_CHAIN_NAME + " -p udp --dport 53 -j ACCEPT");
+            }
 
             Log.i(TAG, "Setting OUTPUT to Accept State");
             cmds.add("-P OUTPUT ACCEPT");
@@ -1302,22 +1259,6 @@ public final class Api {
         callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
     }
 
-    private static final Pattern p = Pattern.compile("UserHandle\\{(.*)\\}");
-
-   /* public boolean isSuPackage(PackageManager pm, String suPackage) {
-        boolean found = false;
-        try {
-            PackageInfo info = pm.getPackageInfo(suPackage, 0);
-            if (info.applicationInfo != null) {
-                found = true;
-            }
-            //found = s + " v" + info.versionName;
-        } catch (NameNotFoundException e) {
-        }
-        return found;
-    }*/
-
-
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
@@ -1528,6 +1469,19 @@ public final class Api {
         return null;
     }
 
+   /* public boolean isSuPackage(PackageManager pm, String suPackage) {
+        boolean found = false;
+        try {
+            PackageInfo info = pm.getPackageInfo(suPackage, 0);
+            if (info.applicationInfo != null) {
+                found = true;
+            }
+            //found = s + " v" + info.versionName;
+        } catch (NameNotFoundException e) {
+        }
+        return found;
+    }*/
+
     public static List<PackageInfoData> getSpecialData(boolean additional) {
         List<PackageInfoData> specialData = new ArrayList<>();
         specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
@@ -1596,7 +1550,7 @@ public final class Api {
         return listUids;
     }
 
-    public static void removeNotification(Context context) {
+    /*public static void removeNotification(Context context) {
 
         final int NOTIF_ID = 33341;
         String notificationText = "";
@@ -1605,7 +1559,7 @@ public final class Api {
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
         mNotificationManager.cancel(NOTIF_ID);
-    }
+    }*/
 
     public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo, SharedPreferences pPrefs) {
         InterfaceDetails details = InterfaceTracker.getCurrentCfg(context);
@@ -1690,48 +1644,6 @@ public final class Api {
         List<String> out = new ArrayList<>();
         iptablesCommands(cmds, out, isIpv6);
         callback.run(ctx, out);
-    }
-
-
-    private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
-
-        private int exitCode = -1;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Integer doInBackground(Object... params) {
-            @SuppressWarnings("unchecked")
-            List<String> commands = (List<String>) params[0];
-            StringBuilder res = (StringBuilder) params[1];
-            try {
-                if (!SU.available())
-                    return exitCode;
-                if (commands != null && commands.size() > 0) {
-                    List<String> output = SU.run(commands);
-                    if (output != null) {
-                        exitCode = 0;
-                        if (output.size() > 0) {
-                            for (String str : output) {
-                                res.append(str);
-                                res.append("\n");
-                            }
-                        }
-                    } else {
-                        exitCode = 1;
-                    }
-                }
-            } catch (Exception ex) {
-                if (res != null)
-                    res.append("\n" + ex);
-            }
-            return exitCode;
-        }
-
-
     }
 
     /**
@@ -1924,14 +1836,6 @@ public final class Api {
         return ret;
     }
 
-	/*public static void displayToasts(Context context, int id, int length) {
-        Toast.makeText(context, context.getString(id), length).show();
-	}
-
-	public static void displayToasts(Context context, String text, int length) {
-		Toast.makeText(context, text, length).show();
-	}*/
-
     /**
      * Check if the firewall is enabled
      *
@@ -1966,16 +1870,103 @@ public final class Api {
             return;
         }
 
-        if (G.activeNotification()) {
+       /* if (G.activeNotification()) {
             showNotification(Api.isEnabled(ctx), ctx);
-        }
+        }*/
 
+        updateNotification(Api.isEnabled(ctx), ctx);
         /* notify */
         Intent message = new Intent(Api.STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
         ctx.sendBroadcast(message);
     }
 
+    public static void updateNotification(boolean status, Context ctx) {
+
+        String NOTIFICATION_CHANNEL_ID = "firewall.service";
+        String channelName = "Firewall Service";
+
+        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(NOTIFICATION_ID);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            assert manager != null;
+            manager.createNotificationChannel(chan);
+        }
+
+
+        Intent appIntent = new Intent(ctx, MainActivity.class);
+        appIntent.setAction(Intent.ACTION_MAIN);
+        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
+        /*TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(appIntent);*/
+
+        int icon;
+        String notificationText = "";
+
+        if (status) {
+            if (G.enableMultiProfile()) {
+                String profile = "";
+                switch (G.storedProfile()) {
+                    case "AFWallPrefs":
+                        profile = G.gPrefs.getString("default", ctx.getString(R.string.defaultProfile));
+                        break;
+                    case "AFWallProfile1":
+                        profile = G.gPrefs.getString("profile1", ctx.getString(R.string.profile1));
+                        break;
+                    case "AFWallProfile2":
+                        profile = G.gPrefs.getString("profile2", ctx.getString(R.string.profile2));
+                        break;
+                    case "AFWallProfile3":
+                        profile = G.gPrefs.getString("profile3", ctx.getString(R.string.profile3));
+                        break;
+                    default:
+                        profile = G.storedProfile();
+                        break;
+                }
+                notificationText = ctx.getString(R.string.active) + " (" + profile + ")";
+            } else {
+                notificationText = ctx.getString(R.string.active);
+            }
+            //notificationText = context.getString(R.string.active);
+            icon = R.drawable.notification;
+        } else {
+            notificationText = ctx.getString(R.string.inactive);
+            icon = R.drawable.notification_error;
+        }
+
+
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder.setContentIntent(notifyPendingIntent);
+
+        Notification notification = notificationBuilder.setOngoing(true)
+                .setContentTitle(ctx.getString(R.string.app_name))
+                .setTicker(ctx.getString(R.string.app_name))
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setContentText(notificationText)
+                .setSmallIcon(icon)
+                .build();
+        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
+        manager.notify(NOTIFICATION_ID, notification);
+
+    }
+
+	/*public static void displayToasts(Context context, int id, int length) {
+        Toast.makeText(context, context.getString(id), length).show();
+	}
+
+	public static void displayToasts(Context context, String text, int length) {
+		Toast.makeText(context, text, length).show();
+	}*/
 
     private static boolean removePackageRef(Context ctx, String pkg, int pkgRemoved, Editor editor, String store) {
         StringBuilder newuids = new StringBuilder();
@@ -2202,118 +2193,6 @@ public final class Api {
                 Toast.makeText(ctx, ctx.getText(R.string.donate_only), Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    /**
-     * Small structure to hold an application info
-     */
-    public static final class PackageInfoData {
-
-        /**
-         * linux user id
-         */
-        public int uid;
-        /**
-         * application names belonging to this user id
-         */
-        public List<String> names;
-        /**
-         * rules saving & load
-         **/
-        public String pkgName;
-        /**
-         * indicates if this application is selected for wifi
-         */
-        public boolean selected_wifi;
-        /**
-         * indicates if this application is selected for 3g
-         */
-        public boolean selected_3g;
-        /**
-         * indicates if this application is selected for roam
-         */
-        public boolean selected_roam;
-        /**
-         * indicates if this application is selected for vpn
-         */
-        public boolean selected_vpn;
-        /**
-         * indicates if this application is selected for lan
-         */
-        public boolean selected_lan;
-        /**
-         * toString cache
-         */
-        public String tostr;
-        /**
-         * application info
-         */
-        public ApplicationInfo appinfo;
-        /**
-         * cached application icon
-         */
-        public Drawable cached_icon;
-        /**
-         * indicates if the icon has been loaded already
-         */
-        public boolean icon_loaded;
-
-        /* install time */
-        public long installTime;
-
-        /**
-         * first time seen?
-         */
-        public boolean firstseen;
-
-        public PackageInfoData() {
-        }
-
-        public PackageInfoData(int uid, String name, String pkgNameStr) {
-            this.uid = uid;
-            this.names = new ArrayList<String>();
-            this.names.add(name);
-            this.pkgName = pkgNameStr;
-        }
-
-        public PackageInfoData(String user, String name, String pkgNameStr) {
-            this(android.os.Process.getUidForName(user), name, pkgNameStr);
-        }
-
-        /**
-         * Screen representation of this application
-         */
-        @Override
-        public String toString() {
-            if (tostr == null) {
-                StringBuilder s = new StringBuilder();
-                //if (uid > 0) s.append(uid + ": ");
-                for (int i = 0; i < names.size(); i++) {
-                    if (i != 0) s.append(", ");
-                    s.append(names.get(i));
-                }
-                s.append("\n");
-                tostr = s.toString();
-            }
-            return tostr;
-        }
-
-        public String toStringWithUID() {
-            if (tostr == null) {
-                StringBuilder s = new StringBuilder();
-                s.append("[ ");
-                s.append(uid);
-                s.append(" ] ");
-                for (int i = 0; i < names.size(); i++) {
-                    if (i != 0) s.append(", ");
-                    s.append(names.get(i));
-                }
-                s.append("\n");
-                tostr = s.toString();
-            }
-            return tostr;
-        }
-
     }
 
     public static void exportRulesToFileConfirm(final Context ctx) {
@@ -2548,7 +2427,6 @@ public final class Api {
         }
         return returnVal;
     }
-
 
     private static void updateRulesFromJson(Context ctx, JSONObject object, String preferenceName) throws JSONException {
         final StringBuilder wifi_uids = new StringBuilder();
@@ -2790,71 +2668,6 @@ public final class Api {
         return res;
     }
 
-    /*public static List<String> interfaceInfo(boolean showMatches) {
-        List<String> ret = new ArrayList<String>();
-        try {
-            for (File f : new File("/sys/class/net").listFiles()) {
-                String name = f.getName();
-
-                if (!showMatches) {
-                    ret.add(name);
-                } else {
-                    if (InterfaceTracker.matchName(InterfaceTracker.ITFS_WIFI, name) != null) {
-                        ret.add(name + ": wifi");
-                    } else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_3G, name) != null) {
-                        ret.add(name + ": 3G");
-                    } else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_VPN, name) != null) {
-                        ret.add(name + ": VPN");
-                    } else {
-                        ret.add(name + ": unknown");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "can't list network interfaces: " + e.getLocalizedMessage());
-        }
-        return ret;
-    }*/
-
-    private static class LogProbeCallback extends RootCommand.Callback {
-        private Context ctx;
-
-        public void cbFunc(RootCommand state) {
-            if (state.exitCode != 0) {
-                G.enableLogService(false);
-                return;
-            }
-            boolean logSet = false;
-            for (String str : state.res.toString().split("\n")) {
-                if (str.equals("LOG")) {
-                    G.logTarget("LOG");
-                    logSet = true;
-                    Log.d(TAG, "logging using LOG target");
-                    break;
-                } else if (str.equals("NFLOG")) {
-                    G.logTarget("NFLOG");
-                    logSet = true;
-                    Log.d(TAG, "logging using NFLOG target");
-                    break;
-                }
-            }
-
-            if (!logSet) {
-                Log.i(TAG, "could not find LOG or NFLOG target");
-                //displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
-                G.logTarget("");
-                G.enableLogService(false);
-                return;
-            }
-            G.enableLogService(true);
-            updateLogRules(ctx, new RootCommand()
-                    .setReopenShell(true)
-                    .setSuccessToast(R.string.log_was_enabled)
-                    .setFailureToast(R.string.log_target_failed));
-        }
-    }
-
-
     public static void setLogTarget(final Context ctx, boolean isEnabled) {
         if (!isEnabled) {
             // easy case: just disable
@@ -2921,14 +2734,6 @@ public final class Api {
         context.startActivity(intent);
     }
 
-	/*public static void showAlertDialogActivity(Context ctx,String title, String message) {
-        Intent dialog = new Intent(ctx,AlertDialogActivity.class);
-		dialog.putExtra("title", title);
-		dialog.putExtra("message", message);
-		dialog.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		ctx.startActivity(dialog);
-	}*/
-
     public static boolean isNetfilterSupported() {
         //!new File("/proc/config.gz").exists() ||
         if (!new File("/proc/net/netfilter").exists()
@@ -2941,6 +2746,31 @@ public final class Api {
         return true;
     }
 
+    /*public static List<String> interfaceInfo(boolean showMatches) {
+        List<String> ret = new ArrayList<String>();
+        try {
+            for (File f : new File("/sys/class/net").listFiles()) {
+                String name = f.getName();
+
+                if (!showMatches) {
+                    ret.add(name);
+                } else {
+                    if (InterfaceTracker.matchName(InterfaceTracker.ITFS_WIFI, name) != null) {
+                        ret.add(name + ": wifi");
+                    } else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_3G, name) != null) {
+                        ret.add(name + ": 3G");
+                    } else if (InterfaceTracker.matchName(InterfaceTracker.ITFS_VPN, name) != null) {
+                        ret.add(name + ": VPN");
+                    } else {
+                        ret.add(name + ": unknown");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "can't list network interfaces: " + e.getLocalizedMessage());
+        }
+        return ret;
+    }*/
 
     public static LinkedList<String> getKernelFeatures(String location) {
         LinkedList<String> list = new LinkedList<String>();
@@ -3004,6 +2834,14 @@ public final class Api {
         return true;
     }
 
+	/*public static void showAlertDialogActivity(Context ctx,String title, String message) {
+        Intent dialog = new Intent(ctx,AlertDialogActivity.class);
+		dialog.putExtra("title", title);
+		dialog.putExtra("message", message);
+		dialog.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		ctx.startActivity(dialog);
+	}*/
+
     public static boolean hasKernelConfig() {
         return new File("/proc/config.gz").exists();
     }
@@ -3024,7 +2862,6 @@ public final class Api {
         }
     }
 
-
     public static void updateLanguage(Context context, String lang) {
         if (lang.equals("sys")) {
             Locale defaultLocale = Resources.getSystem().getConfiguration().locale;
@@ -3032,7 +2869,7 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = defaultLocale;
-            res.updateConfiguration(conf, res.getDisplayMetrics());
+            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
         } else if (!"".equals(lang)) {
             Locale locale = new Locale(lang);
             if (lang.contains("_")) {
@@ -3042,10 +2879,9 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
-            res.updateConfiguration(conf, res.getDisplayMetrics());
+            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
         }
     }
-
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static void setUserOwner(Context context) {
@@ -3076,7 +2912,6 @@ public final class Api {
         return false;
     }
 
-
     public static String loadData(final Context context,
                                   final String resourceName) throws IOException {
         int resourceIdentifier = context
@@ -3100,7 +2935,6 @@ public final class Api {
         return null;
     }
 
-
     /* Checks if external storage is available for read and write */
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
@@ -3119,7 +2953,6 @@ public final class Api {
         }
         return false;
     }
-
 
     /**
      * Encrypt the password
@@ -3199,11 +3032,32 @@ public final class Api {
         return pInfo.packageName;
     }
 
+    public static int getConnectivityStatus(Context context) {
+
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        assert cm != null;
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        if (null != activeNetwork) {
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return 1;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return 2;
+        }
+        return 0;
+    }
 
     public static void showNotification(boolean status, Context context) {
 
+        /*final int NOTIFICATION_ID = 33341;
+        String CHANNEL_ID = "afwall_service";
+
         if (G.activeNotification()) {
-            final int NOTIFICATION_ID = 33341;
+
             String notificationText = "";
 
             NotificationManager mNotificationManager = (NotificationManager) context
@@ -3215,7 +3069,7 @@ public final class Api {
             }
 
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
 
             Intent appIntent = new Intent(context, MainActivity.class);
 
@@ -3259,10 +3113,15 @@ public final class Api {
                 icon = R.drawable.notification_error;
             }
 
-            //TODO: Action button's on notification
-            //Intent deleteIntent = new Intent(context, BootBroadcast.class);
-            //PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, 0, deleteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.activeNotification),
+                        NotificationManager.IMPORTANCE_LOW);
+                channel.setDescription(notificationText);
+                channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
+                channel.setShowBadge(true);
+                mNotificationManager.createNotificationChannel(channel);
+            }
 
             builder.setSmallIcon(icon).setOngoing(true)
                     .setAutoCancel(false)
@@ -3270,23 +3129,16 @@ public final class Api {
                     //keep the priority as low ,so it's not visible on lockscreen
                     .setTicker(context.getString(R.string.app_name))
                     .setPriority(G.getNotificationPriority())
+                    .setChannelId(CHANNEL_ID)
                     //.addAction(R.drawable.apply, "", pendingIntentCancel)
                     //.addAction(R.drawable.exit, "", pendingIntentCancel)
                     .setContentText(notificationText);
 
             Notification notification = builder.build();
-            //notification.flags = Notification.FLAG_ONGOING_EVENT;
-
-			/*if(G.lockNotification() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder.setVisibility(NotificationCompat.PRIORITY_LOW);
-			}*/
-            //builder.setContentIntent(in);
             mNotificationManager.notify(NOTIFICATION_ID, notification);
-        }
 
-
+        }*/
     }
-
 
     /**
      * Apply default chains based on preference
@@ -3395,7 +3247,6 @@ public final class Api {
         return false;
     }
 
-
     public static boolean mountDir(Context context, String path, String mountType) {
         if (path != null) {
             String busyboxPath = Api.getBusyBoxPath(context, false);
@@ -3450,6 +3301,252 @@ public final class Api {
             return (selected_wifi.contains(uid) && selected_3g.contains(uid)) || selected_roam.contains(uid) || selected_vpn.contains(uid);
         } catch (NameNotFoundException e) {
             return false;
+        }
+    }
+
+    public static Context updateBaseContextLocale(Context context) {
+        String language = G.locale(); // Helper method to get saved language from SharedPreferences
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return updateResourcesLocale(context, locale);
+        }
+        return updateResourcesLocaleLegacy(context, locale);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private static Context updateResourcesLocale(Context context, Locale locale) {
+        Configuration configuration = context.getResources().getConfiguration();
+        configuration.setLocale(locale);
+        return context.createConfigurationContext(configuration);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Context updateResourcesLocaleLegacy(Context context, Locale locale) {
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        return context;
+    }
+
+    static class RuleDataSet {
+
+        List<Integer> wifiList;
+        List<Integer> dataList;
+        List<Integer> lanList;
+        List<Integer> roamList;
+        List<Integer> vpnList;
+
+        RuleDataSet(List<Integer> uidsWifi, List<Integer> uids3g,
+                    List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN) {
+            this.wifiList = uidsWifi;
+            this.dataList = uids3g;
+            this.roamList = uidsRoam;
+            this.vpnList = uidsVPN;
+            this.lanList = uidsLAN;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append(wifiList != null ? android.text.TextUtils.join(",", wifiList) : "");
+            builder.append(dataList != null ? android.text.TextUtils.join(",", dataList) : "");
+            builder.append(lanList != null ? android.text.TextUtils.join(",", lanList) : "");
+            builder.append(roamList != null ? android.text.TextUtils.join(",", roamList) : "");
+            builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList) : "");
+            return builder.toString().trim();
+        }
+    }
+
+    private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
+
+        private int exitCode = -1;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Integer doInBackground(Object... params) {
+            @SuppressWarnings("unchecked")
+            List<String> commands = (List<String>) params[0];
+            StringBuilder res = (StringBuilder) params[1];
+            try {
+                if (!SU.available())
+                    return exitCode;
+                if (commands != null && commands.size() > 0) {
+                    List<String> output = SU.run(commands);
+                    if (output != null) {
+                        exitCode = 0;
+                        if (output.size() > 0) {
+                            for (String str : output) {
+                                res.append(str);
+                                res.append("\n");
+                            }
+                        }
+                    } else {
+                        exitCode = 1;
+                    }
+                }
+            } catch (Exception ex) {
+                if (res != null)
+                    res.append("\n" + ex);
+            }
+            return exitCode;
+        }
+
+
+    }
+
+    /**
+     * Small structure to hold an application info
+     */
+    public static final class PackageInfoData {
+
+        /**
+         * linux user id
+         */
+        public int uid;
+        /**
+         * application names belonging to this user id
+         */
+        public List<String> names;
+        /**
+         * rules saving & load
+         **/
+        public String pkgName;
+        /**
+         * indicates if this application is selected for wifi
+         */
+        public boolean selected_wifi;
+        /**
+         * indicates if this application is selected for 3g
+         */
+        public boolean selected_3g;
+        /**
+         * indicates if this application is selected for roam
+         */
+        public boolean selected_roam;
+        /**
+         * indicates if this application is selected for vpn
+         */
+        public boolean selected_vpn;
+        /**
+         * indicates if this application is selected for lan
+         */
+        public boolean selected_lan;
+        /**
+         * toString cache
+         */
+        public String tostr;
+        /**
+         * application info
+         */
+        public ApplicationInfo appinfo;
+        /**
+         * cached application icon
+         */
+        public Drawable cached_icon;
+        /**
+         * indicates if the icon has been loaded already
+         */
+        public boolean icon_loaded;
+
+        /* install time */
+        public long installTime;
+
+        /**
+         * first time seen?
+         */
+        public boolean firstseen;
+
+        public PackageInfoData() {
+        }
+
+        public PackageInfoData(int uid, String name, String pkgNameStr) {
+            this.uid = uid;
+            this.names = new ArrayList<String>();
+            this.names.add(name);
+            this.pkgName = pkgNameStr;
+        }
+
+        public PackageInfoData(String user, String name, String pkgNameStr) {
+            this(android.os.Process.getUidForName(user), name, pkgNameStr);
+        }
+
+        /**
+         * Screen representation of this application
+         */
+        @Override
+        public String toString() {
+            if (tostr == null) {
+                StringBuilder s = new StringBuilder();
+                //if (uid > 0) s.append(uid + ": ");
+                for (int i = 0; i < names.size(); i++) {
+                    if (i != 0) s.append(", ");
+                    s.append(names.get(i));
+                }
+                s.append("\n");
+                tostr = s.toString();
+            }
+            return tostr;
+        }
+
+        public String toStringWithUID() {
+            if (tostr == null) {
+                StringBuilder s = new StringBuilder();
+                s.append("[ ");
+                s.append(uid);
+                s.append(" ] ");
+                for (int i = 0; i < names.size(); i++) {
+                    if (i != 0) s.append(", ");
+                    s.append(names.get(i));
+                }
+                s.append("\n");
+                tostr = s.toString();
+            }
+            return tostr;
+        }
+
+    }
+
+    private static class LogProbeCallback extends RootCommand.Callback {
+        private Context ctx;
+
+        public void cbFunc(RootCommand state) {
+            if (state.exitCode != 0) {
+                G.enableLogService(false);
+                return;
+            }
+            boolean logSet = false;
+            for (String str : state.res.toString().split("\n")) {
+                if (str.equals("LOG")) {
+                    G.logTarget("LOG");
+                    logSet = true;
+                    Log.d(TAG, "logging using LOG target");
+                    break;
+                } else if (str.equals("NFLOG")) {
+                    G.logTarget("NFLOG");
+                    logSet = true;
+                    Log.d(TAG, "logging using NFLOG target");
+                    break;
+                }
+            }
+
+            if (!logSet) {
+                Log.i(TAG, "could not find LOG or NFLOG target");
+                //displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
+                G.logTarget("");
+                G.enableLogService(false);
+                return;
+            }
+            G.enableLogService(true);
+            updateLogRules(ctx, new RootCommand()
+                    .setReopenShell(true)
+                    .setSuccessToast(R.string.log_was_enabled)
+                    .setFailureToast(R.string.log_target_failed));
         }
     }
 

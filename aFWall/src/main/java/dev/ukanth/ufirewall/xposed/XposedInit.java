@@ -31,13 +31,13 @@ import static de.robv.android.xposed.XposedHelpers.findClass;
 public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     public static final String MY_APP = BuildConfig.APPLICATION_ID;
-
-    public static String MODULE_PATH = null;
     public static final String TAG = "AFWallXPosed";
+    public static String MODULE_PATH = null;
     private static Context context;
     private XSharedPreferences prefs;
     private SharedPreferences pPrefs;
     private String profileName = Api.PREFS_NAME;
+    private Activity activity;
 
     public Activity getActivity() {
         return activity;
@@ -46,8 +46,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     public void setActivity(Activity activity) {
         this.activity = activity;
     }
-
-    private Activity activity;
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
@@ -63,6 +61,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             Log.d(TAG, e.getLocalizedMessage());
         }
     }
+
     //Check if AFWall is hooked to make sure XPosed works fine.
     private void interceptAFWall(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         Class<?> afwallHook = findClass("dev.ukanth.ufirewall.util.G", loadPackageParam.classLoader);
@@ -118,18 +117,14 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
-                final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
-                Log.d(TAG, "isXposedEnabled: " + isXposedEnabled);
-                if (isXposedEnabled) {
-                    final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
-                    Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
-                    if (!isAppAllowed) {
-                        param.setResult(0);
-                        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                        dm.remove(0);
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> Toast.makeText(getActivity().getApplicationContext(), "AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")", Toast.LENGTH_LONG).show());
-                        }
+                final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
+                Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
+                if (!isAppAllowed) {
+                    param.setResult(0);
+                    DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                    dm.remove(0);
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> Toast.makeText(getActivity().getApplicationContext(), "AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")", Toast.LENGTH_LONG).show());
                     }
                 }
             }
@@ -139,18 +134,14 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
-                final boolean isXposedEnabled = prefs.getBoolean("fixDownloadManagerLeak", false);
-                Log.i(TAG, "isXposedEnabled: " + isXposedEnabled);
-                if (isXposedEnabled) {
-                    final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
-                    Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
-                    if (!isAppAllowed) {
-                        final Uri uri = (Uri) param.args[0];
-                        Log.d(TAG, "Attempted URL via DM Leak : " + uri.toString());
-                        XposedHelpers.setObjectField(param.thisObject, "mUri", Uri.parse("http://localhost/dummy.txt"));
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> Toast.makeText(getActivity().getApplicationContext(), "Download Manager is attempting to download : " + uri.toString(), Toast.LENGTH_LONG).show());
-                        }
+                final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
+                Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
+                if (!isAppAllowed) {
+                    final Uri uri = (Uri) param.args[0];
+                    Log.d(TAG, "Attempted URL via DM Leak : " + uri.toString());
+                    XposedHelpers.setObjectField(param.thisObject, "mUri", Uri.parse("http://localhost/dummy.txt"));
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(() -> Toast.makeText(getActivity().getApplicationContext(), "Download Manager is attempting to download : " + uri.toString(), Toast.LENGTH_LONG).show());
                     }
                 }
             }
@@ -171,83 +162,6 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         });
 
     }
-
-    /*private void interceptNet(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        final String packageName = loadPackageParam.packageName;
-         *//* Reference taken from XPrivacy *//*
-        // public static InetAddress[] getAllByName(String host)
-        // public static InetAddress[] getAllByNameOnNet(String host, int netId)
-        // public static InetAddress getByAddress(byte[] ipAddress)
-        // public static InetAddress getByAddress(String hostName, byte[] ipAddress)
-        // public static InetAddress getByName(String host)
-        // public static InetAddress getByNameOnNet(String host, int netId)
-        // libcore/luni/src/main/java/java/net/InetAddress.java
-        // http://developer.android.com/reference/java/net/InetAddress.html
-        // http://grepcode.com/file/repository.grepcode.com/java/ext/com.google.android/android/5.0.0_r1/android/net/Network.java
-
-        if (context == null) {
-            Object activityThread = callStaticMethod(
-                    findClass("android.app.ActivityThread", null), "currentActivityThread");
-            //context = (Context) callMethod(activityThread, "getSystemContext");
-            context = (Context) AndroidAppHelper.currentApplication();
-        }
-
-        Class<?> inetAddress = findClass("java.net.InetAddress", loadPackageParam.classLoader);
-        Class<?> inetSocketAddress = XposedHelpers.findClass(" java.net.InetSocketAddress", loadPackageParam.classLoader);
-        final Class<?> socket = XposedHelpers.findClass("java.net.Socket", loadPackageParam.classLoader);
-
-            *//*if(context != null) {
-                Log.d(TAG, "Calling Package ----> " + Api.getPackageDetails(context,packageName));
-            }*//*
-
-        XposedBridge.hookAllConstructors(socket, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-
-
-            }
-        });
-
-
-        XC_MethodHook inetAddrHookSingleResult = new XC_MethodHook() {
-
-
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (context != null) {
-                    Log.d(TAG, "Calling Package ----> " + Api.getPackageDetails(context, packageName));
-                }
-                if (param != null && param.args != null && param.args.length > 0) {
-                    for (Object obj : param.args) {
-                        if (obj != null) {
-                            Log.d(TAG, "XPOSED Param Class ->" + (obj.getClass().getSimpleName()));
-                            Log.d(TAG, "XPOSED Param Value->" + obj.toString());
-                        }
-                    }
-                }
-            }
-
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                   *//* String host = (String) param.args[0];
-
-                    if(Main.patterns.contains(host)) {
-                        Log.d("inet_after_host", host);
-                        param.setResult(new Object());
-                        param.setThrowable(new UnknownHostException(UNABLE_TO_RESOLVE_HOST));
-                    }*//*
-            }
-        };
-
-        XposedBridge.hookAllMethods(inetAddress, "getByName", inetAddrHookSingleResult);
-        XposedBridge.hookAllMethods(inetAddress, "getByAddress", inetAddrHookSingleResult);
-        XposedBridge.hookAllMethods(inetAddress, "getAllByName", inetAddrHookSingleResult);
-        XposedBridge.hookAllMethods(inetAddress, "getAllByNameOnNet", inetAddrHookSingleResult);
-        XposedBridge.hookAllMethods(inetAddress, "getByNameOnNet", inetAddrHookSingleResult);
-
-
-        XposedBridge.hookAllMethods(inetSocketAddress, "createUnresolved", inetAddrHookSingleResult);
-    }*/
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {

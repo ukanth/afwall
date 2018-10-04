@@ -42,6 +42,9 @@
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
+    <!-- uses for job schedulers -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
 
     <!-- Screen support -->
     <supports-screens
@@ -55,12 +58,11 @@
         android:name=".util.G"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher_free"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:launchMode="singleTop"
         android:resizeableActivity="true"
-        android:roundIcon="@mipmap/round_launcher_free"
         android:supportsRtl="true"
         android:theme="@style/AppDarkTheme"
         tools:ignore="ManifestResource">
@@ -159,31 +161,68 @@
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
 
-        <receiver android:name=".broadcast.BootBroadcast">
-            <intent-filter android:priority="500">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+        <!-- still will work in android 7 above -->
+        <receiver android:name=".broadcast.OnBootReceiver">
+             <intent-filter android:priority="500">
+                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
 
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
+         </receiver>
+        <service android:name=".service.ApplyOnBootService" />
+
+
+        <!--<receiver
+            android:name=".broadcast.OnBootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".broadcast.PackageBroadcast">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
 
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".broadcast.ConnectivityChangeReceiver">
+        <service android:name=".service.ApplyOnBootService" />-->
+
+        <!--
+                <receiver android:name=".broadcast.PackageBroadcast">
+                    <intent-filter>
+                        <action android:name="android.intent.action.PACKAGE_ADDED" />
+                        <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                        <data android:scheme="package" />
+                    </intent-filter>
+                </receiver>
+
+
+                <receiver android:name=".broadcast.ConnectivityChangeReceiver">
+                    <intent-filter>
+                        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                        <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
+                    </intent-filter>
+                </receiver> -->
+
+        <service
+            android:name=".service.FirewallService"
+            android:launchMode="singleTop"
+            android:exported="true" />
+
+        <service
+            android:name=".service.ToggleTileService"
+            android:icon="@drawable/notification_quest"
+            android:label="@string/widget_label_status"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.WIFI_AP_STATE_CHANGED" />
+                <action
+                    android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
-        </receiver>
+        </service>
+
         <receiver
             android:name=".widget.StatusWidget"
+            android:enabled="@bool/widgetVisible"
             android:icon="@drawable/preview_toggle"
             android:label="@string/widget_label_status">
             <meta-data
@@ -277,10 +316,13 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.RootShellService" android:exported="false"/>
-        <service android:name=".service.LogService"
-            android:label="AFWallLogService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service
+            android:name=".service.RootShellService"
+            android:exported="false" />
+        <service
+            android:name=".service.LogService"
+            android:enabled="true"
+            android:label="AFWallLogService" />
 
         <!-- Samsung MultiWindow Support -->
         <uses-library

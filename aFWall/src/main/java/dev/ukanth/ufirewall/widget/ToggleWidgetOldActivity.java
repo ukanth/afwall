@@ -255,7 +255,8 @@ public class ToggleWidgetOldActivity extends Activity implements
                                 }
                             }
                         }));
-                Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
             }
         }.start();
         defaultButton.setEnabled(true);
@@ -412,7 +413,8 @@ public class ToggleWidgetOldActivity extends Activity implements
                         }*/
                         break;
                 }
-                Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
             }
         }.start();
     }

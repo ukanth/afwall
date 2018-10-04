@@ -67,61 +67,12 @@ public final class InterfaceTracker {
     public static final String CONNECTIVITY_CHANGE = "CONNECTIVITY_CHANGE";
 
     public static final int ERROR_NOTIFICATION_ID = 1;
-
-    public static long LAST_APPLIED_TIMESTAMP;
-
     private static final int NOTIF_ID = 10221;
+    public static long LAST_APPLIED_TIMESTAMP;
     private static InterfaceDetails currentCfg = null;
 
     private static String truncAfter(String in, String regexp) {
         return in.split(regexp)[0];
-    }
-
-    private static class NewInterfaceScanner {
-
-        public static void populateLanMasks(InterfaceDetails ret) {
-            try {
-                Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-
-                while (en.hasMoreElements()) {
-                    NetworkInterface intf = en.nextElement();
-                    boolean match = false;
-
-                    if (!intf.isUp() || intf.isLoopback()) {
-                        continue;
-                    }
-
-                    for (String pattern : ITFS_WIFI) {
-                        if (intf.getName().startsWith(truncAfter(pattern, "\\+"))) {
-                            match = true;
-                            break;
-                        }
-                    }
-                    if (!match)
-                        continue;
-                    ret.wifiName = intf.getName();
-
-                    Iterator<InterfaceAddress> addrList = intf.getInterfaceAddresses().iterator();
-                    while (addrList.hasNext()) {
-                        InterfaceAddress addr = addrList.next();
-                        InetAddress ip = addr.getAddress();
-                        String mask = truncAfter(ip.getHostAddress(), "%") + "/" +
-                                addr.getNetworkPrefixLength();
-
-                        if (ip instanceof Inet4Address) {
-                            ret.lanMaskV4 = mask;
-                        } else if (ip instanceof Inet6Address) {
-                            ret.lanMaskV6 = mask;
-                        }
-                    }
-                    if (ret.lanMaskV4.equals("") && ret.lanMaskV6.equals("")) {
-                        ret.noIP = true;
-                    }
-                }
-            } catch (Exception e) {
-                Log.i(TAG, "Error fetching network interface list: " + android.util.Log.getStackTraceString(e));
-            }
-        }
     }
 
     private static void getTetherStatus(Context context, InterfaceDetails d) {
@@ -307,5 +258,52 @@ public final class InterfaceTracker {
                         }
                     }
                 }));
+    }
+
+    private static class NewInterfaceScanner {
+
+        public static void populateLanMasks(InterfaceDetails ret) {
+            try {
+                Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+
+                while (en.hasMoreElements()) {
+                    NetworkInterface intf = en.nextElement();
+                    boolean match = false;
+
+                    if (!intf.isUp() || intf.isLoopback()) {
+                        continue;
+                    }
+
+                    for (String pattern : ITFS_WIFI) {
+                        if (intf.getName().startsWith(truncAfter(pattern, "\\+"))) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    if (!match)
+                        continue;
+                    ret.wifiName = intf.getName();
+
+                    Iterator<InterfaceAddress> addrList = intf.getInterfaceAddresses().iterator();
+                    while (addrList.hasNext()) {
+                        InterfaceAddress addr = addrList.next();
+                        InetAddress ip = addr.getAddress();
+                        String mask = truncAfter(ip.getHostAddress(), "%") + "/" +
+                                addr.getNetworkPrefixLength();
+
+                        if (ip instanceof Inet4Address) {
+                            ret.lanMaskV4 = mask;
+                        } else if (ip instanceof Inet6Address) {
+                            ret.lanMaskV6 = mask;
+                        }
+                    }
+                    if (ret.lanMaskV4.equals("") && ret.lanMaskV6.equals("")) {
+                        ret.noIP = true;
+                    }
+                }
+            } catch (Exception e) {
+                Log.i(TAG, "Error fetching network interface list: " + android.util.Log.getStackTraceString(e));
+            }
+        }
     }
 }

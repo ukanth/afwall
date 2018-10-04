@@ -22,12 +22,14 @@
 
 package dev.ukanth.ufirewall.service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -229,20 +231,12 @@ public class RootShellService extends Service {
     }
 
     private static void sendUpdate(final RootCommand state) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Intent broadcastIntent = new Intent();
-                broadcastIntent.setAction("UPDATEUI");
-                broadcastIntent.putExtra("SIZE", state.getCommmands().size());
-                broadcastIntent.putExtra("INDEX", state.commandIndex);
-                mContext.sendBroadcast(broadcastIntent);
-
-               /* if (builder != null) {
-                    builder.setProgress(state.getCommmands().size(), state.commandIndex, false);
-                    notificationManager.notify(NOTIFICATION_ID, builder.build());
-                }*/
-            }
+        new Thread(() -> {
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction("UPDATEUI");
+            broadcastIntent.putExtra("SIZE", state.getCommmands().size());
+            broadcastIntent.putExtra("INDEX", state.commandIndex);
+            mContext.sendBroadcast(broadcastIntent);
         }).start();
     }
 
@@ -335,21 +329,33 @@ public class RootShellService extends Service {
 
     private static void createNotification(Context context) {
 
+        String CHANNEL_ID = "firewall.apply";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        builder = new NotificationCompat.Builder(context);
+        builder = new NotificationCompat.Builder(context,CHANNEL_ID);
 
         Intent appIntent = new Intent(context, MainActivity.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /* Create or update. */
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,context.getString(R.string.runNotification),
+                    NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription("");
+            channel.setShowBadge(true);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
+            notificationManager.createNotificationChannel(channel);
+        }
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(appIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
-        builder.setSmallIcon(R.drawable.notification)
+        builder.setSmallIcon(R.drawable.ic_apply_notification)
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
                 .setTicker(context.getString(R.string.app_name))
-                .setPriority(-2)
+                .setChannelId(CHANNEL_ID)
+                .setPriority(NotificationManager.IMPORTANCE_LOW)
                 .setContentText("");
         builder.setProgress(0, 0, true);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
