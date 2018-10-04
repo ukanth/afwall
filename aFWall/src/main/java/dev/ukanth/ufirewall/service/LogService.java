@@ -368,7 +368,8 @@ public class LogService extends Service {
                     }
                 }
                 data.setType(0);
-                FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(databaseWrapper -> data.save(databaseWrapper)).build().execute();
+                FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(databaseWrapper ->
+                        data.save(databaseWrapper)).build().execute();
             }
         } catch (IllegalStateException e) {
             if (e.getMessage().contains("connection pool has been closed")) {

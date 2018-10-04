@@ -1300,8 +1300,9 @@ public final class Api {
         callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
     }
 
+    //purge 2 hour data
     public static void purgeOldLog() {
-        long purgeInterval = System.currentTimeMillis() - 604800000;
+        long purgeInterval = System.currentTimeMillis() - 7200000;
         new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
     }
 

@@ -25,12 +25,10 @@ package dev.ukanth.ufirewall.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
@@ -105,22 +103,14 @@ public class OldLogActivity extends DataDumpActivity {
         new MaterialDialog.Builder(this)
                 .title(getApplicationContext().getString(R.string.clear_log) + " ?")
                 .cancelable(true)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        //SQLite.delete(LogData_Table.class);
-                        FlowManager.getDatabase(LogDatabase.NAME).reset(ctx);
-                        Toast.makeText(ctx, ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                        parseAndSet(Api.fetchLogs());
-                    }
+                .onPositive((dialog, which) -> {
+                    //SQLite.delete(LogData_Table.class);
+                    FlowManager.getDatabase(LogDatabase.NAME).reset();
+                    Toast.makeText(ctx, ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    parseAndSet(Api.fetchLogs());
                 })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
+                .onNegative((dialog, which) -> dialog.dismiss())
                 .positiveText(R.string.Yes)
                 .negativeText(R.string.No)
                 .show();

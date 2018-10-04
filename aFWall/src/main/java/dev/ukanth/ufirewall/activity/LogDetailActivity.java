@@ -388,7 +388,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         //SQLite.delete(LogData_Table.class);
-                        FlowManager.getDatabase(LogDatabase.NAME).reset(ctx);
+                        FlowManager.getDatabase(LogDatabase.NAME).reset();
                         Toast.makeText(getApplicationContext(), ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
