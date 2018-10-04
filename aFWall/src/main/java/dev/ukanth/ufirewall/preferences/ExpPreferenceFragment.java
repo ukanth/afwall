@@ -215,7 +215,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                                     Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
                                 }
                                 if (updateCheckbox) {
-                                    updateLeakCheckbox();
+                                    getActivity().runOnUiThread((Runnable) () -> updateLeakCheckbox());
                                 }
                             }
                         }).setLogging(true).run(ctx, "rm -f " + filePath);
