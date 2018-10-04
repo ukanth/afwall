@@ -168,10 +168,13 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
                 enableLAN.setChecked(false);
                 CheckBoxPreference enableVPN = (CheckBoxPreference) findPreference("enableVPN");
                 enableVPN.setChecked(false);
+                CheckBoxPreference enableTor = (CheckBoxPreference) findPreference("enableTor");
+                enableTor.setChecked(false);
 
                 G.enableRoam(false);
                 G.enableLAN(false);
                 G.enableVPN(false);
+                G.enableTor(false);
 
             }
         }

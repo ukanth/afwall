@@ -547,6 +547,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             hideColumns(R.id.img_lan);
         }
+        if (G.enableTor()) {
+            addColumns(R.id.img_tor);
+        } else {
+            hideColumns(R.id.img_tor);
+        }
 
 
         updateRadioFilter();
@@ -1669,6 +1674,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.img_lan:
                 selectActionConfirmation(v.getId());
                 break;
+            case R.id.img_tor:
+                selectActionConfirmation(v.getId());
+                break;
             case R.id.img_invert:
                 selectActionConfirmation(getString(R.string.reverse_all), v.getId());
                 break;
@@ -1692,6 +1700,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
                     data.selected_lan = flag;
+                    //addToQueue(data);
+                }
+                setDirty(true);
+            }
+            ((BaseAdapter) adapter).notifyDataSetChanged();
+        }
+    }
+    private void selectAllTor(boolean flag) {
+        if (this.listview == null) {
+            this.listview = (ListView) this.findViewById(R.id.listview);
+        }
+        ListAdapter adapter = listview.getAdapter();
+        if (adapter != null) {
+            int count = adapter.getCount(), item;
+            for (item = 0; item < count; item++) {
+                PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+                if (data.uid != Api.SPECIAL_UID_ANY) {
+                    data.selected_tor = flag;
                     //addToQueue(data);
                 }
                 setDirty(true);
@@ -1758,6 +1784,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         case R.id.img_lan:
                             data.selected_lan = !data.selected_lan;
                             break;
+                        case R.id.img_tor:
+                            data.selected_tor = !data.selected_tor;
+                            break;
                     }
                     //addToQueue(data);
                 }
@@ -1782,6 +1811,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     data.selected_roam = !data.selected_roam;
                     data.selected_vpn = !data.selected_vpn;
                     data.selected_lan = !data.selected_lan;
+                    data.selected_tor = !data.selected_tor;
                     //addToQueue(data);
                 }
                 setDirty(true);
@@ -1823,6 +1853,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 data.selected_roam = false;
                 data.selected_vpn = false;
                 data.selected_lan = false;
+                data.selected_tor = false;
                 //addToQueue(data);
                 setDirty(true);
             }
@@ -1992,6 +2023,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         dialog.setTitle(text + getString(R.string.lan));
                                         selectAllLAN(true);
                                         break;
+                                    case R.id.img_tor:
+                                        dialog.setTitle(text + getString(R.string.tor));
+                                        selectAllTor(true);
+                                        break;
                                 }
                                 break;
                             case 1:
@@ -2010,6 +2045,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         break;
                                     case R.id.img_lan:
                                         dialog.setTitle(text + getString(R.string.lan));
+                                        break;
+                                    case R.id.img_tor:
+                                        dialog.setTitle(text + getString(R.string.tor));
                                         break;
                                 }
                                 selectRevert(i);
@@ -2036,6 +2074,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     case R.id.img_lan:
                                         dialog.setTitle(text + getString(R.string.lan));
                                         selectAllLAN(false);
+                                        break;
+                                    case R.id.img_tor:
+                                        dialog.setTitle(text + getString(R.string.tor));
+                                        selectAllTor(false);
                                         break;
                                 }
                                 break;

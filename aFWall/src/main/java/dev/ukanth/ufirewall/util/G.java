@@ -78,6 +78,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String ENABLE_ROAM = "enableRoam";
     private static final String ENABLE_VPN = "enableVPN";
     private static final String ENABLE_LAN = "enableLAN";
+    private static final String ENABLE_TOR = "enableTor";
     private static final String ENABLE_IPV6 = "enableIPv6";
     private static final String CONTROL_IPV6 = "controlIPv6";
     private static final String SELECTED_FILTER = "selectedFilter";
@@ -654,6 +655,16 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         gPrefs.edit().putBoolean(ENABLE_LAN, val).commit();
         return val;
     }
+
+    public static boolean enableTor() {
+        return gPrefs.getBoolean(ENABLE_TOR, false);
+    }
+
+    public static boolean enableTor(boolean val) {
+        gPrefs.edit().putBoolean(ENABLE_TOR, val).commit();
+        return val;
+    }
+
 
     public static boolean isDonate() {
         return BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate");

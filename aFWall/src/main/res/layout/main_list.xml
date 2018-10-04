@@ -52,6 +52,14 @@
             android:visibility="gone">
         </CheckBox>
 
+        <CheckBox
+            android:id="@+id/itemcheck_tor"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px"
+            android:visibility="gone">
+        </CheckBox>
+
         <TextView
             android:id="@+id/itemtext"
             android:layout_width="fill_parent"

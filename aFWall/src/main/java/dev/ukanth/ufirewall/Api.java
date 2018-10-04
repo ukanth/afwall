@@ -169,6 +169,7 @@ public final class Api {
     public static final String PREF_ROAMING_PKG_UIDS = "AllowedPKGRoaming_UIDS";
     public static final String PREF_VPN_PKG_UIDS = "AllowedPKGVPN_UIDS";
     public static final String PREF_LAN_PKG_UIDS = "AllowedPKGLAN_UIDS";
+    public static final String PREF_TOR_PKG_UIDS = "AllowedPKGTOR_UIDS";
     public static final String PREF_CUSTOMSCRIPT = "CustomScript";
     public static final String PREF_CUSTOMSCRIPT2 = "CustomScript2"; // Executed on shutdown
     public static final String PREF_MODE = "BlockMode";
@@ -189,13 +190,15 @@ public final class Api {
     // Messages
     private static final int VPN_EXPORT = 3;
     private static final int LAN_EXPORT = 4;
+    private static final int TOR_EXPORT = 5;
     private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
     private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
     private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
     // iptables can exit with status 4 if two processes tried to update the same table
     private static final int IPTABLES_TRY_AGAIN = 4;
     private static final String dynChains[] = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
-    private static final String staticChains[] = {"", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan"};
+    private static final String natChains[] = {"", "-tor-check", "-tor-filter"};
+    private static final String staticChains[] = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject"};
     /**
      * @brief Special user/group IDs that aren't associated with
      * any particular app.
@@ -480,6 +483,36 @@ public final class Api {
         cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
     }
 
+    private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6) {
+        for (Integer uid : uids) {
+            if (G.enableInbound() || ipv6) {
+                cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor-reject -m owner --uid-owner " + uid + " -j afwall-reject");
+            }
+            if (!ipv6) {
+                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-check -m owner --uid-owner " + uid + " -j " + AFWALL_CHAIN_NAME + "-tor-filter");
+            }
+        }
+        if (ipv6) {
+            cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-reject");
+        } else {
+            Integer socks_port = 9050;
+            Integer http_port = 8118;
+            Integer dns_port = 5400;
+            Integer tcp_port = 9040;
+	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
+	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
+	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
+	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j afwall-reject");
+            cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
+        }
+        if (G.enableInbound()) {
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-input -j " + AFWALL_CHAIN_NAME + "-tor-reject");
+        }
+    }
+
     private static void addCustomRules(String prefName, List<String> cmds) {
         String[] customRules = G.pPrefs.getString(prefName, "").split("[\\r\\n]+");
         for (String s : customRules) {
@@ -603,6 +636,15 @@ public final class Api {
                 }
             }
         }
+        if (modified.torList.size() > 0) {
+            for (Integer integer : modified.torList) {
+                if (integer > 0) {
+                    original.torList.add(integer);
+                } else {
+                    original.torList.remove(Integer.valueOf(-integer));
+                }
+            }
+        }
         return original;
     }
 
@@ -661,7 +703,18 @@ public final class Api {
             }
 
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+            cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
+            cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
+
+            if (!ipv6) {
+                for (String s : natChains) {
+                    cmds.add("#NOCHK# -t nat -N " + AFWALL_CHAIN_NAME + s);
+                    cmds.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+                }
+                cmds.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+                cmds.add("-t nat -I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
+            }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
             addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
@@ -673,6 +726,7 @@ public final class Api {
                 // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
                 // local processes can't reply to half-open connections without this rule
                 cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
+                cmds.add("-A afwall-input -m state --state ESTABLISHED -j RETURN");
             }
 
             addInterfaceRouting(ctx, cmds, ipv6);
@@ -744,6 +798,10 @@ public final class Api {
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + " -p udp --dport 53 -j ACCEPT");
+            }
+
+            if (G.enableTor()) {
+                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6);
             }
 
             Log.i(TAG, "Setting OUTPUT to Accept State");
@@ -819,6 +877,7 @@ public final class Api {
             final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
             final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
             final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
+            final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
             boolean returnValue;
             List<String> cmds = new ArrayList<String>();
@@ -828,7 +887,8 @@ public final class Api {
                     getListFromPref(savedPkg_3g_uid),
                     getListFromPref(savedPkg_roam_uid),
                     getListFromPref(savedPkg_vpn_uid),
-                    getListFromPref(savedPkg_lan_uid));
+                    getListFromPref(savedPkg_lan_uid),
+                    getListFromPref(savedPkg_tor_uid));
             returnValue = applyIptablesRulesImpl(ctx, dataSet, showErrors, cmds, false);
             if (returnValue == false) {
                 return false;
@@ -840,7 +900,8 @@ public final class Api {
                         getListFromPref(savedPkg_3g_uid),
                         getListFromPref(savedPkg_roam_uid),
                         getListFromPref(savedPkg_vpn_uid),
-                        getListFromPref(savedPkg_lan_uid));
+                        getListFromPref(savedPkg_lan_uid),
+                        getListFromPref(savedPkg_tor_uid));
 
                 returnValue = applyIptablesRulesImpl(ctx, dataSet,
                         showErrors,
@@ -950,6 +1011,7 @@ public final class Api {
             HashSet newpkg_roam = new HashSet();
             HashSet newpkg_vpn = new HashSet();
             HashSet newpkg_lan = new HashSet();
+            HashSet newpkg_tor = new HashSet();
 
             for (int i = 0; i < apps.size(); i++) {
                 if (apps.get(i) != null) {
@@ -985,6 +1047,13 @@ public final class Api {
                             if (!store) newpkg_lan.add(-apps.get(i).uid);
                         }
                     }
+                    if (G.enableTor()) {
+                        if (apps.get(i).selected_tor) {
+                            newpkg_tor.add(apps.get(i).uid);
+                        } else {
+                            if (!store) newpkg_tor.add(-apps.get(i).uid);
+                        }
+                    }
                 }
             }
 
@@ -993,6 +1062,7 @@ public final class Api {
             String roam = android.text.TextUtils.join("|", newpkg_roam);
             String vpn = android.text.TextUtils.join("|", newpkg_vpn);
             String lan = android.text.TextUtils.join("|", newpkg_lan);
+            String tor = android.text.TextUtils.join("|", newpkg_tor);
             // save the new list of UIDs
             if (store) {
                 SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -1002,13 +1072,15 @@ public final class Api {
                 edit.putString(PREF_ROAMING_PKG_UIDS, roam);
                 edit.putString(PREF_VPN_PKG_UIDS, vpn);
                 edit.putString(PREF_LAN_PKG_UIDS, lan);
+                edit.putString(PREF_TOR_PKG_UIDS, tor);
                 edit.commit();
             } else {
                 dataSet = new RuleDataSet(new ArrayList<>(newpkg_wifi),
                         new ArrayList<>(newpkg_3g),
                         new ArrayList<>(newpkg_roam),
                         new ArrayList<>(newpkg_vpn),
-                        new ArrayList<>(newpkg_lan));
+                        new ArrayList<>(newpkg_lan),
+                        new ArrayList<>(newpkg_tor));
             }
         }
         return dataSet;
@@ -1040,6 +1112,7 @@ public final class Api {
     public static boolean purgeIptables(Context ctx, boolean showErrors, RootCommand callback) {
 
         List<String> cmds = new ArrayList<String>();
+        List<String> cmdsv4 = new ArrayList<String>();
         List<String> out = new ArrayList<String>();
 
         for (String s : staticChains) {
@@ -1048,11 +1121,20 @@ public final class Api {
         for (String s : dynChains) {
             cmds.add("-F " + AFWALL_CHAIN_NAME + s);
         }
+        for (String s : natChains) {
+            cmdsv4.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+        }
+        cmdsv4.add("-t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+
         //make sure reset the OUTPUT chain to accept state.
         cmds.add("-P OUTPUT ACCEPT");
 
         //Delete only when the afwall chain exist !
         cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
+
+        if (G.enableInbound()) {
+            cmds.add("-D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
+        }
 
         addCustomRules(Api.PREF_CUSTOMSCRIPT2, cmds);
 
@@ -1062,6 +1144,7 @@ public final class Api {
             // IPv4
             setBinaryPath(ctx, false);
             iptablesCommands(cmds, out, false);
+            iptablesCommands(cmdsv4, out, false);
 
             // IPv6
             if (G.enableIPv6()) {
@@ -1278,12 +1361,14 @@ public final class Api {
         String savedPkg_roam_uid = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
         String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
         String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
+        String savedPkg_tor_uid = prefs.getString(PREF_TOR_PKG_UIDS, "");
 
         List<Integer> selected_wifi;
         List<Integer> selected_3g;
         List<Integer> selected_roam = new ArrayList<>();
         List<Integer> selected_vpn = new ArrayList<>();
         List<Integer> selected_lan = new ArrayList<>();
+        List<Integer> selected_tor = new ArrayList<>();
 
 
         selected_wifi = getListFromPref(savedPkg_wifi_uid);
@@ -1297,6 +1382,9 @@ public final class Api {
         }
         if (G.enableLAN()) {
             selected_lan = getListFromPref(savedPkg_lan_uid);
+        }
+        if (G.enableTor()) {
+            selected_tor = getListFromPref(savedPkg_tor_uid);
         }
         //revert back to old approach
 
@@ -1394,6 +1482,9 @@ public final class Api {
                 if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                     app.selected_lan = true;
                 }
+                if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
+                    app.selected_tor = true;
+                }
                 if (G.supportDual()) {
                     checkPartOfMultiUser(apinfo, name, uid, pkgmanager, multiUserAppsMap);
                 }
@@ -1417,6 +1508,9 @@ public final class Api {
                     }
                     if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                         app.selected_lan = true;
+                    }
+                    if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
+                        app.selected_tor = true;
                     }
                     syncMap.put(app.uid, app);
                 }
@@ -1447,6 +1541,9 @@ public final class Api {
                     }
                     if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                         app.selected_lan = true;
+                    }
+                    if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
+                        app.selected_tor = true;
                     }
                     syncMap.put(app.uid, app);
                 }
@@ -2084,7 +2181,8 @@ public final class Api {
         String savedPks_roam = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
         String savedPks_vpn = prefs.getString(PREF_VPN_PKG_UIDS, "");
         String savedPks_lan = prefs.getString(PREF_LAN_PKG_UIDS, "");
-        boolean wChanged, rChanged, gChanged, vChanged = false;
+        String savedPks_tor = prefs.getString(PREF_TOR_PKG_UIDS, "");
+        boolean wChanged, rChanged, gChanged, vChanged, tChanged = false;
         // look for the removed application in the "wi-fi" list
         wChanged = removePackageRef(ctx, savedPks_wifi, pkgRemoved, editor, PREF_WIFI_PKG_UIDS);
         // look for the removed application in the "3g" list
@@ -2095,8 +2193,10 @@ public final class Api {
         vChanged = removePackageRef(ctx, savedPks_vpn, pkgRemoved, editor, PREF_VPN_PKG_UIDS);
         //  look for the removed application in lan list
         vChanged = removePackageRef(ctx, savedPks_lan, pkgRemoved, editor, PREF_LAN_PKG_UIDS);
+        //  look for the removed application in tor list
+        tChanged = removePackageRef(ctx, savedPks_tor, pkgRemoved, editor, PREF_TOR_PKG_UIDS);
 
-        if (wChanged || gChanged || rChanged || vChanged) {
+        if (wChanged || gChanged || rChanged || vChanged || tChanged) {
             editor.commit();
             if (isEnabled(ctx)) {
                 // .. and also re-apply the rules if the firewall is enabled
@@ -2260,6 +2360,9 @@ public final class Api {
                 if (apps.get(i).selected_lan) {
                     updateExportPackage(exportMap, apps.get(i).pkgName, LAN_EXPORT);
                 }
+                if (apps.get(i).selected_tor) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, TOR_EXPORT);
+                }
             }
         } catch (JSONException e) {
             Log.e(TAG, e.getLocalizedMessage());
@@ -2351,6 +2454,7 @@ public final class Api {
         updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
         updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
         updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
+        updatePackage(ctx, prefs.getString(PREF_TOR_PKG_UIDS, ""), exportMap, TOR_EXPORT);
         return exportMap;
     }
 
@@ -2434,6 +2538,7 @@ public final class Api {
         final StringBuilder roam_uids = new StringBuilder();
         final StringBuilder vpn_uids = new StringBuilder();
         final StringBuilder lan_uids = new StringBuilder();
+        final StringBuilder tor_uids = new StringBuilder();
 
         Map<String, Object> json = JsonHelper.toMap(object);
         final PackageManager pm = ctx.getPackageManager();
@@ -2520,6 +2625,20 @@ public final class Api {
                             }
                         }
                         break;
+                    case TOR_EXPORT:
+                        if (tor_uids.length() != 0) {
+                            tor_uids.append('|');
+                        }
+                        if (pkgName.startsWith("dev.afwall.special")) {
+                            tor_uids.append(specialApps.get(pkgName));
+                        } else {
+                            try {
+                                tor_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+                            } catch (NameNotFoundException e) {
+
+                            }
+                        }
+                        break;
                 }
 
             }
@@ -2531,6 +2650,7 @@ public final class Api {
         edit.putString(PREF_ROAMING_PKG_UIDS, roam_uids.toString());
         edit.putString(PREF_VPN_PKG_UIDS, vpn_uids.toString());
         edit.putString(PREF_LAN_PKG_UIDS, lan_uids.toString());
+        edit.putString(PREF_TOR_PKG_UIDS, tor_uids.toString());
 
         edit.commit();
 
@@ -2808,12 +2928,14 @@ public final class Api {
         final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
         final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
         final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
+        final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
         Api.RuleDataSet dataSet = new Api.RuleDataSet(getListFromPref(savedPkg_wifi_uid),
                 getListFromPref(savedPkg_3g_uid),
                 getListFromPref(savedPkg_roam_uid),
                 getListFromPref(savedPkg_vpn_uid),
-                getListFromPref(savedPkg_lan_uid));
+                getListFromPref(savedPkg_lan_uid),
+                getListFromPref(savedPkg_tor_uid));
         return dataSet;
     }
 
@@ -3337,14 +3459,17 @@ public final class Api {
         List<Integer> lanList;
         List<Integer> roamList;
         List<Integer> vpnList;
+        List<Integer> torList;
 
         RuleDataSet(List<Integer> uidsWifi, List<Integer> uids3g,
-                    List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN) {
+                    List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsLAN,
+                    List<Integer> uidsTor) {
             this.wifiList = uidsWifi;
             this.dataList = uids3g;
             this.roamList = uidsRoam;
             this.vpnList = uidsVPN;
             this.lanList = uidsLAN;
+            this.torList = uidsTor;
         }
 
         @Override
@@ -3355,6 +3480,7 @@ public final class Api {
             builder.append(lanList != null ? android.text.TextUtils.join(",", lanList) : "");
             builder.append(roamList != null ? android.text.TextUtils.join(",", roamList) : "");
             builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList) : "");
+            builder.append(torList != null ? android.text.TextUtils.join(",", torList) : "");
             return builder.toString().trim();
         }
     }
@@ -3437,6 +3563,10 @@ public final class Api {
          * indicates if this application is selected for lan
          */
         public boolean selected_lan;
+        /**
+         * indicates if this application is selected for tor mode
+         */
+        public boolean selected_tor;
         /**
          * toString cache
          */

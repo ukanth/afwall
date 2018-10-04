@@ -205,6 +205,8 @@
     <string name="vpnSummary">Enable to control VPN permissions separately</string>
     <string name="roaming">Roaming control</string>
     <string name="roamingSummary">Enable to control roaming permissions separately</string>
+    <string name="tor_profile">Tor control</string>
+    <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
 
@@ -343,6 +345,7 @@
     <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tor">Tor</string>
     <string name="data">Data</string>
     <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
 

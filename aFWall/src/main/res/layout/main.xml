@@ -143,6 +143,15 @@
                 android:visibility="gone"></ImageView>
 
             <ImageView
+                android:id="@+id/img_tor"
+                android:layout_width="32dp"
+                android:layout_height="24dp"
+                android:clickable="true"
+                android:contentDescription="@string/tor_profile"
+                android:src="@drawable/ic_tor"
+                android:visibility="gone"></ImageView>
+
+            <ImageView
                 android:id="@+id/img_invert"
                 android:layout_width="32dp"
                 android:layout_height="24dp"

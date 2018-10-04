@@ -15,9 +15,9 @@ public class PackageComparator implements Comparator<Api.PackageInfoData> {
             return (o1.firstseen ? -1 : 1);
         }
         boolean o1_selected = o1.selected_3g || o1.selected_wifi || o1.selected_roam ||
-                o1.selected_vpn || o1.selected_lan;
+                o1.selected_vpn || o1.selected_lan || o1.selected_tor;
         boolean o2_selected = o2.selected_3g || o2.selected_wifi || o2.selected_roam ||
-                o2.selected_vpn || o2.selected_lan;
+                o2.selected_vpn || o2.selected_lan || o2.selected_tor;
 
         if (o1_selected == o2_selected) {
             switch (G.sortBy()) {
