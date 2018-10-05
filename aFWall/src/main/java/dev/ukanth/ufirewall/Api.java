@@ -65,6 +65,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
@@ -1300,10 +1301,16 @@ public final class Api {
         callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
     }
 
-    //purge 2 hour data
+    //purge 2 hour data or 2000 records
     public static void purgeOldLog() {
         long purgeInterval = System.currentTimeMillis() - 7200000;
-        new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
+        long count = new Select(com.raizlabs.android.dbflow.sql.language.Method.count()).from(LogData.class).count();
+        //records are more
+        if(count > 2000) {
+            new Delete().from(LogData.class).limit(2000).async().execute();
+        } else {
+            new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
+        }
     }
 
     /**
