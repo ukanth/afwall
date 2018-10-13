@@ -24,11 +24,13 @@
   <string name="error_refresh">Iptables সতেজ করাতে ত্রুটি</string>
   <string name="error_apply">Iptables নিয়ম প্রয়োগে ত্রুটি</string>
   <string name="error_fetch">Iptables নিয়ম আনয়নে ত্রুটি</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">রুটের অনুমতি পাওয়া যায় নাই।\nরুট করা মুঠোফোন প্রয়োজন AFWall+ চালানোর জন্য।\n\nযদি আপনার মুঠোফোন ইতিমধ্যে রুট করা থাকে তাহলে অনুগ্রহ করে নিশ্চিত করুন যে AFWall+ এর পর্যাপ্ত অনুমতি আছে  \"su\" নির্দেশনা সম্পাদন করার জন্যে।</string>
   <string name="error_netfilter">Iptables শিকল এবং লক্ষ্যমাত্রা সমর্থন পাওয়া যায়নি। \nAFWall+ সীমাবদ্ধতা কারণে আশা অনুযায়ী কাজ করতে পারে না।</string>
   <string name="error_common">ত্রুটি: </string>
   <string name="all_item">(যেকোন অ্যাপ) - সমস্ত অ্যাপ নির্বাচনের মত</string>
   <string name="kernel_item">(কার্নেল) - লিনাক্স কার্নেল</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">অপরিচিত</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS সার্ভিস</string>
   <string name="dnsproxy_item">(DNS proxy) - DNS খোঁজা netd এর মাধ্যমে</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">অবস্থা: %s</string>
   <string name="legend_clear">সকল কলামের সব বাক্স বিলোপ করুন</string>
   <string name="mode_whitelist">নির্বাচিততে কাজ করবে</string>
-  <string name="legend_whitelist">নির্বাচিত অ্যাপ্লিকেশনসমূহকে ইন্টারনেট প্রবেশাধিকার দেয়া হবে</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">নির্বাচিততে কাজ করবে না</string>
-  <string name="legend_blacklist">নির্বাচিত অ্যাপ্লিকেশনসমূহকে ইন্টারনেট প্রবেশাধিকার অস্বীকৃত হবে</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">কাস্টম স্ক্রিপ্ট সেট করুন</string>
   <string name="preferences">অগ্রাধিকারসমূহ</string>
   <string name="reload">রিলোড অ্যাপ</string>
   <string name="flush">ফ্লাশ নিয়ম</string>
   <string name="send_report">ত্রুটি প্রতিবেদন প্রেরণ করুন</string>
   <string name="enter_problem">অনুগ্রহ করে সমস্যাটি ব্যাখ্যা করুন:</string>
-  <string name="send_mail">মেইল প্রেরণ করুন</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">নতুন অ্যাপ ইনস্টল করার সময় Notification পাঠানো হবে</string>
   <string name="notify_pref_summary_off">Notifinotification পাঠানো হবে না যখন নতুন অ্যাপ ইনস্টল করা হবে</string>
   <string name="custom_script_defined">কাস্টম স্ক্রিপ্ট নির্ধারিত করা হয়েছে</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Iptables সকল নিয়ম ফ্লাশ করুন?</string>
   <string name="overrideRules">নিয়ম-কানুন আমদানি করতে চান? এই বিদ্যমান নিয়ম অগ্রাহ্য করা হবে হবে!</string>
   <string name="notification_new">নতুন অ্যাপ সংস্থাপিত হয়েছে</string>
-  <string name="notification_new_package">ইন্টারনেট অনুমতি বিন্যাস করুন</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">একেবারে firewall অক্ষম করুন?</string>
   <string name="apply">প্রয়োগ করুন</string>
   <string name="discard">বাতিল করুন</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">AFWall+ স্টার্ট-আপ লিপি অপসারণ করতে অক্ষম হয়েছে</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Firewall নিষ্ক্রিয় করা যাবে না।পাসওয়ার্ড সুরক্ষিত!</string>
-  <string name="widget_label_status">AFWall+ টগল/অবস্থা</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">AFWall+ সেটিংস</string>
   <string name="widget_label_settings_old">AFWall + সেটিংস(পুরাতন)</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">প্রোফাইল ৩</string>
   <string name="profile_hint">প্রোফাইল এর নাম</string>
   <string name="profile_notsupport">প্রোফাইল তথ্য আপনি এই অপশন ব্যবহার করতে অনুগ্রহ করে স্থানান্তর</string>
-  <string name="profile_duplicate">প্রোফাইল ইতোমধ্যেই বিদ্যমান।</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">প্রোফাইল নিয়ম পুনরায় সক্রিয় করুন</string>
   <!-- Interface -->
   <string name="lan_title">LAN নিয়ন্ত্রণ</string>
-  <string name="lan_summary">এই নিয়ন্ত্রণ চালু করলে LAN অনুমতি WiFi থেকে আলাদাভাবে নিয়ন্ত্রণ করবে</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">IPtables বাইনারি</string>
   <string name="vpn_profile">VPN নিয়ন্ত্রণ</string>
   <string name="vpnSummary">VPN অনুমতি আলাদাভাবে নিয়ন্ত্রণ সক্রিয় করুন</string>
   <string name="roaming">রোমিং নিয়ন্ত্রণ</string>
   <string name="roamingSummary">VPN অনুমতি আলাদাভাবে নিয়ন্ত্রণ সক্রিয় করুন</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: বাইনারি ফাইল সংস্থাপন হয়েছ</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">AFWall+ নিষ্ক্রিয় করুন</string>
   <string name="tasker_apply">Tasker: Firewall নিয়ম প্রয়োগ করা হচ্ছে</string>
   <string name="tasker_disabled">Tasker: AFWall+ অক্ষম করা হয়েছে!</string>
-  <string name="tasker_profile_applied">Tasker: সাফল্যের সাথে প্রোফাইল প্রয়োগ করা হয়েছে</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ মাল্টি প্রোফাইল অক্ষম</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 সমর্থন</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">ভাষা/প্লাগ-ইন</string>
   <!-- 1.2.6 -->
   <string name="active_rules">সক্রিয় নিয়ম</string>
-  <string name="active_rules_summary">প্রতিটি কানেক্টিভিটি পরিবর্তনে Firewall চালু করুন (Roam/LAN/Wifi/3 G/tether)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">প্রোফাইল যুক্ত করুন</string>
   <string name="profile_remove">প্রোফাইল অপসারণ করুন</string>
   <string name="profile_rename">প্রোফাইল পুনঃনামকরণ করুন</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">সম আনচেক করুন</string>
   <string name="select_action">কলামের ক্রিয়া নির্বাচন করুন </string>
   <string name="roam">ভ্রমণ</string>
-  <string name="legend_roam">আলাদাভাবে বিভিন্ন নেটওয়ার্ক প্রদায়ক (রোমিং) অনুমতি নিয়ে সময় নিয়ন্ত্রণ ডাটা সক্রিয় করুন</string>
-  <string name="wifi">ওয়াই ফাই</string>
-  <string name="legend_wifi">Wi-Fi সম্মতিসমূহ নিয়ন্ত্রণ করতে সক্ষম।</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">ল্যান</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">ডাটা</string>
-  <string name="legend_data">সক্রিয় (২জি, 3 ছ, এজ, LTE/4 জি) মোবাইল ডেটা নিয়ন্ত্রণ করার অনুমতি</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">সব</string>
   <string name="pkg_core">কোর</string>
   <string name="pkg_sys">সিস্টেম</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">DNS netd মাধ্যমে সক্রিয় করুন</string>
   <string name="disable_dns">DNS netd মাধ্যমে নিষ্ক্রিয় করুন</string>
   <string name="dns_proxy_title">DNS প্রক্সি </string>
-  <string name="dns_proxy_summary">Android 4.3 এবং পরে netd মাধ্যমে ডিএনএস lookups হয়। এটা নিষ্ক্রিয় করা হচ্ছে তাদের ডিভাইসে ইন্টারনেট অবরোধ হবে।</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall+ Tasker প্লাগইন</string>
   <string name="enable">সক্রিয় করুন</string>
   <string name="disable">নিক্রিয় করুন</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">এই বৈশিষ্ট্যটি কেবলমাত্র উপলভ্য অনুদান সংস্করণে।</string>
   <string name="buy_donate">দান সংস্করণ কী দান কিনুন</string>
   <string name="unlock_donate"> চাপুন অনুদান অনলক করতে</string>
-  <string name="donate_support">আপনি এখন অনুদান বৈশিষ্ট্য ব্যবহার করতে পারবেন!</string>
-  <string name="donate_thanks">আপনার সাহায্যের জন্য ধন্যবাদ!</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">Notification আইকন প্রদর্শন করবে</string>
   <string name="activeNotification_summary">Notification এ স্থায়ী ভাবে আইকন প্রদর্শন করবে</string>
   <string name="active">ফায়ারওয়াল সক্রিয়</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Lockscreen বিজ্ঞপ্তি আইকন লুকান</string>
   <string name="lockScreenNotification_summary">Lockscreen চলমান নোটিফিকেশন আড়াল করা হবে</string>
   <string name="menu_legend">লিজেনড</string>
-  <string name="permissiondenied_importexport">পঠন/লিখন প্রবেশের জন্য সঞ্চয় করার অনুমতি পাওয়া যায়নি। আমদানি/রপ্তানি নিয়ম প্রবেশ দিবেন প্লিজ।</string>
-  <string name="permissiondenied_asset">পঠন/লিখন প্রবেশের জন্য সঞ্চয় করার অনুমতি পাওয়া যায়নি। আমদানি/রপ্তানি নিয়ম প্রবেশ দিবেন প্লিজ+ </string>
-  <string name="log_deletedapp">বিলোপ করা আবেদন</string>
-  <string name="log_denied">অস্বীকৃতী:</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">বার</string>
   <string name="log_time">বার</string>
-  <string name="log_dst">গন্তব্য:</string>
-  <string name="log_src">সূত্র:</string>
-  <string name="log_proto">প্রোটোকল:</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">দয়া করে পছন্দের মাধ্যমে লগ সেবাটি সক্রিয় করবেন। যদি সক্রিয় থাকে, তাহলে কোন লগের তথ্য।</string>
-  <string name="loading_data_title">লোড হচ্ছে...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">লগ তথ্য উদ্ধার করা হচ্ছে</string>
   <string name="switch_old">পুরনো দর্শনে পরিবর্তন করুন</string>
   <string name="switch_new">নতুন দর্শনে পরিবর্তন করুন</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Mutlicast DNS সক্রিয় করা হবে</string>
   <string name="error_log">লগ সেবা শুরু করতে অক্ষম। LogTarget খালি থাকে বা LogService সক্রিয় করা হয় না।</string>
   <string name="delete_profile">প্রোফাইল মুছে ফেলা যায়নি</string>
-  <string name="profile_migrate_msg">প্রোফাইল সফলভাবে দেশ ত্যাগ করেছে।</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">গন্তব্য ঠিকানা প্রদর্শন করা হবে</string>
   <string name="source_address">উৎস ঠিকানা প্রদর্শন করা হবে</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">ক্রিয়া নির্বাচন করুন</string>
   <string name="result_copied_to_clipboard">নির্বাচিত বার্তা ক্লিপবোর্ডে কপি করা হয়েছে</string>
   <string name="result">ফলাফল</string>
-  <string name="output_is_empty">আউটপুট ফাঁকা থাকে, ফলে নেটওয়ার্ক অ্যাক্সেস এবং SuperSu অস্বীকার করা হচ্ছে</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">সন্ধান করা হচ্ছে</string>
   <string name="looking_for_data">ডাটার জন্য দেখছে&#8230;</string>
   <string name="reachable_timeout">পাওয়া, টাইম-আউট: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">অনুগ্রহ করে স্ক্যানার আপনার পরিচয় যাচাই করার উপরে আপনার মনে স্থান</string>
   <string name="note">(আঙ্গুলের ছাপ স্বাক্ষর করেন এ অ্যাপটি আপনার লগইন খুব দ্রুত। আপনার ডিভাইসের ডিভাইস সেটিংস নিবন্ধিত অন্তত একটি আঙ্গুলের ছাপ থাকতে হবে)</string>
   <string name="title_activity_home">আঙ্গুলের ছাপ</string>
-  <string name="activity_home_desc">আপনি সফলভাবে ফিঙ্গারপ্রিন্ট অনুমোদনের সাথে যুক্ত হয়েছেন</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">বন্ধ করুন এবং পুনরায় আবার ফিঙ্গারপ্রিন্ট প্রত্যয়ন পর্দায় দেখার অ্যাপটি খুলুন</string>
   <string name="fingerprint_required">আঙুলের ছাপের প্রয়োজন</string>
-  <string name="device_with_no_fingerprint_sensor">আপনার ডিভাইসে ফিঙ্গারপ্রিন্ট সেন্সর নেই</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">আঙুলের ছাপ পরিচয় প্রমাণকারী অনুমতি সক্রিয়</string>
   <string name="register_at_least_one_fingerprint">অন্তত একটি ফিঙ্গারপ্রিন্ট রেজিস্টার সেটিংস</string>
   <string name="lock_screen_not_enabled">লক স্ক্রিন নিরাপত্তা সেটিংস সক্রিয় নয়</string>
-  <string name="fingerprint_enabled_successfully">সফলভাবে সক্রিয় আঙ্গুলের ছাপ</string>
-  <string name="fingerprint_disabled_successfully">সফলভাবে সক্রিয় আঙ্গুলের ছাপ</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">প্রসারিত করুন</string>
   <string name="label_zoomout">জুম আউট</string>
   <string name="exception_pref">ক্রিয়াকলাপের জন্য বিকৃত অগ্রাধিকার শুরু করতে অক্ষম, অনুগ্রহ করে পরিষ্কার প্রয়োগণ উপাত্ত</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">বিজ্ঞপ্তি অগ্রাধিকার</string>
   <string name="defaultPriority">পূর্ব-নির্ধারিত অগ্রাধিকার</string>
   <string name="lowPriority">নিম্ন অগ্রাধিকার</string>
-  <string name="applyRulesFasterTitle">তাৎক্ষণিক প্রয়োগ করুন</string>
-  <string name="applyRulesFaster">শুধু নিয়ম প্রয়োগ করা হয় তাহলে ধীর - অত্যন্ত পরীক্ষামূলক ব্যবহার করুন</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">বাছাই কর</string>
   <string name="input_chain">ইনপুট চেইন (IPv4)</string>
   <string name="output_chain">ইনপুট চেইন (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">ইনপুট চেইন (IPv6)</string>
   <string name="quick_apply_title">দ্রুত প্রয়োগ করুন</string>
   <string name="quick_apply_summary">শুধু দান করুন! আবেদন দ্রুত আইন প্রয়োগ করার বোতাম</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">তাৎক্ষণিক প্রয়োগ করুন</string>
+  <string name="applyRulesFaster">শুধু নিয়ম প্রয়োগ করা হয় তাহলে ধীর - অত্যন্ত পরীক্ষামূলক ব্যবহার করুন</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>

@@ -24,11 +24,13 @@
   <string name="error_refresh">방화벽 새로고침 중 에러</string>
   <string name="error_apply">방화벽 규칙 적용 중 에러</string>
   <string name="error_fetch">방화벽 규칙 가져오는 중 에러</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">루팅기능을 쓸 수 없습니다.\nAFWall+를 쓰시려면 기기가 루팅되어있어야 합니다..\n\n기기가 루팅이 되었다면, AFWall+이 \'su\' 커맨드-슈퍼유저 를 사용할 수 있도록 허용되었는지 확인해주세요.\n</string>
   <string name="error_netfilter">Iptable을 사용할 수 없습니다. \nAFWall+이 미작동할 수 있습니다.</string>
   <string name="error_common">오류: </string>
   <string name="all_item">(모든 앱) - 모두 다 선택</string>
   <string name="kernel_item">(kernel) - 리눅스 kernel</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">알수없음</string>
   <string name="tethering_item">(테터링) - DHCP+DNS service</string>
   <string name="dnsproxy_item">(DNS 프록시) - DNS lookups via netd</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">사용모드: %s</string>
   <string name="legend_clear">모든 선택 취소</string>
   <string name="mode_whitelist">선택사항 허용</string>
-  <string name="legend_whitelist">선택한 애플리케이션의 인터넷 접근을 승인합니다</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">선택사항 차단</string>
-  <string name="legend_blacklist">선택한 애플리케이션의 인터넷 접근을 거부합니다</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">나만의 명령어 설정</string>
   <string name="preferences">설정</string>
   <string name="reload">앱 다시가져오기</string>
   <string name="flush">모든 규칙 삭제</string>
   <string name="send_report">오류정보 보내기</string>
   <string name="enter_problem">문제사항을 적어주세요:</string>
-  <string name="send_mail">이메일 보내기</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">새로운 애플리케이션을 설치 하는 경우 알림이 표시 됩니다.</string>
   <string name="notify_pref_summary_off">새로운 애플리케이션을 설치 하는 경우 알림이 표시되지 않습니다</string>
   <string name="custom_script_defined">나만의 명령어 적용완료</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">모든 방화벽 규칙을 삭제할까요?</string>
   <string name="overrideRules">규칙을 가져오시겠습니까? 현재 존재하는 규칙을 덮어씁니다,</string>
   <string name="notification_new">새로운 앱 설치됨</string>
-  <string name="notification_new_package">인터넷 사용기능 설정</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">방화벽을 정말 중단하시겠습니까?</string>
   <string name="apply">적용</string>
   <string name="discard">저장 안 함</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">시작명령어 중단 실패</string>
   <!-- Widget -->
   <string name="widget_disable_fail">방화벽을 중단할 수 없습니다 - 비밀번호로 보호되어 있습니다!</string>
-  <string name="widget_label_status">AFWall+ On/Off 상태</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">AFWall+ 설정</string>
   <string name="widget_label_settings_old">AFWall+ (예전) 설정</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">프로필 3</string>
   <string name="profile_hint">프로필 이름</string>
   <string name="profile_notsupport">이 옵션을 사용하시려면 프로필 정보를 옮겨 주세요.</string>
-  <string name="profile_duplicate">프로파일이 이미 존재합니다.</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">프로필 규칙 재적용</string>
   <!-- Interface -->
   <string name="lan_title">LAN 설정</string>
-  <string name="lan_summary">이것을 활성화해서 WIfi 규칙과 다른 LAN 규칙을 설정하세요</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">방화벽 binary</string>
   <string name="vpn_profile">VPN 설정</string>
   <string name="vpnSummary">VPN 규칙 따로 설정하기</string>
   <string name="roaming">로밍 설정</string>
   <string name="roamingSummary">로밍 규칙 따로 설정하기</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: binary 파일 설치됨</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">AFWall+ 중단</string>
   <string name="tasker_apply">Tasker: 방화벽 규칙 적용중</string>
   <string name="tasker_disabled">Tasker: AFWall+ 중단됨!</string>
-  <string name="tasker_profile_applied">Tasker: 프로필 적용 완료</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile 중단됨</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 지원</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">언어/플러그인</string>
   <!-- 1.2.6 -->
   <string name="active_rules">사용중인 규칙</string>
-  <string name="active_rules_summary">모든 연결사항에 방화벽 규칙 적용 (로밍/LAN/Wifi/3G/테터링)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">프로필 추가</string>
   <string name="profile_remove">프로필 삭제</string>
   <string name="profile_rename">프로파일 이름 바꾸기</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">선택 해제하기</string>
   <string name="select_action">카데고리 전체적용 선택 </string>
   <string name="roam">로밍</string>
-  <string name="legend_roam">로밍관련 권한을 따로 지정하기</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">와이파이 권한 허가하기</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">데이터</string>
-  <string name="legend_data">데이터 (2G,3G,EDGE,LTE/4G) 권한 허가하기</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">모두</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">시스템</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">DNS via netd 사용</string>
   <string name="disable_dns">DNS via netd 비사용</string>
   <string name="dns_proxy_title">DNS 프록시 </string>
-  <string name="dns_proxy_summary">DNS lookup은 안드로이드 4.3 이상의 netd 기능으로 사용가능합니다. 이 기능을 금지하면 기기의 인터넷을 차단합니다.</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall+ Tasker 플러그인</string>
   <string name="enable">사용</string>
   <string name="disable">비사용</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">이 기능은 프로버전에서 사용가능합니다</string>
   <string name="buy_donate">프로버전을 구입해주세요요</string>
   <string name="unlock_donate"> 눌러서 프로버전 허용</string>
-  <string name="donate_support">이제 프로버전 기능을 사용할 수 있습니다.</string>
-  <string name="donate_thanks">지원해 주셔서 감사드립니다!</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">알림아이콘 보이기</string>
   <string name="activeNotification_summary">상태바에 항상 알림창 표시</string>
   <string name="active">방화벽 활성화</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">잠금화면 알림 숨기기</string>
   <string name="lockScreenNotification_summary">잠금화면에서 알림 숨기기</string>
   <string name="menu_legend">범례</string>
-  <string name="permissiondenied_importexport">저장장치 읽기/쓰기 권한이 없습니다. 내보내기/가져오기를 하시라면 권한을 허가해 주세요.</string>
-  <string name="permissiondenied_asset">외부저장장치 읽기/쓰기 권한이 없습니다. AFWall+ binary를 복사하시려면 권한을 허가해 주세요. </string>
-  <string name="log_deletedapp">삭제된 앱들</string>
-  <string name="log_denied">차단됨 :</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">번</string>
   <string name="log_time">번</string>
-  <string name="log_dst">도착지 :</string>
-  <string name="log_src">출발지 :</string>
-  <string name="log_proto">프로토콜 :</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">환경 설정을 통해 로그 서비스를 활성화하십시오. 활성화 되었다면, 아직 로그 데이터가 존재하지 않습니다.</string>
-  <string name="loading_data_title">로딩중...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">데이타 가져오기...</string>
   <string name="switch_old">예전 모냥으로 전환</string>
   <string name="switch_new">새 모냥으로 전환</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Mutlicast DNS를 사용하도록 설정</string>
   <string name="error_log">로그 서비스를 시작할 수 없습니다. LogTarget이 비었거나 LogService가 활성화되지 않았습니다.</string>
   <string name="delete_profile">프로필을 삭제하는데 실패하였습니다</string>
-  <string name="profile_migrate_msg">프로필이 성공적으로 마이그레이션 되었습니다.</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">목적지 주소</string>
   <string name="source_address">출발지 주소</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">작업 선택</string>
   <string name="result_copied_to_clipboard">결과가 클립보드에 복사되었습니다.</string>
   <string name="result">결과</string>
-  <string name="output_is_empty">출력이 비었습니다. 네트워크 접근이나 SuperSu가 거부되었습니다.</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">검색 중</string>
   <string name="looking_for_data">데이터를 찾고 있습니다....</string>
   <string name="reachable_timeout">연결가능. 타임아웃: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">스캐너에 지문을 대주세요</string>
   <string name="note">(설정에서 지문을 등록하면, 지문인식기능을 사용하여 더 빠르게 앱으로 들어올 수 있습니다.)</string>
   <string name="title_activity_home">지문</string>
-  <string name="activity_home_desc">지문인식으로 로그인 완료되었습니다</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">앱을 닫고 다시 열어서 지문인식화면을 보아주세요.</string>
   <string name="fingerprint_required">지문이 필요합니다</string>
-  <string name="device_with_no_fingerprint_sensor">장치에 지문 인식 센서가 없습니다.</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">지문 인증 권한을 사용할 수 없습니다</string>
   <string name="register_at_least_one_fingerprint">적어도 하나의 지문을 설정에 등록하십시오</string>
   <string name="lock_screen_not_enabled">폰 설정에서 잠금화면을 사용하지 않고 있습니다,</string>
-  <string name="fingerprint_enabled_successfully">지문인식사용</string>
-  <string name="fingerprint_disabled_successfully">지문인식 사용하지않기</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">확대</string>
   <string name="label_zoomout">축소</string>
   <string name="exception_pref">손상된 설정때문에 액티비티를 실행할 수 없습니다. 애플리케이션 데이터를 지운 뒤 다시 시도하십시오</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">알림 우선 순위</string>
   <string name="defaultPriority">기본 우선 순위</string>
   <string name="lowPriority">낮은 우선순위</string>
-  <string name="applyRulesFasterTitle">즉시 적용</string>
-  <string name="applyRulesFaster">규칙을 적용하는 것이 느릴 때만 사용하십시오 - 매우 실험적 기능입니다</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">선택</string>
   <string name="input_chain">체인 (IPv4) 입력</string>
   <string name="output_chain">체인 (IPv4) 출력</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Show Quick Apply</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">즉시 적용</string>
+  <string name="applyRulesFaster">규칙을 적용하는 것이 느릴 때만 사용하십시오 - 매우 실험적 기능입니다</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>

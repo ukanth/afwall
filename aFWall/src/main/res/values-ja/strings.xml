@@ -24,11 +24,13 @@
   <string name="error_refresh">Iptables の更新エラー</string>
   <string name="error_apply">Iptables ルールの適用エラー</string>
   <string name="error_fetch">Iptables ルールの取得エラー</string>
+  <string name="error_su_toast">root アクセスを取得できません!</string>
   <string name="error_su">root 権限を取得できません。\nAFWall+ を実行するには root 化された端末が必要です。\n\nこの端末が既に root 化されている場合は、AFWall+ が \"su\" コマンドを実行するアクセス許可が付与されている事を確認してください。</string>
   <string name="error_netfilter">Iptables のターゲットとチェーンのサポートが見つかりません。 \nAFWall+ はこの制限のため正常に動作しません。</string>
   <string name="error_common">エラー: </string>
   <string name="all_item">(すべてのアプリ) - すべてのアプリを選択するのと同義</string>
   <string name="kernel_item">(カーネル) - Linux カーネル</string>
+  <string name="android_system">Androidシステム</string>
   <string name="unknown_item">不明</string>
   <string name="tethering_item">(テザリング) - DHCP+DNS サービス</string>
   <string name="dnsproxy_item">(DNS プロキシ) - netd 経由の DNS ルックアップ</string>
@@ -76,7 +78,7 @@
   <string name="flush">ルールをフラッシュ</string>
   <string name="send_report">エラーレポートを送信</string>
   <string name="enter_problem">問題を説明して下さい:</string>
-  <string name="send_mail">メール送信</string>
+  <string name="send_mail">メールを送信</string>
   <string name="notify_pref_summary_on">新しいアプリがインストールされた際に通知を表示します</string>
   <string name="notify_pref_summary_off">新しいアプリがインストールされた際に通知を表示しません</string>
   <string name="custom_script_defined">カスタムスクリプトは定義されました</string>
@@ -121,7 +123,7 @@
   <string name="unable_remove_initd">AFWall + スタートアップスクリプトを削除できません。</string>
   <!-- Widget -->
   <string name="widget_disable_fail">ファイアウォールを無効にできません。パスワード保護されています!</string>
-  <string name="widget_label_status">AFWall+ 切り替え/ステータス</string>
+  <string name="widget_label_status">AFWall+ 切り替え</string>
   <string name="widget_label_settings">AFWall+ 設定</string>
   <string name="widget_label_settings_old">AFWall+ 設定 (旧)</string>
   <!-- Color Picker -->
@@ -187,13 +189,15 @@
   <string name="reapply_profile">プロファイルのルールを再適用</string>
   <!-- Interface -->
   <string name="lan_title">LAN 制御</string>
-  <string name="lan_summary">WiFi アクセス許可とは別に LAN アクセス許可を制御するときに有効にします</string>
+  <string name="lan_summary">Wi-Fi アクセス許可とは別に LAN アクセス許可を制御するときに有効にします</string>
   <string name="iptables_pref">Iptables のバイナリ</string>
   <string name="vpn_profile">VPN 制御</string>
   <string name="vpnSummary">有効にすると VPN アクセス許可を個別に制御します</string>
   <string name="roaming">ローミング制御</string>
   <string name="roamingSummary">有効にするとローミングのアクセス許可を個別に制御します</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor 制御</string>
+  <string name="torSummary">Tor ではないトラフィックを Tor 経由にリダイレクトするときに有効にします</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: バイナリファイルをインストールしました</string>
@@ -278,7 +282,7 @@
   <string name="misc_header">言語/プラグイン</string>
   <!-- 1.2.6 -->
   <string name="active_rules">有効なルール</string>
-  <string name="active_rules_summary">接続が変更される毎にファイアウォール ルールを適用します (LAN/WiFi/モバイルデータ/ローミング/テザリング)</string>
+  <string name="active_rules_summary">接続が変更される毎にファイアウォール ルールを適用します (LAN/Wi-Fi/モバイルデータ/ローミング/テザリング)</string>
   <string name="profile_add">プロファイルを追加</string>
   <string name="profile_remove">プロファイルを削除</string>
   <string name="profile_rename">プロファイルの名前を変更</string>
@@ -303,13 +307,14 @@
   <string name="uncheck_all">すべての選択を解除</string>
   <string name="select_action">列のアクションを選択 </string>
   <string name="roam">ローミング</string>
-  <string name="legend_roam">別のネットワークプロバイダー (ローミング) で、個別にデータのアクセス許可の制御を有効にする</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Wifi のアクセス許可の管理を有効にする</string>
+  <string name="legend_roam">別のネットワークプロバイダー (ローミング) のときに、個別に AFWall+ がデータを制御できるようにします</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">AFWall+ が Wi-Fi アクセス許可を制御します</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">データ</string>
-  <string name="legend_data">有効にするとモバイルデータ (2G,3G,EDGE,LTE/4G) のアクセス許可を制御します</string>
+  <string name="legend_data">AFWall+ がモバイルデータ (2G,3G,EDGE,LTE/4G) のアクセス許可を制御します</string>
   <string name="pkg_all">すべて</string>
   <string name="pkg_core">コア</string>
   <string name="pkg_sys">システム</string>
@@ -337,8 +342,8 @@
   <string name="donate_only">この機能は寄付版のみ利用可能です</string>
   <string name="buy_donate">寄付版または寄付キーを購入</string>
   <string name="unlock_donate"> ロックを解除するため、タップして寄付してください</string>
-  <string name="donate_support">寄付版の機能を使用することができます!</string>
-  <string name="donate_thanks">ご支援ありがとうございます!</string>
+  <string name="donate_support">寄付版の機能を使用することができます.</string>
+  <string name="donate_thanks">ご支援ありがとうございます.</string>
   <string name="activeNotification">通知アイコンを表示</string>
   <string name="activeNotification_summary">通知バーに永続的なアイコンを表示します</string>
   <string name="active">ファイアウォールは有効です</string>
@@ -401,17 +406,17 @@
   <string name="lockNotification">ロック画面の通知を非表示にする</string>
   <string name="lockScreenNotification_summary">ロック画面で新しい通知を非表示にします</string>
   <string name="menu_legend">表題</string>
-  <string name="permissiondenied_importexport">ストレージの読み取り/書き込みアクセスが拒否されました。エクスポート/インポートのルールへのアクセス許可を付与してください。</string>
-  <string name="permissiondenied_asset">ストレージの読み取り/書き込みアクセスが拒否されました。AFWall+ バイナリをコピーするためにアクセス許可を付与してください。 </string>
-  <string name="log_deletedapp">アプリケーションを削除しました</string>
-  <string name="log_denied">拒否 :</string>
+  <string name="permissiondenied_importexport">ストレージの読み取り/書き込みアクセス許可が拒否されました。ルールをエクスポート/インポートするためにアクセスを許可してください。</string>
+  <string name="permissiondenied_asset">ストレージの読み取り/書き込みアクセス許可が拒否されました。AFWall+ バイナリーをコピーするためにアクセスを許可してください。</string>
+  <string name="log_deletedapp">アプリが削除されました</string>
+  <string name="log_denied">拒否:</string>
   <string name="log_times">回</string>
   <string name="log_time">回</string>
-  <string name="log_dst">保存先 :</string>
-  <string name="log_src">ソース :</string>
-  <string name="log_proto">プロトコル :</string>
+  <string name="log_dst">保存先:</string>
+  <string name="log_src">ソース:</string>
+  <string name="log_proto">プロトコル:</string>
   <string name="no_data_available">設定からログ サービスを有効にしてください。有効にしている場合は、ログ データがありません。</string>
-  <string name="loading_data_title">読み込んでいます...</string>
+  <string name="loading_data_title">読み込んでいます&#8230;</string>
   <string name="loading_data">ログデータを取得しています</string>
   <string name="switch_old">元のビューに切り替える</string>
   <string name="switch_new">新しいビューに切り替える</string>
@@ -421,7 +426,7 @@
   <string name="mdns">マルチキャスト DNS を有効にする</string>
   <string name="error_log">ログ サービスを開始できません。LogTarget が空か、LogService が有効ではありません。</string>
   <string name="delete_profile">プロファイルを削除できません</string>
-  <string name="profile_migrate_msg">プロファイルが正常に移行されました</string>
+  <string name="profile_migrate_msg">プロファイルを移行しました</string>
   <!-- Log Details -->
   <string name="destination_address">宛先アドレス</string>
   <string name="source_address">送信元アドレス</string>
@@ -435,7 +440,7 @@
   <string name="select_the_action">アクションを選択します</string>
   <string name="result_copied_to_clipboard">結果をクリップボードにコピーしました</string>
   <string name="result">結果</string>
-  <string name="output_is_empty">出力は空です。ネットワークアクセス、SuperSu が拒否されました。</string>
+  <string name="output_is_empty">出力は空です。ネットワークアクセス、SuperSu が拒否されました</string>
   <string name="searching">検索中</string>
   <string name="looking_for_data">データを探しています&#8230;</string>
   <string name="reachable_timeout">到達、タイムアウト: %d ms</string>
@@ -456,15 +461,15 @@
   <string name="desc_fingerprint">身元を確認するために、スキャナーに指先を置いてください</string>
   <string name="note">（指紋認証で高速にアプリにログインできます。お使いのデバイスで、少なくとも１つ指紋を登録する必要があります）</string>
   <string name="title_activity_home">指紋</string>
-  <string name="activity_home_desc">指紋認証でログインに成功しました</string>
+  <string name="activity_home_desc">指紋認証を使用してログインしています</string>
   <string name="activity_home_note">アプリを閉じて再度開くと、もう一度指紋認証画面を表示します</string>
   <string name="fingerprint_required">指紋認証が必要です</string>
   <string name="device_with_no_fingerprint_sensor">お使いのデバイスに、指紋センサーがありません</string>
   <string name="fingerprint_permission_manifest_missing">指紋認証のアクセス許可が有効になっていません</string>
   <string name="register_at_least_one_fingerprint">設定で、少なくとも一つ指紋を登録してください</string>
   <string name="lock_screen_not_enabled">設定で、ロック画面セキュリティが有効になっていません</string>
-  <string name="fingerprint_enabled_successfully">指紋を有効にしました</string>
-  <string name="fingerprint_disabled_successfully">指紋を無効にしました</string>
+  <string name="fingerprint_enabled_successfully">指紋認証が有効です</string>
+  <string name="fingerprint_disabled_successfully">指紋認証が無効です</string>
   <string name="label_zoomin">拡大</string>
   <string name="label_zoomout">縮小</string>
   <string name="exception_pref">環境設定が破損しているため、活動を開始できません。アプリケーションのデータをクリアしてください</string>
@@ -476,8 +481,8 @@
   <string name="notification_priority">通知の優先度</string>
   <string name="defaultPriority">デフォルトの優先度</string>
   <string name="lowPriority">低優先度</string>
-  <string name="applyRulesFasterTitle">すぐに適用</string>
-  <string name="applyRulesFaster">ルールの適用が遅い場合のみ使用します - 非常に実験的</string>
+  <string name="dualAppsTitle">デュアル アプリ サポート</string>
+  <string name="dualAppsDesc">デュアルアプリ、MIUI、Island、仕事用プロファイル アプリのサポート</string>
   <string name="choose">選択</string>
   <string name="input_chain">入力チェーン (IPv4)</string>
   <string name="output_chain">出力チェーン (IPv4)</string>
@@ -493,4 +498,21 @@
   <string name="forward_chain_v6">転送チェーン (IPv6)</string>
   <string name="quick_apply_title">クイック適用を表示</string>
   <string name="quick_apply_summary">寄付の場合のみ! すぐにルールを適用するフローティング適用ボタンを表示します</string>
+  <string name="init_d">スクリプトのスタートアップ ディレクトリ パス</string>
+  <string name="mount_initd_error">ディレクトリをマウントできません</string>
+  <string name="delete_initd_error">スタートアップスクリプトを削除できません</string>
+  <string name="runNotification_summary">ルールを適用すると、通知が表示されます</string>
+  <string name="runNotification">ルール適用状況</string>
+  <string name="displayBlockNotification">ログアラート通知を無効にする</string>
+  <string name="applyRulesFasterTitle">すぐに適用</string>
+  <string name="applyRulesFaster">ルールの適用が遅い場合のみ使用します - 非常に実験的</string>
+  <string name="purging_rules">ファイアウォール iptables ルールをすべて削除します</string>
+  <string name="showhost_desc">DNS から解決されたホスト名を表示します (寄付機能/AFWall+ にインター ネットアクセスが必要です)</string>
+  <string name="show_host">ホスト名を表示</string>
+  <string name="host">ホスト:</string>
+  <string name="battery_optimization_title">ホワイトリスト afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ がバックグラウンドで実行され、接続の変更がある場合にルールを適用する必要があります。バッテリー最適化/Doze 設定から AFWall+ を削除/無視してください。</string>
+  <string name="firewall_service">ファイアウォール サービス</string>
+  <string name="boot_notification">サービスをブート</string>
+  <string name="app_notification">アプリ通知</string>
 </resources>

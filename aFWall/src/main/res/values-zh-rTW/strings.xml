@@ -24,11 +24,13 @@
   <string name="error_refresh">更新 iptables 時錯誤</string>
   <string name="error_apply">套用 iptables 規則時錯誤</string>
   <string name="error_fetch">獲取 iptables 規則時錯誤</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">無法取得 root 權限。\n您需要一台已 root 的手機來執行 AFWall+。\n\n如果這台手機已經 root，請確保 AFWall+ 具有足夠的權限執行 \"su\" 命令。</string>
   <string name="error_netfilter">找不到支援的 iptables 目標和鏈。 \nAFWall+ 可能無法按這種限制的方式工作。</string>
   <string name="error_common">錯誤: </string>
   <string name="all_item">(所有程式) - 與全選功能一樣</string>
   <string name="kernel_item">(內核) - Linux 內核</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">未知</string>
   <string name="tethering_item">(網路共用) - DHCP+DNS 服務</string>
   <string name="dnsproxy_item">(DNS 代理) - 透過 netd 進行 DNS 搜尋</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">模式：%s</string>
   <string name="legend_clear">清空全部選擇</string>
   <string name="mode_whitelist">允許所選</string>
-  <string name="legend_whitelist">所選應用程式將被授予互聯網存取權限</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">阻擋所選</string>
-  <string name="legend_blacklist">所選應用程式將被授予互聯網存取權限</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">設定自定義腳本</string>
   <string name="preferences">優先選項</string>
   <string name="reload">重新載入應用程式</string>
   <string name="flush">更新規則</string>
   <string name="send_report">傳送錯誤報告</string>
   <string name="enter_problem">請描述問題(英文)︰</string>
-  <string name="send_mail">寄信</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">安裝新應用程式時，顯示提醒通知</string>
   <string name="notify_pref_summary_off">安裝新應用程式時，不顯示提醒通知</string>
   <string name="custom_script_defined">自定義腳本已定義</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">更新所有 iptables 規則嗎？</string>
   <string name="overrideRules">你缺定要匯入規則嗎？這將覆蓋現有的規則！</string>
   <string name="notification_new">新安裝程式</string>
-  <string name="notification_new_package">配置網路許可權</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">完全停止防火牆嗎？</string>
   <string name="apply">應用</string>
   <string name="discard">放棄</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">無法移除 AFWall+ 啟動指令碼</string>
   <!-- Widget -->
   <string name="widget_disable_fail">無法停用防火牆，密碼保護！</string>
-  <string name="widget_label_status">AFWall + 切換/狀態</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">AFWall+ 設定</string>
   <string name="widget_label_settings_old">AFWall+ 設定(舊)</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">設定檔 3</string>
   <string name="profile_hint">配置文件名稱</string>
   <string name="profile_notsupport">請轉移設定檔資料以使用此選項</string>
-  <string name="profile_duplicate">設定檔已存在！</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">重新應用設定檔規則</string>
   <!-- Interface -->
   <string name="lan_title">區域網路控制</string>
-  <string name="lan_summary">啟動以單獨控制WiFi權限及區域網路權限</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">Iptables 二進位檔案</string>
   <string name="vpn_profile">VPN 控制</string>
   <string name="vpnSummary">啟用以分別控制 VPN 的許可權</string>
   <string name="roaming">漫遊控制</string>
   <string name="roamingSummary">啟用以分別控制漫遊的許可權</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: 二進位文件安裝完成</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">停用 AFWall+</string>
   <string name="tasker_apply">Tasker：正在套用防火牆規則</string>
   <string name="tasker_disabled">Tasker: AFWall+ 已禁用！</string>
-  <string name="tasker_profile_applied">Tasker：AFWall+ 的設定檔案套用已成功</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ 多設定檔已禁用</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">支援 IPv6</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">語言/插件</string>
   <!-- 1.2.6 -->
   <string name="active_rules">啟動規則</string>
-  <string name="active_rules_summary">各種連接變更時套用防火牆規則 (漫遊/LAN/WiFi/3G/4G/網路共用)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">新增設定檔</string>
   <string name="profile_remove">移除設定檔</string>
   <string name="profile_rename">重新命名設定檔</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">取消全部</string>
   <string name="select_action">已選取操作的連接：</string>
   <string name="roam">漫遊</string>
-  <string name="legend_roam">啟動以在不同的網路供應商 (漫遊) 時，分別控制網路權限</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">啟動以控制 WiFi 權限</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">資料</string>
-  <string name="legend_data">啟動以控制行動數據 (2G,3G,EDGE,LTE/4G) 權限</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">全部</string>
   <string name="pkg_core">核心</string>
   <string name="pkg_sys">系統</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">通過 netd 啟用 DNS</string>
   <string name="disable_dns">通過 netd 停用 DNS</string>
   <string name="dns_proxy_title">DNS 代理 </string>
-  <string name="dns_proxy_summary">DNS 查找是通過 netd 上 Android 4.3 及更高版本。如果禁用該會阻止在這些設備上的互聯網。</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall + Tasker 插件</string>
   <string name="enable">啟用</string>
   <string name="disable">停用</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">此功能只在贊助版提供</string>
   <string name="buy_donate">購買贊助版本或捐贈金鑰</string>
   <string name="unlock_donate"> 點擊解鎖贊助版</string>
-  <string name="donate_support">您可以現在使用贊助版的功能!</string>
-  <string name="donate_thanks">謝謝您的支持！</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">顯示通知圖示</string>
   <string name="activeNotification_summary">在通知列永久顯示圖示</string>
   <string name="active">防火牆已啟用</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">在鎖定畫面隱藏通知圖示</string>
   <string name="lockScreenNotification_summary">在鎖定畫面上隱藏通知</string>
   <string name="menu_legend">圖例</string>
-  <string name="permissiondenied_importexport">無法讀取/寫入外部儲存空間，請授權以匯出/匯入規則。</string>
-  <string name="permissiondenied_asset">無法讀取/寫入外部儲存空間，請授權以複製 AFWall+ 的二進位檔案 。 </string>
-  <string name="log_deletedapp">已刪除程式</string>
-  <string name="log_denied">已拒絕：</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">次</string>
   <string name="log_time">次</string>
-  <string name="log_dst">目標：</string>
-  <string name="log_src">來源：</string>
-  <string name="log_proto">協定：</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">請啟用日誌服務通過首選項。如果啟用，然後沒有日誌資料。</string>
-  <string name="loading_data_title">載入中...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">讀取日誌中</string>
   <string name="switch_old">切換到舊版檢視</string>
   <string name="switch_new">切換到新版檢視</string>
@@ -418,7 +423,7 @@
   <string name="mdns">啟用組播 DNS</string>
   <string name="error_log">無法啟用開機記錄服務。LogTarget 為空或未啟用 LogService。</string>
   <string name="delete_profile">無法刪除項目</string>
-  <string name="profile_migrate_msg">設定檔已成功遷移</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">目的地址</string>
   <string name="source_address">來源位址</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">請選擇操作</string>
   <string name="result_copied_to_clipboard">文字已複製到剪貼簿。</string>
   <string name="result">結果</string>
-  <string name="output_is_empty">輸出是空的，因為網路訪問和 SuperSu 被拒絕</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">搜尋中</string>
   <string name="looking_for_data">正在尋找資料...</string>
   <string name="reachable_timeout">超過時間限制 %d 毫秒</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">請把你的手指放在掃描器以驗證您的身份</string>
   <string name="note">（指紋登入加快您的應用程式登入。您的裝置應該有至少一個指紋註冊在裝置設定裡）</string>
   <string name="title_activity_home">指紋</string>
-  <string name="activity_home_desc">您已由指紋身份驗證登入</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">關閉並重新開啟應用程式，將會看到指紋驗證畫面</string>
   <string name="fingerprint_required">需要設定指紋</string>
-  <string name="device_with_no_fingerprint_sensor">您的設備沒有指紋感應器</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">未啟用指紋驗證權限</string>
   <string name="register_at_least_one_fingerprint">在設定中註冊至少一個指紋</string>
   <string name="lock_screen_not_enabled">安全性設定中鎖定螢幕未啟用</string>
-  <string name="fingerprint_enabled_successfully">指紋驗證已啟用</string>
-  <string name="fingerprint_disabled_successfully">指紋驗證已禁用</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">放大</string>
   <string name="label_zoomout">缩小</string>
   <string name="exception_pref">因為偏好設定毀損而無法啟動，請清除本程式資料</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Notification Priority</string>
   <string name="defaultPriority">Default Priority</string>
   <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">立即套用</string>
-  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">選擇</string>
   <string name="input_chain">INPUT Chain (IPv4)</string>
   <string name="output_chain">OUTPUT Chain (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">顯示快速套用</string>
   <string name="quick_apply_summary">僅限捐贈版！顯示懸浮按鈕以快速套用規則</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">立即套用</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>

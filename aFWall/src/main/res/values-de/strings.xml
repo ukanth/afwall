@@ -24,11 +24,13 @@
   <string name="error_refresh">Fehler beim Aktualisieren der IPTables</string>
   <string name="error_apply">Fehler beim Anwenden der IPTables-Regeln</string>
   <string name="error_fetch">Fehler beim Abrufen der IPTables-Regeln</string>
+  <string name="error_su_toast">Es ist kein Root-Zugriff möglich!</string>
   <string name="error_su">Es ist kein Root-Zugriff möglich.\nUm AFWall+ nutzen zu können, benötigen Sie ein gerootetes Gerät.\n\nWenn das Gerät bereits gerootet ist, stellen Sie bitte sicher, dass AFWall+ Superuser-Rechte gewährt werden.\n.</string>
   <string name="error_netfilter">IPTables-Ziele und -Ketten werden nicht unterstützt.\nAFWall+ funktioniert aufgrund dieser Einschränkung möglicherweise nicht wie erwartet.</string>
   <string name="error_common">Fehler: </string>
   <string name="all_item">(Jede App) - entspricht dem Markieren aller Apps</string>
   <string name="kernel_item">(Kernel) - Linux Kernel</string>
+  <string name="android_system">Android-System</string>
   <string name="unknown_item">Unbekannt</string>
   <string name="tethering_item">(Tethering) - DHCP+DNS-Dienste</string>
   <string name="dnsproxy_item">(DNS-Proxy) - DNS-Abfragen über netd</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Entfernen des AFWall+ Startup-Skript nicht möglich!</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Firefall kann nicht deaktiviert werden. Es wurde ein Passwort festgelegt!</string>
-  <string name="widget_label_status">AFWall+ Statusschalter</string>
+  <string name="widget_label_status">AFWall+ Schalter</string>
   <string name="widget_label_settings">AFWall+ Einstellungen</string>
   <string name="widget_label_settings_old">AFWall+ Einstellungen (alt)</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Profilname</string>
   <string name="profile_notsupport">Bitte Datenprofil migrieren, um diese Option verwenden zu können</string>
-  <string name="profile_duplicate">Profil existiert bereits !</string>
+  <string name="profile_duplicate">Profil existiert bereits!</string>
   <string name="reapply_profile">Profilregeln erneut anwenden</string>
   <!-- Interface -->
   <string name="lan_title">LAN-Steuerung</string>
-  <string name="lan_summary">Aktivieren, um Berechtigungen bei LAN- oder WLAN-Verbindung unabhängig voneinander zu steuern</string>
+  <string name="lan_summary">Aktivieren, um LAN- und WLAN-Genehmigungen unabhängig voneinander zu regulieren</string>
   <string name="iptables_pref">IPTables-Binärdatei</string>
   <string name="vpn_profile">VPN-Steuerung</string>
-  <string name="vpnSummary">Aktivieren, um Berechtigungen bei VPN-Verbindungen zu steuern</string>
+  <string name="vpnSummary">Aktivieren, um VPN-Genehmigungen zu regulieren</string>
   <string name="roaming">Roaming-Steuerung</string>
-  <string name="roamingSummary">Gesonderte Steuerung der Berechtigungen bei Roaming-Verbindung</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="roamingSummary">Aktivieren, um Roaming-Genehmigungen zu regulieren</string>
+  <string name="tor_profile">Tor-Steuerung</string>
+  <string name="torSummary">Aktivieren, um Nicht-Tor-Verkehr über Tor umzuleiten</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: Binärdateien installiert</string>
@@ -218,8 +222,8 @@
   <string name="disable_tasker">AFWall+ deaktivieren</string>
   <string name="tasker_apply">Tasker: Firewall-Regeln anwenden</string>
   <string name="tasker_disabled">Tasker: AFWall+ DEAKTIVIERT!</string>
-  <string name="tasker_profile_applied">Tasker: AFWall+ Profile erfolgreich angewendet</string>
-  <string name="tasker_muliprofile">Tasker: AFWall+ Profile deaktiviert</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ Profil angewendet</string>
+  <string name="tasker_muliprofile">Tasker: AFWall+ Multi-Profil deaktiviert</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6-Unterstützung</string>
   <string name="ipv6_summary">IPv6-Unterstützung aktivieren</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Alle abwählen</string>
   <string name="select_action">Markierungen in Spalte </string>
   <string name="roam">Roaming</string>
-  <string name="legend_roam">Gesonderte Datenübertragungsrechte bei Roaming</string>
+  <string name="legend_roam">Lassen Sie AFWall+ die Datenverbindung mit einem fremden Provider (Roaming) separat steuern</string>
   <string name="wifi">WLAN</string>
-  <string name="legend_wifi">Datenübertragungsrechte im WLAN-Netz</string>
+  <string name="legend_wifi">Lassen Sie AFWall+ die WLAN-Berechtigungen steuern</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Daten</string>
-  <string name="legend_data">Datenübertragungsrechte im Mobilfunknetz</string>
+  <string name="legend_data">Lassen Sie AFWall+ die Berechtigungen für mobile Daten (2G, 3G, EDGE, LTE/4G) steuern</string>
   <string name="pkg_all">Alle</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">System</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Diese Funktion ist nur in der Vollversion verfügbar</string>
   <string name="buy_donate">Spendenversion oder -schlüssel kaufen</string>
   <string name="unlock_donate"> Tippen zum Entsperren</string>
-  <string name="donate_support">Sie können jetzt alle Funktionen uneingeschränkt verwenden!</string>
-  <string name="donate_thanks">Vielen Dank für Ihre Unterstützung!</string>
+  <string name="donate_support">Sie können nun die Funktionen der Spendenversion nutzen.</string>
+  <string name="donate_thanks">Vielen Dank für Ihre Unterstützung.</string>
   <string name="activeNotification">AFWall-Symbol anzeigen</string>
   <string name="activeNotification_summary">Symbol in der Benachrichtigungsleiste dauerhaft anzeigen</string>
   <string name="active">Firewall aktiviert</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Sperrbildschirm-Benachrichtigung ausblenden</string>
   <string name="lockScreenNotification_summary">Permanente Benachrichtigung auf Sperrbildschirm ausblenden</string>
   <string name="menu_legend">Legende</string>
-  <string name="permissiondenied_importexport">Kein Lese-/Schreibzugriff auf das Speichermedium! Bitte gewähren Sie diesen, um Regeln ex-/importieren zu können.</string>
-  <string name="permissiondenied_asset">AFWall+ hat keine Berechtigung, lesend/schreibend auf den Speicher zuzugreifen. Bitte erlauben Sie den Zugriff, damit Binärdateien für AFWall+ kopiert werden können. </string>
-  <string name="log_deletedapp">Gelöschte Anwendung</string>
+  <string name="permissiondenied_importexport">Keine LESE/SCHREIB-Berechtigung für den Speicher. Bitte für den Export/Import von Regeln erteilen.</string>
+  <string name="permissiondenied_asset">Keine LESE/SCHREIB-Berechtigung für den Speicher. Bitte für das Kopieren von Binärdateien von AFWall+ erteilen.</string>
+  <string name="log_deletedapp">Gelöschte App</string>
   <string name="log_denied">Verweigert:</string>
   <string name="log_times">Mal</string>
   <string name="log_time">Mal</string>
-  <string name="log_dst">Ziel :</string>
-  <string name="log_src">Quelle :</string>
-  <string name="log_proto">Protokoll :</string>
+  <string name="log_dst">Ziel:</string>
+  <string name="log_src">Quelle:</string>
+  <string name="log_proto">Protokoll:</string>
   <string name="no_data_available">Es liegen keine Protokolldaten vor. Bitte überprüfen Sie, ob der Protokolldienst in den Einstellungen aktiviert ist.</string>
-  <string name="loading_data_title">Wird geladen …</string>
+  <string name="loading_data_title">Wird geladen &#8230;</string>
   <string name="loading_data">Protokoll wird abgerufen ...</string>
   <string name="switch_old">Zur alten Ansicht wechseln</string>
   <string name="switch_new">Zur neuen Ansicht wechseln</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Mutlicast DNS aktivieren</string>
   <string name="error_log">Protokolldienst kann nicht gestartet werden. Entweder LogTarget enthält keine Werte oder LogService ist nicht aktiviert.</string>
   <string name="delete_profile">Profil kann nicht gelöscht werden</string>
-  <string name="profile_migrate_msg">Profile erfolgreich übertragen</string>
+  <string name="profile_migrate_msg">Profile übertragen</string>
   <!-- Log Details -->
   <string name="destination_address">Zieladresse</string>
   <string name="source_address">Herkunftsadresse</string>
@@ -456,12 +461,12 @@
   <string name="activity_home_desc">Sie haben sich erfolgreich mit der Fingerabdruck-Authentifizierung angemeldet</string>
   <string name="activity_home_note">Starten Sie die App neu, damit der Bildschirm mit der Fingerabdruck-Authentifizierung wieder angezeigt wird</string>
   <string name="fingerprint_required">Fingerabdruck erforderlich</string>
-  <string name="device_with_no_fingerprint_sensor">Ihr Gerät besitzt keinen Fingerabdruck-Sensor</string>
+  <string name="device_with_no_fingerprint_sensor">Ihr Gerät besitzt keinen Fingerabdrucksensor</string>
   <string name="fingerprint_permission_manifest_missing">Fingerabdruck-Authentifizierung nicht aktiviert</string>
   <string name="register_at_least_one_fingerprint">Registrieren Sie mindestens einen Fingerabdruck in den Geräteeinstellungen</string>
   <string name="lock_screen_not_enabled">Keine Sperrbildschirm-Sicherheitseinstellungen aktiviert</string>
-  <string name="fingerprint_enabled_successfully">Fingerabdruck-Authentifizierung aktiviert</string>
-  <string name="fingerprint_disabled_successfully">Fingerabdruck-Authentifizierung deaktiviert</string>
+  <string name="fingerprint_enabled_successfully">Fingerabdruck aktiviert</string>
+  <string name="fingerprint_disabled_successfully">Fingerabdruck deaktiviert</string>
   <string name="label_zoomin">Vergrößern</string>
   <string name="label_zoomout">Verkleinern</string>
   <string name="exception_pref">Aktivität kann aufgrund fehlerhafter Einstellungen nicht gestartet werden. Bitte Anwendungsdaten löschen.</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Benachrichtigungspriorität</string>
   <string name="defaultPriority">Standardpriorität</string>
   <string name="lowPriority">Niedrige Priorität</string>
-  <string name="applyRulesFasterTitle">Sofort anwenden</string>
-  <string name="applyRulesFaster">Nur verwenden, wenn die Anwendung der Regeln langsam ist - Hoch experimentell</string>
+  <string name="dualAppsTitle">Unterstützung von Dual Apps</string>
+  <string name="dualAppsDesc">Unterstützung für Dual-Apps, MIUI, Island und Arbeitsprofil-Apps</string>
   <string name="choose">Auswählen</string>
   <string name="input_chain">EINGABE-Kette (IPv4)</string>
   <string name="output_chain">AUSGABE-Kette (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">WEITERLEITUNGS-Kette (IPv6)</string>
   <string name="quick_apply_title">\"Sofort anwenden\" anzeigen</string>
   <string name="quick_apply_summary">Nur in der Spendenversion! Schwebende Anwenden-Taste einblenden, um Regeln schnell anzuwenden.</string>
+  <string name="init_d">Startverzeichnispfad für das Skript</string>
+  <string name="mount_initd_error">Verzeichnis kann nicht eingehängt werden</string>
+  <string name="delete_initd_error">Startup-Skript kann nicht gelöscht werden</string>
+  <string name="runNotification_summary">Anzeige einer Benachrichtigung, wenn die Regeln angewendet werden</string>
+  <string name="runNotification">Fortschrittsanzeige für Regeln</string>
+  <string name="displayBlockNotification">Warnmeldungen zu Blockaden ausschalten</string>
+  <string name="applyRulesFasterTitle">Sofort anwenden</string>
+  <string name="applyRulesFaster">Nur verwenden, wenn die Anwendung der Regeln langsam ist - Hoch experimentell</string>
+  <string name="purging_rules">Alle Firewall IPTables-Regeln entfernen</string>
+  <string name="showhost_desc">Über DNS aufgelösten Hostnamen anzeigen (Funktion der Spendenversion; AFWall+ benötigt dafür einen INTERNET-Zugang)</string>
+  <string name="show_host">Hostnamen anzeigen</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Doze-Ausnahme für AFWall+</string>
+  <string name="battery_optimization_desc">AFWall+ muss im Hintergrund ausgeführt werden, um bei Verbindungsänderungen die Regeln anwenden zu können. Bitte ändern SIe für AFWall+ die Akkuoptimierungs-/Doze-Voreinstellungen.</string>
+  <string name="firewall_service">Firewall-Dienst</string>
+  <string name="boot_notification">Boot-Dienst</string>
+  <string name="app_notification">App-Benachrichtigung</string>
 </resources>

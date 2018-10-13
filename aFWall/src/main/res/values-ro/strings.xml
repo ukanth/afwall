@@ -24,11 +24,13 @@
   <string name="error_refresh">Eroare reîmprospătare iptables</string>
   <string name="error_apply">Eroare la aplicarea regulilor iptables</string>
   <string name="error_fetch">Eroare preluare reguli iptables</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">Nu s-a putut obține acces root.\nAi nevoie de un telefon cu root pentru a rula AFWall+.\n\nDacă acest telefon are deja root, te rog să te asiguri că AFWall+ are suficiente permisiuni pentru a rula comanda „su”.</string>
   <string name="error_netfilter">Nu am putut găsi suport pentru legăturile și țintele pentru iptables.\nE posibil ca AFWall+ să funcționeze cu probleme datorită acestei limitări.</string>
   <string name="error_common">Eroare: </string>
   <string name="all_item">(Orice aplicație) - la fel ca selectarea tuturor aplicațiilor</string>
   <string name="kernel_item">(Kernel) - Kernel linuxl</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">Necunoscut</string>
   <string name="tethering_item">(Tethering) - servicii DHCP+DNS</string>
   <string name="dnsproxy_item">(DNS proxy) - căutări DNS prin intermediul netd</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">Mod: %s</string>
   <string name="legend_clear">Golește toate casetele de selectare pe toate coloanele</string>
   <string name="mode_whitelist">Permite selectate</string>
-  <string name="legend_whitelist">Aplicațiile selectate vor primi acces la internet</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">Blocare selectate</string>
-  <string name="legend_blacklist">Aplicațiile selectate nu vor primi acces la internet</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">Setare script personalizat</string>
   <string name="preferences">Preferinţe</string>
   <string name="reload">Reîncărcare aplicatii</string>
   <string name="flush">Revigorează regulile</string>
   <string name="send_report">Trimite raportul de eroare</string>
   <string name="enter_problem">Te rog explică problema:</string>
-  <string name="send_mail">Trimite e-mail</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">O notificare va fi trimisă când este instalată o aplicație nouă</string>
   <string name="notify_pref_summary_off">Nu va fi trimisă o notificare când este instalată o aplicație nouă</string>
   <string name="custom_script_defined">Script personalizat definit</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Șterge regulile din iptables?</string>
   <string name="overrideRules">Vrei să imporți regulile? Acest lucru va anula regulile existente!</string>
   <string name="notification_new">Aplicații noi instalate</string>
-  <string name="notification_new_package">Configurează permisiune la internet</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">Dezactivaţi complet firewall-ul?</string>
   <string name="apply">Aplică</string>
   <string name="discard">Renunță</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Nu s-a putut elimina scriptul de pornire</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Firewall-ul nu poate fi dezactivat. Protejat cu parolă!</string>
-  <string name="widget_label_status">AFWall+ Comutare/Stare</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">Setări AFWall +</string>
   <string name="widget_label_settings_old">Setări (Vechi) AFWall+</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Nume Profil</string>
   <string name="profile_notsupport">Migrează datele profilului pentru a folosi această opțiune</string>
-  <string name="profile_duplicate">Profile exists already !</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">Reaplică regulile profilului</string>
   <!-- Interface -->
   <string name="lan_title">Control LAN</string>
-  <string name="lan_summary">Activează controlul permisiunilor LAN separat de permisiunile WiFi</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">Binar Iptables</string>
   <string name="vpn_profile">Control VPN</string>
   <string name="vpnSummary">Permite controlul separat a permisiunilor VPN</string>
   <string name="roaming">Control Roaming</string>
   <string name="roamingSummary">Permite controlul separat pentru permisiunile roaming</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: Fişiere binare instalate</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">Dezactivează AFWall+</string>
   <string name="tasker_apply">Tasker: Aplică regulile firewall-ului</string>
   <string name="tasker_disabled">Tasker: AFWall+ DEZACTIVAT!</string>
-  <string name="tasker_profile_applied">Tasker: AFWall+ profil aplicat cu succes</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profil dezactivat</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suport IPv6</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">Limbi/plugin-uri</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Reguli active</string>
-  <string name="active_rules_summary">Aplică regulile firewall-ului la fiecare modificare de conectivitate (LAN/Wi-Fi/wireless-date/roaming/tether)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">Adaugă profil</string>
   <string name="profile_remove">Elimină profil</string>
   <string name="profile_rename">Redenumește profil</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Deselectează toate</string>
   <string name="select_action">Selectează acțiunea pe coloană </string>
   <string name="roam">Roam</string>
-  <string name="legend_roam">Permite controlul separat al permisiunilor de date când ai furnizori de rețea diferiți (Roaming)</string>
-  <string name="wifi">Wifi</string>
-  <string name="legend_wifi">Activează controlul permisiunilor Wi-Fi</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Date</string>
-  <string name="legend_data">Activează controlul permisiunilor de date mobile (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Toate</string>
   <string name="pkg_core">Nucleu</string>
   <string name="pkg_sys">Sistem</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">Activează DNS prin intermediul netd</string>
   <string name="disable_dns">Dezactivează DNS prin intermediul netd</string>
   <string name="dns_proxy_title">Proxy DNS </string>
-  <string name="dns_proxy_summary">Interogările DNS sunt prin netd în versiunile Android 4.3 sau mai recente. Dezactivând acest lucru va bloca accesul la internet pe dispozitivele respective.</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall + Tasker Plugin</string>
   <string name="enable">Activează</string>
   <string name="disable">Dezactivează</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Această caracteristică este disponibilă numai în versiunea Donator</string>
   <string name="buy_donate">Cumpără versiunea Donator sau cheia Donator</string>
   <string name="unlock_donate"> deblochează butonul pentru donații</string>
-  <string name="donate_support">Acum poți utiliza funcțiile suplimentare!</string>
-  <string name="donate_thanks">Vă mulţumim pentru sprijin!</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">Afișează pictograma de notificare</string>
   <string name="activeNotification_summary">Afișează permanent pictograma în bara de stare</string>
   <string name="active">Firewall-ul este activat</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Ascunde pictograma de notificare în ecranul de blocare</string>
   <string name="lockScreenNotification_summary">Ascunde notificarile actuale în ecranul de blocare</string>
   <string name="menu_legend">Legendă</string>
-  <string name="permissiondenied_importexport">Permisiune SCRIERE/CITIRE refuzată la accesarea mediului de stocare. Te rog, acordă acces pentru exportul/importul regulilor.</string>
-  <string name="permissiondenied_asset">Permisiune SCRIERE/CITIRE refuzată la accesarea mediului de stocare. Te rog, acordă acces pentru copierea fișierelor binare pentru AFWall+ </string>
-  <string name="log_deletedapp">Aplicație eliminată</string>
-  <string name="log_denied">Refuzat:</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">ori</string>
   <string name="log_time">data</string>
-  <string name="log_dst">Destinație: </string>
-  <string name="log_src">Sursă: </string>
-  <string name="log_proto">Protocol: </string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">Te rog, activează serviciul pentru înregistrări din Preferințe. Dacă este activat, atunci nu sunt înregistrări în jurnal.</string>
-  <string name="loading_data_title">Încărcare...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">Preluarea datelor de jurnal</string>
   <string name="switch_old">Comută la vizualizarea veche</string>
   <string name="switch_new">Comută la vizualizarea nouă</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Permite Mutlicast DNS</string>
   <string name="error_log">Serviciul jurnal nu poate fi pornit. LogTarget este gol sau LogService nu este activat.</string>
   <string name="delete_profile">Profilul nu a putut fi șters</string>
-  <string name="profile_migrate_msg">Profilul a fost mutat cu succes</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">Adresa destinației</string>
   <string name="source_address">Adresa sursei</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">Selectează acțiunea</string>
   <string name="result_copied_to_clipboard">Rezultat copiat în memoria temporară</string>
   <string name="result">Rezultat</string>
-  <string name="output_is_empty">Ieșirea este goală, deoarece accesul la rețea și SuperSu este respins</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">Căutare</string>
   <string name="looking_for_data">În căutarea de date&#8230;</string>
   <string name="reachable_timeout">Accesibil, în: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">Te rog pune degetul pe scaner pentru verificarea identității</string>
   <string name="note">(Autentificarea cu amprentă digitală face lansarea aplicației mai rapidă. Dispozitivul tău trebuie să aibă cel puțin o amprentă digitală înregistrată în setări)</string>
   <string name="title_activity_home">Amprentă</string>
-  <string name="activity_home_desc">Te-ai autentificat cu succes folosind amprenta digitală</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">Închide și redeschide aplicația pentru a vedea ecranul de autentificare cu amprentă digitală</string>
   <string name="fingerprint_required">Este necesară amprenta digitală</string>
-  <string name="device_with_no_fingerprint_sensor">Dispozitivul tău nu are senzor pentru amprentă digitală</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">Autentificarea cu amprentă digitală nu este activată</string>
   <string name="register_at_least_one_fingerprint">Înregistrează cel puțin o amprentă digitală în Setări</string>
   <string name="lock_screen_not_enabled">Blocarea ecranului nu este activată în Setări</string>
-  <string name="fingerprint_enabled_successfully">Amprenta digitală activată cu succes</string>
-  <string name="fingerprint_disabled_successfully">Amprenta digitală dezactivată cu succes</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">Zoom In</string>
   <string name="label_zoomout">Zoom Out</string>
   <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Notification Priority</string>
   <string name="defaultPriority">Default Priority</string>
   <string name="lowPriority">Low Priority</string>
-  <string name="applyRulesFasterTitle">Instant Apply</string>
-  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">Choose</string>
   <string name="input_chain">INPUT Chain (IPv4)</string>
   <string name="output_chain">OUTPUT Chain (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Show Quick Apply</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">Instant Apply</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>

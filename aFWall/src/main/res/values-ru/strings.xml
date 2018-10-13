@@ -24,11 +24,13 @@
   <string name="error_refresh">Ошибка обновления iptables</string>
   <string name="error_apply">Ошибка применения правил iptables</string>
   <string name="error_fetch">Ошибка получения правил iptables</string>
+  <string name="error_su_toast">Невозможно получить рут-доступ !</string>
   <string name="error_su">Невозможно получить root доступ.\nДля работы приложения AFWall+ необходим root доступ.\n\nЕсли в Вашем телефоне есть рут, пожалуйста, убедитесь что AFWall+ имеет достаточно разрешений для выполнения команды \"su\".</string>
   <string name="error_netfilter">Не удалось найти поддержку целей iptables и цепочек. \nИз-за этого ограничения AFWall+ может работать не так, как нужно.</string>
   <string name="error_common">Ошибка: </string>
   <string name="all_item">(Любое прил.) - то же, что выбор всех приложений</string>
   <string name="kernel_item">(ядро) - ядро Linux</string>
+  <string name="android_system">Система Андроид</string>
   <string name="unknown_item">Неизв.</string>
   <string name="tethering_item">(раздача) - сервисы DHCP+DNS</string>
   <string name="dnsproxy_item">(DNS proxy) - запросы DNS через netd</string>
@@ -67,9 +69,9 @@
   <string name="mode_header">Режим: %s</string>
   <string name="legend_clear">Снимите все флажки в столбцах</string>
   <string name="mode_whitelist">Разрешить выбранное</string>
-  <string name="legend_whitelist">В выбранных приложениях будет предоставлен доступ в интернет</string>
+  <string name="legend_whitelist">Выбранным приложениям будет предоставлен доступ к интернету</string>
   <string name="mode_blacklist">Блокировать выбранное</string>
-  <string name="legend_blacklist">В выбранных приложениях будет запрещен доступ в интернет</string>
+  <string name="legend_blacklist">Выбранным приложениям будет запрещен доступ к интернету</string>
   <string name="set_custom_script">Пользовательские скрипты</string>
   <string name="preferences">Настройки</string>
   <string name="reload">Перезагрузка приложений</string>
@@ -119,7 +121,7 @@
   <string name="unable_remove_initd">Невозможно удалить скрипт автозапуска</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Не удается отключить брандмауэр. Защищен паролем!</string>
-  <string name="widget_label_status">Переключить/Состояние AFWall+</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">Настройки AFWall+</string>
   <string name="widget_label_settings_old">AFWall+ настройки (старые)</string>
   <!-- Color Picker -->
@@ -185,13 +187,15 @@
   <string name="reapply_profile">Повтор применения правил профиля</string>
   <!-- Interface -->
   <string name="lan_title">Управление сетью</string>
-  <string name="lan_summary">Включить для раздельного управления разрешениями доступа для мобильных и WiFi сетей</string>
+  <string name="lan_summary">Включить для раздельного управления разрешениями LAN и WiFi</string>
   <string name="iptables_pref">Бинарный файл IPtables</string>
   <string name="vpn_profile">Управление VPN</string>
   <string name="vpnSummary">Включить для раздельного управления разрешениями VPN</string>
   <string name="roaming">Управление роумингом</string>
   <string name="roamingSummary">Позволяет управлять разрешением роуминга отдельно</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Управление Tor</string>
+  <string name="torSummary">Включить для перенаправления остального трафика через Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: бинарные файлы установлены</string>
@@ -219,7 +223,7 @@
   <string name="disable_tasker">Отключить AFWall +</string>
   <string name="tasker_apply">Tasker: Применяю правила брандмауэра</string>
   <string name="tasker_disabled">Tasker: AFWall + ОТКЛЮЧЕН!</string>
-  <string name="tasker_profile_applied">Tasker: профиль AFWall+ profile успешно применен</string>
+  <string name="tasker_profile_applied">Tasker: профиль AFWall+ применён</string>
   <string name="tasker_muliprofile">Tasker: AFWall + мультипрофиль отключен</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Поддержка IPv6</string>
@@ -301,13 +305,14 @@
   <string name="uncheck_all">Снять выбор со всего</string>
   <string name="select_action">Выберите действие на колонке </string>
   <string name="roam">Роуминг</string>
-  <string name="legend_roam">Возможность отдельно контролировать разрешения для данных при нахождении в других сетях (в роуминге)</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Включение управления разрешениями Wifi</string>
+  <string name="legend_roam">Предоставление AFWall+ возможности отдельно контролировать разрешения для данных при нахождении в других сетях (в роуминге)</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Предоставить AFWall+ управление разрешениями Wi-Fi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Данные</string>
-  <string name="legend_data">Включение управления разрешениями моб. данных (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Разрешить AFWAll+ управлять разрешениями моб. данных (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Все</string>
   <string name="pkg_core">Ядро</string>
   <string name="pkg_sys">Система</string>
@@ -335,8 +340,8 @@
   <string name="donate_only">Эта функция доступна только в платной версии</string>
   <string name="buy_donate">Купить платную версию или ключ</string>
   <string name="unlock_donate"> нажать для разблокировки платных функций</string>
-  <string name="donate_support">Теперь Вы можете использовать платные функции!</string>
-  <string name="donate_thanks">Спасибо за Вашу поддержку!</string>
+  <string name="donate_support">Теперь вы можете использовать платные функции.</string>
+  <string name="donate_thanks">Спасибо за поддержку.</string>
   <string name="activeNotification">Показать значок уведомления</string>
   <string name="activeNotification_summary">Отображение постоянного значка в панели уведомлений</string>
   <string name="active">Брандмауэр включён</string>
@@ -399,17 +404,17 @@
   <string name="lockNotification">Скрыть значок уведомления на экр. блокировки</string>
   <string name="lockScreenNotification_summary">Скрыть текущие уведомления на экране блокировки</string>
   <string name="menu_legend">Условные обозначения</string>
-  <string name="permissiondenied_importexport">Нет разрешений на чтение/запись доступ к внешней карте памяти. Пожалуйста, предоставьте доступ для экспорта/импорта правил.</string>
-  <string name="permissiondenied_asset">Нет разрешений на чтение/запись с внутренней карты памяти. Пожалуйста, предоставьте доступ для копирования двоичных файлов AFWall + </string>
-  <string name="log_deletedapp">Удалённое приложение</string>
+  <string name="permissiondenied_importexport">Нет разрешения на ЧТЕНИЕ/ЗАПИСЬ в память. Пожалуйста, предоставьте доступ для экспорта/импорта правил.</string>
+  <string name="permissiondenied_asset">Нет разрешения на ЧТЕНИЕ/ЗАПИСЬ в память. Пожалуйста, предоставьте доступ для копирования бинарных файлов AFWAll+.</string>
+  <string name="log_deletedapp">Удалённые приложения</string>
   <string name="log_denied">Отказано:</string>
   <string name="log_times">раз</string>
   <string name="log_time">раз</string>
-  <string name="log_dst">Назначение :</string>
-  <string name="log_src">Источник :</string>
-  <string name="log_proto">Протокол :</string>
+  <string name="log_dst">Назначение:</string>
+  <string name="log_src">Источник:</string>
+  <string name="log_proto">Протокол:</string>
   <string name="no_data_available">Пожалуйста, включите службу журнала через настройки. Если включена, то нет данных журналов.</string>
-  <string name="loading_data_title">Загрузка...</string>
+  <string name="loading_data_title">Загрузка&#8230;</string>
   <string name="loading_data">Получение данных журнала</string>
   <string name="switch_old">Переключиться к старому виду</string>
   <string name="switch_new">Переключиться к новому виду</string>
@@ -419,7 +424,7 @@
   <string name="mdns">Включить Mutlicast DNS</string>
   <string name="error_log">Не удалось запустить службу журнала. LogTarget пуст или LogService не включен.</string>
   <string name="delete_profile">Можете удалить профиль</string>
-  <string name="profile_migrate_msg">Профили успешно перенесены</string>
+  <string name="profile_migrate_msg">Профили перемещены</string>
   <!-- Log Details -->
   <string name="destination_address">Адрес назначения</string>
   <string name="source_address">Адрес источника</string>
@@ -454,15 +459,15 @@
   <string name="desc_fingerprint">Пожалуйста, поместите палец на сканер, чтобы проверить вашу личность</string>
   <string name="note">(Отпечаток пальца делает вход гораздо быстрее. Ваше устройство должно иметь по крайней мере один отпечаток пальца, зарегистрированный в настройках устройства)</string>
   <string name="title_activity_home">Отпечаток пальца</string>
-  <string name="activity_home_desc">Вы успешно вошли в систему с аутентификацией по отпечаткам пальцев</string>
+  <string name="activity_home_desc">Вы вошли с отпечатком пальца</string>
   <string name="activity_home_note">Закройте и снова откройте приложение для входа по отпечатку пальца</string>
   <string name="fingerprint_required">Отпечаток пальца требуется</string>
-  <string name="device_with_no_fingerprint_sensor">Устройство не имеет датчика отпечатков пальцев</string>
+  <string name="device_with_no_fingerprint_sensor">На вашем устройстве отсутствует датчик отпечатка</string>
   <string name="fingerprint_permission_manifest_missing">Разрешение аутентификации по отпечаткам пальцев не предоставлено</string>
   <string name="register_at_least_one_fingerprint">Зарегистрируйте, по крайней мере, один отпечаток пальца в настройках</string>
   <string name="lock_screen_not_enabled">В настройках безопасности блокировка экрана выключена</string>
-  <string name="fingerprint_enabled_successfully">Отпечаток пальца включён</string>
-  <string name="fingerprint_disabled_successfully">Отпечаток пальца отключён</string>
+  <string name="fingerprint_enabled_successfully">Отпечаток пальца включен</string>
+  <string name="fingerprint_disabled_successfully">Отпечаток пальца отключен</string>
   <string name="label_zoomin">Увеличить</string>
   <string name="label_zoomout">Уменьшить</string>
   <string name="exception_pref">Не удаётся запустить activity из-за повреждённых настроек, пожалуйста, очистите данные приложения</string>
@@ -474,8 +479,8 @@
   <string name="notification_priority">Приоритет уведомлений</string>
   <string name="defaultPriority">По умолчанию</string>
   <string name="lowPriority">Низкий</string>
-  <string name="applyRulesFasterTitle">Мгновенное применение</string>
-  <string name="applyRulesFaster">Используйте, только если правила применяются медленно - экспериментально</string>
+  <string name="dualAppsTitle">Поддержка двойных приложений</string>
+  <string name="dualAppsDesc">Поддержка двойных приложений, MIUI, Island и приложений рабочего профиля</string>
   <string name="choose">Выбор</string>
   <string name="input_chain">ВХОДЯЩАЯ цепочка (IPv4)</string>
   <string name="output_chain">ИСХОДЯЩАЯ цепочка (IPv4)</string>
@@ -491,4 +496,21 @@
   <string name="forward_chain_v6">ПЕРЕНАПРАВЛЕНИЕ цепочки (IPv6)</string>
   <string name="quick_apply_title">Показать быстрое применение</string>
   <string name="quick_apply_summary">Только в платной версии! Показать плавающую кнопку для быстрого применения правил</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">Мгновенное применение</string>
+  <string name="applyRulesFaster">Используйте, только если правила применяются медленно - экспериментально</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Хост:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Служба загрузки</string>
+  <string name="app_notification">Уведомления приложения</string>
 </resources>

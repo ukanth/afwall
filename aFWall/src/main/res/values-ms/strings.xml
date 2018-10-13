@@ -24,11 +24,13 @@
   <string name="error_refresh">Ralat kemaskini iptables</string>
   <string name="error_apply">Ralat gunakan peraturan iptables</string>
   <string name="error_fetch">Ralat memasang peraturan iptables</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">Tiada dapat akses root.\nPeranti anda perlu root utntuk menggunakan AFWall+.\n\nJika peranti telah mempunyai root, pastikan AFWall+ mendapat kebenaran arahan \"su\".</string>
   <string name="error_netfilter">Tiada sokongan untuk sasaran iptables dan rantaian. \nAFWall+ mungkin tidak berfungsi seperti yang dijangka disebabkan oleh limitasi ini.</string>
   <string name="error_common">Ralat: </string>
   <string name="all_item">(Semua aplikasi) - Seperti memilih semua aplikasi</string>
   <string name="kernel_item">(kernel) - Linux kernel</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">Tidak diketahui</string>
   <string name="tethering_item">(tambatan) - Perkhidmatan DHCP + DNS</string>
   <string name="dnsproxy_item">(proksi dns) - Carian DNS melalui netd</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">Mod: %s</string>
   <string name="legend_clear">Kosongkan semua kotak disemua kolum</string>
   <string name="mode_whitelist">Aktifkan Pilihan</string>
-  <string name="legend_whitelist">Aplikasi terpilih dibenarkan akses internet</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">Pilihan Disekat</string>
-  <string name="legend_blacklist">Aplikasi terpilih dinafikan akses internet</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">Tetap skrip kustom</string>
   <string name="preferences">Keutamaan</string>
   <string name="reload">Memuatkan aplikasi</string>
   <string name="flush">Flus arahan</string>
   <string name="send_report">Hantar Laporan Ralat</string>
   <string name="enter_problem">Sila jelaskan isu ini:</string>
-  <string name="send_mail">Hantar emel</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">Notifikasi dipaparkan bila aplikasi baru dipasang</string>
   <string name="notify_pref_summary_off">Tiada notifikasi dipaparkan bila aplikasi baru dipasang</string>
   <string name="custom_script_defined">Skrip kustom didefinasikan</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Flus semua arahan iptables?</string>
   <string name="overrideRules">Anda mahu impot arahan? Ini akan mengatasi arahan sebelumnya!</string>
   <string name="notification_new">Aplikasi baru dipasang</string>
-  <string name="notification_new_package">Konfigur kebenaran guna internet</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">Nyahaktifkan sepenuhnya firewall?</string>
   <string name="apply">Gunakan</string>
   <string name="discard">Batal</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Tidak dapat mengalih keluar AFWall+ skrip pemula</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Tidak dapat nyahaktifkan firewall. Dilindungi oleh kata laluan!</string>
-  <string name="widget_label_status">AFWall+ Toggle/Status</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">AFWall+ Seting</string>
   <string name="widget_label_settings_old">AFWall+ Seting (Lama)</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">Nama Profil</string>
   <string name="profile_notsupport">Sila pindahkan data profil untuk menggunakan opsyen ini</string>
-  <string name="profile_duplicate">Profil telah wujud !</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">Mengaktif semula arahan profil</string>
   <!-- Interface -->
   <string name="lan_title">Kawalan LAN</string>
-  <string name="lan_summary">Aktifkan kawalan LAN secara berasingan daripada keizinan WiFi</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">Binari Iptable</string>
   <string name="vpn_profile">Kawalan VPN</string>
   <string name="vpnSummary">Membolehkan kawalan VPN secara berasingan</string>
   <string name="roaming">Kawalan Perantauan</string>
   <string name="roamingSummary">Membolehkan kebenaran kawalan perantauan secara berasingan</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: Fail binari dipasang</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">Nyahaktifkan AFWall+</string>
   <string name="tasker_apply">Tasker: Aktifkan arahan firewall</string>
   <string name="tasker_disabled">Tasker: AFWall+ NYAHAKTIF!</string>
-  <string name="tasker_profile_applied">Tasker: AFWall+ profil berjaya digunakan</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi profil dinyahaktif</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Sokongan IPv6</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">Bahasa/Pautan</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Arahan Aktif</string>
-  <string name="active_rules_summary">Aktifkan arahan firewall disetiap perubahan sambungan (LAN/WiFi/mobile-data/roam/tether)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">Tambah profil</string>
   <string name="profile_remove">Alih keluar profil</string>
   <string name="profile_rename">Namakan Semula Profil</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Nyahtanda semua</string>
   <string name="select_action">Pilih tindakan di kolum </string>
   <string name="roam">Perayauan</string>
-  <string name="legend_roam">Aktif untuk mengawal data semasa penyedia rangkaian berbeza (perayauan) secara berasingan</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Aktifkan untuk mengawal WiFi</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Data</string>
-  <string name="legend_data">Aktif untuk mengawal data mudah alih (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Semua</string>
   <string name="pkg_core">Teras</string>
   <string name="pkg_sys">Sistem</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">Aktif DNS melalui netd</string>
   <string name="disable_dns">Nyahaktifkan DNS melalui netd</string>
   <string name="dns_proxy_title">Proksi DNS </string>
-  <string name="dns_proxy_summary">Carian DNS adalah melalui netd pada Android 4.3 dan keatas. Menyahaktifkan akan menyekat internet pada peranti tersebut.</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall+ Plugin Tasker</string>
   <string name="enable">Aktif</string>
   <string name="disable">Nyahaktif</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Ciri ciri ini hanya didapati di versi donasi sahaja</string>
   <string name="buy_donate">Beli versi donasi atau donasi kekunci</string>
   <string name="unlock_donate"> klik untuk nyahkunci donasi</string>
-  <string name="donate_support">Anda kini boleh menggunakan ciri-ciri donasi!</string>
-  <string name="donate_thanks">Terima kasih atas sokongan anda!</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">Paparkan ikon notifikasi</string>
   <string name="activeNotification_summary">Kekalkan paparan ikon dibar notifikasi</string>
   <string name="active">Firewall diaktifkan</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Sembunyi ikon notifikasi kunci skrin</string>
   <string name="lockScreenNotification_summary">Sembunyi notifikasi seterusnya di skrin kunci</string>
   <string name="menu_legend">Lagenda</string>
-  <string name="permissiondenied_importexport">Kebenaran dinafikan untuk akses BACA/TULIS untuk simpanan. Sila berikan akses untuk arahan ekspot/impot.</string>
-  <string name="permissiondenied_asset">Kebenaran dinafikan untuk akses BACA/TULIS untuk simpanan. Sila berikan akses menyalin binari untuk AFWall+ </string>
-  <string name="log_deletedapp">Aplikasi dihapuskan</string>
-  <string name="log_denied">Ditolak :</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">kali</string>
   <string name="log_time">masa</string>
-  <string name="log_dst">Destinasi:</string>
-  <string name="log_src">Sumber :</string>
-  <string name="log_proto">Protokol :</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">Sila aktifkan servis log melalui Rujukan. Jika aktif, tiada data log.</string>
-  <string name="loading_data_title">Memuatkan...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">Mendapatkan data log</string>
   <string name="switch_old">Tukar ke paparan lama</string>
   <string name="switch_new">Tukar ke paparan baru</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Aktifkan DNS Multicast</string>
   <string name="error_log">Tidak dapat mulakan log servis. TargetLog adalah kosong atau ServisLog dinyahaktifkan.</string>
   <string name="delete_profile">Tidak dapat hapuskan profil</string>
-  <string name="profile_migrate_msg">Profil berjaya dipindahkan</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">Alamat destinasi</string>
   <string name="source_address">Sumber Alamat</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">Pilih Tindakan</string>
   <string name="result_copied_to_clipboard">Keputusan disalin ke klipbod</string>
   <string name="result">Keputusan</string>
-  <string name="output_is_empty">Output ialah kosong, kerana akses rangkaian dan SuperSu ditolak</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">Mencari</string>
   <string name="looking_for_data">Mencari data&#8230;</string>
   <string name="reachable_timeout">Dicapai, tamat: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">Sila letakkan jari anda pada pengimbas untuk mengesahkan identiti anda</string>
   <string name="note">(Pengesahan cap jari membuat akses aplikasi anda lebih cepat. Peranti anda seharusnya memiliki satu cap jari disimpan didalam seting peranti)</string>
   <string name="title_activity_home">Cap jari</string>
-  <string name="activity_home_desc">Anda berjaya melog masuk dengan pengesahan cap jari</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">Tutup dan buka semula aplikasi untuk skrin pengesahan cap jari semula</string>
   <string name="fingerprint_required">Cap jari yang diperlukan</string>
-  <string name="device_with_no_fingerprint_sensor">Peranti anda tidak mempunyai sensor cap jari</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">Kebenaran pengesahan cap jari tidak diaktifkan</string>
   <string name="register_at_least_one_fingerprint">Daftar sekurangnya satu cap jari didalam seting</string>
   <string name="lock_screen_not_enabled">Kunci keselamatan skrin tidak diaktifkan didalam seting</string>
-  <string name="fingerprint_enabled_successfully">Cap Jari Berjaya Diaktifkan</string>
-  <string name="fingerprint_disabled_successfully">Cap Jari Berjaya Dinyahaktifkan</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">Zum masuk</string>
   <string name="label_zoomout">Zum keluar</string>
   <string name="exception_pref">Tidak dapat memulakan aktiviti ini kerana rujukan yang rosak, Sila kosongkan data aplikasi</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Keutamaan Notifikasi</string>
   <string name="defaultPriority">Keutamaan Asal</string>
   <string name="lowPriority">Keutamaan Rendah</string>
-  <string name="applyRulesFasterTitle">Aktif Segera</string>
-  <string name="applyRulesFaster">Gunakan bila arahan terlalu perlahan - Dalam Kajian</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">Pilih</string>
   <string name="input_chain">INPUT di (IPv4)</string>
   <string name="output_chain">OUTPUT di (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
   <string name="quick_apply_title">Papar Mohon Segera</string>
   <string name="quick_apply_summary">Donasi Sahaja! Papar butang aktif untuk arahan segera</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">Aktif Segera</string>
+  <string name="applyRulesFaster">Gunakan bila arahan terlalu perlahan - Dalam Kajian</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>

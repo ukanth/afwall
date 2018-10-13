@@ -24,11 +24,13 @@
   <string name="error_refresh">Gagal refresh iptable</string>
   <string name="error_apply">Gagal menerapkan aturan iptable</string>
   <string name="error_fetch">Gagal mengambil aturan iptable</string>
+  <string name="error_su_toast">Tidak dapat mendapatkan akses root!</string>
   <string name="error_su">Tidak mendapatkan akses root.\nPerangkat Anda harus di-root untuk menggunakan AFWall+.\n\nJika perangkat ini sudah di-root, pastikan AFWall+ diijinkan menjalankan perintah \"su\".</string>
   <string name="error_netfilter">Tidak dapat menemukan dukungan target dan chain untuk iptables.\nAFWall+ mungkin akan bekerja tidak sesuai yang diharapkan karena hal ini.</string>
   <string name="error_common">Eror: </string>
   <string name="all_item">(Apl Apapun) - Seperti pilih semua aplikasi</string>
   <string name="kernel_item">(kernel) - Kernel Linux</string>
+  <string name="android_system">Sistem Android</string>
   <string name="unknown_item">Tidak diketahui</string>
   <string name="tethering_item">(tethering) - layanan DHCP+DNS</string>
   <string name="dnsproxy_item">(dns proxy) - DNS lookups melalui netd</string>
@@ -67,9 +69,9 @@
   <string name="mode_header">Mode: %s</string>
   <string name="legend_clear">Hapus semua kotak centang di Semua kolom</string>
   <string name="mode_whitelist">Izinkan yg dipilih</string>
-  <string name="legend_whitelist">Aplikasi yang dipilih akan diizinkan mengakses internet</string>
+  <string name="legend_whitelist">Aplikasi yang dipilih akan diberikan akses internet</string>
   <string name="mode_blacklist">Blokir yg dipilih</string>
-  <string name="legend_blacklist">Aplikasi yang dipilih tidak diizinkan mengakses internet</string>
+  <string name="legend_blacklist">Aplikasi yang dipilih akan dibatasi dari akses internet</string>
   <string name="set_custom_script">Atur skrip sendiri</string>
   <string name="preferences">Preferensi</string>
   <string name="reload">Muat ulang aplikasi</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Bersihkan semua aturan iptable?</string>
   <string name="overrideRules">Apakah anda ingin mengimpor aturan? Ini akan mengganti aturan yang ada!</string>
   <string name="notification_new">Aplikasi baru diinstall</string>
-  <string name="notification_new_package">Konfigurasi Perizinan Internet</string>
+  <string name="notification_new_package">Konfigurasi perizinan internet</string>
   <string name="confirmMsg">Matikan iptable sepenuhnya?</string>
   <string name="apply">Terapkan</string>
   <string name="discard">Buang</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Gagal menghapus skrip permulaan</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Tidak dapat menonaktifkan firewall. Dilindungi kata sandi!</string>
-  <string name="widget_label_status">AFWall+ Toggle/Status</string>
+  <string name="widget_label_status">Toggle AFWall+</string>
   <string name="widget_label_settings">Pengaturan AFWall+</string>
   <string name="widget_label_settings_old">Pengaturan AFWall+ (lama)</string>
   <!-- Color Picker -->
@@ -184,13 +186,15 @@
   <string name="reapply_profile">Terapkan kembali aturan profil</string>
   <!-- Interface -->
   <string name="lan_title">Kontrol LAN</string>
-  <string name="lan_summary">Pisahkan perizinan kontrol LAN dan WiFi</string>
+  <string name="lan_summary">Aktifkan untuk memisahkan kontrol akses LAN dari perizinan Wi-Fi</string>
   <string name="iptables_pref">Binari iptable</string>
   <string name="vpn_profile">Kontrol VPN</string>
   <string name="vpnSummary">Pisahkan perizinan kontrol VPN</string>
   <string name="roaming">Kontrol roaming</string>
   <string name="roamingSummary">Aktifkan untuk mengendalikan perizinan roaming secara terpisah</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Kontrol Tor</string>
+  <string name="torSummary">Aktifkan untuk mengarahkan lalu lintas data selain Tor melalui Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: File binari teinstall</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">Matikan AFWall+</string>
   <string name="tasker_apply">Tugas: Menerapkan aturan firewall</string>
   <string name="tasker_disabled">Tasker: AFWall+ DINONAKTIFKAN!</string>
-  <string name="tasker_profile_applied">Tasker: Profil AFWall+ telah diterapkan dengan sukses</string>
+  <string name="tasker_profile_applied">Tasker: Profil AFWall+ sudah diterapkan</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile dinonaktifkan</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Dukungan IPv6</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">Bahasa/Plugin</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aturan yg aktif</string>
-  <string name="active_rules_summary">Terapkan peraturan firewall di setiap perubahan koneksi (LAN/WiFi/mobile-data/roam/tether)</string>
+  <string name="active_rules_summary">Terapkan peraturan firewall di setiap pergantian koneksi (LAN/Wi-Fi/mobile data/roaming/tether)</string>
   <string name="profile_add">Tambah profil</string>
   <string name="profile_remove">Hapus profil</string>
   <string name="profile_rename">Ubah nama profil</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Hapus semua tanda</string>
   <string name="select_action">PIlih tindakan pd kolom </string>
   <string name="roam">Roaming</string>
-  <string name="legend_roam">Pisahkan perizinan data saat roaming</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Aktifkan kontrol perizinan WiFi</string>
+  <string name="legend_roam">Izinkan AFWall+ memisahkan perizinan mobile data pada jaringan operator (roaming) yang berbeda</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Izinkan AFWall+ mengontrol perizinan Wi-Fi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Data</string>
-  <string name="legend_data">Aktifkan untuk mengatur izin data seluler (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Izinkan AFWall+ mengontrol perizinan akses mobile data (2G, 3G,EDGE,LTE,4G)</string>
   <string name="pkg_all">Semua</string>
   <string name="pkg_core">Inti</string>
   <string name="pkg_sys">Sistem</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">Aktifkan DNS dari netd</string>
   <string name="disable_dns">Matikan DNS dari netd</string>
   <string name="dns_proxy_title">Proxy DNS </string>
-  <string name="dns_proxy_summary">DNS lookups menggunakan netd pada Android 4.3+. Menonaktifkan ini akan memblokir internet pada perangkat ini.</string>
+  <string name="dns_proxy_summary">DNS lookups melalui netd pada Android 4.3 dan yang lebih baru. Menonaktifkan pengaturan ini akan memblokir akses internet pada perangkat ini.</string>
   <string name="tasker_lable">Plugin Tasker AFWall+</string>
   <string name="enable">Aktifkan</string>
   <string name="disable">Matikan</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Fitur ini hanya tersedia pada versi donasi</string>
   <string name="buy_donate">Beli versi donasi atau kunci donasi</string>
   <string name="unlock_donate"> sentuh untuk membuka donasi</string>
-  <string name="donate_support">Anda dapat menggunakan fitur fitur donasi sekarang!</string>
-  <string name="donate_thanks">Terima kasih untuk dukungan Anda!</string>
+  <string name="donate_support">Sekarang Anda dapat menggunakan fitur-fitur donasi.</string>
+  <string name="donate_thanks">Terima kasih atas dukungan Anda.</string>
   <string name="activeNotification">Tampilkan ikon pemberitahuan</string>
   <string name="activeNotification_summary">Tampilkan ikon secara permanen pada bar pemberitahuan</string>
   <string name="active">Firewall diaktifkan</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Sembunyikan ikon pemberitahuan pada lockscreen</string>
   <string name="lockScreenNotification_summary">Sembunyikan pemberitahuan proses berjalan pada lockscreen</string>
   <string name="menu_legend">Keterangan</string>
-  <string name="permissiondenied_importexport">Izin READ/WRITE ke penyimpanan eksternal ditolak. Harap izinkan untuk mengekspor/impor aturan.</string>
-  <string name="permissiondenied_asset">Izin READ/WRITE ke penyimpanan eksternal ditolak. Harap izinkan untuk menyalin binari </string>
-  <string name="log_deletedapp">Aplikasi dihapus</string>
-  <string name="log_denied">Ditolak :</string>
+  <string name="permissiondenied_importexport">Perizinan READ/WRITE ke penyimpanan ditolak. Mohon izinkan untuk mengekspor dan mengimpor pengaturan.</string>
+  <string name="permissiondenied_asset">Perizinan READ/WRITE ke penyimpanan ditolak. Mohon izinkan untuk menyalin file binari AFWall+.</string>
+  <string name="log_deletedapp">Aplikasi yang sudah Dihapus</string>
+  <string name="log_denied">Ditolak:</string>
   <string name="log_times">kali</string>
   <string name="log_time">waktu</string>
-  <string name="log_dst">Tujuan :</string>
-  <string name="log_src">Sumber :</string>
-  <string name="log_proto">Protokol :</string>
+  <string name="log_dst">Tujuan:</string>
+  <string name="log_src">Sumber:</string>
+  <string name="log_proto">Protokol:</string>
   <string name="no_data_available">Silahkan aktifkan layanan log melalui preferensi. Jika diaktifkan, maka tidak ada data log.</string>
-  <string name="loading_data_title">Memuat...</string>
+  <string name="loading_data_title">Memuat&#8230;</string>
   <string name="loading_data">Mengambil data log</string>
   <string name="switch_old">Ubah ke tampilan lama</string>
   <string name="switch_new">Ubah ke tampilan baru</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Mengaktifkan Mutlicast DNS</string>
   <string name="error_log">Tidak dapat memulai layanan log. LogTarget kosong atau LogService tidak diaktifkan.</string>
   <string name="delete_profile">Tidak dapat menghapus profil</string>
-  <string name="profile_migrate_msg">Profil telah berhasil dimigrasi</string>
+  <string name="profile_migrate_msg">Profil dipindahkan</string>
   <!-- Log Details -->
   <string name="destination_address">Alamat tujuan</string>
   <string name="source_address">Alamat sumber</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">Pilih tindakan</string>
   <string name="result_copied_to_clipboard">Hasil disalin ke clipboard</string>
   <string name="result">Hasil</string>
-  <string name="output_is_empty">Output kosong, dikarenakan jaringan dan akses SuperSU ditolak</string>
+  <string name="output_is_empty">Output kosong dikarenakan akses jaringan dan SuperSu ditolak</string>
   <string name="searching">Mencari</string>
   <string name="looking_for_data">Mencari data&#8230;</string>
   <string name="reachable_timeout">Terjangkau, timeout: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">Harap tempatkan sidik jari Anda pada scanner untuk memverifikasi identitas Anda</string>
   <string name="note">(Otentikasi sidik jari mempercepat login aplikasi. Perangkat Anda setidaknya harus memiliki satu sidik jari tersimpan pada perangkat)</string>
   <string name="title_activity_home">Sidik jadi</string>
-  <string name="activity_home_desc">Berhasil login dengan otentikasi sidik jari</string>
+  <string name="activity_home_desc">Anda harus login untuk menggunakan autentikasi sidik jari</string>
   <string name="activity_home_note">Tutup dan buka aplikasi kembali untuk menampilkan layar otentikasi sidik jari</string>
   <string name="fingerprint_required">Dibutuhkan sidik jari</string>
-  <string name="device_with_no_fingerprint_sensor">Perangkat Anda tidak mempunyai sensor sidik jari</string>
+  <string name="device_with_no_fingerprint_sensor">Perangkat Anda tidak memiliki sensor sidik jari</string>
   <string name="fingerprint_permission_manifest_missing">Perizinan otentikasi sidik jari tidak diaktifkan</string>
   <string name="register_at_least_one_fingerprint">Atur setidaknya satu sidik jari di Pengaturan</string>
   <string name="lock_screen_not_enabled">Kunci layar tidak diaktifkan pada Pengaturan</string>
-  <string name="fingerprint_enabled_successfully">Otentikasi sidik jari berhasil diaktifkan</string>
-  <string name="fingerprint_disabled_successfully">Otentikasi sidik jari telah dinonaktifkan</string>
+  <string name="fingerprint_enabled_successfully">Sensor sidik jari diaktifkan</string>
+  <string name="fingerprint_disabled_successfully">Sensor sidik jari dimatikan</string>
   <string name="label_zoomin">Perbesar</string>
   <string name="label_zoomout">Perkecil</string>
   <string name="exception_pref">Tidak dapat memulai activity karena preferensi korup, Silakan hapus data aplikasi</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Prioritas Pemberitahuan</string>
   <string name="defaultPriority">Prioritas Bawaan</string>
   <string name="lowPriority">Prioritas Rendah</string>
-  <string name="applyRulesFasterTitle">Menerapkan secara Instan</string>
-  <string name="applyRulesFaster">Hanya digunakan jika aturan terpasang berjalan lamban - Fitur Percobaan</string>
+  <string name="dualAppsTitle">Dukungan dual aplikasi</string>
+  <string name="dualAppsDesc">Dukungan untuk dual aplikasi, MIUI, Islan, dan aplikasi profil Kerja</string>
   <string name="choose">Pilih</string>
   <string name="input_chain">Chain INPUT (IPv4)</string>
   <string name="output_chain">Chain OUTPUT (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">Chain FORWARD (IPv6)</string>
   <string name="quick_apply_title">Tunjukkan Akses Cepat</string>
   <string name="quick_apply_summary">Hanya Donasi! Tampilkan tombol terapkan melayang untuk menerapkan aturan secara cepat</string>
+  <string name="init_d">Alamat direktori untuk skrip startup</string>
+  <string name="mount_initd_error">Tidak dapat membuka direktori</string>
+  <string name="delete_initd_error">Tidak dapat menghapus skrip startup</string>
+  <string name="runNotification_summary">Notifikasi akan ditampilkan saat menerapkan peraturan</string>
+  <string name="runNotification">Perkembangan Peraturan</string>
+  <string name="displayBlockNotification">matikan pemberitahuan log</string>
+  <string name="applyRulesFasterTitle">Menerapkan secara Instan</string>
+  <string name="applyRulesFaster">Hanya digunakan jika aturan terpasang berjalan lamban - Fitur Percobaan</string>
+  <string name="purging_rules">Menghapus semua pengaturan iptable firewall</string>
+  <string name="showhost_desc">Menampilkan hostname yang didapat dari DNS (Fitur donasi/Butuh akses INTERNET ke AFWall+)</string>
+  <string name="show_host">Tampilkan hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Kecualikan afwall+ dari mode tidur</string>
+  <string name="battery_optimization_desc">AFWall+ harus berjalan di background dan menerapkan aturan ketika ada pergantian koneksi. Mohon hapus/abaikan AFWall+ dari daftar optimisasi baterai/Pengaturan mode tidur.</string>
+  <string name="firewall_service">Layanan Firewall</string>
+  <string name="boot_notification">Servis saat Booting</string>
+  <string name="app_notification">Pemberitahuan aplikasi</string>
 </resources>

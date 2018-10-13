@@ -24,11 +24,13 @@
   <string name="error_refresh">Greška kod osvježavanja iptables</string>
   <string name="error_apply">Greška kod primjene iptables pravila</string>
   <string name="error_fetch">Greška kod dobavljanja iptables pravila</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">Nije moguće dobiti root pristup.\nVaš uređaj mora biti root-ovan da bi koristili AFWall+.\n\nUkoliko je ovaj uređaj root-ovan, molimo utvrdite da AFWall+ ima dozvolu za izvođenje \"su\" komande.</string>
   <string name="error_netfilter">Podrška za iptables ciljeve i veze nije pronađena.\nAFWall+ možda neće raditi ispravno zbog ovog ograničenja.</string>
   <string name="error_common">Greška: </string>
   <string name="all_item">(Bilo koja aplikacija) - Isto kao označavanje svih aplikacija</string>
   <string name="kernel_item">(kernel) - Linux kernel</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">Nepoznato</string>
   <string name="tethering_item">(tethering/dijeljenje veze) - DHCP+DNS usluge</string>
   <string name="dnsproxy_item">(dns proxy) - DNS pretraživanje preko netd</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">Mod: %s</string>
   <string name="legend_clear">Očisti sve kvadratiće u svim kolonama</string>
   <string name="mode_whitelist">Dozvoli odabrano</string>
-  <string name="legend_whitelist">Označenim aplikacijama će pristup internetu biti odobren</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">Blokiraj odabrano</string>
-  <string name="legend_blacklist">Označenim aplikacijama će pristup internetu biti odbijen</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">Namjestite prilagođenu skriptu</string>
   <string name="preferences">Postavke</string>
   <string name="reload">Ponovo učitaj aplikacije</string>
   <string name="flush">Očisti pravila</string>
   <string name="send_report">Pošalji izvještaj o greški</string>
   <string name="enter_problem">Molimo objasnite problem:</string>
-  <string name="send_mail">Pošalji e-mail</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">Bit će prikazana obavijest kada se instalira nova aplikacija</string>
   <string name="notify_pref_summary_off">Obavijest kada se instalira nova aplikacija neće biti prikazana</string>
   <string name="custom_script_defined">Prilagođena skripta određena</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Očisti sva iptables pravila?</string>
   <string name="overrideRules">Želite li uvesti pravila? To će da poništi već postojeća!</string>
   <string name="notification_new">Nova aplikacija instalirana</string>
-  <string name="notification_new_package">Namjesti dozvolu za pristup internetu</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">Potpuno ISKLJUČITI vatrozid?</string>
   <string name="apply">Primjeni</string>
   <string name="discard">Odbaci</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Nije moguće ukloniti AFWall+ skriptu za podizanje</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Nije moguće isključiti vatrozid. Zaštićeno lozinkom!</string>
-  <string name="widget_label_status">AFWall+ Prekidač/Status</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">AFWall+ Postavke</string>
   <string name="widget_label_settings_old">AFWall+ Postavke (Stare)</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">Profil 3</string>
   <string name="profile_hint">NazivProfila</string>
   <string name="profile_notsupport">Molimo da premjestite podatke profila da bi koristili ovu opciju</string>
-  <string name="profile_duplicate">Profil već postoji!</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">Ponovo primjeni pravila profila</string>
   <!-- Interface -->
   <string name="lan_title">LAN kontrola</string>
-  <string name="lan_summary">Omogući kontroliranje LAN dozvola odvojeno od WiFi dozvola</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">Binarna datoteka iptables</string>
   <string name="vpn_profile">VPN kontrola</string>
   <string name="vpnSummary">Omogući kontroliranje VPN dozvola odvojeno</string>
   <string name="roaming">Kontrola roaminga</string>
   <string name="roamingSummary">Omogući kontrolu roaming dozvola odvojeno</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: binarne datoteke instalirane</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">Isključi AFWall+</string>
   <string name="tasker_apply">Tasker: Primjenjujem pravila vatrozida</string>
   <string name="tasker_disabled">Tasker: AFWall+ ISKLJUČEN!</string>
-  <string name="tasker_profile_applied">Tasker: AFWall+ profil uspješno primjenjen</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ podrška za više profila isključena</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Podrška za IPv6</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">Jezici/Dodatci</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Aktivna pravila</string>
-  <string name="active_rules_summary">Primjeni pravila vatrozida pri svakoj promjeni veze (LAN/WiFi/mobilni-podatci/roming/tether)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">Dodaj profil</string>
   <string name="profile_remove">Ukloni profil</string>
   <string name="profile_rename">Preimenuj profil</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Odznači sve</string>
   <string name="select_action">Odaberite akciju za kolonu </string>
   <string name="roam">Roaming</string>
-  <string name="legend_roam">Omogući odvojenu kontrolu podataka, pri korištenju drugog mrežnog providera (roaming)</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Uključi za kontrolu WiFI dozvola</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Podatci</string>
-  <string name="legend_data">Uključi za kontrolu dozvole korištenja mobilnih podataka (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Sve</string>
   <string name="pkg_core">Jezgro</string>
   <string name="pkg_sys">Sistem</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">Uključi DNS preko netd</string>
   <string name="disable_dns">Isključi DNS preko netd</string>
   <string name="dns_proxy_title">DNS proxy </string>
-  <string name="dns_proxy_summary">DNS pretraga na Android 4.3 ili kasnijem je preko netd. Onemogućavanje ovog će blokirati internet na tim uređajima.</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall+ dodatak Tasker</string>
   <string name="enable">Uključi</string>
   <string name="disable">Isključi</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Ova mogućnost je dostupna samo u donatorskoj verziji</string>
   <string name="buy_donate">Kupite donatorsku verziju ili donatorski ključ</string>
   <string name="unlock_donate"> kliknite da otključate donatorsku verziju</string>
-  <string name="donate_support">Sada možete koristiti donatorske opcije!</string>
-  <string name="donate_thanks">Hvala Vam za podršku!</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">Prikaži ikonu obavijesti</string>
   <string name="activeNotification_summary">Prikazuj trajnu ikonu u traci obavijesti</string>
   <string name="active">Vatrozid uključen</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Sakrij ikone obavijesti na ekranu zaključavanja</string>
   <string name="lockScreenNotification_summary">Sakrij tekuće obavijesti na ekranu zaključavanja</string>
   <string name="menu_legend">Tumač</string>
-  <string name="permissiondenied_importexport">Dozvola za pristup ČITANJU/PISANJU u memoriju odbijena. Molimo dozvolite pristup za uvoz/izvoz pravila.</string>
-  <string name="permissiondenied_asset">Dozvola za pristup ČITANJU/PISANJU u memoriju odbijena. Molimo dozvolite pristup za kopiranje binarnih datoteka za AFWall+ </string>
-  <string name="log_deletedapp">Obrisana aplikacija</string>
-  <string name="log_denied">Odbijeno :</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">puta</string>
   <string name="log_time">put</string>
-  <string name="log_dst">Odredište :</string>
-  <string name="log_src">Izvor :</string>
-  <string name="log_proto">Protokol :</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">Molimo uključite servis dnevnika kroz postavke. Ukoliko je uključen, onda nema podataka dnevnika.</string>
-  <string name="loading_data_title">Učitavanje...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">Dobavljam podatke dnevnika</string>
   <string name="switch_old">Prebaci na stari izgled</string>
   <string name="switch_new">Prebaci na novi izgled</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Uključi Multicast DNS</string>
   <string name="error_log">Nije moguće pokrenuti servis dnevnika. LogTarget je prazan ili LogService nije uključen.</string>
   <string name="delete_profile">Nije moguće obrisati profil</string>
-  <string name="profile_migrate_msg">Profili uspješno premješteni</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">Adresa odredišta</string>
   <string name="source_address">Adresa izvora</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">Odaberite radnju</string>
   <string name="result_copied_to_clipboard">Rezultat kopiran u međuspremnik</string>
   <string name="result">Rezultat</string>
-  <string name="output_is_empty">Izlaz je prazan, jer su pristup mreži i SuperSu isključeni</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">Tražim</string>
   <string name="looking_for_data">Tražim podatke&#8230;</string>
   <string name="reachable_timeout">Dostupno, timeout: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">Molimo stavite vaš prst na skener da bi potvrdili vaš identitet</string>
   <string name="note">(Prijava u aplikaciju je brža korištenjem otiska prsta. Vaš uređaj bi trebao da ima prijavljen bar jedan otisak prsta u postavkama uređaja)</string>
   <string name="title_activity_home">Otisak prsta</string>
-  <string name="activity_home_desc">Uspješno ste se prijavili otiskom prsta</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">Zatvorite i ponovo otvorite aplikaciju da bi ste ponovo vidjeli ekran za prijavu otiskom prsta</string>
   <string name="fingerprint_required">Otisak prsta neophodan</string>
-  <string name="device_with_no_fingerprint_sensor">Vaš uređaj ne posjeduje čitač otiska prsta</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">Dozvola za prijavu otiskom prsta nije uključena</string>
   <string name="register_at_least_one_fingerprint">Prijavite barem jedan otisak prsta u postavkama</string>
   <string name="lock_screen_not_enabled">Sigurnosne postavke ekrana zaključavanja nisu uključene u postavkama</string>
-  <string name="fingerprint_enabled_successfully">Otisak prsta uspješno uključen</string>
-  <string name="fingerprint_disabled_successfully">Otisak prsta uspješno isključen</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">Povećaj</string>
   <string name="label_zoomout">Smanji</string>
   <string name="exception_pref">Nije moguće pokrenuti aktivnost zbog oštećenih postavki. Molimo očistite podatke aplikacije</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Prioritet obavijesti</string>
   <string name="defaultPriority">Zadani prioritet</string>
   <string name="lowPriority">Nizak prioritet</string>
-  <string name="applyRulesFasterTitle">Odmah primjeni</string>
-  <string name="applyRulesFaster">Koristite samo ako je primjena pravila spora - Eksperimentalno</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">Odaberi</string>
   <string name="input_chain">ULAZNI lanac (IPv4)</string>
   <string name="output_chain">IZLAZNI lanac (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">PROSLJEDNI lanac (IPv6)</string>
   <string name="quick_apply_title">Prikaži brzu primjenu</string>
   <string name="quick_apply_summary">Samo donacija! Prikaži lebdeće dugme za brzu primjenu pravila</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">Odmah primjeni</string>
+  <string name="applyRulesFaster">Koristite samo ako je primjena pravila spora - Eksperimentalno</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>

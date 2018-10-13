@@ -24,11 +24,13 @@
   <string name="error_refresh">Erreur lors de l\'actualisation iptables</string>
   <string name="error_apply">Erreur lors de l\'application des règles iptables</string>
   <string name="error_fetch">Erreur lors de la récupération des règles iptables</string>
+  <string name="error_su_toast">Impossible d’obtenir l\'accès root !</string>
   <string name="error_su">Impossible d\'obtenir l\'accès root.\nVotre téléphone doit être rooté pour que AFWall+ fonctionne.\n\nSi ce téléphone est déjà rooté, assurez-vous que AFWall+ a la permission d\'exécuter la commande \"su\".</string>
   <string name="error_netfilter">Impossible de prendre en charge les cibles et chaînes iptables.\nAFWall+ peut ne pas fonctionner comme prévu en raison de cette limitation.</string>
   <string name="error_common">Erreur : </string>
   <string name="all_item">(Toute application) - Identique à la sélection de toutes les applications</string>
   <string name="kernel_item">(Kernel) - Noyau Linux</string>
+  <string name="android_system">Système Android</string>
   <string name="unknown_item">Inconnu</string>
   <string name="tethering_item">(Tethering) - Services DHCP + DNS</string>
   <string name="dnsproxy_item">(Proxy DNS) - Recherches DNS via netd</string>
@@ -67,9 +69,9 @@
   <string name="mode_header">Mode : %s</string>
   <string name="legend_clear">Désactiver toutes les cases à cocher sur toutes les colonnes</string>
   <string name="mode_whitelist">Autoriser la sélection</string>
-  <string name="legend_whitelist">Les applications sélectionnées auront accès à internet</string>
+  <string name="legend_whitelist">Les applications sélectionnées auront accès à Internet</string>
   <string name="mode_blacklist">Bloquer la sélection</string>
-  <string name="legend_blacklist">Les applications sélectionnées n\'auront pas accès à internet</string>
+  <string name="legend_blacklist">Les applications sélectionnées n\'auront pas accès à Internet</string>
   <string name="set_custom_script">Définir un script personnalisé</string>
   <string name="preferences">Préférences</string>
   <string name="reload">Recharger les applications</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Effacer toutes les règles iptables ?</string>
   <string name="overrideRules">Voulez-vous importer les règles ? Ceci effacera les règles existantes !</string>
   <string name="notification_new">Nouvelle application installée</string>
-  <string name="notification_new_package">Configurer les autorisations internet</string>
+  <string name="notification_new_package">Configurer les autorisations Internet</string>
   <string name="confirmMsg">Désactiver totalement le pare-feu ?</string>
   <string name="apply">Appliquer</string>
   <string name="discard">Ignorer</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Impossible de supprimer le script de démarrage AFWall+</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Impossible de désactiver le pare-feu. Protection par mot de passe !</string>
-  <string name="widget_label_status">AFWall+ Activer/Désactiver</string>
+  <string name="widget_label_status">Activer/désactiver AFWall+</string>
   <string name="widget_label_settings">AFWall+ Paramètres</string>
   <string name="widget_label_settings_old">AFWall+ Paramètres (ancien)</string>
   <!-- Color Picker -->
@@ -190,7 +192,9 @@
   <string name="vpnSummary">Cocher pour contrôler les autorisations de VPN indépendamment</string>
   <string name="roaming">Contrôle de la connexion en itinérance</string>
   <string name="roamingSummary">Activer pour contrôler les autorisations d\'itinérance séparément</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Contrôle de Tor</string>
+  <string name="torSummary">Activer pour rediriger le trafic non-Tor via Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+ : fichiers binaires installés</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">Désactiver AFWall+</string>
   <string name="tasker_apply">Tasker : application des règles de pare-feu</string>
   <string name="tasker_disabled">Tasker : AFWall+ désactivé !</string>
-  <string name="tasker_profile_applied">Tasker : profil AFWall+ appliqué avec succès</string>
+  <string name="tasker_profile_applied">Tasker : profil AFWall+ appliqué</string>
   <string name="tasker_muliprofile">Tasker : AFWall+ multi-profil désactivé</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Support IPv6</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">Langues/Plugins</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Règles actives</string>
-  <string name="active_rules_summary">Appliquer les règles de pare-feu à chaque changement de connectivité (LAN/Wi-Fi/2G-3G-4G/Itinérance/Partage)</string>
+  <string name="active_rules_summary">Appliquer les règles de pare-feu à chaque changement de connectivité (LAN/Wi-Fi/données mobiles/itinérance/partage)</string>
   <string name="profile_add">Ajouter un profil</string>
   <string name="profile_remove">Supprimer le profil</string>
   <string name="profile_rename">Renommer le profil</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Tout désélectionner</string>
   <string name="select_action">Choisissez une action sur la colonne </string>
   <string name="roam">Itinérance</string>
-  <string name="legend_roam">Activer le contrôle des données tout en ayant des autorisations différentes de fournisseurs d\'accès réseau (roaming)</string>
+  <string name="legend_roam">Permettre AFWall+ de contrôler les données tout en ayant des autorisations différentes de fournisseurs d\'accès réseau (roaming)</string>
   <string name="wifi">Wi-Fi</string>
-  <string name="legend_wifi">Activer le contrôle des autorisations Wi-Fi</string>
+  <string name="legend_wifi">Permettre AFWall+ de contrôler les autorisations Wi-Fi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Données</string>
-  <string name="legend_data">Activer pour contrôler les autorisations sur les données mobiles (2G, 3G, EDGE, LTE/4G)</string>
+  <string name="legend_data">Permettre AFWall+ de contrôler les autorisations des données mobiles (2G, 3G, EDGE, LTE/4G)</string>
   <string name="pkg_all">Tout</string>
   <string name="pkg_core">Noyau</string>
   <string name="pkg_sys">Système</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">Activer DNS via netd</string>
   <string name="disable_dns">Désactiver DNS via netd</string>
   <string name="dns_proxy_title">Proxy DNS </string>
-  <string name="dns_proxy_summary">Les recherches DNS sont effectuées via netd sur Android 4.3 et plus. La désactivation bloquera internet sur ces appareils.</string>
+  <string name="dns_proxy_summary">Les recherches DNS sont effectuées via netd sur Android 4.3 et plus. La désactivation bloquera Internet sur ces appareils.</string>
   <string name="tasker_lable">Plugin Tasker pour AFWall+</string>
   <string name="enable">Activer</string>
   <string name="disable">Désactiver</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Cette fonctionnalité est disponible uniquement dans la version Donateur</string>
   <string name="buy_donate">Acheter la version Donateur ou une clé Donateur</string>
   <string name="unlock_donate"> taper pour débloquer les fonctionnalités Donateur</string>
-  <string name="donate_support">Vous pouvez maintenant utiliser les fonctionnalités Donateur !</string>
-  <string name="donate_thanks">Merci pour votre soutien !</string>
+  <string name="donate_support">Vous pouvez maintenant utiliser les fonctionnalités Donateur.</string>
+  <string name="donate_thanks">Merci pour votre soutien.</string>
   <string name="activeNotification">Afficher l\'icône de notification</string>
   <string name="activeNotification_summary">Affiche en permanence l\'icône dans la barre de notification</string>
   <string name="active">Pare-feu activé</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Masquer l\'icône de notification de l\'écran de verrouillage</string>
   <string name="lockScreenNotification_summary">Masquer la notification sur l\'écran de verrouillage</string>
   <string name="menu_legend">Légende</string>
-  <string name="permissiondenied_importexport">Autorisation refusée pour accéder en lecture/écriture au stockage externe. Veuillez donner l\'accès aux règles d’exportation/importation.</string>
-  <string name="permissiondenied_asset">Autorisation refusée pour accéder en lecture/écriture au stockage. Veuillez donner l\'accès pour copier les fichiers binaires pour AFWall+ </string>
+  <string name="permissiondenied_importexport">L\'autorisation de lecture/écriture sur le stockage a refusée. Veuillez accorder l’accès pour l’exportation/importation des règles.</string>
+  <string name="permissiondenied_asset">L\'autorisation de lecture/écriture sur le stockage a refusée. Veuillez accorder l’accès pour la copie des binaires AFWall+.</string>
   <string name="log_deletedapp">Application supprimée</string>
   <string name="log_denied">Refusé :</string>
   <string name="log_times">fois</string>
   <string name="log_time">fois</string>
-  <string name="log_dst">Destination :</string>
+  <string name="log_dst">Destination :</string>
   <string name="log_src">Source :</string>
   <string name="log_proto">Protocole :</string>
   <string name="no_data_available">Merci d\'activer le service de journal depuis les préférences. S\'il est activé, alors aucune donnée de journal n\'est présente.</string>
-  <string name="loading_data_title">Chargement...</string>
+  <string name="loading_data_title">Chargement en cours&#8230;</string>
   <string name="loading_data">Récupération des données de journalisation</string>
   <string name="switch_old">Basculer vers l’affichage ancien</string>
   <string name="switch_new">Basculer vers l’affichage récent</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Activer la multidiffusion DNS</string>
   <string name="error_log">Impossible de démarrer le service de journalisation. LogTarget est vide ou LogService n’est pas activé.</string>
   <string name="delete_profile">Impossible de supprimer le profil</string>
-  <string name="profile_migrate_msg">Les profils ont été migrés avec succès</string>
+  <string name="profile_migrate_msg">Profils migrés</string>
   <!-- Log Details -->
   <string name="destination_address">Adresse de destination</string>
   <string name="source_address">Adresse source</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">Veuillez placer votre doigt sur le scanner pour vérifier votre identité</string>
   <string name="note">(L\'identification par empreinte digitale rend votre connexion à l\'application beaucoup plus rapide. Votre appareil doit avoir au moins une empreinte digitale enregistrée dans les paramètres de périphérique)</string>
   <string name="title_activity_home">Empreinte digitale</string>
-  <string name="activity_home_desc">Vous avez réussi à vous connecter avec l’authentification par empreinte digitale</string>
+  <string name="activity_home_desc">Vous vous êtes connecté avec l’authentification par empreinte digitale</string>
   <string name="activity_home_note">Fermez et rouvrez l’application pour afficher de nouveau l’écran d’authentification par empreinte digitale</string>
   <string name="fingerprint_required">Empreinte digitale requise</string>
   <string name="device_with_no_fingerprint_sensor">Votre appareil ne dispose pas d’un capteur d’empreinte digitale</string>
   <string name="fingerprint_permission_manifest_missing">Autorisation d’authentification par empreinte digitale non activée</string>
   <string name="register_at_least_one_fingerprint">Enregistrer au moins une empreinte digitale dans les paramètres</string>
   <string name="lock_screen_not_enabled">La sécurité de verrouillage d\'écran n\'est pas activée dans les paramètres</string>
-  <string name="fingerprint_enabled_successfully">Empreinte digitale activée avec succès</string>
-  <string name="fingerprint_disabled_successfully">Empreinte digitale désactivée avec succès</string>
+  <string name="fingerprint_enabled_successfully">Empreinte digitale activée</string>
+  <string name="fingerprint_disabled_successfully">Empreinte digitale désactivée</string>
   <string name="label_zoomin">Zoom avant</string>
   <string name="label_zoomout">Zoom arrière</string>
   <string name="exception_pref">Impossible de lancer l’application à cause de préférences corrompues, veuillez effacer les données de l’application</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Priorité de la notification</string>
   <string name="defaultPriority">Priorité par défaut</string>
   <string name="lowPriority">Priorité basse</string>
-  <string name="applyRulesFasterTitle">Application immédiate</string>
-  <string name="applyRulesFaster">Utiliser seulement si l\'application des règles est plus lente - très expérimental</string>
+  <string name="dualAppsTitle">Prise en charge du Dual Apps</string>
+  <string name="dualAppsDesc">Prise en charge des applications Dual Apps, MIUI, Island et profil de travail</string>
   <string name="choose">Choisir</string>
   <string name="input_chain">Chaîne INPUT (IPv4)</string>
   <string name="output_chain">Chaîne OUTPUT (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">Chaîne FORWARD (IPv6)</string>
   <string name="quick_apply_title">Afficher l\'application rapide</string>
   <string name="quick_apply_summary">Version donateur seulement ! Afficher le bouton flottant d\'application pour appliquer rapidement les règles</string>
+  <string name="init_d">Chemin d’accès du répertoire de démarrage pour script</string>
+  <string name="mount_initd_error">Impossible de monter le répertoire</string>
+  <string name="delete_initd_error">Impossible de supprimer le script de démarrage</string>
+  <string name="runNotification_summary">Une notification s’affichera lors de l\'application des règles</string>
+  <string name="runNotification">Application des règles</string>
+  <string name="displayBlockNotification">désactiver la notification d’alerte du Journal</string>
+  <string name="applyRulesFasterTitle">Application immédiate</string>
+  <string name="applyRulesFaster">Utiliser seulement si l\'application des règles est plus lente - très expérimental</string>
+  <string name="purging_rules">Supprimer toutes les règles iptables de pare-feu</string>
+  <string name="showhost_desc">Afficher le nom d\'hôte résolu par le DNS (fonctionnalité donateur/nécessite l\'accès INTERNET pour AFWall+)</string>
+  <string name="show_host">Afficher le nom d’hôte</string>
+  <string name="host">Hôte :</string>
+  <string name="battery_optimization_title">Mise en veille de AFWall+ en liste blanche</string>
+  <string name="battery_optimization_desc">AFWall+ a besoin de s’exécuter en arrière-plan et d’appliquer des règles lorsqu’il y a un changement de connectivité. Veuillez supprimer/ignorer AFWall+ dans les préférences d\'optimisation de batterie et de mise en veille.</string>
+  <string name="firewall_service">Service du pare-feu</string>
+  <string name="boot_notification">Service de démarrage</string>
+  <string name="app_notification">Notification d\'application</string>
 </resources>

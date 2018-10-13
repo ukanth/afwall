@@ -24,11 +24,13 @@
   <string name="error_refresh">Errorea iptables berristean</string>
   <string name="error_apply">Errorea iptables arauak aplikatzean</string>
   <string name="error_fetch">Errorea iptables arauak eskuratzean</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">Ezin izan da root baimena eskuratu.\n root erabilgarri duen telefono bat behar duzu AFWall+ erabiltzeko.\n\nTelefono honek dagoeneko root badu egiaztatu AFWall+-ek \"su\" komandoa exekutatzeko baimena duela.</string>
   <string name="error_netfilter">Ezin izan da itables helburu eta kateetarako euskarririk aurkitu.\nAFWall+ agian ez dabil behar bezala muga hau dela eta.</string>
   <string name="error_common">Errorea: </string>
   <string name="all_item">(Edozien aplikazio): Aplikazio guztiak hautatzea bezala</string>
   <string name="kernel_item">(kernel) - Linux kernela</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">Ezezaguna</string>
   <string name="tethering_item">(tethering) - DHCP+DNS zerbitzuak</string>
   <string name="dnsproxy_item">(dnsproxya) - DNS bilaketa netd bidez</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">Modua: %s</string>
   <string name="legend_clear">Garbitu zutabe guztietako koadroak</string>
   <string name="mode_whitelist">Baimendu hautatutakoak</string>
-  <string name="legend_whitelist">Hautatuko aplikazioei Internetera sarbidea emango zaie</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">Blokeatu hautatutakoak</string>
-  <string name="legend_blacklist">Hautatuko aplikazioei Internetera sarbidea ukatuko zaie</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">Ezarri script propioa</string>
   <string name="preferences">Hobespenak</string>
   <string name="reload">Birkargatu aplikazioak</string>
   <string name="flush">Ezabatu arauak</string>
   <string name="send_report">Bidali errore txostena</string>
   <string name="enter_problem">Azaldu arazoa mesedez:</string>
-  <string name="send_mail">Bidali posta mezua</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">Jakinarazpen bat erakutsiko da aplikazio berri bat instalatzean</string>
   <string name="notify_pref_summary_off">Ez da jakinarazpenik erakutsiko aplikazio berri bat instalatzean</string>
   <string name="custom_script_defined">Script pertsonalizatua ezarri da</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Ezabatu iptables arau guztiak?</string>
   <string name="overrideRules">Arauak inportatu nahi dituzu? Honek dauden arauak gainidatziko ditu!</string>
   <string name="notification_new">Aplikazio berria intalatu da</string>
-  <string name="notification_new_package">Konfiguratu internet baimena</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">Guztiz DESGAITU suebakia?</string>
   <string name="apply">Aplikatu</string>
   <string name="discard">Baztertu</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Ezin izan da AFWall+ abio script-a kendu</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Ezin da suebakia ezgaitu - Pasahitzez babestua!</string>
-  <string name="widget_label_status">AFWall+ Txandakatu/egoera</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">AFWall+ Ezarpenak</string>
   <string name="widget_label_settings_old">AFWall+ Ezarpenak (zaharra)</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">3 profila</string>
   <string name="profile_hint">ProfilIzena</string>
   <string name="profile_notsupport">Migratu profileko datuak aukera hau erabiltzeko</string>
-  <string name="profile_duplicate">Profila badago aurretik!</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">Berraplikatu profilaren arauak</string>
   <!-- Interface -->
   <string name="lan_title">LAN kontrola</string>
-  <string name="lan_summary">Gaitu hau alde batetik LAN baimenak eta bestetik WiFi baimenak kudeatzeko</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">Iptables bitarra</string>
   <string name="vpn_profile">VPN kontrola</string>
   <string name="vpnSummary">Gaitu VPN baimenak bereizita kontrolatzeko</string>
   <string name="roaming">Ibiltaritzaren (Roaming-aren) kontrola</string>
   <string name="roamingSummary">Gaitu ibiltaritza baimenak bereizita kontrolatzeko</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: Fitxategi bitarrak instalatuta</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">Ezgaitu AFWall+</string>
   <string name="tasker_apply">Tasker: Suebaki arauak aplikatzen</string>
   <string name="tasker_disabled">Tasker: AFWall+ DESGAITUTA!</string>
-  <string name="tasker_profile_applied">Tasker: AFWall+ profila ongi aplikatu da</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: AFWall+ profil-anitza desgaituta</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">IPv6 euskarria</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">Hizkuntzak/Gehigarriak</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Arau aktiboak</string>
-  <string name="active_rules_summary">Aplikatu suebakiaren arauak konexio aldaketa bakoitzean (LAN/WiFi/datu-mugikorrak/ibiltaritza/tether)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">Gehitu profila</string>
   <string name="profile_remove">Ezabatu profila</string>
   <string name="profile_rename">Aldatu izena profilari</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Desmarkatu guztiak</string>
   <string name="select_action">Aukeratu ekintza zutabean </string>
   <string name="roam">Ibiltaritza</string>
-  <string name="legend_roam">Gaitu beste sare hornitzaile batean (ibiltaritzan) datu baimenak desberdin kontrolatzeko</string>
-  <string name="wifi">WiFi</string>
-  <string name="legend_wifi">Gaitu WiFi baimenak kontrolatzeko</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+  <string name="wifi">Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Datuak</string>
-  <string name="legend_data">Gaitu datu mugikorren baimenak kontrolatzeko (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Guztiak</string>
   <string name="pkg_core">Nukleoa</string>
   <string name="pkg_sys">Sistema</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">Gaitu netd bidezko DNS</string>
   <string name="disable_dns">Ezgaitu netd bidezko DNS</string>
   <string name="dns_proxy_title">DNS Proxya </string>
-  <string name="dns_proxy_summary">DNS bilaketak netd bidez dira Android 4.3-tik aurrera. Hau desgaitzeak Internet desgaituko du gailu hauetan.</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall+ Tasker gehigarria</string>
   <string name="enable">Gaitu</string>
   <string name="disable">Ezgaitu</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Ezaugarri hau dohaintza bertsioan besterik ez dago erabilgarri</string>
   <string name="buy_donate">Erosi dohaitza bertsioa edo dohaitza gakoa</string>
   <string name="unlock_donate"> sakatu dohaintza bertsioa desblokeatzeko</string>
-  <string name="donate_support">Dohaintza bertsioko ezaugarriak erabili ditzakezu orain!</string>
-  <string name="donate_thanks">Eskerrik asko zure babesagatik!</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">Bistaratu jakinarazpen ikonoa</string>
   <string name="activeNotification_summary">Bistaratu behin betiko ikonoa jakinarazpen barran</string>
   <string name="active">Suebakia gaituta</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Ezkutatu blokeo-pantailako jakinarazpen ikonoa</string>
   <string name="lockScreenNotification_summary">Ezkutatu jakinarazpen jarraia blokeo-pantailan</string>
   <string name="menu_legend">Legenda</string>
-  <string name="permissiondenied_importexport">Biltegiratzeko IRAKURRI/IDATZI sarbide baimena ukatuta. Eman baimena arauak esportatu/inportatu ahal izateko.</string>
-  <string name="permissiondenied_asset">Biltegiratzeko IRAKURRI/IDATZI sarbide baimena ukatuta. Eman baimena AFWall+ aplikazioarentzat bitarrak kopiatzeko </string>
-  <string name="log_deletedapp">Ezabatutako aplikazioa</string>
-  <string name="log_denied">Ukatua:</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">aldi</string>
   <string name="log_time">aldi</string>
-  <string name="log_dst">Helburua :</string>
-  <string name="log_src">Iturria :</string>
-  <string name="log_proto">Protokoloa :</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">Gaitu egunkari zerbitzua hobespenetan. Gaituta badago, ez dago daturik egunkarian.</string>
-  <string name="loading_data_title">Kargatzen...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">Egunkariko datuak eskuratzen</string>
   <string name="switch_old">Aldatu ikuspegi zaharrera</string>
   <string name="switch_new">Aldatu ikuspegi berrira</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Gaitu Mutlicast DNS</string>
   <string name="error_log">Ezin izan da egunkari zerbitzua hasi. LogTarget hutsik dago edo LogService desgaituta dago.</string>
   <string name="delete_profile">Ezin izan da profila ezabatu</string>
-  <string name="profile_migrate_msg">Profilak ongi migratu dira</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">Helburuaren helbidea</string>
   <string name="source_address">Iturriaren helbidea</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">Hautatu ekintza</string>
   <string name="result_copied_to_clipboard">Emaitza arbelera kopiatuta</string>
   <string name="result">Emaitza</string>
-  <string name="output_is_empty">Irteera hutsik dago, sarera sarbidea eta SuperSu ukatu direlako</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">Bilatzen</string>
   <string name="looking_for_data">Datuak bilatzen&#8230;</string>
   <string name="reachable_timeout">Eskuragarria, denbora-muga: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">Jarri zure atzamarra eskanerrean zure identitatea egiaztatzeko</string>
   <string name="note">(Hatz marka bidezko sinadurak aplikazioan saioa hastea azkartzen du. Zure gailuak gutxienez hatz-marka baten erregistroa izan behar du gailuaren ezarpenetan)</string>
   <string name="title_activity_home">Hatz-marka</string>
-  <string name="activity_home_desc">Ongi hasi duzu saioa hatz-marka bidez egiaztatuz</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">Itxi eta berriro ireki aplikazioa hatz-marka bidezko egiaztaketaren pantaila berriro ikusteko</string>
   <string name="fingerprint_required">Hatz-marka ezinbestekoa</string>
-  <string name="device_with_no_fingerprint_sensor">Zure gailuak ez du hatz-marka sentsorerik</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">Hatz-marka bidezko egiaztaketarako baimena gaitu gabe</string>
   <string name="register_at_least_one_fingerprint">Erregistratu gutxienez hatz-marka bat ezarpenetan</string>
   <string name="lock_screen_not_enabled">Blokeo pantailaren segurtasuna ez dago ezarpenetan gaituta</string>
-  <string name="fingerprint_enabled_successfully">Hatz-marka ongi gaitu da</string>
-  <string name="fingerprint_disabled_successfully">Hatz-marka ongi desgaitu da</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">Handitu zooma</string>
   <string name="label_zoomout">Txikiagotu zooma</string>
   <string name="exception_pref">Ezin izan da jarduera hasi hondatutako hobespenak direla eta, garbitu aplikazioaren datuak</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Jakinarazpenen lehentasuna</string>
   <string name="defaultPriority">Lehenetsitako lehentasuna</string>
   <string name="lowPriority">Lehentasun gutxikoa</string>
-  <string name="applyRulesFasterTitle">Aplikatu berehala</string>
-  <string name="applyRulesFaster">Arauak aplikatzea motelagoa denean erabili besterik ez - Oso esperimentala</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">Aukeratu</string>
   <string name="input_chain">SARRERA katea (IPv4)</string>
   <string name="output_chain">IRTEERA katea (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">BIRBIDALTZE katea (IPv6)</string>
   <string name="quick_apply_title">Erakutsi aplikatze azkarra</string>
   <string name="quick_apply_summary">Dohaintza besterik ez! Erakutsi aplikatu boti flotatzailea arauak azkar aplikatzeko</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">Aplikatu berehala</string>
+  <string name="applyRulesFaster">Arauak aplikatzea motelagoa denean erabili besterik ez - Oso esperimentala</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>

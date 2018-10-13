@@ -24,11 +24,13 @@
   <string name="error_refresh">Erro ao atualizar iptables</string>
   <string name="error_apply">Erro ao aplicar regras do iptables</string>
   <string name="error_fetch">Erro ao obter as regras iptables</string>
+  <string name="error_su_toast">Unable to aquire root access !</string>
   <string name="error_su">Não foi possível obter o acesso root.\nNecessita de um dispositivo com root para usar o AFWall+.\n\n Se este dispositivo já possui acesso root, certifique-se de que Afwall + tem permissões suficientes para executar o comando \"su\".</string>
   <string name="error_netfilter">Não foi possível localizar os destinos e cadeias iptables.\nO AFWall+ pode não funcionar corretamente em virtude desta limitação.</string>
   <string name="error_common">Erro: </string>
   <string name="all_item">(Qualquer aplicação) - O mesmo que selecionar todas as aplicações</string>
   <string name="kernel_item">(kernel) - Linux kernel</string>
+  <string name="android_system">Android System</string>
   <string name="unknown_item">Desconhecido</string>
   <string name="tethering_item">(tethering) - Serviços DHCP+DNS</string>
   <string name="dnsproxy_item">(proxy dns proxy) - Pesquisas DNS via netd</string>
@@ -67,16 +69,16 @@
   <string name="mode_header">Modo: %s</string>
   <string name="legend_clear">Marcar todas as caixas das colunas</string>
   <string name="mode_whitelist">Permitir selecionadas</string>
-  <string name="legend_whitelist">As aplicações selecionadas podem aceder à Internet</string>
+  <string name="legend_whitelist">Selected apps will be granted Internet access</string>
   <string name="mode_blacklist">Bloquear selecionadas</string>
-  <string name="legend_blacklist">As aplicações selecionadas não podem aceder à Internet</string>
+  <string name="legend_blacklist">Selected apps will be denied Internet access</string>
   <string name="set_custom_script">Definir script personalizado</string>
   <string name="preferences">Preferências</string>
   <string name="reload">Recarregar aplicações</string>
   <string name="flush">Descarregar regras</string>
   <string name="send_report">Enviar relatório de erros</string>
   <string name="enter_problem">Por favor explique o seu problema:</string>
-  <string name="send_mail">Enviar e-mail</string>
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">Mostrar uma notificação sempre que seja instalada uma nova aplicação</string>
   <string name="notify_pref_summary_off">Não mostrar uma notificação sempre que seja instalada uma nova aplicação</string>
   <string name="custom_script_defined">Script personalizado definido</string>
@@ -94,7 +96,7 @@
   <string name="flushRulesConfirm">Descarregar todas as regras iptables?</string>
   <string name="overrideRules">Deseja importar as regras? Esta ação substitui as regras existentes!</string>
   <string name="notification_new">Nova aplicação instalada</string>
-  <string name="notification_new_package">Configurar permissão de Internet</string>
+  <string name="notification_new_package">Configure Internet permission</string>
   <string name="confirmMsg">Desativar completamente a firewall?</string>
   <string name="apply">Aplicar</string>
   <string name="discard">Descartar</string>
@@ -118,7 +120,7 @@
   <string name="unable_remove_initd">Não é possível remover o script de inicialização do AFWall +</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Firewall não desativada. Protegida por palavra-passe!</string>
-  <string name="widget_label_status">AFWall + Toggle/Status</string>
+  <string name="widget_label_status">AFWall+ Toggle</string>
   <string name="widget_label_settings">Configurações AFWall+</string>
   <string name="widget_label_settings_old">Definições AFWall+ (antigas)</string>
   <!-- Color Picker -->
@@ -180,17 +182,19 @@
   <string name="profile3">Perfil 3</string>
   <string name="profile_hint">Nome do perfil</string>
   <string name="profile_notsupport">Efetue a migração dos dados para poder usar esta opção</string>
-  <string name="profile_duplicate">Perfil existente!</string>
+  <string name="profile_duplicate">Profile exists already!</string>
   <string name="reapply_profile">Reaplicar regras do perfil</string>
   <!-- Interface -->
   <string name="lan_title">Controlo de LAN</string>
-  <string name="lan_summary">Enable to control LAN permissions separately from WiFi permissions</string>
+  <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
   <string name="iptables_pref">Binário iptables</string>
   <string name="vpn_profile">Controlo VPN</string>
   <string name="vpnSummary">Enable to control VPN permissions separately</string>
   <string name="roaming">Controlo de roaming</string>
   <string name="roamingSummary">Enable to control roaming permissions separately</string>
-  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3g rules when using wired USB Connection</string>
+  <string name="tor_profile">Tor control</string>
+  <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+  <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: ficheiros binários instalados</string>
@@ -218,7 +222,7 @@
   <string name="disable_tasker">Desativar AFWall+</string>
   <string name="tasker_apply">Tasker: aplicando regras da firewall</string>
   <string name="tasker_disabled">Tasker: AFWall+ desativada!</string>
-  <string name="tasker_profile_applied">Tasker: perfil AFWall+ aplicado com sucesso</string>
+  <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
   <string name="tasker_muliprofile">Tasker: multi-perfil AFWall+ desativado</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Suporte IPv6</string>
@@ -275,7 +279,7 @@
   <string name="misc_header">Idiomas/Plugins</string>
   <!-- 1.2.6 -->
   <string name="active_rules">Regras ativas</string>
-  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/WiFi/mobile-data/roam/tether)</string>
+  <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
   <string name="profile_add">Adicionar perfil</string>
   <string name="profile_remove">Remover perfil</string>
   <string name="profile_rename">Renomear perfil</string>
@@ -300,13 +304,14 @@
   <string name="uncheck_all">Desmarcar tudo</string>
   <string name="select_action">Selecione ação na coluna </string>
   <string name="roam">Roam</string>
-  <string name="legend_roam">Enable to control data while on different network provider (roaming) permissions separately</string>
+  <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
   <string name="wifi">Wi-Fi</string>
-  <string name="legend_wifi">Ative para controlar as permissões Wi-Fi</string>
+  <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tor">Tor</string>
   <string name="data">Dados</string>
-  <string name="legend_data">Enable to control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+  <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
   <string name="pkg_all">Tudo</string>
   <string name="pkg_core">Core</string>
   <string name="pkg_sys">Sistema</string>
@@ -319,7 +324,7 @@
   <string name="enable_dns">Habilitar o DNS via netd</string>
   <string name="disable_dns">Desativar DNS via netd</string>
   <string name="dns_proxy_title">Proxy DNS </string>
-  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the internet on those devices.</string>
+  <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
   <string name="tasker_lable">AFWall+ Tasker</string>
   <string name="enable">Ativar</string>
   <string name="disable">Desativar</string>
@@ -334,8 +339,8 @@
   <string name="donate_only">Esta funcionalidade apenas está disponível na versão completa</string>
   <string name="buy_donate">Compre a versão ou chave \'donate\'</string>
   <string name="unlock_donate"> toque para desbloquear versão paga</string>
-  <string name="donate_support">Você pode agora usar recursos pagos!</string>
-  <string name="donate_thanks">Obrigado pelo apoio!</string>
+  <string name="donate_support">You can now use donate features.</string>
+  <string name="donate_thanks">Thanks for your support.</string>
   <string name="activeNotification">Mostrar o ícone de notificação</string>
   <string name="activeNotification_summary">Exibir ícone permanente na barra de notificação</string>
   <string name="active">Firewall ativada</string>
@@ -398,17 +403,17 @@
   <string name="lockNotification">Hide lockscreen notification icon</string>
   <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
   <string name="menu_legend">Legenda</string>
-  <string name="permissiondenied_importexport">Permission denied to READ/WRITE access for storage. Please give access for export/import rules.</string>
-  <string name="permissiondenied_asset">Permission denied to READ/WRITE access for storage. Please give access for copying binaries for AFWall+ </string>
-  <string name="log_deletedapp">Aplicação apagada</string>
-  <string name="log_denied">Recusado:</string>
+  <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
+  <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+  <string name="log_deletedapp">Deleted App</string>
+  <string name="log_denied">Denied:</string>
   <string name="log_times">vezes</string>
   <string name="log_time">vez</string>
-  <string name="log_dst">Destino:</string>
-  <string name="log_src">Origem:</string>
-  <string name="log_proto">Protocolo:</string>
+  <string name="log_dst">Destination:</string>
+  <string name="log_src">Source:</string>
+  <string name="log_proto">Protocol:</string>
   <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
-  <string name="loading_data_title">A carregar...</string>
+  <string name="loading_data_title">Loading&#8230;</string>
   <string name="loading_data">A obter dados do registo</string>
   <string name="switch_old">Trocar para a vista antiga</string>
   <string name="switch_new">Trocar para outra vista</string>
@@ -418,7 +423,7 @@
   <string name="mdns">Enable Mutlicast DNS</string>
   <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
   <string name="delete_profile">Incapaz de apagar o perfil</string>
-  <string name="profile_migrate_msg">Perfis migrados com sucesso</string>
+  <string name="profile_migrate_msg">Profiles migrated</string>
   <!-- Log Details -->
   <string name="destination_address">Endereço do destino</string>
   <string name="source_address">Endereço da origem</string>
@@ -432,7 +437,7 @@
   <string name="select_the_action">Selecionar ação</string>
   <string name="result_copied_to_clipboard">Relatório copiado para a área de transferência</string>
   <string name="result">Resultado</string>
-  <string name="output_is_empty">Output is empty, due to Network access and SuperSu are denied</string>
+  <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
   <string name="searching">A procurar</string>
   <string name="looking_for_data">A procurar dados&#8230;</string>
   <string name="reachable_timeout">Reachable, timeout: %d ms</string>
@@ -453,15 +458,15 @@
   <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
   <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
   <string name="title_activity_home">Impressão digital</string>
-  <string name="activity_home_desc">You have successfully logged in with fingerprint authentication</string>
+  <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
   <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
   <string name="fingerprint_required">Fingerprint required</string>
-  <string name="device_with_no_fingerprint_sensor">Your Device does not have a Fingerprint Sensor</string>
+  <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
   <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
   <string name="register_at_least_one_fingerprint">Register at least one fingerprint in Settings</string>
   <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
-  <string name="fingerprint_enabled_successfully">Fingerprint Enabled Successfully</string>
-  <string name="fingerprint_disabled_successfully">Fingerprint Disabled Successfully</string>
+  <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
+  <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
   <string name="label_zoomin">Ampliar</string>
   <string name="label_zoomout">Reduzir</string>
   <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
@@ -473,8 +478,8 @@
   <string name="notification_priority">Prioridade da notificação</string>
   <string name="defaultPriority">Padrão</string>
   <string name="lowPriority">Baixa</string>
-  <string name="applyRulesFasterTitle">Imediata</string>
-  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="dualAppsTitle">Dual Apps Support</string>
+  <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
   <string name="choose">Escolha</string>
   <string name="input_chain">Cadeia INPUT (IPv4)</string>
   <string name="output_chain">Cadeia OUTPUT (IPv4)</string>
@@ -490,4 +495,21 @@
   <string name="forward_chain_v6">Cadeia FORWARD (IPv6)</string>
   <string name="quick_apply_title">Show Quick Apply</string>
   <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
+  <string name="init_d">Startup directory path for script</string>
+  <string name="mount_initd_error">Unable to mount the directory</string>
+  <string name="delete_initd_error">Unable to delete the startup script</string>
+  <string name="runNotification_summary">Notification will be shown when applying rules</string>
+  <string name="runNotification">Rules Progress</string>
+  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="applyRulesFasterTitle">Imediata</string>
+  <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
+  <string name="purging_rules">Removing all firewall iptables rules</string>
+  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
+  <string name="show_host">Show hostname</string>
+  <string name="host">Host:</string>
+  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
+  <string name="firewall_service">Firewall Service</string>
+  <string name="boot_notification">Boot Service</string>
+  <string name="app_notification">App Notification</string>
 </resources>
