@@ -78,7 +78,7 @@
   <string name="flush">امسح القواعد</string>
   <string name="send_report">إرسال تقرير الخطأ</string>
   <string name="enter_problem">يرجى توضيح المشكلة:</string>
-  <string name="send_mail">Send e-mail</string> 
+  <string name="send_mail">Send e-mail</string>
   <string name="notify_pref_summary_on">سيتم إظهار إشعار عندما يتم تثبيت تطبيق جديد</string>
   <string name="notify_pref_summary_off">لن يظهر أي إشعار عندما يتم تثبيت تطبيق جديد</string>
   <string name="custom_script_defined">تعريف برنامج نصي مخصص</string>
