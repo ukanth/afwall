@@ -66,10 +66,13 @@ public class FirewallService extends Service {
         manager.cancel(NOTIFICATION_ID);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
-            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
-            manager.createNotificationChannel(chan);
+            notificationChannel.setSound(null,null);
+            notificationChannel.enableLights(false);
+            notificationChannel.enableVibration(false);
+            manager.createNotificationChannel(notificationChannel);
         }
 
 
@@ -122,21 +125,33 @@ public class FirewallService extends Service {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setContentIntent(notifyPendingIntent);
 
+        int notifyType = G.getNotificationPriority();
         Notification notification = notificationBuilder.setOngoing(true)
                 .setContentTitle(getString(R.string.app_name))
                 .setTicker(getString(R.string.app_name))
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
-                .setCategory(Notification.CATEGORY_SERVICE)
+                //.setDefaults(Notification.DEFAULT_ALL)
+                .setSound(null)
+                .setCategory(Notification.CATEGORY_STATUS)
+                .setVisibility(Notification.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
                 .build();
+        switch (notifyType) {
+            case 0:
+                notification.priority = NotificationCompat.PRIORITY_LOW;
+                break;
+            case 1:
+                notification.priority = NotificationCompat.PRIORITY_MIN;
+                break;
+        }
+
         notification.flags  |= Notification.FLAG_ONGOING_EVENT |  Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
 
-        manager.notify(NOTIFICATION_ID, notification);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-           startForeground(NOTIFICATION_ID, notification);
+        if(notifyType < 2 ) {
+            manager.notify(NOTIFICATION_ID, notification);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForeground(NOTIFICATION_ID, notification);
+            }
         }
     }
 

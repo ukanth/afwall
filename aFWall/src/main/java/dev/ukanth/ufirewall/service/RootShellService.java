@@ -22,7 +22,6 @@
 
 package dev.ukanth.ufirewall.service;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -340,8 +339,10 @@ public class RootShellService extends Service {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,context.getString(R.string.runNotification),
                     NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("");
-            channel.setShowBadge(true);
-            channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
+            channel.setShowBadge(false);
+            channel.setSound(null,null);
+            channel.enableLights(false);
+            channel.enableVibration(false);
             notificationManager.createNotificationChannel(channel);
         }
 
@@ -350,11 +351,13 @@ public class RootShellService extends Service {
         stackBuilder.addNextIntent(appIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
+
         builder.setSmallIcon(R.drawable.ic_apply_notification)
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
                 .setTicker(context.getString(R.string.app_name))
                 .setChannelId(CHANNEL_ID)
+                .setOnlyAlertOnce(true)
                 .setPriority(NotificationManager.IMPORTANCE_LOW)
                 .setContentText("");
         builder.setProgress(0, 0, true);

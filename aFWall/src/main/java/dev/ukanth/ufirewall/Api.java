@@ -1995,10 +1995,13 @@ public final class Api {
         manager.cancel(NOTIFICATION_ID);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
-            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
-            manager.createNotificationChannel(chan);
+            notificationChannel.setSound(null,null);
+            notificationChannel.enableLights(false);
+            notificationChannel.enableVibration(false);
+            manager.createNotificationChannel(notificationChannel);
         }
 
 
@@ -2046,6 +2049,9 @@ public final class Api {
             icon = R.drawable.notification_error;
         }
 
+        int notifyType = G.getNotificationPriority();
+
+
 
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
@@ -2054,14 +2060,26 @@ public final class Api {
         Notification notification = notificationBuilder.setOngoing(true)
                 .setContentTitle(ctx.getString(R.string.app_name))
                 .setTicker(ctx.getString(R.string.app_name))
-                .setDefaults(Notification.DEFAULT_ALL)
                 .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
-                .setCategory(Notification.CATEGORY_SERVICE)
+                .setCategory(Notification.CATEGORY_STATUS)
                 .setContentText(notificationText)
+                .setVisibility(Notification.VISIBILITY_SECRET)
                 .setSmallIcon(icon)
                 .build();
+
+        switch (notifyType) {
+            case 0:
+                notification.priority = NotificationCompat.PRIORITY_LOW;
+                break;
+            case 1:
+                notification.priority = NotificationCompat.PRIORITY_MIN;
+                break;
+        }
+
         notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
-        manager.notify(NOTIFICATION_ID, notification);
+        if(notifyType < 2 ) {
+            manager.notify(NOTIFICATION_ID, notification);
+        }
 
     }
 

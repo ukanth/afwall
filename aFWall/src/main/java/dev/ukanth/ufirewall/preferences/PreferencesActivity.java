@@ -23,6 +23,7 @@
 
 package dev.ukanth.ufirewall.preferences;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -289,16 +290,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             rxEvent.publish(new LogChangeEvent("", ctx));
         }
 
-        /*if (key.equals("activeNotification")) {
-            boolean enabled = sharedPreferences.getBoolean(key, false);
-            if (enabled) {
-                //Api.showNotification(Api.isEnabled(ctx), ctx);
-                Api.updateNotification(Api.isEnabled(ctx), ctx);
-            } else {
-                NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.cancel(1);
-            }
-        }*/
+        if (key.equals("notification_priority")) {
+            NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(1);
+            Api.updateNotification(Api.isEnabled(ctx), ctx);
+        }
 
         if (key.equals("enableLogService")) {
             boolean enabled = sharedPreferences.getBoolean(key, false);
@@ -333,8 +329,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(Api.updateBaseContextLocale(base));
     }
-
-
 
 
 }

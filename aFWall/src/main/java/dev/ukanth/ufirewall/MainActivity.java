@@ -1185,7 +1185,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 applyOrSaveRules();
                 return true;
             case R.id.menu_exit:
-                //finish();
+                finish();
                 //System.exit(0);
                 return false;
             case R.id.menu_help:

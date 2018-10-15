@@ -602,4 +602,6 @@
     <string name="firewall_service">Firewall Service</string>
     <string name="boot_notification">Boot Service</string>
     <string name="app_notification">App Notification</string>
+
+    <string name="hide">Hide</string>
 </resources>
