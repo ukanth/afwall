@@ -500,11 +500,11 @@ public final class Api {
             Integer http_port = 8118;
             Integer dns_port = 5400;
             Integer tcp_port = 9040;
-	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
-	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
             cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
-	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
-	    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
             cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
             cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j afwall-reject");
             cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
@@ -1306,7 +1306,7 @@ public final class Api {
         long purgeInterval = System.currentTimeMillis() - 7200000;
         long count = new Select(com.raizlabs.android.dbflow.sql.language.Method.count()).from(LogData.class).count();
         //records are more
-        if(count > 2000) {
+        if (count > 2000) {
             new Delete().from(LogData.class).limit(2000).async().execute();
         } else {
             new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
@@ -1999,7 +1999,7 @@ public final class Api {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
-            notificationChannel.setSound(null,null);
+            notificationChannel.setSound(null, null);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
             manager.createNotificationChannel(notificationChannel);
@@ -2053,7 +2053,6 @@ public final class Api {
         int notifyType = G.getNotificationPriority();
 
 
-
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setContentIntent(notifyPendingIntent);
@@ -2061,10 +2060,10 @@ public final class Api {
         Notification notification = notificationBuilder.setOngoing(true)
                 .setContentTitle(ctx.getString(R.string.app_name))
                 .setTicker(ctx.getString(R.string.app_name))
-                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
+                .setSound(null)
                 .setCategory(Notification.CATEGORY_STATUS)
-                .setContentText(notificationText)
                 .setVisibility(Notification.VISIBILITY_SECRET)
+                .setContentText(notificationText)
                 .setSmallIcon(icon)
                 .build();
 
@@ -2078,10 +2077,7 @@ public final class Api {
         }
 
         notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
-        if(notifyType < 2 ) {
-            manager.notify(NOTIFICATION_ID, notification);
-        }
-
+        manager.notify(NOTIFICATION_ID, notification);
     }
 
 	/*public static void displayToasts(Context context, int id, int length) {
