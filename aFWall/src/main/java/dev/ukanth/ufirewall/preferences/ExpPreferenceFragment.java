@@ -178,7 +178,8 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                                 Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
                             }
                             mountDir(ctx, getFixLeakPath(initScript), "RO");
-                            updateLeakCheckbox();
+                            activity.runOnUiThread(() -> updateLeakCheckbox());
+
                         } else {
                             Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                         }
@@ -215,7 +216,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                                     Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
                                 }
                                 if (updateCheckbox) {
-                                    getActivity().runOnUiThread((Runnable) () -> updateLeakCheckbox());
+                                    getActivity().runOnUiThread(() -> updateLeakCheckbox());
                                 }
                             }
                         }).setLogging(true).run(ctx, "rm -f " + filePath);
