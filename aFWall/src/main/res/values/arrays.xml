@@ -201,14 +201,11 @@
     <string-array name="notification_type_val">
         <item>0</item>
         <item>1</item>
-        <item>2</item>
     </string-array>
     <string-array name="notification_type">
         <item>@string/defaultPriority</item>
         <item>@string/lowPriority</item>
-        <item>@string/hide</item>
     </string-array>
-
 
     <string-array name="initDir" >
     </string-array>

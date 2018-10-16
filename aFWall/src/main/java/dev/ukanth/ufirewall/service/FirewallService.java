@@ -69,7 +69,7 @@ public class FirewallService extends Service {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
-            notificationChannel.setSound(null,null);
+            notificationChannel.setSound(null, null);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
             manager.createNotificationChannel(notificationChannel);
@@ -145,13 +145,13 @@ public class FirewallService extends Service {
                 break;
         }
 
-        notification.flags  |= Notification.FLAG_ONGOING_EVENT |  Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
+        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
 
-        if(notifyType < 2 ) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(NOTIFICATION_ID, notification);
+        } else {
             manager.notify(NOTIFICATION_ID, notification);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForeground(NOTIFICATION_ID, notification);
-            }
         }
     }
 
