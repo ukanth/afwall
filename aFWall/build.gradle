@@ -7,7 +7,7 @@ android {
         applicationId "dev.ukanth.ufirewall"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 16300
+        versionCode 16400
         versionName "3.0.0"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }

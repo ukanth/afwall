@@ -424,13 +424,7 @@ public final class Api {
             String pref = G.dns_proxy();
 
             if (whitelist) {
-                if (pref.equals("auto")) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                        addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
-                    } else {
-                        addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
-                    }
-                } else if (pref.equals("disable")) {
+                if (pref.equals("disable")) {
                     addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
                 } else {
                     addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
@@ -787,6 +781,13 @@ public final class Api {
             // on the LAN
             if (whitelist) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
+                //bug fix allow dns to be open on Oreo for all connection type
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-wan" + " -p udp --dport 53"+ " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-home" + " -p udp --dport 53"+ " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p udp --dport 53"+ " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p udp --dport 53"+ " -j RETURN");
+                }
             }
 
             // now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
@@ -797,9 +798,7 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
 
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -p udp --dport 53 -j ACCEPT");
-            }
+
 
             if (G.enableTor()) {
                 addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6);
