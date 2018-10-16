@@ -1562,14 +1562,15 @@ public final class Api {
             }
             /* convert the map into an array */
             applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
-            for (int i = 0; i < syncMap.size(); i++) {
-                applications.add(syncMap.valueAt(i));
+            //must be in sync block
+            synchronized (syncMap) {
+                for (int i = 0; i < syncMap.size(); i++) {
+                    applications.add(syncMap.valueAt(i));
+                }
             }
-
             return applications;
         } catch (Exception e) {
-            e.printStackTrace();
-            toast(ctx, ctx.getString(R.string.error_common) + e);
+            Log.i(TAG, "Exception in getting app list", e);
         }
         return null;
     }
