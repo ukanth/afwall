@@ -4,11 +4,11 @@ Changelog AFWall+
 Version 3.0.0
 
 Features:
-* Better support for nougat/oreo and pie.
+* Better support for nougat/oreo and pie
 * Firewall toggle tile
 * Adaptive Icons
 * Notification channels
-
+* Tor support
 Bugs:
 * Language selection bug
 * Filter selection bug
