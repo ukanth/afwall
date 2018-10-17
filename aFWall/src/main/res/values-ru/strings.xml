@@ -24,23 +24,23 @@
   <string name="error_refresh">Ошибка обновления iptables</string>
   <string name="error_apply">Ошибка применения правил iptables</string>
   <string name="error_fetch">Ошибка получения правил iptables</string>
-  <string name="error_su_toast">Невозможно получить рут-доступ !</string>
-  <string name="error_su">Невозможно получить root доступ.\nДля работы приложения AFWall+ необходим root доступ.\n\nЕсли в Вашем телефоне есть рут, пожалуйста, убедитесь что AFWall+ имеет достаточно разрешений для выполнения команды \"su\".</string>
-  <string name="error_netfilter">Не удалось найти поддержку целей iptables и цепочек. \nИз-за этого ограничения AFWall+ может работать не так, как нужно.</string>
+  <string name="error_su_toast">Невозможно получить root-доступ !</string>
+  <string name="error_su">Невозможно получить root-доступ.\nДля работы приложения AFWall+ необходим root-доступ.\n\nЕсли в вашем устройстве имеется данный уровень доступа, пожалуйста, убедитесь что AFWall+ имеет достаточно разрешений для выполнения команды \"su\".</string>
+  <string name="error_netfilter">Не удалось найти поддержку целей и цепочек iptables. \nИз-за этого ограничения AFWall+ может работать не так, как нужно.</string>
   <string name="error_common">Ошибка: </string>
-  <string name="all_item">(Любое прил.) - то же, что выбор всех приложений</string>
+  <string name="all_item">(любое приложение) - то же, что выбор всех приложений</string>
   <string name="kernel_item">(ядро) - ядро Linux</string>
-  <string name="android_system">Система Андроид</string>
-  <string name="unknown_item">Неизв.</string>
-  <string name="tethering_item">(раздача) - сервисы DHCP+DNS</string>
+  <string name="android_system">Система Android</string>
+  <string name="unknown_item">Неизвестно</string>
+  <string name="tethering_item">(раздача) - службы DHCP+DNS</string>
   <string name="dnsproxy_item">(DNS proxy) - запросы DNS через netd</string>
   <string name="ntp_item">(ntp) - сервера времени в интернете</string>
-  <string name="root_item">(рут) - приложения с рут-доступом</string>
-  <string name="adb_item">(adb) - Android Debug Bridge (отладочный мост Андроид)</string>
+  <string name="root_item">(root) - приложения с root-доступом</string>
+  <string name="adb_item">(adb) - Android Debug Bridge (отладочный мост Android)</string>
   <string name="media_item">(media) - медиасервер</string>
   <string name="vpn_item">(vpn) - сеть VPN</string>
   <string name="drm_item">(drm) - служба управления цифровыми правами (Digital Rights Management)</string>
-  <string name="gps_item">(gps) - GPS (Global Positioning System-система глобального позиционирования)</string>
+  <string name="gps_item">(gps) - GPS (система глобального позиционирования)</string>
   <string name="shell_item">(shell) - оболочка Linux</string>
   <!-- <string name="operation_timeout">Operation timed out</string> -->
   <string name="fw_enabled">Включить брандмауэр</string>
@@ -64,14 +64,14 @@
   <string name="passremoved">Защита паролем выключена</string>
   <string name="passerror">Ошибка изменения пароля блокировки</string>
   <string name="working">Обработка…</string>
-  <string name="reading_apps">Получение установленных прил.</string>
-  <string name="mode">Режим файрвола</string>
+  <string name="reading_apps">Получение списка установленных приложений</string>
+  <string name="mode">Режим брандмауэра</string>
   <string name="mode_header">Режим: %s</string>
-  <string name="legend_clear">Снимите все флажки в столбцах</string>
+  <string name="legend_clear">Снять все флажки в столбцах</string>
   <string name="mode_whitelist">Разрешить выбранное</string>
-  <string name="legend_whitelist">Выбранным приложениям будет предоставлен доступ к интернету</string>
+  <string name="legend_whitelist">Выбранным приложениям будет предоставлен доступ в интернет</string>
   <string name="mode_blacklist">Блокировать выбранное</string>
-  <string name="legend_blacklist">Выбранным приложениям будет запрещен доступ к интернету</string>
+  <string name="legend_blacklist">Выбранным приложениям будет запрещен доступ в интернет</string>
   <string name="set_custom_script">Пользовательские скрипты</string>
   <string name="preferences">Настройки</string>
   <string name="reload">Перезагрузка приложений</string>
@@ -96,7 +96,7 @@
   <string name="Search">Поиск</string>
   <string name="flushRulesConfirm">Обнулить правила iptables?</string>
   <string name="overrideRules">Вы хотите импортировать правила? Это изменит существующие правила!</string>
-  <string name="notification_new">Новое прил. установлено</string>
+  <string name="notification_new">Установлено новое приложение</string>
   <string name="notification_new_package">Настройка интернет-разрешения</string>
   <string name="confirmMsg">Полностью ОТКЛЮЧИТЬ брандмауэр?</string>
   <string name="apply">Применить</string>
@@ -115,15 +115,15 @@
   <string name="error_notification_ticker">AFWall+ не смог применить правила</string>
   <!-- Advanced Settings -->
   <!-- init.d -->
-  <string name="success_initd">Скрипт запуска установлен</string>
-  <string name="unable_initd">Невозможно установить скрипт автозапуска AFWall+. Пожалуйста, проверьте наличие поддержки скриптов init.d/su.d в Вашем ядре/прошивке</string>
-  <string name="remove_initd">Скрипт запуска удалён</string>
+  <string name="success_initd">Скрипт авозапуска установлен</string>
+  <string name="unable_initd">Невозможно установить скрипт автозапуска AFWall+. Пожалуйста, проверьте наличие поддержки скриптов init.d/su.d в вашем ядре/прошивке</string>
+  <string name="remove_initd">Скрипт автозапуска удалён</string>
   <string name="unable_remove_initd">Невозможно удалить скрипт автозапуска</string>
   <!-- Widget -->
   <string name="widget_disable_fail">Не удается отключить брандмауэр. Защищен паролем!</string>
-  <string name="widget_label_status">AFWall+ Toggle</string>
+  <string name="widget_label_status">Переключение AFWall+</string>
   <string name="widget_label_settings">Настройки AFWall+</string>
-  <string name="widget_label_settings_old">AFWall+ настройки (старые)</string>
+  <string name="widget_label_settings_old">Настройки AFWall+ (старые)</string>
   <!-- Color Picker -->
   <string name="color_pick">Выберите цвет</string>
   <!-- Import/Export -->
@@ -182,13 +182,13 @@
   <string name="profile2">Профиль 2</string>
   <string name="profile3">Профиль 3</string>
   <string name="profile_hint">Имя_профиля</string>
-  <string name="profile_notsupport">Пожалуйста, перенесите данные профиля, чтобы использовать эту опцию</string>
+  <string name="profile_notsupport">Пожалуйста, перенесите данные профиля, чтобы использовать эту функцию</string>
   <string name="profile_duplicate">Профиль уже существует!</string>
   <string name="reapply_profile">Повтор применения правил профиля</string>
   <!-- Interface -->
   <string name="lan_title">Управление сетью</string>
   <string name="lan_summary">Включить для раздельного управления разрешениями LAN и WiFi</string>
-  <string name="iptables_pref">Бинарный файл IPtables</string>
+  <string name="iptables_pref">Бинарный файл iptables</string>
   <string name="vpn_profile">Управление VPN</string>
   <string name="vpnSummary">Включить для раздельного управления разрешениями VPN</string>
   <string name="roaming">Управление роумингом</string>
@@ -200,8 +200,8 @@
   <!-- Toast Messages -->
   <string name="toast_bin_installed">AFWall+: бинарные файлы установлены</string>
   <string name="toast_enabled">AFWall+: брандмауэр включён</string>
-  <string name="toast_error_enabling">AFWall +: ОШИБКА ВКЛЮЧЕНИЯ БРАНДМАУЭРА!</string>
-  <string name="toast_disabled">AFWall +: брандмауэр ОТКЛЮЧЕН!</string>
+  <string name="toast_error_enabling">AFWall+: ОШИБКА ВКЛЮЧЕНИЯ БРАНДМАУЭРА!</string>
+  <string name="toast_disabled">AFWall+: брандмауэр ОТКЛЮЧЁН!</string>
   <string name="toast_error_disabling">AFWall+: Ошибка отключения брандмауэра!</string>
   <!-- Binary -->
   <string name="busybox_pref">Бинарный файл Busybox</string>
@@ -211,38 +211,38 @@
   <string name="builtin_ipt">Встроенный файл iptables</string>
   <string name="auto">Автоматически</string>
   <!-- XPOSED -->
-  <string name="XPosed_prefs_title">Связано с Xposed</string>
+  <string name="XPosed_prefs_title">Связаное с Xposed</string>
   <string name="fixDownloadTitle">Устранение утечки DownloadManager</string>
   <string name="fixDownloadTitleSummary">Использовать Xposed для блокировки загрузки приложений при помощи встроенного диспетчера загрузки Android, даже если приложению запрещён доступ</string>
   <string name="LeakDetected">Обнаружена утечка!</string>
   <!-- Tasker -->
-  <string name="tasker_prefs_title">Настройки Tasker</string>
+  <string name="tasker_prefs_title">Связаное с Tasker</string>
   <string name="disable_toaster">Отключить сообщения Tasker</string>
   <string name="disableTasterSummary">Отключение всплывающих сообщений для плагина Tasker</string>
   <string name="enable_tasker">Включить AFWall +</string>
   <string name="disable_tasker">Отключить AFWall +</string>
   <string name="tasker_apply">Tasker: Применяю правила брандмауэра</string>
-  <string name="tasker_disabled">Tasker: AFWall + ОТКЛЮЧЕН!</string>
+  <string name="tasker_disabled">Tasker: AFWall+ ОТКЛЮЧЁН!</string>
   <string name="tasker_profile_applied">Tasker: профиль AFWall+ применён</string>
-  <string name="tasker_muliprofile">Tasker: AFWall + мультипрофиль отключен</string>
+  <string name="tasker_muliprofile">Tasker: мультипрофиль AFWall+ отключён</string>
   <!-- IPv4/IPv6 -->
   <string name="ipv6_title">Поддержка IPv6</string>
   <string name="ipv6_summary">Разрешить поддержку IPv6</string>
   <string name="control_ipv6_title">Управлять только цепочками IPv6</string>
   <string name="ip6unavailable">Ошибка: IPv6 требуется «/system/bin/ip6tables».</string>
-  <string name="switch_ipv6">Переключение IPV6 правил</string>
-  <string name="switch_ipv4">Переключение IPV46 правил</string>
+  <string name="switch_ipv6">Переключение правил IPv6</string>
+  <string name="switch_ipv4">Переключение правил IPv4</string>
   <!-- Security Preferences -->
   <string name="sec_prefs_title">Безопасность</string>
   <string name="usePattern">Использовать графическую блокировку вместо пароля</string>
   <string name="stealthMode">Режим невидимости на узор</string>
   <string name="patternMaxTry">Максимальное количество попыток</string>
-  <string name="resetPattern">Сбросить шаблон блокировки?</string>
+  <string name="resetPattern">Сбросить ключ блокировки?</string>
   <!-- Device Admin -->
   <string name="enable_device_admin">Администратор устройства</string>
-  <string name="device_admin_enabled">AFWall + администратор устройства включён</string>
-  <string name="device_admin_disabled">AFWall + администратор устройства отключен</string>
-  <string name="device_admin_on_disable">Пожалуйста, перейдите в настройки администратора устройства для отключения AFWall +</string>
+  <string name="device_admin_enabled">AFWall+ как администратор устройства включён</string>
+  <string name="device_admin_disabled">AFWall+ как администратор устройства отключён</string>
+  <string name="device_admin_on_disable">Пожалуйста, перейдите в настройки администратора устройства для отключения AFWall+</string>
   <!-- Experimental Preferences -->
   <string name="exp_prefs_title">Экспериментальные</string>
   <!-- Startup -->
@@ -250,7 +250,7 @@
   <string name="addStartupDelayTitle">Задержка при запуске</string>
   <string name="addStartupDelaySummary">Задержка перед применением правил AFWall + составит 5 секунд. Включайте этот параметр только если правила, которые установлены при запуске, не применяются должным образом во время загрузки.</string>
   <string name="fixleakTitle">Исправить утечку данных при запуске</string>
-  <string name="fixleakSummary">Предотвратите утечку данных во время запуска системы. Необходима поддержка скриптов init.d или su.d (superSU) Вашим ядром/прошивкой. Устройства HTC должны быть настроены для S-OFF.</string>
+  <string name="fixleakSummary">Предотвратите утечку данных во время запуска системы. Необходима поддержка скриптов init.d или su.d (superSU) ядром/прошивкой вашего устройства. Устройства HTC должны быть настроены для S-OFF.</string>
   <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -264,13 +264,13 @@
   <string name="ui_chains6_title">Цепочки IPv6</string>
   <string name="rules_prefs_title">Правила/соединение</string>
   <string name="log_prefs_title">Журнал</string>
-  <string name="hideicons_pref_title">Скрыть значки приложения</string>
+  <string name="hideicons_pref_title">Скрывать значки приложений</string>
   <string name="hideicons_pref_summary_on">Повысить производительность, отключив значки приложений в главном окне</string>
   <string name="hideicons_pref_summary_off">Показывать значки приложений в главном окне</string>
   <string name="notify_pref_title">Включить уведомления</string>
   <string name="syscolor_pref_title">Цвет системных приложений</string>
   <string name="syscolor_pref_summary_on">Цвет для всех системных приложений</string>
-  <string name="enableConfirmTitle">Подтвердить AFWall + отключение</string>
+  <string name="enableConfirmTitle">Подтверждение отключения AFWall+</string>
   <string name="enableConfirm_summary_on">Брандмауэр запросит подтверждение перед отключением</string>
   <string name="showUid">Показать UID для приложений</string>
   <string name="showuid_summary_on">Показывать UID приложений в главном окне</string>
@@ -290,7 +290,7 @@
   <string name="multi_user_title">Включить многопользовательскую поддержку</string>
   <string name="multi_user_summary">Поддержка нескольких пользователей Android (работает только в режиме, блокирующем выбранные элементы)</string>
   <!--  -->
-  <string name="device_admin_desc">Дополнительная безопасность - предотвратить удаление AFWall +</string>
+  <string name="device_admin_desc">Дополнительная безопасность - предотвратить удаление AFWall+</string>
   <string name="traffic_detail_title">Подробности траффика</string>
   <string name="uploaded">Выгружено</string>
   <string name="downloaded">Загружено</string>
@@ -305,14 +305,14 @@
   <string name="uncheck_all">Снять выбор со всего</string>
   <string name="select_action">Выберите действие на колонке </string>
   <string name="roam">Роуминг</string>
-  <string name="legend_roam">Предоставление AFWall+ возможности отдельно контролировать разрешения для данных при нахождении в других сетях (в роуминге)</string>
+  <string name="legend_roam">Разрешить AFWAll+ управлять разрешениями для данных при нахождении в других сетях (в роуминге)</string>
   <string name="wifi">Wi-Fi</string>
-  <string name="legend_wifi">Предоставить AFWall+ управление разрешениями Wi-Fi</string>
+  <string name="legend_wifi">Разрешить AFWAll+ управлять разрешениями Wi-Fi</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
   <string name="tor">Tor</string>
   <string name="data">Данные</string>
-  <string name="legend_data">Разрешить AFWAll+ управлять разрешениями моб. данных (2G,3G,EDGE,LTE/4G)</string>
+  <string name="legend_data">Разрешить AFWAll+ управлять разрешениями мобильных данных (2G,3G,EDGE,LTE/4G)</string>
   <string name="pkg_all">Все</string>
   <string name="pkg_core">Ядро</string>
   <string name="pkg_sys">Система</string>
@@ -326,7 +326,7 @@
   <string name="disable_dns">Отключить DNS через netd</string>
   <string name="dns_proxy_title">Прокси-сервер DNS </string>
   <string name="dns_proxy_summary">DNS-запросы через netd на Android 4.3 и более поздних версиях. При отключении будет блокирован интернет на этих устройствах.</string>
-  <string name="tasker_lable">AFWall+ Tasker плагин</string>
+  <string name="tasker_lable">Плагин Tasker AFWall+</string>
   <string name="enable">Включить</string>
   <string name="disable">Отключить</string>
   <string name="filters_apps_title">Фильтр уведомлений</string>
@@ -345,11 +345,11 @@
   <string name="activeNotification">Показать значок уведомления</string>
   <string name="activeNotification_summary">Отображение постоянного значка в панели уведомлений</string>
   <string name="active">Брандмауэр включён</string>
-  <string name="inactive">Брандмауэр отключен</string>
+  <string name="inactive">Брандмауэр отключён</string>
   <string name="About">О приложении</string>
   <string name="FAQ">Часто задаваемые вопросы</string>
   <string name="su_check_title">Состояние</string>
-  <string name="su_check_message">Проверка рут-доступа</string>
+  <string name="su_check_message">Проверка root-доступа</string>
   <!-- choose file -->
   <!-- <string name="fileSize">File Size</string>-->
   <!--<string name="currentDir">Current Dir</string>-->
@@ -363,9 +363,9 @@
   <string name="pref_password">Пароль</string>
   <string name="pref_pattern">Ключ</string>
   <string name="pref_device">Использовать защиту безопасности устройства</string>
-  <string name="pref_device_desc">Использовать проверку безопасности устройства для открытия AFWall+ (функция платной версии)</string>
+  <string name="pref_device_desc">Использовать проверку безопасности устройства для открытия AFWall+ (платная функция)</string>
   <string name="secure_option">Устройство не защищено паролем/пин-кодом</string>
-  <string name="android_version">Эта функция работает только на версиях Андроид Lollipop и выше</string>
+  <string name="android_version">Эта функция работает только на версиях Android Lollipop и выше</string>
   <!--<string name="pref_pin">Pin</string>-->
   <string name="set_password">Установить</string>
   <string name="wrong_password">Неправильный пароль</string>
@@ -376,9 +376,9 @@
   <string name="access_sort">Сортировка</string>
   <string name="defaultsort">По имени (по умолчанию)</string>
   <string name="lastupdated">По дате установки/обновления</string>
-  <string name="uid">UID</string>
+  <string name="uid">По UID</string>
   <string name="select_dir">Выберите папку</string>
-  <string name="select">Выберите действие</string>
+  <string name="select">Выберите действие для</string>
   <string name="manage_profiles">Управление профилями</string>
   <string name="manage_profiles_summary">Добавление или удаление профилей</string>
   <string name="profiles">Профиль </string>
@@ -401,7 +401,7 @@
   <string name="yTitleDialog">Установить положение по оси Y (число)</string>
   <string name="error_nonsupported">Обнаружен King Root!</string>
   <string name="error_nonsupported_details">AFWall+ обнаружил неподдерживаемое приложение суперпользователя, которое обходит правила брандмауэра. Поскольку приложение использует права суперпользователя, AFWall+ не может исправить данную проблему.</string>
-  <string name="lockNotification">Скрыть значок уведомления на экр. блокировки</string>
+  <string name="lockNotification">Скрыть значок уведомления на экране блокировки</string>
   <string name="lockScreenNotification_summary">Скрыть текущие уведомления на экране блокировки</string>
   <string name="menu_legend">Условные обозначения</string>
   <string name="permissiondenied_importexport">Нет разрешения на ЧТЕНИЕ/ЗАПИСЬ в память. Пожалуйста, предоставьте доступ для экспорта/импорта правил.</string>
@@ -422,16 +422,16 @@
   <string name="reapply_rules">Пожалуйста, повторно примените правила из-за изменения предпочтений</string>
   <string name="custom_rules">Пользовательские правила</string>
   <string name="mdns">Включить Mutlicast DNS</string>
-  <string name="error_log">Не удалось запустить службу журнала. LogTarget пуст или LogService не включен.</string>
-  <string name="delete_profile">Можете удалить профиль</string>
+  <string name="error_log">Не удалось запустить службу журнала. LogTarget пуст или LogService не включён.</string>
+  <string name="delete_profile">Невозможно удалить профиль</string>
   <string name="profile_migrate_msg">Профили перемещены</string>
   <!-- Log Details -->
   <string name="destination_address">Адрес назначения</string>
   <string name="source_address">Адрес источника</string>
   <string name="ping_destination">Пинг назначения</string>
   <string name="ping_source">Пинг источника</string>
-  <string name="resolve_destination">Разрешить назначение</string>
-  <string name="resolve_source">Разрешить источник</string>
+  <string name="resolve_destination">Преобразовывать назначение</string>
+  <string name="resolve_source">Преобразовывать источник</string>
   <string name="copy_text">Скопировать текст</string>
   <string name="destination_copied">Назначение скопировано</string>
   <string name="source_copied">Источник скопирован</string>
@@ -441,37 +441,37 @@
   <string name="output_is_empty">Выход пуст из-за запрета на доступ в сеть и SuperSu</string>
   <string name="searching">Поиск</string>
   <string name="looking_for_data">Поиск данных&#8230;</string>
-  <string name="reachable_timeout">Доступно, время ожидания: %d ms</string>
+  <string name="reachable_timeout">Доступно, время ожидания: %d мс</string>
   <string name="error_or_unknown_category">Ошибка или неизвестная категория</string>
   <string name="show_destination_address">Показать адрес назначения</string>
   <string name="show_source_address">Показать адрес источника</string>
-  <string name="network_connection_not_available">Сетевое соединение не доступно</string>
+  <string name="network_connection_not_available">Сетевое соединение недоступно</string>
   <!-- Custom Rules -->
   <string name="add_ip_rule">Добавить в правило пользователя</string>
   <!-- Fingerprint -->
   <string name="pref_fingerprint">Отпечаток пальца</string>
   <string name="fingerprint_authentication_error">Ошибка проверки подлинности отпечатков пальцев\n</string>
-  <string name="fingerprint_authentication_help">Помощь в аутентификации по отпечатку пальца\n</string>
+  <string name="fingerprint_authentication_help">Помощь в проверки подлинности по отпечатку пальца\n</string>
   <string name="fingerprint_authentication_failed">Аутентификация по отпечатку пальца не выполнена.</string>
-  <string name="fingerprint_authentication_successded">Аутентификация по отпечатку пальца выполнена.</string>
+  <string name="fingerprint_authentication_successded">Проверка подлинности по отпечатку пальца выполнена.</string>
   <string name="title_activity_main">MainActivity</string>
-  <string name="title_fingerprint">Одно касание для разблокировки</string>
+  <string name="title_fingerprint">Разблокировка в одно касание</string>
   <string name="desc_fingerprint">Пожалуйста, поместите палец на сканер, чтобы проверить вашу личность</string>
-  <string name="note">(Отпечаток пальца делает вход гораздо быстрее. Ваше устройство должно иметь по крайней мере один отпечаток пальца, зарегистрированный в настройках устройства)</string>
+  <string name="note">(Отпечаток пальца делает вход гораздо быстрее. Ваше устройство должно иметь по крайней мере один отпечаток пальца, зарегистрированный в настройках)</string>
   <string name="title_activity_home">Отпечаток пальца</string>
-  <string name="activity_home_desc">Вы вошли с отпечатком пальца</string>
+  <string name="activity_home_desc">Вы вошли по отпечатку пальца</string>
   <string name="activity_home_note">Закройте и снова откройте приложение для входа по отпечатку пальца</string>
   <string name="fingerprint_required">Отпечаток пальца требуется</string>
   <string name="device_with_no_fingerprint_sensor">На вашем устройстве отсутствует датчик отпечатка</string>
-  <string name="fingerprint_permission_manifest_missing">Разрешение аутентификации по отпечаткам пальцев не предоставлено</string>
+  <string name="fingerprint_permission_manifest_missing">Разрешение проверки подлинности по отпечаткам пальцев не предоставлено</string>
   <string name="register_at_least_one_fingerprint">Зарегистрируйте, по крайней мере, один отпечаток пальца в настройках</string>
   <string name="lock_screen_not_enabled">В настройках безопасности блокировка экрана выключена</string>
-  <string name="fingerprint_enabled_successfully">Отпечаток пальца включен</string>
-  <string name="fingerprint_disabled_successfully">Отпечаток пальца отключен</string>
+  <string name="fingerprint_enabled_successfully">Отпечаток пальца включён</string>
+  <string name="fingerprint_disabled_successfully">Отпечаток пальца отключён</string>
   <string name="label_zoomin">Увеличить</string>
   <string name="label_zoomout">Уменьшить</string>
-  <string name="exception_pref">Не удаётся запустить activity из-за повреждённых настроек, пожалуйста, очистите данные приложения</string>
-  <string name="ipdetect">AFWall+ обнаружил соединение IPv6. Пожалуйста, включите в Настройки-Правила/соединение и примените повторно</string>
+  <string name="exception_pref">Не удаётся выполнить действие из-за повреждённых настроек, пожалуйста, очистите данные приложения</string>
+  <string name="ipdetect">AFWall+ обнаружил соединение IPv6. Пожалуйста, включите их в \"Настройки\"-\"Правила/соединение\" и примените повторно</string>
   <string name="delayTitle">Настраиваемая задержка</string>
   <string name="delaySummary">AFWall+ будет ждать заданное количество секунд после запуска перед применением правил</string>
   <string name="delayDialog">Укажите задержку в секундах</string>
@@ -494,23 +494,23 @@
   <string name="input_chain_v6">ВХОДЯЩАЯ цепочка (IPv6)</string>
   <string name="output_chain_v6">ИСХОДЯЩАЯ цепочка (IPv6)</string>
   <string name="forward_chain_v6">ПЕРЕНАПРАВЛЕНИЕ цепочки (IPv6)</string>
-  <string name="quick_apply_title">Показать быстрое применение</string>
-  <string name="quick_apply_summary">Только в платной версии! Показать плавающую кнопку для быстрого применения правил</string>
-  <string name="init_d">Startup directory path for script</string>
-  <string name="mount_initd_error">Unable to mount the directory</string>
-  <string name="delete_initd_error">Unable to delete the startup script</string>
-  <string name="runNotification_summary">Notification will be shown when applying rules</string>
-  <string name="runNotification">Rules Progress</string>
-  <string name="displayBlockNotification">disable log alert notification</string>
+  <string name="quick_apply_title">Показывать быстрое применение</string>
+  <string name="quick_apply_summary">Только в платной версии! Показывать плавающую кнопку быстрого применения правил.</string>
+  <string name="init_d">Путь к папке загрузки для скриптов</string>
+  <string name="mount_initd_error">Невозможно подключить папку</string>
+  <string name="delete_initd_error">Невозможно удалить скрипт автозапуска</string>
+  <string name="runNotification_summary">Уведомление будет показано при применении правил</string>
+  <string name="runNotification">Ход применения правил</string>
+  <string name="displayBlockNotification">отключить оповещение журнала</string>
   <string name="applyRulesFasterTitle">Мгновенное применение</string>
   <string name="applyRulesFaster">Используйте, только если правила применяются медленно - экспериментально</string>
-  <string name="purging_rules">Removing all firewall iptables rules</string>
-  <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
-  <string name="show_host">Show hostname</string>
-  <string name="host">Хост:</string>
-  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
-  <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
-  <string name="firewall_service">Firewall Service</string>
+  <string name="purging_rules">Удаление всех правил брандмауэра из iptables</string>
+  <string name="showhost_desc">Показывать имя узла, преобразованное DNS (платная функция, AFWall+ требуется доступ в интернет)</string>
+  <string name="show_host">Показывать имя узла</string>
+  <string name="host">Узел:</string>
+  <string name="battery_optimization_title">AFWall+ в исключения батареи</string>
+  <string name="battery_optimization_desc">AFWall+ должен выполняться в фоновом режиме и применять правила при изменении типа подключения. Пожалуйста, удалите или добавьте в исключения AFWall+ в настройках оптимизации батареи.</string>
+  <string name="firewall_service">Служба брандмауэра</string>
   <string name="boot_notification">Служба загрузки</string>
   <string name="app_notification">Уведомления приложения</string>
 </resources>

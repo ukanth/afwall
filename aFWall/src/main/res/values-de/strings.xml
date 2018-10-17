@@ -186,14 +186,14 @@
   <string name="reapply_profile">Profilregeln erneut anwenden</string>
   <!-- Interface -->
   <string name="lan_title">LAN-Steuerung</string>
-  <string name="lan_summary">Aktivieren, um LAN- und WLAN-Genehmigungen unabhängig voneinander zu regulieren</string>
+  <string name="lan_summary">Ermöglicht die separate Steuerung von LAN- und WLAN-Berechtigungen</string>
   <string name="iptables_pref">IPTables-Binärdatei</string>
   <string name="vpn_profile">VPN-Steuerung</string>
-  <string name="vpnSummary">Aktivieren, um VPN-Genehmigungen zu regulieren</string>
+  <string name="vpnSummary">Ermöglicht die separate Steuerung von VPN-Berechtigungen</string>
   <string name="roaming">Roaming-Steuerung</string>
-  <string name="roamingSummary">Aktivieren, um Roaming-Genehmigungen zu regulieren</string>
+  <string name="roamingSummary">Ermöglicht die separate Steuerung von Roaming-Berechtigungen</string>
   <string name="tor_profile">Tor-Steuerung</string>
-  <string name="torSummary">Aktivieren, um Nicht-Tor-Verkehr über Tor umzuleiten</string>
+  <string name="torSummary">Ermöglicht Nicht-Tor-Datenverkehr über Tor umzuleiten</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
   <!-- Toast Messages -->
@@ -403,8 +403,8 @@
   <string name="lockNotification">Sperrbildschirm-Benachrichtigung ausblenden</string>
   <string name="lockScreenNotification_summary">Permanente Benachrichtigung auf Sperrbildschirm ausblenden</string>
   <string name="menu_legend">Legende</string>
-  <string name="permissiondenied_importexport">Keine LESE/SCHREIB-Berechtigung für den Speicher. Bitte für den Export/Import von Regeln erteilen.</string>
-  <string name="permissiondenied_asset">Keine LESE/SCHREIB-Berechtigung für den Speicher. Bitte für das Kopieren von Binärdateien von AFWall+ erteilen.</string>
+  <string name="permissiondenied_importexport">Lese-/Schreibberechtigung für den Speicher verweigert. Bitte erlauben Sie den Zugriff für den Export/Import der Regeln.</string>
+  <string name="permissiondenied_asset">Lese-/Schreibberechtigung für den Speicher verweigert. Bitte erlauben Sie den Zugriff für das Kopieren von Binärdateien von AFWall+.</string>
   <string name="log_deletedapp">Gelöschte App</string>
   <string name="log_denied">Verweigert:</string>
   <string name="log_times">Mal</string>
@@ -444,7 +444,7 @@
   <string name="error_or_unknown_category">Fehler oder unbekannte Kategorie</string>
   <string name="show_destination_address">Zieladresse anzeigen</string>
   <string name="show_source_address">Herkunftsadresse anzeigen</string>
-  <string name="network_connection_not_available">Keine Netzwerk-Verbindung verfügbar</string>
+  <string name="network_connection_not_available">Keine Netzwerkverbindung verfügbar</string>
   <!-- Custom Rules -->
   <string name="add_ip_rule">Zu benutzerdefiniertem Filter hinzufügen</string>
   <!-- Fingerprint -->
@@ -479,7 +479,7 @@
   <string name="defaultPriority">Standardpriorität</string>
   <string name="lowPriority">Niedrige Priorität</string>
   <string name="dualAppsTitle">Unterstützung von Dual Apps</string>
-  <string name="dualAppsDesc">Unterstützung für Dual-Apps, MIUI, Island und Arbeitsprofil-Apps</string>
+  <string name="dualAppsDesc">Unterstützung für Dual Apps, MIUI, Island und Arbeitsprofil-Apps</string>
   <string name="choose">Auswählen</string>
   <string name="input_chain">EINGABE-Kette (IPv4)</string>
   <string name="output_chain">AUSGABE-Kette (IPv4)</string>
@@ -508,7 +508,7 @@
   <string name="show_host">Hostnamen anzeigen</string>
   <string name="host">Host:</string>
   <string name="battery_optimization_title">Doze-Ausnahme für AFWall+</string>
-  <string name="battery_optimization_desc">AFWall+ muss im Hintergrund ausgeführt werden, um bei Verbindungsänderungen die Regeln anwenden zu können. Bitte ändern SIe für AFWall+ die Akkuoptimierungs-/Doze-Voreinstellungen.</string>
+  <string name="battery_optimization_desc">AFWall+ muss im Hintergrund ausgeführt werden, um bei Verbindungsänderungen die Regeln anwenden zu können. Bitte ändern Sie für AFWall+ die Akkuoptimierungseinstellungen.</string>
   <string name="firewall_service">Firewall-Dienst</string>
   <string name="boot_notification">Boot-Dienst</string>
   <string name="app_notification">App-Benachrichtigung</string>
