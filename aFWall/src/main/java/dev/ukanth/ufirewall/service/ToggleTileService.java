@@ -7,9 +7,11 @@ import android.os.Build;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.support.annotation.RequiresApi;
+import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ToggleTileService extends TileService {
@@ -59,6 +61,11 @@ public class ToggleTileService extends TileService {
         final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
         final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
 
+
+        if (!G.protectionLevel().equals("p0") || G.enableDeviceCheck()) {
+            Toast.makeText(context, R.string.widget_disable_fail, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Tile tile = getQsTile();
 
