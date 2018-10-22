@@ -121,6 +121,7 @@ import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
+import dev.ukanth.ufirewall.widget.StatusWidget;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
 
@@ -1984,7 +1985,8 @@ public final class Api {
 
         updateNotification(Api.isEnabled(ctx), ctx);
         /* notify */
-        Intent message = new Intent(Api.STATUS_CHANGED_MSG);
+        Intent message = new Intent(ctx, StatusWidget.class);
+        message.setAction(STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
         ctx.sendBroadcast(message);
     }
