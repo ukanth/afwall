@@ -326,14 +326,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-   /* public static boolean activeNotification() {
+    public static boolean activeNotification() {
         return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false);
     }
 
     public static boolean activeNotification(boolean val) {
         gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit();
         return val;
-    }*/
+    }
 
     public static boolean showLogToasts() {
         return gPrefs.getBoolean(SHOW_LOG_TOAST, false);

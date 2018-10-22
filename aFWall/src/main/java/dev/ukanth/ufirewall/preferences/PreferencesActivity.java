@@ -292,8 +292,18 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
         if (key.equals("notification_priority")) {
             NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancel(1);
+            notificationManager.cancelAll();
             Api.updateNotification(Api.isEnabled(ctx), ctx);
+        }
+
+        if(key.equals("activeNotification")) {
+            boolean enabled = sharedPreferences.getBoolean(key, false);
+            if(!enabled) {
+                NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancelAll();
+            } else {
+                Api.updateNotification(Api.isEnabled(ctx), ctx);
+            }
         }
 
         if (key.equals("enableLogService")) {

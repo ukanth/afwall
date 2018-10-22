@@ -2242,66 +2242,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private class RunQuickApply extends AsyncTask<Void, Long, Void> {
-        boolean enabled = Api.isEnabled(getApplicationContext());
-        Api.RuleDataSet dataSet = null;
-        boolean returnStatus = false;
-
-        RunQuickApply() {
-        }
-
-        private RunQuickApply setDataSet(Api.RuleDataSet data) {
-            this.dataSet = data;
-            return this;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progress = new MaterialDialog.Builder(MainActivity.this)
-                    .title(R.string.working)
-                    .cancelable(false)
-                    .content(enabled ? R.string.applying_rules
-                            : R.string.saving_rules)
-                    .progress(true, 0)
-                    .show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            //set the progress
-            Api.applyQuickSavedIptablesRules(getApplicationContext(), dataSet, true, new RootCommand()
-                    .setSuccessToast(R.string.rules_applied)
-                    .setFailureToast(R.string.error_apply)
-                    .setReopenShell(true)
-                    .setCallback(new RootCommand.Callback() {
-                        public void cbFunc(RootCommand state) {
-                            try {
-                                progress.dismiss();
-                            } catch (Exception ex) {
-                            }
-                            //queue.clear();
-                            if (state.exitCode == 0) {
-                                //make sure we run on UI thread
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        setDirty(false);
-                                        //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
-                                    }
-                                });
-                            }
-                        }
-                    }));
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
-
     private class RunApply extends AsyncTask<Void, Long, Boolean> {
         boolean enabled = Api.isEnabled(getApplicationContext());
 
@@ -2325,23 +2265,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .setFailureToast(R.string.error_apply)
                         .setReopenShell(true)
                         .setCallback(new RootCommand.Callback() {
-
                             public void cbFunc(RootCommand state) {
-
                                 try {
                                     progress.dismiss();
                                 } catch (Exception ex) {
+
                                 }
                                 if (state.exitCode == 0) {
                                     setDirty(false);
                                 }
-
                                 //queue.clear();
                                 runOnUiThread(() -> {
                                     setDirty(false);
-                                    //getFab().setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#ffd740")));
-                                    menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
-                                    Api.setEnabled(ctx, enabled, true);
+                                    if (state.exitCode != 0) {
+                                        Api.errorNotification(ctx);
+                                        menuSetApplyOrSave(MainActivity.this.mainMenu, false);
+                                        Api.setEnabled(ctx, false, true);
+                                    } else {
+                                        menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
+                                        Api.setEnabled(ctx, enabled, true);
+                                    }
                                 });
 
                             }

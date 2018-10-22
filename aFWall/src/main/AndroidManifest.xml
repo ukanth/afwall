@@ -42,10 +42,6 @@
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
-    <!-- uses for job schedulers -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"

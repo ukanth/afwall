@@ -66,9 +66,12 @@ public class FirewallService extends Service {
         manager.cancel(NOTIFICATION_ID);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
+            if(G.getNotificationPriority() == 0) {
+                notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+            }
             notificationChannel.setSound(null, null);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
@@ -126,7 +129,7 @@ public class FirewallService extends Service {
         notificationBuilder.setContentIntent(notifyPendingIntent);
 
         int notifyType = G.getNotificationPriority();
-        Notification notification = notificationBuilder.setOngoing(true)
+        Notification notification = notificationBuilder
                 .setContentTitle(getString(R.string.app_name))
                 .setTicker(getString(R.string.app_name))
                 //.setDefaults(Notification.DEFAULT_ALL)
@@ -145,32 +148,21 @@ public class FirewallService extends Service {
                 break;
         }
 
-        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForeground(NOTIFICATION_ID, notification);
+        if(G.activeNotification()) {
+            notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForeground(NOTIFICATION_ID, notification);
+            } else {
+                manager.notify(NOTIFICATION_ID, notification);
+            }
         } else {
-            manager.notify(NOTIFICATION_ID, notification);
+            //start with empty notification
+            startForeground(NOTIFICATION_ID, new Notification());
         }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Let it continue running until it is stopped.
-
-      /*  if (connectivityReciver != null) {
-            unregisterReceiver(connectivityReciver);
-        }
-
-        if (packageInstallReceiver != null) {
-            unregisterReceiver(packageInstallReceiver);
-        }
-
-        if (packageUninstallReceiver != null) {
-            unregisterReceiver(packageUninstallReceiver);
-        }*/
-
         connectivityReciver = new ConnectivityChangeReceiver();
         filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(connectivityReciver, filter);
@@ -186,9 +178,6 @@ public class FirewallService extends Service {
         packageUninstallReceiver = new PackageBroadcast();
         intentFilter.addDataScheme("package");
         registerReceiver(packageUninstallReceiver, intentFilter);
-
-
-        //addNotification();
 
         return START_STICKY;
     }

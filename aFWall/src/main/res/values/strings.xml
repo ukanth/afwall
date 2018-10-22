@@ -604,4 +604,5 @@
     <string name="app_notification">App Notification</string>
 
     <string name="hide">Hide</string>
+    <string name="firewall_error_notify">Firewall Issue</string>
 </resources>

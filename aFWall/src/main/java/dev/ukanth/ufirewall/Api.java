@@ -57,6 +57,7 @@ import android.os.UserManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -245,6 +246,8 @@ public final class Api {
     private static String AFWALL_CHAIN_NAME = "afwall";
     private static Map<String, Integer> specialApps = null;
     private static boolean rulesUpToDate = false;
+
+    public static final int ERROR_NOTIFICATION_ID = 9;
 
     public static void setRulesUpToDate(boolean rulesUpToDate) {
         Api.rulesUpToDate = rulesUpToDate;
@@ -1986,10 +1989,61 @@ public final class Api {
         ctx.sendBroadcast(message);
     }
 
+
+    public static void errorNotification(Context ctx) {
+
+        String NOTIFICATION_CHANNEL_ID = "firewall.error";
+        String channelName = ctx.getString(R.string.firewall_error_notify);
+
+        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(ERROR_NOTIFICATION_ID);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            assert manager != null;
+            if (G.getNotificationPriority() == 0) {
+                notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+            }
+            notificationChannel.setSound(null, null);
+            notificationChannel.enableLights(false);
+            notificationChannel.enableVibration(false);
+            manager.createNotificationChannel(notificationChannel);
+        }
+
+
+        Intent appIntent = new Intent(ctx, MainActivity.class);
+        appIntent.setAction(Intent.ACTION_MAIN);
+        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        // Artificial stack so that navigating backward leads back to the Home screen
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx)
+                .addParentStack(MainActivity.class)
+                .addNextIntent(new Intent(ctx, MainActivity.class));
+
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
+        notificationBuilder.setContentIntent(notifyPendingIntent);
+
+        Notification notification = notificationBuilder.setOngoing(false)
+                .setCategory(Notification.CATEGORY_ERROR)
+                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setContentTitle(ctx.getString(R.string.error_notification_title))
+                .setContentText(ctx.getString(R.string.error_notification_text))
+                .setTicker(ctx.getString(R.string.error_notification_ticker))
+                .setSmallIcon(R.drawable.notification_warn)
+                .setAutoCancel(true)
+                .setContentIntent(notifyPendingIntent)
+                .build();
+
+        manager.notify(ERROR_NOTIFICATION_ID, notification);
+    }
+
     public static void updateNotification(boolean status, Context ctx) {
 
         String NOTIFICATION_CHANNEL_ID = "firewall.service";
-        String channelName = "Firewall Service";
+        String channelName = ctx.getString(R.string.firewall_service);
 
         NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(NOTIFICATION_ID);
@@ -1998,6 +2052,9 @@ public final class Api {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
+            if(G.getNotificationPriority() == 0) {
+                notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+            }
             notificationChannel.setSound(null, null);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
@@ -2074,9 +2131,10 @@ public final class Api {
                 notification.priority = NotificationCompat.PRIORITY_MIN;
                 break;
         }
-
-        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
-        manager.notify(NOTIFICATION_ID, notification);
+        if(G.activeNotification()) {
+            notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
+            manager.notify(NOTIFICATION_ID, notification);
+        }
     }
 
 	/*public static void displayToasts(Context context, int id, int length) {
@@ -3193,95 +3251,6 @@ public final class Api {
                 return 2;
         }
         return 0;
-    }
-
-    public static void showNotification(boolean status, Context context) {
-
-        /*final int NOTIFICATION_ID = 33341;
-        String CHANNEL_ID = "afwall_service";
-
-        if (G.activeNotification()) {
-
-            String notificationText = "";
-
-            NotificationManager mNotificationManager = (NotificationManager) context
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
-
-            //refresh notification on profile switch
-            if (G.enableMultiProfile()) {
-                mNotificationManager.cancel(NOTIFICATION_ID);
-            }
-
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
-
-            Intent appIntent = new Intent(context, MainActivity.class);
-
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-            stackBuilder.addParentStack(MainActivity.class);
-            stackBuilder.addNextIntent(appIntent);
-
-            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setContentIntent(resultPendingIntent);
-
-            int icon;
-
-            if (status) {
-                if (G.enableMultiProfile()) {
-                    String profile = "";
-                    switch (G.storedProfile()) {
-                        case "AFWallPrefs":
-                            profile = G.gPrefs.getString("default", context.getString(R.string.defaultProfile));
-                            break;
-                        case "AFWallProfile1":
-                            profile = G.gPrefs.getString("profile1", context.getString(R.string.profile1));
-                            break;
-                        case "AFWallProfile2":
-                            profile = G.gPrefs.getString("profile2", context.getString(R.string.profile2));
-                            break;
-                        case "AFWallProfile3":
-                            profile = G.gPrefs.getString("profile3", context.getString(R.string.profile3));
-                            break;
-                        default:
-                            profile = G.storedProfile();
-                            break;
-                    }
-                    notificationText = context.getString(R.string.active) + " (" + profile + ")";
-                } else {
-                    notificationText = context.getString(R.string.active);
-                }
-                //notificationText = context.getString(R.string.active);
-                icon = R.drawable.notification;
-            } else {
-                notificationText = context.getString(R.string.inactive);
-                icon = R.drawable.notification_error;
-            }
-
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.activeNotification),
-                        NotificationManager.IMPORTANCE_LOW);
-                channel.setDescription(notificationText);
-                channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
-                channel.setShowBadge(true);
-                mNotificationManager.createNotificationChannel(channel);
-            }
-
-            builder.setSmallIcon(icon).setOngoing(true)
-                    .setAutoCancel(false)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    //keep the priority as low ,so it's not visible on lockscreen
-                    .setTicker(context.getString(R.string.app_name))
-                    .setPriority(G.getNotificationPriority())
-                    .setChannelId(CHANNEL_ID)
-                    //.addAction(R.drawable.apply, "", pendingIntentCancel)
-                    //.addAction(R.drawable.exit, "", pendingIntentCancel)
-                    .setContentText(notificationText);
-
-            Notification notification = builder.build();
-            mNotificationManager.notify(NOTIFICATION_ID, notification);
-
-        }*/
     }
 
     /**
