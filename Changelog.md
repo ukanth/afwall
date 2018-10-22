@@ -1,6 +1,15 @@
 Changelog AFWall+
 ==================
 
+Version 3.0.1
+
+* Fix: Status toggle widget 1x1 
+* Fix: Ability to hide ongoing notification (Stop firewall and restart to hide after disable it in preferences)
+* Fix: Firewall error notification on oreo and above
+* Security: Tile toggle checks for password
+* User reported crashes
+* Updated translations   
+
 Version 3.0.0
 
 Features:
