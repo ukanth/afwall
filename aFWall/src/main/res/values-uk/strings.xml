@@ -507,7 +507,7 @@
   <string name="showhost_desc">Показати отримане від DNS імʼя приладу (За умови пожертви/За наявності доступу через Internet до AFWall+)</string>
   <string name="show_host">Показати ім\'я приладу</string>
   <string name="host">Хост:</string>
-  <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+  <string name="battery_optimization_title">Внести AFWall+ в перелік виключень при \"засипанні\" приладу</string>
   <string name="battery_optimization_desc">AFWall+ повинен працювати у фоновому режимі та застосовує правила при зміні зʼєднання. Перемкніть у режим ігнорування або видаліть AFWall+ в налаштуваннях оптимізації батареї/стану сну прилада.</string>
   <string name="firewall_service">Службу брандмауера</string>
   <string name="boot_notification">Служба завантаження</string>

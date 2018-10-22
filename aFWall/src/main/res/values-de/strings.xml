@@ -403,7 +403,7 @@
   <string name="lockNotification">Sperrbildschirm-Benachrichtigung ausblenden</string>
   <string name="lockScreenNotification_summary">Permanente Benachrichtigung auf Sperrbildschirm ausblenden</string>
   <string name="menu_legend">Legende</string>
-  <string name="permissiondenied_importexport">Lese-/Schreibberechtigung für den Speicher verweigert. Bitte erlauben Sie den Zugriff für den Export/Import der Regeln.</string>
+  <string name="permissiondenied_importexport">Keine LESE/SCHREIB-Berechtigung für den Speicher. Bitte für den Export/Import von Regeln erteilen.</string>
   <string name="permissiondenied_asset">Lese-/Schreibberechtigung für den Speicher verweigert. Bitte erlauben Sie den Zugriff für das Kopieren von Binärdateien von AFWall+.</string>
   <string name="log_deletedapp">Gelöschte App</string>
   <string name="log_denied">Verweigert:</string>
