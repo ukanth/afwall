@@ -1566,10 +1566,14 @@ public final class Api {
             /* convert the map into an array */
             applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
             //must be in sync block
-            synchronized (syncMap) {
-                for (int i = 0; i < syncMap.size(); i++) {
-                    applications.add(syncMap.valueAt(i));
+            try {
+                synchronized (syncMap) {
+                    for (int i = 0; i < syncMap.size(); i++) {
+                        applications.add(syncMap.valueAt(i));
+                    }
                 }
+            } catch (Exception e) {
+
             }
             return applications;
         } catch (Exception e) {

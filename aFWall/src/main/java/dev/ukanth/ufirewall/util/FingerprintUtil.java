@@ -35,6 +35,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.ProviderException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
@@ -278,8 +279,7 @@ public class FingerprintUtil {
                 keyGenerator.generateKey();
             } catch (NoSuchAlgorithmException |
                     InvalidAlgorithmParameterException
-                    | CertificateException | IOException e) {
-//                throw new RuntimeException(e);
+                    | CertificateException | ProviderException | IOException e) {
                 Log.e(TAG, "Error(1): " + e.getMessage());
             }
         }

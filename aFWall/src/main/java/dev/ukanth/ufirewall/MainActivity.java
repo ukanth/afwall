@@ -80,6 +80,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -981,30 +982,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         } else if (flag > -1) {
-            switch (flag) {
-                case 0:
-                    for (PackageInfoData app : apps) {
-                        if (app.pkgName.startsWith("dev.afwall.special")) {
-                            searchApp.add(app);
+            try {
+                switch (flag) {
+                    case 0:
+                        for (PackageInfoData app : apps) {
+                            if (app.pkgName.startsWith("dev.afwall.special")) {
+                                searchApp.add(app);
+                            }
                         }
-                    }
-                    break;
-                case 1:
-                    for (PackageInfoData app : apps) {
-                        if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                            searchApp.add(app);
+                        break;
+                    case 1:
+                        for (PackageInfoData app : apps) {
+                            if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                                searchApp.add(app);
+                            }
                         }
-                    }
-                    break;
-                case 2:
-                    for (PackageInfoData app : apps) {
-                        if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                            searchApp.add(app);
+                        break;
+                    case 2:
+                        for (PackageInfoData app : apps) {
+                            if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                                searchApp.add(app);
+                            }
                         }
-                    }
-                    break;
-            }
-
+                        break;
+                }
+            } catch (ConcurrentModificationException e) {}
         }
         List<PackageInfoData> apps2;
         if (showAll || (searchStr != null && searchStr.equals(""))) {
