@@ -702,17 +702,19 @@ public final class Api {
             }
 
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
-            cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
-            cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
 
-            if (!ipv6) {
-                for (String s : natChains) {
-                    cmds.add("#NOCHK# -t nat -N " + AFWALL_CHAIN_NAME + s);
-                    cmds.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+            if(G.enableTor()){
+                cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
+                cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
+                if (!ipv6) {
+                    for (String s : natChains) {
+                        cmds.add("#NOCHK# -t nat -N " + AFWALL_CHAIN_NAME + s);
+                        cmds.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+                    }
+                    cmds.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+                    cmds.add("-t nat -I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
                 }
-                cmds.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
-                cmds.add("-t nat -I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
