@@ -154,9 +154,9 @@ public class PackageBroadcast extends BroadcastReceiver {
         }
 
         Notification notification = notificationBuilder.setOngoing(false)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setPriority(G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_LOW : NotificationManager.IMPORTANCE_MIN)
+                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
                 .setCategory(Notification.CATEGORY_SERVICE)
+                .setSound(null)
                 .setSmallIcon(R.drawable.notification_quest)
                 .setContentTitle(context.getString(R.string.notification_title))
                 .setTicker(context.getString(R.string.notification_title))

@@ -132,7 +132,6 @@ public class FirewallService extends Service {
         Notification notification = notificationBuilder
                 .setContentTitle(getString(R.string.app_name))
                 .setTicker(getString(R.string.app_name))
-                //.setDefaults(Notification.DEFAULT_ALL)
                 .setSound(null)
                 .setCategory(Notification.CATEGORY_STATUS)
                 .setVisibility(Notification.VISIBILITY_SECRET)
