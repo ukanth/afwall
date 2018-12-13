@@ -30,7 +30,7 @@ import static dev.ukanth.ufirewall.Api.mountDir;
 public class ExpPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
 
-    private final String initDirs[] = {"/magisk/.core/service.d", "/sbin/.core/img/.core/service.d", "/magisk/phh/su.d", "/sbin/.core/img/phh/su.d", "/su/su.d", "/system/su.d", "/system/etc/init.d", "/etc/init.d"};
+    private final String initDirs[] = {"/data/adb/service.d", "/magisk/.core/service.d", "/sbin/.core/img/.core/service.d", "/magisk/phh/su.d", "/sbin/.core/img/phh/su.d", "/su/su.d", "/system/su.d", "/system/etc/init.d", "/etc/init.d"};
     private final String initScript = "afwallstart";
 
     @SuppressLint("NewApi")
