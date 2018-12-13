@@ -61,21 +61,26 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             }
             return true;
         });
-        List<String> listSupportedDir = new ArrayList<>();
-        //going through the list of known initDirectories
-        for (String dir : initDirs) {
-            File file = new File(dir);
-            //path exists
-            if (file.exists() && file.isDirectory()) {
-                listSupportedDir.add(dir);
+
+        Activity activity = getActivity();
+        new Thread(() -> {
+            List<String> listSupportedDir = new ArrayList<>();
+            //going through the list of known initDirectories
+            for (String dir : initDirs) {
+                //path exists
+                if (RootTools.exists(dir, true)) {
+                    listSupportedDir.add(dir);
+                }
             }
-        }
-        //some path exists
-        if (listSupportedDir.size() > 0) {
-            String[] entries = listSupportedDir.toArray(new String[listSupportedDir.size()]);
-            listPreference.setEntries(entries);
-            listPreference.setEntryValues(entries);
-        }
+            //some path exists
+            if (listSupportedDir.size() > 0) {
+                String[] entries = listSupportedDir.toArray(new String[listSupportedDir.size()]);
+                activity.runOnUiThread(() -> {
+                    listPreference.setEntries(entries);
+                    listPreference.setEntryValues(entries);
+                });
+            }
+        }).start();
 
         if (G.initPath() != null && !G.initPath().isEmpty()) {
             listPreference.setValue(G.initPath());
@@ -107,9 +112,12 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         if (key.equals("fixLeak")) {
             boolean enabled = G.fixLeak();
 
-            if (enabled != isFixLeakInstalled()) {
-                updateFixLeakScript(enabled);
-            }
+            Activity activity = getActivity();
+            new Thread(() -> {
+                if (enabled != isFixLeakInstalled()) {
+                    activity.runOnUiThread(() -> updateFixLeakScript(enabled));
+                }
+            }).start();
         }
 
         if (key.equals("initPath")) {
@@ -137,7 +145,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
 
         if (fixLeakPref.isEnabled()) {
             // gray out the fixLeak preference if the ROM doesn't support init.d
-            fixLeakPref.setChecked(isFixLeakInstalled());
+            updateLeakCheckbox();
             fixLeakPref.setEnabled(getFixLeakPath(initScript) != null && !isPackageInstalled("com.androguide.universal.init.d", ctx));
         }
     }
@@ -152,9 +160,16 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         }
     }
 
+    /**
+     * Tests whether the fix leak script is installed.
+     *
+     * You should call this from an I/O thread, because current api level does not allow usage of futures.
+     *
+     * @return {@code true} if the fix leak script exists.
+     */
     private boolean isFixLeakInstalled() {
         String path = getFixLeakPath(initScript);
-        return path != null && new File(path).exists();
+        return path != null && RootTools.exists(path);
     }
 
     private void updateFixLeakScript(final boolean enabled) {
@@ -192,19 +207,22 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
     }
 
     private void updateLeakCheckbox() {
+        Activity activity = getActivity();
         CheckBoxPreference fixLeakPref = (CheckBoxPreference) findPreference("fixLeak");
-        fixLeakPref.setChecked(isFixLeakInstalled());
+        new Thread(() -> {
+            boolean isFixLeakInstalled = isFixLeakInstalled();
+            activity.runOnUiThread(() -> fixLeakPref.setChecked(isFixLeakInstalled));
+        }).start();
     }
 
 
     private void deleteFiles(final Context ctx, final boolean updateCheckbox) {
         String path = G.initPath();
         if(path != null) {
-            File f = new File(path);
-            if (f.exists() && f.isDirectory()) {
-                final String filePath = path + "/" + initScript;
+            new Thread(() -> {
+                if (RootTools.exists(path, true)) {
+                    final String filePath = path + "/" + initScript;
 
-                new Thread(() -> {
                     if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
                         new RootCommand()
                                 .setReopenShell(true).setCallback(new RootCommand.Callback() {
@@ -224,8 +242,8 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                     } else {
                         Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                     }
-                }).start();
-            }
+                }
+            }).start();
         } else {
             Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
         }
