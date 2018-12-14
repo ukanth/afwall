@@ -1,6 +1,13 @@
 Changelog AFWall+
 ==================
 
+Version 3.0.2
+* Fix: Issue with Pixel C devices
+* Support for Magisk 18.0 and startup leak
+* Fix: Notification sound issue on some devices
+* Fix: Duplicate name appears on main screen
+
+
 Version 3.0.1
 
 * Fix: Status toggle widget 1x1 
