@@ -704,7 +704,7 @@ public final class Api {
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
-            if(G.enableTor()){
+            if (G.enableTor()) {
                 cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
                 cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
                 if (!ipv6) {
@@ -789,10 +789,10 @@ public final class Api {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
                 //bug fix allow dns to be open on Pie for all connection type
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-wan" + " -p udp --dport 53"+ " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-home" + " -p udp --dport 53"+ " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p udp --dport 53"+ " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p udp --dport 53"+ " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-wan" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-home" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p udp --dport 53" + " -j RETURN");
                 }
             }
 
@@ -803,7 +803,6 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.wifiList, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
-
 
 
             if (G.enableTor()) {
@@ -1567,15 +1566,8 @@ public final class Api {
             }
             /* convert the map into an array */
             applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
-            //must be in sync block
-            try {
-                synchronized (syncMap) {
-                    for (int i = 0; i < syncMap.size(); i++) {
-                        applications.add(syncMap.valueAt(i));
-                    }
-                }
-            } catch (Exception e) {
-
+            for (int i = 0; i < syncMap.size(); i++) {
+                applications.add(syncMap.valueAt(i));
             }
             return applications;
         } catch (Exception e) {
@@ -2060,7 +2052,7 @@ public final class Api {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
-            if(G.getNotificationPriority() == 0) {
+            if (G.getNotificationPriority() == 0) {
                 notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
             }
             notificationChannel.setSound(null, null);
@@ -2139,7 +2131,7 @@ public final class Api {
                 notification.priority = NotificationCompat.PRIORITY_MIN;
                 break;
         }
-        if(G.activeNotification()) {
+        if (G.activeNotification()) {
             notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
             manager.notify(NOTIFICATION_ID, notification);
         }
@@ -3603,6 +3595,28 @@ public final class Api {
 
         public PackageInfoData(String user, String name, String pkgNameStr) {
             this(android.os.Process.getUidForName(user), name, pkgNameStr);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof PackageInfoData)) {
+                return false;
+            }
+
+            PackageInfoData pkg = (PackageInfoData) o;
+
+            return pkg.uid == uid &&
+                    pkg.pkgName.equals(pkgName);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 17;
+            result = 31 * result + appinfo.hashCode();
+            result = 31 * result + uid;
+            result = 31 * result + pkgName.hashCode();
+            return result;
         }
 
         /**
