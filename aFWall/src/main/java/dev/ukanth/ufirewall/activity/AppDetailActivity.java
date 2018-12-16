@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.stericson.rootshell.RootShell;
+import com.stericson.rootshell.execution.Command;
+import com.stericson.rootshell.execution.Shell;
+import com.stericson.roottools.RootTools;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -137,20 +141,25 @@ public class AppDetailActivity extends AppCompatActivity {
                 String textSent = "0";
                 try {
                     if (uidActualFileReceived.exists() && uidActualFileSent.exists()) {
-                        BufferedReader brReceived = new BufferedReader(new FileReader(uidActualFileReceived));
-                        BufferedReader brSent = new BufferedReader(new FileReader(uidActualFileSent));
-                        String receivedLine;
-                        String sentLine;
-                        if ((receivedLine = brReceived.readLine()) != null) {
-                            textReceived = receivedLine;
-                        }
-                        if ((sentLine = brSent.readLine()) != null) {
-                            textSent = sentLine;
-                        }
-                        down.setText(" : " + humanReadableByteCount(Long.parseLong(textReceived), false));
-                        up.setText(" : " + humanReadableByteCount(Long.parseLong(textSent), false));
-                        brReceived.close();
-                        brSent.close();
+                        Command command = new Command(0, "cat " + uidActualFileReceived.getAbsolutePath())
+                        {
+                            @Override
+                            public void commandOutput(int id, String line) {
+                                down.setText(" : " + humanReadableByteCount(Long.parseLong(line), false));
+                                super.commandOutput(id, line);
+                            }
+                        };
+                        Command command1 = new Command(1, "cat " + uidActualFileSent.getAbsolutePath())
+                        {
+                            @Override
+                            public void commandOutput(int id, String line) {
+                                up.setText(" : " + humanReadableByteCount(Long.parseLong(line), false));
+                                super.commandOutput(id, line);
+                            }
+                        };
+                        Shell shell = RootTools.getShell(true);
+                        shell.add(command);
+                        shell.add(command1);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Exception while reading tx bytes: " + e.getLocalizedMessage());
