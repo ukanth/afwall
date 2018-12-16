@@ -1,6 +1,14 @@
 Changelog AFWall+
 ==================
 
+Version 3.0.3
+
+* Fix: Disable firewall issue
+* Fix: Traffic stats always zero in app details
+* Rewritten filter logic for main screen apps.
+* Xposed plugin not able to read preference.
+
+
 Version 3.0.2
 * Fix: Issue with Pixel C devices
 * Support for Magisk 18.0 and startup leak
