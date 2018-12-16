@@ -1354,6 +1354,18 @@ public final class Api {
         callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
     }
 
+
+    public static void fixFolderPermissionsAsync(Context mContext) {
+        AsyncTask.execute(() -> {
+            mContext.getFilesDir().setExecutable(true, false);
+            mContext.getFilesDir().setReadable(true, false);
+            File sharedPrefsFolder = new File(mContext.getFilesDir().getAbsolutePath()
+                    + "/../shared_prefs");
+            sharedPrefsFolder.setExecutable(true, false);
+            sharedPrefsFolder.setReadable(true, false);
+        });
+    }
+
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
@@ -1471,6 +1483,13 @@ public final class Api {
                     app.names = new ArrayList<String>();
                     app.names.add(name);
                     app.appinfo = apinfo;
+                    if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                        //user app
+                        app.appType = 1;
+                    } else {
+                        //system app
+                        app.appType = 0;
+                    }
                     app.pkgName = apinfo.packageName;
                     syncMap.put(apinfo.uid, app);
                 } else {
@@ -1535,6 +1554,8 @@ public final class Api {
             }
             for (int i = 0; i < specialData.size(); i++) {
                 app = specialData.get(i);
+                //core apps
+                app.appType = 2;
                 specialApps.put(app.pkgName, app.uid);
                 //default DNS/NTP
                 if (app.uid != -1 && syncMap.get(app.uid) == null) {
@@ -1618,6 +1639,13 @@ public final class Api {
                     app.names = new ArrayList<String>();
                     app.names.add(name + "(M)");
                     app.appinfo = apinfo;
+                    if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                        //user app
+                        app.appType = 0;
+                    } else {
+                        //system app
+                        app.appType = 1;
+                    }
                     app.pkgName = apinfo.packageName;
                     syncMap.put(appUid, app);
                 }
@@ -3534,6 +3562,13 @@ public final class Api {
          * rules saving & load
          **/
         public String pkgName;
+
+
+        /**
+         * Application Type
+         */
+        public int appType;
+
         /**
          * indicates if this application is selected for wifi
          */

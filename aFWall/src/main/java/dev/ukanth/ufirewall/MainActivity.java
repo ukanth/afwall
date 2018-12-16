@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextWatcher filterTextWatcher = new TextWatcher() {
 
         public void afterTextChanged(Editable s) {
-            showApplications(s.toString(), -1, false);
+            showApplications(s.toString());
         }
 
 
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
-            showApplications(s.toString(), -1, false);
+            showApplications(s.toString());
         }
 
     };
@@ -376,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void updateRadioFilter() {
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
         radioGroup.setOnCheckedChangeListener(this);
-        if(G.showFilter()) {
+        if (G.showFilter()) {
             switch (G.selectedFilter()) {
                 case 0:
                     radioGroup.check(R.id.rpkg_core);
@@ -397,21 +397,54 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void selectFilterGroup() {
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
-        switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.rpkg_core:
-                showApplications(null, 0, false);
-                break;
-            case R.id.rpkg_sys:
-                showApplications(null, 1, false);
-                break;
-            case R.id.rpkg_user:
-                showApplications(null, 2, false);
-                break;
-            default:
-                showApplications("", 99, true);
-                break;
+        if (G.showFilter()) {
+            RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+            switch (radioGroup.getCheckedRadioButtonId()) {
+                case R.id.rpkg_core:
+                    filterApps(2);
+                    break;
+                case R.id.rpkg_sys:
+                    filterApps(0);
+                    break;
+                case R.id.rpkg_user:
+                    filterApps(1);
+                    break;
+                default:
+                    filterApps(-1);
+                    break;
+            }
+        } else {
+            filterApps(-1);
         }
+
+    }
+
+    /**
+     * Filter application based on app tpe
+     *
+     * @param i
+     */
+    private void filterApps(int i) {
+        List<PackageInfoData> returnList = new ArrayList<>();
+        List<PackageInfoData> allApps = Api.getApps(getApplicationContext(), null);
+        if (i >= 0) {
+            for (PackageInfoData infoData : allApps) {
+                if (infoData.appType == i) {
+                    returnList.add(infoData);
+                }
+            }
+        } else {
+            returnList = allApps;
+        }
+        try {
+            Collections.sort(returnList, new PackageComparator());
+        } catch (Exception e) {
+            Log.d(Api.TAG, "Exception Sorting");
+        }
+
+        this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), returnList));
+        // restore
+        this.listview.setSelectionFromTop(index, top);
     }
 
     @Override
@@ -573,21 +606,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.rpkg_all:
-                showOrLoadApplications();
+                filterApps(-1);
                 G.saveSelectedFilter(99);
                 break;
             case R.id.rpkg_core:
-                showApplications(null, 0, false);
+                filterApps(2);
                 G.saveSelectedFilter(0);
                 break;
             case R.id.rpkg_sys:
-                showApplications(null, 1, false);
+                filterApps(0);
                 G.saveSelectedFilter(1);
                 break;
             case R.id.rpkg_user:
-                showApplications(null, 2, false);
+                filterApps(1);
                 G.saveSelectedFilter(2);
-
                 break;
         }
     }
@@ -961,13 +993,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     /**
      * Show the list of applications
      */
-    private void showApplications(final String searchStr, int flag, boolean showAll) {
+    private void showApplications(final String searchStr) {
 
         setDirty(false);
+
         List<PackageInfoData> searchApp = new ArrayList<>();
         HashSet<Integer> unique = new HashSet<>();
         final List<PackageInfoData> apps = Api.getApps(this, null);
         boolean isResultsFound = false;
+
         if (searchStr != null && searchStr.length() > 1) {
             for (PackageInfoData app : apps) {
                 for (String str : app.names) {
@@ -981,54 +1015,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
             }
-        } else if (flag > -1) {
-            try {
-                switch (flag) {
-                    case 0:
-                        for (PackageInfoData app : apps) {
-                            if (app.pkgName.startsWith("dev.afwall.special")) {
-                                searchApp.add(app);
-                            }
-                        }
-                        break;
-                    case 1:
-                        for (PackageInfoData app : apps) {
-                            if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                                searchApp.add(app);
-                            }
-                        }
-                        break;
-                    case 2:
-                        for (PackageInfoData app : apps) {
-                            if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                                searchApp.add(app);
-                            }
-                        }
-                        break;
-                }
-            } catch (ConcurrentModificationException e) {}
         }
-        List<PackageInfoData> apps2;
-        if (showAll || (searchStr != null && searchStr.equals(""))) {
+
+        List<PackageInfoData> apps2 = null;
+        if (searchStr != null && searchStr.equals("")) {
             apps2 = apps;
         } else if (isResultsFound || searchApp.size() > 0) {
             apps2 = searchApp;
-        } else {
-            apps2 = new ArrayList<PackageInfoData>();
         }
-        synchronized (apps2) {
-            // Sort applications - selected first, then alphabetically
-            try {
+        // Sort applications - selected first, then alphabetically
+        try {
+            if (apps2 != null) {
                 Collections.sort(apps2, new PackageComparator());
-            } catch (IllegalArgumentException e) {
-                Log.d(Api.TAG, "IllegalArgumentException on Sort");
+                this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
+                // restore
+                this.listview.setSelectionFromTop(index, top);
             }
+        } catch (Exception e) {
+            Log.d(Api.TAG, "Exception on Sorting");
         }
-
-        this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
-        // restore
-        this.listview.setSelectionFromTop(index, top);
-
     }
 
     @Override
@@ -1252,23 +1257,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         filterText.setEllipsize(TruncateAt.END);
         filterText.setSingleLine();
 
-        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Do something when collapsed
-                showApplications("", 0, true);
+                selectFilterGroup();
                 return true;  // Return true to collapse action view
             }
 
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                filterText.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        filterText.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
-                    }
+                filterText.post(() -> {
+                    filterText.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(filterText, InputMethodManager.SHOW_IMPLICIT);
                 });
                 return true;  // Return true to expand action view
             }
@@ -1709,6 +1711,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             ((BaseAdapter) adapter).notifyDataSetChanged();
         }
     }
+
     private void selectAllTor(boolean flag) {
         if (this.listview == null) {
             this.listview = (ListView) this.findViewById(R.id.listview);

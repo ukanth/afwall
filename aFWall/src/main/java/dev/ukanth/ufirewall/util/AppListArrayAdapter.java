@@ -135,8 +135,10 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
         ApplicationInfo info = holder.app.appinfo;
         if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+            //user app
             holder.text.setTextColor(ContextCompat.getColor(context, R.color.white));
         } else {
+            //system app
             holder.text.setTextColor(G.sysColor());
         }
 

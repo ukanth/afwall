@@ -190,6 +190,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             }
         }
 
+        Api.fixFolderPermissionsAsync(context);
+
         return null;
     }
 
