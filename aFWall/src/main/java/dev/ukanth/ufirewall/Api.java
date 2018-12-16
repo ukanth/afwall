@@ -1363,12 +1363,16 @@ public final class Api {
 
     public static void fixFolderPermissionsAsync(Context mContext) {
         AsyncTask.execute(() -> {
-            mContext.getFilesDir().setExecutable(true, false);
-            mContext.getFilesDir().setReadable(true, false);
-            File sharedPrefsFolder = new File(mContext.getFilesDir().getAbsolutePath()
-                    + "/../shared_prefs");
-            sharedPrefsFolder.setExecutable(true, false);
-            sharedPrefsFolder.setReadable(true, false);
+            try {
+                mContext.getFilesDir().setExecutable(true, false);
+                mContext.getFilesDir().setReadable(true, false);
+                File sharedPrefsFolder = new File(mContext.getFilesDir().getAbsolutePath()
+                        + "/../shared_prefs");
+                sharedPrefsFolder.setExecutable(true, false);
+                sharedPrefsFolder.setReadable(true, false);
+            } catch (Exception e) {
+                Log.e(Api.TAG, e.getMessage(), e);
+            }
         });
     }
 
