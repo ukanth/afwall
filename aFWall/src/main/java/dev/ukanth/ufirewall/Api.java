@@ -488,24 +488,28 @@ public final class Api {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor-reject -m owner --uid-owner " + uid + " -j afwall-reject");
             }
             if (!ipv6) {
-                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-check -m owner --uid-owner " + uid + " -j " + AFWALL_CHAIN_NAME + "-tor-filter");
+                if (G.enableTor()) {
+                    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-check -m owner --uid-owner " + uid + " -j " + AFWALL_CHAIN_NAME + "-tor-filter");
+                }
             }
         }
         if (ipv6) {
             cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-reject");
         } else {
-            Integer socks_port = 9050;
-            Integer http_port = 8118;
-            Integer dns_port = 5400;
-            Integer tcp_port = 9040;
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j afwall-reject");
-            cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
+            if (G.enableTor()) {
+                Integer socks_port = 9050;
+                Integer http_port = 8118;
+                Integer dns_port = 5400;
+                Integer tcp_port = 9040;
+                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
+                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
+                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
+                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
+                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
+                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
+                cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j afwall-reject");
+                cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
+            }
         }
         if (G.enableInbound()) {
             cmds.add("-A " + AFWALL_CHAIN_NAME + "-input -j " + AFWALL_CHAIN_NAME + "-tor-reject");
@@ -1126,10 +1130,12 @@ public final class Api {
         for (String s : dynChains) {
             cmds.add("-F " + AFWALL_CHAIN_NAME + s);
         }
-        for (String s : natChains) {
-            cmdsv4.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+        if (G.enableTor()) {
+            for (String s : natChains) {
+                cmdsv4.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+            }
+            cmdsv4.add("-t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
         }
-        cmdsv4.add("-t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
 
         //make sure reset the OUTPUT chain to accept state.
         cmds.add("-P OUTPUT ACCEPT");
