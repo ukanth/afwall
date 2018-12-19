@@ -265,7 +265,7 @@ public class LogInfo {
                 logInfo.type = type;
                 if (G.showHost()) {
                     try {
-                        String add = Address.getHostName(InetAddress.getByName(logInfo.dst));
+                        String add  = InetAddress.getByName(logInfo.dst).getHostName();
                         if (add != null) {
                             logInfo.host = add;
                             address.append("(" + add + ") ");
