@@ -708,9 +708,12 @@ public final class Api {
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
-            if (G.enableTor()) {
+            if(G.enableInbound()) {
                 cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
                 cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
+            }
+
+            if (G.enableTor()) {
                 if (!ipv6) {
                     for (String s : natChains) {
                         cmds.add("#NOCHK# -t nat -N " + AFWALL_CHAIN_NAME + s);
