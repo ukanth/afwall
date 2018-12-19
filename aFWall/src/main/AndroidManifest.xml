@@ -36,9 +36,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <!-- Will be default in CyanogenMod Superuser App -->
-    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
-
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 

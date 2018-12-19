@@ -27,24 +27,7 @@ public class FirewallService extends Service {
     BroadcastReceiver connectivityReciver;
     BroadcastReceiver packageInstallReceiver;
     BroadcastReceiver packageUninstallReceiver;
-
-    BroadcastReceiver widgetReceiver;
     IntentFilter filter;
-
-    /*private static void sendImplicitBroadcast(Context ctxt, Intent i) {
-        PackageManager pm = ctxt.getPackageManager();
-        List<ResolveInfo> matches = pm.queryBroadcastReceivers(i, 0);
-
-        for (ResolveInfo resolveInfo : matches) {
-            Intent explicit = new Intent(i);
-            ComponentName cn =
-                    new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
-                            resolveInfo.activityInfo.name);
-
-            explicit.setComponent(cn);
-            ctxt.sendBroadcast(explicit);
-        }
-    }*/
 
     @Override
     public IBinder onBind(Intent intent) {

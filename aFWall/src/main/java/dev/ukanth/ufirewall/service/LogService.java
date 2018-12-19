@@ -62,7 +62,6 @@ public class LogService extends Service {
     public static final String TAG = "AFWall";
 
     public static String logPath;
-    private final IBinder mBinder = new Binder();
 
     private Shell.Interactive rootSession;
     static Handler handler;
@@ -204,7 +203,7 @@ public class LogService extends Service {
                         try {
                             new Thread(() -> {
                                 store(event.logInfo, event.ctx);
-                                if (event != null && event.logInfo!= null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+                                if (event != null && event.logInfo != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
                                     if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
                                         showToast(event.ctx, handler, event.logInfo.uidString, false);
                                     }
@@ -347,7 +346,7 @@ public class LogService extends Service {
 
     private static void store(final LogInfo logInfo, Context context) {
         try {
-            if(logInfo != null) {
+            if (logInfo != null) {
                 LogData data = new LogData();
                 data.setDst(logInfo.dst);
                 data.setOut(logInfo.out);
