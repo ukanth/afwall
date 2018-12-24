@@ -133,12 +133,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 String[] items = {current_selected_logData.getDst(), current_selected_logData.getSrc()};
                 new MaterialDialog.Builder(this)
                         .items(items)
-                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-                            @Override
-                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                                return true;
-                            }
-                        })
+                        .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> true)
                         .positiveText(R.string.choose)
                         .show();
                 break;
@@ -149,12 +144,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                         .title(R.string.destination_address)
                         .neutralText(R.string.OK)
                         .positiveText(R.string.copy_text)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getDst() + ":" + current_selected_logData.getDpt());
-                                Api.toast(LogDetailActivity.this, getString(R.string.destination_copied));
-                            }
+                        .onPositive((dialog, which) -> {
+                            Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getDst() + ":" + current_selected_logData.getDpt());
+                            Api.toast(LogDetailActivity.this, getString(R.string.destination_copied));
                         })
                         .show();
 
@@ -166,77 +158,42 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                         .title(R.string.source_address)
                         .neutralText(R.string.OK)
                         .positiveText(R.string.copy_text)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getSrc() + ":" + current_selected_logData.getSpt());
-                                Api.toast(LogDetailActivity.this, getString(R.string.source_copied));
-                            }
+                        .onPositive((dialog, which) -> {
+                            Api.copyToClipboard(LogDetailActivity.this, current_selected_logData.getSrc() + ":" + current_selected_logData.getSpt());
+                            Api.toast(LogDetailActivity.this, getString(R.string.source_copied));
                         })
                         .show();
                 break;
 
             case 3: // Ping Destination
-                try {
-                    new LogNetUtil.NetTask(this).execute(
-                            new LogNetUtil.NetParam(
-                                    LogNetUtil.JobType.PING, current_selected_logData.getDst()
-                            )
-                    ).get();
+                new LogNetUtil.NetTask(this).execute(
+                        new LogNetUtil.NetParam(LogNetUtil.JobType.PING, current_selected_logData.getDst())
+                );
 
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "Exception(00): " + e.getMessage());
-                } catch (ExecutionException e) {
-                    Log.e(TAG, "Exception(01): " + e.getMessage());
-                }
                 break;
 
             case 4: // Ping Source
-                try {
-                    new LogNetUtil.NetTask(this).execute(
-                            new LogNetUtil.NetParam(
-                                    LogNetUtil.JobType.PING, current_selected_logData.getSrc()
-                            )
-                    ).get();
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "Exception(03): " + e.getMessage());
-                } catch (ExecutionException e) {
-                    Log.e(TAG, "Exception(04): " + e.getMessage());
-                }
+                new LogNetUtil.NetTask(this).execute(
+                        new LogNetUtil.NetParam(LogNetUtil.JobType.PING, current_selected_logData.getSrc())
+                );
                 break;
 
             case 5: // Resolve Destination
-                try {
-                    new LogNetUtil.NetTask(this).execute(
-                            new LogNetUtil.NetParam(
-                                    LogNetUtil.JobType.RESOLVE, current_selected_logData.getDst()
-                            )
-                    ).get();
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "Exception(05): " + e.getMessage());
-                } catch (ExecutionException e) {
-                    Log.e(TAG, "Exception(06): " + e.getMessage());
-                }
+                new LogNetUtil.NetTask(this).execute(
+                        new LogNetUtil.NetParam(LogNetUtil.JobType.RESOLVE, current_selected_logData.getDst())
+                );
                 break;
 
             case 6: // Resolve Source
-                try {
-                    new LogNetUtil.NetTask(this).execute(
-                            new LogNetUtil.NetParam(
-                                    LogNetUtil.JobType.RESOLVE, current_selected_logData.getSrc()
-                            )
-                    ).get();
-                } catch (InterruptedException e) {
-                    Log.e(TAG, "Exception(07): " + e.getMessage());
-                } catch (ExecutionException e) {
-                    Log.e(TAG, "Exception(08): " + e.getMessage());
-                }
+                new LogNetUtil.NetTask(this).execute(
+                        new LogNetUtil.NetParam(LogNetUtil.JobType.RESOLVE, current_selected_logData.getSrc())
+                );
                 break;
         }
         return super.onContextItemSelected(item);
     }
 
-    public class NetTask extends AsyncTask<String, Integer, String> {
+   /* public class NetTask extends AsyncTask<String, Integer, String> {
         @Override
         protected String doInBackground(String... params) {
             InetAddress addr = null;
@@ -248,7 +205,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             return addr.getCanonicalHostName().toString();
         }
     }
-
+*/
 
     private List<LogData> getLogData(final int uid) {
         return SQLite.select()
