@@ -27,14 +27,16 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -79,7 +81,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -231,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         migrateNotification();
         //checkAndAskForBatteryOptimization();
     }
+
 
     private void registerNetworkObserver() {
         startService(new Intent(getBaseContext(), FirewallService.class));

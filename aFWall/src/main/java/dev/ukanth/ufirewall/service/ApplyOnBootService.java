@@ -45,6 +45,9 @@ public class ApplyOnBootService extends Service {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
                    channelName, NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setSound(null, null);
+            notificationChannel.setShowBadge(false);
+            notificationChannel.enableLights(false);
+            notificationChannel.enableVibration(false);
             notificationManager.createNotificationChannel(notificationChannel);
 
         }

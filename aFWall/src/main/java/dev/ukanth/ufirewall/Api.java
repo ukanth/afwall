@@ -2047,6 +2047,7 @@ public final class Api {
                 notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
             }
             notificationChannel.setSound(null, null);
+            notificationChannel.setShowBadge(false);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
             manager.createNotificationChannel(notificationChannel);
@@ -2097,6 +2098,7 @@ public final class Api {
                 notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
             }
             notificationChannel.setSound(null, null);
+            notificationChannel.setShowBadge(false);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
             manager.createNotificationChannel(notificationChannel);

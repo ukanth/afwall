@@ -133,6 +133,10 @@ public class PackageBroadcast extends BroadcastReceiver {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            chan.setShowBadge(false);
+            chan.setSound(null,null);
+            chan.enableLights(false);
+            chan.enableVibration(false);
             chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
             manager.createNotificationChannel(chan);

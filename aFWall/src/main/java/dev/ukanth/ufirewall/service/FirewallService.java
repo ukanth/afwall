@@ -57,6 +57,7 @@ public class FirewallService extends Service {
             }
             notificationChannel.setSound(null, null);
             notificationChannel.enableLights(false);
+            notificationChannel.setShowBadge(false);
             notificationChannel.enableVibration(false);
             manager.createNotificationChannel(notificationChannel);
         }
