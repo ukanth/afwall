@@ -5,7 +5,9 @@ Version 3.0.4
 * Fix: domain names resolve
 * Fix: Removed notification dot on all notifications
 * Fix: Inbound option causing firewall disable functionality
+* Fix: Hang issue on log detail when ping/resolve
 * Removed SUPER_USER permission which is not relevant anymore
+
 
 Version 3.0.3
 
