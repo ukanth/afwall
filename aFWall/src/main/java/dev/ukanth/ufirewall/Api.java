@@ -187,6 +187,7 @@ public final class Api {
     public static final String STATUS_EXTRA = "dev.ukanth.ufirewall.intent.extra.STATUS";
     public static final String SCRIPT_EXTRA = "dev.ukanth.ufirewall.intent.extra.SCRIPT";
     public static final String SCRIPT2_EXTRA = "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
+    public static final int ERROR_NOTIFICATION_ID = 9;
     private static final int WIFI_EXPORT = 0;
     private static final int DATA_EXPORT = 1;
     private static final int ROAM_EXPORT = 2;
@@ -247,8 +248,6 @@ public final class Api {
     private static String AFWALL_CHAIN_NAME = "afwall";
     private static Map<String, Integer> specialApps = null;
     private static boolean rulesUpToDate = false;
-
-    public static final int ERROR_NOTIFICATION_ID = 9;
 
     public static void setRulesUpToDate(boolean rulesUpToDate) {
         Api.rulesUpToDate = rulesUpToDate;
@@ -484,11 +483,11 @@ public final class Api {
 
     private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6) {
         for (Integer uid : uids) {
-            if (G.enableInbound() || ipv6) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor-reject -m owner --uid-owner " + uid + " -j afwall-reject");
-            }
-            if (!ipv6) {
-                if (G.enableTor()) {
+            if (uid != null && uid >= 0) {
+                if (G.enableInbound() || ipv6) {
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor-reject -m owner --uid-owner " + uid + " -j afwall-reject");
+                }
+                if (!ipv6) {
                     cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-check -m owner --uid-owner " + uid + " -j " + AFWALL_CHAIN_NAME + "-tor-filter");
                 }
             }
@@ -496,20 +495,18 @@ public final class Api {
         if (ipv6) {
             cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-reject");
         } else {
-            if (G.enableTor()) {
-                Integer socks_port = 9050;
-                Integer http_port = 8118;
-                Integer dns_port = 5400;
-                Integer tcp_port = 9040;
-                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
-                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
-                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
-                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
-                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
-                cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j afwall-reject");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
-            }
+            Integer socks_port = 9050;
+            Integer http_port = 8118;
+            Integer dns_port = 5400;
+            Integer tcp_port = 9040;
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
+            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j afwall-reject");
+            cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
         }
         if (G.enableInbound()) {
             cmds.add("-A " + AFWALL_CHAIN_NAME + "-input -j " + AFWALL_CHAIN_NAME + "-tor-reject");
@@ -708,7 +705,7 @@ public final class Api {
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
-            if(G.enableInbound()) {
+            if (G.enableInbound()) {
                 cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
                 cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
             }
