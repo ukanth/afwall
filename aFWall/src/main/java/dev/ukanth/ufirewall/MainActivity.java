@@ -449,7 +449,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Log.d(Api.TAG, "Exception in filter Sorting");
         }
 
-        this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), inputList));
+        ArrayAdapter appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
+        this.listview.setAdapter(appAdapter);
+        appAdapter.notifyDataSetChanged();
         // restore
         this.listview.setSelectionFromTop(index, top);
     }
