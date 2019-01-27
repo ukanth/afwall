@@ -3589,7 +3589,6 @@ public final class Api {
          **/
         public String pkgName;
 
-
         /**
          * Application Type
          */
@@ -3674,7 +3673,9 @@ public final class Api {
         @Override
         public int hashCode() {
             int result = 17;
-            result = 31 * result + appinfo.hashCode();
+            if(appinfo != null) {
+                result = 31 * result + appinfo.hashCode();
+            }
             result = 31 * result + uid;
             result = 31 * result + pkgName.hashCode();
             return result;

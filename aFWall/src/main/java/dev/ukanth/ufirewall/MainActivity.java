@@ -84,6 +84,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
@@ -376,7 +377,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void updateRadioFilter() {
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
-        radioGroup.setOnCheckedChangeListener(this);
         if (G.showFilter()) {
             switch (G.selectedFilter()) {
                 case 0:
@@ -395,6 +395,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             radioGroup.check(R.id.rpkg_all);
         }
+        radioGroup.setOnCheckedChangeListener(this);
     }
 
     private void selectFilterGroup() {
@@ -426,24 +427,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param i
      */
     private void filterApps(int i) {
-        List<PackageInfoData> returnList = new ArrayList<>();
+        Set<PackageInfoData> returnList = new HashSet<>();
+        List<PackageInfoData> inputList;
         List<PackageInfoData> allApps = Api.getApps(getApplicationContext(), null);
         if (i >= 0) {
             for (PackageInfoData infoData : allApps) {
-                if (infoData.appType == i) {
-                    returnList.add(infoData);
+                if(infoData != null) {
+                    if (infoData.appType == i) {
+                        returnList.add(infoData);
+                    }
                 }
             }
+            inputList = new ArrayList<>(returnList);
         } else {
-            returnList = allApps;
-        }
-        try {
-            Collections.sort(returnList, new PackageComparator());
-        } catch (Exception e) {
-            Log.d(Api.TAG, "Exception Sorting");
+            inputList = allApps;
         }
 
-        this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), returnList));
+        try {
+            Collections.sort(inputList, new PackageComparator());
+        } catch (Exception e) {
+            Log.d(Api.TAG, "Exception in filter Sorting");
+        }
+
+        this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), inputList));
         // restore
         this.listview.setSelectionFromTop(index, top);
     }
