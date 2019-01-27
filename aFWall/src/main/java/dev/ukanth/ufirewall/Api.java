@@ -532,6 +532,7 @@ public final class Api {
      * @param cmds command list
      */
     private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6) {
+        Log.i(TAG, "Adding iface routing: " + ipv6);
         try {
             final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
             final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
@@ -553,13 +554,20 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isTethered) {
-                if (ipv6 && !cfg.lanMaskV6.equals("")) {
-                    cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
-                    cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
-                } else if (!ipv6 && !cfg.lanMaskV4.equals("")) {
-                    cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
-                    cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
+                if (ipv6) {
+                    if (!cfg.lanMaskV6.equals("")) {
+                        Log.i(TAG, "ipv6 found: " + ipv6 + "," + cfg.lanMaskV6 );
+                        cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
+                        cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
+                    }
                 } else {
+                    if (!cfg.lanMaskV4.equals("")) {
+                        Log.i(TAG, "ipv4 found:true,ipv6 " + ipv6 + "," + cfg.lanMaskV4 );
+                        cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
+                        cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
+                    }
+                }
+                if (cfg.lanMaskV4.equals("") && cfg.lanMaskV6.equals("")) {
                     Log.i(TAG, "No ipaddress found for LAN");
                     // lets find one more time
                     //atleast allow internet - don't block completely
@@ -590,7 +598,7 @@ public final class Api {
         return ctx.getString(R.string.unknown_item);
     }
 
-    public static RuleDataSet merge(RuleDataSet original, RuleDataSet modified) {
+   /* public static RuleDataSet merge(RuleDataSet original, RuleDataSet modified) {
         if (modified.dataList.size() > 0) {
             for (Integer integer : modified.dataList) {
                 if (integer > 0) {
@@ -646,7 +654,7 @@ public final class Api {
             }
         }
         return original;
-    }
+    }*/
 
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
@@ -655,6 +663,7 @@ public final class Api {
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
         cmds.add("-P OUTPUT ACCEPT");
     }
+
 
     /**
      * Purge and re-add all rules (internal implementation).
@@ -899,13 +908,41 @@ public final class Api {
                     getListFromPref(savedPkg_lan_uid),
                     getListFromPref(savedPkg_tor_uid));
             returnValue = applyIptablesRulesImpl(ctx, dataSet, showErrors, cmds, false);
-            if (returnValue == false) {
+            if (!returnValue) {
                 return false;
             }
+            rulesUpToDate = true;
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            return true;
+        } catch (Exception e) {
+            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+            applyDefaultChains(ctx, callback);
+            return false;
+        }
+    }
+
+
+    public static boolean applySavedIp6tablesRules(Context ctx, boolean showErrors, RootCommand callback) {
+        if (ctx == null) {
+            return false;
+        }
+        try {
+            Log.i(TAG, "Using applySavedIp6tablesRules");
+            initSpecial();
+
+            final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+            final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
+            final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+            final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
+            final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
+            final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
+
+            boolean returnValue;
+            List<String> cmds = new ArrayList<String>();
 
             if (G.enableIPv6()) {
                 setBinaryPath(ctx, true);
-                dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
+                RuleDataSet dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
                         getListFromPref(savedPkg_3g_uid),
                         getListFromPref(savedPkg_roam_uid),
                         getListFromPref(savedPkg_vpn_uid),
@@ -920,49 +957,6 @@ public final class Api {
                 }
             }
             rulesUpToDate = true;
-
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
-            return true;
-        } catch (Exception e) {
-            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx, callback);
-            return false;
-        }
-    }
-
-
-    public static boolean applyQuickSavedIptablesRules(Context ctx, RuleDataSet dataSet, boolean showErrors, RootCommand callback) {
-        if (ctx == null) {
-            return false;
-        }
-        try {
-            Log.i(TAG, "Using applyQuickSavedIptablesRules");
-            initSpecial();
-
-            boolean returnValue;
-            List<String> cmds = new ArrayList<String>();
-            List<String> out = new ArrayList<String>();
-            setBinaryPath(ctx, false);
-            returnValue = applyIptablesRulesImpl(ctx, dataSet, showErrors, cmds, false);
-            if (returnValue == false) {
-                return false;
-            }
-
-            iptablesCommands(cmds, out, false);
-
-            if (G.enableIPv6()) {
-                setBinaryPath(ctx, true);
-                returnValue = applyIptablesRulesImpl(ctx, dataSet,
-                        showErrors,
-                        cmds, true);
-                if (returnValue == false) {
-                    return false;
-                }
-
-                iptablesCommands(cmds, out, true);
-
-            }
-            rulesUpToDate = true;
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
@@ -975,24 +969,40 @@ public final class Api {
 
     public static boolean fastApply(Context ctx, RootCommand callback) {
         try {
-
+            boolean[] applied = {false, false};
             if (!rulesUpToDate) {
-                return applySavedIptablesRules(ctx, true, callback);
+                Thread t1 = new Thread(() -> {
+                    applied[0] = applySavedIptablesRules(ctx, true, callback);
+                });
+                Thread t2 = new Thread(() -> {
+                    applied[1] = applySavedIp6tablesRules(ctx, true, callback);
+                });
+                t1.start();
+                t2.start();
+                t1.join();
+                t2.join();
+                return applied[0] && applied[1];
             }
             Log.i(TAG, "Using fastApply");
             List<String> out = new ArrayList<String>();
-            List<String> cmds;
 
-            cmds = new ArrayList<String>();
-            setBinaryPath(ctx, false);
-            applyShortRules(ctx, cmds, false);
-            iptablesCommands(cmds, out, false);
-
+            Thread t1 = new Thread(() -> {
+                List<String> cmds = new ArrayList<String>();
+                setBinaryPath(ctx, false);
+                applyShortRules(ctx, cmds, false);
+                iptablesCommands(cmds, out, false);
+            });
+            t1.start();
+            t1.join();
             if (G.enableIPv6()) {
-                setBinaryPath(ctx, true);
-                cmds = new ArrayList<String>();
-                applyShortRules(ctx, cmds, true);
-                iptablesCommands(cmds, out, true);
+                Thread t2 = new Thread(() -> {
+                    setBinaryPath(ctx, true);
+                    List<String> cmds = new ArrayList<String>();
+                    applyShortRules(ctx, cmds, true);
+                    iptablesCommands(cmds, out, true);
+                });
+                t2.start();
+                t2.join();
             }
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
         } catch (Exception e) {
@@ -2320,10 +2330,14 @@ public final class Api {
             editor.commit();
             if (isEnabled(ctx)) {
                 // .. and also re-apply the rules if the firewall is enabled
-                applySavedIptablesRules(ctx, false, callback);
+                new Thread(() -> {
+                    applySavedIptablesRules(ctx, true, callback);
+                }).start();
+                new Thread(() -> {
+                    applySavedIp6tablesRules(ctx, true, callback);
+                }).start();
             }
         }
-
     }
 
     public static boolean checkMD5(String md5, File updateFile) {
