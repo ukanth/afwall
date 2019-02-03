@@ -46,6 +46,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
@@ -991,5 +994,28 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public void onActivityDestroyed(Activity activity) { }
 
 
+    private static Pattern VALID_IPV4_PATTERN = null;
+    private static Pattern VALID_IPV6_PATTERN = null;
+    private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
+    private static final String ipv6Pattern = "([0-9a-f]{1,4}:){7}([0-9a-f]){1,4}";
+
+    static {
+        try {
+            VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern, Pattern.CASE_INSENSITIVE);
+            VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern, Pattern.CASE_INSENSITIVE);
+        } catch (PatternSyntaxException e) {
+            //logger.severe("Unable to compile pattern", e);
+        }
+    }
+
+    public static boolean isIp4Address(String ipAddress) {
+        Matcher m1 = G.VALID_IPV4_PATTERN.matcher(ipAddress);
+        return m1.matches();
+    }
+
+    public static boolean isIp6Address(String ipAddress) {
+        Matcher m2 = G.VALID_IPV6_PATTERN.matcher(ipAddress);
+        return m2.matches();
+    }
 
 }

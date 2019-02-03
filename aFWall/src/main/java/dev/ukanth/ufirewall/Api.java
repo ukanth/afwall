@@ -121,6 +121,7 @@ import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
+import dev.ukanth.ufirewall.util.Rule;
 import dev.ukanth.ufirewall.widget.StatusWidget;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
@@ -556,13 +557,13 @@ public final class Api {
             if (G.enableLAN() && !cfg.isTethered) {
                 if (ipv6) {
                     if (!cfg.lanMaskV6.equals("")) {
-                        Log.i(TAG, "ipv6 found: " + ipv6 + "," + cfg.lanMaskV6 );
+                        Log.i(TAG, "ipv6 found: " + ipv6 + "," + cfg.lanMaskV6);
                         cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
                         cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
                     }
                 } else {
                     if (!cfg.lanMaskV4.equals("")) {
-                        Log.i(TAG, "ipv4 found:true,ipv6 " + ipv6 + "," + cfg.lanMaskV4 );
+                        Log.i(TAG, "ipv4 found:true,ipv6 " + ipv6 + "," + cfg.lanMaskV4);
                         cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
                         cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
                     }
@@ -873,6 +874,56 @@ public final class Api {
         }
     }
 
+    public static boolean applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
+        if (ctx == null) {
+            return false;
+        }
+        RuleDataSet dataSet = getDataSet();
+        boolean[] applied = {false, false};
+        Thread t1 = new Thread(() -> {
+            applied[0] = applySavedIp4tablesRules(ctx, dataSet, showErrors, callback);
+        });
+        Thread t2 = new Thread(() -> {
+            applied[1] = applySavedIp6tablesRules(ctx, dataSet, showErrors, callback);
+        });
+        t1.start();
+        if (G.enableIPv6()) {
+            t2.start();
+        }
+        try {
+            t1.join();
+            if (G.enableIPv6()) {
+                t2.join();
+            }
+        } catch (InterruptedException e) {
+        }
+        boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
+        if (returnValue) {
+            rulesUpToDate = true;
+        }
+        return returnValue;
+    }
+
+    private static RuleDataSet getDataSet() {
+        initSpecial();
+
+        final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+        final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
+        final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+        final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
+        final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
+        final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
+
+        RuleDataSet dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
+                getListFromPref(savedPkg_3g_uid),
+                getListFromPref(savedPkg_roam_uid),
+                getListFromPref(savedPkg_vpn_uid),
+                getListFromPref(savedPkg_lan_uid),
+                getListFromPref(savedPkg_tor_uid));
+
+        return dataSet;
+
+    }
 
     /**
      * Purge and re-add all saved rules (not in-memory ones).
@@ -882,36 +933,20 @@ public final class Api {
      * @param showErrors indicates if errors should be alerted
      * @param callback   If non-null, use a callback instead of blocking the current thread
      */
-    public static boolean applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
+    public static boolean applySavedIp4tablesRules(Context ctx, RuleDataSet dataSet, boolean showErrors, RootCommand callback) {
         if (ctx == null) {
             return false;
         }
         try {
             Log.i(TAG, "Using applySavedIptablesRules");
-            initSpecial();
-
-            final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
-            final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
-            final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
-            final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
-            final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
-            final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
-
             boolean returnValue;
             List<String> cmds = new ArrayList<String>();
-
             setBinaryPath(ctx, false);
-            RuleDataSet dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
-                    getListFromPref(savedPkg_3g_uid),
-                    getListFromPref(savedPkg_roam_uid),
-                    getListFromPref(savedPkg_vpn_uid),
-                    getListFromPref(savedPkg_lan_uid),
-                    getListFromPref(savedPkg_tor_uid));
             returnValue = applyIptablesRulesImpl(ctx, dataSet, showErrors, cmds, false);
             if (!returnValue) {
                 return false;
             }
-            rulesUpToDate = true;
+            //rulesUpToDate = true;
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
@@ -922,41 +957,19 @@ public final class Api {
     }
 
 
-    public static boolean applySavedIp6tablesRules(Context ctx, boolean showErrors, RootCommand callback) {
+    public static boolean applySavedIp6tablesRules(Context ctx, RuleDataSet dataSet, boolean showErrors, RootCommand callback) {
         if (ctx == null) {
             return false;
         }
         try {
             Log.i(TAG, "Using applySavedIp6tablesRules");
-            initSpecial();
-
-            final String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
-            final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
-            final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
-            final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
-            final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
-            final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
-
             boolean returnValue;
             List<String> cmds = new ArrayList<String>();
-
-            if (G.enableIPv6()) {
-                setBinaryPath(ctx, true);
-                RuleDataSet dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
-                        getListFromPref(savedPkg_3g_uid),
-                        getListFromPref(savedPkg_roam_uid),
-                        getListFromPref(savedPkg_vpn_uid),
-                        getListFromPref(savedPkg_lan_uid),
-                        getListFromPref(savedPkg_tor_uid));
-
-                returnValue = applyIptablesRulesImpl(ctx, dataSet,
-                        showErrors,
-                        cmds, true);
-                if (returnValue == false) {
-                    return false;
-                }
+            setBinaryPath(ctx, true);
+            returnValue = applyIptablesRulesImpl(ctx, dataSet, showErrors, cmds, true);
+            if (returnValue == false) {
+                return false;
             }
-            rulesUpToDate = true;
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
@@ -969,46 +982,37 @@ public final class Api {
 
     public static boolean fastApply(Context ctx, RootCommand callback) {
         try {
-            boolean[] applied = {false, false};
             if (!rulesUpToDate) {
+                return applySavedIptablesRules(ctx, true, callback);
+            } else {
+                Log.i(TAG, "Using fastApply");
+                List<String> out = new ArrayList<String>();
+
                 Thread t1 = new Thread(() -> {
-                    applied[0] = applySavedIptablesRules(ctx, true, callback);
-                });
-                Thread t2 = new Thread(() -> {
-                    applied[1] = applySavedIp6tablesRules(ctx, true, callback);
+                    List<String> cmds = new ArrayList<String>();
+                    setBinaryPath(ctx, false);
+                    applyShortRules(ctx, cmds, false);
+                    iptablesCommands(cmds, out, false);
                 });
                 t1.start();
-                t2.start();
                 t1.join();
-                t2.join();
-                return applied[0] && applied[1];
+                if (G.enableIPv6()) {
+                    Thread t2 = new Thread(() -> {
+                        setBinaryPath(ctx, true);
+                        List<String> cmds = new ArrayList<String>();
+                        applyShortRules(ctx, cmds, true);
+                        iptablesCommands(cmds, out, true);
+                    });
+                    t2.start();
+                    t2.join();
+                }
+                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
             }
-            Log.i(TAG, "Using fastApply");
-            List<String> out = new ArrayList<String>();
-
-            Thread t1 = new Thread(() -> {
-                List<String> cmds = new ArrayList<String>();
-                setBinaryPath(ctx, false);
-                applyShortRules(ctx, cmds, false);
-                iptablesCommands(cmds, out, false);
-            });
-            t1.start();
-            t1.join();
-            if (G.enableIPv6()) {
-                Thread t2 = new Thread(() -> {
-                    setBinaryPath(ctx, true);
-                    List<String> cmds = new ArrayList<String>();
-                    applyShortRules(ctx, cmds, true);
-                    iptablesCommands(cmds, out, true);
-                });
-                t2.start();
-                t2.join();
-            }
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
             applyDefaultChains(ctx, callback);
         }
+        rulesUpToDate = true;
         return true;
     }
 
@@ -2330,17 +2334,12 @@ public final class Api {
             editor.commit();
             if (isEnabled(ctx)) {
                 // .. and also re-apply the rules if the firewall is enabled
-                new Thread(() -> {
-                    applySavedIptablesRules(ctx, true, callback);
-                }).start();
-                new Thread(() -> {
-                    applySavedIp6tablesRules(ctx, true, callback);
-                }).start();
+                applySavedIptablesRules(ctx, false, new RootCommand() );
             }
         }
     }
 
-    public static boolean checkMD5(String md5, File updateFile) {
+   /* public static boolean checkMD5(String md5, File updateFile) {
         if (md5.isEmpty() || updateFile == null) {
             dev.ukanth.ufirewall.log.Log.e(TAG, "MD5 string empty or updateFile null");
             return false;
@@ -2353,7 +2352,7 @@ public final class Api {
         }
 
         return calculatedDigest.equalsIgnoreCase(md5);
-    }
+    }*/
 
     private static String calculateMD5(File updateFile) {
         MessageDigest digest;
@@ -3673,7 +3672,7 @@ public final class Api {
         @Override
         public int hashCode() {
             int result = 17;
-            if(appinfo != null) {
+            if (appinfo != null) {
                 result = 31 * result + appinfo.hashCode();
             }
             result = 31 * result + uid;
