@@ -79,6 +79,7 @@ public class ApplyOnBootService extends Service {
         } else {
             startService(new Intent(getApplicationContext(), FirewallService.class));
         }
+
         InterfaceTracker.applyRulesOnChange(this, InterfaceTracker.BOOT_COMPLETED);
 
         if (G.enableLogService()) {

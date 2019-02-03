@@ -173,7 +173,7 @@ public class RulesActivity extends DataDumpActivity {
         // Fourth section: "System info"
         writeHeading(result, true, "System info");
 
-        InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+        InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, false);
 
         result.append("Android version: " + android.os.Build.VERSION.RELEASE + "\n");
         result.append("Manufacturer: " + android.os.Build.MANUFACTURER + "\n");

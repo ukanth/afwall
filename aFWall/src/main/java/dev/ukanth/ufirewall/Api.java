@@ -532,10 +532,9 @@ public final class Api {
      * @param ctx  application context
      * @param cmds command list
      */
-    private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6) {
-        Log.i(TAG, "Adding iface routing: " + ipv6);
+    private static void addInterfaceRouting(Context ctx, List<String> cmds) {
         try {
-            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx);
+            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, true);
             final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
             for (String s : dynChains) {
                 cmds.add("-F " + AFWALL_CHAIN_NAME + s);
@@ -555,17 +554,22 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isTethered) {
-                if (ipv6) {
+                if (G.enableIPv6()) {
                     if (!cfg.lanMaskV6.equals("")) {
-                        Log.i(TAG, "ipv6 found: " + ipv6 + "," + cfg.lanMaskV6);
+                        Log.i(TAG, "ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
                         cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
                         cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
+                    } else {
+                        Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
                     }
                 } else {
                     if (!cfg.lanMaskV4.equals("")) {
-                        Log.i(TAG, "ipv4 found:true,ipv6 " + ipv6 + "," + cfg.lanMaskV4);
+                        Log.i(TAG, "ipv4 found:true," + cfg.lanMaskV4);
                         cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
                         cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
+                    } else {
+                        Log.i(TAG, "no ipv4 found:"  + G.enableIPv6() + ","  + cfg.lanMaskV4);
+
                     }
                 }
                 if (cfg.lanMaskV4.equals("") && cfg.lanMaskV6.equals("")) {
@@ -657,10 +661,10 @@ public final class Api {
         return original;
     }*/
 
-    private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
+    private static void applyShortRules(Context ctx, List<String> cmds) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
-        addInterfaceRouting(ctx, cmds, ipv6);
+        addInterfaceRouting(ctx, cmds);
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
         cmds.add("-P OUTPUT ACCEPT");
     }
@@ -709,7 +713,6 @@ public final class Api {
             }
             for (String s : dynChains) {
                 cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
-                // addInterfaceRouting() will flush these chains, but not create them
             }
 
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
@@ -744,7 +747,8 @@ public final class Api {
                 cmds.add("-A afwall-input -m state --state ESTABLISHED -j RETURN");
             }
 
-            addInterfaceRouting(ctx, cmds, ipv6);
+            Log.i(TAG, "Callin interface routing for " + G.enableIPv6());
+            addInterfaceRouting(ctx, cmds);
 
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
             if (G.enableVPN()) {
@@ -991,7 +995,7 @@ public final class Api {
                 Thread t1 = new Thread(() -> {
                     List<String> cmds = new ArrayList<String>();
                     setBinaryPath(ctx, false);
-                    applyShortRules(ctx, cmds, false);
+                    applyShortRules(ctx, cmds);
                     iptablesCommands(cmds, out, false);
                 });
                 t1.start();
@@ -1000,7 +1004,7 @@ public final class Api {
                     Thread t2 = new Thread(() -> {
                         setBinaryPath(ctx, true);
                         List<String> cmds = new ArrayList<String>();
-                        applyShortRules(ctx, cmds, true);
+                        applyShortRules(ctx, cmds);
                         iptablesCommands(cmds, out, true);
                     });
                     t2.start();
@@ -1721,7 +1725,7 @@ public final class Api {
     }*/
 
     public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo, SharedPreferences pPrefs) {
-        InterfaceDetails details = InterfaceTracker.getCurrentCfg(context);
+        InterfaceDetails details = InterfaceTracker.getCurrentCfg(context, true);
         //allow webview to download since webview requires INTERNET permission
         if (applicationInfo.packageName.equals("com.android.webview") || applicationInfo.packageName.equals("com.google.android.webview")) {
             return true;
@@ -2334,7 +2338,7 @@ public final class Api {
             editor.commit();
             if (isEnabled(ctx)) {
                 // .. and also re-apply the rules if the firewall is enabled
-                applySavedIptablesRules(ctx, false, new RootCommand() );
+                applySavedIptablesRules(ctx, false, new RootCommand());
             }
         }
     }

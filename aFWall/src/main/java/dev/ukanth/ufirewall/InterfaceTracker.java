@@ -132,6 +132,8 @@ public final class InterfaceTracker {
         if (currentCfg != null && currentCfg.equals(newCfg)) {
             return false;
         }
+        Log.i(TAG, "Getting interface details...");
+
         currentCfg = newCfg;
 
         if (!newCfg.netEnabled) {
@@ -158,8 +160,8 @@ public final class InterfaceTracker {
         return true;
     }
 
-    public static InterfaceDetails getCurrentCfg(Context context) {
-        if (currentCfg == null) {
+    public static InterfaceDetails getCurrentCfg(Context context, boolean force) {
+        if (currentCfg == null || force) {
             currentCfg = getInterfaceDetails(context);
         }
         return currentCfg;
@@ -181,7 +183,7 @@ public final class InterfaceTracker {
     }
 
     public static void applyRules(final String reason) {
-        Api.fastApply(ctx, new RootCommand()
+        Api.applySavedIptablesRules(ctx, true, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
                     @Override
