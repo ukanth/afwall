@@ -289,7 +289,6 @@ public class ToggleWidgetOldActivity extends Activity implements
             @Override
             public void run() {
                 Looper.prepare();
-                final Message msg = new Message();
                 switch (i) {
                     case 1:
                         Api.applySavedIptablesRules(context, false, new RootCommand()
@@ -297,12 +296,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                     @Override
                                     public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             Api.setEnabled(context, true, false);
                                         } else {
                                             // error details are already in logcat
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -316,6 +317,7 @@ public class ToggleWidgetOldActivity extends Activity implements
                                 .setCallback(new RootCommand.Callback() {
                                     public void cbFunc(RootCommand state) {
                                         boolean nowEnabled = state.exitCode != 0;
+                                        Message msg = new Message();
                                         msg.arg1 = R.string.toast_disabled;
                                         toaster.sendMessage(msg);
                                         disableOthers();
@@ -331,12 +333,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                     @Override
                                     public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableDefault();
                                         } else {
                                             // error details are already in logcat
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -353,12 +357,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                     @Override
                                     public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableCustom("AFWallProfile1");
                                         } else {
                                             // error details are already in logcat
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -375,12 +381,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                     @Override
                                     public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableCustom("AFWallProfile2");
                                         } else {
                                             // error details are already in logcat
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -397,12 +405,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                     @Override
                                     public void cbFunc(RootCommand state) {
                                         if (state.exitCode == 0) {
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableCustom("AFWallProfile3");
                                         } else {
                                             // error details are already in logcat
+                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }

@@ -1155,7 +1155,7 @@ public final class Api {
         cmds.add("-P OUTPUT ACCEPT");
 
         //Delete only when the afwall chain exist !
-        cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
+        //cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
 
         if (G.enableInbound()) {
             cmds.add("-D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
