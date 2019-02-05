@@ -99,7 +99,7 @@ public class PackageBroadcast extends BroadcastReceiver {
                 // Force app list reload next time
                 Api.applications = null;
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                boolean isNotify = prefs.getBoolean("notifyAppInstall", false);
+                boolean isNotify = prefs.getBoolean("notifyAppInstall", true);
                 if (isNotify && Api.isEnabled(context)) {
                     String added_package = intent.getData().getSchemeSpecificPart();
                     final PackageManager pkgmanager = context.getPackageManager();
@@ -132,7 +132,7 @@ public class PackageBroadcast extends BroadcastReceiver {
         manager.cancel(NOTIFICATION_ID);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
             chan.setShowBadge(false);
             chan.setSound(null,null);
             chan.enableLights(false);
