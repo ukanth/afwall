@@ -321,10 +321,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void registerUIbroadcast() {
         IntentFilter filter = new IntentFilter("UPDATEUI");
-        String rules = G.enableIPv6() ? " (v4 & v6) " : " (v4) ";
+
         uiProgressReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                String rules = G.enableIPv6() ? " (v4 & v6) " : " (v4) ";
                 if (progress != null) {
                     progress.setContent(context.getString(R.string.applying) + rules + intent.getExtras().get("INDEX") + "/" + intent.getExtras().get("SIZE"));
                 }

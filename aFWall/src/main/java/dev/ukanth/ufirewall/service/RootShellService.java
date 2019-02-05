@@ -57,15 +57,15 @@ import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
 
 public class RootShellService extends Service {
 
-    public static final String TAG = "AFWall";
+    public final String TAG = "AFWall";
 
     /* write command completion times to logcat */
-    private static final boolean enableProfiling = false;
+    private final boolean enableProfiling = false;
 
-    private static Shell.Interactive rootSession;
-    private static Context mContext;
-    private static NotificationManager notificationManager;
-    public static final int NOTIFICATION_ID = 33347;
+    private Shell.Interactive rootSession;
+    private Context mContext;
+    private NotificationManager notificationManager;
+    public final int NOTIFICATION_ID = 33347;
 
     public enum ShellState {
         INIT,
@@ -74,20 +74,20 @@ public class RootShellService extends Service {
         FAIL
     }
 
-    private static ShellState rootState = INIT;
+    private ShellState rootState = INIT;
 
     //number of retries - increase the count
-    private final static int MAX_RETRIES = 10;
+    private final int MAX_RETRIES = 10;
 
-    private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
+    private LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
 
-    public final static int EXIT_NO_ROOT_ACCESS = -1;
+    public static final int EXIT_NO_ROOT_ACCESS = -1;
 
-    public final static int NO_TOAST = -1;
+    public static final int NO_TOAST = -1;
 
-    private static NotificationCompat.Builder builder;
+    private NotificationCompat.Builder builder;
 
-    private static void complete(final RootCommand state, int exitCode) {
+    private void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
             Log.d(TAG, "RootShell: " + state.getCommmands().size() + " commands completed in " +
                     (new Date().getTime() - state.startTime.getTime()) + " ms");
@@ -122,7 +122,7 @@ public class RootShellService extends Service {
         return Service.START_STICKY;
     }
 
-    private static void runNextSubmission() {
+    private void runNextSubmission() {
 
         do {
             RootCommand state;
@@ -160,7 +160,7 @@ public class RootShellService extends Service {
         } while (false);
     }
 
-    private static void processCommands(final RootCommand state) {
+    private void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
             sendUpdate(state);
@@ -190,6 +190,8 @@ public class RootShellService extends Service {
                                     }
                                 }
                             }
+                            //Log.d(TAG, ">'" + state.lastCommand);
+
                             if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
                                 //lets wait for few ms before trying ?
                                 state.retryCount++;
@@ -230,7 +232,7 @@ public class RootShellService extends Service {
         }
     }
 
-    private static void sendUpdate(final RootCommand state) {
+    private void sendUpdate(final RootCommand state) {
         new Thread(() -> {
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("UPDATEUI");
@@ -240,7 +242,7 @@ public class RootShellService extends Service {
         }).start();
     }
 
-    private static void setupLogging() {
+    private void setupLogging() {
         Debug.setDebug(false);
         Debug.setLogTypeEnabled(Debug.LOG_ALL, false);
         Debug.setLogTypeEnabled(Debug.LOG_GENERAL, false);
@@ -254,7 +256,7 @@ public class RootShellService extends Service {
     }
 
 
-    private static void startShellInBackground() {
+    private void startShellInBackground() {
         Log.d(TAG, "Starting root shell...");
         setupLogging();
         //start only rootSession is null
@@ -279,7 +281,7 @@ public class RootShellService extends Service {
 
     }
 
-    private static void reOpenShell(Context context) {
+    private void reOpenShell(Context context) {
         if (rootState == null || rootState != ShellState.READY || rootState == ShellState.FAIL) {
             if (notificationManager != null) {
                 notificationManager.cancel(NOTIFICATION_ID);
@@ -292,8 +294,12 @@ public class RootShellService extends Service {
     }
 
 
-    public static void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state, boolean useThreads) {
+    public void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state, boolean useThreads) {
         Log.i(TAG, "Received cmds: #" + cmds.size());
+
+        for (String i : cmds) {
+            Log.i(TAG, i + "\n");
+        }
         state.setCommmands(cmds);
         state.commandIndex = 0;
         state.retryCount = 0;
@@ -301,7 +307,7 @@ public class RootShellService extends Service {
             mContext = ctx.getApplicationContext();
         }
         waitQueue.add(state);
-        if (rootState == ShellState.INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
+        if (rootState == INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
             reOpenShell(ctx);
         } else if (rootState != ShellState.BUSY) {
             runNextSubmission();
@@ -327,7 +333,7 @@ public class RootShellService extends Service {
         return null;
     }
 
-    private static void createNotification(Context context) {
+    private void createNotification(Context context) {
 
         String CHANNEL_ID = "firewall.apply";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

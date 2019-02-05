@@ -179,11 +179,16 @@ public final class InterfaceTracker {
         // update Api.PREFS_NAME so we pick up the right profile
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
-        applyRules(reason);
+
+        if (reason.equals(InterfaceTracker.BOOT_COMPLETED)) {
+            applyBootRules(reason);
+        } else {
+            applyRules(reason);
+        }
     }
 
     public static void applyRules(final String reason) {
-        Api.applySavedIptablesRules(ctx, true, new RootCommand()
+        Api.fastApply(ctx, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
                     @Override
@@ -203,6 +208,53 @@ public final class InterfaceTracker {
                             //lets try applying all rules
                             Api.setRulesUpToDate(false);
                             Api.fastApply(ctx, new RootCommand()
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode == 0) {
+                                                Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
+                                            } else {
+                                                Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
+                                                Api.errorNotification(ctx);
+                                            }
+                                            Api.applyDefaultChains(ctx, new RootCommand()
+                                                    .setFailureToast(R.string.error_apply)
+                                                    .setCallback(new RootCommand.Callback() {
+                                                        @Override
+                                                        public void cbFunc(RootCommand state) {
+                                                            if (state.exitCode != 0) {
+                                                                Api.errorNotification(ctx);
+                                                            }
+                                                        }
+                                                    }));
+                                        }
+                                    }));
+                        }
+                    }
+                }));
+    }
+
+    public static void applyBootRules(final String reason) {
+        Api.applySavedIptablesRules(ctx, true, new RootCommand()
+                .setFailureToast(R.string.error_apply)
+                .setCallback(new RootCommand.Callback() {
+                    @Override
+                    public void cbFunc(RootCommand state) {
+                        if (state.exitCode == 0) {
+                            Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
+                            Api.applyDefaultChains(ctx, new RootCommand()
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode != 0) {
+                                                Api.errorNotification(ctx);
+                                            }
+                                        }
+                                    }));
+                        } else {
+                            //lets try applying all rules
+                            Api.setRulesUpToDate(false);
+                            Api.applySavedIptablesRules(ctx, true, new RootCommand()
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
@@ -261,8 +313,10 @@ public final class InterfaceTracker {
                                 addr.getNetworkPrefixLength();
 
                         if (ip instanceof Inet4Address) {
+                            Log.i(TAG, "Found ipv4: " + mask );
                             ret.lanMaskV4 = mask;
                         } else if (ip instanceof Inet6Address) {
+                            Log.i(TAG, "Found ipv6: " + mask );
                             ret.lanMaskV6 = mask;
                         }
                     }

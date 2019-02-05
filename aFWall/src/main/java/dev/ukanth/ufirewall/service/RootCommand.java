@@ -8,6 +8,7 @@ import java.util.List;
 
 import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
 
+
 /**
  * Created by ukanth on 21/10/17.
  */
@@ -127,7 +128,7 @@ public class RootCommand {
      * @param script List of commands to run as root
      */
     public final void run(Context ctx, List<String> script) {
-        RootShellService.runScriptAsRoot(ctx, script, this, false);
+        new RootShellService().runScriptAsRoot(ctx, script, this, false);
     }
 
     /**
@@ -137,7 +138,7 @@ public class RootCommand {
      * @param script List of commands to run as root
      */
     public final void runThread(Context ctx, List<String> script) {
-        RootShellService.runScriptAsRoot(ctx, script, this, true);
+        new RootShellService().runScriptAsRoot(ctx, script, this, true);
     }
 
     /**
@@ -149,6 +150,6 @@ public class RootCommand {
     public final void run(Context ctx, String cmd) {
         List<String> script = new ArrayList<String>();
         script.add(cmd);
-        RootShellService.runScriptAsRoot(ctx, script, this, false);
+        new RootShellService().runScriptAsRoot(ctx, script, this, false);
     }
 }
