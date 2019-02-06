@@ -471,16 +471,17 @@ public class ToggleWidgetActivity extends Activity {
             @Override
             public void run() {
                 Looper.prepare();
-                final Message msg = new Message();
                 if (actionType < 7) {
                     switch (actionType) {
                         case 1:
                             Api.applySavedIptablesRules(context, true, new RootCommand()
                                     .setSuccessToast(R.string.rules_applied)
                                     .setFailureToast(R.string.error_apply)
+                                    .setReopenShell(true)
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
+                                            final Message msg = new Message();
                                             if (state.exitCode == 0) {
                                                 msg.arg1 = R.string.rules_applied;
                                                 Api.setEnabled(context, true, false);
@@ -488,6 +489,7 @@ public class ToggleWidgetActivity extends Activity {
                                                 // error details are already in logcat
                                                 msg.arg1 = R.string.error_apply;
                                             }
+                                            toaster.sendMessage(msg);
                                         }
                                     }));
                             break;
@@ -499,16 +501,15 @@ public class ToggleWidgetActivity extends Activity {
                                     .setReopenShell(true)
                                     .setCallback(new RootCommand.Callback() {
                                         public void cbFunc(RootCommand state) {
-
+                                            final Message msg = new Message();
                                             if (state.exitCode == 0) {
                                                 msg.arg1 = R.string.toast_disabled;
-                                                toaster.sendMessage(msg);
                                                 Api.setEnabled(context, false, false);
                                             } else {
                                                 // error details are already in logcat
                                                 msg.arg1 = R.string.toast_error_disabling;
-                                                toaster.sendMessage(msg);
                                             }
+                                            toaster.sendMessage(msg);
                                         }
                                     }));
                             break;
@@ -526,6 +527,7 @@ public class ToggleWidgetActivity extends Activity {
                             break;
                     }
                     if (actionType > 2) {
+                        final Message msg = new Message();
                         Api.applySavedIptablesRules(context, true, new RootCommand()
                                 .setSuccessToast(R.string.rules_applied)
                                 .setFailureToast(R.string.error_apply)
@@ -538,6 +540,7 @@ public class ToggleWidgetActivity extends Activity {
                                             // error details are already in logcat
                                             msg.arg1 = R.string.error_apply;
                                         }
+                                        toaster.sendMessage(msg);
                                     }
                                 }));
                         G.reloadPrefs();

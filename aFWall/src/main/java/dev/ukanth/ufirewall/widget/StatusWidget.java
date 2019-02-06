@@ -36,9 +36,11 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.SecurityUtil;
 
 /**
  * ON/OFF Widget implementation
@@ -85,7 +87,6 @@ public class StatusWidget extends AppWidgetProvider {
                     Api.purgeIptables(context, true, new RootCommand()
                             .setSuccessToast(R.string.toast_disabled)
                             .setFailureToast(R.string.toast_error_disabling)
-                            .setReopenShell(true)
                             .setCallback(new RootCommand.Callback() {
                                 public void cbFunc(RootCommand state) {
                                     Api.setEnabled(context, state.exitCode != 0, true);

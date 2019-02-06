@@ -966,8 +966,6 @@ public final class Api {
         }
         try {
             Log.i(TAG, "Using applySaved4IptablesRules");
-            boolean returnValue;
-            //rulesUpToDate = true;
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
@@ -1160,7 +1158,7 @@ public final class Api {
         cmds.add("-P OUTPUT ACCEPT");
 
         //Delete only when the afwall chain exist !
-        //cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
+        cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
 
         if (G.enableInbound()) {
             cmds.add("-D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
@@ -1192,15 +1190,11 @@ public final class Api {
 
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
-    /*@Deprecated
-    public static boolean purgeIptables(Context ctx, boolean showErrors) {
-        // warning: this is a blocking call
-        return purgeIptables(ctx, showErrors, null);
-    }*/
 
     /**
      * Retrieve the current set of IPv4 or IPv6 rules and pass it to a callback

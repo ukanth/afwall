@@ -225,7 +225,6 @@ public class ToggleWidgetOldActivity extends Activity implements
     }
 
     private void runProfile(final String profileName) {
-        final Message msg = new Message();
         final Handler toaster = new Handler() {
             public void handleMessage(Message msg) {
                 if (msg.arg1 != 0)
@@ -244,6 +243,7 @@ public class ToggleWidgetOldActivity extends Activity implements
                         .setCallback(new RootCommand.Callback() {
                             @Override
                             public void cbFunc(RootCommand state) {
+                                Message msg = new Message();
                                 if (state.exitCode == 0) {
                                     msg.arg1 = R.string.rules_applied;
                                     toaster.sendMessage(msg);
@@ -295,15 +295,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                 .setCallback(new RootCommand.Callback() {
                                     @Override
                                     public void cbFunc(RootCommand state) {
+                                        Message msg = new Message();
                                         if (state.exitCode == 0) {
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             Api.setEnabled(context, true, false);
                                         } else {
                                             // error details are already in logcat
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -313,18 +312,22 @@ public class ToggleWidgetOldActivity extends Activity implements
                     case 2:
                         // validation, check for password
                         Api.purgeIptables(context, true, new RootCommand()
+                                .setSuccessToast(R.string.toast_disabled)
+                                .setFailureToast(R.string.toast_error_disabling)
                                 .setReopenShell(true)
                                 .setCallback(new RootCommand.Callback() {
                                     public void cbFunc(RootCommand state) {
-                                        boolean nowEnabled = state.exitCode != 0;
-                                        Message msg = new Message();
-                                        msg.arg1 = R.string.toast_disabled;
+                                        final Message msg = new Message();
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.toast_disabled;
+                                            Api.setEnabled(context, false, false);
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.toast_error_disabling;
+                                        }
                                         toaster.sendMessage(msg);
-                                        disableOthers();
-                                        Api.setEnabled(context, nowEnabled, false);
                                     }
                                 }));
-
                         break;
                     case 3:
                         G.setProfile(G.enableMultiProfile(), "AFWallPrefs");
@@ -332,15 +335,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                 .setCallback(new RootCommand.Callback() {
                                     @Override
                                     public void cbFunc(RootCommand state) {
+                                        Message msg = new Message();
                                         if (state.exitCode == 0) {
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableDefault();
                                         } else {
                                             // error details are already in logcat
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -356,15 +358,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                 .setCallback(new RootCommand.Callback() {
                                     @Override
                                     public void cbFunc(RootCommand state) {
+                                        Message msg = new Message();
                                         if (state.exitCode == 0) {
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableCustom("AFWallProfile1");
                                         } else {
                                             // error details are already in logcat
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -380,15 +381,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                 .setCallback(new RootCommand.Callback() {
                                     @Override
                                     public void cbFunc(RootCommand state) {
+                                        Message msg = new Message();
                                         if (state.exitCode == 0) {
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableCustom("AFWallProfile2");
                                         } else {
                                             // error details are already in logcat
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -404,15 +404,14 @@ public class ToggleWidgetOldActivity extends Activity implements
                                 .setCallback(new RootCommand.Callback() {
                                     @Override
                                     public void cbFunc(RootCommand state) {
+                                        Message msg = new Message();
                                         if (state.exitCode == 0) {
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.rules_applied;
                                             toaster.sendMessage(msg);
                                             enableOthers();
                                             disableCustom("AFWallProfile3");
                                         } else {
                                             // error details are already in logcat
-                                            Message msg = new Message();
                                             msg.arg1 = R.string.error_apply;
                                             toaster.sendMessage(msg);
                                         }
@@ -497,39 +496,4 @@ public class ToggleWidgetOldActivity extends Activity implements
         });
     }
 
-   /* private boolean applyRules(Context context, Message msg, Handler toaster) {
-        boolean success = false;
-        if (Api.applySavedIptablesRules(context, false, new RootCommand())) {
-            msg.arg1 = R.string.toast_enabled;
-            toaster.sendMessage(msg);
-            enableOthers();
-            success = true;
-        } else {
-            msg.arg1 = R.string.toast_error_enabling;
-            toaster.sendMessage(msg);
-        }
-        return success;
-    }
-
-    private boolean applyProfileRules(final Context context, final Message msg,
-                                      final Handler toaster) {
-        boolean success = false;
-        success = Api.applySavedIptablesRules(context, false, new RootCommand()
-                .setFailureToast(R.string.error_apply)
-                .setCallback(new RootCommand.Callback() {
-                    @Override
-                    public void cbFunc(RootCommand state) {
-                        if (state.exitCode == 0) {
-                            msg.arg1 = R.string.rules_applied;
-                            toaster.sendMessage(msg);
-                            enableOthers();
-                        } else {
-                            // error details are already in logcat
-                            msg.arg1 = R.string.error_apply;
-                            toaster.sendMessage(msg);
-                        }
-                    }
-                }));
-        return success;
-    }*/
 }

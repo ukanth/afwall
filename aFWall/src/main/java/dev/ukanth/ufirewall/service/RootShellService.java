@@ -57,15 +57,15 @@ import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
 
 public class RootShellService extends Service {
 
-    public final String TAG = "AFWall";
+    public static final String TAG = "AFWall";
 
     /* write command completion times to logcat */
-    private final boolean enableProfiling = false;
+    private static final boolean enableProfiling = false;
 
-    private Shell.Interactive rootSession;
-    private Context mContext;
-    private NotificationManager notificationManager;
-    public final int NOTIFICATION_ID = 33347;
+    private static Shell.Interactive rootSession;
+    private static Context mContext;
+    private static NotificationManager notificationManager;
+    public static final int NOTIFICATION_ID = 33347;
 
     public enum ShellState {
         INIT,
@@ -74,20 +74,20 @@ public class RootShellService extends Service {
         FAIL
     }
 
-    private ShellState rootState = INIT;
+    private static ShellState rootState = INIT;
 
     //number of retries - increase the count
-    private final int MAX_RETRIES = 10;
+    private final static int MAX_RETRIES = 10;
 
-    private LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
+    private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
 
     public static final int EXIT_NO_ROOT_ACCESS = -1;
 
     public static final int NO_TOAST = -1;
 
-    private NotificationCompat.Builder builder;
+    private static NotificationCompat.Builder builder;
 
-    private void complete(final RootCommand state, int exitCode) {
+    private static void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
             Log.d(TAG, "RootShell: " + state.getCommmands().size() + " commands completed in " +
                     (new Date().getTime() - state.startTime.getTime()) + " ms");
@@ -122,7 +122,7 @@ public class RootShellService extends Service {
         return Service.START_STICKY;
     }
 
-    private void runNextSubmission() {
+    private static void runNextSubmission() {
 
         do {
             RootCommand state;
@@ -160,7 +160,7 @@ public class RootShellService extends Service {
         } while (false);
     }
 
-    private void processCommands(final RootCommand state) {
+    private static void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
             sendUpdate(state);
@@ -174,53 +174,47 @@ public class RootShellService extends Service {
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
                 try {
-                    rootSession.addCommand(command, 0, new Shell.OnCommandResultListener() {
-                        @Override
-                        public void onCommandResult(int commandCode, int exitCode,
-                                                    List<String> output) {
-                            if (output != null) {
-                                ListIterator<String> iter = output.listIterator();
-                                while (iter.hasNext()) {
-                                    String line = iter.next();
-                                    if (line != null && !line.equals("")) {
-                                        if (state.res != null) {
-                                            state.res.append(line + "\n");
-                                        }
-                                        state.lastCommandResult.append(line + "\n");
+                    rootSession.addCommand(command, 0, (commandCode, exitCode, output) -> {
+                        if (output != null) {
+                            ListIterator<String> iter = output.listIterator();
+                            while (iter.hasNext()) {
+                                String line = iter.next();
+                                if (line != null && !line.equals("")) {
+                                    if (state.res != null) {
+                                        state.res.append(line + "\n");
                                     }
+                                    state.lastCommandResult.append(line + "\n");
                                 }
                             }
-                            //Log.d(TAG, ">'" + state.lastCommand);
+                        }
+                        if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
+                            //lets wait for few ms before trying ?
+                            state.retryCount++;
+                            Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                    ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+                            processCommands(state);
+                            return;
+                        }
 
-                            if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
-                                //lets wait for few ms before trying ?
-                                state.retryCount++;
-                                Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                        ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-                                processCommands(state);
-                                return;
-                            }
+                        state.commandIndex++;
+                        state.retryCount = 0;
 
-                            state.commandIndex++;
-                            state.retryCount = 0;
-
-                            boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
-                            if (state.commandIndex >= state.getCommmands().size() || errorExit) {
-                                complete(state, exitCode);
-                                if (exitCode < 0) {
-                                    rootState = ShellState.FAIL;
-                                    Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
-                                } else {
-                                    if (errorExit) {
-                                        Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                                "\nOutput:\n" + state.lastCommandResult);
-                                    }
-                                    rootState = ShellState.READY;
-                                }
-                                runNextSubmission();
+                        boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
+                        if (state.commandIndex >= state.getCommmands().size() || errorExit) {
+                            complete(state, exitCode);
+                            if (exitCode < 0) {
+                                rootState = ShellState.FAIL;
+                                Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
                             } else {
-                                processCommands(state);
+                                if (errorExit) {
+                                    Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                            "\nOutput:\n" + state.lastCommandResult);
+                                }
+                                rootState = ShellState.READY;
                             }
+                            runNextSubmission();
+                        } else {
+                            processCommands(state);
                         }
                     });
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
@@ -232,7 +226,7 @@ public class RootShellService extends Service {
         }
     }
 
-    private void sendUpdate(final RootCommand state) {
+    private static void sendUpdate(final RootCommand state) {
         new Thread(() -> {
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("UPDATEUI");
@@ -261,21 +255,20 @@ public class RootShellService extends Service {
         setupLogging();
         //start only rootSession is null
         if (rootSession == null) {
+
             rootSession = new Shell.Builder().
                     useSU().
                     setWantSTDERR(true).
                     setWatchdogTimeout(5).
-                    open(new Shell.OnCommandResultListener() {
-                        public void onCommandResult(int commandCode, int exitCode, List<String> output) {
-                            if (exitCode < 0) {
-                                Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
-                                rootState = ShellState.FAIL;
-                            } else {
-                                Log.d(TAG, "Root shell is open");
-                                rootState = ShellState.READY;
-                            }
-                            runNextSubmission();
+                    open((commandCode, exitCode, output) -> {
+                        if (exitCode < 0) {
+                            Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
+                            rootState = ShellState.FAIL;
+                        } else {
+                            Log.d(TAG, "Root shell is open");
+                            rootState = ShellState.READY;
                         }
+                        runNextSubmission();
                     });
         }
 
@@ -294,12 +287,8 @@ public class RootShellService extends Service {
     }
 
 
-    public void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state, boolean useThreads) {
+    public void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state) {
         Log.i(TAG, "Received cmds: #" + cmds.size());
-
-        for (String i : cmds) {
-            Log.i(TAG, i + "\n");
-        }
         state.setCommmands(cmds);
         state.commandIndex = 0;
         state.retryCount = 0;
@@ -333,7 +322,7 @@ public class RootShellService extends Service {
         return null;
     }
 
-    private void createNotification(Context context) {
+    private static void createNotification(Context context) {
 
         String CHANNEL_ID = "firewall.apply";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

@@ -1,6 +1,17 @@
 Changelog AFWall+
 ==================
 
+Version 3.1.0
+
+* Ipv4 and ipv6 rules are now applied at same time - Reduced by half time
+* Ipv6 is enabled by default
+* Fix: Widget crashing issue
+* Fix: app notification sometimes not shown
+* Fix: Applying rules on boot for few devices
+* Fix: Duplicate app issue on oneplus devices 
+* Fix: tor related bug
+
+
 Version 3.0.4
 * Fix: domain names resolve
 * Fix: Removed notification dot on all notifications
