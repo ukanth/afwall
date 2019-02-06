@@ -69,8 +69,9 @@ public class StatusWidget extends AppWidgetProvider {
 
             Log.d(Api.TAG, "Protection Level: " + G.protectionLevel());
             if (!G.protectionLevel().equals("p0") || G.enableDeviceCheck()) {
-                Toast.makeText(context, R.string.widget_disable_fail, Toast.LENGTH_SHORT).show();
-                return;
+
+                //Toast.makeText(context, R.string.widget_disable_fail, Toast.LENGTH_SHORT).show();
+                //return;
             } else {
                 if (enabled) {
                     Api.applySavedIptablesRules(context, true, new RootCommand()

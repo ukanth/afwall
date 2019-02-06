@@ -258,7 +258,6 @@ public class ToggleWidgetActivity extends Activity {
         }
 
         public void menuActiviated() {
-            final Message msg = new Message();
             final Handler toaster = new Handler() {
                 public void handleMessage(Message msg) {
                     if (msg.arg1 != 0)
@@ -281,12 +280,14 @@ public class ToggleWidgetActivity extends Activity {
                             .setCallback(new RootCommand.Callback() {
                                 @Override
                                 public void cbFunc(RootCommand state) {
+                                    Message msg = new Message();
                                     if (state.exitCode == 0) {
                                         msg.arg1 = R.string.rules_applied;
                                     } else {
                                         // error details are already in logcat
                                         msg.arg1 = R.string.error_apply;
                                     }
+                                    toaster.sendMessage(msg);
                                 }
                             }));
                     //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());

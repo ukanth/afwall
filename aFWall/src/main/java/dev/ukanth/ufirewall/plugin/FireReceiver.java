@@ -79,7 +79,6 @@ public final class FireReceiver extends BroadcastReceiver {
             }
             final boolean multimode = G.enableMultiProfile();
             final boolean disableToasts = G.disableTaskerToast();
-            final Message msg = new Message();
             if (!G.isProfileMigrated()) {
                 if (index != null) {
                     //int id = Integer.parseInt(index);
@@ -90,6 +89,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
+                                            Message msg = new Message();
                                             if (state.exitCode == 0) {
                                                 msg.arg1 = R.string.rules_applied;
                                                 Api.setEnabled(context, true, false);
@@ -97,6 +97,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                                 // error details are already in logcat
                                                 msg.arg1 = R.string.error_apply;
                                             }
+                                            toaster.sendMessage(msg);
                                         }
                                     }));
                             break;
@@ -106,6 +107,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                         .setReopenShell(true)
                                         .setCallback(new RootCommand.Callback() {
                                             public void cbFunc(RootCommand state) {
+                                                Message msg = new Message();
                                                 boolean nowEnabled = state.exitCode != 0;
                                                 msg.arg1 = R.string.toast_disabled;
                                                 toaster.sendMessage(msg);
@@ -113,6 +115,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                             }
                                         }));
                             } else {
+                                Message msg = new Message();
                                 msg.arg1 = R.string.widget_disable_fail;
                                 toaster.sendMessage(msg);
                             }
@@ -155,6 +158,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                         .setCallback(new RootCommand.Callback() {
                                             @Override
                                             public void cbFunc(RootCommand state) {
+                                                Message msg = new Message();
                                                 if (state.exitCode == 0) {
                                                     msg.arg1 = R.string.tasker_profile_applied;
                                                     if (!disableToasts) toaster.sendMessage(msg);
@@ -162,13 +166,16 @@ public final class FireReceiver extends BroadcastReceiver {
                                                     // error details are already in logcat
                                                     msg.arg1 = R.string.error_apply;
                                                 }
+                                                toaster.sendMessage(msg);
                                             }
                                         }));
                             } else {
+                                Message msg = new Message();
                                 msg.arg1 = R.string.tasker_disabled;
                                 toaster.sendMessage(msg);
                             }
                         } else {
+                            Message msg = new Message();
                             msg.arg1 = R.string.tasker_muliprofile;
                             toaster.sendMessage(msg);
                         }
@@ -189,6 +196,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
+                                            Message msg = new Message();
                                             if (state.exitCode == 0) {
                                                 msg.arg1 = R.string.rules_applied;
                                                 Api.setEnabled(context, true, false);
@@ -196,6 +204,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                                 // error details are already in logcat
                                                 msg.arg1 = R.string.error_apply;
                                             }
+                                            toaster.sendMessage(msg);
                                         }
                                     }));
                             break;
@@ -205,6 +214,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                         .setReopenShell(true)
                                         .setCallback(new RootCommand.Callback() {
                                             public void cbFunc(RootCommand state) {
+                                                Message msg = new Message();
                                                 boolean nowEnabled = state.exitCode != 0;
                                                 msg.arg1 = R.string.toast_disabled;
                                                 toaster.sendMessage(msg);
@@ -216,6 +226,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                 toaster.sendMessage(msg);
                             }*/
                             } else {
+                                Message msg = new Message();
                                 msg.arg1 = R.string.widget_disable_fail;
                                 toaster.sendMessage(msg);
                             }
@@ -247,6 +258,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                         .setCallback(new RootCommand.Callback() {
                                             @Override
                                             public void cbFunc(RootCommand state) {
+                                                Message msg = new Message();
                                                 if (state.exitCode == 0) {
                                                     msg.arg1 = R.string.tasker_profile_applied;
                                                     if (!disableToasts) toaster.sendMessage(msg);
@@ -257,10 +269,12 @@ public final class FireReceiver extends BroadcastReceiver {
                                             }
                                         }));
                             } else {
+                                Message msg = new Message();
                                 msg.arg1 = R.string.tasker_disabled;
                                 toaster.sendMessage(msg);
                             }
                         } else {
+                            Message msg = new Message();
                             msg.arg1 = R.string.tasker_muliprofile;
                             toaster.sendMessage(msg);
                         }
@@ -277,21 +291,4 @@ public final class FireReceiver extends BroadcastReceiver {
         }
 
     }
-
-    /*private boolean applyRules(final Context context, final Message msg, final Handler toaster) {
-        boolean ret = Api.applySavedIptablesRules(context, false, new RootCommand()
-                .setFailureToast(R.string.error_apply)
-                .setCallback(new RootCommand.Callback() {
-                    @Override
-                    public void cbFunc(RootCommand state) {
-                        if (state.exitCode == 0) {
-                            msg.arg1 = R.string.rules_applied;
-                        } else {
-                            // error details are already in logcat
-                            msg.arg1 = R.string.error_apply;
-                        }
-                    }
-                }));
-        return ret;
-    }*/
 }
