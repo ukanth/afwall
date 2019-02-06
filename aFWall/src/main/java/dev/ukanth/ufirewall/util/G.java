@@ -330,7 +330,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean activeNotification() {
-        return gPrefs.getBoolean(ACTIVE_NOTIFICATION, false);
+        return gPrefs.getBoolean(ACTIVE_NOTIFICATION, true);
     }
 
     public static boolean activeNotification(boolean val) {
