@@ -903,7 +903,9 @@ public final class Api {
         }
         Thread t2 = new Thread(() -> {
             //creare new callback command
-            applySavedIp6tablesRules(ctx, ipv6cmds, showErrors, new RootCommand().setCallback(new RootCommand.Callback() {
+            applySavedIp6tablesRules(ctx, ipv6cmds, showErrors, new RootCommand().
+                    setIsv6(true).
+                    setCallback(new RootCommand.Callback() {
                 @Override
                 public void cbFunc(RootCommand state) {
                     if (state.exitCode == 0) {

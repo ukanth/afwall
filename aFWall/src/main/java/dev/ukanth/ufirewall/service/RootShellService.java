@@ -58,33 +58,18 @@ import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
 public class RootShellService extends Service {
 
     public static final String TAG = "AFWall";
-
+    public static final int NOTIFICATION_ID = 33347;
+    public static final int EXIT_NO_ROOT_ACCESS = -1;
+    public static final int NO_TOAST = -1;
     /* write command completion times to logcat */
     private static final boolean enableProfiling = false;
-
+    //number of retries - increase the count
+    private final static int MAX_RETRIES = 10;
     private static Shell.Interactive rootSession;
     private static Context mContext;
     private static NotificationManager notificationManager;
-    public static final int NOTIFICATION_ID = 33347;
-
-    public enum ShellState {
-        INIT,
-        READY,
-        BUSY,
-        FAIL
-    }
-
     private static ShellState rootState = INIT;
-
-    //number of retries - increase the count
-    private final static int MAX_RETRIES = 10;
-
     private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
-
-    public static final int EXIT_NO_ROOT_ACCESS = -1;
-
-    public static final int NO_TOAST = -1;
-
     private static NotificationCompat.Builder builder;
 
     private static void complete(final RootCommand state, int exitCode) {
@@ -107,19 +92,6 @@ public class RootShellService extends Service {
         if (notificationManager != null) {
             notificationManager.cancel(NOTIFICATION_ID);
         }
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) { // if crash restart...
-            Log.i(TAG, "Restarting RootShell...");
-            List<String> cmds = new ArrayList<String>();
-            cmds.add("true");
-            new RootCommand().setFailureToast(R.string.error_su)
-                    .setReopenShell(true).run(getApplicationContext(), cmds);
-        }
-        return Service.START_STICKY;
     }
 
     private static void runNextSubmission() {
@@ -163,7 +135,9 @@ public class RootShellService extends Service {
     private static void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
-            sendUpdate(state);
+            if(!state.isv6) {
+                sendUpdate(state);
+            }
             if (command != null) {
                 state.ignoreExitCode = false;
 
@@ -234,6 +208,69 @@ public class RootShellService extends Service {
             broadcastIntent.putExtra("INDEX", state.commandIndex);
             mContext.sendBroadcast(broadcastIntent);
         }).start();
+    }
+
+    private static void createNotification(Context context) {
+
+        String CHANNEL_ID = "firewall.apply";
+        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        builder = new NotificationCompat.Builder(context, CHANNEL_ID);
+
+        Intent appIntent = new Intent(context, MainActivity.class);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /* Create or update. */
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.runNotification),
+                    NotificationManager.IMPORTANCE_LOW);
+            channel.setDescription("");
+            channel.setShowBadge(false);
+            channel.setSound(null, null);
+            channel.enableLights(false);
+            channel.enableVibration(false);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(appIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
+
+
+        int notifyType = G.getNotificationPriority();
+
+        Notification notification = builder.setSmallIcon(R.drawable.ic_apply_notification)
+                .setAutoCancel(false)
+                .setContentTitle(context.getString(R.string.applying_rules))
+                .setTicker(context.getString(R.string.app_name))
+                .setChannelId(CHANNEL_ID)
+                .setCategory(Notification.CATEGORY_STATUS)
+                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setOnlyAlertOnce(true)
+                .setPriority(NotificationManager.IMPORTANCE_LOW)
+                .setContentText("").build();
+        switch (notifyType) {
+            case 0:
+                notification.priority = NotificationCompat.PRIORITY_LOW;
+                break;
+            case 1:
+                notification.priority = NotificationCompat.PRIORITY_MIN;
+                break;
+        }
+        builder.setProgress(0, 0, true);
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null) { // if crash restart...
+            Log.i(TAG, "Restarting RootShell...");
+            List<String> cmds = new ArrayList<String>();
+            cmds.add("true");
+            new RootCommand().setFailureToast(R.string.error_su)
+                    .setReopenShell(true).run(getApplicationContext(), cmds);
+        }
+        return Service.START_STICKY;
     }
 
     private void setupLogging() {
@@ -322,54 +359,10 @@ public class RootShellService extends Service {
         return null;
     }
 
-    private static void createNotification(Context context) {
-
-        String CHANNEL_ID = "firewall.apply";
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        builder = new NotificationCompat.Builder(context,CHANNEL_ID);
-
-        Intent appIntent = new Intent(context, MainActivity.class);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            /* Create or update. */
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,context.getString(R.string.runNotification),
-                    NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription("");
-            channel.setShowBadge(false);
-            channel.setSound(null,null);
-            channel.enableLights(false);
-            channel.enableVibration(false);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(appIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(resultPendingIntent);
-
-
-        int notifyType = G.getNotificationPriority();
-
-        Notification notification = builder.setSmallIcon(R.drawable.ic_apply_notification)
-                .setAutoCancel(false)
-                .setContentTitle(context.getString(R.string.applying_rules))
-                .setTicker(context.getString(R.string.app_name))
-                .setChannelId(CHANNEL_ID)
-                .setCategory(Notification.CATEGORY_STATUS)
-                .setVisibility(Notification.VISIBILITY_SECRET)
-                .setOnlyAlertOnce(true)
-                .setPriority(NotificationManager.IMPORTANCE_LOW)
-                .setContentText("").build();
-        switch (notifyType) {
-            case 0:
-                notification.priority = NotificationCompat.PRIORITY_LOW;
-                break;
-            case 1:
-                notification.priority = NotificationCompat.PRIORITY_MIN;
-                break;
-        }
-        builder.setProgress(0, 0, true);
-        notificationManager.notify(NOTIFICATION_ID, notification);
+    public enum ShellState {
+        INIT,
+        READY,
+        BUSY,
+        FAIL
     }
 }

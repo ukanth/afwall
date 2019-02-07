@@ -27,6 +27,14 @@ public class RootCommand {
     public StringBuilder lastCommandResult;
     public int exitCode;
     public boolean done = false;
+
+    public RootCommand setIsv6(boolean isv6) {
+        this.isv6 = isv6;
+        return this;
+    }
+
+    public boolean isv6 = false;
+
     private List<String> commmands;
 
     private RootShellService rootShellService;
