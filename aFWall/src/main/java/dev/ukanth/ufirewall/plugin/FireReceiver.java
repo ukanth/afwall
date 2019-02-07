@@ -71,11 +71,11 @@ public final class FireReceiver extends BroadcastReceiver {
          */
         if (PluginBundleManager.isBundleValid(bundle)) {
             String index = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
-            String profileName = null;
+            String name = null;
             if (index.contains("::")) {
                 String[] msg = index.split("::");
                 index = msg[0];
-                profileName = msg[1];
+                name = msg[1];
             }
             final boolean multimode = G.enableMultiProfile();
             final boolean disableToasts = G.disableTaskerToast();
@@ -142,7 +142,7 @@ public final class FireReceiver extends BroadcastReceiver {
                             break;
                         default:
                             if (multimode) {
-                                G.setProfile(true, profileName);
+                                G.setProfile(true, name);
                             }
                             break;
                     }
@@ -238,7 +238,7 @@ public final class FireReceiver extends BroadcastReceiver {
                             break;
                         default:
                             if (multimode) {
-                                ProfileData data = ProfileHelper.getProfileByName(profileName);
+                                ProfileData data = ProfileHelper.getProfileByName(name);
                                 if (data != null) {
                                     G.setProfile(true, data.getIdentifier());
                                 }

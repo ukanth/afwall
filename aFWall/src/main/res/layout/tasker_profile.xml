@@ -41,6 +41,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:hint="0"
                         android:text="@string/enable_tasker" />
 
                     <RadioButton
@@ -48,6 +49,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:hint="1"
                         android:text="@string/disable_tasker" />
 
                     <RadioButton
@@ -55,6 +57,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:hint="2"
                         android:text="@string/defaultProfile" />
 
                     <RadioButton
@@ -62,6 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:hint="3"
                         android:text="@string/profile1" />
 
                     <RadioButton
@@ -69,6 +73,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:hint="4"
                         android:text="@string/profile2" />
 
                     <RadioButton
@@ -76,6 +81,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true"
+                        android:hint="5"
                         android:text="@string/profile3" />
                 </RadioGroup>
             </LinearLayout>

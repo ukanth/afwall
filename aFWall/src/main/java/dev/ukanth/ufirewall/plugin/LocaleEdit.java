@@ -219,13 +219,15 @@ public class LocaleEdit extends AppCompatActivity {
             RadioGroup group = (RadioGroup) findViewById(R.id.radioProfiles);
             int selectedId = group.getCheckedRadioButtonId();
             RadioButton radioButton = (RadioButton) findViewById(selectedId);
+            //int id = Integer.parseInt(radioButton.getHint().toString());
             String action = radioButton.getText().toString();
             final Intent resultIntent = new Intent();
             if (!G.isProfileMigrated()) {
                 int idx = group.indexOfChild(radioButton);
                 resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx + "::" + action));
             } else {
-                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), selectedId + "::" + action));
+                int idx = group.indexOfChild(radioButton);
+                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx + "::" + action));
             }
             resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, action);
             setResult(RESULT_OK, resultIntent);
