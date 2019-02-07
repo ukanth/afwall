@@ -750,7 +750,7 @@ public final class Api {
             }
 
             Log.i(TAG, "Callin interface routing for " + G.enableIPv6());
-            addInterfaceRouting(ctx, cmds,ipv6);
+            addInterfaceRouting(ctx, cmds, ipv6);
 
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
             if (G.enableVPN()) {
@@ -898,7 +898,7 @@ public final class Api {
             applied[0] = applySavedIp4tablesRules(ctx, ipv4cmds, showErrors, callback);
         });
 
-        if(G.enableIPv6()) {
+        if (G.enableIPv6()) {
             applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
         }
         Thread t2 = new Thread(() -> {
@@ -906,14 +906,14 @@ public final class Api {
             applySavedIp6tablesRules(ctx, ipv6cmds, showErrors, new RootCommand().
                     setIsv6(true).
                     setCallback(new RootCommand.Callback() {
-                @Override
-                public void cbFunc(RootCommand state) {
-                    if (state.exitCode == 0) {
-                        //ipv6 also applied properly
-                        applied[1] = true;
-                    }
-                }
-            }));
+                        @Override
+                        public void cbFunc(RootCommand state) {
+                            if (state.exitCode == 0) {
+                                //ipv6 also applied properly
+                                applied[1] = true;
+                            }
+                        }
+                    }));
         });
         t1.start();
         if (G.enableIPv6()) {
@@ -927,9 +927,7 @@ public final class Api {
         } catch (InterruptedException e) {
         }
         boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
-        if (returnValue) {
-            rulesUpToDate = true;
-        }
+        rulesUpToDate = true;
         return returnValue;
     }
 
@@ -978,7 +976,7 @@ public final class Api {
     }
 
 
-    public static  boolean applySavedIp6tablesRules(Context ctx, List<String> cmds, boolean showErrors, RootCommand callback) {
+    public static boolean applySavedIp6tablesRules(Context ctx, List<String> cmds, boolean showErrors, RootCommand callback) {
         if (ctx == null) {
             return false;
         }
