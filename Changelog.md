@@ -3,14 +3,15 @@ Changelog AFWall+
 
 Version 3.1.0
 
-* Ipv4 and ipv6 rules are now applied at same time - Reduced by half time
-* Ipv6 is enabled by default
+* Ipv4 and ipv6 rules are now applied at same time - Rules apply time reduced by half.
+* Ipv6 is enabled by default - Disable if you don't want (under preferences->rules).
+* Fix: Tasker was not working at all after migrated profiles!
 * Fix: Widget crashing issue
-* Fix: app notification sometimes not shown
+* Fix: New app notification sometimes not shown
 * Fix: Applying rules on boot for few devices
 * Fix: Duplicate app issue on oneplus devices 
-* Fix: tor related bug
-
+* Fix: Tor related bug
+* Fix: Xposed module unable to download allowed apps.
 
 Version 3.0.4
 * Fix: domain names resolve
