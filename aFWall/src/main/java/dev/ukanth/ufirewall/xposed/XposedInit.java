@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.widget.Toast;
+
+import com.crossbowffs.remotepreferences.RemotePreferences;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -36,7 +39,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     private static Context context;
     private XSharedPreferences prefs;
     private SharedPreferences pPrefs;
-    private String profileName = Api.PREFS_NAME;
+    private SharedPreferences sharedPreferences;
     private Activity activity;
 
     public Activity getActivity() {
@@ -90,10 +93,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 prefs = new XSharedPreferences(MY_APP);
                 prefs.makeWorldReadable();
                 prefs.reload();
-                if (prefs.getBoolean("enableMultiProfile", false)) {
-                    profileName = prefs.getString("storedProfile", "AFWallPrefs");
-                }
-                Log.d(TAG, "Loading Profile: " + profileName);
+                sharedPreferences = new RemotePreferences(context, BuildConfig.APPLICATION_ID, Api.PREFS_NAME);
             } else {
                 prefs.makeWorldReadable();
                 prefs.reload();
@@ -107,7 +107,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
     }
 
 
-    private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) throws NoSuchMethodException {
+    private void interceptDownloadManager(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         final ApplicationInfo applicationInfo = loadPackageParam.appInfo;
         Class<?> downloadManager = findClass("android.app.DownloadManager", loadPackageParam.classLoader);
         Class<?> downloadManagerRequest = findClass("android.app.DownloadManager.Request", loadPackageParam.classLoader);
@@ -117,7 +117,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
-                final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
+                final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, sharedPreferences, pPrefs);
                 Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
                 if (!isAppAllowed) {
                     param.setResult(0);
@@ -134,7 +134,8 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 reloadPreference();
-                final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, pPrefs);
+
+                final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, sharedPreferences, pPrefs);
                 Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
                 if (!isAppAllowed) {
                     final Uri uri = (Uri) param.args[0];

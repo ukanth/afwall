@@ -1712,7 +1712,7 @@ public final class Api {
         mNotificationManager.cancel(NOTIF_ID);
     }*/
 
-    public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo, SharedPreferences pPrefs) {
+    public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo, SharedPreferences sharedPreferences, SharedPreferences pPrefs) {
         InterfaceDetails details = InterfaceTracker.getCurrentCfg(context, true);
         //allow webview to download since webview requires INTERNET permission
         if (applicationInfo.packageName.equals("com.android.webview") || applicationInfo.packageName.equals("com.google.android.webview")) {
@@ -1723,9 +1723,12 @@ public final class Api {
             Log.i(TAG, "Calling isAppAllowed method from DM with Mode: " + mode);
             switch ((details.netType)) {
                 case ConnectivityManager.TYPE_WIFI:
-                    final String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+                    String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+                    if(savedPkg_wifi_uid.isEmpty()) {
+                        savedPkg_wifi_uid = sharedPreferences.getString(PREF_WIFI_PKG_UIDS, "");
+                    }
                     Log.i(TAG, "DM check for UID: " + applicationInfo.uid);
-                    Log.i(TAG, "DM allowed UIDs: " + savedPkg_wifi_uid);
+                    Log.i(TAG, "DM allowed UsavedPkg_wifi_uidIDs: " + savedPkg_wifi_uid);
                     if (mode.equals(Api.MODE_WHITELIST) && savedPkg_wifi_uid.contains(applicationInfo.uid + "")) {
                         return true;
                     } else if (mode.equals(Api.MODE_BLACKLIST) && !savedPkg_wifi_uid.contains(applicationInfo.uid + "")) {

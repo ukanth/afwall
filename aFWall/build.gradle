@@ -8,8 +8,8 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 17102
-        versionName "3.1.0-BETA3"
+        versionCode 17110
+        versionName "3.1.0"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
@@ -63,8 +63,12 @@ dependencies {
     implementation "org.ocpsoft.prettytime:prettytime:4.0.1.Final"
     compileOnly 'de.robv.android.xposed:api:82'
 
-   /* debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
+    //shared preference for Xposed
+    implementation 'com.crossbowffs.remotepreferences:remotepreferences:0.7'
+
+
+    /* debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
 
     implementation "dnsjava:dnsjava:2.1.8"
 }

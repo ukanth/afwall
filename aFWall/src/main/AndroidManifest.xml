@@ -344,6 +344,12 @@
             android:name=".service.RulesApplyService"
             android:exported="false" />
 
+        <!--for donate change it -->
+        <provider
+            android:name=".util.XPreferenceProvider"
+            android:authorities="dev.ukanth.ufirewall"
+            android:exported="true"/>
+
         <!--<activity android:name=".CustomRulesActivity"></activity>-->
     </application>
 
