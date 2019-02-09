@@ -356,7 +356,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean enableIPv6() {
-        return gPrefs.getBoolean(ENABLE_IPV6, false);
+        return gPrefs.getBoolean(ENABLE_IPV6, true);
     }
 
     public static boolean enableIPv6(boolean val) {
