@@ -361,7 +361,7 @@
     <string name="pref_none">Nessuno</string>
     <string name="pref_password">Password</string>
     <string name="pref_pattern">Modello</string>
-    <string name="pref_device">Usare la protezione della sicurezza del dispositivo</string>
+    <string name="pref_device">Usa la protezione di sicurezza del dispositivo</string>
     <string name="pref_device_desc">Usa il controllo di sicurezza del dispositivo per aprire AFWall + (Donazione/Chiave)</string>
     <string name="secure_option">Il dispositivo non è protetto con password/PIN</string>
     <string name="android_version">Questa caratteristica funziona solo su Lollipop e versioni successive di Android</string>

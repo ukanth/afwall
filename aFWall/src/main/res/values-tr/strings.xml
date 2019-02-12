@@ -24,13 +24,13 @@
     <string name="error_refresh">Iptables yenileme hatası</string>
     <string name="error_apply">Iptables kurallarını uygulama hatası</string>
     <string name="error_fetch">Iptables kurallarını alma hatası</string>
-    <string name="error_su_toast">Unable to aquire root access !</string>
+    <string name="error_su_toast">Kök erişimi alınamıyor!</string>
     <string name="error_su">Root erişimi sağlanamadı.\nAFWall+\'ı kullanabilmek için cihazınız rootlu olmalıdır.\n\nEğer cihazınız rootluysa, root erişim izninin sağlandığından emin olun.</string>
     <string name="error_netfilter">Destek için iptables hedefleri bulunamadı.\nAFWall+ bu sınırlama nedeniyle beklendiği gibi çalışmayabilir.</string>
     <string name="error_common">Hata; </string>
     <string name="all_item">(Herhangi uygulama) - hepsini seç</string>
     <string name="kernel_item">(Kernel) - Linux kernel</string>
-    <string name="android_system">Android System</string>
+    <string name="android_system">Android Sistemi</string>
     <string name="unknown_item">Bilinmiyor</string>
     <string name="tethering_item">(tethering) - DHCP+DNS servisleri</string>
     <string name="dnsproxy_item">(DNS proxy) - Netd aracılığıyla DNS aramaları</string>
@@ -69,16 +69,16 @@
     <string name="mode_header">Mod: %s</string>
     <string name="legend_clear">Tüm sütunlardaki onay kutularını temizleyin</string>
     <string name="mode_whitelist">Seçilenlere izin ver</string>
-    <string name="legend_whitelist">Selected apps will be granted Internet access</string>
+    <string name="legend_whitelist">Seçili uygulamalara internet erişim izni verilecek</string>
     <string name="mode_blacklist">Seçilenleri engelle</string>
-    <string name="legend_blacklist">Selected apps will be denied Internet access</string>
+    <string name="legend_blacklist">Seçili uygulamalara internet erişim izni verilmeyecek</string>
     <string name="set_custom_script">Özel komut belirle</string>
     <string name="preferences">Tercihler</string>
     <string name="reload">Uygulamaları yeniden yükle</string>
     <string name="flush">Kuralları boşalt</string>
     <string name="send_report">Hata raporu gönder</string>
     <string name="enter_problem">Sorunu açıklayınız:</string>
-    <string name="send_mail">Send e-mail</string>
+    <string name="send_mail">E-posta gönderin</string>
     <string name="notify_pref_summary_on">Yeni bir uygulama yüklendiğinde bir bildirim görüntülenir</string>
     <string name="notify_pref_summary_off">Yeni bir uygulama yüklendiğinde bir bildirim görüntülenmez</string>
     <string name="custom_script_defined">Özel komut tanımlandı</string>
@@ -97,7 +97,7 @@
     <string name="flushRulesConfirm">Iptables kuralları silinsin mi?</string>
     <string name="overrideRules">Kuralları içe aktarmak istiyor musunuz? Bu mevcut kuralları geçersiz kılar!</string>
     <string name="notification_new">Yeni uygulama yüklendi</string>
-    <string name="notification_new_package">Configure Internet permission</string>
+    <string name="notification_new_package">İnternet izinlerini yapılandır</string>
     <string name="confirmMsg">Güvenlik duvarı tamamen devre dışı bırakılsın mı?</string>
     <string name="apply">Uygula</string>
     <string name="discard">At</string>
@@ -121,7 +121,7 @@
     <string name="unable_remove_initd">AFWall+ başlangıç komut dosyası kaldırılamıyor</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Güvenlik duvarı devre dışı bırakılamıyor - şifre ile korunuyor!</string>
-    <string name="widget_label_status">AFWall+ Toggle</string>
+    <string name="widget_label_status">AFWall+ Anahtarı</string>
     <string name="widget_label_settings">AFWall+ Ayarları</string>
     <string name="widget_label_settings_old">AFWall+ Ayarları (Eski)</string>
     <!-- Color Picker -->
@@ -183,18 +183,18 @@
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">ProfilAdı</string>
     <string name="profile_notsupport">Bu seçeneği kullanmak için lütfen profil verinizi paylaşınız</string>
-    <string name="profile_duplicate">Profile exists already!</string>
+    <string name="profile_duplicate">Profil zaten var!</string>
     <string name="reapply_profile">Profil kurallarını yeniden uygula</string>
     <!-- Interface -->
     <string name="lan_title">LAN Denetimi</string>
-    <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
+    <string name="lan_summary">LAN izinlerini Wifi izinlerinden ayrı olarak kontrol etmeyi etkinleştir</string>
     <string name="iptables_pref">Iptables binaryleri</string>
     <string name="vpn_profile">VPN Denetimi</string>
     <string name="vpnSummary">VPN izinlerini ayrı ayrı denetlemek için etkinleştir</string>
     <string name="roaming">Veri Dolaşım Denetimi</string>
     <string name="roamingSummary">Dolaşım izinlerini ayrı ayrı denetlemek için etkinleştir</string>
-    <string name="tor_profile">Tor control</string>
-    <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+    <string name="tor_profile">Tor kontrolü</string>
+    <string name="torSummary">Tor olmayan trafiği Tor üzerinden yeniden yönlendirmeyi etkinleştir</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
     <!-- Toast Messages -->
@@ -223,7 +223,7 @@
     <string name="disable_tasker">AFWall+ Pasif</string>
     <string name="tasker_apply">Tasker: güvenlik duvarı kurallarını uygulama</string>
     <string name="tasker_disabled">Tasker: AFWall+ devre DIŞI!</string>
-    <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
+    <string name="tasker_profile_applied">Tasker: AFWall+ profili uygulandı</string>
     <string name="tasker_muliprofile">Tasker: AFWall+ çoklu profili devre dışı</string>
     <!-- IPv4/IPv6 -->
     <string name="ipv6_title">IPv6 Desteği</string>
@@ -280,7 +280,7 @@
     <string name="misc_header">Diller/Eklentiler</string>
     <!-- 1.2.6 -->
     <string name="active_rules">Etkin Kurallar</string>
-    <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
+    <string name="active_rules_summary">Her bağlantı değiştiğinde (LAN/Wi-Fi/mobil veri/dolaşım/paylaşım) güvenlik duvarı kurallarını uygula</string>
     <string name="profile_add">Profil Ekle</string>
     <string name="profile_remove">Profili Kaldır</string>
     <string name="profile_rename">Profil İsmini Değiştir</string>
@@ -307,12 +307,12 @@
     <string name="roam">Roam</string>
     <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
     <string name="wifi">Wi-Fi</string>
-    <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
+    <string name="legend_wifi">AFWall+ Wi-Fi izinlerini kontrol etsin</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
     <string name="tor">Tor</string>
     <string name="data">Veri</string>
-    <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+    <string name="legend_data">AFWall+ mobil veri (2G,3G,EDGE,LTE/4G) izinlerini kontrol etsin</string>
     <string name="pkg_all">Tüm</string>
     <string name="pkg_core">Çekirdek</string>
     <string name="pkg_sys">Sistem</string>
@@ -325,7 +325,7 @@
     <string name="enable_dns">Netd DNS\'i etkinleştir</string>
     <string name="disable_dns">DNS netd devre dışı</string>
     <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
+    <string name="dns_proxy_summary">Netd ile DNS aramaları Android 4.3 ve daha üst sürümlerinde vardır. Bunu devre dışı bırakmak bu aygıtların internet erişimini engeller.</string>
     <string name="tasker_lable">AFWall+ Tasker eklentisi</string>
     <string name="enable">Etkin</string>
     <string name="disable">Devre dışı</string>
@@ -340,8 +340,8 @@
     <string name="donate_only">Bu özellik yalnızca bağış sürümünde geçerli</string>
     <string name="buy_donate">Bağış sürümünü ya da bağış anahtarını al</string>
     <string name="unlock_donate"> bağışa dokunup kilidi aç</string>
-    <string name="donate_support">You can now use donate features.</string>
-    <string name="donate_thanks">Thanks for your support.</string>
+    <string name="donate_support">Bağış özelliklerini şimdi kullanabilirsin.</string>
+    <string name="donate_thanks">Desteğiniz için teşekkürler.</string>
     <string name="activeNotification">Bildirim simgesini göster</string>
     <string name="activeNotification_summary">Simgeyi bildirim çubuğunda kalıcı görüntüle</string>
     <string name="active">Güvenlik Duvarı etkin</string>
@@ -406,15 +406,15 @@
     <string name="menu_legend">İkonlar ve anlamları</string>
     <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
     <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
-    <string name="log_deletedapp">Deleted App</string>
-    <string name="log_denied">Denied:</string>
+    <string name="log_deletedapp">Silinmiş Uygulama</string>
+    <string name="log_denied">Reddedildi:</string>
     <string name="log_times">kez</string>
     <string name="log_time">zaman</string>
-    <string name="log_dst">Destination:</string>
-    <string name="log_src">Source:</string>
-    <string name="log_proto">Protocol:</string>
+    <string name="log_dst">Hedef:</string>
+    <string name="log_src">Kaynak:</string>
+    <string name="log_proto">Protokol:</string>
     <string name="no_data_available">Günlük servisini Tercihler üzerinden etkinleştirin. Etkinleştirilirse, günlük verileri olmayacak.</string>
-    <string name="loading_data_title">Loading&#8230;</string>
+    <string name="loading_data_title">Yükleniyor&#8230;</string>
     <string name="loading_data">Günlük verilerini alma</string>
     <string name="switch_old">Eski görünümüne geçin</string>
     <string name="switch_new">Yeni görünüme geçin</string>
@@ -466,8 +466,8 @@
     <string name="fingerprint_permission_manifest_missing">Parmak izi doğrulama yetkisi devre dışı</string>
     <string name="register_at_least_one_fingerprint">Ayarlarda, en az bir parmak izi kaydı yapmalısınız</string>
     <string name="lock_screen_not_enabled">Ayarlarda, kilit ekran güvenliği devre dışı</string>
-    <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
-    <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
+    <string name="fingerprint_enabled_successfully">Parmak izi etkinleştirildi</string>
+    <string name="fingerprint_disabled_successfully">Parmak izi kilidi kapatıldı</string>
     <string name="label_zoomin">Yakınlaştır</string>
     <string name="label_zoomout">Uzaklaştır</string>
     <string name="exception_pref">Tercihin bozulması nedeniyle etkinlik başlatılamadı, lütfen uygulama verilerini silin</string>
@@ -479,7 +479,7 @@
     <string name="notification_priority">Bildirim önceliği</string>
     <string name="defaultPriority">Varsayılan Öncelik</string>
     <string name="lowPriority">Düşük Öncelik</string>
-    <string name="dualAppsTitle">Dual Apps Support</string>
+    <string name="dualAppsTitle">Çift Uygulama Desteği</string>
     <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
     <string name="choose">Seç</string>
     <string name="input_chain">GİRİŞ zinciri (IPv4)</string>
@@ -506,9 +506,9 @@
     <string name="applyRulesFaster">Yalnızca uygulama kuralları yavaşlarsa kullanın - Oldukça Deneysel</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
     <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
-    <string name="show_host">Show hostname</string>
-    <string name="host">Host:</string>
-    <string name="battery_optimization_title">Whitelist afwall+ doze</string>
+    <string name="show_host">Ana bilgisayar adı göster</string>
+    <string name="host">Sunucu:</string>
+    <string name="battery_optimization_title">Beyaz liste afwall + doze</string>
     <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
     <string name="firewall_service">Güvenlik Duvarı Hizmeti</string>
     <string name="boot_notification">Önyükleme Hizmeti</string>
