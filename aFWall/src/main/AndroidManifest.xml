@@ -47,6 +47,7 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
+    <!-- donate  android:label="@string/app_name_donate" -->
     <application
         android:name=".util.G"
         android:allowBackup="false"
@@ -70,6 +71,7 @@
             android:name="xposedminversion"
             android:value="53" />
 
+        <!-- donate  android:label="@string/app_name_donate" -->
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
