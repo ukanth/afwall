@@ -233,7 +233,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean ipv6Fwd() {
-        return gPrefs.getBoolean(IP6_FWD, false);
+        return gPrefs.getBoolean(IP6_FWD, true);
     }
 
     public static boolean ipv6Fwd(boolean val) {
@@ -242,7 +242,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean ipv6Input() {
-        return gPrefs.getBoolean(IP6_INPUT, false);
+        return gPrefs.getBoolean(IP6_INPUT, true);
     }
 
     public static boolean ipv6Input(boolean val) {
@@ -251,7 +251,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean ipv6Output() {
-        return gPrefs.getBoolean(IP6_OUTPUT, false);
+        return gPrefs.getBoolean(IP6_OUTPUT, true);
     }
 
     public static boolean ipv6Output(boolean val) {
