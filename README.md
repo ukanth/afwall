@@ -42,13 +42,17 @@ The [changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md) documen
 
 Supports
 --------
-* Android versions 4.x/5.x/6.x/7.x
+* Android versions 5.x to 9.x
+    for 4.x - 2.9.9 
+    for 2.x - 1.3.4.1
+* Compatible with Magisk and Lineage su.    
 * ARM/MIPS/x86 processors
-* IPv4/IPv6 protocols
-* WiFi, mobile data, LAN, VPN, tether, and roaming
+* IPv4 and IPv6 protocols
+* WiFi, mobile data, LAN, VPN, tether, roaming and Tor
 * Multi-user (multiple profiles)
 * Many languages *(see [Translating](#translating))*
-* Tasker and Locale apps
+* Tasker and Locale plugin
+* Xposed plugin
 
 Highlights
 ----------
@@ -70,7 +74,7 @@ Features
 * Option to prevent data leaks during boot (requires *init.d* support or *S-OFF*)
 * Optional Password protection
 * Option to manage rules with a custom script
-* Option to enable Device Admin to protect AFWall+ from uninstall
+* ~~Option to enable Device Admin to protect AFWall+ from uninstall~~
 
 Bug Reports
 -----------
@@ -109,7 +113,7 @@ AFWall+ asks for the following Android permissions:
 * RECEIVE_BOOT_COMPLETED: Autostart (Bootup) AFWall+ after the system finishes booting.
 * ACCESS_NETWORK_STATE: Allows AFWall+ to access information about networks (iptables).
 * WRITE_EXTERNAL_STORAGE: Allows AFWall+ to write to external storage for debug log and export iptables rules.
-* ACCESS_SUPERUSER: Standard to support Superuser/SuperSU (by Koushik/Chainfire).
+* DEPRECATED ~~ACCESS_SUPERUSER: Standard to support Superuser/SuperSU (by Koushik/Chainfire)~~
 * INTERNET: NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at [Stackoverflow](https://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4).
 * ACCESS_WIFI_STATE: Used to detect the tether state.
 
