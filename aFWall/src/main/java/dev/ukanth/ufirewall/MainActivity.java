@@ -2280,41 +2280,39 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Boolean doInBackground(Void... params) {
             //set the progress
-            if (G.hasRoot() && Shell.SU.available()) {
-                Api.setRulesUpToDate(false);
-                Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
-                        .setSuccessToast(R.string.rules_applied)
-                        .setFailureToast(R.string.error_apply)
-                        .setReopenShell(true)
-                        .setCallback(new RootCommand.Callback() {
-                            public void cbFunc(RootCommand state) {
-                                try {
-                                    if (runProgress != null) {
-                                        runProgress.dismiss();
-                                    }
-                                } catch (Exception ex) {
+            if (!Shell.SU.available()) return false;
+
+            Api.setRulesUpToDate(false);
+            Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
+                    .setSuccessToast(R.string.rules_applied)
+                    .setFailureToast(R.string.error_apply)
+                    .setReopenShell(true)
+                    .setCallback(new RootCommand.Callback() {
+                        public void cbFunc(RootCommand state) {
+                            try {
+                                if (runProgress != null) {
+                                    runProgress.dismiss();
                                 }
-                                if (state.exitCode == 0) {
-                                    setDirty(false);
-                                }
-                                //queue.clear();
-                                runOnUiThread(() -> {
-                                    setDirty(false);
-                                    if (state.exitCode != 0) {
-                                        Api.errorNotification(ctx);
-                                        menuSetApplyOrSave(MainActivity.this.mainMenu, false);
-                                        Api.setEnabled(ctx, false, true);
-                                    } else {
-                                        menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
-                                        Api.setEnabled(ctx, enabled, true);
-                                    }
-                                });
+                            } catch (Exception ex) {
                             }
-                        }));
-                return true;
-            } else {
-                return false;
-            }
+                            if (state.exitCode == 0) {
+                                setDirty(false);
+                            }
+                            //queue.clear();
+                            runOnUiThread(() -> {
+                                setDirty(false);
+                                if (state.exitCode != 0) {
+                                    Api.errorNotification(ctx);
+                                    menuSetApplyOrSave(MainActivity.this.mainMenu, false);
+                                    Api.setEnabled(ctx, false, true);
+                                } else {
+                                    menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
+                                    Api.setEnabled(ctx, enabled, true);
+                                }
+                            });
+                        }
+                    }));
+            return true;
         }
 
         @Override
