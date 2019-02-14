@@ -192,7 +192,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
 
     public static boolean isRun() {
-        return gPrefs.getBoolean(RUN_NOTIFICATION, false);
+        return gPrefs.getBoolean(RUN_NOTIFICATION, true);
     }
 
     public static boolean isRun(boolean val) {

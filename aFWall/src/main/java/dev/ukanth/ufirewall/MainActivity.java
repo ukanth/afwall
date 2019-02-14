@@ -85,6 +85,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<String> mlocalList = new ArrayList<>(new LinkedHashSet<String>());
     private int initDone = 0;
     private Spinner mSpinner;
-    private MaterialDialog progress;
+    private MaterialDialog runProgress;
     private AlertDialog dialogLegend = null;
 
     private BroadcastReceiver uiProgressReceiver;
@@ -326,8 +327,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 String rules = G.enableIPv6() ? " (v4 & v6) " : " (v4) ";
-                if (progress != null) {
-                    progress.setContent(context.getString(R.string.applying) + rules + intent.getExtras().get("INDEX") + "/" + intent.getExtras().get("SIZE"));
+                if (runProgress != null) {
+                    runProgress.setContent(context.getString(R.string.applying) + rules + intent.getExtras().get("INDEX") + "/" + intent.getExtras().get("SIZE"));
                 }
             }
         };
@@ -433,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         List<PackageInfoData> allApps = Api.getApps(getApplicationContext(), null);
         if (i >= 0) {
             for (PackageInfoData infoData : allApps) {
-                if(infoData != null) {
+                if (infoData != null) {
                     if (infoData.appType == i) {
                         returnList.add(infoData);
                     }
@@ -1655,7 +1656,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         new RunApply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
     }
 
     /**
@@ -2129,6 +2129,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(Api.updateBaseContextLocale(base));
+    }
+
     private static class PurgeTask extends AsyncTask<Void, Void, Boolean> {
 
         private MaterialDialog progress;
@@ -2181,6 +2186,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Toast.makeText(ctx, ctx.getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
                 try {
                     progress.dismiss();
+                    progress = null;
                 } catch (Exception ex) {
                 }
             }
@@ -2262,7 +2268,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPreExecute() {
-            progress = new MaterialDialog.Builder(MainActivity.this)
+            runProgress = new MaterialDialog.Builder(MainActivity.this)
                     .title(R.string.working)
                     .cancelable(false)
                     .content(enabled ? R.string.applying_rules
@@ -2275,6 +2281,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected Boolean doInBackground(Void... params) {
             //set the progress
             if (G.hasRoot() && Shell.SU.available()) {
+                Api.setRulesUpToDate(false);
                 Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
                         .setFailureToast(R.string.error_apply)
@@ -2282,9 +2289,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .setCallback(new RootCommand.Callback() {
                             public void cbFunc(RootCommand state) {
                                 try {
-                                    progress.dismiss();
+                                    if (runProgress != null) {
+                                        runProgress.dismiss();
+                                    }
                                 } catch (Exception ex) {
-
                                 }
                                 if (state.exitCode == 0) {
                                     setDirty(false);
@@ -2301,7 +2309,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         Api.setEnabled(ctx, enabled, true);
                                     }
                                 });
-
                             }
                         }));
                 return true;
@@ -2317,7 +2324,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Toast.makeText(getApplicationContext(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
                 disableFirewall();
                 try {
-                    progress.dismiss();
+                    runProgress.dismiss();
                 } catch (Exception ex) {
                 }
             }
@@ -2405,12 +2412,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
-
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(Api.updateBaseContextLocale(base));
-    }
-
-
 }
 
