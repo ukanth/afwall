@@ -8,8 +8,8 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 17111
-        versionName "3.1.0"
+        versionCode 19305
+        versionName "3.1.1-BETA"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
@@ -57,8 +57,8 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:4.2.4"
     implementation "com.github.Raizlabs.DBFlow:dbflow:4.2.4"
 
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
 
     implementation "org.ocpsoft.prettytime:prettytime:4.0.1.Final"
     compileOnly 'de.robv.android.xposed:api:82'
