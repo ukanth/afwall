@@ -66,7 +66,7 @@ public class PackageBroadcast extends BroadcastReceiver {
             return;
         }
 
-        if (Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(intent.getAction())) {
+        if (Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) {
             // Ignore application updates
             final boolean replacing = intent.getBooleanExtra(
                     Intent.EXTRA_REPLACING, false);
