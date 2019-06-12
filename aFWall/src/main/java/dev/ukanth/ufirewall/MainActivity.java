@@ -2153,6 +2153,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Boolean doInBackground(Void... voids) {
             if (G.hasRoot() && Shell.SU.available()) {
+                //store the root value
+                G.hasRoot(true);
                 Api.purgeIptables(ctx, true, new RootCommand()
                         .setSuccessToast(R.string.rules_deleted)
                         .setFailureToast(R.string.error_purge)
@@ -2277,7 +2279,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Boolean doInBackground(Void... params) {
             //set the progress
-            if (G.hasRoot() && Shell.SU.available()) {
+            if (G.hasRoot()) {
                 Api.setRulesUpToDate(false);
                 Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
@@ -2353,9 +2355,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             rootShell = (new Shell.Builder())
                     .useSU()
                     .addCommand("id", 0, (commandCode, exitCode, output) -> {
-                        synchronized (suGranted) {
                             suGranted[0] = true;
-                        }
                     }).open((commandCode, exitCode, output) -> {
                     });
             rootShell.waitForIdle();
@@ -2404,7 +2404,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 disableFirewall();
                 showRootNotFoundMessage();
             } else {
-                G.hasRoot(suGranted[0]);
+                G.hasRoot(true);
                 startRootShell(rootShell);
                 new SecurityUtil(MainActivity.this).passCheck();
             }
