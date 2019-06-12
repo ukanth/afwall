@@ -1,12 +1,27 @@
 package dev.ukanth.ufirewall.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.log.Log;
+
 /**
  * Created by ukanth on 22/11/16.
  */
 
 public class CustomRuleOld {
 
-    /*private static String loadAssetsFile(Context ctx, String inFile) {
+    private static String loadAssetsFile(Context ctx, String inFile) {
         String tContents = "";
         try {
             InputStream stream = ctx.getAssets().open(inFile);
@@ -34,19 +49,34 @@ public class CustomRuleOld {
                         Rule rule = new Rule();
                         rule.setName(row.getString("name"));
                         rule.setDesc(row.getString("desc"));
-                        rule.setId(row.getString("id"));
-                        JSONArray v4Array = row.getJSONArray("v4");
-                        List<String> list4 = new ArrayList<>();
-                        for(int item=0;item < v4Array.length(); item++) {
-                            list4.add(v4Array.getString(item));
+                        JSONObject v4Obj = row.getJSONObject("v4");
+                        JSONObject v6Obj = row.getJSONObject("v6");
+                        List<String> listv4On = new ArrayList<>();
+                        List<String> listv4Off = new ArrayList<>();
+
+                        List<String> listv6On = new ArrayList<>();
+                        List<String> listv6Off = new ArrayList<>();
+
+                        for (int item = 0; item < v4Obj.getJSONArray("on").length(); item++) {
+                            listv4On.add(v4Obj.getJSONArray("on").getString(item));
                         }
-                        rule.setIpv4(list4);
-                        JSONArray v6Array = row.getJSONArray("v6");
-                        List<String> list6 = new ArrayList<>();
-                        for(int item=0;item < v4Array.length(); item++) {
-                            list6.add(v6Array.getString(item));
+                        for (int item = 0; item < v4Obj.getJSONArray("off").length(); item++) {
+                            listv4Off.add(v4Obj.getJSONArray("off").getString(item));
                         }
-                        rule.setIpv6(list6);
+
+                        rule.setIpv4On(listv4On);
+                        rule.setIpv4Off(listv4Off);
+
+                        for (int item = 0; item < v6Obj.getJSONArray("on").length(); item++) {
+                            listv6On.add(v6Obj.getJSONArray("on").getString(item));
+                        }
+                        for (int item = 0; item < v6Obj.getJSONArray("off").length(); item++) {
+                            listv6Off.add(v6Obj.getJSONArray("off").getString(item));
+                        }
+
+                        rule.setIpv6On(listv6On);
+                        rule.setIpv6Off(listv6Off);
+
                         listRule.add(rule);
                     }
                 }
@@ -60,38 +90,5 @@ public class CustomRuleOld {
     public static int getRulesSize(Context context) {
         return getRules(context).size();
     }
-
-    public static List<String> getIds(Context context) {
-        List<String> listId = new ArrayList<>();
-        for (Rule rule : getRules(context)) {
-            listId.add(rule.getId());
-        }
-        return listId;
-    }
-
-    public static List<String> getAllowedIPv4Rules(Context context) {
-        final SharedPreferences prefs = context.getSharedPreferences(Api.CUSTOM_RULE_PREFS, 0);
-        List<String> allowedRules = new ArrayList<>();
-        for (Rule rule : getRules(context)) {
-            if (prefs.getBoolean(rule.getId(), false)) {
-                //toggled rule
-                allowedRules.addAll(rule.getIpv4());
-            }
-        }
-        return allowedRules;
-    }
-
-    public static List<String> getAllowedIPv6Rules(Context context) {
-        final SharedPreferences prefs = context.getSharedPreferences(Api.CUSTOM_RULE_PREFS, 0);
-
-        List<String> allowedRules = new ArrayList<>();
-        for (Rule rule : getRules(context)) {
-            if (prefs.getBoolean(rule.getId(), false)) {
-                //toggled rule
-                allowedRules.addAll(rule.getIpv6());
-            }
-        }
-        return allowedRules;
-    }*/
 
 }

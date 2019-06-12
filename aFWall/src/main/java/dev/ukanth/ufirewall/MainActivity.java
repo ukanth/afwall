@@ -27,11 +27,8 @@ package dev.ukanth.ufirewall;
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -85,9 +82,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.activity.CustomRulesActivity;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
 import dev.ukanth.ufirewall.activity.LogActivity;
@@ -1209,10 +1206,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.menu_help:
                 showAbout();
                 return true;
-            /*case R.id.menu_customrules:
-                G.hidden()
+            case R.id.menu_customrules:
+                //G.hidden();
                 startCustomRules();
-                return true;*/
+                return true;
             case R.id.menu_log:
                 showLog();
                 return true;

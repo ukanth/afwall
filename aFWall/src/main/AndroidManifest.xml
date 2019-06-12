@@ -39,6 +39,9 @@
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
+   <uses-permission
+       android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <!-- Screen support -->
     <supports-screens
         android:anyDensity="true"
@@ -160,14 +163,14 @@
 
         <!-- still will work in android 7 above -->
         <receiver android:name=".broadcast.OnBootReceiver">
-             <intent-filter android:priority="500">
-                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
+            <intent-filter android:priority="500">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
 
-                 <category android:name="android.intent.category.DEFAULT" />
-             </intent-filter>
-         </receiver>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
         <service android:name=".service.ApplyOnBootService" />
 
 
@@ -203,8 +206,8 @@
 
         <service
             android:name=".service.FirewallService"
-            android:launchMode="singleTop"
-            android:exported="true" />
+            android:exported="true"
+            android:launchMode="singleTop" />
 
         <service
             android:name=".service.ToggleTileService"
@@ -212,8 +215,7 @@
             android:label="@string/widget_label_status"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action
-                    android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 
@@ -352,9 +354,9 @@
         <provider
             android:name=".util.XPreferenceProvider"
             android:authorities="dev.ukanth.ufirewall"
-            android:exported="true"/>
+            android:exported="true" />
 
-        <!--<activity android:name=".CustomRulesActivity"></activity>-->
+        <activity android:name=".activity.CustomRulesActivity"></activity>
     </application>
 
 </manifest>

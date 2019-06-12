@@ -1,15 +1,78 @@
 {
+  "author": "ukanth",
+  "version": "1.0",
   "rules": [
     {
-      "id": "mDNS",
       "name": "Allow Multicast DNS",
       "desc": "DNS based service discovery",
-      "v4": [
-        "-A afwall-wifi-fork -d 224.0.0.0/24 -j afwall-wifi-lan"
-      ],
-      "v6": [
-        "-A afwall-wifi-fork -d ffx2::/16 -j afwall-wifi-lan"
-      ]
+      "v4": {
+        "on": [
+          "-A afwall-wifi-fork -d 224.0.0.0/24 -j afwall-wifi-lan"
+        ],
+        "off": [
+          "-D afwall-wifi-fork -d 224.0.0.0/24 -j afwall-wifi-lan"
+        ]
+      },
+      "v6": {
+        "on": [
+          "-A afwall-wifi-fork -d ffx2::/16 -j afwall-wifi-lan"
+        ],
+        "off": [
+          "-D afwall-wifi-fork -d ffx2::/16 -j afwall-wifi-lan"
+        ]
+      }
+    },
+    {
+      "name": "Allow ICMP",
+      "desc": "To allow ICMP packets",
+      "v4": {
+        "on": [
+          "-A INPUT -p icmp -m icmp --icmp-type echo-reply -j ACCEPT",
+          "-A INPUT -p icmp -m icmp --icmp-type echo-request -j ACCEPT",
+          "-A INPUT -p icmp -m icmp --icmp-type destination-unreachable -j ACCEPT"
+        ],
+        "off": [
+          "-D INPUT -p icmp -m icmp --icmp-type echo-reply -j ACCEPT",
+          "-D INPUT -p icmp -m icmp --icmp-type echo-request -j ACCEPT",
+          "-D INPUT -p icmp -m icmp --icmp-type destination-unreachable -j ACCEPT"
+        ]
+      },
+      "v6": {
+        "on": [
+          "-A INPUT -p icmp -m icmp --icmp-type echo-reply -j ACCEPT",
+          "-A INPUT -p icmp -m icmp --icmp-type echo-request -j ACCEPT",
+          "-A INPUT -p icmp -m icmp --icmp-type destination-unreachable -j ACCEPT"
+        ],
+        "off": [
+          "-D INPUT -p icmp -m icmp --icmp-type echo-reply -j ACCEPT",
+          "-D INPUT -p icmp -m icmp --icmp-type echo-request -j ACCEPT",
+          "-D INPUT -p icmp -m icmp --icmp-type destination-unreachable -j ACCEPT"
+        ]
+      }
+    },
+    {
+      "name": "Allow Loopback Interface",
+      "desc": "Allow lo interface routing (mostly on samsung)",
+      "v4": {
+        "on": [
+          "-A INPUT -i lo -j ACCEPT",
+          "-A afwall -o lo -j ACCEPT"
+        ],
+        "off": [
+          "-D INPUT -i lo -j ACCEPT",
+          "-D afwall -o lo -j ACCEPT"
+        ]
+      },
+      "v6": {
+        "on": [
+          "-A INPUT -i lo -j ACCEPT",
+          "-A afwall -o lo -j ACCEPT"
+        ],
+        "off": [
+          "-D INPUT -i lo -j ACCEPT",
+          "-D afwall -o lo -j ACCEPT"
+        ]
+      }
     }
   ]
 }

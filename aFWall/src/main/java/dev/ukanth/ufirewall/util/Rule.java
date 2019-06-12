@@ -7,18 +7,44 @@ import java.util.List;
  */
 
 public class Rule {
-    /*String id;
+
     String name;
     String desc;
-    List<String> ipv4;
-    List<String> ipv6;
+    List<String> ipv4On;
+    List<String> ipv4Off;
+    List<String> ipv6On;
+    List<String> ipv6Off;
 
-    public String getId() {
-        return id;
+    public List<String> getIpv4On() {
+        return ipv4On;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setIpv4On(List<String> ipv4On) {
+        this.ipv4On = ipv4On;
+    }
+
+    public List<String> getIpv4Off() {
+        return ipv4Off;
+    }
+
+    public void setIpv4Off(List<String> ipv4Off) {
+        this.ipv4Off = ipv4Off;
+    }
+
+    public List<String> getIpv6On() {
+        return ipv6On;
+    }
+
+    public void setIpv6On(List<String> ipv6On) {
+        this.ipv6On = ipv6On;
+    }
+
+    public List<String> getIpv6Off() {
+        return ipv6Off;
+    }
+
+    public void setIpv6Off(List<String> ipv6Off) {
+        this.ipv6Off = ipv6Off;
     }
 
     public String getName() {
@@ -36,22 +62,4 @@ public class Rule {
     public void setDesc(String desc) {
         this.desc = desc;
     }
-
-    public List<String> getIpv4() {
-        return ipv4;
-    }
-
-    public void setIpv4(List<String> ipv4) {
-        this.ipv4 = ipv4;
-    }
-
-    public List<String> getIpv6() {
-        return ipv6;
-    }
-
-    public void setIpv6(List<String> ipv6) {
-        this.ipv6 = ipv6;
-    }*/
-
-
 }
