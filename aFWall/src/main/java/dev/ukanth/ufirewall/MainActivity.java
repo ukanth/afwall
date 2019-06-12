@@ -2269,8 +2269,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPreExecute() {
             runProgress = new MaterialDialog.Builder(MainActivity.this)
                     .title(R.string.su_check_title)
-                    .cancelable(false)
-                    .content(enabled ? R.string.su_check_message
+                    .cancelable(true)
+                    .autoDismiss(true)
+                    .content(enabled ? R.string.applying_rules
                             : R.string.saving_rules)
                     .progress(true, 0)
                     .show();

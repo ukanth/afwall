@@ -135,6 +135,7 @@ public class RootShellService extends Service {
     private static void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
+            //not to send conflicting status
             if(!state.isv6) {
                 sendUpdate(state);
             }
