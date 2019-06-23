@@ -45,6 +45,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -139,30 +140,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<String> mlocalList = new ArrayList<>(new LinkedHashSet<String>());
     private int initDone = 0;
     private Spinner mSpinner;
+    private TextWatcher filterTextWatcher;
     private MaterialDialog runProgress;
     private AlertDialog dialogLegend = null;
 
     private BroadcastReceiver uiProgressReceiver;
     private BroadcastReceiver toastReceiver;
 
-    private Shell.Interactive rootShell = null;
-    private TextWatcher filterTextWatcher = new TextWatcher() {
-
-        public void afterTextChanged(Editable s) {
-            showApplications(s.toString());
-        }
-
-
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
-        }
-
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-            showApplications(s.toString());
-        }
-
-    };
+    private IntentFilter uiFilter;
 
     public boolean isDirty() {
         return dirty;
@@ -218,10 +203,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //queue = new HashSet<>();
 
+
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
-            startRootShell(rootShell);
+            //might not have rootshell
+            startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
         }
@@ -229,7 +216,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerUIbroadcast();
         registerToastbroadcast();
         migrateNotification();
+        initTextWatcher();
+
         //checkAndAskForBatteryOptimization();
+    }
+
+    private void initTextWatcher() {
+        filterTextWatcher = new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+                showApplications(s.toString());
+            }
+
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                showApplications(s.toString());
+            }
+        };
     }
 
 
@@ -252,32 +260,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    private void checkAndAskForBatteryOptimization() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PowerManager powerManager = (PowerManager) getApplicationContext().getSystemService(POWER_SERVICE);
-            if (!powerManager.isIgnoringBatteryOptimizations(getPackageName())) {
-                new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                        .title(R.string.battery_optimization_title)
-                        .content(R.string.battery_optimization_desc)
-                        .onPositive((dialog, which) -> {
-                            try {
-                                Intent intent = new Intent();
-                                intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-                                startActivity(intent);
-                            } catch (ActivityNotFoundException e) {
-                                Toast.makeText(getApplicationContext(), "Unable to open battery optimisation screen. Please add it manually", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .onNegative((dialog, which) -> {
-                            dialog.dismiss();
-                        })
-                        .positiveText(R.string.Continue)
-                        .negativeText(R.string.exit)
-                        .show();
-            }
-        }
-    }
-
     private void migrateNotification() {
         try {
             if (!G.isNotificationMigrated()) {
@@ -297,14 +279,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    private void requestPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET);
-        }
-    }
 
     private void registerToastbroadcast() {
         IntentFilter filter = new IntentFilter("TOAST");
@@ -318,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void registerUIbroadcast() {
-        IntentFilter filter = new IntentFilter("UPDATEUI");
+        uiFilter = new IntentFilter("UPDATEUI");
 
         uiProgressReceiver = new BroadcastReceiver() {
             @Override
@@ -329,40 +303,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         };
-        registerReceiver(uiProgressReceiver, filter);
-    }
-
-    /**
-     * Register quick apply from main screen
-     */
-    private void registerQuickApply() {
-       /* fab = (FloatingActionButton) findViewById(R.id.fab);
-        if (showQuickButton()) {
-            fab.setVisibility(View.VISIBLE);
-        } else {
-            fab.setVisibility(View.GONE);
-        }
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //lets save the rules
-                if (queue != null && !queue.isEmpty()) {
-                    List<PackageInfoData> apps = new ArrayList<>(queue);
-                    for (PackageInfoData data : apps) {
-                        Log.i(TAG, data.pkgName + " " + data.uid);
-                    }
-                    Api.RuleDataSet existingRuleSet  = Api.getExistingRuleSet();
-                    Api.RuleDataSet ruleData = Api.generateRules(getApplicationContext(), apps, false);
-                    Api.RuleDataSet merged = Api.merge(existingRuleSet, ruleData);
-                    Log.i(TAG, "Generated RuleIDs: " + merged.toString());
-
-                    queue.clear();
-                    new RunQuickApply().setDataSet(merged).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    //save the rules
-                    Api.generateRules(getApplicationContext(),  Api.getApps(getApplicationContext(),null), true);
-                }
-            }
-        });*/
     }
 
     @Override
@@ -473,28 +413,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void startRootShell(Shell.Interactive rootShell) {
-        if (rootShell == null) {
-            List<String> cmds = new ArrayList<String>();
-            cmds.add("true");
-            new RootCommand().setFailureToast(R.string.error_su)
-                    .setReopenShell(true)
-                    .setCallback(new RootCommand.Callback() {
-                        public void cbFunc(RootCommand state) {
-                            //failed to acquire root
-                            if (state.exitCode != 0) {
-                                runOnUiThread(() -> {
-                                    disableFirewall();
-                                    showRootNotFoundMessage();
-                                });
-                            }
+    private void startRootShell() {
+        List<String> cmds = new ArrayList<String>();
+        cmds.add("true");
+        new RootCommand().setFailureToast(R.string.error_su)
+                .setReopenShell(true)
+                .setCallback(new RootCommand.Callback() {
+                    public void cbFunc(RootCommand state) {
+                        //failed to acquire root
+                        if (state.exitCode != 0) {
+                            runOnUiThread(() -> {
+                                disableFirewall();
+                                showRootNotFoundMessage();
+                            });
                         }
-                    }).run(getApplicationContext(), cmds);
-        }
-
-       /* if (G.activeNotification()) {
-            Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-        }*/
+                    }
+                }).run(getApplicationContext(), cmds);
     }
 
     private void showRootNotFoundMessage() {
@@ -526,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             fab.setVisibility(View.GONE);
         }*/
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver, uiFilter);
         G.activityResumed();
     }
 
@@ -636,9 +571,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onStart() {
         super.onStart();
         initDone = 0;
-        //startRootShell();
         reloadPreferences();
-        //registerNetwork();
     }
 
     private void addColumns(int id) {
@@ -739,41 +672,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    /* private boolean passCheck() {
-         if (G.enableDeviceCheck()) {
-             deviceCheck();
-         } else {
-             switch (G.protectionLevel()) {
-                 case "p0":
-                     return true;
-                 case "p1":
-                     final String oldpwd = G.profile_pwd();
-                     if (oldpwd.length() == 0) {
-                         return true;
-                     } else {
-                         // Check the password
-                         requestPassword();
-                     }
-                     break;
-                 case "p2":
-                     final String pwd = G.sPrefs.getString("LockPassword", "");
-                     if (pwd.length() == 0) {
-                         return true;
-                     } else {
-                         requestPassword();
-                     }
-                     break;
-                 case "p3":
-
-                     if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
-
-                         requestFingerprint();
-                     }
-             }
-         }
-         return false;
-     }
- */
     @Override
     protected void onPause() {
         super.onPause();
@@ -797,6 +695,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         View v = this.listview.getChildAt(0);
         top = (v == null) ? 0 : v.getTop();
         G.activityPaused();
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(uiProgressReceiver);
     }
 
     /**
@@ -812,101 +711,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (changed)
             editor.commit();
     }
-
-
-    /*private void selectMode() {
-        final Resources res = getResources();
-
-        new MaterialDialog.Builder(this)
-                .title(R.string.selectMode)
-                .cancelable(true)
-                .items(new String[]{
-                        res.getString(R.string.mode_whitelist),
-                        res.getString(R.string.mode_blacklist)})
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        final String mode = (which == 0 ? Api.MODE_WHITELIST : Api.MODE_BLACKLIST);
-                        final Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
-                        editor.putString(Api.PREF_MODE, mode);
-                        editor.commit();
-                        refreshHeader();
-                    }
-                })
-                .show();
-    }*/
-
-
-    /**
-     * Request the password lock before displayed the main screen.
-     */
-    /*private void requestPassword() {
-        switch (G.protectionLevel()) {
-            case "p1":
-                new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                        .title(R.string.pass_titleget).autoDismiss(false)
-                        .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                        .positiveText(R.string.submit)
-                        .negativeText(R.string.Cancel)
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                MainActivity.this.finish();
-                                android.os.Process.killProcess(android.os.Process.myPid());
-                            }
-                        })
-                        .input(R.string.enterpass, R.string.password_empty, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
-                                String pass = input.toString();
-                                boolean isAllowed = false;
-                                if (G.isEnc()) {
-                                    String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
-                                    if (decrypt != null) {
-                                        if (decrypt.equals(pass)) {
-                                            isAllowed = true;
-                                        }
-                                    }
-                                } else {
-                                    if (pass.equals(G.profile_pwd())) {
-                                        isAllowed = true;
-                                    }
-                                }
-                                if (isAllowed) {
-                                    showOrLoadApplications();
-                                    dialog.dismiss();
-                                } else {
-                                    Api.toast(MainActivity.this, getString(R.string.wrong_password));
-                                }
-
-
-                            }
-                        }).show();
-                break;
-            case "p2":
-                Intent intent = new Intent(ACTION_COMPARE_PATTERN, null, getApplicationContext(), LockPatternActivity.class);
-                String savedPattern = G.sPrefs.getString("LockPassword", "");
-                intent.putExtra(EXTRA_PATTERN, savedPattern.toCharArray());
-                startActivityForResult(intent, REQ_ENTER_PATTERN);
-                break;
-        }
-
-    }
-
-    *//**
-     * Request the fingerprint lock before displayed the main screen.
-     *//*
-    private void requestFingerprint() {
-        FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(this);
-        dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
-            @Override
-            public void then() {
-                MainActivity.this.finish();
-                android.os.Process.killProcess(android.os.Process.myPid());
-            }
-        });
-        dialog.show();
-    }*/
 
     /**
      * Refresh informative header
@@ -2117,13 +1921,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             dialogLegend.dismiss();
             dialogLegend = null;
         }
-        if (uiProgressReceiver != null) {
-            unregisterReceiver(uiProgressReceiver);
-        }
         if (toastReceiver != null) {
             unregisterReceiver(toastReceiver);
         }
-
     }
 
     @Override
@@ -2353,10 +2153,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Void doInBackground(Void... params) {
-            rootShell = (new Shell.Builder())
+            Shell.Interactive rootShell = (new Shell.Builder())
                     .useSU()
                     .addCommand("id", 0, (commandCode, exitCode, output) -> {
-                            suGranted[0] = true;
+                        suGranted[0] = true;
                     }).open((commandCode, exitCode, output) -> {
                     });
             rootShell.waitForIdle();
@@ -2385,13 +2185,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 dialog.dismiss();
                             }
                         })
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                MainActivity.this.finish();
-                                android.os.Process.killProcess(android.os.Process.myPid());
-                                dialog.dismiss();
-                            }
+                        .onNegative((dialog, which) -> {
+                            MainActivity.this.finish();
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                            dialog.dismiss();
                         })
                         .positiveText(R.string.Continue)
                         .negativeText(R.string.exit)
@@ -2406,7 +2203,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 showRootNotFoundMessage();
             } else {
                 G.hasRoot(true);
-                startRootShell(rootShell);
+                startRootShell();
                 new SecurityUtil(MainActivity.this).passCheck();
             }
         }

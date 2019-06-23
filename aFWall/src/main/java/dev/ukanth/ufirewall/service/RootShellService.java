@@ -34,6 +34,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -201,13 +202,13 @@ public class RootShellService extends Service {
         }
     }
 
-    private static void sendUpdate(final RootCommand state) {
+    private static void sendUpdate(final RootCommand state2) {
         new Thread(() -> {
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("UPDATEUI");
-            broadcastIntent.putExtra("SIZE", state.getCommmands().size());
-            broadcastIntent.putExtra("INDEX", state.commandIndex);
-            mContext.sendBroadcast(broadcastIntent);
+            broadcastIntent.putExtra("SIZE", state2.getCommmands().size());
+            broadcastIntent.putExtra("INDEX", state2.commandIndex);
+            LocalBroadcastManager.getInstance(mContext).sendBroadcast(broadcastIntent);
         }).start();
     }
 
