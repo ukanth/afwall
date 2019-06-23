@@ -288,19 +288,14 @@ public final class Api {
     public static void toast(final Context ctx, final CharSequence msgText) {
         if (ctx != null) {
             Handler mHandler = new Handler(Looper.getMainLooper());
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(ctx, msgText, Toast.LENGTH_SHORT).show();
-                }
-            });
+            mHandler.post(() -> Toast.makeText(G.getContext(), msgText, Toast.LENGTH_SHORT).show());
         }
     }
 
     public static void toast(final Context ctx, final CharSequence msgText, final int toastlen) {
         if (ctx != null) {
             Handler mHandler = new Handler(Looper.getMainLooper());
-            mHandler.post(() -> Toast.makeText(ctx, msgText, toastlen).show());
+            mHandler.post(() -> Toast.makeText(G.getContext(), msgText, toastlen).show());
         }
     }
 
@@ -2183,14 +2178,6 @@ public final class Api {
             manager.notify(NOTIFICATION_ID, notification);
         }
     }
-
-	/*public static void displayToasts(Context context, int id, int length) {
-        Toast.makeText(context, context.getString(id), length).show();
-	}
-
-	public static void displayToasts(Context context, String text, int length) {
-		Toast.makeText(context, text, length).show();
-	}*/
 
     private static boolean removePackageRef(Context ctx, String pkg, int pkgRemoved, Editor editor, String store) {
         StringBuilder newuids = new StringBuilder();
