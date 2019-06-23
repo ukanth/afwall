@@ -1,10 +1,10 @@
 /*
  * Copyright 2012 two forty four a.m. LLC <http://www.twofortyfouram.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * <http://www.apache.org/licenses/LICENSE-2.0>
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
@@ -61,11 +61,6 @@ public final class FireReceiver extends BroadcastReceiver {
         BundleScrubber.scrub(intent.getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE));
         final Bundle bundle = intent.getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
 
-        final Handler toaster = new Handler() {
-            public void handleMessage(Message msg) {
-                if (msg.arg1 != 0) Toast.makeText(context, msg.arg1, Toast.LENGTH_SHORT).show();
-            }
-        };
         /*
          * Final verification of the plug-in Bundle before firing the setting.
          */
@@ -97,7 +92,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                                 // error details are already in logcat
                                                 msg.arg1 = R.string.error_apply;
                                             }
-                                            toaster.sendMessage(msg);
+                                            sendMessage(msg);
                                         }
                                     }));
                             break;
@@ -108,16 +103,15 @@ public final class FireReceiver extends BroadcastReceiver {
                                         .setCallback(new RootCommand.Callback() {
                                             public void cbFunc(RootCommand state) {
                                                 Message msg = new Message();
-                                                boolean nowEnabled = state.exitCode != 0;
                                                 msg.arg1 = R.string.toast_disabled;
-                                                toaster.sendMessage(msg);
+                                                sendMessage(msg);
                                                 Api.setEnabled(context, false, false);
                                             }
                                         }));
                             } else {
                                 Message msg = new Message();
                                 msg.arg1 = R.string.widget_disable_fail;
-                                toaster.sendMessage(msg);
+                                sendMessage(msg);
                             }
                             break;
                         case "2":
@@ -161,23 +155,24 @@ public final class FireReceiver extends BroadcastReceiver {
                                                 Message msg = new Message();
                                                 if (state.exitCode == 0) {
                                                     msg.arg1 = R.string.tasker_profile_applied;
-                                                    if (!disableToasts) toaster.sendMessage(msg);
+                                                    if (!disableToasts)
+                                                        sendMessage(msg);
                                                 } else {
                                                     // error details are already in logcat
                                                     msg.arg1 = R.string.error_apply;
                                                 }
-                                                toaster.sendMessage(msg);
+                                                sendMessage(msg);
                                             }
                                         }));
                             } else {
                                 Message msg = new Message();
                                 msg.arg1 = R.string.tasker_disabled;
-                                toaster.sendMessage(msg);
+                                sendMessage(msg);
                             }
                         } else {
                             Message msg = new Message();
                             msg.arg1 = R.string.tasker_muliprofile;
-                            toaster.sendMessage(msg);
+                            sendMessage(msg);
                         }
                         G.reloadPrefs();
                         /*if (G.activeNotification()) {
@@ -204,7 +199,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                                 // error details are already in logcat
                                                 msg.arg1 = R.string.error_apply;
                                             }
-                                            toaster.sendMessage(msg);
+                                            sendMessage(msg);
                                         }
                                     }));
                             break;
@@ -215,20 +210,19 @@ public final class FireReceiver extends BroadcastReceiver {
                                         .setCallback(new RootCommand.Callback() {
                                             public void cbFunc(RootCommand state) {
                                                 Message msg = new Message();
-                                                boolean nowEnabled = state.exitCode != 0;
                                                 msg.arg1 = R.string.toast_disabled;
-                                                toaster.sendMessage(msg);
+                                                sendMessage(msg);
                                                 Api.setEnabled(context, false, false);
                                             }
                                         }));
                            /* } else {
                                 msg.arg1 = R.string.toast_error_disabling;
-                                toaster.sendMessage(msg);
+                                sendMessage(msg);
                             }*/
                             } else {
                                 Message msg = new Message();
                                 msg.arg1 = R.string.widget_disable_fail;
-                                toaster.sendMessage(msg);
+                                sendMessage(msg);
                             }
                             break;
                         case "2":
@@ -261,7 +255,7 @@ public final class FireReceiver extends BroadcastReceiver {
                                                 Message msg = new Message();
                                                 if (state.exitCode == 0) {
                                                     msg.arg1 = R.string.tasker_profile_applied;
-                                                    if (!disableToasts) toaster.sendMessage(msg);
+                                                    if (!disableToasts) sendMessage(msg);
                                                 } else {
                                                     // error details are already in logcat
                                                     msg.arg1 = R.string.error_apply;
@@ -271,12 +265,12 @@ public final class FireReceiver extends BroadcastReceiver {
                             } else {
                                 Message msg = new Message();
                                 msg.arg1 = R.string.tasker_disabled;
-                                toaster.sendMessage(msg);
+                                sendMessage(msg);
                             }
                         } else {
                             Message msg = new Message();
                             msg.arg1 = R.string.tasker_muliprofile;
-                            toaster.sendMessage(msg);
+                            sendMessage(msg);
                         }
                         G.reloadPrefs();
                        /* if (G.activeNotification()) {
@@ -290,5 +284,18 @@ public final class FireReceiver extends BroadcastReceiver {
             }
         }
 
+    }
+
+    private void sendMessage(Message msg) {
+        try {
+            new Handler() {
+                public void handleMessage(Message msg) {
+                    if (msg.arg1 != 0)
+                        Toast.makeText(G.getContext(), msg.arg1, Toast.LENGTH_SHORT).show();
+                }
+            }.sendMessage(msg);
+        }catch (Exception e) {
+            //unable to send toast. but don't crash
+        }
     }
 }
