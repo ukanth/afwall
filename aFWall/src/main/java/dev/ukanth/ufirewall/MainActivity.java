@@ -2070,10 +2070,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             runProgress = new MaterialDialog.Builder(MainActivity.this)
                     .title(R.string.su_check_title)
                     .cancelable(true)
-                    .autoDismiss(true)
                     .content(enabled ? R.string.applying_rules
                             : R.string.saving_rules)
-                    .progress(true, 0)
+                    .negativeText("Dismiss")
                     .show();
         }
 
