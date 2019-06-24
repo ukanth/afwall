@@ -1,13 +1,21 @@
 package dev.ukanth.ufirewall.preferences;
 
+import android.app.KeyguardManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
+
+import static dev.ukanth.ufirewall.util.G.isDonate;
+import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
 
 public class ThemePreferenceFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
@@ -56,10 +64,20 @@ public class ThemePreferenceFragment extends PreferenceFragment implements
                         G.getInstance().setTheme(R.style.AppDarkTheme);
                         break;
                     case "L":
-                        G.getInstance().setTheme(R.style.AppLightTheme);
+                        if ((G.isDoKey(ctx) || isDonate())) {
+                            G.getInstance().setTheme(R.style.AppLightTheme);
+                        } else {
+                            Api.toast(ctx, ctx.getText(R.string.donate_only), Toast.LENGTH_LONG);
+                            G.getSelectedTheme("D");
+                        }
                         break;
                     case "B":
-                        G.getInstance().setTheme(R.style.AppBlackTheme);
+                        if ((G.isDoKey(ctx) || isDonate())) {
+                            G.getInstance().setTheme(R.style.AppBlackTheme);
+                        } else {
+                            Api.toast(ctx, ctx.getText(R.string.donate_only), Toast.LENGTH_LONG);
+                            G.getSelectedTheme("D");
+                        }
                         break;
                 }
             }
