@@ -58,6 +58,7 @@ import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.LogNetUtil;
 
 public class LogDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -75,9 +76,24 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
     final String TAG = "AFWall";
 
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initTheme();
         setContentView(R.layout.logdetail_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
         setTitle(getString(R.string.showlogdetail_title));

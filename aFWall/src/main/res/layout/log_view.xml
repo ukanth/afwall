@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:duplicateParentState="false"
+    android:background="?attr/itemBackground"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
