@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.ui.about.ViewPagerAdapter;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SlidingTabLayout;
 
 public class HelpActivity extends AppCompatActivity {
@@ -25,6 +26,8 @@ public class HelpActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             
             String[] viewTitles = { getString(R.string.About), getString(R.string.FAQ) };
+
+            initTheme();
 
             setContentView(R.layout.help_about);
 
@@ -48,32 +51,26 @@ public class HelpActivity extends AppCompatActivity {
             tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
             // Setting Custom Color for the Scroll bar indicator of the Tab View
-            tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
-                @Override
-                public int getIndicatorColor(int position) {
-                    return ContextCompat.getColor(getApplicationContext(),R.color.white);
-                }
-            });
+            tabs.setCustomTabColorizer(position -> ContextCompat.getColor(getApplicationContext(),R.color.white));
 
             // Setting the ViewPager For the SlidingTabsLayout
             tabs.setViewPager(viewPager);
     }
 
-    /*
-        if(tab.getPosition() == 0) {
-   			 count++;
-    		 if(!G.isDo()) {
-	             if(count < 7 && count > 4) {
-	             	Toast.makeText(this, (7-count) + this.getString(R.string.unlock_donate), Toast.LENGTH_SHORT).show();
-	             	count++;
-	             }
-	             if(count >= 7){
-	         		G.isDo(true);
-	         		Toast.makeText(this, this.getString(R.string.donate_support), Toast.LENGTH_LONG).show();
-	            }
-    		}
-    	 }
-    */
+
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
+        }
+    }
 
      @Override
      public boolean onOptionsItemSelected(MenuItem item) {

@@ -37,6 +37,7 @@ public class AppDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initTheme();
         setTitle(getString(R.string.traffic_detail_title));
         setContentView(R.layout.app_detail);
 
@@ -119,6 +120,21 @@ public class AppDetailActivity extends AppCompatActivity {
             down.setText(" : " + humanReadableByteCount(0, false));
             up.setText(" : " + humanReadableByteCount(0, false));
             button.setEnabled(false);
+        }
+    }
+
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                //set other colors
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
         }
     }
 

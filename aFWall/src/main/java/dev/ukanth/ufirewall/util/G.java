@@ -128,6 +128,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
     private static final String RUN_NOTIFICATION = "runNotification";
 
+    private static final String THEME = "theme";
     private static final String FASTER_RULES = "fasterApplyRules";
     //private static final String QUICK_RULES = "quickApply";
     /**
@@ -278,6 +279,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+
+    public static String getSelectedTheme() {
+        return gPrefs.getString(THEME, "D");
+    }
+
+    public static String getSelectedTheme(String val) {
+        gPrefs.edit().putString(THEME, val).commit();
+        return val;
+    }
 
     public static String profile_pwd() {
         return gPrefs.getString(PROFILE_PWD, "");
@@ -535,8 +545,20 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+    public static int userColor() {
+        if (G.getSelectedTheme().equals("L")) {
+            return Color.parseColor("#000000");
+        } else {
+            return Color.parseColor("#FFFFFF");
+        }
+    }
+
     public static int sysColor() {
-        return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58"));
+        if (G.getSelectedTheme().equals("L")) {
+            return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#000000"));
+        } else {
+            return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58"));
+        }
     }
 
     public static boolean activeRules() {

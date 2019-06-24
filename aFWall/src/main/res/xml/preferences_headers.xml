@@ -1,10 +1,16 @@
 <preference-headers
+    android:background="?attr/itemBackground"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
         android:fragment="dev.ukanth.ufirewall.preferences.UIPreferenceFragment"
         android:icon="@drawable/ic_menu_pref"
         android:title="@string/ui_prefs_title" />
+
+    <header
+        android:fragment="dev.ukanth.ufirewall.preferences.ThemePreferenceFragment"
+        android:icon="@drawable/ic_theme"
+        android:title="@string/ui_themes_header" />
     <header
         android:fragment="dev.ukanth.ufirewall.preferences.RulesPreferenceFragment"
         android:icon="@drawable/ic_rules"

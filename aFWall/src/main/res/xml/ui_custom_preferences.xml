@@ -5,6 +5,7 @@
         android:entries="@array/iptables_binary"
         android:entryValues="@array/iptables_binary_path"
         android:key="ip_path"
+        android:summary="%s"
         android:title="@string/iptables_pref" >
     </ListPreference>
     <ListPreference
@@ -12,6 +13,7 @@
         android:entries="@array/busybox_binary"
         android:entryValues="@array/busybox_binary_path"
         android:key="bb_path"
+        android:summary="%s"
         android:title="@string/busybox_pref" >
     </ListPreference>
     <ListPreference

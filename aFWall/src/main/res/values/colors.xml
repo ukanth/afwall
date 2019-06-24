@@ -21,4 +21,7 @@
 	<color name="textPrimary">#f5f5f5</color>
 	<color name="textPrimaryDark">#95aab4</color>
 	<color name="errorText">#ff7878</color>
+
+	<color name="primary_icon">#ffffffff</color>
+    <color name="primary_icon_dark">#ff313131</color>
 </resources>

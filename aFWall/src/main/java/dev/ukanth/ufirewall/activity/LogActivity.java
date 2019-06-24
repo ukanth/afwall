@@ -77,6 +77,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initTheme();
         setContentView(R.layout.log_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
         setTitle(getString(R.string.showlog_title));
@@ -123,6 +124,19 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         }
     }
 
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
+        }
+    }
     private void initializeRecyclerView(final Context ctx) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

@@ -6,6 +6,7 @@
             android:entries="@array/supported_languages"
             android:entryValues="@array/supported_languages_code"
             android:key="locale"
+            android:summary="%s"
             android:title="@string/change_languages"></ListPreference>
 
     </PreferenceCategory>

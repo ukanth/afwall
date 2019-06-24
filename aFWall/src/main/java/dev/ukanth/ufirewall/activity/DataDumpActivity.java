@@ -86,19 +86,33 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     protected void setData(final String data) {
         this.dataText = data;
         Handler refresh = new Handler(Looper.getMainLooper());
-        refresh.post(new Runnable() {
-            public void run() {
-                scaleGesture = (TextView) findViewById(R.id.rules);
-                scaleGesture.setText(data);
-                scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
-            }
+        refresh.post(() -> {
+            scaleGesture = (TextView) findViewById(R.id.rules);
+            scaleGesture.setText(data);
+            scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
         });
+    }
+
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
+        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
+
+        initTheme();
         setContentView(R.layout.rules);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);

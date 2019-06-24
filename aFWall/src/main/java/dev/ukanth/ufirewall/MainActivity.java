@@ -170,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         LeakCanary.install(G.getInstance());*/
 
+        initTheme();
+
+
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
                     .getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
@@ -219,6 +222,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initTextWatcher();
 
         //checkAndAskForBatteryOptimization();
+    }
+
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
+        }
     }
 
     private void initTextWatcher() {

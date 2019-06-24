@@ -17,6 +17,7 @@
             android:entries="@array/initDir"
             android:entryValues="@array/initValue"
             android:key="initPath"
+            android:summary="%s"
             android:title="@string/init_d"></ListPreference>
 
         <CheckBoxPreference

@@ -31,6 +31,7 @@
 
         <ListPreference
             android:defaultValue="OS"
+            android:summary="%s"
             android:dependency="enableLogService"
             android:entries="@array/logDmesgArray"
             android:entryValues="@array/logDmesgValue"
@@ -39,6 +40,7 @@
 
         <ListPreference
             android:defaultValue="bottom"
+            android:summary="%s"
             android:dependency="enableLogService"
             android:entries="@array/toast_pos"
             android:entryValues="@array/toast_pos_val"

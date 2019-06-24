@@ -43,6 +43,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.G;
 
 /**
  * Custom scripts activity.
@@ -55,6 +56,8 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initTheme();
         final View view = getLayoutInflater().inflate(R.layout.customscript, null);
 
         ((Button) view.findViewById(R.id.customscript_ok)).setOnClickListener(this);
@@ -75,6 +78,21 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
 
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
+        }
     }
 
     @Override

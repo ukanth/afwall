@@ -95,6 +95,7 @@
         </activity>
         <activity
             android:name=".preferences.PreferencesActivity"
+            android:theme="@style/AppDarkTheme"
             android:configChanges="orientation|keyboardHidden|locale|screenLayout"
             android:hardwareAccelerated="true">
             <meta-data

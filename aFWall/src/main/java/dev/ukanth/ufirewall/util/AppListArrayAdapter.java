@@ -122,21 +122,18 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }
 
         final int id = holder.app.uid;
-        holder.text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, AppDetailActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("package", holder.app.pkgName);
-                intent.putExtra("appid", id);
-                context.startActivity(intent);
-            }
+        holder.text.setOnClickListener(v -> {
+            Intent intent = new Intent(context, AppDetailActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("package", holder.app.pkgName);
+            intent.putExtra("appid", id);
+            context.startActivity(intent);
         });
 
         ApplicationInfo info = holder.app.appinfo;
         if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
             //user app
-            holder.text.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.text.setTextColor(G.userColor());
         } else {
             //system app
             holder.text.setTextColor(G.sysColor());

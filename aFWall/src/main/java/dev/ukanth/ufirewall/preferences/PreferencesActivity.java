@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -67,6 +69,22 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     private RxEvent rxEvent;
     private Disposable disposable;
 
+
+
+
+    private void initTheme() {
+        switch(G.getSelectedTheme()) {
+            case "D":
+                setTheme(R.style.AppDarkTheme);
+                break;
+            case "L":
+                setTheme(R.style.AppLightTheme);
+                break;
+            case "B":
+                setTheme(R.style.AppBlackTheme);
+                break;
+        }
+    }
     /**
      * Helper method to determine if the device has an extra-large screen. For
      * example, 10" tablets are extra-large.
@@ -92,6 +110,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     protected void onCreate(Bundle savedInstanceState) {
         // set language
         Api.updateLanguage(getApplicationContext(), G.locale());
+        initTheme();
+
         super.onCreate(savedInstanceState);
         prepareLayout();
         subscribe();
@@ -165,6 +185,12 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         });
     }
 
+
+    @Override
+    protected void onApplyThemeResource(Resources.Theme theme, int resid, boolean first) {
+        theme.applyStyle(resid, true);
+    }
+
     @Override
     public View onCreateView(String name, Context context, AttributeSet attrs) {
         // Allow super to try and create a view first
@@ -223,6 +249,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     @Override
     protected boolean isValidFragment(String fragmentName) {
         if (UIPreferenceFragment.class.getName().equals(fragmentName)
+                || ThemePreferenceFragment.class.getName().equals(fragmentName)
                 || RulesPreferenceFragment.class.getName().equals(fragmentName)
                 || LogPreferenceFragment.class.getName().equals(fragmentName)
                 || ExpPreferenceFragment.class.getName().equals(fragmentName)

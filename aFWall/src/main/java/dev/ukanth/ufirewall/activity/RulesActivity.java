@@ -322,20 +322,17 @@ public class RulesActivity extends DataDumpActivity {
                 .content(R.string.flushRulesConfirm)
                 .positiveText(R.string.Yes)
                 .negativeText(R.string.No)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Api.flushAllRules(ctx, new RootCommand()
-                                .setReopenShell(true)
-                                .setSuccessToast(R.string.flushed)
-                                .setFailureToast(R.string.error_purge)
-                                .setCallback(new RootCommand.Callback() {
-                                    public void cbFunc(RootCommand state) {
-                                        populateData(ctx);
-                                    }
-                                }));
-                        dialog.dismiss();
-                    }
+                .onPositive((dialog, which) -> {
+                    Api.flushAllRules(ctx, new RootCommand()
+                            .setReopenShell(true)
+                            .setSuccessToast(R.string.flushed)
+                            .setFailureToast(R.string.error_purge)
+                            .setCallback(new RootCommand.Callback() {
+                                public void cbFunc(RootCommand state) {
+                                    populateData(ctx);
+                                }
+                            }));
+                    dialog.dismiss();
                 })
 
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
