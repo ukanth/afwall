@@ -216,8 +216,8 @@
 
     <string-array name="themeOptions">
         <item>Dark</item>
-        <item>Light</item>
-        <item>Black</item>
+        <item>Light (Donate)</item>
+        <item>Black (Donate)</item>
     </string-array>
 
     <string-array name="themeValues">

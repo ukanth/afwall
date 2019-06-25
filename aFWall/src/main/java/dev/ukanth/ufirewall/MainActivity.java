@@ -147,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private BroadcastReceiver uiProgressReceiver;
     private BroadcastReceiver toastReceiver;
 
+
+    private BroadcastReceiver themeRefreshReceiver;
     private IntentFilter uiFilter;
 
     public boolean isDirty() {
@@ -222,6 +224,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initTextWatcher();
 
         //checkAndAskForBatteryOptimization();
+        registerThemeIntent();
+    }
+
+    private void registerThemeIntent() {
+
+        IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.theme.REFRESH");
+        themeRefreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                initTheme();
+                recreate();
+            }
+        };
+        registerReceiver(themeRefreshReceiver, filter);
     }
 
     private void initTheme() {
@@ -478,6 +494,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             fab.setVisibility(View.GONE);
         }*/
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver, uiFilter);
+
         G.activityResumed();
     }
 
@@ -1940,6 +1957,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         if (toastReceiver != null) {
             unregisterReceiver(toastReceiver);
+        }
+        if (themeRefreshReceiver != null) {
+            unregisterReceiver(themeRefreshReceiver);
         }
     }
 

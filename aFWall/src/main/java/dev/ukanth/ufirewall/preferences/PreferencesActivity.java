@@ -35,6 +35,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatCheckedTextView;
 import android.support.v7.widget.AppCompatEditText;
@@ -352,6 +353,13 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
         if (key.equals("enableMultiProfile")) {
             G.reloadProfile();
+        }
+        if (key.equals("theme")) {
+            initTheme();
+            recreate();
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction("dev.ukanth.ufirewall.theme.REFRESH");
+            ctx.sendBroadcast(broadcastIntent);
         }
     }
 

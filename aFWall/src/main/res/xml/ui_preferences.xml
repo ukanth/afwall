@@ -46,13 +46,6 @@
             android:summaryOn="@string/showuid_summary_on"
             android:title="@string/showUid" />
 
-        <net.margaritov.preference.colorpicker.ColorPickerPreference
-            alphaSlider="true"
-            android:defaultValue="@color/accent"
-            android:key="sysColor"
-            android:summary="@string/syscolor_pref_summary_on"
-            android:title="@string/syscolor_pref_title" />
-
         <CheckBoxPreference
             android:key="enableConfirm"
             android:summary="@string/enableConfirm_summary_on"
