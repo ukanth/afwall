@@ -705,9 +705,9 @@ public class G extends Application implements Application.ActivityLifecycleCallb
             } catch (PackageManager.NameNotFoundException | NullPointerException e) {
                 gPrefs.edit().putBoolean(REG_DO, false).commit();
             }
-            if(BuildConfig.DONATE){
+            /*if(BuildConfig.DONATE){
                 gPrefs.edit().putBoolean(REG_DO, true).commit();
-            }
+            }*/
         }
         return gPrefs.getBoolean(REG_DO, false);
     }
