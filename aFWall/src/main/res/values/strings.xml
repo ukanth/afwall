@@ -293,7 +293,12 @@
     <string name="hideicons_pref_summary_on">Improve performance by disabling app icons in the main view</string>
     <string name="hideicons_pref_summary_off">Show App icons in the main view</string>
     <string name="notify_pref_title">Enable notifications</string>
-    <string name="syscolor_pref_title">System app color</string>
+    <string name="syscolor_pref_title">System applications</string>
+
+    <string name="primary_pref_title">Primary Color</string>
+    <string name="status_pref_title">Statusbar Color</string>
+    <string name="accent_pref_title">Accent Color</string>
+
     <string name="syscolor_pref_summary_on">Color for all system apps</string>
     <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
     <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>

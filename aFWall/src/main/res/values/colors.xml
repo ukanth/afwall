@@ -19,7 +19,8 @@
 
 	<color name="primary">#259b24</color>
 	<color name="primary_dark">#0a7e07</color>
-	<color name="accent">#ffd740</color>
+	<color name="accent_dark">#ffd740</color>
+	<color name="accent_black">#fddf6c</color>
 
 	<color name="textPrimary">#f5f5f5</color>
 	<color name="textPrimaryDark">#95aab4</color>

@@ -11,9 +11,27 @@
 
     <net.margaritov.preference.colorpicker.ColorPickerPreference
         alphaSlider="true"
-        android:defaultValue="@color/accent"
+        android:defaultValue="@color/accent_dark"
         android:key="sysColor"
-        android:summary="@string/syscolor_pref_summary_on"
         android:title="@string/syscolor_pref_title" />
+
+  <!-- <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/primary"
+        android:key="primaryColor"
+        android:title="@string/primary_pref_title" />-->
+
+    <!-- <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/primary_dark"
+        android:key="primaryDarkColor"
+        android:title="@string/status_pref_title" />
+
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/accent"
+        android:key="accentColor"
+        android:title="@string/accent_pref_title" /> -->
 
 </PreferenceScreen>

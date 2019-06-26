@@ -107,6 +107,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String LAST_STORED_PROFILE = "storedProfile";
     private static final String STARTUP_DELAY = "addDelayStart";
     private static final String SYSTEM_APP_COLOR = "sysColor";
+
+    private static final String PRIMARY_COLOR = "primaryColor";
+    private static final String PRIMARY_DARK_COLOR = "primaryColor";
+
     private static final String ACTIVE_RULES = "activeRules";
     private static final String ACTIVE_NOTIFICATION = "activeNotification";
     private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
@@ -560,6 +564,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
             return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58"));
         }
     }
+
+    /*public static int primaryColor() {
+            return gPrefs.getInt(PRIMARY_COLOR, Color.parseColor("#259b24"));
+    }
+
+    public static int primaryDarkColor() {
+        return gPrefs.getInt(PRIMARY_DARK_COLOR, Color.parseColor("#0a7e07"));
+    }*/
 
     public static boolean activeRules() {
         return gPrefs.getBoolean(ACTIVE_RULES, true);

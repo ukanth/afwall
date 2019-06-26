@@ -37,6 +37,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +47,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -59,6 +62,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -193,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         setSupportActionBar(toolbar);
 
+
         this.findViewById(R.id.img_wifi).setOnClickListener(this);
         this.findViewById(R.id.img_reset).setOnClickListener(this);
         this.findViewById(R.id.img_invert).setOnClickListener(this);
@@ -241,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
+        switch (G.getSelectedTheme()) {
             case "D":
                 setTheme(R.style.AppDarkTheme);
                 break;
@@ -494,8 +499,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             fab.setVisibility(View.GONE);
         }*/
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver, uiFilter);
-
         G.activityResumed();
+
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(G.primaryColor()));
+       /* Window window = getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(G.primaryDarkColor());*/
+
     }
 
     private void reloadPreferences() {
@@ -1044,10 +1055,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.menu_help:
                 showAbout();
                 return true;
-            case R.id.menu_customrules:
+            /*case R.id.menu_customrules:
                 //G.hidden();
                 startCustomRules();
-                return true;
+                return true;*/
             case R.id.menu_log:
                 showLog();
                 return true;

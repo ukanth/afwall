@@ -87,11 +87,11 @@
                 android:title="@string/set_custom_script"
                 app:showAsAction="always" />
 
-            <item
+            <!--<item
                 android:id="@+id/menu_customrules"
                 android:icon="@drawable/ic_custom_rules"
                 android:title="@string/custom_rules"
-                app:showAsAction="always" />
+                app:showAsAction="always" />-->
 
             <item
                 android:id="@+id/menu_preference"
