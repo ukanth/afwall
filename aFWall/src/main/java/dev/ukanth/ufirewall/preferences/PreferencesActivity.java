@@ -61,7 +61,6 @@ import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
-import dev.ukanth.ufirewall.util.ThemeUtils;
 import io.reactivex.disposables.Disposable;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
