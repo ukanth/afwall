@@ -526,7 +526,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //make sure we cancel notification posted by app notification.
         NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(2);
+        mNotificationManager.cancel(3);
 
         if (G.disableIcons()) {
             this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
