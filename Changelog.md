@@ -1,9 +1,16 @@
 Changelog AFWall+
 ==================
 
+
+Version 3.2.0
+* Initial Themes (Dark/Light,Black(donate only))
+* Fix: Crash on LOS 16 due to permission
+* Fix: Notification not getting cleared upon opening
+* Fix: Tasker settings not applied bug due to crash
+* Fix: Root progress showing on main screen(dismiss button added incase)
+* Preferences now shows selected values
+
 Version 3.1.0
-
-
 * Performance: Ipv4 and ipv6 rules apply time reduced by half
 * Ipv6 is enabled by default - Disable if not(under preferences->rules).
 * Fix: Tasker plugin issue after profile migration

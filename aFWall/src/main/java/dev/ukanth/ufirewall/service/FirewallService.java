@@ -14,6 +14,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
+import java.util.HashSet;
+
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
@@ -129,6 +131,15 @@ public class FirewallService extends Service {
             case 1:
                 notification.priority = NotificationCompat.PRIORITY_MIN;
                 break;
+        }
+
+        //try starting Log Service in Firewall Service
+
+        if (G.enableLogService()) {
+            //make sure we cleanup existing uid
+            final Intent logIntent = new Intent(this, LogService.class);
+            startService(logIntent);
+            G.storedPid(new HashSet());
         }
 
         if(G.activeNotification()) {

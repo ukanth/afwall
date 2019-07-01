@@ -82,13 +82,6 @@ public class ApplyOnBootService extends Service {
 
         InterfaceTracker.applyRulesOnChange(this, InterfaceTracker.BOOT_COMPLETED);
 
-        if (G.enableLogService()) {
-            //make sure we cleanup existing uid
-            final Intent logIntent = new Intent(this, LogService.class);
-            startService(logIntent);
-            G.storedPid(new HashSet());
-        }
-
         //try applying the rule after few seconds if enabled
         if (G.startupDelay()) {
             //make sure we apply rules after 5 sec

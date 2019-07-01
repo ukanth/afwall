@@ -233,7 +233,6 @@ public class LogService extends Service {
                             default:
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
-
                         break;
                     case "NFLOG":
                         logPath = Api.getNflogPath(getApplicationContext());
@@ -242,7 +241,7 @@ public class LogService extends Service {
                 }
 
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
+                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not NULL" : "rootSession is NULL");
                 handler = new Handler();
 
                 closeSession();
@@ -267,6 +266,8 @@ public class LogService extends Service {
                                         }
                                     }
                                 } catch (Exception e) {
+                                    Log.i(TAG, "Exception in reading logs " + e.getMessage());
+                                    e.printStackTrace();
                                 }
                             } else {
                                 storeLogInfo(line, getApplicationContext());
@@ -285,41 +286,15 @@ public class LogService extends Service {
     }
 
     private void closeSession() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(Api.TAG, "Cleanup session");
-                if (rootSession != null) {
-                    rootSession.close();
-                }
+        new Thread(() -> {
+            Log.i(Api.TAG, "Cleanup!");
+            if (rootSession != null) {
+                rootSession.close();
+                Log.i(Api.TAG, "Cleaned up existing session");
             }
         }).start();
         Api.cleanupUid();
     }
-
-
-    /* private static class Task extends AsyncTask<Void, Void, LogInfo> {
-         private Context context;
-         private String line;
-
-         private Task(Context context, String line) {
-             this.context = context;
-             this.line = line;
-         }
-
-         @Override
-         protected LogInfo doInBackground(Void... voids) {
-             return LogInfo.parseLogs(line, context);
-         }
-
-         @Override
-         protected void onPostExecute(LogInfo a) {
-             if (a != null) {
-                 LogRxEvent.publish(new LogEvent(a, context));
-             }
-         }
-     }
- */
     private void storeLogInfo(String line, Context context) {
         if (G.enableLogService()) {
             if (line != null && line.trim().length() > 0) {
