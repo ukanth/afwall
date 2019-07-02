@@ -4,6 +4,7 @@ Changelog AFWall+
 
 Version 3.2.0
 * Initial Themes (Dark/Light,Black(donate only))
+* Fix: Logservice stops after sometime
 * Fix: Crash on LOS 16 due to permission
 * Fix: Notification not getting cleared upon opening
 * Fix: Tasker settings not applied bug due to crash
