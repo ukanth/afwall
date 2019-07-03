@@ -2159,7 +2159,7 @@ public final class Api {
                 .setContentTitle(ctx.getString(R.string.app_name))
                 .setTicker(ctx.getString(R.string.app_name))
                 .setSound(null)
-                .setCategory(Notification.CATEGORY_STATUS)
+                .setCategory(Notification.CATEGORY_SERVICE)
                 .setVisibility(Notification.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)

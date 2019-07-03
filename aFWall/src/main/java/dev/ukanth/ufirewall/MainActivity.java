@@ -102,6 +102,7 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
+import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -281,6 +282,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void registerNetworkObserver() {
         startService(new Intent(getBaseContext(), FirewallService.class));
+        if(G.enableLogService()) {
+            final Intent logIntent = new Intent(getBaseContext(), LogService.class);
+            startService(logIntent);
+            G.storedPid(new HashSet());
+        }
     }
 
     @Override

@@ -9,9 +9,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 
 import java.util.HashSet;
@@ -119,7 +121,8 @@ public class FirewallService extends Service {
                 .setContentTitle(getString(R.string.app_name))
                 .setTicker(getString(R.string.app_name))
                 .setSound(null)
-                .setCategory(Notification.CATEGORY_STATUS)
+                .setChannelId(NOTIFICATION_CHANNEL_ID)
+                .setCategory(Notification.CATEGORY_SERVICE)
                 .setVisibility(Notification.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
@@ -133,25 +136,19 @@ public class FirewallService extends Service {
                 break;
         }
 
-        //try starting Log Service in Firewall Service
-
-        if (G.enableLogService()) {
-            //make sure we cleanup existing uid
-            final Intent logIntent = new Intent(this, LogService.class);
-            startService(logIntent);
-            G.storedPid(new HashSet());
-        }
-
         if(G.activeNotification()) {
-            notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForeground(NOTIFICATION_ID, notification);
             } else {
                 manager.notify(NOTIFICATION_ID, notification);
             }
         } else {
-            //start with empty notification
-            startForeground(NOTIFICATION_ID, new Notification());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForeground(NOTIFICATION_ID, notification);
+            } else {
+                //empty one
+                startForeground(NOTIFICATION_ID, new Notification());
+            }
         }
     }
 

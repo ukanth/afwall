@@ -76,11 +76,19 @@ public class ApplyOnBootService extends Service {
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(getApplicationContext(), FirewallService.class));
+            if(G.enableLogService()) {
+                startForegroundService(new Intent(getApplicationContext(), LogService.class));
+            }
         } else {
             startService(new Intent(getApplicationContext(), FirewallService.class));
+            if(G.enableLogService()) {
+                startService(new Intent(getApplicationContext(), LogService.class));
+            }
         }
 
         InterfaceTracker.applyRulesOnChange(this, InterfaceTracker.BOOT_COMPLETED);
+
+
 
         //try applying the rule after few seconds if enabled
         if (G.startupDelay()) {
