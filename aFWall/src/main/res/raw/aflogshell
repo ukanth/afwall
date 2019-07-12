@@ -1,0 +1,1 @@
+echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done

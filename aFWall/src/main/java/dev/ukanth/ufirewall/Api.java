@@ -101,13 +101,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -126,7 +121,6 @@ import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
-import dev.ukanth.ufirewall.util.Rule;
 import dev.ukanth.ufirewall.widget.StatusWidget;
 import eu.chainfire.libsuperuser.Shell;
 import eu.chainfire.libsuperuser.Shell.SU;
@@ -357,6 +351,11 @@ public final class Api {
         } else {
             return dir + "/nflog ";
         }
+    }
+
+    public static String getShellPath(Context ctx) {
+        String dir = ctx.getDir("bin", 0).getAbsolutePath();
+        return dir;
     }
 
     /**
@@ -1241,6 +1240,16 @@ public final class Api {
                     tempSession.kill();
                     tempSession.close();
                 }
+            } else {
+                Shell.Interactive tempSession = new Shell.Builder().useSU().open();
+                Log.i(Api.TAG, "Cleaning up log watches");
+                tempSession.addCommand("killall nflog");
+                tempSession.addCommand("pkill -9 -f \"aflogshellb\"");
+                tempSession.addCommand("pkill -9 -f \"aflogshell\"");
+                //try using our busybox incase if pkill is not found
+                String bbPath = getBusyBoxPath(ctx, true);
+                tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshellb\"");
+                tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshell\"");
             }
         } catch (ClassCastException e) {
             Log.e(TAG, "ClassCastException in cleanupUid: " + e.getMessage());
@@ -1719,7 +1728,7 @@ public final class Api {
             switch ((details.netType)) {
                 case ConnectivityManager.TYPE_WIFI:
                     String savedPkg_wifi_uid = pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
-                    if(savedPkg_wifi_uid.isEmpty()) {
+                    if (savedPkg_wifi_uid.isEmpty()) {
                         savedPkg_wifi_uid = sharedPreferences.getString(PREF_WIFI_PKG_UIDS, "");
                     }
                     Log.i(TAG, "DM check for UID: " + applicationInfo.uid);
@@ -1949,7 +1958,8 @@ public final class Api {
         // arch-independent scripts
         ret &= installBinary(ctx, R.raw.afwallstart, "afwallstart");
         //Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
-
+        ret &= installBinary(ctx, R.raw.aflogshell, "aflogshell");
+        ret &= installBinary(ctx, R.raw.aflogshellb, "aflogshellb");
 
         if (showErrors) {
             if (ret) {

@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.stericson.roottools.RootTools;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -171,7 +172,7 @@ public class LogService extends Service {
         startLogService();
     }
 
-    private static class LogTask extends AsyncTask<Void, Void, Void> {
+    /*private static class LogTask extends AsyncTask<Void, Void, Void> {
         private LogEvent event;
 
         private LogTask(LogEvent event) {
@@ -192,7 +193,7 @@ public class LogService extends Service {
                 }
             }
         }
-    }
+    }*/
 
     private void startLogService() {
         if (disposable != null) {
@@ -221,17 +222,20 @@ public class LogService extends Service {
                 if (G.logDmsg().isEmpty()) {
                     G.logDmsg("OS");
                 }
+                //default to busybox if available
+                if(RootTools.isBusyboxAvailable()) {
+                    G.logDmsg("BX");
+                }
+                G.logTarget("LOG");
                 switch (G.logTarget()) {
                     case "LOG":
                         switch (G.logDmsg()) {
                             case "OS":
-                                logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
+                                logPath = Api.getShellPath(getApplicationContext()) + "/aflogshell";
                                 break;
                             case "BX":
-                                logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
+                                logPath = Api.getShellPath(getApplicationContext()) + "/aflogshellb";
                                 break;
-                            default:
-                                logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
                         break;
                     case "NFLOG":
@@ -293,7 +297,7 @@ public class LogService extends Service {
                 Log.i(Api.TAG, "Cleaned up existing session");
             }
         }).start();
-        Api.cleanupUid();
+        //Api.cleanupUid();
     }
     private void storeLogInfo(String line, Context context) {
         if (G.enableLogService()) {
@@ -303,7 +307,8 @@ public class LogService extends Service {
                         new Thread(() -> {
                             LogRxEvent.publish(new LogEvent(LogInfo.parseLogs(line, context, "{AFL}", 0), context));
                         }).start();
-                    } catch (RejectedExecutionException e) {
+                    } catch (Exception e) {
+                        Log.i(TAG, e.getMessage());
                         //Handle when has exception thrown
                     }
                 } /*else if (line.contains("{AFL-ALLOW}")) {

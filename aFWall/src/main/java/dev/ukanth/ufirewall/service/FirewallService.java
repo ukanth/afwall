@@ -150,6 +150,8 @@ public class FirewallService extends Service {
                 startForeground(NOTIFICATION_ID, new Notification());
             }
         }
+
+
     }
 
     @Override

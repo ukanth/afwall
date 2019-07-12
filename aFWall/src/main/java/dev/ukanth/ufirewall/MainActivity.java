@@ -228,9 +228,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerToastbroadcast();
         migrateNotification();
         initTextWatcher();
-
+        registerLogService();
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
+    }
+
+    private void registerLogService() {
+        if(G.enableLogService()) {
+            Log.i(G.TAG, "Starting Log Service");
+            final Intent logIntent = new Intent(getBaseContext(), LogService.class);
+            startService(logIntent);
+            G.storedPid(new HashSet());
+        }
     }
 
     private void registerThemeIntent() {
@@ -282,11 +291,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void registerNetworkObserver() {
         startService(new Intent(getBaseContext(), FirewallService.class));
-        if(G.enableLogService()) {
-            final Intent logIntent = new Intent(getBaseContext(), LogService.class);
-            startService(logIntent);
-            G.storedPid(new HashSet());
-        }
     }
 
     @Override
