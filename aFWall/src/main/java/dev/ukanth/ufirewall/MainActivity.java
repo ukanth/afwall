@@ -534,9 +534,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         refreshHeader();
         updateIconStatus();
 
-        //make sure we cancel notification posted by app notification.
-        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(3);
+        clearNotification();
 
         if (G.disableIcons()) {
             this.findViewById(R.id.imageHolder).setVisibility(View.GONE);
@@ -593,6 +591,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         selectFilterGroup();
+    }
+
+    private void clearNotification() {
+        //make sure we cancel notification posted by app notification.
+        NotificationManager mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(100);
     }
 
     /**

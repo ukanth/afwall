@@ -123,7 +123,7 @@ public class PackageBroadcast extends BroadcastReceiver {
 
 
     private void addNotification(Context context, String label) {
-        final int NOTIFICATION_ID = 3;
+        final int NOTIFICATION_ID = 100;
         String NOTIFICATION_CHANNEL_ID = "firewall.app.notification";
         String channelName = context.getString(R.string.app_notification);
 
