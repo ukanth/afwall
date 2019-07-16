@@ -40,7 +40,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             "/su/su.d/",
             "/system/su.d/",
             "/system/etc/init.d/",
-            "/etc/init.d/"};
+            "/etc/init.d/",
+            "/sbin/supersu/su.d",
+            "/data/adb/su/su.d"};
 
     private final String initScript = "afwallstart";
 
