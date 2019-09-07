@@ -52,7 +52,7 @@ unpack: $(addsuffix -unpack,$(PER_ARCH_TARGETS))
 #
 # Build iptables
 #
-IPTABLES_VER := 1.4.20
+IPTABLES_VER := 1.8.3
 IPTABLES_SRC := sources/iptables-$(IPTABLES_VER)
 IPTABLES_BUILD := $(TRIPLET)/iptables
 
@@ -89,7 +89,7 @@ iptables-unpack: $(IPTABLES_SRC)/configure
 #
 # Build busybox
 #
-BUSYBOX_VER := 1.26.2
+BUSYBOX_VER := 1.31.0
 BUSYBOX_BUILD := $(TRIPLET)/busybox
 
 dist/busybox-$(BUSYBOX_VER).tar.bz2:
