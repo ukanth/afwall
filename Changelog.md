@@ -1,8 +1,11 @@
 Changelog AFWall+
 ==================
 
+Version 3.2.0-BETA2
+* Log service process bug
+* Fix: Install notification does not clear on open
 
-Version 3.2.0
+Version 3.2.0-BETA1
 * Initial Themes (Dark/Light,Black(donate only))
 * Fix: Logservice stops after sometime
 * Fix: Crash on LOS 16 due to permission

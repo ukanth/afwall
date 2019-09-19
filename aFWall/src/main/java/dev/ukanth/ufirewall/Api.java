@@ -231,7 +231,7 @@ public final class Api {
             "vpn",
             "drm",
             "gps",
-            "shell",
+            "shell"
     };
     private static final Pattern p = Pattern.compile("UserHandle\\{(.*)\\}");
     // Preferences
@@ -255,8 +255,12 @@ public final class Api {
 
     // returns c.getString(R.string.<acct>_item)
     public static String getSpecialDescription(Context ctx, String acct) {
-        int rid = ctx.getResources().getIdentifier(acct + "_item", "string", ctx.getPackageName());
-        return ctx.getString(rid);
+        try {
+            int rid = ctx.getResources().getIdentifier(acct + "_item", "string", ctx.getPackageName());
+            return ctx.getString(rid);
+        } catch (Resources.NotFoundException exception) {
+            return null;
+        }
     }
 
     public static String getSpecialDescriptionSystem(Context ctx, String packageName) {
@@ -1437,7 +1441,7 @@ public final class Api {
 
         int count = 0;
         try {
-            List<Integer> uid = new ArrayList<>();
+            List<Integer> listOfUids = new ArrayList<>();
             PackageManager pkgmanager = ctx.getPackageManager();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 //this code will be executed on devices running ICS or later
@@ -1449,7 +1453,7 @@ public final class Api {
                     if (m.find()) {
                         int id = Integer.parseInt(m.group(1));
                         if (id > 0) {
-                            uid.add(id);
+                            listOfUids.add(id);
                         }
                     }
                 }
@@ -1537,7 +1541,7 @@ public final class Api {
                     app.selected_tor = true;
                 }
                 if (G.supportDual()) {
-                    checkPartOfMultiUser(apinfo, name, uid, pkgmanager, multiUserAppsMap);
+                    checkPartOfMultiUser(apinfo, name, listOfUids, pkgmanager, multiUserAppsMap);
                 }
             }
 
@@ -1636,13 +1640,17 @@ public final class Api {
         specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
         specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
         specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
+        specialData.add(new PackageInfoData(1020, ctx.getString(R.string.mdnslabel), "dev.afwall.special.mdns"));
+        specialData.add(new PackageInfoData(1029, ctx.getString(R.string.clat), "dev.afwall.special.clat"));
         if (additional) {
             specialData.add(new PackageInfoData(1020, "mDNS", "dev.afwall.special.mDNS"));
         }
         for (String acct : specialAndroidAccounts) {
             String dsc = getSpecialDescription(ctx, acct);
-            String pkg = "dev.afwall.special." + acct;
-            specialData.add(new PackageInfoData(acct, dsc, pkg));
+            if (dsc != null) {
+                String pkg = "dev.afwall.special." + acct;
+                specialData.add(new PackageInfoData(acct, dsc, pkg));
+            }
         }
         return specialData;
     }
