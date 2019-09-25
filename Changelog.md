@@ -1,6 +1,10 @@
 AFWall+ Changelog
 ==================
 
+Version 3.2.0-BETA2
+* Log service process bug
+* Fix: Install notification does not clear on open
+
 
 Version 3.2.0
 * Integrate basic themes (Dark/Light or Black (donate version only!)

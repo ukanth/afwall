@@ -144,11 +144,18 @@ public class AppDetailActivity extends AppCompatActivity {
         up.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
         if (dir.exists()) {
             String[] children = dir.list();
-            if (!Arrays.asList(children).contains(String.valueOf(localUid))) {
+            if (children != null) {
+                if (!Arrays.asList(children).contains(String.valueOf(localUid))) {
+                    down.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
+                    up.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
+                    return;
+                }
+            } else {
                 down.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
                 up.setText(" : " + humanReadableByteCount(Long.parseLong("0"), false));
                 return;
             }
+
             File uidFileDir = new File("/proc/uid_stat/" + String.valueOf(localUid));
             if (uidFileDir.exists()) {
                 File uidActualFileReceived = new File(uidFileDir, "tcp_rcv");
