@@ -1,43 +1,44 @@
-Changelog AFWall+
+AFWall+ Changelog
 ==================
 
 Version 3.2.0-BETA2
 * Log service process bug
 * Fix: Install notification does not clear on open
 
-Version 3.2.0-BETA1
-* Initial Themes (Dark/Light,Black(donate only))
-* Fix: Logservice stops after sometime
+
+Version 3.2.0
+* Integrate basic themes (Dark/Light or Black (donate version only!)
+* Fix: AFWall's Logservice stops after sometime
 * Fix: Crash on LOS 16 due to permission
 * Fix: Notification not getting cleared upon opening
 * Fix: Tasker settings not applied bug due to crash
-* Fix: Root progress showing on main screen(dismiss button added incase)
-* Preferences now shows selected values
+* Fix: Root progress showing on main screen (dismiss button added incase)
+* Preferences now showing selected values
 
 Version 3.1.0
-* Performance: Ipv4 and ipv6 rules apply time reduced by half
-* Ipv6 is enabled by default - Disable if not(under preferences->rules).
+* Performance: IPv4 & IPv6 rules applying time reduced by half
+* IPv6 is enabled by default - Disable if not (under preferences -> rules)
 * Fix: Tasker plugin issue after profile migration
 * Fix: Widget crashing issue
-* Fix: New app notification issue
+* Fix: New installed app notification issue
 * Fix: Device boot rules issue
 * Fix: Duplicate app issue on oneplus devices 
 * Fix: Tor related bug
-* Fix: Xposed module unable to download allowed apps.
+* Fix: Xposed module unable to download allowed apps
 
 Version 3.0.4
-* Fix: domain names resolve
+* Fix: Domain names are now been correctly resolved
 * Fix: Removed notification dot on all notifications
-* Fix: Inbound option causing firewall disable functionality
+* Fix: Inbound option caused AFWall+ to disable its functionality
 * Fix: Hang issue on log detail when ping/resolve
-* Removed SUPER_USER permission which is not relevant anymore
+* Removed: SUPER_USER permission which is not relevant anymore
 
 Version 3.0.3
 
 * Fix: Disable firewall issue
 * Fix: Traffic stats always zero in app details
-* Rewritten filter logic for main screen apps.
-* Xposed plugin not able to read preference.
+* Rewritten: Filter logic for main screen apps
+* Xposed: Plugin wasn't able to read preference
 
 
 Version 3.0.2
@@ -77,18 +78,18 @@ Version 2.9.9
 
 * Support for dual apps (experimental)
 * DNS Hostname option on log toast(donate feature)
-* Multiple memory leaks across screens.
+* Multiple memory leaks across screens
 * Block log notification now moved under individual app detail screen
-* Enabled log cache for faster load.
+* Enabled log cache for faster load
 * Widgets now ask for password if enabled (except status widget)
 
 Bugs:
-* Shortcut open rules & preference screen without password.
+* Shortcut open rules & preference screen without password
 * fingerprint related issues
 * selinux deny for startup script
-* User reported crash fixes.
+* User reported crash fixes
 * Updated string translations
-* Added default system language option.
+* Added default system language option
 * Log notification name issue
 
 Version 2.9.8
@@ -107,7 +108,7 @@ Version 2.9.8
 Version 2.9.7 
 
 Features:
-* Control default chains for ipv4 and ipv6(preference)
+* Control default chains for IPv4 & IPv6 (preference)
 * Quick apply from main UI - using floating apply button - Donate Version Only
 * Showing rules count on apply
 * Search using UID
@@ -123,7 +124,7 @@ Bug Fixes:
 * Library updates
 * Out of memory crashes when enabled logging
 * Runtime crash fixes due to incompatible libraries
-* Lots of minor bug fixes and underhood changes to introduce new features.
+* Lots of minor bug fixes and underhood changes to introduce new features
 
 
 Version 2.9.6.1
@@ -184,9 +185,10 @@ Bugs
 * Removed toybox check due to ANR 
   + etc.
 Misc
-* Busybox to latest
-* Removed x86/mips supported
-* Support libraries,translation updates
+* Updated: Busybox to latest version
+* Removed: x86 & mips support
+* Updated libraries
+* Translation: Small updates
 
 Version 2.9.1 [Nov 27, 2016]
 * Boot/Connectivity change rules hung on some devices
@@ -228,9 +230,9 @@ Version 2.7.0 [Nov 1, 2016]
 * Bug: Fix for newly installed app on top on few scenarios
 * Bug: Startup script related bugs
 * Bug: Possible tether issue from last version
-* Request: Extra space on notification text ! took lot of time ;)
-* User reported crash fixes
-* Updated Translations
+* Request: Extra space on notification text! It took lot of time.
+* Fix: User reported crash fixes
+* Updated: Translations
 
 Version 2.6.0.1 [Oct 1, 2016]
 * Bug: Frequent crash while logservice enabled
@@ -250,7 +252,7 @@ Version 2.6.0 [Sep 28, 2016]
 * Bug: Improved log storing logic to avoid cpu/battery/hang/crash issues
 * Bug: Connectivity change hang notification issue
 * Bug: Xposed related and user reported fixes
-* Reduced APK size
+* Reduced overall APK size
 
 
 Version 2.5.2 [Aug 14, 2016]
@@ -305,12 +307,12 @@ Version 2.2.2 [Mar 11, 2016]
 * Fix: Issue with auto IPv6 from preference
 * Fix: afwall su.d script removal on uncheck preference & Added support for systemless su
 * Fix: additional steps to kill klogripper process.
-* Disable AFWall+ if kingroot is detected. AFWall+ will no longer support on devices which has su via Kingroot! more details https://github.com/ukanth/afwall/issues/501 
+* Disable AFWall+ if KingRoot is detected. AFWall+ will no longer work with KingRoot, see here for more details: https://github.com/ukanth/afwall/issues/501 
 * Added highly experimental feature - Keep only AFWall+ chains on connectivity change.
 * Updated translations.
 
 Version 2.2.1 [Mar 3, 2016]
-* Fix: delete su.d script if unchecked from preference
+* Fix: Delete su.d script if unchecked from preference
 * Fix: Startup hang issue while applying rules
 * Fix: Widget size issue 
 * Added missing translation for Romania - Thanks to @ASebastian/mysterys3by
@@ -340,7 +342,7 @@ Version 2.1.3 [Nov 24, 2015]
 * UI: Sort option as radio button
 * UI: New Languages (Catalan/Bengali)
 * Minor UI Improvements and About/FAQ link click issue
-* Reported crashes fixed
+* Fixed: Reported crashes fixed
  
 Version 2.1.2 [Oct 6, 2015]
 * UI: Sorting now in main page
@@ -724,22 +726,9 @@ Version 1.0.1a
 * Fixed dangerous file permissions issues (reported in original Droidwall as an issue)
 
 Version 1.0.0a
-* Initial version
-* Based on [DroidWall](http://code.google.com/p/droidwall/) 1.5.7
+* Initial release based on [DroidWall](http://code.google.com/p/droidwall/) 1.5.7
 * ICS style menubar and theme
 * New install notifications
 * New preferences options
 * Force reload Applications
 * Highlight System applications using custom color from preferences
-
--------------------------------------
-
-TODO :
-
--> Kernel logs and mysterious behind it!
--> Support hardware search key
--> Store logs in DB for a details reports. This will surely help.
--> iptables builder (like blocking websites/ipaddress etc.)
--> Application size < 1MB 
--> Rewrite the import/export logic
--> Timer for re-enable firewall after disable
