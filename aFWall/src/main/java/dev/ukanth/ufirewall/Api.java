@@ -118,6 +118,7 @@ import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
+import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
@@ -2027,7 +2028,11 @@ public final class Api {
             showNotification(Api.isEnabled(ctx), ctx);
         }*/
 
-        updateNotification(Api.isEnabled(ctx), ctx);
+        //addNotification();
+        Intent myService = new Intent(ctx, FirewallService.class);
+        ctx.stopService(myService);
+        ctx.startService(myService);
+
         /* notify */
         Intent message = new Intent(ctx, StatusWidget.class);
         message.setAction(STATUS_CHANGED_MSG);
