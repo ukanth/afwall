@@ -81,6 +81,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -155,6 +156,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private BroadcastReceiver themeRefreshReceiver;
     private IntentFilter uiFilter;
+
+    //all async reference with context
+    private GetAppList getAppList;
+    private RunApply runApply;
+    private PurgeTask purgeTask;
 
     public boolean isDirty() {
         return dirty;
@@ -234,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void registerLogService() {
-        if(G.enableLogService()) {
+        if (G.enableLogService()) {
             Log.i(G.TAG, "Starting Log Service");
             final Intent logIntent = new Intent(getBaseContext(), LogService.class);
             startService(logIntent);
@@ -799,9 +805,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void showOrLoadApplications() {
         //nocache!!
-        GetAppList getAppList = new GetAppList();
+        getAppList = new GetAppList(MainActivity.this);
         if (plsWait == null && (getAppList.getStatus() == AsyncTask.Status.PENDING || getAppList.getStatus() == AsyncTask.Status.FINISHED)) {
-            getAppList.setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            getAppList.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -1515,14 +1521,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
         Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-        new RunApply().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        runApply = new RunApply(MainActivity.this);
+        runApply.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
      * Purge iptables rules, showing a visual indication
      */
     private void purgeRules() {
-        new PurgeTask(MainActivity.this).execute();
+        purgeTask = new PurgeTask(MainActivity.this);
+        purgeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         menuSetApplyOrSave(mainMenu, Api.isEnabled(getApplicationContext()));
     }
 
@@ -1980,6 +1989,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             dialogLegend.dismiss();
             dialogLegend = null;
         }
+        if (getAppList != null) {
+            getAppList.cancel(true);
+        }
+        if (runApply != null) {
+            runApply.cancel(true);
+        }
+
+        if (purgeTask != null) {
+            purgeTask.cancel(true);
+        }
+
         if (toastReceiver != null) {
             unregisterReceiver(toastReceiver);
         }
@@ -1993,18 +2013,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.attachBaseContext(Api.updateBaseContextLocale(base));
     }
 
-    private static class PurgeTask extends AsyncTask<Void, Void, Boolean> {
+    private class PurgeTask extends AsyncTask<Void, Void, Boolean> {
 
         private MaterialDialog progress;
-        private Context ctx;
+        private WeakReference<MainActivity> activityReference;
 
-        private PurgeTask(Context context) {
-            this.ctx = context;
+        PurgeTask(MainActivity context) {
+            activityReference = new WeakReference<>(context);
         }
 
         @Override
         protected void onPreExecute() {
-            progress = new MaterialDialog.Builder(ctx)
+            progress = new MaterialDialog.Builder(activityReference.get())
                     .title(R.string.working)
                     .cancelable(false)
                     .content(R.string.purging_rules)
@@ -2031,7 +2051,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 } catch (Exception ex) {
                                 }
                                 boolean nowEnabled = state.exitCode != 0;
-                                Api.setEnabled(ctx, nowEnabled, true);
+                                runOnUiThread(() -> {
+                                    Api.setEnabled(ctx, nowEnabled, true);
+                                });
+
                             }
                         }));
                 return true;
@@ -2056,16 +2079,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
-        Context context = null;
+        private WeakReference<MainActivity> activityReference;
 
-        public GetAppList setContext(Context context) {
-            this.context = context;
-            return this;
+        GetAppList(MainActivity context) {
+            activityReference = new WeakReference<>(context);
         }
 
         @Override
         protected void onPreExecute() {
-            plsWait = new MaterialDialog.Builder(context).cancelable(false).
+            plsWait = new MaterialDialog.Builder(activityReference.get()).cancelable(false).
                     title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
                     .size(), true).show();
             doProgress(0);
@@ -2077,7 +2099,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Void doInBackground(Void... params) {
-            Api.getApps(MainActivity.this, this);
+            Api.getApps(activityReference.get(), this);
             if (isCancelled())
                 return null;
             //publishProgress(-1);
@@ -2127,9 +2149,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class RunApply extends AsyncTask<Void, Long, Boolean> {
         boolean enabled = Api.isEnabled(getApplicationContext());
 
+        private WeakReference<MainActivity> activityReference;
+
+        RunApply(MainActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
+
         @Override
         protected void onPreExecute() {
-            runProgress = new MaterialDialog.Builder(MainActivity.this)
+            runProgress = new MaterialDialog.Builder(activityReference.get())
                     .title(R.string.su_check_title)
                     .cancelable(true)
                     .content(enabled ? R.string.applying_rules
@@ -2143,7 +2171,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //set the progress
             if (G.hasRoot()) {
                 Api.setRulesUpToDate(false);
-                Api.applySavedIptablesRules(getApplicationContext(), true, new RootCommand()
+                Api.applySavedIptablesRules(activityReference.get(), true, new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
                         .setFailureToast(R.string.error_apply)
                         .setReopenShell(true)
@@ -2162,12 +2190,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 runOnUiThread(() -> {
                                     setDirty(false);
                                     if (state.exitCode != 0) {
-                                        Api.errorNotification(ctx);
-                                        menuSetApplyOrSave(MainActivity.this.mainMenu, false);
-                                        Api.setEnabled(ctx, false, true);
+                                        Api.errorNotification(activityReference.get());
+                                        menuSetApplyOrSave(activityReference.get().mainMenu, false);
+                                        Api.setEnabled(activityReference.get(), false, true);
                                     } else {
-                                        menuSetApplyOrSave(MainActivity.this.mainMenu, enabled);
-                                        Api.setEnabled(ctx, enabled, true);
+                                        menuSetApplyOrSave(activityReference.get().mainMenu, enabled);
+                                        Api.setEnabled(activityReference.get(), enabled, true);
                                     }
                                 });
                             }
@@ -2190,7 +2218,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
             if (!aVoid) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activityReference.get(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
                 disableFirewall();
                 try {
                     runProgress.dismiss();
