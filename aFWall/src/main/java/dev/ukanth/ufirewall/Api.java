@@ -231,7 +231,8 @@ public final class Api {
             "vpn",
             "drm",
             "gps",
-            "shell"
+            "shell",
+            "mdnsr"
     };
     private static final Pattern p = Pattern.compile("UserHandle\\{(.*)\\}");
     // Preferences
@@ -594,7 +595,7 @@ public final class Api {
     }
 
     public static String getSpecialAppName(int uid) {
-        List<PackageInfoData> packageInfoData = getSpecialData(true);
+        List<PackageInfoData> packageInfoData = getSpecialData();
         for (PackageInfoData infoData : packageInfoData) {
             if (infoData.uid == uid) {
                 return infoData.names.get(0);
@@ -880,53 +881,33 @@ public final class Api {
         }
     }
 
-    public static boolean applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
+    public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         Log.i(TAG, "Using applySavedIptablesRules");
-        if (ctx == null) {
-            return false;
-        }
         RuleDataSet dataSet = getDataSet();
-        boolean[] applied = {false, false};
-
+        Thread t2 = null;
         List<String> ipv4cmds = new ArrayList<String>();
         List<String> ipv6cmds = new ArrayList<String>();
         applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
-
-        Thread t1 = new Thread(() -> {
-            applied[0] = applySavedIp4tablesRules(ctx, ipv4cmds, showErrors, callback);
-        });
+        Thread t1 = new Thread(() -> applySavedIp4tablesRules(ctx, ipv4cmds, callback));
+        t1.start();
 
         if (G.enableIPv6()) {
             applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-        }
-        Thread t2 = new Thread(() -> {
-            //creare new callback command
-            applySavedIp6tablesRules(ctx, ipv6cmds, showErrors, new RootCommand().
-                    setIsv6(true).
-                    setCallback(new RootCommand.Callback() {
-                        @Override
-                        public void cbFunc(RootCommand state) {
-                            if (state.exitCode == 0) {
-                                //ipv6 also applied properly
-                                applied[1] = true;
-                            }
-                        }
-                    }));
-        });
-        t1.start();
-        if (G.enableIPv6()) {
+            t2 = new Thread(() -> applySavedIp6tablesRules(ctx, ipv6cmds, callback));
             t2.start();
         }
+
         try {
             t1.join();
-            if (G.enableIPv6()) {
+            if (t2 != null) {
                 t2.join();
             }
         } catch (InterruptedException e) {
+
         }
-        boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
+        //boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
         rulesUpToDate = true;
-        return returnValue;
+        //return returnValue;
     }
 
     private static RuleDataSet getDataSet() {
@@ -954,11 +935,10 @@ public final class Api {
      * Purge and re-add all saved rules (not in-memory ones).
      * This is much faster than just calling "applyIptablesRules", since it don't need to read installed applications.
      *
-     * @param ctx        application context (mandatory)
-     * @param showErrors indicates if errors should be alerted
-     * @param callback   If non-null, use a callback instead of blocking the current thread
+     * @param ctx      application context (mandatory)
+     * @param callback If non-null, use a callback instead of blocking the current thread
      */
-    public static boolean applySavedIp4tablesRules(Context ctx, List<String> cmds, boolean showErrors, RootCommand callback) {
+    public static boolean applySavedIp4tablesRules(Context ctx, List<String> cmds, RootCommand callback) {
         if (ctx == null) {
             return false;
         }
@@ -974,7 +954,7 @@ public final class Api {
     }
 
 
-    public static boolean applySavedIp6tablesRules(Context ctx, List<String> cmds, boolean showErrors, RootCommand callback) {
+    public static boolean applySavedIp6tablesRules(Context ctx, List<String> cmds, RootCommand callback) {
         if (ctx == null) {
             return false;
         }
@@ -994,7 +974,7 @@ public final class Api {
         try {
             if (!rulesUpToDate) {
                 Log.i(TAG, "Using full Apply");
-                return applySavedIptablesRules(ctx, true, callback);
+                applySavedIptablesRules(ctx, true, callback);
             } else {
                 Log.i(TAG, "Using fastApply");
                 List<String> out = new ArrayList<String>();
@@ -1571,7 +1551,7 @@ public final class Api {
                 }
             }
 
-            List<PackageInfoData> specialData = getSpecialData(false);
+            List<PackageInfoData> specialData = getSpecialData();
 
             if (specialApps == null) {
                 specialApps = new HashMap<String, Integer>();
@@ -1634,17 +1614,23 @@ public final class Api {
         return found;
     }*/
 
-    public static List<PackageInfoData> getSpecialData(boolean additional) {
+    public static List<PackageInfoData> getSpecialData() {
         List<PackageInfoData> specialData = new ArrayList<>();
         specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
         specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
         specialData.add(new PackageInfoData(SPECIAL_UID_TETHER, ctx.getString(R.string.tethering_item), "dev.afwall.special.tether"));
         specialData.add(new PackageInfoData(SPECIAL_UID_NTP, ctx.getString(R.string.ntp_item), "dev.afwall.special.ntp"));
-        specialData.add(new PackageInfoData(1020, ctx.getString(R.string.mdnslabel), "dev.afwall.special.mdns"));
-        specialData.add(new PackageInfoData(1029, ctx.getString(R.string.clat), "dev.afwall.special.clat"));
-        if (additional) {
-            specialData.add(new PackageInfoData(1020, "mDNS", "dev.afwall.special.mDNS"));
+
+
+        specialData.add(new PackageInfoData(1020, ctx.getString(R.string.mdnslabel), "dev.afwall.special.mdnsr"));
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            specialData.add(new PackageInfoData(1029, ctx.getString(R.string.clat), "dev.afwall.special.clat"));
         }
+
+        /*if (additional) {
+            specialData.add(new PackageInfoData(1020, "mDNS", "dev.afwall.special.mDNS"));
+        }*/
         for (String acct : specialAndroidAccounts) {
             String dsc = getSpecialDescription(ctx, acct);
             if (dsc != null) {
