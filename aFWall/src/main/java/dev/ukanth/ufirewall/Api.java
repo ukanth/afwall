@@ -889,13 +889,15 @@ public final class Api {
         List<String> ipv6cmds = new ArrayList<String>();
         applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
         Thread t1 = new Thread(() -> applySavedIp4tablesRules(ctx, ipv4cmds, callback));
-        t1.start();
 
         if (G.enableIPv6()) {
             applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
             t2 = new Thread(() -> applySavedIp6tablesRules(ctx, ipv6cmds, callback));
-            t2.start();
+
         }
+
+        t1.start();
+        t2.start();
 
         try {
             t1.join();
