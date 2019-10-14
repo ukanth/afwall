@@ -4,9 +4,16 @@ AFWall+ Changelog
 Version 3.2.0-BETA2
 * Log service process bug
 * Fix: Install notification does not clear on open
+* Fix: Applying dialog issue
+* Fix: kernel in the logs even whitelisted
+* Fix: Statusbar notification update on firewall status
+* Fix: Possible memory leaks in async
+* Fix: mDNS and CLAT on core apps (Android 10)
+* Fix: Additional startup leak path for supersu
+* Updated libraries
 
 
-Version 3.2.0
+Version 3.2.0-BETA1
 * Integrate basic themes (Dark/Light or Black (donate version only!)
 * Fix: AFWall's Logservice stops after sometime
 * Fix: Crash on LOS 16 due to permission
