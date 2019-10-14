@@ -221,7 +221,10 @@ public class LogInfo {
                     return null;
                 }
                 String appName = "";
-                if(uid == -11) {
+                if(logInfo.proto != null && logInfo.proto.toLowerCase().startsWith("icmp")) {
+                    appName = "ICMP";
+                    logInfo.uid = 0;
+                } else if(uid == -11) {
                     appName = ctx.getString(R.string.kernel_item);
                     logInfo.uid = uid;
                 } else {

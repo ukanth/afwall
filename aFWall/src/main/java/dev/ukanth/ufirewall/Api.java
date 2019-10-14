@@ -232,8 +232,7 @@ public final class Api {
             "vpn",
             "drm",
             "gps",
-            "shell",
-            "mdnsr"
+            "shell"
     };
     private static final Pattern p = Pattern.compile("UserHandle\\{(.*)\\}");
     // Preferences
