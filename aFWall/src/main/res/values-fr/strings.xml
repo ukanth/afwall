@@ -267,7 +267,10 @@
     <string name="hideicons_pref_summary_on">Améliorer les performances en désactivant les icônes des applications dans la vue principale</string>
     <string name="hideicons_pref_summary_off">Afficher les icônes des applications dans la vue principale</string>
     <string name="notify_pref_title">Activer les notifications</string>
-    <string name="syscolor_pref_title">Couleur des applications système</string>
+    <string name="syscolor_pref_title">Applications système</string>
+    <string name="primary_pref_title">Couleur Primaire</string>
+    <string name="status_pref_title">Couleur de la barre d\'état</string>
+    <string name="accent_pref_title">Couleur secondaire</string>
     <string name="syscolor_pref_summary_on">Couleur pour toutes les applications du système</string>
     <string name="enableConfirmTitle">Confirmer la désactivation de AFWall+</string>
     <string name="enableConfirm_summary_on">Le pare-feu demandera une confirmation avant d\'être désactivé</string>
@@ -420,7 +423,8 @@
     <string name="showlogdetail_title">Détails du journal de l\'application</string>
     <string name="reapply_rules">Merci de ré-appliquer les règles en raison du changement de préférence</string>
     <string name="custom_rules">Règles personnalisées</string>
-    <string name="mdns">Activer la multidiffusion DNS</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Impossible de démarrer le service de journalisation. LogTarget est vide ou LogService n’est pas activé.</string>
     <string name="delete_profile">Impossible de supprimer le profil</string>
     <string name="profile_migrate_msg">Profils migrés</string>
@@ -512,4 +516,9 @@
     <string name="firewall_service">Service du pare-feu</string>
     <string name="boot_notification">Service de démarrage</string>
     <string name="app_notification">Notification d\'application</string>
+    <string name="hide">Masquer</string>
+    <string name="firewall_error_notify">Problème du pare-feu</string>
+    <string name="ui_themes_header">Thèmes</string>
+    <string name="theme">Thème UI</string>
+    <string name="clat">(clat) Clat</string>
 </resources>

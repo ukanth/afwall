@@ -268,7 +268,10 @@
     <string name="hideicons_pref_summary_on">Zvýšit výkon zakázáním ikon aplikací v hlavním okně</string>
     <string name="hideicons_pref_summary_off">Zobrazit ikony aplikací v hlavním okně</string>
     <string name="notify_pref_title">Povolit oznámení</string>
-    <string name="syscolor_pref_title">Barva systémových aplikací</string>
+    <string name="syscolor_pref_title">System applications</string>
+    <string name="primary_pref_title">Primary Color</string>
+    <string name="status_pref_title">Statusbar Color</string>
+    <string name="accent_pref_title">Accent Color</string>
     <string name="syscolor_pref_summary_on">Barva pro všechny systémové aplikace</string>
     <string name="enableConfirmTitle">Potvrzení při vypnutí AFWall+</string>
     <string name="enableConfirm_summary_on">Firewall bude žádat o potvrzení před jeho vypnutím</string>
@@ -421,7 +424,8 @@
     <string name="showlogdetail_title">Detaily protokolu aplikace</string>
     <string name="reapply_rules">Prosím znovu aplikujte pravidla kvůli změně voleb</string>
     <string name="custom_rules">Vlastní pravidla</string>
-    <string name="mdns">Povolení Mutlicast DNS</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Nelze spustit službu protokolů. LogTarget je prázdný nebo LogService není povolen.</string>
     <string name="delete_profile">Nelze odstranit profil</string>
     <string name="profile_migrate_msg">Profily migrovány</string>
@@ -513,4 +517,9 @@
     <string name="firewall_service">Služba brány firewall</string>
     <string name="boot_notification">Boot Service</string>
     <string name="app_notification">Oznámení aplikace</string>
+    <string name="hide">Hide</string>
+    <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="ui_themes_header">Themes</string>
+    <string name="theme">UI Theme</string>
+    <string name="clat">(clat) Clat</string>
 </resources>

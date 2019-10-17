@@ -496,8 +496,8 @@
     <string name="reapply_rules">Please reapply the rules due to preference change</string>
 
     <string name="custom_rules">Custom Rules</string>
-    <string name="mdnslabel">(mdns) Mutlicast DNS</string>
-    <string name="mdns">Enable Mutlicast DNS</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
     <string name="delete_profile">Unable to delete profile</string>
     <string name="profile_migrate_msg">Profiles migrated</string>

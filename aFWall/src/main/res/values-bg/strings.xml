@@ -267,7 +267,10 @@
     <string name="hideicons_pref_summary_on">Подобряване на производителността чрез скриване на иконите на приложенията в основния изглед</string>
     <string name="hideicons_pref_summary_off">Показване на икони на приложения в основния екран</string>
     <string name="notify_pref_title">Разрешаване на уведомленията</string>
-    <string name="syscolor_pref_title">Цвят на системно приложение</string>
+    <string name="syscolor_pref_title">System applications</string>
+    <string name="primary_pref_title">Primary Color</string>
+    <string name="status_pref_title">Statusbar Color</string>
+    <string name="accent_pref_title">Accent Color</string>
     <string name="syscolor_pref_summary_on">Цвят за всички системни приложения</string>
     <string name="enableConfirmTitle">Потвърдете забраняването</string>
     <string name="enableConfirm_summary_on">Защитна стена ще поиска потвърждение преди да бъде забранена</string>
@@ -420,7 +423,8 @@
     <string name="showlogdetail_title">Подробности от журнала на приложение</string>
     <string name="reapply_rules">Моля приложете наново правилата поради промяна в настройките</string>
     <string name="custom_rules">Персонализирани правила</string>
-    <string name="mdns">Разреши Mutlicast DNS</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Не може да се стартира журналния сървис. LogTarget е празен или LogService не е разрешен.</string>
     <string name="delete_profile">Не може да изтрие профил</string>
     <string name="profile_migrate_msg">Profiles migrated</string>
@@ -512,4 +516,9 @@
     <string name="firewall_service">Firewall Service</string>
     <string name="boot_notification">Boot Service</string>
     <string name="app_notification">App Notification</string>
+    <string name="hide">Hide</string>
+    <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="ui_themes_header">Themes</string>
+    <string name="theme">UI Theme</string>
+    <string name="clat">(clat) Clat</string>
 </resources>

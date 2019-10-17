@@ -67,7 +67,7 @@
     <string name="reading_apps">正在检索已安装应用</string>
     <string name="mode">防火墙模式</string>
     <string name="mode_header">模式：%s</string>
-    <string name="legend_clear">全选所有列</string>
+    <string name="legend_clear">清除所有复选框</string>
     <string name="mode_whitelist">允许所选项</string>
     <string name="legend_whitelist">选中的应用将有权访问网络</string>
     <string name="mode_blacklist">阻止所选项</string>
@@ -176,10 +176,10 @@
     <string name="toggle_profile1">激活配置1</string>
     <string name="toggle_profile2">激活配置2</string>
     <string name="toggle_profile3">激活配置3</string>
-    <string name="multipleProfiles">多配置文件</string>
+    <string name="multipleProfiles">多个配置文件</string>
     <string name="defaultProfile">默认</string>
     <string name="profile1">配置文件 1</string>
-    <string name="profile2">配置文件 1</string>
+    <string name="profile2">配置文件 2</string>
     <string name="profile3">配置文件 3</string>
     <string name="profile_hint">配置名</string>
     <string name="profile_notsupport">请迁移配置数据以使用此选项</string>
@@ -192,7 +192,7 @@
     <string name="vpn_profile">VPN 控制</string>
     <string name="vpnSummary">启用以单独控制 VPN 权限</string>
     <string name="roaming">漫游控制</string>
-    <string name="roamingSummary">启用分应用漫游权限控制</string>
+    <string name="roamingSummary">启用以各个应用对漫游网络的使用权限</string>
     <string name="tor_profile">Tor 控制</string>
     <string name="torSummary">启用以通过洋葱路由重定向非 tor 流量</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -231,13 +231,13 @@
     <string name="control_ipv6_title">仅控制 IPv6 链</string>
     <string name="ip6unavailable">错误：IPv6 需要 \"/system/bin/ip6tables\"</string>
     <string name="switch_ipv6">切换 IPv6 规则</string>
-    <string name="switch_ipv4">切换 IPv6 规则</string>
+    <string name="switch_ipv4">切换 IPv4 规则</string>
     <!-- Security Preferences -->
     <string name="sec_prefs_title">安全</string>
     <string name="usePattern">使用图案锁代替密码</string>
     <string name="stealthMode">锁屏隐身模式</string>
     <string name="patternMaxTry">最大尝试次数</string>
-    <string name="resetPattern">重置图形锁？</string>
+    <string name="resetPattern">要重置锁定模式吗？</string>
     <!-- Device Admin -->
     <string name="enable_device_admin">设备管理</string>
     <string name="device_admin_enabled">AFWall+ 设备管理权限已启用</string>
@@ -248,9 +248,9 @@
     <!-- Startup -->
     <string name="startup_service">正在应用规则. 请稍后.</string>
     <string name="addStartupDelayTitle">启动延迟</string>
-    <string name="addStartupDelaySummary">AFWall+ 将等待 5 秒后应用规则. 仅当启动规则无法正确在开机过程中应用时启用此设定.</string>
+    <string name="addStartupDelaySummary">AFWall+ 将等待 \'5\' 秒，然后再应用规则。只有在开机时，规则无法应用时，才需要使用这个选项。</string>
     <string name="fixleakTitle">修复启动数据泄露</string>
-    <string name="fixleakSummary">防止系统启动中的数据泄漏。您的 ROM 必须支持 init.d 或 su.d (SuperSU)。HTC 设备必须 S-OFF。</string>
+    <string name="fixleakSummary">为了防止系统启动时的数据泄漏，您的 ROM 必须支持 init.d 或 su.d (SuperSU)，HTC 设备必须设定为 S-OFF。</string>
     <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -268,8 +268,11 @@
     <string name="hideicons_pref_summary_on">在主视图中隐藏应用图标以提升性能</string>
     <string name="hideicons_pref_summary_off">在主视图中显示应用图标</string>
     <string name="notify_pref_title">启用通知</string>
-    <string name="syscolor_pref_title">系统应用颜色</string>
-    <string name="syscolor_pref_summary_on">系统应用颜色</string>
+    <string name="syscolor_pref_title">System applications</string>
+    <string name="primary_pref_title">Primary Color</string>
+    <string name="status_pref_title">Statusbar Color</string>
+    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_summary_on">所有系统应用的颜色</string>
     <string name="enableConfirmTitle">确认 AFWall+ 禁用操作</string>
     <string name="enableConfirm_summary_on">防火墙被禁用前将要求确认</string>
     <string name="showUid">显示应用程序的 UID</string>
@@ -421,7 +424,8 @@
     <string name="showlogdetail_title">应用日志详情</string>
     <string name="reapply_rules">首选项已改变，请重新应用规则</string>
     <string name="custom_rules">自定义规则</string>
-    <string name="mdns">启用多播 DNS</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">无法启用日志服务。LogTarget 为空或未启用 LogService。</string>
     <string name="delete_profile">无法删除配置</string>
     <string name="profile_migrate_msg">配置文件已迁移</string>
@@ -513,4 +517,9 @@
     <string name="firewall_service">防火墙服务</string>
     <string name="boot_notification">启动服务</string>
     <string name="app_notification">应用通知</string>
+    <string name="hide">Hide</string>
+    <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="ui_themes_header">Themes</string>
+    <string name="theme">UI Theme</string>
+    <string name="clat">(clat) Clat</string>
 </resources>

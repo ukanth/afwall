@@ -29,13 +29,13 @@
     <string name="error_netfilter">Non è stato possibile trovare il supporto a iptables target e chain.\nAFWall+ potrebbe non funzionare come supposto a causa di questa limitazione.</string>
     <string name="error_common">Errore: </string>
     <string name="all_item">(Qualsiasi app) - Come se tutte le app fossero selezionate</string>
-    <string name="kernel_item">(kernel) - Kernel di Linux</string>
+    <string name="kernel_item">(kernel) - kernel di Linux</string>
     <string name="android_system">Sistema Android</string>
     <string name="unknown_item">Sconosciuto</string>
     <string name="tethering_item">(tethering) - Servizi DHCP+DNS</string>
-    <string name="dnsproxy_item">(dns proxy) - Ricerche DNS tramite netd</string>
-    <string name="ntp_item">(ntp) - Server dell\'internet time</string>
-    <string name="root_item">(root) - Applicazioni in esecuzione come root</string>
+    <string name="dnsproxy_item">(dns proxy) - DNS lookups via netd</string>
+    <string name="ntp_item">(ntp) - network time protocol</string>
+    <string name="root_item">(root) - App in esecuzione come root</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
     <string name="media_item">(media) - Media server</string>
     <string name="vpn_item">(vpn) - reti VPN</string>
@@ -75,12 +75,12 @@
     <string name="set_custom_script">Imposta uno script personalizzato</string>
     <string name="preferences">Preferenze</string>
     <string name="reload">Ricarica app</string>
-    <string name="flush">Applica regole</string>
+    <string name="flush">Pulisci regole</string>
     <string name="send_report">Invia report di errore</string>
     <string name="enter_problem">Per favore descrivi il problema:</string>
-    <string name="send_mail">Invia email</string>
-    <string name="notify_pref_summary_on">Verrà mostrata una notifica quando una nuova applicazione viene installata</string>
-    <string name="notify_pref_summary_off">Non verrà visualizzata alcuna notifica quando viene installata una nuova applicazione</string>
+    <string name="send_mail">Invia un\'e-mail</string>
+    <string name="notify_pref_summary_on">Verrà mostrata una notifica quando una nuova applicazione sarà stata installata</string>
+    <string name="notify_pref_summary_off">Non verrà visualizzata alcuna notifica quando sarà stata installata una nuova applicazione</string>
     <string name="custom_script_defined">Script personalizzato definito</string>
     <string name="custom_script_removed">Script personalizzato rimosso</string>
     <string name="custom_script_error">Errore durante il salvataggio di uno script personalizzato</string>
@@ -93,8 +93,8 @@
     <string name="copy">Copia</string>
     <string name="copied">Copiato</string>
     <string name="Search">Ricerca</string>
-    <string name="flushRulesConfirm">Applicare tutte le regole iptables?</string>
-    <string name="overrideRules">Importare le regole? Le regole esistenti verranno sovrascritte!</string>
+    <string name="flushRulesConfirm">Pulire tutte le regole iptables?</string>
+    <string name="overrideRules">Vuoi importare le regole? Le regole esistenti verranno sovrascritte!</string>
     <string name="notification_new">Nuova app installata</string>
     <string name="notification_new_package">Configura permessi internet</string>
     <string name="confirmMsg">DISABILITARE completamente il firewall?</string>
@@ -267,7 +267,10 @@
     <string name="hideicons_pref_summary_on">Migliora le prestazioni disabilitando le icone delle app nella vista principale</string>
     <string name="hideicons_pref_summary_off">Mostra le icone delle app nella vista principale</string>
     <string name="notify_pref_title">Abilita notifiche</string>
-    <string name="syscolor_pref_title">Colore app di sistema</string>
+    <string name="syscolor_pref_title">Applicazioni di sistema</string>
+    <string name="primary_pref_title">Colore primario</string>
+    <string name="status_pref_title">Colore barra di stato</string>
+    <string name="accent_pref_title">Colore dettagli</string>
     <string name="syscolor_pref_summary_on">Colore per tutte le app di sistema</string>
     <string name="enableConfirmTitle">Conferma la disabilitazione di AFWall+</string>
     <string name="enableConfirm_summary_on">Il firewall chiederà la conferma prima della sua disabilitazione</string>
@@ -420,7 +423,8 @@
     <string name="showlogdetail_title">File di log dell\'applicazione</string>
     <string name="reapply_rules">Le preferenze sono cambiate, applica di nuovo le regole</string>
     <string name="custom_rules">Regole personalizzate</string>
-    <string name="mdns">Abilitare il DNS multicast</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Impossibile avviare il servizio Registro. LogTarget è vuoto o LogService non è abilitato.</string>
     <string name="delete_profile">Impossibile eliminare il profilo</string>
     <string name="profile_migrate_msg">Profili migrati</string>
@@ -512,4 +516,9 @@
     <string name="firewall_service">Servizio firewall</string>
     <string name="boot_notification">Servizio di avvio</string>
     <string name="app_notification">Notifica app</string>
+    <string name="hide">Nascondi</string>
+    <string name="firewall_error_notify">Problema firewall</string>
+    <string name="ui_themes_header">Temi</string>
+    <string name="theme">Tema UI</string>
+    <string name="clat">(clat) Clat</string>
 </resources>

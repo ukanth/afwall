@@ -267,7 +267,10 @@
     <string name="hideicons_pref_summary_on">Förbättra prestanda genom att inaktivera ikoner på huvudvyn</string>
     <string name="hideicons_pref_summary_off">Visa ikoner för appar i huvudvyn</string>
     <string name="notify_pref_title">Aktivera notifikationer</string>
-    <string name="syscolor_pref_title">Färg för systemappar</string>
+    <string name="syscolor_pref_title">System applications</string>
+    <string name="primary_pref_title">Primary Color</string>
+    <string name="status_pref_title">Statusbar Color</string>
+    <string name="accent_pref_title">Accent Color</string>
     <string name="syscolor_pref_summary_on">Färg för alla systemappar</string>
     <string name="enableConfirmTitle">Bekräfta inaktivering av AFWall+</string>
     <string name="enableConfirm_summary_on">Brandväggen kommer att be om bekräftelse innan den avaktiveras</string>
@@ -420,7 +423,8 @@
     <string name="showlogdetail_title">Visa detaljerad logg</string>
     <string name="reapply_rules">Var god tillämpa reglerna igen eftersom inställningarna har ändrats</string>
     <string name="custom_rules">Anpassade regler</string>
-    <string name="mdns">Aktivera mutlicast DNS</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Det gick inte att starta loggtjänsten. LogTarget är tom eller LogService är inte aktiverad.</string>
     <string name="delete_profile">Det gick inte att ta bort profilen</string>
     <string name="profile_migrate_msg">Profiler migrerade</string>
@@ -512,4 +516,9 @@
     <string name="firewall_service">Brandväggstjänsten</string>
     <string name="boot_notification">Starttjänst</string>
     <string name="app_notification">Appaviseringar</string>
+    <string name="hide">Hide</string>
+    <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="ui_themes_header">Themes</string>
+    <string name="theme">UI Theme</string>
+    <string name="clat">(clat) Clat</string>
 </resources>

@@ -96,7 +96,7 @@
     <string name="flushRulesConfirm">Wyczyścić wszystkie reguły iptables?</string>
     <string name="overrideRules">Czy chcesz zaimportować reguły? To nadpisze istniejące reguły!</string>
     <string name="notification_new">Nowa aplikacja zainstalowana</string>
-    <string name="notification_new_package">Configure Internet permission</string>
+    <string name="notification_new_package">Skonfiguruj uprawnienia internetowe</string>
     <string name="confirmMsg">Całkowicie wyłączyć zaporę?</string>
     <string name="apply">Zastosuj</string>
     <string name="discard">Odrzuć</string>
@@ -267,7 +267,10 @@
     <string name="hideicons_pref_summary_on">Zwiększ płynność poprzed ukrycie ikon przewijania listy aplikacji</string>
     <string name="hideicons_pref_summary_off">Pokaż ikony aplikacji w widoku głównym</string>
     <string name="notify_pref_title">Włącz powiadomienia</string>
-    <string name="syscolor_pref_title">Kolor aplikacji systemowej</string>
+    <string name="syscolor_pref_title">Aplikacje systemowe</string>
+    <string name="primary_pref_title">Kolor podstawowy</string>
+    <string name="status_pref_title">Statusbar Color</string>
+    <string name="accent_pref_title">Accent Color</string>
     <string name="syscolor_pref_summary_on">Kolor dla wszystkich aplikacji systemowych</string>
     <string name="enableConfirmTitle">Potwierdź wyłączenie AFWall+</string>
     <string name="enableConfirm_summary_on">Zapora wyświetli potwierdzenie zanim zostanie wyłączona</string>
@@ -339,7 +342,7 @@
     <string name="donate_only">Funkcja dostępna tylko w wersji płatnej</string>
     <string name="buy_donate">Kup wersję z darowizną lub klucz z darowizną</string>
     <string name="unlock_donate"> dotknij aby odblokować dotacje</string>
-    <string name="donate_support">You can now use donate features.</string>
+    <string name="donate_support">Możesz teraz używać dotacji.</string>
     <string name="donate_thanks">Dziękujemy za wsparcie.</string>
     <string name="activeNotification">Pokaż ikonę powiadomień</string>
     <string name="activeNotification_summary">Pokazuj ikonę powiadomienia na pasku powiadomień</string>
@@ -410,7 +413,7 @@
     <string name="log_times">razy</string>
     <string name="log_time">czas</string>
     <string name="log_dst">Cel:</string>
-    <string name="log_src">Source:</string>
+    <string name="log_src">Źródło:</string>
     <string name="log_proto">Protokół:</string>
     <string name="no_data_available">Proszę włączyć usługę dziennika zdarzeń w Ustawieniach. Jeśli włączone - brak danych dziennika.</string>
     <string name="loading_data_title">Loading&#8230;</string>
@@ -420,7 +423,8 @@
     <string name="showlogdetail_title">Szczegóły dziennika zdarzeń aplikacji</string>
     <string name="reapply_rules">Proszę ponownie zastosować reguły ze względu na zmianę preferencji</string>
     <string name="custom_rules">Reguły niestandardowe</string>
-    <string name="mdns">Włącz Mutlicast DNS</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Nie można uruchomić usługi dziennika. LogTarget jest pusty lub Logservice nie jest włączona.</string>
     <string name="delete_profile">Nie można usunąć profilu</string>
     <string name="profile_migrate_msg">Profiles migrated</string>
@@ -465,8 +469,8 @@
     <string name="fingerprint_permission_manifest_missing">Nie włączone uprawnienia dla uwierzytelniania odciskiem palca</string>
     <string name="register_at_least_one_fingerprint">Zarejestruj przynajmniej jeden odcisk palca w ustawieniach</string>
     <string name="lock_screen_not_enabled">Blokada ekranu nie jest włączona w ustawieniach</string>
-    <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
-    <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
+    <string name="fingerprint_enabled_successfully">Odcisk palca włączony</string>
+    <string name="fingerprint_disabled_successfully">Odcisk palca wyłączony</string>
     <string name="label_zoomin">Powiększ</string>
     <string name="label_zoomout">Pomniejsz</string>
     <string name="exception_pref">Nie można uruchomić aktywności z powodu uszkodzonych ustawień. Proszę wyczyść dane aplikacji</string>
@@ -512,4 +516,9 @@
     <string name="firewall_service">Firewall Service</string>
     <string name="boot_notification">Boot Service</string>
     <string name="app_notification">Powiadomienia aplikacji</string>
+    <string name="hide">Ukryj</string>
+    <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="ui_themes_header">Themes</string>
+    <string name="theme">UI Theme</string>
+    <string name="clat">(clat) Clat</string>
 </resources>

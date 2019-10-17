@@ -270,7 +270,10 @@
     <string name="hideicons_pref_summary_on">メイン画面のアプリアイコンを無効にしてパフォーマンスを改善します</string>
     <string name="hideicons_pref_summary_off">メイン画面にアプリアイコンを表示します</string>
     <string name="notify_pref_title">通知を有効にする</string>
-    <string name="syscolor_pref_title">システムアプリの色</string>
+    <string name="syscolor_pref_title">システムアプリケーション</string>
+    <string name="primary_pref_title">プライマリ色</string>
+    <string name="status_pref_title">ステータスバーの色</string>
+    <string name="accent_pref_title">アクセント色</string>
     <string name="syscolor_pref_summary_on">すべてのシステム アプリの色</string>
     <string name="enableConfirmTitle">AFWall+ を無効にするか確認します</string>
     <string name="enableConfirm_summary_on">ファイアウォールを無効にする前に確認します</string>
@@ -423,7 +426,8 @@
     <string name="showlogdetail_title">アプリケーション ログの詳細</string>
     <string name="reapply_rules">設定変更によりルールを再適用します</string>
     <string name="custom_rules">カスタムルール</string>
-    <string name="mdns">マルチキャスト DNS を有効にする</string>
+    <string name="mdnslabel">(mdns) Multicast DNS</string>
+    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">ログ サービスを開始できません。LogTarget が空か、LogService が有効ではありません。</string>
     <string name="delete_profile">プロファイルを削除できません</string>
     <string name="profile_migrate_msg">プロファイルを移行しました</string>
@@ -515,4 +519,9 @@
     <string name="firewall_service">ファイアウォール サービス</string>
     <string name="boot_notification">サービスをブート</string>
     <string name="app_notification">アプリ通知</string>
+    <string name="hide">非表示</string>
+    <string name="firewall_error_notify">ファイアウォールの問題</string>
+    <string name="ui_themes_header">テーマ</string>
+    <string name="theme">UI テーマ</string>
+    <string name="clat">(clat) Clat</string>
 </resources>
