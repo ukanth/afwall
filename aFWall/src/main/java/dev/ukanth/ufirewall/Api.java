@@ -897,11 +897,13 @@ public final class Api {
         }
 
         t1.start();
-        t2.start();
+        if (G.enableIPv6()) {
+            t2.start();
+        }
 
         try {
             t1.join();
-            if (t2 != null) {
+            if (G.enableIPv6() && t2 != null) {
                 t2.join();
             }
         } catch (InterruptedException e) {
