@@ -1,5 +1,6 @@
 package dev.ukanth.ufirewall.events;
 
+import dev.ukanth.ufirewall.log.Log;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -17,7 +18,9 @@ public class RxEvent {
     }
 
     public Disposable subscribe(@NonNull Consumer<Object> action) {
-        return sSubject.subscribe(action);
+        return sSubject.subscribe(action, throwable -> {
+            Log.i("AFWall", throwable.getLocalizedMessage());
+        });
     }
 
     public void publish(@NonNull Object message) {

@@ -1,26 +1,24 @@
 AFWall+ Changelog
 ==================
 
-Version 3.2.0-BETA2
-* Log service process bug
-* Fix: Install notification does not clear on open
-* Fix: Applying dialog issue
-* Fix: kernel in the logs even whitelisted
-* Fix: Statusbar notification update on firewall status
-* Fix: Possible memory leaks in async
-* Fix: mDNS and CLAT on core apps (Android 10)
-* Fix: Additional startup leak path for supersu
-* Updated libraries
-
-
-Version 3.2.0-BETA1
+Version 3.2.0
 * Integrate basic themes (Dark/Light or Black (donate version only!)
-* Fix: AFWall's Logservice stops after sometime
-* Fix: Crash on LOS 16 due to permission
-* Fix: Notification not getting cleared upon opening
-* Fix: Tasker settings not applied bug due to crash
-* Fix: Root progress showing on main screen (dismiss button added incase)
 * Preferences now showing selected values
+* Updated libraries
+* Bug Fixes:
+  - AFWall's Logservice stops after sometime 
+  - Crash on LOS 16 due to permission
+  - Notification not getting cleared upon opening
+  - Tasker settings not applied bug due to crash
+  - Root progress showing on main screen (dismiss button added incase)
+  - Log service process bug
+  - Applying dialog issue
+  - kernel in the logs even whitelisted
+  - Statusbar notification update on firewall status
+  - Possible memory leaks in async
+  - mDNS and CLAT on core apps (Android 10)
+  - Additional startup leak path for supersu
+
 
 Version 3.1.0
 * Performance: IPv4 & IPv6 rules applying time reduced by half

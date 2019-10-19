@@ -29,8 +29,7 @@ public class FirewallService extends Service {
 
     private static final int NOTIFICATION_ID = 1;
     BroadcastReceiver connectivityReciver;
-    BroadcastReceiver packageInstallReceiver;
-    BroadcastReceiver packageUninstallReceiver;
+    BroadcastReceiver packageReceiver;
     IntentFilter filter;
 
     @Override
@@ -163,32 +162,28 @@ public class FirewallService extends Service {
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         intentFilter.addDataScheme("package");
-        packageInstallReceiver = new PackageBroadcast();
-        registerReceiver(packageInstallReceiver, intentFilter);
+        packageReceiver = new PackageBroadcast();
+        registerReceiver(packageReceiver, intentFilter);
 
 
         intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_REMOVED);
-        packageUninstallReceiver = new PackageBroadcast();
         intentFilter.addDataScheme("package");
-        registerReceiver(packageUninstallReceiver, intentFilter);
+        registerReceiver(packageReceiver, intentFilter);
 
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (connectivityReciver != null) {
             unregisterReceiver(connectivityReciver);
             connectivityReciver = null;
         }
-        if (packageInstallReceiver != null) {
-            unregisterReceiver(packageInstallReceiver);
-            packageInstallReceiver = null;
+        if (packageReceiver != null) {
+            unregisterReceiver(packageReceiver);
+            packageReceiver = null;
         }
-        if (packageUninstallReceiver != null) {
-            unregisterReceiver(packageUninstallReceiver);
-            packageUninstallReceiver = null;
-        }
+        super.onDestroy();
+
     }
 }
