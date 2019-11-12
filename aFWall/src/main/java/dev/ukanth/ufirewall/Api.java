@@ -1134,13 +1134,15 @@ public final class Api {
                 cmdsv4.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
             }
             cmdsv4.add("-t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+        } else {
+            cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
         }
 
         //make sure reset the OUTPUT chain to accept state.
         cmds.add("-P OUTPUT ACCEPT");
 
         //Delete only when the afwall chain exist !
-        cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
+        //cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
 
         if (G.enableInbound()) {
             cmds.add("-D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
