@@ -155,10 +155,19 @@ public class FirewallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        //incase if it's not null, make sure we unregister it
+        if(packageReceiver != null) {
+            unregisterReceiver(packageReceiver);
+        }
+
+        if (connectivityReciver != null) {
+            unregisterReceiver(connectivityReciver);
+        }
+
         connectivityReciver = new ConnectivityChangeReceiver();
         filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(connectivityReciver, filter);
-
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         intentFilter.addDataScheme("package");
@@ -184,6 +193,5 @@ public class FirewallService extends Service {
             packageReceiver = null;
         }
         super.onDestroy();
-
     }
 }

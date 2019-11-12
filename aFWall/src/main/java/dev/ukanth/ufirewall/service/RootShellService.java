@@ -241,7 +241,7 @@ public class RootShellService extends Service {
 
         int notifyType = G.getNotificationPriority();
 
-        Notification notification = builder.setSmallIcon(R.drawable.ic_apply_notification)
+        Notification notification = builder.setSmallIcon(R.drawable.ic_apply)
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
                 .setTicker(context.getString(R.string.app_name))

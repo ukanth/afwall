@@ -1,5 +1,6 @@
 package dev.ukanth.ufirewall.service;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -53,8 +54,17 @@ public class ApplyOnBootService extends Service {
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
 
-        builder.setContentTitle(getString(R.string.applying_rules))
-                .setSmallIcon(R.drawable.ic_apply_notification);
+        builder.setSmallIcon(R.drawable.ic_apply)
+                .setAutoCancel(false)
+                .setContentTitle(getString(R.string.applying_rules))
+                .setTicker(getString(R.string.app_name))
+                .setChannelId(NOTIFICATION_CHANNEL_ID)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setOnlyAlertOnce(true)
+                .setPriority(NotificationManager.IMPORTANCE_LOW)
+                .setContentText("").build();
+
         startForeground(1, builder.build());
     }
 
