@@ -42,6 +42,7 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.stericson.roottools.RootTools;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
@@ -232,10 +233,18 @@ public class LogService extends Service {
                         switch (G.logDmsg()) {
                             case "OS":
                                 logPath = Api.getShellPath(getApplicationContext()) + "/aflogshell";
+                                if(!new File(logPath).exists()) {
+                                    logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
+                                }
                                 break;
                             case "BX":
                                 logPath = Api.getShellPath(getApplicationContext()) + "/aflogshellb";
+                                if(!new File(logPath).exists()) {
+                                    logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
+                                }
                                 break;
+                            default:
+                                logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
                         break;
                     case "NFLOG":

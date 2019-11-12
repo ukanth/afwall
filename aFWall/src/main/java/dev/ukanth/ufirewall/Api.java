@@ -1218,6 +1218,7 @@ public final class Api {
         try {
             Set<String> uids = G.storedPid();
             if (uids != null && uids.size() > 0) {
+                Log.i(TAG, "log cleanup using uid");
                 Shell.Interactive tempSession = new Shell.Builder().useSU().open();
                 for (String uid : uids) {
                     Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
@@ -1230,7 +1231,7 @@ public final class Api {
                 }
             } else {
                 Shell.Interactive tempSession = new Shell.Builder().useSU().open();
-                Log.i(Api.TAG, "Cleaning up log watches");
+                Log.i(Api.TAG, "Cleaning up log watches using shell");
                 tempSession.addCommand("killall nflog");
                 tempSession.addCommand("pkill -9 -f \"aflogshellb\"");
                 tempSession.addCommand("pkill -9 -f \"aflogshell\"");
@@ -1238,6 +1239,7 @@ public final class Api {
                 String bbPath = getBusyBoxPath(ctx, true);
                 tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshellb\"");
                 tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshell\"");
+                //TODO: cleanup shell
             }
         } catch (ClassCastException e) {
             Log.e(TAG, "ClassCastException in cleanupUid: " + e.getMessage());
