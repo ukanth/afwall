@@ -716,8 +716,6 @@ public final class Api {
                 cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
             }
 
-            cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
-            cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
             if (G.enableInbound()) {
                 cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
@@ -733,6 +731,9 @@ public final class Api {
                     cmds.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
                     cmds.add("-t nat -I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
                 }
+            } else {
+                cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+                cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
