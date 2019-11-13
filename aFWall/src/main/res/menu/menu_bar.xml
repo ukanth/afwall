@@ -67,7 +67,7 @@
                 app:showAsAction="always|withText" />
             <item
                 android:id="@+id/menu_apply"
-                android:icon="@drawable/ic_apply"
+                android:icon="@drawable/ic_apply_menu"
                 android:title=""
                 app:showAsAction="always|withText" />
             <item

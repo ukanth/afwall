@@ -227,7 +227,6 @@ public class LogService extends Service {
                 if(RootTools.isBusyboxAvailable()) {
                     G.logDmsg("BX");
                 }
-                G.logTarget("LOG");
                 switch (G.logTarget()) {
                     case "LOG":
                         switch (G.logDmsg()) {
@@ -300,13 +299,13 @@ public class LogService extends Service {
 
     private void closeSession() {
         new Thread(() -> {
-            Log.i(Api.TAG, "Cleanup!");
             if (rootSession != null) {
+                Log.i(Api.TAG, "Cleanup!");
                 rootSession.close();
                 Log.i(Api.TAG, "Cleaned up existing session");
             }
         }).start();
-        //Api.cleanupUid();
+        Api.cleanupUid();
     }
     private void storeLogInfo(String line, Context context) {
         if (G.enableLogService()) {

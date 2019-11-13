@@ -98,8 +98,6 @@ public class ApplyOnBootService extends Service {
 
         InterfaceTracker.applyRulesOnChange(this, InterfaceTracker.BOOT_COMPLETED);
 
-
-
         //try applying the rule after few seconds if enabled
         if (G.startupDelay()) {
             //make sure we apply rules after 5 sec
