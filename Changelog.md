@@ -1,6 +1,16 @@
 AFWall+ Changelog
 ==================
 
+Version 3.3.0
+
+* Bug Fixes:
+   - MAJOR: Rules not applied properly (v4/v6)
+   - Logs are always empty issue
+   - Boot rules are not applied on Pie and above
+   - Disable/Enable of firewall issue
+   - Crash on applying rules on fewer devices
+   - Notification bug on fewer devices
+
 Version 3.2.0
 * Integrate basic themes (Dark/Light or Black (donate version only!)
 * Preferences now showing selected values

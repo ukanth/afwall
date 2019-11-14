@@ -101,8 +101,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -885,35 +890,41 @@ public final class Api {
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         Log.i(TAG, "Using applySavedIptablesRules");
         RuleDataSet dataSet = getDataSet();
-        Thread t2 = null;
+        boolean[] applied = {false, false};
+
         List<String> ipv4cmds = new ArrayList<String>();
         List<String> ipv6cmds = new ArrayList<String>();
-        applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
-        Thread t1 = new Thread(() -> applySavedIp4tablesRules(ctx, ipv4cmds, callback));
-
-        if (G.enableIPv6()) {
-            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-            t2 = new Thread(() -> applySavedIp6tablesRules(ctx, ipv6cmds, callback));
-
-        }
-
+        Thread t2 = null;
+        Thread t1 = new Thread(() -> {
+            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
+            applied[0] = applySavedIp4tablesRules(ctx, ipv4cmds, callback);
+        });
         t1.start();
+
         if (G.enableIPv6()) {
+            t2 = new Thread(() -> {
+                //creare new callback command
+                applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
+                try {
+                    applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone());
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+            });
             t2.start();
         }
 
         try {
             t1.join();
-            if (G.enableIPv6() && t2 != null) {
+            if (G.enableIPv6()&& t2 != null) {
                 t2.join();
             }
         } catch (InterruptedException e) {
-
         }
-        //boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
+        boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
         rulesUpToDate = true;
-        //return returnValue;
     }
+
 
     private static RuleDataSet getDataSet() {
         initSpecial();
@@ -1134,9 +1145,9 @@ public final class Api {
             for (String s : natChains) {
                 cmdsv4.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
             }
-            cmdsv4.add("-t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+            cmdsv4.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
         } else {
-            cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
+            cmdsv4.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
         }
 
         //make sure reset the OUTPUT chain to accept state.

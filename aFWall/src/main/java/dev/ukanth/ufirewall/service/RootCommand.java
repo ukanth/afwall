@@ -12,7 +12,7 @@ import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
  * Created by ukanth on 21/10/17.
  */
 
-public class RootCommand {
+public class RootCommand implements Cloneable {
     public Callback cb = null;
     public int successToast = NO_TOAST;
     public int failureToast = NO_TOAST;
@@ -43,6 +43,12 @@ public class RootCommand {
         rootShellService = new RootShellService();
     }
 
+
+    @Override
+    public RootCommand clone() throws
+            CloneNotSupportedException {
+        return (RootCommand) super.clone();
+    }
 
     public List<String> getCommmands() {
         return commmands;
@@ -131,8 +137,8 @@ public class RootCommand {
      * @param script List of commands to run as root
      */
     public final void run(Context ctx, List<String> script) {
-        if(rootShellService == null) {
-            rootShellService =  new RootShellService();
+        if (rootShellService == null) {
+            rootShellService = new RootShellService();
         }
         rootShellService.runScriptAsRoot(ctx, script, this);
     }
@@ -144,8 +150,8 @@ public class RootCommand {
      * @param cmd Command to run as root
      */
     public final void run(Context ctx, String cmd) {
-        if(rootShellService == null) {
-            rootShellService =  new RootShellService();
+        if (rootShellService == null) {
+            rootShellService = new RootShellService();
         }
         List<String> script = new ArrayList<String>();
         script.add(cmd);

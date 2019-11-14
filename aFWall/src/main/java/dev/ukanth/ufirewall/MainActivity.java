@@ -1002,7 +1002,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 purgeRules();
             }
         }
-        refreshHeader();
+        //refreshHeader();
     }
 
     @Override
@@ -1347,20 +1347,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         purgeRules();
-                       /* if (G.activeNotification()) {
-                            Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-                        }*/
                         Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-                        //ServiceCompat.stopForeground(FirewallService.class,Service.STOP_FOREGROUND_REMOVE);
                         dialog.dismiss();
                     }
                 })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Api.setEnabled(getApplicationContext(), true, true);
-                        dialog.dismiss();
-                    }
+                .onNegative((dialog, which) -> {
+                    Api.setEnabled(getApplicationContext(), true, true);
+                    dialog.dismiss();
                 })
                 .positiveText(R.string.Yes)
                 .negativeText(R.string.No)
@@ -1531,8 +1524,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void purgeRules() {
         purgeTask = new PurgeTask(MainActivity.this);
         purgeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        menuSetApplyOrSave(mainMenu, Api.isEnabled(getApplicationContext()));
     }
 
     @Override
@@ -1804,24 +1795,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 .content(R.string.unsaved_changes_message)
                                 .positiveText(R.string.apply)
                                 .negativeText(R.string.discard)
-                                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                    @Override
-                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        applyOrSaveRules();
-                                        dialog.dismiss();
-                                    }
+                                .onPositive((dialog, which) -> {
+                                    applyOrSaveRules();
+                                    dialog.dismiss();
                                 })
-                                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                    @Override
-                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        setDirty(false);
-                                        Api.applications = null;
-                                        //finish();
-                                        //System.exit(0);
-                                        //force reload rules.
-                                        MainActivity.super.onKeyDown(keyCode, event);
-                                        dialog.dismiss();
-                                    }
+                                .onNegative((dialog, which) -> {
+                                    setDirty(false);
+                                    Api.applications = null;
+                                    //finish();
+                                    //System.exit(0);
+                                    //force reload rules.
+                                    MainActivity.super.onKeyDown(keyCode, event);
+                                    dialog.dismiss();
                                 })
                                 .show();
                         return true;
@@ -2053,6 +2038,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 boolean nowEnabled = state.exitCode != 0;
                                 runOnUiThread(() -> {
                                     Api.setEnabled(ctx, nowEnabled, true);
+                                    menuSetApplyOrSave(mainMenu, nowEnabled);
+                                    refreshHeader();
                                 });
 
                             }
@@ -2171,10 +2158,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //set the progress
             if (G.hasRoot()) {
                 Api.setRulesUpToDate(false);
-                Api.applySavedIptablesRules(activityReference.get(), true, new RootCommand()
+                RootCommand rootCommand4 = new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
                         .setFailureToast(R.string.error_apply)
-                        .setReopenShell(true)
                         .setCallback(new RootCommand.Callback() {
                             public void cbFunc(RootCommand state) {
                                 try {
@@ -2197,9 +2183,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         menuSetApplyOrSave(activityReference.get().mainMenu, enabled);
                                         Api.setEnabled(activityReference.get(), enabled, true);
                                     }
+                                    refreshHeader();
                                 });
                             }
-                        }));
+                        });
+                Api.applySavedIptablesRules(activityReference.get(), true, rootCommand4);
                 return true;
             } else {
                 runOnUiThread(() -> {
@@ -2220,6 +2208,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (!aVoid) {
                 Toast.makeText(activityReference.get(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
                 disableFirewall();
+                refreshHeader();
                 try {
                     runProgress.dismiss();
                 } catch (Exception ex) {
