@@ -5,7 +5,8 @@ Version 3.3.0
 
 * Bug Fixes:
    - MAJOR: Rules not applied properly (v4/v6)
-   - Logs are always empty issue
+   - Theme related bug with logs
+   - Log related bugs on many devices
    - Boot rules are not applied on Pie and above
    - Disable/Enable of firewall issue
    - Crash on applying rules on fewer devices
