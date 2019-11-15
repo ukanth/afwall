@@ -903,10 +903,9 @@ public final class Api {
 
         if (G.enableIPv6()) {
             t2 = new Thread(() -> {
-                //creare new callback command
                 applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
                 try {
-                    applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone());
+                    applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone().setIsv6(true));
                 } catch (CloneNotSupportedException e) {
                     e.printStackTrace();
                 }
