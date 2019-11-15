@@ -172,7 +172,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <service android:name=".service.ApplyOnBootService" />
+        <!--<service android:name=".service.ApplyOnBootService" />-->
 
         <service
             android:name=".service.FirewallService"

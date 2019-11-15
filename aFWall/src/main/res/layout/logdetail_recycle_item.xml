@@ -8,8 +8,7 @@
     android:layout_marginRight="5dp"
     android:layout_marginTop="5dp"
     card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="2dp"
-    android:background="?attr/itemBackground">
+    card_view:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"

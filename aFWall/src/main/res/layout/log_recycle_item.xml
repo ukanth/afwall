@@ -18,7 +18,6 @@
 
         <ImageView
             android:id="@+id/app_icon"
-            android:adjustViewBounds="true"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
