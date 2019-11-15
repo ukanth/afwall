@@ -234,19 +234,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerToastbroadcast();
         migrateNotification();
         initTextWatcher();
-        registerLogService();
+        //registerLogService();
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
     }
 
-    private void registerLogService() {
+    /*private void registerLogService() {
         if (G.enableLogService()) {
             Log.i(G.TAG, "Starting Log Service");
             final Intent logIntent = new Intent(getBaseContext(), LogService.class);
             startService(logIntent);
             G.storedPid(new HashSet());
         }
-    }
+    }*/
 
     private void registerThemeIntent() {
 

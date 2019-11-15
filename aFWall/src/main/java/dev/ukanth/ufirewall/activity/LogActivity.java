@@ -140,18 +140,15 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     private void initializeRecyclerView(final Context ctx) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerViewAdapter = new LogRecyclerViewAdapter(getApplicationContext(),new RecyclerItemClickListener() {
-            @Override
-            public void onItemClick(LogData logData) {
-                if(G.isDoKey(ctx) || G.isDonate()) {
-                    Intent intent = new Intent(ctx, LogDetailActivity.class);
-                    intent.putExtra("DATA",logData.getUid());
-                    startActivity(intent);
-                } else {
-                    Api.donateDialog(LogActivity.this,false);
-                }
-                // do what ever you want to do with it
+        recyclerViewAdapter = new LogRecyclerViewAdapter(getApplicationContext(), logData -> {
+            if(G.isDoKey(ctx) || G.isDonate()) {
+                Intent intent = new Intent(ctx, LogDetailActivity.class);
+                intent.putExtra("DATA",logData.getUid());
+                startActivity(intent);
+            } else {
+                Api.donateDialog(LogActivity.this,false);
             }
+            // do what ever you want to do with it
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }

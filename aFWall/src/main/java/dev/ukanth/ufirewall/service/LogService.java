@@ -40,9 +40,7 @@ import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.stericson.roottools.RootTools;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
@@ -173,7 +171,7 @@ public class LogService extends Service {
         startLogService();
     }
 
-    /*private static class LogTask extends AsyncTask<Void, Void, Void> {
+    private static class LogTask extends AsyncTask<Void, Void, Void> {
         private LogEvent event;
 
         private LogTask(LogEvent event) {
@@ -194,7 +192,7 @@ public class LogService extends Service {
                 }
             }
         }
-    }*/
+    }
 
     private void startLogService() {
         if (disposable != null) {
@@ -223,28 +221,19 @@ public class LogService extends Service {
                 if (G.logDmsg().isEmpty()) {
                     G.logDmsg("OS");
                 }
-                //default to busybox if available
-                if(RootTools.isBusyboxAvailable()) {
-                    G.logDmsg("BX");
-                }
                 switch (G.logTarget()) {
                     case "LOG":
                         switch (G.logDmsg()) {
                             case "OS":
-                                logPath = Api.getShellPath(getApplicationContext()) + "/aflogshell";
-                                if(!new File(logPath).exists()) {
-                                    logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
-                                }
+                                logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                                 break;
                             case "BX":
-                                logPath = Api.getShellPath(getApplicationContext()) + "/aflogshellb";
-                                if(!new File(logPath).exists()) {
-                                    logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
-                                }
+                                logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
                                 break;
                             default:
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
+
                         break;
                     case "NFLOG":
                         logPath = Api.getNflogPath(getApplicationContext());
@@ -253,10 +242,9 @@ public class LogService extends Service {
                 }
 
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not NULL" : "rootSession is NULL");
+                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
                 handler = new Handler();
 
-                closeSession();
                 rootSession = new Shell.Builder()
                         .useSU()
                         .setMinimalLogging(true)
@@ -278,8 +266,6 @@ public class LogService extends Service {
                                         }
                                     }
                                 } catch (Exception e) {
-                                    Log.i(TAG, "Exception in reading logs " + e.getMessage());
-                                    e.printStackTrace();
                                 }
                             } else {
                                 storeLogInfo(line, getApplicationContext());
@@ -299,14 +285,34 @@ public class LogService extends Service {
 
     private void closeSession() {
         new Thread(() -> {
+            Log.i(Api.TAG, "Cleanup session");
             if (rootSession != null) {
-                Log.i(Api.TAG, "Cleanup!");
                 rootSession.close();
-                Log.i(Api.TAG, "Cleaned up existing session");
             }
         }).start();
         Api.cleanupUid();
     }
+
+
+    /* private static class Task extends AsyncTask<Void, Void, LogInfo> {
+         private Context context;
+         private String line;
+         private Task(Context context, String line) {
+             this.context = context;
+             this.line = line;
+         }
+         @Override
+         protected LogInfo doInBackground(Void... voids) {
+             return LogInfo.parseLogs(line, context);
+         }
+         @Override
+         protected void onPostExecute(LogInfo a) {
+             if (a != null) {
+                 LogRxEvent.publish(new LogEvent(a, context));
+             }
+         }
+     }
+ */
     private void storeLogInfo(String line, Context context) {
         if (G.enableLogService()) {
             if (line != null && line.trim().length() > 0) {
@@ -316,7 +322,6 @@ public class LogService extends Service {
                             LogRxEvent.publish(new LogEvent(LogInfo.parseLogs(line, context, "{AFL}", 0), context));
                         }).start();
                     } catch (Exception e) {
-                        Log.i(TAG, e.getMessage());
                         //Handle when has exception thrown
                     }
                 } /*else if (line.contains("{AFL-ALLOW}")) {

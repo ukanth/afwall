@@ -18,8 +18,9 @@
 
         <ImageView
             android:id="@+id/app_icon"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:adjustViewBounds="true"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter" />
 
@@ -34,7 +35,7 @@
                 android:id="@+id/app_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="?attr/tint"
                 android:textSize="16sp"/>
 
             <TextView
@@ -43,8 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/app_name"
-                android:layout_marginTop="6dp"
-                android:textColor="@color/white" />
+                android:textColor="?attr/tint"
+                android:layout_marginTop="6dp" />
 
             <TextView
 
@@ -52,8 +53,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/last_denied"
-                android:layout_marginTop="6dp"
-                android:textColor="@color/white" />
+                android:textColor="?attr/tint"
+                android:layout_marginTop="6dp"/>
 
         </RelativeLayout>
     </LinearLayout>
