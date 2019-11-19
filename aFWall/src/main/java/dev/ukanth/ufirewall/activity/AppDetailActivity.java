@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -44,7 +47,13 @@ public class AppDetailActivity extends AppCompatActivity {
         int appid = getIntent().getIntExtra("appid", -1);
         String packageName = getIntent().getStringExtra("package");
         try {
-            CheckBox logOption = (CheckBox) findViewById(R.id.notification_p);
+            AppCompatCheckBox logOption = (AppCompatCheckBox) findViewById(R.id.notification_p);
+            if(G.getSelectedTheme().equals("L")){
+                logOption.setTextAppearance(getApplicationContext(),R.style.checkBoxStyleLight);
+                logOption.refreshDrawableState();
+                logOption.invalidate();
+                logOption.postInvalidate();
+            }
 
             LogPreference logPreference = SQLite.select()
                     .from(LogPreference.class)
