@@ -1,6 +1,12 @@
 AFWall+ Changelog
 ==================
 
+<en-US>
+Version 3.3.1
+
+* Bug: Firewall not blocking on oneplus devices
+* Minor UI fixes
+
 Version 3.3.0
 
 * Bug Fixes:
