@@ -47,14 +47,7 @@ public class AppDetailActivity extends AppCompatActivity {
         int appid = getIntent().getIntExtra("appid", -1);
         String packageName = getIntent().getStringExtra("package");
         try {
-            AppCompatCheckBox logOption = (AppCompatCheckBox) findViewById(R.id.notification_p);
-            if(G.getSelectedTheme().equals("L")){
-                logOption.setTextAppearance(getApplicationContext(),R.style.checkBoxStyleLight);
-                logOption.refreshDrawableState();
-                logOption.invalidate();
-                logOption.postInvalidate();
-            }
-
+            CheckBox logOption = (CheckBox) findViewById(R.id.notification_p);
             LogPreference logPreference = SQLite.select()
                     .from(LogPreference.class)
                     .where(LogPreference_Table.uid.eq(appid)).querySingle();

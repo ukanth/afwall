@@ -148,10 +148,10 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_gravity="center"
+        android:background="?attr/itemBackground"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatCheckBox
-            android:theme="@style/checkBoxStyleDark"
+        <CheckBox
             android:id="@+id/notification_p"
             android:layout_width="0.0dip"
             android:layout_height="wrap_content"
