@@ -308,6 +308,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
 
         if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
+                || key.equals("enableBluetooth")
                 || key.equals("enableLAN") || key.equals("enableRoam")
                 || key.equals("locale") || key.equals("showFilter")) {
             G.reloadProfile();

@@ -55,6 +55,8 @@ public final class InterfaceTracker {
 
     public static final String ITFS_VPN[] = {"tun+", "ppp+", "tap+"};
 
+    public static final String ITFS_BLUETOOTH[] = {"bt-pan"};
+
     public static final String BOOT_COMPLETED = "BOOT_COMPLETED";
     public static final String CONNECTIVITY_CHANGE = "CONNECTIVITY_CHANGE";
 
