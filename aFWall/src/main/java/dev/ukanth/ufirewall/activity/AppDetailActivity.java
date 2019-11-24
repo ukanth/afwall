@@ -100,7 +100,7 @@ public class AppDetailActivity extends AppCompatActivity {
                     setTotalBytesManual(down, up, applicationInfo.uid);
                 }
             } else {
-                image.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_android_white_24dp));
+                image.setImageDrawable(getApplicationContext().getResources().getDrawable(R.drawable.ic_unknown));
                 if(appid >= 0) {
                     textView.setText(Api.getSpecialDescription(getApplicationContext(), packageName.replace("dev.afwall.special.", "")));
                 } else {

@@ -141,7 +141,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
         if (!G.disableIcons()) {
             if(holder.app.pkgName.startsWith("dev.afwall.special.")) {
-                holder.icon.setImageDrawable(convertView.getContext().getResources().getDrawable(R.drawable.ic_android_white_24dp));
+                holder.icon.setImageDrawable(convertView.getContext().getResources().getDrawable(R.drawable.ic_unknown));
             } else {
                 holder.icon.setImageDrawable(holder.app.cached_icon);
                 if (!holder.app.icon_loaded && info != null) {
