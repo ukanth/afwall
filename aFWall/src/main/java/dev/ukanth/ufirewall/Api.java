@@ -554,7 +554,7 @@ public final class Api {
                 addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
             }
 
-            if (cfg.isTethered) {
+            if (cfg.isWifiTethered) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
             } else {
@@ -562,7 +562,9 @@ public final class Api {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
             }
 
-            if (G.enableLAN() && !cfg.isTethered) {
+            // TODO: Bluetooth and Usb tether
+
+            if (G.enableLAN() && !cfg.isWifiTethered) {
                 if (ipv6) {
                     if (!cfg.lanMaskV6.equals("")) {
                         Log.i(TAG, "ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);

@@ -38,6 +38,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
     // These are marked "@hide" in WifiManager.java
     public static final String WIFI_AP_STATE_CHANGED_ACTION = "android.net.wifi.WIFI_AP_STATE_CHANGED";
+    public static final String TETHER_STATE_CHANGED_ACTION = "android.net.conn.TETHER_STATE_CHANGED";
     public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
     public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
 

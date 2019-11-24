@@ -68,23 +68,37 @@ public final class InterfaceTracker {
     }
 
     private static void getTetherStatus(Context context, InterfaceDetails d) {
+        getWifiTetherStatus(context, d);
+        getBluetoothTetherStatus(context, d);
+        getUsbTetherStatus(context, d);
+    }
+
+    private static void getWifiTetherStatus(Context context, InterfaceDetails d) {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         Method[] wmMethods = wifi.getClass().getDeclaredMethods();
 
-        d.isTethered = false;
-        d.tetherStatusKnown = false;
+        d.isWifiTethered = false;
+        d.tetherWifiStatusKnown = false;
 
         for (Method method : wmMethods) {
             if (method.getName().equals("isWifiApEnabled")) {
                 try {
-                    d.isTethered = ((Boolean) method.invoke(wifi)).booleanValue();
-                    d.tetherStatusKnown = true;
-                    Log.d(TAG, "isWifiApEnabled is " + d.isTethered);
+                    d.isWifiTethered = ((Boolean) method.invoke(wifi)).booleanValue();
+                    d.tetherWifiStatusKnown = true;
+                    Log.d(TAG, "isWifiApEnabled is " + d.isWifiTethered);
                 } catch (Exception e) {
                     Log.e(Api.TAG, android.util.Log.getStackTraceString(e));
                 }
             }
         }
+    }
+
+    private static void getBluetoothTetherStatus(Context context, InterfaceDetails d) {
+        // TODO:
+    }
+
+    private static void getUsbTetherStatus(Context context, InterfaceDetails d) {
+        // TODO
     }
 
     private static InterfaceDetails getInterfaceDetails(Context context) {
@@ -142,11 +156,19 @@ public final class InterfaceTracker {
             Log.i(TAG, "Now assuming NO connection (all interfaces down)");
         } else {
             if (newCfg.netType == ConnectivityManager.TYPE_WIFI) {
-                Log.i(TAG, "Now assuming wifi connection");
+                Log.i(TAG, "Now assuming wifi connection (" +
+                        "bluetooth-tethered: " + (newCfg.isBluetoothTethered ? "yes" : "no") + ", " +
+                        "usb-tethered: " + (newCfg.isUsbTethered ? "yes" : "no") + ")");
             } else if (newCfg.netType == ConnectivityManager.TYPE_MOBILE) {
                 Log.i(TAG, "Now assuming 3G connection (" +
-                        (newCfg.isRoaming ? "roaming, " : "") +
-                        (newCfg.isTethered ? "tethered" : "non-tethered") + ")");
+                        "roaming: " + (newCfg.isRoaming ? "yes" : "no") +
+                        "wifi-tethered: " + (newCfg.isWifiTethered ? "yes" : "no") + ", " +
+                        "bluetooth-tethered: " + (newCfg.isBluetoothTethered ? "yes" : "no") + ", " +
+                        "usb-tethered: " + (newCfg.isUsbTethered ? "yes" : "no") + ")");
+            } else if (newCfg.netType == ConnectivityManager.TYPE_BLUETOOTH) {
+                Log.i(TAG, "Now assuming bluetooth connection (" +
+                        "wifi-tethered: " + (newCfg.isWifiTethered ? "yes" : "no") + ", " +
+                        "usb-tethered: " + (newCfg.isUsbTethered ? "yes" : "no") + ")");
             }
 
             if (!newCfg.lanMaskV4.equals("")) {

@@ -167,6 +167,7 @@ public class FirewallService extends Service {
 
         connectivityReciver = new ConnectivityChangeReceiver();
         filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(ConnectivityChangeReceiver.TETHER_STATE_CHANGED_ACTION);
         registerReceiver(connectivityReciver, filter);
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
