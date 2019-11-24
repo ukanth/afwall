@@ -19,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import java.util.HashSet;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.broadcast.ConnectivityChangeReceiver;
@@ -179,6 +180,8 @@ public class FirewallService extends Service {
         intentFilter = new IntentFilter(Intent.ACTION_PACKAGE_REMOVED);
         intentFilter.addDataScheme("package");
         registerReceiver(packageReceiver, intentFilter);
+
+        InterfaceTracker.setupBluetoothProfile(this);
 
         return START_STICKY;
     }

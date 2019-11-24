@@ -22,6 +22,8 @@
 
 package dev.ukanth.ufirewall;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -93,8 +95,45 @@ public final class InterfaceTracker {
         }
     }
 
+    private static BluetoothProfile btPanProfile;
+    private static BluetoothProfile.ServiceListener btListener = new BluetoothProfile.ServiceListener() {
+        @Override
+        public void onServiceConnected(int profile, BluetoothProfile proxy) {
+            Log.d(TAG, "BluetoothProfile.ServiceListener connected");
+            btPanProfile = proxy;
+        }
+
+        @Override
+        public void onServiceDisconnected(int profile) {
+            Log.d(TAG, "BluetoothProfile.ServiceListener disconected");
+        }
+    };
+
+    // To get bluetooth tethering, we need valid BluetoothPan instance
+    // It is obtainable only in ServiceListener.onServiceConnected callback
+    public static void setupBluetoothProfile(Context context) {
+        BluetoothAdapter.getDefaultAdapter().getProfileProxy(context, btListener, 5);
+    }
+
     private static void getBluetoothTetherStatus(Context context, InterfaceDetails d) {
-        // TODO:
+        if (btPanProfile != null) {
+            Method[] btMethods = btPanProfile.getClass().getDeclaredMethods();
+
+            d.isBluetoothTethered = false;
+            d.tetherBluetoothStatusKnown = false;
+
+            for (Method method : btMethods) {
+                if (method.getName().equals("isTetheringOn")) {
+                    try {
+                        d.isBluetoothTethered = ((Boolean) method.invoke(btPanProfile)).booleanValue();
+                        d.tetherBluetoothStatusKnown = true;
+                        Log.d(TAG, "isBluetoothTetheringOn is " + d.isBluetoothTethered);
+                    } catch (Exception e) {
+                        Log.e(Api.TAG, android.util.Log.getStackTraceString(e));
+                    }
+                }
+            }
+        }
     }
 
     private static void getUsbTetherStatus(Context context, InterfaceDetails d) {
