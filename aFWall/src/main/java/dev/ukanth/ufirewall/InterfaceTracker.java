@@ -61,6 +61,7 @@ public final class InterfaceTracker {
 
     public static final String BOOT_COMPLETED = "BOOT_COMPLETED";
     public static final String CONNECTIVITY_CHANGE = "CONNECTIVITY_CHANGE";
+    public static final String TETHER_STATE_CHANGED = "TETHER_STATE_CHANGED";
 
 
     private static InterfaceDetails currentCfg = null;

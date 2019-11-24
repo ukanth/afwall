@@ -3373,6 +3373,9 @@ public final class Api {
 
             if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
                 return 2;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_BLUETOOTH)
+                return 3;
         }
         return 0;
     }
