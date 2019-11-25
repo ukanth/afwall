@@ -777,18 +777,16 @@ public final class Api {
                 }
             }
 
-            if (G.enableBluetooth()) {
-                for (final String itf : ITFS_BLUETOOTH) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-bluetooth");
-                }
-            }
-
             for (final String itf : ITFS_WIFI) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-wifi");
             }
 
             for (final String itf : ITFS_3G) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
+            }
+
+            for (final String itf : ITFS_BLUETOOTH) {
+                cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-bluetooth");
             }
 
             final boolean any_wifi = ruleDataSet.wifiList.indexOf(SPECIAL_UID_ANY) >= 0;
@@ -1060,6 +1058,11 @@ public final class Api {
                     } else {
                         if (!store) newpkg_3g.add(-apps.get(i).uid);
                     }
+                    if (apps.get(i).selected_bluetooth) {
+                        newpkg_bluetooth.add(apps.get(i).uid);
+                    } else {
+                        if (!store) newpkg_bluetooth.add(-apps.get(i).uid);
+                    }
                     if (G.enableRoam()) {
                         if (apps.get(i).selected_roam) {
                             newpkg_roam.add(apps.get(i).uid);
@@ -1072,13 +1075,6 @@ public final class Api {
                             newpkg_vpn.add(apps.get(i).uid);
                         } else {
                             if (!store) newpkg_vpn.add(-apps.get(i).uid);
-                        }
-                    }
-                    if (G.enableBluetooth()) {
-                        if (apps.get(i).selected_bluetooth) {
-                            newpkg_bluetooth.add(apps.get(i).uid);
-                        } else {
-                            if (!store) newpkg_bluetooth.add(-apps.get(i).uid);
                         }
                     }
                     if (G.enableLAN()) {
@@ -1438,24 +1434,22 @@ public final class Api {
 
         List<Integer> selected_wifi;
         List<Integer> selected_3g;
+        List<Integer> selected_bluetooth;
         List<Integer> selected_roam = new ArrayList<>();
         List<Integer> selected_vpn = new ArrayList<>();
-        List<Integer> selected_bluetooth = new ArrayList<>();
         List<Integer> selected_lan = new ArrayList<>();
         List<Integer> selected_tor = new ArrayList<>();
 
 
         selected_wifi = getListFromPref(savedPkg_wifi_uid);
         selected_3g = getListFromPref(savedPkg_3g_uid);
+        selected_bluetooth = getListFromPref(savedPkg_bluetooth_uid);
 
         if (G.enableRoam()) {
             selected_roam = getListFromPref(savedPkg_roam_uid);
         }
         if (G.enableVPN()) {
             selected_vpn = getListFromPref(savedPkg_vpn_uid);
-        }
-        if (G.enableBluetooth()) {
-            selected_bluetooth = getListFromPref(savedPkg_bluetooth_uid);
         }
         if (G.enableLAN()) {
             selected_lan = getListFromPref(savedPkg_lan_uid);
@@ -1557,14 +1551,14 @@ public final class Api {
                 if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
                     app.selected_3g = true;
                 }
+                if (!app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
+                    app.selected_bluetooth = true;
+                }
                 if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
                     app.selected_roam = true;
                 }
                 if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
                     app.selected_vpn = true;
-                }
-                if (G.enableBluetooth() && !app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
-                    app.selected_bluetooth = true;
                 }
                 if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                     app.selected_lan = true;
@@ -1587,14 +1581,14 @@ public final class Api {
                     if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
                         app.selected_3g = true;
                     }
+                    if (!app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
+                        app.selected_bluetooth = true;
+                    }
                     if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
                         app.selected_roam = true;
                     }
                     if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
                         app.selected_vpn = true;
-                    }
-                    if (G.enableBluetooth() && !app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
-                        app.selected_bluetooth = true;
                     }
                     if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                         app.selected_lan = true;
@@ -1625,14 +1619,14 @@ public final class Api {
                     if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
                         app.selected_3g = true;
                     }
+                    if (!app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
+                        app.selected_bluetooth = true;
+                    }
                     if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
                         app.selected_roam = true;
                     }
                     if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
                         app.selected_vpn = true;
-                    }
-                    if (G.enableBluetooth() && !app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
-                        app.selected_bluetooth = true;
                     }
                     if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                         app.selected_lan = true;
@@ -3530,17 +3524,14 @@ public final class Api {
             SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             List<Integer> selected_wifi = getListFromPref(prefs.getString(PREF_WIFI_PKG_UIDS, ""));
             List<Integer> selected_3g = getListFromPref(prefs.getString(PREF_3G_PKG_UIDS, ""));
+            List<Integer> selected_bluetooth = getListFromPref(prefs.getString(PREF_BLUETOOTH_PKG_UIDS, ""));
             List<Integer> selected_roam = new ArrayList<>();
             List<Integer> selected_vpn = new ArrayList<>();
-            List<Integer> selected_bluetooth = new ArrayList<>();
             if (G.enableRoam()) {
                 selected_roam = getListFromPref(prefs.getString(PREF_ROAMING_PKG_UIDS, ""));
             }
             if (G.enableVPN()) {
                 selected_vpn = getListFromPref(prefs.getString(PREF_VPN_PKG_UIDS, ""));
-            }
-            if (G.enableBluetooth()) {
-                selected_bluetooth = getListFromPref(prefs.getString(PREF_BLUETOOTH_PKG_UIDS, ""));
             }
             return (selected_wifi.contains(uid) && selected_3g.contains(uid)) || selected_roam.contains(uid) || selected_vpn.contains(uid) || selected_bluetooth.contains(uid);
         } catch (NameNotFoundException e) {

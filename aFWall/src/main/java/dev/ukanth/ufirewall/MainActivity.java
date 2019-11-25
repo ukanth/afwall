@@ -569,11 +569,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             hideColumns(R.id.img_vpn);
         }
-        if (G.enableBluetooth()) {
-            addColumns(R.id.img_bluetooth);
-        } else {
-            hideColumns(R.id.img_bluetooth);
-        }
 
         if (!Api.isMobileNetworkSupported(getApplicationContext())) {
             ImageView view = (ImageView) this.findViewById(R.id.img_3g);

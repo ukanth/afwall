@@ -134,23 +134,21 @@
                 android:visibility="gone"></ImageView>
 
             <ImageView
+                android:id="@+id/img_bluetooth"
+                android:layout_width="32dp"
+                android:layout_height="24dp"
+                android:clickable="true"
+                android:contentDescription="@string/bluetooth"
+                android:src="@drawable/ic_bluetooth"/>
+
+            <ImageView
                 android:id="@+id/img_vpn"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
                 android:clickable="true"
                 android:contentDescription="@string/vpn_profile"
                 android:src="@drawable/ic_vpn"
-
                 android:visibility="gone"></ImageView>
-
-            <ImageView
-                android:id="@+id/img_bluetooth"
-                android:layout_width="32dp"
-                android:layout_height="24dp"
-                android:clickable="true"
-                android:contentDescription="@string/bluetooth_profile"
-                android:src="@drawable/ic_bluetooth"
-                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/img_tor"
