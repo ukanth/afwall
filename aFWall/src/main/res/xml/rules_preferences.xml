@@ -32,6 +32,13 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="activeRules"
+            android:icon="@drawable/ic_bluetooth"
+            android:key="enableBluetooth"
+            android:summary="@string/bluetoothSummary"
+            android:title="@string/bluetooth_profile" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="activeRules"
             android:icon="@drawable/ic_tor"
             android:key="enableTor"
             android:summary="@string/torSummary"

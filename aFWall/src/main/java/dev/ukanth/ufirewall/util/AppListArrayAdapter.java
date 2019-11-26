@@ -61,13 +61,14 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 removeSupport(convertView, R.id.itemcheck_3g);
             }
 
-            holder.box_bluetooth = convertView.findViewById(R.id.itemcheck_bluetooth);
-
             if (G.enableRoam()) {
                 holder.box_roam = addSupport(convertView, true, R.id.itemcheck_roam);
             }
             if (G.enableVPN()) {
                 holder.box_vpn = addSupport(convertView, true, R.id.itemcheck_vpn);
+            }
+            if (G.enableBluetooth()) {
+                holder.box_bluetooth = addSupport(convertView, true, R.id.itemcheck_bluetooth);
             }
             if (G.enableLAN()) {
                 holder.box_lan = addSupport(convertView, true, R.id.itemcheck_lan);
@@ -93,12 +94,14 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             } else {
                 removeSupport(convertView, R.id.itemcheck_3g);
             }
-            holder.box_bluetooth = convertView.findViewById(R.id.itemcheck_bluetooth);
             if (G.enableRoam()) {
                 addSupport(convertView, false, R.id.itemcheck_roam);
             }
             if (G.enableVPN()) {
                 addSupport(convertView, false, R.id.itemcheck_vpn);
+            }
+            if (G.enableBluetooth()) {
+                addSupport(convertView, false, R.id.itemcheck_bluetooth);
             }
             if (G.enableLAN()) {
                 addSupport(convertView, false, R.id.itemcheck_lan);
@@ -172,14 +175,14 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             holder.box_3g.setChecked(holder.app.selected_3g);
         }
 
-        holder.box_bluetooth.setTag(holder.app);
-        holder.box_bluetooth.setChecked(holder.app.selected_bluetooth);
-
         if (G.enableRoam()) {
             holder.box_roam = addSupport(holder.box_roam, holder.app, 0);
         }
         if (G.enableVPN()) {
             holder.box_vpn = addSupport(holder.box_vpn, holder.app, 1);
+        }
+        if (G.enableBluetooth()) {
+            holder.box_bluetooth = addSupport(holder.box_bluetooth, holder.app, 6);
         }
         if (G.enableLAN()) {
             holder.box_lan = addSupport(holder.box_lan, holder.app, 2);
@@ -324,6 +327,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     break;
                 case 1:
                     check.setChecked(app.selected_vpn);
+                    break;
+                case 6:
+                    check.setChecked(app.selected_bluetooth);
                     break;
                 case 2:
                     check.setChecked(app.selected_lan);

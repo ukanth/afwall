@@ -685,6 +685,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+    public static boolean enableBluetooth() {
+        return gPrefs.getBoolean(ENABLE_BLUETOOTH, false);
+    }
+
+    public static boolean enableBluetooth(boolean val) {
+        gPrefs.edit().putBoolean(ENABLE_BLUETOOTH, val).commit();
+        return val;
+    }
+
     public static boolean enableLAN() {
         return gPrefs.getBoolean(ENABLE_LAN, true);
     }

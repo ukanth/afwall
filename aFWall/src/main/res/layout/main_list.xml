@@ -44,18 +44,19 @@
             android:visibility="gone" >
         </CheckBox>
 
-        <CheckBox
-            android:id="@+id/itemcheck_bluetooth"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px" >
-        </CheckBox>
-
-        <CheckBox
+         <CheckBox
             android:id="@+id/itemcheck_vpn"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:padding="0px" 
+            android:visibility="gone">
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_bluetooth"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px"
             android:visibility="gone">
         </CheckBox>
 
