@@ -206,7 +206,7 @@
     <string name="roaming">Roaming control</string>
     <string name="roamingSummary">Enable to control roaming permissions separately</string>
     <string name="bluetooth_profile">Bluetooth control</string>
-    <string name="bluetoothSummary">Enable to control Bluetooth tethering separately</string>
+    <string name="bluetoothSummary">Enable to control Bluetooth tether connectivity</string>
     <string name="tor_profile">Tor control</string>
     <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
