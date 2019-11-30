@@ -25,8 +25,16 @@ package dev.ukanth.ufirewall;
 public class InterfaceDetails {
 	// firewall policy
 	public boolean isRoaming = false;
-	public boolean isTethered = false;
-	public boolean tetherStatusKnown = false;
+
+	public boolean isWifiTethered = false;
+	public boolean tetherWifiStatusKnown = false;
+
+	public boolean isBluetoothTethered = false;
+	public boolean tetherBluetoothStatusKnown = false;
+
+	public boolean isUsbTethered = false;
+	public boolean tetherUsbStatusKnown = false;
+
 	public String lanMaskV4 = "";
 	public String lanMaskV6 = "";
 	// TODO: identify DNS servers instead of opening up port 53/udp to all LAN hosts
@@ -39,8 +47,12 @@ public class InterfaceDetails {
 
 	public boolean equals(InterfaceDetails that) {
 		if (this.isRoaming != that.isRoaming ||
-			this.isTethered != that.isTethered ||
-			this.tetherStatusKnown != that.tetherStatusKnown ||
+			this.isWifiTethered != that.isWifiTethered ||
+			this.tetherWifiStatusKnown != that.tetherWifiStatusKnown ||
+			this.isBluetoothTethered != that.isBluetoothTethered ||
+			this.tetherBluetoothStatusKnown != that.tetherBluetoothStatusKnown ||
+			this.isUsbTethered != that.isUsbTethered ||
+			this.tetherUsbStatusKnown != that.tetherUsbStatusKnown ||
 			!this.lanMaskV4.equals(that.lanMaskV4) ||
 			!this.lanMaskV6.equals(that.lanMaskV6) ||
 			!this.wifiName.equals(that.wifiName) ||

@@ -38,6 +38,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
     // These are marked "@hide" in WifiManager.java
     public static final String WIFI_AP_STATE_CHANGED_ACTION = "android.net.wifi.WIFI_AP_STATE_CHANGED";
+    public static final String TETHER_STATE_CHANGED_ACTION = "android.net.conn.TETHER_STATE_CHANGED";
     public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
     public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
 
@@ -46,11 +47,6 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
         int status = Api.getConnectivityStatus(context);
         if (status > 0) {
-            if (intent.getAction().equals(WIFI_AP_STATE_CHANGED_ACTION)) {
-                int newState = intent.getIntExtra(EXTRA_WIFI_AP_STATE, -1);
-                int oldState = intent.getIntExtra(EXTRA_PREVIOUS_WIFI_AP_STATE, -1);
-                Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
-            }
             // NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
             // This will prevent applying rules when the user disable the option in preferences. This is for low end devices
             if (intent.getAction().equals(WIFI_AP_STATE_CHANGED_ACTION)) {
@@ -59,9 +55,15 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
             }
 
-            if (Api.isEnabled(context) && G.activeRules() && intent.getAction().equals(CONNECTIVITY_ACTION)) {
-                Log.i(TAG, "Network change captured.");
-                InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+            if (Api.isEnabled(context) && G.activeRules()) {
+                String action = intent.getAction();
+                if (action.equals(CONNECTIVITY_ACTION)) {
+                    Log.i(TAG, "Network change captured.");
+                    InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+                } else if (action.equals(TETHER_STATE_CHANGED_ACTION)) {
+                    Log.i(TAG, "Tether change captured.");
+                    InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.TETHER_STATE_CHANGED);
+                }
             }
         }
     }

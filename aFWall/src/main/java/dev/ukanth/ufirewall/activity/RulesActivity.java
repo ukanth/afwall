@@ -187,7 +187,9 @@ public class RulesActivity extends DataDumpActivity {
         } else {
             result.append("Active interface: unknown\n");
         }
-        result.append("Tether status: " + (cfg.tetherStatusKnown ? (cfg.isTethered ? "yes" : "no") : "unknown") + "\n");
+        result.append("Wifi Tether status: " + (cfg.tetherWifiStatusKnown ? (cfg.isWifiTethered ? "yes" : "no") : "unknown") + "\n");
+        result.append("Bluetooth Tether status: " + (cfg.tetherBluetoothStatusKnown ? (cfg.isBluetoothTethered ? "yes" : "no") : "unknown") + "\n");
+        result.append("Usb Tether status: " + (cfg.tetherUsbStatusKnown ? (cfg.isUsbTethered ? "yes" : "no") : "unknown") + "\n");
         result.append("Roam status: " + (cfg.isRoaming ? "yes" : "no") + "\n");
         result.append("IPv4 subnet: " + cfg.lanMaskV4 + "\n");
         result.append("IPv6 subnet: " + cfg.lanMaskV6 + "\n");
