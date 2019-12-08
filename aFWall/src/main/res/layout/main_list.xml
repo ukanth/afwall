@@ -73,7 +73,7 @@
                 android:visibility="gone"></CheckBox>
 
             <CheckBox
-                android:id="@+id/itemcheck_bluetooth"
+                android:id="@+id/itemcheck_tether"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:buttonTint="@color/list_checkbox"
@@ -87,9 +87,7 @@
                 android:buttonTint="@color/list_checkbox"
                 android:padding="0px"
                 android:visibility="gone"></CheckBox>
-
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/itemtext"
