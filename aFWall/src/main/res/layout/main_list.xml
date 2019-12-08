@@ -38,6 +38,7 @@
                 android:id="@+id/itemcheck_lan"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
                 android:padding="0px"
                 android:visibility="gone"></CheckBox>
 
@@ -45,18 +46,21 @@
                 android:id="@+id/itemcheck_wifi"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
                 android:padding="0px"></CheckBox>
 
             <CheckBox
                 android:id="@+id/itemcheck_3g"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
                 android:padding="0px"></CheckBox>
 
             <CheckBox
                 android:id="@+id/itemcheck_roam"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
                 android:padding="0px"
                 android:visibility="gone"></CheckBox>
 
@@ -64,6 +68,7 @@
                 android:id="@+id/itemcheck_vpn"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
                 android:padding="0px"
                 android:visibility="gone"></CheckBox>
 
@@ -71,6 +76,7 @@
                 android:id="@+id/itemcheck_bluetooth"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
                 android:padding="0px"
                 android:visibility="gone"></CheckBox>
 
@@ -78,6 +84,7 @@
                 android:id="@+id/itemcheck_tor"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
                 android:padding="0px"
                 android:visibility="gone"></CheckBox>
 
