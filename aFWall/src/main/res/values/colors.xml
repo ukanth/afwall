@@ -12,6 +12,7 @@
 	<color name="menu">#ffffffff</color>
 
 	<color name="checkbox">#ffd740</color>
+	<color name="list_checkbox">#a4a4a4</color>
 
 	<color name="black">#ff000000</color>
 	<color name="widget_color1">#FFFF4040</color>

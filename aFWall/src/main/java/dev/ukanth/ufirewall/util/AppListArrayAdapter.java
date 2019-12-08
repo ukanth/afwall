@@ -128,13 +128,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }
 
         final int id = holder.app.uid;
-        holder.text.setOnClickListener(v -> {
-            Intent intent = new Intent(context, AppDetailActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("package", holder.app.pkgName);
-            intent.putExtra("appid", id);
-            context.startActivity(intent);
-        });
+        holder.icon.setOnClickListener(v -> StartAppDetailActivityIntent(v,holder,id));
+        holder.text.setOnClickListener(v -> StartAppDetailActivityIntent(v,holder,id));
+
 
         ApplicationInfo info = holder.app.appinfo;
         if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -194,6 +190,14 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         addEventListenter(holder);
 
         return convertView;
+    }
+
+    private void StartAppDetailActivityIntent(View v, AppStateHolder holder, Integer id) {
+        Intent intent = new Intent(context, AppDetailActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("package", holder.app.pkgName);
+        intent.putExtra("appid", id);
+        context.startActivity(intent);
     }
 
     private void addEventListenter(final AppStateHolder holder) {

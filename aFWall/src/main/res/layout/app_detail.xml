@@ -15,8 +15,8 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="58.69998dip"
-        android:paddingLeft="10.0dip" >
+        android:layout_height="wrap_content"
+        android:paddingLeft="10.0dip">
 
         <ImageView
             android:id="@+id/app_icon"
@@ -30,7 +30,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1.0"
             android:orientation="vertical"
-            android:paddingLeft="10.0dip" >
+            android:paddingLeft="10.0dip">
 
             <TextView
                 android:id="@+id/app_title"

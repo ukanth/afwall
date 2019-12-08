@@ -1,79 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
         android:baselineAligned="true"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp" >
+        android:columnCount="2"
+        android:horizontalSpacing="0dip"
+        android:numColumns="auto_fit"
+        android:rowCount="2"
+        android:verticalSpacing="0dip">
 
         <ImageView
             android:id="@+id/itemicon"
-            android:layout_width="32dp"
-            android:layout_height="32dp">
-        </ImageView>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_rowSpan="2"
+            android:layout_column="0"
+            android:layout_gravity="center|left"
+            android:layout_margin="16dp"></ImageView>
 
-        <CheckBox
-            android:id="@+id/itemcheck_lan"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px"
-            android:visibility="gone">
-        </CheckBox>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_gravity="left|center_vertical"
+            android:baselineAligned="true"
+            android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/itemcheck_wifi"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px" >
-        </CheckBox>
+            <CheckBox
+                android:id="@+id/itemcheck_lan"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
+                android:padding="0px"
+                android:visibility="gone"></CheckBox>
 
-        <CheckBox
-            android:id="@+id/itemcheck_3g"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px" >
-        </CheckBox>
+            <CheckBox
+                android:id="@+id/itemcheck_wifi"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
+                android:padding="0px"></CheckBox>
 
-        <CheckBox
-            android:id="@+id/itemcheck_roam"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px"
-            android:visibility="gone" >
-        </CheckBox>
+            <CheckBox
+                android:id="@+id/itemcheck_3g"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
+                android:padding="0px"></CheckBox>
 
-         <CheckBox
-            android:id="@+id/itemcheck_vpn"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px" 
-            android:visibility="gone">
-        </CheckBox>
+            <CheckBox
+                android:id="@+id/itemcheck_roam"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
+                android:padding="0px"
+                android:visibility="gone"></CheckBox>
 
-        <CheckBox
-            android:id="@+id/itemcheck_tether"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px"
-            android:visibility="gone">
-        </CheckBox>
+            <CheckBox
+                android:id="@+id/itemcheck_vpn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
+                android:padding="0px"
+                android:visibility="gone"></CheckBox>
 
-        <CheckBox
-            android:id="@+id/itemcheck_tor"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:padding="0px"
-            android:visibility="gone">
-        </CheckBox>
+            <CheckBox
+                android:id="@+id/itemcheck_tether"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
+                android:padding="0px"
+                android:visibility="gone"></CheckBox>
+
+            <CheckBox
+                android:id="@+id/itemcheck_tor"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:buttonTint="@color/list_checkbox"
+                android:padding="0px"
+                android:visibility="gone"></CheckBox>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/itemtext"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:textIsSelectable="false"
-           >
-        </TextView>
-    </LinearLayout>
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginLeft="5dp"
+            android:gravity="fill"
+            android:textIsSelectable="false"></TextView>
+    </GridLayout>
+</LinearLayout>
+
