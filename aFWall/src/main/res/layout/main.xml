@@ -192,7 +192,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@drawable/list_divider"
-                android:dividerHeight="5px"
+                android:dividerHeight="1px"
                 android:fastScrollEnabled="true"></ListView>
 
 

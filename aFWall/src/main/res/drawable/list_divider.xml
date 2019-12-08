@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid
+    <!--<solid
         android:width="1dp"
-        android:color="#424242"
+        android:color="?attr/tint"
         android:dashWidth="1dp"
-        android:dashGap="1dp" />
+        android:dashGap="1dp" />-->
+    <gradient
+        android:angle="180"
+        android:startColor="#00000000"
+        android:centerColor="#FCEBD3"
+        android:endColor="#00000000"/>
 </shape>
 
     <!--
     <shape xmlns:android="http://schemas.android.com/apk/res/android"
         android:shape="rectangle">
-        <gradient
-            android:angle="180"
-            android:startColor="#00000000"
-            android:centerColor="#FFF29C"
-            android:endColor="#00000000"/>
+
     </shape>-->
