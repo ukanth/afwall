@@ -144,12 +144,12 @@
                 android:visibility="gone"></ImageView>
 
             <ImageView
-                android:id="@+id/img_bluetooth"
+                android:id="@+id/img_tether"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
                 android:clickable="true"
-                android:contentDescription="@string/bluetooth_profile"
-                android:src="@drawable/ic_bluetooth"
+                android:contentDescription="@string/tether_profile"
+                android:src="@drawable/ic_tether"
                 android:visibility="gone"/>
 
             <ImageView

@@ -53,7 +53,7 @@
         </CheckBox>
 
         <CheckBox
-            android:id="@+id/itemcheck_bluetooth"
+            android:id="@+id/itemcheck_tether"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:padding="0px"

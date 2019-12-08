@@ -80,7 +80,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String REG_DO = "ipurchaseddonatekey";
     private static final String ENABLE_ROAM = "enableRoam";
     private static final String ENABLE_VPN = "enableVPN";
-    private static final String ENABLE_BLUETOOTH = "enableBluetooth";
+    private static final String ENABLE_TETHER = "enableTether";
     private static final String ENABLE_LAN = "enableLAN";
     private static final String ENABLE_TOR = "enableTor";
     private static final String ENABLE_IPV6 = "enableIPv6";
@@ -685,12 +685,12 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static boolean enableBluetooth() {
-        return gPrefs.getBoolean(ENABLE_BLUETOOTH, false);
+    public static boolean enableTether() {
+        return gPrefs.getBoolean(ENABLE_TETHER, false);
     }
 
-    public static boolean enableBluetooth(boolean val) {
-        gPrefs.edit().putBoolean(ENABLE_BLUETOOTH, val).commit();
+    public static boolean enableTether(boolean val) {
+        gPrefs.edit().putBoolean(ENABLE_TETHER, val).commit();
         return val;
     }
 

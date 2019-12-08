@@ -569,10 +569,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             hideColumns(R.id.img_vpn);
         }
-        if (G.enableBluetooth()) {
-            addColumns(R.id.img_bluetooth);
+        if (G.enableTether()) {
+            addColumns(R.id.img_tether);
         } else {
-            hideColumns(R.id.img_bluetooth);
+            hideColumns(R.id.img_tether);
         }
 
         if (!Api.isMobileNetworkSupported(getApplicationContext())) {
@@ -1550,7 +1550,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.img_vpn:
                 selectActionConfirmation(v.getId());
                 break;
-            case R.id.img_bluetooth:
+            case R.id.img_tether:
                 selectActionConfirmation(v.getId());
                 break;
             case R.id.img_lan:
@@ -1641,7 +1641,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    private void selectAllBluetooth(boolean flag) {
+    private void selectAlltether(boolean flag) {
         if (this.listview == null) {
             this.listview = (ListView) this.findViewById(R.id.listview);
         }
@@ -1651,7 +1651,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (item = 0; item < count; item++) {
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
-                    data.selected_bluetooth = flag;
+                    data.selected_tether = flag;
                     //addToQueue(data);
                 }
                 setDirty(true);
@@ -1683,8 +1683,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         case R.id.img_vpn:
                             data.selected_vpn = !data.selected_vpn;
                             break;
-                        case R.id.img_bluetooth:
-                            data.selected_bluetooth = !data.selected_bluetooth;
+                        case R.id.img_tether:
+                            data.selected_tether = !data.selected_tether;
                             break;
                         case R.id.img_lan:
                             data.selected_lan = !data.selected_lan;
@@ -1715,7 +1715,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     data.selected_3g = !data.selected_3g;
                     data.selected_roam = !data.selected_roam;
                     data.selected_vpn = !data.selected_vpn;
-                    data.selected_bluetooth = !data.selected_bluetooth;
+                    data.selected_tether = !data.selected_tether;
                     data.selected_lan = !data.selected_lan;
                     data.selected_tor = !data.selected_tor;
                     //addToQueue(data);
@@ -1758,7 +1758,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 data.selected_3g = false;
                 data.selected_roam = false;
                 data.selected_vpn = false;
-                data.selected_bluetooth = false;
+                data.selected_tether = false;
                 data.selected_lan = false;
                 data.selected_tor = false;
                 //addToQueue(data);
@@ -1920,9 +1920,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         dialog.setTitle(text + getString(R.string.vpn));
                                         selectAllVPN(true);
                                         break;
-                                    case R.id.img_bluetooth:
-                                        dialog.setTitle(text + getString(R.string.bluetooth));
-                                        selectAllBluetooth(true);
+                                    case R.id.img_tether:
+                                        dialog.setTitle(text + getString(R.string.tether));
+                                        selectAlltether(true);
                                         break;
                                     case R.id.img_lan:
                                         dialog.setTitle(text + getString(R.string.lan));
@@ -1948,8 +1948,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     case R.id.img_vpn:
                                         dialog.setTitle(text + getString(R.string.vpn));
                                         break;
-                                    case R.id.img_bluetooth:
-                                        dialog.setTitle(text + getString(R.string.bluetooth));
+                                    case R.id.img_tether:
+                                        dialog.setTitle(text + getString(R.string.tether));
                                         break;
                                     case R.id.img_lan:
                                         dialog.setTitle(text + getString(R.string.lan));
@@ -1979,9 +1979,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         dialog.setTitle(text + getString(R.string.vpn));
                                         selectAllVPN(false);
                                         break;
-                                    case R.id.img_bluetooth:
-                                        dialog.setTitle(text + getString(R.string.bluetooth));
-                                        selectAllBluetooth(false);
+                                    case R.id.img_tether:
+                                        dialog.setTitle(text + getString(R.string.tether));
+                                        selectAlltether(false);
                                         break;
                                     case R.id.img_lan:
                                         dialog.setTitle(text + getString(R.string.lan));

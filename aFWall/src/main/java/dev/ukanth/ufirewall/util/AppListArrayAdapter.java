@@ -67,8 +67,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             if (G.enableVPN()) {
                 holder.box_vpn = addSupport(convertView, true, R.id.itemcheck_vpn);
             }
-            if (G.enableBluetooth()) {
-                holder.box_bluetooth = addSupport(convertView, true, R.id.itemcheck_bluetooth);
+            if (G.enableTether()) {
+                holder.box_tether = addSupport(convertView, true, R.id.itemcheck_tether);
             }
             if (G.enableLAN()) {
                 holder.box_lan = addSupport(convertView, true, R.id.itemcheck_lan);
@@ -100,8 +100,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             if (G.enableVPN()) {
                 addSupport(convertView, false, R.id.itemcheck_vpn);
             }
-            if (G.enableBluetooth()) {
-                addSupport(convertView, false, R.id.itemcheck_bluetooth);
+            if (G.enableTether()) {
+                addSupport(convertView, false, R.id.itemcheck_tether);
             }
             if (G.enableLAN()) {
                 addSupport(convertView, false, R.id.itemcheck_lan);
@@ -147,7 +147,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
         if (!G.disableIcons()) {
             if(holder.app.pkgName.startsWith("dev.afwall.special.")) {
-                holder.icon.setImageDrawable(convertView.getContext().getResources().getDrawable(R.drawable.ic_unknown));
+                holder.icon.setImageDrawable(context.getDrawable(R.drawable.ic_unknown));
             } else {
                 holder.icon.setImageDrawable(holder.app.cached_icon);
                 if (!holder.app.icon_loaded && info != null) {
@@ -181,8 +181,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         if (G.enableVPN()) {
             holder.box_vpn = addSupport(holder.box_vpn, holder.app, 1);
         }
-        if (G.enableBluetooth()) {
-            holder.box_bluetooth = addSupport(holder.box_bluetooth, holder.app, 6);
+        if (G.enableTether()) {
+            holder.box_tether = addSupport(holder.box_tether, holder.app, 6);
         }
         if (G.enableLAN()) {
             holder.box_lan = addSupport(holder.box_lan, holder.app, 2);
@@ -283,13 +283,13 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             });
         }
 
-        if (holder.box_bluetooth != null) {
-            holder.box_bluetooth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        if (holder.box_tether != null) {
+            holder.box_tether.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_bluetooth != isChecked) {
-                            holder.app.selected_bluetooth = isChecked;
+                        if (holder.app.selected_tether != isChecked) {
+                            holder.app.selected_tether = isChecked;
                             MainActivity.dirty = true;
                             notifyDataSetChanged();
                             //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
@@ -329,7 +329,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     check.setChecked(app.selected_vpn);
                     break;
                 case 6:
-                    check.setChecked(app.selected_bluetooth);
+                    check.setChecked(app.selected_tether);
                     break;
                 case 2:
                     check.setChecked(app.selected_lan);
@@ -364,7 +364,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         private CheckBox box_3g;
         private CheckBox box_roam;
         private CheckBox box_vpn;
-        private CheckBox box_bluetooth;
+        private CheckBox box_tether;
         private CheckBox box_tor;
         private TextView text;
         private ImageView icon;

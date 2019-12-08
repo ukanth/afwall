@@ -177,7 +177,7 @@ public final class Api {
     public static final String PREF_WIFI_PKG_UIDS = "AllowedPKGWifi_UIDS";
     public static final String PREF_ROAMING_PKG_UIDS = "AllowedPKGRoaming_UIDS";
     public static final String PREF_VPN_PKG_UIDS = "AllowedPKGVPN_UIDS";
-    public static final String PREF_BLUETOOTH_PKG_UIDS = "AllowedPKGBluetooth_UIDS";
+    public static final String PREF_TETHER_PKG_UIDS = "AllowedPKGTether_UIDS";
     public static final String PREF_LAN_PKG_UIDS = "AllowedPKGLAN_UIDS";
     public static final String PREF_TOR_PKG_UIDS = "AllowedPKGTOR_UIDS";
     public static final String PREF_CUSTOMSCRIPT = "CustomScript";
@@ -200,18 +200,18 @@ public final class Api {
     private static final int ROAM_EXPORT = 2;
     // Messages
     private static final int VPN_EXPORT = 3;
-    private static final int BLUETOOTH_EXPORT = 6;
+    private static final int TETHER_EXPORT = 6;
     private static final int LAN_EXPORT = 4;
     private static final int TOR_EXPORT = 5;
     private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
     private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
     private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
-    private static final String ITFS_BLUETOOTH[] = InterfaceTracker.ITFS_BLUETOOTH;
+    private static final String ITFS_TETHER[] = InterfaceTracker.ITFS_TETHER;
     // iptables can exit with status 4 if two processes tried to update the same table
     private static final int IPTABLES_TRY_AGAIN = 4;
     private static final String dynChains[] = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String natChains[] = {"", "-tor-check", "-tor-filter"};
-    private static final String staticChains[] = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-bluetooth"};
+    private static final String staticChains[] = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
     /**
      * @brief Special user/group IDs that aren't associated with
      * any particular app.
@@ -562,7 +562,7 @@ public final class Api {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
             }
 
-            // TODO: Bluetooth and Usb tether
+            // TODO: tether and Usb tether
 
             if (G.enableLAN() && !cfg.isWifiTethered) {
                 if (ipv6) {
@@ -777,9 +777,9 @@ public final class Api {
                 }
             }
 
-            if (G.enableBluetooth()) {
-                for (final String itf : ITFS_BLUETOOTH) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-bluetooth");
+            if (G.enableTether()) {
+                for (final String itf : ITFS_TETHER) {
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-tether");
                 }
             }
 
@@ -829,7 +829,7 @@ public final class Api {
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-home" + " -p udp --dport 53" + " -j RETURN");
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p udp --dport 53" + " -j RETURN");
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p udp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-bluetooth" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-tether" + " -p udp --dport 53" + " -j RETURN");
                 }
             }
 
@@ -840,7 +840,7 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.wifiList, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
-            addRulesForUidlist(cmds, ruleDataSet.bluetoothList, AFWALL_CHAIN_NAME + "-bluetooth", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.tetherList, AFWALL_CHAIN_NAME + "-tether", whitelist);
 
 
             if (G.enableTor()) {
@@ -945,7 +945,7 @@ public final class Api {
         final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
         final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
         final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
-        final String savedPkg_bluetooth_uid = G.pPrefs.getString(PREF_BLUETOOTH_PKG_UIDS, "");
+        final String savedPkg_tether_uid = G.pPrefs.getString(PREF_TETHER_PKG_UIDS, "");
         final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
         final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
@@ -953,7 +953,7 @@ public final class Api {
                 getListFromPref(savedPkg_3g_uid),
                 getListFromPref(savedPkg_roam_uid),
                 getListFromPref(savedPkg_vpn_uid),
-                getListFromPref(savedPkg_bluetooth_uid),
+                getListFromPref(savedPkg_tether_uid),
                 getListFromPref(savedPkg_lan_uid),
                 getListFromPref(savedPkg_tor_uid));
 
@@ -1044,7 +1044,7 @@ public final class Api {
             HashSet newpkg_3g = new HashSet();
             HashSet newpkg_roam = new HashSet();
             HashSet newpkg_vpn = new HashSet();
-            HashSet newpkg_bluetooth = new HashSet();
+            HashSet newpkg_tether = new HashSet();
             HashSet newpkg_lan = new HashSet();
             HashSet newpkg_tor = new HashSet();
 
@@ -1074,11 +1074,11 @@ public final class Api {
                             if (!store) newpkg_vpn.add(-apps.get(i).uid);
                         }
                     }
-                    if (G.enableBluetooth()) {
-                        if (apps.get(i).selected_bluetooth) {
-                            newpkg_bluetooth.add(apps.get(i).uid);
+                    if (G.enableTether()) {
+                        if (apps.get(i).selected_tether) {
+                            newpkg_tether.add(apps.get(i).uid);
                         } else {
-                            if (!store) newpkg_bluetooth.add(-apps.get(i).uid);
+                            if (!store) newpkg_tether.add(-apps.get(i).uid);
                         }
                     }
                     if (G.enableLAN()) {
@@ -1102,7 +1102,7 @@ public final class Api {
             String data = android.text.TextUtils.join("|", newpkg_3g);
             String roam = android.text.TextUtils.join("|", newpkg_roam);
             String vpn = android.text.TextUtils.join("|", newpkg_vpn);
-            String bluetooth = android.text.TextUtils.join("|", newpkg_bluetooth);
+            String tether = android.text.TextUtils.join("|", newpkg_tether);
             String lan = android.text.TextUtils.join("|", newpkg_lan);
             String tor = android.text.TextUtils.join("|", newpkg_tor);
             // save the new list of UIDs
@@ -1113,7 +1113,7 @@ public final class Api {
                 edit.putString(PREF_3G_PKG_UIDS, data);
                 edit.putString(PREF_ROAMING_PKG_UIDS, roam);
                 edit.putString(PREF_VPN_PKG_UIDS, vpn);
-                edit.putString(PREF_BLUETOOTH_PKG_UIDS, bluetooth);
+                edit.putString(PREF_TETHER_PKG_UIDS, tether);
                 edit.putString(PREF_LAN_PKG_UIDS, lan);
                 edit.putString(PREF_TOR_PKG_UIDS, tor);
                 edit.commit();
@@ -1122,7 +1122,7 @@ public final class Api {
                         new ArrayList<>(newpkg_3g),
                         new ArrayList<>(newpkg_roam),
                         new ArrayList<>(newpkg_vpn),
-                        new ArrayList<>(newpkg_bluetooth),
+                        new ArrayList<>(newpkg_tether),
                         new ArrayList<>(newpkg_lan),
                         new ArrayList<>(newpkg_tor));
             }
@@ -1432,7 +1432,7 @@ public final class Api {
         String savedPkg_3g_uid = prefs.getString(PREF_3G_PKG_UIDS, "");
         String savedPkg_roam_uid = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
         String savedPkg_vpn_uid = prefs.getString(PREF_VPN_PKG_UIDS, "");
-        String savedPkg_bluetooth_uid = prefs.getString(PREF_BLUETOOTH_PKG_UIDS, "");
+        String savedPkg_tether_uid = prefs.getString(PREF_TETHER_PKG_UIDS, "");
         String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
         String savedPkg_tor_uid = prefs.getString(PREF_TOR_PKG_UIDS, "");
 
@@ -1440,7 +1440,7 @@ public final class Api {
         List<Integer> selected_3g;
         List<Integer> selected_roam = new ArrayList<>();
         List<Integer> selected_vpn = new ArrayList<>();
-        List<Integer> selected_bluetooth = new ArrayList<>();
+        List<Integer> selected_tether = new ArrayList<>();
         List<Integer> selected_lan = new ArrayList<>();
         List<Integer> selected_tor = new ArrayList<>();
 
@@ -1454,8 +1454,8 @@ public final class Api {
         if (G.enableVPN()) {
             selected_vpn = getListFromPref(savedPkg_vpn_uid);
         }
-        if (G.enableBluetooth()) {
-            selected_bluetooth = getListFromPref(savedPkg_bluetooth_uid);
+        if (G.enableTether()) {
+            selected_tether = getListFromPref(savedPkg_tether_uid);
         }
         if (G.enableLAN()) {
             selected_lan = getListFromPref(savedPkg_lan_uid);
@@ -1563,8 +1563,8 @@ public final class Api {
                 if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
                     app.selected_vpn = true;
                 }
-                if (G.enableBluetooth() && !app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
-                    app.selected_bluetooth = true;
+                if (G.enableTether() && !app.selected_tether && Collections.binarySearch(selected_tether, app.uid) >= 0) {
+                    app.selected_tether = true;
                 }
                 if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                     app.selected_lan = true;
@@ -1593,8 +1593,8 @@ public final class Api {
                     if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
                         app.selected_vpn = true;
                     }
-                    if (G.enableBluetooth() && !app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
-                        app.selected_bluetooth = true;
+                    if (G.enableTether() && !app.selected_tether && Collections.binarySearch(selected_tether, app.uid) >= 0) {
+                        app.selected_tether = true;
                     }
                     if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                         app.selected_lan = true;
@@ -1631,8 +1631,8 @@ public final class Api {
                     if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
                         app.selected_vpn = true;
                     }
-                    if (G.enableBluetooth() && !app.selected_bluetooth && Collections.binarySearch(selected_bluetooth, app.uid) >= 0) {
-                        app.selected_bluetooth = true;
+                    if (G.enableTether() && !app.selected_tether && Collections.binarySearch(selected_tether, app.uid) >= 0) {
+                        app.selected_tether = true;
                     }
                     if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
                         app.selected_lan = true;
@@ -2360,7 +2360,7 @@ public final class Api {
         String savedPks_3g = prefs.getString(PREF_3G_PKG_UIDS, "");
         String savedPks_roam = prefs.getString(PREF_ROAMING_PKG_UIDS, "");
         String savedPks_vpn = prefs.getString(PREF_VPN_PKG_UIDS, "");
-        String savedPks_bluetooth = prefs.getString(PREF_BLUETOOTH_PKG_UIDS, "");
+        String savedPks_tether = prefs.getString(PREF_TETHER_PKG_UIDS, "");
         String savedPks_lan = prefs.getString(PREF_LAN_PKG_UIDS, "");
         String savedPks_tor = prefs.getString(PREF_TOR_PKG_UIDS, "");
         boolean wChanged, rChanged, gChanged, vChanged, bChanged, lChanged, tChanged;
@@ -2372,8 +2372,8 @@ public final class Api {
         rChanged = removePackageRef(ctx, savedPks_roam, pkgRemoved, editor, PREF_ROAMING_PKG_UIDS);
         //  look for the removed application in vpn list
         vChanged = removePackageRef(ctx, savedPks_vpn, pkgRemoved, editor, PREF_VPN_PKG_UIDS);
-        //  look for the removed application in bluetooth list
-        bChanged = removePackageRef(ctx, savedPks_bluetooth, pkgRemoved, editor, PREF_BLUETOOTH_PKG_UIDS);
+        //  look for the removed application in tether list
+        bChanged = removePackageRef(ctx, savedPks_tether, pkgRemoved, editor, PREF_TETHER_PKG_UIDS);
         //  look for the removed application in lan list
         lChanged = removePackageRef(ctx, savedPks_lan, pkgRemoved, editor, PREF_LAN_PKG_UIDS);
         //  look for the removed application in tor list
@@ -2539,8 +2539,8 @@ public final class Api {
                 if (apps.get(i).selected_vpn) {
                     updateExportPackage(exportMap, apps.get(i).pkgName, VPN_EXPORT);
                 }
-                if (apps.get(i).selected_bluetooth) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, BLUETOOTH_EXPORT);
+                if (apps.get(i).selected_tether) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, TETHER_EXPORT);
                 }
                 if (apps.get(i).selected_lan) {
                     updateExportPackage(exportMap, apps.get(i).pkgName, LAN_EXPORT);
@@ -2638,7 +2638,7 @@ public final class Api {
         updatePackage(ctx, prefs.getString(PREF_3G_PKG_UIDS, ""), exportMap, DATA_EXPORT);
         updatePackage(ctx, prefs.getString(PREF_ROAMING_PKG_UIDS, ""), exportMap, ROAM_EXPORT);
         updatePackage(ctx, prefs.getString(PREF_VPN_PKG_UIDS, ""), exportMap, VPN_EXPORT);
-        updatePackage(ctx, prefs.getString(PREF_BLUETOOTH_PKG_UIDS, ""), exportMap, BLUETOOTH_EXPORT);
+        updatePackage(ctx, prefs.getString(PREF_TETHER_PKG_UIDS, ""), exportMap, TETHER_EXPORT);
         updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
         updatePackage(ctx, prefs.getString(PREF_TOR_PKG_UIDS, ""), exportMap, TOR_EXPORT);
         return exportMap;
@@ -2723,7 +2723,7 @@ public final class Api {
         final StringBuilder data_uids = new StringBuilder();
         final StringBuilder roam_uids = new StringBuilder();
         final StringBuilder vpn_uids = new StringBuilder();
-        final StringBuilder bluetooth_uids = new StringBuilder();
+        final StringBuilder tether_uids = new StringBuilder();
         final StringBuilder lan_uids = new StringBuilder();
         final StringBuilder tor_uids = new StringBuilder();
 
@@ -2798,15 +2798,15 @@ public final class Api {
                             }
                         }
                         break;
-                    case BLUETOOTH_EXPORT:
-                        if (bluetooth_uids.length() != 0) {
-                            bluetooth_uids.append('|');
+                    case TETHER_EXPORT:
+                        if (tether_uids.length() != 0) {
+                            tether_uids.append('|');
                         }
                         if (pkgName.startsWith("dev.afwall.special")) {
-                            bluetooth_uids.append(specialApps.get(pkgName));
+                            tether_uids.append(specialApps.get(pkgName));
                         } else {
                             try {
-                                bluetooth_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
+                                tether_uids.append(pm.getApplicationInfo(pkgName, 0).uid);
                             } catch (NameNotFoundException e) {
 
                             }
@@ -2850,7 +2850,7 @@ public final class Api {
         edit.putString(PREF_3G_PKG_UIDS, data_uids.toString());
         edit.putString(PREF_ROAMING_PKG_UIDS, roam_uids.toString());
         edit.putString(PREF_VPN_PKG_UIDS, vpn_uids.toString());
-        edit.putString(PREF_BLUETOOTH_PKG_UIDS, bluetooth_uids.toString());
+        edit.putString(PREF_TETHER_PKG_UIDS, tether_uids.toString());
         edit.putString(PREF_LAN_PKG_UIDS, lan_uids.toString());
         edit.putString(PREF_TOR_PKG_UIDS, tor_uids.toString());
 
@@ -3129,7 +3129,7 @@ public final class Api {
         final String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
         final String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
         final String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
-        final String savedPkg_bluetooth_uid = G.pPrefs.getString(PREF_BLUETOOTH_PKG_UIDS, "");
+        final String savedPkg_tether_uid = G.pPrefs.getString(PREF_TETHER_PKG_UIDS, "");
         final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
         final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
@@ -3137,7 +3137,7 @@ public final class Api {
                 getListFromPref(savedPkg_3g_uid),
                 getListFromPref(savedPkg_roam_uid),
                 getListFromPref(savedPkg_vpn_uid),
-                getListFromPref(savedPkg_bluetooth_uid),
+                getListFromPref(savedPkg_tether_uid),
                 getListFromPref(savedPkg_lan_uid),
                 getListFromPref(savedPkg_tor_uid));
         return dataSet;
@@ -3532,17 +3532,17 @@ public final class Api {
             List<Integer> selected_3g = getListFromPref(prefs.getString(PREF_3G_PKG_UIDS, ""));
             List<Integer> selected_roam = new ArrayList<>();
             List<Integer> selected_vpn = new ArrayList<>();
-            List<Integer> selected_bluetooth = new ArrayList<>();
+            List<Integer> selected_tether = new ArrayList<>();
             if (G.enableRoam()) {
                 selected_roam = getListFromPref(prefs.getString(PREF_ROAMING_PKG_UIDS, ""));
             }
             if (G.enableVPN()) {
                 selected_vpn = getListFromPref(prefs.getString(PREF_VPN_PKG_UIDS, ""));
             }
-            if (G.enableBluetooth()) {
-                selected_bluetooth = getListFromPref(prefs.getString(PREF_BLUETOOTH_PKG_UIDS, ""));
+            if (G.enableTether()) {
+                selected_tether = getListFromPref(prefs.getString(PREF_TETHER_PKG_UIDS, ""));
             }
-            return (selected_wifi.contains(uid) && selected_3g.contains(uid)) || selected_roam.contains(uid) || selected_vpn.contains(uid) || selected_bluetooth.contains(uid);
+            return (selected_wifi.contains(uid) && selected_3g.contains(uid)) || selected_roam.contains(uid) || selected_vpn.contains(uid) || selected_tether.contains(uid);
         } catch (NameNotFoundException e) {
             return false;
         }
@@ -3581,17 +3581,17 @@ public final class Api {
         List<Integer> lanList;
         List<Integer> roamList;
         List<Integer> vpnList;
-        List<Integer> bluetoothList;
+        List<Integer> tetherList;
         List<Integer> torList;
 
         RuleDataSet(List<Integer> uidsWifi, List<Integer> uids3g,
-                    List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsBluetooth,
+                    List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsTether,
                     List<Integer> uidsLAN, List<Integer> uidsTor) {
             this.wifiList = uidsWifi;
             this.dataList = uids3g;
             this.roamList = uidsRoam;
             this.vpnList = uidsVPN;
-            this.bluetoothList = uidsBluetooth;
+            this.tetherList = uidsTether;
             this.lanList = uidsLAN;
             this.torList = uidsTor;
         }
@@ -3604,7 +3604,7 @@ public final class Api {
             builder.append(lanList != null ? android.text.TextUtils.join(",", lanList) : "");
             builder.append(roamList != null ? android.text.TextUtils.join(",", roamList) : "");
             builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList) : "");
-            builder.append(bluetoothList != null ? android.text.TextUtils.join(",", bluetoothList) : "");
+            builder.append(tetherList != null ? android.text.TextUtils.join(",", tetherList) : "");
             builder.append(torList != null ? android.text.TextUtils.join(",", torList) : "");
             return builder.toString().trim();
         }
@@ -3691,9 +3691,9 @@ public final class Api {
          */
         public boolean selected_vpn;
         /**
-         * indicates if this application is selected for bluetooth
+         * indicates if this application is selected for tether
          */
-        public boolean selected_bluetooth;
+        public boolean selected_tether;
         /**
          * indicates if this application is selected for lan
          */

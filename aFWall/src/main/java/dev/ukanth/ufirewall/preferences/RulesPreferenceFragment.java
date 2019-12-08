@@ -176,7 +176,7 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
                 G.enableRoam(false);
                 G.enableLAN(false);
                 G.enableVPN(false);
-                G.enableBluetooth(false);
+                G.enableTether(false);
                 G.enableTor(false);
 
             }
