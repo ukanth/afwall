@@ -158,6 +158,8 @@
     <string name="log_disabled">Log disabled</string>
     <string name="log_was_enabled">Log enabled</string>
     <string name="log_was_disabled">Log disabled</string>
+    <string name="log_target_success">Log target change succesful</string>
+    <string name="log_target_fail">Log target change failed</string>
     <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>
@@ -621,4 +623,6 @@
     <string name="from">From</string>
     <string name="legend_action">Actions</string>
     <string name="clear_all">Clear All</string>
+
+    <string name="log_target">Log Target</string>
 </resources>

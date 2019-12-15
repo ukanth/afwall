@@ -116,6 +116,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String ACTIVE_NOTIFICATION = "activeNotification";
     private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
     private static final String LOG_TARGET = "logTarget";
+    private static final String LOG_TARGETS = "logTargets";
     private static final String SHOW_HOST = "showHostName";
     private static final String APP_VERSION = "appVersion";
     private static final String DNS_PROXY = "dns_value";
@@ -606,6 +607,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getBoolean(PROFILE_SWITCH, false);
     }
 
+    public static String logTargets() {
+        return gPrefs.getString(LOG_TARGETS, null);
+    }
+
+    public static String logTargets(String val) {
+        gPrefs.edit().putString(LOG_TARGETS, val).commit();
+        return val;
+    }
+
     public static String logTarget() {
         return gPrefs.getString(LOG_TARGET, "");
     }
@@ -614,6 +624,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         gPrefs.edit().putString(LOG_TARGET, val).commit();
         return val;
     }
+
 
     public static void saveSelectedFilter(int i) {
         gPrefs.edit().putInt(SELECTED_FILTER, i).commit();

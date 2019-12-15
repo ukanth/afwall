@@ -1,17 +1,20 @@
 package dev.ukanth.ufirewall.preferences;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.stericson.roottools.RootTools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,9 +36,34 @@ public class LogPreferenceFragment extends PreferenceFragment {
             populateLogMessage(findPreference("logDmesg"));
             populateAppList(findPreference("block_filter"));
             setupLogHostname(findPreference("showHostName"));
+            populateLogTarget(findPreference("logTarget"));
         } catch (ClassCastException c) {
             Log.i(Api.TAG, c.getMessage());
             Api.toast((Context) getActivity(), getString(R.string.exception_pref));
+        }
+    }
+
+    private void populateLogTarget(Preference logTarget) {
+        if (logTarget == null) {
+            return;
+        }
+        Context ctx = (Context) getActivity();
+        if(G.logTargets() == null) {
+            Api.probeLogTarget(ctx);
+
+            String [] items = G.logTargets().split(",");
+            ListPreference listPreference = (ListPreference) logTarget;
+            if (listPreference != null) {
+                listPreference.setEntries(items);
+                listPreference.setEntryValues(items);
+            }
+        } else{
+            String [] items = G.logTargets().split(",");
+            ListPreference listPreference = (ListPreference) logTarget;
+            if (listPreference != null) {
+                listPreference.setEntries(items);
+                listPreference.setEntryValues(items);
+            }
         }
     }
 

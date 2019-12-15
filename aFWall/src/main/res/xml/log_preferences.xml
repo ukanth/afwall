@@ -10,6 +10,22 @@
     <PreferenceCategory
         android:key="logExperimental"
         android:title="@string/exp_prefs_title">
+
+        <ListPreference
+            android:defaultValue="OS"
+            android:summary="%s"
+            android:entries="@array/logDmesgArray"
+            android:entryValues="@array/logDmesgValue"
+            android:key="logDmesg"
+            android:title="@string/log_dmesg"></ListPreference>
+
+        <ListPreference
+            android:defaultValue="LOG"
+            android:summary="%s"
+            android:key="logTarget"
+            android:title="@string/log_target"></ListPreference>
+
+
         <CheckBoxPreference
             android:key="enableLogService"
             android:title="@string/enable_firewall_log_service" />
@@ -29,14 +45,6 @@
             android:summary="@string/showhost_desc"
             android:title="@string/show_host" />
 
-        <ListPreference
-            android:defaultValue="OS"
-            android:summary="%s"
-            android:dependency="enableLogService"
-            android:entries="@array/logDmesgArray"
-            android:entryValues="@array/logDmesgValue"
-            android:key="logDmesg"
-            android:title="@string/log_dmesg"></ListPreference>
 
         <ListPreference
             android:defaultValue="bottom"

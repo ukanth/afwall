@@ -338,16 +338,22 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             }
         }
 
+        if(key.equals("logTarget")) {
+            Api.updateLogRules(ctx, new RootCommand()
+                    .setReopenShell(true)
+                    .setSuccessToast(R.string.log_target_success)
+                    .setFailureToast(R.string.log_target_fail));
+        }
         if (key.equals("enableLogService")) {
             boolean enabled = sharedPreferences.getBoolean(key, false);
             if (enabled) {
-                Api.setLogTarget(ctx, true);
+                //Api.setLogTarget(ctx, true);
                 Intent intent = new Intent(ctx, LogService.class);
                 ctx.stopService(intent);
                 Api.cleanupUid();
                 ctx.startService(intent);
             } else {
-                Api.setLogTarget(ctx, false);
+                //Api.setLogTarget(ctx, false);
                 Intent intent = new Intent(ctx, LogService.class);
                 ctx.stopService(intent);
                 Api.cleanupUid();

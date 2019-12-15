@@ -58,6 +58,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -480,10 +481,10 @@ public final class Api {
         // this can be changed dynamically through the Firewall Logs activity
 
         if (G.enableLogService() && G.logTarget() != null) {
-            if (G.logTarget().equals("LOG")) {
+            if (G.logTarget().trim().equals("LOG")) {
                 //cmds.add("-A " + AFWALL_CHAIN_NAME  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
-            } else if (G.logTarget().equals("NFLOG")) {
+            } else if (G.logTarget().trim().equals("NFLOG")) {
                 //cmds.add("-A " + AFWALL_CHAIN_NAME + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
             }
@@ -2990,7 +2991,27 @@ public final class Api {
         return res;
     }
 
-    public static void setLogTarget(final Context ctx, boolean isEnabled) {
+    /**
+     * Probe log target
+     * @param ctx
+     */
+    public static void probeLogTarget(final Context ctx) {
+        LogProbeCallback cb = new LogProbeCallback();
+        cb.ctx = ctx;
+        if (G.enableIPv6()) {
+            new RootCommand()
+                    .setReopenShell(true)
+                    .setCallback(cb)
+                    .setLogging(true)
+                    .run(ctx, "cat /proc/net/ip6_tables_targets");
+        }
+        new RootCommand()
+                .setReopenShell(true)
+                .setCallback(cb)
+                .setLogging(true)
+                .run(ctx, "cat /proc/net/ip_tables_targets");
+    }
+    /*public static void setLogTarget(final Context ctx, boolean isEnabled) {
         if (!isEnabled) {
             // easy case: just disable
             G.enableLogService(false);
@@ -3027,7 +3048,7 @@ public final class Api {
                     .setSuccessToast(R.string.log_was_enabled)
                     .setFailureToast(R.string.log_target_failed));
         }
-    }
+    }*/
 
     @SuppressLint("InlinedApi")
     public static void showInstalledAppDetails(Context context, String packageName) {
@@ -3802,29 +3823,30 @@ public final class Api {
     }
 
     private static class LogProbeCallback extends RootCommand.Callback {
-        private Context ctx;
+        public Context ctx;
+        private List<String> availableLogTargets = new ArrayList<>();
 
         public void cbFunc(RootCommand state) {
+
+            Toast.makeText(ctx, "coming here", Toast.LENGTH_SHORT).show();
+            String joined = TextUtils.join(", ", availableLogTargets);
+            G.logTargets(joined);
+
+
             if (state.exitCode != 0) {
-                G.enableLogService(false);
                 return;
             }
-            boolean logSet = false;
             for (String str : state.res.toString().split("\n")) {
                 if (str.equals("LOG")) {
-                    G.logTarget("LOG");
-                    logSet = true;
-                    Log.d(TAG, "logging using LOG target");
-                    break;
+                    availableLogTargets.add("LOG");
                 } else if (str.equals("NFLOG")) {
-                    G.logTarget("NFLOG");
-                    logSet = true;
-                    Log.d(TAG, "logging using NFLOG target");
-                    break;
+                    availableLogTargets.add("NFLOG");
                 }
             }
 
-            if (!logSet) {
+
+
+           /* if (!logSet) {
                 Log.i(TAG, "could not find LOG or NFLOG target");
                 //displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
                 G.logTarget("");
@@ -3835,7 +3857,7 @@ public final class Api {
             updateLogRules(ctx, new RootCommand()
                     .setReopenShell(true)
                     .setSuccessToast(R.string.log_was_enabled)
-                    .setFailureToast(R.string.log_target_failed));
+                    .setFailureToast(R.string.log_target_failed));*/
         }
     }
 
