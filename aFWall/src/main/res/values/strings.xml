@@ -617,4 +617,8 @@
     <string name="ui_themes_header">Themes</string>
     <string name="theme">UI Theme</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Clone columns</string>
+    <string name="from">From</string>
+    <string name="legend_action">Actions</string>
+    <string name="clear_all">Clear All</string>
 </resources>

@@ -933,7 +933,7 @@ public final class Api {
             }
         } catch (InterruptedException e) {
         }
-        boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
+        //boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
         rulesUpToDate = true;
     }
 

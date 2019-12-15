@@ -73,6 +73,8 @@ public class RootShellService extends Service {
     private static LinkedList<RootCommand> waitQueue = new LinkedList<RootCommand>();
     private static NotificationCompat.Builder builder;
 
+
+
     private static void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
             Log.d(TAG, "RootShell: " + state.getCommmands().size() + " commands completed in " +
@@ -120,7 +122,6 @@ public class RootShellService extends Service {
                     complete(state, EXIT_NO_ROOT_ACCESS);
                     continue;
                 } else if (rootState == ShellState.READY) {
-                    //Log.i(TAG, "Total commamds: #" + state.getCommmands().size());
                     rootState = ShellState.BUSY;
                     if (G.isRun()) {
                         createNotification(mContext);
@@ -334,7 +335,9 @@ public class RootShellService extends Service {
         if (mContext == null) {
             mContext = ctx.getApplicationContext();
         }
+        //add it to queue
         waitQueue.add(state);
+
         if (rootState == INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
             reOpenShell(ctx);
         } else if (rootState != ShellState.BUSY) {
@@ -351,7 +354,7 @@ public class RootShellService extends Service {
                     }
                     runNextSubmission();
                 }
-            }, 5000);
+            }, 10000);
         }
     }
 

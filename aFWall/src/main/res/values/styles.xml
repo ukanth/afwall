@@ -75,6 +75,7 @@
         <item name="tint">@color/white</item>
         <item name="android:listViewStyle">@style/BlackListView</item>
 
+        <item name="colorControlActivated">@color/black</item>
     </style>
 
 

@@ -206,8 +206,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         this.findViewById(R.id.img_wifi).setOnClickListener(this);
+        /*
         this.findViewById(R.id.img_reset).setOnClickListener(this);
         this.findViewById(R.id.img_invert).setOnClickListener(this);
+        this.findViewById(R.id.img_clone).setOnClickListener(this);
+        */
+        this.findViewById(R.id.img_action).setOnClickListener(this);
 
         AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
         AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
@@ -1167,25 +1171,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         getString(R.string.import_rules),
                         getString(R.string.import_all),
                         getString(R.string.import_rules_droidwall)})
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        switch (which) {
-                            case 0:
-                                //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-                                //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
-                                File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                                FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
-                                //fileDialog.setFlag(true);
-                                //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
-                                fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
+                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+                    switch (which) {
+                        case 0:
+                            //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
+                            //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
+                            File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                            FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
+                            //fileDialog.setFlag(true);
+                            //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
+                            fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
+                                public void fileSelected(File file) {
+                                    String fileSelected = file.toString();
+                                    StringBuilder builder = new StringBuilder();
+                                    if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
+                                        Api.applications = null;
+                                        showOrLoadApplications();
+                                        Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                    } else {
+                                        if (builder.toString().equals("")) {
+                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
+                                        } else {
+                                            Api.toast(MainActivity.this, builder.toString());
+                                        }
+                                    }
+                                }
+                            });
+                            fileDialog.showDialog();
+                            break;
+                        case 1:
+
+                            if (G.isDoKey(getApplicationContext()) || isDonate()) {
+
+                                File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                                FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
+                                //fileDialog2.setFlag(false);
+                                //fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
+                                fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
                                     public void fileSelected(File file) {
                                         String fileSelected = file.toString();
                                         StringBuilder builder = new StringBuilder();
-                                        if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
+                                        if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
                                             Api.applications = null;
                                             showOrLoadApplications();
                                             Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                            Intent intent = getIntent();
+                                            finish();
+                                            startActivity(intent);
                                         } else {
                                             if (builder.toString().equals("")) {
                                                 Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
@@ -1195,75 +1227,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                         }
                                     }
                                 });
-                                fileDialog.showDialog();
-                                break;
-                            case 1:
+                                fileDialog2.showDialog();
+                            } else {
+                                Api.donateDialog(MainActivity.this, false);
+                            }
+                            break;
+                        case 2:
 
-                                if (G.isDoKey(getApplicationContext()) || isDonate()) {
-
-                                    File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                                    FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
-                                    //fileDialog2.setFlag(false);
-                                    //fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
-                                    fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
-                                        public void fileSelected(File file) {
-                                            String fileSelected = file.toString();
-                                            StringBuilder builder = new StringBuilder();
-                                            if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
+                            new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+                                    .title(R.string.import_rules_droidwall)
+                                    .content(R.string.overrideRules)
+                                    .positiveText(R.string.Yes)
+                                    .negativeText(R.string.No)
+                                    .icon(getResources().getDrawable(R.drawable.ic_launcher))
+                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
                                                 Api.applications = null;
                                                 showOrLoadApplications();
-                                                Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
-                                                Intent intent = getIntent();
-                                                finish();
-                                                startActivity(intent);
+                                                Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
                                             } else {
-                                                if (builder.toString().equals("")) {
-                                                    Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                                } else {
-                                                    Api.toast(MainActivity.this, builder.toString());
-                                                }
+                                                Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
                                             }
                                         }
-                                    });
-                                    fileDialog2.showDialog();
-                                } else {
-                                    Api.donateDialog(MainActivity.this, false);
-                                }
-                                break;
-                            case 2:
+                                    })
 
-                                new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                                        .title(R.string.import_rules_droidwall)
-                                        .content(R.string.overrideRules)
-                                        .positiveText(R.string.Yes)
-                                        .negativeText(R.string.No)
-                                        .icon(getResources().getDrawable(R.drawable.ic_launcher))
-                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
-                                                    Api.applications = null;
-                                                    showOrLoadApplications();
-                                                    Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-                                                } else {
-                                                    Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                                }
-                                            }
-                                        })
-
-                                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                            @Override
-                                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                dialog.cancel();
-                                            }
-                                        })
-                                        .show();
+                                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                        @Override
+                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    .show();
 
 
-                                break;
-                        }
-                        return true;
+                            break;
                     }
+                    return true;
                 })
                 .positiveText(R.string.imports)
                 .negativeText(R.string.Cancel)
@@ -1277,19 +1278,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .items(new String[]{
                         getString(R.string.export_rules),
                         getString(R.string.export_all)})
-                .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        switch (which) {
-                            case 0:
-                                Api.exportRulesToFileConfirm(MainActivity.this);
-                                break;
-                            case 1:
-                                Api.exportAllPreferencesToFileConfirm(MainActivity.this);
-                                break;
-                        }
-                        return true;
+                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+                    switch (which) {
+                        case 0:
+                            Api.exportRulesToFileConfirm(MainActivity.this);
+                            break;
+                        case 1:
+                            Api.exportAllPreferencesToFileConfirm(MainActivity.this);
+                            break;
                     }
+                    return true;
                 }).positiveText(R.string.exports)
                 .negativeText(R.string.Cancel)
                 .show();
@@ -1559,16 +1557,48 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.img_tor:
                 selectActionConfirmation(v.getId());
                 break;
-            case R.id.img_invert:
+            /*case R.id.img_invert:
                 selectActionConfirmation(getString(R.string.reverse_all), v.getId());
+                break;
+            case R.id.img_clone:
+                cloneColumn(getString(R.string.legend_clone), v.getId());
                 break;
             case R.id.img_reset:
                 selectActionConfirmation(getString(R.string.unselect_all), v.getId());
-                break;
+                break;*/
+            case R.id.img_action:
+                selectAction();
             //case R.id.img_invert:
             //	revertApplications();
             //	break;
         }
+    }
+
+    private void selectAction() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.confirmation)
+                .cancelable(true)
+                .negativeText(R.string.Cancel)
+                .items(new String[]{
+                        getString(R.string.invert_all),
+                        getString(R.string.clone),
+                        getString(R.string.clear_all)})
+                .itemsCallback((dialog, view, which, text) -> {
+                    switch (which){
+                        case 0:
+                            selectActionConfirmation(getString(R.string.reverse_all),0);
+                            break;
+                        case 1:
+                            cloneColumn(getString(R.string.legend_clone));
+                            break;
+                        case 2:
+                            selectActionConfirmation(getString(R.string.reverse_all),1);
+                            break;
+                    }
+                })
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .show();
+
     }
 
     private void selectAllLAN(boolean flag) {
@@ -1834,7 +1864,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 .onNegative((dialog, which) -> {
                                     setDirty(false);
                                     Api.applications = null;
-                                    //finish();
+                                    finish();
                                     //System.exit(0);
                                     //force reload rules.
                                     MainActivity.super.onKeyDown(keyCode, event);
@@ -1866,27 +1896,251 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .cancelable(true)
                 .positiveText(R.string.OK)
                 .negativeText(R.string.Cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        switch (i) {
-                            case R.id.img_invert:
-                                selectRevert();
-                                break;
-                            case R.id.img_reset:
-                                clearAll();
-                        }
-                        dialog.dismiss();
+                .onPositive((dialog, which) -> {
+                    switch (i) {
+                        case 0:
+                            selectRevert();
+                            break;
+                        case 1:
+                            clearAll();
                     }
+                    dialog.dismiss();
                 })
 
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
+                .onNegative((dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    private void cloneColumn(String displayMessage) {
+        String [] items = new String[]{
+                getString(R.string.lan),
+                getString(R.string.wifi),
+                getString(R.string.data),
+                getString(R.string.vpn),
+                getString(R.string.roam),
+                getString(R.string.tether),
+                getString(R.string.tor)};
+
+        new MaterialDialog.Builder(this)
+                .title(R.string.confirmation).content(displayMessage)
+                .cancelable(true)
+                .positiveText(R.string.OK)
+                .negativeText(R.string.Cancel)
+                .items(items)
+                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+                    switch (which) {
+                       default:
+                           new MaterialDialog.Builder(this)
+                                   .title(R.string.confirmation).content(displayMessage)
+                                   .cancelable(true)
+                                   .positiveText(R.string.OK)
+                                   .negativeText(R.string.Cancel)
+                                   .items(items)
+                                   .itemsCallbackSingleChoice(-1, (dialog2, view2, which2, text2) -> {
+                                       switch (which) {
+                                           default:
+                                               copyColumns(which,which2);
+
+                                       }
+                                       return true;
+                                   })
+                                   .positiveText(R.string.clone)
+
+                                   .onNegative((dialog2, which2) -> dialog.dismiss())
+                                   .show();
+                    }
+                    return true;
+                })
+                .positiveText(R.string.from)
+                .onNegative((dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void copyColumns(int which, int which2) {
+            if (this.listview == null) {
+                this.listview = (ListView) this.findViewById(R.id.listview);
+            }
+            ListAdapter adapter = listview.getAdapter();
+            if (adapter != null) {
+                int count = adapter.getCount(), item;
+                for (item = 0; item < count; item++) {
+                    PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+                    if (data.uid != Api.SPECIAL_UID_ANY) {
+                        switch (which){
+                            case 0:
+                                switch (which2){
+                                    case 0:
+                                        break;
+                                    case 1:
+                                        data.selected_wifi = data.selected_lan;
+                                        break;
+                                    case 2:
+                                        data.selected_3g = data.selected_lan;
+                                        break;
+                                    case 3:
+                                        data.selected_vpn = data.selected_lan;
+                                        break;
+                                    case 4:
+                                        data.selected_roam = data.selected_lan;
+                                        break;
+                                    case 5:
+                                        data.selected_tether = data.selected_lan;
+                                        break;
+                                    case 6:
+                                        data.selected_tor = data.selected_lan;
+                                        break;
+                                }
+                                break;
+                            case 1:
+                                switch (which2){
+                                    case 0:
+                                        data.selected_lan = data.selected_wifi;
+                                        break;
+                                    case 1:
+                                        break;
+                                    case 2:
+                                        data.selected_3g = data.selected_wifi;
+                                        break;
+                                    case 3:
+                                        data.selected_vpn = data.selected_wifi;
+                                        break;
+                                    case 4:
+                                        data.selected_roam = data.selected_wifi;
+                                        break;
+                                    case 5:
+                                        data.selected_tether = data.selected_wifi;
+                                        break;
+                                    case 6:
+                                        data.selected_tor = data.selected_wifi;
+                                        break;
+                                }
+                                break;
+                            case 2:
+                                switch (which2){
+                                    case 0:
+                                        data.selected_lan = data.selected_3g;
+                                        break;
+                                    case 1:
+                                        data.selected_wifi = data.selected_3g;
+                                        break;
+                                    case 2:
+                                        break;
+                                    case 3:
+                                        data.selected_vpn = data.selected_3g;
+                                        break;
+                                    case 4:
+                                        data.selected_roam = data.selected_3g;
+                                        break;
+                                    case 5:
+                                        data.selected_tether = data.selected_3g;
+                                        break;
+                                    case 6:
+                                        data.selected_tor = data.selected_3g;
+                                        break;
+                                }
+                                break;
+                            case 3:
+                                switch (which2){
+                                    case 0:
+                                        data.selected_lan = data.selected_vpn;
+                                        break;
+                                    case 1:
+                                        data.selected_wifi = data.selected_vpn;
+                                        break;
+                                    case 2:
+                                        data.selected_3g = data.selected_vpn;
+                                        break;
+                                    case 3:
+                                        break;
+                                    case 4:
+                                        data.selected_roam = data.selected_vpn;
+                                        break;
+                                    case 5:
+                                        data.selected_tether = data.selected_vpn;
+                                        break;
+                                    case 6:
+                                        data.selected_tor = data.selected_vpn;
+                                        break;
+                                }
+                                break;
+                            case 4:
+                                switch (which2){
+                                    case 0:
+                                        data.selected_lan = data.selected_roam;
+                                        break;
+                                    case 1:
+                                        data.selected_wifi = data.selected_roam;
+                                        break;
+                                    case 2:
+                                        data.selected_3g = data.selected_roam;
+                                        break;
+                                    case 3:
+                                        data.selected_vpn = data.selected_roam;
+                                        break;
+                                    case 4:
+                                        break;
+                                    case 5:
+                                        data.selected_tether = data.selected_roam;
+                                        break;
+                                    case 6:
+                                        data.selected_tor = data.selected_roam;
+                                        break;
+                                }
+                                break;
+                            case 5:
+                                switch (which2){
+                                    case 0:
+                                        data.selected_lan = data.selected_tether;
+                                        break;
+                                    case 1:
+                                        data.selected_wifi = data.selected_tether;
+                                        break;
+                                    case 2:
+                                        data.selected_3g = data.selected_tether;
+                                        break;
+                                    case 3:
+                                        data.selected_vpn = data.selected_tether;
+                                        break;
+                                    case 4:
+                                        data.selected_roam = data.selected_tether;
+                                        break;
+                                    case 5:
+                                        break;
+                                    case 6:
+                                        data.selected_tor = data.selected_tether;
+                                        break;
+                                }
+                                break;
+                            case 6:
+                                switch (which2){
+                                    case 0:
+                                        data.selected_lan = data.selected_tor;
+                                        break;
+                                    case 1:
+                                        data.selected_wifi = data.selected_tor;
+                                        break;
+                                    case 2:
+                                        data.selected_3g = data.selected_tor;
+                                        break;
+                                    case 3:
+                                        data.selected_vpn = data.selected_tor;
+                                        break;
+                                    case 4:
+                                        data.selected_roam = data.selected_tor;
+                                        break;
+                                    case 5:
+                                        data.selected_tether = data.selected_tor;
+                                        break;
+                                    case 6:
+                                        break;
+                                }
+                                break;
+                        }
+                    }
+                    setDirty(true);
+                }
+                ((BaseAdapter) adapter).notifyDataSetChanged();
+            }
     }
 
     private void selectActionConfirmation(final int i) {
