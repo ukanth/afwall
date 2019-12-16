@@ -8,6 +8,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -21,7 +22,10 @@ import java.util.List;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+
+import static dev.ukanth.ufirewall.util.G.ctx;
 
 public class LogPreferenceFragment extends PreferenceFragment {
 
@@ -49,14 +53,33 @@ public class LogPreferenceFragment extends PreferenceFragment {
         }
         Context ctx = (Context) getActivity();
         if(G.logTargets() == null) {
-            Api.probeLogTarget(ctx);
+            List<String> availableLogTargets = new ArrayList<>();
+            new RootCommand()
+                    .setReopenShell(true)
+                    .setCallback(new RootCommand.Callback() {
+                        public void cbFunc(RootCommand state) {
+                            if (state.exitCode != 0) {
+                                return;
+                            }
+                            for (String str : state.res.toString().split("\n")) {
+                                if (str.equals("LOG") || str.equals("NFLOG")){
+                                    availableLogTargets.add(str);
+                                }
+                            }
+                            if(availableLogTargets.size() > 0) {
+                                String joined = TextUtils.join(",", availableLogTargets);
+                                G.logTargets(joined);
 
-            String [] items = G.logTargets().split(",");
-            ListPreference listPreference = (ListPreference) logTarget;
-            if (listPreference != null) {
-                listPreference.setEntries(items);
-                listPreference.setEntryValues(items);
-            }
+                                String [] items = G.logTargets().split(",");
+                                ListPreference listPreference = (ListPreference) logTarget;
+                                if (listPreference != null) {
+                                    listPreference.setEntries(items);
+                                    listPreference.setEntryValues(items);
+                                }
+                            }
+                        }
+                    }).setLogging(true)
+                    .run(ctx, "cat /proc/net/ip_tables_targets");
         } else{
             String [] items = G.logTargets().split(",");
             ListPreference listPreference = (ListPreference) logTarget;

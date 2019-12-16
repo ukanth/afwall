@@ -2996,20 +2996,7 @@ public final class Api {
      * @param ctx
      */
     public static void probeLogTarget(final Context ctx) {
-        LogProbeCallback cb = new LogProbeCallback();
-        cb.ctx = ctx;
-        if (G.enableIPv6()) {
-            new RootCommand()
-                    .setReopenShell(true)
-                    .setCallback(cb)
-                    .setLogging(true)
-                    .run(ctx, "cat /proc/net/ip6_tables_targets");
-        }
-        new RootCommand()
-                .setReopenShell(true)
-                .setCallback(cb)
-                .setLogging(true)
-                .run(ctx, "cat /proc/net/ip_tables_targets");
+
     }
     /*public static void setLogTarget(final Context ctx, boolean isEnabled) {
         if (!isEnabled) {
@@ -3822,7 +3809,7 @@ public final class Api {
 
     }
 
-    private static class LogProbeCallback extends RootCommand.Callback {
+    /*public static class LogProbeCallback extends RootCommand.Callback {
         public Context ctx;
         private List<String> availableLogTargets = new ArrayList<>();
 
@@ -3843,22 +3830,7 @@ public final class Api {
                     availableLogTargets.add("NFLOG");
                 }
             }
-
-
-
-           /* if (!logSet) {
-                Log.i(TAG, "could not find LOG or NFLOG target");
-                //displayToasts(ctx, R.string.log_target_failed, Toast.LENGTH_SHORT);
-                G.logTarget("");
-                G.enableLogService(false);
-                return;
-            }
-            G.enableLogService(true);
-            updateLogRules(ctx, new RootCommand()
-                    .setReopenShell(true)
-                    .setSuccessToast(R.string.log_was_enabled)
-                    .setFailureToast(R.string.log_target_failed));*/
         }
-    }
+    }*/
 
 }
