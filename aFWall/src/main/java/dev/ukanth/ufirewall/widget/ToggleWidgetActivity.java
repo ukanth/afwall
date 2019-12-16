@@ -461,10 +461,12 @@ public class ToggleWidgetActivity extends Activity {
     }
 
     private void invokeAction() {
-        final Handler toaster = new Handler() {
+        final Handler toaster = new Handler(getMainLooper()) {
+            @Override
             public void handleMessage(Message msg) {
-                if (msg.arg1 != 0)
-                    Toast.makeText(getApplicationContext(), msg.arg1, Toast.LENGTH_SHORT).show();
+                if (msg.arg1 != 0) {
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(),msg.arg1,Toast.LENGTH_SHORT).show());
+                }
             }
         };
         final Context context = getApplicationContext();
@@ -552,7 +554,6 @@ public class ToggleWidgetActivity extends Activity {
             }
         }.start();
     }
-
 
     /*private boolean applyProfileRules(final Context context, final Message msg, final Handler toaster) {
         boolean ret = Api.applySavedIptablesRules(context, false, new RootCommand()
