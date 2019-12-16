@@ -44,6 +44,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
+import android.preference.ListPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -54,6 +55,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -263,6 +265,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
         registerReceiver(themeRefreshReceiver, filter);
+    }
+
+    private void probeLogTarget() {
+        List<String> availableLogTargets = new ArrayList<>();
+        if (G.logTargets() == null) {
+            try {
+                new RootCommand()
+                        .setReopenShell(true)
+                        .setCallback(new RootCommand.Callback() {
+                            public void cbFunc(RootCommand state) {
+                                if (state.exitCode != 0) {
+                                    return;
+                                }
+                                for (String str : state.res.toString().split("\n")) {
+                                    if (str.equals("LOG") || str.equals("NFLOG")) {
+                                        availableLogTargets.add(str);
+                                    }
+                                }
+                                if (availableLogTargets.size() > 0) {
+                                    String joined = TextUtils.join(",", availableLogTargets);
+                                    G.logTargets(joined);
+                                }
+                            }
+                        }).setLogging(true)
+                        .run(ctx, "cat /proc/net/ip_tables_targets");
+            } catch (Exception e) {
+                Log.e(Api.TAG, "Exception in getting iptables log targets", e);
+            }
+        }
     }
 
     private void initTheme() {
@@ -1568,9 +1599,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;*/
             case R.id.img_action:
                 selectAction();
-            //case R.id.img_invert:
-            //	revertApplications();
-            //	break;
+                //case R.id.img_invert:
+                //	revertApplications();
+                //	break;
         }
     }
 
@@ -1584,15 +1615,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         getString(R.string.clone),
                         getString(R.string.clear_all)})
                 .itemsCallback((dialog, view, which, text) -> {
-                    switch (which){
+                    switch (which) {
                         case 0:
-                            selectActionConfirmation(getString(R.string.reverse_all),0);
+                            selectActionConfirmation(getString(R.string.reverse_all), 0);
                             break;
                         case 1:
                             cloneColumn(getString(R.string.legend_clone));
                             break;
                         case 2:
-                            selectActionConfirmation(getString(R.string.reverse_all),1);
+                            selectActionConfirmation(getString(R.string.reverse_all), 1);
                             break;
                     }
                 })
@@ -1912,7 +1943,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void cloneColumn(String displayMessage) {
-        String [] items = new String[]{
+        String[] items = new String[]{
                 getString(R.string.lan),
                 getString(R.string.wifi),
                 getString(R.string.data),
@@ -1929,25 +1960,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .items(items)
                 .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     switch (which) {
-                       default:
-                           new MaterialDialog.Builder(this)
-                                   .title(R.string.confirmation).content(displayMessage)
-                                   .cancelable(true)
-                                   .positiveText(R.string.OK)
-                                   .negativeText(R.string.Cancel)
-                                   .items(items)
-                                   .itemsCallbackSingleChoice(-1, (dialog2, view2, which2, text2) -> {
-                                       switch (which) {
-                                           default:
-                                               copyColumns(which,which2);
+                        default:
+                            new MaterialDialog.Builder(this)
+                                    .title(R.string.confirmation).content(displayMessage)
+                                    .cancelable(true)
+                                    .positiveText(R.string.OK)
+                                    .negativeText(R.string.Cancel)
+                                    .items(items)
+                                    .itemsCallbackSingleChoice(-1, (dialog2, view2, which2, text2) -> {
+                                        switch (which) {
+                                            default:
+                                                copyColumns(which, which2);
 
-                                       }
-                                       return true;
-                                   })
-                                   .positiveText(R.string.clone)
+                                        }
+                                        return true;
+                                    })
+                                    .positiveText(R.string.clone)
 
-                                   .onNegative((dialog2, which2) -> dialog.dismiss())
-                                   .show();
+                                    .onNegative((dialog2, which2) -> dialog.dismiss())
+                                    .show();
                     }
                     return true;
                 })
@@ -1957,190 +1988,190 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void copyColumns(int which, int which2) {
-            if (this.listview == null) {
-                this.listview = (ListView) this.findViewById(R.id.listview);
-            }
-            ListAdapter adapter = listview.getAdapter();
-            if (adapter != null) {
-                int count = adapter.getCount(), item;
-                for (item = 0; item < count; item++) {
-                    PackageInfoData data = (PackageInfoData) adapter.getItem(item);
-                    if (data.uid != Api.SPECIAL_UID_ANY) {
-                        switch (which){
-                            case 0:
-                                switch (which2){
-                                    case 0:
-                                        break;
-                                    case 1:
-                                        data.selected_wifi = data.selected_lan;
-                                        break;
-                                    case 2:
-                                        data.selected_3g = data.selected_lan;
-                                        break;
-                                    case 3:
-                                        data.selected_vpn = data.selected_lan;
-                                        break;
-                                    case 4:
-                                        data.selected_roam = data.selected_lan;
-                                        break;
-                                    case 5:
-                                        data.selected_tether = data.selected_lan;
-                                        break;
-                                    case 6:
-                                        data.selected_tor = data.selected_lan;
-                                        break;
-                                }
-                                break;
-                            case 1:
-                                switch (which2){
-                                    case 0:
-                                        data.selected_lan = data.selected_wifi;
-                                        break;
-                                    case 1:
-                                        break;
-                                    case 2:
-                                        data.selected_3g = data.selected_wifi;
-                                        break;
-                                    case 3:
-                                        data.selected_vpn = data.selected_wifi;
-                                        break;
-                                    case 4:
-                                        data.selected_roam = data.selected_wifi;
-                                        break;
-                                    case 5:
-                                        data.selected_tether = data.selected_wifi;
-                                        break;
-                                    case 6:
-                                        data.selected_tor = data.selected_wifi;
-                                        break;
-                                }
-                                break;
-                            case 2:
-                                switch (which2){
-                                    case 0:
-                                        data.selected_lan = data.selected_3g;
-                                        break;
-                                    case 1:
-                                        data.selected_wifi = data.selected_3g;
-                                        break;
-                                    case 2:
-                                        break;
-                                    case 3:
-                                        data.selected_vpn = data.selected_3g;
-                                        break;
-                                    case 4:
-                                        data.selected_roam = data.selected_3g;
-                                        break;
-                                    case 5:
-                                        data.selected_tether = data.selected_3g;
-                                        break;
-                                    case 6:
-                                        data.selected_tor = data.selected_3g;
-                                        break;
-                                }
-                                break;
-                            case 3:
-                                switch (which2){
-                                    case 0:
-                                        data.selected_lan = data.selected_vpn;
-                                        break;
-                                    case 1:
-                                        data.selected_wifi = data.selected_vpn;
-                                        break;
-                                    case 2:
-                                        data.selected_3g = data.selected_vpn;
-                                        break;
-                                    case 3:
-                                        break;
-                                    case 4:
-                                        data.selected_roam = data.selected_vpn;
-                                        break;
-                                    case 5:
-                                        data.selected_tether = data.selected_vpn;
-                                        break;
-                                    case 6:
-                                        data.selected_tor = data.selected_vpn;
-                                        break;
-                                }
-                                break;
-                            case 4:
-                                switch (which2){
-                                    case 0:
-                                        data.selected_lan = data.selected_roam;
-                                        break;
-                                    case 1:
-                                        data.selected_wifi = data.selected_roam;
-                                        break;
-                                    case 2:
-                                        data.selected_3g = data.selected_roam;
-                                        break;
-                                    case 3:
-                                        data.selected_vpn = data.selected_roam;
-                                        break;
-                                    case 4:
-                                        break;
-                                    case 5:
-                                        data.selected_tether = data.selected_roam;
-                                        break;
-                                    case 6:
-                                        data.selected_tor = data.selected_roam;
-                                        break;
-                                }
-                                break;
-                            case 5:
-                                switch (which2){
-                                    case 0:
-                                        data.selected_lan = data.selected_tether;
-                                        break;
-                                    case 1:
-                                        data.selected_wifi = data.selected_tether;
-                                        break;
-                                    case 2:
-                                        data.selected_3g = data.selected_tether;
-                                        break;
-                                    case 3:
-                                        data.selected_vpn = data.selected_tether;
-                                        break;
-                                    case 4:
-                                        data.selected_roam = data.selected_tether;
-                                        break;
-                                    case 5:
-                                        break;
-                                    case 6:
-                                        data.selected_tor = data.selected_tether;
-                                        break;
-                                }
-                                break;
-                            case 6:
-                                switch (which2){
-                                    case 0:
-                                        data.selected_lan = data.selected_tor;
-                                        break;
-                                    case 1:
-                                        data.selected_wifi = data.selected_tor;
-                                        break;
-                                    case 2:
-                                        data.selected_3g = data.selected_tor;
-                                        break;
-                                    case 3:
-                                        data.selected_vpn = data.selected_tor;
-                                        break;
-                                    case 4:
-                                        data.selected_roam = data.selected_tor;
-                                        break;
-                                    case 5:
-                                        data.selected_tether = data.selected_tor;
-                                        break;
-                                    case 6:
-                                        break;
-                                }
-                                break;
-                        }
+        if (this.listview == null) {
+            this.listview = (ListView) this.findViewById(R.id.listview);
+        }
+        ListAdapter adapter = listview.getAdapter();
+        if (adapter != null) {
+            int count = adapter.getCount(), item;
+            for (item = 0; item < count; item++) {
+                PackageInfoData data = (PackageInfoData) adapter.getItem(item);
+                if (data.uid != Api.SPECIAL_UID_ANY) {
+                    switch (which) {
+                        case 0:
+                            switch (which2) {
+                                case 0:
+                                    break;
+                                case 1:
+                                    data.selected_wifi = data.selected_lan;
+                                    break;
+                                case 2:
+                                    data.selected_3g = data.selected_lan;
+                                    break;
+                                case 3:
+                                    data.selected_vpn = data.selected_lan;
+                                    break;
+                                case 4:
+                                    data.selected_roam = data.selected_lan;
+                                    break;
+                                case 5:
+                                    data.selected_tether = data.selected_lan;
+                                    break;
+                                case 6:
+                                    data.selected_tor = data.selected_lan;
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            switch (which2) {
+                                case 0:
+                                    data.selected_lan = data.selected_wifi;
+                                    break;
+                                case 1:
+                                    break;
+                                case 2:
+                                    data.selected_3g = data.selected_wifi;
+                                    break;
+                                case 3:
+                                    data.selected_vpn = data.selected_wifi;
+                                    break;
+                                case 4:
+                                    data.selected_roam = data.selected_wifi;
+                                    break;
+                                case 5:
+                                    data.selected_tether = data.selected_wifi;
+                                    break;
+                                case 6:
+                                    data.selected_tor = data.selected_wifi;
+                                    break;
+                            }
+                            break;
+                        case 2:
+                            switch (which2) {
+                                case 0:
+                                    data.selected_lan = data.selected_3g;
+                                    break;
+                                case 1:
+                                    data.selected_wifi = data.selected_3g;
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+                                    data.selected_vpn = data.selected_3g;
+                                    break;
+                                case 4:
+                                    data.selected_roam = data.selected_3g;
+                                    break;
+                                case 5:
+                                    data.selected_tether = data.selected_3g;
+                                    break;
+                                case 6:
+                                    data.selected_tor = data.selected_3g;
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            switch (which2) {
+                                case 0:
+                                    data.selected_lan = data.selected_vpn;
+                                    break;
+                                case 1:
+                                    data.selected_wifi = data.selected_vpn;
+                                    break;
+                                case 2:
+                                    data.selected_3g = data.selected_vpn;
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    data.selected_roam = data.selected_vpn;
+                                    break;
+                                case 5:
+                                    data.selected_tether = data.selected_vpn;
+                                    break;
+                                case 6:
+                                    data.selected_tor = data.selected_vpn;
+                                    break;
+                            }
+                            break;
+                        case 4:
+                            switch (which2) {
+                                case 0:
+                                    data.selected_lan = data.selected_roam;
+                                    break;
+                                case 1:
+                                    data.selected_wifi = data.selected_roam;
+                                    break;
+                                case 2:
+                                    data.selected_3g = data.selected_roam;
+                                    break;
+                                case 3:
+                                    data.selected_vpn = data.selected_roam;
+                                    break;
+                                case 4:
+                                    break;
+                                case 5:
+                                    data.selected_tether = data.selected_roam;
+                                    break;
+                                case 6:
+                                    data.selected_tor = data.selected_roam;
+                                    break;
+                            }
+                            break;
+                        case 5:
+                            switch (which2) {
+                                case 0:
+                                    data.selected_lan = data.selected_tether;
+                                    break;
+                                case 1:
+                                    data.selected_wifi = data.selected_tether;
+                                    break;
+                                case 2:
+                                    data.selected_3g = data.selected_tether;
+                                    break;
+                                case 3:
+                                    data.selected_vpn = data.selected_tether;
+                                    break;
+                                case 4:
+                                    data.selected_roam = data.selected_tether;
+                                    break;
+                                case 5:
+                                    break;
+                                case 6:
+                                    data.selected_tor = data.selected_tether;
+                                    break;
+                            }
+                            break;
+                        case 6:
+                            switch (which2) {
+                                case 0:
+                                    data.selected_lan = data.selected_tor;
+                                    break;
+                                case 1:
+                                    data.selected_wifi = data.selected_tor;
+                                    break;
+                                case 2:
+                                    data.selected_3g = data.selected_tor;
+                                    break;
+                                case 3:
+                                    data.selected_vpn = data.selected_tor;
+                                    break;
+                                case 4:
+                                    data.selected_roam = data.selected_tor;
+                                    break;
+                                case 5:
+                                    data.selected_tether = data.selected_tor;
+                                    break;
+                                case 6:
+                                    break;
+                            }
+                            break;
                     }
-                    setDirty(true);
                 }
-                ((BaseAdapter) adapter).notifyDataSetChanged();
+                setDirty(true);
             }
+            ((BaseAdapter) adapter).notifyDataSetChanged();
+        }
     }
 
     private void selectActionConfirmation(final int i) {
@@ -2485,6 +2516,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             }
                         });
                 Api.applySavedIptablesRules(activityReference.get(), true, rootCommand4);
+                probeLogTarget();
                 return true;
             } else {
                 runOnUiThread(() -> {

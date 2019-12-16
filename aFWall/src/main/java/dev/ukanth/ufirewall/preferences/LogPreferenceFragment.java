@@ -8,6 +8,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceGroup;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -52,41 +53,15 @@ public class LogPreferenceFragment extends PreferenceFragment {
             return;
         }
         Context ctx = (Context) getActivity();
-        if(G.logTargets() == null) {
-            List<String> availableLogTargets = new ArrayList<>();
-            new RootCommand()
-                    .setReopenShell(true)
-                    .setCallback(new RootCommand.Callback() {
-                        public void cbFunc(RootCommand state) {
-                            if (state.exitCode != 0) {
-                                return;
-                            }
-                            for (String str : state.res.toString().split("\n")) {
-                                if (str.equals("LOG") || str.equals("NFLOG")){
-                                    availableLogTargets.add(str);
-                                }
-                            }
-                            if(availableLogTargets.size() > 0) {
-                                String joined = TextUtils.join(",", availableLogTargets);
-                                G.logTargets(joined);
-
-                                String [] items = G.logTargets().split(",");
-                                ListPreference listPreference = (ListPreference) logTarget;
-                                if (listPreference != null) {
-                                    listPreference.setEntries(items);
-                                    listPreference.setEntryValues(items);
-                                }
-                            }
-                        }
-                    }).setLogging(true)
-                    .run(ctx, "cat /proc/net/ip_tables_targets");
-        } else{
+        ListPreference listPreference = (ListPreference) logTarget;
+        if(G.logTargets() != null) {
             String [] items = G.logTargets().split(",");
-            ListPreference listPreference = (ListPreference) logTarget;
             if (listPreference != null) {
                 listPreference.setEntries(items);
                 listPreference.setEntryValues(items);
             }
+        } else{
+            ((PreferenceGroup) findPreference("logExperimental")).removePreference(listPreference);
         }
     }
 
