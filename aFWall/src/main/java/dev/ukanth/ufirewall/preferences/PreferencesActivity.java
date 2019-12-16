@@ -343,6 +343,10 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                     .setReopenShell(true)
                     .setSuccessToast(R.string.log_target_success)
                     .setFailureToast(R.string.log_target_fail));
+            Intent intent = new Intent(ctx, LogService.class);
+            ctx.stopService(intent);
+            Api.cleanupUid();
+            ctx.startService(intent);
         }
         if (key.equals("enableLogService")) {
             boolean enabled = sharedPreferences.getBoolean(key, false);
