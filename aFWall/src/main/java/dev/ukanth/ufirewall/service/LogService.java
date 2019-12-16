@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -95,6 +96,8 @@ public class LogService extends Service {
         if (showToastRunnable == null) {
             showToastRunnable = new CancelableRunnable() {
                 public void run() {
+
+
                     if (cancel && toast != null) {
                         toast.cancel();
                     }
@@ -109,21 +112,20 @@ public class LogService extends Service {
                         toast.setView(toastLayout);
                     }
 
+                    //Fix for many crashes in android 28
+                    if (Build.VERSION_CODES.P >= 28 && toast.getView().isShown()) {
+                        toast.cancel();
+                    }
+
                     switch (toastDuration) {
                         case 3500:
                             toast.setDuration(Toast.LENGTH_LONG);
                             break;
                         case 7000:
                             toast.setDuration(Toast.LENGTH_LONG);
-
                             if (showOnlyToastRunnable == null) {
-                                showOnlyToastRunnable = new Runnable() {
-                                    public void run() {
-                                        toast.show();
-                                    }
-                                };
+                                showOnlyToastRunnable = () -> toast.show();
                             }
-
                             handler.postDelayed(showOnlyToastRunnable, 3250);
                             break;
                         default:
