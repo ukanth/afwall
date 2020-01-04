@@ -292,6 +292,9 @@
             android:name=".service.RootShellService"
             android:exported="false" />
         <service
+            android:name=".service.RootShellService2"
+            android:exported="false" />
+        <service
             android:name=".service.LogService"
             android:enabled="true"
             android:label="AFWallLogService" />

@@ -47,9 +47,11 @@ import android.os.PowerManager;
 import android.preference.ListPreference;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -76,6 +78,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -152,12 +155,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MaterialDialog runProgress;
     private AlertDialog dialogLegend = null;
 
-    private BroadcastReceiver uiProgressReceiver;
-    private BroadcastReceiver toastReceiver;
-
-
-    private BroadcastReceiver themeRefreshReceiver;
-    private IntentFilter uiFilter;
+    private BroadcastReceiver uiProgressReceiver4,uiProgressReceiver6, toastReceiver,themeRefreshReceiver;
+    private IntentFilter uiFilter4, uiFilter6;
 
     //all async reference with context
     private GetAppList getAppList;
@@ -236,7 +235,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             registerNetworkObserver();
         }
         //registerQuickApply();
-        registerUIbroadcast();
+        registerUIbroadcast4();
+        registerUIbroadcast6();
+
         registerToastbroadcast();
         migrateNotification();
         initTextWatcher();
@@ -380,15 +381,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerReceiver(toastReceiver, filter);
     }
 
-    private void registerUIbroadcast() {
-        uiFilter = new IntentFilter("UPDATEUI");
+    private void registerUIbroadcast4() {
+        uiFilter4 = new IntentFilter("UPDATEUI4");
 
-        uiProgressReceiver = new BroadcastReceiver() {
+        uiProgressReceiver4 = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String rules = G.enableIPv6() ? " (v4 & v6) " : " (v4) ";
-                if (runProgress != null) {
-                    runProgress.setContent(context.getString(R.string.applying) + rules + intent.getExtras().get("INDEX") + "/" + intent.getExtras().get("SIZE"));
+                Bundle b = intent.getExtras();
+                if(runProgress !=null) {
+                    TextView view = (TextView) runProgress.findViewById(R.id.apply4);
+                    view.setText(b.get("INDEX") + "/" + b.get("SIZE"));
+                    view.invalidate();
+                }
+            }
+        };
+    }
+
+    private void registerUIbroadcast6() {
+        uiFilter6 = new IntentFilter("UPDATEUI6");
+
+        uiProgressReceiver6 = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Bundle b = intent.getExtras();
+                if(runProgress !=null) {
+                    TextView view = (TextView) runProgress.findViewById(R.id.apply6);
+                    view.setText(b.get("INDEX") + "/" + b.get("SIZE"));
+                    view.invalidate();
                 }
             }
         };
@@ -549,7 +568,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             fab.setVisibility(View.GONE);
         }*/
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver, uiFilter);
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver4, uiFilter4);
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver6, uiFilter6);
+
         G.activityResumed();
 
         //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(G.primaryColor()));
@@ -800,7 +821,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         View v = this.listview.getChildAt(0);
         top = (v == null) ? 0 : v.getTop();
         G.activityPaused();
-        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(uiProgressReceiver);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(uiProgressReceiver4);
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(uiProgressReceiver6);
     }
 
     /**
@@ -2475,8 +2497,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             runProgress = new MaterialDialog.Builder(activityReference.get())
                     .title(R.string.su_check_title)
                     .cancelable(true)
-                    .content(enabled ? R.string.applying_rules
-                            : R.string.saving_rules)
+                    .customView(R.layout.apply_view, false)
+                    //.content(enabled ? R.string.applying_rules
+                    //        : R.string.saving_rules)
                     .negativeText("Dismiss")
                     .show();
         }
@@ -2620,6 +2643,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startRootShell();
                 new SecurityUtil(MainActivity.this).passCheck();
             }
+        }
+    }
+
+    @RequiresApi(28)
+    private static class OnUnhandledKeyEventListenerWrapper implements View.OnUnhandledKeyEventListener {
+        private ViewCompat.OnUnhandledKeyEventListenerCompat mCompatListener;
+
+        OnUnhandledKeyEventListenerWrapper(ViewCompat.OnUnhandledKeyEventListenerCompat listener) {
+            this.mCompatListener = listener;
+        }
+
+        public boolean onUnhandledKeyEvent(View v, KeyEvent event) {
+            return this.mCompatListener.onUnhandledKeyEvent(v, event);
         }
     }
 }

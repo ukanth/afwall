@@ -910,6 +910,7 @@ public final class Api {
         List<String> ipv6cmds = new ArrayList<String>();
         Thread t2 = null;
         Thread t1 = new Thread(() -> {
+            callback.hash = ipv6cmds.hashCode();
             applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
             applied[0] = applySavedIp4tablesRules(ctx, ipv4cmds, callback);
         });
@@ -918,11 +919,7 @@ public final class Api {
         if (G.enableIPv6()) {
             t2 = new Thread(() -> {
                 applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-                try {
-                    applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone().setIsv6(true));
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
+                applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone().setHash(ipv6cmds.hashCode()));
             });
             t2.start();
         }
@@ -975,7 +972,7 @@ public final class Api {
         }
         try {
             Log.i(TAG, "Using applySaved4IptablesRules");
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,false);
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -991,7 +988,7 @@ public final class Api {
         }
         try {
             Log.i(TAG, "Using applySavedIp6tablesRules");
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());

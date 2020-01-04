@@ -53,10 +53,10 @@ import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
-import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
+import static dev.ukanth.ufirewall.service.RootShellService2.ShellState.INIT;
 
 
-public class RootShellService extends Service implements Cloneable {
+public class RootShellService2 extends Service {
 
     public static final String TAG = "AFWall";
     public static final int NOTIFICATION_ID = 33347;
@@ -72,16 +72,6 @@ public class RootShellService extends Service implements Cloneable {
     private static ShellState rootState = INIT;
     private static LinkedList<RootCommand> waitQueue = new LinkedList<>();
     private static NotificationCompat.Builder builder;
-
-    @Override
-    public RootShellService clone() {
-        RootShellService rootShellService = null;
-        try {
-            rootShellService = (RootShellService) super.clone();
-        } catch (CloneNotSupportedException e) {
-        }
-        return rootShellService;
-    }
 
     private static void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
@@ -143,9 +133,8 @@ public class RootShellService extends Service implements Cloneable {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
             //not to send conflicting status
-            if (!state.isv6) {
-                sendUpdate(state);
-            }
+            sendUpdate(state);
+
             if (command != null) {
                 state.ignoreExitCode = false;
 
@@ -211,7 +200,7 @@ public class RootShellService extends Service implements Cloneable {
     private static void sendUpdate(final RootCommand state2) {
         new Thread(() -> {
             Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction("UPDATEUI4");
+            broadcastIntent.setAction("UPDATEUI6");
             broadcastIntent.putExtra("SIZE", state2.getCommmands().size());
             broadcastIntent.putExtra("INDEX", state2.commandIndex);
             LocalBroadcastManager.getInstance(mContext).sendBroadcast(broadcastIntent);
@@ -320,7 +309,7 @@ public class RootShellService extends Service implements Cloneable {
             }
             rootState = ShellState.BUSY;
             startShellInBackground();
-            Intent intent = new Intent(context, RootShellService.class);
+            Intent intent = new Intent(context, RootShellService2.class);
             context.startService(intent);
         }
     }
