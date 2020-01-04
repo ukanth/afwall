@@ -1,7 +1,13 @@
 AFWall+ Changelog
 ==================
 
-<en-US>
+Version 3.4.0-BETA1
+* Feature: Bluetooth,USB tethering as separate rules - Thanks @nxzero
+* Feature: Clone columns (Copy rules from one column to other column)
+* Feature: Selectable Log target (LOG/NFLOG)
+* Main screen UI update - Thanks @vvimjam
+* Crash fixes and performance improvements
+
 Version 3.3.1
 
 * Bug: Firewall not blocking on oneplus devices
