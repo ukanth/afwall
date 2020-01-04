@@ -2502,6 +2502,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     //        : R.string.saving_rules)
                     .negativeText("Dismiss")
                     .show();
+            if(G.enableIPv6()) {
+                runProgress.findViewById(R.id.apply6layout).setVisibility(View.VISIBLE);
+            }
         }
 
         @Override

@@ -172,7 +172,7 @@
                 android:clickable="true"
                 android:contentDescription="@string/legend_action"
 
-                android:src="@drawable/ic_action"></ImageView>
+                android:src="@drawable/ic_settings"></ImageView>
 
 
             <!-- <ImageView
