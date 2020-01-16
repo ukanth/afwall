@@ -35,9 +35,18 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
     private Activity activity;
 
+    private boolean useOld = false;
+
     //final int color = G.sysColor();
     //final int defaultColor = Color.WHITE;
 
+    public AppListArrayAdapter(MainActivity activity, Context context, List<PackageInfoData> apps, boolean useOld) {
+        super(context, R.layout.main_list_old, apps);
+        this.useOld = true;
+        this.activity = activity;
+        this.context = context;
+        this.listApps = apps;
+    }
     public AppListArrayAdapter(MainActivity activity, Context context, List<PackageInfoData> apps) {
         super(context, R.layout.main_list, apps);
         this.activity = activity;
@@ -51,7 +60,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null) {
             // Inflate a new view
-            convertView = inflater.inflate(R.layout.main_list, parent, false);
+            if(useOld) {
+                convertView = inflater.inflate(R.layout.main_list_old, parent, false);
+            } else{
+                convertView = inflater.inflate(R.layout.main_list, parent, false);
+            }
             holder = new AppStateHolder();
             holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
 

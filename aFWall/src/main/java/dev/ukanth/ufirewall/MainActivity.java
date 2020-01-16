@@ -66,6 +66,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -73,7 +74,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
@@ -162,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private GetAppList getAppList;
     private RunApply runApply;
     private PurgeTask purgeTask;
+    private int columnCount = 3;
+    private View view;
 
     public boolean isDirty() {
         return dirty;
@@ -195,7 +200,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (Exception e) {
         }
 
-        setContentView(R.layout.main);
+        updateSelectedColumnCount();
+
+        if(columnCount <= 3) {
+            setContentView(R.layout.main_old);
+        }
+        else{
+            setContentView(R.layout.main);
+        }
+
+        view = (View) findViewById (R.id.imageHolder);
+        view.invalidate();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
@@ -244,6 +259,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //registerLogService();
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
+
+
+    }
+
+    private void updateSelectedColumnCount() {
+        columnCount = G.enableRoam() ?  columnCount + 1 : columnCount;
+        columnCount = G.enableVPN() ?  columnCount + 1 : columnCount;
+        columnCount = G.enableTether() ?  columnCount + 1 : columnCount;
+        columnCount = G.enableTor() ?  columnCount + 1 : columnCount;
     }
 
     /*private void registerLogService() {
@@ -495,8 +519,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (Exception e) {
             Log.d(Api.TAG, "Exception in filter Sorting");
         }
-
-        ArrayAdapter appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
+        ArrayAdapter appAdapter;
+        if(columnCount <= 3) {
+            appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList, true);
+        } else {
+            appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
+        }
         this.listview.setAdapter(appAdapter);
         appAdapter.notifyDataSetChanged();
         // restore
@@ -511,6 +539,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onRestart() {
         super.onRestart();
+        refreshBar();
+    }
+
+    private void refreshBar() {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        view.setLayoutParams(layoutParams);
+        view.invalidate();
+        view.postInvalidate();
+        view.refreshDrawableState();
+        view.setVisibility(View.GONE);
+        view.setVisibility(View.VISIBLE);
     }
 
     private void updateIconStatus() {
@@ -563,6 +602,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
+        refreshBar();
         /*if (showQuickButton()) {
             fab.setVisibility(View.VISIBLE);
         } else {
@@ -582,6 +622,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void reloadPreferences() {
+        columnCount = 3;
+        updateSelectedColumnCount();
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         G.reloadPrefs();
         checkPreferences();
@@ -966,7 +1009,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         try {
             if (apps2 != null) {
                 Collections.sort(apps2, new PackageComparator());
-                this.listview.setAdapter(new AppListArrayAdapter(this, getApplicationContext(), apps2));
+                ArrayAdapter appAdapter;
+                if(columnCount <= 3) {
+                    appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2, true);
+                } else {
+                    appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2);
+                }
+                this.listview.setAdapter(appAdapter);
                 // restore
                 this.listview.setSelectionFromTop(index, top);
             }

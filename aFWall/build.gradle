@@ -8,8 +8,8 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 19440
-        versionName "3.4.0-BETA"
+        versionCode 19441
+        versionName "3.4.0-BETA2"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 

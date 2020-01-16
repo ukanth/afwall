@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:baselineAligned="true"
+    android:orientation="horizontal"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp" >
+
+    <ImageView
+        android:id="@+id/itemicon"
+        android:layout_width="32dp"
+        android:layout_height="32dp">
+    </ImageView>
+
+    <CheckBox
+        android:id="@+id/itemcheck_lan"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="0px"
+        android:visibility="gone">
+    </CheckBox>
+
+    <CheckBox
+        android:id="@+id/itemcheck_wifi"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="0px" >
+    </CheckBox>
+
+    <CheckBox
+        android:id="@+id/itemcheck_3g"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="0px" >
+    </CheckBox>
+
+    <CheckBox
+        android:id="@+id/itemcheck_roam"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="0px"
+        android:visibility="gone" >
+    </CheckBox>
+
+    <CheckBox
+        android:id="@+id/itemcheck_vpn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="0px"
+        android:visibility="gone">
+    </CheckBox>
+
+
+    <CheckBox
+        android:id="@+id/itemcheck_tether"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="0px"
+        android:visibility="gone">
+    </CheckBox>
+
+    <CheckBox
+        android:id="@+id/itemcheck_tor"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:padding="0px"
+        android:visibility="gone">
+    </CheckBox>
+
+    <TextView
+        android:id="@+id/itemtext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:textIsSelectable="false"
+        >
+    </TextView>
+</LinearLayout>

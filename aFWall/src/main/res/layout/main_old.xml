@@ -91,13 +91,11 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7px"
-            android:layout_marginBottom="7px"
             android:padding="0px">
 
-            <ImageView
+            <View
                 android:id="@+id/imageHolder"
-                android:layout_width="72dp"
+                android:layout_width="32dp"
                 android:layout_height="fill_parent" />
 
             <ImageView
@@ -145,6 +143,7 @@
 
                 android:visibility="gone"></ImageView>
 
+
             <ImageView
                 android:id="@+id/img_tether"
                 android:layout_width="32dp"
@@ -164,44 +163,14 @@
 
                 android:visibility="gone"></ImageView>
 
-
             <ImageView
                 android:id="@+id/img_action"
                 android:layout_width="32dp"
                 android:layout_height="24dp"
                 android:clickable="true"
                 android:contentDescription="@string/legend_action"
-
                 android:src="@drawable/ic_settings"></ImageView>
 
-
-            <!-- <ImageView
-                android:id="@+id/img_invert"
-                android:layout_width="24dp"
-                android:layout_height="18dp"
-                android:clickable="true"
-                android:contentDescription="@string/invert_all"
-                android:src="@drawable/ic_invert"></ImageView>
-
-            <ImageView
-                android:id="@+id/img_clone"
-                android:layout_width="24dp"
-                android:layout_height="18dp"
-                android:clickable="true"
-                android:contentDescription="@string/legend_clone"
-
-                android:src="@drawable/ic_clone"></ImageView>
-
-            <ImageView
-                android:id="@+id/img_reset"
-                android:layout_width="24dp"
-                android:layout_height="18dp"
-                android:clickable="true"
-                android:contentDescription="@string/legend_clear"
-
-                android:src="@drawable/ic_clean"></ImageView>
-
-            -->
         </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -213,12 +182,9 @@
                 android:id="@+id/listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@drawable/list_divider"
-                android:dividerHeight="1px"
                 android:fastScrollEnabled="true"></ListView>
 
 
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 </FrameLayout>
-
