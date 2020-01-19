@@ -126,6 +126,7 @@ public class FirewallService extends Service {
                 .setVisibility(Notification.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
+                .setOngoing(true)
                 .build();
         switch (notifyType) {
             case 0:
