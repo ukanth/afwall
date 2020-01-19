@@ -17,11 +17,11 @@
             android:summaryOff="@string/hideicons_pref_summary_off"
             android:summaryOn="@string/hideicons_pref_summary_on"
             android:title="@string/hideicons_pref_title" />
-        <CheckBoxPreference
+        <!--<CheckBoxPreference
             android:defaultValue="true"
             android:key="activeNotification"
             android:summary="@string/activeNotification_summary"
-            android:title="@string/activeNotification" />
+            android:title="@string/activeNotification" />-->
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="runNotification"

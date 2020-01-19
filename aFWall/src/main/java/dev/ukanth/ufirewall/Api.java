@@ -2237,10 +2237,8 @@ public final class Api {
                 notification.priority = NotificationCompat.PRIORITY_MIN;
                 break;
         }
-        if (G.activeNotification()) {
-            notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
-            manager.notify(NOTIFICATION_ID, notification);
-        }
+        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
+        manager.notify(NOTIFICATION_ID, notification);
     }
 
     private static boolean removePackageRef(Context ctx, String pkg, int pkgRemoved, Editor editor, String store) {

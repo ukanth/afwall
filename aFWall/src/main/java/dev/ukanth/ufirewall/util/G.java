@@ -113,7 +113,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String PRIMARY_DARK_COLOR = "primaryColor";
 
     private static final String ACTIVE_RULES = "activeRules";
-    private static final String ACTIVE_NOTIFICATION = "activeNotification";
+    //private static final String ACTIVE_NOTIFICATION = "activeNotification";
     private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
     private static final String LOG_TARGET = "logTarget";
     private static final String LOG_TARGETS = "logTargets";
@@ -345,14 +345,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static boolean activeNotification() {
+   /* public static boolean activeNotification() {
         return gPrefs.getBoolean(ACTIVE_NOTIFICATION, true);
     }
 
     public static boolean activeNotification(boolean val) {
         gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit();
         return val;
-    }
+    }*/
 
     public static boolean showLogToasts() {
         return gPrefs.getBoolean(SHOW_LOG_TOAST, false);

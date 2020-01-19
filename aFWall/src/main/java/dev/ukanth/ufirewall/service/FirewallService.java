@@ -137,20 +137,20 @@ public class FirewallService extends Service {
                 break;
         }
 
-        if(G.activeNotification()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForeground(NOTIFICATION_ID, notification);
-            } else {
-                manager.notify(NOTIFICATION_ID, notification);
-            }
+        //if(G.activeNotification()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(NOTIFICATION_ID, notification);
         } else {
+            manager.notify(NOTIFICATION_ID, notification);
+        }
+        /*} else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForeground(NOTIFICATION_ID, notification);
             } else {
                 //empty one
                 startForeground(NOTIFICATION_ID, new Notification());
             }
-        }
+        }*/
 
 
     }
