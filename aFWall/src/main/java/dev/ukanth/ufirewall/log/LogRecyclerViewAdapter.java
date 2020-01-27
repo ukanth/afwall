@@ -65,7 +65,11 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
             holder.icon.setBackgroundDrawable(info.applicationInfo.loadIcon(context.getPackageManager()));
         } catch (Exception e) {
             info = null;
-            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_unknown));
+            try {
+                holder.icon.setImageDrawable(context.getDrawable(R.drawable.ic_unknown));
+            }catch (Exception e1) {
+
+            }
         }
 
         try {
