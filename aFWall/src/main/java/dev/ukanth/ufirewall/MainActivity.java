@@ -1552,6 +1552,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             final String script2 = data.getStringExtra(Api.SCRIPT2_EXTRA);
             setCustomScript(script, script2);
         }
+        recreate();
     }
 
     /**
