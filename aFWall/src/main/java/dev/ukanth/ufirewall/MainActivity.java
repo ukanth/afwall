@@ -165,7 +165,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private GetAppList getAppList;
     private RunApply runApply;
     private PurgeTask purgeTask;
-    private int columnCount = 3;
+    private static int DEFAULT_COLUMN = 2;
+    private int selectedColumns = DEFAULT_COLUMN;
+    private static int DEFAULT_VIEW_LIMIT = 4;
     private View view;
 
     public boolean isDirty() {
@@ -200,9 +202,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (Exception e) {
         }
 
-        updateSelectedColumnCount();
+        updateSelectedColumns();
 
-        if(columnCount <= 3) {
+        if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
             setContentView(R.layout.main_old);
         }
         else{
@@ -263,11 +265,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    private void updateSelectedColumnCount() {
-        columnCount = G.enableRoam() ?  columnCount + 1 : columnCount;
-        columnCount = G.enableVPN() ?  columnCount + 1 : columnCount;
-        columnCount = G.enableTether() ?  columnCount + 1 : columnCount;
-        columnCount = G.enableTor() ?  columnCount + 1 : columnCount;
+    private void updateSelectedColumns() {
+        selectedColumns = G.enableLAN() ?  selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableRoam() ?  selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableVPN() ?  selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableTether() ?  selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableTor() ?  selectedColumns + 1 : selectedColumns;
     }
 
     /*private void registerLogService() {
@@ -520,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Log.d(Api.TAG, "Exception in filter Sorting");
         }
         ArrayAdapter appAdapter;
-        if(columnCount <= 3) {
+        if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
             appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList, true);
         } else {
             appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
@@ -622,8 +625,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void reloadPreferences() {
-        columnCount = 3;
-        updateSelectedColumnCount();
+        selectedColumns = DEFAULT_COLUMN;
+        updateSelectedColumns();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         G.reloadPrefs();
@@ -1010,7 +1013,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (apps2 != null) {
                 Collections.sort(apps2, new PackageComparator());
                 ArrayAdapter appAdapter;
-                if(columnCount <= 3) {
+                if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
                     appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2, true);
                 } else {
                     appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2);
