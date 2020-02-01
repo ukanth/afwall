@@ -72,10 +72,9 @@
         <item name="android:textColorSecondary">@color/white</item>
 
         <item name="colorControlNormal">@color/white</item>
-        <item name="tint">@color/white</item>
-        <item name="android:listViewStyle">@style/BlackListView</item>
 
-        <item name="colorControlActivated">@color/black</item>
+        <item name="android:listViewStyle">@style/BlackListView</item>
+        <item name="tint">@color/white</item>
     </style>
 
 
