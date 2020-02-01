@@ -74,7 +74,7 @@
     <string name="legend_blacklist">选中的应用将被拒绝访问网络</string>
     <string name="set_custom_script">设置自定义脚本</string>
     <string name="preferences">首选项</string>
-    <string name="reload">重新加載应用</string>
+    <string name="reload">重新加载应用</string>
     <string name="flush">刷新规则</string>
     <string name="send_report">发送错误报告</string>
     <string name="enter_problem">请阐述问题：</string>
@@ -268,10 +268,10 @@
     <string name="hideicons_pref_summary_on">在主视图中隐藏应用图标以提升性能</string>
     <string name="hideicons_pref_summary_off">在主视图中显示应用图标</string>
     <string name="notify_pref_title">启用通知</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
+    <string name="syscolor_pref_title">Systemanwendungen</string>
+    <string name="primary_pref_title">主色调</string>
     <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="accent_pref_title">强调色</string>
     <string name="syscolor_pref_summary_on">所有系统应用的颜色</string>
     <string name="enableConfirmTitle">确认 AFWall+ 禁用操作</string>
     <string name="enableConfirm_summary_on">防火墙被禁用前将要求确认</string>
@@ -424,8 +424,8 @@
     <string name="showlogdetail_title">应用日志详情</string>
     <string name="reapply_rules">首选项已改变，请重新应用规则</string>
     <string name="custom_rules">自定义规则</string>
-    <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdnslabel">(mdns) 组播DNS</string>
+    <string name="mdns">启用组播DNS</string>
     <string name="error_log">无法启用日志服务。LogTarget 为空或未启用 LogService。</string>
     <string name="delete_profile">无法删除配置</string>
     <string name="profile_migrate_msg">配置文件已迁移</string>
@@ -517,9 +517,9 @@
     <string name="firewall_service">防火墙服务</string>
     <string name="boot_notification">启动服务</string>
     <string name="app_notification">应用通知</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">隐藏</string>
+    <string name="firewall_error_notify">防火墙问题</string>
+    <string name="ui_themes_header">主题</string>
+    <string name="theme">界面主题</string>
     <string name="clat">(clat) Clat</string>
 </resources>

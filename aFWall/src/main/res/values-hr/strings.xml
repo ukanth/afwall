@@ -267,10 +267,10 @@
     <string name="hideicons_pref_summary_on">Poboljšajte performanse onemogućavanjem prikaza ikona u glavnom prikazu</string>
     <string name="hideicons_pref_summary_off">Prikaži ikone aplikacija u glavnom prikazu</string>
     <string name="notify_pref_title">Omogući obavijesti</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">Aplikacije sustava</string>
+    <string name="primary_pref_title">Osnovna boja</string>
+    <string name="status_pref_title">Boja statusne trake</string>
+    <string name="accent_pref_title">Boja naglašavanja</string>
     <string name="syscolor_pref_summary_on">Boja za sve sistemske aplikacije</string>
     <string name="enableConfirmTitle">Potvrdite onemogućavanje AFWall+</string>
     <string name="enableConfirm_summary_on">Vatrozid će tražiti potvrdu prije nego onemogućavanja</string>
@@ -424,7 +424,7 @@
     <string name="reapply_rules">Ponovno primijenite pravila zbog promjena postavki</string>
     <string name="custom_rules">Prilagođena pravila</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Omogući Multicast DNS</string>
     <string name="error_log">Nije moguće pokrenuti servis zapisnika. LogTarget je prazan ili LogService nije omogućen.</string>
     <string name="delete_profile">Nije moguće obrisati profil</string>
     <string name="profile_migrate_msg">Profili premješteni</string>
@@ -516,9 +516,9 @@
     <string name="firewall_service">Usluga vatrozida</string>
     <string name="boot_notification">Boot usluga</string>
     <string name="app_notification">Obavijest aplikacije</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">Sakrij</string>
+    <string name="firewall_error_notify">Problemi sa vatrozidom</string>
+    <string name="ui_themes_header">Teme</string>
+    <string name="theme">Tema UI</string>
     <string name="clat">(clat) Clat</string>
 </resources>

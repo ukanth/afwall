@@ -268,10 +268,10 @@
     <string name="hideicons_pref_summary_on">Повысить производительность, отключив значки приложений в главном окне</string>
     <string name="hideicons_pref_summary_off">Показывать значки приложений в главном окне</string>
     <string name="notify_pref_title">Включить уведомления</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">Системные приложения</string>
+    <string name="primary_pref_title">Основной цвет</string>
+    <string name="status_pref_title">Цвет строки состояния</string>
+    <string name="accent_pref_title">Цвет оттенка</string>
     <string name="syscolor_pref_summary_on">Цвет для всех системных приложений</string>
     <string name="enableConfirmTitle">Подтверждение отключения AFWall+</string>
     <string name="enableConfirm_summary_on">Брандмауэр запросит подтверждение перед отключением</string>
@@ -425,7 +425,7 @@
     <string name="reapply_rules">Пожалуйста, повторно примените правила из-за изменения предпочтений</string>
     <string name="custom_rules">Пользовательские правила</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Включить Multicast DNS</string>
     <string name="error_log">Не удалось запустить службу журнала. LogTarget пуст или LogService не включён.</string>
     <string name="delete_profile">Невозможно удалить профиль</string>
     <string name="profile_migrate_msg">Профили перемещены</string>
@@ -517,9 +517,9 @@
     <string name="firewall_service">Служба брандмауэра</string>
     <string name="boot_notification">Служба загрузки</string>
     <string name="app_notification">Уведомления приложения</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">Скрыть</string>
+    <string name="firewall_error_notify">Режим файрвола</string>
+    <string name="ui_themes_header">Темы</string>
+    <string name="theme">Тема интерфейса</string>
     <string name="clat">(clat) Clat</string>
 </resources>

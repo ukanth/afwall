@@ -426,8 +426,8 @@
     <string name="showlogdetail_title">アプリケーション ログの詳細</string>
     <string name="reapply_rules">設定変更によりルールを再適用します</string>
     <string name="custom_rules">カスタムルール</string>
-    <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdnslabel">(mdns) マルチキャスト DNS</string>
+    <string name="mdns">マルチキャスト DNS を有効にする</string>
     <string name="error_log">ログ サービスを開始できません。LogTarget が空か、LogService が有効ではありません。</string>
     <string name="delete_profile">プロファイルを削除できません</string>
     <string name="profile_migrate_msg">プロファイルを移行しました</string>

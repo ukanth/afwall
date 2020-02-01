@@ -425,7 +425,7 @@
     <string name="reapply_rules">Lütfen kuralları tercih değişikliği nedeniyle yeniden uygulayın</string>
     <string name="custom_rules">Özel Kurallar</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Multicast DNS\'i etkinleştir</string>
     <string name="error_log">Günlük hizmeti başlatılamıyor. LogTarget boş veya LogService etkin değil.</string>
     <string name="delete_profile">Profil silinemiyor</string>
     <string name="profile_migrate_msg">Profiller taşındı</string>

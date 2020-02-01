@@ -268,7 +268,7 @@
     <string name="hideicons_pref_summary_off">Vis app-ikoner i hovedvisningen</string>
     <string name="notify_pref_title">Aktiver varsler</string>
     <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
+    <string name="primary_pref_title">Primærfarge</string>
     <string name="status_pref_title">Statusbar Color</string>
     <string name="accent_pref_title">Accent Color</string>
     <string name="syscolor_pref_summary_on">Farge for alle system-apper</string>

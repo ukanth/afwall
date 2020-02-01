@@ -267,10 +267,10 @@
     <string name="hideicons_pref_summary_on">Leistungssteigerung durch Ausblenden der App-Symbole in der Hauptansicht</string>
     <string name="hideicons_pref_summary_off">App-Symbole werden in der Hauptansicht angezeigt</string>
     <string name="notify_pref_title">Benachrichtigungen</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">Systemanwendungen</string>
+    <string name="primary_pref_title">Primärfarbe</string>
+    <string name="status_pref_title">Statusleistenfarbe</string>
+    <string name="accent_pref_title">Akzentfarbe</string>
     <string name="syscolor_pref_summary_on">Farbe für alle System-Apps</string>
     <string name="enableConfirmTitle">Bestätigungsfenster beim Deaktivieren von AFWall+</string>
     <string name="enableConfirm_summary_on">Ausschalten der Firewall muss bestätigt werden</string>
@@ -424,7 +424,7 @@
     <string name="reapply_rules">Regeln nach Einstellungsänderungen erneut anwenden</string>
     <string name="custom_rules">Benutzerdefinierte Regeln</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Mutlicast DNS aktivieren</string>
     <string name="error_log">Protokolldienst kann nicht gestartet werden. Entweder LogTarget enthält keine Werte oder LogService ist nicht aktiviert.</string>
     <string name="delete_profile">Profil kann nicht gelöscht werden</string>
     <string name="profile_migrate_msg">Profile übertragen</string>
@@ -516,9 +516,9 @@
     <string name="firewall_service">Firewall-Dienst</string>
     <string name="boot_notification">Boot-Dienst</string>
     <string name="app_notification">App-Benachrichtigung</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
-    <string name="clat">(clat) Clat</string>
+    <string name="hide">Ausblenden</string>
+    <string name="firewall_error_notify">Firewall-Problem</string>
+    <string name="ui_themes_header">Designs</string>
+    <string name="theme">Design der Benutzeroberfläche</string>
+    <string name="clat">(Clat) Clat</string>
 </resources>

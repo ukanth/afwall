@@ -267,10 +267,10 @@
     <string name="hideicons_pref_summary_on">Підвищити продуктивність, вимкнувши піктограми додатків у головному вікні</string>
     <string name="hideicons_pref_summary_off">Відображати піктограми застосунків у головному вікні</string>
     <string name="notify_pref_title">Увімкнути сповіщення</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">Системні додатки</string>
+    <string name="primary_pref_title">Основний колір</string>
+    <string name="status_pref_title">Колір рядка стану</string>
+    <string name="accent_pref_title">Колір відтінку</string>
     <string name="syscolor_pref_summary_on">Колір для усіх системних застосунків</string>
     <string name="enableConfirmTitle">Підтвердіть вимкнення AFWall+</string>
     <string name="enableConfirm_summary_on">Брандмауер буде запитувати підтвердження перед відключенням</string>
@@ -424,7 +424,7 @@
     <string name="reapply_rules">Будь ласка, повторно застосуйте правила через зміни уподобань</string>
     <string name="custom_rules">Власні правила</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Увімкнути Mutlicast DNS</string>
     <string name="error_log">Не вдалося запустити службу журналу. LogTarget є порожнім або LogService не ввімкнуто.</string>
     <string name="delete_profile">Не вдалося видалити профіль</string>
     <string name="profile_migrate_msg">Профілі перенесено</string>
@@ -516,9 +516,9 @@
     <string name="firewall_service">Службу брандмауера</string>
     <string name="boot_notification">Служба завантаження</string>
     <string name="app_notification">Сповіщення додатка</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">Приховати</string>
+    <string name="firewall_error_notify">Режим брандмауера</string>
+    <string name="ui_themes_header">Теми</string>
+    <string name="theme">Тема інтерфейсу</string>
     <string name="clat">(clat) Clat</string>
 </resources>

@@ -8,7 +8,7 @@
     <!-- main -->
     <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall+ (捐贈版)</string>
-    <string name="title_disabled">AFWall+  (已停止)</string>
+    <string name="title_disabled">AFWall+ (停用)</string>
     <string name="whitelist_array_item">允許所選</string>
     <string name="blacklist_array_item">阻擋所選</string>
     <string name="showrules">顯示規則</string>
@@ -33,14 +33,14 @@
     <string name="android_system">Android 系統</string>
     <string name="unknown_item">未知</string>
     <string name="tethering_item">(網路共用) - DHCP+DNS 服務</string>
-    <string name="dnsproxy_item">(DNS 代理) - 透過 netd 進行 DNS 搜尋</string>
-    <string name="ntp_item">(NTP) - Internet 時間伺服器</string>
-    <string name="root_item">(root) - 以root身份執行應用程式</string>
+    <string name="dnsproxy_item">(DNS 代理) - 以 netd 搜尋 DNS</string>
+    <string name="ntp_item">(NTP) - 互聯網時間伺服器</string>
+    <string name="root_item">(root) - 以root身分執行應用程式</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
-    <string name="media_item">(media) - Media server</string>
+    <string name="media_item">(media) - 媒體伺服器</string>
     <string name="vpn_item">(vpn) - VPN 網路</string>
     <string name="drm_item">(drm) - 數位著作權管理</string>
-    <string name="gps_item">(gps)-GPS</string>
+    <string name="gps_item">(gps) - 全球定位系統</string>
     <string name="shell_item">(shell) - Linux shell</string>
     <!-- <string name="operation_timeout">Operation timed out</string> -->
     <string name="fw_enabled">啟用防火牆</string>
@@ -48,43 +48,43 @@
     <string name="flushed">已啟用規則</string>
     <string name="show_log">檢視紀錄</string>
     <string name="clear_log">清除日誌</string>
-    <string name="applying_rules">正在套用 iptables（防火牆）規則</string>
+    <string name="applying_rules">正在套用 iptables 規則</string>
     <string name="applying">套用中</string>
-    <string name="saving_rules">正在儲存 iptables（防火牆）規則</string>
+    <string name="saving_rules">正在儲存 iptables 規則</string>
     <string name="rules_applied">規則應用成功</string>
-    <string name="rules_saved">規則已儲存</string>
-    <string name="rules_deleted">規則已刪除</string>
+    <string name="rules_saved">已儲存規則</string>
+    <string name="rules_deleted">已刪除規則</string>
     <string name="pass_titleset">設定密碼鎖</string>
     <string name="pass_titleget">需要密碼</string>
     <string name="enterpass">輸入密碼</string>
     <string name="reenterpass">確認密碼</string>
-    <string name="error_write_pref">載入設定時出錯</string>
-    <string name="enternewpass">輸入新密碼 (空白時移除密碼)：</string>
-    <string name="passdefined">密碼鎖已啟動</string>
-    <string name="passremoved">密碼鎖已停止</string>
+    <string name="error_write_pref">儲存設定時出錯</string>
+    <string name="enternewpass">輸入新密碼（留空將移除密碼）：</string>
+    <string name="passdefined">已啟動密碼鎖</string>
+    <string name="passremoved">已停止密碼鎖</string>
     <string name="passerror">改變密碼鎖錯誤</string>
     <string name="working">工作中</string>
     <string name="reading_apps">檢查安裝的應用程式</string>
     <string name="mode">防火牆模式</string>
     <string name="mode_header">模式：%s</string>
-    <string name="legend_clear">清空全部選擇</string>
+    <string name="legend_clear">取消全部選擇</string>
     <string name="mode_whitelist">允許所選</string>
-    <string name="legend_whitelist">所選的應用程式將被授予網路存取權限</string>
+    <string name="legend_whitelist">授權所選的應用程式存取網路</string>
     <string name="mode_blacklist">阻擋所選</string>
-    <string name="legend_blacklist">所選的應用程式將被拒絕網路存取權限</string>
+    <string name="legend_blacklist">阻止所選的應用程式存取網路</string>
     <string name="set_custom_script">設定自定義腳本</string>
     <string name="preferences">優先選項</string>
-    <string name="reload">重新載入應用程式</string>
+    <string name="reload">再載入應用程式</string>
     <string name="flush">更新規則</string>
     <string name="send_report">傳送錯誤報告</string>
-    <string name="enter_problem">請描述問題(英文)︰</string>
+    <string name="enter_problem">請描述問題：</string>
     <string name="send_mail">傳送郵件</string>
-    <string name="notify_pref_summary_on">安裝新應用程式時，顯示提醒通知</string>
-    <string name="notify_pref_summary_off">安裝新應用程式時，不顯示提醒通知</string>
+    <string name="notify_pref_summary_on">安裝新應用程式時顯示提醒通知</string>
+    <string name="notify_pref_summary_off">安裝新應用程式時不顯示提醒通知</string>
     <string name="custom_script_defined">自定義腳本已定義</string>
     <string name="custom_script_removed">自定義腳本已刪除</string>
     <string name="custom_script_error">保存自定義腳本時出錯</string>
-    <string name="custom_script_info"><b>在下面輸入自訂指令碼。</b>		\n<i>(留空則移除)</i>		\n有關自訂指令碼的訊息，請點擊<a href="https://github.com/ukanth/afwall/wiki/CustomScripts">這裡</a>。</string>
+    <string name="custom_script_info"><b>在下面輸入自訂指令碼。</b>		\n<i>（留空則移除）</i>		\n有關自訂指令碼的訊息，請點擊<a href="https://github.com/ukanth/afwall/wiki/CustomScripts">這裡</a>。</string>
     <string name="custom_script2_info">\n<b>自定義腳本關閉</b>\n您可以自定義腳本用於當防火牆被<b>禁用</b>時：</string>
     <string name="unsaved_changes">未保存更改</string>
     <string name="unsaved_changes_message">有更改尚未保存。\n您想保存還是放棄它們？</string>
@@ -94,9 +94,9 @@
     <string name="copied">已複製</string>
     <string name="Search">搜尋</string>
     <string name="flushRulesConfirm">更新所有 iptables 規則嗎？</string>
-    <string name="overrideRules">你缺定要匯入規則嗎？這將覆蓋現有的規則！</string>
-    <string name="notification_new">新安裝程式</string>
-    <string name="notification_new_package">Configure Internet permission</string>
+    <string name="overrideRules">你確定要匯入規則，取代現有的規則嗎？</string>
+    <string name="notification_new">已安裝新應用程式</string>
+    <string name="notification_new_package">設定網路權限</string>
     <string name="confirmMsg">完全停止防火牆嗎？</string>
     <string name="apply">應用</string>
     <string name="discard">放棄</string>
@@ -116,13 +116,13 @@
     <!-- init.d -->
     <string name="success_initd">啟動腳本已安裝</string>
     <string name="unable_initd">無法安裝 AFWall+ 啟動腳本。請驗證您的 ROM/內核是否支援 init.d/su.d</string>
-    <string name="remove_initd">啟動腳本已刪除</string>
+    <string name="remove_initd">已刪除啟動腳本</string>
     <string name="unable_remove_initd">無法移除 AFWall+ 啟動指令碼</string>
     <!-- Widget -->
-    <string name="widget_disable_fail">無法停用防火牆，密碼保護！</string>
+    <string name="widget_disable_fail">防火牆受密碼保護，無法停用！</string>
     <string name="widget_label_status">AFWall+ 開關</string>
     <string name="widget_label_settings">AFWall+ 設定</string>
-    <string name="widget_label_settings_old">AFWall+ 設定(舊)</string>
+    <string name="widget_label_settings_old">AFWall+ 舊設定</string>
     <!-- Color Picker -->
     <string name="color_pick">按下顏色以套用修改</string>
     <!-- Import/Export -->
@@ -130,14 +130,14 @@
     <string name="export_rules">僅匯出規則</string>
     <string name="export_all">匯出規則、 設定檔和偏好設定</string>
     <string name="import_rules">僅匯入規則</string>
-    <string name="import_all">匯入規則、 設定檔和偏好設定</string>
-    <string name="export_rules_success">匯出至 </string>
-    <string name="export_rules_fail">匯出失敗 ！</string>
-    <string name="import_rules_success">匯入從 </string>
-    <string name="import_rules_fail">匯入失敗！</string>
-    <string name="import_rules_missing">找不到規則檔</string>
+    <string name="import_all">匯入規則、 設定檔和設定</string>
+    <string name="export_rules_success">匯出至</string>
+    <string name="export_rules_fail">無法匯出！</string>
+    <string name="import_rules_success">匯入從</string>
+    <string name="import_rules_fail">無法匯入！</string>
+    <string name="import_rules_missing">找不到規則檔！</string>
     <string name="exportConfirm">匯出規則到儲存裝置？</string>
-    <string name="export_logs_fail">匯出到儲存裝置失敗！</string>
+    <string name="export_logs_fail">無法匯出到儲存裝置！</string>
     <string name="export_to_sd">匯出到儲存裝置</string>
     <!-- Logging -->
     <string name="enable_firewall_log">啟用防火牆日誌</string>
@@ -186,14 +186,14 @@
     <string name="reapply_profile">重新應用設定檔規則</string>
     <!-- Interface -->
     <string name="lan_title">區域網路控制</string>
-    <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
+    <string name="lan_summary">分別設定 LAN 及 Wi-Fi 權限</string>
     <string name="iptables_pref">Iptables 二進位檔案</string>
     <string name="vpn_profile">VPN 控制</string>
     <string name="vpnSummary">啟用以分別控制 VPN 的許可權</string>
     <string name="roaming">漫遊控制</string>
     <string name="roamingSummary">啟用以分別控制漫遊的許可權</string>
     <string name="tor_profile">Tor 控制</string>
-    <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+    <string name="torSummary">使用 Tor 重新導向非 Tor 的流量</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
     <!-- Toast Messages -->
@@ -222,12 +222,12 @@
     <string name="disable_tasker">停用 AFWall+</string>
     <string name="tasker_apply">Tasker：正在套用防火牆規則</string>
     <string name="tasker_disabled">Tasker: AFWall+ 已禁用！</string>
-    <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
+    <string name="tasker_profile_applied">Tasker: AFWall+ 設定檔套用成功</string>
     <string name="tasker_muliprofile">Tasker: AFWall+ 多設定檔已禁用</string>
     <!-- IPv4/IPv6 -->
     <string name="ipv6_title">支援 IPv6</string>
     <string name="ipv6_summary">啟用對 IPv6 的支持</string>
-    <string name="control_ipv6_title">Only Control IPv6 Chains</string>
+    <string name="control_ipv6_title">僅控制 IPv6 鏈</string>
     <string name="ip6unavailable">錯誤：IPv6 需要 \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">切換 IPv6 規則</string>
     <string name="switch_ipv4">切換 IPv4 規則</string>
@@ -258,19 +258,19 @@
     <string name="enableInboundSummary">允許從 LAN 到手機的連接 (Samba、sshd、AirDroid等)</string>
     <!-- UI Preferences -->
     <string name="ui_prefs_title">使用者介面</string>
-    <string name="rule_prefs_title">Rules Behaviour</string>
-    <string name="ui_chains_title">IPv4 Chains</string>
-    <string name="ui_chains6_title">IPv6 Chains</string>
+    <string name="rule_prefs_title">規則行為</string>
+    <string name="ui_chains_title">IPv4 鏈</string>
+    <string name="ui_chains6_title">IPv6 鏈</string>
     <string name="rules_prefs_title">規則/連線</string>
     <string name="log_prefs_title">日誌</string>
     <string name="hideicons_pref_title">隱藏圖示</string>
     <string name="hideicons_pref_summary_on">取消程式圖示的顯示可以提升流暢度</string>
     <string name="hideicons_pref_summary_off">在主畫面中顯示應用程式圖示</string>
     <string name="notify_pref_title">啟用通知</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">系統應用程式</string>
+    <string name="primary_pref_title">主色</string>
+    <string name="status_pref_title">狀態列顏色</string>
+    <string name="accent_pref_title">I love you China</string>
     <string name="syscolor_pref_summary_on">所有系統程式的顏色</string>
     <string name="enableConfirmTitle">確認禁用防火牆</string>
     <string name="enableConfirm_summary_on">防火牆被禁用前將要求確認</string>
@@ -516,9 +516,9 @@
     <string name="firewall_service">防火牆服務</string>
     <string name="boot_notification">啟動服務</string>
     <string name="app_notification">程式通知</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">隱藏</string>
+    <string name="firewall_error_notify">防火牆問題</string>
+    <string name="ui_themes_header">主題</string>
+    <string name="theme">使用者介面主題</string>
     <string name="clat">(clat) Clat</string>
 </resources>

@@ -516,7 +516,7 @@
     <string name="firewall_service">Brandväggstjänsten</string>
     <string name="boot_notification">Starttjänst</string>
     <string name="app_notification">Appaviseringar</string>
-    <string name="hide">Hide</string>
+    <string name="hide">Dölj</string>
     <string name="firewall_error_notify">Firewall Issue</string>
     <string name="ui_themes_header">Themes</string>
     <string name="theme">UI Theme</string>

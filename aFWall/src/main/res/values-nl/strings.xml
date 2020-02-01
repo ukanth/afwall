@@ -270,10 +270,10 @@
     <string name="hideicons_pref_summary_on">Prestaties verbeteren door applicatie pictogrammen uit te schakelen in het hoofdscherm</string>
     <string name="hideicons_pref_summary_off">Applicatie pictogrammen in het hoofdvenster weergeven</string>
     <string name="notify_pref_title">Meldingen inschakelen</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">Systeemtoepassingen</string>
+    <string name="primary_pref_title">Primaire kleur</string>
+    <string name="status_pref_title">Statusbalk kleur</string>
+    <string name="accent_pref_title">Accentkleur</string>
     <string name="syscolor_pref_summary_on">Kleur voor alle systeem applicaties</string>
     <string name="enableConfirmTitle">Bevestiging bij uitschakelen AFWall+</string>
     <string name="enableConfirm_summary_on">Firewall zal om bevestiging vragen voor het uitschakelen</string>
@@ -427,7 +427,7 @@
     <string name="reapply_rules">Instellingen zijn gewijzigd, pas de regels opnieuw toe</string>
     <string name="custom_rules">Persoonlijke regels</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Multicast DNS inschakelen</string>
     <string name="error_log">Kan log-service niet starten. LogTarget is leeg of LogService is niet ingeschakeld.</string>
     <string name="delete_profile">Kan profiel niet verwijderen</string>
     <string name="profile_migrate_msg">Profielen gemigreerd</string>
@@ -519,9 +519,9 @@
     <string name="firewall_service">Firewall Service</string>
     <string name="boot_notification">Boot Service</string>
     <string name="app_notification">App notificatie</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">Verberg</string>
+    <string name="firewall_error_notify">Firewall probleem</string>
+    <string name="ui_themes_header">Thema\'s</string>
+    <string name="theme">UI Thema</string>
     <string name="clat">(clat) Clat</string>
 </resources>

@@ -267,10 +267,10 @@
     <string name="hideicons_pref_summary_on">Hobetu errendimendua ikuspegi nagusian aplikazioen ikonoak desgaituz</string>
     <string name="hideicons_pref_summary_off">Erakutsi aplikazioen ikonoak ikuspegi nagusian</string>
     <string name="notify_pref_title">Gaitu jakinarazpenak</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">Sistemako aplikazioak</string>
+    <string name="primary_pref_title">Kolore nagusia</string>
+    <string name="status_pref_title">Egoera-barraren kolorea</string>
+    <string name="accent_pref_title">Nabarmentze kolorea</string>
     <string name="syscolor_pref_summary_on">Sistemako aplikazio guztien kolorea</string>
     <string name="enableConfirmTitle">Berretsi AFWall+ desgaitzea</string>
     <string name="enableConfirm_summary_on">Suebakiak berrespena eskatuko du ezgaitu aurretik</string>
@@ -516,9 +516,9 @@
     <string name="firewall_service">Suebaki Zerbitzua</string>
     <string name="boot_notification">Makina hasiera zerbitzua</string>
     <string name="app_notification">Aplikazio jakinarazpena</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">Ezkutatu</string>
+    <string name="firewall_error_notify">Suebakiaren arazoa</string>
+    <string name="ui_themes_header">Gaiak</string>
+    <string name="theme">Interfazearen gaia</string>
     <string name="clat">(clat) Clat</string>
 </resources>

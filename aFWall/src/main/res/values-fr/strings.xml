@@ -423,8 +423,8 @@
     <string name="showlogdetail_title">Détails du journal de l\'application</string>
     <string name="reapply_rules">Merci de ré-appliquer les règles en raison du changement de préférence</string>
     <string name="custom_rules">Règles personnalisées</string>
-    <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdnslabel">Multidiffusion DNS (mdns)</string>
+    <string name="mdns">Activer la multidiffusion DNS</string>
     <string name="error_log">Impossible de démarrer le service de journalisation. LogTarget est vide ou LogService n’est pas activé.</string>
     <string name="delete_profile">Impossible de supprimer le profil</string>
     <string name="profile_migrate_msg">Profils migrés</string>

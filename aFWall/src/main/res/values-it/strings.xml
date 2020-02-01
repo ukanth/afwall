@@ -424,7 +424,7 @@
     <string name="reapply_rules">Le preferenze sono cambiate, applica di nuovo le regole</string>
     <string name="custom_rules">Regole personalizzate</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Abilita Multicast DNS</string>
     <string name="error_log">Impossibile avviare il servizio Registro. LogTarget è vuoto o LogService non è abilitato.</string>
     <string name="delete_profile">Impossibile eliminare il profilo</string>
     <string name="profile_migrate_msg">Profili migrati</string>

@@ -120,7 +120,7 @@
     <string name="unable_remove_initd">Nie można usunąć skryptu startowego AFWall+</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Nie można wyłączyć zapory. Blokada hasłem!</string>
-    <string name="widget_label_status">AFWall+ Toggle</string>
+    <string name="widget_label_status">Ukryj AFWall+</string>
     <string name="widget_label_settings">Ustawienia AFWall+</string>
     <string name="widget_label_settings_old">Ustawienia AFWall+ (Stare)</string>
     <!-- Color Picker -->
@@ -186,7 +186,7 @@
     <string name="reapply_profile">Zaaplikuj ponownie reguły profili</string>
     <!-- Interface -->
     <string name="lan_title">Ustawienia LAN</string>
-    <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
+    <string name="lan_summary">Pozwól kontrolować uprawnienia LAN oddzielnie od uprawnień Wi-Fi</string>
     <string name="iptables_pref">Plik wykonywalny iptables</string>
     <string name="vpn_profile">Ustawienia VPN</string>
     <string name="vpnSummary">Włącz, aby sterować uprawnieniami VPN oddzielnie</string>
@@ -222,7 +222,7 @@
     <string name="disable_tasker">Wyłącz AFWall+</string>
     <string name="tasker_apply">Tasker: Stosowanie reguł zapory</string>
     <string name="tasker_disabled">Tasker: AFWall+ WYŁĄCZONY!</string>
-    <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
+    <string name="tasker_profile_applied">Tasker: Profil AFWall+ zastosowany</string>
     <string name="tasker_muliprofile">Tasker: Multi-profile AFWall+ wyłączone</string>
     <!-- IPv4/IPv6 -->
     <string name="ipv6_title">Wsparcie IPv6</string>
@@ -269,8 +269,8 @@
     <string name="notify_pref_title">Włącz powiadomienia</string>
     <string name="syscolor_pref_title">Aplikacje systemowe</string>
     <string name="primary_pref_title">Kolor podstawowy</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="status_pref_title">Kolor paska stanu</string>
+    <string name="accent_pref_title">Kolor dodatkowy</string>
     <string name="syscolor_pref_summary_on">Kolor dla wszystkich aplikacji systemowych</string>
     <string name="enableConfirmTitle">Potwierdź wyłączenie AFWall+</string>
     <string name="enableConfirm_summary_on">Zapora wyświetli potwierdzenie zanim zostanie wyłączona</string>
@@ -416,7 +416,7 @@
     <string name="log_src">Źródło:</string>
     <string name="log_proto">Protokół:</string>
     <string name="no_data_available">Proszę włączyć usługę dziennika zdarzeń w Ustawieniach. Jeśli włączone - brak danych dziennika.</string>
-    <string name="loading_data_title">Loading&#8230;</string>
+    <string name="loading_data_title">Wczytywanie&#8230;</string>
     <string name="loading_data">Pobieranie danych logów</string>
     <string name="switch_old">Przełącz na stary widok</string>
     <string name="switch_new">Przełącz na nowy widok</string>
@@ -424,10 +424,10 @@
     <string name="reapply_rules">Proszę ponownie zastosować reguły ze względu na zmianę preferencji</string>
     <string name="custom_rules">Reguły niestandardowe</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdns">Włącz Multicast DNS</string>
     <string name="error_log">Nie można uruchomić usługi dziennika. LogTarget jest pusty lub Logservice nie jest włączona.</string>
     <string name="delete_profile">Nie można usunąć profilu</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
+    <string name="profile_migrate_msg">Profile zmigrowane</string>
     <!-- Log Details -->
     <string name="destination_address">Adres docelowy</string>
     <string name="source_address">Adres źródłowy</string>
@@ -465,7 +465,7 @@
     <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
     <string name="activity_home_note">Zamknij i ponownie otwórz aplikację, aby ponownie wyświetlić ekran uwierzytelniania odciskiem palca</string>
     <string name="fingerprint_required">Wymagany odcisk palca</string>
-    <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
+    <string name="device_with_no_fingerprint_sensor">Twoje urządzenie nie ma czujnika linii papilarnych</string>
     <string name="fingerprint_permission_manifest_missing">Nie włączone uprawnienia dla uwierzytelniania odciskiem palca</string>
     <string name="register_at_least_one_fingerprint">Zarejestruj przynajmniej jeden odcisk palca w ustawieniach</string>
     <string name="lock_screen_not_enabled">Blokada ekranu nie jest włączona w ustawieniach</string>
@@ -500,11 +500,11 @@
     <string name="quick_apply_title">Pokaż Szybkie stosowanie</string>
     <string name="quick_apply_summary">Tylko w wersji płatnej! Pokaż pływający przycisk Zastosuj, aby szybko zastosować reguły</string>
     <string name="init_d">Startup directory path for script</string>
-    <string name="mount_initd_error">Unable to mount the directory</string>
-    <string name="delete_initd_error">Unable to delete the startup script</string>
+    <string name="mount_initd_error">Nie można zamontować katalogu</string>
+    <string name="delete_initd_error">Nie można usunąć skryptu startowego</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
-    <string name="runNotification">Rules Progress</string>
-    <string name="displayBlockNotification">disable log alert notification</string>
+    <string name="runNotification">Postęp Zasad</string>
+    <string name="displayBlockNotification">wyłącz powiadomienie o alercie dziennika</string>
     <string name="applyRulesFasterTitle">Zastosuj natychmiast</string>
     <string name="applyRulesFaster">Używaj tylko jeśli stosowanie reguł jest wolne - Bardzo eksperymentalne</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
@@ -513,12 +513,12 @@
     <string name="host">Host:</string>
     <string name="battery_optimization_title">Whitelist afwall+ doze</string>
     <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
-    <string name="firewall_service">Firewall Service</string>
-    <string name="boot_notification">Boot Service</string>
+    <string name="firewall_service">Usługi Zapory</string>
+    <string name="boot_notification">Usługi uruchamiania</string>
     <string name="app_notification">Powiadomienia aplikacji</string>
     <string name="hide">Ukryj</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="firewall_error_notify">Tryb zapory</string>
+    <string name="ui_themes_header">Motywy</string>
+    <string name="theme">Motyw UI</string>
     <string name="clat">(clat) Clat</string>
 </resources>
