@@ -211,9 +211,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             setContentView(R.layout.main);
         }
 
-        view = (View) findViewById (R.id.imageHolder);
-        view.invalidate();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -266,6 +263,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void updateSelectedColumns() {
+        selectedColumns = DEFAULT_COLUMN;
         selectedColumns = G.enableLAN() ?  selectedColumns + 1 : selectedColumns;
         selectedColumns = G.enableRoam() ?  selectedColumns + 1 : selectedColumns;
         selectedColumns = G.enableVPN() ?  selectedColumns + 1 : selectedColumns;
@@ -542,18 +540,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onRestart() {
         super.onRestart();
-        refreshBar();
     }
 
-    private void refreshBar() {
-        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        view.setLayoutParams(layoutParams);
-        view.invalidate();
-        view.postInvalidate();
-        view.refreshDrawableState();
-        view.setVisibility(View.GONE);
-        view.setVisibility(View.VISIBLE);
-    }
+
 
     private void updateIconStatus() {
         if (Api.isEnabled(getApplicationContext())) {
@@ -605,7 +594,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onResume() {
         super.onResume();
-        refreshBar();
         /*if (showQuickButton()) {
             fab.setVisibility(View.VISIBLE);
         } else {
@@ -625,7 +613,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void reloadPreferences() {
-        selectedColumns = DEFAULT_COLUMN;
+
         updateSelectedColumns();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);

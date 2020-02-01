@@ -97,7 +97,7 @@
 
             <ImageView
                 android:id="@+id/imageHolder"
-                android:layout_width="72dp"
+                android:layout_width="40dp"
                 android:layout_height="fill_parent" />
 
             <ImageView
