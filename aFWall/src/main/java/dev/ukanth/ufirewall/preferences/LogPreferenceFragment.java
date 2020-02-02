@@ -53,13 +53,16 @@ public class LogPreferenceFragment extends PreferenceFragment {
             return;
         }
         ListPreference listPreference = (ListPreference) logTarget;
-        if(G.logTargets() != null) {
+        if(G.logTargets() != null && G.logTargets().length() > 0) {
             String [] items = G.logTargets().split(",");
-            if (listPreference != null) {
-                listPreference.setEntries(items);
-                listPreference.setEntryValues(items);
+            if(items != null && items.length > 0) {
+                if (listPreference != null) {
+                    listPreference.setEntries(items);
+                    listPreference.setEntryValues(items);
+                }
+            } else {
+                ((PreferenceGroup) findPreference("logExperimental")).removePreference(listPreference);
             }
-            listPreference.setValue("LOG");
         } else{
             ((PreferenceGroup) findPreference("logExperimental")).removePreference(listPreference);
         }
