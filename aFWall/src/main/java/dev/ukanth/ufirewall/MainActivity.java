@@ -1707,7 +1707,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             cloneColumn(getString(R.string.legend_clone));
                             break;
                         case 2:
-                            selectActionConfirmation(getString(R.string.reverse_all), 1);
+                            selectActionConfirmation(getString(R.string.unselect_all), 1);
                             break;
                     }
                 })
