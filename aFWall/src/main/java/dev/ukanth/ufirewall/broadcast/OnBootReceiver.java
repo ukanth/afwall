@@ -54,7 +54,10 @@ public class OnBootReceiver extends BroadcastReceiver {
 
             if (G.enableLogService()) {
                 Log.i("AFWall", "Starting log service onboot");
-                context.startService(new Intent(context, LogService.class));
+                if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                    Log.i("AFWall", "Starting firewall service onboot");
+                    context.startService(new Intent(context, LogService.class));
+                }
             }
 
             //try applying the rule after few seconds if enabled

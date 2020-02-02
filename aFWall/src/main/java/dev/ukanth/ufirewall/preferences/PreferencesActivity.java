@@ -305,13 +305,14 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Context ctx = getApplicationContext();
-
+        boolean isRefreshRequired = false;
 
         if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
                 || key.equals("enableTether")
                 || key.equals("enableLAN") || key.equals("enableRoam")
                 || key.equals("locale") || key.equals("showFilter")) {
             G.reloadProfile();
+            isRefreshRequired = true;
         }
 
         if (key.equals("ip_path") || key.equals("dns_value")) {
@@ -371,6 +372,12 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             recreate();
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("dev.ukanth.ufirewall.theme.REFRESH");
+            ctx.sendBroadcast(broadcastIntent);
+        }
+
+        if (isRefreshRequired) {
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction("dev.ukanth.ufirewall.ui.CHECKREFRESH");
             ctx.sendBroadcast(broadcastIntent);
         }
     }

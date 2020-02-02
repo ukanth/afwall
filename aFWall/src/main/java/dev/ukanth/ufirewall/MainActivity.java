@@ -158,13 +158,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MaterialDialog runProgress;
     private AlertDialog dialogLegend = null;
 
-    private BroadcastReceiver uiProgressReceiver4,uiProgressReceiver6, toastReceiver,themeRefreshReceiver;
+    private BroadcastReceiver uiProgressReceiver4,uiProgressReceiver6, toastReceiver,themeRefreshReceiver, uiRefreshReceiver;
     private IntentFilter uiFilter4, uiFilter6;
 
     //all async reference with context
     private GetAppList getAppList;
     private RunApply runApply;
     private PurgeTask purgeTask;
+    private int currentUI = 0;
     private static int DEFAULT_COLUMN = 2;
     private int selectedColumns = DEFAULT_COLUMN;
     private static int DEFAULT_VIEW_LIMIT = 4;
@@ -205,9 +206,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         updateSelectedColumns();
 
         if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
+            currentUI = 0;
             setContentView(R.layout.main_old);
         }
         else{
+            currentUI = 1;
             setContentView(R.layout.main);
         }
 
@@ -258,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //registerLogService();
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
+        registerUIRefresh();
 
 
     }
@@ -280,6 +284,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }*/
 
+    private void  registerUIRefresh(){
+        IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.ui.CHECKREFRESH");
+        uiRefreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateSelectedColumns();
+
+                if(selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
+                    recreate();
+                }
+                else if(selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0){
+                    recreate();
+                }
+            }
+        };
+        registerReceiver(uiRefreshReceiver, filter);
+    }
     private void registerThemeIntent() {
 
         IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.theme.REFRESH");
@@ -1531,6 +1552,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             break;
             case PREFERENCE_RESULT: {
                 invalidateOptionsMenu();
+                //recreate();
             }
             break;
         }
@@ -1540,7 +1562,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             final String script2 = data.getStringExtra(Api.SCRIPT2_EXTRA);
             setCustomScript(script, script2);
         }
-        recreate();
     }
 
     /**
@@ -2381,6 +2402,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         if (themeRefreshReceiver != null) {
             unregisterReceiver(themeRefreshReceiver);
+        }
+        if (uiRefreshReceiver != null) {
+            unregisterReceiver(uiRefreshReceiver);
         }
     }
 
