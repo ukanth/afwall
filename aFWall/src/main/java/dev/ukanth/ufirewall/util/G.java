@@ -617,7 +617,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static String logTarget() {
-        return gPrefs.getString(LOG_TARGET, "");
+        return gPrefs.getString(LOG_TARGET, "LOG");
     }
 
     public static String logTarget(String val) {

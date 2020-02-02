@@ -1265,18 +1265,18 @@ public final class Api {
                     tempSession.kill();
                     tempSession.close();
                 }
-            } else {
-                Shell.Interactive tempSession = new Shell.Builder().useSU().open();
-                Log.i(Api.TAG, "Cleaning up log watches using shell");
-                tempSession.addCommand("killall nflog");
-                tempSession.addCommand("pkill -9 -f \"aflogshellb\"");
-                tempSession.addCommand("pkill -9 -f \"aflogshell\"");
-                //try using our busybox incase if pkill is not found
-                String bbPath = getBusyBoxPath(ctx, true);
-                tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshellb\"");
-                tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshell\"");
-                //TODO: cleanup shell
             }
+            Shell.Interactive tempSession = new Shell.Builder().useSU().open();
+            Log.i(Api.TAG, "Cleaning up log watches using shell");
+            tempSession.addCommand("killall nflog");
+            tempSession.addCommand("pkill -9 -f \"aflogshellb\"");
+            tempSession.addCommand("pkill -9 -f \"aflogshell\"");
+            //try using our busybox incase if pkill is not found
+            String bbPath = getBusyBoxPath(ctx, true);
+            tempSession.addCommand(bbPath + " pkill -9 -f \"nflog\"");
+            tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshellb\"");
+            tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshell\"");
+            //TODO: cleanup shell
         } catch (ClassCastException e) {
             Log.e(TAG, "ClassCastException in cleanupUid: " + e.getMessage());
         } catch (Exception e) {

@@ -62,11 +62,11 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
         holder.bind(logData.get(position),recyclerItemClickListener);
         try {
             info = Api.getPackageDetails(context, data.getUid());
-            holder.icon.setBackgroundDrawable(info.applicationInfo.loadIcon(context.getPackageManager()));
+            holder.icon.setBackground(info.applicationInfo.loadIcon(context.getPackageManager()));
         } catch (Exception e) {
             info = null;
             try {
-                holder.icon.setImageDrawable(context.getDrawable(R.drawable.ic_unknown));
+                holder.icon.setBackgroundResource(R.drawable.ic_unknown);
             }catch (Exception e1) {
 
             }

@@ -148,7 +148,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             } else {
                 Api.donateDialog(LogActivity.this,false);
             }
-            // do what ever you want to do with it
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }

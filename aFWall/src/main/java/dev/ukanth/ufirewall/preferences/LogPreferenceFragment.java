@@ -52,7 +52,6 @@ public class LogPreferenceFragment extends PreferenceFragment {
         if (logTarget == null) {
             return;
         }
-        Context ctx = (Context) getActivity();
         ListPreference listPreference = (ListPreference) logTarget;
         if(G.logTargets() != null) {
             String [] items = G.logTargets().split(",");
@@ -60,6 +59,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
                 listPreference.setEntries(items);
                 listPreference.setEntryValues(items);
             }
+            listPreference.setValue("LOG");
         } else{
             ((PreferenceGroup) findPreference("logExperimental")).removePreference(listPreference);
         }

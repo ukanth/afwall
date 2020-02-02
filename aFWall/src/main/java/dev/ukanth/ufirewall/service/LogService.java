@@ -235,7 +235,6 @@ public class LogService extends Service {
                             default:
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
-
                         break;
                     case "NFLOG":
                         logPath = Api.getNflogPath(getApplicationContext());
@@ -247,33 +246,40 @@ public class LogService extends Service {
                 Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
                 handler = new Handler();
 
-                rootSession = new Shell.Builder()
-                        .useSU()
-                        .setMinimalLogging(true)
-                        .setOnSTDOUTLineListener(line -> {
-                            if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
-                                try {
-                                    String uid = line.split("=")[1];
-                                    if (uid != null) {
-                                        Set data = G.storedPid();
-                                        if (data == null || data.isEmpty()) {
-                                            data = new HashSet();
-                                            data.add(uid);
-                                            G.storedPid(data);
-                                        } else if (!data.contains(uid)) {
-                                            Set data2 = new HashSet();
-                                            data2.addAll(data);
-                                            data2.add(uid);
-                                            G.storedPid(data2);
+                if(logPath != null) {
+                    rootSession = new Shell.Builder()
+                            .useSU()
+                            .setMinimalLogging(true)
+                            .setOnSTDOUTLineListener(line -> {
+                                if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
+                                    try {
+                                        String uid = line.split("=")[1];
+                                        if (uid != null) {
+                                            Set data = G.storedPid();
+                                            if (data == null || data.isEmpty()) {
+                                                data = new HashSet();
+                                                data.add(uid);
+                                                G.storedPid(data);
+                                            } else if (!data.contains(uid)) {
+                                                Set data2 = new HashSet();
+                                                data2.addAll(data);
+                                                data2.add(uid);
+                                                G.storedPid(data2);
+                                            }
                                         }
+                                    } catch (Exception e) {
                                     }
-                                } catch (Exception e) {
+                                } else {
+                                    storeLogInfo(line, getApplicationContext());
                                 }
-                            } else {
-                                storeLogInfo(line, getApplicationContext());
-                            }
 
-                        }).addCommand(logPath).open();
+                            }).addCommand(logPath).open();
+                } else {
+                    Log.i(TAG, "Unable to start log service. Log Path is empty");
+                    Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));
+                    G.enableLogService(false);
+                    stopSelf();
+                }
             } else {
                 Log.i(TAG, "Unable to start log service. LogTarget is empty");
                 Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));
