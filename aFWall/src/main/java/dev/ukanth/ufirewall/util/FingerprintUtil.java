@@ -68,7 +68,7 @@ public class FingerprintUtil {
     /*
     * Dialog
     **/
-    public static class FingerprintDialog extends Dialog{
+    public static class FingerprintDialog extends Dialog {
 
         private KeyStore keyStore;
         // Variable used for storing the key in the Android Keystore container
@@ -89,6 +89,7 @@ public class FingerprintUtil {
         OnFingerprintFailure failureCallback;
         OnFingerprintSuccess successCallback;
 
+        @RequiresApi(api = Build.VERSION_CODES.M)
         public FingerprintDialog(Context context) {
             super(context);
 
@@ -245,7 +246,9 @@ public class FingerprintUtil {
             if(successCallback != null){
                 successCallback.then();
             }
-            this.dismiss();
+            if(isShowing()) {
+                dismiss();
+            }
         }
 
         @TargetApi(Build.VERSION_CODES.M)

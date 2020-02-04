@@ -1486,7 +1486,7 @@ public final class Api {
                 }
             }
 
-
+            //use pm list packages -f -U --user 10 
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
@@ -1701,23 +1701,27 @@ public final class Api {
         try {
             for (Integer integer : uid1) {
                 int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
-                String[] pkgs = pkgmanager.getPackagesForUid(appUid);
-                if (pkgs != null) {
-                    PackageInfoData app = new PackageInfoData();
-                    app.uid = appUid;
-                    app.installTime = new File(apinfo.sourceDir).lastModified();
-                    app.names = new ArrayList<String>();
-                    app.names.add(name + "(M)");
-                    app.appinfo = apinfo;
-                    if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                        //user app
-                        app.appType = 0;
-                    } else {
-                        //system app
-                        app.appType = 1;
+                try{
+                    String[] pkgs = pkgmanager.getPackagesForUid(appUid);
+                    if (pkgs != null) {
+                        PackageInfoData app = new PackageInfoData();
+                        app.uid = appUid;
+                        app.installTime = new File(apinfo.sourceDir).lastModified();
+                        app.names = new ArrayList<String>();
+                        app.names.add(name + "(M)");
+                        app.appinfo = apinfo;
+                        if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                            //user app
+                            app.appType = 0;
+                        } else {
+                            //system app
+                            app.appType = 1;
+                        }
+                        app.pkgName = apinfo.packageName;
+                        syncMap.put(appUid, app);
                     }
-                    app.pkgName = apinfo.packageName;
-                    syncMap.put(appUid, app);
+                }catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
