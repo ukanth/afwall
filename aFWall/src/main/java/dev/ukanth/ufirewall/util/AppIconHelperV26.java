@@ -10,6 +10,10 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import dev.ukanth.ufirewall.log.Log;
+
+import static dev.ukanth.ufirewall.Api.TAG;
+
 public class AppIconHelperV26 {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -43,7 +47,7 @@ public class AppIconHelperV26 {
                 return bitmap;
             }
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG,e.getMessage(),e);
         }
 
         return null;

@@ -1208,7 +1208,7 @@ public final class Api {
 
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG,e.getMessage(),e);
             return false;
         }
     }
@@ -1486,7 +1486,7 @@ public final class Api {
                 }
             }
 
-            //use pm list packages -f -U --user 10 
+            //use pm list packages -f -U --user 10
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();

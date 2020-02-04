@@ -25,6 +25,8 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.AppIconHelperV26;
 import dev.ukanth.ufirewall.util.G;
 
+import static dev.ukanth.ufirewall.Api.TAG;
+
 /**
  * Created by ukanth on 25/7/16.
  */
@@ -68,7 +70,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
                 holder.icon.setImageDrawable(info.applicationInfo.loadIcon(context.getPackageManager()));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG,e.getMessage(),e);
             info = null;
             try {
                 if(Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.O) {
@@ -77,7 +79,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
                     holder.icon.setImageDrawable(context.getDrawable(R.drawable.ic_unknown));
                 }
             }catch (Exception e1) {
-                e1.printStackTrace();
+                Log.e(TAG,e1.getMessage(),e1);
             }
         }
 

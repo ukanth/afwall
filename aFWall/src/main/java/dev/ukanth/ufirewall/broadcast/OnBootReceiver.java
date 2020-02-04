@@ -54,24 +54,24 @@ public class OnBootReceiver extends BroadcastReceiver {
 
             if (G.enableLogService()) {
                 Log.i("AFWall", "Starting log service onboot");
-                if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    Log.i("AFWall", "Starting firewall service onboot");
-                    context.startService(new Intent(context, LogService.class));
+                try {
+                    context.startService(new Intent(context, FirewallService.class));
+                } catch (Exception e) {
                 }
             }
-
-            //try applying the rule after few seconds if enabled
-            if (G.startupDelay()) {
-                //make sure we apply rules after 5 sec
-                Handler handler = new Handler();
-                handler.postDelayed(() -> {
-                    // Apply the changes regards if network is up/not
-                    InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-                }, G.getCustomDelay());
-            }
-
-            //check if startup script is copied
-            Api.checkAndCopyFixLeak(context, "afwallstart");
         }
+
+        //try applying the rule after few seconds if enabled
+        if (G.startupDelay()) {
+            //make sure we apply rules after 5 sec
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                // Apply the changes regards if network is up/not
+                InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+            }, G.getCustomDelay());
+        }
+
+        //check if startup script is copied
+        Api.checkAndCopyFixLeak(context, "afwallstart");
     }
 }

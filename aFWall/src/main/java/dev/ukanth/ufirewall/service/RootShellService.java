@@ -320,8 +320,12 @@ public class RootShellService extends Service implements Cloneable {
             }
             rootState = ShellState.BUSY;
             startShellInBackground();
-            Intent intent = new Intent(context, RootShellService.class);
-            context.startService(intent);
+            try {
+                Intent intent = new Intent(context, RootShellService.class);
+                context.startService(intent);
+            } catch (Exception e){
+                Log.e(TAG, e.getMessage(),e);
+            }
         }
     }
 

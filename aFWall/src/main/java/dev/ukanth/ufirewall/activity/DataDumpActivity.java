@@ -54,6 +54,8 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
+import static dev.ukanth.ufirewall.Api.TAG;
+
 
 public abstract class DataDumpActivity extends AppCompatActivity {
 
@@ -215,9 +217,9 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                 filename = file.getAbsolutePath();
                 res = true;
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                Log.e(TAG,e.getMessage(),e);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG,e.getMessage(),e);
             } finally {
                 try {
                     if (output != null) {
@@ -225,7 +227,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                         output.close();
                     }
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    Log.e(TAG,ex.getMessage(),ex);
                 }
             }
             return res;
