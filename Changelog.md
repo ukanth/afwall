@@ -1,6 +1,17 @@
 AFWall+ Changelog
 ==================
 
+Version 3.4.0
+* Feature: Bluetooth,USB tethering as separate rules - Thanks @nxzero
+* Feature: Clone columns (Copy rules from one column to other column)
+* Feature: Selectable Log target (LOG/NFLOG)
+* Fix: Log related issues 
+* Fix: Notification related issues/Option removed!!
+* Main screen UI update - Thanks @vvimjam
+* Crash fixes and performance improvements
+* Translation updates.
+
+
 Version 3.4.0-BETA2
 * Main UI update only when more than 4 controls
 * Notification related fixes
