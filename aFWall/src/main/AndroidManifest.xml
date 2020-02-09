@@ -329,7 +329,7 @@
         <!--TODO: for donate change it -->
         <provider
             android:name=".util.XPreferenceProvider"
-            android:authorities="dev.ukanth.ufirewall"
+            android:authorities="${applicationId}"
             android:exported="true" />
 
         <activity android:name=".activity.CustomRulesActivity"></activity>
