@@ -1,4 +1,7 @@
+APP_OPTIM := debug
+LOCAL_CFLAGS += -UNDEBUG
 LOCAL_PATH := $(call my-dir)
+
 # Clear variables here.
 include $(CLEAR_VARS)
 

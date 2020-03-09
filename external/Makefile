@@ -6,29 +6,33 @@ NDK     := /opt/android-ndk-r10e
 ARCH    := arm
 GCCVER  := 4.9
 
+LOCAL_CFLAGS += -UNDEBUG
+APP_OPTIM := debug
 # You should be able to just 'make ARCH=x86' and it should DTRT.
 ARCH_LIST := arm x86 mips
 #ARCH_LIST := arm
 ifeq ($(ARCH),arm)
 TRIPLET := arm-linux-androideabi
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
-APIVER  := 8
-NDK_ABINAME := armeabi
+APIVER  := 16
+NDK_ABINAME := arm64-v8a
 endif
 ifeq ($(ARCH),x86)
 TRIPLET := i686-linux-android
 TOOLCHAIN := x86-$(GCCVER)
-APIVER  := 9
-NDK_ABINAME := x86
+APIVER  := 16
+NDK_ABINAME := x86_64
 endif
 ifeq ($(ARCH),mips)
 TRIPLET := mipsel-linux-android
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
-APIVER  := 9
-NDK_ABINAME := mips
+APIVER  := 16
+NDK_ABINAME := mips64
 endif
 
-NDK_SYSROOT := $(NDK)/platforms/android-$(APIVER)/arch-$(ARCH)
+#NDK_SYSROOT := $(NDK)/platforms/android-$(APIVER)/arch-$(ARCH)
+NDK_SYSROOT :=$(NDK)/sysroot/
+
 
 BINDIR := $(firstword $(wildcard $(NDK)/toolchains/$(TOOLCHAIN)/prebuilt/*/bin))
 PATH := $(BINDIR):$(NDK):$(PATH)
@@ -36,8 +40,8 @@ PATH := $(BINDIR):$(NDK):$(PATH)
 RESDIR := $(shell pwd)/../aFWall/src/main/res/raw/
 DESTDIR := $(shell pwd)/$(TRIPLET)/out
 
-CONFIGURE_ARGS := --host=$(TRIPLET) --disable-shared --enable-static \
-		  CFLAGS="--sysroot=$(NDK_SYSROOT) -O2 -fvisibility=default -fPIE" \
+CONFIGURE_ARGS := --host=$(TRIPLET) --disable-nftables --enable-libipq --disable-shared --enable-static \
+		  CFLAGS="-fvisibility=default -fPIE" \
                   LDFLAGS="-rdynamic -pie" \
 
 PER_ARCH_TARGETS := iptables busybox nflog run_pie
@@ -52,22 +56,22 @@ unpack: $(addsuffix -unpack,$(PER_ARCH_TARGETS))
 #
 # Build iptables
 #
-IPTABLES_VER := 1.4.20
+IPTABLES_VER := 1.6.1
 IPTABLES_SRC := sources/iptables-$(IPTABLES_VER)
 IPTABLES_BUILD := $(TRIPLET)/iptables
 
 dist/iptables-$(IPTABLES_VER).tar.bz2:
 	mkdir -p dist
-	curl http://ftp.netfilter.org/pub/iptables/iptables-$(IPTABLES_VER).tar.bz2 -o $@.tmp && mv $@.tmp $@
+	curl http://www.netfilter.org/projects/iptables/files/iptables-$(IPTABLES_VER).tar.bz2 -o $@.tmp && mv $@.tmp $@
 
 $(IPTABLES_SRC)/configure: dist/iptables-$(IPTABLES_VER).tar.bz2
 	rm -rf $(IPTABLES_SRC)
 	mkdir -p sources
 	tar -jxf $< -C sources
-	cd $(IPTABLES_SRC) && \
-		for x in ../../dist/iptables-patches/*; do \
-			patch -p1 < $$x || exit 1; \
-		done
+	#cd $(IPTABLES_SRC) && \
+	#	for x in ../../dist/iptables-patches/*; do \
+	#		patch -p1 < $$x || exit 1; \
+	#	done
 	cd $(IPTABLES_SRC) && ./autogen.sh
 
 $(IPTABLES_BUILD)/Makefile: $(IPTABLES_SRC)/configure
