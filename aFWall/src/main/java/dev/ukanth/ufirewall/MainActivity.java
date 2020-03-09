@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MaterialDialog runProgress;
     private AlertDialog dialogLegend = null;
 
-    private BroadcastReceiver uiProgressReceiver4,uiProgressReceiver6, toastReceiver,themeRefreshReceiver, uiRefreshReceiver;
+    private BroadcastReceiver uiProgressReceiver4, uiProgressReceiver6, toastReceiver, themeRefreshReceiver, uiRefreshReceiver, listUIRefreshReceiver;
     private IntentFilter uiFilter4, uiFilter6;
 
     //all async reference with context
@@ -205,11 +205,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         updateSelectedColumns();
 
-        if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
+        if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
             currentUI = 0;
             setContentView(R.layout.main_old);
-        }
-        else{
+        } else {
             currentUI = 1;
             setContentView(R.layout.main);
         }
@@ -262,17 +261,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
         registerUIRefresh();
+        registerListRefresh();
 
 
     }
 
+    private void registerListRefresh() {
+        IntentFilter filter = new IntentFilter("REFRESH_LIST_UI");
+        listUIRefreshReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                filterApps(-1);
+            }
+        };
+        registerReceiver(listUIRefreshReceiver, filter);
+    }
+
     private void updateSelectedColumns() {
         selectedColumns = DEFAULT_COLUMN;
-        selectedColumns = G.enableLAN() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableRoam() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableVPN() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableTether() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableTor() ?  selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableLAN() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableRoam() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableVPN() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableTether() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableTor() ? selectedColumns + 1 : selectedColumns;
     }
 
     /*private void registerLogService() {
@@ -284,23 +295,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }*/
 
-    private void  registerUIRefresh(){
+    private void registerUIRefresh() {
         IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.ui.CHECKREFRESH");
         uiRefreshReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateSelectedColumns();
 
-                if(selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
+                if (selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
                     recreate();
-                }
-                else if(selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0){
+                } else if (selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0) {
                     recreate();
                 }
             }
         };
         registerReceiver(uiRefreshReceiver, filter);
     }
+
     private void registerThemeIntent() {
 
         IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.theme.REFRESH");
@@ -434,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle b = intent.getExtras();
-                if(runProgress !=null) {
+                if (runProgress != null) {
                     TextView view = (TextView) runProgress.findViewById(R.id.apply4);
                     view.setText(b.get("INDEX") + "/" + b.get("SIZE"));
                     view.invalidate();
@@ -450,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle b = intent.getExtras();
-                if(runProgress !=null) {
+                if (runProgress != null) {
                     TextView view = (TextView) runProgress.findViewById(R.id.apply6);
                     view.setText(b.get("INDEX") + "/" + b.get("SIZE"));
                     view.invalidate();
@@ -542,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Log.d(Api.TAG, "Exception in filter Sorting");
         }
         ArrayAdapter appAdapter;
-        if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
+        if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
             appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList, true);
         } else {
             appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
@@ -562,7 +573,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onRestart() {
         super.onRestart();
     }
-
 
 
     private void updateIconStatus() {
@@ -1022,7 +1032,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (apps2 != null) {
                 Collections.sort(apps2, new PackageComparator());
                 ArrayAdapter appAdapter;
-                if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
+                if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
                     appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2, true);
                 } else {
                     appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2);
@@ -2406,6 +2416,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (uiRefreshReceiver != null) {
             unregisterReceiver(uiRefreshReceiver);
         }
+        if (listUIRefreshReceiver != null) {
+            unregisterReceiver(listUIRefreshReceiver);
+        }
     }
 
     @Override
@@ -2567,7 +2580,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     //        : R.string.saving_rules)
                     .negativeText("Dismiss")
                     .show();
-            if(G.enableIPv6()) {
+            if (G.enableIPv6()) {
                 runProgress.findViewById(R.id.apply6layout).setVisibility(View.VISIBLE);
             }
         }

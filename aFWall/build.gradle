@@ -8,8 +8,8 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 19450
-        versionName "3.4.0"
+        versionCode 19460
+        versionName "3.5.0-BETA"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
@@ -37,7 +37,7 @@ android {
 
 dependencies {
 
-    implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
+    implementation 'eu.chainfire:libsuperuser:1.0.0.+'
     //implementation 'com.github.topjohnwu:libsu:1.0.1'
 
     implementation 'org.bitbucket.ukanth:android-lockpattern:8.0.1'

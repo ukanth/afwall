@@ -58,6 +58,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
@@ -68,6 +69,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.stericson.rootshell.RootShell;
+import com.stericson.rootshell.SanityCheckRootShell;
+import com.stericson.rootshell.execution.JavaCommand;
 import com.stericson.roottools.RootTools;
 
 import org.json.JSONArray;
@@ -926,7 +930,7 @@ public final class Api {
 
         try {
             t1.join();
-            if (G.enableIPv6()&& t2 != null) {
+            if (G.enableIPv6() && t2 != null) {
                 t2.join();
             }
         } catch (InterruptedException e) {
@@ -972,7 +976,7 @@ public final class Api {
         }
         try {
             Log.i(TAG, "Using applySaved4IptablesRules");
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,false);
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds, false);
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -988,7 +992,7 @@ public final class Api {
         }
         try {
             Log.i(TAG, "Using applySavedIp6tablesRules");
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds, true);
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -1208,7 +1212,7 @@ public final class Api {
 
             return true;
         } catch (Exception e) {
-            Log.e(TAG,e.getMessage(),e);
+            Log.e(TAG, e.getMessage(), e);
             return false;
         }
     }
@@ -1412,6 +1416,15 @@ public final class Api {
         });
     }
 
+
+    private static void sendUpdate(Context context) {
+        new Thread(() -> {
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction("REFRESH_LIST_UI");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(broadcastIntent);
+        }).start();
+    }
+
     /**
      * @param ctx application context (mandatory)
      * @return a list of applications
@@ -1468,24 +1481,7 @@ public final class Api {
 
         int count = 0;
         try {
-            List<Integer> listOfUids = new ArrayList<>();
             PackageManager pkgmanager = ctx.getPackageManager();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //this code will be executed on devices running ICS or later
-                final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
-                List<UserHandle> list = um.getUserProfiles();
-
-                for (UserHandle user : list) {
-                    Matcher m = p.matcher(user.toString());
-                    if (m.find()) {
-                        int id = Integer.parseInt(m.group(1));
-                        if (id > 0) {
-                            listOfUids.add(id);
-                        }
-                    }
-                }
-            }
-
             //use pm list packages -f -U --user 10
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
@@ -1500,7 +1496,6 @@ public final class Api {
             Date install = new Date();
             install.setTime(System.currentTimeMillis() - (180000));
 
-            SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
 
             for (int i = 0; i < installed.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
@@ -1570,38 +1565,6 @@ public final class Api {
                 if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
                     app.selected_tor = true;
                 }
-                if (G.supportDual()) {
-                    checkPartOfMultiUser(apinfo, name, listOfUids, pkgmanager, multiUserAppsMap);
-                }
-            }
-
-            if (G.supportDual()) {
-                //run through multi user map
-                for (int i = 0; i < multiUserAppsMap.size(); i++) {
-                    app = multiUserAppsMap.valueAt(i);
-                    if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
-                        app.selected_wifi = true;
-                    }
-                    if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
-                        app.selected_3g = true;
-                    }
-                    if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
-                        app.selected_roam = true;
-                    }
-                    if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
-                        app.selected_vpn = true;
-                    }
-                    if (G.enableTether() && !app.selected_tether && Collections.binarySearch(selected_tether, app.uid) >= 0) {
-                        app.selected_tether = true;
-                    }
-                    if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
-                        app.selected_lan = true;
-                    }
-                    if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
-                        app.selected_tor = true;
-                    }
-                    syncMap.put(app.uid, app);
-                }
             }
 
             List<PackageInfoData> specialData = getSpecialData();
@@ -1645,8 +1608,76 @@ public final class Api {
             if (changed) {
                 edit.commit();
             }
-            /* convert the map into an array */
+
             applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
+
+            if (G.supportDual()) {
+                List<Integer> listOfUids = new ArrayList<>();
+                final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
+                List<UserHandle> list = um.getUserProfiles();
+
+                for (UserHandle user : list) {
+                    Matcher m = p.matcher(user.toString());
+                    if (m.find()) {
+                        int id = Integer.parseInt(m.group(1));
+                        if (id > 0) {
+                            listOfUids.add(id);
+                        }
+                    }
+                }
+                updateMultiUserApps(ctx, listOfUids, (commandCode, exitCode, output) -> {
+                    for (String line : output) {
+                        if (line != null && !line.isEmpty()) {
+                            try {
+                                String packageStr = "";
+                                String uidStr = "";
+                                String[] details = line.split(" ");
+                                if(details.length > 0) {
+                                    packageStr = details[0].split(":")[1];
+                                    uidStr = details[1].split(":")[1];
+                                }
+                                Log.i(TAG, packageStr + "------------" + uidStr);
+                                if (!packageStr.isEmpty() && !uidStr.isEmpty()) {
+                                    int appUid = Integer.parseInt(uidStr);
+                                    PackageInfo packageInfo = getPackageDetails(ctx, appUid);
+                                    //int appUid = Integer.parseInt(uid + "" + packageInfo.applicationInfo.uid + "");
+                                    if (packageInfo != null) {
+                                        PackageInfoData app1 = new PackageInfoData();
+                                        app1.uid = appUid;
+                                        app1.installTime = new File(packageInfo.applicationInfo.sourceDir).lastModified();
+                                        app1.names = new ArrayList<String>();
+                                        String cachekey1 = packageInfo.applicationInfo.packageName;
+                                        String name1 = prefs.getString(cachekey1, "");
+                                        if (name1.length() == 0 || isRecentlyInstalled(packageInfo.applicationInfo.packageName)) {
+                                            // get label and put on cache
+                                            name1 = pkgmanager.getApplicationLabel(packageInfo.applicationInfo).toString();
+                                        }
+                                        app1.names.add(name1 + "(M)");
+                                        app1.appinfo = packageInfo.applicationInfo;
+                                        if (app1.appinfo != null && (app1.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                                            //user app
+                                            app1.appType = 0;
+                                        } else {
+                                            //system app
+                                            app1.appType = 1;
+                                        }
+                                        app1.pkgName = packageInfo.applicationInfo.packageName;
+                                        syncMap.put(appUid, app1);
+                                    }
+                                } else {
+                                    Log.i(TAG, line + "--Cant convert");
+                                }
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                    for (int i = 0; i < syncMap.size(); i++) {
+                        applications.add(syncMap.valueAt(i));
+                    }
+                    sendUpdate(ctx);
+                });
+            }
+            /* convert the map into an array */
             for (int i = 0; i < syncMap.size(); i++) {
                 applications.add(syncMap.valueAt(i));
             }
@@ -1657,18 +1688,67 @@ public final class Api {
         return null;
     }
 
-   /* public boolean isSuPackage(PackageManager pm, String suPackage) {
-        boolean found = false;
-        try {
-            PackageInfo info = pm.getPackageInfo(suPackage, 0);
-            if (info.applicationInfo != null) {
-                found = true;
+
+
+    private static Shell.Interactive updateMultiUserApps(Context ctx, List<Integer> listOfUids, Shell.OnCommandResultListener listener) {
+        Shell.Interactive shell = new Shell.Builder().useSU()
+                .setMinimalLogging(true).open();
+        /*Shell.OnCommandResultListener onCommandResultListener = (commandCode, uid, output) -> {
+            for (String line : output) {
+                if (line != null && !line.isEmpty()) {
+                    try {
+                        String packageStr = "";
+                        String uidStr = "";
+                        String[] details = line.split(" ");
+                        if(details.length > 0) {
+                            packageStr = details[0].split(":")[1];
+                            uidStr = details[1].split(":")[1];
+                        }
+                        Log.i(TAG, packageStr + "------------" + uidStr);
+                        if (!packageStr.isEmpty() && !uidStr.isEmpty()) {
+                            int appUid = Integer.parseInt(uidStr);
+                            PackageInfo packageInfo = getPackageDetails(ctx, appUid);
+                            //int appUid = Integer.parseInt(uid + "" + packageInfo.applicationInfo.uid + "");
+                            if (packageInfo != null) {
+                                PackageInfoData app = new PackageInfoData();
+                                app.uid = appUid;
+                                app.installTime = new File(packageInfo.applicationInfo.sourceDir).lastModified();
+                                app.names = new ArrayList<String>();
+                                String cachekey = packageInfo.applicationInfo.packageName;
+                                String name = prefs.getString(cachekey, "");
+                                if (name.length() == 0 || isRecentlyInstalled(packageInfo.applicationInfo.packageName)) {
+                                    // get label and put on cache
+                                    name = pkgmanager.getApplicationLabel(packageInfo.applicationInfo).toString();
+                                }
+                                app.names.add(name + "(M)");
+                                app.appinfo = packageInfo.applicationInfo;
+                                if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                                    //user app
+                                    app.appType = 0;
+                                } else {
+                                    //system app
+                                    app.appType = 1;
+                                }
+                                app.pkgName = packageInfo.applicationInfo.packageName;
+                                multiUserAppsMap.put(appUid, app);
+                            }
+                        } else {
+                            Log.i(TAG, line + "--Cant convert");
+                        }
+                    } catch (Exception e) {
+                        shell.close();
+                    }
+                }
             }
-            //found = s + " v" + info.versionName;
-        } catch (NameNotFoundException e) {
+            shell.waitForIdle();
+            shell.close();
+        };*/
+        for (Integer uid : listOfUids) {
+            shell.addCommand("pm list packages -U --user " + uid, uid, listener);
         }
-        return found;
-    }*/
+        return shell;
+    }
+
 
     public static List<PackageInfoData> getSpecialData() {
         List<PackageInfoData> specialData = new ArrayList<>();
@@ -1697,11 +1777,11 @@ public final class Api {
         return specialData;
     }
 
-    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, PackageManager pkgmanager, SparseArray<PackageInfoData> syncMap) {
+    /*private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, PackageManager pkgmanager, SparseArray<PackageInfoData> syncMap) {
         try {
             for (Integer integer : uid1) {
                 int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
-                try{
+                try {
                     String[] pkgs = pkgmanager.getPackagesForUid(appUid);
                     if (pkgs != null) {
                         PackageInfoData app = new PackageInfoData();
@@ -1720,14 +1800,14 @@ public final class Api {
                         app.pkgName = apinfo.packageName;
                         syncMap.put(appUid, app);
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
-    }
+    }*/
 
     private static boolean isRecentlyInstalled(String packageName) {
         boolean isRecent = false;
@@ -2992,6 +3072,7 @@ public final class Api {
 
     /**
      * Probe log target
+     *
      * @param ctx
      */
     public static void probeLogTarget(final Context ctx) {

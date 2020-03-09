@@ -323,8 +323,8 @@ public class RootShellService extends Service implements Cloneable {
             try {
                 Intent intent = new Intent(context, RootShellService.class);
                 context.startService(intent);
-            } catch (Exception e){
-                Log.e(TAG, e.getMessage(),e);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
             }
         }
     }
