@@ -120,9 +120,11 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 final boolean isAppAllowed = Api.isAppAllowed(context, applicationInfo, sharedPreferences, pPrefs);
                 Log.d(TAG, "DM Calling Application: " + applicationInfo.packageName + ", Allowed: " + isAppAllowed);
                 if (!isAppAllowed) {
-                    param.setResult(0);
-                    DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                    dm.remove(0);
+                    if (param.getResult() != null) {
+                        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                        dm.remove((Long) param.getResult());
+                    }
+                    param.setResult(0L);
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> Toast.makeText(getActivity().getApplicationContext(), "AFWall+ denied access to Download Manager for package(uid) : " + applicationInfo.packageName + "(" + applicationInfo.uid + ")", Toast.LENGTH_LONG).show());
                     }
