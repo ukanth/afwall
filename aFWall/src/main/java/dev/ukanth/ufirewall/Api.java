@@ -822,7 +822,7 @@ public final class Api {
 
             // NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
             // on the LAN
-            if (whitelist) {
+            if (whitelist && !G.dns_proxy().equals("disable")) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
                 //bug fix allow dns to be open on Pie for all connection type
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
