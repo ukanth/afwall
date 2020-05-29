@@ -5,8 +5,8 @@ Description
 
 Android Firewall+ (AFWall+) is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to access the network.
 
-For more information and a community discussion ground, please visit the official [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or the official [Wiki page](https://github.com/ukanth/afwall/wiki).
 
+For more information and a community discussion ground, please visit the official [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or the official [Wiki page](https://github.com/ukanth/afwall/wiki).
 
 <img src="https://raw.githubusercontent.com/ukanth/afwall/0502e6f17ceda08069720ff2f260902690e65e9b/screenshots/Main_2.0.png" width="300">
 
