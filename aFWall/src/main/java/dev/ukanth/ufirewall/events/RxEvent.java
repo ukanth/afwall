@@ -1,10 +1,11 @@
 package dev.ukanth.ufirewall.events;
 
+import android.support.annotation.NonNull;
+
 import dev.ukanth.ufirewall.log.Log;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.subjects.PublishSubject;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.subjects.PublishSubject;
 
 /**
  * Created by ukanth on 25/9/17.

@@ -3,6 +3,7 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+
         google() 
     }
     dependencies {
@@ -20,6 +21,9 @@ allprojects {
         maven { url "http://dl.bintray.com/drummer-aidan/maven/com/afollestad" }
         maven {
             url "https://maven.google.com"
+        }
+        jcenter {
+            url "http://jcenter.bintray.com/"
         }
         google()
     }

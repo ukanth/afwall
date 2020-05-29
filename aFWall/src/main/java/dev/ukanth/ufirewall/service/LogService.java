@@ -56,7 +56,7 @@ import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.log.LogRxEvent;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Shell;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class LogService extends Service {
 
