@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.InputType;
 import android.widget.Toast;
 
@@ -101,6 +102,7 @@ public class SecurityUtil {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void requestFingerprint() {
         FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(activity);
         dialog.setOnFingerprintFailureListener(() -> {

@@ -268,11 +268,11 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                     //use the existing method to protect password
                     showPatternActivity();
                     break;
-				case "p3":
+                case "p3":
                     if (FingerprintUtil.isAndroidSupport()) {
                         checkFingerprintDeviceSupport();
                     }
-					break;
+                    break;
             }
             // check if device support fingerprint,
             // if so check if one fingerprint already existed at least
@@ -321,10 +321,11 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                     fingerprintManager.hasEnrolledFingerprints() &&
                     keyguardManager.isKeyguardSecure();
         } catch (Exception e) {
-            return  false;
+            return false;
         }
 
     }
+
     @TargetApi(Build.VERSION_CODES.M)
     private void checkFingerprintDeviceSupport() {
         // Initializing both Android Keyguard Manager and Fingerprint Manager
@@ -421,22 +422,21 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
         // check if fingerprint enabled and confirm disable by fingerprint itself
         if (G.isFingerprintEnabled()) {
-            final FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(globalContext);
-            dialog.setOnFingerprintFailureListener(new FingerprintUtil.OnFingerprintFailure() {
-                @Override
-                public void then() {
+
+            final FingerprintUtil.FingerprintDialog dialog;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                dialog = new FingerprintUtil.FingerprintDialog(globalContext);
+                dialog.setOnFingerprintFailureListener(() -> {
                     itemList.setValueIndex(3);
                     dialog.dismiss();
-                }
-            });
-            dialog.setOnFingerprintSuccess(new FingerprintUtil.OnFingerprintSuccess() {
-                @Override
-                public void then() {
+                });
+                dialog.setOnFingerprintSuccess(() -> {
                     G.isFingerprintEnabled(false);
                     Api.toast(globalContext, getString(R.string.fingerprint_disabled_successfully));
-                }
-            });
-            dialog.show();
+                });
+                dialog.show();
+            }
+
         }
     }
 
