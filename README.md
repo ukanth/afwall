@@ -1,4 +1,4 @@
-## AFWall+ (Android Firewall+) [![Build Status](https://travis-ci.org/ukanth/afwall.png?branch=beta)](https://travis-ci.org/ukanth/afwall) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
+## AFWall+ (Android Firewall+) ![Android CI](https://github.com/ukanth/afwall/workflows/Android%20CI/badge.svg?branch=beta) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall)
 
 Description
 -----------
