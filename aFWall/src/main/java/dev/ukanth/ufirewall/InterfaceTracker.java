@@ -113,7 +113,11 @@ public final class InterfaceTracker {
     // To get bluetooth tethering, we need valid BluetoothPan instance
     // It is obtainable only in ServiceListener.onServiceConnected callback
     public static void setupBluetoothProfile(Context context) {
-        BluetoothAdapter.getDefaultAdapter().getProfileProxy(context, btListener, 5);
+        try {
+            BluetoothAdapter.getDefaultAdapter().getProfileProxy(context, btListener, 5);
+        } catch (NullPointerException e) {
+            Log.e("AFWall", "Unable to get Bluetooth Adapter");
+        }
     }
 
     private static void getBluetoothTetherStatus(Context context, InterfaceDetails d) {
