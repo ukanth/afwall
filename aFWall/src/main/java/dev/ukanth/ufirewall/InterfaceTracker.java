@@ -25,6 +25,7 @@ package dev.ukanth.ufirewall;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
@@ -57,7 +58,7 @@ public final class InterfaceTracker {
 
     public static final String ITFS_VPN[] = {"tun+", "ppp+", "tap+"};
 
-    public static final String ITFS_TETHER[] = {"bt-pan","usb+", "rndis+","rmnet_usb+"};
+    public static final String ITFS_TETHER[] = {"bt-pan", "usb+", "rndis+", "rmnet_usb+"};
 
     public static final String BOOT_COMPLETED = "BOOT_COMPLETED";
     public static final String CONNECTIVITY_CHANGE = "CONNECTIVITY_CHANGE";
@@ -113,10 +114,10 @@ public final class InterfaceTracker {
     // To get bluetooth tethering, we need valid BluetoothPan instance
     // It is obtainable only in ServiceListener.onServiceConnected callback
     public static void setupBluetoothProfile(Context context) {
-        try {
+        PackageManager pm = context.getPackageManager();
+        boolean hasBluetooth = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+        if (hasBluetooth) {
             BluetoothAdapter.getDefaultAdapter().getProfileProxy(context, btListener, 5);
-        } catch (NullPointerException e) {
-            Log.e("AFWall", "Unable to get Bluetooth Adapter");
         }
     }
 
@@ -381,10 +382,10 @@ public final class InterfaceTracker {
                                 addr.getNetworkPrefixLength();
 
                         if (ip instanceof Inet4Address) {
-                            Log.i(TAG, "Found ipv4: " + mask );
+                            Log.i(TAG, "Found ipv4: " + mask);
                             ret.lanMaskV4 = mask;
                         } else if (ip instanceof Inet6Address) {
-                            Log.i(TAG, "Found ipv6: " + mask );
+                            Log.i(TAG, "Found ipv6: " + mask);
                             ret.lanMaskV6 = mask;
                         }
                     }
