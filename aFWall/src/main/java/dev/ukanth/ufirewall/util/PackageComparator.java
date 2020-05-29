@@ -22,7 +22,7 @@ public class PackageComparator implements Comparator<Api.PackageInfoData> {
         if (o1_selected == o2_selected) {
             switch (G.sortBy()) {
                 case "s0":
-                    return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0).toString(),o2.names.get(0).toString());
+                    return String.CASE_INSENSITIVE_ORDER.compare(o1.names.get(0), o2.names.get(0));
                 case "s1":
                     return (o1.installTime > o2.installTime) ? -1: (o1.installTime < o2.installTime) ? 1 : 0;
                 case "s2":

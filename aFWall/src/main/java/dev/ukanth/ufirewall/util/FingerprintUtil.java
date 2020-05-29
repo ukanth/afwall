@@ -106,7 +106,7 @@ public class FingerprintUtil {
             setContentView(R.layout.fingerprint);
             setTitle(R.string.fingerprint_required);
 
-            errorText = (TextView) findViewById(R.id.fingerprintErrorText);
+            errorText = findViewById(R.id.fingerprintErrorText);
 
             // choose key that depends on [pkg_name]:Fingerprint
             KEY_NAME = GetKey(getContext());

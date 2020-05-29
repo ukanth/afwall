@@ -9,12 +9,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    CharSequence pageTitles[];
+    CharSequence[] pageTitles;
     int noOfTabs;
 
 
     // Build a Constructor and assign the passed Values to appropriate values in the class
-    public ViewPagerAdapter(FragmentManager fm,CharSequence mTitles[], int mNumbOfTabsumb) {
+    public ViewPagerAdapter(FragmentManager fm, CharSequence[] mTitles, int mNumbOfTabsumb) {
         super(fm);
         this.pageTitles = mTitles;
         this.noOfTabs = mNumbOfTabsumb;

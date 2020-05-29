@@ -133,7 +133,7 @@ public class ImportApi {
 
     private static String readTextFile(InputStream inputStream) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final byte buf[] = new byte[4096];
+        final byte[] buf = new byte[4096];
         int len;
         try {
             while ((len = inputStream.read(buf)) != -1) {

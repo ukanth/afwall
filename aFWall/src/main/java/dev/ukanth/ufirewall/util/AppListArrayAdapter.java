@@ -66,7 +66,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 convertView = inflater.inflate(R.layout.main_list, parent, false);
             }
             holder = new AppStateHolder();
-            holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
+            holder.box_wifi = convertView.findViewById(R.id.itemcheck_wifi);
 
             if (Api.isMobileNetworkSupported(context)) {
                 holder.box_3g = addSupport(convertView, true, R.id.itemcheck_3g);
@@ -90,8 +90,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 holder.box_tor = addSupport(convertView, true, R.id.itemcheck_tor);
             }
 
-            holder.text = (TextView) convertView.findViewById(R.id.itemtext);
-            holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
+            holder.text = convertView.findViewById(R.id.itemtext);
+            holder.icon = convertView.findViewById(R.id.itemicon);
 
             if (G.disableIcons()) {
                 holder.icon.setVisibility(View.GONE);
@@ -101,7 +101,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         } else {
             // Convert an existing view
             holder = (AppStateHolder) convertView.getTag();
-            holder.box_wifi = (CheckBox) convertView.findViewById(R.id.itemcheck_wifi);
+            holder.box_wifi = convertView.findViewById(R.id.itemcheck_wifi);
             if (Api.isMobileNetworkSupported(context)) {
                 holder.box_3g = addSupport(convertView, true, R.id.itemcheck_3g);
             } else {
@@ -123,8 +123,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 addSupport(convertView, false, R.id.itemcheck_tor);
             }
 
-            holder.text = (TextView) convertView.findViewById(R.id.itemtext);
-            holder.icon = (ImageView) convertView.findViewById(R.id.itemicon);
+            holder.text = convertView.findViewById(R.id.itemtext);
+            holder.icon = convertView.findViewById(R.id.itemicon);
             if (G.disableIcons()) {
                 holder.icon.setVisibility(View.GONE);
                 activity.findViewById(R.id.imageHolder).setVisibility(View.GONE);
@@ -360,7 +360,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
     }
 
     private CheckBox addSupport(View convertView, boolean action, int id) {
-        CheckBox check = (CheckBox) convertView.findViewById(id);
+        CheckBox check = convertView.findViewById(id);
         check.setVisibility(View.VISIBLE);
        /* if (action) {
             check.setOnCheckedChangeListener(this);
@@ -369,7 +369,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
     }
 
     private CheckBox removeSupport(View convertView, int id) {
-        CheckBox check = (CheckBox) convertView.findViewById(id);
+        CheckBox check = convertView.findViewById(id);
         check.setVisibility(View.GONE);
         return check;
     }
@@ -426,7 +426,6 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             }
         }
 
-        ;
     }
 
     /**

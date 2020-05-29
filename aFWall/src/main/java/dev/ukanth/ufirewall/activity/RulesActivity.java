@@ -138,7 +138,7 @@ public class RulesActivity extends DataDumpActivity {
     }
 
     protected String getSuInfo(PackageManager pm) {
-        String suPackages[] = {
+        String[] suPackages = {
                 "com.koushikdutta.superuser",
                 "com.noshufou.android.su",
                 "com.noshufou.android.su.elite",

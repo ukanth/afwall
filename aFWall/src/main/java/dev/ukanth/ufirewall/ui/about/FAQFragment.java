@@ -28,10 +28,10 @@ public class FAQFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		TextView text = (TextView) getActivity().findViewById(R.id.faq_afwall_title);
+		TextView text = getActivity().findViewById(R.id.faq_afwall_title);
 		text.setText(R.string.faq);
 		
-		WebView creditsWebView = (WebView) getActivity().findViewById(R.id.faq_webview);
+		WebView creditsWebView = getActivity().findViewById(R.id.faq_webview);
 		try {
 			String data = Api.loadData(getActivity().getBaseContext(), "faq");
 			creditsWebView.loadDataWithBaseURL(null, data, "text/html","UTF-8",null);

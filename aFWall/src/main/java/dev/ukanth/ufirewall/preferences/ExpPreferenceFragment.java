@@ -30,7 +30,7 @@ import static dev.ukanth.ufirewall.Api.mountDir;
 public class ExpPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {
 
-    private final String initDirs[] = {
+    private final String[] initDirs = {
             "/magisk/.core/service.d/",
             "/sbin/.core/img/.core/service.d/",
             "/sbin/.magisk/img/.core/service.d/",

@@ -35,15 +35,15 @@ public class LocaleEdit extends AppCompatActivity {
 
         setContentView(R.layout.tasker_profile);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tasker_toolbar);
+        Toolbar toolbar = findViewById(R.id.tasker_toolbar);
 
         setSupportActionBar(toolbar);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        RadioButton tasker_enable = (RadioButton) findViewById(R.id.tasker_enable);
-        RadioButton tasker_disable = (RadioButton) findViewById(R.id.tasker_disable);
-        RadioButton button1 = (RadioButton) findViewById(R.id.defaultProfile);
+        RadioButton tasker_enable = findViewById(R.id.tasker_enable);
+        RadioButton tasker_disable = findViewById(R.id.tasker_disable);
+        RadioButton button1 = findViewById(R.id.defaultProfile);
 
         String name = prefs.getString("default", getString(R.string.defaultProfile));
         button1.setText(name != null && name.length() == 0 ? getString(R.string.defaultProfile) : name);
@@ -51,11 +51,11 @@ public class LocaleEdit extends AppCompatActivity {
 
         if (!G.isProfileMigrated()) {
 
-            RadioGroup profiles = (RadioGroup) findViewById(R.id.radioProfiles);
+            RadioGroup profiles = findViewById(R.id.radioProfiles);
 
-            RadioButton button2 = (RadioButton) findViewById(R.id.profile1);
-            RadioButton button3 = (RadioButton) findViewById(R.id.profile2);
-            RadioButton button4 = (RadioButton) findViewById(R.id.profile3);
+            RadioButton button2 = findViewById(R.id.profile1);
+            RadioButton button3 = findViewById(R.id.profile2);
+            RadioButton button4 = findViewById(R.id.profile3);
 
             List<String> profilesList = G.getAdditionalProfiles();
             //int textColor = Color.parseColor("#000000");
@@ -107,7 +107,7 @@ public class LocaleEdit extends AppCompatActivity {
                                 break;
                             default:
                                 int diff = CUSTOM_PROFILE_ID + (Integer.parseInt(index) - 6);
-                                RadioButton btn = (RadioButton) findViewById(diff);
+                                RadioButton btn = findViewById(diff);
                                 if (btn != null) {
                                     btn.setChecked(true);
                                 }
@@ -117,11 +117,11 @@ public class LocaleEdit extends AppCompatActivity {
             }
         } else {
             //TODO: lets do it on new way
-            RadioGroup profiles = (RadioGroup) findViewById(R.id.radioProfiles);
+            RadioGroup profiles = findViewById(R.id.radioProfiles);
             //remove the existing profiles
-            RadioButton button2 = (RadioButton) findViewById(R.id.profile1);
-            RadioButton button3 = (RadioButton) findViewById(R.id.profile2);
-            RadioButton button4 = (RadioButton) findViewById(R.id.profile3);
+            RadioButton button2 = findViewById(R.id.profile1);
+            RadioButton button3 = findViewById(R.id.profile2);
+            RadioButton button4 = findViewById(R.id.profile3);
             profiles.removeView(button2);
             profiles.removeView(button3);
             profiles.removeView(button4);
@@ -158,7 +158,7 @@ public class LocaleEdit extends AppCompatActivity {
                                 break;
                             default:
                                 int diff = Integer.parseInt(index);
-                                RadioButton btn = (RadioButton) findViewById(diff);
+                                RadioButton btn = findViewById(diff);
                                 if (btn != null) {
                                     btn.setChecked(true);
                                 }
@@ -216,9 +216,9 @@ public class LocaleEdit extends AppCompatActivity {
         if (mIsCancelled) {
             setResult(RESULT_CANCELED);
         } else {
-            RadioGroup group = (RadioGroup) findViewById(R.id.radioProfiles);
+            RadioGroup group = findViewById(R.id.radioProfiles);
             int selectedId = group.getCheckedRadioButtonId();
-            RadioButton radioButton = (RadioButton) findViewById(selectedId);
+            RadioButton radioButton = findViewById(selectedId);
             //int id = Integer.parseInt(radioButton.getHint().toString());
             String action = radioButton.getText().toString();
             final Intent resultIntent = new Intent();

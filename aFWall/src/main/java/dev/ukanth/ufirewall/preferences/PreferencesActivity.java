@@ -169,7 +169,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     }
 
     private void prepareLayout() {
-        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
+        ViewGroup root = findViewById(android.R.id.content);
         View content = root.getChildAt(0);
         LinearLayout toolbarContainer = (LinearLayout) View.inflate(this, R.layout.activity_prefs, null);
 
@@ -177,7 +177,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         toolbarContainer.addView(content);
         root.addView(toolbarContainer);
 
-        mToolBar = (Toolbar) toolbarContainer.findViewById(R.id.toolbar);
+        mToolBar = toolbarContainer.findViewById(R.id.toolbar);
         mToolBar.setTitle(getTitle() + " " + getString(R.string.preferences));
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,7 +250,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        if (UIPreferenceFragment.class.getName().equals(fragmentName)
+        return UIPreferenceFragment.class.getName().equals(fragmentName)
                 || ThemePreferenceFragment.class.getName().equals(fragmentName)
                 || RulesPreferenceFragment.class.getName().equals(fragmentName)
                 || LogPreferenceFragment.class.getName().equals(fragmentName)
@@ -260,10 +260,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 || SecPreferenceFragment.class.getName().equals(fragmentName)
                 || MultiProfilePreferenceFragment.class.getName().equals(fragmentName)
                 || WidgetPreferenceFragment.class.getName().equals(fragmentName)
-                || LanguagePreferenceFragment.class.getName().equals(fragmentName)) {
-            return (true);
-        }
-        return (false);
+                || LanguagePreferenceFragment.class.getName().equals(fragmentName);
     }
 
     @Override

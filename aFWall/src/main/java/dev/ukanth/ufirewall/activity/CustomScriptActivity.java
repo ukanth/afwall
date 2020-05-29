@@ -60,20 +60,20 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
         initTheme();
         final View view = getLayoutInflater().inflate(R.layout.customscript, null);
 
-        ((Button) view.findViewById(R.id.customscript_ok)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.customscript_cancel)).setOnClickListener(this);
+        view.findViewById(R.id.customscript_ok).setOnClickListener(this);
+        view.findViewById(R.id.customscript_cancel).setOnClickListener(this);
         ((TextView) view.findViewById(R.id.customscript_link)).setMovementMethod(LinkMovementMethod.getInstance());
 
         final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
-        this.script = (EditText) view.findViewById(R.id.customscript);
+        this.script = view.findViewById(R.id.customscript);
         this.script.setText(prefs.getString(Api.PREF_CUSTOMSCRIPT, ""));
-        this.script2 = (EditText) view.findViewById(R.id.customscript2);
+        this.script2 = view.findViewById(R.id.customscript2);
         this.script2.setText(prefs.getString(Api.PREF_CUSTOMSCRIPT2, ""));
 
         setTitle(R.string.set_custom_script);
         setContentView(view);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.custom_toolbar);
+        Toolbar toolbar = findViewById(R.id.custom_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeButtonEnabled(true);

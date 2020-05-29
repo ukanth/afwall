@@ -87,7 +87,7 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
             if (context == null) {
                 Object activityThread = callStaticMethod(
                         findClass("android.app.ActivityThread", null), "currentActivityThread");
-                context = (Context) AndroidAppHelper.currentApplication();
+                context = AndroidAppHelper.currentApplication();
             }
             if (prefs == null) {
                 prefs = new XSharedPreferences(MY_APP);

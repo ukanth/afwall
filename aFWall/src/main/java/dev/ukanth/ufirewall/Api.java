@@ -86,6 +86,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
@@ -204,15 +205,15 @@ public final class Api {
     private static final int TETHER_EXPORT = 6;
     private static final int LAN_EXPORT = 4;
     private static final int TOR_EXPORT = 5;
-    private static final String ITFS_WIFI[] = InterfaceTracker.ITFS_WIFI;
-    private static final String ITFS_3G[] = InterfaceTracker.ITFS_3G;
-    private static final String ITFS_VPN[] = InterfaceTracker.ITFS_VPN;
-    private static final String ITFS_TETHER[] = InterfaceTracker.ITFS_TETHER;
+    private static final String[] ITFS_WIFI = InterfaceTracker.ITFS_WIFI;
+    private static final String[] ITFS_3G = InterfaceTracker.ITFS_3G;
+    private static final String[] ITFS_VPN = InterfaceTracker.ITFS_VPN;
+    private static final String[] ITFS_TETHER = InterfaceTracker.ITFS_TETHER;
     // iptables can exit with status 4 if two processes tried to update the same table
     private static final int IPTABLES_TRY_AGAIN = 4;
-    private static final String dynChains[] = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
-    private static final String natChains[] = {"", "-tor-check", "-tor-filter"};
-    private static final String staticChains[] = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
+    private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
+    private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
+    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
     /**
      * @brief Special user/group IDs that aren't associated with
      * any particular app.
@@ -387,7 +388,7 @@ public final class Api {
         // Write the iptables binary
         final FileOutputStream out = new FileOutputStream(file);
         final InputStream is = ctx.getResources().openRawResource(resid);
-        byte buf[] = new byte[1024];
+        byte[] buf = new byte[1024];
         int len;
         while ((len = is.read(buf)) > 0) {
             out.write(buf, 0, len);
@@ -407,7 +408,7 @@ public final class Api {
      * @param prefix       "iptables" command and the portion of the rule preceding "-m owner --uid-owner X"
      * @param suffix       the remainder of the iptables rule, following "-m owner --uid-owner X"
      */
-    private static void addRuleForUsers(List<String> listCommands, String users[], String prefix, String suffix) {
+    private static void addRuleForUsers(List<String> listCommands, String[] users, String prefix, String suffix) {
         for (String user : users) {
             int uid = android.os.Process.getUidForName(user);
             if (uid != -1)
@@ -800,7 +801,7 @@ public final class Api {
             if (((!whitelist && (any_wifi || any_3g)) ||
                     (ruleDataSet.dataList.indexOf(SPECIAL_UID_TETHER) >= 0) || (ruleDataSet.wifiList.indexOf(SPECIAL_UID_TETHER) >= 0))) {
 
-                String users[] = {"root", "nobody"};
+                String[] users = {"root", "nobody"};
                 String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
 
                 // DHCP replies to client
@@ -1789,11 +1790,7 @@ public final class Api {
                     Log.i(TAG, "DM allowed UsavedPkg_wifi_uidIDs: " + savedPkg_wifi_uid);
                     if (mode.equals(Api.MODE_WHITELIST) && savedPkg_wifi_uid.contains(applicationInfo.uid + "")) {
                         return true;
-                    } else if (mode.equals(Api.MODE_BLACKLIST) && !savedPkg_wifi_uid.contains(applicationInfo.uid + "")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    } else return mode.equals(Api.MODE_BLACKLIST) && !savedPkg_wifi_uid.contains(applicationInfo.uid + "");
 
                 case ConnectivityManager.TYPE_MOBILE:
                     String savedPkg_3g_uid = pPrefs.getString(PREF_3G_PKG_UIDS, "");
@@ -1804,11 +1801,7 @@ public final class Api {
                     Log.i(TAG, "DM allowed UIDs: " + savedPkg_3g_uid);
                     if (mode.equals(Api.MODE_WHITELIST) && savedPkg_3g_uid.contains(applicationInfo.uid + "")) {
                         return true;
-                    } else if (mode.equals(Api.MODE_BLACKLIST) && !savedPkg_3g_uid.contains(applicationInfo.uid + "")) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    } else return mode.equals(Api.MODE_BLACKLIST) && !savedPkg_3g_uid.contains(applicationInfo.uid + "");
             }
         }
 
@@ -3065,14 +3058,12 @@ public final class Api {
 
     public static boolean isNetfilterSupported() {
         //!new File("/proc/config.gz").exists() ||
-        if (!new File("/proc/net/netfilter").exists()
-                || !new File("/proc/net/ip_tables_targets").exists()) {
-            return false;
-        } /*else {
+        /*else {
             String[] features = new String[]{"CONFIG_NETFILTER=", "CONFIG_IP_NF_IPTABLES=", "CONFIG_NF_NAT"};
             return hasKernelFeature(features, getKernelFeatures("/proc/config.gz"));
         }*/
-        return true;
+        return new File("/proc/net/netfilter").exists()
+                && new File("/proc/net/ip_tables_targets").exists();
     }
 
     /*public static List<String> interfaceInfo(boolean showMatches) {
@@ -3256,7 +3247,7 @@ public final class Api {
             InputStream inputStream = context.getApplicationContext()
                     .getResources().openRawResource(resourceIdentifier);
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    inputStream, "UTF-8"));
+                    inputStream, StandardCharsets.UTF_8));
             String line;
             StringBuffer data = new StringBuffer();
             while ((line = reader.readLine()) != null) {
@@ -3271,20 +3262,14 @@ public final class Api {
     /* Checks if external storage is available for read and write */
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     /* Checks if external storage is available to at least read */
     public static boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)
-                || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state)
+                || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     /**

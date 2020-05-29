@@ -83,13 +83,13 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
 
         public ViewHolder(View itemView) {
             super(itemView);
-            icon = (ImageView) itemView.findViewById(R.id.data_icon);
+            icon = itemView.findViewById(R.id.data_icon);
             //appName = (TextView)itemView.findViewById(R.id.app_name);
-            deniedTime = (TextView) itemView.findViewById(R.id.denied_time);
+            deniedTime = itemView.findViewById(R.id.denied_time);
             //dataInterface = (TextView)itemView.findViewById(R.id.data_interface);
-            dataDest = (TextView) itemView.findViewById(R.id.data_dest);
-            dataSrc = (TextView) itemView.findViewById(R.id.data_src);
-            dataProto = (TextView) itemView.findViewById(R.id.data_proto);
+            dataDest = itemView.findViewById(R.id.data_dest);
+            dataSrc = itemView.findViewById(R.id.data_src);
+            dataProto = itemView.findViewById(R.id.data_proto);
             dataHost = itemView.findViewById(R.id.data_host);
         }
 

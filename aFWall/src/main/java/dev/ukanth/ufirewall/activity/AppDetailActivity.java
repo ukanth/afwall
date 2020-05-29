@@ -47,7 +47,7 @@ public class AppDetailActivity extends AppCompatActivity {
         int appid = getIntent().getIntExtra("appid", -1);
         String packageName = getIntent().getStringExtra("package");
         try {
-            CheckBox logOption = (CheckBox) findViewById(R.id.notification_p);
+            CheckBox logOption = findViewById(R.id.notification_p);
             LogPreference logPreference = SQLite.select()
                     .from(LogPreference.class)
                     .where(LogPreference_Table.uid.eq(appid)).querySingle();
@@ -66,7 +66,7 @@ public class AppDetailActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -74,11 +74,11 @@ public class AppDetailActivity extends AppCompatActivity {
 
         final Context ctx = getApplicationContext();
 
-        ImageView image = (ImageView) findViewById(R.id.app_icon);
-        TextView textView = (TextView) findViewById(R.id.app_title);
-        TextView textView2 = (TextView) findViewById(R.id.app_package);
-        TextView up = (TextView) findViewById(R.id.up);
-        TextView down = (TextView) findViewById(R.id.down);
+        ImageView image = findViewById(R.id.app_icon);
+        TextView textView = findViewById(R.id.app_title);
+        TextView textView2 = findViewById(R.id.app_package);
+        TextView up = findViewById(R.id.up);
+        TextView down = findViewById(R.id.down);
 
         /**/
 
@@ -158,7 +158,7 @@ public class AppDetailActivity extends AppCompatActivity {
                 return;
             }
 
-            File uidFileDir = new File("/proc/uid_stat/" + String.valueOf(localUid));
+            File uidFileDir = new File("/proc/uid_stat/" + localUid);
             if (uidFileDir.exists()) {
                 File uidActualFileReceived = new File(uidFileDir, "tcp_rcv");
                 File uidActualFileSent = new File(uidFileDir, "tcp_snd");

@@ -15,9 +15,6 @@ public class ShareProfilePreference extends SharePreferenceProvider {
     @Override
     protected boolean checkAccess(String prefName, String prefKey, boolean write) {
         // Only allow read access
-        if (write) {
-            return false;
-        }
-        return true;
+        return !write;
     }
 }

@@ -136,7 +136,7 @@ public class ColorPickerView extends View {
     private Point mStartTouchPoint = null;
 
     public interface OnColorChangedListener {
-        public void onColorChanged(int color);
+        void onColorChanged(int color);
     }
 
     public ColorPickerView(Context context) {

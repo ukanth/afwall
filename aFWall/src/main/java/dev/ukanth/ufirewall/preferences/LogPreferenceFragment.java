@@ -44,7 +44,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
             populateLogTarget(findPreference("logTarget"));
         } catch (ClassCastException c) {
             Log.i(Api.TAG, c.getMessage());
-            Api.toast((Context) getActivity(), getString(R.string.exception_pref));
+            Api.toast(getActivity(), getString(R.string.exception_pref));
         }
     }
 

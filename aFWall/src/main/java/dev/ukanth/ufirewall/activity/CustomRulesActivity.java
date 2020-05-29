@@ -27,7 +27,7 @@ public class CustomRulesActivity extends AppCompatActivity {
         final View view = getLayoutInflater().inflate(R.layout.activity_custom_rules, null);
         setTitle(R.string.custom_rules);
 
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.activity_custom_rules);
+        LinearLayout linearLayout = view.findViewById(R.id.activity_custom_rules);
         try {
 
             List<Rule> rules = CustomRuleOld.getRules(getApplicationContext());
@@ -100,7 +100,7 @@ public class CustomRulesActivity extends AppCompatActivity {
 
         setContentView(view);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.custom_toolbar_rules);
+        Toolbar toolbar = findViewById(R.id.custom_toolbar_rules);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeButtonEnabled(true);

@@ -65,12 +65,7 @@ public final class PluginBundleManager
         /*
          * Make sure the extra isn't null or empty
          */
-        if (TextUtils.isEmpty(bundle.getString(BUNDLE_EXTRA_STRING_MESSAGE)))
-        {
-            return false;
-        }
-
-        return true;
+        return !TextUtils.isEmpty(bundle.getString(BUNDLE_EXTRA_STRING_MESSAGE));
     }
 
     /**

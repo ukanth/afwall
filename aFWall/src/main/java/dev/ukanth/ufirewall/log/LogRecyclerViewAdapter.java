@@ -127,10 +127,10 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
 
         public ViewHolder(View itemView) {
             super(itemView);
-            icon = (ImageView )itemView.findViewById(R.id.app_icon);
-            appName = (TextView)itemView.findViewById(R.id.app_name);
-            lastDenied = (TextView)itemView.findViewById(R.id.last_denied);
-            dataDenied = (TextView)itemView.findViewById(R.id.data_denied);
+            icon = itemView.findViewById(R.id.app_icon);
+            appName = itemView.findViewById(R.id.app_name);
+            lastDenied = itemView.findViewById(R.id.last_denied);
+            dataDenied = itemView.findViewById(R.id.data_denied);
         }
 
         public void bind(final LogData item, final RecyclerItemClickListener listener) {

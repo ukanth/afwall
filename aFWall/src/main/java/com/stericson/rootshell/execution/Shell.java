@@ -38,20 +38,21 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class Shell {
 
-    public static enum ShellType {
+    public enum ShellType {
         NORMAL,
         ROOT,
         CUSTOM
     }
 
     //this is only used with root shells
-    public static enum ShellContext {
+    public enum ShellContext {
         NORMAL("normal"), //The normal context...
         SHELL("u:r:shell:s0"), //unprivileged shell (such as an adb shell)
         SYSTEM_SERVER("u:r:system_server:s0"), // system_server, u:r:system:s0 on some firmwares
@@ -62,7 +63,7 @@ public class Shell {
 
         private String value;
 
-        private ShellContext(String value) {
+        ShellContext(String value) {
             this.value = value;
         }
 
@@ -165,9 +166,9 @@ public class Shell {
 
         }
 
-        this.inputStream = new BufferedReader(new InputStreamReader(this.proc.getInputStream(), "UTF-8"));
-        this.errorStream = new BufferedReader(new InputStreamReader(this.proc.getErrorStream(), "UTF-8"));
-        this.outputStream = new OutputStreamWriter(this.proc.getOutputStream(), "UTF-8");
+        this.inputStream = new BufferedReader(new InputStreamReader(this.proc.getInputStream(), StandardCharsets.UTF_8));
+        this.errorStream = new BufferedReader(new InputStreamReader(this.proc.getErrorStream(), StandardCharsets.UTF_8));
+        this.outputStream = new OutputStreamWriter(this.proc.getOutputStream(), StandardCharsets.UTF_8);
 
         /**
          * Thread responsible for carrying out the requested operations
@@ -259,7 +260,6 @@ public class Shell {
 
         while (this.isCleaning) {
             //Don't add commands while cleaning
-            ;
         }
 
         this.commands.add(command);
@@ -701,7 +701,7 @@ public class Shell {
 
                     if (pos >= 0) {
                         outputLine = outputLine.substring(pos);
-                        String fields[] = outputLine.split(" ");
+                        String[] fields = outputLine.split(" ");
 
                         if (fields.length >= 2 && fields[1] != null) {
                             int id = 0;

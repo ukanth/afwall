@@ -29,11 +29,11 @@ public class RadialMenuWidget extends View {
 
 	//Defines the interface
 	public interface RadialMenuEntry {
-	      public String getName();
-	      public String getLabel();
-	      public int getIcon();
-	      public List<RadialMenuEntry> getChildren();
-	      public void menuActiviated();
+	      String getName();
+	      String getLabel();
+	      int getIcon();
+	      List<RadialMenuEntry> getChildren();
+	      void menuActiviated();
 	}	
 
 	
@@ -763,9 +763,7 @@ public class RadialMenuWidget extends View {
 		    
 			// checks if point falls inside the radius of the wedge
 			double dist = diffX*diffX + diffY*diffY;
-			if (dist < outerRadius*outerRadius && dist > innerRadius*innerRadius) {
-				return true;
-				}
+			return dist < outerRadius * outerRadius && dist > innerRadius * innerRadius;
 			}
 		  return false;
 		}
@@ -979,8 +977,8 @@ public class RadialMenuWidget extends View {
 				if (widthOffset < this.textRect.width()/2) {
 					widthOffset = this.textRect.width()/2+scalePX(3);
 				}
-				this.textBoxRect.set((xPosition - (widthOffset)), 
-						(int) (yPosition - (r2MinSize+r2VariableSize) - headerBuffer-this.textRect.height()-scalePX(3)), 
+				this.textBoxRect.set((xPosition - (widthOffset)),
+						yPosition - (r2MinSize+r2VariableSize) - headerBuffer-this.textRect.height()-scalePX(3),
 						(xPosition + (widthOffset)), 
 						(yPosition - (r2MinSize+r2VariableSize) - headerBuffer+scalePX(3)));
 				this.headerTextBottom = yPosition - (r2MinSize+r2VariableSize) - headerBuffer-this.textRect.bottom;		
@@ -1033,8 +1031,8 @@ public class RadialMenuWidget extends View {
 				if (widthOffset < this.textRect.width()/2) {
 					widthOffset = this.textRect.width()/2+scalePX(3);
 				}
-				this.textBoxRect.set((xPosition - (widthOffset)), 
-						(int) (yPosition - (heightOffset) - headerBuffer-this.textRect.height()-scalePX(3)), 
+				this.textBoxRect.set((xPosition - (widthOffset)),
+						yPosition - (heightOffset) - headerBuffer-this.textRect.height()-scalePX(3),
 						(xPosition + (widthOffset)), 
 						(yPosition - (heightOffset) - headerBuffer+scalePX(3)));
 				this.headerTextBottom = yPosition - (heightOffset) - headerBuffer-this.textRect.bottom;		
@@ -1138,8 +1136,8 @@ public class RadialMenuWidget extends View {
 			offset = this.textRect.width()/2+scalePX(3);
 		}
 		
-		this.textBoxRect.set((xPosition - (offset)), 
-				(int) (yPosition - (MaxSize) - headerBuffer-this.textRect.height()-scalePX(3)), 
+		this.textBoxRect.set((xPosition - (offset)),
+				yPosition - (MaxSize) - headerBuffer-this.textRect.height()-scalePX(3),
 				(xPosition + (offset)), 
 				(yPosition - (MaxSize) - headerBuffer+scalePX(3)));
 	

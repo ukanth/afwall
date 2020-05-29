@@ -25,7 +25,7 @@ public class MultiProfilePreferenceFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.profiles_preferences);
-        Preference button = (Preference) findPreference("manage_profiles");
+        Preference button = findPreference("manage_profiles");
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -37,7 +37,7 @@ public class MultiProfilePreferenceFragment extends PreferenceFragment {
 
         final PreferenceCategory mCategory = (PreferenceCategory) findPreference("promigrate");
         final PreferenceCategory mCategory2 = (PreferenceCategory) findPreference("oldprofile_pref");
-        final Preference migrate = (Preference) findPreference("migrate_profile");
+        final Preference migrate = findPreference("migrate_profile");
         if (!G.isProfileMigrated()) {
             migrate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -48,13 +48,13 @@ public class MultiProfilePreferenceFragment extends PreferenceFragment {
                         Api.toast(getActivity(), ctx.getString(R.string.profile_migrate_msg));
                         mCategory.removePreference(migrate);
 
-                        Preference migrate = (Preference) findPreference("profile1");
+                        Preference migrate = findPreference("profile1");
                         mCategory2.removePreference(migrate);
 
-                        migrate = (Preference) findPreference("profile2");
+                        migrate = findPreference("profile2");
                         mCategory2.removePreference(migrate);
 
-                        migrate = (Preference) findPreference("profile3");
+                        migrate = findPreference("profile3");
                         mCategory2.removePreference(migrate);
                     }
                     return true;
@@ -63,13 +63,13 @@ public class MultiProfilePreferenceFragment extends PreferenceFragment {
         } else {
             mCategory.removePreference(migrate);
 
-            Preference migrate2 = (Preference) findPreference("profile1");
+            Preference migrate2 = findPreference("profile1");
             mCategory2.removePreference(migrate2);
 
-            migrate2 = (Preference) findPreference("profile2");
+            migrate2 = findPreference("profile2");
             mCategory2.removePreference(migrate2);
 
-            migrate2 = (Preference) findPreference("profile3");
+            migrate2 = findPreference("profile3");
             mCategory2.removePreference(migrate2);
         }
     }

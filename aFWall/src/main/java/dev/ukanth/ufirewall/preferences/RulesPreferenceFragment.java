@@ -91,30 +91,30 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
                                 boolean firstTime = true;
                                 while (matcher.find()) {
                                     if (firstTime) {
-                                        G.ipv4Input(matcher.group(1).equals("ACCEPT") ? true : false);
+                                        G.ipv4Input(matcher.group(1).equals("ACCEPT"));
                                         firstTime = false;
                                     } else {
-                                        G.ipv6Input(matcher.group(1).equals("ACCEPT") ? true : false);
+                                        G.ipv6Input(matcher.group(1).equals("ACCEPT"));
                                     }
                                 }
                                 firstTime = true;
                                 final Matcher matcher2 = pattern2.matcher(output);
                                 while (matcher2.find()) {
                                     if (firstTime) {
-                                        G.ipv4Output(matcher2.group(1).equals("ACCEPT") ? true : false);
+                                        G.ipv4Output(matcher2.group(1).equals("ACCEPT"));
                                         firstTime = false;
                                     } else {
-                                        G.ipv6Output(matcher2.group(1).equals("ACCEPT") ? true : false);
+                                        G.ipv6Output(matcher2.group(1).equals("ACCEPT"));
                                     }
                                 }
                                 firstTime = true;
                                 final Matcher matcher3 = pattern3.matcher(output);
                                 while (matcher3.find()) {
                                     if (firstTime) {
-                                        G.ipv4Fwd(matcher3.group(1).equals("ACCEPT") ? true : false);
+                                        G.ipv4Fwd(matcher3.group(1).equals("ACCEPT"));
                                         firstTime = false;
                                     } else {
-                                        G.ipv6Fwd(matcher3.group(1).equals("ACCEPT") ? true : false);
+                                        G.ipv6Fwd(matcher3.group(1).equals("ACCEPT"));
                                     }
                                 }
                             }

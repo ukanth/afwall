@@ -46,20 +46,18 @@ public class InterfaceDetails {
 	public int netType = -1;
 
 	public boolean equals(InterfaceDetails that) {
-		if (this.isRoaming != that.isRoaming ||
-			this.isWifiTethered != that.isWifiTethered ||
-			this.tetherWifiStatusKnown != that.tetherWifiStatusKnown ||
-			this.isBluetoothTethered != that.isBluetoothTethered ||
-			this.tetherBluetoothStatusKnown != that.tetherBluetoothStatusKnown ||
-			this.isUsbTethered != that.isUsbTethered ||
-			this.tetherUsbStatusKnown != that.tetherUsbStatusKnown ||
-			!this.lanMaskV4.equals(that.lanMaskV4) ||
-			!this.lanMaskV6.equals(that.lanMaskV6) ||
-			!this.wifiName.equals(that.wifiName) ||
-			this.netEnabled != that.netEnabled ||
-			this.netType != that.netType ||
-			this.noIP != that.noIP)
-			return false;
-		return true;
-	}
+        return this.isRoaming == that.isRoaming &&
+                this.isWifiTethered == that.isWifiTethered &&
+                this.tetherWifiStatusKnown == that.tetherWifiStatusKnown &&
+                this.isBluetoothTethered == that.isBluetoothTethered &&
+                this.tetherBluetoothStatusKnown == that.tetherBluetoothStatusKnown &&
+                this.isUsbTethered == that.isUsbTethered &&
+                this.tetherUsbStatusKnown == that.tetherUsbStatusKnown &&
+                this.lanMaskV4.equals(that.lanMaskV4) &&
+                this.lanMaskV6.equals(that.lanMaskV6) &&
+                this.wifiName.equals(that.wifiName) &&
+                this.netEnabled == that.netEnabled &&
+                this.netType == that.netType &&
+                this.noIP == that.noIP;
+    }
 }

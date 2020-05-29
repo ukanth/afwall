@@ -40,7 +40,7 @@ public class ToggleWidgetActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.toggle_widget_view);
 
-        relativeLayout = (RelativeLayout) this.findViewById(R.id.widgetCircle);
+        relativeLayout = this.findViewById(R.id.widgetCircle);
         pieMenu = new RadialMenuWidget(getBaseContext());
 
         pieMenu.setAnimationSpeed(0L);
@@ -87,7 +87,7 @@ public class ToggleWidgetActivity extends Activity {
         }
 
         public void menuActiviated() {
-            relativeLayout = (RelativeLayout) findViewById(R.id.widgetCircle);
+            relativeLayout = findViewById(R.id.widgetCircle);
             relativeLayout.removeAllViews();
             finish();
         }

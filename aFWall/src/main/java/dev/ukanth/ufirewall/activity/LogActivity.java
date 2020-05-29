@@ -79,7 +79,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         super.onCreate(savedInstanceState);
         initTheme();
         setContentView(R.layout.log_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
+        Toolbar toolbar = findViewById(R.id.rule_toolbar);
         setTitle(getString(R.string.showlog_title));
         //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -106,11 +106,11 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             }
         }
 
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        mSwipeLayout = findViewById(R.id.swipeContainer);
         mSwipeLayout.setOnRefreshListener(this);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        emptyView = (TextView) findViewById(R.id.empty_view);
+        recyclerView = findViewById(R.id.recyclerview);
+        emptyView = findViewById(R.id.empty_view);
 
         initializeRecyclerView(getApplicationContext());
 

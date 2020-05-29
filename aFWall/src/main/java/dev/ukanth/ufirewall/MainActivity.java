@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             setContentView(R.layout.main);
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Api.assertBinaries(this, true);
 
         initDone = 0;
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeLayout = findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
         //queue = new HashSet<>();
@@ -469,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void updateRadioFilter() {
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+        RadioGroup radioGroup = findViewById(R.id.appFilterGroup);
         if (G.showFilter()) {
             switch (G.selectedFilter()) {
                 case 0:
@@ -493,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectFilterGroup() {
         if (G.showFilter()) {
-            RadioGroup radioGroup = (RadioGroup) findViewById(R.id.appFilterGroup);
+            RadioGroup radioGroup = findViewById(R.id.appFilterGroup);
             switch (radioGroup.getCheckedRadioButtonId()) {
                 case R.id.rpkg_core:
                     filterApps(2);
@@ -644,7 +644,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Api.updateLanguage(getApplicationContext(), G.locale());
 
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
 
         //verifyMultiProfile();
@@ -687,7 +687,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         if (!Api.isMobileNetworkSupported(getApplicationContext())) {
-            ImageView view = (ImageView) this.findViewById(R.id.img_3g);
+            ImageView view = this.findViewById(R.id.img_3g);
             view.setVisibility(View.GONE);
 
         } else {
@@ -756,20 +756,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void addColumns(int id) {
-        ImageView view = (ImageView) this.findViewById(id);
+        ImageView view = this.findViewById(id);
         view.setVisibility(View.VISIBLE);
         view.setOnClickListener(this);
     }
 
     private void hideColumns(int id) {
-        ImageView view = (ImageView) this.findViewById(id);
+        ImageView view = this.findViewById(id);
         view.setVisibility(View.GONE);
         view.setOnClickListener(this);
     }
 
     private void setupMultiProfile() {
         reloadProfileList(true);
-        mSpinner = (Spinner) findViewById(R.id.profileGroup);
+        mSpinner = findViewById(R.id.profileGroup);
         spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
                 mlocalList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -932,7 +932,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         initDone = initDone + 1;
         if (initDone > 1) {
-            Spinner spinner = (Spinner) findViewById(R.id.profileGroup);
+            Spinner spinner = findViewById(R.id.profileGroup);
             String profileName = spinner.getSelectedItem().toString();
             if (!G.isProfileMigrated()) {
                 switch (position) {
@@ -981,8 +981,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
-
-    ;
 
     /**
      * Show the list of applications
@@ -1110,7 +1108,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void disableFirewall() {
         Api.setEnabled(this, false, true);
-        menuSetApplyOrSave(MainActivity.this.mainMenu, false);
+        menuSetApplyOrSave(mainMenu, false);
     }
 
     private void disableOrEnable() {
@@ -1251,7 +1249,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void search(MenuItem item) {
         item.setActionView(R.layout.searchbar);
-        final EditText filterText = (EditText) item.getActionView().findViewById(
+        final EditText filterText = item.getActionView().findViewById(
                 R.id.searchApps);
         filterText.addTextChangedListener(filterTextWatcher);
         filterText.setEllipsize(TruncateAt.END);
@@ -1420,7 +1418,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
                 if (grantResults.length > 0
@@ -1718,7 +1716,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectAllLAN(boolean flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1737,7 +1735,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectAllTor(boolean flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1769,7 +1767,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }*/
     private void selectAllVPN(boolean flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1788,7 +1786,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectAlltether(boolean flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1807,7 +1805,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectRevert(int flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1848,7 +1846,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectRevert() {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1873,7 +1871,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectAllRoam(boolean flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1892,7 +1890,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void clearAll() {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1915,7 +1913,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectAll3G(boolean flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {
@@ -1936,7 +1934,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void selectAllWifi(boolean flag) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         int count = adapter.getCount(), item;
@@ -2073,7 +2071,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void copyColumns(int which, int which2) {
         if (this.listview == null) {
-            this.listview = (ListView) this.findViewById(R.id.listview);
+            this.listview = this.findViewById(R.id.listview);
         }
         ListAdapter adapter = listview.getAdapter();
         if (adapter != null) {

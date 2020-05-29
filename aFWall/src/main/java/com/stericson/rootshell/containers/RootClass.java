@@ -30,7 +30,7 @@ public class RootClass /* #ANNOTATIONS extends AbstractProcessor */ {
     static String PATH_TO_DX = "/Users/Chris/Projects/android-sdk-macosx/build-tools/18.0.1/dx";
 
     enum READ_STATE {
-        STARTING, FOUND_ANNOTATION;
+        STARTING, FOUND_ANNOTATION
     }
 
     public RootClass(String[] args) throws ClassNotFoundException, NoSuchMethodException,
@@ -54,11 +54,9 @@ public class RootClass /* #ANNOTATIONS extends AbstractProcessor */ {
 
     }
 
-    ;
-
     public class RootArgs {
 
-        public String args[];
+        public String[] args;
     }
 
     static void displayError(Exception e) {

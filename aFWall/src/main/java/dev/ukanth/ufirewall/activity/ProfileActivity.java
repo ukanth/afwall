@@ -40,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
+        Toolbar toolbar = findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -48,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         initList();
 
-        ListView listView = (ListView) findViewById(R.id.listProfileView);
+        ListView listView = findViewById(R.id.listProfileView);
         profileAdapter = new ProfileAdapter(profilesList, this);
         listView.setAdapter(profileAdapter);
         // we register for the contextmneu

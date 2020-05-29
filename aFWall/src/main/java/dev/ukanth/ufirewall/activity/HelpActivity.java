@@ -31,7 +31,7 @@ public class HelpActivity extends AppCompatActivity {
 
             setContentView(R.layout.help_about);
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.help_toolbar);
+            Toolbar toolbar = findViewById(R.id.help_toolbar);
             setSupportActionBar(toolbar);
 
 
@@ -39,7 +39,7 @@ public class HelpActivity extends AppCompatActivity {
             adapter =  new ViewPagerAdapter(getSupportFragmentManager(), viewTitles, noOfTabs);
 
             // Initilization
-            viewPager = (ViewPager) findViewById(R.id.pager);
+            viewPager = findViewById(R.id.pager);
 
             viewPager.setAdapter(adapter);
 
@@ -47,7 +47,7 @@ public class HelpActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
             // Assiging the Sliding Tab Layout View
-            tabs = (SlidingTabLayout) findViewById(R.id.tabs);
+            tabs = findViewById(R.id.tabs);
             tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
             // Setting Custom Color for the Scroll bar indicator of the Tab View

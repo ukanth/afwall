@@ -64,7 +64,7 @@ public class RootShell {
      */
     public static int defaultCommandTimeout = 20000;
 
-    public static enum LogLevel {
+    public enum LogLevel {
         VERBOSE,
         ERROR,
         DEBUG,

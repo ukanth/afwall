@@ -49,16 +49,16 @@ public final class InterfaceTracker {
 
     public static final String TAG = "AFWall";
 
-    public static final String ITFS_WIFI[] = {"eth+", "wlan+", "tiwlan+", "ra+", "bnep+"};
+    public static final String[] ITFS_WIFI = {"eth+", "wlan+", "tiwlan+", "ra+", "bnep+"};
 
-    public static final String ITFS_3G[] = {"rmnet+", "pdp+", "uwbr+", "wimax+", "vsnet+",
+    public static final String[] ITFS_3G = {"rmnet+", "pdp+", "uwbr+", "wimax+", "vsnet+",
             "rmnet_sdio+", "ccmni+", "qmi+", "svnet0+", "ccemni+",
             "wwan+", "cdma_rmnet+", "clat4+", "cc2mni+", "bond1+", "rmnet_smux+", "ccinet+",
             "v4-rmnet+", "seth_w+", "v4-rmnet_data+", "rmnet_ipa+", "rmnet_data+", "r_rmnet_data+"};
 
-    public static final String ITFS_VPN[] = {"tun+", "ppp+", "tap+"};
+    public static final String[] ITFS_VPN = {"tun+", "ppp+", "tap+"};
 
-    public static final String ITFS_TETHER[] = {"bt-pan", "usb+", "rndis+", "rmnet_usb+"};
+    public static final String[] ITFS_TETHER = {"bt-pan", "usb+", "rndis+", "rmnet_usb+"};
 
     public static final String BOOT_COMPLETED = "BOOT_COMPLETED";
     public static final String CONNECTIVITY_CHANGE = "CONNECTIVITY_CHANGE";

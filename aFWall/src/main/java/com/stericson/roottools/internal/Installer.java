@@ -148,7 +148,6 @@ class Installer
                     long size = iss.available();
                     while ((pos += ofc.transferFrom(rfc, pos, size - pos)) < size)
                     {
-                        ;
                     }
                 }
                 catch (IOException ex)
@@ -249,7 +248,6 @@ class Installer
             byte[] buffer = new byte[4096];
             while (-1 != dis.read(buffer))
             {
-                ;
             }
             byte[] digest = md.digest();
             StringBuffer sb = new StringBuffer();

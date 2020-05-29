@@ -46,7 +46,7 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 										  String key) {
 		if(ctx == null) {
-			ctx = (Context) getActivity();
+			ctx = getActivity();
 		}
 		if(ctx != null) {
 			if (key.equals("notification_priority")) {

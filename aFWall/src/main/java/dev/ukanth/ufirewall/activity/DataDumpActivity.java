@@ -86,10 +86,10 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
     protected void setData(final String data) {
-        this.dataText = data;
+        dataText = data;
         Handler refresh = new Handler(Looper.getMainLooper());
         refresh.post(() -> {
-            scaleGesture = (TextView) findViewById(R.id.rules);
+            scaleGesture = findViewById(R.id.rules);
             scaleGesture.setText(data);
             scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
         });
@@ -117,7 +117,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         initTheme();
         setContentView(R.layout.rules);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
+        Toolbar toolbar = findViewById(R.id.rule_toolbar);
         //toolbar.setTitle(getString(R.string.showrules_title));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +128,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
 
-        mScrollView = (ScrollView) findViewById(R.id.ruleScrollView);
+        mScrollView = findViewById(R.id.ruleScrollView);
 
         // Load partially transparent black background
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -261,7 +261,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
     private void copy() {
         try {
-            TextView rulesText = (TextView) findViewById(R.id.rules);
+            TextView rulesText = findViewById(R.id.rules);
             android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
             android.content.ClipData clip = android.content.ClipData
                     .newPlainText("", rulesText.getText().toString());

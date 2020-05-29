@@ -95,7 +95,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         super.onCreate(savedInstanceState);
         initTheme();
         setContentView(R.layout.logdetail_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.rule_toolbar);
+        Toolbar toolbar = findViewById(R.id.rule_toolbar);
         setTitle(getString(R.string.showlogdetail_title));
         toolbar.setNavigationOnClickListener(v -> finish());
 
@@ -108,11 +108,11 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mSwipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipedetailContainer);
+        mSwipeLayout = findViewById(R.id.swipedetailContainer);
         mSwipeLayout.setOnRefreshListener(this);
 
-        recyclerView = (RecyclerView) findViewById(R.id.detailrecyclerview);
-        emptyView = (TextView) findViewById(R.id.emptydetail_view);
+        recyclerView = findViewById(R.id.detailrecyclerview);
+        emptyView = findViewById(R.id.emptydetail_view);
 
         initializeRecyclerView(getApplicationContext());
 

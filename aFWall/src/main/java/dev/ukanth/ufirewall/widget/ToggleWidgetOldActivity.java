@@ -45,18 +45,18 @@ public class ToggleWidgetOldActivity extends Activity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.toggle_widget_old_view);
 
-        enableButton = (Button) this.findViewById(R.id.toggle_enable_firewall);
-        disableButton = (Button) this
+        enableButton = this.findViewById(R.id.toggle_enable_firewall);
+        disableButton = this
                 .findViewById(R.id.toggle_disable_firewall);
-        defaultButton = (Button) this.findViewById(R.id.toggle_default_profile);
+        defaultButton = this.findViewById(R.id.toggle_default_profile);
 
         enableButton.setOnClickListener(this);
         disableButton.setOnClickListener(this);
         defaultButton.setOnClickListener(this);
 
-        profButton1 = (Button) this.findViewById(R.id.toggle_profile1);
-        profButton2 = (Button) this.findViewById(R.id.toggle_profile2);
-        profButton3 = (Button) this.findViewById(R.id.toggle_profile3);
+        profButton1 = this.findViewById(R.id.toggle_profile1);
+        profButton2 = this.findViewById(R.id.toggle_profile2);
+        profButton3 = this.findViewById(R.id.toggle_profile3);
 
         if (Api.isEnabled(getApplicationContext())) {
             enableOthers();

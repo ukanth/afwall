@@ -172,22 +172,14 @@ public class FileDialog {
 
                             Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
                             Matcher m2 = p2.matcher(filename);
-                            if(m2.matches() || m1.matches()) {
-                                endsWith = true;
-                            } else {
-                                endsWith = false;
-                            }
+                            endsWith = m2.matches() || m1.matches();
                         } else {
                             Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
                             Matcher m1 = p1.matcher(filename);
 
                             Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
                             Matcher m2 = p2.matcher(filename);
-                            if(m2.matches() || m1.matches()) {
-                                endsWith = true;
-                            } else {
-                                endsWith = false;
-                            }
+                            endsWith = m2.matches() || m1.matches();
                         }
                         // boolean endsWith = fileEndsWith != null ? filename.contains(fileEndsWith) : true;
                         return endsWith || sel.isDirectory();
@@ -203,7 +195,7 @@ public class FileDialog {
 
         }
         if(r != null && r.size() > 0) {
-            fileList = (String[]) r.toArray(new String[]{});
+            fileList = r.toArray(new String[]{});
         }
     }
 
