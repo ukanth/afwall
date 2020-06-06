@@ -25,7 +25,7 @@
     <string name="error_refresh">Error refreshing iptables</string>
     <string name="error_apply">Error applying iptables rules</string>
     <string name="error_fetch">Error fetching iptables rules</string>
-    <string name="error_su_toast">Unable to aquire root access !</string>
+    <string name="error_su_toast">Unable to acquire root access !</string>
     <string name="error_su">Could not acquire root access.\nYour device must be rooted to use AFWall+.\n\nIf this device is already rooted, please ensure AFWall+ has permission to execute the \"su\" command.</string>
     <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
     <string name="error_common">Error: </string>

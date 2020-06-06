@@ -1,4 +1,5 @@
-## AFWall+ (Android Firewall+) ![Android CI](https://github.com/ukanth/afwall/workflows/Android%20CI/badge.svg?branch=beta) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall) ![GitHub](https://img.shields.io/github/license/ukanth/afwall)  ![F-Droid](https://img.shields.io/f-droid/v/dev.ukanth.ufirewall) ![GitHub All Releases](https://img.shields.io/github/downloads/ukanth/afwall/total) ![GitHub repo size](https://img.shields.io/github/repo-size/ukanth/afwall)
+## AFWall+ (Android Firewall+)
+![Android CI](https://github.com/ukanth/afwall/workflows/Android%20CI/badge.svg?branch=beta) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall) ![GitHub](https://img.shields.io/github/license/ukanth/afwall)  ![F-Droid](https://img.shields.io/f-droid/v/dev.ukanth.ufirewall) ![GitHub All Releases](https://img.shields.io/github/downloads/ukanth/afwall/total) ![GitHub repo size](https://img.shields.io/github/repo-size/ukanth/afwall)
 
 Description
 -----------
