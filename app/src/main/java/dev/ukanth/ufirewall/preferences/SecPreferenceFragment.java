@@ -462,7 +462,9 @@ public class SecPreferenceFragment extends PreferenceFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        setupEnableAdmin(findPreference("enableAdmin"));
         switch (requestCode) {
+
             case REQ_CREATE_PATTERN: {
                 ListPreference itemList = (ListPreference) findPreference("passSetting");
                 if (resultCode == getActivity().RESULT_OK) {
