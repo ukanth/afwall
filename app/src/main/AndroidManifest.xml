@@ -245,21 +245,21 @@
         <!-- device admin -->
         <!-- This is required this receiver to become device admin component. -->
 
-        <!-- <receiver
-            android:name=".admin.AdminDeviceReceiver"
+         <receiver
+             android:name=".admin.AdminDeviceReceiver"
+             android:description="@string/device_admin_desc"
+             android:label="@string/enable_device_admin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
 
             <intent-filter>
-
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
-                <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLE_REQUESTED" />
-                <action android:name="android.app.action.ACTION_DEVICE_ADMIN_DISABLED" />
-                <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
             </intent-filter>
-        </receiver> -->
+        </receiver>
+
+
 
         <!-- Tasker/Locale Plugin -->
 

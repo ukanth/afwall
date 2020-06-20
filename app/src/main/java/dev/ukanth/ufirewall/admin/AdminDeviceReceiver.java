@@ -16,7 +16,7 @@ import dev.ukanth.ufirewall.util.G;
  * subclass DeviceAdminReceiver class here and to implement its only required
  * method onEnabled().
  */
-/*public class AdminDeviceReceiver extends DeviceAdminReceiver {
+public class AdminDeviceReceiver extends DeviceAdminReceiver {
 	static final String TAG = "AdminDeviceReceiver";
 
 	@Override
@@ -34,4 +34,4 @@ import dev.ukanth.ufirewall.util.G;
 		Toast.makeText(context, R.string.device_admin_disabled,Toast.LENGTH_LONG).show();
 		Log.d(TAG, "onDisabled");
 	}
-}*/
+}

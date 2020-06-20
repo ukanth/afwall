@@ -90,7 +90,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String ENABLE_INBOUND = "enableInbound";
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
     private static final String LOG_PING_TIMEOUT = "logPingTime";
-    //private static final String ENABLE_ADMIN = "enableAdmin";
+    private static final String ENABLE_ADMIN = "enableAdmin";
     private static final String DUAL_APPS = "supportDualApps";
     private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
     private static final String ENABLE_CONFIRM = "enableConfirm";
@@ -417,14 +417,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         gPrefs.edit().putString(LOG_PING_TIMEOUT, logPingTimeout+"");
     }*/
 
-   /* public static boolean enableAdmin() {
+    public static boolean enableAdmin() {
         return gPrefs.getBoolean(ENABLE_ADMIN, false);
     }
 
     public static boolean enableAdmin(boolean val) {
         gPrefs.edit().putBoolean(ENABLE_ADMIN, val).commit();
         return val;
-    }*/
+    }
 
     public static boolean showHost() {
         return gPrefs.getBoolean(SHOW_HOST, false);
