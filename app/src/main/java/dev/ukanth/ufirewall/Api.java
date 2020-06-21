@@ -3207,33 +3207,27 @@ public final class Api {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static void setUserOwner(Context context) {
         if (supportsMultipleUsers(context)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                try {
-                    Method getUserHandle = UserManager.class.getMethod("getUserHandle");
-                    int userHandle = (Integer) getUserHandle.invoke(context.getSystemService(Context.USER_SERVICE));
-                    G.setMultiUserId(userHandle);
-                } catch (Exception ex) {
-                    Log.e(TAG, "Exception on setUserOwner " + ex.getMessage());
-                }
+            try {
+                Method getUserHandle = UserManager.class.getMethod("getUserHandle");
+                int userHandle = (Integer) getUserHandle.invoke(context.getSystemService(Context.USER_SERVICE));
+                G.setMultiUserId(userHandle);
+            } catch (Exception ex) {
+                Log.e(TAG, "Exception on setUserOwner " + ex.getMessage());
             }
         }
     }
 
     @SuppressLint("NewApi")
     public static boolean supportsMultipleUsers(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            final UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
-            try {
-                Method supportsMultipleUsers = UserManager.class.getMethod("supportsMultipleUsers");
-                return (Boolean) supportsMultipleUsers.invoke(um);
-            } catch (Exception ex) {
-                return false;
-            }
+        final UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
+        try {
+            Method supportsMultipleUsers = UserManager.class.getMethod("supportsMultipleUsers");
+            return (Boolean) supportsMultipleUsers.invoke(um);
+        } catch (Exception ex) {
+            return false;
         }
-        return false;
     }
 
     public static String loadData(final Context context,
