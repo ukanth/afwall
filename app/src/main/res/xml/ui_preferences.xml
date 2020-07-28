@@ -34,6 +34,13 @@
             android:key="notification_priority"
             android:summary="%s"
             android:title="@string/notification_priority"></ListPreference>
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="showAllApps"
+            android:summaryOff="@string/showallapps_summary_off"
+            android:summaryOn="@string/showallapps_summary_on"
+            android:title="@string/showAllApps" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="showFilter"

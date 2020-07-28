@@ -25,11 +25,6 @@ import dev.ukanth.ufirewall.R;
 public class FileDialog {
     private static final String PARENT_DIR = "..";
     private final String TAG = getClass().getName();
-
-    public boolean isFlag() {
-        return flag;
-    }
-
     public void setFlag(boolean flag) {
         this.flag = flag;
     }
@@ -44,8 +39,8 @@ public class FileDialog {
     public interface DirectorySelectedListener {
         void directorySelected(File directory);
     }
-    private ListenerList<FileSelectedListener> fileListenerList = new ListenerList<FileDialog.FileSelectedListener>();
-    private ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<FileDialog.DirectorySelectedListener>();
+    private ListenerList<FileSelectedListener> fileListenerList = new ListenerList<>();
+    private ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<>();
     private final Activity activity;
     private boolean selectDirectoryOption;
     private String[] fileEndsWith;
@@ -74,33 +69,19 @@ public class FileDialog {
         builder.title(currentPath.getPath());
         if (selectDirectoryOption) {
 
-            builder.onPositive(new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    fireDirectorySelectedEvent(currentPath);
-                }
-            });
-            /*builder.setPositiveButton(activity.getString(R.string.select_dir), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    // Log.d(TAG, currentPath.getPath());
-                    fireDirectorySelectedEvent(currentPath);
-                }
-            });*/
+            builder.onPositive((dialog12, which) -> fireDirectorySelectedEvent(currentPath));
         }
 
         builder.items(fileList);
-        builder.itemsCallback(new MaterialDialog.ListCallback()  {
-            @Override
-            public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                String fileChosen = fileList[which];
-                File chosenFile = getChosenFile(fileChosen);
-                if (chosenFile.isDirectory()) {
-                    loadFileList(chosenFile,flag);
-                    dialog.cancel();
-                    dialog.dismiss();
-                    showDialog();
-                } else fireFileSelectedEvent(chosenFile);
-            }
+        builder.itemsCallback((dialog1, view, which, text) -> {
+            String fileChosen = fileList[which];
+            File chosenFile = getChosenFile(fileChosen);
+            if (chosenFile.isDirectory()) {
+                loadFileList(chosenFile,flag);
+                dialog1.cancel();
+                dialog1.dismiss();
+                showDialog();
+            } else fireFileSelectedEvent(chosenFile);
         });
 
         dialog = builder.show();
@@ -136,24 +117,15 @@ public class FileDialog {
     }
 
     private void fireFileSelectedEvent(final File file) {
-        fileListenerList.fireEvent(new ListenerList.FireHandler<FileSelectedListener>() {
-            public void fireEvent(FileSelectedListener listener) {
-                listener.fileSelected(file);
-            }
-        });
+        fileListenerList.fireEvent(listener -> listener.fileSelected(file));
     }
 
     private void fireDirectorySelectedEvent(final File directory) {
-        dirListenerList.fireEvent(new ListenerList.FireHandler<DirectorySelectedListener>() {
-            public void fireEvent(DirectorySelectedListener listener) {
-                listener.directorySelected(directory);
-            }
-        });
+        dirListenerList.fireEvent(listener -> listener.directorySelected(directory));
     }
 
     private void loadFileList(File path,final boolean flag) {
         this.currentPath = path;
-        //String afwallDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/";
         List<String> r = new ArrayList<String>();
         if (path.exists()) {
             if (path.getParentFile() != null) r.add(PARENT_DIR);
@@ -181,7 +153,6 @@ public class FileDialog {
                             Matcher m2 = p2.matcher(filename);
                             endsWith = m2.matches() || m1.matches();
                         }
-                        // boolean endsWith = fileEndsWith != null ? filename.contains(fileEndsWith) : true;
                         return endsWith || sel.isDirectory();
                     }
                 }

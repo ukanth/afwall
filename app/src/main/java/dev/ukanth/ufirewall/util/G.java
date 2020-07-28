@@ -134,6 +134,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
     private static final String RUN_NOTIFICATION = "runNotification";
 
+    private static final String SHOW_ALL_APPS = "showAllApps";
+
     private static final String THEME = "theme";
     private static final String FASTER_RULES = "fasterApplyRules";
     //private static final String QUICK_RULES = "quickApply";
@@ -204,6 +206,16 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     public static boolean isRun(boolean val) {
         gPrefs.edit().putBoolean(RUN_NOTIFICATION, val).commit();
+        return val;
+    }
+
+
+    public static boolean showAllApps() {
+        return gPrefs.getBoolean(SHOW_ALL_APPS, false);
+    }
+
+    public static boolean showAllApps(boolean val) {
+        gPrefs.edit().putBoolean(SHOW_ALL_APPS, val).commit();
         return val;
     }
 

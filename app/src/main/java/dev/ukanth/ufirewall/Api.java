@@ -138,6 +138,7 @@ import static dev.ukanth.ufirewall.util.G.ipv4Fwd;
 import static dev.ukanth.ufirewall.util.G.ipv4Input;
 import static dev.ukanth.ufirewall.util.G.ipv6Fwd;
 import static dev.ukanth.ufirewall.util.G.ipv6Input;
+import static dev.ukanth.ufirewall.util.G.showAllApps;
 
 /**
  * Contains shared programming interfaces.
@@ -1515,7 +1516,7 @@ public final class Api {
                 boolean firstseen = false;
                 app = syncMap.get(apinfo.uid);
                 // filter applications which are not allowed to access the Internet
-                if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName)) {
+                if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName) && !showAllApps()) {
                     continue;
                 }
                 // try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
