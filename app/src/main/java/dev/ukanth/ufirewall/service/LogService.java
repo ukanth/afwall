@@ -60,6 +60,10 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class LogService extends Service {
 
+    /*static {
+        System.loadLibrary("native-lib");
+    }*/
+
     public static final String TAG = "AFWall";
 
     public static String logPath;
@@ -85,6 +89,8 @@ public class LogService extends Service {
     private static abstract class CancelableRunnable implements Runnable {
         public boolean cancel;
     }
+
+    //public native String stringFromLog();
 
     @Nullable
     @Override
@@ -171,6 +177,8 @@ public class LogService extends Service {
     @Override
     public void onCreate() {
         startLogService();
+        //Toast.makeText(getApplicationContext(), stringFromLog(), Toast.LENGTH_LONG).show();
+
     }
 
     private static class LogTask extends AsyncTask<Void, Void, Void> {

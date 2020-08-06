@@ -44,6 +44,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -57,6 +58,8 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
+import dev.ukanth.ufirewall.preferences.DefaultConnectionPref;
+import dev.ukanth.ufirewall.preferences.DefaultConnectionPrefDB;
 
 public class G extends Application implements Application.ActivityLifecycleCallbacks{
 
@@ -815,6 +818,30 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
     }
 
+    public static void storeDefaultConnection(List<Integer> list, int modeType) {
+        // store to DB
+        for (Integer uid : list) {
+            DefaultConnectionPref preference = new DefaultConnectionPref();
+            preference.setUid(uid);
+            preference.setState(true);
+            preference.setModeType(modeType);
+            FlowManager.getDatabase(DefaultConnectionPrefDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+        }
+    }
+
+    public static List<Integer> readDefaultConnection(int modeType) {
+        List<DefaultConnectionPref> list = SQLite.select()
+                .from(DefaultConnectionPref.class)
+                .queryList();
+        List<Integer> listSelected = new ArrayList<>();
+        for (DefaultConnectionPref pref : list) {
+            if (pref.isState() && pref.getModeType() == modeType) {
+                listSelected.add(pref.getUid());
+            }
+        }
+        return listSelected;
+    }
+
     public static List<Integer> readBlockedApps() {
         List<LogPreference> list = SQLite.select()
                 .from(LogPreference.class)
@@ -868,6 +895,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         // will be used by XPosed to return true
         return false;
     }
+
+
 
 
     @Override

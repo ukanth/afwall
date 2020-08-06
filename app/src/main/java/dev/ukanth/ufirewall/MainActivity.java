@@ -133,7 +133,6 @@ import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PAT
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener,
         RadioGroup.OnCheckedChangeListener {
 
-
     private static final int SHOW_ABOUT_RESULT = 1200;
     private static final int PREFERENCE_RESULT = 1205;
     private static final int SHOW_CUSTOM_SCRIPT = 1201;
@@ -262,8 +261,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
         registerUIRefresh();
-
-
     }
 
     private void updateSelectedColumns() {

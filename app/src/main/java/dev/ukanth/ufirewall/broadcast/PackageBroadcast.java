@@ -48,6 +48,8 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
+import static dev.ukanth.ufirewall.util.G.isDonate;
+
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled
  * apps.
@@ -102,18 +104,22 @@ public class PackageBroadcast extends BroadcastReceiver {
                 boolean isNotify = prefs.getBoolean("notifyAppInstall", true);
                 if (isNotify && Api.isEnabled(context)) {
                     String added_package = intent.getData().getSchemeSpecificPart();
-                    final PackageManager pkgmanager = context.getPackageManager();
+                    final PackageManager packager = context.getPackageManager();
                     String label = null;
                     try {
-                        ApplicationInfo applicationInfo = pkgmanager.getApplicationInfo(added_package, 0);
-                        label = pkgmanager.getApplicationLabel(applicationInfo).toString();
-                        if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(Manifest.permission.INTERNET, added_package)) {
+                        ApplicationInfo applicationInfo = packager.getApplicationInfo(added_package, 0);
+                        label = packager.getApplicationLabel(applicationInfo).toString();
+                        if (PackageManager.PERMISSION_GRANTED == packager.checkPermission(Manifest.permission.INTERNET, added_package)) {
                             addNotification(context,label);
                         }
                         if (Api.recentlyInstalled == null) {
                             Api.recentlyInstalled = new HashSet<>();
                         }
                         Api.recentlyInstalled.add(applicationInfo.packageName);
+                        //sets default permissions
+                        if ((G.isDoKey(context) || isDonate())) {
+                            Api.setDefaultPermission(applicationInfo);
+                        }
                     } catch (NameNotFoundException e) {
                     }
                 }

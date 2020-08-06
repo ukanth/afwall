@@ -628,4 +628,10 @@
     <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
     <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
     <string name="showAllApps">Show all apps</string>
+    <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
+    <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
+
+    <string name="connection_default_allow">Default Allow Connection</string>
+    <string name="connection_default_block">Default Block Connection</string>
+
 </resources>

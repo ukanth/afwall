@@ -123,6 +123,8 @@ import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
+import dev.ukanth.ufirewall.preferences.DefaultConnectionPref;
+import dev.ukanth.ufirewall.preferences.DefaultConnectionPref_Table;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
@@ -3559,6 +3561,74 @@ public final class Api {
         configuration.locale = locale;
         resources.updateConfiguration(configuration, resources.getDisplayMetrics());
         return context;
+    }
+
+    public static void setDefaultPermission(ApplicationInfo applicationInfo) {
+
+        String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
+        String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
+        String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
+        String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
+        String savedPkg_tether_uid = G.pPrefs.getString(PREF_TETHER_PKG_UIDS, "");
+        String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
+        String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
+
+        //lets first get what mode
+        int modeType = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST).equals(Api.MODE_WHITELIST) ? 0 : 1;
+        //lets get the preference
+        List<DefaultConnectionPref> list = SQLite.select().from(DefaultConnectionPref.class).where(DefaultConnectionPref_Table.modeType.eq(modeType))
+                .queryList();
+        boolean isModified = false;
+        for (DefaultConnectionPref pref : list) {
+            if(pref.isState()) {
+                switch (pref.getUid()) {
+                    case 0:
+                        savedPkg_lan_uid = savedPkg_lan_uid + "|" + applicationInfo.uid;
+                        isModified = true;
+                        break;
+                    case 1:
+                        savedPkg_wifi_uid = savedPkg_wifi_uid + "|" + applicationInfo.uid;
+                        isModified = true;
+                        break;
+                    case 2:
+                        savedPkg_3g_uid = savedPkg_3g_uid + "|" + applicationInfo.uid;
+                        isModified = true;
+                        break;
+                    case 3:
+                        savedPkg_roam_uid = savedPkg_roam_uid + "|" + applicationInfo.uid;
+                        isModified = true;
+                        break;
+                    case 4:
+                        savedPkg_tor_uid = savedPkg_tor_uid + "|" + applicationInfo.uid;
+                        isModified = true;
+                        break;
+                    case 5:
+                        savedPkg_vpn_uid = savedPkg_vpn_uid + "|" + applicationInfo.uid;
+                        isModified = true;
+                        break;
+                    case 6:
+                        savedPkg_tether_uid = savedPkg_tether_uid + "|" + applicationInfo.uid;
+                        isModified = true;
+                        break;
+                }
+            }
+        }
+
+        if(isModified) {
+            SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+            Editor edit = prefs.edit();
+            edit.putString(PREF_WIFI_PKG_UIDS, savedPkg_wifi_uid);
+            edit.putString(PREF_3G_PKG_UIDS, savedPkg_3g_uid);
+            edit.putString(PREF_ROAMING_PKG_UIDS, savedPkg_roam_uid);
+            edit.putString(PREF_VPN_PKG_UIDS, savedPkg_vpn_uid);
+            edit.putString(PREF_TETHER_PKG_UIDS, savedPkg_tether_uid);
+            edit.putString(PREF_LAN_PKG_UIDS, savedPkg_lan_uid);
+            edit.putString(PREF_TOR_PKG_UIDS, savedPkg_tor_uid);
+            edit.commit();
+            //make sure rules are modified flag is set
+            Api.setRulesUpToDate(false);
+            fastApply(ctx, new RootCommand());
+        }
     }
 
     static class RuleDataSet {

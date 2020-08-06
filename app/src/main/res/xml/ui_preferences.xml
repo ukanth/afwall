@@ -11,6 +11,15 @@
             android:summaryOn="@string/notify_pref_summary_on"
             android:title="@string/notify_pref_title" />
 
+        <Preference
+            android:key="default_behavior_allow_mode"
+            android:title="@string/default_connection_setting_allow"></Preference>
+
+
+        <Preference
+            android:key="default_behavior_block_mode"
+            android:title="@string/default_connection_setting_block"></Preference>
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="disableIcons"
