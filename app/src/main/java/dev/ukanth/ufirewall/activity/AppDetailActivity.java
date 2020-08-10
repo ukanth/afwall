@@ -94,7 +94,11 @@ public class AppDetailActivity extends AppCompatActivity {
             if (!packageName.startsWith("dev.afwall.special.")) {
                 applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
                 if (applicationInfo != null) {
-                    image.setImageDrawable(applicationInfo.loadIcon(packageManager));
+                    try {
+                        image.setBackground(applicationInfo.loadIcon(packageManager));
+                    } catch (Exception e){
+                        image.setImageDrawable(applicationInfo.loadIcon(packageManager));
+                    }
                     String name = packageManager.getApplicationLabel(applicationInfo).toString();
                     textView.setText(name);
                     setTotalBytesManual(down, up, applicationInfo.uid);

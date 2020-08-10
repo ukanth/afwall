@@ -2,7 +2,11 @@ package dev.ukanth.ufirewall.log;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,17 +62,14 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
         return new ViewHolder(mView);
     }
 
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
         holder.bind(logData.get(position),recyclerItemClickListener);
         try {
             info = Api.getPackageDetails(context, data.getUid());
-            if(Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
-                holder.icon.setBackground(info.applicationInfo.loadIcon(context.getPackageManager()));
-            } else {
-                holder.icon.setImageDrawable(info.applicationInfo.loadIcon(context.getPackageManager()));
-            }
+            holder.icon.setBackground(info.applicationInfo.loadIcon(context.getPackageManager()));
         } catch (Exception e) {
             Log.e(TAG,e.getMessage(),e);
             info = null;
@@ -76,7 +77,9 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
                 if(Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.O) {
                     holder.icon.setBackground(context.getDrawable(R.drawable.ic_unknown));
                 } else {
-                    holder.icon.setImageDrawable(context.getDrawable(R.drawable.ic_unknown));
+                    Drawable appIcon = context.getDrawable(R.drawable.ic_unknown);
+                    Bitmap bitmap = ((BitmapDrawable)appIcon).getBitmap();
+                    holder.icon.setImageBitmap(bitmap);
                 }
             }catch (Exception e1) {
                 Log.e(TAG,e1.getMessage(),e1);
