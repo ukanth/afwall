@@ -149,6 +149,8 @@
     <string name="log_disabled">Registros desativados</string>
     <string name="log_was_enabled">Registros ativados</string>
     <string name="log_was_disabled">Registros desativados</string>
+    <string name="log_target_success">Registro de alterações bem sucedida</string>
+    <string name="log_target_fail">Registro de alterações falhou</string>
     <string name="log_toggle_failed">Erro ao alternar o estado do registro</string>
     <string name="log_target_failed">Erro: o kernel não tem suporte LOG/NFLOG</string>
     <string name="log_cleared">Registro limpo</string>
@@ -192,6 +194,8 @@
     <string name="vpnSummary">Ative para controlar separadamente as permissões de VPN</string>
     <string name="roaming">Controle do Roaming</string>
     <string name="roamingSummary">Ative para controlar separadamente as permissões de roaming</string>
+    <string name="tether_profile">Controle de Tether</string>
+    <string name="tetherSummary">Permitir o controle da conectividade Bluetooth/USB tether</string>
     <string name="tor_profile">Controle da rede Tor</string>
     <string name="torSummary">Habilite redirecionamento de todo tráfego para rede Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -312,6 +316,7 @@
     <string name="legend_wifi">Deixe o AFWall+ controlar as permissões de Wi-Fi</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">Dados</string>
     <string name="legend_data">Ative para controlar as permissões de dados móveis (2G,3G,EDGE,LTE/4G)</string>
@@ -516,9 +521,21 @@
     <string name="firewall_service">Serviço de firewall</string>
     <string name="boot_notification">Serviço de inicialização</string>
     <string name="app_notification">Notificação de apps</string>
-    <string name="hide">Hide</string>
-    <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="hide">Esconder</string>
+    <string name="firewall_error_notify">Questão do Firewall</string>
+    <string name="ui_themes_header">Temas</string>
+    <string name="theme">Tema UI</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Colunas clonadas</string>
+    <string name="from">De</string>
+    <string name="legend_action">Ações</string>
+    <string name="clear_all">Limpar Tudo</string>
+    <string name="log_target">Registro de Destino</string>
+    <string name="showallapps_summary_off">Atualmente mostra aplicações com permissão da INTERNET</string>
+    <string name="showallapps_summary_on">Atualmente mostra todos os aplicativos instalados (AVISO: desabilite esta configuração para um melhor desempenho)</string>
+    <string name="showAllApps">Mostrar todos os aplicativos</string>
+    <string name="default_connection_setting_allow">Comportamento padrão da lista branca(Doação apenas)</string>
+    <string name="default_connection_setting_block">Comportamento padrão da lista negra(Doação apenas)</string>
+    <string name="connection_default_allow">Permitir Conexão por Padrão</string>
+    <string name="connection_default_block">Bloquear Conexão por Padrão</string>
 </resources>
