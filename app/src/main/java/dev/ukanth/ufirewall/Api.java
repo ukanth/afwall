@@ -2132,8 +2132,8 @@ public final class Api {
         notificationBuilder.setContentIntent(notifyPendingIntent);
 
         Notification notification = notificationBuilder.setOngoing(false)
-                .setCategory(Notification.CATEGORY_ERROR)
-                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setCategory(NotificationCompat.CATEGORY_ERROR)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentTitle(ctx.getString(R.string.error_notification_title))
                 .setContentText(ctx.getString(R.string.error_notification_text))
                 .setTicker(ctx.getString(R.string.error_notification_ticker))
@@ -2223,8 +2223,8 @@ public final class Api {
                 .setContentTitle(ctx.getString(R.string.app_name))
                 .setTicker(ctx.getString(R.string.app_name))
                 .setSound(null)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
                 .build();

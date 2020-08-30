@@ -242,7 +242,7 @@ public class RootShellService2 extends Service {
                 .setTicker(context.getString(R.string.app_name))
                 .setChannelId(CHANNEL_ID)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setOnlyAlertOnce(true)
                 .setPriority(NotificationManager.IMPORTANCE_LOW)
                 .setContentText("").build();

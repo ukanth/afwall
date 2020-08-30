@@ -120,7 +120,7 @@ public class FirewallService extends Service {
                 .setSound(null)
                 .setChannelId(NOTIFICATION_CHANNEL_ID)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
                 .setOngoing(true)
