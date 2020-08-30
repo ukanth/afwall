@@ -1491,7 +1491,11 @@ public final class Api {
             }
 
             //use pm list packages -f -U --user 10
-            List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(PackageManager.GET_META_DATA);
+            int pkgManagerFlags = PackageManager.GET_META_DATA;
+            // it's useless to iterate over uninstalled packages if we don't support multi-profile apps
+            if (G.supportDual())
+                pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
+            List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
@@ -1546,7 +1550,8 @@ public final class Api {
                         app.appType = 0;
                     }
                     app.pkgName = apinfo.packageName;
-                    syncMap.put(apinfo.uid, app);
+                    if ((apinfo.flags & ApplicationInfo.FLAG_INSTALLED) != 0)
+                        syncMap.put(apinfo.uid, app);
                 } else {
                     app.names.add(name);
                 }
