@@ -3,12 +3,10 @@ package dev.ukanth.ufirewall.log;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +24,6 @@ import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.util.AppIconHelperV26;
 import dev.ukanth.ufirewall.util.G;
 
 import static dev.ukanth.ufirewall.Api.TAG;

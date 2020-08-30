@@ -7,7 +7,7 @@
     android:background="?attr/itemBackground"
     android:duplicateParentState="false">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/rule_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"

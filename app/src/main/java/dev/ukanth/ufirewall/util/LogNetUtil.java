@@ -2,17 +2,10 @@ package dev.ukanth.ufirewall.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-
-import org.xbill.DNS.ARecord;
-import org.xbill.DNS.Address;
-import org.xbill.DNS.Credibility;
-import org.xbill.DNS.Lookup;
-import org.xbill.DNS.Record;
-import org.xbill.DNS.Type;
 
 import java.io.BufferedReader;
 import java.io.IOException;

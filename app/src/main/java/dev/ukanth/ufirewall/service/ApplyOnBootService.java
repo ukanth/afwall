@@ -1,29 +1,7 @@
 package dev.ukanth.ufirewall.service;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Messenger;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-
-import java.util.HashSet;
-
-import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.MainActivity;
-import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.util.G;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 /*public class ApplyOnBootService extends Service {
 

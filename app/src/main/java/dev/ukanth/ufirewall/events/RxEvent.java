@@ -1,6 +1,6 @@
 package dev.ukanth.ufirewall.events;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import dev.ukanth.ufirewall.log.Log;
 import io.reactivex.rxjava3.disposables.Disposable;

@@ -2,12 +2,9 @@ package dev.ukanth.ufirewall.util;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.view.View;
+import androidx.annotation.NonNull;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.File;
@@ -16,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import dev.ukanth.ufirewall.R;
 
 /**
  * Created by ukanth on 18/7/15.

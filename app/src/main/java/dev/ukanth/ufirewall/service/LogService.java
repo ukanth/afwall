@@ -27,12 +27,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,11 +41,8 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.stericson.roottools.RootTools;
 
-import java.io.DataOutputStream;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.RejectedExecutionException;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
