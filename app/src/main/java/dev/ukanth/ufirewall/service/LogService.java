@@ -43,6 +43,8 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.stericson.roottools.RootTools;
 
+import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
@@ -88,6 +90,7 @@ public class LogService extends Service {
     private static View toastLayout;
 
     private Disposable disposable;
+    private int BUFF_LEN = 2000;
 
     private static abstract class CancelableRunnable implements Runnable {
         public boolean cancel;
@@ -212,20 +215,20 @@ public class LogService extends Service {
             disposable.dispose();
         }
         disposable = LogRxEvent.subscribe((event -> {
-                    if (event != null) {
-                        try {
-                            new Thread(() -> {
-                                store(event.logInfo, event.ctx);
-                                if (event != null && event.logInfo != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-                                    if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
-                                        showToast(event.ctx, handler, event.logInfo.uidString, false);
-                                    }
+            if (event != null) {
+                    try {
+                        new Thread(() -> {
+                            store(event.logInfo, event.ctx);
+                            if (event != null && event.logInfo != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+                                if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
+                                    showToast(event.ctx, handler, event.logInfo.uidString, false);
                                 }
-                            }).start();
-                        } catch (Exception e) {
-                        }
+                            }
+                        }).start();
+                    } catch (Exception e) {
                     }
-                })
+                }
+            })
         );
         if (G.enableLogService()) {
             // this method is executed in a background thread
@@ -262,33 +265,34 @@ public class LogService extends Service {
                 handler = new Handler();
 
                 if(logPath != null) {
-                    rootSession = new Shell.Builder()
-                            .useSU()
-                            .setMinimalLogging(true)
-                            .setOnSTDOUTLineListener(line -> {
-                                if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
-                                    try {
-                                        String uid = line.split("=")[1];
-                                        if (uid != null) {
-                                            Set data = G.storedPid();
-                                            if (data == null || data.isEmpty()) {
-                                                data = new HashSet();
-                                                data.add(uid);
-                                                G.storedPid(data);
-                                            } else if (!data.contains(uid)) {
-                                                Set data2 = new HashSet();
-                                                data2.addAll(data);
-                                                data2.add(uid);
-                                                G.storedPid(data2);
-                                            }
+                   rootSession = new Shell.Builder()
+                        .useSU()
+                        .setMinimalLogging(true)
+                        .setOnSTDOUTLineListener(line -> {
+                            //Log.i(TAG,line);
+                            if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
+                                try {
+                                    String uid = line.split("=")[1];
+                                    if (uid != null) {
+                                        Set data = G.storedPid();
+                                        if (data == null || data.isEmpty()) {
+                                            data = new HashSet();
+                                            data.add(uid);
+                                            G.storedPid(data);
+                                        } else if (!data.contains(uid)) {
+                                            Set data2 = new HashSet();
+                                            data2.addAll(data);
+                                            data2.add(uid);
+                                            G.storedPid(data2);
                                         }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
-                                } else {
-                                    storeLogInfo(line, getApplicationContext());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            }).addCommand(logPath).open();
+                            } else {
+                                storeLogInfo(line, getApplicationContext());
+                            }
+                        }).addCommand(logPath).open();
                 } else {
                     Log.i(TAG, "Unable to start log service. Log Path is empty");
                     Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));
@@ -345,17 +349,9 @@ public class LogService extends Service {
                             LogRxEvent.publish(new LogEvent(LogInfo.parseLogs(line, context, "{AFL}", 0), context));
                         }).start();
                     } catch (Exception e) {
-                        //Handle when has exception thrown
+                        //e.printStackTrace();
                     }
-                } /*else if (line.contains("{AFL-ALLOW}")) {
-                    try {
-                        new Thread(() -> {
-                            LogRxEvent.publish(new LogEvent(LogInfo.parseLogs(line, context, "{AFL-ALLOW}", 1), context));
-                        }).start();
-                    } catch (RejectedExecutionException e) {
-                        //Handle when has exception thrown
-                    }
-                }*/
+                }
             }
         }
     }
