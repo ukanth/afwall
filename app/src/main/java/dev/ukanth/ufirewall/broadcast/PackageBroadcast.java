@@ -35,8 +35,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
+
 import androidx.core.app.NotificationCompat;
 
 import java.util.HashSet;
@@ -75,21 +78,25 @@ public class PackageBroadcast extends BroadcastReceiver {
             if (!replacing) {
                 // Update the Firewall if necessary
                 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -123);
-                //TODO - Remove only that app
-                Api.applicationRemoved(context, uid, new RootCommand()
-                        .setFailureToast(R.string.error_apply)
-                        .setCallback(new RootCommand.Callback() {
-                            @Override
-                            public void cbFunc(RootCommand state) {
-                                if (state.exitCode == 0) {
-                                    Api.removeCacheLabel(intent.getData().getSchemeSpecificPart(), context);
-                                    Api.removeAllUnusedCacheLabel(context);
-                                    // Force app list reload next time
-                                    Api.applications = null;
-                                }
+                String packageName = context.getPackageManager().getNameForUid(uid);
+                //if it contains sharedID -- dont remove based on uid
+                if(packageName != null && packageName.contains("sharedID")) {
+                    //ignore since the another app with same ID exists
+                } else {
+                    Api.applicationRemoved(context, uid, new RootCommand()
+                    .setFailureToast(R.string.error_apply)
+                    .setCallback(new RootCommand.Callback() {
+                        @Override
+                        public void cbFunc(RootCommand state) {
+                            if (state.exitCode == 0) {
+                                Api.removeCacheLabel(intent.getData().getSchemeSpecificPart(), context);
+                                Api.removeAllUnusedCacheLabel(context);
+                                // Force app list reload next time
+                                Api.applications = null;
                             }
-                        }));
-
+                        }
+                    }));
+                }
             }
         } else if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
             final boolean updateApp = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
