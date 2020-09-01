@@ -92,6 +92,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -791,26 +792,30 @@ public final class Api {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
             }
 
-            final boolean any_wifi = ruleDataSet.wifiList.indexOf(SPECIAL_UID_ANY) >= 0;
-            final boolean any_3g = ruleDataSet.dataList.indexOf(SPECIAL_UID_ANY) >= 0;
-
-            // special rules to allow 3G<->wifi tethering
+            // special rules to allow tethering
             // note that this can only blacklist DNS/DHCP services, not all tethered traffic
-            if (((!whitelist && (any_wifi || any_3g)) ||
-                    (ruleDataSet.dataList.indexOf(SPECIAL_UID_TETHER) >= 0) || (ruleDataSet.wifiList.indexOf(SPECIAL_UID_TETHER) >= 0))) {
+            String[] users_dhcp = {"root", "nobody", "network_stack"};
+            String[] users_dns = {"root", "nobody", /*"dns_tether"*/};
+            String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
 
-                String[] users_dhcp = {"root", "nobody", "network_stack"};
-                String[] users_dns = {"root", "nobody", /*"dns_tether"*/};
-                String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
-
+            if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
                 addRuleForUsers(cmds, users_dhcp, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
-
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
+            }
+            if (containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
+                // DHCP replies to client
+                addRuleForUsers(cmds, users_dhcp, "-A " + AFWALL_CHAIN_NAME + "-tether", "-p udp --sport=67 --dport=68" + action);
+                // DNS replies to client
+                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-tether", "-p udp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-tether", "-p tcp --sport=53" + action);
+            }
 
-                // DNS requests to upstream servers
+            // DNS requests to upstream servers
+            // TODO: Allow DNS upstream servers from other connection types
+            if (containsUidOrAny(ruleDataSet.dataList, SPECIAL_UID_TETHER)) {
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
             }
@@ -857,6 +862,17 @@ public final class Api {
 
         iptablesCommands(cmds, out, ipv6);
         return true;
+    }
+
+    /**
+     * Checks if a collection contains specified uid or {@code SPECIAL_UID_ANY}
+     *
+     * @param uidList    collection of uids
+     * @param uidToCheck uid to check
+     * @return true if {@code uidList} contains {@code SPECIAL_UID_ANY} or {@code uidToCheck}
+     */
+    private static boolean containsUidOrAny(Collection<Integer> uidList, int uidToCheck) {
+        return uidList.contains(SPECIAL_UID_ANY) || uidList.contains(uidToCheck);
     }
 
     /**
