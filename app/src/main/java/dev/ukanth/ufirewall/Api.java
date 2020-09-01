@@ -799,19 +799,20 @@ public final class Api {
             if (((!whitelist && (any_wifi || any_3g)) ||
                     (ruleDataSet.dataList.indexOf(SPECIAL_UID_TETHER) >= 0) || (ruleDataSet.wifiList.indexOf(SPECIAL_UID_TETHER) >= 0))) {
 
-                String[] users = {"root", "nobody"};
+                String[] users_dhcp = {"root", "nobody", "network_stack"};
+                String[] users_dns = {"root", "nobody", /*"dns_tether"*/};
                 String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
 
                 // DHCP replies to client
-                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+                addRuleForUsers(cmds, users_dhcp, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
 
                 // DNS replies to client
-                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
-                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
 
                 // DNS requests to upstream servers
-                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
-                addRuleForUsers(cmds, users, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
             }
 
             // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
