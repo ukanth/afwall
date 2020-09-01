@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
+
 import androidx.core.app.NotificationCompat;
 
 import dev.ukanth.ufirewall.Api;
@@ -16,6 +17,7 @@ import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.FirewallService;
+import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.util.G;
 
 public class OnBootReceiver extends BroadcastReceiver {
@@ -50,7 +52,7 @@ public class OnBootReceiver extends BroadcastReceiver {
             if (G.enableLogService()) {
                 Log.i("AFWall", "Starting log service onboot");
                 try {
-                    context.startService(new Intent(context, FirewallService.class));
+                    context.startService(new Intent(context, LogService.class));
                 } catch (Exception e) {
                 }
             }
