@@ -1,6 +1,15 @@
 AFWall+ Changelog
 ==================
 
+Version 3.5.0-BETA-1
+* Feature: Show installed apps without internet permission
+* Feature: Default setting for installed app (Blacklist/whitelist) - Donate Only
+* Fix: Logs do not show app image
+* Fix: Better support for Multiprofile/Island/Workprofile - Thanks to @n90p
+* Fix: Log service startup issue
+* Update support tools and build libraries(AndroidX)
+* Target SDK to android 10
+
 Version 3.4.0
 * Feature: Bluetooth,USB tethering as separate rules - Thanks @nxzero
 * Feature: Clone columns (Copy rules from one column to other column)
