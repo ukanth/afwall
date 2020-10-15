@@ -795,7 +795,7 @@ public final class Api {
             // special rules to allow tethering
             // note that this can only blacklist DNS/DHCP services, not all tethered traffic
             String[] users_dhcp = {"root", "nobody", "network_stack"};
-            String[] users_dns = {"root", "nobody", /*"dns_tether"*/};
+            String[] users_dns = {"root", "nobody", "dns_tether"};
             String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
 
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER)) {
@@ -804,6 +804,7 @@ public final class Api {
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
+
             }
             if (containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
