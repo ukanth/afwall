@@ -98,7 +98,7 @@ public final class InterfaceTracker {
     }
 
     private static BluetoothProfile btPanProfile;
-    private static BluetoothProfile.ServiceListener btListener = new BluetoothProfile.ServiceListener() {
+    private static final BluetoothProfile.ServiceListener btListener = new BluetoothProfile.ServiceListener() {
         @Override
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
             Log.d(TAG, "BluetoothProfile.ServiceListener connected");

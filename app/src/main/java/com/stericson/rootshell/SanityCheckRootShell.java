@@ -141,7 +141,7 @@ public class SanityCheckRootShell extends Activity
     // not interfere with proper rendering.
     private class SanityCheckThread extends Thread
     {
-        private Handler mHandler;
+        private final Handler mHandler;
 
         public SanityCheckThread(Context context, Handler handler)
         {

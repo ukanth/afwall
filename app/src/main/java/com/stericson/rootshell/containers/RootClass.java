@@ -73,7 +73,7 @@ public class RootClass /* #ANNOTATIONS extends AbstractProcessor */ {
 
         private final String AVOIDDIRPATH = "stericson" + File.separator + "RootShell" + File.separator;
 
-        private List<File> classFiles;
+        private final List<File> classFiles;
 
         public AnnotationsFinder() throws IOException {
             System.out.println("Discovering root class annotations...");

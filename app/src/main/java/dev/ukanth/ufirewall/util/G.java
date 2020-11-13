@@ -166,8 +166,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     private static final String INITPATH = "initPath";
 
-    private static String AFWALL_PROFILE = "AFWallProfile";
-    private static String SHOW_LOG_TOAST = "showLogToasts";
+    private static final String AFWALL_PROFILE = "AFWallProfile";
+    private static final String SHOW_LOG_TOAST = "showLogToasts";
     public static String[] profiles = {"AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3};
     public static String[] default_profiles = {"AFWallProfile1", "AFWallProfile2", "AFWallProfile3"};
     public static Context ctx;

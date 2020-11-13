@@ -61,7 +61,7 @@ public class Shell {
         UNTRUSTED_APP("u:r:untrusted_app:s0"), // Third-party apps
         RECOVERY("u:r:recovery:s0"); //Recovery
 
-        private String value;
+        private final String value;
 
         ShellContext(String value) {
             this.value = value;
@@ -82,7 +82,7 @@ public class Shell {
 
     private static Shell customShell = null;
 
-    private static String[] suVersion = new String[]{
+    private static final String[] suVersion = new String[]{
             null, null
     };
 
@@ -119,7 +119,7 @@ public class Shell {
 
     public boolean isClosed = false;
 
-    private int maxCommands = 5000;
+    private final int maxCommands = 5000;
 
     private int read = 0;
 
@@ -554,7 +554,7 @@ public class Shell {
      * <p/>
      * The notification of a new command is handled by the method add in this class
      */
-    private Runnable input = new Runnable() {
+    private final Runnable input = new Runnable() {
         public void run() {
 
             try {
@@ -647,7 +647,7 @@ public class Shell {
      *
      * This include the output and error stream
      */
-    private Runnable output = new Runnable() {
+    private final Runnable output = new Runnable() {
         public void run() {
             try {
                 Command command = null;

@@ -34,8 +34,8 @@ public class FileDialog {
     public interface DirectorySelectedListener {
         void directorySelected(File directory);
     }
-    private ListenerList<FileSelectedListener> fileListenerList = new ListenerList<>();
-    private ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<>();
+    private final ListenerList<FileSelectedListener> fileListenerList = new ListenerList<>();
+    private final ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<>();
     private final Activity activity;
     private boolean selectDirectoryOption;
     private String[] fileEndsWith;
@@ -176,7 +176,7 @@ public class FileDialog {
 }
 
 class ListenerList<L> {
-    private List<L> listenerList = new ArrayList<L>();
+    private final List<L> listenerList = new ArrayList<L>();
 
     public interface FireHandler<L> {
         void fireEvent(L listener);

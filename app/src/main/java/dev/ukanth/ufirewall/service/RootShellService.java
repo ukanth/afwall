@@ -70,7 +70,7 @@ public class RootShellService extends Service implements Cloneable {
     private static Context mContext;
     private static NotificationManager notificationManager;
     private static ShellState rootState = INIT;
-    private static LinkedList<RootCommand> waitQueue = new LinkedList<>();
+    private static final LinkedList<RootCommand> waitQueue = new LinkedList<>();
     private static NotificationCompat.Builder builder;
 
     @Override

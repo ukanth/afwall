@@ -122,7 +122,7 @@ public class SanityCheckRootTools extends Activity {
     // Run our long-running tests in their separate thread so as to
     // not interfere with proper rendering.
     private class SanityCheckThread extends Thread {
-        private Handler mHandler;
+        private final Handler mHandler;
 
         public SanityCheckThread(Context context, Handler handler) {
             mHandler = handler;

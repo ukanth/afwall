@@ -34,12 +34,12 @@ import static dev.ukanth.ufirewall.Api.TAG;
 public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerViewAdapter.ViewHolder>{
 
 
-    private List<LogData> logData;
-    private Context context;
+    private final List<LogData> logData;
+    private final Context context;
     private LogData data;
     private PackageInfo info;
     private static PrettyTime prettyTime;
-    private RecyclerItemClickListener recyclerItemClickListener;
+    private final RecyclerItemClickListener recyclerItemClickListener;
 
 
     public LogRecyclerViewAdapter(final Context context,RecyclerItemClickListener recyclerItemClickListener){

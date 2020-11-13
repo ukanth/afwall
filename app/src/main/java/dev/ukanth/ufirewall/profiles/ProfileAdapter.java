@@ -16,8 +16,8 @@ import dev.ukanth.ufirewall.R;
  */
 public class ProfileAdapter extends ArrayAdapter<ProfileData> {
 
-    private List<ProfileData> profileList;
-    private Context context;
+    private final List<ProfileData> profileList;
+    private final Context context;
 
 
     public ProfileAdapter(List<ProfileData> profileList, Context ctx) {

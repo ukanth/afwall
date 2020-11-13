@@ -37,10 +37,10 @@ public class RadialMenuWidget extends View {
 	}	
 
 	
-	private List<RadialMenuEntry> menuEntries = new ArrayList<RadialMenuEntry>();
+	private final List<RadialMenuEntry> menuEntries = new ArrayList<RadialMenuEntry>();
 	private RadialMenuEntry centerCircle = null;
 	
-	private float screen_density = getContext().getResources().getDisplayMetrics().density;
+	private final float screen_density = getContext().getResources().getDisplayMetrics().density;
 	
 	private int defaultColor = Color.rgb(0, 0, 0); 	//default color of wedge pieces
 	private int defaultAlpha = 180;  						//transparency of the colors, 255=Opague, 0=Transparent
@@ -54,7 +54,7 @@ public class RadialMenuWidget extends View {
 	private int disabledColor = Color.rgb(85, 85, 85);  	//color to fill when something is selected
 	private int disabledAlpha = 100;						//transparency of fill when something is selected
 	
-	private int pictureAlpha = 255;							//transparency of images
+	private final int pictureAlpha = 255;							//transparency of images
 
 	private int textColor = Color.rgb(255, 255, 255);  	//color to fill when something is selected
 	private int textAlpha = 255;						//transparency of fill when something is selected
@@ -104,9 +104,9 @@ public class RadialMenuWidget extends View {
 	
 	private String headerString = null;
 	private int headerTextSize = textSize;				//TextSize
-	private int headerBuffer = scalePX(8);
-	private Rect textRect = new Rect();
-	private RectF textBoxRect = new RectF();
+	private final int headerBuffer = scalePX(8);
+	private final Rect textRect = new Rect();
+	private final RectF textBoxRect = new RectF();
 	private int headerTextLeft; 
 	private int headerTextBottom;
 	
@@ -121,7 +121,7 @@ public class RadialMenuWidget extends View {
     private static final int ANIMATE_IN = 1;
     private static final int ANIMATE_OUT = 2;
     
-    private int animateSections = 4;
+    private final int animateSections = 4;
     private int r2VariableSize;
 	private boolean animateOuterIn = false;
 	private boolean animateOuterOut = false;
@@ -1144,10 +1144,12 @@ public class RadialMenuWidget extends View {
 	}
    
     public class Wedge extends Path {
-    	private int x, y;
-    	private int InnerSize, OuterSize;
-    	private float StartArc;
-    	private float ArcWidth;
+    	private final int x;
+        private final int y;
+    	private final int InnerSize;
+        private final int OuterSize;
+    	private final float StartArc;
+    	private final float ArcWidth;
     	
     	private Wedge(int x, int y, int InnerSize, int OuterSize, float StartArc, float ArcWidth) {
     		super();

@@ -12,7 +12,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject;
  */
 
 public class LogRxEvent {
-    private static PublishSubject<LogEvent> sSubject = PublishSubject.create();
+    private static final PublishSubject<LogEvent> sSubject = PublishSubject.create();
 
     private LogRxEvent() {
         // hidden constructor

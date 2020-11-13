@@ -70,7 +70,7 @@ public class RootShellService2 extends Service {
     private static Context mContext;
     private static NotificationManager notificationManager;
     private static ShellState rootState = INIT;
-    private static LinkedList<RootCommand> waitQueue = new LinkedList<>();
+    private static final LinkedList<RootCommand> waitQueue = new LinkedList<>();
     private static NotificationCompat.Builder builder;
 
     private static void complete(final RootCommand state, int exitCode) {

@@ -1,4 +1,4 @@
--keepattributes **
+-keepattributes
 -keep class org.ocpsoft.prettytime.i18n.**
 -keep class !android.support.v7.view.menu.**,!android.support.design.internal.NavigationMenu,!android.support.design.internal.NavigationMenuPresenter,!android.support.design.internal.NavigationSubMenu,** {*;}
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }

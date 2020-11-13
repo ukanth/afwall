@@ -33,7 +33,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
     private final Context context;
     private final List<PackageInfoData> listApps;
 
-    private Activity activity;
+    private final Activity activity;
 
     private boolean useOld = false;
 

@@ -252,9 +252,9 @@ public final class Api {
     //for custom scripts
     //public static String ipPath = null;
     public static String bbPath = null;
-    private static String charsetName = "UTF8";
-    private static String algorithm = "DES";
-    private static int base64Mode = Base64.DEFAULT;
+    private static final String charsetName = "UTF8";
+    private static final String algorithm = "DES";
+    private static final int base64Mode = Base64.DEFAULT;
     private static String AFWALL_CHAIN_NAME = "afwall";
     private static Map<String, Integer> specialApps = null;
     private static boolean rulesUpToDate = false;
@@ -2991,7 +2991,6 @@ public final class Api {
         return returnVal;
     }
 
-    @SuppressWarnings("unchecked")
     public static boolean loadSharedPreferencesFromFile(Context ctx, StringBuilder builder, String fileName, boolean loadAll) {
         boolean res = false;
         File file = new File(fileName);
@@ -3573,7 +3572,6 @@ public final class Api {
         return context.createConfigurationContext(configuration);
     }
 
-    @SuppressWarnings("deprecation")
     private static Context updateResourcesLocaleLegacy(Context context, Locale locale) {
         Resources resources = context.getResources();
         Configuration configuration = resources.getConfiguration();

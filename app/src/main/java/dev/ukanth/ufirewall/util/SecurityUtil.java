@@ -26,12 +26,12 @@ import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 
 public class SecurityUtil {
 
-    private Context context;
+    private final Context context;
 
     public static final int REQ_ENTER_PATTERN = 9755;
     public static final int LOCK_VERIFICATION = 1212;
 
-    private Activity activity;
+    private final Activity activity;
 
     public SecurityUtil(Activity activity) {
         this.activity = activity;

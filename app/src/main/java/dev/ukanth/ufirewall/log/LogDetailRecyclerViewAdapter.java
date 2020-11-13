@@ -19,10 +19,10 @@ import dev.ukanth.ufirewall.R;
 public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetailRecyclerViewAdapter.ViewHolder> {
 
 
-    private List<LogData> logData;
-    private Context context;
+    private final List<LogData> logData;
+    private final Context context;
     private LogData data;
-    private RecyclerItemClickListener recyclerItemClickListener;
+    private final RecyclerItemClickListener recyclerItemClickListener;
 
 
     public LogDetailRecyclerViewAdapter(final Context context, RecyclerItemClickListener recyclerItemClickListener) {

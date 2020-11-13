@@ -45,7 +45,7 @@ public class Log {
 		String msg = "";
 	}
 
-	private static LinkedList<LogEntry> circ = new LinkedList<LogEntry>();
+	private static final LinkedList<LogEntry> circ = new LinkedList<LogEntry>();
 
 	private static synchronized void circLog(int level, String msg) {
 		LogEntry e = new LogEntry();

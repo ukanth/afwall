@@ -57,7 +57,7 @@ public class LogInfo {
     public String timestamp;
     int totalBlocked;
 
-    private HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address
+    private final HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address
 
     public LogInfo() {
         this.dstBlocked = new HashMap<String, Integer>();

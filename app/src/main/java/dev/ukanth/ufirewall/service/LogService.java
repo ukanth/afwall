@@ -85,7 +85,7 @@ public class LogService extends Service {
     private static View toastLayout;
 
     private Disposable disposable;
-    private int BUFF_LEN = 2000;
+    private final int BUFF_LEN = 2000;
 
     private static abstract class CancelableRunnable implements Runnable {
         public boolean cancel;

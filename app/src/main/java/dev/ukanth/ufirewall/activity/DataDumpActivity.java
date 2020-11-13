@@ -187,9 +187,9 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
     private static class Task extends AsyncTask<Void, Void, Boolean> {
         public String filename = "";
-        private Context ctx;
+        private final Context ctx;
 
-        private WeakReference<DataDumpActivity> activityReference;
+        private final WeakReference<DataDumpActivity> activityReference;
 
         // only retain a weak reference to the activity
         Task(DataDumpActivity context) {

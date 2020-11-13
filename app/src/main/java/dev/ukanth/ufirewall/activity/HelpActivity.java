@@ -17,8 +17,8 @@ public class HelpActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
     private SlidingTabLayout tabs;
-	private int count = 0;
-    private int noOfTabs =2;
+	private final int count = 0;
+    private final int noOfTabs =2;
 
 
 	@Override

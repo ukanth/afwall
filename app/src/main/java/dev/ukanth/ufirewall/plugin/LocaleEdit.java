@@ -24,7 +24,7 @@ public class LocaleEdit extends AppCompatActivity {
 
     private boolean mIsCancelled = false;
 
-    private int CUSTOM_PROFILE_ID = 100;
+    private final int CUSTOM_PROFILE_ID = 100;
 
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);

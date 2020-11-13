@@ -12,7 +12,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject;
  */
 
 public class RxEvent {
-    private PublishSubject<Object> sSubject = PublishSubject.create();
+    private final PublishSubject<Object> sSubject = PublishSubject.create();
 
     public RxEvent() {
         // hidden constructor

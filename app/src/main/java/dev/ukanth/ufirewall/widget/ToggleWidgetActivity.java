@@ -205,7 +205,7 @@ public class ToggleWidgetActivity extends Activity {
             return 0;
         }
 
-        private List<RadialMenuEntry> children = new ArrayList<RadialMenuEntry>();
+        private final List<RadialMenuEntry> children = new ArrayList<RadialMenuEntry>();
 
         public List<RadialMenuEntry> getChildren() {
             return children;
@@ -247,7 +247,7 @@ public class ToggleWidgetActivity extends Activity {
             return 0;
         }
 
-        private String profileName;
+        private final String profileName;
 
         public GenericProfile(String profileName) {
             this.profileName = profileName;

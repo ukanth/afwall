@@ -156,9 +156,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private RunApply runApply;
     private PurgeTask purgeTask;
     private int currentUI = 0;
-    private static int DEFAULT_COLUMN = 2;
+    private static final int DEFAULT_COLUMN = 2;
     private int selectedColumns = DEFAULT_COLUMN;
-    private static int DEFAULT_VIEW_LIMIT = 4;
+    private static final int DEFAULT_VIEW_LIMIT = 4;
     private View view;
 
     public boolean isDirty() {
@@ -2402,7 +2402,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class PurgeTask extends AsyncTask<Void, Void, Boolean> {
 
         private MaterialDialog progress;
-        private WeakReference<MainActivity> activityReference;
+        private final WeakReference<MainActivity> activityReference;
 
         PurgeTask(MainActivity context) {
             activityReference = new WeakReference<>(context);
@@ -2467,7 +2467,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
-        private WeakReference<MainActivity> activityReference;
+        private final WeakReference<MainActivity> activityReference;
 
         GetAppList(MainActivity context) {
             activityReference = new WeakReference<>(context);
@@ -2537,7 +2537,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class RunApply extends AsyncTask<Void, Long, Boolean> {
         boolean enabled = Api.isEnabled(getApplicationContext());
 
-        private WeakReference<MainActivity> activityReference;
+        private final WeakReference<MainActivity> activityReference;
 
         RunApply(MainActivity context) {
             activityReference = new WeakReference<>(context);
@@ -2702,7 +2702,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @RequiresApi(28)
     private static class OnUnhandledKeyEventListenerWrapper implements View.OnUnhandledKeyEventListener {
-        private ViewCompat.OnUnhandledKeyEventListenerCompat mCompatListener;
+        private final ViewCompat.OnUnhandledKeyEventListenerCompat mCompatListener;
 
         OnUnhandledKeyEventListenerWrapper(ViewCompat.OnUnhandledKeyEventListenerCompat listener) {
             this.mCompatListener = listener;

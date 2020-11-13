@@ -36,9 +36,9 @@ public class AlphaPatternDrawable extends Drawable {
 
     private int mRectangleSize = 10;
 
-    private Paint mPaint = new Paint();
-    private Paint mPaintWhite = new Paint();
-    private Paint mPaintGray = new Paint();
+    private final Paint mPaint = new Paint();
+    private final Paint mPaintWhite = new Paint();
+    private final Paint mPaintGray = new Paint();
 
     private int numRectanglesHorizontal;
     private int numRectanglesVertical;
