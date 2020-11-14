@@ -26,12 +26,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -54,6 +56,8 @@ import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
+import dev.ukanth.ufirewall.log.LogPreference;
+import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.LogNetUtil;
@@ -68,13 +72,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private LogData current_selected_logData;
 
     private int uid;
-    protected static final int MENU_TOGGLE = -4;
-    protected static final int MENU_CLEAR = 40;
+    protected final int MENU_TOGGLE = -4;
+    protected final int MENU_CLEAR = 40;
 
     final String TAG = "AFWall";
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
+        switch (G.getSelectedTheme()) {
             case "D":
                 setTheme(R.style.AppDarkTheme);
                 break;
@@ -133,6 +137,21 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             menu.add(0, v.getId(), 4, R.string.ping_source);
             menu.add(0, v.getId(), 5, R.string.resolve_destination);
             menu.add(0, v.getId(), 6, R.string.resolve_source);
+            LogPreference logPreference = SQLite.select()
+                    .from(LogPreference.class)
+                    .where(LogPreference_Table.uid.eq(uid)).querySingle();
+
+            if (logPreference != null) {
+                if(logPreference.isDisable()) {
+                    menu.add(0, v.getId(), 7, R.string.displayBlockNotification_enable);
+                } else {
+                    menu.add(0, v.getId(), 8, R.string.displayBlockNotification_disable);
+                }
+            } else {
+                menu.add(0, v.getId(), 8, R.string.displayBlockNotification_disable);
+            }
+
+
         });
         recyclerView.setAdapter(recyclerViewAdapter);
     }
@@ -202,23 +221,17 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                         new LogNetUtil.NetParam(LogNetUtil.JobType.RESOLVE, current_selected_logData.getSrc())
                 );
                 break;
+            case 7:
+                G.updateLogNotification(uid, false);
+                break;
+            case 8:
+                G.updateLogNotification(uid, true);
+                break;
+
         }
         return super.onContextItemSelected(item);
     }
 
-   /* public class NetTask extends AsyncTask<String, Integer, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            InetAddress addr = null;
-            try {
-                addr = InetAddress.getByName(params[0]);
-            } catch (UnknownHostException e) {
-                Log.e(TAG, "Exception(09): " + e.getMessage());
-            }
-            return addr.getCanonicalHostName().toString();
-        }
-    }
-*/
 
     private List<LogData> getLogData(final int uid) {
         return SQLite.select()
@@ -355,21 +368,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         new MaterialDialog.Builder(this)
                 .title(getApplicationContext().getString(R.string.clear_log) + " ?")
                 .cancelable(true)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        //SQLite.delete(LogData_Table.class);
-                        FlowManager.getDatabase(LogDatabase.NAME).reset();
-                        Toast.makeText(getApplicationContext(), ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
+                .onPositive((dialog, which) -> {
+                    //SQLite.delete(LogData_Table.class);
+                    FlowManager.getDatabase(LogDatabase.NAME).reset();
+                    Toast.makeText(getApplicationContext(), ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
+                .onNegative((dialog, which) -> dialog.dismiss())
                 .positiveText(R.string.Yes)
                 .negativeText(R.string.No)
                 .show();

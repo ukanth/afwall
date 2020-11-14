@@ -600,7 +600,8 @@
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
     <string name="runNotification">Rules Progress</string>
 
-    <string name="displayBlockNotification">disable log alert notification</string>
+    <string name="displayBlockNotification_disable">Disable log toasts</string>
+    <string name="displayBlockNotification_enable">Enable log toasts</string>
 
     <string name="applyRulesFasterTitle">Instant Apply</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
