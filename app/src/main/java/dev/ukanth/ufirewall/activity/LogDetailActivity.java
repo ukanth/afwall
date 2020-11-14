@@ -145,10 +145,10 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 if(logPreference.isDisable()) {
                     menu.add(0, v.getId(), 7, R.string.displayBlockNotification_enable);
                 } else {
-                    menu.add(0, v.getId(), 8, R.string.displayBlockNotification_disable);
+                    menu.add(0, v.getId(), 8, R.string.displayBlockNotification);
                 }
             } else {
-                menu.add(0, v.getId(), 8, R.string.displayBlockNotification_disable);
+                menu.add(0, v.getId(), 8, R.string.displayBlockNotification);
             }
 
 

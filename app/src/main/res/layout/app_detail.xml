@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10.0dip"
             android:layout_weight="1.0"
-            android:text="@string/displayBlockNotification_disable" />
+            android:text="@string/displayBlockNotification" />
     </LinearLayout>
 
 </LinearLayout>

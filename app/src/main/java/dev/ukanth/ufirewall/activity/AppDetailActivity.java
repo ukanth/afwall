@@ -211,4 +211,9 @@ public class AppDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
