@@ -33,10 +33,10 @@ import static de.robv.android.xposed.XposedHelpers.findClass;
  */
 public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
-    public static final String MY_APP = BuildConfig.APPLICATION_ID;
-    public static final String TAG = "AFWallXPosed";
-    public static String MODULE_PATH = null;
-    private static Context context;
+    private final String MY_APP = BuildConfig.APPLICATION_ID;
+    private final String TAG = "AFWallXPosed";
+    private String MODULE_PATH = null;
+    private Context context;
     private XSharedPreferences prefs;
     private SharedPreferences pPrefs;
     private SharedPreferences sharedPreferences;

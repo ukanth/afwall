@@ -134,7 +134,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
     public static boolean dirty = false;
-    private static Menu mainMenu;
+
+
+    private Menu mainMenu;
     private ListView listview = null;
     private MaterialDialog plsWait;
     private ArrayAdapter<String> spinnerAdapter = null;
@@ -177,13 +179,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        LeakCanary.install(G.getInstance());*/
-
         initTheme();
-
 
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -1024,13 +1020,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onSearchRequested() {
-        MenuItem menuItem = mainMenu.findItem(R.id.menu_search); // R.string.search is the id of the searchview
-        if (menuItem != null) {
-            if (menuItem.isActionViewExpanded()) {
-                menuItem.collapseActionView();
-            } else {
-                menuItem.expandActionView();
-                search(menuItem);
+        if(mainMenu != null) {
+            MenuItem menuItem = mainMenu.findItem(R.id.menu_search); // R.string.search is the id of the searchview
+            if (menuItem != null) {
+                if (menuItem.isActionViewExpanded()) {
+                    menuItem.collapseActionView();
+                } else {
+                    menuItem.expandActionView();
+                    search(menuItem);
+                }
             }
         }
         return super.onSearchRequested();

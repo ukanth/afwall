@@ -30,7 +30,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,16 +75,16 @@ public class LogService extends Service {
 
     public static final int QUEUE_NUM = 40;
 
-    public static Toast toast;
-    public static TextView toastTextView;
-    public static CharSequence toastText;
-    public static int toastDuration;
-    public static int toastDefaultYOffset;
-    public static int toastYOffset;
+    private Toast toast;
+    private TextView toastTextView;
+    private CharSequence toastText;
+    private int toastDuration;
+    private int toastDefaultYOffset;
+    private int toastYOffset;
 
-    private static Runnable showOnlyToastRunnable;
-    private static CancelableRunnable showToastRunnable;
-    private static View toastLayout;
+    private Runnable showOnlyToastRunnable;
+    private CancelableRunnable showToastRunnable;
+    private View toastLayout;
 
     private Disposable disposable;
     private final int BUFF_LEN = 2000;
@@ -99,16 +101,13 @@ public class LogService extends Service {
         return null;
     }
 
-    public static void showToast(final Context context, final Handler handler, final CharSequence text, boolean cancel) {
+    public void showToast(final Context context, final Handler handler, final CharSequence text, boolean cancel) {
         if (showToastRunnable == null) {
             showToastRunnable = new CancelableRunnable() {
                 public void run() {
-
-
                     if (cancel && toast != null) {
                         toast.cancel();
                     }
-
                     if (cancel || toast == null) {
                         toastLayout = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_toast, null);
                         toastTextView = toastLayout.findViewById(R.id.toasttext);
@@ -210,20 +209,20 @@ public class LogService extends Service {
             disposable.dispose();
         }
         disposable = LogRxEvent.subscribe((event -> {
-            if (event != null) {
-                    try {
-                        new Thread(() -> {
-                            store(event.logInfo, event.ctx);
-                            if (event != null && event.logInfo != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-                                if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
-                                    showToast(event.ctx, handler, event.logInfo.uidString, false);
+                    if (event != null) {
+                        try {
+                            new Thread(() -> {
+                                store(event.logInfo, event.ctx);
+                                if (event != null && event.logInfo != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
+                                    if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
+                                        showToast(event.ctx, handler, event.logInfo.uidString, false);
+                                    }
                                 }
-                            }
-                        }).start();
-                    } catch (Exception e) {
+                            }).start();
+                        } catch (Exception e) {
+                        }
                     }
-                }
-            })
+                })
         );
         if (G.enableLogService()) {
             // this method is executed in a background thread
@@ -239,10 +238,10 @@ public class LogService extends Service {
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                                 break;
                             case "BX":
-                                if(RootTools.isBusyboxAvailable()) {
+                                if (RootTools.isBusyboxAvailable()) {
                                     logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
-                                } else{
-                                    logPath = "echo PID=$$ & while true; do " + Api.getBusyBoxPath(ctx,false) +" dmesg -c ; sleep 1 ; done";
+                                } else {
+                                    logPath = "echo PID=$$ & while true; do " + Api.getBusyBoxPath(ctx, false) + " dmesg -c ; sleep 1 ; done";
                                 }
                                 break;
                             default:
@@ -259,35 +258,35 @@ public class LogService extends Service {
                 Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
                 handler = new Handler();
 
-                if(logPath != null) {
-                   rootSession = new Shell.Builder()
-                        .useSU()
-                        .setMinimalLogging(true)
-                        .setOnSTDOUTLineListener(line -> {
-                            //Log.i(TAG,line);
-                            if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
-                                try {
-                                    String uid = line.split("=")[1];
-                                    if (uid != null) {
-                                        Set data = G.storedPid();
-                                        if (data == null || data.isEmpty()) {
-                                            data = new HashSet();
-                                            data.add(uid);
-                                            G.storedPid(data);
-                                        } else if (!data.contains(uid)) {
-                                            Set data2 = new HashSet();
-                                            data2.addAll(data);
-                                            data2.add(uid);
-                                            G.storedPid(data2);
+                if (logPath != null) {
+                    rootSession = new Shell.Builder()
+                            .useSU()
+                            .setMinimalLogging(true)
+                            .setOnSTDOUTLineListener(line -> {
+                                //Log.i(TAG,line);
+                                if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
+                                    try {
+                                        String uid = line.split("=")[1];
+                                        if (uid != null) {
+                                            Set data = G.storedPid();
+                                            if (data == null || data.isEmpty()) {
+                                                data = new HashSet();
+                                                data.add(uid);
+                                                G.storedPid(data);
+                                            } else if (!data.contains(uid)) {
+                                                Set data2 = new HashSet();
+                                                data2.addAll(data);
+                                                data2.add(uid);
+                                                G.storedPid(data2);
+                                            }
                                         }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                                } else {
+                                    storeLogInfo(line, getApplicationContext());
                                 }
-                            } else {
-                                storeLogInfo(line, getApplicationContext());
-                            }
-                        }).addCommand(logPath).open();
+                            }).addCommand(logPath).open();
                 } else {
                     Log.i(TAG, "Unable to start log service. Log Path is empty");
                     Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));

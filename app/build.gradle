@@ -71,8 +71,7 @@ dependencies {
     implementation 'com.crossbowffs.remotepreferences:remotepreferences:0.7'
 
 
-    /* debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
     implementation "dnsjava:dnsjava:3.2.2"
 }

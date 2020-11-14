@@ -323,6 +323,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         // Common options: Copy, Export to SD Card, Refresh
         SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.ic_flow);
         sub.add(0, MENU_CLEAR, 0, R.string.clear_log).setIcon(R.drawable.ic_clearlog);
+        //sub.add(0, MENU, 0, R.string.clear_log).setIcon(R.drawable.ic_clearlog);
         //sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
         //populateMenu(sub);
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
