@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,7 +18,7 @@ import java.util.List;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-import eu.chainfire.libsuperuser.Shell;
+//import eu.chainfire.libsuperuser.Shell;
 
 /**
  * This file was created to simplify Network Function in AFWall+ log system
@@ -173,15 +174,17 @@ public class LogNetUtil {
             // using libsuperuser to perform ping by Busybox,
             // This will need permission in AFWall+
             // "0:(root) Apps running as root"
-            String result = "";
+            Shell.Result result;
             String command = String.format(PING_CMD, Api.getBusyBoxPath(context, true), G.logPingTimeout(), ip);
             Log.d(TAG, "Execute CMD: " + command);
-            result = parse(Shell.run("su", new String[]{command}, null, true));
-            if (result.isEmpty()) {
 
-                return context.getString(R.string.network_connection_not_available);
-            }
-            return result;
+            result = Shell.su("su " + command).exec();
+            //result = parse(Shell.run("su", , null, true));
+
+            List<String> out = result.getOut();  // stdout
+            int code = result.getCode();         // return code of the last command
+            boolean ok = result.isSuccess();
+            return ok && out!= null ? out.get(0) :  "";
         }
 
         private String parse(List<String> output) {

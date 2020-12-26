@@ -21,7 +21,7 @@
  */
 
 package dev.ukanth.ufirewall.service;
-
+/*
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -62,7 +62,6 @@ public class RootShellService2 extends Service {
     public static final int NOTIFICATION_ID = 33347;
     public static final int EXIT_NO_ROOT_ACCESS = -1;
     public static final int NO_TOAST = -1;
-    /* write command completion times to logcat */
     private static final boolean enableProfiling = false;
     //number of retries - increase the count
     private final static int MAX_RETRIES = 10;
@@ -216,7 +215,7 @@ public class RootShellService2 extends Service {
         Intent appIntent = new Intent(context, MainActivity.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            /* Create or update. */
+
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.runNotification),
                     NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("");
@@ -362,4 +361,4 @@ public class RootShellService2 extends Service {
         BUSY,
         FAIL
     }
-}
+}*/

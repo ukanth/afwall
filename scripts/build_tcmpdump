@@ -1,0 +1,445 @@
+#!/bin/sh
+
+SCRIPT_VERSION=1.0
+BUILD_DIR=build
+
+DEFAULT_TCPDUMP_VERSION=4.7.4
+DEFAULT_LIBPCAP_VERSION=1.7.4
+
+GIT_LIBPCAP="https://github.com/the-tcpdump-group/libpcap.git"
+GIT_TCPDUMP="https://github.com/the-tcpdump-group/tcpdump.git"
+
+BASE_URL="http://www.tcpdump.org/release"
+
+ALL_ARCHS="arm arm64 mips mips64 x86 x86_64"
+
+TOOLCHAINS="arm:arm-linux-androideabi-4.9:9 
+            arm64:aarch64-linux-android-4.9:21 
+            mips:mipsel-linux-android-4.9:9
+            mips64:mips64el-linux-android-4.9:21
+            x86:x86-4.9:9
+            x86_64:x86_64-4.9:21"
+
+ARCH_TRANSLATIONS="arm:arm-linux
+                   arm64:aarch64-linux
+                   mips:mipsel-linux
+                   mips64:mips64el-linux
+                   x86:x86
+                   x86_64:x86_64"
+
+BASE_CFLAGS="-O2 -fPIC -fPIE"
+BASE_LDFLAGS=""
+
+EXTRA_CFLAGS_arm="-march=armv7-a -mthumb -mfloat-abi=softfp -mfpu=neon"
+EXTRA_LDFLAGS_arm="-march=armv7-a -Wl,--fix-cortex-a8"
+
+absolute_path() {
+    local ABS_PATH=$(cd "$1"; pwd)
+    echo $ABS_PATH
+}
+
+usage() {
+    PROGRAM=`basename $1`
+    echo "Usage: $PROGRAM [OPTIONS]"
+    echo "Version: ${SCRIPT_VERSION}"
+    echo "Automatically download and build tcpdump for Android devices"
+    echo "Also valid for Lollipop and Marshmallow"
+    echo ""
+    echo "OPTIONS:"
+    echo "-h              Show this help"
+    echo "-a=ARCHS        Space separated architectures to build or all. Default: all"
+    echo "                Valid architectures: ${ALL_ARCHS}"
+    echo "-n=NDK_PATH     Path of the Android NDK root"
+    echo "                Default: Value of the NDK environment variable"
+    echo "-b=BUILD_DIR    Destination of the compiled tcpdump. Default: build"
+    echo "-s              Don't strip the final executable"
+    echo "-j=NPROCS       Number of simultaneous jobs when compiling"
+    echo "                Default: Number of cores of the machine"
+    echo "-t=TCPDUMP_VER  Version of tcpdump or \"master\" for the latest revision in the repository"
+    echo "                Default: ${DEFAULT_TCPDUMP_VERSION}"
+    echo "-l=LIBPCAP_VER  Version of libpcap or \"master\" for the latest revision in the repository"
+    echo "                Default: ${DEFAULT_LIBPCAP_VERSION}"
+    echo "-u=TCPDUMP_DIR  Don't download tcpdump. Use the one in the specified directory"
+    echo "-m=LIBPCAP_DIR  Don't download libpcap. Use the one in the specified directory"
+    echo
+}
+
+
+check_requirements() {
+
+    if [ ! -f "${NDK}/ndk-build" ]; then
+        echo "ERROR: Can't find the NDK directory"
+        exit 2
+    fi
+
+    flex -V > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "ERROR: flex not found"
+        exit 2
+    fi
+
+    bison -V > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "ERROR: bison not found"
+        exit 2
+    fi
+
+    if [ "${VERSION_LIBPCAP}" = "master" -o "${VERSION_TCPDUMP}" = "master" ]; then
+        git --version > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo "ERROR: git not found"
+            exit 2
+        fi
+    fi
+
+    if [ "${VERSION_LIBPCAP}" != "master" -o "${VERSION_TCPDUMP}" != "master" ]; then
+        wget -V > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            DOWNLOADER=wget
+        else
+            curl -V > /dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                DOWNLOADER=curl
+            else
+                echo "ERROR: wget or curl not found"
+                exit 2
+            fi
+        fi
+    fi
+}
+
+download_file() {
+    local URL="$1"
+    if [ "${DOWNLOADER}" = "wget" ]; then
+        wget "${URL}"
+    elif [ "${DOWNLOADER}" = "curl" ]; then
+        curl -O "${URL}"
+    fi
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Can't download ${URL}"
+        exit 3
+    fi
+}
+
+download() {
+    local PROGRAM="$1"
+    local VERSION="$2"
+    local GIT_URL="$3"
+    if [ "${VERSION}" = "master" ]; then
+        git clone "${GIT_URL}" "${PROGRAM}"
+        if [ $? -ne 0 ]; then
+            echo "ERROR: Can't download ${PROGRAM} repository from ${GIT_LIBPCAP}"
+            exit 3
+        fi
+        absolute_path "${PROGRAM}"
+    else
+        # Download and decompress from their web
+        DIR="${PROGRAM}-${VERSION}"
+        FILE="${DIR}.tar.gz"
+        download_file "${BASE_URL}/${FILE}"
+        tar xzf "${FILE}"
+        if [ $? -ne 0 ]; then
+            echo "ERROR: Can't extract ${FILE}"
+            exit 3
+        fi
+        absolute_path "${DIR}"
+    fi
+}
+
+check_archs() {
+    local IS_VALID=no
+    for arch in $1; do
+        IS_VALID=no
+        for valid_arch in ${ALL_ARCHS}; do
+            if [ "${valid_arch}" = "${arch}" ]; then
+                IS_VALID=yes
+                break
+            fi                        
+        done
+        if [ "${IS_VALID}" = "no" ]; then
+            echo "ERROR: The architecture ${arch} is not valid. Valid architectures are ${ALL_ARCHS}"
+            exit 3
+        fi
+    done    
+}
+
+check_compiler_tools() {
+    local ARCH="$1"
+    local toolchain_dir=""
+    for toolchain_info in $TOOLCHAINS; do
+        t_arch="${toolchain_info%%:*}"
+        if [ "${t_arch}" = "${ARCH}" ]; then
+            toolchain_dir="${toolchain_info%:*}"
+            toolchain_dir="${toolchain_dir#*:}"
+            toolchain_platform=android-"${toolchain_info##*:}"
+            break
+        fi
+    done
+
+    if [ -z "${toolchain_dir}" ]; then
+        echo "ERROR: Can't find the toolchain directory for ${ARCH}"
+        exit 3
+    fi
+
+    local SYSROOT="${NDK}/platforms/${toolchain_platform}/arch-${ARCH}"
+
+    if [ ! -d "${SYSROOT}" ]; then
+        echo "ERROR: Can't find the platform directory ${toolchain_platform} for ${ARCH}"
+        exit 3
+    fi
+
+    CONFIG_ARCH=""
+    for arch_translation in $ARCH_TRANSLATIONS; do
+        t_arch="${arch_translation%%:*}"        
+        if [ "${t_arch}" = "${ARCH}" ]; then
+            CONFIG_ARCH="${arch_translation##*:}"
+            break
+        fi
+    done
+
+    if [ -z "${CONFIG_ARCH}" ]; then
+        echo "ERROR: Can't determine the architecture for the \"configure\" script"
+        exit 3
+    fi
+
+    CC=""
+    COMPILERS=$(find "${NDK}/toolchains/${toolchain_dir}/prebuilt" -type f -name "*-gcc")
+    for compiler in $COMPILERS; do
+        printf "Testing ${compiler}... "
+        $compiler --version >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            echo "OK"
+            CC="$compiler --sysroot=${SYSROOT}"
+            break
+        fi
+        echo "NOT VALID"
+    done
+
+    if [ -z "${CC}" ]; then
+        echo "ERROR: Can't find a valid compiler"
+    fi
+   
+    RANLIB_TOOL=""
+    RANLIBS=$(find "${NDK}/toolchains/${toolchain_dir}/prebuilt" -type f -name "*-ranlib")
+    for ranlib in $RANLIBS; do
+        printf "Testing ${ranlib}... "
+        $ranlib --version >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            echo "OK"
+            RANLIB_TOOL="${ranlib}"
+            break
+        fi
+        echo "NOT VALID"
+    done
+
+    if [ -z "${RANLIB_TOOL}" ]; then
+        echo "ERROR: Can't find a valid ranlib tool"
+    fi
+    
+
+    if [ "${SHOULD_STRIP}" = "yes" ]; then
+        STRIP_TOOL=""
+        local STRIP_TOOLS=$(find "${NDK}/toolchains/${toolchain_dir}/prebuilt" -type f -name "*-strip")
+        for strip_tool in $STRIP_TOOLS; do
+            printf "Testing ${strip_tool}... "
+            $strip_tool --version >/dev/null 2>&1
+            if [ $? -eq 0 ]; then
+                echo "OK"
+                STRIP_TOOL="$strip_tool"
+                break
+            fi
+            echo "NOT VALID"
+        done
+
+        if [ -z "${STRIP_TOOL}" ]; then
+            echo "ERROR: Can't find a valid strip tool"
+        fi        
+    fi
+}
+
+SHOULD_STRIP=yes
+ARCHS="${ALL_ARCHS}"
+TCPDUMP_VERSION="${DEFAULT_TCPDUMP_VERSION}"
+LIBPCAP_VERSION="${DEFAULT_LIBPCAP_VERSION}"
+NPROCS=`getconf _NPROCESSORS_ONLN`
+
+DIR_LIBPCAP=""
+DIR_TCPDUMP=""
+
+while getopts "ha:n:b:sj:t:l:u:m:" arg; do
+    case "${arg}" in
+        a)
+            if [ "${OPTARG}" = "all" ]; then
+                ARCHS="${ALL_ARCHS}"
+            else
+                ARCHS="${OPTARG}"
+                check_archs "${ARCHS}"
+            fi
+            ;;
+        t)
+            TCPDUMP_VERSION="${OPTARG}"
+            ;;
+        l)
+            LIBPCAP_VERSION="${OPTARG}"
+            ;;
+        n)
+            NDK="${OPTARG}"
+            ;;
+
+        s) 
+            SHOULD_STRIP=no
+            ;;
+
+        b)
+            BUILD_DIR="${OPTARG}"
+            ;;        
+        j)
+            NPROCS="${OPTARG}"
+            ;;
+        u)
+            DIR_TCPDUMP="${OPTARG}"
+            ;;
+        m)
+            DIR_LIBPCAP="${OPTARG}"
+            ;;
+        h)
+            usage $0
+            exit 0
+            ;;
+        *)
+            usage $0
+            echo "ERROR: Invalid option"
+            exit 1
+            ;;
+    esac
+done
+
+if [ ! -d "${BUILD_DIR}" ]; then
+    mkdir "${BUILD_DIR}" >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Can't create the directory ${BUILD_DIR}"
+        exit 3
+    fi
+fi
+
+BUILD_DIR=`absolute_path "${BUILD_DIR}"`
+
+
+echo "Checking basic requirements..."
+check_requirements
+if [ -z "${DIR_LIBPCAP}" -o -z "${DIR_TCPDUMP}" ]; then
+    echo "Downloading source code..."
+fi
+
+if [ -z "${DIR_LIBPCAP}" ]; then
+    DIR_LIBPCAP=`download libpcap "${LIBPCAP_VERSION}" "${GIT_LIBPCAP}"`
+fi
+
+if [ -z "${DIR_TCPDUMP}" ]; then
+    DIR_TCPDUMP=`download tcpdump "${TCPDUMP_VERSION}" "${GIT_TCPDUMP}"`
+fi
+
+DIR_LIBPCAP=`absolute_path "${DIR_LIBPCAP}"`
+DIR_TCPDUMP=`absolute_path "${DIR_TCPDUMP}"`
+
+if [ ! -f "${DIR_LIBPCAP}/configure" ]; then
+    echo "ERROR: Can't find the \"configure\" libpcap script in ${DIR_LIBPCAP}"
+    exit 3
+fi
+
+if [ ! -f "${DIR_TCPDUMP}/configure" ]; then
+    echo "ERROR: Can't find the \"configure\" tcpdump script in ${DIR_TCPDUMP}"
+    exit 3
+fi
+
+GENERATED_FILES=""
+
+for ARCH in ${ARCHS}; do
+    echo
+    echo "Checking compiler for ${ARCH}..."
+    check_compiler_tools "${ARCH}"
+    export CC
+
+    EXTRA_CFLAGS=$(eval echo \$EXTRA_CFLAGS_${ARCH})
+    export CFLAGS="${BASE_CFLAGS} ${EXTRA_CFLAGS}"
+
+    EXTRA_LDFLAGS=$(eval echo \$EXTRA_LDFLAGS_${ARCH})
+    export LDFLAGS="${BASE_LDFLAGS} ${EXTRA_LDFLAGS}"
+
+    echo "Compiling libpcap for ${ARCH}..."
+    cd "${DIR_LIBPCAP}"    
+
+    CONFIGURE_COMMAND="./configure --host=${CONFIG_ARCH} --with-pcap=linux"
+    echo "${CONFIGURE_COMMAND}"
+    ${CONFIGURE_COMMAND}
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Failed configuring libpcap"
+        echo "CC = ${CC}"
+        echo "CFLAGS = ${CFLAGS}"
+        echo "LDFLAGS = ${LDFLAGS}"
+        exit 4
+    fi
+    make clean && make -j "${NPROCS}"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Failed compiling libpcap"
+        exit 4
+    fi    
+
+    if [ ! -f libpcap.a ]; then
+        echo "ERROR: lipcap.a not generated"
+        exit 4
+    fi
+
+    ${RANLIB_TOOL} libpcap.a
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Failed executing ${RANLIB_TOOL} on libpcap.a"
+        exit 4
+    fi
+
+    echo "Compiling tcpdump for ${ARCH}..."
+    cd "${DIR_TCPDUMP}"
+
+    export CFLAGS="${CFLAGS} -I${DIR_LIBPCAP} -L${DIR_LIBPCAP}"
+    export LDFLAGS="${LDFLAGS} -pie"
+    CONFIGURE_COMMAND="./configure --host=${CONFIG_ARCH}"
+    echo "${CONFIGURE_COMMAND}"
+    ${CONFIGURE_COMMAND}
+    echo "CC = $CC"
+    echo "CFLAGS = $CFLAGS"
+    echo "LDFLAGS = $LDFLAGS"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Failed configuring tcpdump"
+        exit 4
+    fi
+    make clean && make -j "${NPROCS}"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Failed compiling tcpdump"
+        exit 4
+    fi    
+    
+    mkdir "${BUILD_DIR}/${TCPDUMP_VERSION}" 2>/dev/null
+    mkdir "${BUILD_DIR}/${TCPDUMP_VERSION}/${ARCH}" 2>/dev/null
+
+    if [ -n "${STRIP_TOOL}" ]; then
+        echo "Stripping tcpdump..."
+        "${STRIP_TOOL}" tcpdump
+    fi
+
+    mv tcpdump "${BUILD_DIR}/${TCPDUMP_VERSION}/${ARCH}/tcpdump"
+    if [ $? -ne 0 ]; then
+        echo "ERROR: Can't move tcpdump to ${BUILD_DIR}/${TCPDUMP_VERSION}/${ARCH}/tcpdump"
+        exit 5
+    fi
+
+    echo "Created ${BUILD_DIR}/${TCPDUMP_VERSION}/${ARCH}/tcpdump"
+    GENERATED_FILES="${GENERATED_FILES} ${BUILD_DIR}/${TCPDUMP_VERSION}/${ARCH}/tcpdump"
+done
+
+if [ -n "${GENERATED_FILES}" ]; then
+    echo
+    echo "Generated files:"
+    for file in ${GENERATED_FILES}; do
+        echo $file
+    done
+fi
+

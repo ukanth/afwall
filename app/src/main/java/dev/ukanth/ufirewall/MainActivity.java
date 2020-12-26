@@ -29,10 +29,12 @@ import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -52,6 +54,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -72,6 +78,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,10 +86,15 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.topjohnwu.superuser.BusyBoxInstaller;
+import com.topjohnwu.superuser.CallbackList;
+import com.topjohnwu.superuser.Shell;
+import com.topjohnwu.superuser.ipc.RootService;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -110,7 +122,6 @@ import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import dev.ukanth.ufirewall.util.SecurityUtil;
-import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.utils.AlpSettings;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
@@ -135,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
     public static boolean dirty = false;
 
-
     private Menu mainMenu;
     private ListView listview = null;
     private MaterialDialog plsWait;
@@ -150,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MaterialDialog runProgress;
     private AlertDialog dialogLegend = null;
 
-    private BroadcastReceiver uiProgressReceiver4,uiProgressReceiver6, toastReceiver,themeRefreshReceiver, uiRefreshReceiver;
+    private BroadcastReceiver uiProgressReceiver4, uiProgressReceiver6, toastReceiver, themeRefreshReceiver, uiRefreshReceiver;
     private IntentFilter uiFilter4, uiFilter6;
 
     //all async reference with context
@@ -166,6 +176,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean isDirty() {
         return dirty;
     }
+
+    static {
+        Shell.enableVerboseLogging = BuildConfig.DEBUG;
+        Shell.setDefaultBuilder(Shell.Builder.create()
+                .setFlags(Shell.FLAG_REDIRECT_STDERR));
+    }
+
 
     public void setDirty(boolean dirty) {
         MainActivity.dirty = dirty;
@@ -191,11 +208,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         updateSelectedColumns();
 
-        if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
+        if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
             currentUI = 0;
             setContentView(R.layout.main_old);
-        }
-        else{
+        } else {
             currentUI = 1;
             setContentView(R.layout.main);
         }
@@ -228,35 +244,63 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //queue = new HashSet<>();
 
+        //(new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        if (!G.hasRoot()) {
-            (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        if (!Shell.rootAccess()) {
+            new MaterialDialog.Builder(MainActivity.this).cancelable(false)
+                    .title(R.string.error_common)
+                    .content(R.string.error_netfilter)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .onNegative((dialog, which) -> {
+                        MainActivity.this.finish();
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                        dialog.dismiss();
+                    })
+                    .positiveText(R.string.Continue)
+                    .negativeText(R.string.exit)
+                    .show();
         } else {
-            //might not have rootshell
-            startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
         }
         //registerQuickApply();
         registerUIbroadcast4();
+
         registerUIbroadcast6();
 
         registerToastbroadcast();
+
         migrateNotification();
+
         initTextWatcher();
+
         //registerLogService();
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
+
         registerUIRefresh();
+
+
+        Intent intent = new Intent(this, RootShellService.class);
+        RootService.bind(intent, new RootShellConnection());
+
+
+        //testDaemon();
     }
 
     private void updateSelectedColumns() {
         selectedColumns = DEFAULT_COLUMN;
-        selectedColumns = G.enableLAN() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableRoam() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableVPN() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableTether() ?  selectedColumns + 1 : selectedColumns;
-        selectedColumns = G.enableTor() ?  selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableLAN() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableRoam() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableVPN() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableTether() ? selectedColumns + 1 : selectedColumns;
+        selectedColumns = G.enableTor() ? selectedColumns + 1 : selectedColumns;
     }
 
     /*private void registerLogService() {
@@ -268,23 +312,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }*/
 
-    private void  registerUIRefresh(){
+    private void registerUIRefresh() {
         IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.ui.CHECKREFRESH");
         uiRefreshReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateSelectedColumns();
 
-                if(selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
+                if (selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
                     recreate();
-                }
-                else if(selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0){
+                } else if (selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0) {
                     recreate();
                 }
             }
         };
         registerReceiver(uiRefreshReceiver, filter);
     }
+
     private void registerThemeIntent() {
 
         IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.theme.REFRESH");
@@ -418,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle b = intent.getExtras();
-                if(runProgress !=null) {
+                if (runProgress != null) {
                     TextView view = (TextView) runProgress.findViewById(R.id.apply4);
                     view.setText(b.get("INDEX") + "/" + b.get("SIZE"));
                     view.invalidate();
@@ -434,7 +478,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle b = intent.getExtras();
-                if(runProgress !=null) {
+                if (runProgress != null) {
                     TextView view = (TextView) runProgress.findViewById(R.id.apply6);
                     view.setText(b.get("INDEX") + "/" + b.get("SIZE"));
                     view.invalidate();
@@ -526,7 +570,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Log.d(Api.TAG, "Exception in filter Sorting");
         }
         ArrayAdapter appAdapter;
-        if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
+        if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
             appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList, true);
         } else {
             appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
@@ -548,31 +592,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-
     private void updateIconStatus() {
         if (Api.isEnabled(getApplicationContext())) {
             getSupportActionBar().setIcon(R.drawable.notification);
         } else {
             getSupportActionBar().setIcon(R.drawable.notification_error);
         }
-    }
-
-    private void startRootShell() {
-        List<String> cmds = new ArrayList<String>();
-        cmds.add("true");
-        new RootCommand().setFailureToast(R.string.error_su)
-                .setReopenShell(true)
-                .setCallback(new RootCommand.Callback() {
-                    public void cbFunc(RootCommand state) {
-                        //failed to acquire root
-                        if (state.exitCode != 0) {
-                            runOnUiThread(() -> {
-                                disableFirewall();
-                                showRootNotFoundMessage();
-                            });
-                        }
-                    }
-                }).run(getApplicationContext(), cmds);
     }
 
     private void showRootNotFoundMessage() {
@@ -622,7 +647,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         updateSelectedColumns();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        G.reloadPrefs();
+        //G.reloadPrefs();
         checkPreferences();
         //language
         Api.updateLanguage(getApplicationContext(), G.locale());
@@ -1004,7 +1029,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (apps2 != null) {
                 Collections.sort(apps2, new PackageComparator());
                 ArrayAdapter appAdapter;
-                if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
+                if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
                     appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2, true);
                 } else {
                     appAdapter = new AppListArrayAdapter(this, getApplicationContext(), apps2);
@@ -1020,7 +1045,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onSearchRequested() {
-        if(mainMenu != null) {
+        if (mainMenu != null) {
             MenuItem menuItem = mainMenu.findItem(R.id.menu_search); // R.string.search is the id of the searchview
             if (menuItem != null) {
                 if (menuItem.isActionViewExpanded()) {
@@ -2418,7 +2443,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            if (G.hasRoot() && Shell.SU.available()) {
+            if (G.hasRoot() && Shell.rootAccess()) {
                 //store the root value
                 G.hasRoot(true);
                 Api.purgeIptables(ctx, true, new RootCommand()
@@ -2551,7 +2576,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     //        : R.string.saving_rules)
                     .negativeText("Dismiss")
                     .show();
-            if(G.enableIPv6()) {
+            if (G.enableIPv6()) {
                 runProgress.findViewById(R.id.apply6layout).setVisibility(View.VISIBLE);
             }
         }
@@ -2559,7 +2584,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Boolean doInBackground(Void... params) {
             //set the progress
-            if (G.hasRoot()) {
+            if (Shell.rootAccess()) {
                 Api.setRulesUpToDate(false);
                 RootCommand rootCommand4 = new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
@@ -2618,96 +2643,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (Exception ex) {
                 }
             }
-        }
-    }
-
-    private class RootCheck extends AsyncTask<Void, Void, Void> {
-        MaterialDialog suDialog = null;
-        boolean unsupportedSU = false;
-        boolean[] suGranted = {false};
-        private Context context = null;
-        //private boolean suAvailable = false;
-
-        public RootCheck setContext(Context context) {
-            this.context = context;
-            return this;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            suDialog = new MaterialDialog.Builder(context).
-                    cancelable(false).title(getString(R.string.su_check_title)).progress(true, 0).content(context.getString(R.string.su_check_message))
-                    .show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            Shell.Interactive rootShell = (new Shell.Builder())
-                    .useSU()
-                    .addCommand("id", 0, (commandCode, exitCode, output) -> {
-                        suGranted[0] = true;
-                    }).open((commandCode, exitCode, output) -> {
-                    });
-            rootShell.waitForIdle();
-            unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            try {
-                if (suDialog != null) {
-                    suDialog.dismiss();
-                }
-            } catch (final Exception e) {
-            } finally {
-                suDialog = null;
-            }
-            if (!Api.isNetfilterSupported() && !isFinishing()) {
-                new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                        .title(R.string.error_common)
-                        .content(R.string.error_netfilter)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .onNegative((dialog, which) -> {
-                            MainActivity.this.finish();
-                            android.os.Process.killProcess(android.os.Process.myPid());
-                            dialog.dismiss();
-                        })
-                        .positiveText(R.string.Continue)
-                        .negativeText(R.string.exit)
-                        .show();
-            }
-            /*// more details on https://github.com/ukanth/afwall/issues/501
-            if (isSuPackage(getPackageManager(), "com.kingroot.kinguser")) {
-                G.kingDetected(true);
-            }*/
-            if (!suGranted[0] && !unsupportedSU && !isFinishing()) {
-                disableFirewall();
-                showRootNotFoundMessage();
-            } else {
-                G.hasRoot(true);
-                startRootShell();
-                new SecurityUtil(MainActivity.this).passCheck();
-            }
-        }
-    }
-
-    @RequiresApi(28)
-    private static class OnUnhandledKeyEventListenerWrapper implements View.OnUnhandledKeyEventListener {
-        private final ViewCompat.OnUnhandledKeyEventListenerCompat mCompatListener;
-
-        OnUnhandledKeyEventListenerWrapper(ViewCompat.OnUnhandledKeyEventListenerCompat listener) {
-            this.mCompatListener = listener;
-        }
-
-        public boolean onUnhandledKeyEvent(View v, KeyEvent event) {
-            return this.mCompatListener.onUnhandledKeyEvent(v, event);
         }
     }
 }

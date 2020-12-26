@@ -9,7 +9,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import com.stericson.roottools.RootTools;
+import com.topjohnwu.superuser.Shell;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,7 +65,8 @@ public class ImportApi {
             dir.mkdirs();
             File shared_prefs = new File(getDataDir(ctx, "com.googlecode.droidwall.free") + File.separator + "shared_prefs" + File.separator + "DroidWallPrefs.xml");
             File file = new File(dir, "DroidWallPrefs.xml");
-            RootTools.copyFile(shared_prefs.getPath(), dir.getPath(), true, false);
+            Shell.Result result = Shell.su("cp " + shared_prefs.getPath() +  " " +dir.getPath()).exec();
+            //RootTools.copyFile(shared_prefs.getPath(), dir.getPath(), true, false);
             final Editor prefEdit = ctx.getSharedPreferences(Api.PREFS_NAME, Context.MODE_PRIVATE).edit();
             // write the logic to read the copied xml
             String wifi = null, g = null;
@@ -97,8 +98,8 @@ public class ImportApi {
                 prefEdit.putString(Api.PREF_3G_PKG_UIDS, g);
             }
             prefEdit.commit();
-            result[0] = true;
-            return result[0];
+            //result[0] = true;
+            return result.isSuccess();
         }
 
         @Override

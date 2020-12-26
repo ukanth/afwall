@@ -1,0 +1,203 @@
+{
+  "abi": "ARMEABI_V7A",
+  "abiPlatformVersion": 21,
+  "buildSettings": {
+    "environmentVariables": []
+  },
+  "cmake": {
+    "cmakeArtifactsBaseFolder": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/armeabi-v7a",
+    "cmakeServerLogFile": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/armeabi-v7a/cmake_server_log.txt",
+    "cmakeWrappingBaseFolder": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cxx/debug/armeabi-v7a",
+    "effectiveConfiguration": {
+      "name": "traditional-android-studio-cmake-environment",
+      "description": "Composite reified CMakeSettings configuration",
+      "generator": "Ninja",
+      "inheritEnvironments": [
+        "ndk"
+      ],
+      "buildRoot": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/armeabi-v7a",
+      "cmakeToolchain": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake",
+      "cmakeExecutable": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake",
+      "variables": [
+        {
+          "name": "CMAKE_FIND_ROOT_PATH",
+          "value": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/prefab/armeabi-v7a/prefab"
+        },
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Debug"
+        },
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake"
+        },
+        {
+          "name": "ANDROID_ABI",
+          "value": "armeabi-v7a"
+        },
+        {
+          "name": "ANDROID_NDK",
+          "value": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669"
+        },
+        {
+          "name": "ANDROID_PLATFORM",
+          "value": "android-21"
+        },
+        {
+          "name": "CMAKE_ANDROID_ARCH_ABI",
+          "value": "armeabi-v7a"
+        },
+        {
+          "name": "CMAKE_ANDROID_NDK",
+          "value": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669"
+        },
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "ON"
+        },
+        {
+          "name": "CMAKE_LIBRARY_OUTPUT_DIRECTORY",
+          "value": "/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/debug/obj/armeabi-v7a"
+        },
+        {
+          "name": "CMAKE_MAKE_PROGRAM",
+          "value": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja"
+        },
+        {
+          "name": "CMAKE_SYSTEM_NAME",
+          "value": "Android"
+        },
+        {
+          "name": "CMAKE_SYSTEM_VERSION",
+          "value": "21"
+        }
+      ]
+    }
+  },
+  "cxxBuildFolder": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/armeabi-v7a",
+  "info": {
+    "abi": "ARMEABI_V7A",
+    "bitness": 32,
+    "deprecated": false,
+    "default": true
+  },
+  "originalCxxBuildFolder": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/armeabi-v7a",
+  "variant": {
+    "buildSystemArgumentList": [],
+    "buildTargetSet": [],
+    "cFlagsList": [],
+    "cmakeSettingsConfiguration": "android-gradle-plugin-predetermined-name",
+    "cppFlagsList": [],
+    "isDebuggableEnabled": true,
+    "module": {
+      "buildSystem": "CMAKE",
+      "cmake": {
+        "cmakeExe": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/cmake",
+        "minimumCmakeVersion": "3.10.2",
+        "ninjaExe": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja"
+      },
+      "cmakeToolchainFile": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake",
+      "cxxFolder": "/Users/umakanth/projects/opensource/afwall/app/.cxx",
+      "gradleModulePathName": ":app",
+      "intermediatesFolder": "/Users/umakanth/projects/opensource/afwall/app/build/intermediates",
+      "makeFile": "/Users/umakanth/projects/opensource/afwall/app/src/main/cpp/CMakeLists.txt",
+      "moduleBuildFile": "/Users/umakanth/projects/opensource/afwall/app/build.gradle",
+      "moduleRootFolder": "/Users/umakanth/projects/opensource/afwall/app",
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkFolder": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669",
+      "ndkMetaAbiList": [
+        {
+          "abi": "ARMEABI_V7A",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "ARM64_V8A",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86",
+          "bitness": 32,
+          "deprecated": false,
+          "default": true
+        },
+        {
+          "abi": "X86_64",
+          "bitness": 64,
+          "deprecated": false,
+          "default": true
+        }
+      ],
+      "ndkMetaPlatforms": {
+        "min": 16,
+        "max": 29,
+        "aliases": {
+          "20": 19,
+          "25": 24,
+          "J": 16,
+          "J-MR1": 17,
+          "J-MR2": 18,
+          "K": 19,
+          "L": 21,
+          "L-MR1": 22,
+          "M": 23,
+          "N": 24,
+          "N-MR1": 24,
+          "O": 26,
+          "O-MR1": 27,
+          "P": 28,
+          "Q": 29
+        }
+      },
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultStl": "LIBCXX_STATIC",
+      "ndkVersion": "21.0.6113669",
+      "project": {
+        "compilerSettingsCacheFolder": "/Users/umakanth/projects/opensource/afwall/.cxx",
+        "cxxFolder": "/Users/umakanth/projects/opensource/afwall/.cxx",
+        "isBuildOnlyTargetAbiEnabled": true,
+        "isCmakeBuildCohabitationEnabled": false,
+        "isNativeCompilerSettingsCacheEnabled": false,
+        "rootBuildGradleFolder": "/Users/umakanth/projects/opensource/afwall",
+        "sdkFolder": "/Users/umakanth/Library/Android/sdk",
+        "isPrefabEnabled": false
+      },
+      "splitsAbiFilterSet": [],
+      "stlSharedObjectMap": {
+        "LIBCXX_SHARED": {
+          "ARMEABI_V7A": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/arm-linux-androideabi/libc++_shared.so",
+          "ARM64_V8A": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/aarch64-linux-android/libc++_shared.so",
+          "X86": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/i686-linux-android/libc++_shared.so",
+          "X86_64": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/lib/x86_64-linux-android/libc++_shared.so"
+        },
+        "LIBCXX_STATIC": {},
+        "NONE": {},
+        "SYSTEM": {}
+      }
+    },
+    "objFolder": "/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/debug/obj",
+    "variantName": "debug",
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "prefabDirectory": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/prefab",
+    "prefabPackageDirectoryList": []
+  },
+  "prefabFolder": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/debug/prefab/armeabi-v7a"
+}

@@ -2,12 +2,15 @@ package dev.ukanth.ufirewall.service;
 
 import android.content.Context;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
+import dev.ukanth.ufirewall.RootShellService;
+
 
 /**
  * Created by ukanth on 21/10/17.
@@ -15,8 +18,9 @@ import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
 
 public class RootCommand implements Cloneable, Serializable {
     public Callback cb = null;
-    public int successToast = NO_TOAST;
-    public int failureToast = NO_TOAST;
+    //TODO: Root
+    public int successToast = -1;
+    public int failureToast = -1;
     public boolean reopenShell = false;
     public int retryExitCode = -1;
     public int commandIndex;
@@ -39,11 +43,11 @@ public class RootCommand implements Cloneable, Serializable {
     }
 
     private RootShellService rootShellService;
-    private RootShellService2 rootShellService2;
+    //private RootShellService2 rootShellService2;
 
     public RootCommand() {
         rootShellService = new RootShellService();
-        rootShellService2 = new RootShellService2();
+        //rootShellService2 = new RootShellService2();
     }
 
 
@@ -95,7 +99,7 @@ public class RootCommand implements Cloneable, Serializable {
      * @return RootCommand builder object
      */
     public RootCommand setFailureToast(int resId) {
-        this.failureToast = resId;
+        //this.failureToast = resId;
         return this;
     }
 
@@ -148,7 +152,7 @@ public class RootCommand implements Cloneable, Serializable {
         if (rootShellService == null) {
             rootShellService = new RootShellService();
         }
-        rootShellService.runScriptAsRoot(ctx, script, this);
+        rootShellService.runCommandsAsSU(ctx, script, this);
     }
 
     /**
@@ -158,7 +162,13 @@ public class RootCommand implements Cloneable, Serializable {
      * @param script List of commands to run as root
      */
     public final void run(Context ctx, List<String> script, boolean isv6) {
+
         if (rootShellService == null) {
+            rootShellService = new RootShellService();
+        }
+        rootShellService.runCommandsAsSU(ctx, script, this);
+
+        /*if (rootShellService == null) {
             rootShellService = new RootShellService();
         }
         if (rootShellService2 == null) {
@@ -168,7 +178,7 @@ public class RootCommand implements Cloneable, Serializable {
             rootShellService2.runScriptAsRoot(ctx, script, this);
         } else {
             rootShellService.runScriptAsRoot(ctx, script, this);
-        }
+        }*/
     }
 
     /**
@@ -183,7 +193,7 @@ public class RootCommand implements Cloneable, Serializable {
         }
         List<String> script = new ArrayList<String>();
         script.add(cmd);
-        rootShellService.runScriptAsRoot(ctx, script, this);
+        rootShellService.runCommandsAsSU(ctx, script, this);
     }
 
     public static abstract class Callback {

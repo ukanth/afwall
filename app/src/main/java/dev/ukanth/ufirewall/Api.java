@@ -68,7 +68,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.stericson.roottools.RootTools;
+import com.topjohnwu.superuser.Shell;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -128,8 +129,7 @@ import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.widget.StatusWidget;
-import eu.chainfire.libsuperuser.Shell;
-import eu.chainfire.libsuperuser.Shell.SU;
+
 
 import static dev.ukanth.ufirewall.util.G.ctx;
 import static dev.ukanth.ufirewall.util.G.ipv4Fwd;
@@ -1268,7 +1268,7 @@ public final class Api {
 
     //Cleanup unused shell opened by logservice
     public static void cleanupUid() {
-        try {
+        /*try {
             Set<String> uids = G.storedPid();
             if (uids != null && uids.size() > 0) {
                 Log.i(TAG, "log cleanup using uid");
@@ -1298,7 +1298,7 @@ public final class Api {
             Log.e(TAG, "ClassCastException in cleanupUid: " + e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "Exception in cleanupUid: " + e.getMessage());
-        }
+        }*/
     }
 
 
@@ -1961,10 +1961,12 @@ public final class Api {
                     new RootCommand()
                             .setReopenShell(true)
                             .run(ctx, "chmod 755 " + f.getAbsolutePath());
+                    /*
+                    TODO: Root
                     if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
                             true, false)) {
                         Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
-                    }
+                    }*/
                     mountDir(ctx, getFixLeakPath(initScript), "RO");
                 } else {
                     Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
@@ -3448,7 +3450,7 @@ public final class Api {
         apply46(ctx, cmds, callback);
     }
 
-    public static boolean hasRoot() {
+    /*public static boolean hasRoot() {
         final boolean[] hasRoot = new boolean[1];
         Thread t = new Thread() {
             @Override
@@ -3462,7 +3464,7 @@ public final class Api {
         } catch (InterruptedException e) {
         }
         return hasRoot[0];
-    }
+    }*/
 
     // Clipboard
     public static void copyToClipboard(Context context, String val) {
@@ -3497,11 +3499,11 @@ public final class Api {
     public static boolean mountDir(Context context, String path, String mountType) {
         if (path != null) {
             String busyboxPath = Api.getBusyBoxPath(context, false);
-            if (busyboxPath != null && !busyboxPath.trim().isEmpty()) {
+            /*if (busyboxPath != null && !busyboxPath.trim().isEmpty()) {
                 return RootTools.remount(path, mountType, busyboxPath);
             } else {
                 return false;
-            }
+            }*/
         }
         return false;
     }
@@ -3522,8 +3524,10 @@ public final class Api {
                                 .setReopenShell(true)
                                 .setLogging(true)
                                 .run(ctx, "chmod 755 " + f.getAbsolutePath());
+                        /*
+                        TODO: Root
                         RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName),
-                                true, false);
+                                true, false);*/
                         mountDir(context, getFixLeakPath(fileName), "RO");
                     }
                 }
@@ -3699,20 +3703,22 @@ public final class Api {
             List<String> commands = (List<String>) params[0];
             StringBuilder res = (StringBuilder) params[1];
             try {
-                if (!SU.available())
+                if (!Shell.rootAccess())
                     return exitCode;
                 if (commands != null && commands.size() > 0) {
-                    List<String> output = SU.run(commands);
-                    if (output != null) {
-                        exitCode = 0;
-                        if (output.size() > 0) {
-                            for (String str : output) {
-                                res.append(str);
-                                res.append("\n");
+                    for(String command: commands) {
+                        List<String> output = Shell.su(command).exec().getOut();
+                        if (output != null) {
+                            exitCode = 0;
+                            if (output.size() > 0) {
+                                for (String str : output) {
+                                    res.append(str);
+                                    res.append("\n");
+                                }
                             }
+                        } else {
+                            exitCode = 1;
                         }
-                    } else {
-                        exitCode = 1;
                     }
                 }
             } catch (Exception ex) {

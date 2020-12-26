@@ -41,9 +41,12 @@ import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.stericson.roottools.RootTools;
+import com.topjohnwu.superuser.CallbackList;
+import com.topjohnwu.superuser.Shell;
+//import com.stericson.roottools.RootTools;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
@@ -55,7 +58,7 @@ import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.log.LogRxEvent;
 import dev.ukanth.ufirewall.util.G;
-import eu.chainfire.libsuperuser.Shell;
+//import eu.chainfire.libsuperuser.Shell;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
@@ -70,7 +73,7 @@ public class LogService extends Service {
 
     public static String logPath;
 
-    private Shell.Interactive rootSession;
+    //private Shell.Interactive rootSession;
     static Handler handler;
 
     public static final int QUEUE_NUM = 40;
@@ -238,11 +241,11 @@ public class LogService extends Service {
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                                 break;
                             case "BX":
-                                if (RootTools.isBusyboxAvailable()) {
-                                    logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
-                                } else {
+                                //if (RootTools.isBusyboxAvailable()) {
+                                //    logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
+                                //} else {
                                     logPath = "echo PID=$$ & while true; do " + Api.getBusyBoxPath(ctx, false) + " dmesg -c ; sleep 1 ; done";
-                                }
+                                //}
                                 break;
                             default:
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
@@ -255,38 +258,39 @@ public class LogService extends Service {
                 }
 
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
+                //Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
                 handler = new Handler();
 
-                if (logPath != null) {
-                    rootSession = new Shell.Builder()
-                            .useSU()
-                            .setMinimalLogging(true)
-                            .setOnSTDOUTLineListener(line -> {
-                                //Log.i(TAG,line);
-                                if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
-                                    try {
-                                        String uid = line.split("=")[1];
-                                        if (uid != null) {
-                                            Set data = G.storedPid();
-                                            if (data == null || data.isEmpty()) {
-                                                data = new HashSet();
-                                                data.add(uid);
-                                                G.storedPid(data);
-                                            } else if (!data.contains(uid)) {
-                                                Set data2 = new HashSet();
-                                                data2.addAll(data);
-                                                data2.add(uid);
-                                                G.storedPid(data2);
-                                            }
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                List<String> callbackList = new CallbackList<String>() {
+                    @Override
+                    public void onAddElement(String line) {
+                        if (line != null && !line.isEmpty() && line.startsWith("PID=")) {
+                            try {
+                                String uid = line.split("=")[1];
+                                if (uid != null) {
+                                    Set data = G.storedPid();
+                                    if (data == null || data.isEmpty()) {
+                                        data = new HashSet();
+                                        data.add(uid);
+                                        G.storedPid(data);
+                                    } else if (!data.contains(uid)) {
+                                        Set data2 = new HashSet();
+                                        data2.addAll(data);
+                                        data2.add(uid);
+                                        G.storedPid(data2);
                                     }
-                                } else {
-                                    storeLogInfo(line, getApplicationContext());
                                 }
-                            }).addCommand(logPath).open();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            storeLogInfo(line, getApplicationContext());
+                        }
+                    }
+                };
+
+                if (logPath != null) {
+                    Shell.su(logPath).to(callbackList);
                 } else {
                     Log.i(TAG, "Unable to start log service. Log Path is empty");
                     Api.toast(getApplicationContext(), getApplicationContext().getString(R.string.error_log));
@@ -307,9 +311,9 @@ public class LogService extends Service {
     private void closeSession() {
         new Thread(() -> {
             Log.i(Api.TAG, "Cleanup session");
-            if (rootSession != null) {
-                rootSession.close();
-            }
+            //if (rootSession != null) {
+            //    rootSession.close();
+            //}
         }).start();
         Api.cleanupUid();
     }

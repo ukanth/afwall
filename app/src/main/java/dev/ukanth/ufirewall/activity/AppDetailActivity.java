@@ -15,12 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.stericson.rootshell.execution.Command;
+import com.topjohnwu.superuser.Shell;
+/*import com.stericson.rootshell.execution.Command;
 import com.stericson.rootshell.execution.Shell;
-import com.stericson.roottools.RootTools;
+import com.stericson.roottools.RootTools;*/
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -165,25 +167,17 @@ public class AppDetailActivity extends AppCompatActivity {
                 String textSent = "0";
                 try {
                     if (uidActualFileReceived.exists() && uidActualFileSent.exists()) {
-                        Command command = new Command(0, "cat " + uidActualFileReceived.getAbsolutePath())
-                        {
-                            @Override
-                            public void commandOutput(int id, String line) {
-                                down.setText(" : " + humanReadableByteCount(Long.parseLong(line), false));
-                                super.commandOutput(id, line);
-                            }
-                        };
-                        Command command1 = new Command(1, "cat " + uidActualFileSent.getAbsolutePath())
-                        {
-                            @Override
-                            public void commandOutput(int id, String line) {
-                                up.setText(" : " + humanReadableByteCount(Long.parseLong(line), false));
-                                super.commandOutput(id, line);
-                            }
-                        };
-                        Shell shell = RootTools.getShell(true);
-                        shell.add(command);
-                        shell.add(command1);
+                        Shell.Result result = Shell.su("cat " + uidActualFileReceived.getAbsolutePath()).exec();
+                       if(result.isSuccess()) {
+                            List<String> out = result.getOut();
+                           down.setText(" : " + humanReadableByteCount(Long.parseLong(out.get(0)), false));
+                        }
+
+                        result = Shell.su("cat " + uidActualFileSent.getAbsolutePath()).exec();
+                        if(result.isSuccess()) {
+                            List<String> out = result.getOut();
+                            down.setText(" : " + humanReadableByteCount(Long.parseLong(out.get(0)), false));
+                        }
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Exception while reading tx bytes: " + e.getLocalizedMessage());

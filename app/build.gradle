@@ -4,7 +4,7 @@ android {
     buildToolsVersion '29.0.3'
 
     defaultConfig {
-        applicationId "dev.ukanth.ufirewall"
+        applicationId "dev.ukanth.ufirewall.dev"
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 29
@@ -29,6 +29,12 @@ android {
         }
     }
 
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+        }
+    }
+
     lintOptions {
         disable 'MissingTranslation'
         abortOnError true
@@ -37,14 +43,18 @@ android {
 
 dependencies {
 
-    implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
-    //implementation 'com.github.topjohnwu:libsu:1.0.1'
+    def libsuVersion = '3.0.2'
+    def dbFlowVersion = '4.2.4'
+
+    implementation "com.github.topjohnwu:libsu:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:busybox:${libsuVersion}"
 
     implementation 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
@@ -53,13 +63,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
 
-    annotationProcessor 'com.github.Raizlabs.DBFlow:dbflow-processor:4.2.4'
-    implementation "com.github.Raizlabs.DBFlow:dbflow-core:4.2.4"
-    implementation "com.github.Raizlabs.DBFlow:dbflow:4.2.4"
+    implementation 'com.google.android.material:material:1.2.1'
 
-    //implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    //implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
-
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}"
+    implementation "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}"
 
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.7'
@@ -69,9 +77,6 @@ dependencies {
 
     //shared preference for Xposed
     implementation 'com.crossbowffs.remotepreferences:remotepreferences:0.7'
-
-
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
-
     implementation "dnsjava:dnsjava:3.2.2"
 }

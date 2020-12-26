@@ -13,7 +13,8 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
-import com.stericson.roottools.RootTools;
+
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -81,9 +82,11 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             //going through the list of known initDirectories
             for (String dir : initDirs) {
                 //path exists
+                /*
+                TODO: Root
                 if (RootTools.exists(dir, true)) {
                     listSupportedDir.add(dir);
-                }
+                }*/
             }
             //some path exists
             if (listSupportedDir.size() > 0) {
@@ -182,7 +185,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
      */
     private boolean isFixLeakInstalled() {
         String path = getFixLeakPath(initScript);
-        return path != null && RootTools.exists(path);
+        return path != null; // TODO: Root && RootTools.exists(path);
     }
 
     private void updateFixLeakScript(final boolean enabled) {
@@ -198,12 +201,12 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                         File f = new File(path);
                         if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
                             //make sure it's executable
-                            new RootCommand()
-                                    .setReopenShell(true)
-                                    .run(ctx, "chmod 755 " + f.getAbsolutePath());
-                            if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
-                                    true, false)) {
-                                Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
+                            Shell.Result givePermission = Shell.su("chmod 755 " + f.getAbsolutePath()).exec();
+                            if(givePermission.isSuccess()){
+                                Shell.Result copyCode = Shell.su("cp " + srcPath + " " + f.getAbsolutePath() + "/" + initScript).exec();
+                                if(copyCode.isSuccess()) {
+                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
+                                }
                             }
                             mountDir(ctx, getFixLeakPath(initScript), "RO");
                             activity.runOnUiThread(() -> updateLeakCheckbox());
@@ -233,7 +236,9 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
         String path = G.initPath();
         if(path != null) {
             new Thread(() -> {
-                if (RootTools.exists(path, true)) {
+                //TODO: Root
+                if(true) {
+                //if (RootTools.exists(path, true)) {
                     final String filePath = path + "/" + initScript;
 
                     if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {

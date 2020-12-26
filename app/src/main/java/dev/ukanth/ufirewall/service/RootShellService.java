@@ -22,6 +22,7 @@
 
 package dev.ukanth.ufirewall.service;
 
+/*
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -30,11 +31,14 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Debug;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.topjohnwu.superuser.Shell;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,10 +54,11 @@ import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
-import eu.chainfire.libsuperuser.Debug;
-import eu.chainfire.libsuperuser.Shell;
+//import eu.chainfire.libsuperuser.Debug;
+//import eu.chainfire.libsuperuser.Shell;
 
 import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
+
 
 
 public class RootShellService extends Service implements Cloneable {
@@ -62,11 +67,10 @@ public class RootShellService extends Service implements Cloneable {
     public static final int NOTIFICATION_ID = 33347;
     public static final int EXIT_NO_ROOT_ACCESS = -1;
     public static final int NO_TOAST = -1;
-    /* write command completion times to logcat */
     private static final boolean enableProfiling = false;
     //number of retries - increase the count
     private final static int MAX_RETRIES = 10;
-    private static Shell.Interactive rootSession;
+    //private static Shell.Interactive rootSession;
     private static Context mContext;
     private static NotificationManager notificationManager;
     private static ShellState rootState = INIT;
@@ -156,6 +160,8 @@ public class RootShellService extends Service implements Cloneable {
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
                 try {
+
+
                     rootSession.addCommand(command, 0, (commandCode, exitCode, output) -> {
                         if (output != null) {
                             ListIterator<String> iter = output.listIterator();
@@ -227,7 +233,6 @@ public class RootShellService extends Service implements Cloneable {
         Intent appIntent = new Intent(context, MainActivity.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            /* Create or update. */
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.runNotification),
                     NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("");
@@ -377,4 +382,4 @@ public class RootShellService extends Service implements Cloneable {
         BUSY,
         FAIL
     }
-}
+} */

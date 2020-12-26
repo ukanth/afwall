@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake",
+    "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/build/cmake/platforms.cmake",
+    "/Users/umakanth/projects/opensource/afwall/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/release/armeabi-v7a\" clean"
+  ],
+  "buildTargetsCommand": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/release/armeabi-v7a\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "native-lib-Release-armeabi-v7a": {
+      "artifactName": "native-lib",
+      "buildCommand": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/release/armeabi-v7a\" native-lib",
+      "abi": "armeabi-v7a",
+      "output": "/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/release/obj/armeabi-v7a/libnative-lib.so",
+      "runtimeFiles": []
+    }
+  }
+}

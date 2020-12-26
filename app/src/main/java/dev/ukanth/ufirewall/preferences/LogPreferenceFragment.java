@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.stericson.roottools.RootTools;
+//import com.stericson.roottools.RootTools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +88,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
         val.add("OS");
 
         ListPreference listPreference = (ListPreference) logDmesg;
-        if (RootTools.isBusyboxAvailable() || !Api.getBusyBoxPath(ctx,false).isEmpty()) {
+        if (!Api.getBusyBoxPath(ctx,false).isEmpty()) {
             ar.add("Busybox");
             val.add("BX");
         }

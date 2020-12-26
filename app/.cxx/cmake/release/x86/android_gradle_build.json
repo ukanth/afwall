@@ -1,0 +1,43 @@
+{
+  "stringTable": {
+    "0": "/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/release/x86",
+    "1": "--target=i686-none-linux-android21 --gcc-toolchain=/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64 --sysroot=/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dnative_lib_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -O2 -DNDEBUG -fPIC"
+  },
+  "buildFiles": [
+    "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake",
+    "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/build/cmake/platforms.cmake",
+    "/Users/umakanth/projects/opensource/afwall/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/release/x86\" clean"
+  ],
+  "buildTargetsCommand": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja  -C \"/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/release/x86\" {LIST_OF_TARGETS_TO_BUILD}",
+  "libraries": {
+    "native-lib-Release-x86": {
+      "buildCommand": "/Users/umakanth/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja -C \"/Users/umakanth/projects/opensource/afwall/app/.cxx/cmake/release/x86\" native-lib",
+      "buildType": "release",
+      "toolchain": "880653011",
+      "abi": "x86",
+      "artifactName": "native-lib",
+      "files": [
+        {
+          "src": "/Users/umakanth/projects/opensource/afwall/app/src/main/cpp/shell.cpp",
+          "flagsOrdinal": 1,
+          "workingDirectoryOrdinal": 0
+        }
+      ],
+      "headers": [],
+      "output": "/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/release/obj/x86/libnative-lib.so",
+      "runtimeFiles": []
+    }
+  },
+  "toolchains": {
+    "880653011": {
+      "cppCompilerExecutable": "/Users/umakanth/Library/Android/sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

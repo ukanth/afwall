@@ -179,7 +179,7 @@ public class FirewallService extends Service {
         intentFilter.addDataScheme("package");
         registerReceiver(packageReceiver, intentFilter);
 
-        InterfaceTracker.setupBluetoothProfile(this);
+        //InterfaceTracker.setupBluetoothProfile(this);
 
         return START_STICKY;
     }
