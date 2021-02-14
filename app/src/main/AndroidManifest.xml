@@ -30,7 +30,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Allows ufwall to write to external storage -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
 
     <!-- Allows access to IP configuration and tethering state -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -68,6 +69,7 @@
         android:resizeableActivity="true"
         android:supportsRtl="true"
         android:theme="@style/AppDarkTheme"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="ManifestResource">
 
         <meta-data

@@ -1206,14 +1206,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 search(item);
                 return true;
             case R.id.menu_export:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // permissions have not been granted.
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-                } else {
+                if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+                    // Do some stuff
                     showExportDialog();
+                } else {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // permissions have not been granted.
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                    } else{
+                        showExportDialog();
+                    }
                 }
                 return true;
             case R.id.menu_import:
@@ -1274,24 +1279,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         case 0:
                             //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
                             //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
-                            File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                            File mPath = null;
+                            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                                mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                            } else{
+                                mPath = new File(ctx.getExternalFilesDir(null) + "/afwall/");
+                            }
                             FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
+
                             //fileDialog.setFlag(true);
                             //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
-                            fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
-                                public void fileSelected(File file) {
-                                    String fileSelected = file.toString();
-                                    StringBuilder builder = new StringBuilder();
-                                    if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
-                                        Api.applications = null;
-                                        showOrLoadApplications();
-                                        Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                            fileDialog.addFileListener((FileDialog.FileSelectedListener) file -> {
+                                String fileSelected = file.toString();
+                                StringBuilder builder = new StringBuilder();
+                                if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
+                                    Api.applications = null;
+                                    showOrLoadApplications();
+                                    Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                } else {
+                                    if (builder.toString().equals("")) {
+                                        Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
                                     } else {
-                                        if (builder.toString().equals("")) {
-                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                        } else {
-                                            Api.toast(MainActivity.this, builder.toString());
-                                        }
+                                        Api.toast(MainActivity.this, builder.toString());
                                     }
                                 }
                             });
@@ -1301,27 +1310,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                             if (G.isDoKey(getApplicationContext()) || isDonate()) {
 
-                                File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                                File mPath2 = null;
+                                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                                    mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                                } else{
+                                    mPath2 = new File(ctx.getExternalFilesDir(null) + "/afwall/");
+                                }
                                 FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
-                                //fileDialog2.setFlag(false);
-                                //fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
-                                fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
-                                    public void fileSelected(File file) {
-                                        String fileSelected = file.toString();
-                                        StringBuilder builder = new StringBuilder();
-                                        if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
-                                            Api.applications = null;
-                                            showOrLoadApplications();
-                                            Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
-                                            Intent intent = getIntent();
-                                            finish();
-                                            startActivity(intent);
+                                fileDialog2.addFileListener(file -> {
+                                    String fileSelected = file.toString();
+                                    StringBuilder builder = new StringBuilder();
+                                    if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
+                                        Api.applications = null;
+                                        showOrLoadApplications();
+                                        Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                        Intent intent = getIntent();
+                                        finish();
+                                        startActivity(intent);
+                                    } else {
+                                        if (builder.toString().equals("")) {
+                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
                                         } else {
-                                            if (builder.toString().equals("")) {
-                                                Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                            } else {
-                                                Api.toast(MainActivity.this, builder.toString());
-                                            }
+                                            Api.toast(MainActivity.this, builder.toString());
                                         }
                                     }
                                 });

@@ -2572,66 +2572,75 @@ public final class Api {
 
     public static boolean exportAll(Context ctx, final String fileName) {
         boolean res = false;
-        File sdCard = Environment.getExternalStorageDirectory();
         if (isExternalStorageWritable()) {
-            File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-            dir.mkdirs();
-            File file = new File(dir, fileName);
+            File file = null;
+            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+                dir.mkdirs();
+                file = new File(dir, fileName);
+            } else{
+                file = new File(ctx.getExternalFilesDir(null) + "/export/");
+            }
 
             try {
-                FileOutputStream fOut = new FileOutputStream(file);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                if(file != null) {
+                    FileOutputStream fOut = new FileOutputStream(file);
+                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                JSONObject exportObject = new JSONObject();
-                //if multiprofile is enabled
-                if (G.enableMultiProfile()) {
-                    if (!G.isProfileMigrated()) {
-                        JSONObject profileObject = new JSONObject();
-                        //store all the profile settings
-                        for (String profile : G.profiles) {
-                            profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                        }
-                        exportObject.put("profiles", profileObject);
-                        //if any additional profiles
-                        //int defaultProfileCount = 3;
-                        JSONObject addProfileObject = new JSONObject();
-                        for (String profile : G.getAdditionalProfiles()) {
-                            addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                        }
-                        //support for new profiles
-                        exportObject.put("additional_profiles", addProfileObject);
-                    } else {
-                        JSONObject profileObject = new JSONObject();
-                        //add default profile
-                        String profileName = "AFWallPrefs";
-                        profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
-                        //update for new profile logic
-                        List<ProfileData> profileDataList = ProfileHelper.getProfiles();
-                        //store all the profile settings
-                        for (ProfileData profile : profileDataList) {
-                            profileName = profile.getName();
-                            if (profile.getIdentifier().startsWith("AFWallProfile")) {
-                                profileName = profile.getIdentifier();
+                    JSONObject exportObject = new JSONObject();
+                    //if multiprofile is enabled
+                    if (G.enableMultiProfile()) {
+                        if (!G.isProfileMigrated()) {
+                            JSONObject profileObject = new JSONObject();
+                            //store all the profile settings
+                            for (String profile : G.profiles) {
+                                profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
                             }
-                            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
+                            exportObject.put("profiles", profileObject);
+                            //if any additional profiles
+                            //int defaultProfileCount = 3;
+                            JSONObject addProfileObject = new JSONObject();
+                            for (String profile : G.getAdditionalProfiles()) {
+                                addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
+                            }
+                            //support for new profiles
+                            exportObject.put("additional_profiles", addProfileObject);
+                        } else {
+                            JSONObject profileObject = new JSONObject();
+                            //add default profile
+                            String profileName = "AFWallPrefs";
+                            profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
+                            //update for new profile logic
+                            List<ProfileData> profileDataList = ProfileHelper.getProfiles();
+                            //store all the profile settings
+                            for (ProfileData profile : profileDataList) {
+                                profileName = profile.getName();
+                                if (profile.getIdentifier().startsWith("AFWallProfile")) {
+                                    profileName = profile.getIdentifier();
+                                }
+                                profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
+                            }
+                            exportObject.put("_profiles", profileObject);
                         }
-                        exportObject.put("_profiles", profileObject);
+
+
+                    } else {
+                        //default Profile - current one
+                        JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                        exportObject.put("default", obj);
                     }
 
+                    //now gets all the preferences
+                    exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
 
-                } else {
-                    //default Profile - current one
-                    JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                    exportObject.put("default", obj);
+                    myOutWriter.append(exportObject.toString());
+                    res = true;
+                    myOutWriter.close();
+                    fOut.close();
+                } else{
+                    Log.i(TAG, "Error creating file");
                 }
 
-                //now gets all the preferences
-                exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
-
-                myOutWriter.append(exportObject.toString());
-                res = true;
-                myOutWriter.close();
-                fOut.close();
             } catch (FileNotFoundException e) {
                 Log.d(TAG, e.getLocalizedMessage());
             } catch (IOException e) {
@@ -2672,23 +2681,34 @@ public final class Api {
 
     public static boolean exportRules(Context ctx, final String fileName) {
         boolean res = false;
-        File sdCard = Environment.getExternalStorageDirectory();
+
         if (isExternalStorageWritable()) {
-            File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-            dir.mkdirs();
-            File file = new File(dir, fileName);
+            File file = null;
+            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+                dir.mkdirs();
+                file = new File(dir, fileName);
+            } else{
+                file = new File(ctx.getExternalFilesDir(null) + "/export/");
+            }
+
             try {
-                FileOutputStream fOut = new FileOutputStream(file);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                if(file != null) {
+                    FileOutputStream fOut = new FileOutputStream(file);
+                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                //default Profile - current one
-                JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
+                    //default Profile - current one
+                    JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                    JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
 
-                myOutWriter.append(jArray.toString());
-                res = true;
-                myOutWriter.close();
-                fOut.close();
+                    myOutWriter.append(jArray.toString());
+                    res = true;
+                    myOutWriter.close();
+                    fOut.close();
+                } else{
+                    Log.e(TAG, "Error exporting document");
+                }
+
             } catch (FileNotFoundException e) {
                 Log.e(TAG, e.getLocalizedMessage());
             } catch (JSONException e) {
