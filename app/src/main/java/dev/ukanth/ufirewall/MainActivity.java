@@ -1283,7 +1283,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
                                 mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                             } else{
-                                mPath = new File(ctx.getExternalFilesDir(null) + "/afwall/");
+                                mPath = new File(ctx.getExternalFilesDir(null) + "/");
                             }
                             FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
 
@@ -1314,7 +1314,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
                                     mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                                 } else{
-                                    mPath2 = new File(ctx.getExternalFilesDir(null) + "/afwall/");
+                                    mPath2 = new File(ctx.getExternalFilesDir(null), "/");
                                 }
                                 FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
                                 fileDialog2.addFileListener(file -> {

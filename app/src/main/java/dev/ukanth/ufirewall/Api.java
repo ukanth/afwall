@@ -2495,7 +2495,7 @@ public final class Api {
     public static void exportRulesToFileConfirm(final Context ctx) {
         String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
         if (exportRules(ctx, fileName)) {
-            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
+            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fileName);
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
         }
@@ -2504,7 +2504,7 @@ public final class Api {
     public static void exportAllPreferencesToFileConfirm(final Context ctx) {
         String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
         if (exportAll(ctx, fileName)) {
-            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
+            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fileName);
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
         }
@@ -2572,14 +2572,15 @@ public final class Api {
 
     public static boolean exportAll(Context ctx, final String fileName) {
         boolean res = false;
-        if (isExternalStorageWritable()) {
             File file = null;
             if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
                 File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
                 dir.mkdirs();
                 file = new File(dir, fileName);
             } else{
-                file = new File(ctx.getExternalFilesDir(null) + "/export/");
+                file = new File(ctx.getExternalFilesDir(null)  + "/" + fileName);
+
+
             }
 
             try {
@@ -2650,7 +2651,7 @@ public final class Api {
             } catch (Exception e) {
                 Log.d(TAG, e.getLocalizedMessage());
             }
-        }
+
 
         return res;
     }
@@ -2682,14 +2683,13 @@ public final class Api {
     public static boolean exportRules(Context ctx, final String fileName) {
         boolean res = false;
 
-        if (isExternalStorageWritable()) {
             File file = null;
             if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
-                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/" );
                 dir.mkdirs();
                 file = new File(dir, fileName);
             } else{
-                file = new File(ctx.getExternalFilesDir(null) + "/export/");
+                file = new File(ctx.getExternalFilesDir(null) + "/" + fileName) ;
             }
 
             try {
@@ -2716,7 +2716,6 @@ public final class Api {
             } catch (IOException e) {
                 Log.e(TAG, e.getLocalizedMessage());
             }
-        }
 
         return res;
     }
