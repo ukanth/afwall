@@ -34,7 +34,7 @@ Index
 * [Compile Native Binaries](#compiling-native-binaries)
 * [Contributing](#contributing)
 * [Translating](#translating)
-* [Donations](#donations)
+* [Donations](https://github.com/ukanth/afwall/wiki#making-donations)
 
 
 Availability
