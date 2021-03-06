@@ -29,7 +29,7 @@
     <string name="error_su">Could not acquire root access.\nYour device must be rooted to use AFWall+.\n\nIf this device is already rooted, please ensure AFWall+ has permission to execute the \"su\" command.</string>
     <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
     <string name="error_common">Error: </string>
-    <string name="all_item">(Any app) - Same as selecting all apps</string>
+    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
     <string name="kernel_item">(kernel) - Linux kernel</string>
     <string name="android_system">Android System</string>
     <string name="unknown_item">Unknown</string>
