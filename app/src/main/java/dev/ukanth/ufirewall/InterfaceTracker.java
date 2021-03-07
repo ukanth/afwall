@@ -167,8 +167,8 @@ public final class InterfaceTracker {
             public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
                 super.onLinkPropertiesChanged(network, linkProperties);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    Toast.makeText(context, linkProperties.isPrivateDnsActive() +"" , Toast.LENGTH_LONG).show();
                     ret.isPrivateDns = linkProperties.isPrivateDnsActive();
+                    Log.i(Api.TAG, "Private DNS status:" +  ret.isPrivateDns);
                 }
             }
         });

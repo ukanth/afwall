@@ -1748,10 +1748,10 @@ public final class Api {
                         app.appinfo = apinfo;
                         if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                             //user app
-                            app.appType = 0;
+                            app.appType = 1;
                         } else {
                             //system app
-                            app.appType = 1;
+                            app.appType = 0;
                         }
                         app.pkgName = apinfo.packageName;
                         syncMap.put(appUid, app);
