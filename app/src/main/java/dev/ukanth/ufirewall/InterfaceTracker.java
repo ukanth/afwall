@@ -27,8 +27,13 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.widget.Toast;
 
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -91,6 +96,7 @@ public final class InterfaceTracker {
                     d.tetherWifiStatusKnown = true;
                     Log.d(TAG, "isWifiApEnabled is " + d.isWifiTethered);
                 } catch (Exception e) {
+                    Log.e(G.TAG, "Exception in getting Wifi tether status");
                     Log.e(Api.TAG, android.util.Log.getStackTraceString(e));
                 }
             }
@@ -155,6 +161,17 @@ public final class InterfaceTracker {
 
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        cm.registerNetworkCallback(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                super.onLinkPropertiesChanged(network, linkProperties);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    Toast.makeText(context, linkProperties.isPrivateDnsActive() +"" , Toast.LENGTH_LONG).show();
+                    ret.isPrivateDns = linkProperties.isPrivateDnsActive();
+                }
+            }
+        });
 
         NetworkInfo info = cm.getActiveNetworkInfo();
 

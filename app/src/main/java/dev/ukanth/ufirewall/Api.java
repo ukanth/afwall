@@ -45,7 +45,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -599,6 +602,8 @@ public final class Api {
             } else {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-home");
             }
+
+
         } catch (Exception e) {
             Log.i(TAG, "Exception while applying shortRules " + e.getMessage());
         }
@@ -730,6 +735,8 @@ public final class Api {
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
+            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, true);
+
             if (G.enableInbound()) {
                 cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
                 cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
@@ -819,6 +826,12 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.dataList, SPECIAL_UID_TETHER)) {
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
+            }
+
+            //Support for Android P and above
+            if (cfg.isPrivateDns) {
+                cmds.add("-I " + AFWALL_CHAIN_NAME + " -p tcp --dport 853" + " -j ACCEPT -m comment --comment \"DNS-over-TLS\"");
+                cmds.add("-I " + AFWALL_CHAIN_NAME + " -p tcp --dport 443" + " -j ACCEPT -m comment --comment \"DNS-over-HTTPS\"");
             }
 
             // if tethered, try to match the above rules (if enabled).  no match -> fall through to the

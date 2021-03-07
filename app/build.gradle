@@ -73,5 +73,5 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
-    implementation "dnsjava:dnsjava:3.2.2"
+    implementation "dnsjava:dnsjava:3.3.1"
 }
