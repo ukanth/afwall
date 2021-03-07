@@ -279,11 +279,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateSelectedColumns();
-
                 if(selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
                     recreate();
                 }
                 else if(selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0){
+                    recreate();
+                } else{
                     recreate();
                 }
             }

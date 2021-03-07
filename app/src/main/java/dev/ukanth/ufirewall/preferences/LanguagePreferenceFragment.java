@@ -1,11 +1,15 @@
 package dev.ukanth.ufirewall.preferences;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;

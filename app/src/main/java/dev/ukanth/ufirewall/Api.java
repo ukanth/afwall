@@ -3246,7 +3246,11 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = defaultLocale;
-            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                context.createConfigurationContext(conf);
+            } else {
+                context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            }
         } else if (!"".equals(lang)) {
             Locale locale = new Locale(lang);
             if (lang.contains("_")) {
@@ -3256,7 +3260,11 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
-            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                context.createConfigurationContext(conf);
+            } else {
+                context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            }
         }
     }
 
