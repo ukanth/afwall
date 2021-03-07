@@ -240,7 +240,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             DataDumpActivity activity = activityReference.get();
             if (activity == null || activity.isFinishing()) return;
 
-            if (res == true) {
+            if (res) {
                 Api.toast(ctx, ctx.getString(R.string.export_rules_success) + filename, Toast.LENGTH_LONG);
             } else {
                 Api.toast(ctx, ctx.getString(R.string.export_logs_fail), Toast.LENGTH_LONG);

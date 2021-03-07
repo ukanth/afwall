@@ -190,13 +190,11 @@ public class LocaleEdit extends AppCompatActivity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+            case R.id.twofortyfouram_locale_menu_save:
                 finish();
                 return true;
             case R.id.twofortyfouram_locale_menu_dontsave:
                 mIsCancelled = true;
-                finish();
-                return true;
-            case R.id.twofortyfouram_locale_menu_save:
                 finish();
                 return true;
         }

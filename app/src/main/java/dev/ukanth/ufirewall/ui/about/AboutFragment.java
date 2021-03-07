@@ -22,8 +22,7 @@ public class AboutFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup group,
 			Bundle saved) {
-		View view = inflater.inflate(R.layout.help_about_content, group, false);
-		return view;
+		return inflater.inflate(R.layout.help_about_content, group, false);
 	}
 
 	@Override

@@ -120,7 +120,7 @@ public class LogInfo {
                 totalBlocked = loginfo.totalBlocked;
                 if (loginfo.dstBlocked.size() > 0) {
                     for (String unique : loginfo.dstBlocked.keySet()) {
-                        address.append(unique + "(" + loginfo.dstBlocked.get(unique) + ")");
+                        address.append(unique).append("(").append(loginfo.dstBlocked.get(unique)).append(")");
                         address.append("\n");
                     }
                 }
@@ -261,7 +261,7 @@ public class LogInfo {
                 //address.append(ctx.getString(R.string.blocked));
                 //address.append(" ");
                 address.append(appName);
-                address.append("(" + uid + ") ");
+                address.append("(").append(uid).append(") ");
                 address.append(logInfo.dst);
                 address.append(":");
                 address.append(logInfo.dpt);
@@ -271,7 +271,7 @@ public class LogInfo {
                         String add  = InetAddress.getByName(logInfo.dst).getHostName();
                         if (add != null) {
                             logInfo.host = add;
-                            address.append("(" + add + ") ");
+                            address.append("(").append(add).append(") ");
                         }
                     } catch (Exception e) {
                     }

@@ -117,7 +117,7 @@ public class RootShellService2 extends Service {
                 if (rootState == ShellState.FAIL) {
                     // if we don't have root, abort all queued commands
                     complete(state, EXIT_NO_ROOT_ACCESS);
-                    continue;
+                    //continue;
                 } else if (rootState == ShellState.READY) {
                     rootState = ShellState.BUSY;
                     if (G.isRun()) {
@@ -152,7 +152,7 @@ public class RootShellService2 extends Service {
                                 String line = iter.next();
                                 if (line != null && !line.equals("")) {
                                     if (state.res != null) {
-                                        state.res.append(line + "\n");
+                                        state.res.append(line).append("\n");
                                     }
                                     state.lastCommandResult.append(line + "\n");
                                 }

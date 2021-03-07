@@ -244,7 +244,7 @@ public abstract class SharePreferenceProvider extends ContentProvider implements
         return true;
     }
 
-    private class PrefNameKeyPair {
+    private static class PrefNameKeyPair {
         private final String name;
         private final String key;
 

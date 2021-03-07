@@ -175,7 +175,7 @@ public final class InterfaceTracker {
 
         NetworkInfo info = cm.getActiveNetworkInfo();
 
-        if (info == null || info.isConnected() == false) {
+        if (info == null || !info.isConnected()) {
             return ret;
         }
 

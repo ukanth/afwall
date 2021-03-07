@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
-    buildToolsVersion '30.0.0'
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         applicationId "dev.ukanth.ufirewall"
@@ -43,8 +43,8 @@ dependencies {
     implementation 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.appcompat:appcompat:1.3.0-beta01'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'

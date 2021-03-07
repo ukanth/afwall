@@ -173,8 +173,7 @@ public class RootShell {
         }
 
         //Avoid concurrent modification...
-        List<String> final_result = new ArrayList<String>();
-        final_result.addAll(result);
+        List<String> final_result = new ArrayList<String>(result);
 
         for (String line : final_result) {
             if (line.trim().equals(file)) {

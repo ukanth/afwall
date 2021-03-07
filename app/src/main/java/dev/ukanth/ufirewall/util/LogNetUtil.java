@@ -185,10 +185,11 @@ public class LogNetUtil {
         }
 
         private String parse(List<String> output) {
-            String result = "";
+            StringBuilder resultBuilder = new StringBuilder();
             for (String line : output) {
-                result += line + " ";
+                resultBuilder.append(line).append(" ");
             }
+            String result = resultBuilder.toString();
             if (result.isEmpty()) {
                 return context.getString(R.string.output_is_empty);
             }
@@ -203,7 +204,7 @@ public class LogNetUtil {
                 StringBuilder log = new StringBuilder();
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    log.append(line + "\n");
+                    log.append(line).append("\n");
                 }
                 return log.toString();
             } catch (IOException e) {

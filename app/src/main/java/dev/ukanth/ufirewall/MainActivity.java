@@ -36,6 +36,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -1421,6 +1422,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
                 if (grantResults.length > 0
@@ -1531,18 +1534,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         //isPassVerify = true;
                         showOrLoadApplications();
                         break;
-                    case RESULT_CANCELED:
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        break;
-                    case RESULT_FAILED:
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        break;
-                    case RESULT_FORGOT_PATTERN:
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        break;
                     default:
                         MainActivity.this.finish();
                         android.os.Process.killProcess(android.os.Process.myPid());
@@ -1648,44 +1639,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onClick(View v) {
 
         switch (v.getId()) {
-            /*case R.id.label_mode:
-                selectMode();
-				break;*/
             case R.id.img_wifi:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_3g:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_roam:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_vpn:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_tether:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_lan:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_tor:
                 selectActionConfirmation(v.getId());
                 break;
-            /*case R.id.img_invert:
-                selectActionConfirmation(getString(R.string.reverse_all), v.getId());
-                break;
-            case R.id.img_clone:
-                cloneColumn(getString(R.string.legend_clone), v.getId());
-                break;
-            case R.id.img_reset:
-                selectActionConfirmation(getString(R.string.unselect_all), v.getId());
-                break;*/
             case R.id.img_action:
                 selectAction();
-                //case R.id.img_invert:
-                //	revertApplications();
-                //	break;
         }
     }
 
@@ -2726,5 +2690,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return this.mCompatListener.onUnhandledKeyEvent(v, event);
         }
     }
+
 }
 

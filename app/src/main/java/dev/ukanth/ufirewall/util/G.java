@@ -1010,8 +1010,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static List<String> getDefaultProfiles() {
-        List<String> items = new ArrayList<String>(Arrays.asList(default_profiles));
-        return items;
+        return new ArrayList<String>(Arrays.asList(default_profiles));
     }
 
     public static void updateLogNotification(int uid, boolean isChecked) {
@@ -1118,5 +1117,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         Matcher m2 = G.VALID_IPV6_PATTERN.matcher(ipAddress);
         return m2.matches();
     }
+
+
 
 }

@@ -193,14 +193,8 @@ public class ToggleWidgetOldActivity extends Activity implements
                         switchAction();
                         break;
                     case RESULT_CANCELED:
-                        ToggleWidgetOldActivity.this.finish();
-                        break;
                     case RESULT_FAILED:
-                        ToggleWidgetOldActivity.this.finish();
-                        break;
                     case RESULT_FORGOT_PATTERN:
-                        ToggleWidgetOldActivity.this.finish();
-                        break;
                     default:
                         ToggleWidgetOldActivity.this.finish();
                         break;

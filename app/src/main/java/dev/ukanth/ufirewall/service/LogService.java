@@ -274,8 +274,7 @@ public class LogService extends Service {
                                                 data.add(uid);
                                                 G.storedPid(data);
                                             } else if (!data.contains(uid)) {
-                                                Set data2 = new HashSet();
-                                                data2.addAll(data);
+                                                Set data2 = new HashSet(data);
                                                 data2.add(uid);
                                                 G.storedPid(data2);
                                             }

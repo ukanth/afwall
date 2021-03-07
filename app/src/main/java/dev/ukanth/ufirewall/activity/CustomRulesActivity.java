@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall.activity;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -9,6 +10,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -51,20 +53,13 @@ public class CustomRulesActivity extends AppCompatActivity {
                 cardView.setLayoutParams(params);
 
 
-                Switch switchButton = new Switch(this);
+                SwitchCompat switchButton = new SwitchCompat(this);
                 switchButton.setTag(rule.getName());
-                switchButton.setOnCheckedChangeListener((buttonView, isChecked)
-                        -> {
-
+                switchButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     Toast.makeText(getApplicationContext(), buttonView.getTag().toString() + isChecked, Toast.LENGTH_SHORT).show();
                 });
                 switchButton.setChecked(false);
                 switchButton.setContentDescription(rule.getDesc());
-                StringBuilder builder = new StringBuilder();
-                builder.append(rule.getName());
-                builder.append("\n");
-                builder.append(rule.getDesc());
-                builder.append("\n");
                 /*for (String r : rule.getIpv4()) {
                     builder.appdend(r);
                     builder.append("\n");
@@ -73,7 +68,11 @@ public class CustomRulesActivity extends AppCompatActivity {
                     builder.append(r);
                     builder.append("\n");
                 }*/
-                switchButton.setText(builder.toString());
+                String builder = rule.getName() +
+                        "\n" +
+                        rule.getDesc() +
+                        "\n";
+                switchButton.setText(builder);
                 switchButton.setTextSize(18);
 
                 switchButton.setLayoutParams(params);
@@ -121,7 +120,6 @@ public class CustomRulesActivity extends AppCompatActivity {
 
     public int dpToPixels(int dp) {
         DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

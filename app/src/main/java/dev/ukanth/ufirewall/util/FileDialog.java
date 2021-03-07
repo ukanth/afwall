@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,7 +39,7 @@ public class FileDialog {
     private final ListenerList<DirectorySelectedListener> dirListenerList = new ListenerList<>();
     private final Activity activity;
     private boolean selectDirectoryOption;
-    private String[] fileEndsWith;
+    //private String[] fileEndsWith;
 
     /**
      * @param activity
@@ -154,9 +155,7 @@ public class FileDialog {
             };
             String[] fileList1 = path.list(filter);
             if(fileList1 != null) {
-                for (String file : fileList1) {
-                    r.add(file);
-                }
+                r.addAll(Arrays.asList(fileList1));
             }
 
         }
@@ -170,9 +169,9 @@ public class FileDialog {
         else return new File(currentPath, fileChosen);
     }
 
-    public void setFileEndsWith(String[] fileEndsWith,String notContains) {
+    /*public void setFileEndsWith(String[] fileEndsWith,String notContains) {
         this.fileEndsWith = fileEndsWith != null ? fileEndsWith : new String[]{ "" };
-    }
+    }*/
 }
 
 class ListenerList<L> {

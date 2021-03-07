@@ -171,7 +171,7 @@ public class ImportApi {
             final int uid = Integer.parseInt(tok.nextToken());
             String[] pack = pm.getPackagesForUid(uid);
             if (pack != null && pack.length == 1) {
-                pkg.append(pack[0] + "|");
+                pkg.append(pack[0]).append("|");
             }
             if (uid == 1000) {
                 pkg.append("android|");

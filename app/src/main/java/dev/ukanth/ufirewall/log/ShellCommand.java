@@ -67,7 +67,7 @@ public class ShellCommand {
 	}
 
 	public void waitForExit() {
-		while (checkForExit() == false) {
+		while (!checkForExit()) {
 			if (stdoutAvailable()) {
 				Log.d("AFWALL", "ShellCommand waitForExit [" + tag
 						+ "] discarding read: " + readStdout());

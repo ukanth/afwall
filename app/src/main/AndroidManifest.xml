@@ -44,7 +44,7 @@
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
-   <uses-permission
+    <uses-permission
        android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <!-- Screen support -->

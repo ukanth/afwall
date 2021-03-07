@@ -283,9 +283,7 @@ public class Shell {
         int toClean = Math.abs(this.maxCommands - (this.maxCommands / 4));
         RootShell.log("Cleaning up: " + toClean);
 
-        for (int i = 0; i < toClean; i++) {
-            this.commands.remove(0);
-        }
+        this.commands.subList(0, toClean).clear();
 
         this.read = this.commands.size() - 1;
         this.write = this.commands.size() - 1;
@@ -459,10 +457,8 @@ public class Shell {
 
             process.destroy();
 
-            List<String> ret = stdout;
-
-            if (ret != null) {
-                for (String line : ret) {
+            if (stdout != null) {
+                for (String line : stdout) {
                     if (!internal) {
                         if (line.contains(".")) {
                             version = line;
