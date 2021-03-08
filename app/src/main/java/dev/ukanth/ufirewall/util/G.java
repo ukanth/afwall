@@ -23,6 +23,7 @@
 
 package dev.ukanth.ufirewall.util;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -31,6 +32,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
+import android.net.NetworkRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -141,6 +147,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     private static final String THEME = "theme";
     private static final String FASTER_RULES = "fasterApplyRules";
+
+    private static boolean privateDns = false;
     //private static final String QUICK_RULES = "quickApply";
     /**
      * FIXME
@@ -1118,6 +1126,21 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return m2.matches();
     }
 
+    public static boolean getPrivateDnsStatus() {
+        return privateDns;
+    }
 
-
+    public static  void registerPrivateLink() {
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        cm.registerNetworkCallback(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                super.onLinkPropertiesChanged(network, linkProperties);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    privateDns = linkProperties.isPrivateDnsActive();
+                    Log.i(Api.TAG, "Private DNS status:" +  privateDns);
+                }
+            }
+        });
+    }
 }

@@ -322,7 +322,8 @@ public final class Api {
         if (builtin) {
             dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
         }
-        String ipPath = dir + (setv6 ? "ip6tables" : "iptables");
+
+        String ipPath = dir + (setv6 ?  "ip6tables" : "iptables" );
 
         /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
@@ -457,6 +458,12 @@ public final class Api {
             // NTP service runs as "system" user
             if (uids.contains(SPECIAL_UID_NTP)) {
                 addRuleForUsers(cmds, new String[]{"system"}, "-A " + chain + " -p udp --dport 123", action);
+            }
+
+
+            if (G.getPrivateDnsStatus()) {
+                cmds.add("-A " + chain + " -p tcp --dport 853" + " -j ACCEPT");
+                cmds.add("-A " + chain + " -p tcp --dport 443" + " -j ACCEPT");
             }
 
             boolean kernel_checked = uids.contains(SPECIAL_UID_KERNEL);
@@ -734,7 +741,6 @@ public final class Api {
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
-            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, true);
 
             if (G.enableInbound()) {
                 cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
@@ -827,11 +833,6 @@ public final class Api {
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
             }
 
-            //Support for Android P and above
-            if (cfg.isPrivateDns) {
-                cmds.add("-I " + AFWALL_CHAIN_NAME + " -p tcp --dport 853" + " -j ACCEPT -m comment --comment \"DNS-over-TLS\"");
-                cmds.add("-I " + AFWALL_CHAIN_NAME + " -p tcp --dport 443" + " -j ACCEPT -m comment --comment \"DNS-over-HTTPS\"");
-            }
 
             // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
             // normal 3G/wifi rules

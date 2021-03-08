@@ -26,8 +26,6 @@ public class InterfaceDetails {
 	// firewall policy
 	public boolean isRoaming = false;
 
-	public boolean isPrivateDns = false;
-
 	public boolean isWifiTethered = false;
 	public boolean tetherWifiStatusKnown = false;
 
@@ -60,7 +58,6 @@ public class InterfaceDetails {
                 this.wifiName.equals(that.wifiName) &&
                 this.netEnabled == that.netEnabled &&
                 this.netType == that.netType &&
-				this.isPrivateDns == that.isPrivateDns &&
-                this.noIP == that.noIP;
+				this.noIP == that.noIP;
     }
 }

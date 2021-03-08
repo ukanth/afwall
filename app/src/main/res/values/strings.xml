@@ -634,5 +634,4 @@
 
     <string name="connection_default_allow">Default Allow Connection</string>
     <string name="connection_default_block">Default Block Connection</string>
-
 </resources>

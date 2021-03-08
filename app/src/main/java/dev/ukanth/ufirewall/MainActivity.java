@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
 
         initTheme();
-
+        G.registerPrivateLink();
 
 
         try {

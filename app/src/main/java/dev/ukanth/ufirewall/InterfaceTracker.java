@@ -162,17 +162,6 @@ public final class InterfaceTracker {
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        cm.registerNetworkCallback(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-                super.onLinkPropertiesChanged(network, linkProperties);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ret.isPrivateDns = linkProperties.isPrivateDnsActive();
-                    Log.i(Api.TAG, "Private DNS status:" +  ret.isPrivateDns);
-                }
-            }
-        });
-
         NetworkInfo info = cm.getActiveNetworkInfo();
 
         if (info == null || !info.isConnected()) {
