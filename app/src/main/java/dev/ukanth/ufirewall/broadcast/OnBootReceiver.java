@@ -49,6 +49,13 @@ public class OnBootReceiver extends BroadcastReceiver {
 
             InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
 
+            //register private DNS change listener
+            try {
+                G.registerPrivateLink();
+            }catch (Exception e){
+
+            }
+
             if (G.enableLogService()) {
                 Log.i("AFWall", "Starting log service onboot");
                 try {

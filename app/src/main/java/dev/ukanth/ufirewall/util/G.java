@@ -59,6 +59,7 @@ import java.util.regex.PatternSyntaxException;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
@@ -1139,6 +1140,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     privateDns = linkProperties.isPrivateDnsActive();
                     Log.i(Api.TAG, "Private DNS status:" +  privateDns);
+                    InterfaceTracker.applyRules("Private DNS change");
                 }
             }
         });
