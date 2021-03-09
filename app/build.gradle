@@ -31,7 +31,6 @@ android {
 
     lintOptions {
         disable 'MissingTranslation'
-        ignore "QueryPermissionsNeeded"
         abortOnError true
     }
 }
