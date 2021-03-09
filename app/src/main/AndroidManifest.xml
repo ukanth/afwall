@@ -30,7 +30,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Allows ufwall to write to external storage -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
 
     <!-- Allows access to IP configuration and tethering state -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -43,7 +44,9 @@
     <!-- Allows ufwall to access information about Fingerprint -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
-   <uses-permission
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission"/>
+
+    <uses-permission
        android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <!-- Screen support -->
@@ -68,6 +71,7 @@
         android:resizeableActivity="true"
         android:supportsRtl="true"
         android:theme="@style/AppDarkTheme"
+        android:requestLegacyExternalStorage="true"
         tools:ignore="ManifestResource">
 
         <meta-data
@@ -79,6 +83,12 @@
         <meta-data
             android:name="xposedminversion"
             android:value="53" />
+        <meta-data
+            android:name="xposedsharedprefs"
+            android:value="true" />
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/module_scope" />
 
         <!-- donate  android:label="@string/app_name_donate" -->
         <activity

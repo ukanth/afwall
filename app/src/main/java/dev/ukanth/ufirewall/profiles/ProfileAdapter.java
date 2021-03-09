@@ -44,8 +44,7 @@ public class ProfileAdapter extends ArrayAdapter<ProfileData> {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inflater.inflate(R.layout.profile_layout, null);
-            TextView tv = v.findViewById(R.id.pro_name);
-            holder.profileNameView = tv;
+            holder.profileNameView = v.findViewById(R.id.pro_name);
             v.setTag(holder);
         } else {
             holder = (ProfileHolder) v.getTag();

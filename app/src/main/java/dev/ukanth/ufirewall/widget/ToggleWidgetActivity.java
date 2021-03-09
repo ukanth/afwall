@@ -431,14 +431,8 @@ public class ToggleWidgetActivity extends Activity {
                         invokeAction();
                         break;
                     case RESULT_CANCELED:
-                        ToggleWidgetActivity.this.finish();
-                        break;
                     case RESULT_FAILED:
-                        ToggleWidgetActivity.this.finish();
-                        break;
                     case RESULT_FORGOT_PATTERN:
-                        ToggleWidgetActivity.this.finish();
-                        break;
                     default:
                         ToggleWidgetActivity.this.finish();
                         break;

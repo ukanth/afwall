@@ -118,7 +118,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     }
 
 
-    public class ViewHolder  extends RecyclerView.ViewHolder{
+    public static class ViewHolder  extends RecyclerView.ViewHolder{
 
         final ImageView icon;
         final TextView appName;

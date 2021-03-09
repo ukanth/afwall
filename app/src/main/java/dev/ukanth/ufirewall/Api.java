@@ -45,7 +45,10 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
+import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -319,7 +322,8 @@ public final class Api {
         if (builtin) {
             dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
         }
-        String ipPath = dir + (setv6 ? "ip6tables" : "iptables");
+
+        String ipPath = dir + (setv6 ?  "ip6tables" : "iptables" );
 
         /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
@@ -368,8 +372,7 @@ public final class Api {
     }
 
     public static String getShellPath(Context ctx) {
-        String dir = ctx.getDir("bin", 0).getAbsolutePath();
-        return dir;
+        return ctx.getDir("bin", 0).getAbsolutePath();
     }
 
     /**
@@ -418,7 +421,7 @@ public final class Api {
     private static void addRulesForUidlist(List<String> cmds, List<Integer> uids, String chain, boolean whitelist) {
         String action = whitelist ? " -j RETURN" : " -j " + AFWALL_CHAIN_NAME + "-reject";
 
-        if (uids.indexOf(SPECIAL_UID_ANY) >= 0) {
+        if (uids.contains(SPECIAL_UID_ANY)) {
             if (!whitelist) {
                 cmds.add("-A " + chain + action);
             }
@@ -453,11 +456,18 @@ public final class Api {
 
 
             // NTP service runs as "system" user
-            if (uids.indexOf(SPECIAL_UID_NTP) >= 0) {
+            if (uids.contains(SPECIAL_UID_NTP)) {
                 addRuleForUsers(cmds, new String[]{"system"}, "-A " + chain + " -p udp --dport 123", action);
             }
 
-            boolean kernel_checked = uids.indexOf(SPECIAL_UID_KERNEL) >= 0;
+
+            if (G.getPrivateDnsStatus()) {
+                cmds.add("-A " + chain + " -p tcp --dport 853" + " -j ACCEPT");
+                // disabling HTTPS over DNS
+                //cmds.add("-A " + chain + " -p tcp --dport 443" + " -j ACCEPT");
+            }
+
+            boolean kernel_checked = uids.contains(SPECIAL_UID_KERNEL);
             if (whitelist) {
                 if (kernel_checked) {
                     // reject any other UIDs, but allow the kernel through
@@ -599,6 +609,8 @@ public final class Api {
             } else {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-home");
             }
+
+
         } catch (Exception e) {
             Log.i(TAG, "Exception while applying shortRules " + e.getMessage());
         }
@@ -730,6 +742,7 @@ public final class Api {
             cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
             cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
 
+
             if (G.enableInbound()) {
                 cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
                 cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
@@ -820,6 +833,7 @@ public final class Api {
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
             }
+
 
             // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
             // normal 3G/wifi rules
@@ -964,15 +978,13 @@ public final class Api {
         final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
         final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
-        RuleDataSet dataSet = new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
+        return new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
                 getListFromPref(savedPkg_3g_uid),
                 getListFromPref(savedPkg_roam_uid),
                 getListFromPref(savedPkg_vpn_uid),
                 getListFromPref(savedPkg_tether_uid),
                 getListFromPref(savedPkg_lan_uid),
                 getListFromPref(savedPkg_tor_uid));
-
-        return dataSet;
 
     }
 
@@ -1360,9 +1372,9 @@ public final class Api {
      * @param ctx      application context
      * @param callback Callback for completion status
      */
-    public static void clearLog(Context ctx, RootCommand callback) {
-        callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
-    }
+    //public static void clearLog(Context ctx, RootCommand callback) {
+    //    callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
+    //}
 
     //purge 2 hour data or 2000 records
     public static void purgeOldLog() {
@@ -1513,11 +1525,11 @@ public final class Api {
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
-            String name = null;
-            String cachekey = null;
+            String name;
+            String cachekey;
             String cacheLabel = "cache.label.";
-            PackageInfoData app = null;
-            ApplicationInfo apinfo = null;
+            PackageInfoData app;
+            ApplicationInfo apinfo;
 
             Date install = new Date();
             install.setTime(System.currentTimeMillis() - (180000));
@@ -1735,10 +1747,10 @@ public final class Api {
                         app.appinfo = apinfo;
                         if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                             //user app
-                            app.appType = 0;
+                            app.appType = 1;
                         } else {
                             //system app
-                            app.appType = 1;
+                            app.appType = 0;
                         }
                         app.pkgName = apinfo.packageName;
                         syncMap.put(appUid, app);
@@ -2046,7 +2058,7 @@ public final class Api {
             }
         }*/
 
-        if (ret == true && currentVer > 0) {
+        if (ret && currentVer > 0) {
             // this indicates that migration from the old version was successful.
             G.appVersion(currentVer);
         }
@@ -2072,9 +2084,8 @@ public final class Api {
      */
     public static boolean isEnabled(Context ctx) {
         if (ctx == null) return false;
-        boolean flag = ctx.getSharedPreferences(PREF_FIREWALL_STATUS, Context.MODE_PRIVATE).getBoolean(PREF_ENABLED, false);
         //Log.d(TAG, "Checking for IsEnabled, Flag:" + flag);
-        return flag;
+        return ctx.getSharedPreferences(PREF_FIREWALL_STATUS, Context.MODE_PRIVATE).getBoolean(PREF_ENABLED, false);
     }
 
     /**
@@ -2200,11 +2211,11 @@ public final class Api {
         stackBuilder.addNextIntent(appIntent);*/
 
         int icon;
-        String notificationText = "";
+        String notificationText;
 
         if (status) {
             if (G.enableMultiProfile()) {
-                String profile = "";
+                String profile;
                 switch (G.storedProfile()) {
                     case "AFWallPrefs":
                         profile = G.gPrefs.getString("default", ctx.getString(R.string.defaultProfile));
@@ -2497,7 +2508,7 @@ public final class Api {
     public static void exportRulesToFileConfirm(final Context ctx) {
         String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
         if (exportRules(ctx, fileName)) {
-            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/" + fileName);
+            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fileName);
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
         }
@@ -2506,7 +2517,7 @@ public final class Api {
     public static void exportAllPreferencesToFileConfirm(final Context ctx) {
         String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
         if (exportAll(ctx, fileName)) {
-            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + Environment.getExternalStorageDirectory().getPath() + "/afwall/");
+            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fileName);
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
         }
@@ -2574,66 +2585,76 @@ public final class Api {
 
     public static boolean exportAll(Context ctx, final String fileName) {
         boolean res = false;
-        File sdCard = Environment.getExternalStorageDirectory();
-        if (isExternalStorageWritable()) {
-            File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-            dir.mkdirs();
-            File file = new File(dir, fileName);
+            File file;
+            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+                dir.mkdirs();
+                file = new File(dir, fileName);
+            } else{
+                file = new File(ctx.getExternalFilesDir(null)  + "/" + fileName);
+
+
+            }
 
             try {
-                FileOutputStream fOut = new FileOutputStream(file);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                if(file != null) {
+                    FileOutputStream fOut = new FileOutputStream(file);
+                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                JSONObject exportObject = new JSONObject();
-                //if multiprofile is enabled
-                if (G.enableMultiProfile()) {
-                    if (!G.isProfileMigrated()) {
-                        JSONObject profileObject = new JSONObject();
-                        //store all the profile settings
-                        for (String profile : G.profiles) {
-                            profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                        }
-                        exportObject.put("profiles", profileObject);
-                        //if any additional profiles
-                        //int defaultProfileCount = 3;
-                        JSONObject addProfileObject = new JSONObject();
-                        for (String profile : G.getAdditionalProfiles()) {
-                            addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                        }
-                        //support for new profiles
-                        exportObject.put("additional_profiles", addProfileObject);
-                    } else {
-                        JSONObject profileObject = new JSONObject();
-                        //add default profile
-                        String profileName = "AFWallPrefs";
-                        profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
-                        //update for new profile logic
-                        List<ProfileData> profileDataList = ProfileHelper.getProfiles();
-                        //store all the profile settings
-                        for (ProfileData profile : profileDataList) {
-                            profileName = profile.getName();
-                            if (profile.getIdentifier().startsWith("AFWallProfile")) {
-                                profileName = profile.getIdentifier();
+                    JSONObject exportObject = new JSONObject();
+                    //if multiprofile is enabled
+                    if (G.enableMultiProfile()) {
+                        if (!G.isProfileMigrated()) {
+                            JSONObject profileObject = new JSONObject();
+                            //store all the profile settings
+                            for (String profile : G.profiles) {
+                                profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
                             }
-                            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
+                            exportObject.put("profiles", profileObject);
+                            //if any additional profiles
+                            //int defaultProfileCount = 3;
+                            JSONObject addProfileObject = new JSONObject();
+                            for (String profile : G.getAdditionalProfiles()) {
+                                addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
+                            }
+                            //support for new profiles
+                            exportObject.put("additional_profiles", addProfileObject);
+                        } else {
+                            JSONObject profileObject = new JSONObject();
+                            //add default profile
+                            String profileName = "AFWallPrefs";
+                            profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
+                            //update for new profile logic
+                            List<ProfileData> profileDataList = ProfileHelper.getProfiles();
+                            //store all the profile settings
+                            for (ProfileData profile : profileDataList) {
+                                profileName = profile.getName();
+                                if (profile.getIdentifier().startsWith("AFWallProfile")) {
+                                    profileName = profile.getIdentifier();
+                                }
+                                profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
+                            }
+                            exportObject.put("_profiles", profileObject);
                         }
-                        exportObject.put("_profiles", profileObject);
+
+
+                    } else {
+                        //default Profile - current one
+                        JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                        exportObject.put("default", obj);
                     }
 
+                    //now gets all the preferences
+                    exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
 
-                } else {
-                    //default Profile - current one
-                    JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                    exportObject.put("default", obj);
+                    myOutWriter.append(exportObject.toString());
+                    res = true;
+                    myOutWriter.close();
+                    fOut.close();
+                } else{
+                    Log.i(TAG, "Error creating file");
                 }
 
-                //now gets all the preferences
-                exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
-
-                myOutWriter.append(exportObject.toString());
-                res = true;
-                myOutWriter.close();
-                fOut.close();
             } catch (FileNotFoundException e) {
                 Log.d(TAG, e.getLocalizedMessage());
             } catch (IOException e) {
@@ -2643,7 +2664,7 @@ public final class Api {
             } catch (Exception e) {
                 Log.d(TAG, e.getLocalizedMessage());
             }
-        }
+
 
         return res;
     }
@@ -2674,23 +2695,33 @@ public final class Api {
 
     public static boolean exportRules(Context ctx, final String fileName) {
         boolean res = false;
-        File sdCard = Environment.getExternalStorageDirectory();
-        if (isExternalStorageWritable()) {
-            File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-            dir.mkdirs();
-            File file = new File(dir, fileName);
+
+            File file;
+            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/" );
+                dir.mkdirs();
+                file = new File(dir, fileName);
+            } else{
+                file = new File(ctx.getExternalFilesDir(null) + "/" + fileName) ;
+            }
+
             try {
-                FileOutputStream fOut = new FileOutputStream(file);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                if(file != null) {
+                    FileOutputStream fOut = new FileOutputStream(file);
+                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                //default Profile - current one
-                JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
+                    //default Profile - current one
+                    JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                    JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
 
-                myOutWriter.append(jArray.toString());
-                res = true;
-                myOutWriter.close();
-                fOut.close();
+                    myOutWriter.append(jArray.toString());
+                    res = true;
+                    myOutWriter.close();
+                    fOut.close();
+                } else{
+                    Log.e(TAG, "Error exporting document");
+                }
+
             } catch (FileNotFoundException e) {
                 Log.e(TAG, e.getLocalizedMessage());
             } catch (JSONException e) {
@@ -2698,7 +2729,6 @@ public final class Api {
             } catch (IOException e) {
                 Log.e(TAG, e.getLocalizedMessage());
             }
-        }
 
         return res;
     }
@@ -2936,7 +2966,6 @@ public final class Api {
                             updateRulesFromJson(ctx, obj, key);
                         } catch (JSONException e) {
                             if (e.getMessage().contains("No value")) {
-                                continue;
                             }
                         }
                     }
@@ -2950,7 +2979,7 @@ public final class Api {
                             updateRulesFromJson(ctx, obj, key);
                         } catch (JSONException e) {
                             if (e.getMessage().contains("No value")) {
-                                continue;
+                               // continue;
                             }
                         }
                     }
@@ -2964,7 +2993,7 @@ public final class Api {
                             updateRulesFromJson(ctx, obj, key);
                         } catch (JSONException e) {
                             if (e.getMessage().contains("No value")) {
-                                continue;
+                               // continue;
                             }
                         }
                     }
@@ -3123,8 +3152,8 @@ public final class Api {
                 File cfg = new File(location);
                 FileInputStream fis = new FileInputStream(cfg);
                 GZIPInputStream gzip = new GZIPInputStream(fis);
-                BufferedReader in = null;
-                String line = "";
+                BufferedReader in;
+                String line;
 
                 in = new BufferedReader(new InputStreamReader(gzip));
                 while ((line = in.readLine()) != null) {
@@ -3154,14 +3183,13 @@ public final class Api {
         final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
         final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
-        Api.RuleDataSet dataSet = new Api.RuleDataSet(getListFromPref(savedPkg_wifi_uid),
+        return new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
                 getListFromPref(savedPkg_3g_uid),
                 getListFromPref(savedPkg_roam_uid),
                 getListFromPref(savedPkg_vpn_uid),
                 getListFromPref(savedPkg_tether_uid),
                 getListFromPref(savedPkg_lan_uid),
                 getListFromPref(savedPkg_tor_uid));
-        return dataSet;
     }
 
     public static boolean hasKernelFeature(String[] features,
@@ -3174,6 +3202,7 @@ public final class Api {
             for (String test : location) {
                 if (test.startsWith(features[i])) {
                     results[i] = true;
+                    break;
                 }
             }
         }
@@ -3216,7 +3245,11 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = defaultLocale;
-            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                context.createConfigurationContext(conf);
+            } else {
+                context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            }
         } else if (!"".equals(lang)) {
             Locale locale = new Locale(lang);
             if (lang.contains("_")) {
@@ -3226,7 +3259,11 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
-            context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                context.createConfigurationContext(conf);
+            } else {
+                context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
+            }
         }
     }
 
@@ -3586,13 +3623,13 @@ public final class Api {
 
     public static void setDefaultPermission(ApplicationInfo applicationInfo) {
 
-        String savedPkg_wifi_uid = G.pPrefs.getString(PREF_WIFI_PKG_UIDS, "");
-        String savedPkg_3g_uid = G.pPrefs.getString(PREF_3G_PKG_UIDS, "");
-        String savedPkg_roam_uid = G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, "");
-        String savedPkg_vpn_uid = G.pPrefs.getString(PREF_VPN_PKG_UIDS, "");
-        String savedPkg_tether_uid = G.pPrefs.getString(PREF_TETHER_PKG_UIDS, "");
-        String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
-        String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
+        StringBuilder savedPkg_wifi_uid = new StringBuilder(G.pPrefs.getString(PREF_WIFI_PKG_UIDS, ""));
+        StringBuilder savedPkg_3g_uid = new StringBuilder(G.pPrefs.getString(PREF_3G_PKG_UIDS, ""));
+        StringBuilder savedPkg_roam_uid = new StringBuilder(G.pPrefs.getString(PREF_ROAMING_PKG_UIDS, ""));
+        StringBuilder savedPkg_vpn_uid = new StringBuilder(G.pPrefs.getString(PREF_VPN_PKG_UIDS, ""));
+        StringBuilder savedPkg_tether_uid = new StringBuilder(G.pPrefs.getString(PREF_TETHER_PKG_UIDS, ""));
+        StringBuilder savedPkg_lan_uid =new StringBuilder( G.pPrefs.getString(PREF_LAN_PKG_UIDS, ""));
+        StringBuilder savedPkg_tor_uid = new StringBuilder(G.pPrefs.getString(PREF_TOR_PKG_UIDS, ""));
 
         //lets first get what mode
         int modeType = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST).equals(Api.MODE_WHITELIST) ? 0 : 1;
@@ -3604,31 +3641,31 @@ public final class Api {
             if(pref.isState()) {
                 switch (pref.getUid()) {
                     case 0:
-                        savedPkg_lan_uid = savedPkg_lan_uid + "|" + applicationInfo.uid;
+                        savedPkg_lan_uid.append("|").append(applicationInfo.uid);
                         isModified = true;
                         break;
                     case 1:
-                        savedPkg_wifi_uid = savedPkg_wifi_uid + "|" + applicationInfo.uid;
+                        savedPkg_wifi_uid.append("|").append(applicationInfo.uid);
                         isModified = true;
                         break;
                     case 2:
-                        savedPkg_3g_uid = savedPkg_3g_uid + "|" + applicationInfo.uid;
+                        savedPkg_3g_uid.append("|").append(applicationInfo.uid);
                         isModified = true;
                         break;
                     case 3:
-                        savedPkg_roam_uid = savedPkg_roam_uid + "|" + applicationInfo.uid;
+                        savedPkg_roam_uid.append("|").append(applicationInfo.uid);
                         isModified = true;
                         break;
                     case 4:
-                        savedPkg_tor_uid = savedPkg_tor_uid + "|" + applicationInfo.uid;
+                        savedPkg_tor_uid.append("|").append(applicationInfo.uid);
                         isModified = true;
                         break;
                     case 5:
-                        savedPkg_vpn_uid = savedPkg_vpn_uid + "|" + applicationInfo.uid;
+                        savedPkg_vpn_uid.append("|").append(applicationInfo.uid);
                         isModified = true;
                         break;
                     case 6:
-                        savedPkg_tether_uid = savedPkg_tether_uid + "|" + applicationInfo.uid;
+                        savedPkg_tether_uid.append("|").append(applicationInfo.uid);
                         isModified = true;
                         break;
                 }
@@ -3638,13 +3675,13 @@ public final class Api {
         if(isModified) {
             SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             Editor edit = prefs.edit();
-            edit.putString(PREF_WIFI_PKG_UIDS, savedPkg_wifi_uid);
-            edit.putString(PREF_3G_PKG_UIDS, savedPkg_3g_uid);
-            edit.putString(PREF_ROAMING_PKG_UIDS, savedPkg_roam_uid);
-            edit.putString(PREF_VPN_PKG_UIDS, savedPkg_vpn_uid);
-            edit.putString(PREF_TETHER_PKG_UIDS, savedPkg_tether_uid);
-            edit.putString(PREF_LAN_PKG_UIDS, savedPkg_lan_uid);
-            edit.putString(PREF_TOR_PKG_UIDS, savedPkg_tor_uid);
+            edit.putString(PREF_WIFI_PKG_UIDS, savedPkg_wifi_uid.toString());
+            edit.putString(PREF_3G_PKG_UIDS, savedPkg_3g_uid.toString());
+            edit.putString(PREF_ROAMING_PKG_UIDS, savedPkg_roam_uid.toString());
+            edit.putString(PREF_VPN_PKG_UIDS, savedPkg_vpn_uid.toString());
+            edit.putString(PREF_TETHER_PKG_UIDS, savedPkg_tether_uid.toString());
+            edit.putString(PREF_LAN_PKG_UIDS, savedPkg_lan_uid.toString());
+            edit.putString(PREF_TOR_PKG_UIDS, savedPkg_tor_uid.toString());
             edit.commit();
             //make sure rules are modified flag is set
             Api.setRulesUpToDate(false);
@@ -3676,15 +3713,14 @@ public final class Api {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append(wifiList != null ? android.text.TextUtils.join(",", wifiList) : "");
-            builder.append(dataList != null ? android.text.TextUtils.join(",", dataList) : "");
-            builder.append(lanList != null ? android.text.TextUtils.join(",", lanList) : "");
-            builder.append(roamList != null ? android.text.TextUtils.join(",", roamList) : "");
-            builder.append(vpnList != null ? android.text.TextUtils.join(",", vpnList) : "");
-            builder.append(tetherList != null ? android.text.TextUtils.join(",", tetherList) : "");
-            builder.append(torList != null ? android.text.TextUtils.join(",", torList) : "");
-            return builder.toString().trim();
+            String builder = (wifiList != null ? android.text.TextUtils.join(",", wifiList) : "") +
+                    (dataList != null ? android.text.TextUtils.join(",", dataList) : "") +
+                    (lanList != null ? android.text.TextUtils.join(",", lanList) : "") +
+                    (roamList != null ? android.text.TextUtils.join(",", roamList) : "") +
+                    (vpnList != null ? android.text.TextUtils.join(",", vpnList) : "") +
+                    (tetherList != null ? android.text.TextUtils.join(",", tetherList) : "") +
+                    (torList != null ? android.text.TextUtils.join(",", torList) : "");
+            return builder.trim();
         }
     }
 
@@ -3723,7 +3759,7 @@ public final class Api {
                 }
             } catch (Exception ex) {
                 if (res != null)
-                    res.append("\n" + ex);
+                    res.append("\n").append(ex);
             }
             return exitCode;
         }

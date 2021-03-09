@@ -306,14 +306,13 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                             //data already Present. Update the template here
                             count.put(data.getUid(), count.get(data.getUid()).intValue() + 1);
                             tmpData.setCount(count.get(data.getUid()).intValue());
-                            logMap.put(data.getUid(), tmpData);
                         } else {
                             //process template here
                             count.put(data.getUid(), 1);
                             tmpData.setCount(1);
                             lastBlocked.put(data.getUid(), data.getTimestamp());
-                            logMap.put(data.getUid(), tmpData);
                         }
+                        logMap.put(data.getUid(), tmpData);
                     }
                 //}
             //};

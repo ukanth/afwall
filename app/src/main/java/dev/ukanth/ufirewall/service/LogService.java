@@ -31,6 +31,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.view.Gravity;
@@ -45,11 +46,13 @@ import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
 //import com.stericson.roottools.RootTools;
 
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import dev.ukanth.ufirewall.Api;
+
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.events.LogEvent;
 import dev.ukanth.ufirewall.log.Log;
@@ -227,7 +230,9 @@ public class LogService extends Service {
                     }
                 })
         );
+
         if (G.enableLogService()) {
+
             // this method is executed in a background thread
             // no problem calling su here
             if (G.logTarget() != null && G.logTarget().length() > 1) {
@@ -237,9 +242,6 @@ public class LogService extends Service {
                 switch (G.logTarget()) {
                     case "LOG":
                         switch (G.logDmsg()) {
-                            case "OS":
-                                logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
-                                break;
                             case "BX":
                                 //if (RootTools.isBusyboxAvailable()) {
                                 //    logPath = "echo PID=$$ & while true; do busybox dmesg -c ; sleep 1 ; done";
@@ -247,6 +249,7 @@ public class LogService extends Service {
                                     logPath = "echo PID=$$ & while true; do " + Api.getBusyBoxPath(ctx, false) + " dmesg -c ; sleep 1 ; done";
                                 //}
                                 break;
+                            case "OS":
                             default:
                                 logPath = "echo PID=$$ & while true; do dmesg -c ; sleep 1 ; done";
                         }
@@ -318,26 +321,6 @@ public class LogService extends Service {
         Api.cleanupUid();
     }
 
-
-    /* private static class Task extends AsyncTask<Void, Void, LogInfo> {
-         private Context context;
-         private String line;
-         private Task(Context context, String line) {
-             this.context = context;
-             this.line = line;
-         }
-         @Override
-         protected LogInfo doInBackground(Void... voids) {
-             return LogInfo.parseLogs(line, context);
-         }
-         @Override
-         protected void onPostExecute(LogInfo a) {
-             if (a != null) {
-                 LogRxEvent.publish(new LogEvent(a, context));
-             }
-         }
-     }
- */
     private void storeLogInfo(String line, Context context) {
         if (G.enableLogService()) {
             if (line != null && line.trim().length() > 0) {

@@ -47,6 +47,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 import dev.ukanth.ufirewall.Api;
@@ -185,6 +187,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         }
     }
 
+
     private static class Task extends AsyncTask<Void, Void, Boolean> {
         public String filename = "";
         private final Context ctx;
@@ -204,11 +207,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             boolean res = false;
 
             try {
-                File sdCard = Environment.getExternalStorageDirectory();
-                File dir = new File(sdCard.getAbsolutePath() + "/afwall/");
-                dir.mkdirs();
+                //File sdCard = Environment.Task();
+                //File file = new File(ctx.getExternalFilesDir(null), fileName);
+                //File dir = new File(ctx.getExternalFilesDir(null) + "/export/");
+                //dir.mkdirs();
 
-                File file = new File(dir, sdDumpFile);
+                File file = new File(ctx.getExternalFilesDir(null), sdDumpFile);
                 output = new FileOutputStream(file);
 
                 output.write(dataText.getBytes());
@@ -236,7 +240,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             DataDumpActivity activity = activityReference.get();
             if (activity == null || activity.isFinishing()) return;
 
-            if (res == true) {
+            if (res) {
                 Api.toast(ctx, ctx.getString(R.string.export_rules_success) + filename, Toast.LENGTH_LONG);
             } else {
                 Api.toast(ctx, ctx.getString(R.string.export_logs_fail), Toast.LENGTH_LONG);

@@ -55,25 +55,22 @@ public class ProfileHelper {
 
     public static List<ProfileData> getProfiles() {
 
-        List<ProfileData> profileDataList = SQLite.select()
+        return SQLite.select()
                 .from(ProfileData.class)
                 .queryList();
-        return profileDataList;
     }
 
 
     public static ProfileData getProfileByName(String profileName) {
-        ProfileData profileData = SQLite.select()
+        return SQLite.select()
                 .from(ProfileData.class).where(ProfileData_Table.name.eq(profileName))
                 .querySingle();
-        return profileData;
     }
 
     public static ProfileData getProfileByIdentifier(String identifier) {
-        ProfileData profileData = SQLite.select()
+        return SQLite.select()
                 .from(ProfileData.class).where(ProfileData_Table.identifier.eq(identifier))
                 .querySingle();
-        return profileData;
     }
 
     public static void updateProfileName(String identifier,String newName) {

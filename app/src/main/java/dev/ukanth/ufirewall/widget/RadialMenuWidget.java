@@ -179,7 +179,7 @@ public class RadialMenuWidget extends View {
 			            MinSize, MaxSize,
 			            (i* slice)+start, slice);					
 				
-				if (inWedge == true) {
+				if (inWedge) {
 					selected = f;
 					break;
 				}
@@ -187,7 +187,7 @@ public class RadialMenuWidget extends View {
 
 			
 			//Checks if a pie slice is selected in second Wedge
-			if (Wedge2Shown == true) {
+			if (Wedge2Shown) {
 				for (int i = 0; i < Wedges2.length; i++) {
 					Wedge f = Wedges2[i];
 					double slice = (2*Math.PI) / wedgeQty2;
@@ -198,7 +198,7 @@ public class RadialMenuWidget extends View {
 				            r2MinSize, r2MaxSize,
 				            (i* slice)+start, slice);					
 					
-					if (inWedge2 == true) {
+					if (inWedge2) {
 						selected2 = f;
 						break;
 					}
@@ -212,8 +212,8 @@ public class RadialMenuWidget extends View {
 		} else if (state == MotionEvent.ACTION_UP) {
 			//execute commands...
 			//put in stuff here to "return" the button that was pressed.
-			if (inCircle == true) {  
-				if (Wedge2Shown == true) {
+			if (inCircle) {
+				if (Wedge2Shown) {
 					enabled = null;
 					animateOuterIn = true;  //sets Wedge2Shown = false;
 				}
@@ -285,7 +285,7 @@ public class RadialMenuWidget extends View {
     	paint.setStrokeWidth(3);
 
     	// draws a dot at the source of the press
-    	if (showSource == true ) {
+    	if (showSource) {
 			paint.setColor(outlineColor);
 	    	paint.setAlpha(outlineAlpha); 
 			paint.setStyle(Paint.Style.STROKE);
@@ -304,17 +304,17 @@ public class RadialMenuWidget extends View {
 	    	paint.setAlpha(outlineAlpha); 
 			paint.setStyle(Paint.Style.STROKE);
 	    	c.drawPath(f, paint);
-			if (f == enabled && Wedge2Shown == true) {
+			if (f == enabled && Wedge2Shown) {
 		    	paint.setColor(wedge2Color);
 		    	paint.setAlpha(wedge2Alpha);
 		    	paint.setStyle(Paint.Style.FILL);
 		    	c.drawPath(f, paint);
-			} else if (f != enabled && Wedge2Shown == true) {
+			} else if (f != enabled && Wedge2Shown) {
 		    	paint.setColor(disabledColor);
 		    	paint.setAlpha(disabledAlpha);
 		    	paint.setStyle(Paint.Style.FILL);
 		    	c.drawPath(f, paint);			
-			} else if (f == enabled && Wedge2Shown == false) {
+			} else if (f == enabled && !Wedge2Shown) {
 		    	paint.setColor(wedge2Color);
 		    	paint.setAlpha(wedge2Alpha);
 		    	paint.setStyle(Paint.Style.FILL);
@@ -340,7 +340,7 @@ public class RadialMenuWidget extends View {
 				String[] stringArray = menuItemName.split("\n");
 
 		    	paint.setColor(textColor);
-				if (f != enabled && Wedge2Shown == true) {
+				if (f != enabled && Wedge2Shown) {
 			    	paint.setAlpha(disabledAlpha);
 				} else {
 					paint.setAlpha(textAlpha);
@@ -371,7 +371,7 @@ public class RadialMenuWidget extends View {
 				//Puts in the Icon
 			    Drawable drawable = getResources().getDrawable(menuEntries.get(i).getIcon());			    
 				drawable.setBounds(rf2);
-				if (f != enabled && Wedge2Shown == true) {
+				if (f != enabled && Wedge2Shown) {
 					drawable.setAlpha(disabledAlpha);
 				} else {
 					drawable.setAlpha(pictureAlpha);
@@ -383,7 +383,7 @@ public class RadialMenuWidget extends View {
 				//Puts in the Icon
 			    Drawable drawable = getResources().getDrawable(menuEntries.get(i).getIcon());			    
 				drawable.setBounds(rf);
-				if (f != enabled && Wedge2Shown == true) {
+				if (f != enabled && Wedge2Shown) {
 					drawable.setAlpha(disabledAlpha);
 				} else {
 					drawable.setAlpha(pictureAlpha);
@@ -395,7 +395,7 @@ public class RadialMenuWidget extends View {
 			} else {
 				//Puts in the Text if no Icon
 		    	paint.setColor(textColor);
-				if (f != enabled && Wedge2Shown == true) {
+				if (f != enabled && Wedge2Shown) {
 			    	paint.setAlpha(disabledAlpha);
 				} else {
 					paint.setAlpha(textAlpha);
@@ -430,14 +430,14 @@ public class RadialMenuWidget extends View {
 
 		
 		//Animate the outer ring in/out
-		if (animateOuterIn == true) {
+		if (animateOuterIn) {
 			animateOuterWedges(ANIMATE_IN);
 		}
-		else if (animateOuterOut == true) {
+		else if (animateOuterOut) {
 			animateOuterWedges(ANIMATE_OUT);
 		}			
 		
-		if (Wedge2Shown == true) {
+		if (Wedge2Shown) {
 			
 			for (int i = 0; i < Wedges2.length; i++) {
 				Wedge f = Wedges2[i];
@@ -545,7 +545,7 @@ public class RadialMenuWidget extends View {
     	paint.setAlpha(outlineAlpha); 
 		paint.setStyle(Paint.Style.STROKE);
 	    c.drawCircle(xPosition, yPosition, cRadius, paint);
-		if (inCircle == true) {
+		if (inCircle) {
 		    paint.setColor(selectedColor);
 	    	paint.setAlpha(selectedAlpha);
 	    	paint.setStyle(Paint.Style.FILL);
@@ -657,7 +657,7 @@ public class RadialMenuWidget extends View {
 
     		paint.setTextSize(headerTextSize);
     		paint.getTextBounds(headerString,0,headerString.length(),this.textRect);
-	    	if (HeaderBoxBounded == false) {
+	    	if (!HeaderBoxBounded) {
 	    		determineHeaderBox();
 	    		HeaderBoxBounded = true;
 	    	}
@@ -895,8 +895,7 @@ public class RadialMenuWidget extends View {
     
     private int scalePX( int dp_size )
     {
-		int px_size = (int) (dp_size * screen_density + 0.5f);
-        return px_size;
+		return (int) (dp_size * screen_density + 0.5f);
     }
 
 	private int getSizeX()
@@ -947,8 +946,8 @@ public class RadialMenuWidget extends View {
 	        
 	        //calculates new wedge sizes
 			for (int i = 0; i < Wedges2.length; i++) {
-				this.Wedges2[i] = new Wedge(xPosition, yPosition, r2MinSize, r2MinSize+r2VariableSize, (i
-						* slice2)+start_slice2, slice2);
+				this.Wedges2[i] = new Wedge(xPosition, yPosition, r2MinSize, r2MinSize + r2VariableSize, (i
+						* slice2) + start_slice2, slice2);
 				float xCenter = (float)(Math.cos(((rSlice2*i)+(rSlice2*0.5))+rStart2) * (r2MinSize+r2VariableSize+r2MinSize)/2)+xPosition;
 				float yCenter = (float)(Math.sin(((rSlice2*i)+(rSlice2*0.5))+rStart2) * (r2MinSize+r2VariableSize+r2MinSize)/2)+yPosition;
 
@@ -1000,8 +999,8 @@ public class RadialMenuWidget extends View {
 
 	        
 			for (int i = 0; i < Wedges2.length; i++) {
-				this.Wedges2[i] = new Wedge(xPosition, yPosition, r2MinSize, r2MaxSize-r2VariableSize, (i
-						* slice2)+start_slice2, slice2);
+				this.Wedges2[i] = new Wedge(xPosition, yPosition, r2MinSize, r2MaxSize - r2VariableSize, (i
+						* slice2) + start_slice2, slice2);
 				
 				float xCenter = (float)(Math.cos(((rSlice2*i)+(rSlice2*0.5))+rStart2) * (r2MaxSize-r2VariableSize+r2MinSize)/2)+xPosition;
 				float yCenter = (float)(Math.sin(((rSlice2*i)+(rSlice2*0.5))+rStart2) * (r2MaxSize-r2VariableSize+r2MinSize)/2)+yPosition;
@@ -1040,7 +1039,7 @@ public class RadialMenuWidget extends View {
 			}
 	    }
  		
-	    if (animationComplete == true) {
+	    if (animationComplete) {
 	    	r2VariableSize = 0;
 	    	this.animateTextSize = textSize;
 	    	if (animation_direction==ANIMATE_IN) {
@@ -1068,7 +1067,7 @@ public class RadialMenuWidget extends View {
 					
 			for (int i = 0; i < Wedges.length; i++) {
 				this.Wedges[i] = new Wedge(xPosition, yPosition, MinSize, MaxSize, (i
-						* degSlice)+start_degSlice, degSlice);
+						* degSlice) + start_degSlice, degSlice);
 				float xCenter = (float)(Math.cos(((rSlice*i)+(rSlice*0.5))+rStart) * (MaxSize+MinSize)/2)+xPosition;
 				float yCenter = (float)(Math.sin(((rSlice*i)+(rSlice*0.5))+rStart) * (MaxSize+MinSize)/2)+yPosition;
 				
@@ -1108,7 +1107,7 @@ public class RadialMenuWidget extends View {
 				
 		for (int i = 0; i < Wedges2.length; i++) {
 			this.Wedges2[i] = new Wedge(xPosition, yPosition, r2MinSize, r2MaxSize, (i
-					* degSlice2)+start_degSlice2, degSlice2);
+					* degSlice2) + start_degSlice2, degSlice2);
 			float xCenter = (float)(Math.cos(((rSlice2*i)+(rSlice2*0.5))+rStart2) * (r2MaxSize+r2MinSize)/2)+xPosition;
 			float yCenter = (float)(Math.sin(((rSlice2*i)+(rSlice2*0.5))+rStart2) * (r2MaxSize+r2MinSize)/2)+yPosition;
 
@@ -1143,7 +1142,7 @@ public class RadialMenuWidget extends View {
 	
 	}
    
-    public class Wedge extends Path {
+    public static class Wedge extends Path {
     	private final int x;
         private final int y;
     	private final int InnerSize;

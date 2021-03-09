@@ -254,7 +254,7 @@ public class SharePreference implements SharedPreferences {
                 Uri uri = mBaseUri.buildUpon().appendPath(key).build();
                 mContext.getContentResolver().delete(uri, null, null);
             }
-            ContentValues[] values = mToAdd.toArray(new ContentValues[mToAdd.size()]);
+            ContentValues[] values = mToAdd.toArray(new ContentValues[0]);
             Uri uri = mBaseUri.buildUpon().appendPath("").build();
             mContext.getContentResolver().bulkInsert(uri, values);
             return true;

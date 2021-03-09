@@ -58,6 +58,6 @@ public class InterfaceDetails {
                 this.wifiName.equals(that.wifiName) &&
                 this.netEnabled == that.netEnabled &&
                 this.netType == that.netType &&
-                this.noIP == that.noIP;
+				this.noIP == that.noIP;
     }
 }

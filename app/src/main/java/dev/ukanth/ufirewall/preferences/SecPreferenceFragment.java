@@ -57,8 +57,8 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
     private static final int REQUEST_CODE_ENABLE_ADMIN = 10237; // identifies
 
-    private static ComponentName deviceAdmin;
-    private static DevicePolicyManager mDPM;
+    private ComponentName deviceAdmin;
+    private DevicePolicyManager mDPM;
 
     private Context globalContext = null;
 

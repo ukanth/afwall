@@ -1,4 +1,0 @@
-# ninja log v5
-0	9	0	clean	fa797a8a57d706ff
-0	298	1605762913	CMakeFiles/native-lib.dir/shell.cpp.o	f4011526376bd67d
-298	371	1605762913	/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libnative-lib.so	7b607c439fe38d21

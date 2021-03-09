@@ -1,8 +1,0 @@
-# ninja log v5
-0	128	1605762695	CMakeFiles/native-lib.dir/shell.cpp.o	60234ccc182a53d1
-129	154	1605762695	/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so	2f241b066fa888ad
-0	8	0	clean	fa797a8a57d706ff
-1	78	1605762913	CMakeFiles/native-lib.dir/shell.cpp.o	60234ccc182a53d1
-78	129	1605762913	/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so	2f241b066fa888ad
-1	83	1605762925	CMakeFiles/native-lib.dir/shell.cpp.o	60234ccc182a53d1
-83	119	1605762925	/Users/umakanth/projects/opensource/afwall/app/build/intermediates/cmake/debug/obj/arm64-v8a/libnative-lib.so	2f241b066fa888ad

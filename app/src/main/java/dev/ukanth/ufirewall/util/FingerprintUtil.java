@@ -318,8 +318,7 @@ public class FingerprintUtil {
 
             CancellationSignal cancellationSignal;
 
-            void FingerprintHandler(){
-
+            FingerprintHandler(){
                 cancellationSignal = new CancellationSignal();
             }
 

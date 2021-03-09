@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.topjohnwu.superuser.Shell;
 
@@ -26,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.StringTokenizer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,9 +38,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.log.Log;
 
+@Deprecated
 public class ImportApi {
 
-
+    /*
     private static File getDataDir(Context ctx, String packageName) {
         try {
             PackageInfo packageInfo = ctx.getPackageManager().getPackageInfo(packageName, 0);
@@ -51,6 +56,7 @@ public class ImportApi {
     }
 
     private static class LoadTask extends AsyncTask<Void, Void, Boolean> {
+
         private final Context ctx;
         boolean[] result = {false};
 
@@ -172,12 +178,12 @@ public class ImportApi {
             final int uid = Integer.parseInt(tok.nextToken());
             String[] pack = pm.getPackagesForUid(uid);
             if (pack != null && pack.length == 1) {
-                pkg.append(pack[0] + "|");
+                pkg.append(pack[0]).append("|");
             }
             if (uid == 1000) {
                 pkg.append("android|");
             }
         }
         return pkg.toString();
-    }
+    }*/
 }

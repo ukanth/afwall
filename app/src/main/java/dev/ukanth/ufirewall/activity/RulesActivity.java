@@ -99,7 +99,7 @@ public class RulesActivity extends DataDumpActivity {
         if (initialNewline) {
             res.append("\n");
         }
-        res.append(eq + "\n" + title + "\n" + eq + "\n\n");
+        res.append(eq).append("\n").append(title).append("\n").append(eq).append("\n\n");
     }
 
     protected void appendPreferences(final Context ctx) {
@@ -110,11 +110,11 @@ public class RulesActivity extends DataDumpActivity {
             Map<String, ?> prefs = G.gPrefs.getAll();
             for (String s : new TreeSet<String>(prefs.keySet())) {
                 Object entry = prefs.get(s);
-                result.append(s + ": " + entry.toString() + "\n");
+                result.append(s).append(": ").append(entry.toString()).append("\n");
             }
             //append profile mode & Status
-            result.append("Profile Mode : " + G.pPrefs.getString(Api.PREF_MODE, "") + "\n");
-            result.append("Status : " + (Api.isEnabled(ctx) ? "Enabled" : "Disabled") + "\n");
+            result.append("Profile Mode : ").append(G.pPrefs.getString(Api.PREF_MODE, "")).append("\n");
+            result.append("Status : ").append(Api.isEnabled(ctx) ? "Enabled" : "Disabled").append("\n");
         } catch (NullPointerException e) {
             result.append("Error retrieving preferences\n");
         }
@@ -175,10 +175,10 @@ public class RulesActivity extends DataDumpActivity {
 
         InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, false);
 
-        result.append("Android version: " + android.os.Build.VERSION.RELEASE + "\n");
-        result.append("Manufacturer: " + android.os.Build.MANUFACTURER + "\n");
-        result.append("Model: " + android.os.Build.MODEL + "\n");
-        result.append("Build: " + android.os.Build.DISPLAY + "\n");
+        result.append("Android version: ").append(android.os.Build.VERSION.RELEASE).append("\n");
+        result.append("Manufacturer: ").append(android.os.Build.MANUFACTURER).append("\n");
+        result.append("Model: ").append(android.os.Build.MODEL).append("\n");
+        result.append("Build: ").append(android.os.Build.DISPLAY).append("\n");
 
         if (cfg.netType == ConnectivityManager.TYPE_MOBILE) {
             result.append("Active interface: mobile\n");
@@ -187,12 +187,12 @@ public class RulesActivity extends DataDumpActivity {
         } else {
             result.append("Active interface: unknown\n");
         }
-        result.append("Wifi Tether status: " + (cfg.tetherWifiStatusKnown ? (cfg.isWifiTethered ? "yes" : "no") : "unknown") + "\n");
-        result.append("Bluetooth Tether status: " + (cfg.tetherBluetoothStatusKnown ? (cfg.isBluetoothTethered ? "yes" : "no") : "unknown") + "\n");
-        result.append("Usb Tether status: " + (cfg.tetherUsbStatusKnown ? (cfg.isUsbTethered ? "yes" : "no") : "unknown") + "\n");
-        result.append("Roam status: " + (cfg.isRoaming ? "yes" : "no") + "\n");
-        result.append("IPv4 subnet: " + cfg.lanMaskV4 + "\n");
-        result.append("IPv6 subnet: " + cfg.lanMaskV6 + "\n");
+        result.append("Wifi Tether status: ").append(cfg.tetherWifiStatusKnown ? (cfg.isWifiTethered ? "yes" : "no") : "unknown").append("\n");
+        result.append("Bluetooth Tether status: ").append(cfg.tetherBluetoothStatusKnown ? (cfg.isBluetoothTethered ? "yes" : "no") : "unknown").append("\n");
+        result.append("Usb Tether status: ").append(cfg.tetherUsbStatusKnown ? (cfg.isUsbTethered ? "yes" : "no") : "unknown").append("\n");
+        result.append("Roam status: ").append(cfg.isRoaming ? "yes" : "no").append("\n");
+        result.append("IPv4 subnet: ").append(cfg.lanMaskV4).append("\n");
+        result.append("IPv6 subnet: ").append(cfg.lanMaskV6).append("\n");
 
         // filesystem calls can block, so run in another thread
         new AsyncTask<Void, Void, String>() {
@@ -206,7 +206,7 @@ public class RulesActivity extends DataDumpActivity {
                 ret.append(getFileInfo("/system/app/Superuser.apk"));
 
                 PackageManager pm = ctx.getPackageManager();
-                ret.append("Superuser: " + getSuInfo(pm));
+                ret.append("Superuser: ").append(getSuInfo(pm));
                 ret.append("\n");
 
                 return ret.toString();

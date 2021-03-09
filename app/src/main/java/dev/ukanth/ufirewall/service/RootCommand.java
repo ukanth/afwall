@@ -2,8 +2,6 @@ package dev.ukanth.ufirewall.service;
 
 import android.content.Context;
 
-import com.topjohnwu.superuser.Shell;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

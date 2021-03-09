@@ -65,7 +65,7 @@ public class Log {
 		for (int i = 0; i < circ.size(); i++) {
 			LogEntry e = circ.get(i);
 			String timestamp = new SimpleDateFormat("HH:mm:ss").format(e.timestamp);
-			ret.append(timestamp + " " + e.msg + "\n");
+			ret.append(timestamp).append(" ").append(e.msg).append("\n");
 		}
 
 		return ret.toString();

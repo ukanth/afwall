@@ -90,7 +90,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             }
             //some path exists
             if (listSupportedDir.size() > 0) {
-                String[] entries = listSupportedDir.toArray(new String[listSupportedDir.size()]);
+                String[] entries = listSupportedDir.toArray(new String[0]);
                 activity.runOnUiThread(() -> {
                     listPreference.setEntries(entries);
                     listPreference.setEntryValues(entries);

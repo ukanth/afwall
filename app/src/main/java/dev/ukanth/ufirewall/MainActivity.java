@@ -38,7 +38,9 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,6 +60,8 @@ import androidx.appcompat.widget.Toolbar;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.provider.Settings;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -197,6 +201,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
 
         initTheme();
+        G.registerPrivateLink();
+
+
+
 
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -318,10 +326,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateSelectedColumns();
-
-                if (selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
+                if(selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
                     recreate();
                 } else if (selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0) {
+                    recreate();
+                } else{
                     recreate();
                 }
             }
@@ -1231,14 +1240,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 search(item);
                 return true;
             case R.id.menu_export:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // permissions have not been granted.
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-                } else {
+                if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+                    // Do some stuff
                     showExportDialog();
+                } else {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // permissions have not been granted.
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                    } else{
+                        showExportDialog();
+                    }
                 }
                 return true;
             case R.id.menu_import:
@@ -1292,31 +1306,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .cancelable(false)
                 .items(new String[]{
                         getString(R.string.import_rules),
-                        getString(R.string.import_all),
-                        getString(R.string.import_rules_droidwall)})
+                        getString(R.string.import_all)})
                 .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
                             //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
                             //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
-                            File mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                            File mPath = null;
+                            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                                mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                            } else{
+                                mPath = new File(ctx.getExternalFilesDir(null) + "/");
+                            }
                             FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
+
                             //fileDialog.setFlag(true);
                             //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
-                            fileDialog.addFileListener(new FileDialog.FileSelectedListener() {
-                                public void fileSelected(File file) {
-                                    String fileSelected = file.toString();
-                                    StringBuilder builder = new StringBuilder();
-                                    if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
-                                        Api.applications = null;
-                                        showOrLoadApplications();
-                                        Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                            fileDialog.addFileListener((FileDialog.FileSelectedListener) file -> {
+                                String fileSelected = file.toString();
+                                StringBuilder builder = new StringBuilder();
+                                if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
+                                    Api.applications = null;
+                                    showOrLoadApplications();
+                                    Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                } else {
+                                    if (builder.toString().equals("")) {
+                                        Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
                                     } else {
-                                        if (builder.toString().equals("")) {
-                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                        } else {
-                                            Api.toast(MainActivity.this, builder.toString());
-                                        }
+                                        Api.toast(MainActivity.this, builder.toString());
                                     }
                                 }
                             });
@@ -1326,27 +1343,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                             if (G.isDoKey(getApplicationContext()) || isDonate()) {
 
-                                File mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                                File mPath2 = null;
+                                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                                    mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
+                                } else{
+                                    mPath2 = new File(ctx.getExternalFilesDir(null), "/");
+                                }
                                 FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
-                                //fileDialog2.setFlag(false);
-                                //fileDialog2.setFileEndsWith(new String[] {"backup_all", "afwall-backup-all"}, "" );
-                                fileDialog2.addFileListener(new FileDialog.FileSelectedListener() {
-                                    public void fileSelected(File file) {
-                                        String fileSelected = file.toString();
-                                        StringBuilder builder = new StringBuilder();
-                                        if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
-                                            Api.applications = null;
-                                            showOrLoadApplications();
-                                            Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
-                                            Intent intent = getIntent();
-                                            finish();
-                                            startActivity(intent);
+                                fileDialog2.addFileListener(file -> {
+                                    String fileSelected = file.toString();
+                                    StringBuilder builder = new StringBuilder();
+                                    if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
+                                        Api.applications = null;
+                                        showOrLoadApplications();
+                                        Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                        Intent intent = getIntent();
+                                        finish();
+                                        startActivity(intent);
+                                    } else {
+                                        if (builder.toString().equals("")) {
+                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
                                         } else {
-                                            if (builder.toString().equals("")) {
-                                                Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                            } else {
-                                                Api.toast(MainActivity.this, builder.toString());
-                                            }
+                                            Api.toast(MainActivity.this, builder.toString());
                                         }
                                     }
                                 });
@@ -1354,37 +1372,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             } else {
                                 Api.donateDialog(MainActivity.this, false);
                             }
-                            break;
-                        case 2:
-
-                            new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                                    .title(R.string.import_rules_droidwall)
-                                    .content(R.string.overrideRules)
-                                    .positiveText(R.string.Yes)
-                                    .negativeText(R.string.No)
-                                    .icon(getResources().getDrawable(R.drawable.ic_launcher))
-                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
-                                                Api.applications = null;
-                                                showOrLoadApplications();
-                                                Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-                                            } else {
-                                                Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                            }
-                                        }
-                                    })
-
-                                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            dialog.cancel();
-                                        }
-                                    })
-                                    .show();
-
-
                             break;
                     }
                     return true;
@@ -1430,6 +1417,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
                 if (grantResults.length > 0
@@ -1540,18 +1529,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         //isPassVerify = true;
                         showOrLoadApplications();
                         break;
-                    case RESULT_CANCELED:
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        break;
-                    case RESULT_FAILED:
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        break;
-                    case RESULT_FORGOT_PATTERN:
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        break;
                     default:
                         MainActivity.this.finish();
                         android.os.Process.killProcess(android.os.Process.myPid());
@@ -1657,44 +1634,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onClick(View v) {
 
         switch (v.getId()) {
-            /*case R.id.label_mode:
-                selectMode();
-				break;*/
             case R.id.img_wifi:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_3g:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_roam:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_vpn:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_tether:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_lan:
-                selectActionConfirmation(v.getId());
-                break;
             case R.id.img_tor:
                 selectActionConfirmation(v.getId());
                 break;
-            /*case R.id.img_invert:
-                selectActionConfirmation(getString(R.string.reverse_all), v.getId());
-                break;
-            case R.id.img_clone:
-                cloneColumn(getString(R.string.legend_clone), v.getId());
-                break;
-            case R.id.img_reset:
-                selectActionConfirmation(getString(R.string.unselect_all), v.getId());
-                break;*/
             case R.id.img_action:
                 selectAction();
-                //case R.id.img_invert:
-                //	revertApplications();
-                //	break;
         }
     }
 
@@ -2643,6 +2593,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 } catch (Exception ex) {
                 }
             }
+        }
+    }
+
+
+    @RequiresApi(28)
+    private static class OnUnhandledKeyEventListenerWrapper implements View.OnUnhandledKeyEventListener {
+        private final ViewCompat.OnUnhandledKeyEventListenerCompat mCompatListener;
+
+        OnUnhandledKeyEventListenerWrapper(ViewCompat.OnUnhandledKeyEventListenerCompat listener) {
+            this.mCompatListener = listener;
+        }
+
+        public boolean onUnhandledKeyEvent(View v, KeyEvent event) {
+            return this.mCompatListener.onUnhandledKeyEvent(v, event);
         }
     }
 }

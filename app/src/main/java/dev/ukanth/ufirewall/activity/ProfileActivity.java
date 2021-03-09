@@ -149,9 +149,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (G.isProfileMigrated()) {
             List<ProfileData> profiles = ProfileHelper.getProfiles();
-            for (ProfileData pro : profiles) {
-                profilesList.add(pro);
-            }
+            profilesList.addAll(profiles);
         } else {
             profilesList.add(new ProfileData(G.gPrefs.getString("profile1", getString(R.string.profile1)), "AFWallProfile1"));
             profilesList.add(new ProfileData(G.gPrefs.getString("profile2", getString(R.string.profile2)), "AFWallProfile2"));
