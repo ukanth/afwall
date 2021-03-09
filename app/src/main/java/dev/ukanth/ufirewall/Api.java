@@ -1372,9 +1372,9 @@ public final class Api {
      * @param ctx      application context
      * @param callback Callback for completion status
      */
-    public static void clearLog(Context ctx, RootCommand callback) {
-        callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
-    }
+    //public static void clearLog(Context ctx, RootCommand callback) {
+    //    callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
+    //}
 
     //purge 2 hour data or 2000 records
     public static void purgeOldLog() {
