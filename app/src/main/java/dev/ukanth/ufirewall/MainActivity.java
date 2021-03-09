@@ -187,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         G.registerPrivateLink();
 
 
+
+
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
                     .getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
@@ -1279,8 +1281,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .cancelable(false)
                 .items(new String[]{
                         getString(R.string.import_rules),
-                        getString(R.string.import_all),
-                        getString(R.string.import_rules_droidwall)})
+                        getString(R.string.import_all)})
                 .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
@@ -1346,37 +1347,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             } else {
                                 Api.donateDialog(MainActivity.this, false);
                             }
-                            break;
-                        case 2:
-
-                            new MaterialDialog.Builder(MainActivity.this).cancelable(false)
-                                    .title(R.string.import_rules_droidwall)
-                                    .content(R.string.overrideRules)
-                                    .positiveText(R.string.Yes)
-                                    .negativeText(R.string.No)
-                                    .icon(getResources().getDrawable(R.drawable.ic_launcher))
-                                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            if (ImportApi.loadSharedPreferencesFromDroidWall(MainActivity.this)) {
-                                                Api.applications = null;
-                                                showOrLoadApplications();
-                                                Api.toast(MainActivity.this, getString(R.string.import_rules_success) + Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-                                            } else {
-                                                Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                            }
-                                        }
-                                    })
-
-                                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                                        @Override
-                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                            dialog.cancel();
-                                        }
-                                    })
-                                    .show();
-
-
                             break;
                     }
                     return true;

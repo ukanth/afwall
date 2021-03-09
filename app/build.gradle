@@ -37,8 +37,16 @@ android {
 
 dependencies {
 
+    def libsuVersion = '3.1.1'
+    def dbFlowVersion = '4.2.4'
+
+    implementation "com.github.topjohnwu:libsu:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:busybox:${libsuVersion}"
+
     implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
-    //implementation 'com.github.topjohnwu:libsu:1.0.1'
+
 
     implementation 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
@@ -53,13 +61,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
 
-    annotationProcessor 'com.github.Raizlabs.DBFlow:dbflow-processor:4.2.4'
-    implementation "com.github.Raizlabs.DBFlow:dbflow-core:4.2.4"
-    implementation "com.github.Raizlabs.DBFlow:dbflow:4.2.4"
-
-    //implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-    //implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
-
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}"
+    implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}"
+    implementation "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}"
 
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.7'
