@@ -107,16 +107,24 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import javax.xml.transform.Result;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.log.Log;
@@ -216,7 +224,7 @@ public final class Api {
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
     private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
-    /**
+/**
      * @brief Special user/group IDs that aren't associated with
      * any particular app.
      * <p>
@@ -314,7 +322,7 @@ public final class Api {
         boolean builtin = true;
         String pref = G.ip_path();
 
-        if (pref.equals("system") || !setv6) {
+        if (pref.equals("system")) {
             builtin = false;
         }
 
@@ -876,6 +884,7 @@ public final class Api {
         }
 
         iptablesCommands(cmds, out, ipv6);
+
         return true;
     }
 
@@ -931,6 +940,7 @@ public final class Api {
             cmds.set(i, s);
         }
     }
+
 
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         Log.i(TAG, "Using applySavedIptablesRules");
@@ -1029,22 +1039,22 @@ public final class Api {
 
     public static boolean fastApply(Context ctx, RootCommand callback) {
         try {
-            if (!rulesUpToDate) {
-                Log.i(TAG, "Using full Apply");
-                applySavedIptablesRules(ctx, true, callback);
-            } else {
-                Log.i(TAG, "Using fastApply");
-                List<String> out = new ArrayList<String>();
-                List<String> cmds;
-                cmds = new ArrayList<String>();
-                applyShortRules(ctx, cmds, false);
-                iptablesCommands(cmds, out, false);
-                if (G.enableIPv6()) {
+                if (!rulesUpToDate) {
+                    Log.i(TAG, "Using full Apply");
+                    applySavedIptablesRules(ctx, true, callback);
+                } else {
+                    Log.i(TAG, "Using fastApply");
+                    List<String> out = new ArrayList<String>();
+                    List<String> cmds;
                     cmds = new ArrayList<String>();
-                    applyShortRules(ctx, cmds, true);
-                    iptablesCommands(cmds, out, true);
-                }
-                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+                    applyShortRules(ctx, cmds, false);
+                    iptablesCommands(cmds, out, false);
+                    if (G.enableIPv6()) {
+                        cmds = new ArrayList<String>();
+                        applyShortRules(ctx, cmds, true);
+                        iptablesCommands(cmds, out, true);
+                    }
+                    callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
             }
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -1369,8 +1379,6 @@ public final class Api {
     /**
      * Clear firewall logs by purging dmesg
      *
-     * @param ctx      application context
-     * @param callback Callback for completion status
      */
     //public static void clearLog(Context ctx, RootCommand callback) {
     //    callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
