@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +31,7 @@ public class FirewallService extends Service {
     BroadcastReceiver connectivityReciver;
     BroadcastReceiver packageReceiver;
     IntentFilter filter;
+    private BluetoothAdapter bluetoothAdapter;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -179,7 +182,9 @@ public class FirewallService extends Service {
         intentFilter.addDataScheme("package");
         registerReceiver(packageReceiver, intentFilter);
 
-        InterfaceTracker.setupBluetoothProfile(this);
+        if(bluetoothAdapter == null) {
+            bluetoothAdapter = InterfaceTracker.setupBluetoothProfile(this);
+        }
 
         return START_STICKY;
     }
@@ -193,6 +198,10 @@ public class FirewallService extends Service {
         if (packageReceiver != null) {
             unregisterReceiver(packageReceiver);
             packageReceiver = null;
+        }
+
+        if(bluetoothAdapter != null) {
+            bluetoothAdapter.cancelDiscovery();
         }
         super.onDestroy();
     }
