@@ -133,9 +133,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         disposable = rxEvent.subscribe(event -> {
             if (event instanceof RulesEvent) {
                 ruleChangeApplyRules((RulesEvent) event);
-            } else if (event instanceof LogChangeEvent) {
+            } /*else if (event instanceof LogChangeEvent) {
                 logDmesgChangeApplyRules((LogChangeEvent) event);
-            }
+            }*/
         });
     }
 
@@ -279,7 +279,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         return isXLargeTablet(this) && !isSimplePreferences(this);
     }
 
-    public void logDmesgChangeApplyRules(LogChangeEvent logChangeEvent) {
+    /*public void logDmesgChangeApplyRules(LogChangeEvent logChangeEvent) {
         if (logChangeEvent != null) {
             final Context context = logChangeEvent.ctx;
             final Intent logIntent = new Intent(context, LogService.class);
@@ -294,8 +294,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 Api.cleanupUid();
             }
         }
-
-    }
+    }*/
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -314,9 +313,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             rxEvent.publish(new RulesEvent("", ctx));
         }
 
-        if (key.equals("logDmesg")) {
+        /*if (key.equals("logDmesg")) {
             rxEvent.publish(new LogChangeEvent("", ctx));
-        }
+        }*/
 
         if (key.equals("notification_priority")) {
             NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -341,7 +340,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                     .setFailureToast(R.string.log_target_fail));
             Intent intent = new Intent(ctx, LogService.class);
             ctx.stopService(intent);
-            Api.cleanupUid();
+            //Api.cleanupUid();
             ctx.startService(intent);
         }
         if (key.equals("enableLogService")) {
@@ -350,13 +349,13 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 //Api.setLogTarget(ctx, true);
                 Intent intent = new Intent(ctx, LogService.class);
                 ctx.stopService(intent);
-                Api.cleanupUid();
+                //Api.cleanupUid();
                 ctx.startService(intent);
             } else {
                 //Api.setLogTarget(ctx, false);
                 Intent intent = new Intent(ctx, LogService.class);
                 ctx.stopService(intent);
-                Api.cleanupUid();
+                //Api.cleanupUid();
             }
         }
         if (key.equals("enableMultiProfile")) {

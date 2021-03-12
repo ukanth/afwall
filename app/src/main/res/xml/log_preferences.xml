@@ -11,13 +11,13 @@
         android:key="logExperimental"
         android:title="@string/exp_prefs_title">
 
-        <ListPreference
+        <!--<ListPreference
             android:defaultValue="OS"
             android:summary="%s"
             android:entries="@array/logDmesgArray"
             android:entryValues="@array/logDmesgValue"
             android:key="logDmesg"
-            android:title="@string/log_dmesg"></ListPreference>
+            android:title="@string/log_dmesg"></ListPreference>-->
 
         <ListPreference
             android:defaultValue="LOG"
@@ -46,14 +46,14 @@
             android:title="@string/show_host" />
 
 
-        <ListPreference
+       <!-- <ListPreference
             android:defaultValue="bottom"
             android:summary="%s"
             android:dependency="enableLogService"
             android:entries="@array/toast_pos"
             android:entryValues="@array/toast_pos_val"
             android:key="toast_pos"
-            android:title="@string/position"></ListPreference>
+            android:title="@string/position"></ListPreference> -->
 
         <EditTextPreference
             android:dependency="enableLogService"
@@ -63,9 +63,9 @@
             android:key="logPingTime"
             android:title="@string/pingDelayTitle" />
 
-        <Preference
+        <!--<Preference
             android:key="block_filter"
-            android:title="@string/filters_apps_title"></Preference>
+            android:title="@string/filters_apps_title"></Preference> -->
 
     </PreferenceCategory>
 

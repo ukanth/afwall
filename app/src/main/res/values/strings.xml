@@ -617,6 +617,8 @@
 
     <string name="hide">Hide</string>
     <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="firewall_log_notify">Log Notification</string>
+
     <string name="ui_themes_header">Themes</string>
     <string name="theme">UI Theme</string>
     <string name="clat">(clat) Clat</string>

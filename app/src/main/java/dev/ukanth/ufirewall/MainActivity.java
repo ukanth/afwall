@@ -107,6 +107,7 @@ import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
+import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
@@ -250,9 +251,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         registerUIbroadcast6();
 
         registerToastbroadcast();
-        migrateNotification();
+        //migrateNotification();
         initTextWatcher();
-        //registerLogService();
+        registerLogService();
         //checkAndAskForBatteryOptimization();
         registerThemeIntent();
         registerUIRefresh();
@@ -267,14 +268,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         selectedColumns = G.enableTor() ?  selectedColumns + 1 : selectedColumns;
     }
 
-    /*private void registerLogService() {
+    private void registerLogService() {
         if (G.enableLogService()) {
             Log.i(G.TAG, "Starting Log Service");
             final Intent logIntent = new Intent(getBaseContext(), LogService.class);
             startService(logIntent);
-            G.storedPid(new HashSet());
         }
-    }*/
+    }
 
     private void  registerUIRefresh(){
         IntentFilter filter = new IntentFilter("dev.ukanth.ufirewall.ui.CHECKREFRESH");
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
 
-    private void migrateNotification() {
+    /*private void migrateNotification() {
         try {
             if (!G.isNotificationMigrated()) {
                 List<Integer> idList = G.getBlockedNotifyList();
@@ -405,8 +405,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (Exception e) {
             Log.e(G.TAG, "Unable to migrate notification", e);
         }
-
-    }
+    }*/
 
 
     private void registerToastbroadcast() {

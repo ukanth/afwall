@@ -113,7 +113,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String BUSYBOX_PATH = "bb_path";
     private static final String TOAST_POS = "toast_pos";
     private static final String LANGUAGE = "locale";
-    private static final String LOG_DMESG = "logDmesg";
+    //private static final String LOG_DMESG = "logDmesg";
     private static final String SORT_BY = "sort";
     private static final String LAST_STORED_PROFILE = "storedProfile";
     private static final String STARTUP_DELAY = "addDelayStart";
@@ -155,7 +155,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
      * FIXME
      **/
     private static final String AFWALL_STATUS = "AFWallStaus";
-    private static final String BLOCKED_NOTIFICATION = "block_filter_app";
+    //private static final String BLOCKED_NOTIFICATION = "block_filter_app";
     /* Profiles */
     private static final String ADDITIONAL_PROFILES = "plusprofiles";
     //private static final String PROFILES = "profiles_json";
@@ -549,14 +549,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static String logDmsg() {
+    /*public static String logDmsg() {
         return gPrefs.getString(LOG_DMESG, "OS");
     }
 
     public static String logDmsg(String val) {
         gPrefs.edit().putString(LOG_DMESG, val).commit();
         return val;
-    }
+    }*/
 
     public static String sortBy() {
         return gPrefs.getString(SORT_BY, "s0");
@@ -641,7 +641,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static String logTarget() {
-        return gPrefs.getString(LOG_TARGET, "LOG");
+        return gPrefs.getString(LOG_TARGET, "LOG").trim();
     }
 
     public static String logTarget(String val) {
@@ -809,11 +809,11 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getString(PROTECTION_OPTION, "p0");
     }
 
-    public static void setBlockedNotifyApps(List<Integer> list) {
+    /*public static void setBlockedNotifyApps(List<Integer> list) {
         String listString = list.toString();
         listString = listString.substring(1, listString.length() - 1);
         gPrefs.edit().putString(BLOCKED_NOTIFICATION, listString).commit();
-    }
+    }*/
 
 
     public static void storeBlockedApps(List<Integer> list) {
@@ -875,7 +875,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return data;
     }*/
 
-    public static List<Integer> getBlockedNotifyList() {
+    /*public static List<Integer> getBlockedNotifyList() {
         List<Integer> data = new ArrayList<Integer>();
         try {
             String blockedApps = gPrefs.getString(BLOCKED_NOTIFICATION, null);
@@ -897,7 +897,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         } catch (Exception e) {
         }
         return data;
-    }
+    }*/
 
     //This method is used for Xposed
     public static boolean isXposedEnabled() {
@@ -1031,10 +1031,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
     }
 
-    public static void isNotificationMigrated(boolean b) {
+    /*public static void isNotificationMigrated(boolean b) {
         gPrefs.edit().putBoolean("NewDBNotification", b).commit();
         gPrefs.edit().putString(BLOCKED_NOTIFICATION, "").commit();
-    }
+    }*/
 
     public static boolean isNotificationMigrated() {
         return gPrefs.getBoolean("NewDBNotification", false);
@@ -1140,7 +1140,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     privateDns = linkProperties.isPrivateDnsActive();
                     Log.i(Api.TAG, "Private DNS status:" +  privateDns);
-                    InterfaceTracker.applyRules("Private DNS change");
+                    //InterfaceTracker.applyRules("Private DNS change");
                 }
             }
         });

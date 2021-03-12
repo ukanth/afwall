@@ -189,17 +189,15 @@
     </string-array>
 
 
-    <string-array name="logDmesgArray">
+   <!-- <string-array name="logDmesgArray">
         <item>System</item>
         <item>Busybox</item>
-        <!--<item>Toybox</item>-->
     </string-array>
 
     <string-array name="logDmesgValue">
         <item>OS</item>
         <item>BB</item>
-        <!--<item>TB</item>-->
-    </string-array>
+    </string-array>-->
 
 
     <string-array name="notification_type_val">

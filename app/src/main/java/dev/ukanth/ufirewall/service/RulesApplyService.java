@@ -34,7 +34,7 @@ public class RulesApplyService extends IntentService {
                 context.startService(logIntent);
             } else {
                 context.stopService(logIntent);
-                Api.cleanupUid();
+                //Api.cleanupUid();
             }
         }
     }

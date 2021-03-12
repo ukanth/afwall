@@ -2,10 +2,14 @@ package dev.ukanth.ufirewall.log;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,10 +67,20 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
+        PackageManager manager = context.getPackageManager();
         holder.bind(logData.get(position),recyclerItemClickListener);
         try {
+            Object drawable = info.applicationInfo.loadIcon(manager);
             info = Api.getPackageDetails(context, data.getUid());
-            holder.icon.setBackground(info.applicationInfo.loadIcon(context.getPackageManager()));
+            if(info!=null && info.applicationInfo !=null) {
+                if (drawable instanceof Bitmap)
+                    holder.icon.setImageBitmap((Bitmap)drawable);
+                else
+                    holder.icon.setBackground((Drawable)drawable);
+            } else{
+                Drawable appIcon = context.getDrawable(R.drawable.ic_unknown);
+                holder.icon.setImageBitmap(getBitmapFromDrawable(appIcon));
+            }
         } catch (Exception e) {
             Log.e(TAG,e.getMessage(),e);
             info = null;
@@ -75,8 +89,7 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
                     holder.icon.setBackground(context.getDrawable(R.drawable.ic_unknown));
                 } else {
                     Drawable appIcon = context.getDrawable(R.drawable.ic_unknown);
-                    Bitmap bitmap = ((BitmapDrawable)appIcon).getBitmap();
-                    holder.icon.setImageBitmap(bitmap);
+                    holder.icon.setImageBitmap(getBitmapFromDrawable(appIcon));
                 }
             }catch (Exception e1) {
                 Log.e(TAG,e1.getMessage(),e1);
@@ -96,6 +109,14 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
         } else {
             holder.dataDenied.setText(context.getString(R.string.log_denied) + " " + data.getCount() + " " + context.getString(R.string.log_time)) ;
         }
+    }
+
+    private Bitmap getBitmapFromDrawable(Drawable appIcon) {
+        Bitmap bitmap = Bitmap.createBitmap(appIcon.getIntrinsicWidth(), appIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        appIcon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        appIcon.draw(canvas);
+        return bitmap;
     }
 
     public static String pretty(Date date) {

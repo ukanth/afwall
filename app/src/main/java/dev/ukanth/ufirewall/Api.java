@@ -372,11 +372,12 @@ public final class Api {
      */
     public static String getNflogPath(Context ctx) {
         String dir = ctx.getDir("bin", 0).getAbsolutePath();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+        return dir + "/nflog ";
+        /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             return dir + "/run_pie " + dir + "/nflog ";
         } else {
             return dir + "/nflog ";
-        }
+        }*/
     }
 
     public static String getShellPath(Context ctx) {
@@ -534,7 +535,7 @@ public final class Api {
             cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
             cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
             cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j afwall-reject");
+            cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j " + AFWALL_CHAIN_NAME + "-reject");
             cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
         }
         if (G.enableInbound()) {
@@ -1289,7 +1290,7 @@ public final class Api {
     }
 
     //Cleanup unused shell opened by logservice
-    public static void cleanupUid() {
+    /*public static void cleanupUid() {
         try {
             Set<String> uids = G.storedPid();
             if (uids != null && uids.size() > 0) {
@@ -1321,7 +1322,7 @@ public final class Api {
         } catch (Exception e) {
             Log.e(TAG, "Exception in cleanupUid: " + e.getMessage());
         }
-    }
+    }*/
 
 
     public static void applyIPv6Quick(Context ctx, List<String> cmds, RootCommand callback) {
@@ -1384,16 +1385,12 @@ public final class Api {
     //    callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
     //}
 
-    //purge 2 hour data or 2000 records
+    //purge 1 hour data
     public static void purgeOldLog() {
-        long purgeInterval = System.currentTimeMillis() - 7200000;
+        long purgeInterval = System.currentTimeMillis() - 3600000;
         long count = new Select(com.raizlabs.android.dbflow.sql.language.Method.count()).from(LogData.class).count();
         //records are more
-        if (count > 2000) {
-            new Delete().from(LogData.class).limit(2000).async().execute();
-        } else {
-            new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
-        }
+        new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
     }
 
     /**

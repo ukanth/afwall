@@ -43,10 +43,9 @@ dependencies {
     implementation "com.github.topjohnwu:libsu:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
-    implementation "com.github.topjohnwu.libsu:busybox:${libsuVersion}"
+    //implementation "com.github.topjohnwu.libsu:busybox:${libsuVersion}"
 
     implementation 'eu.chainfire:libsuperuser:1.0.0.201704021214'
-
 
     implementation 'org.bitbucket.ukanth:android-lockpattern:8.0.1'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
