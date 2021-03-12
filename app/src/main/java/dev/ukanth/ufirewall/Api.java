@@ -1316,7 +1316,6 @@ public final class Api {
             tempSession.addCommand(bbPath + " pkill -9 -f \"nflog\"");
             tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshellb\"");
             tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshell\"");
-            //TODO: cleanup shell
         } catch (ClassCastException e) {
             Log.e(TAG, "ClassCastException in cleanupUid: " + e.getMessage());
         } catch (Exception e) {
@@ -2044,8 +2043,8 @@ public final class Api {
         // arch-independent scripts
         ret &= installBinary(ctx, R.raw.afwallstart, "afwallstart");
         //Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
-        ret &= installBinary(ctx, R.raw.aflogshell, "aflogshell");
-        ret &= installBinary(ctx, R.raw.aflogshellb, "aflogshellb");
+        //ret &= installBinary(ctx, R.raw.aflogshell, "aflogshell");
+        //ret &= installBinary(ctx, R.raw.aflogshellb, "aflogshellb");
 
         if (showErrors) {
             if (ret) {
