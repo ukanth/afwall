@@ -70,9 +70,9 @@ public class LogRecyclerViewAdapter  extends RecyclerView.Adapter<LogRecyclerVie
         PackageManager manager = context.getPackageManager();
         holder.bind(logData.get(position),recyclerItemClickListener);
         try {
-            Object drawable = info.applicationInfo.loadIcon(manager);
             info = Api.getPackageDetails(context, data.getUid());
             if(info!=null && info.applicationInfo !=null) {
+                Object drawable = info.applicationInfo.loadIcon(manager);
                 if (drawable instanceof Bitmap)
                     holder.icon.setImageBitmap((Bitmap)drawable);
                 else

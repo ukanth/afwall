@@ -33,13 +33,6 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="enableLogService"
-            android:key="showLogToasts"
-            android:summary="@string/showlog_toasts"
-            android:title="@string/enable_show_toasts" />
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:dependency="enableLogService"
             android:enabled="false"
             android:key="showHostName"
             android:summary="@string/showhost_desc"

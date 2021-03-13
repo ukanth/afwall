@@ -176,7 +176,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String INITPATH = "initPath";
 
     private static final String AFWALL_PROFILE = "AFWallProfile";
-    private static final String SHOW_LOG_TOAST = "showLogToasts";
+    //private static final String SHOW_LOG_TOAST = "showLogToasts";
     public static String[] profiles = {"AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3};
     public static String[] default_profiles = {"AFWallProfile1", "AFWallProfile2", "AFWallProfile3"};
     public static Context ctx;
@@ -376,7 +376,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public static boolean activeNotification(boolean val) {
         gPrefs.edit().putBoolean(ACTIVE_NOTIFICATION, val).commit();
         return val;
-    }*/
+    }
 
     public static boolean showLogToasts() {
         return gPrefs.getBoolean(SHOW_LOG_TOAST, false);
@@ -385,7 +385,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public static boolean showLogToasts(boolean val) {
         gPrefs.edit().putBoolean(SHOW_LOG_TOAST, val).commit();
         return val;
-    }
+    }*/
 
     public static boolean fixLeak() {
         return gPrefs.getBoolean(FIX_START_LEAK, false);
@@ -641,7 +641,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static String logTarget() {
-        return gPrefs.getString(LOG_TARGET, "LOG").trim();
+        return gPrefs.getString(LOG_TARGET, "").trim();
     }
 
     public static String logTarget(String val) {

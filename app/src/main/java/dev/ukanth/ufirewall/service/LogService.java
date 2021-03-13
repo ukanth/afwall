@@ -40,16 +40,20 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.graphics.drawable.IconCompat;
 
+import android.os.Looper;
 import android.os.SystemClock;
+import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.topjohnwu.superuser.CallbackList;
+import com.topjohnwu.superuser.Shell;
 
 
 import java.util.List;
@@ -68,7 +72,6 @@ import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.util.G;
-import eu.chainfire.libsuperuser.Shell;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
 
@@ -76,10 +79,6 @@ public class LogService extends Service {
 
     public static final String TAG = "AFWall";
     public static String logPath;
-
-    private Shell.Interactive rootSession;
-    static Handler handler;
-
     public static final int QUEUE_NUM = 40;
 
     /*private Toast toast;
@@ -199,31 +198,17 @@ public class LogService extends Service {
 
 
     private void startLogService() {
-        /*if (disposable != null) {
-            disposable.dispose();
-        }
-        disposable = LogRxEvent.subscribe((event -> {
-                    if (event != null) {
-                        try {
-                            new Thread(() -> {
-                                store(event.logInfo, event.ctx);
-                                if (event != null && event.logInfo != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-                                    if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
-                                        showToast(event.ctx, handler, event.logInfo.uidString, false);
-                                    }
-                                }
-                            }).start();
-                        } catch (Exception e) {
-                        }
-                    }
-                })
-        );*/
-
-        if (G.enableLogService()) {
+        if (G.enableLogService() && executorService == null) {
             // this method is executed in a background thread
             // no problem calling su here
-            if (G.logTarget() != null && G.logTarget().length() > 1) {
-                switch (G.logTarget()) {
+            String log = G.logTarget();
+            if (log != null) {
+                log = log.trim();
+                if(log.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please select log target first", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                switch (log) {
                     case "LOG":
                         logPath = "cat /proc/kmsg";
                         break;
@@ -234,18 +219,13 @@ public class LogService extends Service {
                 }
 
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-                Log.i(TAG, "rootSession " + rootSession != null ? "rootSession is not Null" : "Null rootSession");
-                handler = new Handler();
-
                 callbackList = new CallbackList<String>() {
                     @Override
                     public void onAddElement(String line) {
                         //kmsg entering into idle state, wait for few seconds and start again ?
-
                         Log.i(TAG, line);
                         if(line.contains("suspend exit")) {
-                            Log.i(G.TAG, "Restarting log watcher");
-                            initiateLogWatcher(logPath);
+                            restartWatcher(logPath);
                         }
 
                         if(line.contains("{AFL}")) {
@@ -266,6 +246,14 @@ public class LogService extends Service {
             Log.i(Api.TAG, "Logservice is running.. skipping");
 
         }
+    }
+
+    private void restartWatcher(String logPath) {
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            Log.i(G.TAG, "Restarting log watcher after 5s");
+            initiateLogWatcher(logPath);
+        }, 5000);
     }
 
     private void createNotification() {
@@ -310,32 +298,31 @@ public class LogService extends Service {
         if(executorService != null) {
             executorService.shutdownNow();
         }
-        executorService = Executors.newFixedThreadPool(1);
-        com.topjohnwu.superuser.Shell.su(logCommand).to(callbackList).submit(executorService, null);
+        //make sure it's enabled first
+        if(G.enableLogService()) {
+            executorService = Executors.newSingleThreadExecutor();
+            com.topjohnwu.superuser.Shell.su(logCommand).to(callbackList).submit(executorService, out -> {
+                //failed to start, try restarting
+                if(out.getCode() == 0) {
+                    restartWatcher(logPath);
+                }
+            });
+        } else{
+            if(executorService != null) {
+                executorService.shutdownNow();
+            }
+        }
     }
 
-    private void closeSession() {
-        new Thread(() -> {
-            Log.i(Api.TAG, "Cleanup session");
-            if (rootSession != null) {
-                rootSession.close();
-            }
-        }).start();
-        //Api.cleanupUid();
-    }
 
     private void storeLogInfo(String line, Context context) {
         try {
 
             LogEvent event = new LogEvent(LogInfo.parseLogs(line, context, "{AFL}", 0), context);
             store(event.logInfo, event.ctx);
-            if (event != null && event.logInfo != null && event.logInfo.uidString != null && event.logInfo.uidString.length() > 0) {
-                if (G.showLogToasts() && G.canShow(event.logInfo.uid)) {
-                    //showToast(event.ctx, handler, event.logInfo.uidString, false);
-                    showNotification(event.ctx, event.logInfo);
-                }
-            }
+            showNotification(event.logInfo);
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
             //e.printStackTrace();
         }
     }
@@ -343,7 +330,7 @@ public class LogService extends Service {
 
 
     @SuppressLint("RestrictedApi")
-    private void showNotification(Context ctx, LogInfo logInfo) {
+    private void showNotification(LogInfo logInfo) {
 
         Notification notification = null;
 
@@ -404,10 +391,11 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        closeSession();
-        /*if (disposable != null) {
-            disposable.dispose();
-        }*/
+        Log.d(TAG, "Log service onDestroy");
+        if(executorService != null) {
+            executorService.shutdownNow();
+        }
+        executorService = null;
         super.onDestroy();
     }
 
@@ -423,6 +411,7 @@ public class LogService extends Service {
         if(executorService != null) {
             executorService.shutdownNow();
         }
+        executorService = null;
         super.onTaskRemoved(rootIntent);
     }
 }

@@ -47,6 +47,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -340,22 +341,26 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                     .setFailureToast(R.string.log_target_fail));
             Intent intent = new Intent(ctx, LogService.class);
             ctx.stopService(intent);
-            //Api.cleanupUid();
             ctx.startService(intent);
         }
         if (key.equals("enableLogService")) {
-            boolean enabled = sharedPreferences.getBoolean(key, false);
-            if (enabled) {
-                //Api.setLogTarget(ctx, true);
-                Intent intent = new Intent(ctx, LogService.class);
-                ctx.stopService(intent);
-                //Api.cleanupUid();
-                ctx.startService(intent);
-            } else {
-                //Api.setLogTarget(ctx, false);
-                Intent intent = new Intent(ctx, LogService.class);
-                ctx.stopService(intent);
-                //Api.cleanupUid();
+            if(G.logTarget() !=null && !G.logTarget().trim().isEmpty()) {
+                boolean enabled = sharedPreferences.getBoolean(key, false);
+                if (enabled) {
+                    //Api.setLogTarget(ctx, true);
+                    Intent intent = new Intent(ctx, LogService.class);
+                    ctx.stopService(intent);
+                    //Api.cleanupUid();
+                    ctx.startService(intent);
+                } else {
+                    //Api.setLogTarget(ctx, false);
+                    Intent intent = new Intent(ctx, LogService.class);
+                    ctx.stopService(intent);
+                    //Api.cleanupUid();
+                }
+            } else{
+                Toast.makeText(getApplicationContext(), "Please select log target first", Toast.LENGTH_LONG).show();
+
             }
         }
         if (key.equals("enableMultiProfile")) {

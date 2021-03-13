@@ -60,6 +60,10 @@ public class LogPreferenceFragment extends PreferenceFragment {
                     listPreference.setEntries(items);
                     listPreference.setEntryValues(items);
                 }
+                //if there is only one entry
+                if(items.length == 1) {
+                    G.logTarget(items[0]);
+                }
             } else {
                 ((PreferenceGroup) findPreference("logExperimental")).removePreference(listPreference);
             }
@@ -97,7 +101,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
             listPreference.setEntries(ar.toArray(new String[0]));
             listPreference.setEntryValues(val.toArray(new String[0]));
         }
-    }*/
+    }
 
     public static int[] convertIntegers(List<Integer> integers) {
         int[] ret = new int[integers.size()];
@@ -106,7 +110,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
             ret[i] = iterator.next().intValue();
         }
         return ret;
-    }
+    }*/
 
     /*private void populateAppList(Preference list) {
         final ArrayList<CharSequence> entriesList = new ArrayList<CharSequence>();
@@ -156,7 +160,7 @@ public class LogPreferenceFragment extends PreferenceFragment {
             }
             return true;
         });
-    }*/
+    }
 
     private Integer[] selectItems(ArrayList<Integer> entryValuesList) {
         List<Integer> items = new ArrayList<>();
@@ -166,5 +170,5 @@ public class LogPreferenceFragment extends PreferenceFragment {
             }
         }
         return items.toArray(new Integer[0]);
-    }
+    }*/
 }
