@@ -151,7 +151,7 @@ public class LogInfo {
     public static LogInfo parseLogs(String result, final Context ctx, String pattern, int type) {
         StringBuilder address;
         int start, end;
-        Integer uid = -11;
+        Integer uid = -100;
         Integer strUid;
         String out, src, dst, proto, spt, dpt, len;
         LogInfo logInfo = new LogInfo();
@@ -224,8 +224,8 @@ public class LogInfo {
                 if(logInfo.proto != null && logInfo.proto.toLowerCase().startsWith("icmp")) {
                     appName = "ICMP";
                     logInfo.uid = 0;
-                } else if(uid == -11) {
-                    appName = ctx.getString(R.string.kernel_item);
+                } else if(uid == -100) {
+                    appName = ctx.getString(R.string.unknown_item);
                     logInfo.uid = uid;
                 } else {
                     if (uid < 2000) {

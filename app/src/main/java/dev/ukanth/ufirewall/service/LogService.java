@@ -331,20 +331,13 @@ public class LogService extends Service {
 
     @SuppressLint("RestrictedApi")
     private void showNotification(LogInfo logInfo) {
-
-        Notification notification = null;
-
-        notification = notificationBuilder.setOngoing(false)
+        manager.notify(109, notificationBuilder.setOngoing(false)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentText(logInfo.uidString)
                 .setSmallIcon(R.drawable.ic_block_black_24dp)
                 .setAutoCancel(true)
-                .build();
-
-
-        manager.notify(109, notification);
-
+                .build());
     }
 
     private static void store(final LogInfo logInfo, Context context) {
@@ -378,15 +371,15 @@ public class LogService extends Service {
                 //reconnect logic
                 try {
                     FlowManager.init(new FlowConfig.Builder(context).build());
+                    store(logInfo,context);
                 } catch (Exception de) {
-                    Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
+                    Log.e(TAG, "Exception while saving log data:" + e.getLocalizedMessage(), de);
                 }
             }
-            Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
+            Log.e(TAG, "Exception while saving log data:" + e.getLocalizedMessage(), e);
         } catch (Exception e) {
-            Log.i(TAG, "Exception while saving log data:" + e.getLocalizedMessage());
+            Log.e(TAG, "Exception while saving log data:" + e.getLocalizedMessage(),e);
         }
-
     }
 
     @Override
