@@ -51,7 +51,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
     private PackageInfo info;
     private static PrettyTime prettyTime;
     private final RecyclerItemClickListener recyclerItemClickListener;
-
+    private View mView;
 
     public LogRecyclerViewAdapter(final Context context, RecyclerItemClickListener recyclerItemClickListener) {
         this.context = context;
@@ -66,7 +66,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_recycle_item, parent, false);
+        mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_recycle_item, parent, false);
         return new ViewHolder(mView);
     }
 
@@ -207,17 +207,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
         }
 
         public void bind(final LogData item, final RecyclerItemClickListener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(item);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(item));
         }
     }
-
-    public List<LogData> getLogData() {
-        return logData;
-    }
-
 }
