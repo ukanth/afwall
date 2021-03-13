@@ -452,14 +452,18 @@ public final class Api {
             if (whitelist) {
                 if (pref.equals("disable")) {
                     addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
+                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
                 } else {
                     addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
+                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
                 }
             } else {
                 if (pref.equals("disable")) {
                     addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
+                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
                 } else if (pref.equals("enable")) {
                     addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
+                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
                 }
             }
 
@@ -853,6 +857,8 @@ public final class Api {
             // on the LAN
             if (whitelist && !G.dns_proxy().equals("disable")) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
+                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p tcp --dport 53 -j RETURN");
+
                 //bug fix allow dns to be open on Pie for all connection type
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-wan" + " -p udp --dport 53" + " -j RETURN");
@@ -860,6 +866,12 @@ public final class Api {
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p udp --dport 53" + " -j RETURN");
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p udp --dport 53" + " -j RETURN");
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-tether" + " -p udp --dport 53" + " -j RETURN");
+
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-wan" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-home" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-tether" + " -p tcp --dport 53" + " -j RETURN");
                 }
             }
 
