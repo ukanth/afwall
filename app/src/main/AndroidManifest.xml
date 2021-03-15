@@ -110,7 +110,7 @@
         <activity
             android:name=".preferences.PreferencesActivity"
             android:theme="@style/AppDarkTheme"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
             android:hardwareAccelerated="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -122,29 +122,29 @@
             android:hardwareAccelerated="true"></activity>
         <activity
             android:name=".activity.RulesActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity
             android:name=".activity.ProfileActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity
             android:name=".activity.AppDetailActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         <activity
             android:name=".activity.LogActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity
             android:name=".activity.OldLogActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity
             android:name=".activity.LogDetailActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity
             android:name=".activity.DataDumpActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
@@ -170,7 +170,7 @@
         </activity>
         <activity
             android:name=".activity.CustomScriptActivity"
-            android:configChanges="orientation|keyboardHidden|locale|screenLayout">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
