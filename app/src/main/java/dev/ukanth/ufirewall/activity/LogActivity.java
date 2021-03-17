@@ -235,6 +235,8 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             } finally {
                 loadDialog = null;
             }
+            recyclerView.setAdapter(null);
+            recyclerView.setAdapter(recyclerViewAdapter);
 
             mSwipeLayout.setRefreshing(false);
 
@@ -249,8 +251,10 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                 recyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
+
             recyclerView.getRecycledViewPool().clear();
-            Log.i(Api.TAG,"Ended Loading: " + System.currentTimeMillis());
+            recyclerView.setRecycledViewPool(new RecyclerView.RecycledViewPool());
+            //Log.i(Api.TAG,"Ended Loading: " + System.currentTimeMillis());
         }
     }
 

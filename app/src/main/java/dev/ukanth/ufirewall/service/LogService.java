@@ -30,10 +30,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -48,6 +52,10 @@ import androidx.core.graphics.drawable.IconCompat;
 
 import android.os.Looper;
 import android.os.SystemClock;
+import android.provider.Settings;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -56,7 +64,14 @@ import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
 
 
+import org.ocpsoft.prettytime.PrettyTime;
+import org.ocpsoft.prettytime.TimeUnit;
+import org.ocpsoft.prettytime.units.JustNow;
+import org.slf4j.helpers.Util;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -107,6 +122,7 @@ public class LogService extends Service {
     private ExecutorService executorService;
 
     static {
+        //TODO: Remove this line before release
         com.topjohnwu.superuser.Shell.enableVerboseLogging = BuildConfig.DEBUG;
         com.topjohnwu.superuser.Shell.setDefaultBuilder(com.topjohnwu.superuser.Shell.Builder.create()
                 .setFlags(com.topjohnwu.superuser.Shell.FLAG_REDIRECT_STDERR)
@@ -198,7 +214,7 @@ public class LogService extends Service {
 
 
     private void startLogService() {
-        if (G.enableLogService() && executorService == null) {
+        if (G.enableLogService()) {
             // this method is executed in a background thread
             // no problem calling su here
             String log = G.logTarget();
@@ -223,7 +239,6 @@ public class LogService extends Service {
                     @Override
                     public void onAddElement(String line) {
                         //kmsg entering into idle state, wait for few seconds and start again ?
-                        Log.i(TAG, line);
                         if(line.contains("suspend exit")) {
                             restartWatcher(logPath);
                         }
@@ -242,9 +257,6 @@ public class LogService extends Service {
                 G.enableLogService(false);
                 stopSelf();
             }
-        } else {
-            Log.i(Api.TAG, "Logservice is running.. skipping");
-
         }
     }
 
@@ -297,14 +309,20 @@ public class LogService extends Service {
         //kills the existing one
         if(executorService != null) {
             executorService.shutdownNow();
+        } else {
+            executorService = Executors.newCachedThreadPool();
         }
+
         //make sure it's enabled first
         if(G.enableLogService()) {
-            executorService = Executors.newSingleThreadExecutor();
+            Log.i(TAG, "Staring log watcher");
+            //Toast.makeText(getApplicationContext(), getString(R.string.log_service_watcher), Toast.LENGTH_SHORT).show();
             com.topjohnwu.superuser.Shell.su(logCommand).to(callbackList).submit(executorService, out -> {
                 //failed to start, try restarting
                 if(out.getCode() == 0) {
                     restartWatcher(logPath);
+                } else{
+                    Log.i(TAG, "Started successfully");
                 }
             });
         } else{
@@ -319,8 +337,10 @@ public class LogService extends Service {
         try {
 
             LogEvent event = new LogEvent(LogInfo.parseLogs(line, context, "{AFL}", 0), context);
-            store(event.logInfo, event.ctx);
-            showNotification(event.logInfo);
+            if(event.logInfo != null) {
+                store(event.logInfo, event.ctx);
+                showNotification(event.logInfo);
+            }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             //e.printStackTrace();
@@ -328,17 +348,57 @@ public class LogService extends Service {
     }
 
 
+    private void checkBatteryOptimize() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final Intent doze = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+            if (Api.batteryOptimized(this) && getPackageManager().resolveActivity(doze, 0) != null) {
+            }
+        }
+    }
+
+    private static PrettyTime prettyTime;
+
+    public static String pretty(Date date) {
+        if (prettyTime == null) {
+            prettyTime = new PrettyTime(new Locale(G.locale()));
+            for (TimeUnit t : prettyTime.getUnits()) {
+                if (t instanceof JustNow) {
+                    prettyTime.removeUnit(t);
+                    break;
+                }
+            }
+        }
+        prettyTime.setReference(date);
+        return prettyTime.format(new Date(0));
+    }
 
     @SuppressLint("RestrictedApi")
     private void showNotification(LogInfo logInfo) {
-        manager.notify(109, notificationBuilder.setOngoing(false)
-                .setCategory(NotificationCompat.CATEGORY_EVENT)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                .setContentText(logInfo.uidString)
-                .setSmallIcon(R.drawable.ic_block_black_24dp)
-                .setAutoCancel(true)
-                .build());
+        /*Drawable icon = getPackageManager().getApplicationIcon(Api.getPackageDetails(getApplicationContext(), logInfo.uid).applicationInfo);
+        Bitmap bitmap = null;
+        if (icon instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable)icon).getBitmap();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if(icon instanceof  AdaptiveIconDrawable) {
+                bitmap = Api.getBitmapFromDrawable(icon);
+            }
+        }*/
+
+        //if(bitmap != null) {
+            manager.notify(109, notificationBuilder.setOngoing(false)
+                    .setCategory(NotificationCompat.CATEGORY_EVENT)
+                    .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+                    .setContentText(logInfo.uidString)
+                    //.setLargeIcon(bitmap)
+                    .setSmallIcon(R.drawable.ic_block_black_24dp)
+                    .setAutoCancel(true)
+                    .build());
+        //}
     }
+
+
 
     private static void store(final LogInfo logInfo, Context context) {
         try {

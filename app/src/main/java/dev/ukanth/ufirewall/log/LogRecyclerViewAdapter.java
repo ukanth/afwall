@@ -129,7 +129,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
                     holder.icon.setBackground((Drawable)drawable);
             } else{
                 Drawable appIcon = context.getDrawable(R.drawable.ic_unknown);
-                holder.icon.setImageBitmap(getBitmapFromDrawable(appIcon));
+                holder.icon.setImageBitmap(Api.getBitmapFromDrawable(appIcon));
             }
         } catch (Exception e) {
             Log.e(TAG,e.getMessage(),e);
@@ -139,7 +139,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
                     holder.icon.setBackground(context.getDrawable(R.drawable.ic_unknown));
                 } else {
                     Drawable appIcon = context.getDrawable(R.drawable.ic_unknown);
-                    holder.icon.setImageBitmap(getBitmapFromDrawable(appIcon));
+                    holder.icon.setImageBitmap(Api.getBitmapFromDrawable(appIcon));
                 }
             }catch (Exception e1) {
                 Log.e(TAG,e1.getMessage(),e1);
@@ -161,14 +161,6 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
             holder.dataDenied.setText(context.getString(R.string.log_denied) + " " + data.getCount() + " " + context.getString(R.string.log_time));
         }
         holder.icon.invalidate();
-    }
-
-    private Bitmap getBitmapFromDrawable(Drawable appIcon) {
-        Bitmap bitmap = Bitmap.createBitmap(appIcon.getIntrinsicWidth(), appIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        appIcon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        appIcon.draw(canvas);
-        return bitmap;
     }
 
     public static String pretty(Date date) {

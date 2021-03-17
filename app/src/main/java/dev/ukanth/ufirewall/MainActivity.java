@@ -187,9 +187,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initTheme();
         G.registerPrivateLink();
 
-
-
-
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
                     .getDeclaredField("FLAG_HARDWARE_ACCELERATED").getInt(null);
@@ -246,15 +243,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
         }
-        //registerQuickApply();
         registerUIbroadcast4();
         registerUIbroadcast6();
-
         registerToastbroadcast();
-        //migrateNotification();
         initTextWatcher();
-        registerLogService();
-        //checkAndAskForBatteryOptimization();
         registerThemeIntent();
         registerUIRefresh();
     }
@@ -372,6 +364,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void registerNetworkObserver() {
         startService(new Intent(getBaseContext(), FirewallService.class));
+        //start log service
+        if(G.enableLogService()) {
+            startService(new Intent(getBaseContext(), LogService.class));
+        }
     }
 
     @Override
@@ -1432,13 +1428,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .title(R.string.confirmMsg)
                 //.content(R.string.confirmMsg)
                 .cancelable(false)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        purgeRules();
-                        Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
-                        dialog.dismiss();
-                    }
+                .onPositive((dialog, which) -> {
+                    purgeRules();
+                    Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
+                    dialog.dismiss();
                 })
                 .onNegative((dialog, which) -> {
                     Api.setEnabled(getApplicationContext(), true, true);
@@ -2643,6 +2636,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 G.hasRoot(true);
                 startRootShell();
                 new SecurityUtil(MainActivity.this).passCheck();
+                registerNetworkObserver();
             }
         }
     }

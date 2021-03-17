@@ -347,20 +347,17 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             if(G.logTarget() !=null && !G.logTarget().trim().isEmpty()) {
                 boolean enabled = sharedPreferences.getBoolean(key, false);
                 if (enabled) {
-                    //Api.setLogTarget(ctx, true);
+                    Toast.makeText(getApplicationContext(), getString(R.string.log_service_start), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(ctx, LogService.class);
                     ctx.stopService(intent);
-                    //Api.cleanupUid();
                     ctx.startService(intent);
                 } else {
-                    //Api.setLogTarget(ctx, false);
+                    Toast.makeText(getApplicationContext(), getString(R.string.log_service_stop), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(ctx, LogService.class);
                     ctx.stopService(intent);
-                    //Api.cleanupUid();
                 }
             } else{
-                Toast.makeText(getApplicationContext(), "Please select log target first", Toast.LENGTH_LONG).show();
-
+                Toast.makeText(getApplicationContext(), getString(R.string.log_service_select), Toast.LENGTH_LONG).show();
             }
         }
         if (key.equals("enableMultiProfile")) {

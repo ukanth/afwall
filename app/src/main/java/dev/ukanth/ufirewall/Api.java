@@ -43,6 +43,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
@@ -55,6 +57,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -506,7 +509,7 @@ public final class Api {
         if (G.enableLogService() && G.logTarget() != null) {
             if (G.logTarget().trim().equals("LOG")) {
                 //cmds.add("-A " + AFWALL_CHAIN_NAME  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid");
+                cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options");
             } else if (G.logTarget().trim().equals("NFLOG")) {
                 //cmds.add("-A " + AFWALL_CHAIN_NAME + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
@@ -1396,12 +1399,14 @@ public final class Api {
     //    callback.run(ctx, getBusyBoxPath(ctx, true) + " dmesg -c");
     //}
 
-    //purge 1 hour data
+    //purge 2 hour data
     public static void purgeOldLog() {
-        long purgeInterval = System.currentTimeMillis() - 3600000;
+        long purgeInterval = System.currentTimeMillis() - 7200000;
         long count = new Select(com.raizlabs.android.dbflow.sql.language.Method.count()).from(LogData.class).count();
         //records are more
-        new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
+        if(count > 5000) {
+            new Delete().from(LogData.class).where(LogData_Table.timestamp.lessThan(purgeInterval)).async().execute();
+        }
     }
 
     /**
@@ -3925,6 +3930,23 @@ public final class Api {
             return tostr;
         }
 
+    }
+
+    @NonNull
+    public static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
+        final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bmp);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bmp;
+    }
+
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public static boolean batteryOptimized(Context context) {
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return !pm.isIgnoringBatteryOptimizations(context.getPackageName());
     }
 
     /*public static class LogProbeCallback extends RootCommand.Callback {
