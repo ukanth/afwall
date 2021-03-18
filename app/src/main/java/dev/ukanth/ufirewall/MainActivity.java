@@ -1226,15 +1226,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 return true;
             case R.id.menu_import:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // permissions have not been granted.
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_READ_STORAGE);
-
-                } else {
+                if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+                    // Do some stuff
                     showImportDialog();
+                } else {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        // permissions have not been granted.
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_REQUEST_READ_STORAGE);
+
+                    } else {
+                        showImportDialog();
+                    }
                 }
                 return true;
             default:
