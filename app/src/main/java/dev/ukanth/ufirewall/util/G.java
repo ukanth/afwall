@@ -108,7 +108,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String SHOW_UID = "showUid";
     private static final String NOTIFY_INSTALL = "notifyAppInstall";
     private static final String DISABLE_ICONS = "disableIcons";
-    private static final String IPTABLES_PATH = "ip_path";
+    private static final String IPTABLES_PATH = "ipt_path";
     private static final String PROTECTION_OPTION = "passSetting";
     private static final String BUSYBOX_PATH = "bb_path";
     private static final String TOAST_POS = "toast_pos";
@@ -515,7 +515,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static String ip_path() {
-        return gPrefs.getString(IPTABLES_PATH, "auto");
+        return gPrefs.getString(IPTABLES_PATH, "system");
     }
 
     public static String ip_path(String val) {

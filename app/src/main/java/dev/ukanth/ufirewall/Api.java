@@ -323,9 +323,13 @@ public final class Api {
 
     public static String getBinaryPath(Context ctx, boolean setv6) {
         boolean builtin = true;
-        String pref = G.ip_path();
+        String ip_path = G.ip_path();
 
-        if (pref.equals("system")) {
+        if (ip_path.equals("system")) {
+            builtin = false;
+        } else if(ip_path.equals("builtin")) {
+            builtin = true;
+        } else{
             builtin = false;
         }
 

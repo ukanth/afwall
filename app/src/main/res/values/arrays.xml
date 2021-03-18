@@ -110,13 +110,11 @@
     </string-array>
     
     <string-array name="iptables_binary">
-        <item>@string/auto</item>
         <item>@string/system_ipt</item>
         <item>@string/builtin_ipt</item>
     </string-array>
     
       <string-array name="iptables_binary_path">
-        <item>auto</item>
         <item>system</item>
         <item>builtin</item>
     </string-array>

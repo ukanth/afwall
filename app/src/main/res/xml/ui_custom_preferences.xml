@@ -1,10 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
  <PreferenceCategory android:title="@string/binaries" >
     <ListPreference
-        android:defaultValue="auto"
+        android:defaultValue="system"
         android:entries="@array/iptables_binary"
         android:entryValues="@array/iptables_binary_path"
-        android:key="ip_path"
+        android:key="ipt_path"
         android:summary="%s"
         android:title="@string/iptables_pref" >
     </ListPreference>
