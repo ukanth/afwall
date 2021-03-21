@@ -132,6 +132,10 @@ public final class InterfaceTracker {
         return bluetoothAdapter;
     }
 
+    public static BluetoothProfile getBtProfile() {
+        return btPanProfile;
+    }
+
     private static void getBluetoothTetherStatus(Context context, InterfaceDetails d) {
         if (btPanProfile != null) {
             Method[] btMethods = btPanProfile.getClass().getDeclaredMethods();

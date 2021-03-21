@@ -310,7 +310,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             isRefreshRequired = true;
         }
 
-        if (key.equals("ip_path") || key.equals("dns_value")) {
+        if (key.equals("ipt_path") || key.equals("dns_value")) {
             rxEvent.publish(new RulesEvent("", ctx));
         }
 
