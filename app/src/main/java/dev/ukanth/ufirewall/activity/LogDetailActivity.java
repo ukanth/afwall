@@ -388,7 +388,11 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 .cancelable(true)
                 .onPositive((dialog, which) -> {
                     //SQLite.delete(LogData_Table.class);
-                    FlowManager.getDatabase(LogDatabase.NAME).reset();
+                   // FlowManager.getDatabase(LogDatabase.NAME).reset();
+                    SQLite.delete(LogData.class)
+                            .where(LogData_Table.uid.eq(uid))
+                            .async()
+                            .execute();
                     Toast.makeText(getApplicationContext(), ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 })
