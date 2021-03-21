@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
@@ -31,6 +32,8 @@ import dev.ukanth.ufirewall.util.G;
 
 public class AppDetailActivity extends AppCompatActivity {
     public static final String TAG = "AFWall";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

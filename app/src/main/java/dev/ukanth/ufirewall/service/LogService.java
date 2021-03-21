@@ -121,14 +121,6 @@ public class LogService extends Service {
     private List<String> callbackList;
     private ExecutorService executorService;
 
-    static {
-        //TODO: Remove this line before release
-        com.topjohnwu.superuser.Shell.enableVerboseLogging = BuildConfig.DEBUG;
-        com.topjohnwu.superuser.Shell.setDefaultBuilder(com.topjohnwu.superuser.Shell.Builder.create()
-                .setFlags(com.topjohnwu.superuser.Shell.FLAG_REDIRECT_STDERR)
-        );
-    }
-
     //public native String stringFromLog();
 
     @Nullable

@@ -22,18 +22,23 @@
 
 package dev.ukanth.ufirewall.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -46,6 +51,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,14 +74,21 @@ import dev.ukanth.ufirewall.util.LogNetUtil;
 
 public class LogDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
+
     private RecyclerView recyclerView;
+    protected static String logDumpFile = "log_dump.log";
+
     private LogDetailRecyclerViewAdapter recyclerViewAdapter;
     private TextView emptyView;
     private SwipeRefreshLayout mSwipeLayout;
     protected Menu mainMenu;
     private LogData current_selected_logData;
+    private static List<LogData> logDataList;
 
-    private int uid;
+    protected static final int MENU_EXPORT_LOG = 100;
+
+    private static int uid;
     protected final int MENU_TOGGLE = -4;
     protected final int MENU_CLEAR = 40;
 
@@ -273,11 +290,11 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            List<LogData> logData = getLogData(uid);
+            logDataList = getLogData(uid);
             try {
-                if (logData != null && logData.size() > 0) {
-                    Collections.sort(logData, new DateComparator());
-                    recyclerViewAdapter.updateData(logData);
+                if (logDataList != null && logDataList.size() > 0) {
+                    Collections.sort(logDataList, new DateComparator());
+                    recyclerViewAdapter.updateData(logDataList);
                     return true;
                 } else {
                     return false;
@@ -339,6 +356,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         //sub.add(0, MENU, 0, R.string.clear_log).setIcon(R.drawable.ic_clearlog);
         //sub.add(0, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.exportr);
         //populateMenu(sub);
+        sub.add(1, MENU_EXPORT_LOG, 0, R.string.export_to_sd).setIcon(R.drawable.ic_export);
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         super.onCreateOptionsMenu(menu);
         mainMenu = menu;
@@ -356,9 +374,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             case MENU_CLEAR:
                 clearDatabase(getApplicationContext());
                 return true;
-            /*case MENU_EXPORT_LOG:
-                //exportToSD();
-                return true;*/
+            case MENU_EXPORT_LOG:
+                exportToSD();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -385,6 +403,96 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     public void onRefresh() {
         (new CollectDetailLog()).setContext(this).execute();
     }
+
+    private static class Task extends AsyncTask<Void, Void, Boolean> {
+        public String filename = "";
+        private final Context ctx;
+
+        private final WeakReference<LogDetailActivity> activityReference;
+
+        // only retain a weak reference to the activity
+        Task(LogDetailActivity context) {
+            this.ctx = context;
+            activityReference = new WeakReference<>(context);
+        }
+
+
+        @Override
+        public Boolean doInBackground(Void... args) {
+            FileOutputStream output = null;
+            boolean res = false;
+
+            try {
+                File file;
+                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" );
+                    dir.mkdirs();
+                    file = new File(dir, logDumpFile);
+                } else{
+                    file = new File(ctx.getExternalFilesDir(null) + "/" + logDumpFile) ;
+                }
+                output = new FileOutputStream(file);
+                StringBuilder builder = new StringBuilder();
+                builder.append("uid: " + uid);
+
+                for(LogData data: logDataList) {
+                    builder.append("src:").append(data.getSrc()).append(",")
+                            .append("dst:").append(data.getDst()).append(",")
+                            .append("proto:").append(data.getProto()).append(",")
+                            .append("sport:").append(data.getSpt()).append(",")
+                            .append("dport:").append(data.getDpt());
+                    builder.append("\n");
+                }
+                output.write(builder.toString().getBytes());
+                filename = file.getAbsolutePath();
+                res = true;
+            } catch (FileNotFoundException e) {
+                Log.e(G.TAG,e.getMessage(),e);
+            } catch (IOException e) {
+                Log.e(G.TAG,e.getMessage(),e);
+            } finally {
+                try {
+                    if (output != null) {
+                        output.flush();
+                        output.close();
+                    }
+                } catch (IOException ex) {
+                    Log.e(G.TAG,ex.getMessage(),ex);
+                }
+            }
+            return res;
+        }
+
+        @Override
+        public void onPostExecute(Boolean res) {
+            LogDetailActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) return;
+
+            if (res) {
+                Api.toast(ctx, ctx.getString(R.string.export_rules_success) + filename, Toast.LENGTH_LONG);
+            } else {
+                Api.toast(ctx, ctx.getString(R.string.export_logs_fail), Toast.LENGTH_LONG);
+            }
+        }
+    }
+
+        private void exportToSD() {
+
+            if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+                // Do some stuff
+                new Task(this).execute();
+            } else {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    // permissions have not been granted.
+                    ActivityCompat.requestPermissions(LogDetailActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                } else{
+                    new Task(this).execute();
+                }
+            }
+        }
 
 	/*@Override
     public boolean onPrepareOptionsMenu(Menu menu) {

@@ -27,6 +27,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -52,6 +53,7 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
@@ -75,7 +77,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     protected static String dataText;
 
     // to be filled in by subclasses
-    protected static String sdDumpFile;
+    protected static String sdDumpFile =  "iptables.log";
 
     protected abstract void populateMenu(SubMenu sub);
 
@@ -207,14 +209,15 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             boolean res = false;
 
             try {
-                //File sdCard = Environment.Task();
-                //File file = new File(ctx.getExternalFilesDir(null), fileName);
-                //File dir = new File(ctx.getExternalFilesDir(null) + "/export/");
-                //dir.mkdirs();
-
-                File file = new File(ctx.getExternalFilesDir(null), sdDumpFile);
+                File file;
+                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" );
+                    dir.mkdirs();
+                    file = new File(dir, sdDumpFile);
+                } else{
+                    file = new File(ctx.getExternalFilesDir(null) + "/" + sdDumpFile) ;
+                }
                 output = new FileOutputStream(file);
-
                 output.write(dataText.getBytes());
                 filename = file.getAbsolutePath();
                 res = true;
@@ -250,14 +253,19 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
     private void exportToSD() {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // permissions have not been granted.
-            ActivityCompat.requestPermissions(DataDumpActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-        } else {
+        if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+            // Do some stuff
             new Task(this).execute();
+        } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // permissions have not been granted.
+                ActivityCompat.requestPermissions(DataDumpActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+            } else{
+                new Task(this).execute();
+            }
         }
     }
 
