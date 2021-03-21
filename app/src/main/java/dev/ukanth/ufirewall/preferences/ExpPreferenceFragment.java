@@ -35,6 +35,7 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             "/sbin/.core/img/.core/service.d/",
             "/sbin/.magisk/img/.core/service.d/",
             "/magisk/phh/su.d/",
+            "/data/adb/post-fs-data.d/",
             "/data/adb/service.d/",
             "/sbin/.core/img/phh/su.d/",
             "/su/su.d/",
