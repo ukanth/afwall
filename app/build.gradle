@@ -73,8 +73,8 @@ dependencies {
     //shared preference for Xposed
     implementation 'com.crossbowffs.remotepreferences:remotepreferences:0.7'
 
-
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    //TODO: Remove this before release
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
     implementation "dnsjava:dnsjava:3.3.1"
 }

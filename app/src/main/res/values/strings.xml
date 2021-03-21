@@ -392,8 +392,8 @@
     <string name="invalid_profile">Invalid profile name</string>
 
     <!-- Donate -->
-    <string name="donate_only">This feature is available only in the donate version</string>
-    <string name="buy_donate">Buy donate version or donate key</string>
+    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+    <string name="buy_donate">Purchase donate version or Unlocker</string>
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features.</string>
     <string name="donate_thanks">Thanks for your support.</string>
