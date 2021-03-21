@@ -2615,8 +2615,6 @@ public final class Api {
                 file = new File(dir, fileName);
             } else{
                 file = new File(ctx.getExternalFilesDir(null)  + "/" + fileName);
-
-
             }
 
             try {
@@ -2670,6 +2668,10 @@ public final class Api {
                     //now gets all the preferences
                     exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
 
+                    //store whitelist/blocklist mode
+                    String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+                    exportObject.put("mode", mode);
+
                     myOutWriter.append(exportObject.toString());
                     res = true;
                     myOutWriter.close();
@@ -2679,16 +2681,14 @@ public final class Api {
                 }
 
             } catch (FileNotFoundException e) {
-                Log.d(TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage(),e);
             } catch (IOException e) {
-                Log.d(TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage(),e);
             } catch (JSONException e) {
-                Log.d(TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage(),e);
             } catch (Exception e) {
-                Log.d(TAG, e.getLocalizedMessage());
+                Log.d(TAG, e.getLocalizedMessage(),e);
             }
-
-
         return res;
     }
 
@@ -2737,7 +2737,13 @@ public final class Api {
                     JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
                     JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
 
-                    myOutWriter.append(jArray.toString());
+                    JSONObject exportObject = new JSONObject();
+                    exportObject.put("rules", jArray);
+
+                    String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+                    exportObject.put("mode", mode);
+
+                    myOutWriter.append(exportObject.toString());
                     res = true;
                     myOutWriter.close();
                     fOut.close();
@@ -2767,8 +2773,25 @@ public final class Api {
                 text.append(line);
             }
             String data = text.toString();
-            JSONArray array = new JSONArray(data);
-            updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
+
+            try {
+                //old export format
+                JSONArray array = new JSONArray(data);
+                updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
+            } catch (JSONException e) {
+                //new exported format
+                JSONObject jsonObject = new JSONObject(data);
+
+                //save mode
+                if(jsonObject.get("mode") != null) {
+                    G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).commit();
+                }
+
+                JSONArray array = (JSONArray) jsonObject.get("rules");
+                updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
+
+
+            }
             returnVal = true;
         } catch (FileNotFoundException e) {
             msg.append(ctx.getString(R.string.import_rules_missing));
@@ -2945,6 +2968,12 @@ public final class Api {
             String[] intType = {"logPingTime", "customDelay", "patternMax", "widgetX", "widgetY", "notification_priority"};
             List<String> ignoreList = Arrays.asList(ignore);
             List<String> intList = Arrays.asList(intType);
+
+            //allow/deny rule
+            if(object.get("mode") != null) {
+                G.pPrefs.edit().putString(PREF_MODE, object.getString("mode")).commit();
+            }
+
             JSONArray prefArray = (JSONArray) object.get("prefs");
             for (int i = 0; i < prefArray.length(); i++) {
                 JSONObject prefObj = (JSONObject) prefArray.get(i);
