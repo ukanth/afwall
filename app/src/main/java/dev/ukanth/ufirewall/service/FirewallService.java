@@ -201,7 +201,8 @@ public class FirewallService extends Service {
         }
 
         if(bluetoothAdapter != null) {
-            bluetoothAdapter.cancelDiscovery();
+
+            bluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP,InterfaceTracker.getBtProfile());
         }
         super.onDestroy();
     }
