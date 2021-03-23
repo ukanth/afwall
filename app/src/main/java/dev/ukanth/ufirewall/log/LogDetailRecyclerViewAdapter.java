@@ -47,11 +47,13 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         data = logData.get(position);
         if (data != null) {
             holder.bind(logData.get(position), recyclerItemClickListener);
-            if (data.getOut() != null && (data.getOut().contains("lan") || data.getOut().startsWith("eth") || data.getOut().startsWith("ra") || data.getOut().startsWith("bnep"))) {
-                holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_wifi));
+            if(data.getOut() != null) {
                 holder.deniedTime.setText(pretty(data.getTimestamp()) + "(" + data.getOut() + ")");
-            } else {
-                holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_mobiledata));
+                if((data.getOut().contains("lan") || data.getOut().startsWith("eth") || data.getOut().startsWith("ra") || data.getOut().startsWith("bnep"))) {
+                    holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_wifi));
+                } else{
+                    holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_mobiledata));
+                }
             }
             holder.dataDest.setText(context.getResources().getString(R.string.log_dst) + data.getDst() + ":" + data.getDpt());
             holder.dataSrc.setText(context.getResources().getString(R.string.log_src) + data.getSrc() + ":" + data.getSpt());

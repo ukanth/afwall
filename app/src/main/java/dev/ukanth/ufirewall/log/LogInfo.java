@@ -24,6 +24,7 @@
 package dev.ukanth.ufirewall.log;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -42,6 +43,8 @@ import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.InterfaceDetails;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 
@@ -234,7 +237,11 @@ public class LogInfo {
                 if (((start = result.indexOf("OUT=")) != -1)
                         && ((end = result.indexOf(" ", start)) != -1)) {
                     out = result.substring(start + 4, end);
-                    logInfo.out = out;
+                    if(out.isEmpty()) {
+                        logInfo.out = (InterfaceTracker.getCurrentCfg(ctx,false).netType == ConnectivityManager.TYPE_WIFI ? "eth" : "mobile");
+                    } else {
+                        logInfo.out = out;
+                    }
                 }
 
                 if (uid == android.os.Process.myUid()) {
