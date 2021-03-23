@@ -7,7 +7,7 @@ if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables ]; then
 elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables ]; then
   path="dev.ukanth.ufirewall.donate"
 else
-  log -p i -t afwall "AFWall does not seem to be installed, waited for $((endDt-startDt)) seconds."
+  log -p i -t afwall "AFWall does not seem to be installed"
   exit
 fi
 

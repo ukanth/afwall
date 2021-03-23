@@ -1297,7 +1297,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                             //fileDialog.setFlag(true);
                             //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
-                            fileDialog.addFileListener((FileDialog.FileSelectedListener) file -> {
+                            fileDialog.addFileListener(file -> {
                                 String fileSelected = file.toString();
                                 StringBuilder builder = new StringBuilder();
                                 if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {

@@ -39,7 +39,7 @@ public class SecurityUtil {
     }
 
     private void deviceCheck() {
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if ((G.isDoKey(context) || isDonate())) {
                 KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
                 if (keyguardManager.isKeyguardSecure()) {
@@ -85,10 +85,18 @@ public class SecurityUtil {
                         return true;
                     }
                 case "p3":
-                    if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
-                        requestFingerprint();
-                        return true;
-                    }
+                    /* TODO: Testing is required before enabling this.
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                        if (BiometricUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
+                            requestFingerprintQ();
+                            return true;
+                        }
+                    } else {*/
+                        if (FingerprintUtil.isAndroidSupport() && G.isFingerprintEnabled()) {
+                            requestFingerprint();
+                            return true;
+                        }
+                    //}
                     break;
             }
         }
@@ -105,6 +113,16 @@ public class SecurityUtil {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void requestFingerprint() {
         FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(activity);
+        dialog.setOnFingerprintFailureListener(() -> {
+            activity.finish();
+            android.os.Process.killProcess(android.os.Process.myPid());
+        });
+        dialog.show();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void requestFingerprintQ() {
+        BiometricUtil.FingerprintDialog dialog = new BiometricUtil.FingerprintDialog(activity);
         dialog.setOnFingerprintFailureListener(() -> {
             activity.finish();
             android.os.Process.killProcess(android.os.Process.myPid());
