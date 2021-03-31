@@ -23,6 +23,7 @@ import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.broadcast.ConnectivityChangeReceiver;
 import dev.ukanth.ufirewall.broadcast.PackageBroadcast;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
 public class FirewallService extends Service {
@@ -201,8 +202,11 @@ public class FirewallService extends Service {
         }
 
         if(bluetoothAdapter != null) {
-
-            bluetoothAdapter.closeProfileProxy(BluetoothProfile.A2DP,InterfaceTracker.getBtProfile());
+            try {
+                bluetoothAdapter.closeProfileProxy(5, InterfaceTracker.getBtProfile());
+            }catch (Exception e){
+                Log.e(G.TAG, "Error closing bt profile",e);
+            }
         }
         super.onDestroy();
     }

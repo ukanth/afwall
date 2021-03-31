@@ -8,7 +8,7 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2001113
+        versionCode 20210326
         versionName "3.5.0"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
@@ -74,7 +74,7 @@ dependencies {
     implementation 'com.crossbowffs.remotepreferences:remotepreferences:0.7'
 
     //TODO: Remove this before release
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
     implementation "dnsjava:dnsjava:3.3.1"
 }

@@ -76,7 +76,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     static {
         //TODO: Remove this line before release
-        com.topjohnwu.superuser.Shell.enableVerboseLogging = BuildConfig.DEBUG;
+        //com.topjohnwu.superuser.Shell.enableVerboseLogging = BuildConfig.DEBUG;
         com.topjohnwu.superuser.Shell.setDefaultBuilder(com.topjohnwu.superuser.Shell.Builder.create()
                 .setFlags(com.topjohnwu.superuser.Shell.FLAG_REDIRECT_STDERR)
         );
