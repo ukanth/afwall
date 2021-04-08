@@ -23,11 +23,11 @@
     <string name="error_refresh">خطأ في تحديث قواعد العناوين</string>
     <string name="error_apply">خطأ في تطبيق قواعد العناوين</string>
     <string name="error_fetch">خطأ في جلب قواعد العناوين</string>
-    <string name="error_su_toast">غير قادر على الوصول إلى الجذر!</string>
+    <string name="error_su_toast">Unable to acquire root access !</string>
     <string name="error_su">لم أستطع الحصول على صلاحيات الرووت.\n يجب أن يكون جهازك مروت لإستعمال AFWall+.\n\n إذا كان هذا الجهاز مروت، الرجاء التأكد أن AFWall+ يملك الإذن لتنفيذ تعليمة \"su\".</string>
     <string name="error_netfilter">تعذر العثور على دعم اهداف iptables والسلاسل.\+nAFWall قد لا يعمل على النحو المتوقع نتيجة لهذا التقييد.</string>
     <string name="error_common">خطأ: </string>
-    <string name="all_item">(أي تطبيق) - مماثل لتحديد جميع التطبيقات</string>
+    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
     <string name="kernel_item">(نواة) - نواة لينيكس</string>
     <string name="android_system">نظام الأندرويد</string>
     <string name="unknown_item">غير معروف</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">السجل معطل</string>
     <string name="log_was_enabled">السِجِل مُفَعَّل</string>
     <string name="log_was_disabled">السجل معطل</string>
+    <string name="log_target_success">Log target change succesful</string>
+    <string name="log_target_fail">Log target change failed</string>
     <string name="log_toggle_failed">خطأ في تبديل حالة السجل</string>
     <string name="log_target_failed">خطأ: النواة لا تدعم LOG/NFLOG</string>
     <string name="log_cleared">تم مسح السجل</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">تفعيل هذا، للتحكم في أذونات VPN بشكل منفصل</string>
     <string name="roaming">التحكم ببيانات التجوال</string>
     <string name="roamingSummary">تفعيل هذا، للتحكم في أذونات التجوال بشكل منفصل</string>
+    <string name="tether_profile">Tether control</string>
+    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
     <string name="tor_profile">Tor control</string>
     <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
     <string name="lan">الشبكة المحلية</string>
     <string name="vpn">VPN</string>
+    <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">البيانات</string>
     <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
@@ -338,8 +343,8 @@
     <string name="imports">إستيراد</string>
     <string name="invalid_profile">اسم الوضع غير صالح</string>
     <!-- Donate -->
-    <string name="donate_only">تتوفر هذه الميزة فقط في نسخة التبرع</string>
-    <string name="buy_donate">شراء الإصدار الرئيسي او شراء مفتاح</string>
+    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+    <string name="buy_donate">Purchase donate version or Unlocker</string>
     <string name="unlock_donate"> اضغط لفتح التبرع</string>
     <string name="donate_support">You can now use donate features.</string>
     <string name="donate_thanks">Thanks for your support.</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">Unable to delete the startup script</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
     <string name="runNotification">Rules Progress</string>
-    <string name="displayBlockNotification">disable log alert notification</string>
+    <string name="displayBlockNotification">Disable log notification</string>
+    <string name="displayBlockNotification_enable">Enable log notification</string>
     <string name="applyRulesFasterTitle">Instant Apply</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">App Notification</string>
     <string name="hide">Hide</string>
     <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="firewall_log_notify">Log Notification</string>
     <string name="ui_themes_header">Themes</string>
     <string name="theme">UI Theme</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Clone columns</string>
+    <string name="from">From</string>
+    <string name="legend_action">Actions</string>
+    <string name="clear_all">Clear All</string>
+    <string name="log_target">Log Target</string>
+    <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
+    <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
+    <string name="showAllApps">Show all apps</string>
+    <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
+    <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
+    <string name="connection_default_allow">Default Allow Connection</string>
+    <string name="connection_default_block">Default Block Connection</string>
+    <string name="log_service_start">Starting Log service</string>
+    <string name="log_service_stop">Stopping Log service</string>
+    <string name="log_service_select">Please select log target first</string>
+    <string name="log_service_watcher">Opening log watcher...</string>
+    <string name="log_service_success">Started Log service Successfully!</string>
 </resources>

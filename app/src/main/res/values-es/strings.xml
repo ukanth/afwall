@@ -23,11 +23,11 @@
     <string name="error_refresh">Error al actualizar iptables</string>
     <string name="error_apply">Error al aplicar las reglas iptables</string>
     <string name="error_fetch">Error al obtener reglas iptables</string>
-    <string name="error_su_toast">¡No se ha podido adquirir acceso de root!</string>
+    <string name="error_su_toast">¡Error al adquirir acceso root!</string>
     <string name="error_su">No se pudo adquirir acceso root.\nTu dispositivo tiene que estar con root para usar AFWall+.\n\nSi tu dispositivo ya está con root, asegúrate que AFWall+ tiene permisos para ejecutar el comando \"su\".</string>
     <string name="error_netfilter">No se ha podido encontrar soporte para objetivos y cadenas de iptables. \nAFWall+ podría no funcionar como se espera debido a esta limitación.</string>
     <string name="error_common">Error: </string>
-    <string name="all_item">(Cualquier aplicación) - Igual que seleccionar todas las aplicaciones</string>
+    <string name="all_item">(Cualquier aplic.) - Igual que seleccionar todas - ¡¡AVISO!! </string>
     <string name="kernel_item">(Kernel) - núcleo Linux</string>
     <string name="android_system">Sistema Android</string>
     <string name="unknown_item">Desconocido</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">Registro desactivado</string>
     <string name="log_was_enabled">Registro activado</string>
     <string name="log_was_disabled">Registro desactivado</string>
+    <string name="log_target_success">Se ha cambiado el registro de destino</string>
+    <string name="log_target_fail">Error al cambiar el registro de destino</string>
     <string name="log_toggle_failed">Error al habilitar/deshabilitar el registro de estado</string>
     <string name="log_target_failed">Error: el kernel no tiene soporte para LOG/NFLOG</string>
     <string name="log_cleared">Registro borrado</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">Activar para controlar los permisos de la VPN de forma separada</string>
     <string name="roaming">Control de roaming</string>
     <string name="roamingSummary">Activar el control de los permisos de roaming por separado</string>
+    <string name="tether_profile">Control de tethering</string>
+    <string name="tetherSummary">Activar para controlar conectividad de tethering Bluetooth/USB</string>
     <string name="tor_profile">Control de Tor</string>
     <string name="torSummary">Activar para redirigir el tráfico no torificado a través de Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">Permitir a AFWall+ controlar los permisos de Wi-Fi</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">Tethering Bluetooth USB</string>
     <string name="tor">Tor</string>
     <string name="data">Datos</string>
     <string name="legend_data">Permitir que AFWall+ controle los permisos de datos móviles (2G,3G,EDGE,LTE/4G)</string>
@@ -338,8 +343,8 @@
     <string name="imports">Importar</string>
     <string name="invalid_profile">Nombre de perfil no válido</string>
     <!-- Donate -->
-    <string name="donate_only">Esta función está disponible sólo en la edición de donación</string>
-    <string name="buy_donate">Comprar la clave o la versión de donación</string>
+    <string name="donate_only">Esta característica está disponible en la versión de pago/desbloqueada mediante donación</string>
+    <string name="buy_donate">Compra la versión completa o desbloquéala</string>
     <string name="unlock_donate"> Activar para desbloquear el boton para donacion</string>
     <string name="donate_support">Ahora puedes usar las características de donante.</string>
     <string name="donate_thanks">Gracias por tu apoyo.</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">No se puede eliminar el script de arranque</string>
     <string name="runNotification_summary">Se mostrará una notificación cuando se apliquen reglas</string>
     <string name="runNotification">Progreso de las reglas</string>
-    <string name="displayBlockNotification">desactivar la notificación de alerta de registro</string>
+    <string name="displayBlockNotification">Desactivar notificación de registro</string>
+    <string name="displayBlockNotification_enable">Activar notificación de registro</string>
     <string name="applyRulesFasterTitle">Aplicar instantáneamente</string>
     <string name="applyRulesFaster">Utilizar sólo si AFWall+ tarda mucho tiempo en aplicar las reglas - Altamente Experimental</string>
     <string name="purging_rules">Eliminando todas las reglas iptables del cortafuegos</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">Notificaciones de aplicación</string>
     <string name="hide">Ocultar</string>
     <string name="firewall_error_notify">Problema en Firewall</string>
+    <string name="firewall_log_notify">Notificación de registro</string>
     <string name="ui_themes_header">Temas</string>
     <string name="theme">Tema de UI</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Clonar columnas</string>
+    <string name="from">De</string>
+    <string name="legend_action">Acciones</string>
+    <string name="clear_all">Limpiar todo</string>
+    <string name="log_target">Objetivo de registro</string>
+    <string name="showallapps_summary_off">Muestra las aplicación con permiso de INTERNET</string>
+    <string name="showallapps_summary_on">Muestra todas las aplicaciones instaladas (AVISO: desactiva esto para mejor rendimiento)</string>
+    <string name="showAllApps">Mostrar todas las aplicaciones</string>
+    <string name="default_connection_setting_allow">Comportamiento de lista blanca por defecto (solo donación)</string>
+    <string name="default_connection_setting_block">Comportamiento de lista negra por defecto (solo donación)</string>
+    <string name="connection_default_allow">Permitir conexión por defecto</string>
+    <string name="connection_default_block">Bloquear conexión por defecto</string>
+    <string name="log_service_start">Inicio de servicio de registro</string>
+    <string name="log_service_stop">Detención de servicio de registro</string>
+    <string name="log_service_select">Por favor, selecciona el objetivo de registro primero</string>
+    <string name="log_service_watcher">Abriendo visor de registro...</string>
+    <string name="log_service_success">¡Se ha iniciado el servicio de registro con éxito!</string>
 </resources>

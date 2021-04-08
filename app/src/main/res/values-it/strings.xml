@@ -23,11 +23,11 @@
     <string name="error_refresh">Errore durante l\'aggiornamento delle regole iptables</string>
     <string name="error_apply">Errore durante l\'applicazione delle regole iptables</string>
     <string name="error_fetch">Errore durante il recupero delle regole iptables</string>
-    <string name="error_su_toast">Impossibile ottenere l\'accesso come root!</string>
+    <string name="error_su_toast">Impossibile acquisire l\'accesso root!</string>
     <string name="error_su">Non è stato possibile acquisire l\'accesso come root.\nÈ necessario fare il root del dispositivo per poter usare AFWall+.\n\nSe si è già fatta questa operazione, assicurarsi di avere il permesso di eseguire il comando \"su\".</string>
     <string name="error_netfilter">Non è stato possibile trovare il supporto a iptables target e chain.\nAFWall+ potrebbe non funzionare come supposto a causa di questa limitazione.</string>
     <string name="error_common">Errore: </string>
-    <string name="all_item">(Qualsiasi app) - Come se tutte le app fossero selezionate</string>
+    <string name="all_item">(Qualunque app) - Uguale a selezionare tutte le app - !!ATTENZIONE!! </string>
     <string name="kernel_item">(kernel) - kernel di Linux</string>
     <string name="android_system">Sistema Android</string>
     <string name="unknown_item">Sconosciuto</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">Registro disabilitato</string>
     <string name="log_was_enabled">Registro abilitato</string>
     <string name="log_was_disabled">Registro disabilitato</string>
+    <string name="log_target_success">Cambio del target del log eseguito con successo</string>
+    <string name="log_target_fail">Cambio del target del log fallito</string>
     <string name="log_toggle_failed">Errore durante la disattivazione/attivazione dei log</string>
     <string name="log_target_failed">Errore: manca il supporto a LOG/NFLOG nel kernel</string>
     <string name="log_cleared">Registro eliminato</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">Abilita il controllo delle autorizzazioni VPN separatamente</string>
     <string name="roaming">Controllo roaming</string>
     <string name="roamingSummary">Abilita il controllo separato delle autorizzazioni del roaming</string>
+    <string name="tether_profile">Controllo Tether</string>
+    <string name="tetherSummary">Abilita per controllare la connettività Bluetooth/Tether USB</string>
     <string name="tor_profile">Controllo Tor</string>
     <string name="torSummary">Abilita il reindirizzamento del traffico non-Tor attraverso Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">Lascia ad AFWall+ il controllo delle autorizzazioni Wi-Fi</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">Dati</string>
     <string name="legend_data">Lascia ad AFWall+ il controllo delle autorizzazioni dei dati mobili (2G,3G,EDGE,LTE/4G)</string>
@@ -338,8 +343,8 @@
     <string name="imports">Importa</string>
     <string name="invalid_profile">Nome di profilo non valido</string>
     <!-- Donate -->
-    <string name="donate_only">Questa funzionalità è disponibile solo nella versione per donatori</string>
-    <string name="buy_donate">Acquista versione per donatori o la chiave per donatori</string>
+    <string name="donate_only">Questa funzionalità è disponibile solo nella versione per donatori/Unlocker</string>
+    <string name="buy_donate">Compra la versione per donatori o Unlocker</string>
     <string name="unlock_donate"> tap per sbloccare la donazione</string>
     <string name="donate_support">Ora puoi usare ulteriori funzionalitá.</string>
     <string name="donate_thanks">Grazie per il tuo supporto.</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">Impossibile eliminare lo script di avvio</string>
     <string name="runNotification_summary">Verrà mostrata una notifica quando si applicano regole</string>
     <string name="runNotification">Avanzamento regole</string>
-    <string name="displayBlockNotification">disattiva la notifica di avviso di log</string>
+    <string name="displayBlockNotification">Disabilita la notifica di log</string>
+    <string name="displayBlockNotification_enable">Abilita la notifica di log</string>
     <string name="applyRulesFasterTitle">Applica subito</string>
     <string name="applyRulesFaster">Usare solo se l\'applicazione delle regole è lenta - molto sperimentale</string>
     <string name="purging_rules">Rimozione di tutte le regole firewall di iptables</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">Notifica app</string>
     <string name="hide">Nascondi</string>
     <string name="firewall_error_notify">Problema firewall</string>
+    <string name="firewall_log_notify">Notifica di log</string>
     <string name="ui_themes_header">Temi</string>
     <string name="theme">Tema UI</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Clona colonne</string>
+    <string name="from">Da</string>
+    <string name="legend_action">Azioni</string>
+    <string name="clear_all">Cancella Tutto</string>
+    <string name="log_target">Target di log</string>
+    <string name="showallapps_summary_off">Attualmente mostra applicazioni con permessi INTERNET</string>
+    <string name="showallapps_summary_on">Attualmente mostra tutte le applicazioni installate (ATTENZIONE: disabilita questa impostazione per migliorare le prestazioni)</string>
+    <string name="showAllApps">Mostra tutte le app</string>
+    <string name="default_connection_setting_allow">Comportamento predefinito della whitelist(Solo per donatori)</string>
+    <string name="default_connection_setting_block">Comportamento predefinito della blacklist(Solo per donatori)</string>
+    <string name="connection_default_allow">Connessione permessa come impostazione predefinita</string>
+    <string name="connection_default_block">Connessione bloccata come impostazione predefinita</string>
+    <string name="log_service_start">Avvio del servizio di log</string>
+    <string name="log_service_stop">Arresto del servizio di log</string>
+    <string name="log_service_select">Seleziona prima il target del log</string>
+    <string name="log_service_watcher">Apertura dell\'osservatore del log...</string>
+    <string name="log_service_success">Servizio di log avviato con successo!</string>
 </resources>

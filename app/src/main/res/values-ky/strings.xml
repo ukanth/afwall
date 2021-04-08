@@ -6,8 +6,8 @@
     -->
     <!-- main -->
     <string name="app_name">AFWall+ </string>
-    <string name="app_name_donate">AFWall+ (Donate)</string>
-    <string name="title_disabled">AFWall+ (DISABLED)</string>
+    <string name="app_name_donate">AFWall+ (акы төлөнүүчү нускасы)</string>
+    <string name="title_disabled">AFWall+ (ӨЧҮРҮЛГӨН)</string>
     <string name="whitelist_array_item">Allow selected</string>
     <string name="blacklist_array_item">Block selected</string>
     <string name="showrules">Show rules</string>
@@ -16,7 +16,7 @@
     <string name="setpwd">Set password</string>
     <string name="help">Help</string>
     <string name="close">Close</string>
-    <string name="exit">Exit</string>
+    <string name="exit">Чыгуу</string>
     <string name="error_purge">Error purging iptables</string>
     <string name="error_binary">Error installing binary files</string>
     <string name="error_migration">Error migrating old settings</string>

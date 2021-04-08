@@ -27,7 +27,7 @@
     <string name="error_su">Impossible d\'obtenir l\'accès root.\nVotre téléphone doit être rooté pour que AFWall+ fonctionne.\n\nSi ce téléphone est déjà rooté, assurez-vous que AFWall+ a la permission d\'exécuter la commande \"su\".</string>
     <string name="error_netfilter">Impossible de prendre en charge les cibles et chaînes iptables.\nAFWall+ peut ne pas fonctionner comme prévu en raison de cette limitation.</string>
     <string name="error_common">Erreur : </string>
-    <string name="all_item">(Toute application) - Identique à la sélection de toutes les applications</string>
+    <string name="all_item">(Toute application) - Identique à la sélection de toutes les applications - !! AVERTISSEMENT !! </string>
     <string name="kernel_item">(Kernel) - Noyau Linux</string>
     <string name="android_system">Système Android</string>
     <string name="unknown_item">Inconnu</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">Journal désactivé</string>
     <string name="log_was_enabled">Journal activé</string>
     <string name="log_was_disabled">Journal désactivé</string>
+    <string name="log_target_success">Changement de cible de journalisation réussi</string>
+    <string name="log_target_fail">Erreur de changement de cible de journalisation</string>
     <string name="log_toggle_failed">Erreur lors de l\'activation/désactivation du journal</string>
     <string name="log_target_failed">Erreur : le noyau ne prend pas en charge LOG/NFLOG</string>
     <string name="log_cleared">Journal effacé</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">Cocher pour contrôler les autorisations de VPN indépendamment</string>
     <string name="roaming">Contrôle de la connexion en itinérance</string>
     <string name="roamingSummary">Activer pour contrôler les autorisations d\'itinérance séparément</string>
+    <string name="tether_profile">Contrôle du partage de connexion</string>
+    <string name="tetherSummary">Activer pour contrôler le partage de connexion Bluetooth/USB</string>
     <string name="tor_profile">Contrôle de Tor</string>
     <string name="torSummary">Activer pour rediriger le trafic non-Tor via Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -306,14 +310,15 @@
     <string name="uncheck_all">Tout désélectionner</string>
     <string name="select_action">Choisissez une action sur la colonne </string>
     <string name="roam">Itinérance</string>
-    <string name="legend_roam">Permettre AFWall+ de contrôler les données tout en ayant des autorisations différentes de fournisseurs d\'accès réseau (roaming)</string>
+    <string name="legend_roam">Permettre à AFWall+ de contrôler les données tout en ayant des autorisations différentes de fournisseurs d\'accès réseau (roaming)</string>
     <string name="wifi">Wi-Fi</string>
-    <string name="legend_wifi">Permettre AFWall+ de contrôler les autorisations Wi-Fi</string>
+    <string name="legend_wifi">Permettre à AFWall+ de contrôler les autorisations Wi-Fi</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">Partage de connexion USB Bluetooth</string>
     <string name="tor">Tor</string>
     <string name="data">Données</string>
-    <string name="legend_data">Permettre AFWall+ de contrôler les autorisations des données mobiles (2G, 3G, EDGE, LTE/4G)</string>
+    <string name="legend_data">Permettre à AFWall+ de contrôler les autorisations des données mobiles (2G, 3G, EDGE, LTE/4G)</string>
     <string name="pkg_all">Tout</string>
     <string name="pkg_core">Noyau</string>
     <string name="pkg_sys">Système</string>
@@ -338,8 +343,8 @@
     <string name="imports">Import</string>
     <string name="invalid_profile">Nom de profil non valide</string>
     <!-- Donate -->
-    <string name="donate_only">Cette fonctionnalité est disponible uniquement dans la version Donateur</string>
-    <string name="buy_donate">Acheter la version Donateur ou une clé Donateur</string>
+    <string name="donate_only">Cette fonctionnalité est disponible uniquement dans la version Donateur/Unlocker</string>
+    <string name="buy_donate">Acheter la version donateur ou Unlocker</string>
     <string name="unlock_donate"> taper pour débloquer les fonctionnalités Donateur</string>
     <string name="donate_support">Vous pouvez maintenant utiliser les fonctionnalités Donateur.</string>
     <string name="donate_thanks">Merci pour votre soutien.</string>
@@ -405,8 +410,8 @@
     <string name="lockNotification">Masquer l\'icône de notification de l\'écran de verrouillage</string>
     <string name="lockScreenNotification_summary">Masquer la notification sur l\'écran de verrouillage</string>
     <string name="menu_legend">Légende</string>
-    <string name="permissiondenied_importexport">L\'autorisation de lecture/écriture sur le stockage a refusée. Veuillez accorder l’accès pour l’exportation/importation des règles.</string>
-    <string name="permissiondenied_asset">L\'autorisation de lecture/écriture sur le stockage a refusée. Veuillez accorder l’accès pour la copie des binaires AFWall+.</string>
+    <string name="permissiondenied_importexport">L\'autorisation de lecture/écriture sur le stockage est refusée. Veuillez accorder l’accès pour l’exportation/importation des règles.</string>
+    <string name="permissiondenied_asset">L\'autorisation de lecture/écriture sur le stockage est refusée. Veuillez accorder l’accès pour la copie des binaires AFWall+.</string>
     <string name="log_deletedapp">Application supprimée</string>
     <string name="log_denied">Refusé :</string>
     <string name="log_times">fois</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">Impossible de supprimer le script de démarrage</string>
     <string name="runNotification_summary">Une notification s’affichera lors de l\'application des règles</string>
     <string name="runNotification">Application des règles</string>
-    <string name="displayBlockNotification">désactiver la notification d’alerte du Journal</string>
+    <string name="displayBlockNotification">Désactiver la notification de journalisation</string>
+    <string name="displayBlockNotification_enable">Activer la notification de journalisation</string>
     <string name="applyRulesFasterTitle">Application immédiate</string>
     <string name="applyRulesFaster">Utiliser seulement si l\'application des règles est plus lente - très expérimental</string>
     <string name="purging_rules">Supprimer toutes les règles iptables de pare-feu</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">Notification d\'application</string>
     <string name="hide">Masquer</string>
     <string name="firewall_error_notify">Problème du pare-feu</string>
+    <string name="firewall_log_notify">Notification de journalisation</string>
     <string name="ui_themes_header">Thèmes</string>
     <string name="theme">Thème UI</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Dupliquer les colonnes</string>
+    <string name="from">Depuis</string>
+    <string name="legend_action">Actions</string>
+    <string name="clear_all">Tout supprimer</string>
+    <string name="log_target">Cible de journalisation</string>
+    <string name="showallapps_summary_off">Affiche actuellement les applications avec la permission INTERNET</string>
+    <string name="showallapps_summary_on">Affiche actuellement toutes les applications installées (ATTENTION : désactivez ce paramètre pour de meilleures performances)</string>
+    <string name="showAllApps">Afficher toutes les applications</string>
+    <string name="default_connection_setting_allow">Comportement de la liste blanche par défaut (donateur uniquement)</string>
+    <string name="default_connection_setting_block">Comportement de la liste noire par défaut (donateur uniquement)</string>
+    <string name="connection_default_allow">Connexion autorisée par défaut</string>
+    <string name="connection_default_block">Connexion bloquee par défaut</string>
+    <string name="log_service_start">Démarrage du service de journalisation</string>
+    <string name="log_service_stop">Arrêt du service de journalisation</string>
+    <string name="log_service_select">Veuillez d\'abord sélectionner la cible de journalisation</string>
+    <string name="log_service_watcher">Lancement de l\'observateur du journal...</string>
+    <string name="log_service_success">Service de journalisation démarré avec succès !</string>
 </resources>

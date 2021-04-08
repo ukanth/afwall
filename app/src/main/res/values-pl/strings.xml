@@ -6,7 +6,7 @@
     -->
     <!-- main -->
     <string name="app_name">AFWall+ </string>
-    <string name="app_name_donate">AFWall + (dotacja)</string>
+    <string name="app_name_donate">AFWall+ (dotacja)</string>
     <string name="title_disabled">AFWall+ (WYŁĄCZONY)</string>
     <string name="whitelist_array_item">Zezwalaj wybranym</string>
     <string name="blacklist_array_item">Blokuj wybrane</string>
@@ -23,11 +23,11 @@
     <string name="error_refresh">Błąd odświeżania iptables</string>
     <string name="error_apply">Nie udało się zastosować reguł iptables</string>
     <string name="error_fetch">Błąd przy pobieraniu reguł iptables</string>
-    <string name="error_su_toast">Nie udało się uzyskać dostępu do konta root!</string>
+    <string name="error_su_toast">Nie udało się uzyskać dostępu do roota!</string>
     <string name="error_su">Nie można uzyskać uprawnień root.\n Urządzenie musi być zrootowane, aby używać AFWall+. \n\n Jeśli twój telefon jest już zrootowany, upewnij się że AFWall+ posiada uprawnienia aby uruchomić komendę \"su\".</string>
     <string name="error_netfilter">Nie znaleziono wsparcia dla celów i łańcuchów iptables.\nAFWall+ może nie działać zgodnie z oczekiwaniami z powodu tego ograniczenia.</string>
     <string name="error_common">Błąd: </string>
-    <string name="all_item">(Dowolna) - działa jak zaznaczenie wszystkich</string>
+    <string name="all_item">(Dowolna) - działa jak zaznaczenie wszystkich!! </string>
     <string name="kernel_item">(kernel) - Jądro Linuxa</string>
     <string name="android_system">System Android</string>
     <string name="unknown_item">Nieznane</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">Logowanie wyłączone</string>
     <string name="log_was_enabled">Logowanie włączone</string>
     <string name="log_was_disabled">Logowanie wyłączone</string>
+    <string name="log_target_success"> Pomyślnie rejestrowanie zmian</string>
+    <string name="log_target_fail">Log dziennika nie powiodł się</string>
     <string name="log_toggle_failed">Błąd zmiany stanu dziennika zdarzeń</string>
     <string name="log_target_failed">Błąd: jądro nie wspiera LOG/NFLOG</string>
     <string name="log_cleared">Logi wyczyszczone</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">Włącz, aby sterować uprawnieniami VPN oddzielnie</string>
     <string name="roaming">Ustawienia Roamingu</string>
     <string name="roamingSummary">Włącz, aby sterować oddzielnie uprawnieniami roamingu</string>
+    <string name="tether_profile">Sterowanie tetherem</string>
+    <string name="tetherSummary">Włącz, aby kontrolować łączność przez tethering Bluetooth/USB</string>
     <string name="tor_profile">Ustawienia Tor</string>
     <string name="torSummary">Włącz, aby przekierować ruch sieciowy przez Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">Pozwól AFWall+ kontrolować uprawnienia Wi-Fi</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">Tethering przez USB Bluetooth</string>
     <string name="tor">Tor</string>
     <string name="data">Dane</string>
     <string name="legend_data">Pozwól AFWall+ kontrolować uprawnienia danych mobilnych (2G,3G,EDGE,LTE/4G)</string>
@@ -338,8 +343,8 @@
     <string name="imports">Import</string>
     <string name="invalid_profile">Nieprawidłowa nazwa profilu</string>
     <!-- Donate -->
-    <string name="donate_only">Funkcja dostępna tylko w wersji płatnej</string>
-    <string name="buy_donate">Kup wersję z darowizną lub klucz z darowizną</string>
+    <string name="donate_only">Ta funkcja jest dostępna tylko w wersji darowizny/Unlocker</string>
+    <string name="buy_donate">Kup wersję darowizny lub Unlocker</string>
     <string name="unlock_donate"> dotknij aby odblokować dotacje</string>
     <string name="donate_support">Możesz teraz używać dotacji.</string>
     <string name="donate_thanks">Dziękujemy za wsparcie.</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">Nie można usunąć skryptu startowego</string>
     <string name="runNotification_summary">Powiadomienie zostanie wyświetlone podczas stosowania reguł</string>
     <string name="runNotification">Postęp Zasad</string>
-    <string name="displayBlockNotification">wyłącz powiadomienie o alercie dziennika</string>
+    <string name="displayBlockNotification">Wyłącz powiadomienia dziennika</string>
+    <string name="displayBlockNotification_enable">Włącz powiadomienia dziennika</string>
     <string name="applyRulesFasterTitle">Zastosuj natychmiast</string>
     <string name="applyRulesFaster">Używaj tylko jeśli stosowanie reguł jest wolne - Bardzo eksperymentalne</string>
     <string name="purging_rules">Usuwanie wszystkich reguł iptables zapory</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">Powiadomienia aplikacji</string>
     <string name="hide">Ukryj</string>
     <string name="firewall_error_notify">Tryb zapory</string>
+    <string name="firewall_log_notify">Powiadomienie dziennika</string>
     <string name="ui_themes_header">Motywy</string>
     <string name="theme">Motyw UI</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Klonuj kolumny</string>
+    <string name="from">Od</string>
+    <string name="legend_action">Działania</string>
+    <string name="clear_all">Wyczyść wszystko</string>
+    <string name="log_target">Logowanie celu</string>
+    <string name="showallapps_summary_off">Obecnie pokazuje aplikacje z uprawnieniami do INTERNETU</string>
+    <string name="showallapps_summary_on">Obecnie pokazuje wszystkie zainstalowane aplikacje (OSTRZEŻENIE: wyłącz to ustawienie, aby uzyskać lepszą wydajność)</string>
+    <string name="showAllApps">Pokaż wszystkie aplikacje</string>
+    <string name="default_connection_setting_allow">Domyślne zachowanie białej listy (Tylko jeśli dotacja)</string>
+    <string name="default_connection_setting_block">Domyślne działanie czarnej listy (Tylko jeśli dotacja)</string>
+    <string name="connection_default_allow">Domyślnie zezwalaj na połączenie</string>
+    <string name="connection_default_block">Domyślne połączenie blokowe</string>
+    <string name="log_service_start">Uruchamianie usługi dziennika</string>
+    <string name="log_service_stop">Zatrzymanie usługi dziennika</string>
+    <string name="log_service_select">Najpierw wybierz cel dziennika</string>
+    <string name="log_service_watcher">Otwórz obserwator dziennika...</string>
+    <string name="log_service_success">Uruchomiono usługę dziennika pomyślnie!</string>
 </resources>

@@ -23,11 +23,11 @@
     <string name="error_refresh">방화벽 새로고침 중 에러</string>
     <string name="error_apply">방화벽 규칙 적용 중 에러</string>
     <string name="error_fetch">방화벽 규칙 가져오는 중 에러</string>
-    <string name="error_su_toast">루트 권한을 취득할 수가 없습니다!</string>
+    <string name="error_su_toast">Unable to acquire root access !</string>
     <string name="error_su">루팅기능을 쓸 수 없습니다.\nAFWall+를 쓰시려면 기기가 루팅되어있어야 합니다..\n\n기기가 루팅이 되었다면, AFWall+이 \'su\' 커맨드-슈퍼유저 를 사용할 수 있도록 허용되었는지 확인해주세요.\n</string>
     <string name="error_netfilter">Iptable을 사용할 수 없습니다. \nAFWall+이 미작동할 수 있습니다.</string>
     <string name="error_common">오류: </string>
-    <string name="all_item">(모든 앱) - 모두 다 선택</string>
+    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
     <string name="kernel_item">(kernel) - 리눅스 kernel</string>
     <string name="android_system">안드로이드 시스템</string>
     <string name="unknown_item">알수없음</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">기록 중단됨</string>
     <string name="log_was_enabled">기록 사용중</string>
     <string name="log_was_disabled">기록 중단됨</string>
+    <string name="log_target_success">Log target change succesful</string>
+    <string name="log_target_fail">Log target change failed</string>
     <string name="log_toggle_failed">기록기능 On/Off 중 에러</string>
     <string name="log_target_failed">오류: kernel이 LOG/NFLOG를 지원하지 않습니다</string>
     <string name="log_cleared">기록 지우기</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">VPN 규칙 따로 설정하기</string>
     <string name="roaming">로밍 설정</string>
     <string name="roamingSummary">로밍 규칙 따로 설정하기</string>
+    <string name="tether_profile">Tether control</string>
+    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
     <string name="tor_profile">Tor 설정</string>
     <string name="torSummary">Tor를 이용하지 않는 트래픽을 Tor를 통해 리다이렉트하려면 활성화하세요.</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">AFWall+가 와이파이 권한들을 조정하도록 합니다.</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">데이터</string>
     <string name="legend_data">AFWall+가 모바일 데이터 (2G,3G,EDGE,LTE/4G) 권한들을 조정하도록 합니다.</string>
@@ -338,8 +343,8 @@
     <string name="imports">가져오기</string>
     <string name="invalid_profile">프로필 이름 인식불가</string>
     <!-- Donate -->
-    <string name="donate_only">이 기능은 프로버전에서 사용가능합니다</string>
-    <string name="buy_donate">프로버전을 구입해주세요요</string>
+    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+    <string name="buy_donate">Purchase donate version or Unlocker</string>
     <string name="unlock_donate"> 눌러서 프로버전 허용</string>
     <string name="donate_support">당신은 이제 기부버전 기능들을 사용할 수 있습니다.</string>
     <string name="donate_thanks">지원해주셔서 감사합니다.</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">시작 스크립트를 삭제할 수 없습니다</string>
     <string name="runNotification_summary">규칙들을 적용할 때 알림이 표시됩니다.</string>
     <string name="runNotification">규칙들 진행 상황</string>
-    <string name="displayBlockNotification">로그 경고 알림 비활성화</string>
+    <string name="displayBlockNotification">Disable log notification</string>
+    <string name="displayBlockNotification_enable">Enable log notification</string>
     <string name="applyRulesFasterTitle">즉시 적용</string>
     <string name="applyRulesFaster">규칙을 적용하는 것이 느릴 때만 사용하십시오 - 매우 실험적 기능입니다</string>
     <string name="purging_rules">모든 방화벽 iptable 규칙들 제거 중</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">애플리케이션 알림</string>
     <string name="hide">숨기기</string>
     <string name="firewall_error_notify">방화벽 문제</string>
+    <string name="firewall_log_notify">Log Notification</string>
     <string name="ui_themes_header">테마</string>
     <string name="theme">UI 테마</string>
     <string name="clat">Clat (clat)</string>
+    <string name="legend_clone">Clone columns</string>
+    <string name="from">From</string>
+    <string name="legend_action">Actions</string>
+    <string name="clear_all">Clear All</string>
+    <string name="log_target">Log Target</string>
+    <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
+    <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
+    <string name="showAllApps">Show all apps</string>
+    <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
+    <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
+    <string name="connection_default_allow">Default Allow Connection</string>
+    <string name="connection_default_block">Default Block Connection</string>
+    <string name="log_service_start">Starting Log service</string>
+    <string name="log_service_stop">Stopping Log service</string>
+    <string name="log_service_select">Please select log target first</string>
+    <string name="log_service_watcher">Opening log watcher...</string>
+    <string name="log_service_success">Started Log service Successfully!</string>
 </resources>

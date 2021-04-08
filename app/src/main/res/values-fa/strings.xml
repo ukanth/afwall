@@ -23,13 +23,13 @@
     <string name="error_refresh">خطای بازیابی iptables</string>
     <string name="error_apply">خطا در اعمال قوانین iptables</string>
     <string name="error_fetch">خطا هنگام واکشی قوانین iptables</string>
-    <string name="error_su_toast">امکان دسترسی root وجود ندارد!</string>
+    <string name="error_su_toast">سظح دسترسی root امکان‌پذیر نیست!</string>
     <string name="error_su">امکان دستیابی به دسترسی ROOT وجود ندارد. n\
 برای استفاده از +AFWall باید گوشی شما روت شده باشد. n\n\
 اگر گوشی شما روت شده است، لطفا مطمئن شوید که +AFWall اجازه های کافی برای اجرای دستور \"su\" را دارد.</string>
     <string name="error_netfilter">بعضی از فرامین پشتیبانی نمیشوند. ممکن است برنامه فایروال در عملکردش با محدودیت روبرو بشه.</string>
     <string name="error_common">خطا: </string>
-    <string name="all_item">(هر برنامه‌ای) - مثل اینکه همه برنامه‌ها را انتخاب کرده باشید</string>
+    <string name="all_item">(هر برنامه‌ای) - مشابه انتخاب همه‌ی برنامه‌ها - !!هشدار!! </string>
     <string name="kernel_item">(هسته) - هسته‌ی لینوکس</string>
     <string name="android_system">سیستم اندروید</string>
     <string name="unknown_item">ناشناخته</string>
@@ -150,6 +150,8 @@
     <string name="log_disabled">گزارش غیرفعال شد</string>
     <string name="log_was_enabled">گزارش فعال شد</string>
     <string name="log_was_disabled">گزارش غیرفعال شد</string>
+    <string name="log_target_success">Log target change succesful</string>
+    <string name="log_target_fail">Log target change failed</string>
     <string name="log_toggle_failed">خطا در روشن کردن وضعیتهای آمار</string>
     <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">آمار پاک شد</string>
@@ -193,6 +195,8 @@
     <string name="vpnSummary">Enable to control VPN permissions separately</string>
     <string name="roaming">کنترل رومینگ</string>
     <string name="roamingSummary">برای کنترل مجوزهای رومینگ بصورت جداگانه این گزینه را فعال کنید</string>
+    <string name="tether_profile">Tether control</string>
+    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
     <string name="tor_profile">کنترل Tor</string>
     <string name="torSummary">برای ارسال ترافیک غیر Tor از طریق Tor فعال کنید</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -317,6 +321,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="legend_wifi">اجازه بده +AFWall مجوز های وای فای را کنترل کند</string>
     <string name="lan">شبکه</string>
     <string name="vpn">شبکه اختصاصی مجازی</string>
+    <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">داده ها</string>
     <string name="legend_data">اجازه بده +AFWAll مجوزهای داده موبایل (2G,3G,EDGE,LTE/4G) را کنترل کند</string>
@@ -344,8 +349,8 @@ S-OFF پیکربندی شوند.</string>
     <string name="imports">واردکردن</string>
     <string name="invalid_profile">نام نمایه نامعتبر است</string>
     <!-- Donate -->
-    <string name="donate_only">این قابلیت فقط در نسخه کمک مالی موجود می‌باشد</string>
-    <string name="buy_donate">نسخه کمک مالی یا کلید کمک مالی را بخرید</string>
+    <string name="donate_only">این قابیلت فقط برای نسخه‌ی unlock شده، در دسترس می‌باشد</string>
+    <string name="buy_donate">خرید نسخه‌ی donate یا unlocker</string>
     <string name="unlock_donate">کمک مالی به ما برای باز کردن قفل</string>
     <string name="donate_support">حال می‌توانید از امکانات نسخه کمک مالی استفاده کنید.</string>
     <string name="donate_thanks">از حمایت شما متشکریم.</string>
@@ -450,7 +455,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="output_is_empty">خروجی به خاطر دسترسی شبکه و تکذیب شدن SuperSu خالی است</string>
     <string name="searching">درحال جستجو</string>
     <string name="looking_for_data">به دنبال داده&#8230;</string>
-    <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+    <string name="reachable_timeout">قابل دسترسی،  مهلت: %d میلی ثانیه</string>
     <string name="error_or_unknown_category">خطا یا دسته بندی ناشناخته</string>
     <string name="show_destination_address">نشان دادن آدرس مقصد</string>
     <string name="show_source_address">نشان دادن آدرس منبع</string>
@@ -510,7 +515,8 @@ S-OFF پیکربندی شوند.</string>
     <string name="delete_initd_error">نمی‌توان اسکریپت راه‌اندازی را حذف کرد</string>
     <string name="runNotification_summary">اعلان‌ها هنگام اعمال قوانین نمایش داده خواهند شد</string>
     <string name="runNotification">پیشرفت قوانین</string>
-    <string name="displayBlockNotification">غیرفعال‌سازی اعلان هشدار log</string>
+    <string name="displayBlockNotification">Disable log notification</string>
+    <string name="displayBlockNotification_enable">Enable log notification</string>
     <string name="applyRulesFasterTitle">اعمال فوری</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="purging_rules">در حال پاک‌سازی تمام قوانین iptables دیوار آتش</string>
@@ -525,7 +531,25 @@ S-OFF پیکربندی شوند.</string>
     <string name="app_notification">اعلان برنامه</string>
     <string name="hide">پنهان کردن</string>
     <string name="firewall_error_notify">مشکل فایروال</string>
+    <string name="firewall_log_notify">Log Notification</string>
     <string name="ui_themes_header">پوسته ها</string>
     <string name="theme">پوسته رابط کاربری</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Clone columns</string>
+    <string name="from">از</string>
+    <string name="legend_action">کنش‌ها</string>
+    <string name="clear_all">پاک کردن همه</string>
+    <string name="log_target">Log Target</string>
+    <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
+    <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
+    <string name="showAllApps">Show all apps</string>
+    <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
+    <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
+    <string name="connection_default_allow">Default Allow Connection</string>
+    <string name="connection_default_block">Default Block Connection</string>
+    <string name="log_service_start">Starting Log service</string>
+    <string name="log_service_stop">Stopping Log service</string>
+    <string name="log_service_select">Please select log target first</string>
+    <string name="log_service_watcher">Opening log watcher...</string>
+    <string name="log_service_success">Started Log service Successfully!</string>
 </resources>

@@ -23,11 +23,11 @@
     <string name="error_refresh">Fel vid uppdatering av iptables</string>
     <string name="error_apply">Fel vid tillämpning av iptables regler</string>
     <string name="error_fetch">Fel vid hämtning av iptables regler</string>
-    <string name="error_su_toast">Det går inte att få root-åtkomst!</string>
+    <string name="error_su_toast">Det går inte att skaffa root-åtkomst!</string>
     <string name="error_su">Kunde inte få root access.\nDet behövs en rootad enhet för att köra AFWall+.\n\nOm denna enhet redan är rootad, kontrollera att AFWall+ har tillräcklig behörighet för att köra \"su\" kommandot.</string>
     <string name="error_netfilter">Kunde inte få tillgång till kärnstödet för iptables.\nAFWall+ kommer kanske inte att fungera som förväntat på grund av denna begränsning.</string>
     <string name="error_common">Fel: </string>
-    <string name="all_item">(Valfri app) - samma som att välja alla appar</string>
+    <string name="all_item">(Valfri app) - Samma som att välja alla appar - !!VARNING!! </string>
     <string name="kernel_item">(Kernel) - Linux-kärnan</string>
     <string name="android_system">Android-system</string>
     <string name="unknown_item">Okänd</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">Loggning inaktiverad</string>
     <string name="log_was_enabled">Loggning aktiverad</string>
     <string name="log_was_disabled">Loggning inaktiverad</string>
+    <string name="log_target_success">Ändring av loggning lyckades</string>
+    <string name="log_target_fail">Ändring av loggning misslyckades</string>
     <string name="log_toggle_failed">Misslyckades ändra loggstatus</string>
     <string name="log_target_failed">Fel: kärnan saknar LOG/NFLOG stöd</string>
     <string name="log_cleared">Loggen rensad</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">Aktivera för att kunna styra VPN-regler separat</string>
     <string name="roaming">Roaming-kontroll</string>
     <string name="roamingSummary">Aktivera för att kunna styra roaming-regler separat</string>
+    <string name="tether_profile">Kontrollera internetdelning</string>
+    <string name="tetherSummary">Aktivera för att styra internetdelning via Bluetooth/USB</string>
     <string name="tor_profile">Tor styrning</string>
     <string name="torSummary">Aktivera för att omdirigera icke-Tor trafik genom Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">Låt AFWall+ styra Wi-Fi behörigheter</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">USB Bluetooth internetdelning</string>
     <string name="tor">Tor</string>
     <string name="data">Data</string>
     <string name="legend_data">Aktivera för att kontrollera mobilt data (2G, 3G, EDGE, LTE / 4G) behörigheter</string>
@@ -339,7 +344,7 @@
     <string name="invalid_profile">Ogiltigt profilnamn</string>
     <!-- Donate -->
     <string name="donate_only">Den här funktionen är endast tillgänglig i donationsversionen</string>
-    <string name="buy_donate">Köp donationsversion eller donationsnyckel</string>
+    <string name="buy_donate">Köp donationsversion eller Unlocker</string>
     <string name="unlock_donate"> tryck för att låsa upp donationsversionen</string>
     <string name="donate_support">Du kan nu använda funktioner från donationsversionen.</string>
     <string name="donate_thanks">Tack för ditt stöd.</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">Misslyckades med att ta bort startskriptet</string>
     <string name="runNotification_summary">Notifieringar kommer att visas när regler tillämpas</string>
     <string name="runNotification">Regeltillämpning</string>
-    <string name="displayBlockNotification">inaktivera notifiering av loggvarningar</string>
+    <string name="displayBlockNotification">Inaktivera notifiering av loggvarningar</string>
+    <string name="displayBlockNotification_enable">Aktivera notifiering av loggvarningar</string>
     <string name="applyRulesFasterTitle">Tillämpa direkt</string>
     <string name="applyRulesFaster">Använd bara om tillämpningen av reglerna är långsammare - högst experimentellt</string>
     <string name="purging_rules">Ta bort alla brandväggsregler</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">Appaviseringar</string>
     <string name="hide">Dölj</string>
     <string name="firewall_error_notify">Brandväggsproblem</string>
+    <string name="firewall_log_notify">Loggnotifiering</string>
     <string name="ui_themes_header">Teman</string>
     <string name="theme">Användargränssnittstema</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Klona kolumner</string>
+    <string name="from">Från</string>
+    <string name="legend_action">Åtgärder</string>
+    <string name="clear_all">Rensa alla</string>
+    <string name="log_target">Loggningsmål</string>
+    <string name="showallapps_summary_off">Visar för närvarande appar med INTERNET-behörighet</string>
+    <string name="showallapps_summary_on">Visar alla installerade appar (VARNING: inaktivera denna inställning för bättre prestanda)</string>
+    <string name="showAllApps">Visa alla appar</string>
+    <string name="default_connection_setting_allow">Standardbeteende för vitlistning (endast donationsversionen)</string>
+    <string name="default_connection_setting_block">Standardbeteende för svartlistning (endast donationsversionen)</string>
+    <string name="connection_default_allow">Standard att tillåta anslutning</string>
+    <string name="connection_default_block">Standard att blockera anslutning</string>
+    <string name="log_service_start">Startar loggtjänst</string>
+    <string name="log_service_stop">Stoppar loggtjänsten</string>
+    <string name="log_service_select">Välj loggmål först</string>
+    <string name="log_service_watcher">Öppnar loggövervakning...</string>
+    <string name="log_service_success">Loggtjänsten startades!</string>
 </resources>

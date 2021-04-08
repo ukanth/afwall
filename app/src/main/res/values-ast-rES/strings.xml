@@ -5,7 +5,7 @@
        By community with many improvements by Gitoffthelawn
     -->
     <!-- main -->
-    <string name="app_name">AFWall+ </string>
+    <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall+ (Donación)</string>
     <string name="title_disabled">AFWall+ (DESHABILITÁU)</string>
     <string name="whitelist_array_item">Permitir lo esbillao</string>
@@ -20,25 +20,25 @@
     <string name="error_purge">Fallu purgando iptables</string>
     <string name="error_binary">Fallu al instalar los ficheros binarios</string>
     <string name="error_migration">Fallu al migrar los axustes vieyos</string>
-    <string name="error_refresh">Fallu xenerando iptables</string>
-    <string name="error_apply">Fallu aplicando les regles d\'iptables</string>
-    <string name="error_fetch">Fallu diendo en cata les regles d\'iptables</string>
-    <string name="error_su_toast">Unable to aquire root access !</string>
+    <string name="error_refresh">Error refreshing iptables</string>
+    <string name="error_apply">Error applying iptables rules</string>
+    <string name="error_fetch">Error fetching iptables rules</string>
+    <string name="error_su_toast">Unable to acquire root access !</string>
     <string name="error_su">Nun pudo alquirise l\'accesu root.\nEl to preséu ha tar rootexáu pa executar AFWall+.\n\nSi esti preséu yá lo ta, asegúrate qu\'AFWall+ tien permisu pa executar el comandu «su», por favor.</string>
     <string name="error_netfilter">Nun pudo alcontrase\'l sofitu pa cadenes y oxetivos d\'IPtables.\nAFWall+ quiciabes nun furrule como s\'espera pola mor d\'esta llimitación.</string>
     <string name="error_common">Fallu: </string>
-    <string name="all_item">(Cualesquier aplicación) Lo mesmo qu\'esbillales toes</string>
+    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
     <string name="kernel_item">(Kernel) - Kernel Linux</string>
-    <string name="android_system">Android System</string>
+    <string name="android_system">Sistema Android</string>
     <string name="unknown_item">Desconocíu</string>
     <string name="tethering_item">(Tethering) - Servicios DHCP+DNS</string>
-    <string name="dnsproxy_item">(Proxy DNS) - Guetes DNS per netd</string>
+    <string name="dnsproxy_item">(Proxy DNS) - Busques DNS per netd</string>
     <string name="ntp_item">(ntp) - Sirvidores d\'hora de rede</string>
     <string name="root_item">(root) - Aplicaciones executándose como root</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
     <string name="media_item">(media) - Sirvidor multimedia</string>
     <string name="vpn_item">(vpn) - Redes VPN</string>
-    <string name="drm_item">(drm) - Serviciu de xestión de drechos dixitales</string>
+    <string name="drm_item">(drm) - Serviciu de xestión de derechos dixitales</string>
     <string name="gps_item">(gps) - GPS</string>
     <string name="shell_item">(shell) - Shell de Linux</string>
     <!-- <string name="operation_timeout">Operation timed out</string> -->
@@ -76,22 +76,22 @@
     <string name="reload">Recargar aplicaciones</string>
     <string name="flush">Balerar regles</string>
     <string name="send_report">Unviar informe de fallu</string>
-    <string name="enter_problem">Desplica\'l problema:</string>
+    <string name="enter_problem">Esplica\'l problema:</string>
     <string name="send_mail">Send e-mail</string>
-    <string name="notify_pref_summary_on">Amosaráse un avisu al instalase una aplicación nueva</string>
-    <string name="notify_pref_summary_off">Nun va amosase nengún avisu al instalar una aplicación nueva</string>
+    <string name="notify_pref_summary_on">Va amosase un avisu cuando s\'instale una aplicación nueva</string>
+    <string name="notify_pref_summary_off">Nun va amosase nengún avisu cuando s\'instale una aplicación nueva</string>
     <string name="custom_script_defined">Definióse\'l script personalizáu</string>
     <string name="custom_script_removed">Desanicióse\'l script personalizáu</string>
     <string name="custom_script_error">Fallu guardando\'l script personalizáu</string>
     <string name="custom_script_info"><b>Introduz embaxo\'l script personalizáu.</b>\n<i>(Dexar balero pa desaniciar)</i>\nPa más información tocante a scripts personalizaos, primi <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">equí</a>.</string>
     <string name="custom_script2_info">    	\n<b>Script d\'apagáu personalizáu</b>    	\nPues tamién definir un script personalizáu que s\'execute cuando\'l tonafuéu tea <b>deshabilitáu</b>:</string>
-    <string name="unsaved_changes">Camudancies ensin guardar</string>
-    <string name="unsaved_changes_message">Tienes camudancies ensin guardar.\n¿Quies aplicales o descartales?</string>
+    <string name="unsaved_changes">Cambeos ensin guardar</string>
+    <string name="unsaved_changes_message">Tienes cambeos ensin guardar.\n¿Quies aplicalos o escartalos?</string>
     <string name="help_dialog_text"></string>
-    <string name="showrules_title">Regles d\'Iptables</string>
+    <string name="showrules_title">Regles d\'iptables</string>
     <string name="copy">Copiar</string>
     <string name="copied">Copiáu</string>
-    <string name="Search">Guetar</string>
+    <string name="Search">Buscar</string>
     <string name="flushRulesConfirm">¿Balerar toles regles d\'iptables?</string>
     <string name="overrideRules">¿Quies importar les regles? ¡Esto va anular les esistentes!</string>
     <string name="notification_new">Instaláronse aplicaciones nueves</string>
@@ -114,9 +114,9 @@
     <!-- Advanced Settings -->
     <!-- init.d -->
     <string name="success_initd">Instalóse\'l script d\'aniciu</string>
-    <string name="unable_initd">Nun pue instalase\'l script d\'aniciu d\'AFWall+. Verifica que la ROM/kernel sofita init.d/su.d</string>
+    <string name="unable_initd">Nun ye posible instalar el script d\'aniciu d\'AFWall+. Verifica que la ROM/kernel sofita init.d/su.d</string>
     <string name="remove_initd">Desinstalóse\'l script d\'aniciu</string>
-    <string name="unable_remove_initd">Nun pue desaniciase\'l script d\'aniciu d\'AFWall+</string>
+    <string name="unable_remove_initd">Nun ye posible desaniciar el script d\'aniciu d\'AFWall+</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Nun pue deshabilitase\'l tornafuéu. ¡Protexío por contraseña!</string>
     <string name="widget_label_status">AFWall+ Toggle</string>
@@ -142,12 +142,14 @@
     <string name="enable_firewall_log">Habilitar rexistru del tornafuéu</string>
     <string name="enable_firewall_log_service">Prender serviciu de rexistru</string>
     <string name="showlog_title">Rexistros del tornafuéu</string>
-    <string name="showlog_service_summary">Habilita l\'amuesa de mensaxes emerxentes al bloquiar conexones </string>
+    <string name="showlog_service_summary">Activa l\'amuesa de mensaxes emerxentes al bloquiar conexones </string>
     <string name="enable_log">Habillitar rexistru</string>
     <string name="disable_log">Deshabilitar rexistru</string>
     <string name="log_disabled">Rexistru deshabilitáu</string>
     <string name="log_was_enabled">Habilitóse\'l rexistru</string>
     <string name="log_was_disabled">Deshabilitóse\'l rexistru</string>
+    <string name="log_target_success">Log target change succesful</string>
+    <string name="log_target_fail">Log target change failed</string>
     <string name="log_toggle_failed">Fallu alternando l\'estáu del rexistru</string>
     <string name="log_target_failed">Fallu: Al kernel fálta-y sofitu de LOG/NFLOG</string>
     <string name="log_cleared">Rexistru llimpiáu</string>
@@ -181,16 +183,18 @@
     <string name="profile3">Perfil 3</string>
     <string name="profile_hint">ProfileName</string>
     <string name="profile_notsupport">Please migrate profile data to use this option</string>
-    <string name="profile_duplicate">Profile exists already!</string>
+    <string name="profile_duplicate">¡El perfil yá esiste!</string>
     <string name="reapply_profile">Reaplicar regles de perfiles</string>
     <!-- Interface -->
     <string name="lan_title">Control de LAN</string>
     <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
-    <string name="iptables_pref">Binariu d\'IPtables</string>
+    <string name="iptables_pref">Binariu d\'iptables</string>
     <string name="vpn_profile">Control de VPN</string>
     <string name="vpnSummary">Habilita\'l control de permisos VPN de mou separtáu</string>
     <string name="roaming">Control de Roaming</string>
     <string name="roamingSummary">Enable to control roaming permissions separately</string>
+    <string name="tether_profile">Tether control</string>
+    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
     <string name="tor_profile">Tor control</string>
     <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -211,8 +215,8 @@
     <!-- XPOSED -->
     <string name="XPosed_prefs_title">Venceyao a XPosed</string>
     <string name="fixDownloadTitle">Iguar escape del xestor de decargues</string>
-    <string name="fixDownloadTitleSummary">Usa Xposed pa bloquiar a les aplicaciones que baxen datos usando\'l xestor de descargues integráu d\'Android magar que l\'aplicación tenga l\'accesu ñegáu</string>
-    <string name="LeakDetected">¡Deteutáronse escapes!</string>
+    <string name="fixDownloadTitleSummary">Usa Xposed pa bloquiar les aplicaciones que baxen datos col usu del xestor de descargues integráu d\'Android magar que l\'aplicación tenga l\'accesu negáu</string>
+    <string name="LeakDetected">¡Detectáronse escapes!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker Related</string>
     <string name="disable_toaster">Deshabilitar avisos emerxentes</string>
@@ -278,7 +282,7 @@
     <string name="showuid_summary_off">Anubre les UIDs d\'aplicación an vista principal. Habilitalo pue ser útil pa rastrexar rexistros.</string>
     <string name="languages">Llingües</string>
     <string name="change_languages">Camudar llingua</string>
-    <string name="misc_header">Llingües/Complementos</string>
+    <string name="misc_header">Llingües/Plugins</string>
     <!-- 1.2.6 -->
     <string name="active_rules">Activar regles</string>
     <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">Datos</string>
     <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
@@ -338,10 +343,10 @@
     <string name="imports">Importar</string>
     <string name="invalid_profile">Nome de perfil non válidu</string>
     <!-- Donate -->
-    <string name="donate_only">Esta carauterística ta namái disponibles na versión de donación</string>
-    <string name="buy_donate">Buy donate version or donate key</string>
+    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+    <string name="buy_donate">Purchase donate version or Unlocker</string>
     <string name="unlock_donate"> calca pa desbloquiar la versión de donación</string>
-    <string name="donate_support">You can now use donate features.</string>
+    <string name="donate_support">Agora pues usar les carauterístiques de donación.</string>
     <string name="donate_thanks">Thanks for your support.</string>
     <string name="activeNotification">Amosar l\'iconu d\'avisu</string>
     <string name="activeNotification_summary">Amuesa siempres un iconu na barra d\'avisos</string>
@@ -372,10 +377,10 @@
     <string name="wrong_password">Contraseña incorreuta</string>
     <string name="password_empty"></string>
     <string name="submit">Unviar</string>
-    <string name="dialog_color_picker">Seleutor de color</string>
+    <string name="dialog_color_picker">Selector de color</string>
     <!--<string name="sort">Sort Applications</string>-->
     <string name="access_sort">Opción d\'ordenación</string>
-    <string name="defaultsort">Per nome (por defeutu)</string>
+    <string name="defaultsort">Pol nome (por defeutu)</string>
     <string name="lastupdated">Per instalación/anovamientu</string>
     <string name="uid">Per UID</string>
     <string name="select_dir">Esbillar direutoriu</string>
@@ -400,7 +405,7 @@
     <string name="yTitle">Posición Y de widget</string>
     <string name="yTitleSummary">Anulación manual de posición Y</string>
     <string name="yTitleDialog">Afita la posición Y (númberu)</string>
-    <string name="error_nonsupported">¡Deteutóse King Root!</string>
+    <string name="error_nonsupported">¡Detectóse King Root!</string>
     <string name="error_nonsupported_details">AFWall+ deteutó una aplicación de susperusuariu non sofitada que ye conocida por saltase les regles del tornafuéu. Darréu que ye una aplicación de superusuariu, AFWall+ nun pue iguar esti problema.</string>
     <string name="lockNotification">Anubrir iconu d\'avisu na pantalla de bloquéu</string>
     <string name="lockScreenNotification_summary">Anubre l\'avisu entrante na pantalla de bloquéu</string>
@@ -411,11 +416,11 @@
     <string name="log_denied">Denied:</string>
     <string name="log_times">vegaes</string>
     <string name="log_time">vegada</string>
-    <string name="log_dst">Destination:</string>
-    <string name="log_src">Source:</string>
-    <string name="log_proto">Protocol:</string>
+    <string name="log_dst">Destín:</string>
+    <string name="log_src">Orixe:</string>
+    <string name="log_proto">Protocolu:</string>
     <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
-    <string name="loading_data_title">Loading&#8230;</string>
+    <string name="loading_data_title">Cargando&#8230;</string>
     <string name="loading_data">Recibiendo rexistru de datos</string>
     <string name="switch_old">Camudar a vista vieya</string>
     <string name="switch_new">Camudar a vista nueva</string>
@@ -424,8 +429,8 @@
     <string name="custom_rules">Custom Rules</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
-    <string name="error_log">Nun pue aniciase\'l serviciu de rexistru. LogTarget ta baleru o LogService nun ta activáu.</string>
-    <string name="delete_profile">Nun pue desaniciase\'l perfil</string>
+    <string name="error_log">Nun ye posible aniciar el serviciu de rexistru. LogTarget ta baleru o LogService nun ta activáu.</string>
+    <string name="delete_profile">Nun ye posible desaniciar el perfil</string>
     <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Direición de destín</string>
@@ -441,8 +446,8 @@
     <string name="result_copied_to_clipboard">Result copied to clipboard</string>
     <string name="result">Result</string>
     <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
-    <string name="searching">Guetando</string>
-    <string name="looking_for_data">Guetando datos&#8230;</string>
+    <string name="searching">Buscando</string>
+    <string name="looking_for_data">Buscando datos&#8230;</string>
     <string name="reachable_timeout">Reachable, timeout: %d ms</string>
     <string name="error_or_unknown_category">Fallu o estaya desconocida</string>
     <string name="show_destination_address">Amosar direición de destín</string>
@@ -456,15 +461,15 @@
     <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
     <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
     <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_fingerprint">One-touch Unlock</string>
+    <string name="title_activity_main">Actividá principal</string>
+    <string name="title_fingerprint">Desbloquéu con un toque</string>
     <string name="desc_fingerprint">Pon la to buelga nel escáner pa verificar la to identidá</string>
     <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
     <string name="title_activity_home">Buelga</string>
     <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
     <string name="activity_home_note">Zarra y reabri l\'aplicación pa ver de nueves la pantalla d\'autenticación de buelga</string>
     <string name="fingerprint_required">Ríquese la buelga</string>
-    <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
+    <string name="device_with_no_fingerprint_sensor">Al preséu fálta-y el sensor de buelgues</string>
     <string name="fingerprint_permission_manifest_missing">Nun s\'habilitó\'l permisu d\'autenticación de buelgues</string>
     <string name="register_at_least_one_fingerprint">Rexistra polo menos una buelga n\'Axustes</string>
     <string name="lock_screen_not_enabled">Nun s\'habilitó n\'Axustes la seguranza de bloquéu de pantalla</string>
@@ -472,7 +477,7 @@
     <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
     <string name="label_zoomin">Zoom In</string>
     <string name="label_zoomout">Zoom Out</string>
-    <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+    <string name="exception_pref">Nun ye posible aniciar l\'actividá pola mor d\'una preferencia toyida. Llimpia los datos de l\'aplicación</string>
     <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
     <string name="delayTitle">Custom Seconds Delay</string>
     <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
@@ -499,11 +504,12 @@
     <string name="quick_apply_title">Show Quick Apply</string>
     <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
     <string name="init_d">Startup directory path for script</string>
-    <string name="mount_initd_error">Unable to mount the directory</string>
-    <string name="delete_initd_error">Unable to delete the startup script</string>
+    <string name="mount_initd_error">Nun ye posible montar el direutoriu</string>
+    <string name="delete_initd_error">Nun ye posible desaniciar el script d\'aniciu</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
     <string name="runNotification">Rules Progress</string>
-    <string name="displayBlockNotification">disable log alert notification</string>
+    <string name="displayBlockNotification">Disable log notification</string>
+    <string name="displayBlockNotification_enable">Enable log notification</string>
     <string name="applyRulesFasterTitle">Instant Apply</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">App Notification</string>
     <string name="hide">Hide</string>
     <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="ui_themes_header">Themes</string>
-    <string name="theme">UI Theme</string>
+    <string name="firewall_log_notify">Log Notification</string>
+    <string name="ui_themes_header">Estilos</string>
+    <string name="theme">Estilu de la IU</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Clone columns</string>
+    <string name="from">From</string>
+    <string name="legend_action">Actions</string>
+    <string name="clear_all">Clear All</string>
+    <string name="log_target">Log Target</string>
+    <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
+    <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
+    <string name="showAllApps">Show all apps</string>
+    <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
+    <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
+    <string name="connection_default_allow">Default Allow Connection</string>
+    <string name="connection_default_block">Default Block Connection</string>
+    <string name="log_service_start">Starting Log service</string>
+    <string name="log_service_stop">Stopping Log service</string>
+    <string name="log_service_select">Please select log target first</string>
+    <string name="log_service_watcher">Opening log watcher...</string>
+    <string name="log_service_success">Started Log service Successfully!</string>
 </resources>

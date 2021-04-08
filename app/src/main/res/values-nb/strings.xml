@@ -23,11 +23,11 @@
     <string name="error_refresh">Feil ved gjenoppfrisking av iptables</string>
     <string name="error_apply">Feil ved bruk av iptables-regler</string>
     <string name="error_fetch">Feil ved innhenting av regler fra iptables</string>
-    <string name="error_su_toast">Ikke i stand til å få rottilgang!</string>
+    <string name="error_su_toast">Unable to acquire root access !</string>
     <string name="error_su">Could not acquire root access.\nYour device must be rooted to use AFWall+.\n\nIf this device is already rooted, please ensure AFWall+ has permission to execute the \"su\" command.</string>
     <string name="error_netfilter">Kunne ikke finne støtte for iptables-mål og kjeder.\nAFWall+ vil kanskje ikke virke som forventet grunnet denne begrensningen.</string>
     <string name="error_common">Feil: </string>
-    <string name="all_item">(Ethvert program) - Samme som å velge alle programmer</string>
+    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
     <string name="kernel_item">(kernel) - Linux-kjernen</string>
     <string name="android_system">Android System</string>
     <string name="unknown_item">Ukjent</string>
@@ -148,6 +148,8 @@
     <string name="log_disabled">Logg deaktivert</string>
     <string name="log_was_enabled">Logg aktivert</string>
     <string name="log_was_disabled">Logg deaktivert</string>
+    <string name="log_target_success">Log target change succesful</string>
+    <string name="log_target_fail">Log target change failed</string>
     <string name="log_toggle_failed">Feil ved endring av loggstatus</string>
     <string name="log_target_failed">Feil: Kjernen mangler LOG-/NFLOG -støtte</string>
     <string name="log_cleared">Logg tømt</string>
@@ -191,6 +193,8 @@
     <string name="vpnSummary">Aktiver for å kontrollere VPN-tillatelser separat</string>
     <string name="roaming">Gjesting-kontroll</string>
     <string name="roamingSummary">Aktiver for å kontrollere roaming-tillatelser separat</string>
+    <string name="tether_profile">Tether control</string>
+    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
     <string name="tor_profile">Tor-kontroll</string>
     <string name="torSummary">Aktiver for å omdirigere ikke-Tor-trafikk gjennom Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -311,6 +315,7 @@
     <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
+    <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">Data</string>
     <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
@@ -338,8 +343,8 @@
     <string name="imports">Importer</string>
     <string name="invalid_profile">Ugyldig profilnavn</string>
     <!-- Donate -->
-    <string name="donate_only">Denne funksjonen er bare tilgjengelig i donasjonsversjonen</string>
-    <string name="buy_donate">Buy donate version or donate key</string>
+    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+    <string name="buy_donate">Purchase donate version or Unlocker</string>
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features.</string>
     <string name="donate_thanks">Takk for din støtte.</string>
@@ -503,7 +508,8 @@
     <string name="delete_initd_error">Kunne ikke slette oppstartsskriptet</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
     <string name="runNotification">Rules Progress</string>
-    <string name="displayBlockNotification">disable log alert notification</string>
+    <string name="displayBlockNotification">Disable log notification</string>
+    <string name="displayBlockNotification_enable">Enable log notification</string>
     <string name="applyRulesFasterTitle">Umiddelbar bruk</string>
     <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
@@ -517,7 +523,25 @@
     <string name="app_notification">App-varsling</string>
     <string name="hide">Skjul</string>
     <string name="firewall_error_notify">Firewall Issue</string>
+    <string name="firewall_log_notify">Log Notification</string>
     <string name="ui_themes_header">Temaer</string>
     <string name="theme">UI Theme</string>
     <string name="clat">(clat) Clat</string>
+    <string name="legend_clone">Clone columns</string>
+    <string name="from">From</string>
+    <string name="legend_action">Actions</string>
+    <string name="clear_all">Clear All</string>
+    <string name="log_target">Log Target</string>
+    <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
+    <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
+    <string name="showAllApps">Show all apps</string>
+    <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
+    <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
+    <string name="connection_default_allow">Default Allow Connection</string>
+    <string name="connection_default_block">Default Block Connection</string>
+    <string name="log_service_start">Starting Log service</string>
+    <string name="log_service_stop">Stopping Log service</string>
+    <string name="log_service_select">Please select log target first</string>
+    <string name="log_service_watcher">Opening log watcher...</string>
+    <string name="log_service_success">Started Log service Successfully!</string>
 </resources>
