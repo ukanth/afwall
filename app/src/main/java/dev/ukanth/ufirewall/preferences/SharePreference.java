@@ -44,7 +44,7 @@ public class SharePreference implements SharedPreferences {
         mContext = context;
         mHandler = new Handler(context.getMainLooper());
         mBaseUri = Uri.parse("content://" + authority).buildUpon().appendPath(prefName).build();
-        mListeners = new WeakHashMap<OnSharedPreferenceChangeListener, PreferenceContentObserver>();
+        mListeners = new WeakHashMap<>();
     }
 
     @Override
