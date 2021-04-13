@@ -45,7 +45,7 @@ The [changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md) documen
 
 Supports
 --------
-* Android versions 5.x to 9.x
+* Android versions 5.x to 11.x
     for 4.x - 2.9.9 
     for 2.x - 1.3.4.1
 * Compatible with Magisk and LineageOS su.    
