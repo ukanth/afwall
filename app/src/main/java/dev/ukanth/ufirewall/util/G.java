@@ -151,6 +151,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String CUSTOM_DELAY_SECONDS = "customDelay";
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
     private static final String RUN_NOTIFICATION = "runNotification";
+    private static final String COPIED_OLD_EXPORTS = "copyOldExports";
 
     private static final String SHOW_ALL_APPS = "showAllApps";
 
@@ -226,6 +227,16 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     public static boolean isRun(boolean val) {
         gPrefs.edit().putBoolean(RUN_NOTIFICATION, val).commit();
+        return val;
+    }
+
+
+    public static boolean hasCopyOld() {
+        return gPrefs.getBoolean(COPIED_OLD_EXPORTS, false);
+    }
+
+    public static boolean hasCopyOldExports(boolean val) {
+        gPrefs.edit().putBoolean(COPIED_OLD_EXPORTS, val).commit();
         return val;
     }
 

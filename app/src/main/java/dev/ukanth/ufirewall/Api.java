@@ -65,6 +65,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
 
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -2762,6 +2763,47 @@ public final class Api {
         return res;
     }
 
+
+    private static boolean  importRulesRoot(Context ctx, File file, StringBuilder msg) {
+        boolean returnVal = false;
+        BufferedReader br = null;
+        try {
+            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.su("cat " + file.getAbsolutePath()).exec();
+            List<String> out = result.getOut();
+            String data = TextUtils.join("", out);
+
+            try {
+                //old export format
+                JSONArray array = new JSONArray(data);
+                updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
+            } catch (JSONException e) {
+                //new exported format
+                JSONObject jsonObject = new JSONObject(data);
+
+                //save mode
+                if(jsonObject.get("mode") != null) {
+                    G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).commit();
+                }
+
+                JSONArray array = (JSONArray) jsonObject.get("rules");
+                updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
+
+
+            }
+            returnVal = true;
+        } catch (JSONException e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    Log.e(TAG, e.getLocalizedMessage());
+                }
+            }
+        }
+        return returnVal;
+    }
     private static boolean importRules(Context ctx, File file, StringBuilder msg) {
         boolean returnVal = false;
         BufferedReader br = null;
@@ -2794,7 +2836,11 @@ public final class Api {
             }
             returnVal = true;
         } catch (FileNotFoundException e) {
-            msg.append(ctx.getString(R.string.import_rules_missing));
+            if(e.getMessage().contains("EACCES")) {
+                return importRulesRoot(ctx, file, msg);
+            } else {
+                msg.append(ctx.getString(R.string.import_rules_missing));
+            }
         } catch (IOException e) {
             Log.e(TAG, e.getLocalizedMessage());
         } catch (JSONException e) {

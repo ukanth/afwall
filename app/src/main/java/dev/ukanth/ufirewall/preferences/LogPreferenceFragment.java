@@ -65,9 +65,11 @@ public class LogPreferenceFragment extends PreferenceFragment {
                     G.logTarget(items[0]);
                 }
             } else {
+                //no LOG targets
                 ((PreferenceGroup) findPreference("logExperimental")).removePreference(listPreference);
             }
         } else{
+            //no LOG targets
             ((PreferenceGroup) findPreference("logExperimental")).removePreference(listPreference);
         }
     }

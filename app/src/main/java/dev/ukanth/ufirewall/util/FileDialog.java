@@ -6,6 +6,7 @@ import android.os.Environment;
 import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -125,40 +126,61 @@ public class FileDialog {
         List<String> r = new ArrayList<String>();
         if (path.exists()) {
             if (path.getParentFile() != null) r.add(PARENT_DIR);
-            FilenameFilter filter = new FilenameFilter() {
-                public boolean accept(File dir, String filename) {
-                    File sel = new File(dir, filename);
-                    if (!sel.canRead()) return false;
-                    if (selectDirectoryOption) return sel.isDirectory();
+            FilenameFilter filter = (dir, filename) -> {
+                File sel = new File(dir, filename);
+                if (!sel.canRead()) return false;
+                if (selectDirectoryOption) return sel.isDirectory();
+                    //backup.json - [a-z]+.json
+                else {
+                    boolean endsWith;
+                    if(flag) {
+                        Pattern p1 = Pattern.compile("[a-z]+.json");
+                        Matcher m1 = p1.matcher(filename);
 
-                        //backup.json - [a-z]+.json
-                    else {
-                        boolean endsWith;
-                        if(flag) {
-                            Pattern p1 = Pattern.compile("[a-z]+.json");
-                            Matcher m1 = p1.matcher(filename);
+                        Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
+                        Matcher m2 = p2.matcher(filename);
+                        endsWith = m2.matches() || m1.matches();
+                    } else {
+                        Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
+                        Matcher m1 = p1.matcher(filename);
 
-                            Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
-                            Matcher m2 = p2.matcher(filename);
-                            endsWith = m2.matches() || m1.matches();
-                        } else {
-                            Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
-                            Matcher m1 = p1.matcher(filename);
-
-                            Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
-                            Matcher m2 = p2.matcher(filename);
-                            endsWith = m2.matches() || m1.matches();
-                        }
-                        return endsWith || sel.isDirectory();
+                        Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
+                        Matcher m2 = p2.matcher(filename);
+                        endsWith = m2.matches() || m1.matches();
                     }
+                    return endsWith || sel.isDirectory();
                 }
             };
             String[] fileList1 = path.list(filter);
             if(fileList1 != null) {
                 r.addAll(Arrays.asList(fileList1));
             }
-
         }
+        //copied ones from old afwall
+        Shell.Result result  = com.topjohnwu.superuser.Shell.su("ls " + currentPath).exec();
+        List<String> out = result.getOut();
+        for(String files: out) {
+            boolean endsWith;
+            if(flag) {
+                Pattern p1 = Pattern.compile("[a-z]+.json");
+                Matcher m1 = p1.matcher(files);
+
+                Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
+                Matcher m2 = p2.matcher(files);
+                endsWith = m2.matches() || m1.matches();
+            } else {
+                Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
+                Matcher m1 = p1.matcher(files);
+
+                Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
+                Matcher m2 = p2.matcher(files);
+                endsWith = m2.matches() || m1.matches();
+            }
+            if (!r.contains(files) && endsWith) {
+                r.add(files);
+            }
+        }
+
         if(r != null && r.size() > 0) {
             fileList = r.toArray(new String[]{});
         }

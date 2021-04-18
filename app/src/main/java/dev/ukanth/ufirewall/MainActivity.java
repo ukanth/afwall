@@ -83,6 +83,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.stericson.roottools.RootTools;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -118,6 +119,7 @@ import dev.ukanth.ufirewall.util.SecurityUtil;
 import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.utils.AlpSettings;
 
+import static dev.ukanth.ufirewall.util.G.TAG;
 import static dev.ukanth.ufirewall.util.G.ctx;
 import static dev.ukanth.ufirewall.util.G.isDonate;
 import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
@@ -239,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             //might not have rootshell
+
             startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
@@ -577,6 +580,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 }).run(getApplicationContext(), cmds);
+        //check if log targets support
+        probeLogTarget();
     }
 
     private void showRootNotFoundMessage() {
@@ -1228,6 +1233,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.menu_import:
                 if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
                     // Do some stuff
+                    copyOldExportedData();
                     showImportDialog();
                 } else {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -1244,6 +1250,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void copyOldExportedData() {
+        if(!G.hasCopyOld()) {
+            //using root to copy existing data to current directory on A11
+            String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
+            String targetDir = ctx.getExternalFilesDir(null) + "/";
+            String command = "cp -R " + existingDir + " " + targetDir;
+            Log.i(TAG, "Invoking migration script " + command);
+            com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.su(command).exec();
+            G.hasCopyOldExports(true);
         }
     }
 
@@ -1298,6 +1316,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             //fileDialog.setFlag(true);
                             //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
                             fileDialog.addFileListener(file -> {
+
                                 String fileSelected = file.toString();
                                 StringBuilder builder = new StringBuilder();
                                 if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
@@ -2538,7 +2557,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             }
                         });
                 Api.applySavedIptablesRules(activityReference.get(), true, rootCommand4);
-                probeLogTarget();
                 return true;
             } else {
                 runOnUiThread(() -> {
