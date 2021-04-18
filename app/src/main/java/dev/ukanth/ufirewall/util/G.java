@@ -72,6 +72,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     private static G instance;
 
+    private static boolean enabledPrivateLink = false;
+
     private static boolean isActivityVisible;
 
     static {
@@ -1151,17 +1153,25 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static  void registerPrivateLink() {
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        cm.registerNetworkCallback(new NetworkRequest.Builder().build(), new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-                super.onLinkPropertiesChanged(network, linkProperties);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    privateDns = linkProperties.isPrivateDnsActive();
-                    Log.i(Api.TAG, "Private DNS status:" +  privateDns);
-                    //InterfaceTracker.applyRules("Private DNS change");
+        if(!enabledPrivateLink) {
+            ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                    super.onLinkPropertiesChanged(network, linkProperties);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        if(linkProperties.isPrivateDnsActive() != privateDns) {
+                            Log.i(Api.TAG, "Private DNS status changed: " + privateDns);
+                            privateDns = linkProperties.isPrivateDnsActive();
+                            InterfaceTracker.applyRules("Private DNS changed.. reapplying rules");
+                        }
+                    }
                 }
-            }
-        });
+            };
+            cm.registerNetworkCallback(new NetworkRequest.Builder().build(), callback);
+            enabledPrivateLink = true;
+        } else{
+            Log.i(TAG, "Private link has registered already");
+        }
     }
 }
