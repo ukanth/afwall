@@ -61,6 +61,8 @@ import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
 
+import static dev.ukanth.ufirewall.util.G.isDonate;
+
 public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recyclerView;
@@ -78,48 +80,50 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         super.onCreate(savedInstanceState);
         initTheme();
         setContentView(R.layout.log_view);
-        Toolbar toolbar = findViewById(R.id.rule_toolbar);
-        setTitle(getString(R.string.showlog_title));
-        //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
-        setSupportActionBar(toolbar);
 
-        // Load partially transparent black background
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if ((G.isDoKey(getApplicationContext()) || isDonate())) {
 
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            Object data = bundle.get("validate");
-            if(data != null){
-                String check = (String) data;
-                if(check.equals("yes")) {
-                    new SecurityUtil(LogActivity.this).passCheck();
+            Toolbar toolbar = findViewById(R.id.rule_toolbar);
+            setTitle(getString(R.string.showlog_title));
+            toolbar.setNavigationOnClickListener(v -> finish());
+
+            setSupportActionBar(toolbar);
+
+            // Load partially transparent black background
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            Bundle bundle = getIntent().getExtras();
+            if(bundle != null) {
+                Object data = bundle.get("validate");
+                if(data != null){
+                    String check = (String) data;
+                    if(check.equals("yes")) {
+                        new SecurityUtil(LogActivity.this).passCheck();
+                    }
                 }
             }
-        }
 
-        mSwipeLayout = findViewById(R.id.swipeContainer);
-        mSwipeLayout.setOnRefreshListener(this);
+            mSwipeLayout = findViewById(R.id.swipeContainer);
+            mSwipeLayout.setOnRefreshListener(this);
 
-        recyclerView = findViewById(R.id.recyclerview);
-        emptyView = findViewById(R.id.empty_view);
+            recyclerView = findViewById(R.id.recyclerview);
+            emptyView = findViewById(R.id.empty_view);
 
-        initializeRecyclerView(getApplicationContext());
+            initializeRecyclerView(getApplicationContext());
 
-        if(G.enableLogService()) {
-            (new CollectLog()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            if(G.enableLogService()) {
+                (new CollectLog()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            mSwipeLayout.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                mSwipeLayout.setVisibility(View.GONE);
+                emptyView.setVisibility(View.VISIBLE);
+            }
+
+        } else{
+            Api.donateDialog(LogActivity.this, true);
         }
     }
 
@@ -140,7 +144,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerViewAdapter = new LogRecyclerViewAdapter(getApplicationContext(), logData -> {
-            if(G.isDoKey(ctx) || G.isDonate()) {
+            if(G.isDoKey(ctx) || isDonate()) {
                 Intent intent = new Intent(ctx, LogDetailActivity.class);
                 intent.putExtra("DATA",logData.getUid());
                 startActivity(intent);

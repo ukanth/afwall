@@ -96,6 +96,9 @@ public class LogService extends Service {
     public static String logPath;
     public static final int QUEUE_NUM = 40;
 
+    private String NOTIFICATION_CHANNEL_ID = "firewall.logservice";
+
+
     /*private Toast toast;
     private TextView toastTextView;
     private CharSequence toastText;
@@ -261,14 +264,11 @@ public class LogService extends Service {
     }
 
     private void createNotification() {
-        String NOTIFICATION_CHANNEL_ID = "firewall.logservice";
-        String channelName = ctx.getString(R.string.firewall_log_notify);
-
         manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(109);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, ctx.getString(R.string.firewall_log_notify), NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             assert manager != null;
             if (G.getNotificationPriority() == 0) {
@@ -282,15 +282,11 @@ public class LogService extends Service {
         }
 
 
+
         Intent appIntent = new Intent(ctx, LogActivity.class);
         appIntent.setAction(Intent.ACTION_MAIN);
         appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Artificial stack so that navigating backward leads back to the Home screen
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx)
-                .addParentStack(MainActivity.class)
-                .addNextIntent(new Intent(ctx, LogActivity.class));
 
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
