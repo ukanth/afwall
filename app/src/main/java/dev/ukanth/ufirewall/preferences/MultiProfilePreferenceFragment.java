@@ -26,39 +26,33 @@ public class MultiProfilePreferenceFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.profiles_preferences);
         Preference button = findPreference("manage_profiles");
-        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                //code for what you want it to do
-                startActivity(new Intent(getActivity(), ProfileActivity.class));
-                return true;
-            }
+        button.setOnPreferenceClickListener(preference -> {
+            //code for what you want it to do
+            startActivity(new Intent(getActivity(), ProfileActivity.class));
+            return true;
         });
 
         final PreferenceCategory mCategory = (PreferenceCategory) findPreference("promigrate");
         final PreferenceCategory mCategory2 = (PreferenceCategory) findPreference("oldprofile_pref");
         final Preference migrate = findPreference("migrate_profile");
         if (!G.isProfileMigrated()) {
-            migrate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    Context ctx = getActivity();
-                    ProfileHelper.migrateProfiles(ctx);
-                    if (ctx != null) {
-                        Api.toast(getActivity(), ctx.getString(R.string.profile_migrate_msg));
-                        mCategory.removePreference(migrate);
+            migrate.setOnPreferenceClickListener(preference -> {
+                Context ctx = getActivity();
+                ProfileHelper.migrateProfiles(ctx);
+                if (ctx != null) {
+                    Api.toast(getActivity(), ctx.getString(R.string.profile_migrate_msg));
+                    mCategory.removePreference(migrate);
 
-                        Preference migrate = findPreference("profile1");
-                        mCategory2.removePreference(migrate);
+                    Preference migrate1 = findPreference("profile1");
+                    mCategory2.removePreference(migrate1);
 
-                        migrate = findPreference("profile2");
-                        mCategory2.removePreference(migrate);
+                    migrate1 = findPreference("profile2");
+                    mCategory2.removePreference(migrate1);
 
-                        migrate = findPreference("profile3");
-                        mCategory2.removePreference(migrate);
-                    }
-                    return true;
+                    migrate1 = findPreference("profile3");
+                    mCategory2.removePreference(migrate1);
                 }
+                return true;
             });
         } else {
             mCategory.removePreference(migrate);

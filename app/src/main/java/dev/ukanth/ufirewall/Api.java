@@ -4011,6 +4011,38 @@ public final class Api {
 
     }
 
+
+
+    public static void copySharedPreferences(SharedPreferences fromPreferences, SharedPreferences toPreferences, boolean clear) {
+
+        SharedPreferences.Editor editor = toPreferences.edit();
+        copySharedPreferences(fromPreferences, editor);
+        editor.commit();
+    }
+
+
+    public static void copySharedPreferences(SharedPreferences fromPreferences, SharedPreferences.Editor toEditor) {
+
+        for (Map.Entry<String, ?> entry : fromPreferences.getAll().entrySet()) {
+            Object value = entry.getValue();
+            String key = entry.getKey();
+            if (value instanceof String) {
+                toEditor.putString(key, ((String) value));
+            } else if (value instanceof Set) {
+                toEditor.putStringSet(key, (Set<String>) value); // EditorImpl.putStringSet already creates a copy of the set
+            } else if (value instanceof Integer) {
+                toEditor.putInt(key, (Integer) value);
+            } else if (value instanceof Long) {
+                toEditor.putLong(key, (Long) value);
+            } else if (value instanceof Float) {
+                toEditor.putFloat(key, (Float) value);
+            } else if (value instanceof Boolean) {
+                toEditor.putBoolean(key, (Boolean) value);
+            }
+        }
+        toEditor.commit();
+    }
+
     @NonNull
     public static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
         final Bitmap bmp = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);

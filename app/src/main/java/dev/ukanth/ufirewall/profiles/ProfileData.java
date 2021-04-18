@@ -10,7 +10,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  */
 
 @Table(database = ProfilesDatabase.class)
-public class ProfileData extends BaseModel {
+public class ProfileData extends BaseModel implements  Cloneable{
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -18,6 +18,10 @@ public class ProfileData extends BaseModel {
 
     public long getId() {
         return id;
+    }
+
+    public void removeId(){
+        id = -1;
     }
 
     @Column
@@ -72,4 +76,7 @@ public class ProfileData extends BaseModel {
         this.parentProfile = parentProfile;
     }
 
+    public ProfileData clone() throws CloneNotSupportedException {
+        return (ProfileData) super.clone();
+    }
 }
