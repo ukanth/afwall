@@ -60,6 +60,7 @@ import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
 
@@ -86,6 +87,8 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
+import dev.ukanth.ufirewall.log.LogPreference;
+import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.util.G;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
@@ -281,8 +284,6 @@ public class LogService extends Service {
             manager.createNotificationChannel(notificationChannel);
         }
 
-
-
         Intent appIntent = new Intent(ctx, LogActivity.class);
         appIntent.setAction(Intent.ACTION_MAIN);
         appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -328,6 +329,16 @@ public class LogService extends Service {
             if(event.logInfo != null) {
                 store(event.logInfo, event.ctx);
                 showNotification(event.logInfo);
+                /*try {
+                    LogPreference logPreference = SQLite.select()
+                            .from(LogPreference.class)
+                            .where(LogPreference_Table.uid.eq(event.logInfo.uid)).querySingle();
+                    if(logPreference!=null && !logPreference.isDisable()) {
+                        showNotification(event.logInfo);
+                    } }
+                catch (Exception e) {
+                    showNotification(event.logInfo);
+                }*/
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);

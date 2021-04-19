@@ -1,10 +1,11 @@
 AFWall+ Changelog
 ==================
 
-Version 3.5.1-BETA
+Version 3.5.1
 * Feature: Cloning of profiles
 * Bug: PrivateDNS changes on boot 
 * Bug: Log target missing on few scenarios
+* Bug: Import/Export rules missing on A11
 
 
 Version 3.5.0
