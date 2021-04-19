@@ -1,7 +1,7 @@
 AFWall+ Changelog
 ==================
 
-Version 3.5.0-BETA-2
+Version 3.5.0
 Features
  - Show installed apps without internet permission
  - Default setting for installed app - Donate Only
