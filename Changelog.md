@@ -1,6 +1,12 @@
 AFWall+ Changelog
 ==================
 
+Version 3.5.1-BETA
+* Feature: Cloning of profiles
+* Bug: PrivateDNS changes on boot 
+* Bug: Log target missing on few scenarios
+
+
 Version 3.5.0
 Features
  - Show installed apps without internet permission

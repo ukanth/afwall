@@ -81,9 +81,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         initTheme();
         setContentView(R.layout.log_view);
 
-
-        if ((G.isDoKey(getApplicationContext()) || isDonate())) {
-
             Toolbar toolbar = findViewById(R.id.rule_toolbar);
             setTitle(getString(R.string.showlog_title));
             toolbar.setNavigationOnClickListener(v -> finish());
@@ -121,10 +118,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                 mSwipeLayout.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
-
-        } else{
-            Api.donateDialog(LogActivity.this, true);
-        }
     }
 
     private void initTheme() {
