@@ -641,4 +641,5 @@
     <string name="log_service_select">Please select log target first</string>
     <string name="log_service_watcher">Opening log watcher...</string>
     <string name="log_service_success">Started Log service Successfully!</string>
+    <string name="unable_clone">Unable to clone</string>
 </resources>
