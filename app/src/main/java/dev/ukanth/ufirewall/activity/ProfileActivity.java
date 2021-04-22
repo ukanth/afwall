@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.profiles.ProfileAdapter;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
@@ -138,39 +140,45 @@ public class ProfileActivity extends AppCompatActivity {
             case MENU_CLONE:
                 if ((G.isDoKey(getApplicationContext()) || isDonate())) {
                     ProfileData data = ProfileHelper.getProfileByName(profileName);
-                    String exitingName = data.getName();
                     if(data != null) {
-                        new MaterialDialog.Builder(this)
-                                .cancelable(true)
-                                .title(R.string.profile_rename)
-                                .inputType(InputType.TYPE_CLASS_TEXT)
-                                .input(exitingName, exitingName, (dialog, input) -> {
-                                    String newName = input.toString();
-                                    //copy data
-                                    ProfileData data1 = null;
-                                    try {
-                                        data1 = data.clone();
-                                        if (isNotDuplicate(newName)) {
-                                            String identifier = newName.replaceAll("\\s+", "");
-                                            data1.removeId();
-                                            data1.setName(newName);
-                                            data1.setIdentifier(identifier);
-                                            data1.save();
-                                            SharedPreferences fromShared = getSharedPreferences(profileName, Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor toShared = getSharedPreferences(newName,Context.MODE_PRIVATE).edit();
-                                            Api.copySharedPreferences(fromShared,toShared);
-                                            profilesList.add(data1);
-                                            profileAdapter.notifyDataSetChanged();
-                                        } else {
-                                            Api.toast(getApplicationContext(), getString(R.string.profile_duplicate));
+                        String exitingName = data.getName();
+                        if(data != null) {
+                            new MaterialDialog.Builder(this)
+                                    .cancelable(true)
+                                    .title(R.string.profile_rename)
+                                    .inputType(InputType.TYPE_CLASS_TEXT)
+                                    .input(exitingName, exitingName, (dialog, input) -> {
+                                        String newName = input.toString();
+                                        //copy data
+                                        ProfileData data1 = null;
+                                        try {
+                                            data1 = data.clone();
+                                            if (isNotDuplicate(newName)) {
+                                                String identifier = newName.replaceAll("\\s+", "");
+                                                data1.removeId();
+                                                data1.setName(newName);
+                                                data1.setIdentifier(identifier);
+                                                data1.save();
+                                                SharedPreferences fromShared = getSharedPreferences(profileName, Context.MODE_PRIVATE);
+                                                SharedPreferences.Editor toShared = getSharedPreferences(newName,Context.MODE_PRIVATE).edit();
+                                                Api.copySharedPreferences(fromShared,toShared);
+                                                profilesList.add(data1);
+                                                profileAdapter.notifyDataSetChanged();
+                                            } else {
+                                                Api.toast(getApplicationContext(), getString(R.string.profile_duplicate));
+                                            }
+                                        } catch (CloneNotSupportedException e) {
+                                            Log.e(G.TAG, e.getMessage(), e);
                                         }
-                                    } catch (CloneNotSupportedException e) {
-                                        e.printStackTrace();
-                                    }
 
 
-                                }).show();
+                                    }).show();
+                        }
+                    } else{
+                        Log.i(G.TAG,"Unable to clone. Data from DB is empty");
+                        Toast.makeText(getApplicationContext(), getString(R.string.unable_clone), Toast.LENGTH_LONG).show();
                     }
+
                 } else{
                     Api.donateDialog(ProfileActivity.this, true);
                 }
