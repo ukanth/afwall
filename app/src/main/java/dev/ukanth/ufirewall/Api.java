@@ -3016,7 +3016,7 @@ public final class Api {
             List<String> intList = Arrays.asList(intType);
 
             //allow/deny rule
-            if(object.get("mode") != null) {
+            if(object.has("mode")) {
                 G.pPrefs.edit().putString(PREF_MODE, object.getString("mode")).commit();
             }
 
