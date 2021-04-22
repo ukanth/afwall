@@ -364,11 +364,12 @@ public final class Api {
             return "busybox ";
         } else {
             String dir = ctx.getDir("bin", 0).getAbsolutePath();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            return dir + "/busybox ";
+            /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                 return dir + "/run_pie " + dir + "/busybox ";
             } else {
                 return dir + "/busybox ";
-            }
+            }*/
         }
     }
 
@@ -2043,21 +2044,21 @@ public final class Api {
                 ret = installBinary(ctx, R.raw.busybox_x86, "busybox") &&
                         installBinary(ctx, R.raw.iptables_x86, "iptables") &&
                         installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
-                        installBinary(ctx, R.raw.nflog_x86, "nflog") &&
-                        installBinary(ctx, R.raw.run_pie_x86, "run_pie");
+                        installBinary(ctx, R.raw.nflog_x86, "nflog");
+                        //installBinary(ctx, R.raw.run_pie_x86, "run_pie");
             } else if (abi.startsWith("mips")) {
                 ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
                         installBinary(ctx, R.raw.iptables_mips, "iptables") &&
                         installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
-                        installBinary(ctx, R.raw.nflog_mips, "nflog") &&
-                        installBinary(ctx, R.raw.run_pie_mips, "run_pie");
+                        installBinary(ctx, R.raw.nflog_mips, "nflog");
+                        //installBinary(ctx, R.raw.run_pie_mips, "run_pie");
             } else {
                 // default to ARM
                 ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
                         installBinary(ctx, R.raw.iptables_arm, "iptables") &&
                         installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
-                        installBinary(ctx, R.raw.nflog_arm, "nflog") &&
-                        installBinary(ctx, R.raw.run_pie_arm, "run_pie");
+                        installBinary(ctx, R.raw.nflog_arm, "nflog");
+                        //installBinary(ctx, R.raw.run_pie_arm, "run_pie");
             }
             Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
         }
