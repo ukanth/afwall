@@ -23,11 +23,11 @@
   <string name="error_refresh">刷新 iptables 错误。</string>
   <string name="error_apply">应用 iptables 规则时出错。</string>
   <string name="error_fetch">获取 iptables 规则时出错。</string>
-  <string name="error_su_toast">无法获得 root 权限 !</string>
+  <string name="error_su_toast">无法获取 root 权限！</string>
   <string name="error_su">无法获取 root 权限.\nAFWall+ 只能在已 root 设备上使用.\n\n如果此设备已 root, 请确认 AFWall+ 已获取执行 \"su\" 命令的权限.</string>
   <string name="error_netfilter">Iptables 缺失。\nAFWall+可能将不能达到预期效果。</string>
   <string name="error_common">错误：</string>
-  <string name="all_item">(任何应用) - 效果和全选一样</string>
+  <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
   <string name="kernel_item">(内核) - Linux 内核</string>
   <string name="android_system">Android 系统</string>
   <string name="unknown_item">未知</string>
@@ -149,6 +149,8 @@
   <string name="log_disabled">日志已禁用</string>
   <string name="log_was_enabled">日志已启用</string>
   <string name="log_was_disabled">日志已禁用</string>
+  <string name="log_target_success">Log target change succesful</string>
+  <string name="log_target_fail">Log target change failed</string>
   <string name="log_toggle_failed">切换日志状态错误</string>
   <string name="log_target_failed">错误: 内核缺少 LOG/NFLOG 支持</string>
   <string name="log_cleared">日志已清除</string>
@@ -192,6 +194,8 @@
   <string name="vpnSummary">启用以单独控制 VPN 权限</string>
   <string name="roaming">漫游控制</string>
   <string name="roamingSummary">启用以各个应用对漫游网络的使用权限</string>
+  <string name="tether_profile">Tether control</string>
+  <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
   <string name="tor_profile">Tor 控制</string>
   <string name="torSummary">启用以通过洋葱路由重定向非 tor 流量</string>
   <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -312,6 +316,7 @@
   <string name="legend_wifi">让 AFWall+ 控制 Wi-Fi 权限</string>
   <string name="lan">LAN</string>
   <string name="vpn">VPN</string>
+  <string name="tether">USB Bluetooth Tether</string>
   <string name="tor">Tor</string>
   <string name="data">数据</string>
   <string name="legend_data">让 AFWAll+ 控制数据 (2G, 3G, EDGE, LTE/4G) 权限</string>
@@ -339,8 +344,8 @@
   <string name="imports">导入</string>
   <string name="invalid_profile">无效配置文件名</string>
   <!-- Donate -->
-  <string name="donate_only">此功能仅供捐赠版使用</string>
-  <string name="buy_donate">购买捐赠版或秘钥</string>
+  <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+  <string name="buy_donate">Purchase donate version or Unlocker</string>
   <string name="unlock_donate"> 点击以解锁捐赠版功能</string>
   <string name="donate_support">您现在可以使用捐赠版的功能 ！</string>
   <string name="donate_thanks">感谢您的支持。</string>
@@ -504,7 +509,8 @@
   <string name="delete_initd_error">无法删除启动脚本</string>
   <string name="runNotification_summary">应用规则时将显示提示通知</string>
   <string name="runNotification">规则申请状态</string>
-  <string name="displayBlockNotification">禁用日志警报通知</string>
+  <string name="displayBlockNotification">禁用日志通知</string>
+  <string name="displayBlockNotification_enable">启用日志通知</string>
   <string name="applyRulesFasterTitle">立即应用</string>
   <string name="applyRulesFaster">仅当应用规则更慢时使用 - 超级实验性</string>
   <string name="purging_rules">删除所有防火墙 iptables 规则</string>
@@ -518,7 +524,25 @@
   <string name="app_notification">应用通知</string>
   <string name="hide">隐藏</string>
   <string name="firewall_error_notify">防火墙问题</string>
+  <string name="firewall_log_notify">日志通知</string>
   <string name="ui_themes_header">主题</string>
   <string name="theme">界面主题</string>
   <string name="clat">(clat) Clat</string>
+  <string name="legend_clone">克隆列</string>
+  <string name="from">来源</string>
+  <string name="legend_action">操作</string>
+  <string name="clear_all">清除全部</string>
+  <string name="log_target">Log Target</string>
+  <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
+  <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
+  <string name="showAllApps">显示所有应用</string>
+  <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
+  <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
+  <string name="connection_default_allow">默认允许连接</string>
+  <string name="connection_default_block">默认阻止连接</string>
+  <string name="log_service_start">正在启动日志服务</string>
+  <string name="log_service_stop">正在停止日志服务</string>
+  <string name="log_service_select">Please select log target first</string>
+  <string name="log_service_watcher">Opening log watcher...</string>
+  <string name="log_service_success">成功启动日志服务！</string>
 </resources>
