@@ -31,7 +31,10 @@
 
     <!-- Allows ufwall to write to external storage -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
+        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
 
     <!-- Allows access to IP configuration and tethering state -->
     <uses-permission android:name="android.permission.INTERNET" />
