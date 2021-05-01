@@ -80,8 +80,9 @@ public class StatusWidget extends AppWidgetProvider {
                             .setReopenShell(true)
                             .setCallback(new RootCommand.Callback() {
                                 public void cbFunc(RootCommand state) {
+                                    boolean status = (state.exitCode == 0);
                                     // setEnabled always sends us a STATUS_CHANGED_MSG intent to update the icon
-                                    Api.setEnabled(context, state.exitCode == 0, true);
+                                    Api.setEnabled(context, status, true);
                                 }
                             }));
                 } else {
@@ -90,7 +91,8 @@ public class StatusWidget extends AppWidgetProvider {
                             .setFailureToast(R.string.toast_error_disabling)
                             .setCallback(new RootCommand.Callback() {
                                 public void cbFunc(RootCommand state) {
-                                    Api.setEnabled(context, state.exitCode != 0, true);
+                                    boolean status = (state.exitCode != 0);
+                                    Api.setEnabled(context, status,  true);
                                 }
                             }));
                 }

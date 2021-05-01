@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -80,8 +81,11 @@ public class ToggleTileService extends TileService {
                         .setCallback(new RootCommand.Callback() {
                             public void cbFunc(RootCommand state) {
                                 // setEnabled always sends us a STATUS_CHANGED_MSG intent to update the icon
-                                Api.setEnabled(context, state.exitCode == 0, true);
-
+                                try {
+                                    Api.setEnabled(context, state.exitCode == 0, true);
+                                } catch (Exception e) {
+                                    Log.e(G.TAG, e.getLocalizedMessage(), e );
+                                }
                                 tile.setState(Tile.STATE_ACTIVE);
                                 tile.setLabel(getString(R.string.active));
                                 tile.setIcon(Icon.createWithResource(context, R.drawable.notification));
@@ -95,7 +99,11 @@ public class ToggleTileService extends TileService {
                         .setReopenShell(true)
                         .setCallback(new RootCommand.Callback() {
                             public void cbFunc(RootCommand state) {
-                                Api.setEnabled(context, state.exitCode != 0, true);
+                                try {
+                                    Api.setEnabled(context, state.exitCode != 0, true);
+                                } catch (Exception e) {
+                                    Log.e(G.TAG, e.getLocalizedMessage(), e );
+                                }
                                 tile.setState(Tile.STATE_INACTIVE);// e() method form java, used in Kotlin as a property
                                 tile.setLabel(getString(R.string.inactive));
                                 tile.setIcon(Icon.createWithResource(context, R.drawable.notification_error));

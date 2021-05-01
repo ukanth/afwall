@@ -75,6 +75,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 
 import dev.ukanth.ufirewall.Api;
 
@@ -102,25 +103,6 @@ public class LogService extends Service {
     private String NOTIFICATION_CHANNEL_ID = "firewall.logservice";
 
 
-    /*private Toast toast;
-    private TextView toastTextView;
-    private CharSequence toastText;
-    private int toastDuration;
-    private int toastDefaultYOffset;
-    private int toastYOffset;
-
-    private Runnable showOnlyToastRunnable;
-    private CancelableRunnable showToastRunnable;
-    private View toastLayout;
-
-    private Disposable disposable;
-    private final int BUFF_LEN = 2000;
-    private static abstract class CancelableRunnable implements Runnable {
-        public boolean cancel;
-    }
-
-    */
-
     private  NotificationManager manager;
     private  NotificationCompat.Builder notificationBuilder;
 
@@ -134,69 +116,6 @@ public class LogService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-    /*public void showToast(final Context context, final Handler handler, final CharSequence text, boolean cancel) {
-        if (showToastRunnable == null) {
-            showToastRunnable = new CancelableRunnable() {
-                public void run() {
-                    if (cancel && toast != null) {
-                        toast.cancel();
-                    }
-                    if (cancel || toast == null) {
-                        toastLayout = ((LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_toast, null);
-                        toastTextView = toastLayout.findViewById(R.id.toasttext);
-                        if (toast == null) {
-                            toast = new Toast(context);
-                        }
-                        toastDefaultYOffset = toast.getYOffset();
-                        toast.setView(toastLayout);
-                    }
-
-                    //Fix for many crashes in android 28
-                    if (Build.VERSION_CODES.P >= 28 && toast.getView().isShown()) {
-                        toast.cancel();
-                    }
-
-                    switch (toastDuration) {
-                        case 3500:
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            break;
-                        case 7000:
-                            toast.setDuration(Toast.LENGTH_LONG);
-                            if (showOnlyToastRunnable == null) {
-                                showOnlyToastRunnable = () -> toast.show();
-                            }
-                            handler.postDelayed(showOnlyToastRunnable, 3250);
-                            break;
-                        default:
-                            toast.setDuration(Toast.LENGTH_SHORT);
-                    }
-
-                    switch (G.toast_pos()) {
-                        case "top":
-                            toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, 0, toastYOffset);
-                            break;
-                        case "bottom":
-                            toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastYOffset);
-                            break;
-                        case "center":
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            break;
-                        default:
-                            toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, toastDefaultYOffset);
-                            break;
-                    }
-
-                    toastTextView.setText(android.text.Html.fromHtml(toastText.toString()));
-                    toast.show();
-                }
-            };
-        }
-
-        showToastRunnable.cancel = cancel;
-        toastText = text;
-        handler.post(showToastRunnable);
-    }*/
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -306,14 +225,18 @@ public class LogService extends Service {
         if(G.enableLogService()) {
             Log.i(TAG, "Staring log watcher");
             //Toast.makeText(getApplicationContext(), getString(R.string.log_service_watcher), Toast.LENGTH_SHORT).show();
-            com.topjohnwu.superuser.Shell.su(logCommand).to(callbackList).submit(executorService, out -> {
-                //failed to start, try restarting
-                if(out.getCode() == 0) {
-                    restartWatcher(logPath);
-                } else{
-                    Log.i(TAG, "Started successfully");
-                }
-            });
+            try {
+                com.topjohnwu.superuser.Shell.su(logCommand).to(callbackList).submit(executorService, out -> {
+                    //failed to start, try restarting
+                    if (out.getCode() == 0) {
+                        restartWatcher(logPath);
+                    } else {
+                        Log.i(TAG, "Started successfully");
+                    }
+                });
+            } catch(Exception e) {
+                Log.i(TAG, "Unable to start log service.");
+            }
         } else{
             if(executorService != null) {
                 executorService.shutdownNow();
@@ -385,7 +308,7 @@ public class LogService extends Service {
             }
         }*/
 
-        //if(bitmap != null) {
+        if(G.enableLogService()) {
             manager.notify(109, notificationBuilder.setOngoing(false)
                     .setCategory(NotificationCompat.CATEGORY_EVENT)
                     .setVisibility(NotificationCompat.VISIBILITY_SECRET)
@@ -394,7 +317,7 @@ public class LogService extends Service {
                     .setSmallIcon(R.drawable.ic_block_black_24dp)
                     .setAutoCancel(true)
                     .build());
-        //}
+        }
     }
 
 

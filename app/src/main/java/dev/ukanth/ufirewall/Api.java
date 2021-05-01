@@ -2794,6 +2794,8 @@ public final class Api {
             returnVal = true;
         } catch (JSONException e) {
             Log.e(TAG, e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.e(TAG, e.getLocalizedMessage());
         } finally {
             if (br != null) {
                 try {
