@@ -1,6 +1,13 @@
 AFWall+ Changelog
 ==================
 
+Version 3.5.2
+
+* Fix: Import all issue.
+* Chinese lang issue  
+* Crash fixes.
+* Removed run_pie binaries which are no longer used.
+
 Version 3.5.1
 * Feature: Cloning of profiles
 * Bug: PrivateDNS changes on boot 
