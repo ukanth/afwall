@@ -38,7 +38,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -120,9 +119,6 @@ import dev.ukanth.ufirewall.util.SecurityUtil;
 import eu.chainfire.libsuperuser.Shell;
 import haibison.android.lockpattern.utils.AlpSettings;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.os.Build.VERSION.SDK_INT;
 import static dev.ukanth.ufirewall.util.G.TAG;
 import static dev.ukanth.ufirewall.util.G.ctx;
 import static dev.ukanth.ufirewall.util.G.isDonate;
@@ -214,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);
 
-        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -830,7 +826,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void deviceCheck() {
-        if (SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             if ((G.isDoKey(getApplicationContext()) || isDonate())) {
                 KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
                 if (keyguardManager.isKeyguardSecure()) {
@@ -1105,7 +1101,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return true;
     }
 
-
     private void disableFirewall() {
         Api.setEnabled(this, false, true);
         menuSetApplyOrSave(mainMenu, false);
@@ -1124,17 +1119,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         //refreshHeader();
-    }
-
-
-    private boolean checkPermission() {
-        if (SDK_INT >= Build.VERSION_CODES.R) {
-            return Environment.isExternalStorageManager();
-        } else {
-            int result = ContextCompat.checkSelfPermission(MainActivity.this, READ_EXTERNAL_STORAGE);
-            int result1 = ContextCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE);
-            return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
-        }
     }
 
     @Override
@@ -1231,15 +1215,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 search(item);
                 return true;
             case R.id.menu_export:
-                if(SDK_INT  >= Build.VERSION_CODES.R ){
+                if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
                     // Do some stuff
                     showExportDialog();
                 } else {
-                    if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
                         // permissions have not been granted.
                         ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{WRITE_EXTERNAL_STORAGE},
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
                     } else{
                         showExportDialog();
@@ -1247,27 +1231,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 return true;
             case R.id.menu_import:
-                if(SDK_INT  >= Build.VERSION_CODES.R ){
-                   if(!checkPermission()) {
-                       try {
-                           Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                           intent.addCategory("android.intent.category.DEFAULT");
-                           intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
-                           startActivityForResult(intent, 2296);
-                       } catch (Exception e) {
-                           Intent intent = new Intent();
-                           intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                           startActivityForResult(intent, 2296);
-                       }
-                   } else {
-                       showImportDialog();
-                   }
+                if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+                    // Do some stuff
+                    copyOldExportedData();
+                    showImportDialog();
                 } else {
-                    if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE)
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                             != PackageManager.PERMISSION_GRANTED) {
                         // permissions have not been granted.
                         ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{READ_EXTERNAL_STORAGE},
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                                 MY_PERMISSIONS_REQUEST_READ_STORAGE);
 
                     } else {
@@ -1280,20 +1253,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-
     private void copyOldExportedData() {
         if(!G.hasCopyOld()) {
-            try {
-                //using root to copy existing data to current directory on A11
-                String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
-                String targetDir = ctx.getExternalFilesDir(null) + "/";
-                String command = "cp -R " + existingDir + " " + targetDir;
-                Log.i(TAG, "Invoking migration script " + command);
-                com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.su(command).exec();
-                G.hasCopyOldExports(true);
-            } catch (Exception e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            }
+            //using root to copy existing data to current directory on A11
+            String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
+            String targetDir = ctx.getExternalFilesDir(null) + "/";
+            String command = "cp -R " + existingDir + " " + targetDir;
+            Log.i(TAG, "Invoking migration script " + command);
+            com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.su(command).exec();
+            G.hasCopyOldExports(true);
         }
     }
 
@@ -1338,7 +1306,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
                             //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
                             File mPath = null;
-                            if(SDK_INT  < Build.VERSION_CODES.Q ){
+                            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
                                 mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                             } else{
                                 mPath = new File(ctx.getExternalFilesDir(null) + "/");
@@ -1370,7 +1338,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             if (G.isDoKey(getApplicationContext()) || isDonate()) {
 
                                 File mPath2 = null;
-                                if(SDK_INT  < Build.VERSION_CODES.Q ){
+                                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
                                     mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                                 } else{
                                     mPath2 = new File(ctx.getExternalFilesDir(null), "/");
@@ -1521,15 +1489,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case 2296: {
-                if (SDK_INT >= Build.VERSION_CODES.R) {
-                    if (Environment.isExternalStorageManager()) {
-                         showImportDialog();
-                    } else {
-                        Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
             case LOCK_VERIFICATION: {
                 switch (resultCode) {
                     case RESULT_OK:
