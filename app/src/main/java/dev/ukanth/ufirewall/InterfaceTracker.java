@@ -396,12 +396,14 @@ public final class InterfaceTracker {
                         String mask = truncAfter(ip.getHostAddress(), "%") + "/" +
                                 addr.getNetworkPrefixLength();
 
-                        if (ip instanceof Inet4Address) {
-                            Log.i(TAG, "Found ipv4: " + mask);
-                            ret.lanMaskV4 = mask;
-                        } else if (ip instanceof Inet6Address) {
-                            Log.i(TAG, "Found ipv6: " + mask);
-                            ret.lanMaskV6 = mask;
+                        if(ret.lanMaskV4.isEmpty() || ret.lanMaskV6.isEmpty()) {
+                            if (ip instanceof Inet4Address) {
+                                Log.i(TAG, "Found ipv4: " + mask);
+                                ret.lanMaskV4 = mask;
+                            } else if (ip instanceof Inet6Address) {
+                                Log.i(TAG, "Found ipv6: " + mask);
+                                ret.lanMaskV6 = mask;
+                            }
                         }
                     }
                     if (ret.lanMaskV4.equals("") && ret.lanMaskV6.equals("")) {

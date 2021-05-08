@@ -576,7 +576,8 @@ public final class Api {
      */
     private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6) {
         try {
-            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, true);
+            //force only for v4
+            final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, !ipv6);
             final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
             for (String s : dynChains) {
                 cmds.add("-F " + AFWALL_CHAIN_NAME + s);
@@ -750,7 +751,7 @@ public final class Api {
 
         try {
             // prevent data leaks due to incomplete rules
-            Log.i(TAG, "Setting OUTPUT to Drop");
+            Log.i(TAG, "Setting OUTPUT to Drop for " + (ipv6 ? "v6": "v4"));
             cmds.add("-P OUTPUT DROP");
 
             for (String s : staticChains) {
@@ -794,7 +795,7 @@ public final class Api {
                 cmds.add("-A afwall-input -m state --state ESTABLISHED -j RETURN");
             }
 
-            Log.i(TAG, "Callin interface routing for " + G.enableIPv6());
+            Log.i(TAG, "Callin interface routing for " + ipv6);
             addInterfaceRouting(ctx, cmds, ipv6);
 
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
@@ -967,34 +968,33 @@ public final class Api {
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         Log.i(TAG, "Using applySavedIptablesRules");
         RuleDataSet dataSet = getDataSet();
-        boolean[] applied = {false, false};
+        //boolean[] applied = {false, false};
 
-        List<String> ipv4cmds = new ArrayList<String>();
-        List<String> ipv6cmds = new ArrayList<String>();
-        Thread t2 = null;
+        List<String> ipv4cmds = new ArrayList<>();
+        List<String> ipv6cmds = new ArrayList<>();
+
         Thread t1 = new Thread(() -> {
-            callback.hash = ipv6cmds.hashCode();
             applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
-            applied[0] = applySavedIp4tablesRules(ctx, ipv4cmds, callback);
+            applySavedIp4tablesRules(ctx, ipv4cmds, callback);
         });
         t1.start();
 
+        Thread t2 = null;
         if (G.enableIPv6()) {
             t2 = new Thread(() -> {
                 applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-                applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone().setHash(ipv6cmds.hashCode()));
+                applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone().setHash(dataSet.hashCode()));
             });
             t2.start();
         }
 
         try {
             t1.join();
-            if (G.enableIPv6()&& t2 != null) {
+            if (t2 != null) {
                 t2.join();
             }
         } catch (InterruptedException e) {
         }
-        //boolean returnValue = G.enableIPv6() ? (applied[0] && applied[1]) : applied[0];
         rulesUpToDate = true;
     }
 
@@ -3808,6 +3808,15 @@ public final class Api {
             this.tetherList = uidsTether;
             this.lanList = uidsLAN;
             this.torList = uidsTor;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result
+                    + ((wifiList == null) ? 0 : dataList.hashCode());
+            return result;
         }
 
         @Override

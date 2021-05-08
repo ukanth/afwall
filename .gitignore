@@ -50,7 +50,7 @@ obj/
 # IDE related 
 .idea/
 *.iml
-aFWall/*.iml
+app/*.iml
 .settings/
 
 # Proguard 

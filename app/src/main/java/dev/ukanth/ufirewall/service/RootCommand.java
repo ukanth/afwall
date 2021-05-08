@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import dev.ukanth.ufirewall.log.Log;
+
 import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
 
 /**
@@ -54,6 +56,7 @@ public class RootCommand implements Cloneable, Serializable {
             rootCommand = (RootCommand) super.clone();
             rootCommand.isv6 = true;
         } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
         return rootCommand;
     }

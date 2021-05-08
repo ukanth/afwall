@@ -143,6 +143,8 @@ public class RootShellService extends Service implements Cloneable {
     private static void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
+            //Log.i("AFWall", command);
+
             //not to send conflicting status
             if (!state.isv6) {
                 sendUpdate(state);
@@ -341,7 +343,7 @@ public class RootShellService extends Service implements Cloneable {
         }
         //already in memory and applied
         //add it to queue
-        Log.d(TAG, "Hashing...." + state.isv6);
+        Log.d(TAG, "Hashing4...." + state.isv6);
         Log.d(TAG, state.hash + "");
 
         waitQueue.add(state);
@@ -354,7 +356,7 @@ public class RootShellService extends Service implements Cloneable {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Log.i(TAG, "State of rootShell: " + rootState);
+                    Log.i(TAG, "State of rootShell(4): " + rootState);
                     if (rootState == ShellState.BUSY) {
                         //try resetting state to READY forcefully
                         Log.i(TAG, "Forcefully changing the state " + rootState);

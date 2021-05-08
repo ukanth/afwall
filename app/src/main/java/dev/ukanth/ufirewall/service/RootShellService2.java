@@ -53,7 +53,7 @@ import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
-import static dev.ukanth.ufirewall.service.RootShellService2.ShellState.INIT;
+import static dev.ukanth.ufirewall.service.RootShellService2.ShellState2.INIT;
 
 
 public class RootShellService2 extends Service {
@@ -69,13 +69,13 @@ public class RootShellService2 extends Service {
     private static Shell.Interactive rootSession;
     private static Context mContext;
     private static NotificationManager notificationManager;
-    private static ShellState rootState = INIT;
+    private static ShellState2 rootState = INIT;
     private static final LinkedList<RootCommand> waitQueue = new LinkedList<>();
     private static NotificationCompat.Builder builder;
 
     private static void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
-            Log.d(TAG, "RootShell: " + state.getCommmands().size() + " commands completed in " +
+            Log.d(TAG, "RootShell6: " + state.getCommmands().size() + " commands completed in " +
                     (new Date().getTime() - state.startTime.getTime()) + " ms");
         }
         state.exitCode = exitCode;
@@ -103,23 +103,23 @@ public class RootShellService2 extends Service {
                 state = waitQueue.remove();
             } catch (NoSuchElementException e) {
                 // nothing left to do
-                if (rootState == ShellState.BUSY) {
-                    rootState = ShellState.READY;
+                if (rootState == ShellState2.BUSY) {
+                    rootState = ShellState2.READY;
                 }
                 break;
             }
             if (state != null) {
                 //same as last one. ignore it
-                Log.i(TAG, "Start processing next state");
+                Log.i(TAG, "Start processing next state(6)");
                 if (enableProfiling) {
                     state.startTime = new Date();
                 }
-                if (rootState == ShellState.FAIL) {
+                if (rootState == ShellState2.FAIL) {
                     // if we don't have root, abort all queued commands
                     complete(state, EXIT_NO_ROOT_ACCESS);
                     //continue;
-                } else if (rootState == ShellState.READY) {
-                    rootState = ShellState.BUSY;
+                } else if (rootState == ShellState2.READY) {
+                    rootState = ShellState2.BUSY;
                     if (G.isRun()) {
                         createNotification(mContext);
                     }
@@ -132,6 +132,7 @@ public class RootShellService2 extends Service {
     private static void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
+            //Log.i("AFWall", command);
             //not to send conflicting status
             sendUpdate(state);
 
@@ -174,14 +175,14 @@ public class RootShellService2 extends Service {
                         if (state.commandIndex >= state.getCommmands().size() || errorExit) {
                             complete(state, exitCode);
                             if (exitCode < 0) {
-                                rootState = ShellState.FAIL;
+                                rootState = ShellState2.FAIL;
                                 Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
                             } else {
                                 if (errorExit) {
                                     Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
                                             "\nOutput:\n" + state.lastCommandResult);
                                 }
-                                rootState = ShellState.READY;
+                                rootState = ShellState2.READY;
                             }
                             runNextSubmission();
                         } else {
@@ -291,10 +292,10 @@ public class RootShellService2 extends Service {
                     open((commandCode, exitCode, output) -> {
                         if (exitCode < 0) {
                             Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
-                            rootState = ShellState.FAIL;
+                            rootState = ShellState2.FAIL;
                         } else {
-                            Log.d(TAG, "Root shell is open");
-                            rootState = ShellState.READY;
+                            Log.d(TAG, "Root shell(6) is open");
+                            rootState = ShellState2.READY;
                         }
                         runNextSubmission();
                     });
@@ -303,11 +304,11 @@ public class RootShellService2 extends Service {
     }
 
     private void reOpenShell(Context context) {
-        if (rootState == null || rootState != ShellState.READY || rootState == ShellState.FAIL) {
+        if (rootState == null || rootState != ShellState2.READY || rootState == ShellState2.FAIL) {
             if (notificationManager != null) {
                 notificationManager.cancel(NOTIFICATION_ID);
             }
-            rootState = ShellState.BUSY;
+            rootState = ShellState2.BUSY;
             startShellInBackground();
             Intent intent = new Intent(context, RootShellService2.class);
             context.startService(intent);
@@ -325,24 +326,24 @@ public class RootShellService2 extends Service {
         }
         //already in memory and applied
         //add it to queue
-        Log.d(TAG, "Hashing...." + state.isv6);
+        Log.d(TAG, "Hashing6...." + state.isv6);
         Log.d(TAG, state.hash + "");
 
         waitQueue.add(state);
 
-        if (rootState == INIT || (rootState == ShellState.FAIL && state.reopenShell)) {
+        if (rootState == INIT || (rootState == ShellState2.FAIL && state.reopenShell)) {
             reOpenShell(ctx);
-        } else if (rootState != ShellState.BUSY) {
+        } else if (rootState != ShellState2.BUSY) {
             runNextSubmission();
         } else {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Log.i(TAG, "State of rootShell: " + rootState);
-                    if (rootState == ShellState.BUSY) {
+                    Log.i(TAG, "State of rootShell(6): " + rootState);
+                    if (rootState == ShellState2.BUSY) {
                         //try resetting state to READY forcefully
                         Log.i(TAG, "Forcefully changing the state " + rootState);
-                        rootState = ShellState.READY;
+                        rootState = ShellState2.READY;
                     }
                     runNextSubmission();
                 }
@@ -356,7 +357,7 @@ public class RootShellService2 extends Service {
         return null;
     }
 
-    public enum ShellState {
+    public enum ShellState2 {
         INIT,
         READY,
         BUSY,
