@@ -148,8 +148,8 @@
     <string name="log_disabled">Log dimatikan</string>
     <string name="log_was_enabled">Log diaktifkan</string>
     <string name="log_was_disabled">Log dimatikan</string>
-    <string name="log_target_success">Mengubah target log berhasil</string>
-    <string name="log_target_fail">Mengubah target log gagal</string>
+    <string name="log_target_success">Berhasil mengubah target log</string>
+    <string name="log_target_fail">Gagal mengubah target log</string>
     <string name="log_toggle_failed">Gagal menukan status log</string>
     <string name="log_target_failed">Eror: Kernel tidak mendukung LOG/NFLOG</string>
     <string name="log_cleared">Log dihapus</string>
@@ -343,8 +343,8 @@
     <string name="imports">Impor</string>
     <string name="invalid_profile">Nama profil tidak benar</string>
     <!-- Donate -->
-    <string name="donate_only">Fitur ini hanya tersedia khusus di versi donasi/Unlocker</string>
-    <string name="buy_donate">Pembelian versi donasi atau Unlocker</string>
+    <string name="donate_only">Fitur ini hanya tersedia di versi donasi/Unlocker</string>
+    <string name="buy_donate">Beli versi donasi atau Unlocker</string>
     <string name="unlock_donate"> sentuh untuk membuka donasi</string>
     <string name="donate_support">Sekarang Anda dapat menggunakan fitur-fitur donasi.</string>
     <string name="donate_thanks">Terima kasih atas dukungan Anda.</string>
@@ -535,13 +535,13 @@
     <string name="showallapps_summary_off">Saat ini menampilkan aplikasi dengan izin INTERNET</string>
     <string name="showallapps_summary_on">Saat ini menampilkan semua aplikasi terinstall (PERINGATAN: Nonaktifkan setelan ini untuk performa lebih baik)</string>
     <string name="showAllApps">Tampilkan semua aplikasi</string>
-    <string name="default_connection_setting_allow">Bawaan aturan daftar putih(Khusus Donasi)</string>
-    <string name="default_connection_setting_block">Bawaan aturan daftar hitam(Khusus Donasi)</string>
+    <string name="default_connection_setting_allow">Aturan bawaan daftar putih(Khusus Donasi)</string>
+    <string name="default_connection_setting_block">Aturan bawaan daftar hitam(Khusus Donasi)</string>
     <string name="connection_default_allow">Bawaan Izinkan Koneksi</string>
     <string name="connection_default_block">Bawaan Blokir Koneksi</string>
-    <string name="log_service_start">Memulai layananan log</string>
-    <string name="log_service_stop">Menghentikan layanan log</string>
+    <string name="log_service_start">Memulai servis log</string>
+    <string name="log_service_stop">Menghentikan servis log</string>
     <string name="log_service_select">Silakan pilih target log terlebih dahulu</string>
     <string name="log_service_watcher">Membuka pengintai log...</string>
-    <string name="log_service_success">Memulai layanan log berhasil!</string>
+    <string name="log_service_success">Berhasil memulai servis Log!</string>
 </resources>

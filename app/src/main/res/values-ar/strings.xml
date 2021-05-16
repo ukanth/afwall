@@ -23,11 +23,11 @@
     <string name="error_refresh">خطأ في تحديث قواعد العناوين</string>
     <string name="error_apply">خطأ في تطبيق قواعد العناوين</string>
     <string name="error_fetch">خطأ في جلب قواعد العناوين</string>
-    <string name="error_su_toast">Unable to acquire root access !</string>
+    <string name="error_su_toast">غير قادر على الحصول على صلاحيات الجذر!</string>
     <string name="error_su">لم أستطع الحصول على صلاحيات الرووت.\n يجب أن يكون جهازك مروت لإستعمال AFWall+.\n\n إذا كان هذا الجهاز مروت، الرجاء التأكد أن AFWall+ يملك الإذن لتنفيذ تعليمة \"su\".</string>
     <string name="error_netfilter">تعذر العثور على دعم اهداف iptables والسلاسل.\+nAFWall قد لا يعمل على النحو المتوقع نتيجة لهذا التقييد.</string>
     <string name="error_common">خطأ: </string>
-    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
+    <string name="all_item">(أي تطبيق) - مماثل لتحديد جميع التطبيقات تحذير!! </string>
     <string name="kernel_item">(نواة) - نواة لينيكس</string>
     <string name="android_system">نظام الأندرويد</string>
     <string name="unknown_item">غير معروف</string>
@@ -148,8 +148,8 @@
     <string name="log_disabled">السجل معطل</string>
     <string name="log_was_enabled">السِجِل مُفَعَّل</string>
     <string name="log_was_disabled">السجل معطل</string>
-    <string name="log_target_success">Log target change succesful</string>
-    <string name="log_target_fail">Log target change failed</string>
+    <string name="log_target_success">سجل تغيير الهدف بنجاح</string>
+    <string name="log_target_fail">فشل تغيير هدف السجل</string>
     <string name="log_toggle_failed">خطأ في تبديل حالة السجل</string>
     <string name="log_target_failed">خطأ: النواة لا تدعم LOG/NFLOG</string>
     <string name="log_cleared">تم مسح السجل</string>

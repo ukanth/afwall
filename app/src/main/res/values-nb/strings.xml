@@ -23,11 +23,11 @@
     <string name="error_refresh">Feil ved gjenoppfrisking av iptables</string>
     <string name="error_apply">Feil ved bruk av iptables-regler</string>
     <string name="error_fetch">Feil ved innhenting av regler fra iptables</string>
-    <string name="error_su_toast">Unable to acquire root access !</string>
-    <string name="error_su">Could not acquire root access.\nYour device must be rooted to use AFWall+.\n\nIf this device is already rooted, please ensure AFWall+ has permission to execute the \"su\" command.</string>
+    <string name="error_su_toast">Ikke i stand til å få rottilgang!</string>
+    <string name="error_su">Kunne ikke få rottilgang.\nEnheten må ha rottilgang for å bruke AFWall+.\n\nHvis denne enheten allerede har rottilgang, sørg for at AFWall+ har tillatelse til å utføre \"su\"-kommandoen.</string>
     <string name="error_netfilter">Kunne ikke finne støtte for iptables-mål og kjeder.\nAFWall+ vil kanskje ikke virke som forventet grunnet denne begrensningen.</string>
     <string name="error_common">Feil: </string>
-    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
+    <string name="all_item">(Enhver app) - Samme som å velge alle apper - !!ADVARSEL!! </string>
     <string name="kernel_item">(kernel) - Linux-kjernen</string>
     <string name="android_system">Android System</string>
     <string name="unknown_item">Ukjent</string>
@@ -68,9 +68,9 @@
     <string name="mode_header">Modus: %s</string>
     <string name="legend_clear">Fjern alle avmerkinger i boksene i alle kolonner</string>
     <string name="mode_whitelist">Tillat valgte</string>
-    <string name="legend_whitelist">Selected apps will be granted Internet access</string>
+    <string name="legend_whitelist">Valgte apper vil bli gitt internettilgang</string>
     <string name="mode_blacklist">Blokker valgte</string>
-    <string name="legend_blacklist">Selected apps will be denied Internet access</string>
+    <string name="legend_blacklist">Valgte apper vil bli nektet internettilgang</string>
     <string name="set_custom_script">Sett egendefinerte skript</string>
     <string name="preferences">Innstillinger</string>
     <string name="reload">Gjeninnlast programmer</string>
@@ -270,7 +270,7 @@
     <string name="hideicons_pref_summary_on">Forbedre ytelsen ved å deaktivere app-ikoner i hovedvisningen</string>
     <string name="hideicons_pref_summary_off">Vis app-ikoner i hovedvisningen</string>
     <string name="notify_pref_title">Aktiver varsler</string>
-    <string name="syscolor_pref_title">System applications</string>
+    <string name="syscolor_pref_title">Systemapper</string>
     <string name="primary_pref_title">Primærfarge</string>
     <string name="status_pref_title">Statuslinjefarge</string>
     <string name="accent_pref_title">Aksentfarge</string>
@@ -343,7 +343,7 @@
     <string name="imports">Importer</string>
     <string name="invalid_profile">Ugyldig profilnavn</string>
     <!-- Donate -->
-    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+    <string name="donate_only">Denne funksjonen er bare tilgjengelig i donasjonsversjonen/Unlocker</string>
     <string name="buy_donate">Purchase donate version or Unlocker</string>
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features.</string>
@@ -355,7 +355,7 @@
     <string name="About">Om</string>
     <string name="FAQ">Ofte stilte spørsmål</string>
     <string name="su_check_title">Status</string>
-    <string name="su_check_message">Sjekker root-tilgang</string>
+    <string name="su_check_message">Sjekker rottilgang</string>
     <!-- choose file -->
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
@@ -523,18 +523,18 @@
     <string name="app_notification">App-varsling</string>
     <string name="hide">Skjul</string>
     <string name="firewall_error_notify">Firewall Issue</string>
-    <string name="firewall_log_notify">Log Notification</string>
+    <string name="firewall_log_notify">Logg-varsling</string>
     <string name="ui_themes_header">Temaer</string>
-    <string name="theme">UI Theme</string>
+    <string name="theme">Brukerflatetema</string>
     <string name="clat">(clat) Clat</string>
-    <string name="legend_clone">Clone columns</string>
-    <string name="from">From</string>
+    <string name="legend_clone">Klon kolonner</string>
+    <string name="from">Fra</string>
     <string name="legend_action">Actions</string>
-    <string name="clear_all">Clear All</string>
+    <string name="clear_all">Fjern alle valg</string>
     <string name="log_target">Log Target</string>
-    <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
-    <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
-    <string name="showAllApps">Show all apps</string>
+    <string name="showallapps_summary_off">Viser nå apper med INTERNETT-tillatelse</string>
+    <string name="showallapps_summary_on">Viser nå alle installerte apper (ADVARSEL: slå av denne innstillingen for bedre ytelse)</string>
+    <string name="showAllApps">Vis alle apper</string>
     <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
     <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
     <string name="connection_default_allow">Default Allow Connection</string>
