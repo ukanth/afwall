@@ -3,10 +3,12 @@ AFWall+ Changelog
 
 Version 3.5.2
 
-* Fix: Import all issue.
+* Fix: Fail to Import from older versions.
+* IPv6 issues on few devices when enabled.
 * Chinese lang issue  
 * Crash fixes.
 * Removed run_pie binaries which are no longer used.
+
 
 Version 3.5.1
 * Feature: Cloning of profiles
