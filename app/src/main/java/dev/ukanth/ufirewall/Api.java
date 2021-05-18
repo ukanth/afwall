@@ -3698,6 +3698,13 @@ public final class Api {
     public static Context updateBaseContextLocale(Context context) {
         String language = G.locale(); // Helper method to get saved language from SharedPreferences
         Locale locale = new Locale(language);
+
+        if (language.equals("zh_CN")) {
+            locale = Locale.SIMPLIFIED_CHINESE;
+        } else if (language.equals("zh_TW")) {
+            locale = Locale.TRADITIONAL_CHINESE;
+        }
+
         Locale.setDefault(locale);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return updateResourcesLocale(context, locale);
