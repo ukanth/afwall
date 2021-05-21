@@ -9,7 +9,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 20210517
-        versionName "3.5.3-BETA"
+        versionName "3.5.2.1"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
