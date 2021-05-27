@@ -1,5 +1,6 @@
 package dev.ukanth.ufirewall.xposed;
 
+/*
 import android.app.Activity;
 import android.app.AndroidAppHelper;
 import android.app.DownloadManager;
@@ -25,13 +26,13 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.SharePreference;
 
 import static de.robv.android.xposed.XposedHelpers.callStaticMethod;
-import static de.robv.android.xposed.XposedHelpers.findClass;
+import static de.robv.android.xposed.XposedHelpers.findClass;*/
 
 
 /**
  * Created by ukanth on 6/7/16.
  */
-public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage {
+/*public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     private final String MY_APP = BuildConfig.APPLICATION_ID;
     private final String TAG = "AFWallXPosed";
@@ -171,4 +172,4 @@ public class XposedInit implements IXposedHookZygoteInit, IXposedHookLoadPackage
         MODULE_PATH = startupParam.modulePath;
         Log.d(TAG, "MyPackage: " + MY_APP);
     }
-}
+}*/

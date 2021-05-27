@@ -8,8 +8,8 @@ android {
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 20210517
-        versionName "3.5.2.1"
+        versionCode 20210526
+        versionName "3.5.3"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
@@ -68,10 +68,10 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.0.7'
 
     implementation "org.ocpsoft.prettytime:prettytime:4.0.6.Final"
-    compileOnly 'de.robv.android.xposed:api:82'
+    //compileOnly 'de.robv.android.xposed:api:82'
 
     //shared preference for Xposed
-    implementation 'com.crossbowffs.remotepreferences:remotepreferences:0.7'
+    //implementation 'com.crossbowffs.remotepreferences:remotepreferences:0.7'
 
     //TODO: Remove this before release
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'

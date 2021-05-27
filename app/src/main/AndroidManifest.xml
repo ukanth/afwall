@@ -335,11 +335,10 @@
             android:name=".service.RulesApplyService"
             android:exported="false" />
 
-        <!--TODO: for donate change it -->
-        <provider
+       <!-- <provider
             android:name=".util.XPreferenceProvider"
             android:authorities="${applicationId}"
-            android:exported="true" />
+            android:exported="true" />-->
 
         <activity android:name=".activity.CustomRulesActivity"></activity>
     </application>
