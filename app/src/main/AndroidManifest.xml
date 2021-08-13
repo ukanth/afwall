@@ -76,7 +76,7 @@
         android:requestLegacyExternalStorage="true"
         tools:ignore="ManifestResource">
 
-        <meta-data
+        <!--<meta-data
             android:name="xposedmodule"
             android:value="true" />
         <meta-data
@@ -84,7 +84,7 @@
             android:value="Xposed related fixes for AFWall+" />
         <meta-data
             android:name="xposedminversion"
-            android:value="53" />
+            android:value="53" />-->
 
 
         <!-- donate  android:label="@string/app_name_donate" -->

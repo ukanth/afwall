@@ -159,7 +159,7 @@ public class RootShellService extends Service implements Cloneable {
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
                 try {
-                    rootSession.addCommand(command, 0, (commandCode, exitCode, output) -> {
+                    rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR)-> {
                         if (output != null) {
                             ListIterator<String> iter = output.listIterator();
                             while (iter.hasNext()) {
@@ -300,20 +300,18 @@ public class RootShellService extends Service implements Cloneable {
         if (rootSession == null) {
             rootSession = new Shell.Builder().
                     useSU().
-                    setWantSTDERR(true).
                     setWatchdogTimeout(5).
-                    open((commandCode, exitCode, output) -> {
-                        if (exitCode < 0) {
-                            Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
+                    open((success, reason) -> {
+                        if (reason < 0) {
+                            Log.e(TAG, "Can't open root shell: exitCode " + reason);
                             rootState = ShellState.FAIL;
                         } else {
-                            Log.d(TAG, "Root shell is open");
+                            Log.d(TAG, "Root shell(6) is open");
                             rootState = ShellState.READY;
                         }
                         runNextSubmission();
                     });
         }
-
     }
 
     private void reOpenShell(Context context) {

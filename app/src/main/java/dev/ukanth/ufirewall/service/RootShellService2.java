@@ -146,7 +146,7 @@ public class RootShellService2 extends Service {
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
                 try {
-                    rootSession.addCommand(command, 0, (commandCode, exitCode, output) -> {
+                    rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR) -> {
                         if (output != null) {
                             ListIterator<String> iter = output.listIterator();
                             while (iter.hasNext()) {
@@ -287,11 +287,10 @@ public class RootShellService2 extends Service {
         if (rootSession == null) {
             rootSession = new Shell.Builder().
                     useSU().
-                    setWantSTDERR(true).
                     setWatchdogTimeout(5).
-                    open((commandCode, exitCode, output) -> {
-                        if (exitCode < 0) {
-                            Log.e(TAG, "Can't open root shell: exitCode " + exitCode);
+                    open((success, reason) -> {
+                        if (reason < 0) {
+                            Log.e(TAG, "Can't open root shell: exitCode " + reason);
                             rootState = ShellState2.FAIL;
                         } else {
                             Log.d(TAG, "Root shell(6) is open");

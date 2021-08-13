@@ -2609,10 +2609,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected Void doInBackground(Void... params) {
             Shell.Interactive rootShell = (new Shell.Builder())
                     .useSU()
-                    .addCommand("id", 0, (commandCode, exitCode, output) -> {
+                    .addCommand("id", 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, STDOUT, STDERR)-> {
                         suGranted[0] = true;
-                    }).open((commandCode, exitCode, output) -> {
-                    });
+                    }).open();
             rootShell.waitForIdle();
             unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
             return null;
