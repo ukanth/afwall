@@ -67,13 +67,12 @@ public class RootShellService2 extends Service {
     //number of retries - increase the count
     private final static int MAX_RETRIES = 10;
     private static Shell.Interactive rootSession;
-    private static Context mContext;
-    private static NotificationManager notificationManager;
+    private Context mContext;
+    private NotificationManager notificationManager;
     private static ShellState2 rootState = INIT;
-    private static final LinkedList<RootCommand> waitQueue = new LinkedList<>();
-    private static NotificationCompat.Builder builder;
+    private final LinkedList<RootCommand> waitQueue = new LinkedList<>();
 
-    private static void complete(final RootCommand state, int exitCode) {
+    private void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
             Log.d(TAG, "RootShell6: " + state.getCommmands().size() + " commands completed in " +
                     (new Date().getTime() - state.startTime.getTime()) + " ms");
@@ -85,7 +84,7 @@ public class RootShellService2 extends Service {
         }
 
         if (exitCode == 0 && state.successToast != NO_TOAST) {
-            Api.sendToastBroadcast(mContext, mContext.getString(state.successToast));
+            Api.sendToastBroadcast(this.mContext, mContext.getString(state.successToast));
         } else if (exitCode != 0 && state.failureToast != NO_TOAST) {
             Api.sendToastBroadcast(mContext, mContext.getString(state.failureToast));
         }
@@ -95,7 +94,7 @@ public class RootShellService2 extends Service {
         }
     }
 
-    private static void runNextSubmission() {
+    private void runNextSubmission() {
 
         do {
             RootCommand state;
@@ -129,7 +128,7 @@ public class RootShellService2 extends Service {
         } while (false);
     }
 
-    private static void processCommands(final RootCommand state) {
+    private void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
             //Log.i("AFWall", command);
@@ -147,16 +146,14 @@ public class RootShellService2 extends Service {
                 state.lastCommandResult = new StringBuilder();
                 try {
                     rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR) -> {
-                        if (output != null) {
-                            ListIterator<String> iter = output.listIterator();
-                            while (iter.hasNext()) {
-                                String line = iter.next();
-                                if (line != null && !line.equals("")) {
-                                    if (state.res != null) {
-                                        state.res.append(line).append("\n");
-                                    }
-                                    state.lastCommandResult.append(line + "\n");
+                        ListIterator<String> iter = output.listIterator();
+                        while (iter.hasNext()) {
+                            String line = iter.next();
+                            if (line != null && !line.equals("")) {
+                                if (state.res != null) {
+                                    state.res.append(line).append("\n");
                                 }
+                                state.lastCommandResult.append(line).append("\n");
                             }
                         }
                         if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
@@ -198,21 +195,21 @@ public class RootShellService2 extends Service {
         }
     }
 
-    private static void sendUpdate(final RootCommand state2) {
+    private void sendUpdate(final RootCommand state2) {
         new Thread(() -> {
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("UPDATEUI6");
             broadcastIntent.putExtra("SIZE", state2.getCommmands().size());
             broadcastIntent.putExtra("INDEX", state2.commandIndex);
-            LocalBroadcastManager.getInstance(mContext).sendBroadcast(broadcastIntent);
+            LocalBroadcastManager.getInstance(this.mContext).sendBroadcast(broadcastIntent);
         }).start();
     }
 
-    private static void createNotification(Context context) {
+    private void createNotification(Context context) {
 
         String CHANNEL_ID = "firewall.apply";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        builder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
         Intent appIntent = new Intent(context, MainActivity.class);
 
@@ -263,7 +260,7 @@ public class RootShellService2 extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) { // if crash restart...
             Log.i(TAG, "Restarting RootShell...");
-            List<String> cmds = new ArrayList<String>();
+            List<String> cmds = new ArrayList<>();
             cmds.add("true");
             new RootCommand().setFailureToast(R.string.error_su)
                     .setReopenShell(true).run(getApplicationContext(), cmds);
@@ -325,8 +322,6 @@ public class RootShellService2 extends Service {
         }
         //already in memory and applied
         //add it to queue
-        Log.d(TAG, "Hashing6...." + state.isv6);
-        Log.d(TAG, state.hash + "");
 
         waitQueue.add(state);
 
@@ -346,7 +341,7 @@ public class RootShellService2 extends Service {
                     }
                     runNextSubmission();
                 }
-            }, 10000);
+            }, 1000);
         }
     }
 

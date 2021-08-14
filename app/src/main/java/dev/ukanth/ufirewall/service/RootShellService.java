@@ -32,6 +32,8 @@ import android.content.Intent;
 import android.os.Process;
 import android.os.Build;
 import android.os.IBinder;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
@@ -68,23 +70,12 @@ public class RootShellService extends Service implements Cloneable {
     //number of retries - increase the count
     private final static int MAX_RETRIES = 10;
     private static Shell.Interactive rootSession;
-    private static Context mContext;
-    private static NotificationManager notificationManager;
+    private Context mContext;
+    private NotificationManager notificationManager;
     private static ShellState rootState = INIT;
-    private static final LinkedList<RootCommand> waitQueue = new LinkedList<>();
-    private static NotificationCompat.Builder builder;
+    private final LinkedList<RootCommand> waitQueue = new LinkedList<>();
 
-    @Override
-    public RootShellService clone() {
-        RootShellService rootShellService = null;
-        try {
-            rootShellService = (RootShellService) super.clone();
-        } catch (CloneNotSupportedException e) {
-        }
-        return rootShellService;
-    }
-
-    private static void complete(final RootCommand state, int exitCode) {
+    private void complete(final RootCommand state, int exitCode) {
         if (enableProfiling) {
             Log.d(TAG, "RootShell: " + state.getCommmands().size() + " commands completed in " +
                     (new Date().getTime() - state.startTime.getTime()) + " ms");
@@ -106,7 +97,7 @@ public class RootShellService extends Service implements Cloneable {
         }
     }
 
-    private static void runNextSubmission() {
+    private void runNextSubmission() {
 
         do {
             RootCommand state;
@@ -140,7 +131,7 @@ public class RootShellService extends Service implements Cloneable {
         } while (false);
     }
 
-    private static void processCommands(final RootCommand state) {
+    private void processCommands(final RootCommand state) {
         if (state.commandIndex < state.getCommmands().size() && state.getCommmands().get(state.commandIndex) != null) {
             String command = state.getCommmands().get(state.commandIndex);
             //Log.i("AFWall", command);
@@ -160,16 +151,14 @@ public class RootShellService extends Service implements Cloneable {
                 state.lastCommandResult = new StringBuilder();
                 try {
                     rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR)-> {
-                        if (output != null) {
-                            ListIterator<String> iter = output.listIterator();
-                            while (iter.hasNext()) {
-                                String line = iter.next();
-                                if (line != null && !line.equals("")) {
-                                    if (state.res != null) {
-                                        state.res.append(line).append("\n");
-                                    }
-                                    state.lastCommandResult.append(line).append("\n");
+                        ListIterator<String> iter = output.listIterator();
+                        while (iter.hasNext()) {
+                            String line = iter.next();
+                            if (line != null && !line.equals("")) {
+                                if (state.res != null) {
+                                    state.res.append(line).append("\n");
                                 }
+                                state.lastCommandResult.append(line).append("\n");
                             }
                         }
                         if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
@@ -211,7 +200,7 @@ public class RootShellService extends Service implements Cloneable {
         }
     }
 
-    private static void sendUpdate(final RootCommand state2) {
+    private  void sendUpdate(final RootCommand state2) {
         new Thread(() -> {
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("UPDATEUI4");
@@ -221,11 +210,11 @@ public class RootShellService extends Service implements Cloneable {
         }).start();
     }
 
-    private static void createNotification(Context context) {
+    private void createNotification(Context context) {
 
         String CHANNEL_ID = "firewall.apply";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        builder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
         Intent appIntent = new Intent(context, MainActivity.class);
 
@@ -276,7 +265,7 @@ public class RootShellService extends Service implements Cloneable {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) { // if crash restart...
             Log.i(TAG, "Restarting RootShell...");
-            List<String> cmds = new ArrayList<String>();
+            List<String> cmds = new ArrayList<>();
             cmds.add("true");
             new RootCommand().setFailureToast(R.string.error_su)
                     .setReopenShell(true).run(getApplicationContext(), cmds);
@@ -342,7 +331,6 @@ public class RootShellService extends Service implements Cloneable {
         //already in memory and applied
         //add it to queue
         Log.d(TAG, "Hashing4...." + state.isv6);
-        Log.d(TAG, state.hash + "");
 
         waitQueue.add(state);
 
@@ -362,7 +350,7 @@ public class RootShellService extends Service implements Cloneable {
                     }
                     runNextSubmission();
                 }
-            }, 10000);
+            }, 1000);
         }
     }
 

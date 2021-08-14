@@ -47,10 +47,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
-import android.net.LinkProperties;
-import android.net.Network;
 import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -111,24 +108,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import javax.xml.transform.Result;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.log.Log;
@@ -186,8 +175,6 @@ public final class Api {
     public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
     //for import/export rules
-    public static final String PREF_3G_PKG = "AllowedPKG3G";
-    public static final String PREF_WIFI_PKG = "AllowedPKGWifi";
     //revertback to old approach for performance
     public static final String PREF_3G_PKG_UIDS = "AllowedPKG3G_UIDS";
     public static final String PREF_WIFI_PKG_UIDS = "AllowedPKGWifi_UIDS";
@@ -323,7 +310,7 @@ public final class Api {
     }
 
     public static String getBinaryPath(Context ctx, boolean setv6) {
-        boolean builtin = true;
+        boolean builtin;
         String ip_path = G.ip_path();
 
         if (ip_path.equals("system")) {
@@ -365,11 +352,6 @@ public final class Api {
         } else {
             String dir = ctx.getDir("bin", 0).getAbsolutePath();
             return dir + "/busybox ";
-            /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                return dir + "/run_pie " + dir + "/busybox ";
-            } else {
-                return dir + "/busybox ";
-            }*/
         }
     }
 
@@ -983,7 +965,7 @@ public final class Api {
         if (G.enableIPv6()) {
             t2 = new Thread(() -> {
                 applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-                applySavedIp6tablesRules(ctx, ipv6cmds, callback.clone().setHash(dataSet.hashCode()));
+                applySavedIp6tablesRules(ctx, ipv6cmds, callback);
             });
             t2.start();
         }
@@ -3637,7 +3619,7 @@ public final class Api {
     public static boolean mountDir(Context context, String path, String mountType) {
         if (path != null) {
             String busyboxPath = Api.getBusyBoxPath(context, false);
-            if (busyboxPath != null && !busyboxPath.trim().isEmpty()) {
+            if (!busyboxPath.trim().isEmpty()) {
                 return RootTools.remount(path, mountType, busyboxPath);
             } else {
                 return false;
@@ -3652,7 +3634,6 @@ public final class Api {
                     .getAbsolutePath();
 
             new Thread(() -> {
-                boolean returnFlag = false;
                 String path = G.initPath();
                 if (path != null) {
                     File f = new File(path);
@@ -3671,7 +3652,7 @@ public final class Api {
         }
     }
 
-    public static boolean isAFWallAllowed(Context context) {
+    /*public static boolean isAFWallAllowed(Context context) {
         try {
             int uid = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).uid;
             SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -3693,7 +3674,7 @@ public final class Api {
         } catch (NameNotFoundException e) {
             return false;
         }
-    }
+    }*/
 
     public static Context updateBaseContextLocale(Context context) {
         String language = G.locale(); // Helper method to get saved language from SharedPreferences
@@ -3788,7 +3769,7 @@ public final class Api {
             edit.putString(PREF_TETHER_PKG_UIDS, savedPkg_tether_uid.toString());
             edit.putString(PREF_LAN_PKG_UIDS, savedPkg_lan_uid.toString());
             edit.putString(PREF_TOR_PKG_UIDS, savedPkg_tor_uid.toString());
-            edit.commit();
+            edit.apply();
             //make sure rules are modified flag is set
             Api.setRulesUpToDate(false);
             fastApply(ctx, new RootCommand());
@@ -4032,12 +4013,12 @@ public final class Api {
 
 
 
-    public static void copySharedPreferences(SharedPreferences fromPreferences, SharedPreferences toPreferences, boolean clear) {
+    /*public static void copySharedPreferences(SharedPreferences fromPreferences, SharedPreferences toPreferences, boolean clear) {
 
         SharedPreferences.Editor editor = toPreferences.edit();
         copySharedPreferences(fromPreferences, editor);
-        editor.commit();
-    }
+        editor.apply();
+    }*/
 
 
     public static void copySharedPreferences(SharedPreferences fromPreferences, SharedPreferences.Editor toEditor) {
