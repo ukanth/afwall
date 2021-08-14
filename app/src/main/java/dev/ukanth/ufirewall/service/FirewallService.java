@@ -123,20 +123,13 @@ public class FirewallService extends Service {
                 .setTicker(getString(R.string.app_name))
                 .setSound(null)
                 .setChannelId(NOTIFICATION_CHANNEL_ID)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
                 .setOngoing(true)
                 .build();
-        switch (notifyType) {
-            case 0:
-                notification.priority = NotificationCompat.PRIORITY_LOW;
-                break;
-            case 1:
-                notification.priority = NotificationCompat.PRIORITY_MIN;
-                break;
-        }
 
         //if(G.activeNotification()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

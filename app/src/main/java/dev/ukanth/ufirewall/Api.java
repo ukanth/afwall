@@ -371,10 +371,6 @@ public final class Api {
         }*/
     }
 
-    public static String getShellPath(Context ctx) {
-        return ctx.getDir("bin", 0).getAbsolutePath();
-    }
-
     /**
      * Copies a raw resource file, given its ID to the given location
      *
@@ -494,7 +490,7 @@ public final class Api {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
 
-        if (G.enableLogService() && G.logTarget() != null) {
+        if (G.enableLogService()) {
             if (G.logTarget().trim().equals("LOG")) {
                 //cmds.add("-A " + AFWALL_CHAIN_NAME  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options");
@@ -1157,7 +1153,7 @@ public final class Api {
                 edit.putString(PREF_TETHER_PKG_UIDS, tether);
                 edit.putString(PREF_LAN_PKG_UIDS, lan);
                 edit.putString(PREF_TOR_PKG_UIDS, tor);
-                edit.commit();
+                edit.apply();
             } else {
                 dataSet = new RuleDataSet(new ArrayList<>(newpkg_wifi),
                         new ArrayList<>(newpkg_3g),
@@ -1196,9 +1192,9 @@ public final class Api {
      */
     public static boolean purgeIptables(Context ctx, boolean showErrors, RootCommand callback) {
 
-        List<String> cmds = new ArrayList<String>();
-        List<String> cmdsv4 = new ArrayList<String>();
-        List<String> out = new ArrayList<String>();
+        List<String> cmds = new ArrayList<>();
+        List<String> cmdsv4 = new ArrayList<>();
+        List<String> out = new ArrayList<>();
 
         for (String s : staticChains) {
             cmds.add("-F " + AFWALL_CHAIN_NAME + s);
@@ -1265,8 +1261,8 @@ public final class Api {
      * @param useIPV6  true to list IPv6 rules, false to list IPv4 rules
      */
     public static void fetchIptablesRules(Context ctx, boolean useIPV6, RootCommand callback) {
-        List<String> cmds = new ArrayList<String>();
-        List<String> out = new ArrayList<String>();
+        List<String> cmds = new ArrayList<>();
+        List<String> out = new ArrayList<>();
         cmds.add("-n -v -L");
         iptablesCommands(cmds, out, false);
         if (useIPV6) {
@@ -1413,7 +1409,7 @@ public final class Api {
                 .queryList();
         purgeOldLog();
         //fetch last 100 records
-        if (log != null && log.size() > 100) {
+        if (log.size() > 100) {
             return log.subList((log.size() - 100), log.size());
         } else {
             return log;
@@ -1508,22 +1504,19 @@ public final class Api {
         try {
             List<Integer> listOfUids = new ArrayList<>();
             PackageManager pkgmanager = ctx.getPackageManager();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //this code will be executed on devices running ICS or later
-                final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
-                List<UserHandle> list = um.getUserProfiles();
+            //this code will be executed on devices running ICS or later
+            final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
+            List<UserHandle> list = um.getUserProfiles();
 
-                for (UserHandle user : list) {
-                    Matcher m = p.matcher(user.toString());
-                    if (m.find()) {
-                        int id = Integer.parseInt(m.group(1));
-                        if (id > 0) {
-                            listOfUids.add(id);
-                        }
+            for (UserHandle user : list) {
+                Matcher m = p.matcher(user.toString());
+                if (m.find() && m.groupCount() > 0) {
+                    int id = Integer.parseInt(m.group(1));
+                    if (id > 0) {
+                        listOfUids.add(id);
                     }
                 }
             }
-
             //use pm list packages -f -U --user 10
             int pkgManagerFlags = PackageManager.GET_META_DATA;
             // it's useless to iterate over uninstalled packages if we don't support multi-profile apps
@@ -1687,7 +1680,7 @@ public final class Api {
             }
 
             if (changed) {
-                edit.commit();
+                edit.apply();
             }
             /* convert the map into an array */
             applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
@@ -1698,7 +1691,7 @@ public final class Api {
         } catch (Exception e) {
             Log.i(TAG, "Exception in getting app list", e);
         }
-        return null;
+        return new ArrayList<>();
     }
 
    /* public boolean isSuPackage(PackageManager pm, String suPackage) {
@@ -1775,27 +1768,20 @@ public final class Api {
 
     private static boolean isRecentlyInstalled(String packageName) {
         boolean isRecent = false;
-        try {
-            if (recentlyInstalled != null && recentlyInstalled.contains(packageName)) {
-                isRecent = true;
-                recentlyInstalled.remove(packageName);
-            }
-        } catch (Exception e) {
+        if (recentlyInstalled != null && recentlyInstalled.contains(packageName)) {
+            isRecent = true;
+            recentlyInstalled.remove(packageName);
         }
         return isRecent;
     }
 
     private static List<Integer> getListFromPref(String savedPkg_uid) {
         StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
-        List<Integer> listUids = new ArrayList<Integer>();
+        List<Integer> listUids = new ArrayList<>();
         while (tok.hasMoreTokens()) {
             String uid = tok.nextToken();
             if (!uid.equals("")) {
-                try {
-                    listUids.add(Integer.parseInt(uid));
-                } catch (Exception ex) {
-
-                }
+                listUids.add(Integer.parseInt(uid));
             }
         }
         // Sort the array to allow using "Arrays.binarySearch" later
@@ -1917,8 +1903,6 @@ public final class Api {
             Log.e(TAG, "runScript failed: " + r.getLocalizedMessage());
         } catch (InterruptedException e) {
             Log.e(TAG, "Caught InterruptedException");
-        } catch (ExecutionException e) {
-            Log.e(TAG, "runScript failed: " + e.getLocalizedMessage());
         } catch (Exception e) {
             Log.e(TAG, "runScript failed: " + e.getLocalizedMessage());
         }
@@ -1940,7 +1924,7 @@ public final class Api {
         }
     }
 
-    private static void deleteStartFixFiles(final Context ctx) {
+    /*private static void deleteStartFixFiles(final Context ctx) {
         String path = G.initPath();
         File f = new File(path);
         final String initScript = "afwallstart";
@@ -1992,7 +1976,7 @@ public final class Api {
                 }
             }
         }).start();
-    }
+    }*/
 
     /**
      * Asserts that the binary files are installed in the cache directory.
@@ -2002,7 +1986,7 @@ public final class Api {
      * @return false if the binary files could not be installed
      */
     public static boolean assertBinaries(Context ctx, boolean showErrors) {
-        int currentVer = -1, lastVer = -1;
+        int currentVer = -1;
         try {
             currentVer = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
             if (G.appVersion() == currentVer) {
@@ -2144,7 +2128,6 @@ public final class Api {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            assert manager != null;
             if (G.getNotificationPriority() == 0) {
                 notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
             }
@@ -2262,20 +2245,14 @@ public final class Api {
                 .setContentTitle(ctx.getString(R.string.app_name))
                 .setTicker(ctx.getString(R.string.app_name))
                 .setSound(null)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
                 .build();
 
-        switch (notifyType) {
-            case 0:
-                notification.priority = NotificationCompat.PRIORITY_LOW;
-                break;
-            case 1:
-                notification.priority = NotificationCompat.PRIORITY_MIN;
-                break;
-        }
+
         notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
         manager.notify(NOTIFICATION_ID, notification);
     }
@@ -2415,7 +2392,7 @@ public final class Api {
         tChanged = removePackageRef(ctx, savedPks_tor, pkgRemoved, editor, PREF_TOR_PKG_UIDS);
 
         if (wChanged || gChanged || rChanged || vChanged || bChanged || lChanged || tChanged) {
-            editor.commit();
+            editor.apply();
             if (isEnabled(ctx)) {
                 // .. and also re-apply the rules if the firewall is enabled
                 applySavedIptablesRules(ctx, false, new RootCommand());
@@ -2560,6 +2537,7 @@ public final class Api {
         List<PackageInfoData> apps = getApps(ctx, null);
         // Builds a pipe-separated list of names
         Map<String, JSONObject> exportMap = new HashMap<>();
+
         try {
             for (int i = 0; i < apps.size(); i++) {
                 if (apps.get(i).selected_wifi) {
@@ -2602,67 +2580,64 @@ public final class Api {
             }
 
             try {
-                if(file != null) {
-                    FileOutputStream fOut = new FileOutputStream(file);
-                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+                FileOutputStream fOut = new FileOutputStream(file);
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                    JSONObject exportObject = new JSONObject();
-                    //if multiprofile is enabled
-                    if (G.enableMultiProfile()) {
-                        if (!G.isProfileMigrated()) {
-                            JSONObject profileObject = new JSONObject();
-                            //store all the profile settings
-                            for (String profile : G.profiles) {
-                                profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                            }
-                            exportObject.put("profiles", profileObject);
-                            //if any additional profiles
-                            //int defaultProfileCount = 3;
-                            JSONObject addProfileObject = new JSONObject();
-                            for (String profile : G.getAdditionalProfiles()) {
-                                addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                            }
-                            //support for new profiles
-                            exportObject.put("additional_profiles", addProfileObject);
-                        } else {
-                            JSONObject profileObject = new JSONObject();
-                            //add default profile
-                            String profileName = "AFWallPrefs";
-                            profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
-                            //update for new profile logic
-                            List<ProfileData> profileDataList = ProfileHelper.getProfiles();
-                            //store all the profile settings
-                            for (ProfileData profile : profileDataList) {
-                                profileName = profile.getName();
-                                if (profile.getIdentifier().startsWith("AFWallProfile")) {
-                                    profileName = profile.getIdentifier();
-                                }
-                                profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
-                            }
-                            exportObject.put("_profiles", profileObject);
+                JSONObject exportObject = new JSONObject();
+                //if multiprofile is enabled
+                if (G.enableMultiProfile()) {
+                    if (!G.isProfileMigrated()) {
+                        JSONObject profileObject = new JSONObject();
+                        //store all the profile settings
+                        for (String profile : G.profiles) {
+                            profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
                         }
-
-
+                        exportObject.put("profiles", profileObject);
+                        //if any additional profiles
+                        //int defaultProfileCount = 3;
+                        JSONObject addProfileObject = new JSONObject();
+                        for (String profile : G.getAdditionalProfiles()) {
+                            addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
+                        }
+                        //support for new profiles
+                        exportObject.put("additional_profiles", addProfileObject);
                     } else {
-                        //default Profile - current one
-                        JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                        exportObject.put("default", obj);
+                        JSONObject profileObject = new JSONObject();
+                        //add default profile
+                        String profileName = "AFWallPrefs";
+                        profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
+                        //update for new profile logic
+                        List<ProfileData> profileDataList = ProfileHelper.getProfiles();
+                        //store all the profile settings
+                        for (ProfileData profile : profileDataList) {
+                            profileName = profile.getName();
+                            if (profile.getIdentifier().startsWith("AFWallProfile")) {
+                                profileName = profile.getIdentifier();
+                            }
+                            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
+                        }
+                        exportObject.put("_profiles", profileObject);
                     }
 
-                    //now gets all the preferences
-                    exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
 
-                    //store whitelist/blocklist mode
-                    String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-                    exportObject.put("mode", mode);
-
-                    myOutWriter.append(exportObject.toString());
-                    res = true;
-                    myOutWriter.close();
-                    fOut.close();
-                } else{
-                    Log.i(TAG, "Error creating file");
+                } else {
+                    //default Profile - current one
+                    JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                    exportObject.put("default", obj);
                 }
+
+                //now gets all the preferences
+                exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
+
+                //store whitelist/blocklist mode
+                String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+                exportObject.put("mode", mode);
+
+                myOutWriter.append(exportObject.toString());
+                res = true;
+                myOutWriter.close();
+                fOut.close();
+
 
             } catch (FileNotFoundException e) {
                 Log.d(TAG, e.getLocalizedMessage(),e);
@@ -2713,27 +2688,25 @@ public final class Api {
             }
 
             try {
-                if(file != null) {
-                    FileOutputStream fOut = new FileOutputStream(file);
-                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                    //default Profile - current one
-                    JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                    JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
+                FileOutputStream fOut = new FileOutputStream(file);
+                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
 
-                    JSONObject exportObject = new JSONObject();
-                    exportObject.put("rules", jArray);
+                //default Profile - current one
+                JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
 
-                    String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-                    exportObject.put("mode", mode);
+                JSONObject exportObject = new JSONObject();
+                exportObject.put("rules", jArray);
 
-                    myOutWriter.append(exportObject.toString());
-                    res = true;
-                    myOutWriter.close();
-                    fOut.close();
-                } else{
-                    Log.e(TAG, "Error exporting document");
-                }
+                String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+                exportObject.put("mode", mode);
+
+                myOutWriter.append(exportObject.toString());
+                res = true;
+                myOutWriter.close();
+                fOut.close();
+
 
             } catch (FileNotFoundException e) {
                 Log.e(TAG, e.getLocalizedMessage());
@@ -2765,7 +2738,7 @@ public final class Api {
 
                 //save mode
                 if(jsonObject.get("mode") != null) {
-                    G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).commit();
+                    G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).apply();
                 }
 
                 JSONArray array = (JSONArray) jsonObject.get("rules");

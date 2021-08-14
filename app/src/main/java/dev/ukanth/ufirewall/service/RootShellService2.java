@@ -222,6 +222,9 @@ public class RootShellService2 extends Service {
             channel.setSound(null, null);
             channel.enableLights(false);
             channel.enableVibration(false);
+            if(G.getNotificationPriority() == 0) {
+                channel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+            }
             notificationManager.createNotificationChannel(channel);
         }
 
@@ -238,20 +241,13 @@ public class RootShellService2 extends Service {
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
                 .setTicker(context.getString(R.string.app_name))
+                .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setChannelId(CHANNEL_ID)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                 .setOnlyAlertOnce(true)
                 .setPriority(NotificationManager.IMPORTANCE_LOW)
                 .setContentText("").build();
-        switch (notifyType) {
-            case 0:
-                notification.priority = NotificationCompat.PRIORITY_LOW;
-                break;
-            case 1:
-                notification.priority = NotificationCompat.PRIORITY_MIN;
-                break;
-        }
         builder.setProgress(0, 0, true);
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
