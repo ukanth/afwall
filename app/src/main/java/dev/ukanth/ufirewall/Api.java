@@ -907,9 +907,13 @@ public final class Api {
     private static void iptablesCommands(List<String> in, List<String> out, boolean ipv6) {
         String ipPath = getBinaryPath(G.ctx, ipv6);
 
+        String waitTime = "";
+        if(G.ip_path().equals("system")) {
+            waitTime = " -w 1";
+        }
         boolean firstLit = true;
         for (String s : in) {
-            s = s + " -w 2";
+            s = s + waitTime;
             if (s.matches("#LITERAL# .*")) {
                 if (firstLit) {
                     // export vars for the benefit of custom scripts
