@@ -44,11 +44,13 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
     public static final String EXTRA_WIFI_AP_STATE = "wifi_state";
     public static final String EXTRA_PREVIOUS_WIFI_AP_STATE = "previous_wifi_state";
 
+
     @Override
     public void onReceive(final Context context, Intent intent) {
 
         int status = Api.getConnectivityStatus(context);
         if (status > 0) {
+
             // NOTE: this gets called for wifi/3G/tether/roam changes but not VPN connect/disconnect
             // This will prevent applying rules when the user disable the option in preferences. This is for low end devices
             if (intent.getAction().equals(WIFI_AP_STATE_CHANGED_ACTION)) {

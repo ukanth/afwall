@@ -15,7 +15,7 @@ import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
  * Created by ukanth on 21/10/17.
  */
 
-public class RootCommand implements Cloneable, Serializable {
+public class RootCommand {
     public Callback cb = null;
     public int successToast = NO_TOAST;
     public int failureToast = NO_TOAST;
@@ -35,11 +35,6 @@ public class RootCommand implements Cloneable, Serializable {
 
     private List<String> commmands;
 
-    public RootCommand setHash(int hash) {
-        this.hash = hash;
-        return this;
-    }
-
     private RootShellService rootShellService;
     private RootShellService2 rootShellService2;
 
@@ -49,7 +44,7 @@ public class RootCommand implements Cloneable, Serializable {
     }
 
 
-    @Override
+    /*@Override
     public RootCommand clone() {
         RootCommand rootCommand = null;
         try {
@@ -59,7 +54,7 @@ public class RootCommand implements Cloneable, Serializable {
             e.printStackTrace();
         }
         return rootCommand;
-    }
+    }*/
 
     public List<String> getCommmands() {
         return commmands;
@@ -161,17 +156,11 @@ public class RootCommand implements Cloneable, Serializable {
      * @param script List of commands to run as root
      */
     public final void run(Context ctx, List<String> script, boolean isv6) {
-        if (rootShellService == null) {
-            rootShellService = new RootShellService();
-        }
         if (rootShellService2 == null) {
             rootShellService2 = new RootShellService2();
         }
-        if (isv6) {
-            rootShellService2.runScriptAsRoot(ctx, script, this.clone());
-        } else {
-            rootShellService.runScriptAsRoot(ctx, script, this);
-        }
+
+        rootShellService2.runScriptAsRoot(ctx, script, this);
     }
 
     /**

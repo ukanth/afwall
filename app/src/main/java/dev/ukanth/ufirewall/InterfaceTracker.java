@@ -245,6 +245,7 @@ public final class InterfaceTracker {
     }
 
     public static InterfaceDetails getCurrentCfg(Context context, boolean force) {
+        Log.i(TAG, "Forcing configuration: " + force);
         if (currentCfg == null || force) {
             currentCfg = getInterfaceDetails(context);
         }
@@ -260,6 +261,7 @@ public final class InterfaceTracker {
             Log.d(TAG, reason + ": firewall is disabled, ignoring");
             return;
         }
+        Log.d(TAG, reason + " applying rules");
         // update Api.PREFS_NAME so we pick up the right profile
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
@@ -398,10 +400,8 @@ public final class InterfaceTracker {
 
                         if(ret.lanMaskV4.isEmpty() || ret.lanMaskV6.isEmpty()) {
                             if (ip instanceof Inet4Address) {
-                                Log.i(TAG, "Found ipv4: " + mask);
                                 ret.lanMaskV4 = mask;
                             } else if (ip instanceof Inet6Address) {
-                                Log.i(TAG, "Found ipv6: " + mask);
                                 ret.lanMaskV6 = mask;
                             }
                         }

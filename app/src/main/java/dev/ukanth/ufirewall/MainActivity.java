@@ -2527,7 +2527,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //set the progress
             if (G.hasRoot()) {
                 Api.setRulesUpToDate(false);
-                RootCommand rootCommand4 = new RootCommand()
+                RootCommand rootCommand = new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
                         .setFailureToast(R.string.error_apply)
                         .setCallback(new RootCommand.Callback() {
@@ -2556,7 +2556,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 });
                             }
                         });
-                Api.applySavedIptablesRules(activityReference.get(), true, rootCommand4);
+                Api.applySavedIptablesRules(activityReference.get(), true, rootCommand);
                 return true;
             } else {
                 runOnUiThread(() -> {

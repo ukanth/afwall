@@ -112,7 +112,7 @@ public class RootShellService extends Service implements Cloneable {
             }
             if (state != null) {
                 //same as last one. ignore it
-                Log.i(TAG, "Start processing next state");
+                Log.i(TAG, "Start processing next state(4)");
                 if (enableProfiling) {
                     state.startTime = new Date();
                 }
@@ -284,7 +284,7 @@ public class RootShellService extends Service implements Cloneable {
 
 
     private void startShellInBackground() {
-        Log.d(TAG, "Starting root shell...");
+        Log.d(TAG, "Starting root shell(4)...");
         setupLogging();
         //start only rootSession is null
         if (rootSession == null) {
@@ -296,7 +296,7 @@ public class RootShellService extends Service implements Cloneable {
                             Log.e(TAG, "Can't open root shell: exitCode " + reason);
                             rootState = ShellState.FAIL;
                         } else {
-                            Log.d(TAG, "Root shell(6) is open");
+                            Log.d(TAG, "Root shell(4) is open");
                             rootState = ShellState.READY;
                         }
                         runNextSubmission();

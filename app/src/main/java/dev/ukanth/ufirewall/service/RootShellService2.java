@@ -31,6 +31,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
@@ -53,12 +55,14 @@ import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 
+
+
 import static dev.ukanth.ufirewall.service.RootShellService2.ShellState2.INIT;
 
 
 public class RootShellService2 extends Service {
 
-    public static final String TAG = "AFWall";
+    public static final String TAG = "AFWall6";
     public static final int NOTIFICATION_ID = 33347;
     public static final int EXIT_NO_ROOT_ACCESS = -1;
     public static final int NO_TOAST = -1;
@@ -66,7 +70,7 @@ public class RootShellService2 extends Service {
     private static final boolean enableProfiling = false;
     //number of retries - increase the count
     private final static int MAX_RETRIES = 10;
-    private static Shell.Interactive rootSession;
+    private static Shell.Interactive rootSession2;
     private Context mContext;
     private NotificationManager notificationManager;
     private static ShellState2 rootState = INIT;
@@ -145,47 +149,47 @@ public class RootShellService2 extends Service {
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
                 try {
-                    rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR) -> {
-                        ListIterator<String> iter = output.listIterator();
-                        while (iter.hasNext()) {
-                            String line = iter.next();
-                            if (line != null && !line.equals("")) {
-                                if (state.res != null) {
-                                    state.res.append(line).append("\n");
+                   rootSession2.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR) -> {
+                                ListIterator<String> iter = output.listIterator();
+                                while (iter.hasNext()) {
+                                    String line = iter.next();
+                                    if (line != null && !line.equals("")) {
+                                        if (state.res != null) {
+                                            state.res.append(line).append("\n");
+                                        }
+                                        state.lastCommandResult.append(line).append("\n");
+                                    }
                                 }
-                                state.lastCommandResult.append(line).append("\n");
-                            }
-                        }
-                        if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
-                            //lets wait for few ms before trying ?
-                            state.retryCount++;
-                            Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                    ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
-                            processCommands(state);
-                            return;
-                        }
-
-                        state.commandIndex++;
-                        state.retryCount = 0;
-
-                        boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
-                        if (state.commandIndex >= state.getCommmands().size() || errorExit) {
-                            complete(state, exitCode);
-                            if (exitCode < 0) {
-                                rootState = ShellState2.FAIL;
-                                Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
-                            } else {
-                                if (errorExit) {
-                                    Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                            "\nOutput:\n" + state.lastCommandResult);
+                                if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
+                                    //lets wait for few ms before trying ?
+                                    state.retryCount++;
+                                    Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                            ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+                                    processCommands(state);
+                                    return;
                                 }
-                                rootState = ShellState2.READY;
-                            }
-                            runNextSubmission();
-                        } else {
-                            processCommands(state);
-                        }
-                    });
+
+                                state.commandIndex++;
+                                state.retryCount = 0;
+
+                                boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
+                                if (state.commandIndex >= state.getCommmands().size() || errorExit) {
+                                    complete(state, exitCode);
+                                    if (exitCode < 0) {
+                                        rootState = ShellState2.FAIL;
+                                        Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
+                                    } else {
+                                        if (errorExit) {
+                                            Log.i(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
+                                                    "\nOutput:\n" + state.lastCommandResult);
+                                        }
+                                        rootState = ShellState2.READY;
+                                    }
+                                    runNextSubmission();
+                                } else {
+                                    processCommands(state);
+                                }
+                            });
                 } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
                     Log.e(TAG, e.getMessage(), e);
                 }
@@ -274,23 +278,23 @@ public class RootShellService2 extends Service {
 
 
     private void startShellInBackground() {
-        Log.d(TAG, "Starting root shell...");
+        Log.d(TAG, "Starting root shell(6)...");
         setupLogging();
         //start only rootSession is null
-        if (rootSession == null) {
-            rootSession = new Shell.Builder().
-                    useSU().
-                    setWatchdogTimeout(5).
-                    open((success, reason) -> {
-                        if (reason < 0) {
-                            Log.e(TAG, "Can't open root shell: exitCode " + reason);
-                            rootState = ShellState2.FAIL;
-                        } else {
-                            Log.d(TAG, "Root shell(6) is open");
-                            rootState = ShellState2.READY;
-                        }
-                        runNextSubmission();
-                    });
+        if (rootSession2 == null) {
+            rootSession2 = new Shell.Builder().
+                useSU().
+                setWatchdogTimeout(5).
+                open((success, reason) -> {
+                    if (reason < 0) {
+                        Log.e(TAG, "Can't open root shell: exitCode " + reason);
+                        rootState = ShellState2.FAIL;
+                    } else {
+                        Log.d(TAG, "Root shell(6) is open");
+                        rootState = ShellState2.READY;
+                    }
+                    runNextSubmission();
+                });
         }
 
     }
