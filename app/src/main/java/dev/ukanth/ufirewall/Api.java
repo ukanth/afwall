@@ -579,7 +579,6 @@ public final class Api {
             if (G.enableLAN() && !cfg.isWifiTethered) {
                 if (ipv6) {
                     if (!cfg.lanMaskV6.equals("")) {
-                        Log.i(TAG, "ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
                         cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
                         cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
                     } else {
@@ -587,12 +586,10 @@ public final class Api {
                     }
                 } else {
                     if (!cfg.lanMaskV4.equals("")) {
-                        Log.i(TAG, "ipv4 found:true," + cfg.lanMaskV4);
                         cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
                         cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
                     } else {
                         Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
-
                     }
                 }
                 if (cfg.lanMaskV4.equals("") && cfg.lanMaskV6.equals("")) {
@@ -718,6 +715,8 @@ public final class Api {
 
         List<String> cmds = new ArrayList<String>();
 
+        Log.i(TAG, "Constructing rules for " + (ipv6 ? "v6": "v4"));
+
         //check before make them ACCEPT state
         if (ipv4Input() || (ipv6 && ipv6Input())) {
             cmds.add("-P INPUT ACCEPT");
@@ -729,7 +728,6 @@ public final class Api {
 
         try {
             // prevent data leaks due to incomplete rules
-            Log.i(TAG, "Setting OUTPUT to Drop for " + (ipv6 ? "v6": "v4"));
             cmds.add("-P OUTPUT DROP");
 
             for (String s : staticChains) {
@@ -773,7 +771,6 @@ public final class Api {
                 cmds.add("-A afwall-input -m state --state ESTABLISHED -j RETURN");
             }
 
-            Log.i(TAG, "Callin interface routing for " + ipv6);
             addInterfaceRouting(ctx, cmds, ipv6);
 
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
@@ -877,15 +874,16 @@ public final class Api {
                 addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6);
             }
 
-            Log.i(TAG, "Setting OUTPUT to Accept State");
             cmds.add("-P OUTPUT ACCEPT");
+
+
 
         } catch (Exception e) {
             Log.e(e.getClass().getName(), e.getMessage(), e);
         }
 
         iptablesCommands(cmds, out, ipv6);
-
+        Log.i(TAG, "Total # of rules for " + (ipv6 ? "v6": "v4") + " " + cmds.size());
         return true;
     }
 
@@ -911,6 +909,7 @@ public final class Api {
 
         boolean firstLit = true;
         for (String s : in) {
+            s = s + " -w 2";
             if (s.matches("#LITERAL# .*")) {
                 if (firstLit) {
                     // export vars for the benefit of custom scripts
@@ -951,9 +950,16 @@ public final class Api {
         List<String> ipv4cmds = new ArrayList<>();
         List<String> ipv6cmds = new ArrayList<>();
 
-        Thread t1 = new Thread(() -> {
-            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
-            applySavedIp4tablesRules(ctx, ipv4cmds, callback);
+        applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
+        applySavedIp4tablesRules(ctx, ipv4cmds, callback);
+
+        if (G.enableIPv6()) {
+                applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
+                applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
+        }
+
+        /*Thread t1 = new Thread(() -> {
+
         });
         t1.start();
 
@@ -961,7 +967,7 @@ public final class Api {
         if (G.enableIPv6()) {
             t2 = new Thread(() -> {
                 applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-                applySavedIp6tablesRules(ctx, ipv6cmds, callback);
+                applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
             });
             t2.start();
         }
@@ -972,7 +978,7 @@ public final class Api {
                 t2.join();
             }
         } catch (InterruptedException e) {
-        }
+        }*/
         rulesUpToDate = true;
     }
 
@@ -1011,7 +1017,7 @@ public final class Api {
         }
         try {
             Log.i(TAG, "Using applySaved4IptablesRules");
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,false);
+            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
@@ -1287,41 +1293,6 @@ public final class Api {
         }
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
-
-    //Cleanup unused shell opened by logservice
-    /*public static void cleanupUid() {
-        try {
-            Set<String> uids = G.storedPid();
-            if (uids != null && uids.size() > 0) {
-                Log.i(TAG, "log cleanup using uid");
-                Shell.Interactive tempSession = new Shell.Builder().useSU().open();
-                for (String uid : uids) {
-                    Log.i(Api.TAG, "Cleaning up previous uid: " + uid);
-                    tempSession.addCommand("kill -9 " + uid);
-                }
-                G.storedPid(new HashSet());
-                if (tempSession != null) {
-                    tempSession.kill();
-                    tempSession.close();
-                }
-            }
-            Shell.Interactive tempSession = new Shell.Builder().useSU().open();
-            Log.i(Api.TAG, "Cleaning up log watches using shell");
-            tempSession.addCommand("killall nflog");
-            tempSession.addCommand("pkill -9 -f \"aflogshellb\"");
-            tempSession.addCommand("pkill -9 -f \"aflogshell\"");
-            //try using our busybox incase if pkill is not found
-            String bbPath = getBusyBoxPath(ctx, true);
-            tempSession.addCommand(bbPath + " pkill -9 -f \"nflog\"");
-            tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshellb\"");
-            tempSession.addCommand(bbPath + " pkill -9 -f \"aflogshell\"");
-        } catch (ClassCastException e) {
-            Log.e(TAG, "ClassCastException in cleanupUid: " + e.getMessage());
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in cleanupUid: " + e.getMessage());
-        }
-    }*/
-
 
     public static void applyIPv6Quick(Context ctx, List<String> cmds, RootCommand callback) {
         List<String> out = new ArrayList<String>();
