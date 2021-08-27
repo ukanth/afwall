@@ -8,6 +8,12 @@
             android:key="activeRules"
             android:summary="@string/active_rules_summary"
             android:title="@string/active_rules" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="addDelay"
+            android:summary="@string/add_delay_rules"
+            android:title="@string/add_delay" />
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="activeRules"

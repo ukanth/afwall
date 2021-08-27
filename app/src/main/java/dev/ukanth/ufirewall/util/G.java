@@ -134,6 +134,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String PRIMARY_DARK_COLOR = "primaryColor";
 
     private static final String ACTIVE_RULES = "activeRules";
+    private static final String ADD_DELAY = "addDelay";
+
     //private static final String ACTIVE_NOTIFICATION = "activeNotification";
     private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
     private static final String LOG_TARGET = "logTarget";
@@ -623,6 +625,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     public static boolean activeRules() {
         return gPrefs.getBoolean(ACTIVE_RULES, true);
+    }
+
+    public static boolean addDelay() {
+        return gPrefs.getBoolean(ADD_DELAY, true);
     }
 
     public static boolean startupDelay() {

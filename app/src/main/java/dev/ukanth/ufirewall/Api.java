@@ -908,7 +908,7 @@ public final class Api {
         String ipPath = getBinaryPath(G.ctx, ipv6);
 
         String waitTime = "";
-        if(G.ip_path().equals("system")) {
+        if(G.ip_path().equals("system") && G.addDelay()) {
             waitTime = " -w 1";
         }
         boolean firstLit = true;
