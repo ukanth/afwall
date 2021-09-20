@@ -461,7 +461,7 @@ public final class Api {
             }
 
 
-            if (G.getPrivateDnsStatus()) {
+            if (G.getPrivateDnsStatus() && !G.dns_proxy().equals("disable")) {
                 cmds.add("-A " + chain + " -p tcp --dport 853" + " -j ACCEPT");
                 // disabling HTTPS over DNS
                 //cmds.add("-A " + chain + " -p tcp --dport 443" + " -j ACCEPT");
