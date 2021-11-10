@@ -60,9 +60,9 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}"
 
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.2'
 
-    implementation "org.ocpsoft.prettytime:prettytime:5.0.1.Final"
+    implementation "org.ocpsoft.prettytime:prettytime:5.0.2.Final"
     //compileOnly 'de.robv.android.xposed:api:82'
 
     //shared preference for Xposed
@@ -71,5 +71,5 @@ dependencies {
     //TODO: Remove this before release
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.5'
 
-    implementation "dnsjava:dnsjava:3.4.1"
+    implementation "dnsjava:dnsjava:3.4.2"
 }
