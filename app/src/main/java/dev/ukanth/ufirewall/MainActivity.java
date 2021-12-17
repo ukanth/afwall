@@ -84,6 +84,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.stericson.roottools.RootTools;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -116,7 +117,7 @@ import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import dev.ukanth.ufirewall.util.SecurityUtil;
-import eu.chainfire.libsuperuser.Shell;
+
 import haibison.android.lockpattern.utils.AlpSettings;
 
 import static dev.ukanth.ufirewall.util.G.TAG;
@@ -236,6 +237,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //queue = new HashSet<>();
 
+
+        (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -2384,7 +2387,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            if (G.hasRoot() && Shell.SU.available()) {
+            if (G.hasRoot()) {
                 //store the root value
                 G.hasRoot(true);
                 Api.purgeIptables(ctx, true, new RootCommand()
@@ -2607,12 +2610,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Void doInBackground(Void... params) {
-            Shell.Interactive rootShell = (new Shell.Builder())
-                    .useSU()
-                    .addCommand("id", 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, STDOUT, STDERR)-> {
-                        suGranted[0] = true;
-                    }).open();
-            rootShell.waitForIdle();
+            suGranted[0] = Shell.rootAccess();
             unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
             return null;
         }

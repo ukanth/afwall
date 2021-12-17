@@ -32,13 +32,13 @@ android {
 
 dependencies {
 
-    def libsuVersion = '3.1.2'
+    def libsuVersion = '3.2.1'
     def dbFlowVersion = '4.2.4'
 
     implementation "com.github.topjohnwu:libsu:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
-    //implementation "com.github.topjohnwu.libsu:busybox:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:busybox:${libsuVersion}"
 
     implementation 'eu.chainfire:libsuperuser:1.1.0.201907261845'
 
