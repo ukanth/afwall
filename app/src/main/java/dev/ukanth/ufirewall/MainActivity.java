@@ -235,12 +235,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSwipeLayout = findViewById(R.id.swipe_container);
         mSwipeLayout.setOnRefreshListener(this);
 
-        
+
         if (!G.hasRoot()) {
             (new RootCheck()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             //might not have rootshell
-
             startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();

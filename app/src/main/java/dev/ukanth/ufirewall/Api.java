@@ -73,6 +73,7 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.stericson.roottools.RootTools;
+import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -132,8 +133,6 @@ import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.widget.StatusWidget;
-import eu.chainfire.libsuperuser.Shell;
-import eu.chainfire.libsuperuser.Shell.SU;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
 import static dev.ukanth.ufirewall.util.G.ipv4Fwd;
@@ -3523,7 +3522,7 @@ public final class Api {
         Thread t = new Thread() {
             @Override
             public void run() {
-                hasRoot[0] = Shell.SU.available();
+                hasRoot[0] = Shell.rootAccess();
             }
         };
         t.start();
@@ -3780,13 +3779,15 @@ public final class Api {
         @Override
         protected Integer doInBackground(Object... params) {
             @SuppressWarnings("unchecked")
+
             List<String> commands = (List<String>) params[0];
             StringBuilder res = (StringBuilder) params[1];
+            Log.i(TAG, "Executing root commands of" + commands.size());
             try {
-                if (!SU.available())
+                if (!hasRoot())
                     return exitCode;
                 if (commands != null && commands.size() > 0) {
-                    List<String> output = SU.run(commands);
+                    List<String> output = Shell.su(String.valueOf(commands)).exec().getOut();
                     if (output != null) {
                         exitCode = 0;
                         if (output.size() > 0) {
