@@ -7,6 +7,11 @@ package dev.ukanth.ufirewall.util;
  * Created by ukanth
  */
 
+import static android.content.Context.BIOMETRIC_SERVICE;
+import static android.content.Context.KEYGUARD_SERVICE;
+import static android.hardware.biometrics.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED;
+import static android.hardware.biometrics.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -17,7 +22,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.biometrics.BiometricManager;
 import android.hardware.biometrics.BiometricPrompt;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -50,13 +54,6 @@ import javax.crypto.SecretKey;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-
-import static android.content.Context.BIOMETRIC_SERVICE;
-import static android.content.Context.FINGERPRINT_SERVICE;
-import static android.content.Context.KEYGUARD_SERVICE;
-import static android.hardware.biometrics.BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE;
-import static android.hardware.biometrics.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED;
-import static android.hardware.biometrics.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE;
 
 public class BiometricUtil {
 

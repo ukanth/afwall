@@ -1,7 +1,6 @@
 package dev.ukanth.ufirewall.util;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;

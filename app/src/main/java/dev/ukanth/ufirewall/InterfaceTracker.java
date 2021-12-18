@@ -22,18 +22,15 @@
 
 package dev.ukanth.ufirewall;
 
+import static dev.ukanth.ufirewall.util.G.ctx;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.net.LinkProperties;
-import android.net.Network;
 import android.net.NetworkInfo;
-import android.net.NetworkRequest;
 import android.net.wifi.WifiManager;
-import android.os.Build;
-import android.widget.Toast;
 
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -47,8 +44,6 @@ import java.util.Iterator;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
-
-import static dev.ukanth.ufirewall.util.G.ctx;
 
 public final class InterfaceTracker {
 

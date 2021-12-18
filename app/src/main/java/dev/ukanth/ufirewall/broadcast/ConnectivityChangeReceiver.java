@@ -21,18 +21,16 @@
  */
 package dev.ukanth.ufirewall.broadcast;
 
+import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.LinkProperties;
-import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
-
-import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 

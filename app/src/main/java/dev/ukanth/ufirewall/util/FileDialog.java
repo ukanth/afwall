@@ -3,7 +3,6 @@ package dev.ukanth.ufirewall.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Environment;
-import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.topjohnwu.superuser.Shell;

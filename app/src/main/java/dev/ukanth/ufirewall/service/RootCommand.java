@@ -1,15 +1,12 @@
 package dev.ukanth.ufirewall.service;
 
+import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
+
 import android.content.Context;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import dev.ukanth.ufirewall.log.Log;
-
-import static dev.ukanth.ufirewall.service.RootShellService.NO_TOAST;
 
 /**
  * Created by ukanth on 21/10/17.

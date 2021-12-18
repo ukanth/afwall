@@ -33,14 +33,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.util.SecurityUtil;
 
 /**
  * ON/OFF Widget implementation

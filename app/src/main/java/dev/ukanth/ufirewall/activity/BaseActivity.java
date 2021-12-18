@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.LocaleList;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;

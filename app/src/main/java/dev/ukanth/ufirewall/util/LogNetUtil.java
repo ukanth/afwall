@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall.util;
 
 import android.content.Context;
 import android.os.AsyncTask;
+
 import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;

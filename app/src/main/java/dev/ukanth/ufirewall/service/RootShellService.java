@@ -22,6 +22,8 @@
 
 package dev.ukanth.ufirewall.service;
 
+import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -29,11 +31,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Process;
 import android.os.Build;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
@@ -55,8 +55,6 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
-
-import static dev.ukanth.ufirewall.service.RootShellService.ShellState.INIT;
 
 
 public class RootShellService extends Service implements Cloneable {

@@ -1,5 +1,11 @@
 package dev.ukanth.ufirewall.preferences;
 
+import static android.content.Context.FINGERPRINT_SERVICE;
+import static android.content.Context.KEYGUARD_SERVICE;
+import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -21,13 +27,14 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -39,12 +46,6 @@ import dev.ukanth.ufirewall.util.FingerprintUtil;
 import dev.ukanth.ufirewall.util.G;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
-
-import static android.content.Context.FINGERPRINT_SERVICE;
-import static android.content.Context.KEYGUARD_SERVICE;
-import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
-import static haibison.android.lockpattern.LockPatternActivity.ACTION_CREATE_PATTERN;
-import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 
 public class SecPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {

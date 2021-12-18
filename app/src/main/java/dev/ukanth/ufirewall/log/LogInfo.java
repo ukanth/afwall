@@ -31,10 +31,7 @@ import android.util.SparseArray;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
 import org.ocpsoft.prettytime.units.JustNow;
-import org.xbill.DNS.Address;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,7 +40,6 @@ import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
-import dev.ukanth.ufirewall.InterfaceDetails;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;

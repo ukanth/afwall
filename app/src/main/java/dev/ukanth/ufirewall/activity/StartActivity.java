@@ -1,8 +1,6 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 
 import dev.ukanth.ufirewall.MainActivity;

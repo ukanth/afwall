@@ -1,6 +1,5 @@
 package dev.ukanth.ufirewall.util;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.Html;
@@ -13,11 +12,9 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
-import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
 import android.util.Log;
 
-import org.xml.sax.ContentHandler;
 import org.xml.sax.XMLReader;
 
 import java.lang.reflect.Field;

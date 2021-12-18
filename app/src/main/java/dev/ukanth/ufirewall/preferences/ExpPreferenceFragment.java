@@ -1,5 +1,8 @@
 package dev.ukanth.ufirewall.preferences;
 
+import static dev.ukanth.ufirewall.Api.getFixLeakPath;
+import static dev.ukanth.ufirewall.Api.mountDir;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -23,9 +26,6 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
-
-import static dev.ukanth.ufirewall.Api.getFixLeakPath;
-import static dev.ukanth.ufirewall.Api.mountDir;
 
 public class ExpPreferenceFragment extends PreferenceFragment implements
         OnSharedPreferenceChangeListener {

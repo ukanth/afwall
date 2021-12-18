@@ -5,8 +5,6 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import dev.ukanth.ufirewall.log.LogPreferenceDB;
-
 /**
  * Created by ukanth on 17/1/16.
  */

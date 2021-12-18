@@ -24,6 +24,12 @@
 
 package dev.ukanth.ufirewall;
 
+import static dev.ukanth.ufirewall.util.G.TAG;
+import static dev.ukanth.ufirewall.util.G.ctx;
+import static dev.ukanth.ufirewall.util.G.isDonate;
+import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
+import static dev.ukanth.ufirewall.util.SecurityUtil.REQ_ENTER_PATTERN;
+
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
@@ -36,26 +42,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.core.view.ViewCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -80,10 +71,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.stericson.roottools.RootTools;
 import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
@@ -103,8 +102,6 @@ import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.activity.OldLogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.log.LogPreference;
-import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
@@ -114,19 +111,9 @@ import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.util.ImportApi;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import dev.ukanth.ufirewall.util.SecurityUtil;
-
 import haibison.android.lockpattern.utils.AlpSettings;
-
-import static dev.ukanth.ufirewall.util.G.TAG;
-import static dev.ukanth.ufirewall.util.G.ctx;
-import static dev.ukanth.ufirewall.util.G.isDonate;
-import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
-import static dev.ukanth.ufirewall.util.SecurityUtil.REQ_ENTER_PATTERN;
-import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
-import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, OnClickListener, SwipeRefreshLayout.OnRefreshListener,

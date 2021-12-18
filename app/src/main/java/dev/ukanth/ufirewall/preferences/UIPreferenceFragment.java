@@ -1,9 +1,10 @@
 package dev.ukanth.ufirewall.preferences;
 
+import static dev.ukanth.ufirewall.util.G.isDonate;
+
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -17,8 +18,6 @@ import java.util.List;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
-
-import static dev.ukanth.ufirewall.util.G.isDonate;
 
 public class UIPreferenceFragment extends PreferenceFragment  implements
 		SharedPreferences.OnSharedPreferenceChangeListener {

@@ -1,5 +1,7 @@
 package dev.ukanth.ufirewall.util;
 
+import static dev.ukanth.ufirewall.Api.TAG;
+
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -8,11 +10,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
 
 import dev.ukanth.ufirewall.log.Log;
-
-import static dev.ukanth.ufirewall.Api.TAG;
 
 public class AppIconHelperV26 {
 

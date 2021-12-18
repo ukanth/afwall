@@ -1,5 +1,10 @@
 package dev.ukanth.ufirewall.widget;
 
+import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
+import static dev.ukanth.ufirewall.util.SecurityUtil.REQ_ENTER_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
+import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,11 +26,6 @@ import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
-
-import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
-import static dev.ukanth.ufirewall.util.SecurityUtil.REQ_ENTER_PATTERN;
-import static haibison.android.lockpattern.LockPatternActivity.RESULT_FAILED;
-import static haibison.android.lockpattern.LockPatternActivity.RESULT_FORGOT_PATTERN;
 
 public class ToggleWidgetOldActivity extends Activity implements
         OnClickListener {

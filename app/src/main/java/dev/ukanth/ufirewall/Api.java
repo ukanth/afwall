@@ -24,6 +24,13 @@
 
 package dev.ukanth.ufirewall;
 
+import static dev.ukanth.ufirewall.util.G.ctx;
+import static dev.ukanth.ufirewall.util.G.ipv4Fwd;
+import static dev.ukanth.ufirewall.util.G.ipv4Input;
+import static dev.ukanth.ufirewall.util.G.ipv6Fwd;
+import static dev.ukanth.ufirewall.util.G.ipv6Input;
+import static dev.ukanth.ufirewall.util.G.showAllApps;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -58,14 +65,14 @@ import android.os.PowerManager;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.TaskStackBuilder;
-
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -109,7 +116,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -133,13 +139,6 @@ import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.widget.StatusWidget;
-
-import static dev.ukanth.ufirewall.util.G.ctx;
-import static dev.ukanth.ufirewall.util.G.ipv4Fwd;
-import static dev.ukanth.ufirewall.util.G.ipv4Input;
-import static dev.ukanth.ufirewall.util.G.ipv6Fwd;
-import static dev.ukanth.ufirewall.util.G.ipv6Input;
-import static dev.ukanth.ufirewall.util.G.showAllApps;
 
 /**
  * Contains shared programming interfaces.

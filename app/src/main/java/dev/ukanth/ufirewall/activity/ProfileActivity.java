@@ -1,10 +1,10 @@
 package dev.ukanth.ufirewall.activity;
 
+import static dev.ukanth.ufirewall.util.G.isDonate;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -14,21 +14,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.profiles.ProfileAdapter;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.util.G;
-
-import static dev.ukanth.ufirewall.util.G.isDonate;
 
 /**
  * Created by ukanth on 31/7/15.

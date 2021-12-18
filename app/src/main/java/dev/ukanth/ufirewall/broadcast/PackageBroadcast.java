@@ -22,6 +22,8 @@
  */
 package dev.ukanth.ufirewall.broadcast;
 
+import static dev.ukanth.ufirewall.util.G.isDonate;
+
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -35,10 +37,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
@@ -50,8 +50,6 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
-
-import static dev.ukanth.ufirewall.util.G.isDonate;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled

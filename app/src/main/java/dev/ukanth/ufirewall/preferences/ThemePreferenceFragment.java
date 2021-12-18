@@ -1,21 +1,16 @@
 package dev.ukanth.ufirewall.preferences;
 
-import android.app.KeyguardManager;
-import android.content.ActivityNotFoundException;
+import static dev.ukanth.ufirewall.util.G.isDonate;
+
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
-
-import static dev.ukanth.ufirewall.util.G.isDonate;
-import static dev.ukanth.ufirewall.util.SecurityUtil.LOCK_VERIFICATION;
 
 public class ThemePreferenceFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {

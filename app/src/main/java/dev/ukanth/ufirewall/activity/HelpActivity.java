@@ -1,11 +1,12 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.os.Bundle;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.MenuItem;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.ui.about.ViewPagerAdapter;

@@ -1,24 +1,25 @@
 package dev.ukanth.ufirewall.util;
 
+import static dev.ukanth.ufirewall.util.G.isDonate;
+import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
+import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
+
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import androidx.annotation.RequiresApi;
 import android.text.InputType;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import haibison.android.lockpattern.LockPatternActivity;
-
-import static dev.ukanth.ufirewall.util.G.isDonate;
-import static haibison.android.lockpattern.LockPatternActivity.ACTION_COMPARE_PATTERN;
-import static haibison.android.lockpattern.LockPatternActivity.EXTRA_PATTERN;
 
 /**
  * Created by ukanth on 17/3/18.

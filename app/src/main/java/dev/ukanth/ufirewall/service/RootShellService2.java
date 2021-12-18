@@ -22,6 +22,8 @@
 
 package dev.ukanth.ufirewall.service;
 
+import static dev.ukanth.ufirewall.service.RootShellService2.ShellState2.INIT;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -32,7 +34,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
@@ -54,10 +55,6 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
-
-
-
-import static dev.ukanth.ufirewall.service.RootShellService2.ShellState2.INIT;
 
 
 public class RootShellService2 extends Service {

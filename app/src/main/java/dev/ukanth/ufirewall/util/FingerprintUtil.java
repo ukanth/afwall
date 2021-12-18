@@ -7,6 +7,9 @@ package dev.ukanth.ufirewall.util;
  * Created by vzool on 1/20/17.
  */
 
+import static android.content.Context.FINGERPRINT_SERVICE;
+import static android.content.Context.KEYGUARD_SERVICE;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -22,11 +25,12 @@ import android.os.CancellationSignal;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
+import android.view.WindowManager;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import android.view.WindowManager;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -47,9 +51,6 @@ import javax.crypto.SecretKey;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-
-import static android.content.Context.FINGERPRINT_SERVICE;
-import static android.content.Context.KEYGUARD_SERVICE;
 
 public class FingerprintUtil {
 
