@@ -116,7 +116,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -952,35 +959,21 @@ public final class Api {
         List<String> ipv4cmds = new ArrayList<>();
         List<String> ipv6cmds = new ArrayList<>();
 
-        applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
-        applySavedIp4tablesRules(ctx, ipv4cmds, callback);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        if (G.enableIPv6()) {
-                applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-                applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
-        }
-
-        /*Thread t1 = new Thread(() -> {
+        executorService.submit(() -> {
+            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
+            applySavedIp4tablesRules(ctx, ipv4cmds, callback);
 
         });
-        t1.start();
 
-        Thread t2 = null;
         if (G.enableIPv6()) {
-            t2 = new Thread(() -> {
+            executorService.submit(() -> {
                 applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
                 applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
             });
-            t2.start();
-        }
 
-        try {
-            t1.join();
-            if (t2 != null) {
-                t2.join();
-            }
-        } catch (InterruptedException e) {
-        }*/
+        }
         rulesUpToDate = true;
     }
 
