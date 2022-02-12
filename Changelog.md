@@ -1,6 +1,16 @@
 AFWall+ Changelog
 ==================
 
+Version 3.5.3
+
+* Fix: applying rules with ipv6 error
+* Fix: #1101 DNS leak when using external dns client.
+* New: Enable delay when applying rules (optional)
+* Use libsu for root detection.
+* Chinese menu issue.
+* Dropped xposed support.
+* Updated libraries and SDK (30) 
+
 Version 3.5.2
 
 * Fix: Fail to Import from older versions.
