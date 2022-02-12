@@ -23,13 +23,13 @@
     <string name="error_refresh">Erro ao atualizar iptables</string>
     <string name="error_apply">Erro ao aplicar regras do iptables</string>
     <string name="error_fetch">Erro ao obter as regras iptables</string>
-    <string name="error_su_toast">Unable to acquire root access !</string>
+    <string name="error_su_toast">Não é possível obter acesso root!</string>
     <string name="error_su">Não foi possível obter o acesso root.\nNecessita de um dispositivo com root para usar o AFWall+.\n\n Se este dispositivo já possui acesso root, certifique-se de que Afwall + tem permissões suficientes para executar o comando \"su\".</string>
     <string name="error_netfilter">Não foi possível localizar os destinos e cadeias iptables.\nO AFWall+ pode não funcionar corretamente em virtude desta limitação.</string>
     <string name="error_common">Erro: </string>
-    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
+    <string name="all_item">(Qualquer aplicação) - É o mesmo que selecionar todas as aplicações! - Teña coidado!! </string>
     <string name="kernel_item">(kernel) - Linux kernel</string>
-    <string name="android_system">Android System</string>
+    <string name="android_system">Sistema Android</string>
     <string name="unknown_item">Desconhecido</string>
     <string name="tethering_item">(tethering) - Serviços DHCP+DNS</string>
     <string name="dnsproxy_item">(proxy dns proxy) - Pesquisas DNS via netd</string>

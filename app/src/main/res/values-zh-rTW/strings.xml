@@ -23,11 +23,11 @@
     <string name="error_refresh">更新 iptables 時錯誤</string>
     <string name="error_apply">套用 iptables 規則時錯誤</string>
     <string name="error_fetch">獲取 iptables 規則時錯誤</string>
-    <string name="error_su_toast">Unable to acquire root access !</string>
+    <string name="error_su_toast">無法取得 root 權限!</string>
     <string name="error_su">無法取得 root 權限。\n您需要一台已 root 的手機來執行 AFWall+。\n\n如果這台手機已經 root，請確保 AFWall+ 具有足夠的權限執行 \"su\" 命令。</string>
     <string name="error_netfilter">找不到支援的 iptables 目標和鏈。 \nAFWall+ 可能無法按這種限制的方式工作。</string>
     <string name="error_common">錯誤: </string>
-    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
+    <string name="all_item">(所有程式) - 與全選功能一樣 - ！！警告！！ </string>
     <string name="kernel_item">(內核) - Linux 內核</string>
     <string name="android_system">Android 系統</string>
     <string name="unknown_item">未知</string>
@@ -285,7 +285,7 @@
     <string name="misc_header">語言/插件</string>
     <!-- 1.2.6 -->
     <string name="active_rules">啟動規則</string>
-    <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
+    <string name="active_rules_summary">各種連接變更時套用防火牆規則 (漫遊/LAN/Wi-Fi/3G/4G/網路共用)</string>
     <string name="profile_add">新增設定檔</string>
     <string name="profile_remove">移除設定檔</string>
     <string name="profile_rename">重新命名設定檔</string>
@@ -310,15 +310,15 @@
     <string name="uncheck_all">取消全部</string>
     <string name="select_action">已選取操作的連接：</string>
     <string name="roam">漫遊</string>
-    <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+    <string name="legend_roam">允許 AFWall+ 在不同的網路供應商 (漫遊) 時，分別控制網路權限</string>
     <string name="wifi">Wi-Fi</string>
-    <string name="legend_wifi">Let AFWall+ control Wi-Fi permissions</string>
+    <string name="legend_wifi">允許 AFWall+ 控制 Wi-Fi 權限</string>
     <string name="lan">LAN</string>
     <string name="vpn">VPN</string>
-    <string name="tether">USB Bluetooth Tether</string>
+    <string name="tether">USB 藍牙共享網路</string>
     <string name="tor">Tor</string>
     <string name="data">資料</string>
-    <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+    <string name="legend_data">允許 AFWall+ 控制行動數據 (2G,3G,EDGE,LTE/4G) 權限</string>
     <string name="pkg_all">全部</string>
     <string name="pkg_core">核心</string>
     <string name="pkg_sys">系統</string>
@@ -331,7 +331,7 @@
     <string name="enable_dns">通過 netd 啟用 DNS</string>
     <string name="disable_dns">通過 netd 停用 DNS</string>
     <string name="dns_proxy_title">DNS 代理 </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
+    <string name="dns_proxy_summary">DNS 查找是通過 netd 上 Android 4.3 及更高版本。如果禁用該會阻止在這些設備上的互聯網。</string>
     <string name="tasker_lable">AFWall + Tasker 插件</string>
     <string name="enable">啟用</string>
     <string name="disable">停用</string>
@@ -343,8 +343,8 @@
     <string name="imports">匯入</string>
     <string name="invalid_profile">不正確設定檔名稱</string>
     <!-- Donate -->
-    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
-    <string name="buy_donate">Purchase donate version or Unlocker</string>
+    <string name="donate_only">此功能只在贊助版/解鎖版使用</string>
+    <string name="buy_donate">購買捐贈版或解鎖版</string>
     <string name="unlock_donate"> 點擊解鎖贊助版</string>
     <string name="donate_support">您可以現在使用贊助版的功能。</string>
     <string name="donate_thanks">謝謝您的支持。</string>
@@ -410,8 +410,8 @@
     <string name="lockNotification">在鎖定畫面隱藏通知圖示</string>
     <string name="lockScreenNotification_summary">在鎖定畫面上隱藏通知</string>
     <string name="menu_legend">圖例</string>
-    <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
-    <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+    <string name="permissiondenied_importexport">讀/寫儲存空間權限被拒絕。請授予匯出/匯入規則的存取權限。</string>
+    <string name="permissiondenied_asset">讀/寫儲存空間權限被拒絕。請授予權限以便複製 AFWall+ 二進制檔案。</string>
     <string name="log_deletedapp">刪除應用程式</string>
     <string name="log_denied">已拒絕：</string>
     <string name="log_times">次</string>
@@ -427,8 +427,8 @@
     <string name="showlogdetail_title">應用程式日誌資訊</string>
     <string name="reapply_rules">因為偏好設定改變，請重新套用規則</string>
     <string name="custom_rules">自訂規則</string>
-    <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
+    <string name="mdnslabel">(mdns) 組播 DNS</string>
+    <string name="mdns">啟用組播 DNS</string>
     <string name="error_log">無法啟用開機記錄服務。LogTarget 為空或未啟用 LogService。</string>
     <string name="delete_profile">無法刪除項目</string>
     <string name="profile_migrate_msg">Profiles migrated</string>
@@ -445,7 +445,7 @@
     <string name="select_the_action">請選擇操作</string>
     <string name="result_copied_to_clipboard">文字已複製到剪貼簿。</string>
     <string name="result">結果</string>
-    <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
+    <string name="output_is_empty">輸出是空的，因為網路訪問和 SuperSu 被拒絕</string>
     <string name="searching">搜尋中</string>
     <string name="looking_for_data">正在尋找資料...</string>
     <string name="reachable_timeout">超過時間限制 %d 毫秒</string>
@@ -504,7 +504,7 @@
     <string name="quick_apply_title">顯示快速套用</string>
     <string name="quick_apply_summary">僅限捐贈版！顯示懸浮按鈕以快速套用規則</string>
     <string name="init_d">Startup directory path for script</string>
-    <string name="mount_initd_error">Unable to mount the directory</string>
+    <string name="mount_initd_error">無法掛載資料夾。</string>
     <string name="delete_initd_error">Unable to delete the startup script</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
     <string name="runNotification">Rules Progress</string>
@@ -530,7 +530,7 @@
     <string name="legend_clone">Clone columns</string>
     <string name="from">From</string>
     <string name="legend_action">Actions</string>
-    <string name="clear_all">Clear All</string>
+    <string name="clear_all">全部清除</string>
     <string name="log_target">Log Target</string>
     <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
     <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>

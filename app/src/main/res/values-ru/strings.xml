@@ -23,7 +23,7 @@
     <string name="error_refresh">Ошибка обновления iptables</string>
     <string name="error_apply">Ошибка применения правил iptables</string>
     <string name="error_fetch">Ошибка получения правил iptables</string>
-    <string name="error_su_toast">Невозможно получить рут-доступ !</string>
+    <string name="error_su_toast">Невозможно получить root-доступ!</string>
     <string name="error_su">Невозможно получить root-доступ.\nДля работы приложения AFWall+ необходим root-доступ.\n\nЕсли в вашем устройстве имеется данный уровень доступа, пожалуйста, убедитесь что AFWall+ имеет достаточно разрешений для выполнения команды \"su\".</string>
     <string name="error_netfilter">Не удалось найти поддержку целей и цепочек iptables. \nИз-за этого ограничения AFWall+ может работать не так, как нужно.</string>
     <string name="error_common">Ошибка: </string>
@@ -43,7 +43,7 @@
     <string name="shell_item">(shell) - оболочка Linux</string>
     <!-- <string name="operation_timeout">Operation timed out</string> -->
     <string name="fw_enabled">Включить брандмауэр</string>
-    <string name="fw_disabled">Выключить брандмауэр</string>
+    <string name="fw_disabled">Отключить брандмауэр</string>
     <string name="flushed">Правила удалены</string>
     <string name="show_log">Просмотреть журнал</string>
     <string name="clear_log">Удалить лог</string>
@@ -119,7 +119,7 @@
     <string name="remove_initd">Скрипт автозапуска удалён</string>
     <string name="unable_remove_initd">Невозможно удалить скрипт автозапуска</string>
     <!-- Widget -->
-    <string name="widget_disable_fail">Не удается отключить брандмауэр. Защищен паролем!</string>
+    <string name="widget_disable_fail">Невозможно отключить брандмауэр. Защита паролем!</string>
     <string name="widget_label_status">Переключение AFWall+</string>
     <string name="widget_label_settings">Настройки AFWall+</string>
     <string name="widget_label_settings_old">Настройки AFWall+ (старые)</string>
@@ -523,7 +523,7 @@
     <string name="boot_notification">Служба загрузки</string>
     <string name="app_notification">Уведомления приложения</string>
     <string name="hide">Скрыть</string>
-    <string name="firewall_error_notify">Режим файрвола</string>
+    <string name="firewall_error_notify">Проблема с брандмауэром</string>
     <string name="firewall_log_notify">Уведомление журнала</string>
     <string name="ui_themes_header">Темы</string>
     <string name="theme">Тема интерфейса</string>
@@ -537,7 +537,7 @@
     <string name="showallapps_summary_on">Показывает все установленные приложения (ВНИМАНИЕ: отключите этот параметр для лучшей производительности)</string>
     <string name="showAllApps">Показать все приложения</string>
     <string name="default_connection_setting_allow">Поведение белого списка по умолчанию (только премиум-функция)</string>
-    <string name="default_connection_setting_block">Поведение черного списка по умолчанию (только премиум-функция)</string>
+    <string name="default_connection_setting_block">Поведение чёрного списка по умолчанию (только премиум-функция)</string>
     <string name="connection_default_allow">Разрешение на соединение по умолчанию</string>
     <string name="connection_default_block">Разрешение на блокировку по умолчанию</string>
     <string name="log_service_start">Запуск службы журнала</string>

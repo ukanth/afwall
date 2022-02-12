@@ -537,8 +537,8 @@
     <string name="showAllApps">Tüm uygulamaları göster</string>
     <string name="default_connection_setting_allow">Varsayılan beyaz liste eylemi (Bağışçılara Özel)</string>
     <string name="default_connection_setting_block">Varsayılan kara liste eylemi (Bağışçılara Özel)</string>
-    <string name="connection_default_allow">Varsayılan Bağlantılara İzin Ver</string>
-    <string name="connection_default_block">Varsayılan Bağlantıları Engelle</string>
+    <string name="connection_default_allow">İzin Verilecek Bağlantılar</string>
+    <string name="connection_default_block">Engellenecek Bağlantılar</string>
     <string name="log_service_start">Günlük hizmeti başlatılıyor</string>
     <string name="log_service_stop">Günlük hizmeti durduruluyor</string>
     <string name="log_service_select">Lütfen ilk olarak günlük hedefi seçin</string>

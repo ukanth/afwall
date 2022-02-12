@@ -23,11 +23,11 @@
     <string name="error_refresh">Hiba az iptables frissítése közben</string>
     <string name="error_apply">Hiba az iptables szabályok alkalmazása közben</string>
     <string name="error_fetch">Hiba az iptables szabályok letöltése közben</string>
-    <string name="error_su_toast">Unable to acquire root access !</string>
+    <string name="error_su_toast">Nem sikerült root hozzáférést szerezni!</string>
     <string name="error_su">Nem sikerült a root jogosultságot megszerezni.\nRootolt eszközön lehet használni az AFWall+ alkalmazást.\n\nHa az eszköz rootolt, győződjön meg róla, hogy az AFWall+ rendelkezik-e engedéllyel a \"su\" parancs végrehajtásához.</string>
     <string name="error_netfilter">Nem találhatók iptables célok és láncok.\nAz Afwall+ lehet, hogy nem működik majd ezekkel a korlátozásokkal.</string>
     <string name="error_common">Hiba: </string>
-    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
+    <string name="all_item">(Bármelyik alkalmazás) – Ugyanaz mint az összes alkalmazás kiválasztása – !!FIGYELEM!! </string>
     <string name="kernel_item">(kernel) - Linux kernel</string>
     <string name="android_system">Android rendszer</string>
     <string name="unknown_item">Ismeretlen</string>
@@ -119,7 +119,7 @@
     <string name="unable_remove_initd">Nem sikerült eltávolítani az AFWall+ indítási scriptet</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Nem tudja letiltani tűzfalat. Jelszóval védett!</string>
-    <string name="widget_label_status">AFWall+ Toggle</string>
+    <string name="widget_label_status">AFWall+ Váltás</string>
     <string name="widget_label_settings">AFWall+ beállítások</string>
     <string name="widget_label_settings_old">AFWall+ Beállítások (régi)</string>
     <!-- Color Picker -->
@@ -148,8 +148,8 @@
     <string name="log_disabled">Naplózás letiltva</string>
     <string name="log_was_enabled">Naplózás engedélyezve</string>
     <string name="log_was_disabled">Naplózás letiltva</string>
-    <string name="log_target_success">Log target change succesful</string>
-    <string name="log_target_fail">Log target change failed</string>
+    <string name="log_target_success">Sikeres naplózási célmódosítás</string>
+    <string name="log_target_fail">Sikertelen naplózási célmódosítás</string>
     <string name="log_toggle_failed">Hiba a napló (log) állapotának átállítása közben</string>
     <string name="log_target_failed">Hiba: a kernelből hiányzik a LOG/NFLOG támogatás</string>
     <string name="log_cleared">A napló (log) törölve</string>
@@ -187,16 +187,16 @@
     <string name="reapply_profile">Profil szabályok újraalkalmazása</string>
     <!-- Interface -->
     <string name="lan_title">LAN szabályzás</string>
-    <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
+    <string name="lan_summary">Engedélyezi a LAN-engedélyek és a Wi-Fi-engedélyek külön-külön vezérlését</string>
     <string name="iptables_pref">Iptables bináris</string>
     <string name="vpn_profile">VPN szabályzás</string>
     <string name="vpnSummary">VPN engedélyek külön-külön szabályozása</string>
     <string name="roaming">Roaming szabályozás</string>
     <string name="roamingSummary">Roaming engedélyek külön-külön szabályozása</string>
-    <string name="tether_profile">Tether control</string>
-    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
+    <string name="tether_profile">Internetmegosztás vezérlése</string>
+    <string name="tetherSummary">Engedélyezi a Bluetooth/USB internetmegosztási kapcsolat vezérlését</string>
     <string name="tor_profile">Tor szabályzása</string>
-    <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
+    <string name="torSummary">Engedélyezi a nem Tor-forgalom átirányítását a Tor-on keresztül</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
     <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
     <!-- Toast Messages -->
@@ -215,7 +215,7 @@
     <!-- XPOSED -->
     <string name="XPosed_prefs_title">XPosed kapcsolódó</string>
     <string name="fixDownloadTitle">Letöltés kezelő szivárgás javítás</string>
-    <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
+    <string name="fixDownloadTitleSummary">Az Xposed használatával blokkolhatja az alkalmazásoknak az Android beépített letöltéskezelőjével való adat letöltését, még akkor is, ha az alkalmazás hozzáférését megtagadják</string>
     <string name="LeakDetected">Szivárgás észlelve!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker kapcsolódó</string>
@@ -261,7 +261,7 @@
     <string name="enableInboundSummary">Engedélyezi a LAN-ról az eszközre érkező kapcsolatokat (Samba, sshd, AirDroid, stb.)</string>
     <!-- UI Preferences -->
     <string name="ui_prefs_title">Felhasználói felület</string>
-    <string name="rule_prefs_title">Rules Behaviour</string>
+    <string name="rule_prefs_title">Szabályok, Viselkedés</string>
     <string name="ui_chains_title">IPv4 láncok</string>
     <string name="ui_chains6_title">IPv6 láncok</string>
     <string name="rules_prefs_title">Szabályok/kapcsolódás</string>

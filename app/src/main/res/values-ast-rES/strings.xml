@@ -215,7 +215,7 @@
     <!-- XPOSED -->
     <string name="XPosed_prefs_title">Venceyao a XPosed</string>
     <string name="fixDownloadTitle">Iguar escape del xestor de decargues</string>
-    <string name="fixDownloadTitleSummary">Usa Xposed pa bloquiar les aplicaciones que baxen datos col usu del xestor de descargues integráu d\'Android magar que l\'aplicación tenga l\'accesu negáu</string>
+    <string name="fixDownloadTitleSummary">Usa Xposed pa bloquiar les aplicaciones que baxen datos col xestor de descargues integráu d\'Android magar que l\'aplicación tenga l\'accesu negáu</string>
     <string name="LeakDetected">¡Detectáronse escapes!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker Related</string>
@@ -270,8 +270,8 @@
     <string name="hideicons_pref_summary_on">Ameyora\'l rindimientu desactivando los iconos d\'aplicaciones na vista principal</string>
     <string name="hideicons_pref_summary_off">Amuesa los iconos d\'aplicaciones na vista principal</string>
     <string name="notify_pref_title">Habilitar avisos</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
+    <string name="syscolor_pref_title">Aplicaciones del sistema</string>
+    <string name="primary_pref_title">Color primariu</string>
     <string name="status_pref_title">Statusbar Color</string>
     <string name="accent_pref_title">Accent Color</string>
     <string name="syscolor_pref_summary_on">Color pa toles aplicaciones del sistema</string>
@@ -515,7 +515,7 @@
     <string name="purging_rules">Removing all firewall iptables rules</string>
     <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
     <string name="show_host">Show hostname</string>
-    <string name="host">Host:</string>
+    <string name="host">Agospiador:</string>
     <string name="battery_optimization_title">Whitelist afwall+ doze</string>
     <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
     <string name="firewall_service">Firewall Service</string>
@@ -529,7 +529,7 @@
     <string name="clat">(clat) Clat</string>
     <string name="legend_clone">Clone columns</string>
     <string name="from">From</string>
-    <string name="legend_action">Actions</string>
+    <string name="legend_action">Aiciones</string>
     <string name="clear_all">Clear All</string>
     <string name="log_target">Log Target</string>
     <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
