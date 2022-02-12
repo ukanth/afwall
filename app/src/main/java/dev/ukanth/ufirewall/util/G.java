@@ -625,7 +625,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean addDelay() {
-        return gPrefs.getBoolean(ADD_DELAY, true);
+        return gPrefs.getBoolean(ADD_DELAY, false);
     }
 
     public static boolean startupDelay() {

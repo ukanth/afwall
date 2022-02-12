@@ -10,7 +10,7 @@
             android:title="@string/active_rules" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="addDelay"
             android:summary="@string/add_delay_rules"
             android:title="@string/add_delay" />
