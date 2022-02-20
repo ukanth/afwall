@@ -176,7 +176,7 @@ public class FirewallService extends Service {
         registerReceiver(packageReceiver, intentFilter);
 
         if(bluetoothAdapter == null) {
-            bluetoothAdapter = InterfaceTracker.setupBluetoothProfile(this);
+            bluetoothAdapter = InterfaceTracker.setupBluetoothProfile(bluetoothAdapter, this);
         }
 
         return START_STICKY;
@@ -196,7 +196,7 @@ public class FirewallService extends Service {
         if(bluetoothAdapter != null) {
             try {
                 bluetoothAdapter.closeProfileProxy(5, InterfaceTracker.getBtProfile());
-            }catch (Exception e){
+            } catch (Exception e){
                 Log.e(G.TAG, "Error closing bt profile",e);
             }
         }
