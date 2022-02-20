@@ -509,24 +509,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             inputList = new ArrayList<>(returnList);
         } else {
-            inputList = allApps;
+            if(allApps != null && allApps.size() > 0) {
+                inputList = allApps;
+            } else{
+                inputList = new ArrayList<>(returnList);
+            }
         }
-
-        try {
-            Collections.sort(inputList, new PackageComparator());
-        } catch (Exception e) {
-            Log.d(Api.TAG, "Exception in filter Sorting");
+        if(inputList != null && inputList.size() > 0) {
+            try {
+                Collections.sort(inputList, new PackageComparator());
+            } catch (Exception e) {
+                Log.d(Api.TAG, "Exception in filter Sorting");
+            }
+            ArrayAdapter appAdapter;
+            if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
+                appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList, true);
+            } else {
+                appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
+            }
+            this.listview.setAdapter(appAdapter);
+            appAdapter.notifyDataSetChanged();
+            // restore
+            this.listview.setSelectionFromTop(index, top);
+        } else{
+            Log.d(Api.TAG, "Input list is empty");
         }
-        ArrayAdapter appAdapter;
-        if(selectedColumns <= DEFAULT_VIEW_LIMIT) {
-            appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList, true);
-        } else {
-            appAdapter = new AppListArrayAdapter(this, getApplicationContext(), inputList);
-        }
-        this.listview.setAdapter(appAdapter);
-        appAdapter.notifyDataSetChanged();
-        // restore
-        this.listview.setSelectionFromTop(index, top);
     }
 
     @Override
