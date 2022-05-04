@@ -1491,7 +1491,46 @@ public final class Api {
             if (G.supportDual()) {
                 pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
             }
-            List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
+
+            // Get the main user packages
+            Process package_process = Runtime.getRuntime().exec("pm list packages --user 0");
+            assert package_process != null;
+            BufferedReader installed_packages_reader = new BufferedReader(new InputStreamReader(package_process.getInputStream()));
+            package_process.waitFor();
+
+            List<ApplicationInfo> installed = new ArrayList<>();
+            // Let's convert the string to ApplicationInfo
+            String one_package;
+            while ((one_package = installed_packages_reader.readLine()) != null) {
+                // As the packages _should_ be in the format of:
+                // package:com.android.cts.priv.ctsshim
+                // We _should_ be able to split on ":" and get the last element.
+                String package_name = one_package.split(":")[1];
+                ApplicationInfo app_info = pkgmanager.getApplicationInfo(package_name, pkgManagerFlags);
+                installed.add(app_info);
+            }
+            installed_packages_reader.close();
+
+            if (G.supportDual()) {
+                // Let's get a programmatic way of getting the user ID's here.
+                package_process = Runtime.getRuntime().exec("pm list packages --user 10");
+                assert package_process != null;
+                installed_packages_reader = new BufferedReader(new InputStreamReader(package_process.getInputStream()));
+                package_process.waitFor();
+
+                // Let's convert the string to ApplicationInfo
+                String dual_package;
+                while ((dual_package = installed_packages_reader.readLine()) != null) {
+                    String package_name = dual_package.split(":")[1];
+                    ApplicationInfo app_info = pkgmanager.getApplicationInfo(package_name, pkgManagerFlags);
+                    installed.add(app_info);
+                }
+            }
+            installed_packages_reader.close();
+
+            // Let's remove the duplicates here.
+            installed = new ArrayList<>(new HashSet<>(installed));
+
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
