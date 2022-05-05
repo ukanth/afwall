@@ -51,7 +51,9 @@
 
     <!-- Needed for Android 11+ to correctly interact with apps that have been installed for other users -->
     <!-- HOWEVER... As this is WIP, AFWall needs to be installed on the system partition to function -->
-    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" android:protectionLevel="signatureOrSystem" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" android:protectionLevel="signatureOrSystem" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_PROFILES" android:protectionLevel="signatureOrSystem" tools:ignore="ProtectedPermissions" />
 
     <uses-permission
        android:name="android.permission.FOREGROUND_SERVICE"/>
