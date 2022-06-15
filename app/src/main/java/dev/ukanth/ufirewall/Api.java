@@ -123,6 +123,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -220,7 +221,8 @@ public final class Api {
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
     private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
-/**
+    private static boolean globalStatus = false;
+    /**
      * @brief Special user/group IDs that aren't associated with
      * any particular app.
      * <p>
@@ -951,30 +953,50 @@ public final class Api {
     }
 
 
+    public static void waitAndTerminate(ExecutorService executorService) {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            executorService.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
-        Log.i(TAG, "Using applySavedIptablesRules");
-        RuleDataSet dataSet = getDataSet();
-        //boolean[] applied = {false, false};
 
-        List<String> ipv4cmds = new ArrayList<>();
-        List<String> ipv6cmds = new ArrayList<>();
+        if(!globalStatus) {
+            Log.i(TAG, "Using applySavedIptablesRules");
+            globalStatus = true;
+            ExecutorService executorService = Executors.newFixedThreadPool(2);
+            RuleDataSet dataSet = getDataSet();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+            List<String> ipv4cmds = new ArrayList<>();
+            List<String> ipv6cmds = new ArrayList<>();
 
-        executorService.submit(() -> {
-            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
-            applySavedIp4tablesRules(ctx, ipv4cmds, callback);
-
-        });
-
-        if (G.enableIPv6()) {
             executorService.submit(() -> {
-                applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-                applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
+                applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
+                applySavedIp4tablesRules(ctx, ipv4cmds, callback);
+
             });
 
+            if (G.enableIPv6()) {
+                executorService.submit(() -> {
+                    applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
+                    applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
+                });
+
+            }
+            waitAndTerminate(executorService);
+            globalStatus = false;
+            rulesUpToDate = true;
+
+        } else {
+            Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
         }
-        rulesUpToDate = true;
+
     }
 
 
