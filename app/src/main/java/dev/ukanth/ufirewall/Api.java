@@ -693,6 +693,7 @@ public final class Api {
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
+        /*FIXME: Adding custom rules might increase the time */
         Log.i(TAG, "Applying custom rules");
         addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
         addInterfaceRouting(ctx, cmds, ipv6);
@@ -3533,22 +3534,6 @@ public final class Api {
         apply46(ctx, cmds, callback);
     }
 
-    public static boolean hasRoot() {
-        final boolean[] hasRoot = new boolean[1];
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                hasRoot[0] = Shell.rootAccess();
-            }
-        };
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-        }
-        return hasRoot[0];
-    }
-
     // Clipboard
     public static void copyToClipboard(Context context, String val) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -3800,7 +3785,7 @@ public final class Api {
             StringBuilder res = (StringBuilder) params[1];
             Log.i(TAG, "Executing root commands of" + commands.size());
             try {
-                if (!hasRoot())
+                if (!Shell.isAppGrantedRoot())
                     return exitCode;
                 if (commands != null && commands.size() > 0) {
                     List<String> output = Shell.su(String.valueOf(commands)).exec().getOut();
