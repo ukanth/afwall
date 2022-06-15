@@ -92,6 +92,7 @@
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
             android:hardwareAccelerated="true"
+            android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -107,6 +108,7 @@
         <activity
             android:name=".preferences.PreferencesActivity"
             android:theme="@style/AppDarkTheme"
+            android:exported="true"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
             android:hardwareAccelerated="true">
             <meta-data
@@ -152,6 +154,7 @@
         <activity
             android:name=".widget.ToggleWidgetActivity"
             android:launchMode="singleInstance"
+            android:exported="true"
             android:theme="@style/Theme.Transparent">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -160,6 +163,7 @@
         <activity
             android:name=".widget.ToggleWidgetOldActivity"
             android:launchMode="singleInstance"
+            android:exported="true"
             android:theme="@style/Theme.Transparent">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -174,7 +178,8 @@
         </activity>
 
         <!-- still will work in android 7 above -->
-        <receiver android:name=".broadcast.OnBootReceiver">
+        <receiver android:name=".broadcast.OnBootReceiver"
+            android:exported="true">
             <intent-filter android:priority="500">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -193,6 +198,7 @@
         <service
             android:name=".service.ToggleTileService"
             android:icon="@drawable/notification_quest"
+            android:exported="true"
             android:label="@string/widget_label_status"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
@@ -203,6 +209,7 @@
         <receiver
             android:name=".widget.StatusWidget"
             android:enabled="true"
+            android:exported="true"
             android:icon="@drawable/preview_toggle"
             android:label="@string/widget_label_status">
             <meta-data
@@ -217,6 +224,7 @@
         </receiver>
         <receiver
             android:name=".widget.ToggleWidget"
+            android:exported="true"
             android:icon="@drawable/preview_new"
             android:label="@string/widget_label_settings">
             <meta-data
@@ -231,6 +239,7 @@
         </receiver>
         <receiver
             android:name=".widget.ToggleWidgetOld"
+            android:exported="true"
             android:label="@string/widget_label_settings_old">
             <meta-data
                 android:name="android.appwidget.provider"
@@ -254,6 +263,7 @@
 
          <receiver
              android:name=".admin.AdminDeviceReceiver"
+             android:exported="true"
              android:description="@string/device_admin_desc"
              android:label="@string/enable_device_admin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
