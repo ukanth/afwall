@@ -693,6 +693,8 @@ public final class Api {
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
+        Log.i(TAG, "Applying custom rules");
+        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
         addInterfaceRouting(ctx, cmds, ipv6);
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
         cmds.add("-P OUTPUT ACCEPT");
