@@ -1252,7 +1252,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String targetDir = ctx.getExternalFilesDir(null) + "/";
             String command = "cp -R " + existingDir + " " + targetDir;
             Log.i(TAG, "Invoking migration script " + command);
-            com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.su(command).exec();
+            com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.cmd(command).exec();
             G.hasCopyOldExports(true);
         }
     }

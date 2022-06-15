@@ -200,7 +200,7 @@ public class LogService extends Service {
             Log.i(TAG, "Staring log watcher");
             //Toast.makeText(getApplicationContext(), getString(R.string.log_service_watcher), Toast.LENGTH_SHORT).show();
             try {
-                com.topjohnwu.superuser.Shell.su(logCommand).to(callbackList).submit(executorService, out -> {
+                com.topjohnwu.superuser.Shell.cmd(logCommand).to(callbackList).submit(executorService, out -> {
                     //failed to start, try restarting
                     if (out.getCode() == 0) {
                         restartWatcher(logPath);

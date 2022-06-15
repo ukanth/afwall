@@ -2715,7 +2715,7 @@ public final class Api {
         boolean returnVal = false;
         BufferedReader br = null;
         try {
-            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.su("cat " + file.getAbsolutePath()).exec();
+            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("cat " + file.getAbsolutePath()).exec();
             List<String> out = result.getOut();
             String data = TextUtils.join("", out);
 
@@ -3788,7 +3788,7 @@ public final class Api {
                 if (!Shell.isAppGrantedRoot())
                     return exitCode;
                 if (commands != null && commands.size() > 0) {
-                    List<String> output = Shell.su(String.valueOf(commands)).exec().getOut();
+                    List<String> output = Shell.cmd(String.valueOf(commands)).exec().getOut();
                     if (output != null) {
                         exitCode = 0;
                         if (output.size() > 0) {

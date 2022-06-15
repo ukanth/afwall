@@ -156,7 +156,7 @@ public class FileDialog {
             }
         }
         //copied ones from old afwall
-        Shell.Result result  = com.topjohnwu.superuser.Shell.su("ls " + currentPath).exec();
+        Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("ls " + currentPath).exec();
         List<String> out = result.getOut();
         for(String files: out) {
             boolean endsWith;
