@@ -42,6 +42,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
@@ -98,41 +99,20 @@ public final class InterfaceTracker {
         }
     }
 
-    private static BluetoothProfile btPanProfile;
-    private static final BluetoothProfile.ServiceListener btListener = new BluetoothProfile.ServiceListener() {
-        @Override
-        public void onServiceConnected(int profile, BluetoothProfile proxy) {
-            Log.d(TAG, "BluetoothProfile.ServiceListener connected");
-            btPanProfile = proxy;
-        }
 
-        @Override
-        public void onServiceDisconnected(int profile) {
-            Log.d(TAG, "BluetoothProfile.ServiceListener disconected");
-        }
-    };
+
 
     // To get bluetooth tethering, we need valid BluetoothPan instance
     // It is obtainable only in ServiceListener.onServiceConnected callback
-    public static BluetoothAdapter setupBluetoothProfile(BluetoothAdapter bluetoothAdapter, Context context) {
-        PackageManager pm = context.getPackageManager();
-        boolean hasBluetooth = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
-        if (hasBluetooth) {
-            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothAdapter != null) {
-                bluetoothAdapter.getProfileProxy(context, btListener, 5);
-            }
-        }
-        return bluetoothAdapter;
-    }
+
 
     public static BluetoothProfile getBtProfile() {
-        return btPanProfile;
+        return FirewallService.getBtPanProfile();
     }
 
     private static void getBluetoothTetherStatus(Context context, InterfaceDetails d) {
-        if (btPanProfile != null) {
-            Method[] btMethods = btPanProfile.getClass().getDeclaredMethods();
+        if (FirewallService.getBtPanProfile() != null) {
+            Method[] btMethods = FirewallService.getBtPanProfile().getClass().getDeclaredMethods();
 
             d.isBluetoothTethered = false;
             d.tetherBluetoothStatusKnown = false;
@@ -140,7 +120,7 @@ public final class InterfaceTracker {
             for (Method method : btMethods) {
                 if (method.getName().equals("isTetheringOn")) {
                     try {
-                        d.isBluetoothTethered = ((Boolean) method.invoke(btPanProfile)).booleanValue();
+                        d.isBluetoothTethered = ((Boolean) method.invoke(FirewallService.getBtPanProfile())).booleanValue();
                         d.tetherBluetoothStatusKnown = true;
                         Log.d(TAG, "isBluetoothTetheringOn is " + d.isBluetoothTethered);
                     } catch (Exception e) {

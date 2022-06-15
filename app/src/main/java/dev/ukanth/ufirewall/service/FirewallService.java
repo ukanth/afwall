@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
@@ -32,7 +34,9 @@ public class FirewallService extends Service {
     BroadcastReceiver packageReceiver;
     IntentFilter filter;
     private BluetoothAdapter bluetoothAdapter;
-
+    private BluetoothProfile.ServiceListener btListener;
+    private static BluetoothProfile btPanProfile;
+    public Context context;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -41,7 +45,24 @@ public class FirewallService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        context = this;
         addNotification();
+        registerBTListener();
+    }
+
+    private void registerBTListener() {
+        btListener = new BluetoothProfile.ServiceListener() {
+            @Override
+            public void onServiceConnected(int profile, BluetoothProfile proxy) {
+                Log.d(G.TAG, "BluetoothProfile.ServiceListener connected");
+                btPanProfile = proxy;
+            }
+
+            @Override
+            public void onServiceDisconnected(int profile) {
+                Log.d(G.TAG, "BluetoothProfile.ServiceListener disconected");
+            }
+        };
     }
 
 
@@ -176,12 +197,24 @@ public class FirewallService extends Service {
         registerReceiver(packageReceiver, intentFilter);
 
         if(bluetoothAdapter == null) {
-            bluetoothAdapter = InterfaceTracker.setupBluetoothProfile(bluetoothAdapter, this);
+            bluetoothAdapter = getBTAdapter(context);
         }
 
         return START_STICKY;
     }
 
+    private BluetoothAdapter getBTAdapter(Context context) {
+        BluetoothAdapter bluetoothAdapter = null;
+        PackageManager pm = context.getPackageManager();
+        boolean hasBluetooth = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+        if (hasBluetooth) {
+            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter != null) {
+                bluetoothAdapter.getProfileProxy(context, btListener, 5);
+            }
+        }
+        return bluetoothAdapter;
+    }
     @Override
     public void onDestroy() {
         if (connectivityReciver != null) {
@@ -196,10 +229,15 @@ public class FirewallService extends Service {
         if(bluetoothAdapter != null) {
             try {
                 bluetoothAdapter.closeProfileProxy(5, InterfaceTracker.getBtProfile());
+                btListener = null;
             } catch (Exception e){
                 Log.e(G.TAG, "Error closing bt profile",e);
             }
         }
         super.onDestroy();
+    }
+
+    public static BluetoothProfile getBtPanProfile() {
+        return btPanProfile;
     }
 }
