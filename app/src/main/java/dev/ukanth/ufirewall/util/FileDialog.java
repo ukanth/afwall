@@ -156,7 +156,34 @@ public class FileDialog {
             }
         }
         //copied ones from old afwall
-        Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("ls " + currentPath).exec();
+        File[] listFilesInDir = currentPath.listFiles();
+        if(listFilesInDir !=null && listFilesInDir.length > 0){
+            for(File files: listFilesInDir) {
+                String name = files.getName();
+                boolean endsWith;
+                if(flag) {
+                    Pattern p1 = Pattern.compile("[a-z]+.json");
+                    Matcher m1 = p1.matcher(name);
+
+                    Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
+                    Matcher m2 = p2.matcher(name);
+                    endsWith = m2.matches() || m1.matches();
+                } else {
+                    Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
+                    Matcher m1 = p1.matcher(name);
+
+                    Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
+                    Matcher m2 = p2.matcher(name);
+                    endsWith = m2.matches() || m1.matches();
+                }
+                if (!r.contains(files) && endsWith) {
+                    r.add(name);
+                }
+            }
+        }
+
+
+        /*Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("ls " + currentPath).exec();
         List<String> out = result.getOut();
         for(String files: out) {
             boolean endsWith;
@@ -178,7 +205,7 @@ public class FileDialog {
             if (!r.contains(files) && endsWith) {
                 r.add(files);
             }
-        }
+        }*/
 
         if(r != null && r.size() > 0) {
             fileList = r.toArray(new String[]{});
