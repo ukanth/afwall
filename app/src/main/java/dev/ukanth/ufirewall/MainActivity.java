@@ -2599,7 +2599,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected Void doInBackground(Void... params) {
-            suGranted[0] = Shell.rootAccess();
+            //open shell if required
+            Shell.getShell().isRoot();
+            suGranted[0] = Shell.isAppGrantedRoot();
             unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
             return null;
         }

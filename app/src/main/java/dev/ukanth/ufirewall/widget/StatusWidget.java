@@ -113,7 +113,7 @@ public class StatusWidget extends AppWidgetProvider {
         views.setInt(R.id.widgetCanvas, "setBackgroundResource", iconId);
         final Intent msg = new Intent(context, StatusWidget.class);
         msg.setAction(Api.TOGGLE_REQUEST_MSG);
-        final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, PendingIntent.FLAG_UPDATE_CURRENT);
+        final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.widgetCanvas, intent);
         manager.updateAppWidget(widgetIds, views);
     }

@@ -2140,7 +2140,7 @@ public final class Api {
                 .addParentStack(MainActivity.class)
                 .addNextIntent(new Intent(ctx, MainActivity.class));
 
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setContentIntent(notifyPendingIntent);
 
@@ -2228,7 +2228,7 @@ public final class Api {
         int notifyType = G.getNotificationPriority();
 
 
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setContentIntent(notifyPendingIntent);
 
@@ -3785,7 +3785,7 @@ public final class Api {
             StringBuilder res = (StringBuilder) params[1];
             Log.i(TAG, "Executing root commands of" + commands.size());
             try {
-                if (!Shell.isAppGrantedRoot())
+                if (Shell.getShell().isRoot() && !Shell.isAppGrantedRoot())
                     return exitCode;
                 if (commands != null && commands.size() > 0) {
                     List<String> output = Shell.cmd(String.valueOf(commands)).exec().getOut();
