@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
+    private static final int PERMISSION_BLUETOOTH = 4;
+
     public static boolean dirty = false;
 
 
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         initTheme();
         G.registerPrivateLink();
+        checkPermissions();
 
         try {
             final int FLAG_HARDWARE_ACCELERATED = WindowManager.LayoutParams.class
@@ -237,6 +240,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initTextWatcher();
         registerThemeIntent();
         registerUIRefresh();
+    }
+
+    private void checkPermissions() {
+        if(G.enableTether()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // permissions have not been granted.
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.BLUETOOTH_CONNECT},
+                        PERMISSION_BLUETOOTH);
+            }
+        }
     }
 
     private void updateSelectedColumns() {

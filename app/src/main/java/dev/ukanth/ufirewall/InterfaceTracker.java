@@ -167,7 +167,9 @@ public final class InterfaceTracker {
                 break;
         }
         try {
-            getTetherStatus(context, ret);
+            if(G.enableTether()) {
+                getTetherStatus(context, ret);
+            }
         } catch (Exception e) {
             Log.i(Api.TAG, "Exception in  getInterfaceDetails.checkTether" + e.getLocalizedMessage());
         }
