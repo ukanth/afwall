@@ -3,13 +3,17 @@ AFWall+ Changelog
 
 Version 3.5.3
 
-* Fix: applying rules with ipv6 error
-* Fix: #1101 DNS leak when using external dns client.
-* New: Enable delay when applying rules (optional)
+* New: Enable delay when applying rules (Required for Android 11+ on some devices)
+* Fixes
+  Applying rules with ipv6 error
+  #1101 DNS leak when using external dns client.
+  #1280 work profile apps not shown on Android 11+
+  Bluetooth tether
+  import/export hanging
 * Use libsu for root detection.
 * Chinese menu issue.
-* Dropped xposed support.
-* Updated libraries and SDK (30) 
+* Dropped xposed support! will be provided as separate module
+* Updated libraries and SDK (31) 
 
 Version 3.5.2
 
