@@ -222,6 +222,10 @@ public final class Api {
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
     private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
     private static boolean globalStatus = false;
+
+
+    private static final Pattern dual_pattern = Pattern.compile("package:(.*) uid:(.*)", Pattern.MULTILINE);
+
     /**
      * @brief Special user/group IDs that aren't associated with
      * any particular app.
@@ -1730,7 +1734,8 @@ public final class Api {
             for (Integer integer : uid1) {
                 int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
                 try{
-                    String[] pkgs = pkgmanager.getPackagesForUid(appUid);
+                    List<String> pkgs = getPackagesForUser(integer);
+                    //String[] pkgs = pkgmanager.getPackagesForUid(appUid);
                     if (pkgs != null) {
                         PackageInfoData app = new PackageInfoData();
                         app.uid = appUid;
@@ -1755,6 +1760,21 @@ public final class Api {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
+    }
+
+    private static List<String> getPackagesForUser(Integer integer) {
+        List<String> listApps = new ArrayList<>();
+        Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
+        List<String> out = result.getOut();
+        Matcher matcher;
+        for(String item: out) {
+            matcher = dual_pattern.matcher(item);
+            if (matcher.find() && matcher.groupCount() > 0) {
+                String packageName = matcher.group(1);
+                listApps.add(packageName);
+            }
+        }
+        return listApps.size() > 0 ? listApps : null;
     }
 
     private static boolean isRecentlyInstalled(String packageName) {
