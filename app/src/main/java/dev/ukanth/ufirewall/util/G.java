@@ -1156,22 +1156,26 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return privateDns;
     }
 
+    private static ConnectivityManager.NetworkCallback callback = null;
+
     public static  void registerPrivateLink() {
         if(!enabledPrivateLink) {
             ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-                    super.onLinkPropertiesChanged(network, linkProperties);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        if(linkProperties.isPrivateDnsActive() != privateDns) {
-                            Log.i(Api.TAG, "Private DNS status changed: " + privateDns);
-                            privateDns = linkProperties.isPrivateDnsActive();
-                            InterfaceTracker.applyRules("Private DNS changed.. reapplying rules");
+            if(callback == null) {
+                callback = new ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                        super.onLinkPropertiesChanged(network, linkProperties);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            if(linkProperties.isPrivateDnsActive() != privateDns) {
+                                Log.i(Api.TAG, "Private DNS status changed: " + privateDns);
+                                privateDns = linkProperties.isPrivateDnsActive();
+                                InterfaceTracker.applyRules("Private DNS changed.. reapplying rules");
+                            }
                         }
                     }
-                }
-            };
+                };
+            }
             cm.registerNetworkCallback(new NetworkRequest.Builder().build(), callback);
             enabledPrivateLink = true;
         } else{
