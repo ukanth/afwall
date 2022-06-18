@@ -72,12 +72,6 @@ public class OnBootReceiver extends BroadcastReceiver {
             handler.postDelayed(() -> {
                 // Apply the changes regards if network is up/not
                 InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-
-                try {
-                    G.registerPrivateLink();
-                }catch (Exception e){
-
-                }
             }, G.getCustomDelay());
         }
 
