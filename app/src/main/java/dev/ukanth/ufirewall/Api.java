@@ -1533,6 +1533,8 @@ public final class Api {
 
             SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
 
+            HashMap<Integer,String> listMaps = getPackagesForUser(listOfUids);
+
             for (int i = 0; i < installed.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
                 count = count + 1;
@@ -1603,7 +1605,7 @@ public final class Api {
                     app.selected_tor = true;
                 }
                 if (G.supportDual()) {
-                    checkPartOfMultiUser(apinfo, name, listOfUids, pkgmanager, multiUserAppsMap);
+                    checkPartOfMultiUser(apinfo, name, listOfUids, listMaps, multiUserAppsMap);
                 }
             }
 
@@ -1729,14 +1731,13 @@ public final class Api {
         return specialData;
     }
 
-    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, PackageManager pkgmanager, SparseArray<PackageInfoData> syncMap) {
+    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, HashMap<Integer,String> pkgs, SparseArray<PackageInfoData> syncMap) {
         try {
             for (Integer integer : uid1) {
                 int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
                 try{
-                    List<String> pkgs = getPackagesForUser(integer);
                     //String[] pkgs = pkgmanager.getPackagesForUid(appUid);
-                    if (pkgs != null) {
+                    if (packagesExistForUserUid(pkgs, appUid)) {
                         PackageInfoData app = new PackageInfoData();
                         app.uid = appUid;
                         app.installTime = new File(apinfo.sourceDir).lastModified();
@@ -1762,16 +1763,27 @@ public final class Api {
         }
     }
 
-    private static List<String> getPackagesForUser(Integer integer) {
-        List<String> listApps = new ArrayList<>();
-        Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
-        List<String> out = result.getOut();
-        Matcher matcher;
-        for(String item: out) {
-            matcher = dual_pattern.matcher(item);
-            if (matcher.find() && matcher.groupCount() > 0) {
-                String packageName = matcher.group(1);
-                listApps.add(packageName);
+    private static boolean packagesExistForUserUid(HashMap<Integer,String> pkgs, int appUid) {
+        if(pkgs.containsKey(appUid)){
+            return true;
+        }
+        return false;
+    }
+
+    private static HashMap<Integer, String> getPackagesForUser(List<Integer> userProfile) {
+        HashMap<Integer,String> listApps = new HashMap<>();
+        for(Integer integer: userProfile) {
+            Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
+            List<String> out = result.getOut();
+            Matcher matcher;
+            for (String item : out) {
+                matcher = dual_pattern.matcher(item);
+                if (matcher.find() && matcher.groupCount() > 0) {
+                    String packageName = matcher.group(1);
+                    String packageId = matcher.group(2);
+                    Log.i(TAG, packageId + " " + packageName);
+                    listApps.put(Integer.parseInt(packageId), packageName);
+                }
             }
         }
         return listApps.size() > 0 ? listApps : null;
