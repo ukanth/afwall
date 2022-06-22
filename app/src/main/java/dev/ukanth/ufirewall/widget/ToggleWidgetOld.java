@@ -50,7 +50,7 @@ public class ToggleWidgetOld extends AppWidgetProvider {
 
         Intent configIntent = new Intent(context, ToggleWidgetOldActivity.class);
 
-        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, PendingIntent.FLAG_MUTABLE);
 
         remoteViews.setOnClickPendingIntent(R.id.toggle_widget_icon_old, configPendingIntent);
         appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
