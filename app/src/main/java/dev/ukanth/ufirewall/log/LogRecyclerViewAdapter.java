@@ -22,6 +22,7 @@ import org.ocpsoft.prettytime.units.JustNow;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -110,7 +111,8 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
         PackageManager manager = context.getPackageManager();
         holder.bind(logData.get(position),recyclerItemClickListener);
         try {
-            info = Api.getPackageDetails(context, data.getUid());
+            HashMap<Integer,String> listMaps = Api.getPackagesForUser(Api.getListOfUids());
+            info = Api.getPackageDetails(context, listMaps, data.getUid());
             if(info!=null && info.applicationInfo !=null) {
                 Object drawable = info.applicationInfo.loadIcon(manager);
                 if (drawable instanceof Bitmap)
