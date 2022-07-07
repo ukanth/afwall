@@ -17,6 +17,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import com.stericson.roottools.RootTools;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -197,18 +198,16 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
                 if (path != null) {
                     if (enabled) {
                         File f = new File(path);
-                        if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
+                        boolean mountable = mountDir(ctx, getFixLeakPath(initScript), "RW");
+                        if (mountable) {
                             //make sure it's executable
-                            new RootCommand()
-                                    .setReopenShell(true)
-                                    .run(ctx, "chmod 755 " + f.getAbsolutePath());
-                            if (RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
+                            Shell.Result result = Shell.cmd("chmod 755 " + f.getAbsolutePath()).exec();
+                            if(result.isSuccess() && RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + initScript),
                                     true, false)) {
                                 Api.sendToastBroadcast(ctx, ctx.getString(R.string.success_initd));
+                                mountDir(ctx, getFixLeakPath(initScript), "RO");
+                                activity.runOnUiThread(() -> updateLeakCheckbox());
                             }
-                            mountDir(ctx, getFixLeakPath(initScript), "RO");
-                            activity.runOnUiThread(() -> updateLeakCheckbox());
-
                         } else {
                             Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
                         }
@@ -236,22 +235,17 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             new Thread(() -> {
                 if (RootTools.exists(path, true)) {
                     final String filePath = path + "/" + initScript;
-
-                    if (mountDir(ctx, getFixLeakPath(initScript), "RW")) {
-                        new RootCommand()
-                                .setReopenShell(true).setCallback(new RootCommand.Callback() {
-                            @Override
-                            public void cbFunc(RootCommand state) {
-                                if (state.exitCode == 0) {
-                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
-                                } else {
-                                    Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
-                                }
-                                if (updateCheckbox) {
-                                    getActivity().runOnUiThread(() -> updateLeakCheckbox());
-                                }
-                            }
-                        }).setLogging(true).run(ctx, "rm -f " + filePath);
+                    boolean mountable = mountDir(ctx, getFixLeakPath(initScript), "RW");
+                    if (mountable) {
+                        Shell.Result result = Shell.cmd("rm -f " + filePath).exec();
+                        if(result.isSuccess()){
+                            Api.sendToastBroadcast(ctx, ctx.getString(R.string.remove_initd));
+                        } else{
+                            Api.sendToastBroadcast(ctx, ctx.getString(R.string.delete_initd_error));
+                        }
+                        if (updateCheckbox) {
+                            getActivity().runOnUiThread(() -> updateLeakCheckbox());
+                        }
                         mountDir(ctx, getFixLeakPath(initScript), "RO");
                     } else {
                         Api.sendToastBroadcast(ctx, ctx.getString(R.string.mount_initd_error));
