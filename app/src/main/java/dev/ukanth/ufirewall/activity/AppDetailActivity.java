@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall.activity;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.stericson.roottools.RootTools;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -80,7 +82,15 @@ public class AppDetailActivity extends AppCompatActivity {
         /**/
 
         final PackageManager packageManager = getApplicationContext().getPackageManager();
-        final String[] packageNameList = ctx.getPackageManager().getPackagesForUid(appid);
+
+        HashMap<Integer,String> listMaps = Api.getPackagesForUser(Api.getListOfUids());
+        String packageNameList = "";
+        PackageInfo packageInfo =  Api.getPackageDetails(ctx, listMaps, appid);
+        if(packageInfo != null) {
+            packageNameList = packageInfo.applicationInfo.name;
+        }
+
+        //final String[] packageNameList = ctx.getPackageManager().getPackagesForUid(appid);
 
         final String pName = packageName;
         Button button = findViewById(R.id.app_settings);
@@ -112,8 +122,8 @@ public class AppDetailActivity extends AppCompatActivity {
                 button.setEnabled(false);
             }
 
-            if (packageNameList != null && packageNameList.length > 1) {
-                textView2.setText(Arrays.toString(packageNameList));
+            if (packageNameList != null) {
+                textView2.setText(packageNameList);
                 button.setEnabled(false);
             } else {
                 textView2.setText(packageName);
