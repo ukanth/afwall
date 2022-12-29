@@ -4,23 +4,28 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
+        maven { url 'https://haibison.bitbucket.io/maven-repos' }
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url 'https://jitpack.io' }
         maven {  url "https://maven.google.com"  }
+
+        gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.1'
+        classpath 'com.android.tools.build:gradle:7.3.0'
     }
 }
 
 allprojects {
     repositories {
         mavenCentral()
+        google()
+        jcenter()
         maven { url "https://jitpack.io" }
         maven {
             url "https://maven.google.com"
         }
         maven { url "https://plugins.gradle.org/m2/" }
-        google()
+        gradlePluginPortal()
     }
 }
