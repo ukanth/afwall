@@ -47,6 +47,7 @@ import androidx.core.app.NotificationCompat;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.topjohnwu.superuser.CallbackList;
+import com.topjohnwu.superuser.Shell;
 
 import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
@@ -83,7 +84,7 @@ public class LogService extends Service {
     private List<String> callbackList;
     private ExecutorService executorService;
 
-    //public native String stringFromLog();
+    private Shell logWatcherShell; // Additional shell for long running log-watcher process
 
     @Nullable
     @Override
@@ -188,19 +189,31 @@ public class LogService extends Service {
     }
 
     private void initiateLogWatcher(String logCommand) {
-        //kills the existing one
+        // Stop existing log service
+        if (logWatcherShell != null) {
+            try {
+                logWatcherShell.close();
+            } catch (Exception e) {
+                Log.e(TAG, "Failed closing previous log watcher shell and process - further logging will not function");
+            }
+            logWatcherShell = null;
+        }
+        // Clear/remove existing tasks
         if(executorService != null) {
             executorService.shutdownNow();
-        } else {
-            executorService = Executors.newCachedThreadPool();
         }
 
         //make sure it's enabled first
         if(G.enableLogService()) {
+            if (executorService == null) {
+                executorService = Executors.newCachedThreadPool();
+            }
+            if (logWatcherShell == null) {
+                logWatcherShell = Shell.Builder.create().setFlags(Shell.FLAG_REDIRECT_STDERR).build();
+            }
             Log.i(TAG, "Staring log watcher");
-            //Toast.makeText(getApplicationContext(), getString(R.string.log_service_watcher), Toast.LENGTH_SHORT).show();
             try {
-                com.topjohnwu.superuser.Shell.cmd(logCommand).to(callbackList).submit(executorService, out -> {
+                logWatcherShell.newJob().add(logCommand).to(callbackList).submit(executorService, out -> {
                     //failed to start, try restarting
                     if (out.getCode() == 0) {
                         restartWatcher(logPath);
@@ -210,10 +223,6 @@ public class LogService extends Service {
                 });
             } catch(Exception e) {
                 Log.i(TAG, "Unable to start log service.");
-            }
-        } else{
-            if(executorService != null) {
-                executorService.shutdownNow();
             }
         }
     }
@@ -226,20 +235,9 @@ public class LogService extends Service {
             if(event.logInfo != null) {
                 store(event.logInfo, event.ctx);
                 showNotification(event.logInfo);
-                /*try {
-                    LogPreference logPreference = SQLite.select()
-                            .from(LogPreference.class)
-                            .where(LogPreference_Table.uid.eq(event.logInfo.uid)).querySingle();
-                    if(logPreference!=null && !logPreference.isDisable()) {
-                        showNotification(event.logInfo);
-                    } }
-                catch (Exception e) {
-                    showNotification(event.logInfo);
-                }*/
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            //e.printStackTrace();
         }
     }
 
@@ -270,24 +268,11 @@ public class LogService extends Service {
 
     @SuppressLint("RestrictedApi")
     private void showNotification(LogInfo logInfo) {
-        /*Drawable icon = getPackageManager().getApplicationIcon(Api.getPackageDetails(getApplicationContext(), logInfo.uid).applicationInfo);
-        Bitmap bitmap = null;
-        if (icon instanceof BitmapDrawable) {
-            bitmap = ((BitmapDrawable)icon).getBitmap();
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if(icon instanceof  AdaptiveIconDrawable) {
-                bitmap = Api.getBitmapFromDrawable(icon);
-            }
-        }*/
-
         if(G.enableLogService()) {
             manager.notify(109, notificationBuilder.setOngoing(false)
                     .setCategory(NotificationCompat.CATEGORY_EVENT)
                     .setVisibility(NotificationCompat.VISIBILITY_SECRET)
                     .setContentText(logInfo.uidString)
-                    //.setLargeIcon(bitmap)
                     .setSmallIcon(R.drawable.ic_block_black_24dp)
                     .setAutoCancel(true)
                     .build());
