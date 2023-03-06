@@ -130,6 +130,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
     private static final int PERMISSION_BLUETOOTH = 4;
 
+    private static final int PERMISSION_NOTIFICATION = 5;
+
     public static boolean dirty = false;
 
 
@@ -250,6 +252,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.BLUETOOTH_CONNECT},
                         PERMISSION_BLUETOOTH);
+            }
+        }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // permissions have not been granted.
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        PERMISSION_NOTIFICATION);
             }
         }
     }
@@ -1482,7 +1493,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivityForResult(intent, SHOW_CUSTOM_SCRIPT);
     }
 
-    private void startCustomRules() {
+    /*private void startCustomRules() {
         if ((G.isDoKey(getApplicationContext()) || isDonate())) {
             Intent intent = new Intent();
             intent.setClass(this, CustomRulesActivity.class);
@@ -1490,13 +1501,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             Api.donateDialog(MainActivity.this, false);
         }
-    }
+    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case LOCK_VERIFICATION: {
+            case LOCK_VERIFICATION:
+            case REQ_ENTER_PATTERN: {
                 switch (resultCode) {
                     case RESULT_OK:
                         showOrLoadApplications();
@@ -1520,20 +1532,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
             break;
-
-            case REQ_ENTER_PATTERN: {
-                switch (resultCode) {
-                    case RESULT_OK:
-                        //isPassVerify = true;
-                        showOrLoadApplications();
-                        break;
-                    default:
-                        MainActivity.this.finish();
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                        break;
-                }
-            }
-            break;
+            //isPassVerify = true;
             case PREFERENCE_RESULT: {
                 invalidateOptionsMenu();
                 //recreate();

@@ -12,6 +12,7 @@
             android:title="@string/notify_pref_title" />
 
         <Preference
+            android:layout_width="wrap_content"
             android:key="default_behavior_allow_mode"
             android:title="@string/default_connection_setting_allow"></Preference>
 

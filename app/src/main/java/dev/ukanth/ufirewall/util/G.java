@@ -625,6 +625,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean addDelay() {
+        //default enable add delay for Q
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            return gPrefs.getBoolean(ADD_DELAY, true);
+        }
         return gPrefs.getBoolean(ADD_DELAY, false);
     }
 
@@ -852,12 +856,20 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
     }
 
-    public static void storeDefaultConnection(List<Integer> list, int modeType) {
+    public static void storeDefaultConnection(List<Integer> list1, List<Integer> list2, int modeType) {
         // store to DB
-        for (Integer uid : list) {
+
+        for (Integer uid : list1) {
             DefaultConnectionPref preference = new DefaultConnectionPref();
             preference.setUid(uid);
             preference.setState(true);
+            preference.setModeType(modeType);
+            FlowManager.getDatabase(DefaultConnectionPrefDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+        }
+        for (Integer uid : list2) {
+            DefaultConnectionPref preference = new DefaultConnectionPref();
+            preference.setUid(uid);
+            preference.setState(false);
             preference.setModeType(modeType);
             FlowManager.getDatabase(DefaultConnectionPrefDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
         }

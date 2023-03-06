@@ -101,10 +101,18 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 					.items(entriesList)
 					.itemsCallbackMultiChoice(null, (dialog1, which, text) -> {
 						List<Integer> listPerf = new ArrayList<Integer>();
+						List<Integer> selectedItems = new ArrayList<Integer>();
+						List<Integer> ignoredItems = new ArrayList<Integer>();
 						for (int i : which) {
+							selectedItems.add(i);
 							listPerf.add(entryValuesList.get(i));
 						}
-						G.storeDefaultConnection(listPerf,modeType);
+						for (int item: entryValuesList) {
+							if(!selectedItems.contains(item)) {
+								ignoredItems.add(item);
+							}
+						}
+						G.storeDefaultConnection(listPerf,ignoredItems,modeType);
 						return true;
 					})
 					.positiveText(R.string.OK)
