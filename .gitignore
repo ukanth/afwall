@@ -26,7 +26,6 @@ gradle-wrapper.properties
 # Gradle
 .gradle/
 gradle/
-gradle*
 
 # Log Files
 *.log
