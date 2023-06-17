@@ -2259,15 +2259,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     protected boolean isSuPackage(PackageManager pm, String suPackage) {
-        boolean found = false;
         try {
             PackageInfo info = pm.getPackageInfo(suPackage, 0);
-            if (info.applicationInfo != null) {
-                found = true;
-            }
-        } catch (Exception e) {
+            return info.applicationInfo != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
-        return found;
     }
 
     @Override
