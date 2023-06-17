@@ -9,7 +9,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 20230215
-        versionName "3.5.4"
+        versionName "3.6"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
@@ -33,7 +33,7 @@ android {
 
 dependencies {
 
-    def libsuVersion = '5.0.3'
+    def libsuVersion = '5.1.0'
     def dbFlowVersion = '4.2.4'
 
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
