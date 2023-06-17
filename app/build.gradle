@@ -13,6 +13,10 @@ android {
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     buildTypes {
         debug {
             minifyEnabled false

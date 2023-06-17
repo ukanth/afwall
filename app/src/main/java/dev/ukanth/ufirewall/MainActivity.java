@@ -496,19 +496,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void selectFilterGroup() {
         if (G.showFilter()) {
             RadioGroup radioGroup = findViewById(R.id.appFilterGroup);
-            switch (radioGroup.getCheckedRadioButtonId()) {
-                case R.id.rpkg_core:
-                    filterApps(2);
-                    break;
-                case R.id.rpkg_sys:
-                    filterApps(0);
-                    break;
-                case R.id.rpkg_user:
-                    filterApps(1);
-                    break;
-                default:
-                    filterApps(-1);
-                    break;
+            int selectedId = radioGroup.getCheckedRadioButtonId();
+            if(selectedId == R.id.rpkg_core) {
+                filterApps(2);
+            } else if (selectedId == R.id.rpkg_sys) {
+                filterApps(0);
+            }else if (selectedId == R.id.rpkg_user) {
+                filterApps(1);
+            } else {
+                filterApps(-1);
             }
         } else {
             filterApps(-1);
@@ -739,23 +735,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
-            case R.id.rpkg_all:
-                filterApps(-1);
-                G.saveSelectedFilter(99);
-                break;
-            case R.id.rpkg_core:
-                filterApps(2);
-                G.saveSelectedFilter(0);
-                break;
-            case R.id.rpkg_sys:
-                filterApps(0);
-                G.saveSelectedFilter(1);
-                break;
-            case R.id.rpkg_user:
-                filterApps(1);
-                G.saveSelectedFilter(2);
-                break;
+        if(checkedId == R.id.rpkg_all) {
+            filterApps(-1);
+            G.saveSelectedFilter(99);
+        } else if(checkedId == R.id.rpkg_core) {
+            filterApps(2);
+            G.saveSelectedFilter(0);
+        }  else if(checkedId == R.id.rpkg_sys) {
+            filterApps(0);
+            G.saveSelectedFilter(1);
+        } else if(checkedId == R.id.rpkg_user) {
+            filterApps(1);
+            G.saveSelectedFilter(2);
         }
     }
 
@@ -1141,133 +1132,118 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         super.onOptionsItemSelected(item);
-        MenuItem menuItem;
-        switch (item.getItemId()) {
-
-		/*case android.R.id.home:
+        int selectedItem = item.getItemId();
+        if(selectedItem == R.id.menu_legend) {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View view = inflater.inflate(R.layout.legend, null, false);
+            dialogLegend = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .setCancelable(true)
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            dialogLegend = null;
+                        }
+                    })
+                    .create();
+            dialogLegend.show();
+            return true;
+        } else if(selectedItem == R.id.menu_toggle) {
             disableOrEnable();
-	        return true;*/
-            case R.id.menu_legend:
-                LayoutInflater inflater = LayoutInflater.from(this);
-                View view = inflater.inflate(R.layout.legend, null, false);
-                dialogLegend = new AlertDialog.Builder(this)
-                        .setView(view)
-                        .setCancelable(true)
-                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialogInterface) {
-                                dialogLegend = null;
-                            }
-                        })
-                        .create();
-                dialogLegend.show();
-                return true;
-            case R.id.menu_toggle:
-                disableOrEnable();
-                return true;
-            case R.id.allowmode:
-                item.setChecked(true);
-                Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
-                editor.putString(Api.PREF_MODE, Api.MODE_WHITELIST);
-                editor.commit();
-                refreshHeader();
-                return true;
-            case R.id.blockmode:
-                item.setChecked(true);
-                Editor editor2 = getSharedPreferences(Api.PREFS_NAME, 0).edit();
-                editor2.putString(Api.PREF_MODE, Api.MODE_BLACKLIST);
-                editor2.commit();
-                refreshHeader();
-                return true;
-            case R.id.sort_default:
-                G.sortBy("s0");
-                item.setChecked(true);
-                Api.applications = null;
-                showOrLoadApplications();
-                return true;
-            case R.id.sort_lastupdate:
-                G.sortBy("s1");
-                item.setChecked(true);
-                Api.applications = null;
-                showOrLoadApplications();
-                return true;
-            case R.id.sort_uid:
-                G.sortBy("s2");
-                item.setChecked(true);
-                Api.applications = null;
-                showOrLoadApplications();
-                return true;
-            case R.id.menu_apply:
-                applyOrSaveRules();
-                return true;
-            case R.id.menu_exit:
-                finish();
-                //System.exit(0);
-                return false;
-            case R.id.menu_help:
-                showAbout();
-                return true;
-            /*case R.id.menu_customrules:
-                //G.hidden();
-                startCustomRules();
-                return true;*/
-            case R.id.menu_log:
-                showLog();
-                return true;
-            case R.id.menu_rules:
-                showRules();
-                return true;
-            case R.id.menu_setcustom:
-                setCustomScript();
-                return true;
-            case R.id.menu_preference:
-                showPreferences();
-                return true;
-        /*case R.id.menu_reload:
+            return true;
+        } else if(selectedItem == R.id.allowmode) {
+            item.setChecked(true);
+            Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
+            editor.putString(Api.PREF_MODE, Api.MODE_WHITELIST);
+            editor.commit();
+            refreshHeader();
+            return true;
+        } else if(selectedItem == R.id.blockmode) {
+            item.setChecked(true);
+            Editor editor2 = getSharedPreferences(Api.PREFS_NAME, 0).edit();
+            editor2.putString(Api.PREF_MODE, Api.MODE_BLACKLIST);
+            editor2.commit();
+            refreshHeader();
+            return true;
+        } else if(selectedItem == R.id.sort_default) {
+            G.sortBy("s0");
+            item.setChecked(true);
             Api.applications = null;
-			showOrLoadApplications();
-			return true;*/
-            case R.id.menu_search:
-                search(item);
-                return true;
-            case R.id.menu_export:
-                if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
-                    // Do some stuff
+            showOrLoadApplications();
+            return true;
+        } else if(selectedItem == R.id.sort_lastupdate) {
+            G.sortBy("s1");
+            item.setChecked(true);
+            Api.applications = null;
+            showOrLoadApplications();
+            return true;
+        } else if(selectedItem == R.id.sort_uid) {
+            G.sortBy("s2");
+            item.setChecked(true);
+            Api.applications = null;
+            showOrLoadApplications();
+            return true;
+        } else if(selectedItem == R.id.menu_apply) {
+            applyOrSaveRules();
+            return true;
+        } else if(selectedItem == R.id.menu_exit) {
+            finish();
+            return true;
+        } else if(selectedItem == R.id.menu_help) {
+            showAbout();
+            return true;
+        } else if(selectedItem == R.id.menu_log) {
+            showLog();
+            return true;
+        } else if(selectedItem == R.id.menu_rules) {
+            showRules();
+            return true;
+        } else if(selectedItem == R.id.menu_setcustom) {
+            setCustomScript();
+            return true;
+        } else if(selectedItem == R.id.menu_preference) {
+            showPreferences();
+            return true;
+        } else if(selectedItem == R.id.menu_search) {
+            search(item);
+            return true;
+        } else if(selectedItem == R.id.menu_export) {
+            if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+                // Do some stuff
+                showExportDialog();
+            } else {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    // permissions have not been granted.
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                } else{
                     showExportDialog();
-                } else {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        // permissions have not been granted.
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-                    } else{
-                        showExportDialog();
-                    }
                 }
-                return true;
-            case R.id.menu_import:
-                if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
-                    // Do some stuff
-                    copyOldExportedData();
-                    showImportDialog();
-                } else {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        // permissions have not been granted.
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                MY_PERMISSIONS_REQUEST_READ_STORAGE);
+            }
+            return true;
+        } else if(selectedItem == R.id.menu_import) {
+            if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
+                // Do some stuff
+                copyOldExportedData();
+                showImportDialog();
+            } else {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    // permissions have not been granted.
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_READ_STORAGE);
 
-                    } else {
-                        showImportDialog();
-                    }
+                } else {
+                    showImportDialog();
                 }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            }
+            return true;
+        } else {
+           return super.onOptionsItemSelected(item);
         }
     }
 
@@ -1629,19 +1605,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.img_wifi:
-            case R.id.img_3g:
-            case R.id.img_roam:
-            case R.id.img_vpn:
-            case R.id.img_tether:
-            case R.id.img_lan:
-            case R.id.img_tor:
-                selectActionConfirmation(v.getId());
-                break;
-            case R.id.img_action:
-                selectAction();
+        int id = v.getId();
+        if(id == R.id.img_wifi || id == R.id.img_3g
+                || id == R.id.img_roam
+                || id == R.id.img_vpn
+                || id == R.id.img_tether
+                || id == R.id.img_lan
+                || id == R.id.img_tor) {
+            selectActionConfirmation(v.getId());
+        } else if (id == R.id.img_action ) {
+            selectAction();
         }
     }
 
@@ -1771,28 +1744,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (item = 0; item < count; item++) {
                 PackageInfoData data = (PackageInfoData) adapter.getItem(item);
                 if (data.uid != Api.SPECIAL_UID_ANY) {
-                    switch (flag) {
-                        case R.id.img_wifi:
-                            data.selected_wifi = !data.selected_wifi;
-                            break;
-                        case R.id.img_3g:
-                            data.selected_3g = !data.selected_3g;
-                            break;
-                        case R.id.img_roam:
-                            data.selected_roam = !data.selected_roam;
-                            break;
-                        case R.id.img_vpn:
-                            data.selected_vpn = !data.selected_vpn;
-                            break;
-                        case R.id.img_tether:
-                            data.selected_tether = !data.selected_tether;
-                            break;
-                        case R.id.img_lan:
-                            data.selected_lan = !data.selected_lan;
-                            break;
-                        case R.id.img_tor:
-                            data.selected_tor = !data.selected_tor;
-                            break;
+                    if(flag ==  R.id.img_wifi) {
+                        data.selected_wifi = !data.selected_wifi;
+                    } else if(flag ==  R.id.img_3g) {
+                        data.selected_3g = !data.selected_3g;
+                    } else if(flag ==  R.id.img_roam) {
+                        data.selected_roam = !data.selected_roam;
+                    } else if(flag ==  R.id.img_vpn) {
+                        data.selected_vpn = !data.selected_vpn;
+                    } else if(flag ==  R.id.img_tether) {
+                        data.selected_tether = !data.selected_tether;
+                    } else if(flag ==  R.id.img_lan) {
+                        data.selected_lan = !data.selected_lan;
+                    } else if(flag ==  R.id.img_tor) {
+                        data.selected_tor = !data.selected_tor;
                     }
                     //addToQueue(data);
                 }
@@ -2223,101 +2188,71 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         getString(R.string.check_all),
                         getString(R.string.invert_all),
                         getString(R.string.uncheck_all)})
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
-                        switch (which) {
-                            case 0:
-                                switch (i) {
-                                    case R.id.img_wifi:
-                                        dialog.setTitle(text + getString(R.string.wifi));
-                                        selectAllWifi(true);
-                                        break;
-                                    case R.id.img_3g:
-                                        dialog.setTitle(text + getString(R.string.data));
-                                        selectAll3G(true);
-                                        break;
-                                    case R.id.img_roam:
-                                        dialog.setTitle(text + getString(R.string.roam));
-                                        selectAllRoam(true);
-                                        break;
-                                    case R.id.img_vpn:
-                                        dialog.setTitle(text + getString(R.string.vpn));
-                                        selectAllVPN(true);
-                                        break;
-                                    case R.id.img_tether:
-                                        dialog.setTitle(text + getString(R.string.tether));
-                                        selectAlltether(true);
-                                        break;
-                                    case R.id.img_lan:
-                                        dialog.setTitle(text + getString(R.string.lan));
-                                        selectAllLAN(true);
-                                        break;
-                                    case R.id.img_tor:
-                                        dialog.setTitle(text + getString(R.string.tor));
-                                        selectAllTor(true);
-                                        break;
-                                }
-                                break;
-                            case 1:
-                                switch (i) {
-                                    case R.id.img_wifi:
-                                        dialog.setTitle(text + getString(R.string.wifi));
-                                        break;
-                                    case R.id.img_3g:
-                                        dialog.setTitle(text + getString(R.string.data));
-                                        break;
-                                    case R.id.img_roam:
-                                        dialog.setTitle(text + getString(R.string.roam));
-                                        break;
-                                    case R.id.img_vpn:
-                                        dialog.setTitle(text + getString(R.string.vpn));
-                                        break;
-                                    case R.id.img_tether:
-                                        dialog.setTitle(text + getString(R.string.tether));
-                                        break;
-                                    case R.id.img_lan:
-                                        dialog.setTitle(text + getString(R.string.lan));
-                                        break;
-                                    case R.id.img_tor:
-                                        dialog.setTitle(text + getString(R.string.tor));
-                                        break;
-                                }
-                                selectRevert(i);
-                                dirty = true;
-                                break;
-                            case 2:
-                                switch (i) {
-                                    case R.id.img_wifi:
-                                        dialog.setTitle(text + getString(R.string.wifi));
-                                        selectAllWifi(false);
-                                        break;
-                                    case R.id.img_3g:
-                                        dialog.setTitle(text + getString(R.string.data));
-                                        selectAll3G(false);
-                                        break;
-                                    case R.id.img_roam:
-                                        dialog.setTitle(text + getString(R.string.roam));
-                                        selectAllRoam(false);
-                                        break;
-                                    case R.id.img_vpn:
-                                        dialog.setTitle(text + getString(R.string.vpn));
-                                        selectAllVPN(false);
-                                        break;
-                                    case R.id.img_tether:
-                                        dialog.setTitle(text + getString(R.string.tether));
-                                        selectAlltether(false);
-                                        break;
-                                    case R.id.img_lan:
-                                        dialog.setTitle(text + getString(R.string.lan));
-                                        selectAllLAN(false);
-                                        break;
-                                    case R.id.img_tor:
-                                        dialog.setTitle(text + getString(R.string.tor));
-                                        selectAllTor(false);
-                                        break;
-                                }
-                                break;
+                .itemsCallback((dialog, view, which, text) -> {
+                    if(which == 0) {
+                        if( i == R.id.img_wifi) {
+                            dialog.setTitle(text + getString(R.string.wifi));
+                            selectAllWifi(true);
+                        } else if (i == R.id.img_3g) {
+                            dialog.setTitle(text + getString(R.string.data));
+                            selectAll3G(true);
+                        } else if (i == R.id.img_roam) {
+                            dialog.setTitle(text + getString(R.string.roam));
+                            selectAllRoam(true);
+                        } else if (i == R.id.img_vpn) {
+                            dialog.setTitle(text + getString(R.string.vpn));
+                            selectAllVPN(true);
+                        } else if (i == R.id.img_tether) {
+                            dialog.setTitle(text + getString(R.string.tether));
+                            selectAlltether(true);
+                        } else if (i == R.id.img_lan) {
+                            dialog.setTitle(text + getString(R.string.lan));
+                            selectAllLAN(true);
+                        } else if (i == R.id.img_tor) {
+                            dialog.setTitle(text + getString(R.string.tor));
+                            selectAllTor(true);
+                        }
+                    } else if (which == 1) {
+                        if( i == R.id.img_wifi) {
+                            dialog.setTitle(text + getString(R.string.wifi));
+                        } else if (i == R.id.img_3g) {
+                            dialog.setTitle(text + getString(R.string.data));
+                        } else if (i == R.id.img_roam) {
+                            dialog.setTitle(text + getString(R.string.roam));
+                        } else if (i == R.id.img_vpn) {
+                            dialog.setTitle(text + getString(R.string.vpn));
+                        } else if (i == R.id.img_tether) {
+                            dialog.setTitle(text + getString(R.string.tether));
+                        } else if (i == R.id.img_lan) {
+                            dialog.setTitle(text + getString(R.string.lan));
+                        } else if (i == R.id.img_tor) {
+                            dialog.setTitle(text + getString(R.string.tor));
+                        }
+                        selectRevert(i);
+                        dirty = true;
+                    } else if (which == 2) {
+
+                        if( i == R.id.img_wifi) {
+                            dialog.setTitle(text + getString(R.string.wifi));
+                            selectAllWifi(false);
+                        } else if (i == R.id.img_3g) {
+                            dialog.setTitle(text + getString(R.string.data));
+                            selectAll3G(false);
+                        } else if (i == R.id.img_roam) {
+                            dialog.setTitle(text + getString(R.string.roam));
+                            selectAllRoam(false);
+                        } else if (i == R.id.img_vpn) {
+                            dialog.setTitle(text + getString(R.string.vpn));
+                            selectAllVPN(false);
+                        } else if (i == R.id.img_tether) {
+                            dialog.setTitle(text + getString(R.string.tether));
+                            selectAlltether(false);
+                        } else if (i == R.id.img_lan) {
+                            dialog.setTitle(text + getString(R.string.lan));
+                            selectAllLAN(false);
+                        } else if (i == R.id.img_tor) {
+                            dialog.setTitle(text + getString(R.string.tor));
+                            selectAllTor(false);
                         }
                     }
                 }).show();

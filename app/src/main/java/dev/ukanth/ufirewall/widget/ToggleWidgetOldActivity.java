@@ -137,37 +137,30 @@ public class ToggleWidgetOldActivity extends Activity implements
     }
 
     private void switchAction() {
-        switch (buttonId) {
-            case R.id.toggle_enable_firewall:
-                startAction(1);
-                break;
-            case R.id.toggle_disable_firewall:
-                startAction(2);
-                break;
-            case R.id.toggle_default_profile:
-                startAction(3);
-                break;
-            case R.id.toggle_profile1:
-                if (!G.isProfileMigrated()) {
-                    startAction(4);
-                } else {
-                    runProfile(profileName);
-                }
-                break;
-            case R.id.toggle_profile2:
-                if (!G.isProfileMigrated()) {
-                    startAction(5);
-                } else {
-                    runProfile(profileName);
-                }
-                break;
-            case R.id.toggle_profile3:
-                if (!G.isProfileMigrated()) {
-                    startAction(6);
-                } else {
-                    runProfile(profileName);
-                }
-                break;
+        if(buttonId == R.id.toggle_enable_firewall) {
+            startAction(1);
+        } else if(buttonId == R.id.toggle_disable_firewall) {
+            startAction(2);
+        } else if(buttonId == R.id.toggle_default_profile) {
+            startAction(3);
+        } else if(buttonId == R.id.toggle_profile1) {
+            if (!G.isProfileMigrated()) {
+                startAction(4);
+            } else {
+                runProfile(profileName);
+            }
+        } else if(buttonId == R.id.toggle_profile2) {
+            if (!G.isProfileMigrated()) {
+                startAction(5);
+            } else {
+                runProfile(profileName);
+            }
+        } else if(buttonId == R.id.toggle_profile3) {
+            if (!G.isProfileMigrated()) {
+                startAction(6);
+            } else {
+                runProfile(profileName);
+            }
         }
     }
 
