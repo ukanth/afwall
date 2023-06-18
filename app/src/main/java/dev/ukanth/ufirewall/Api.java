@@ -706,19 +706,18 @@ public final class Api {
                 cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
             }
 
-            if (G.enableTor()) {
-                if (!ipv6) {
-                    for (String s : natChains) {
-                        cmds.add("#NOCHK# -t nat -N " + AFWALL_CHAIN_NAME + s);
-                        cmds.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
-                    }
-                    cmds.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
-                    cmds.add("-t nat -I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
+            if (G.enableTor() && !ipv6) {
+                for (String s : natChains) {
+                    cmds.add("#NOCHK# -t nat -N " + AFWALL_CHAIN_NAME + s);
+                    cmds.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
                 }
+                cmds.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+                cmds.add("-t nat -I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
             addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+
             cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g -j " + AFWALL_CHAIN_NAME + "-3g-postcustom");
             cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi -j " + AFWALL_CHAIN_NAME + "-wifi-postcustom");
             addRejectRules(cmds);
@@ -791,7 +790,6 @@ public final class Api {
                 addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
             }
 
-
             // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
             // normal 3G/wifi rules
             cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-tether -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
@@ -818,7 +816,6 @@ public final class Api {
                     cmds.add("-A " + AFWALL_CHAIN_NAME + "-tether" + " -p tcp --dport 53" + " -j RETURN");
                 }
             }
-
             // now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
             // in whitelist mode the last rule in the list routes everything else to afwall-reject
             addRulesForUidlist(cmds, ruleDataSet.dataList, AFWALL_CHAIN_NAME + "-3g-home", whitelist);
@@ -827,16 +824,10 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.tetherList, AFWALL_CHAIN_NAME + "-tether", whitelist);
-
-
             if (G.enableTor()) {
                 addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6);
             }
-
             cmds.add("-P OUTPUT ACCEPT");
-
-
-
         } catch (Exception e) {
             Log.e(e.getClass().getName(), e.getMessage(), e);
         }
