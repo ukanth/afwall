@@ -1422,7 +1422,7 @@ public final class Api {
                 Matcher m = p.matcher(user.toString());
                 if (m.find() && m.groupCount() > 0) {
                     int id = Integer.parseInt(m.group(1));
-                    if (id > 0) {
+                    if (id >= 0) {
                         listOfUids.add(id);
                     }
                 }
