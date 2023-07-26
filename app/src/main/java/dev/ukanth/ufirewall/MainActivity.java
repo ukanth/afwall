@@ -2545,7 +2545,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             //open shell if required
             Shell.getShell().isRoot();
             suGranted[0] = Shell.isAppGrantedRoot();
-            unsupportedSU = isSuPackage(getPackageManager(), "com.kingouser.com");
+            unsupportedSU = isSuPackage(getPackageManager(), "com.kingroot.kinguser");
             return null;
         }
 
