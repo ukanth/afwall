@@ -5,9 +5,9 @@ buildscript {
         google()
         jcenter()
         maven { url 'https://haibison.bitbucket.io/maven-repos' }
-        maven { url "https://plugins.gradle.org/m2/" }
         maven { url 'https://jitpack.io' }
         maven { url "https://maven.google.com" }
+        maven { url "https://plugins.gradle.org/m2/" }
         gradlePluginPortal()
     }
     dependencies {
