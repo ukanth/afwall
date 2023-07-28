@@ -32,8 +32,9 @@ public class InterfaceDetails {
 	public boolean isBluetoothTethered = false;
 	public boolean tetherBluetoothStatusKnown = false;
 
-	public boolean isUsbTethered = false;
-	public boolean tetherUsbStatusKnown = false;
+	final public boolean isUsbTethered = false;
+
+	final public boolean tetherUsbStatusKnown = false;
 
 	public String lanMaskV4 = "";
 	public String lanMaskV6 = "";

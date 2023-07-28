@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.os.Environment;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.io.FilenameFilter;
