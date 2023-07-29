@@ -3,8 +3,6 @@ package dev.ukanth.ufirewall.log;
 import static dev.ukanth.ufirewall.Api.TAG;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
@@ -29,10 +28,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
 
     private final List<LogData> logData;
     private final Context context;
-    private LogData data;
-    private PackageInfo info;
     private final RecyclerItemClickListener recyclerItemClickListener;
-    private View mView;
 
     public LogRecyclerViewAdapter(final Context context, RecyclerItemClickListener recyclerItemClickListener) {
         this.context = context;
@@ -45,9 +41,10 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
         logData.addAll(logDataList);
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_recycle_item, parent, false);
+        View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.log_recycle_item, parent, false);
         return new ViewHolder(mView);
     }
 
@@ -97,9 +94,8 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        data = logData.get(position);
-        PackageManager manager = context.getPackageManager();
-        holder.bind(logData.get(position),recyclerItemClickListener);
+        LogData data = logData.get(position);
+        holder.bind(logData.get(position), recyclerItemClickListener);
         try {
             Drawable applicationIcon = Api.getApplicationIcon(context, data.getUid());
             holder.icon.setBackground(applicationIcon);
