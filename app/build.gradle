@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
+
 android {
+
     compileSdkVersion 33
     buildToolsVersion '33.0.1'
 
@@ -27,10 +29,12 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
     }
+
     lint {
         abortOnError true
         disable 'MissingTranslation'
     }
+
     namespace 'dev.ukanth.ufirewall'
 
 }
@@ -63,7 +67,6 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}"
     implementation "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}"
 
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
     implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
 
     implementation "org.ocpsoft.prettytime:prettytime:5.0.6.Final"
