@@ -28,15 +28,9 @@ import android.net.ConnectivityManager;
 import android.util.Log;
 import android.util.SparseArray;
 
-import org.ocpsoft.prettytime.PrettyTime;
-import org.ocpsoft.prettytime.TimeUnit;
-import org.ocpsoft.prettytime.units.JustNow;
-
 import java.net.InetAddress;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
@@ -61,28 +55,11 @@ public class LogInfo {
     public long timestamp;
     int totalBlocked;
 
-    private static PrettyTime prettyTime;
-
-    public static String pretty(Date date) {
-        if (prettyTime == null) {
-            prettyTime = new PrettyTime(new Locale(G.locale()));
-            for (TimeUnit t : prettyTime.getUnits()) {
-                if (t instanceof JustNow) {
-                    prettyTime.removeUnit(t);
-                    break;
-                }
-            }
-        }
-        prettyTime.setReference(date);
-        return prettyTime.format(new Date(0));
-    }
-
     private final HashMap<String, Integer> dstBlocked; // Number of packets blocked per destination IP address
 
     public LogInfo() {
         this.dstBlocked = new HashMap<String, Integer>();
     }
-
 
     public static String parseLog(Context ctx, List<LogData> listLogData) {
 

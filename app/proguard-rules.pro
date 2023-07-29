@@ -1,5 +1,4 @@
 -keepattributes
--keep class org.ocpsoft.prettytime.i18n.**
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -dontpreverify
 -dontoptimize

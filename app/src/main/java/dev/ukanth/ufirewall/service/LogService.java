@@ -49,13 +49,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.topjohnwu.superuser.CallbackList;
 import com.topjohnwu.superuser.Shell;
 
-import org.ocpsoft.prettytime.PrettyTime;
-import org.ocpsoft.prettytime.TimeUnit;
-import org.ocpsoft.prettytime.units.JustNow;
-
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -233,29 +227,12 @@ public class LogService extends Service {
         }
     }
 
-
     private void checkBatteryOptimize() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final Intent doze = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
             if (Api.batteryOptimized(this) && getPackageManager().resolveActivity(doze, 0) != null) {
             }
         }
-    }
-
-    private static PrettyTime prettyTime;
-
-    public static String pretty(Date date) {
-        if (prettyTime == null) {
-            prettyTime = new PrettyTime(new Locale(G.locale()));
-            for (TimeUnit t : prettyTime.getUnits()) {
-                if (t instanceof JustNow) {
-                    prettyTime.removeUnit(t);
-                    break;
-                }
-            }
-        }
-        prettyTime.setReference(date);
-        return prettyTime.format(new Date(0));
     }
 
     @SuppressLint("RestrictedApi")
@@ -270,8 +247,6 @@ public class LogService extends Service {
                     .build());
         }
     }
-
-
 
     private static void store(final LogInfo logInfo, Context context) {
         try {
