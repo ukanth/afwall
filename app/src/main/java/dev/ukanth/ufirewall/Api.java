@@ -1413,7 +1413,6 @@ public final class Api {
         int count = 0;
         try {
             listOfUids = new ArrayList<>();
-            PackageManager pkgmanager = ctx.getPackageManager();
             //this code will be executed on devices running ICS or later
             final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
             List<UserHandle> list = um.getUserProfiles();
@@ -1433,6 +1432,7 @@ public final class Api {
             if (G.supportDual()) {
                 pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
             }
+            PackageManager pkgmanager = ctx.getPackageManager();
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
@@ -1447,8 +1447,6 @@ public final class Api {
             install.setTime(System.currentTimeMillis() - (180000));
 
             SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
-
-            HashMap<Integer,String> listMaps = getPackagesForUser(listOfUids);
 
             for (int i = 0; i < installed.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
@@ -1520,7 +1518,8 @@ public final class Api {
                     app.selected_tor = true;
                 }
                 if (G.supportDual()) {
-                    checkPartOfMultiUser(apinfo, name, listOfUids, listMaps, multiUserAppsMap);
+                    HashMap<Integer,String> packagesForUser = getPackagesForUser(listOfUids);
+                    checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, multiUserAppsMap);
                 }
             }
 
