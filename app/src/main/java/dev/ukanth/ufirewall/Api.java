@@ -2186,6 +2186,29 @@ public final class Api {
         }
     }
 
+    private static Map<Integer, ApplicationInfo> uidToApplicationInfoMap = null;
+
+    public static Drawable getApplicationIcon(Context context, int appUid) {
+        if (uidToApplicationInfoMap == null) {
+            PackageManager packageManager = context.getPackageManager();
+            List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+            uidToApplicationInfoMap = new HashMap<>();
+            for (ApplicationInfo applicationInfo : installedApplications) {
+                if (!uidToApplicationInfoMap.containsKey(applicationInfo.uid)) {
+                    uidToApplicationInfoMap.put(applicationInfo.uid, applicationInfo);
+                }
+            }
+        }
+
+        ApplicationInfo applicationInfo = uidToApplicationInfoMap.get(appUid);
+        if (applicationInfo != null) {
+            PackageManager packageManager = context.getPackageManager();
+            return applicationInfo.loadIcon(packageManager);        // The application icon.
+        } else {
+            return context.getDrawable(R.drawable.ic_unknown);      // The default icon.
+        }
+    }
+
     /**
      * Called when an application in removed (un-installed) from the system.
      * This will look for that application in the selected list and update the persisted values if necessary
