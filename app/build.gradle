@@ -2,15 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 33
-    buildToolsVersion '33.0.1'
-
     defaultConfig {
+        compileSdk 33
         applicationId "dev.ukanth.ufirewall"
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 20230215
+        versionCode 20230814
         versionName "3.6"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
