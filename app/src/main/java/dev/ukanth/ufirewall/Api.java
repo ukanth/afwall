@@ -1409,7 +1409,7 @@ public final class Api {
                 Matcher m = p.matcher(user.toString());
                 if (m.find() && m.groupCount() > 0) {
                     int id = Integer.parseInt(m.group(1));
-                    if (id >= 0) {
+                    if (id > 0) {
                         listOfUids.add(id);
                     }
                 }
@@ -1435,6 +1435,10 @@ public final class Api {
             install.setTime(System.currentTimeMillis() - (180000));
 
             SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
+            HashMap<Integer, String> packagesForUser = new HashMap<>();
+            if(G.supportDual()) {
+                packagesForUser  = getPackagesForUser(listOfUids);
+            }
 
             for (int i = 0; i < installed.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
@@ -1506,7 +1510,6 @@ public final class Api {
                     app.selected_tor = true;
                 }
                 if (G.supportDual()) {
-                    HashMap<Integer,String> packagesForUser = getPackagesForUser(listOfUids);
                     checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, multiUserAppsMap);
                 }
             }
