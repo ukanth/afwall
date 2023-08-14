@@ -189,15 +189,7 @@ public class LogService extends Service {
     }
 
     private void initiateLogWatcher(String logCommand) {
-        // Stop existing log service
-        if (logWatcherShell != null) {
-            try {
-                logWatcherShell.close();
-            } catch (Exception e) {
-                Log.e(TAG, "Failed closing previous log watcher shell and process - further logging will not function");
-            }
-            logWatcherShell = null;
-        }
+
         // Clear/remove existing tasks
         if(executorService != null) {
             executorService.shutdownNow();
