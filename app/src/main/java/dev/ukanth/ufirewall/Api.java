@@ -1409,7 +1409,7 @@ public final class Api {
                 Matcher m = p.matcher(user.toString());
                 if (m.find() && m.groupCount() > 0) {
                     int id = Integer.parseInt(m.group(1));
-                    if (id > 0) {
+                    if (id >= 0) {
                         listOfUids.add(id);
                     }
                 }
@@ -1675,7 +1675,7 @@ public final class Api {
     public static HashMap<Integer, String> getPackagesForUser(List<Integer> userProfile) {
         HashMap<Integer,String> listApps = new HashMap<>();
         for(Integer integer: userProfile) {
-            Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
+            Shell.Result result = Shell.cmd("pm list packages -u --user " + integer).exec();
             List<String> out = result.getOut();
             Matcher matcher;
             for (String item : out) {
