@@ -1675,7 +1675,7 @@ public final class Api {
     public static HashMap<Integer, String> getPackagesForUser(List<Integer> userProfile) {
         HashMap<Integer,String> listApps = new HashMap<>();
         for(Integer integer: userProfile) {
-            Shell.Result result = Shell.cmd("pm list packages -u --user " + integer).exec();
+            Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
             List<String> out = result.getOut();
             Matcher matcher;
             for (String item : out) {
@@ -2189,7 +2189,7 @@ public final class Api {
     public static PackageInfo getPackageDetails(Context ctx, HashMap<Integer, String> listMaps, int uid) {
         try {
             final PackageManager pm = ctx.getPackageManager();
-            if (listMaps.containsKey(uid)) {
+            if (listMaps != null && listMaps.containsKey(uid)) {
                 return pm.getPackageInfo(listMaps.get(uid), PackageManager.GET_META_DATA);
             } else {
                 return null;
