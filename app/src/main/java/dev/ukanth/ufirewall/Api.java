@@ -21,7 +21,6 @@
  * @version 1.2
  */
 
-
 package dev.ukanth.ufirewall;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
@@ -88,7 +87,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -97,10 +95,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -110,24 +105,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -1851,6 +1839,60 @@ public final class Api {
         }
     }
 
+    private static boolean installBinariesX86() {
+        if (!installBinary(ctx, R.raw.busybox_x86, "busybox")) return false;
+        if (!installBinary(ctx, R.raw.iptables_x86, "iptables")) return false;
+        if (!installBinary(ctx, R.raw.ip6tables_x86, "ip6tables")) return false;
+        if (!installBinary(ctx, R.raw.nflog_x86, "nflog")) return false;
+        //if (!installBinary(ctx, R.raw.run_pie_x86, "run_pie")) return false;
+        return true;
+    }
+
+    private static boolean installBinariesMips() {
+        if (!installBinary(ctx, R.raw.busybox_mips, "busybox")) return false;
+        if (!installBinary(ctx, R.raw.iptables_mips, "iptables")) return false;
+        if (!installBinary(ctx, R.raw.ip6tables_mips, "ip6tables")) return false;
+        if (!installBinary(ctx, R.raw.nflog_mips, "nflog")) return false;
+        //if (!installBinary(ctx, R.raw.run_pie_mips, "run_pie")) return false;
+        return true;
+    }
+
+    private static boolean installBinariesArm() {
+        if (!installBinary(ctx, R.raw.busybox_arm, "busybox")) return false;
+        if (!installBinary(ctx, R.raw.iptables_arm, "iptables")) return false;
+        if (!installBinary(ctx, R.raw.ip6tables_arm, "ip6tables")) return false;
+        if (!installBinary(ctx, R.raw.nflog_arm, "nflog")) return false;
+        //if (!installBinary(ctx, R.raw.run_pie_arm, "run_pie")) return false;
+        return true;
+    }
+
+    private static boolean installBinariesForAbi(String abi) {
+        if (abi.startsWith("x86")) {
+            return installBinariesX86();
+        } else if (abi.startsWith("mips")) {
+            return installBinariesMips();
+        } else {
+            return installBinariesArm();
+        }
+    }
+
+    private static int getPackageVersion() {
+        try {
+            return ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Can't determine the package version!");
+            return -1;
+        }
+    }
+
+    private static String getAbi() {
+        if (Build.VERSION.SDK_INT > 21) {
+            return Build.SUPPORTED_ABIS[0];
+        } else {
+            return Build.CPU_ABI;
+        }
+    }
+
     /**
      * Asserts that the binary files are installed in the cache directory.
      *
@@ -1859,67 +1901,39 @@ public final class Api {
      * @return false if the binary files could not be installed
      */
     public static boolean assertBinaries(Context ctx, boolean showErrors) {
-        int currentVer = -1;
-        try {
-            currentVer = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
-            if (G.appVersion() == currentVer) {
-                return true;
-            }
-        } catch (NameNotFoundException e) {
-            Log.e(TAG, "packageManager can't look up versionCode");
+
+        int currentVer = getPackageVersion();
+
+        if (G.appVersion() == currentVer) {
+            // The version hasn't changed: Use the previously installed binaries.
+            return true;
         }
 
-        final String[] abis;
-        if (Build.VERSION.SDK_INT > 21) {
-            abis = Build.SUPPORTED_ABIS;
-        } else {
-            abis = new String[]{Build.CPU_ABI, Build.CPU_ABI2};
+        String abi = getAbi();
+
+        Log.d(TAG, "Installing binaries for " + abi + "...");
+
+        if (!installBinariesForAbi(abi))
+        {
+            Log.e(TAG, "Installation of the binaries for " + abi + " failed!");
+            toast(ctx, ctx.getString(R.string.error_binary), Toast.LENGTH_LONG);
+            return false;
         }
 
-        boolean ret = false;
-
-        for (String abi : abis) {
-            if (abi.startsWith("x86")) {
-                ret = installBinary(ctx, R.raw.busybox_x86, "busybox") &&
-                        installBinary(ctx, R.raw.iptables_x86, "iptables") &&
-                        installBinary(ctx, R.raw.ip6tables_x86, "ip6tables") &&
-                        installBinary(ctx, R.raw.nflog_x86, "nflog");
-                        //installBinary(ctx, R.raw.run_pie_x86, "run_pie");
-            } else if (abi.startsWith("mips")) {
-                ret = installBinary(ctx, R.raw.busybox_mips, "busybox") &&
-                        installBinary(ctx, R.raw.iptables_mips, "iptables") &&
-                        installBinary(ctx, R.raw.ip6tables_mips, "ip6tables") &&
-                        installBinary(ctx, R.raw.nflog_mips, "nflog");
-                        //installBinary(ctx, R.raw.run_pie_mips, "run_pie");
-            } else {
-                // default to ARM
-                ret = installBinary(ctx, R.raw.busybox_arm, "busybox") &&
-                        installBinary(ctx, R.raw.iptables_arm, "iptables") &&
-                        installBinary(ctx, R.raw.ip6tables_arm, "ip6tables") &&
-                        installBinary(ctx, R.raw.nflog_arm, "nflog");
-                        //installBinary(ctx, R.raw.run_pie_arm, "run_pie");
-            }
-            Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
+        // Arch-independent scripts:
+        if (!installBinary(ctx, R.raw.afwallstart, "afwallstart"))
+        {
+            Log.e(TAG, "Installation of the arch-independent binaries failed!");
+            toast(ctx, ctx.getString(R.string.error_binary));
+            return false;
         }
 
-        // arch-independent scripts
-        ret &= installBinary(ctx, R.raw.afwallstart, "afwallstart");
-        //Log.d(TAG, "binary installation for " + abi + (ret ? " succeeded" : " failed"));
-        //ret &= installBinary(ctx, R.raw.aflogshell, "aflogshell");
-        //ret &= installBinary(ctx, R.raw.aflogshellb, "aflogshellb");
+        Log.d(TAG, "Installed binaries for " + abi + ".");
+        toast(ctx, ctx.getString(R.string.toast_bin_installed), Toast.LENGTH_SHORT);
 
-        if (showErrors) {
-            if (ret) {
-                toast(ctx, ctx.getString(R.string.toast_bin_installed));
-            } else {
-                toast(ctx, ctx.getString(R.string.error_binary));
-            }
-        }
-        if (ret && currentVer > 0) {
-            // this indicates that migration from the old version was successful.
-            G.appVersion(currentVer);
-        }
-        return ret;
+        G.appVersion(currentVer); // This indicates that the installation of the binaries for this version was successful.
+
+        return true;
     }
 
     /**
