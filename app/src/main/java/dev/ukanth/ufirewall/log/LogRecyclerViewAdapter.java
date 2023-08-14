@@ -5,9 +5,7 @@ import static dev.ukanth.ufirewall.Api.TAG;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +20,6 @@ import org.ocpsoft.prettytime.units.JustNow;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -111,33 +108,11 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
         PackageManager manager = context.getPackageManager();
         holder.bind(logData.get(position),recyclerItemClickListener);
         try {
-            HashMap<Integer,String> listMaps = Api.getPackagesForUser(Api.getListOfUids());
-            info = Api.getPackageDetails(context, listMaps, data.getUid());
-            if(info!=null && info.applicationInfo !=null) {
-                Object drawable = info.applicationInfo.loadIcon(manager);
-                if (drawable instanceof Bitmap)
-                    holder.icon.setImageBitmap((Bitmap)drawable);
-                else
-                    holder.icon.setBackground((Drawable)drawable);
-            } else{
-                Drawable appIcon = context.getDrawable(R.drawable.ic_unknown);
-                holder.icon.setImageBitmap(Api.getBitmapFromDrawable(appIcon));
-            }
+            Drawable applicationIcon = Api.getApplicationIcon(context, data.getUid());
+            holder.icon.setBackground(applicationIcon);
         } catch (Exception e) {
-            Log.e(TAG,e.getMessage(),e);
-            info = null;
-            try {
-                if(Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.O) {
-                    holder.icon.setBackground(context.getDrawable(R.drawable.ic_unknown));
-                } else {
-                    Drawable appIcon = context.getDrawable(R.drawable.ic_unknown);
-                    holder.icon.setImageBitmap(Api.getBitmapFromDrawable(appIcon));
-                }
-            }catch (Exception e1) {
-                Log.e(TAG,e1.getMessage(),e1);
-            }
+            Log.e(TAG, e.getMessage(), e);
         }
-
 
         try {
             //if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {
