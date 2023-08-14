@@ -46,8 +46,6 @@ public class FirewallService extends Service {
     public void onCreate() {
         super.onCreate();
         context = this;
-        addNotification();
-        registerBTListener();
     }
 
     private void registerBTListener() {
@@ -137,7 +135,7 @@ public class FirewallService extends Service {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
         notificationBuilder.setContentIntent(notifyPendingIntent);
 
-        int notifyType = G.getNotificationPriority();
+        //int notifyType = G.getNotificationPriority();
         Notification notification = notificationBuilder
                 .setContentTitle(getString(R.string.app_name))
                 .setTicker(getString(R.string.app_name))
@@ -171,6 +169,9 @@ public class FirewallService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        addNotification();
+        registerBTListener();
 
         //incase if it's not null, make sure we unregister it
         if(packageReceiver != null) {
