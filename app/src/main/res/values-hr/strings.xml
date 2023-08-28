@@ -544,4 +544,7 @@
     <string name="log_service_select">Prvo izaberite željeni dnevnik</string>
     <string name="log_service_watcher">Otvaranje pregleda dnevnika...</string>
     <string name="log_service_success">Uspešno započeto vođenje dnevnika!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

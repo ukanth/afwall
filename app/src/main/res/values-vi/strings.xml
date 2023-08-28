@@ -544,4 +544,7 @@
     <string name="log_service_select">Hãy chọn đối tượng ghi</string>
     <string name="log_service_watcher">Mở theo dõi ghi chép...</string>
     <string name="log_service_success">Đã bật tác vụ ghi chép!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

@@ -545,4 +545,7 @@
     <string name="log_service_select">请先选择日志目标</string>
     <string name="log_service_watcher">正在打开日志监视器...</string>
     <string name="log_service_success">成功启动日志服务！</string>
+    <string name="unable_clone">无法克隆</string>
+    <string name="add_delay">添加延迟</string>
+    <string name="add_delay_rules">给应用规则添加1秒延迟.</string>
 </resources>

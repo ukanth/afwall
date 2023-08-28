@@ -544,4 +544,7 @@
     <string name="log_service_select">Por favor, selecciona el objetivo de registro primero</string>
     <string name="log_service_watcher">Abriendo visor de registro...</string>
     <string name="log_service_success">¡Se ha iniciado el servicio de registro con éxito!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

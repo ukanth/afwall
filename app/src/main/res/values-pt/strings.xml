@@ -68,16 +68,16 @@
     <string name="mode_header">Modo: %s</string>
     <string name="legend_clear">Marcar todas as caixas das colunas</string>
     <string name="mode_whitelist">Permitir selecionadas</string>
-    <string name="legend_whitelist">Selected apps will be granted Internet access</string>
+    <string name="legend_whitelist">Selecionar apps que tem acesso à internet</string>
     <string name="mode_blacklist">Bloquear selecionadas</string>
-    <string name="legend_blacklist">Selected apps will be denied Internet access</string>
+    <string name="legend_blacklist">Selecionar apps com acesso negado à internet</string>
     <string name="set_custom_script">Definir script personalizado</string>
     <string name="preferences">Preferências</string>
     <string name="reload">Recarregar aplicações</string>
     <string name="flush">Descarregar regras</string>
     <string name="send_report">Enviar relatório de erros</string>
     <string name="enter_problem">Por favor explique o seu problema:</string>
-    <string name="send_mail">Send e-mail</string>
+    <string name="send_mail">Enviar e-mail</string>
     <string name="notify_pref_summary_on">Mostrar uma notificação sempre que seja instalada uma nova aplicação</string>
     <string name="notify_pref_summary_off">Não mostrar uma notificação sempre que seja instalada uma nova aplicação</string>
     <string name="custom_script_defined">Script personalizado definido</string>
@@ -95,7 +95,7 @@
     <string name="flushRulesConfirm">Descarregar todas as regras iptables?</string>
     <string name="overrideRules">Deseja importar as regras? Esta ação substitui as regras existentes!</string>
     <string name="notification_new">Nova aplicação instalada</string>
-    <string name="notification_new_package">Configure Internet permission</string>
+    <string name="notification_new_package">Configurar as permissões de internet</string>
     <string name="confirmMsg">Desativar completamente a firewall?</string>
     <string name="apply">Aplicar</string>
     <string name="discard">Descartar</string>
@@ -183,7 +183,7 @@
     <string name="profile3">Perfil 3</string>
     <string name="profile_hint">Nome do perfil</string>
     <string name="profile_notsupport">Efetue a migração dos dados para poder usar esta opção</string>
-    <string name="profile_duplicate">Profile exists already!</string>
+    <string name="profile_duplicate">O Perfil já existe!</string>
     <string name="reapply_profile">Reaplicar regras do perfil</string>
     <!-- Interface -->
     <string name="lan_title">Controlo de LAN</string>
@@ -544,4 +544,7 @@
     <string name="log_service_select">Please select log target first</string>
     <string name="log_service_watcher">Opening log watcher...</string>
     <string name="log_service_success">Started Log service Successfully!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

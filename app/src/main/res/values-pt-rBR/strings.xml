@@ -544,4 +544,7 @@
     <string name="log_service_select">Selecione primeiro o destino do log</string>
     <string name="log_service_watcher">Abrindo visualizador de log...</string>
     <string name="log_service_success">Serviço de Log Iniciado com sucesso!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

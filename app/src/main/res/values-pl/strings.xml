@@ -21,7 +21,7 @@
     <string name="error_binary">Błąd instalacji plików binarnych</string>
     <string name="error_migration">Błąd podczas migracji starych ustawień</string>
     <string name="error_refresh">Błąd odświeżania iptables</string>
-    <string name="error_apply">Nie udało się zastosować reguł iptables</string>
+    <string name="error_apply">Błąd poczas stosowania reguł iptables</string>
     <string name="error_fetch">Błąd przy pobieraniu reguł iptables</string>
     <string name="error_su_toast">Nie udało się uzyskać dostępu do roota!</string>
     <string name="error_su">Nie można uzyskać uprawnień root.\n Urządzenie musi być zrootowane, aby używać AFWall+. \n\n Jeśli twój telefon jest już zrootowany, upewnij się że AFWall+ posiada uprawnienia aby uruchomić komendę \"su\".</string>
@@ -544,4 +544,7 @@
     <string name="log_service_select">Najpierw wybierz cel dziennika</string>
     <string name="log_service_watcher">Otwórz obserwator dziennika...</string>
     <string name="log_service_success">Uruchomiono usługę dziennika pomyślnie!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

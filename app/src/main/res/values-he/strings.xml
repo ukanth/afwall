@@ -5,8 +5,8 @@
        By community with many improvements by Gitoffthelawn
     -->
     <!-- main -->
-    <string name="app_name">+AFWall </string>
-    <string name="app_name_donate">+AFWall (תרומה)</string>
+    <string name="app_name">AFWall+ </string>
+    <string name="app_name_donate">+AFWall (גרסת תרומה)</string>
     <string name="title_disabled">+AFWall (מושבת)</string>
     <string name="whitelist_array_item">אפשר בחירה</string>
     <string name="blacklist_array_item">חסום בחירה</string>
@@ -23,12 +23,12 @@
     <string name="error_refresh">שגיאה ברענון iptables</string>
     <string name="error_apply">שגיאה בהחלת חוקי iptables</string>
     <string name="error_fetch">שגיאה בהבאת חוקי iptables</string>
-    <string name="error_su_toast">Unable to acquire root access !</string>
+    <string name="error_su_toast">לא מצליח להשיג גישת שורש !</string>
     <string name="error_su">לא התקבלה גישת שורש (root).\nעל המכשיר להיות בעל גישת שורש (rooted) על מנת להשתמש ב+AFWall.\n\nאם המכשיר בעל גישת שורש, נא לוודא שיש ל+AFWall הרשאות לבצע את פקודת \"su\".</string>
     <string name="error_netfilter">לא היתה אפשרות למצוא תמיכה עבור מטרות ושרשראות
 iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה זו.</string>
     <string name="error_common">שגיאה: </string>
-    <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
+    <string name="all_item">(כל אפליקציה) - זהה לבחירת כל האפליקציות - !!אזהרה!! </string>
     <string name="kernel_item">(kernel) - ליבת לינוקס</string>
     <string name="android_system">מערכת אנדרואיד</string>
     <string name="unknown_item">לא ידוע</string>
@@ -45,9 +45,9 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <!-- <string name="operation_timeout">Operation timed out</string> -->
     <string name="fw_enabled">הפעל חומת אש</string>
     <string name="fw_disabled">השבת חומת אש</string>
-    <string name="flushed">Rules flushed</string>
-    <string name="show_log">View log</string>
-    <string name="clear_log">Clear log</string>
+    <string name="flushed">הכללים נמחקו</string>
+    <string name="show_log">הצג יומן</string>
+    <string name="clear_log">נקה יומן</string>
     <string name="applying_rules">מחיל חוקי iptables</string>
     <string name="applying">מחיל</string>
     <string name="saving_rules">שומר חוקי iptables</string>
@@ -93,7 +93,7 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="copy">העתק</string>
     <string name="copied">הועתק</string>
     <string name="Search">חיפוש</string>
-    <string name="flushRulesConfirm">Flush all iptables rules?</string>
+    <string name="flushRulesConfirm">לבטל את כל חוקי iptables?</string>
     <string name="overrideRules">האם ברצונך לייבא את החוקים? פעולה זו תדרוס את החוקים הקיימים!</string>
     <string name="notification_new">יישום חדש הותקן</string>
     <string name="notification_new_package">הגדר הרשאות אינטרנט</string>
@@ -120,7 +120,7 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="unable_remove_initd">אין אפשרות להסיר את סקריפט ההפעלה של AFWall+</string>
     <!-- Widget -->
     <string name="widget_disable_fail">אין אפשרות להשבית את חומת האש. מוגן בסיסמה!</string>
-    <string name="widget_label_status">AFWall+ Toggle</string>
+    <string name="widget_label_status">AFWall+ מתג</string>
     <string name="widget_label_settings">הגדרות AFWall+</string>
     <string name="widget_label_settings_old">הגדרות AFWall+ (ישן)</string>
     <!-- Color Picker -->
@@ -140,25 +140,25 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="export_logs_fail">ייצוא לאחסון נכשל!</string>
     <string name="export_to_sd">ייצא לאחסון</string>
     <!-- Logging -->
-    <string name="enable_firewall_log">Enable firewall log</string>
-    <string name="enable_firewall_log_service">Turn on log service</string>
-    <string name="showlog_title">Firewall Logs</string>
+    <string name="enable_firewall_log">אפשר יומן חומת אש</string>
+    <string name="enable_firewall_log_service">הפעלת שירות היומן</string>
+    <string name="showlog_title">יומן חומת אש</string>
     <string name="showlog_service_summary">הצג התראות טוסט בעת חסימת קישור </string>
-    <string name="enable_log">Enable log</string>
-    <string name="disable_log">Disable log</string>
-    <string name="log_disabled">Log disabled</string>
-    <string name="log_was_enabled">Log enabled</string>
-    <string name="log_was_disabled">Log disabled</string>
-    <string name="log_target_success">Log target change succesful</string>
-    <string name="log_target_fail">Log target change failed</string>
-    <string name="log_toggle_failed">Error toggling log status</string>
+    <string name="enable_log">אפשר יומן</string>
+    <string name="disable_log">השבת יומן</string>
+    <string name="log_disabled">יומן מושבת</string>
+    <string name="log_was_enabled">יומן מאופשר</string>
+    <string name="log_was_disabled">יומן מושבת</string>
+    <string name="log_target_success">שינוי יעד היומן הצליח</string>
+    <string name="log_target_fail">שינוי יעד היומן נכשל</string>
+    <string name="log_toggle_failed">שגיאה במעבר מצב יומן</string>
     <string name="log_target_failed">שגיאה: קרנל לא תומך LOG/NFLOG</string>
-    <string name="log_cleared">Log cleared</string>
-    <string name="log_dmesg">Log fetch method</string>
-    <string name="log_clear_error">Error clearing log</string>
-    <string name="log_fetch_error">Error fetching log</string>
-    <string name="log_parse_error">Error parsing log</string>
-    <string name="no_log">Log is empty</string>
+    <string name="log_cleared">יומן נוקה</string>
+    <string name="log_dmesg">שיטת אחזור יומן</string>
+    <string name="log_clear_error">שגיאה בניקוי יומן</string>
+    <string name="log_fetch_error">שגיאה באחזור יומן</string>
+    <string name="log_parse_error">שגיאה בניתוח יומן</string>
+    <string name="no_log">היומן ריק</string>
     <string name="LogAppName">שם האפליקציה</string>
     <string name="LogPackBlock">סה\"כ חבילות שנחסמו</string>
     <string name="blocked">AFWall+ חסם:</string>
@@ -194,8 +194,8 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="vpnSummary">אפשר שליטה בהרשאות VPN בנפרד</string>
     <string name="roaming">שליטת נדידה</string>
     <string name="roamingSummary">אפשר שליטה בהרשאות נדידת נתונים בנפרד</string>
-    <string name="tether_profile">Tether control</string>
-    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
+    <string name="tether_profile">בקרת Tether</string>
+    <string name="tetherSummary">אפשר לשלוט בקישוריות חיבור Bluetooth/USB</string>
     <string name="tor_profile">שליטת Tor</string>
     <string name="torSummary">אפשר ניתוב תעבורה שאינה משוייכת ל-Tor דרך Tor</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -266,21 +266,21 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="ui_chains_title">שרשראות IPv4</string>
     <string name="ui_chains6_title">שרשראות IPv6</string>
     <string name="rules_prefs_title">חוקים/קישוריות</string>
-    <string name="log_prefs_title">Log</string>
+    <string name="log_prefs_title">יומן</string>
     <string name="hideicons_pref_title">הסתר סמלי אפליקציות</string>
     <string name="hideicons_pref_summary_on">שיפור ביצועים ע\"י ביטול סמלי אפליקציות במסך הראשי</string>
     <string name="hideicons_pref_summary_off">הצג סמלי אפליקציות במסך הראשי</string>
     <string name="notify_pref_title">אפשר התראות</string>
-    <string name="syscolor_pref_title">System applications</string>
-    <string name="primary_pref_title">Primary Color</string>
-    <string name="status_pref_title">Statusbar Color</string>
-    <string name="accent_pref_title">Accent Color</string>
+    <string name="syscolor_pref_title">יישומי מערכת</string>
+    <string name="primary_pref_title">צבע ראשי</string>
+    <string name="status_pref_title">צבע שורת מצב</string>
+    <string name="accent_pref_title">צבע הדגשה</string>
     <string name="syscolor_pref_summary_on">צבע עבור כל אפליקציות המערכת</string>
     <string name="enableConfirmTitle">נדרש אישור להשבתת AFWall+</string>
     <string name="enableConfirm_summary_on">חומת האש תבקש אישור לפני השבתה</string>
     <string name="showUid">הצג את ה-UID של אפליקציות</string>
     <string name="showuid_summary_on">הצג UID של אפליקציות במסך הראשי</string>
-    <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
+    <string name="showuid_summary_off">הסתר UID של אפליקציה בתצוגה הראשית. הפעלה יכולה להיות שימושית למעקב אחר יומנים.</string>
     <string name="languages">שפות</string>
     <string name="change_languages">שנה שפה</string>
     <string name="misc_header">שפות/תוספים</string>
@@ -316,7 +316,7 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="legend_wifi">אפשר לAFWall+ לשלוט בהרשאות Wi-Fi</string>
     <string name="lan">רשת מקומית (LAN)</string>
     <string name="vpn">VPN</string>
-    <string name="tether">USB Bluetooth Tether</string>
+    <string name="tether">חיבור USB Bluetooth</string>
     <string name="tor">Tor</string>
     <string name="data">נתונים</string>
     <string name="legend_data">אפשר לAFWall+ לשלוט בהרשאות נתונים (2G,3G,EDGE,LTE/4G)</string>
@@ -333,7 +333,7 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="disable_dns">אל תאפשר DNS באמצעות netd</string>
     <string name="dns_proxy_title">שרת DNS Proxy </string>
     <string name="dns_proxy_summary">שאילתות DNS נעשות באמצעות nets באנדרואיד 4.3 ומעלה. השבתה תחסום את האינטרנט במכשירים אלו.</string>
-    <string name="tasker_lable">AFWall+ Tasker plugin</string>
+    <string name="tasker_lable">תוסף AFWall+ Tasker</string>
     <string name="enable">הפעל</string>
     <string name="disable">השבת</string>
     <string name="filters_apps_title">סינון התראות</string>
@@ -344,8 +344,8 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="imports">ייבא</string>
     <string name="invalid_profile">שם פרופיל לא תקין</string>
     <!-- Donate -->
-    <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
-    <string name="buy_donate">Purchase donate version or Unlocker</string>
+    <string name="donate_only">תכונה זו זמינה רק בגרסת התרומה / לא נעולה</string>
+    <string name="buy_donate">קנה גרסת תרומה או לא נעולה</string>
     <string name="unlock_donate"> לחץ כדי לאפשר גרסת תורמים</string>
     <string name="donate_support">כעת באפשרותך להשתמש בתכונות גרסת התורמים.</string>
     <string name="donate_thanks">תודה על תמיכתך.</string>
@@ -420,17 +420,17 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="log_dst">יעד:</string>
     <string name="log_src">מקור:</string>
     <string name="log_proto">פרוטוקול:</string>
-    <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
-    <string name="loading_data_title">Loading&#8230;</string>
-    <string name="loading_data">Retrieving log data</string>
+    <string name="no_data_available">אנא הפעל את שירות היומן באמצעות העדפות. אם מופעל, אז אין נתוני יומן.</string>
+    <string name="loading_data_title">טוען&#8230;</string>
+    <string name="loading_data">מאחזר מידע</string>
     <string name="switch_old">החלף למראה הישן</string>
     <string name="switch_new">החלף למראה החדש</string>
-    <string name="showlogdetail_title">Application Log Details</string>
+    <string name="showlogdetail_title">פרטי יומן אפליקציה</string>
     <string name="reapply_rules">יש להחיל מחדש את החוקים בעקבות שינוי העדפות</string>
     <string name="custom_rules">חוקים מותאמים אישית</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
-    <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
+    <string name="mdns">לאפשר Multicast DNS</string>
+    <string name="error_log">לא ניתן להפעיל את שירות היומן. LogTarget ריק או LogService אינו מופעל.</string>
     <string name="delete_profile">לא ניתן למחוק פרופיל</string>
     <string name="profile_migrate_msg">פרופילים הועברו</string>
     <!-- Log Details -->
@@ -438,8 +438,8 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="source_address">כתובת מקור</string>
     <string name="ping_destination">יעד לפינג</string>
     <string name="ping_source">מקור הפינג</string>
-    <string name="resolve_destination">Resolve Destination</string>
-    <string name="resolve_source">Resolve Source</string>
+    <string name="resolve_destination">קבע יעד</string>
+    <string name="resolve_source">קבע מקור</string>
     <string name="copy_text">העתק טקסט</string>
     <string name="destination_copied">יעד הועתק</string>
     <string name="source_copied">מקור הועתק</string>
@@ -449,7 +449,7 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="output_is_empty">פלט ריק מכיוון שהגישה לרשת ו-SuperSU נדחו</string>
     <string name="searching">מחפש</string>
     <string name="looking_for_data">מחפש מידע&#8230;</string>
-    <string name="reachable_timeout">Reachable, timeout: %d ms</string>
+    <string name="reachable_timeout">זמין, פסק זמן: %d ms</string>
     <string name="error_or_unknown_category">שגיאה או קטגוריה לא מוכרת</string>
     <string name="show_destination_address">הצג כתובת יעד</string>
     <string name="show_source_address">הצג כתובת מקור</string>
@@ -464,9 +464,9 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="fingerprint_authentication_successded">אימות טביעת אצבע הצליח.</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_fingerprint">פתיחת נעילה בנגיעה אחת</string>
-    <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
-    <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-    <string name="title_activity_home">Fingerprint</string>
+    <string name="desc_fingerprint">אנא הנח את קצה האצבע על הסורק כדי לאמת את זהותך</string>
+    <string name="note">(כניסה בטביעת אצבע הופכת את הכניסה לאפליקציה שלך למהירה הרבה יותר. למכשיר שלך צריכה להיות רשומה לפחות טביעת אצבע אחת בהגדרות המכשיר)</string>
+    <string name="title_activity_home">טביעת אצבע</string>
     <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
     <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
     <string name="fingerprint_required">Fingerprint required</string>
@@ -536,13 +536,16 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="showallapps_summary_off">Currently shows applications with INTERNET permission</string>
     <string name="showallapps_summary_on">Currently shows all installed applications (WARNING: disable this setting for better performance)</string>
     <string name="showAllApps">Show all apps</string>
-    <string name="default_connection_setting_allow">Default whitelist behavior(Donate Only)</string>
-    <string name="default_connection_setting_block">Default blacklist behavior(Donate Only)</string>
-    <string name="connection_default_allow">Default Allow Connection</string>
-    <string name="connection_default_block">Default Block Connection</string>
-    <string name="log_service_start">Starting Log service</string>
-    <string name="log_service_stop">Stopping Log service</string>
-    <string name="log_service_select">Please select log target first</string>
-    <string name="log_service_watcher">Opening log watcher...</string>
-    <string name="log_service_success">Started Log service Successfully!</string>
+    <string name="default_connection_setting_allow">התנהגות ברירת המחדל של רשימת ההיתרים (תרומה בלבד)</string>
+    <string name="default_connection_setting_block">התנהגות ברירת המחדל של רשימה שחורה (תרומה בלבד)</string>
+    <string name="connection_default_allow">ברירת מחדל לאפשר חיבור</string>
+    <string name="connection_default_block">ברירת מחדל לחסום חיבור</string>
+    <string name="log_service_start">הפעלת שרות יומן</string>
+    <string name="log_service_stop">מפסיק שרות יומן</string>
+    <string name="log_service_select">אנא בחר יעד יומן תחילה</string>
+    <string name="log_service_watcher">פותח את שומר היומן...</string>
+    <string name="log_service_success">שירות היומן התחיל בהצלחה!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

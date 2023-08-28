@@ -544,4 +544,7 @@
     <string name="log_service_select">Veuillez d\'abord sélectionner la cible de journalisation</string>
     <string name="log_service_watcher">Lancement de l\'observateur du journal...</string>
     <string name="log_service_success">Service de journalisation démarré avec succès !</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

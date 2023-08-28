@@ -10,10 +10,10 @@
     <string name="title_disabled">AFWall+ (ӨЧҮРҮЛГӨН)</string>
     <string name="whitelist_array_item">Allow selected</string>
     <string name="blacklist_array_item">Block selected</string>
-    <string name="showrules">Show rules</string>
-    <string name="applyrules">Apply</string>
-    <string name="saverules">Save</string>
-    <string name="setpwd">Set password</string>
+    <string name="showrules">Эрежени көрсөтүү</string>
+    <string name="applyrules">Эрежени колдонуу</string>
+    <string name="saverules">Эрежени сактоо</string>
+    <string name="setpwd">Сырсөз орнотуу</string>
     <string name="help">Жардам</string>
     <string name="close">Жабуу</string>
     <string name="exit">Чыгуу</string>
@@ -544,4 +544,7 @@
     <string name="log_service_select">Please select log target first</string>
     <string name="log_service_watcher">Opening log watcher...</string>
     <string name="log_service_success">Started Log service Successfully!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

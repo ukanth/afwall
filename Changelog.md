@@ -1,6 +1,20 @@
 AFWall+ Changelog
 ==================
 
+Version 3.6.0
+
+* Updated libraries and SDK (33)
+* Fixes:
+  - Chinese language not working
+  - Added Sinhala language
+  - libsu memory leak
+  - Optimizing copying binaries during install
+  - Log freezing on few devices
+  - Work profile fix for android 12
+* Add support for recent versions of Android.
+* Code optimizations.
+
+
 Version 3.5.3
 
 * New: Enable delay when applying rules (Required for Android 11+ on some devices)

@@ -150,8 +150,8 @@
     <string name="log_disabled">گزارش غیرفعال شد</string>
     <string name="log_was_enabled">گزارش فعال شد</string>
     <string name="log_was_disabled">گزارش غیرفعال شد</string>
-    <string name="log_target_success">Log target change succesful</string>
-    <string name="log_target_fail">Log target change failed</string>
+    <string name="log_target_success">تغیییر هدف بر اساس لاگ موفق بود</string>
+    <string name="log_target_fail">تغیییر هدف بر اساس لاگ ناموفق بود</string>
     <string name="log_toggle_failed">خطا در روشن کردن وضعیتهای آمار</string>
     <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">آمار پاک شد</string>
@@ -195,8 +195,8 @@
     <string name="vpnSummary">Enable to control VPN permissions separately</string>
     <string name="roaming">کنترل رومینگ</string>
     <string name="roamingSummary">برای کنترل مجوزهای رومینگ بصورت جداگانه این گزینه را فعال کنید</string>
-    <string name="tether_profile">Tether control</string>
-    <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
+    <string name="tether_profile">کنترل Tether</string>
+    <string name="tetherSummary">فعالسازی کنترل اتصالات tether بلوتوث/USB</string>
     <string name="tor_profile">کنترل Tor</string>
     <string name="torSummary">برای ارسال ترافیک غیر Tor از طریق Tor فعال کنید</string>
     <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
@@ -316,7 +316,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="uncheck_all">لغو انتخاب همه</string>
     <string name="select_action">انتخاب عمل در ستون </string>
     <string name="roam">پرسه زدن</string>
-    <string name="legend_roam">Let AFWall+ control data while on different network provider (roaming) permissions separately</string>
+    <string name="legend_roam">بذار AFWall+ داده ها را در اپراتور های دیگر (رومینگ) به‌صورت دستورهای جدا کنترل بکنه</string>
     <string name="wifi">وای فای</string>
     <string name="legend_wifi">اجازه بده +AFWall مجوز های وای فای را کنترل کند</string>
     <string name="lan">شبکه</string>
@@ -337,7 +337,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="enable_dns">فعال سازی دی ان اس از طریق netd</string>
     <string name="disable_dns">غیر فعال کردن دی ان اس از طریق netd</string>
     <string name="dns_proxy_title">پراکسی DNS </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
+    <string name="dns_proxy_summary">جستجو های دی ان اس در اندروید 4.3 به بعد با استفاده از netd انجام میشه. غیرفعال کردن این باعث مسدود شدن اینترنت در آن دستگاه ها میشود.</string>
     <string name="tasker_lable">پلاگین AFWall+‎  Tasker</string>
     <string name="enable">فعالسازی</string>
     <string name="disable">غیرفعالسازی</string>
@@ -399,12 +399,12 @@ S-OFF پیکربندی شوند.</string>
     <string name="migrate_summary">انتقال تمام داده‌های نمایه</string>
     <string name="insert_profile">نام نمایه</string>
     <string name="add">اضافه کردن</string>
-    <string name="showlog_toasts">Show toast notification on block</string>
-    <string name="enable_show_toasts">Enable show toasts</string>
+    <string name="showlog_toasts">موقع مسدود کردن اعلان نشان بده</string>
+    <string name="enable_show_toasts">فعال کردن نمایش اعلان</string>
     <string name="top">بالا</string>
     <string name="center">مرکز</string>
     <string name="bottom">پایین</string>
-    <string name="position">Toasts Position</string>
+    <string name="position">مکان اعلان ها</string>
     <string name="widget_prefs_title">موقعیت‌های ویدجت</string>
     <string name="xTitle">موقعیت افقی ویجت</string>
     <string name="xTitleSummary">تنظیم دستی موقعیت افقی</string>
@@ -417,8 +417,8 @@ S-OFF پیکربندی شوند.</string>
     <string name="lockNotification">پنهان‌سازی آیکون اعلان صفحه قفل</string>
     <string name="lockScreenNotification_summary">پنهان کردن اعلان‌ها در صفحه قفل</string>
     <string name="menu_legend">راهنما و علائم</string>
-    <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
-    <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
+    <string name="permissiondenied_importexport">دستور خواندن/نوشتن برای حافظه رد شد. لطفا درخواست رو قبول کنید تا دستورها رو بتونید صادر/وارد کنید.</string>
+    <string name="permissiondenied_asset">دستور خواندن/نوشتن برای حافظه رد شد. لطفا درخواست رو قبول کنید تا باینری های AFWALL+ را کپی کنید.</string>
     <string name="log_deletedapp">برنامه حذف شده</string>
     <string name="log_denied">غیرمجاز:</string>
     <string name="log_times">زمان ها</string>
@@ -426,7 +426,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="log_dst">مقصد:</string>
     <string name="log_src">منبع:</string>
     <string name="log_proto">پروتکل:</string>
-    <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+    <string name="no_data_available">لطفا سرویس لاگ رو در سلیقه ها فعال کنید. اگر فعال است، یعنی هیچ لاگ ای موجود نیست.</string>
     <string name="loading_data_title">در حال بارگذاری&#8230;</string>
     <string name="loading_data">در حال بازیابی داده log</string>
     <string name="switch_old">رفتن به نمای قدیمی</string>
@@ -436,7 +436,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="custom_rules">قوانین سفارشی</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">فعال سازی Multicast DNS</string>
-    <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
+    <string name="error_log">شروع سرویس لاگ ناموفق بود. LogTarget خالی است یا LogService فعال نیست.</string>
     <string name="delete_profile">امکان حذف نمایه وجود ندارد</string>
     <string name="profile_migrate_msg">نمایه‌ها انتقال‌یافتند</string>
     <!-- Log Details -->
@@ -471,7 +471,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="title_activity_main">فعالیت اصلی</string>
     <string name="title_fingerprint">گشایش تک-ضربه</string>
     <string name="desc_fingerprint">لطفا برای تایید هویتتان ، نوک انگشت خود را روی حسگر بگذارید</string>
-    <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
+    <string name="note">(ورود با اثرانگشت ورود شما رو به برنامه سریعتر میکنه. دستگاه شما باید حداقل یک اثرانگشت در تنظیمات دارا باشد)</string>
     <string name="title_activity_home">اثر انگشت</string>
     <string name="activity_home_desc">شما با تایید هویت بوسیله اثرانگشت وارد حساب شدید</string>
     <string name="activity_home_note">برای دیدن دوباره صفحه شناسایی اثرانگشت برنامه را ببندید و دوباره باز کنید</string>
@@ -484,7 +484,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="fingerprint_disabled_successfully">اثرانگشت غیرفعال‌شد</string>
     <string name="label_zoomin">بزرگ‌نمایی</string>
     <string name="label_zoomout">کوچک‌نمایی</string>
-    <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
+    <string name="exception_pref">شروع فعالیت ها به دلیل سلیقه خراب ناموفق بود، لطفا دیتا های برنامه رو پاکسازی کنید</string>
     <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
     <string name="delayTitle">زمان درنگ سفارشی</string>
     <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
@@ -552,4 +552,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="log_service_select">Please select log target first</string>
     <string name="log_service_watcher">Opening log watcher...</string>
     <string name="log_service_success">Started Log service Successfully!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>

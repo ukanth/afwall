@@ -544,4 +544,7 @@
     <string name="log_service_select">Lütfen ilk olarak günlük hedefi seçin</string>
     <string name="log_service_watcher">Günlük izleyicisi açılıyor...</string>
     <string name="log_service_success">Günlük hizmeti başarıyla başlatıldı!</string>
+    <string name="unable_clone">Klonlanamıyor</string>
+    <string name="add_delay">Gecikme Ekle</string>
+    <string name="add_delay_rules">Kuralları 1 saniye gecikmeyle uygula.</string>
 </resources>

@@ -544,4 +544,7 @@
     <string name="log_service_select">Будь ласка, спочатку виберіть мета журналу</string>
     <string name="log_service_watcher">Відкриття журналу...</string>
     <string name="log_service_success">Журнал успішно запущений!</string>
+    <string name="unable_clone">Неможливо клонувати</string>
+    <string name="add_delay">Додати затримку</string>
+    <string name="add_delay_rules">Застосовувати правила з затримкою в 1 секунду.</string>
 </resources>

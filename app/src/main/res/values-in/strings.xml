@@ -544,4 +544,7 @@
     <string name="log_service_select">Silakan pilih target log terlebih dahulu</string>
     <string name="log_service_watcher">Membuka pengintai log...</string>
     <string name="log_service_success">Berhasil memulai servis Log!</string>
+    <string name="unable_clone">Unable to clone</string>
+    <string name="add_delay">Add Delay</string>
+    <string name="add_delay_rules">Apply rules with 1sec delay.</string>
 </resources>
