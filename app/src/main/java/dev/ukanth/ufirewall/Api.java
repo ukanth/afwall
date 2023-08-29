@@ -169,6 +169,7 @@ public final class Api {
     public static final int NOTIFICATION_ID = 1;
     public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
+    public static final String CACHE_PREFS_NAME = "AFWallCache";
     //for import/export rules
     //revertback to old approach for performance
     public static final String PREF_3G_PKG_UIDS = "AllowedPKG3G_UIDS";
@@ -1396,8 +1397,7 @@ public final class Api {
         }
         //revert back to old approach
 
-        //always use the defaul preferences to store cache value - reduces the application usage size
-        SharedPreferences cachePrefs = ctx.getSharedPreferences(DEFAULT_PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences cachePrefs = ctx.getSharedPreferences(CACHE_PREFS_NAME, Context.MODE_PRIVATE);
 
         int count = 0;
         try {
