@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Aplică regulile la schimbarea profilului</string>
     <string name="multi_apply_rules_info">Încarcă și aplică regulile la comutarea profilurilor</string>
     <string name="multi_user_title">Activează suportul multi-utilizator</string>
-    <string name="multi_user_summary">Suportă multi-user Android (funcţionează numai în modul în care elementele selectate sunt blocate)</string>
+    <string name="multi_user_summary">Suportă multi-user Android</string>
     <!--  -->
     <string name="device_admin_desc">Securitate suplimentară - Previne dezinstalarea AFWall+</string>
     <string name="traffic_detail_title">Detalii trafic</string>

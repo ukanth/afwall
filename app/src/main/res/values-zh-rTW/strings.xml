@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">設定檔案切換時套用規則</string>
     <string name="multi_apply_rules_info">切換設定檔案時將載入並套用規則</string>
     <string name="multi_user_title">啟用多使用者支援</string>
-    <string name="multi_user_summary">支援 Android 多使用者 (僅適用黑名單模式)</string>
+    <string name="multi_user_summary">支援 Android 多使用者</string>
     <!--  -->
     <string name="device_admin_desc">加強安全 - 防止移除 AFWall+</string>
     <string name="traffic_detail_title">流量狀況</string>

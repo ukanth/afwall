@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Primjeni pravila kod promjene profila</string>
     <string name="multi_apply_rules_info">Učitaj i primjeni pravila kod promjene profila</string>
     <string name="multi_user_title">Omogući podršku za više korisnika</string>
-    <string name="multi_user_summary">Podrška za Android opciju s više korisnika (samo radi u načinu rada gdje su označene stvari blokirane)</string>
+    <string name="multi_user_summary">Podrška za Android opciju s više korisnika</string>
     <!--  -->
     <string name="device_admin_desc">Dodatna sigurnost - Spriječi deinstaliranje AFWall+</string>
     <string name="traffic_detail_title">Detalji o prometu</string>

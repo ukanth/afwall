@@ -294,7 +294,7 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="multi_apply_rules">החל חוקים בהחלפת פרופיל</string>
     <string name="multi_apply_rules_info">טען והחל חוקים בעת החלפת פרופילים</string>
     <string name="multi_user_title">אפשר תמיכה במשתמשים מרובים</string>
-    <string name="multi_user_summary">תמיכה בריבוי משתמשים של אנדרואיד (עובד רק במצב חסימת אפליקציות שנבחרו)</string>
+    <string name="multi_user_summary">תמיכה בריבוי משתמשים של אנדרואיד</string>
     <!--  -->
     <string name="device_admin_desc">אבטחה נוספת - מנע הסרת האפליקציה AFWall+</string>
     <string name="traffic_detail_title">פרטי תעבורה</string>
