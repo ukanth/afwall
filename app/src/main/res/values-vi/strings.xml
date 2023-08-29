@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Áp dụng quy tắc khi đổi cấu hình</string>
     <string name="multi_apply_rules_info">Tải và áp dụng quy tắc khi đổi cấu hình</string>
     <string name="multi_user_title">Bật hỗ trợ nhiều người dùng</string>
-    <string name="multi_user_summary">Hỗ trợ nhiều người dùng trên Android (chỉ hoạt động trong chế độ đánh dấu chặn)</string>
+    <string name="multi_user_summary">Hỗ trợ nhiều người dùng trên Android</string>
     <!--  -->
     <string name="device_admin_desc">Tăng cường bảo mật - Ngăn gỡ cài đặt AFWall+</string>
     <string name="traffic_detail_title">Chi tiết lưu lượng</string>

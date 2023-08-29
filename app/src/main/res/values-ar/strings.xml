@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">تطبيق القواعد على تبديل الأوضاع</string>
     <string name="multi_apply_rules_info">تحميل وتطبيق القواعد عند التبديل بين ملفات التعريف</string>
     <string name="multi_user_title">تفعيل دعم تعدد المستخدمين</string>
-    <string name="multi_user_summary">دعم تعدد المستخدمين للنظام (يعمل فقط في الوضع حيث يتم حظر العناصر المحددة)</string>
+    <string name="multi_user_summary">دعم تعدد المستخدمين للنظام</string>
     <!--  -->
     <string name="device_admin_desc">حماية إضافية - منع إلغاء تثبيت AFWall+</string>
     <string name="traffic_detail_title">تفاصيل حركة البيانات</string>

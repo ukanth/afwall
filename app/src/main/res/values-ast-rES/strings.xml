@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Aplicar regles na conmutación de perfiles</string>
     <string name="multi_apply_rules_info">Carga y aplica les regles al camudar de perfiles</string>
     <string name="multi_user_title">Habilitar sofitu multi-usuariu</string>
-    <string name="multi_user_summary">Sofita la carauterística de multi-usuariu d\'Android (namái furrula nel mou u se bloquien los elementos bloquiaos)</string>
+    <string name="multi_user_summary">Sofita la carauterística de multi-usuariu d\'Android</string>
     <!--  -->
     <string name="device_admin_desc">Seguranza adicional - Evita la desinstalación d\'AFWall+</string>
     <string name="traffic_detail_title">Detalles de tráficu</string>

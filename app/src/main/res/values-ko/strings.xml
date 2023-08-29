@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">프로필 교체시 규칙 적용</string>
     <string name="multi_apply_rules_info">프로필 교체시 규칙을 재적용합니다.</string>
     <string name="multi_user_title">다중사용자기능 허용</string>
-    <string name="multi_user_summary">안드로이드 멀티유저 지원 (다만, 선택된 앱이 차단될 때만 사용가능)</string>
+    <string name="multi_user_summary">안드로이드 멀티유저 지원</string>
     <!--  -->
     <string name="device_admin_desc">기타보호기능 - AFWall+ 삭제 금지하기</string>
     <string name="traffic_detail_title">트래픽 통계</string>
