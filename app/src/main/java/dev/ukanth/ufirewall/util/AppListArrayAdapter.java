@@ -166,11 +166,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
 
         ApplicationInfo info = holder.app.appinfo;
-        if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+        if (holder.app.appType == 1) {
             //user app
             holder.text.setTextColor(G.userColor());
         } else {
-            //system app
+            //system or core app
             holder.text.setTextColor(G.sysColor());
         }
 

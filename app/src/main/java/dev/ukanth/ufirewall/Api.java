@@ -125,6 +125,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
+import dev.ukanth.ufirewall.MultiUser;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
@@ -1841,28 +1842,34 @@ public final class Api {
 
         int count = 0;
         try {
-            listOfUids = new ArrayList<>();
-            //this code will be executed on devices running ICS or later
-            final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
-            List<UserHandle> list = um.getUserProfiles();
+            /*if(G.supportDual()) {
+                listOfUids = new ArrayList<>();
+                //this code will be executed on devices running ICS or later
+                final UserManager um = (UserManager) ctx.getSystemService(Context.USER_SERVICE);
+                List<UserHandle> list = um.getUserProfiles();
 
-            for (UserHandle user : list) {
-                Matcher m = p.matcher(user.toString());
-                if (m.find() && m.groupCount() > 0) {
-                    int id = Integer.parseInt(m.group(1));
-                    if (id > 0) {
-                        listOfUids.add(id);
+                for (UserHandle user : list) {
+                    Matcher m = p.matcher(user.toString());
+                    if (m.find() && m.groupCount() > 0) {
+                        int id = Integer.parseInt(m.group(1));
+                        if (id > 0) {
+                            listOfUids.add(id);
+                        }
                     }
                 }
-            }
-            //use pm list packages -f -U --user 10
-            int pkgManagerFlags = PackageManager.GET_META_DATA;
-            // it's useless to iterate over uninstalled packages if we don't support multi-profile apps
-            if (G.supportDual()) {
-                pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
-            }
+            }*/
             PackageManager pkgmanager = ctx.getPackageManager();
-            List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
+            List<PackageInfo> installed;
+            if (G.isMultiUser()) {
+                installed = MultiUser.getInstalledPackagesFromAllUsers(MultiUser.MATCH_ALL_METADATA);
+            } else {
+                int pkgManagerFlags = PackageManager.GET_META_DATA;
+                // it's useless to iterate over uninstalled packages if we don't support multi-profile apps
+                if (G.supportDual()) {
+                    pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
+                }
+                installed = pkgmanager.getInstalledPackages(pkgManagerFlags);
+            }
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
@@ -1870,21 +1877,24 @@ public final class Api {
             String cachekey;
             String cacheLabel = "cache.label.";
             PackageInfoData app;
-            ApplicationInfo apinfo;
 
             Date install = new Date();
             install.setTime(System.currentTimeMillis() - (180000));
 
             SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
             HashMap<Integer, String> packagesForUser = new HashMap<>();
-            if(G.supportDual()) {
+            /*if(G.supportDual()) {
                 packagesForUser  = getPackagesForUser(listOfUids);
-            }
+            }*/
 
-            for (int i = 0; i < installed.size(); i++) {
-                //for (ApplicationInfo apinfo : installed) {
+
+            for (PackageInfo pkginfo : installed) {
+                ApplicationInfo apinfo = pkginfo.applicationInfo;
+                if (apinfo == null) continue;
+
+                int user_id = MultiUser.applicationUserId(apinfo);
+                Log.d(TAG, "Processing app info: " + apinfo.packageName + " / user " + user_id + " / uid " + apinfo.uid);
                 count = count + 1;
-                apinfo = installed.get(i);
 
                 if (appList != null) {
                     appList.doProgress(count);
@@ -1897,11 +1907,15 @@ public final class Api {
                     continue;
                 }
                 // try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
-                cachekey = cacheLabel + apinfo.packageName;
+                cachekey = cacheLabel + apinfo.packageName + Integer.toString(user_id);
                 name = prefs.getString(cachekey, "");
                 if (name.length() == 0 || isRecentlyInstalled(apinfo.packageName)) {
                     // get label and put on cache
-                    name = pkgmanager.getApplicationLabel(apinfo).toString();
+                    if (G.isMultiUser()) {
+                        name = pkgmanager.getApplicationLabel(apinfo).toString() + " / user " + Integer.toString(user_id);
+                    } else {
+                        name = pkgmanager.getApplicationLabel(apinfo).toString();
+                    }
                     edit.putString(cachekey, name);
                     changed = true;
                     firstseen = true;
@@ -1921,8 +1935,7 @@ public final class Api {
                         app.appType = 0;
                     }
                     app.pkgName = apinfo.packageName;
-                    if ((apinfo.flags & ApplicationInfo.FLAG_INSTALLED) != 0)
-                        syncMap.put(apinfo.uid, app);
+                    syncMap.put(app.uid, app);
                 } else {
                     app.names.add(name);
                 }
@@ -1950,12 +1963,12 @@ public final class Api {
                 if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
                     app.selected_tor = true;
                 }
-                if (G.supportDual()) {
+                /*if (G.supportDual()) {
                     checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, multiUserAppsMap);
-                }
+                }*/
             }
 
-            if (G.supportDual()) {
+            /*if (G.supportDual()) {
                 //run through multi user map
                 for (int i = 0; i < multiUserAppsMap.size(); i++) {
                     app = multiUserAppsMap.valueAt(i);
@@ -1982,7 +1995,7 @@ public final class Api {
                     }
                     syncMap.put(app.uid, app);
                 }
-            }
+            }*/
 
             List<PackageInfoData> specialData = getSpecialData();
 
@@ -2077,7 +2090,7 @@ public final class Api {
         return specialData;
     }
 
-    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, HashMap<Integer,String> pkgs, SparseArray<PackageInfoData> syncMap) {
+    /*private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, HashMap<Integer,String> pkgs, SparseArray<PackageInfoData> syncMap) {
         try {
             for (Integer integer : uid1) {
                 int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
@@ -2107,7 +2120,7 @@ public final class Api {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
-    }
+    }*/
 
     private static boolean packagesExistForUserUid(HashMap<Integer,String> pkgs, int appUid) {
         if(pkgs.containsKey(appUid)){
@@ -3623,7 +3636,7 @@ public final class Api {
     public static void probeLogTarget(final Context ctx) {
 
     }
-    
+
     @SuppressLint("InlinedApi")
     public static void showInstalledAppDetails(Context context, String packageName) {
         final String SCHEME = "package";
@@ -4282,7 +4295,7 @@ public final class Api {
         public String pkgName;
 
         /**
-         * Application Type
+         * Application Type. 0 for system, 1 for user, 2 for core.
          */
         public int appType;
 
@@ -4398,13 +4411,12 @@ public final class Api {
         public String toStringWithUID() {
             if (tostr == null) {
                 StringBuilder s = new StringBuilder();
-                s.append("[ ");
-                s.append(uid);
-                s.append(" ] ");
                 for (int i = 0; i < names.size(); i++) {
                     if (i != 0) s.append(", ");
                     s.append(names.get(i));
                 }
+                s.append(" / ");
+                s.append(uid);
                 s.append("\n");
                 tostr = s.toString();
             }
