@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -149,6 +150,11 @@ public class ExpPreferenceFragment extends PreferenceFragment implements
             } else {
                 Api.setUserOwner(this.getActivity().getApplicationContext());
             }
+            final Context ctx = getActivity().getApplicationContext();
+            SharedPreferences cachePrefs = ctx.getSharedPreferences(Api.CACHE_PREFS_NAME, Context.MODE_PRIVATE);
+            Editor edit = cachePrefs.edit();
+            edit.clear();
+            edit.apply();
         }
     }
 
