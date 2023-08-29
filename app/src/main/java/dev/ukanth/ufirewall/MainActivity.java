@@ -101,6 +101,7 @@ import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.activity.OldLogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.MultiUser;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
@@ -176,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MultiUser.setup();
 
         initTheme();
         G.registerPrivateLink();
