@@ -45,6 +45,8 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:nio:${libsuVersion}"
+    implementation "org.lsposed.hiddenapibypass:hiddenapibypass:4.3"
+    compileOnly project(":hiddenapi:stubs")
     implementation "eu.chainfire:libsuperuser:1.1.0"
     implementation "com.github.ukanth:android-lockpattern:8.0.4"
     implementation "com.afollestad.material-dialogs:core:0.9.6.0"
