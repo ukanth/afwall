@@ -294,7 +294,7 @@
     <string name="multi_apply_rules">Применять правила при смене профиля</string>
     <string name="multi_apply_rules_info">Загрузить и применить правила при переключении профилей</string>
     <string name="multi_user_title">Включить многопользовательскую поддержку</string>
-    <string name="multi_user_summary">Поддержка нескольких пользователей Android (работает только в режиме, блокирующем выбранные элементы)</string>
+    <string name="multi_user_summary">Поддержка нескольких пользователей Android</string>
     <!--  -->
     <string name="device_admin_desc">Дополнительная безопасность - предотвратить удаление AFWall+</string>
     <string name="traffic_detail_title">Подробности траффика</string>

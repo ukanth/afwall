@@ -294,7 +294,7 @@
     <string name="multi_apply_rules">Aplikovat pravidla na přepínač profilů</string>
     <string name="multi_apply_rules_info">Načíst a aplikovat pravidla při přepínání profilů</string>
     <string name="multi_user_title">Povolit podporu více uživatelů</string>
-    <string name="multi_user_summary">Podpora více uživatelů Androidu (pouze v módu kde vybrané položky jsou blokované)</string>
+    <string name="multi_user_summary">Podpora více uživatelů Androidu</string>
     <!--  -->
     <string name="device_admin_desc">Dodatečné zabezpečení - zabránit odinstalaci AFWall+</string>
     <string name="traffic_detail_title">Podrobnosti o provozu</string>

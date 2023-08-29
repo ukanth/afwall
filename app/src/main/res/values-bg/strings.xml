@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Прилагай при смяна</string>
     <string name="multi_apply_rules_info">Зареждане и прилагане правила при превключване между профили</string>
     <string name="multi_user_title">Разреши многопотребителски режим</string>
-    <string name="multi_user_summary">Поддръжка на Андроид многопотребителски режим (работи само в режим, където избраните елементи са блокирани)</string>
+    <string name="multi_user_summary">Поддръжка на Андроид многопотребителски режим</string>
     <!--  -->
     <string name="device_admin_desc">Допълнителна защита - предотвратява деинсталирането на AFWall +</string>
     <string name="traffic_detail_title">Трафик детайли</string>

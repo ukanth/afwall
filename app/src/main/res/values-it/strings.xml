@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Applicare le regole quando si cambia profilo</string>
     <string name="multi_apply_rules_info">Carica e applica le regole al cambio dei profili</string>
     <string name="multi_user_title">Abilita il supporto multi-utente</string>
-    <string name="multi_user_summary">Supporto multi-utenti di Android (funziona solo nella modalità in cui gli elementi selezionati sono bloccati)</string>
+    <string name="multi_user_summary">Supporto multi-utenti di Android</string>
     <!--  -->
     <string name="device_admin_desc">Protezione aggiuntiva - Impedisce la disinstallazione di AFWall +</string>
     <string name="traffic_detail_title">Dettagli del traffico</string>

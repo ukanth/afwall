@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Regeln bei Profilwechsel anwenden</string>
     <string name="multi_apply_rules_info">Regeln beim Profilwechsel laden und anwenden</string>
     <string name="multi_user_title">Multi-User-Unterstützung</string>
-    <string name="multi_user_summary">Multi-User-Unterstützung aktivieren (nur im Modus möglich, in dem ausgewählte Elemente blockiert werden)</string>
+    <string name="multi_user_summary">Multi-User-Unterstützung aktivieren</string>
     <!--  -->
     <string name="device_admin_desc">Erweiterte Sicherheit - Deinstallation von AFWall+ verhindern</string>
     <string name="traffic_detail_title">Traffic-Details</string>

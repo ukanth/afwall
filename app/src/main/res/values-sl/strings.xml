@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Uveljavi pravila</string>
     <string name="multi_apply_rules_info">Uveljavi pravila Iptables ob vsaki zamenjavi profila</string>
     <string name="multi_user_title">Vklopi večuporabniški način</string>
-    <string name="multi_user_summary">Podpora za androidni večuporabniški način (deluje le v načinu, kjer so izbrane aplikacije blokirane)</string>
+    <string name="multi_user_summary">Podpora za androidni večuporabniški način</string>
     <!--  -->
     <string name="device_admin_desc">Varnostna nastavitev - Prepreči odstranitev AFWall+</string>
     <string name="traffic_detail_title">Podatki o prometu</string>

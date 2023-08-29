@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Alkalmazza a szabályokat profil váltás esetén</string>
     <string name="multi_apply_rules_info">Szabályok betöltése és alkalmazása amikor profilt vált</string>
     <string name="multi_user_title">Több felhasználó támogatás engedélyezése</string>
-    <string name="multi_user_summary">Android többfelhasználós mód támogatása (csak abban a módban működik, amiben a kiválasztott elemek le vannak tiltva)</string>
+    <string name="multi_user_summary">Android többfelhasználós mód támogatása</string>
     <!--  -->
     <string name="device_admin_desc">Kiegészítő biztonság - az AFWall+ eltávolításának megelőzése</string>
     <string name="traffic_detail_title">Forgalmi adatok</string>

@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Profil geçişinde kuralları uygula</string>
     <string name="multi_apply_rules_info">Profiller değiştirildiğinde kuralları yükle ve uygula</string>
     <string name="multi_user_title">Çoklu kullanıcı desteğini etkinleştir</string>
-    <string name="multi_user_summary">Android çoklu kullanıcı desteği (sadece seçilenlerin engellendiği modda çalışır)</string>
+    <string name="multi_user_summary">Android çoklu kullanıcı desteği</string>
     <!--  -->
     <string name="device_admin_desc">Ek Güvenlik - AFWall+ kaldırılmasını önle</string>
     <string name="traffic_detail_title">Trafik detayları</string>
