@@ -999,8 +999,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (PackageInfoData app : apps) {
                 for (String str : app.names) {
                     if (str != null && searchStr != null) {
+                        if (unique.contains(app.uid)) {
+                            continue;
+                        }
                         if (str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())
-                                && !searchApp.contains(app) || (G.showUid() && (str + " " + app.uid).contains(searchStr) && !unique.contains(app.uid))) {
+                                && !searchApp.contains(app) || (G.showUid() && (str + " " + app.uid).contains(searchStr))) {
                             searchApp.add(app);
                             unique.add(app.uid);
                             isResultsFound = true;
