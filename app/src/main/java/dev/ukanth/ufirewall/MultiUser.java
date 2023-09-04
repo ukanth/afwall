@@ -107,7 +107,18 @@ public class MultiUser {
 
     // Copied from LSPosed daemon/**/PackageService.java
     public static boolean isPackageAvailable(String packageName, int userId, boolean ignoreHidden) throws RemoteException {
-        return pm.isPackageAvailable(packageName, userId) || (ignoreHidden && pm.getApplicationHiddenSettingAsUser(packageName, userId));
+        // Unlike LSPosed, we do not check getApplicationHiddenSettingAsUser
+        // because this requires MANAGE_USERS permission (on some versions of
+        // Android) which we cannot get, as explained above.
+        //
+        // Normally, it would return whether the user manually hid their app in
+        // their list of apps. This is used by the system home app to hide the
+        // app in the home screen only - but the app still shows up in the
+        // system "all apps" settings. Likewise, hiding these apps within
+        // AFWall seems a bit pointless. It is unclear why LSPosed themselves
+        // do it. Their original PR is here:
+        //   https://github.com/LSPosed/LSPosed/pull/852
+        return pm.isPackageAvailable(packageName, userId); // || (ignoreHidden && pm.getApplicationHiddenSettingAsUser(packageName, userId));
     }
 
     public static int packageUserId(PackageInfo info) {
