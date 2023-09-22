@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -20,12 +21,10 @@ import dev.ukanth.ufirewall.R;
  */
 public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetailRecyclerViewAdapter.ViewHolder> {
 
-
     private final List<LogData> logData;
     private final Context context;
     private LogData data;
     private final RecyclerItemClickListener recyclerItemClickListener;
-
 
     public LogDetailRecyclerViewAdapter(final Context context, RecyclerItemClickListener recyclerItemClickListener) {
         this.context = context;
@@ -39,6 +38,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
     }
 
     @Override
+    @NonNull
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.logdetail_recycle_item, parent, false);
         return new ViewHolder(mView);
@@ -83,9 +83,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView icon;
-        //final TextView appName;
         final TextView deniedTime;
-        //final TextView dataInterface;
         final TextView dataDest;
         final TextView dataSrc;
         final TextView dataProto;
@@ -94,9 +92,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         public ViewHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.data_icon);
-            //appName = (TextView)itemView.findViewById(R.id.app_name);
             deniedTime = itemView.findViewById(R.id.denied_time);
-            //dataInterface = (TextView)itemView.findViewById(R.id.data_interface);
             dataDest = itemView.findViewById(R.id.data_dest);
             dataSrc = itemView.findViewById(R.id.data_src);
             dataProto = itemView.findViewById(R.id.data_proto);
@@ -112,9 +108,4 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
             });
         }
     }
-
-    public List<LogData> getLogData() {
-        return logData;
-    }
-
 }
