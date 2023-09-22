@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import dev.ukanth.ufirewall.R;
@@ -47,31 +48,37 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
         if (data != null) {
-            holder.bind(logData.get(position), recyclerItemClickListener);
-            if(data.getOut() != null) {
-                holder.deniedTime.setText(pretty(data.getTimestamp()) + "(" + data.getOut() + ")");
-                if((data.getOut().contains("lan") || data.getOut().startsWith("eth") || data.getOut().startsWith("ra") || data.getOut().startsWith("bnep"))) {
+            holder.bind(data, recyclerItemClickListener);
+            if (data.getOut() != null) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(data.getTimestamp());
+                java.text.DateFormat dateFormat = java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT);
+                String dateTime = dateFormat.format(calendar.getTime());
+                holder.deniedTime.setText(dateTime + " (" + data.getOut() + ")");
+                if ((data.getOut().contains("lan") || data.getOut().startsWith("eth") || data.getOut().startsWith("ra") || data.getOut().startsWith("bnep"))) {
                     holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_wifi));
-                } else{
+                } else {
                     holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_mobiledata));
                 }
             }
+
             holder.dataDest.setText(context.getResources().getString(R.string.log_dst) + data.getDst() + ":" + data.getDpt());
             holder.dataSrc.setText(context.getResources().getString(R.string.log_src) + data.getSrc() + ":" + data.getSpt());
             holder.dataProto.setText(context.getResources().getString(R.string.log_proto) + data.getProto());
-            holder.dataHost.setText(context.getResources().getString(R.string.host) + data.getHostname());
-        }
-    }
 
-    public static String pretty(Long timestamp) {
-        return android.text.format.DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date(timestamp)).toString();
+            String hostName = data.getHostname();
+            if (!hostName.isEmpty()) {
+                holder.dataHost.setText(context.getResources().getString(R.string.host) + hostName);
+            } else {
+                holder.dataHost.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
     public int getItemCount() {
         return logData.size();
     }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
