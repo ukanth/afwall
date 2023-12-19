@@ -19,7 +19,7 @@ ifeq ($(ARCH),arm64)
 TRIPLET := aarch64-linux-android
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
 APIVER  := 21
-NDK_ABINAME := arm64
+NDK_ABINAME := arm64-v8a
 endif
 ifeq ($(ARCH),x86)
 TRIPLET := i686-linux-android
