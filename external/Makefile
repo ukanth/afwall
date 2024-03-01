@@ -8,23 +8,20 @@ GCCVER  := 4.9
 
 # You should be able to just 'make ARCH=x86' and it should DTRT.
 ARCH_LIST := arm x86 mips
-#ARCH_LIST := arm
+APIVER := 21
 ifeq ($(ARCH),arm)
 TRIPLET := arm-linux-androideabi
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
-APIVER  := 8
 NDK_ABINAME := armeabi
 endif
 ifeq ($(ARCH),x86)
 TRIPLET := i686-linux-android
 TOOLCHAIN := x86-$(GCCVER)
-APIVER  := 9
 NDK_ABINAME := x86
 endif
 ifeq ($(ARCH),mips)
 TRIPLET := mipsel-linux-android
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
-APIVER  := 9
 NDK_ABINAME := mips
 endif
 
@@ -126,9 +123,10 @@ busybox-unpack: $(BUSYBOX_BUILD)/.configured
 #
 NDK_OUTDIR := ../libs/$(NDK_ABINAME)
 
-$(NDK_OUTDIR)/nflog:
-	ndk-build APP_ABI=$(NDK_ABINAME)
+$(NDK_OUTDIR)/nflog: .FORCE
+	ndk-build APP_ABI=$(NDK_ABINAME) APP_PLATFORM=$(APIVER) NDK_TOOLCHAIN=$(TOOLCHAIN)
 
+.FORCE:
 .PHONY: nflog nflog-unpack
 nflog: $(NDK_OUTDIR)/nflog
 	cp $< $(RESDIR)/nflog_$(ARCH)

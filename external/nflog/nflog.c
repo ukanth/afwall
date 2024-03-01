@@ -16,10 +16,14 @@
 #include <linux/netfilter.h>
 #include <linux/netfilter/nfnetlink.h>
 #include <linux/ip.h>
+#include <linux/in.h>
+#include <linux/if.h>
+#include <linux/ipv6.h>
 #include <linux/tcp.h>
 #include <linux/udp.h>
 #include <linux/icmp.h>
-#include <net/if.h>
+#include <linux/icmpv6.h>
+#include <linux/if_ether.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <sys/select.h>
@@ -48,6 +52,12 @@ static int parse_attr_cb(const struct nlattr *attr, void *data)
         return MNL_CB_OK;
 
     switch(type) {
+        case NFULA_HWTYPE:
+            if (mnl_attr_validate(attr, MNL_TYPE_U16) < 0) {
+                perror("mnl_attr_validate");
+                return MNL_CB_ERROR;
+            }
+            break;
         case NFULA_MARK:
         case NFULA_IFINDEX_INDEV:
         case NFULA_IFINDEX_OUTDEV:
@@ -68,6 +78,13 @@ static int parse_attr_cb(const struct nlattr *attr, void *data)
         case NFULA_HWADDR:
             if (mnl_attr_validate2(attr, MNL_TYPE_UNSPEC,
                         sizeof(struct nfulnl_msg_packet_hw)) < 0) {
+                perror("mnl_attr_validate");
+                return MNL_CB_ERROR;
+            }
+            break;
+        case NFULA_PACKET_HDR:
+            if (mnl_attr_validate2(attr, MNL_TYPE_UNSPEC,
+                        sizeof(struct nfulnl_msg_packet_hdr)) < 0) {
                 perror("mnl_attr_validate");
                 return MNL_CB_ERROR;
             }
@@ -173,48 +190,91 @@ static int log_cb(const struct nlmsghdr *nlh, void *data)
         printf("OUT= ");
     }
 
+    uint16_t hwProtocol = 0;
+    if (tb[NFULA_PACKET_HDR]) {
+        struct nfulnl_msg_packet_hdr* pktHdr = (struct nfulnl_msg_packet_hdr*)mnl_attr_get_payload(tb[NFULA_PACKET_HDR]);
+        hwProtocol = ntohs(pktHdr->hw_protocol);
+    }
+
     if (tb[NFULA_PAYLOAD]) {
-        struct iphdr *iph = (struct iphdr *) mnl_attr_get_payload(tb[NFULA_PAYLOAD]);
 
-        printf("SRC=%u.%u.%u.%u DST=%u.%u.%u.%u ",
-                ((unsigned char *)&iph->saddr)[0],
-                ((unsigned char *)&iph->saddr)[1],
-                ((unsigned char *)&iph->saddr)[2],
-                ((unsigned char *)&iph->saddr)[3],
-                ((unsigned char *)&iph->daddr)[0],
-                ((unsigned char *)&iph->daddr)[1],
-                ((unsigned char *)&iph->daddr)[2],
-                ((unsigned char *)&iph->daddr)[3]);
+        switch (hwProtocol) {
+            case ETH_P_IP: {
+                struct iphdr *iph = (struct iphdr *) mnl_attr_get_payload(tb[NFULA_PAYLOAD]);
 
-        printf("LEN=%u ", ntohs(iph->tot_len));
+                char addressStr[INET_ADDRSTRLEN];
+                inet_ntop(AF_INET, &iph->saddr, addressStr, sizeof(addressStr));
+                printf("SRC=%s ", addressStr);
+                inet_ntop(AF_INET, &iph->daddr, addressStr, sizeof(addressStr));
+                printf("DST=%s ", addressStr);
 
-        switch(iph->protocol) 
-        {
-            case IPPROTO_TCP: 
+                printf("LEN=%u ", ntohs(iph->tot_len));
+
+                switch(iph->protocol)
                 {
-                    struct tcphdr *th = (struct tcphdr *) ((__u32 *) iph + iph->ihl);
-                    printf("PROTO=TCP SPT=%u DPT=%u ",
-                            ntohs(th->source), ntohs(th->dest));
-                    break;
+                    case IPPROTO_TCP:
+                        {
+                            struct tcphdr *th = (struct tcphdr *) ((__u32 *) iph + iph->ihl);
+                            printf("PROTO=TCP SPT=%u DPT=%u ",
+                                    ntohs(th->source), ntohs(th->dest));
+                            break;
+                        }
+                    case IPPROTO_UDP:
+                        {
+                            struct udphdr *uh = (struct udphdr *) ((__u32 *) iph + iph->ihl);
+                            printf("PROTO=UDP SPT=%u DPT=%u LEN=%u ",
+                                    ntohs(uh->source), ntohs(uh->dest), ntohs(uh->len));
+                            break;
+                        }
+                    case IPPROTO_ICMP:
+                        {
+                            struct icmphdr *ich = (struct icmphdr *) ((__u32 *) iph + iph->ihl);
+                            printf("PROTO=ICMP TYPE=%u CODE=%u ",
+                                ich->type, ich->code);
+                            break;
+                        }
+                    default:
+                        {
+                            printf("PROTO=%u ", iph->protocol);
+                        }
                 }
-            case IPPROTO_UDP:
-                {
-                    struct udphdr *uh = (struct udphdr *) ((__u32 *) iph + iph->ihl);
-                    printf("PROTO=UDP SPT=%u DPT=%u LEN=%u ",
-                            ntohs(uh->source), ntohs(uh->dest), ntohs(uh->len));
-                    break;
+                break;
+            }
+            case ETH_P_IPV6: {
+                struct ipv6hdr *iph = (struct ipv6hdr *) mnl_attr_get_payload(tb[NFULA_PAYLOAD]);
+
+                char addressStr[INET6_ADDRSTRLEN];
+                inet_ntop(AF_INET6, &iph->saddr, addressStr, sizeof(addressStr));
+                printf("SRC=%s ", addressStr);
+                inet_ntop(AF_INET6, &iph->daddr, addressStr, sizeof(addressStr));
+                printf("DST=%s ", addressStr);
+
+                switch (iph->nexthdr) {
+                    case IPPROTO_TCP: {
+                        struct tcphdr *th = (struct tcphdr *) ((uint8_t*) iph + sizeof(*iph));
+                        printf("PROTO=TCP SPT=%u DPT=%u ",
+                                ntohs(th->source), ntohs(th->dest));
+                        break;
+                    }
+                    case IPPROTO_UDP: {
+                        struct udphdr *uh = (struct udphdr *) ((uint8_t *) iph + sizeof(*iph));
+                        printf("PROTO=UDP SPT=%u DPT=%u LEN=%u ",
+                                ntohs(uh->source), ntohs(uh->dest), ntohs(uh->len));
+                        break;
+                    }
+                    case IPPROTO_ICMPV6: {
+                        struct icmp6hdr *icmpv6h = (struct icmp6hdr *) ((uint8_t *) iph + sizeof(*iph));
+                        printf("PROTO=ICMP6 TYPE=%u CODE=%u ", icmpv6h->icmp6_type, icmpv6h->icmp6_code);
+                        break;
+                    }
+                    default: {
+                        printf("PROTO=%d ", iph->nexthdr);
+                        break;
+                    }
                 }
-            case IPPROTO_ICMP:
-                {
-                    struct icmphdr *ich = (struct icmphdr *) ((__u32 *) iph + iph->ihl);
-                    printf("PROTO=ICMP TYPE=%u CODE=%u ", 
-                        ich->type, ich->code);
-                    break;
-                }
-            default: 
-                {
-                    printf("PROTO=%u ", iph->protocol);
-                }
+            }
+            default:
+                break;
         }
     }
 
