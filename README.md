@@ -164,11 +164,6 @@ This project also uses some other open-source libraries such as:
         <td>MIT</td>
         <td>https://github.com/Raizlabs/DBFlow</td>
     </tr>
-	<tr>
-        <td>Prettytime</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/ocpsoft/prettytime</td>
-    </tr>
     <tr>
         <td>material-dialogs</td>
         <td>MIT License</td>

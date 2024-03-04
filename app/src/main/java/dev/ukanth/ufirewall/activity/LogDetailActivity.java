@@ -295,7 +295,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                     return false;
                 }
             } catch (Exception e) {
-                Log.e(Api.TAG, "Exception while retrieving  data" + e.getLocalizedMessage());
+                Log.e(Api.TAG, "Exception while retrieving data" + e.getLocalizedMessage());
                 return null;
             }
 
