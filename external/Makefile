@@ -9,7 +9,6 @@ GCCVER  := 4.9
 # You should be able to just 'make ARCH=x86' and it should DTRT.
 ARCH_LIST := arm arm64 x86 mips
 APIVER := 21
-
 ifeq ($(ARCH),arm)
 TRIPLET := arm-linux-androideabi
 TOOLCHAIN := $(TRIPLET)-$(GCCVER)
