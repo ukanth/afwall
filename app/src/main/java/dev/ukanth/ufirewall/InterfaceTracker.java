@@ -24,10 +24,8 @@ package dev.ukanth.ufirewall;
 
 import static dev.ukanth.ufirewall.util.G.ctx;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;

@@ -2748,14 +2748,6 @@ public final class Api {
         return res;
     }
 
-    /**
-     * Probe log target
-     * @param ctx
-     */
-    public static void probeLogTarget(final Context ctx) {
-
-    }
-    
     @SuppressLint("InlinedApi")
     public static void showInstalledAppDetails(Context context, String packageName) {
         final String SCHEME = "package";
@@ -2989,19 +2981,6 @@ public final class Api {
         }
     }
 
-    /**
-     * Delete all firewall rules.  For diagnostic purposes only.
-     *
-     * @param ctx      application context
-     * @param callback callback for completion
-     */
-    public static void flushOtherRules(Context ctx, RootCommand callback) {
-        List<String> cmds = new ArrayList<String>();
-        cmds.add("-F firewall");
-        cmds.add("-X firewall");
-        apply46(ctx, cmds, callback);
-    }
-
     // Clipboard
     public static void copyToClipboard(Context context, String val) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -3159,13 +3138,13 @@ public final class Api {
 
     static class RuleDataSet {
 
-        List<Integer> wifiList;
-        List<Integer> dataList;
-        List<Integer> lanList;
-        List<Integer> roamList;
-        List<Integer> vpnList;
-        List<Integer> tetherList;
-        List<Integer> torList;
+        final List<Integer> wifiList;
+        final List<Integer> dataList;
+        final List<Integer> lanList;
+        final List<Integer> roamList;
+        final List<Integer> vpnList;
+        final List<Integer> tetherList;
+        final List<Integer> torList;
 
         RuleDataSet(List<Integer> uidsWifi, List<Integer> uids3g,
                     List<Integer> uidsRoam, List<Integer> uidsVPN, List<Integer> uidsTether,

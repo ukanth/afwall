@@ -50,19 +50,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
-import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.preferences.DefaultConnectionPref;
 import dev.ukanth.ufirewall.preferences.DefaultConnectionPrefDB;
 
@@ -71,8 +65,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static G instance;
 
     private static boolean enabledPrivateLink = false;
-
-    private static boolean isActivityVisible;
 
     static {
         //TODO: Remove this line before release
@@ -114,22 +106,16 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String ENABLE_CONFIRM = "enableConfirm";
     private static final String ENABLE_MULTI_PROFILE = "enableMultiProfile";
     private static final String SHOW_UID = "showUid";
-    private static final String NOTIFY_INSTALL = "notifyAppInstall";
     private static final String DISABLE_ICONS = "disableIcons";
     private static final String IPTABLES_PATH = "ipt_path";
     private static final String PROTECTION_OPTION = "passSetting";
     private static final String BUSYBOX_PATH = "bb_path";
-    private static final String TOAST_POS = "toast_pos";
     private static final String LANGUAGE = "locale";
     //private static final String LOG_DMESG = "logDmesg";
     private static final String SORT_BY = "sort";
     private static final String LAST_STORED_PROFILE = "storedProfile";
     private static final String STARTUP_DELAY = "addDelayStart";
     private static final String SYSTEM_APP_COLOR = "sysColor";
-
-    private static final String PRIMARY_COLOR = "primaryColor";
-    private static final String PRIMARY_DARK_COLOR = "primaryColor";
-
     private static final String ACTIVE_RULES = "activeRules";
     private static final String ADD_DELAY = "addDelay";
 
@@ -142,11 +128,9 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String DNS_PROXY = "dns_value";
     private static final String MULTI_USER = "multiUser";
     private static final String MULTI_USER_ID = "multiUserId";
-    private static final String IS_MIGRATED = "isMigrated";
     private static final String SHOW_FILTER = "showFilter";
     private static final String PATTERN_MAX_TRY = "patternMax";
     private static final String PATTERN_STEALTH = "stealthMode";
-    private static final String ISKINGDETECT = "kingDetect";
     private static final String PWD_ENCRYPT = "pwdEncrypt";
     private static final String PROFILE_PWD = "profilePwd";
     private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
@@ -158,7 +142,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String SHOW_ALL_APPS = "showAllApps";
 
     private static final String THEME = "theme";
-    private static final String FASTER_RULES = "fasterApplyRules";
 
     private static boolean privateDns = false;
     //private static final String QUICK_RULES = "quickApply";
@@ -187,51 +170,20 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String INITPATH = "initPath";
 
     private static final String AFWALL_PROFILE = "AFWallProfile";
-    //private static final String SHOW_LOG_TOAST = "showLogToasts";
-    public static String[] profiles = {"AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3};
-    public static String[] default_profiles = {"AFWallProfile1", "AFWallProfile2", "AFWallProfile3"};
+    public static final String[] profiles = {"AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3};
+    public static final String[] default_profiles = {"AFWallProfile1", "AFWallProfile2", "AFWallProfile3"};
     public static Context ctx;
     public static SharedPreferences gPrefs;
     public static SharedPreferences pPrefs;
     public static SharedPreferences sPrefs;
 
-    public static Set<String> storedPid() {
-        return gPrefs.getStringSet("storedPid", null);
-    }
-
-    public static void storedPid(Set store) {
-        gPrefs.edit().putStringSet("storedPid", store).commit();
-    }
-
     public static boolean supportDual() {
         return gPrefs.getBoolean(DUAL_APPS, false);
     }
 
-    public static boolean supportDual(boolean val) {
-        gPrefs.edit().putBoolean(DUAL_APPS, val).commit();
-        return val;
-    }
-
-
-    public static boolean isFaster() {
-        return gPrefs.getBoolean(FASTER_RULES, false);
-    }
-
-    public static boolean isFaster(boolean val) {
-        gPrefs.edit().putBoolean(FASTER_RULES, val).commit();
-        return val;
-    }
-
-
     public static boolean isRun() {
         return gPrefs.getBoolean(RUN_NOTIFICATION, true);
     }
-
-    public static boolean isRun(boolean val) {
-        gPrefs.edit().putBoolean(RUN_NOTIFICATION, val).commit();
-        return val;
-    }
-
 
     public static boolean hasCopyOld() {
         return gPrefs.getBoolean(COPIED_OLD_EXPORTS, false);
@@ -246,12 +198,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public static boolean showAllApps() {
         return gPrefs.getBoolean(SHOW_ALL_APPS, false);
     }
-
-    public static boolean showAllApps(boolean val) {
-        gPrefs.edit().putBoolean(SHOW_ALL_APPS, val).commit();
-        return val;
-    }
-
 
    /* public static boolean showQuickButton() {
         return gPrefs.getBoolean(QUICK_RULES, false);
@@ -475,12 +421,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getBoolean(SHOW_HOST, false);
     }
 
-    public static boolean showHost(boolean val) {
-        gPrefs.edit().putBoolean(SHOW_HOST, val).commit();
-        return val;
-    }
-
-
     public static boolean enableDeviceCheck() {
         return gPrefs.getBoolean(ENABLE_DEVICE_CHECK, false);
     }
@@ -507,28 +447,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getBoolean(SHOW_UID, false);
     }
 
-    public static boolean showUid(boolean val) {
-        gPrefs.edit().putBoolean(SHOW_UID, val).commit();
-        return val;
-    }
-
     public static boolean showFilter() {
         return gPrefs.getBoolean(SHOW_FILTER, false);
-    }
-
-    public static boolean showFilter(boolean val) {
-        gPrefs.edit().putBoolean(SHOW_FILTER, val).commit();
-        return val;
-    }
-
-
-    public static boolean kingDetected() {
-        return gPrefs.getBoolean(ISKINGDETECT, false);
-    }
-
-    public static boolean kingDetected(boolean val) {
-        gPrefs.edit().putBoolean(ISKINGDETECT, val).commit();
-        return val;
     }
 
     public static boolean disableIcons() {
@@ -539,11 +459,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getString(IPTABLES_PATH, "system");
     }
 
-    public static String ip_path(String val) {
-        gPrefs.edit().putString(IPTABLES_PATH, val).commit();
-        return val;
-    }
-
     public static String dns_proxy() {
         return gPrefs.getString(DNS_PROXY, "auto");
     }
@@ -552,22 +467,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getString(BUSYBOX_PATH, "builtin");
     }
 
-    public static String bb_path(String val) {
-        gPrefs.edit().putString(BUSYBOX_PATH, val).commit();
-        return val;
-    }
-
-    public static String toast_pos() {
-        return gPrefs.getString(TOAST_POS, "bottom");
-    }
-
     public static String locale() {
         return PreferenceManager.getDefaultSharedPreferences(ctx).getString(LANGUAGE, "en");
-    }
-
-    public static String locale(String val) {
-        gPrefs.edit().putString(LANGUAGE, val).commit();
-        return val;
     }
 
     /*public static String logDmsg() {
@@ -697,16 +598,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         gPrefs.edit().putInt(APP_VERSION, val).commit();
         return val;
     }
-
-    public static boolean isMigrated() {
-        return gPrefs.getBoolean(IS_MIGRATED, false);
-    }
-
-    public static boolean isMigrated(boolean val) {
-        gPrefs.edit().putBoolean(IS_MIGRATED, val).commit();
-        return val;
-    }
-
 
     public static int ruleTextSize() {
         return gPrefs.getInt("ruleTextSize", 32);
@@ -844,18 +735,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         gPrefs.edit().putString(BLOCKED_NOTIFICATION, listString).commit();
     }*/
 
-
-    public static void storeBlockedApps(List<Integer> list) {
-        // store to DB
-        for (Integer uid : list) {
-            LogPreference preference = new LogPreference();
-            preference.setUid(uid);
-            preference.setTimestamp(System.currentTimeMillis());
-            preference.setDisable(true);
-            FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
-        }
-    }
-
     public static void storeDefaultConnection(List<Integer> list1, List<Integer> list2, int modeType) {
         // store to DB
 
@@ -882,19 +761,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         List<Integer> listSelected = new ArrayList<>();
         for (DefaultConnectionPref pref : list) {
             if (pref.isState() && pref.getModeType() == modeType) {
-                listSelected.add(pref.getUid());
-            }
-        }
-        return listSelected;
-    }
-
-    public static List<Integer> readBlockedApps() {
-        List<LogPreference> list = SQLite.select()
-                .from(LogPreference.class)
-                .queryList();
-        List<Integer> listSelected = new ArrayList<>();
-        for (LogPreference pref : list) {
-            if (pref.isDisable()) {
                 listSelected.add(pref.getUid());
             }
         }
@@ -942,9 +808,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return false;
     }
 
-
-
-
     @Override
     public void onCreate() {
         instance = this;
@@ -988,29 +851,11 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         Api.applications = null;
     }
 
-    public static boolean setProfile(boolean newEnableMultiProfile, String profileName) {
+    public static void setProfile(boolean newEnableMultiProfile, String profileName) {
         enableMultiProfile(newEnableMultiProfile);
         storedProfile(profileName);
         reloadProfile();
-        return true;
     }
-
-    public static void addAdditionalProfile(String profile) {
-        String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
-        StringBuilder builder = new StringBuilder();
-        if (profile != null && profile.length() > 0) {
-            profile = profile.trim();
-            if (previousProfiles.length() == 0) {
-                builder.append(profile);
-            } else {
-                builder.append(previousProfiles);
-                builder.append(",");
-                builder.append(profile);
-            }
-            gPrefs.edit().putString(ADDITIONAL_PROFILES, builder.toString()).commit();
-        }
-    }
-
 
     public static boolean clearSharedPreferences(Context ctx, String preferenceName) {
         File dir = new File(ctx.getFilesDir().getParent() + "/shared_prefs/");
@@ -1073,17 +918,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         gPrefs.edit().putString(BLOCKED_NOTIFICATION, "").commit();
     }*/
 
-    public static boolean isNotificationMigrated() {
-        return gPrefs.getBoolean("NewDBNotification", false);
-    }
-
-    public static boolean canShow(int uid) {
-        LogPreference logPreference = SQLite.select()
-                .from(LogPreference.class)
-                .where(LogPreference_Table.uid.eq(uid)).querySingle();
-        return (logPreference == null) || !logPreference.isDisable();
-    }
-
     public static boolean isActivityVisible() {
         return activityVisible;
     }
@@ -1098,35 +932,24 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     private static boolean activityVisible;
 
-
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
-        if (activity instanceof MainActivity) {
-            isActivityVisible = true;
-        }
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
-        if (activity instanceof MainActivity) {
-            isActivityVisible = false;
-        }
-
     }
 
     @Override
@@ -1135,34 +958,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     @Override
     public void onActivityDestroyed(Activity activity) { }
-
-
-    private static Pattern VALID_IPV4_PATTERN = null;
-    private static Pattern VALID_IPV6_PATTERN = null;
-    private static final String ipv4Pattern = "(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])";
-    private static final String ipv6Pattern = "^(((?=(?>.*?::)(?!.*::)))(::)?([0-9A-F]{1,4}::?){0,5}"
-            + "|([0-9A-F]{1,4}:){6})(\\2([0-9A-F]{1,4}(::?|$)){0,2}|((25[0-5]"
-            + "|(2[0-4]|1\\d|[1-9])?\\d)(\\.|$)){4}|[0-9A-F]{1,4}:[0-9A-F]{1,"
-            + "4})(?<![^:]:|\\.)\\z";
-
-    static {
-        try {
-            VALID_IPV4_PATTERN = Pattern.compile(ipv4Pattern, Pattern.CASE_INSENSITIVE);
-            VALID_IPV6_PATTERN = Pattern.compile(ipv6Pattern, Pattern.CASE_INSENSITIVE);
-        } catch (PatternSyntaxException e) {
-            //logger.severe("Unable to compile pattern", e);
-        }
-    }
-
-    public static boolean isIp4Address(String ipAddress) {
-        Matcher m1 = G.VALID_IPV4_PATTERN.matcher(ipAddress);
-        return m1.matches();
-    }
-
-    public static boolean isIp6Address(String ipAddress) {
-        Matcher m2 = G.VALID_IPV6_PATTERN.matcher(ipAddress);
-        return m2.matches();
-    }
 
     public static boolean getPrivateDnsStatus() {
         return privateDns;

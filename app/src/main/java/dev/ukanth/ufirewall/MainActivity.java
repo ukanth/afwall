@@ -159,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int DEFAULT_COLUMN = 2;
     private int selectedColumns = DEFAULT_COLUMN;
     private static final int DEFAULT_VIEW_LIMIT = 4;
-    private View view;
 
     public boolean isDirty() {
         return dirty;
@@ -270,14 +269,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         selectedColumns = G.enableVPN() ? selectedColumns + 1 : selectedColumns;
         selectedColumns = G.enableTether() ? selectedColumns + 1 : selectedColumns;
         selectedColumns = G.enableTor() ? selectedColumns + 1 : selectedColumns;
-    }
-
-    private void registerLogService() {
-        if (G.enableLogService()) {
-            Log.i(G.TAG, "Starting Log Service");
-            final Intent logIntent = new Intent(getBaseContext(), LogService.class);
-            startService(logIntent);
-        }
     }
 
     private void registerUIRefresh() {
@@ -831,27 +822,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public void deviceCheck() {
-        if (Build.VERSION.SDK_INT >= 21) {
-            if ((G.isDoKey(getApplicationContext()) || isDonate())) {
-                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-                if (keyguardManager.isKeyguardSecure()) {
-                    Intent createConfirmDeviceCredentialIntent = keyguardManager.createConfirmDeviceCredentialIntent(null, null);
-                    if (createConfirmDeviceCredentialIntent != null) {
-                        try {
-                            startActivityForResult(createConfirmDeviceCredentialIntent, LOCK_VERIFICATION);
-                        } catch (ActivityNotFoundException e) {
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, getText(R.string.android_version), Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Api.donateDialog(MainActivity.this, true);
-            }
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -898,8 +868,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void refreshHeader() {
         final String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-        //final TextView labelmode = (TextView) this.findViewById(R.id.label_mode);
-        final Resources res = getResources();
 
         if (mode.equals(Api.MODE_WHITELIST)) {
             if (mainMenu != null) {
@@ -1251,7 +1219,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String targetDir = ctx.getExternalFilesDir(null) + "/";
             String command = "cp -R " + existingDir + " " + targetDir;
             Log.i(TAG, "Invoking migration script " + command);
-            com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.cmd(command).exec();
+            com.topjohnwu.superuser.Shell.cmd(command).exec();
             G.hasCopyOldExports(true);
         }
     }
@@ -2434,7 +2402,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private class RunApply extends AsyncTask<Void, Long, Boolean> {
-        boolean enabled = Api.isEnabled(getApplicationContext());
+        final boolean enabled = Api.isEnabled(getApplicationContext());
 
         private final WeakReference<MainActivity> activityReference;
 
@@ -2524,7 +2492,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private class RootCheck extends AsyncTask<Void, Void, Void> {
         MaterialDialog suDialog = null;
         boolean unsupportedSU = false;
-        boolean[] suGranted = {false};
+        final boolean[] suGranted = {false};
         private Context context = null;
         //private boolean suAvailable = false;
 
@@ -2594,19 +2562,4 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
     }
-
-    @RequiresApi(28)
-    private static class OnUnhandledKeyEventListenerWrapper implements View.OnUnhandledKeyEventListener {
-        private final ViewCompat.OnUnhandledKeyEventListenerCompat mCompatListener;
-
-        OnUnhandledKeyEventListenerWrapper(ViewCompat.OnUnhandledKeyEventListenerCompat listener) {
-            this.mCompatListener = listener;
-        }
-
-        public boolean onUnhandledKeyEvent(View v, KeyEvent event) {
-            return this.mCompatListener.onUnhandledKeyEvent(v, event);
-        }
-    }
-
 }
-

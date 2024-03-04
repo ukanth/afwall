@@ -25,7 +25,6 @@ import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public class ExpPreferenceFragment extends PreferenceFragment implements
