@@ -331,8 +331,6 @@
     <string name="showfilter_summary_off">Фильтры (все/ядро/система/пользователь) скрыты в главном окне</string>
     <string name="enable_dns">Включить DNS через netd</string>
     <string name="disable_dns">Отключить DNS через netd</string>
-    <string name="dns_proxy_title">Прокси-сервер DNS </string>
-    <string name="dns_proxy_summary">DNS-запросы через netd на Android 4.3 и более поздних версиях. При отключении будет блокирован интернет на этих устройствах.</string>
     <string name="tasker_lable">Плагин Tasker AFWall+</string>
     <string name="enable">Включить</string>
     <string name="disable">Отключить</string>

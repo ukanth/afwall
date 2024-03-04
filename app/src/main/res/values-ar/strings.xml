@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">إخفاء التصفية في طريقة العرض الأساسية حسب (الكل\الأساسية\النظام\المستخدم)</string>
     <string name="enable_dns">تمكين DNS عبر netd</string>
     <string name="disable_dns">تعطيل DNS عبر netd</string>
-    <string name="dns_proxy_title">وكيل خدمة أسماء النطاقات DNS</string>
-    <string name="dns_proxy_summary">عمليات البحث عن DNS يتم عبر netd على اندرويد 4.3 وما بعده. سيؤدي تعطيل هذا إلى حظر الإنترنت على تلك الأجهزة.</string>
     <string name="tasker_lable">إضافة مستخدمي المهام AFWall+</string>
     <string name="enable">تمكين</string>
     <string name="disable">تعطيل</string>

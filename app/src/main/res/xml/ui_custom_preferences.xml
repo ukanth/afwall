@@ -16,13 +16,6 @@
         android:summary="%s"
         android:title="@string/busybox_pref" >
     </ListPreference>
-    <ListPreference
-        android:defaultValue="auto"
-        android:entries="@array/dns_proxy"
-        android:entryValues="@array/dns_proxy_values"
-        android:key="dns_value"
-        android:summary="@string/dns_proxy_summary"
-        android:title="@string/dns_proxy_title" >
-    </ListPreference>
+
 </PreferenceCategory>
 </PreferenceScreen>

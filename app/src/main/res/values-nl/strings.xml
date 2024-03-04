@@ -333,8 +333,6 @@
     <string name="showfilter_summary_off">Filters (All/Core/systeem/gebruiker) worden verborgen in het hoofdscherm</string>
     <string name="enable_dns">DNS via netd inschakelen</string>
     <string name="disable_dns">DNS via netd uitschakelen</string>
-    <string name="dns_proxy_title">DNS-Proxy</string>
-    <string name="dns_proxy_summary">DNS-lookups gaan via netd op Android 4.3 en hoger. Het uitschakelen hiervan blokkeert het internet op deze apparaten.</string>
     <string name="tasker_lable">AFWall+ Tasker Plug-in</string>
     <string name="enable">Inschakelen</string>
     <string name="disable">Uitschakelen</string>

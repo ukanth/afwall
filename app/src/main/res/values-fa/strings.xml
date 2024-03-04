@@ -336,8 +336,6 @@ S-OFF پیکربندی شوند.</string>
     <string name="showfilter_summary_off">فیلترها (تمام/هسته/سیستم/کاربر) در نمای اصلی پنهان هستند</string>
     <string name="enable_dns">فعال سازی دی ان اس از طریق netd</string>
     <string name="disable_dns">غیر فعال کردن دی ان اس از طریق netd</string>
-    <string name="dns_proxy_title">پراکسی DNS </string>
-    <string name="dns_proxy_summary">جستجو های دی ان اس در اندروید 4.3 به بعد با استفاده از netd انجام میشه. غیرفعال کردن این باعث مسدود شدن اینترنت در آن دستگاه ها میشود.</string>
     <string name="tasker_lable">پلاگین AFWall+‎  Tasker</string>
     <string name="enable">فعالسازی</string>
     <string name="disable">غیرفعالسازی</string>

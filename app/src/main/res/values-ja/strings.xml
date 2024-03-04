@@ -333,8 +333,6 @@
     <string name="showfilter_summary_off">フィルター (すべて/コア/システム/ユーザー) はメイン画面で非表示です</string>
     <string name="enable_dns">netd 経由で DNS を有効にします</string>
     <string name="disable_dns">netd 経由で DNS を無効にします</string>
-    <string name="dns_proxy_title">DNS プロキシ </string>
-    <string name="dns_proxy_summary">DNS ルックアップは Android 4.3 およびそれ以降、netd 経由です。これを無効にすると、それらのデバイスでインターネットがブロックされます。</string>
     <string name="tasker_lable">AFWall+ タスカー プラグイン</string>
     <string name="enable">有効</string>
     <string name="disable">無効</string>

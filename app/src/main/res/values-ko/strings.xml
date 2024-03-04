@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">필터 (모두/기본기/시스템/사용자) 숨기기</string>
     <string name="enable_dns">DNS via netd 사용</string>
     <string name="disable_dns">DNS via netd 비사용</string>
-    <string name="dns_proxy_title">DNS 프록시 </string>
-    <string name="dns_proxy_summary">안드로이드 4.3 이상인 기기들에서는 netd를 통해 DNS 질의를 수행합니다. 이것을 비활성화할 경우, 이러한 기기들의 인터넷을 차단하게 됩니다.</string>
     <string name="tasker_lable">AFWall+ Tasker 플러그인</string>
     <string name="enable">사용</string>
     <string name="disable">비사용</string>

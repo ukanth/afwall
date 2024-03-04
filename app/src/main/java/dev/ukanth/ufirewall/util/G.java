@@ -139,7 +139,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String LOG_TARGETS = "logTargets";
     private static final String SHOW_HOST = "showHostName";
     private static final String APP_VERSION = "appVersion";
-    private static final String DNS_PROXY = "dns_value";
     private static final String MULTI_USER = "multiUser";
     private static final String MULTI_USER_ID = "multiUserId";
     private static final String IS_MIGRATED = "isMigrated";
@@ -544,9 +543,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static String dns_proxy() {
-        return gPrefs.getString(DNS_PROXY, "auto");
-    }
 
     public static String bb_path() {
         return gPrefs.getString(BUSYBOX_PATH, "builtin");

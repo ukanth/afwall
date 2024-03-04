@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Τα φίλτρα (Όλα/Πυρήνας/Σύστημα/Χρήστης) δεν θα εμφανίζονται στην κύρια προβολή</string>
     <string name="enable_dns">Ενεργοποίηση DNS μέσω netd</string>
     <string name="disable_dns">Άπενεργοποιηση DNS μέσω netd</string>
-    <string name="dns_proxy_title">Διαμεσολαβητής DNS </string>
-    <string name="dns_proxy_summary">Οι αναζητήσεις DNS γίνονται μέσω του netd σε Android 4.3 και μετά . Η απενεργοποίηση του θα εμποδίσει το Διαδίκτυο σε αυτές τις συσκευές .</string>
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Ενεργοποίηση</string>
     <string name="disable">Απενεργοποίηση</string>

@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Filter (Semua/core/sistem/pengguna) disembunyikan pada tampilan utama</string>
     <string name="enable_dns">Aktifkan DNS dari netd</string>
     <string name="disable_dns">Matikan DNS dari netd</string>
-    <string name="dns_proxy_title">Proxy DNS </string>
-    <string name="dns_proxy_summary">DNS lookups melalui netd pada Android 4.3 dan yang lebih baru. Menonaktifkan pengaturan ini akan memblokir akses internet pada perangkat ini.</string>
     <string name="tasker_lable">Plugin Tasker AFWall+</string>
     <string name="enable">Aktifkan</string>
     <string name="disable">Matikan</string>

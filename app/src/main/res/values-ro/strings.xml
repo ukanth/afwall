@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Filtrele (Toate/Nucleu/Sistem/Utilizator) sunt ascunse în ecranul principal</string>
     <string name="enable_dns">Activează DNS prin intermediul netd</string>
     <string name="disable_dns">Dezactivează DNS prin intermediul netd</string>
-    <string name="dns_proxy_title">Proxy DNS </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
     <string name="tasker_lable">AFWall + Tasker Plugin</string>
     <string name="enable">Activează</string>
     <string name="disable">Dezactivează</string>

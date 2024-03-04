@@ -372,10 +372,6 @@
 
     <string name="enable_dns">Enable DNS via netd</string>
     <string name="disable_dns">Disable DNS via netd</string>
-
-    <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
-
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Enable</string>
     <string name="disable">Disable</string>

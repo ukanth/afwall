@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Филтери (све/језгро/корисник) неће бити приказани</string>
     <string name="enable_dns">Укључи DNS преко netd</string>
     <string name="disable_dns">Искључи DNS преко netd</string>
-    <string name="dns_proxy_title">DNS прокси </string>
-    <string name="dns_proxy_summary">DNS упити иду преко netd на Андроиду 4.3 и новијим. Искључивањем ћете потпуно онемогућити интернет.</string>
     <string name="tasker_lable">AFWall+ прикључак Таскера</string>
     <string name="enable">Укључи</string>
     <string name="disable">Искључи</string>
