@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Застосувати правила при перемиканні профілю</string>
     <string name="multi_apply_rules_info">Завантажити і застосувати правила при перемиканні профілю</string>
     <string name="multi_user_title">Увімкнути підтримку декількох користувачів</string>
-    <string name="multi_user_summary">Підтримка декількох користувачів Android (працює тільки в режимі, який блокує вибрані елементи)</string>
+    <string name="multi_user_summary">Підтримка декількох користувачів Android</string>
     <!--  -->
     <string name="device_admin_desc">Додатковий захист - запобігання видаленню AFWall+</string>
     <string name="traffic_detail_title">Подробиці трафіку</string>

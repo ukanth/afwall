@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Aplikovať pravidlá pri prepnutí profilov</string>
     <string name="multi_apply_rules_info">Načítať a aplikovať pravidlá pri prepínaní profilov</string>
     <string name="multi_user_title">Povoliť podporu viacerých užívateľov</string>
-    <string name="multi_user_summary">Podpora viacerých užívateľov systému Android (funguje iba v režime, kde sú blokované vybrané položky)</string>
+    <string name="multi_user_summary">Podpora viacerých užívateľov systému Android</string>
     <!--  -->
     <string name="device_admin_desc">Dodatočné zabezpečenie - zabráni odinštalácii AFWall +</string>
     <string name="traffic_detail_title">Detaily komunikácie</string>
