@@ -3161,13 +3161,20 @@ public final class Api {
 
         try {
             for (PackageInfoData app : apps) {
-                updateExportPackage(exportMap, app.pkgName, app.selected_wifi, WIFI_EXPORT);
-                updateExportPackage(exportMap, app.pkgName, app.selected_3g, DATA_EXPORT);
-                updateExportPackage(exportMap, app.pkgName, app.selected_roam, ROAM_EXPORT);
-                updateExportPackage(exportMap, app.pkgName, app.selected_vpn, VPN_EXPORT);
-                updateExportPackage(exportMap, app.pkgName, app.selected_tether, TETHER_EXPORT);
-                updateExportPackage(exportMap, app.pkgName, app.selected_lan, LAN_EXPORT);
-                updateExportPackage(exportMap, app.pkgName, app.selected_tor, TOR_EXPORT);
+                String packageName = app.pkgName;
+                if (G.isMultiUser()) {
+                    int user_id = MultiUser.applicationUserId(app.appinfo);
+                    if (user_id > 0) {
+                        packageName = packageName + "/" + String.valueOf(user_id);
+                    }
+                }
+                updateExportPackage(exportMap, packageName, app.selected_wifi, WIFI_EXPORT);
+                updateExportPackage(exportMap, packageName, app.selected_3g, DATA_EXPORT);
+                updateExportPackage(exportMap, packageName, app.selected_roam, ROAM_EXPORT);
+                updateExportPackage(exportMap, packageName, app.selected_vpn, VPN_EXPORT);
+                updateExportPackage(exportMap, packageName, app.selected_tether, TETHER_EXPORT);
+                updateExportPackage(exportMap, packageName, app.selected_lan, LAN_EXPORT);
+                updateExportPackage(exportMap, packageName, app.selected_tor, TOR_EXPORT);
             }
         } catch (JSONException e) {
             Log.e(TAG, e.getLocalizedMessage());
@@ -3417,10 +3424,19 @@ public final class Api {
         uidBuilders[TOR_EXPORT] = new StringBuilder();
 
         Map<String, Object> json = JsonHelper.toMap(object);
+        Map<String, PackageInfoData> muPackages = null;
         final PackageManager pm = ctx.getPackageManager();
 
         for (Map.Entry<String, Object> entry : json.entrySet()) {
             String pkgName = entry.getKey();
+            int user_id = 0;
+            if (G.isMultiUser()) {
+                if (pkgName.contains("/")) {
+                    String[] parts = pkgName.split("/");
+                    pkgName = parts[0];
+                    user_id = Integer.parseInt(parts[1]);
+                }
+            }
             if (pkgName.contains(":")) {
                 pkgName = pkgName.split(":")[0];
             }
@@ -3439,10 +3455,30 @@ public final class Api {
                 if (pkgName.startsWith("dev.afwall.special")) {
                     uidBuilder.append(specialApps.get(pkgName));
                 } else {
-                    try {
-                        uidBuilder.append(pm.getApplicationInfo(pkgName, 0).uid);
-                    } catch (NameNotFoundException e) {
-                        // Handle exception if needed
+                    if (user_id > 0) {
+                        if (muPackages == null) {
+                            // build cache of all installed packages
+                            muPackages = new HashMap();
+                            List<PackageInfoData> apps = getApps(ctx, null);
+                            for (PackageInfoData pkginfo : apps) {
+                                int user_id_ = MultiUser.applicationUserId(pkginfo.appinfo);
+                                if (user_id_ > 0) {
+                                    muPackages.put(pkginfo.pkgName + "/" + String.valueOf(user_id_), pkginfo);
+                                }
+                            }
+                        }
+                        PackageInfoData pkginfo = muPackages.get(pkgName + "/" + String.valueOf(user_id));
+                        if (pkginfo != null) {
+                            uidBuilder.append(pkginfo.uid);
+                        } else {
+                            // Handle not found if needed
+                        }
+                    } else {
+                        try {
+                            uidBuilder.append(pm.getApplicationInfo(pkgName, 0).uid);
+                        } catch (NameNotFoundException e) {
+                            // Handle exception if needed
+                        }
                     }
                 }
             }
