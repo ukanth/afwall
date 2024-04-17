@@ -2371,26 +2371,35 @@ public final class Api {
 
         try {
             for (int i = 0; i < apps.size(); i++) {
+                PackageInfoData pkginfo = apps.get(i);
+                String packageName = pkginfo.pkgName;
+                if (G.isMultiUser()) {
+                    int user_id = MultiUser.applicationUserId(pkginfo.appinfo);
+                    if (user_id > 0) {
+                        packageName = packageName + "/" + String.valueOf(user_id);
+                    }
+                }
+
                 if (apps.get(i).selected_wifi) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, WIFI_EXPORT);
+                    updateExportPackage(exportMap, packageName, WIFI_EXPORT);
                 }
                 if (apps.get(i).selected_3g) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, DATA_EXPORT);
+                    updateExportPackage(exportMap, packageName, DATA_EXPORT);
                 }
                 if (apps.get(i).selected_roam) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, ROAM_EXPORT);
+                    updateExportPackage(exportMap, packageName, ROAM_EXPORT);
                 }
                 if (apps.get(i).selected_vpn) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, VPN_EXPORT);
+                    updateExportPackage(exportMap, packageName, VPN_EXPORT);
                 }
                 if (apps.get(i).selected_tether) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, TETHER_EXPORT);
+                    updateExportPackage(exportMap, packageName, TETHER_EXPORT);
                 }
                 if (apps.get(i).selected_lan) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, LAN_EXPORT);
+                    updateExportPackage(exportMap, packageName, LAN_EXPORT);
                 }
                 if (apps.get(i).selected_tor) {
-                    updateExportPackage(exportMap, apps.get(i).pkgName, TOR_EXPORT);
+                    updateExportPackage(exportMap, packageName, TOR_EXPORT);
                 }
             }
         } catch (JSONException e) {
@@ -2620,10 +2629,19 @@ public final class Api {
         uidBuilders[TOR_EXPORT] = new StringBuilder();
 
         Map<String, Object> json = JsonHelper.toMap(object);
+        Map<String, PackageInfoData> muPackages = null;
         final PackageManager pm = ctx.getPackageManager();
 
         for (Map.Entry<String, Object> entry : json.entrySet()) {
             String pkgName = entry.getKey();
+            int user_id = 0;
+            if (G.isMultiUser()) {
+                if (pkgName.contains("/")) {
+                    String[] parts = pkgName.split("/");
+                    pkgName = parts[0];
+                    user_id = Integer.parseInt(parts[1]);
+                }
+            }
             if (pkgName.contains(":")) {
                 pkgName = pkgName.split(":")[0];
             }
@@ -2642,10 +2660,30 @@ public final class Api {
                 if (pkgName.startsWith("dev.afwall.special")) {
                     uidBuilder.append(specialApps.get(pkgName));
                 } else {
-                    try {
-                        uidBuilder.append(pm.getApplicationInfo(pkgName, 0).uid);
-                    } catch (NameNotFoundException e) {
-                        // Handle exception if needed
+                    if (user_id > 0) {
+                        if (muPackages == null) {
+                            // build cache of all installed packages
+                            muPackages = new HashMap();
+                            List<PackageInfoData> apps = getApps(ctx, null);
+                            for (PackageInfoData pkginfo : apps) {
+                                int user_id_ = MultiUser.applicationUserId(pkginfo.appinfo);
+                                if (user_id_ > 0) {
+                                    muPackages.put(pkginfo.pkgName + "/" + String.valueOf(user_id_), pkginfo);
+                                }
+                            }
+                        }
+                        PackageInfoData pkginfo = muPackages.get(pkgName + "/" + String.valueOf(user_id));
+                        if (pkginfo != null) {
+                            uidBuilder.append(pkginfo.uid);
+                        } else {
+                            // Handle not found if needed
+                        }
+                    } else {
+                        try {
+                            uidBuilder.append(pm.getApplicationInfo(pkgName, 0).uid);
+                        } catch (NameNotFoundException e) {
+                            // Handle exception if needed
+                        }
                     }
                 }
             }
