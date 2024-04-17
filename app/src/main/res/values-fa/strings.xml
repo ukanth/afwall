@@ -299,7 +299,7 @@ S-OFF پیکربندی شوند.</string>
     <string name="multi_apply_rules">اعمال قوانین در تعویض نمایه</string>
     <string name="multi_apply_rules_info">قوانین را در هر تعویض نمایه بارگذاری و اعمال کن</string>
     <string name="multi_user_title">فعال کردن پشتیبانی چند کاربره</string>
-    <string name="multi_user_summary">از اندروید چند-کاربره پشتیبانی کن (تنها در حالتی کار می‌کند که موارد انتخاب شده مسدود هستند)</string>
+    <string name="multi_user_summary">از اندروید چند-کاربره پشتیبانی کن</string>
     <!--  -->
     <string name="device_admin_desc">امنیت اضافی - از لغو نصب +AFWall جلوگیری می کند</string>
     <string name="traffic_detail_title">جزئیات ترافیک</string>

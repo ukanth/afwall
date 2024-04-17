@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Aplikatu arauak profila aldatzean</string>
     <string name="multi_apply_rules_info">Kargatu eta aplikatu arauak profilak aldatzean</string>
     <string name="multi_user_title">Gaitu hainbat erabiltzailerentzako euskarria</string>
-    <string name="multi_user_summary">Onartu hainbat Android erabiltzaile (Hautatutako elementuak blokeatuta dauden moduan besterik ez dabil)</string>
+    <string name="multi_user_summary">Onartu hainbat Android erabiltzaile</string>
     <!--  -->
     <string name="device_admin_desc">Segurtasun gehigarria - Eragotzi AFWall+ desinstalatzea</string>
     <string name="traffic_detail_title">Trafikoaren xehetasunak</string>

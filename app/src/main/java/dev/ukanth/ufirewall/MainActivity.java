@@ -101,6 +101,7 @@ import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.activity.OldLogActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.MultiUser;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
@@ -233,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
+            MultiUser.setup();
         }
         registerUIbroadcast4();
         registerUIbroadcast6();
@@ -997,8 +999,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             for (PackageInfoData app : apps) {
                 for (String str : app.names) {
                     if (str != null && searchStr != null) {
+                        if (unique.contains(app.uid)) {
+                            continue;
+                        }
                         if (str.contains(searchStr.toLowerCase()) || str.toLowerCase().contains(searchStr.toLowerCase())
-                                && !searchApp.contains(app) || (G.showUid() && (str + " " + app.uid).contains(searchStr) && !unique.contains(app.uid))) {
+                                && !searchApp.contains(app) || (G.showUid() && (str + " " + app.uid).contains(searchStr))) {
                             searchApp.add(app);
                             unique.add(app.uid);
                             isResultsFound = true;

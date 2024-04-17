@@ -296,7 +296,7 @@
     <string name="multi_apply_rules">Regels toepassen bij wisselen profiel</string>
     <string name="multi_apply_rules_info">Regels laden en toepassen bij het wisselen van profiel</string>
     <string name="multi_user_title">Multi-user ondersteuning</string>
-    <string name="multi_user_summary">Ondersteuning van Android multi-user (werkt alleen in de modus waar de geselecteerde items worden geblokkeerd)</string>
+    <string name="multi_user_summary">Ondersteuning van Android multi-user</string>
     <!--  -->
     <string name="device_admin_desc">Extra beveiliging - Voorkom verwijderen AFWall+</string>
     <string name="traffic_detail_title">Details netwerkverkeer</string>

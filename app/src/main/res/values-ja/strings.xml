@@ -296,7 +296,7 @@
     <string name="multi_apply_rules">プロファイル切り替え時にルールを適用</string>
     <string name="multi_apply_rules_info">プロファイルの切り替え時にルールを読み込んで適用します</string>
     <string name="multi_user_title">マルチ ユーザーのサポートを有効にする</string>
-    <string name="multi_user_summary">Android マルチ ユーザーをサポートします (選択した項目がブロックされるモードでのみ動作)</string>
+    <string name="multi_user_summary">Android マルチ ユーザーをサポートします</string>
     <!--  -->
     <string name="device_admin_desc">追加のセキュリティ - AFWall+ のアンインストールを防止します</string>
     <string name="traffic_detail_title">トラフィック詳細</string>
