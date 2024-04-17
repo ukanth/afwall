@@ -2370,16 +2370,27 @@ public final class Api {
         Map<String, JSONObject> exportMap = new HashMap<>();
 
         try {
-            for (PackageInfoData app : apps) {
-                if (app.selected_wifi || app.selected_3g || app.selected_roam || app.selected_vpn ||
-                        app.selected_tether || app.selected_lan || app.selected_tor) {
-                    updateExportPackage(exportMap, app.pkgName, WIFI_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, DATA_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, ROAM_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, VPN_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, TETHER_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, LAN_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, TOR_EXPORT);
+            for (int i = 0; i < apps.size(); i++) {
+                if (apps.get(i).selected_wifi) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, WIFI_EXPORT);
+                }
+                if (apps.get(i).selected_3g) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, DATA_EXPORT);
+                }
+                if (apps.get(i).selected_roam) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, ROAM_EXPORT);
+                }
+                if (apps.get(i).selected_vpn) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, VPN_EXPORT);
+                }
+                if (apps.get(i).selected_tether) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, TETHER_EXPORT);
+                }
+                if (apps.get(i).selected_lan) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, LAN_EXPORT);
+                }
+                if (apps.get(i).selected_tor) {
+                    updateExportPackage(exportMap, apps.get(i).pkgName, TOR_EXPORT);
                 }
             }
         } catch (JSONException e) {
