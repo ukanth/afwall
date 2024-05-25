@@ -20,3 +20,10 @@ jobs:
         java-version: 17
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          app/build/outputs/apk/
+          app/build/outputs/bundle/
