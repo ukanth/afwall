@@ -3,13 +3,12 @@ apply plugin: 'com.android.application'
 android {
 
     defaultConfig {
-        compileSdk 33
+        compileSdk 34
         applicationId "dev.ukanth.ufirewall"
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 20230828
-        versionName "3.6.0"
+        versionCode 20240606
+        versionName "3.6.1"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
 
@@ -27,6 +26,7 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
     }
+
 
     lint {
         abortOnError true
