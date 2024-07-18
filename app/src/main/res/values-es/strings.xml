@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Los filtros (Todos/Core/Sistema/Usuario) se ocultan en la vista principal</string>
     <string name="enable_dns">Activar DNS vía netd</string>
     <string name="disable_dns">Desactivar DNS vía netd</string>
-    <string name="dns_proxy_title">Proxy DNS </string>
-    <string name="dns_proxy_summary">Las consultas de DNS son mediante netd en Android 4.3 y posteriores. Deshabilitar esto bloqueará internet en dichos dispositivos.</string>
     <string name="tasker_lable">Plugin de Tasker AFWall+</string>
     <string name="enable">Activar</string>
     <string name="disable">Desactivar</string>

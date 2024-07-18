@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Les peñeres (Too/Nucleu/Sistema/Usuariu) van anubrise na vista principal</string>
     <string name="enable_dns">Habilitar DNS pente netd</string>
     <string name="disable_dns">Deshabilitar DNS pente netd</string>
-    <string name="dns_proxy_title">Proxy DNS </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Habilitar</string>
     <string name="disable">Deshabilitar</string>

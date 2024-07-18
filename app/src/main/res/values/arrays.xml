@@ -134,19 +134,6 @@
         <item>system</item>
     </string-array>
     
-    
-      <string-array name="dns_proxy">
-        <item>@string/auto</item>
-        <item>@string/enable_dns</item>
-        <item>@string/disable_dns</item>
-    </string-array>
-    
-      <string-array name="dns_proxy_values">
-        <item>auto</item>
-        <item>enable</item>
-        <item>disable</item>
-    </string-array>
-    
     <string-array name="pattern_max_attempt">
         <item>3</item>
         <item>4</item>

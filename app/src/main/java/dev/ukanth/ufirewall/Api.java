@@ -158,8 +158,7 @@ public final class Api {
      * special application UID used for dnsmasq DHCP/DNS
      */
     public static final int SPECIAL_UID_TETHER = -12;
-    /** special application UID used for netd DNS proxy */
-    //public static final int SPECIAL_UID_DNSPROXY	= -13;
+
     /**
      * special application UID used for NTP
      */
@@ -435,24 +434,12 @@ public final class Api {
 				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  action);
 			}*/
 
-            String pref = G.dns_proxy();
-
             if (whitelist) {
-                if (pref.equals("disable")) {
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
-                } else {
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
-                }
+                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
+                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
             } else {
-                if (pref.equals("disable")) {
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j " + AFWALL_CHAIN_NAME + "-reject");
-                } else if (pref.equals("enable")) {
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
-                    addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
-                }
+                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
+                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
             }
 
 
@@ -462,7 +449,7 @@ public final class Api {
             }
 
 
-            if (G.getPrivateDnsStatus() && !G.dns_proxy().equals("disable")) {
+            if (G.getPrivateDnsStatus()) {
                 cmds.add("-A " + chain + " -p tcp --dport 853" + " -j ACCEPT");
                 // disabling HTTPS over DNS
                 //cmds.add("-A " + chain + " -p tcp --dport 443" + " -j ACCEPT");
@@ -484,6 +471,13 @@ public final class Api {
                     cmds.add("-A " + chain + " -j " + AFWALL_CHAIN_NAME + "-reject");
                 }
             }
+
+            //add 1052 for LAN
+            if(G.enableLAN()) {
+                cmds.add("-A " + "afwall-wifi-lan" + " -m owner --uid-owner 1052 -j RETURN");
+            }
+
+            cmds.add("-A " + "afwall-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
         }
     }
 
@@ -785,7 +779,7 @@ public final class Api {
 
             // NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
             // on the LAN
-            if (whitelist && !G.dns_proxy().equals("disable")) {
+            if (whitelist) {
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
                 cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p tcp --dport 53 -j RETURN");
 

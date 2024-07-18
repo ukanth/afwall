@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
     <string name="enable_dns">Activa el DNS mitjançant netd</string>
     <string name="disable_dns">Desactiva el DNS mitjançant netd</string>
-    <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Activa</string>
     <string name="disable">Desactiva</string>

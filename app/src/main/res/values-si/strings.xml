@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">පෙරහන් (සියලුම/හරය/පද්ධතිය/පරිශීලක) ප්‍රධාන දසුනෙහි සඟවා ඇත</string>
     <string name="enable_dns">netd හරහා DNS සබල කරන්න</string>
     <string name="disable_dns">netd හරහා DNS අක්‍රිය කරන්න</string>
-    <string name="dns_proxy_title">DNS ප්‍රොක්සි </string>
-    <string name="dns_proxy_summary">DNS සෙවීම් ඇන්ඩ්‍රොයිඩ් 4.3 සහ ඊට පසු netd හරහා වේ. මෙය අක්‍රිය කිරීමෙන් එම උපාංගවල අන්තර්ජාලය අවහිර කරයි.</string>
     <string name="tasker_lable">AFWall+ Tasker ප්ලගිනය</string>
     <string name="enable">සබල කරන්න</string>
     <string name="disable">අබල කරන්න</string>

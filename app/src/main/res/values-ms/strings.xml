@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Tapis (Semua/Teras/Sistem/Pengguna) disembunyikan dimenu utama</string>
     <string name="enable_dns">Aktif DNS melalui netd</string>
     <string name="disable_dns">Nyahaktifkan DNS melalui netd</string>
-    <string name="dns_proxy_title">Proksi DNS </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
     <string name="tasker_lable">AFWall+ Plugin Tasker</string>
     <string name="enable">Aktif</string>
     <string name="disable">Nyahaktif</string>

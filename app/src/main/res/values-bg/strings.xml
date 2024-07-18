@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Филтри (Всички/Основни/Системни/Потребителски) са скрити от основния екран</string>
     <string name="enable_dns">Разреши DNS чрез netd</string>
     <string name="disable_dns">Забрани DNS чрез netd</string>
-    <string name="dns_proxy_title">DNS прокси </string>
-    <string name="dns_proxy_summary">DNS заявки са чрез netd на Android 4.3 и по-нов. Забраняването на това ще блокира интернета на тези устройства.</string>
     <string name="tasker_lable">AFWall + Tasker плъгин</string>
     <string name="enable">Разреши</string>
     <string name="disable">Изключи</string>

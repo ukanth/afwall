@@ -331,8 +331,6 @@
     <string name="showfilter_summary_off">Filtry (vše/jádro/systém/uživatel) jsou skryty v hlavním okně</string>
     <string name="enable_dns">Povolit DNS přes netd</string>
     <string name="disable_dns">Zakázat DNS přes netd</string>
-    <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">Vyhledávání DNS je na zařízení s Android 4.3 a vyšší prostřednictvím netd. Zakázání zablokuje internet na těchto zařízeních.</string>
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Povolit</string>
     <string name="disable">Zakázat</string>
