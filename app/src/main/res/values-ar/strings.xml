@@ -83,7 +83,7 @@
     <string name="custom_script_defined">تعريف برنامج نصي مخصص</string>
     <string name="custom_script_removed">إزالة برنامج نصي مخصص</string>
     <string name="custom_script_error">حدث خطأ أثناء حفظ البرنامج النصي المخصص</string>
-    <string name="custom_script_info">&lt;b&gt;أدخل السكريبت المعدل أسفله&lt;/b&gt; \n&gt;i/&gt;(أتركه فارغ لحذفه.)&lt;/i&gt; \nلمعلومات حول السكريبتات المعدلة اضغط  &lt;a href="https://github.com/ukanth/afwall/wiki/CustomScripts"&gt;هنا&lt;/a&gt;.</string>
+    <string name="custom_script_info"><b>أدخل السكريبت المعدل أسفله</b> \n<i>(أتركه فارغ لحذفه.)</i> \nلمعلومات حول السكريبتات المعدلة اضغط  <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">هنا</a>.</string>
     <string name="custom_script2_info">     يمكنك أيضا تعريف \n <b>البرنامج النصي المخصص لإيقاف التشغيل</b> \nYou برنامج نصي مخصص ليتم تنفيذها عندما يكون <b>تعطيل</b> جدار الحماية:</string>
     <string name="unsaved_changes">التغييرات غير محفوظة</string>
     <string name="unsaved_changes_message">لم تقم بتطبيق التغييرات. \n هل تريد تطبيقها أو تجاهلها ؟</string>
@@ -330,6 +330,8 @@
     <string name="showfilter_summary_off">إخفاء التصفية في طريقة العرض الأساسية حسب (الكل\الأساسية\النظام\المستخدم)</string>
     <string name="enable_dns">تمكين DNS عبر netd</string>
     <string name="disable_dns">تعطيل DNS عبر netd</string>
+    <string name="dns_proxy_title">وكيل خدمة أسماء النطاقات DNS</string>
+    <string name="dns_proxy_summary">عمليات البحث عن DNS يتم عبر netd على اندرويد 4.3 وما بعده. سيؤدي تعطيل هذا إلى حظر الإنترنت على تلك الأجهزة.</string>
     <string name="tasker_lable">إضافة مستخدمي المهام AFWall+</string>
     <string name="enable">تمكين</string>
     <string name="disable">تعطيل</string>
