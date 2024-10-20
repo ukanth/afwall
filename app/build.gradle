@@ -3,11 +3,11 @@ apply plugin: 'com.android.application'
 android {
 
     defaultConfig {
-        compileSdk 34
+        compileSdk 35
         applicationId "dev.ukanth.ufirewall"
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
-        versionCode 20240606
+        versionCode 20241019
         versionName "3.6.1"
         //buildConfigField 'boolean', 'DONATE', 'true'
     }
@@ -34,12 +34,18 @@ android {
     }
 
     namespace 'dev.ukanth.ufirewall'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    compileSdk 35
+    buildToolsVersion '34.0.0'
 
 }
 
 dependencies {
 
-    def libsuVersion = '5.1.0'
+    def libsuVersion = '6.0.0'
     def dbFlowVersion = '4.2.4'
 
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
@@ -48,19 +54,19 @@ dependencies {
     implementation "eu.chainfire:libsuperuser:1.1.0"
     implementation "com.github.ukanth:android-lockpattern:8.0.4"
     implementation "com.afollestad.material-dialogs:core:0.9.6.0"
-    implementation "androidx.appcompat:appcompat:1.6.0-rc01"
-    implementation "com.google.android.material:material:1.7.0"
+    implementation "androidx.appcompat:appcompat:1.7.0"
+    implementation "com.google.android.material:material:1.12.0"
     implementation "androidx.cardview:cardview:1.0.0"
-    implementation "androidx.recyclerview:recyclerview:1.2.1"
-    implementation "androidx.annotation:annotation:1.5.0"
-    implementation "androidx.core:core:1.9.0"
-    implementation "androidx.preference:preference:1.2.0"
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
+    implementation "androidx.annotation:annotation:1.9.0"
+    implementation "androidx.core:core:1.13.1"
+    implementation "androidx.preference:preference:1.2.1"
     implementation "androidx.legacy:legacy-support-v13:1.0.0"
     annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbFlowVersion}"
     implementation "com.github.Raizlabs.DBFlow:dbflow-core:${dbFlowVersion}"
     implementation "com.github.Raizlabs.DBFlow:dbflow:${dbFlowVersion}"
-    implementation "io.reactivex.rxjava3:rxjava:3.1.5"
+    implementation "io.reactivex.rxjava3:rxjava:3.1.9"
     implementation "org.ocpsoft.prettytime:prettytime:5.0.6.Final"
-    implementation "dnsjava:dnsjava:3.5.2"
+    implementation "dnsjava:dnsjava:3.6.2"
 
 }

@@ -1860,10 +1860,10 @@ public final class Api {
     }
 
     private static boolean installBinariesArm64() {
-        if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
-        if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
-        if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
-        if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
+        //if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
+        //if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
+        //if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
+        //if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
         //if (!installBinary(ctx, R.raw.run_pie_arm64, "run_pie")) return false;
         return true;
     }
@@ -1882,9 +1882,10 @@ public final class Api {
             return installBinariesX86();
         } else if (abi.startsWith("mips")) {
             return installBinariesMips();
-        } else if (abi.startsWith("arm64")) {
-            return installBinariesArm64();
-        } else {
+        } //else if (abi.startsWith("arm64")) {
+          //  return installBinariesArm64();
+        //}
+        else {
             return installBinariesArm();
         }
     }
