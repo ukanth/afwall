@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">ফিল্টার (সব/মূল/পদ্ধতি/ইউজার) প্রধান দৃশ্যে দেখানো হয়</string>
     <string name="enable_dns">DNS netd মাধ্যমে সক্রিয় করুন</string>
     <string name="disable_dns">DNS netd মাধ্যমে নিষ্ক্রিয় করুন</string>
-    <string name="dns_proxy_title">DNS প্রক্সি </string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
     <string name="tasker_lable">AFWall+ Tasker প্লাগইন</string>
     <string name="enable">সক্রিয় করুন</string>
     <string name="disable">নিক্রিয় করুন</string>

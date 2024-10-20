@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Filtre (Všetko/Jadro/Systém/Užívateľ) budú skryté v hlavnom zobrazení</string>
     <string name="enable_dns">Zapnúť DNS pomocou netd</string>
     <string name="disable_dns">Vypnúť DNS pomocou netd</string>
-    <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">DNS vyhľadania idú cez netd na Androide 4.3 a novších. Vypnutie zablokuje internet na týchto zariadeniach.</string>
     <string name="tasker_lable">AFWall+ Tasker zásuvný modul</string>
     <string name="enable">Zapnúť</string>
     <string name="disable">Vypnúť</string>

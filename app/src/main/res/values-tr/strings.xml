@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Filtreler (Tümü/Çekirdek/Sistem/Kullanıcı) ana görünümde gizlenir</string>
     <string name="enable_dns">Netd DNS\'i etkinleştir</string>
     <string name="disable_dns">Netd DNS\'i devre dışı bırak</string>
-    <string name="dns_proxy_title">DNS vekil </string>
-    <string name="dns_proxy_summary">DNS aramaları Android 4.3 ve sonraki sürümlerinde netd üzerinden yapılır. Bunu devre dışı bırakmak, bu cihazlarda interneti engelleyecektir.</string>
     <string name="tasker_lable">AFWall+ Tasker eklentisi</string>
     <string name="enable">Etkinleştir</string>
     <string name="disable">Devre dışı bırak</string>

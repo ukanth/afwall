@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Ẩn các bộ lọc (Tất cả/Lõi/Hệ thống/Người dùng) ở màn hình chính</string>
     <string name="enable_dns">Bật DNS bằng netd</string>
     <string name="disable_dns">Tắt DNS bằng netd</string>
-    <string name="dns_proxy_title">DNS Proxy </string>
-    <string name="dns_proxy_summary">Tra cứu DNS bằng netd trên Android 4.3 trở lên. Internet trên những thiết bị này sẽ bị chặn nếu tắt tính năng.</string>
     <string name="tasker_lable">Phần mở rộng Tasker</string>
     <string name="enable">Bật</string>
     <string name="disable">Tắt</string>

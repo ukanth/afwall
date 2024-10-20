@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">A szűrők (Összes/Alapvető/Rendszer/Felhasználói) nem jelennek meg a fő nézetben</string>
     <string name="enable_dns">DNS engedélyezése netd keresztül</string>
     <string name="disable_dns">DNS letiltása netd keresztül</string>
-    <string name="dns_proxy_title">DNS Proxy </string>
-    <string name="dns_proxy_summary">A DNS lekérdezést a netd végzi az Android 4.3 és újabb verziókon. Ennek letiltása blokkolja az internetet ezeken az eszközökön.</string>
     <string name="tasker_lable">AFWall+ Tasker Plugin</string>
     <string name="enable">Engedélyez</string>
     <string name="disable">Letilt</string>

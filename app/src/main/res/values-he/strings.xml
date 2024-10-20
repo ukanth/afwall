@@ -331,8 +331,6 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="showfilter_summary_off">מסננים (הכל/ליבה/מערכת/משתמש) מוסתרים במסך הראשי</string>
     <string name="enable_dns">אפשר DNS באמצעות netd</string>
     <string name="disable_dns">אל תאפשר DNS באמצעות netd</string>
-    <string name="dns_proxy_title">שרת DNS Proxy </string>
-    <string name="dns_proxy_summary">שאילתות DNS נעשות באמצעות nets באנדרואיד 4.3 ומעלה. השבתה תחסום את האינטרנט במכשירים אלו.</string>
     <string name="tasker_lable">תוסף AFWall+ Tasker</string>
     <string name="enable">הפעל</string>
     <string name="disable">השבת</string>

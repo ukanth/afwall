@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Iragazkiak (Denak/Nukleoa/Sistema/Erabiltzailea) ikuspegi nagusian ezkutatuta daude</string>
     <string name="enable_dns">Gaitu netd bidezko DNS</string>
     <string name="disable_dns">Ezgaitu netd bidezko DNS</string>
-    <string name="dns_proxy_title">DNS Proxya </string>
-    <string name="dns_proxy_summary">DNS bilaketak netd bidez dira Android 4.3-tik aurrera. Hau desgaitzeak Internet desgaituko du gailu hauetan.</string>
     <string name="tasker_lable">AFWall+ Tasker gehigarria</string>
     <string name="enable">Gaitu</string>
     <string name="disable">Ezgaitu</string>

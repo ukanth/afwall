@@ -9,7 +9,7 @@ android {
         minSdkVersion 21
         versionCode 20241019
         versionName "3.6.1"
-        //buildConfigField 'boolean', 'DONATE', 'true'
+        buildConfigField 'boolean', 'DONATE', 'false'
     }
 
     buildFeatures {

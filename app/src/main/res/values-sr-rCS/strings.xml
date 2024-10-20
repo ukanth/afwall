@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Filteri (Svi/Jezgra/Sistem/Korisnik) su skriveni na glavnom ekranu</string>
     <string name="enable_dns">Uključi DNS preko netd</string>
     <string name="disable_dns">Isključi DNS preko netd</string>
-    <string name="dns_proxy_title">DNS proxy </string>
-    <string name="dns_proxy_summary">DNS pretraga na Android 4.3 ili kasnijem verzijama je preko netd. Onemogućavanje ovog će blokirati internet na tim uređajima.</string>
     <string name="tasker_lable">AFWall+ Tasker dodatak</string>
     <string name="enable">Uključi</string>
     <string name="disable">Isključi</string>

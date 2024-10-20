@@ -330,8 +330,6 @@
     <string name="showfilter_summary_off">Filtre (Alle/Kjerne/System/Bruker) skjules i hovedvisningen</string>
     <string name="enable_dns">Aktiver DNS via netd</string>
     <string name="disable_dns">Deaktiver DNS via netd</string>
-    <string name="dns_proxy_title">DNS-mellomtjener</string>
-    <string name="dns_proxy_summary">DNS lookups are via netd on Android 4.3 and later. Disabling this will block the Internet on those devices.</string>
     <string name="tasker_lable">AFWall+ Tasker-tillegg</string>
     <string name="enable">Aktiver</string>
     <string name="disable">Deaktiver</string>

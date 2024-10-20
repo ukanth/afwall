@@ -331,8 +331,6 @@
     <string name="showfilter_summary_off">在主视图中隐藏过滤器 (所有/核心/系统/用户)</string>
     <string name="enable_dns">由netd启用DNS</string>
     <string name="disable_dns">由netd禁用DNS</string>
-    <string name="dns_proxy_title">DNS 代理 </string>
-    <string name="dns_proxy_summary">在 Android 4.3 及更高版本上, DNS 查询通过 netd 完成. 禁用此项将导致这些设备上网络连接受阻</string>
     <string name="tasker_lable">AFWall+ Tasker 插件</string>
     <string name="enable">启用</string>
     <string name="disable">禁用</string>
