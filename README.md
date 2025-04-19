@@ -69,10 +69,10 @@ Highlights
 Features
 --------
 * List and search for all installed applications
-* Sort installed applications by installation date, [UUID](https://developer.android.com/reference/java/util/UUID) or in alphabatical order
+* Sort installed applications by installation date, [UUID](https://developer.android.com/reference/java/util/UUID) or in alphabetical order
 * Receive notification for any newly installed application, AFwall only list app with INTERNET_PERMISSION
-* AFWall comes with it's logs service to see what's going on
-* Display notifcations for blocked packets
+* AFWall comes with its logs service to see what's going on
+* Display notifications for blocked packets
 * Filter blocked packet notifications per app
 * Export & import rules ("Import All Rules" requires the donate version)
 * Option to prevent data leaks during boot (requires *init.d* support or *S-OFF*)
@@ -106,7 +106,7 @@ We do not recommend using AFWall+ in combination with any of the similar solutio
 Upgrading
 ---------
 
-The upgrading mechanism is really simple, basically you can just "over-install" the new version over the old one, however this is the best pratice (which we recommended):
+The upgrading mechanism is really simple, basically you can just "over-install" the new version over the old one, however this is the best practice (which we recommended):
 
 * **Make a backup of the current version** (e.g. via Titanium Backup).
 * **Do not remove the current version** (otherwise your settings might getting reset).
