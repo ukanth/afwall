@@ -46,7 +46,7 @@ The [changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md) documen
 
 Supports
 --------
-* Android versions 5.x to 11.x
+* Android versions 5.x to 15.x
    - for Android versions till 4.x use [2.9.9](https://github.com/ukanth/afwall/releases/tag/v2.9.9) 
    - for Android versions till 2.x use [1.3.4.1](https://github.com/ukanth/afwall/releases/tag/v1.3.4.1)
 * Compatible with Magisk and LineageOS su.    
@@ -99,7 +99,7 @@ Limitations
 Compatibility
 -------------
 
-AFWall+ has been successfully tested under Android versions 4.x - 9.x. and is reported to work with most Android variants, including stock or exotic ROMs.
+AFWall+ has been successfully tested under Android versions 4.x - 15.x. and is reported to work with most Android variants, including stock or exotic ROMs.
 
 We do not recommend using AFWall+ in combination with any of the similar solutions (Avast, Kaspersky, NetGuard etc) because this could result in conflicts or even data leaks (e.g. IPtables could get overwritten).
 
