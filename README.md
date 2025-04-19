@@ -47,8 +47,8 @@ The [changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md) documen
 Supports
 --------
 * Android versions 5.x to 11.x
-    for 4.x - 2.9.9 
-    for 2.x - 1.3.4.1
+   - for Android versions till 4.x use [2.9.9](https://github.com/ukanth/afwall/releases/tag/v2.9.9) 
+   - for Android versions till 2.x use [1.3.4.1](https://github.com/ukanth/afwall/releases/tag/v1.3.4.1)
 * Compatible with Magisk and LineageOS su.    
 * ARM/MIPS/x86 processors
 * IPv4 & IPv6 protocols
