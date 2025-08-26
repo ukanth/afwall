@@ -112,6 +112,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -208,7 +209,9 @@ public final class Api {
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
     private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
-    private static boolean globalStatus = false;
+    private static volatile boolean globalStatus = false;
+
+    private static final Object GLOBAL_STATUS_LOCK = new Object();
 
     public static List<Integer> getListOfUids() {
         return listOfUids;
@@ -216,6 +219,8 @@ public final class Api {
 
     private static List<Integer> listOfUids = new ArrayList<>();
 
+
+    private static Map<Integer, ApplicationInfo> uidToApplicationInfoMap = null;
 
 
     private static final Pattern dual_pattern = Pattern.compile("package:(.*) uid:(.*)", Pattern.MULTILINE);
@@ -262,13 +267,22 @@ public final class Api {
     private static final String charsetName = "UTF8";
     private static final String algorithm = "DES";
     private static final int base64Mode = Base64.DEFAULT;
-    private static String AFWALL_CHAIN_NAME = "afwall";
+    private static volatile String AFWALL_CHAIN_NAME = "afwall";
+    private static final Object CHAIN_NAME_LOCK = new Object();
     private static Map<String, Integer> specialApps = null;
-    private static boolean rulesUpToDate = false;
-
+    private static volatile boolean rulesUpToDate = false;
+    private static final Object RULES_LOCK = new Object();
     public static void setRulesUpToDate(boolean rulesUpToDate) {
-        Api.rulesUpToDate = rulesUpToDate;
+        synchronized (RULES_LOCK) {
+            Api.rulesUpToDate = rulesUpToDate;
+        }
     }
+    public static boolean getRulesUpToDate() {
+        synchronized (RULES_LOCK) {
+            return Api.rulesUpToDate;
+        }
+    }
+
 
     // returns c.getString(R.string.<acct>_item)
     public static String getSpecialDescription(Context ctx, String acct) {
@@ -481,59 +495,88 @@ public final class Api {
         }
     }
 
-    private static void addRejectRules(List<String> cmds) {
+    private static void addRejectRules(List<String> cmds, String chainName) {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
 
         if (G.enableLogService()) {
             if (G.logTarget().trim().equals("LOG")) {
-                //cmds.add("-A " + AFWALL_CHAIN_NAME  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options");
+                //cmds.add("-A " + chainName  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
+                cmds.add("-A " + chainName + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options");
             } else if (G.logTarget().trim().equals("NFLOG")) {
-                //cmds.add("-A " + AFWALL_CHAIN_NAME + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
+                //cmds.add("-A " + chainName + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
+                cmds.add("-A " + chainName + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
             }
         }
-        cmds.add("-A " + AFWALL_CHAIN_NAME + "-reject" + " -j REJECT");
+        cmds.add("-A " + chainName + "-reject" + " -j REJECT");
     }
 
-    private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6) {
+    private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6, String chainName) {
         for (Integer uid : uids) {
             if (uid != null && uid >= 0) {
                 if (G.enableInbound() || ipv6) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor-reject -m owner --uid-owner " + uid + " -j afwall-reject");
+                    cmds.add("-A " + chainName + "-tor-reject -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
                 }
                 if (!ipv6) {
-                    cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-check -m owner --uid-owner " + uid + " -j " + AFWALL_CHAIN_NAME + "-tor-filter");
+                    cmds.add("-t nat -A " + chainName + "-tor-check -m owner --uid-owner " + uid + " -j " + chainName + "-tor-filter");
                 }
             }
         }
         if (ipv6) {
-            cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-reject");
+            cmds.add("-A " + chainName + " -j " + chainName + "-tor-reject");
         } else {
             Integer socks_port = 9050;
             Integer http_port = 8118;
             Integer dns_port = 5400;
             Integer tcp_port = 9040;
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + "-tor-filter -j MARK --set-mark 0x500");
-            cmds.add("-t nat -A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor-check");
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-tor -m mark --mark 0x500 -j " + AFWALL_CHAIN_NAME + "-reject");
-            cmds.add("-A " + AFWALL_CHAIN_NAME + " -j " + AFWALL_CHAIN_NAME + "-tor");
+            cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
+            cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
+            cmds.add("-t nat -A " + chainName + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
+            cmds.add("-t nat -A " + chainName + "-tor-filter -p tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports " + tcp_port);
+            cmds.add("-t nat -A " + chainName + "-tor-filter -j MARK --set-mark 0x500");
+            cmds.add("-t nat -A " + chainName + " -j " + chainName + "-tor-check");
+            cmds.add("-A " + chainName + "-tor -m mark --mark 0x500 -j " + chainName + "-reject");
+            cmds.add("-A " + chainName + " -j " + chainName + "-tor");
         }
         if (G.enableInbound()) {
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-input -j " + AFWALL_CHAIN_NAME + "-tor-reject");
+            cmds.add("-A " + chainName + "-input -j " + chainName + "-tor-reject");
         }
     }
 
+    private static String sanitizeRule(String rule) {
+        // Remove potentially dangerous characters and commands
+        if (rule.contains("&&") || rule.contains("||") || rule.contains(";") ||
+                rule.contains("|") || rule.contains("`") || rule.contains("$") ||
+                rule.contains("rm ") || rule.contains("dd ") || rule.contains("chmod ") ||
+                rule.contains("chown ") || rule.contains("su ") || rule.contains("sudo ")) {
+            Log.w(TAG, "Rejecting potentially dangerous custom rule: " + rule);
+            return null;
+        }
+
+        // Only allow basic iptables/ip6tables commands
+        if (!rule.startsWith("iptables ") && !rule.startsWith("ip6tables ") &&
+                !rule.startsWith("-A ") && !rule.startsWith("-I ") &&
+                !rule.startsWith("-D ") && !rule.startsWith("-F ") &&
+                !rule.startsWith("-P ") && !rule.startsWith("-N ")) {
+            Log.w(TAG, "Rejecting non-iptables rule: " + rule);
+            return null;
+        }
+
+        return rule;
+    }
+
     private static void addCustomRules(String prefName, List<String> cmds) {
-        String[] customRules = G.pPrefs.getString(prefName, "").split("[\\r\\n]+");
-        for (String s : customRules) {
-            if (s.matches(".*\\S.*")) {
-                cmds.add("#LITERAL# " + s);
+        String customRulesStr = G.pPrefs.getString(prefName, "");
+        if (customRulesStr.isEmpty()) return;
+
+        String[] customRules = customRulesStr.split("[\\r\\n]+");
+        for (String rule : customRules) {
+            if (rule.matches(".*\\S.*")) {
+                // Sanitize the rule to prevent command injection
+                String sanitizedRule = sanitizeRule(rule.trim());
+                if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
+                    cmds.add("#LITERAL# " + sanitizedRule);
+                }
             }
         }
     }
@@ -547,26 +590,26 @@ public final class Api {
      * @param ctx  application context
      * @param cmds command list
      */
-    private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6) {
+    private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6, String chainName) {
         try {
             //force only for v4
             final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, !ipv6);
             final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
             for (String s : dynChains) {
-                cmds.add("-F " + AFWALL_CHAIN_NAME + s);
+                cmds.add("-F " + chainName + s);
             }
 
             if (whitelist) {
                 // always allow the DHCP client full wifi access
-                addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom", "-j RETURN");
+                addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + chainName + "-wifi-postcustom", "-j RETURN");
             }
 
             if (cfg.isWifiTethered) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-tether");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-tether");
+                cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-tether");
+                cmds.add("-A " + chainName + "-3g-postcustom -j " + chainName + "-3g-tether");
             } else {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-postcustom -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-postcustom -j " + AFWALL_CHAIN_NAME + "-3g-fork");
+                cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-fork");
+                cmds.add("-A " + chainName + "-3g-postcustom -j " + chainName + "-3g-fork");
             }
 
             // TODO: tether and Usb tether
@@ -574,15 +617,15 @@ public final class Api {
             if (G.enableLAN() && !cfg.isWifiTethered) {
                 if (ipv6) {
                     if (!cfg.lanMaskV6.equals("")) {
-                        cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV6 + " -j afwall-wifi-lan");
-                        cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j afwall-wifi-wan");
+                        cmds.add("-A " + chainName + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + chainName + "-wifi-lan");
+                        cmds.add("-A " + chainName + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + chainName + "-wifi-wan");
                     } else {
                         Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
                     }
                 } else {
                     if (!cfg.lanMaskV4.equals("")) {
-                        cmds.add("-A afwall-wifi-fork -d " + cfg.lanMaskV4 + " -j afwall-wifi-lan");
-                        cmds.add("-A afwall-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j afwall-wifi-wan");
+                        cmds.add("-A " + chainName + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + chainName + "-wifi-lan");
+                        cmds.add("-A " + chainName + "-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j " + chainName + "-wifi-wan");
                     } else {
                         Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
                     }
@@ -591,16 +634,16 @@ public final class Api {
                     Log.i(TAG, "No ipaddress found for LAN");
                     // lets find one more time
                     //atleast allow internet - don't block completely
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+                    cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
                 }
             } else {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-fork -j " + AFWALL_CHAIN_NAME + "-wifi-wan");
+                cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
             }
 
             if (G.enableRoam() && cfg.isRoaming) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-roam");
+                cmds.add("-A " + chainName + "-3g-fork -j " + chainName + "-3g-roam");
             } else {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-fork -j " + AFWALL_CHAIN_NAME + "-3g-home");
+                cmds.add("-A " + chainName + "-3g-fork -j " + chainName + "-3g-home");
             }
 
 
@@ -627,7 +670,8 @@ public final class Api {
         /*FIXME: Adding custom rules might increase the time */
         Log.i(TAG, "Applying custom rules");
         addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
-        addInterfaceRouting(ctx, cmds, ipv6);
+        String chainName = getThreadSafeChainName();
+        addInterfaceRouting(ctx, cmds, ipv6, chainName);
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
         cmds.add("-P OUTPUT ACCEPT");
     }
@@ -641,16 +685,23 @@ public final class Api {
      */
     private static boolean applyIptablesRulesImpl(final Context ctx, RuleDataSet ruleDataSet, final boolean showErrors,
                                                   List<String> out, boolean ipv6) {
+        return applyIptablesRulesImpl(ctx, ruleDataSet, showErrors, out, ipv6, null);
+    }
+    
+    private static boolean applyIptablesRulesImpl(final Context ctx, RuleDataSet ruleDataSet, final boolean showErrors,
+                                                  List<String> out, boolean ipv6, String threadSafeChainName) {
         if (ctx == null) {
             return false;
         }
 
         assertBinaries(ctx, showErrors);
-        if (G.isMultiUser()) {
-            //FIXME: after setting this, we need to flush the iptables ?
-            if (G.getMultiUserId() > 0) {
-                AFWALL_CHAIN_NAME = "afwall" + G.getMultiUserId();
-            }
+        
+        // Use thread-safe chain name if provided, otherwise determine it safely
+        final String chainName;
+        if (threadSafeChainName != null) {
+            chainName = threadSafeChainName;
+        } else {
+            chainName = getThreadSafeChainName();
         }
         final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
 
@@ -671,143 +722,146 @@ public final class Api {
             // prevent data leaks due to incomplete rules
             cmds.add("-P OUTPUT DROP");
 
+            // Create and flush all chains first to ensure they exist
             for (String s : staticChains) {
-                cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
-                cmds.add("-F " + AFWALL_CHAIN_NAME + s);
+                cmds.add("#NOCHK# -N " + chainName + s);
+                cmds.add("-F " + chainName + s);
             }
             for (String s : dynChains) {
-                cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + s);
+                cmds.add("#NOCHK# -N " + chainName + s);
+                cmds.add("-F " + chainName + s);
             }
+            
 
-            cmds.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
-            cmds.add("-I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
+            cmds.add("#NOCHK# -D OUTPUT -j " + chainName);
+            cmds.add("-I OUTPUT 1 -j " + chainName);
 
 
             if (G.enableInbound()) {
-                cmds.add("#NOCHK# -D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
-                cmds.add("-I INPUT 1 -j " + AFWALL_CHAIN_NAME + "-input");
+                cmds.add("#NOCHK# -D INPUT -j " + chainName + "-input");
+                cmds.add("-I INPUT 1 -j " + chainName + "-input");
             }
 
             if (G.enableTor() && !ipv6) {
                 for (String s : natChains) {
-                    cmds.add("#NOCHK# -t nat -N " + AFWALL_CHAIN_NAME + s);
-                    cmds.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+                    cmds.add("#NOCHK# -t nat -N " + chainName + s);
+                    cmds.add("-t nat -F " + chainName + s);
                 }
-                cmds.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
-                cmds.add("-t nat -I OUTPUT 1 -j " + AFWALL_CHAIN_NAME);
+                cmds.add("#NOCHK# -t nat -D OUTPUT -j " + chainName);
+                cmds.add("-t nat -I OUTPUT 1 -j " + chainName);
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
             addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
 
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g -j " + AFWALL_CHAIN_NAME + "-3g-postcustom");
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi -j " + AFWALL_CHAIN_NAME + "-wifi-postcustom");
-            addRejectRules(cmds);
+            cmds.add("-A " + chainName + "-3g -j " + chainName + "-3g-postcustom");
+            cmds.add("-A " + chainName + "-wifi -j " + chainName + "-wifi-postcustom");
+            addRejectRules(cmds, chainName);
 
             if (G.enableInbound()) {
                 // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
                 // local processes can't reply to half-open connections without this rule
-                cmds.add("-A afwall -m state --state ESTABLISHED -j RETURN");
-                cmds.add("-A afwall-input -m state --state ESTABLISHED -j RETURN");
+                cmds.add("-A " + chainName + " -m state --state ESTABLISHED -j RETURN");
+                cmds.add("-A " + chainName + "-input -m state --state ESTABLISHED -j RETURN");
             }
 
-            addInterfaceRouting(ctx, cmds, ipv6);
+            addInterfaceRouting(ctx, cmds, ipv6, chainName);
 
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
             if (G.enableVPN()) {
                 // if !enableVPN then we ignore those interfaces (pass all traffic)
                 for (final String itf : ITFS_VPN) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-vpn");
+                    cmds.add("#NOCHK# -A " + chainName + " -o " + itf + " -j " + chainName + "-vpn");
                 }
                 // KitKat policy based routing - see:
                 // http://forum.xda-developers.com/showthread.php?p=48703545
                 // This covers mark range 0x3c - 0x47.  The official range is believed to be
                 // 0x3c - 0x45 but this is close enough.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x3c/0xfffc -g " + AFWALL_CHAIN_NAME + "-vpn");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -m mark --mark 0x40/0xfff8 -g " + AFWALL_CHAIN_NAME + "-vpn");
+                    cmds.add("-A " + chainName + " -m mark --mark 0x3c/0xfffc -g " + chainName + "-vpn");
+                    cmds.add("-A " + chainName + " -m mark --mark 0x40/0xfff8 -g " + chainName + "-vpn");
                 }
             }
 
             if (G.enableTether()) {
                 for (final String itf : ITFS_TETHER) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-tether");
+                    cmds.add("#NOCHK# -A " + chainName + " -o " + itf + " -j " + chainName + "-tether");
                 }
             }
 
             for (final String itf : ITFS_WIFI) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-wifi");
+                cmds.add("#NOCHK# -A " + chainName + " -o " + itf + " -j " + chainName + "-wifi");
             }
 
             for (final String itf : ITFS_3G) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + " -o " + itf + " -j " + AFWALL_CHAIN_NAME + "-3g");
+                cmds.add("#NOCHK# -A " + chainName + " -o " + itf + " -j " + chainName + "-3g");
             }
 
             // special rules to allow tethering
             // note that this can only blacklist DNS/DHCP services, not all tethered traffic
             String[] users_dhcp = {"root", "nobody", "network_stack"};
             String[] users_dns = {"root", "nobody", "dns_tether"};
-            String action = " -j " + (whitelist ? "RETURN" : AFWALL_CHAIN_NAME + "-reject");
+            String action = " -j " + (whitelist ? "RETURN" : chainName + "-reject");
 
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
-                addRuleForUsers(cmds, users_dhcp, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+                addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
                 // DNS replies to client
-                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p udp --sport=53" + action);
-                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-wifi-tether", "-p tcp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p udp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p tcp --sport=53" + action);
 
             }
             if (containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
-                addRuleForUsers(cmds, users_dhcp, "-A " + AFWALL_CHAIN_NAME + "-tether", "-p udp --sport=67 --dport=68" + action);
+                addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-tether", "-p udp --sport=67 --dport=68" + action);
                 // DNS replies to client
-                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-tether", "-p udp --sport=53" + action);
-                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-tether", "-p tcp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p udp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p tcp --sport=53" + action);
             }
 
             // DNS requests to upstream servers
             // TODO: Allow DNS upstream servers from other connection types
             if (containsUidOrAny(ruleDataSet.dataList, SPECIAL_UID_TETHER)) {
-                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p udp --dport=53" + action);
-                addRuleForUsers(cmds, users_dns, "-A " + AFWALL_CHAIN_NAME + "-3g-tether", "-p tcp --dport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-3g-tether", "-p udp --dport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-3g-tether", "-p tcp --dport=53" + action);
             }
 
             // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
             // normal 3G/wifi rules
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-tether -j " + AFWALL_CHAIN_NAME + "-wifi-fork");
-            cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-tether -j " + AFWALL_CHAIN_NAME + "-3g-fork");
+            cmds.add("-A " + chainName + "-wifi-tether -j " + chainName + "-wifi-fork");
+            cmds.add("-A " + chainName + "-3g-tether -j " + chainName + "-3g-fork");
 
             // NOTE: we still need to open a hole to let WAN-only UIDs talk to a DNS server
             // on the LAN
             if (whitelist) {
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p udp --dport 53 -j RETURN");
-                cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-lan -p tcp --dport 53 -j RETURN");
+                cmds.add("-A " + chainName + "-wifi-lan -p udp --dport 53 -j RETURN");
+                cmds.add("-A " + chainName + "-wifi-lan -p tcp --dport 53 -j RETURN");
 
                 //bug fix allow dns to be open on Pie for all connection type
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-wan" + " -p udp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-home" + " -p udp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p udp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p udp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-tether" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-wifi-wan" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-3g-home" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-3g-roam" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-vpn" + " -p udp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-tether" + " -p udp --dport 53" + " -j RETURN");
 
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-wifi-wan" + " -p tcp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-home" + " -p tcp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-3g-roam" + " -p tcp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-vpn" + " -p tcp --dport 53" + " -j RETURN");
-                    cmds.add("-A " + AFWALL_CHAIN_NAME + "-tether" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-wifi-wan" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-3g-home" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-3g-roam" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-vpn" + " -p tcp --dport 53" + " -j RETURN");
+                    cmds.add("-A " + chainName + "-tether" + " -p tcp --dport 53" + " -j RETURN");
                 }
             }
             // now add the per-uid rules for 3G home, 3G roam, wifi WAN, wifi LAN, VPN
             // in whitelist mode the last rule in the list routes everything else to afwall-reject
-            addRulesForUidlist(cmds, ruleDataSet.dataList, AFWALL_CHAIN_NAME + "-3g-home", whitelist);
-            addRulesForUidlist(cmds, ruleDataSet.roamList, AFWALL_CHAIN_NAME + "-3g-roam", whitelist);
-            addRulesForUidlist(cmds, ruleDataSet.wifiList, AFWALL_CHAIN_NAME + "-wifi-wan", whitelist);
-            addRulesForUidlist(cmds, ruleDataSet.lanList, AFWALL_CHAIN_NAME + "-wifi-lan", whitelist);
-            addRulesForUidlist(cmds, ruleDataSet.vpnList, AFWALL_CHAIN_NAME + "-vpn", whitelist);
-            addRulesForUidlist(cmds, ruleDataSet.tetherList, AFWALL_CHAIN_NAME + "-tether", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.dataList, chainName + "-3g-home", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.roamList, chainName + "-3g-roam", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.wifiList, chainName + "-wifi-wan", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.lanList, chainName + "-wifi-lan", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.vpnList, chainName + "-vpn", whitelist);
+            addRulesForUidlist(cmds, ruleDataSet.tetherList, chainName + "-tether", whitelist);
             if (G.enableTor()) {
-                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6);
+                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
             }
             cmds.add("-P OUTPUT ACCEPT");
         } catch (Exception e) {
@@ -877,6 +931,17 @@ public final class Api {
         }
     }
 
+    /**
+     * Get thread-safe chain name, handling multi-user scenarios safely
+     */
+    private static String getThreadSafeChainName() {
+        synchronized (CHAIN_NAME_LOCK) {
+            if (G.isMultiUser() && G.getMultiUserId() > 0) {
+                return "afwall" + G.getMultiUserId();
+            }
+            return "afwall";
+        }
+    }
 
     public static void waitAndTerminate(ExecutorService executorService) {
         executorService.shutdown();
@@ -891,37 +956,55 @@ public final class Api {
     }
 
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
+        synchronized (GLOBAL_STATUS_LOCK) {
+            if(!globalStatus) {
+                Log.i(TAG, "Using applySavedIptablesRules");
+                globalStatus = true;
+                
+                try {
+                    RuleDataSet dataSet = getDataSet();
+                    List<String> ipv4cmds = new ArrayList<>();
+                    List<String> ipv6cmds = new ArrayList<>();
+                    
+                    // Create thread-safe chain name for this execution
+                    final String chainName = getThreadSafeChainName();
+                    
+                    // Apply IPv4 rules first (sequentially)
+                    try {
+                        Log.i(TAG, "Applying IPv4 rules");
+                        applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false, chainName);
+                        applySavedIp4tablesRules(ctx, ipv4cmds, callback);
+                        Log.i(TAG, "Successfully applied IPv4 rules");
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error applying IPv4 rules", e);
+                        throw new RuntimeException(e);
+                    }
 
-        if(!globalStatus) {
-            Log.i(TAG, "Using applySavedIptablesRules");
-            globalStatus = true;
-            ExecutorService executorService = Executors.newFixedThreadPool(2);
-            RuleDataSet dataSet = getDataSet();
+                    // Apply IPv6 rules second (sequentially after IPv4)
+                    if (G.enableIPv6()) {
+                        try {
+                            Log.i(TAG, "Applying IPv6 rules");
+                            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true, chainName);
+                            applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
+                            Log.i(TAG, "Successfully applied IPv6 rules");
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error applying IPv6 rules", e);
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    
+                    Log.i(TAG, "Successfully applied all firewall rules");
 
-            List<String> ipv4cmds = new ArrayList<>();
-            List<String> ipv6cmds = new ArrayList<>();
-
-            executorService.submit(() -> {
-                applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false);
-                applySavedIp4tablesRules(ctx, ipv4cmds, callback);
-
-            });
-
-            if (G.enableIPv6()) {
-                executorService.submit(() -> {
-                    applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true);
-                    applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
-                });
-
+                } catch (Exception e) {
+                    Log.e(TAG, "Error applying rules", e);
+                } finally {
+                    globalStatus = false;
+                    setRulesUpToDate(true);
+                }
+            } else {
+                Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
             }
-            waitAndTerminate(executorService);
-            globalStatus = false;
-            rulesUpToDate = true;
-
-        } else {
-            Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
         }
-
     }
 
 
@@ -987,7 +1070,7 @@ public final class Api {
 
     public static boolean fastApply(Context ctx, RootCommand callback) {
         try {
-                if (!rulesUpToDate) {
+                if (!getRulesUpToDate()) {
                     Log.i(TAG, "Using full Apply");
                     applySavedIptablesRules(ctx, true, callback);
                 } else {
@@ -1008,7 +1091,7 @@ public final class Api {
             Log.d(TAG, "Exception while applying rules: " + e.getMessage());
             applyDefaultChains(ctx, callback);
         }
-        rulesUpToDate = true;
+        setRulesUpToDate(true);
         return true;
     }
 
@@ -1019,8 +1102,7 @@ public final class Api {
      */
     public static RuleDataSet generateRules(Context ctx, List<PackageInfoData> apps, boolean store) {
 
-        rulesUpToDate = false;
-
+        setRulesUpToDate(false);
         RuleDataSet dataSet = null;
 
         if (apps != null) {
@@ -1267,10 +1349,11 @@ public final class Api {
         if (!isEnabled(ctx)) {
             return;
         }
+        String chainName = getThreadSafeChainName();
         List<String> cmds = new ArrayList<String>();
-        cmds.add("#NOCHK# -N " + AFWALL_CHAIN_NAME + "-reject");
-        cmds.add("-F " + AFWALL_CHAIN_NAME + "-reject");
-        addRejectRules(cmds);
+        cmds.add("#NOCHK# -N " + chainName + "-reject");
+        cmds.add("-F " + chainName + "-reject");
+        addRejectRules(cmds, chainName);
         apply46(ctx, cmds, callback);
     }
 
@@ -1967,7 +2050,7 @@ public final class Api {
         if (prefs.getBoolean(PREF_ENABLED, false) == enabled) {
             return;
         }
-        rulesUpToDate = false;
+        setRulesUpToDate(false);
 
         Editor edit = prefs.edit();
         edit.putBoolean(PREF_ENABLED, enabled);
@@ -2208,7 +2291,6 @@ public final class Api {
         }
     }
 
-    private static Map<Integer, ApplicationInfo> uidToApplicationInfoMap = null;
 
     public static Drawable getApplicationIcon(Context context, int appUid) {
         if (uidToApplicationInfoMap == null) {
