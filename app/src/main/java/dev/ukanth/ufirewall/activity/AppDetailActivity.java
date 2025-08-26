@@ -62,14 +62,16 @@ public class AppDetailActivity extends AppCompatActivity {
                     G.updateLogNotification(appid, isChecked);
                 }
             });
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         final Context ctx = getApplicationContext();
 
@@ -86,7 +88,7 @@ public class AppDetailActivity extends AppCompatActivity {
         HashMap<Integer,String> listMaps = Api.getPackagesForUser(Api.getListOfUids());
         String packageNameList = "";
         PackageInfo packageInfo =  Api.getPackageDetails(ctx, listMaps, appid);
-        if(packageInfo != null) {
+        if(packageInfo != null && packageInfo.applicationInfo != null) {
             packageNameList = packageInfo.applicationInfo.name;
         }
 
@@ -98,18 +100,17 @@ public class AppDetailActivity extends AppCompatActivity {
         ApplicationInfo applicationInfo;
 
         try {
+            assert packageName != null;
             if (!packageName.startsWith("dev.afwall.special.")) {
                 applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-                if (applicationInfo != null) {
-                    try {
-                        image.setBackground(applicationInfo.loadIcon(packageManager));
-                    } catch (Exception e){
-                        image.setImageDrawable(applicationInfo.loadIcon(packageManager));
-                    }
-                    String name = packageManager.getApplicationLabel(applicationInfo).toString();
-                    textView.setText(name);
-                    setTotalBytesManual(down, up, applicationInfo.uid);
+                try {
+                    image.setImageDrawable(applicationInfo.loadIcon(packageManager));
+                } catch (Exception e){
+                    image.setImageDrawable(applicationInfo.loadIcon(packageManager));
                 }
+                String name = packageManager.getApplicationLabel(applicationInfo).toString();
+                textView.setText(name);
+                setTotalBytesManual(down, up, applicationInfo.uid);
             } else {
                 image.setImageDrawable(getApplicationContext().getDrawable(R.drawable.ic_unknown));
                 if(appid >= 0) {

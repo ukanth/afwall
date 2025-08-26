@@ -76,8 +76,10 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
         Toolbar toolbar = findViewById(R.id.custom_toolbar);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
 
@@ -127,37 +129,31 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
     }
 
     @Override
-    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
-        // Handle the back button when dirty
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
-            if (script.getText().toString().equals(prefs.getString(Api.PREF_CUSTOMSCRIPT, ""))
-                    && script2.getText().toString().equals(prefs.getString(Api.PREF_CUSTOMSCRIPT2, ""))) {
-                // Nothing has been changed, just return
-                return super.onKeyDown(keyCode, event);
-            }
-            new MaterialDialog.Builder(this)
-                    .title(R.string.unsaved_changes)
-                    .content(R.string.unsaved_changes_message)
-                    .positiveText(R.string.apply)
-                    .negativeText(R.string.discard)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            resultOk();
-                        }
-                    })
-
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            onBackPressed();
-                            findViewById(R.id.customscript_cancel).performClick();
-                        }
-                    })
-                    .show();
-            return true;
+    public void onBackPressed() {
+        final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
+        if (script.getText().toString().equals(prefs.getString(Api.PREF_CUSTOMSCRIPT, ""))
+                && script2.getText().toString().equals(prefs.getString(Api.PREF_CUSTOMSCRIPT2, ""))) {
+            // Nothing has been changed, just return
+            super.onBackPressed();
+            return;
         }
-        return super.onKeyDown(keyCode, event);
+        new MaterialDialog.Builder(this)
+                .title(R.string.unsaved_changes)
+                .content(R.string.unsaved_changes_message)
+                .positiveText(R.string.apply)
+                .negativeText(R.string.discard)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        resultOk();
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        findViewById(R.id.customscript_cancel).performClick();
+                    }
+                })
+                .show();
     }
 }

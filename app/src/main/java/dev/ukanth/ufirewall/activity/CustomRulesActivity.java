@@ -33,15 +33,11 @@ public class CustomRulesActivity extends AppCompatActivity {
 
             List<Rule> rules = CustomRuleOld.getRules(getApplicationContext());
             for (final Rule rule : rules) {
-
-
                 CardView cardView = new CardView(this);
                 cardView.setElevation(5);
                 cardView.setRadius(5);
-
-                cardView.setLayoutParams(new CardView.LayoutParams(
-                        CardView.LayoutParams.WRAP_CONTENT, 100));
-
+                cardView.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, 100));
                 cardView.setMinimumHeight(60);
 
 
@@ -59,14 +55,6 @@ public class CustomRulesActivity extends AppCompatActivity {
                 });
                 switchButton.setChecked(false);
                 switchButton.setContentDescription(rule.getDesc());
-                /*for (String r : rule.getIpv4()) {
-                    builder.appdend(r);
-                    builder.append("\n");
-                }
-                for (String r : rule.getIpv6()) {
-                    builder.append(r);
-                    builder.append("\n");
-                }*/
                 String builder = rule.getName() +
                         "\n" +
                         rule.getDesc() +
@@ -76,23 +64,10 @@ public class CustomRulesActivity extends AppCompatActivity {
 
                 switchButton.setLayoutParams(params);
 
-               /* cardView.setOnClickListener(v -> {
-                    StringBuilder builder2 = new StringBuilder();
-                    for (String r : rule.getIpv4()) {
-                        builder2.append(r);
-                        builder2.append("\n");
-                    }
-                    for (String r : rule.getIpv6()) {
-                        builder2.append(r);
-                        builder2.append("\n");
-                    }
-                    Toast.makeText(this, builder2.toString(), Toast.LENGTH_SHORT).show();
-                });*/
-
                 cardView.addView(switchButton);
                 linearLayout.addView(cardView);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -101,8 +76,10 @@ public class CustomRulesActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.custom_toolbar_rules);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
 
     }

@@ -63,6 +63,10 @@ import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import android.os.Handler;
+import android.os.Looper;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -89,8 +93,10 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         setSupportActionBar(toolbar);
 
         // Load partially transparent black background
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
@@ -112,7 +118,8 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         initializeRecyclerView(getApplicationContext());
 
         if(G.enableLogService()) {
-            (new CollectLog()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            CollectLog collectLog = new CollectLog().setContext(this);
+            collectLog.execute();
 
         } else {
             recyclerView.setVisibility(View.GONE);
@@ -167,9 +174,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         long l = SQLite.selectCountOf().from(LogData.class).count();
         return (int) l;
     }
-
-
-    private class CollectLog extends AsyncTask<Void, Integer, Boolean> {
+    private class CollectLog implements Runnable {
         private Context context = null;
         MaterialDialog loadDialog = null;
 
@@ -181,7 +186,15 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             return this;
         }
 
-        @Override
+        public void execute() {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> {
+                onPreExecute();
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(this);
+            });
+        }
+
         protected void onPreExecute() {
             loadDialog = new MaterialDialog.Builder(context).cancelable(false)
                     .title(getString(R.string.working))
@@ -190,38 +203,24 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                     .progress(true, 0).show();
         }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
+        protected Boolean doInBackground() {
             List<LogData> logData = getLogData();
             try {
-                if(logData != null && logData.size() > 0) {
-                    logData = updateMap(logData,this);
+                if (logData != null && logData.size() > 0) {
+                    logData = updateMap(logData, this);
                     Collections.sort(logData, new DateComparator());
                     recyclerViewAdapter.updateData(logData);
                     return true;
                 } else {
                     return false;
                 }
-            } catch(Exception e) {
-                Log.e(Api.TAG,"Exception while retrieving  data" + e.getLocalizedMessage());
+            } catch (Exception e) {
+                Log.e(Api.TAG, "Exception while retrieving data" + e.getLocalizedMessage());
                 return null;
             }
         }
 
-        /*@Override
-        protected void onProgressUpdate(Integer... progress) {
-
-            if (progress[0] == 0 ||  progress[0] == -1) {
-                //do nothing
-            } else {
-                loadDialog.incrementProgress(progress[0]);
-            }
-        }*/
-
-        @Override
         protected void onPostExecute(Boolean logPresent) {
-            super.onPostExecute(logPresent);
-            //doProgress(-1);
             try {
                 if ((loadDialog != null) && loadDialog.isShowing()) {
                     loadDialog.dismiss();
@@ -238,7 +237,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
             mSwipeLayout.setRefreshing(false);
 
-
             if (logPresent != null && logPresent) {
                 recyclerViewAdapter.notifyDataSetChanged();
                 recyclerView.setVisibility(View.VISIBLE);
@@ -252,11 +250,15 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
             recyclerView.getRecycledViewPool().clear();
             recyclerView.setRecycledViewPool(new RecyclerView.RecycledViewPool());
-            //Log.i(Api.TAG,"Ended Loading: " + System.currentTimeMillis());
+        }
+
+        @Override
+        public void run() {
+            Boolean result = doInBackground();
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(() -> onPostExecute(result));
         }
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         // Common options: Copy, Export to SD Card, Refresh
@@ -382,7 +384,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        (new CollectLog()).setContext(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        (new CollectLog()).setContext(this).run();
     }
 
 	/*@Override

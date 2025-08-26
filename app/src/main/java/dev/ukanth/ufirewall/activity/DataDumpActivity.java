@@ -26,7 +26,8 @@ package dev.ukanth.ufirewall.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -82,8 +83,6 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     protected abstract void populateData(final Context ctx);
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
-    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
 
     protected void setData(final String data) {
         dataText = data;
@@ -96,16 +95,10 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     }
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
+        switch (G.getSelectedTheme()) {
+            case "D" -> setTheme(R.style.AppDarkTheme);
+            case "L" -> setTheme(R.style.AppLightTheme);
+            case "B" -> setTheme(R.style.AppBlackTheme);
         }
     }
 
@@ -131,8 +124,10 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         mScrollView = findViewById(R.id.ruleScrollView);
 
         // Load partially transparent black background
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         setData("");
         populateData(this);
@@ -162,37 +157,43 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        float newSize;
         switch (item.getItemId()) {
-            case MENU_COPY:
+            case MENU_COPY -> {
                 copy();
                 return true;
-            case MENU_EXPORT_LOG:
+            }
+            case MENU_EXPORT_LOG -> {
                 exportToSD();
                 return true;
-            case MENU_REFRESH:
+            }
+            case MENU_REFRESH -> {
                 populateData(this);
                 return true;
-            case MENU_ZOOM_IN:
-                Float newSize = scaleGesture.getTextSize() + 2.0f;
+            }
+            case MENU_ZOOM_IN -> {
+                newSize = scaleGesture.getTextSize() + 2.0f;
                 scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
-                G.ruleTextSize(newSize.intValue());
+                G.ruleTextSize((int) newSize);
                 return false;
-            case MENU_ZOOM_OUT:
+            }
+            case MENU_ZOOM_OUT -> {
                 newSize = scaleGesture.getTextSize() - 2.0f;
                 scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
-                G.ruleTextSize(newSize.intValue());
+                G.ruleTextSize((int) newSize);
                 return false;
-            default:
+            }
+            default -> {
                 return super.onOptionsItemSelected(item);
+            }
         }
     }
 
-
-    private static class Task extends AsyncTask<Void, Void, Boolean> {
+    private static class Task implements Runnable {
         public String filename = "";
         private final Context ctx;
-
         private final WeakReference<DataDumpActivity> activityReference;
+        private final Handler handler = new Handler(Looper.getMainLooper());
 
         // only retain a weak reference to the activity
         Task(DataDumpActivity context) {
@@ -200,9 +201,8 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             activityReference = new WeakReference<>(context);
         }
 
-
         @Override
-        public Boolean doInBackground(Void... args) {
+        public void run() {
             FileOutputStream output = null;
             boolean res = false;
 
@@ -219,8 +219,6 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                 output.write(dataText.getBytes());
                 filename = file.getAbsolutePath();
                 res = true;
-            } catch (FileNotFoundException e) {
-                Log.e(TAG,e.getMessage(),e);
             } catch (IOException e) {
                 Log.e(TAG,e.getMessage(),e);
             } finally {
@@ -233,19 +231,18 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                     Log.e(TAG,ex.getMessage(),ex);
                 }
             }
-            return res;
-        }
 
-        @Override
-        public void onPostExecute(Boolean res) {
-            DataDumpActivity activity = activityReference.get();
-            if (activity == null || activity.isFinishing()) return;
+            final boolean result = res;
+            handler.post(() -> {
+                DataDumpActivity activity = activityReference.get();
+                if (activity == null || activity.isFinishing()) return;
 
-            if (res) {
-                Api.toast(ctx, ctx.getString(R.string.export_rules_success) + filename, Toast.LENGTH_LONG);
-            } else {
-                Api.toast(ctx, ctx.getString(R.string.export_logs_fail), Toast.LENGTH_LONG);
-            }
+                if (result) {
+                    Api.toast(ctx, ctx.getString(R.string.export_rules_success) + filename, Toast.LENGTH_LONG);
+                } else {
+                    Api.toast(ctx, ctx.getString(R.string.export_logs_fail), Toast.LENGTH_LONG);
+                }
+            });
         }
     }
 
@@ -253,7 +250,8 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
         if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
             // Do some stuff
-            new Task(this).execute();
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            executor.execute(new Task(this));
         } else {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -262,7 +260,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
             } else{
-                new Task(this).execute();
+                new Task(this).run();
             }
         }
     }
