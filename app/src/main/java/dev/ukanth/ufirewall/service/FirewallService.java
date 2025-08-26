@@ -228,8 +228,15 @@ public class FirewallService extends Service {
         boolean hasBluetooth = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
         if (hasBluetooth) {
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothAdapter != null) {
-                bluetoothAdapter.getProfileProxy(context, btListener, 5);
+            if (bluetoothAdapter != null && btListener != null && btPanProfile == null) {
+                try {
+                    boolean success = bluetoothAdapter.getProfileProxy(context, btListener, 5); // BluetoothProfile.PAN
+                    if (!success) {
+                        Log.w(G.TAG, "Failed to get Bluetooth PAN profile proxy");
+                    }
+                } catch (Exception e) {
+                    Log.e(G.TAG, "Error getting Bluetooth profile proxy", e);
+                }
             }
         }
         return bluetoothAdapter;
@@ -245,12 +252,19 @@ public class FirewallService extends Service {
             packageReceiver = null;
         }
 
+        // Close bluetooth profile connection to prevent ServiceConnection leak
         if(bluetoothAdapter != null) {
             try {
-                bluetoothAdapter.closeProfileProxy(5, InterfaceTracker.getBtProfile());
-                btListener = null;
+                if(btPanProfile != null) {
+                    bluetoothAdapter.closeProfileProxy(5, btPanProfile); // BluetoothProfile.PAN
+                    btPanProfile = null;
+                }
             } catch (Exception e){
-                Log.e(G.TAG, "Error closing bt profile",e);
+                Log.e(G.TAG, "Error closing bt profile", e);
+            } finally {
+                // Always clean up references regardless of profile state
+                btListener = null;
+                bluetoothAdapter = null;
             }
         }
         super.onDestroy();
