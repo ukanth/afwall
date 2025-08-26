@@ -5,7 +5,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context="dev.ukanth.ufirewall.activity.CustomRulesActivity">
+    tools:context="dev.ukanth.ufirewall.activity.CustomRulesActivity"
+    android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/custom_toolbar_rules"

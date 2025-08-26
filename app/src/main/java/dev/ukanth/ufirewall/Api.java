@@ -166,7 +166,7 @@ public final class Api {
     public static final int SPECIAL_UID_NTP = -14;
 
     public static final int NOTIFICATION_ID = 1;
-    public static final String PREF_FIREWALL_STATUS = "AFWallStaus";
+    public static final String PREF_FIREWALL_STATUS = "AFWallStatus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
     //for import/export rules
     //revertback to old approach for performance
@@ -1940,7 +1940,7 @@ public final class Api {
         //if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
         //if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
         //if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
-        //if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
+        if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
         //if (!installBinary(ctx, R.raw.run_pie_arm64, "run_pie")) return false;
         return true;
     }
@@ -2414,7 +2414,10 @@ public final class Api {
         }
     }
 
-    private static void updateExportPackage(Map<String, JSONObject> exportMap, String packageName, int identifier) throws JSONException {
+    private static void updateExportPackage(Map<String, JSONObject> exportMap, String packageName, boolean isChecked, int identifier) throws JSONException {
+        if (!isChecked) {
+            return;
+        }
         JSONObject obj;
         if (packageName != null) {
             if (exportMap.containsKey(packageName)) {
@@ -2426,16 +2429,15 @@ public final class Api {
                 exportMap.put(packageName, obj);
             }
         }
-
     }
 
     private static void updatePackage(Context ctx, String savedPkg_uid, Map<String, JSONObject> exportMap, int identifier) throws JSONException {
         StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
         while (tok.hasMoreTokens()) {
             String uid = tok.nextToken();
-            if (!uid.equals("")) {
+            if (!uid.isEmpty()) {
                 String packageName = ctx.getPackageManager().getNameForUid(Integer.parseInt(uid));
-                updateExportPackage(exportMap, packageName, identifier);
+                updateExportPackage(exportMap, packageName, /*is_checked=*/ true, identifier);
             }
         }
     }
@@ -2446,16 +2448,13 @@ public final class Api {
 
         try {
             for (PackageInfoData app : apps) {
-                if (app.selected_wifi || app.selected_3g || app.selected_roam || app.selected_vpn ||
-                        app.selected_tether || app.selected_lan || app.selected_tor) {
-                    updateExportPackage(exportMap, app.pkgName, WIFI_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, DATA_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, ROAM_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, VPN_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, TETHER_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, LAN_EXPORT);
-                    updateExportPackage(exportMap, app.pkgName, TOR_EXPORT);
-                }
+                updateExportPackage(exportMap, app.pkgName, app.selected_wifi, WIFI_EXPORT);
+                updateExportPackage(exportMap, app.pkgName, app.selected_3g, DATA_EXPORT);
+                updateExportPackage(exportMap, app.pkgName, app.selected_roam, ROAM_EXPORT);
+                updateExportPackage(exportMap, app.pkgName, app.selected_vpn, VPN_EXPORT);
+                updateExportPackage(exportMap, app.pkgName, app.selected_tether, TETHER_EXPORT);
+                updateExportPackage(exportMap, app.pkgName, app.selected_lan, LAN_EXPORT);
+                updateExportPackage(exportMap, app.pkgName, app.selected_tor, TOR_EXPORT);
             }
         } catch (JSONException e) {
             Log.e(TAG, e.getLocalizedMessage());

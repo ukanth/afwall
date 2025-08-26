@@ -164,7 +164,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     /**
      * FIXME
      **/
-    private static final String AFWALL_STATUS = "AFWallStaus";
+    private static final String AFWALL_STATUS = "AFWallStatus";
     //private static final String BLOCKED_NOTIFICATION = "block_filter_app";
     /* Profiles */
     private static final String ADDITIONAL_PROFILES = "plusprofiles";

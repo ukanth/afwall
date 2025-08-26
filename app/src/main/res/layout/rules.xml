@@ -5,7 +5,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:background="?attr/itemBackground"
-    android:duplicateParentState="false">
+    android:duplicateParentState="false"
+    android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/rule_toolbar"
