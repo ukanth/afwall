@@ -1,253 +1,372 @@
-## AFWall+ (Android Firewall+)
-![Android CI](https://github.com/ukanth/afwall/workflows/Android%20CI/badge.svg?branch=beta) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall) ![GitHub](https://img.shields.io/github/license/ukanth/afwall)  ![F-Droid](https://img.shields.io/f-droid/v/dev.ukanth.ufirewall) ![GitHub All Releases](https://img.shields.io/github/downloads/ukanth/afwall/total) ![GitHub repo size](https://img.shields.io/github/repo-size/ukanth/afwall)
+# AFWall+ (Android Firewall+)
 
-Description
------------
+[![Android CI](https://github.com/ukanth/afwall/workflows/Android%20CI/badge.svg?branch=beta)](https://github.com/ukanth/afwall/actions) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall) ![License](https://img.shields.io/github/license/ukanth/afwall) ![F-Droid](https://img.shields.io/f-droid/v/dev.ukanth.ufirewall) ![Downloads](https://img.shields.io/github/downloads/ukanth/afwall/total) ![Repo Size](https://img.shields.io/github/repo-size/ukanth/afwall)
 
-Android Firewall+ (AFWall+) is an advanced iptables editor (GUI) for Android. It provides fine-grained control over which Android apps are allowed to access the network.
+> **Your Privacy, Your Control** - AFWall+ gives you complete control over which apps can access the internet on your Android device.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ukanth/afwall/0502e6f17ceda08069720ff2f260902690e65e9b/screenshots/Main_2.0.png" width="300" alt="AFWall+ Screenshot">
+</p>
 
-For more information and a community discussion ground, please visit the official [XDA thread](http://forum.xda-developers.com/showthread.php?t=1957231) or the official [Wiki page](https://github.com/ukanth/afwall/wiki).
+## 🔥 What is AFWall+?
 
-<img src="https://raw.githubusercontent.com/ukanth/afwall/0502e6f17ceda08069720ff2f260902690e65e9b/screenshots/Main_2.0.png" width="300">
+**AFWall+ (Android Firewall+)** is a powerful, open-source firewall application for rooted Android devices. Built on Linux's robust `iptables` framework, AFWall+ provides **granular network control** at the system level - something impossible with standard Android permissions.
 
-[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall)
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/dev.ukanth.ufirewall/)
-    
+### 🎯 **Core Purpose**
+- **Block unwanted network access** by apps, even when they have internet permission
+- **Prevent data leaks** and unauthorized background connections
+- **Monitor network activity** with comprehensive logging
+- **Save battery and data** by controlling which apps can connect when
+- **Enhance privacy** by blocking tracking and analytics
 
-Index
------
+### 🛡️ **How It Works**
+AFWall+ operates at the **Linux kernel level** using `iptables` rules to:
+1. **Intercept all network requests** before they leave your device
+2. **Apply custom firewall rules** based on your preferences
+3. **Allow or block connections** per app, per network type (WiFi, mobile, VPN)
+4. **Log blocked attempts** for monitoring and analysis
 
-* [Description](#description)
-* [Availability](#availability)
-* [Supports](#supports)
-* [Highlights](#highlights)
-* [Features](#features)
-* [Bug Reports](#bug-reports)
-* [Limitations](#limitations)
-* [Compatibility](#compatibility)
-* [Upgrading](#upgrading)
-* [Permissions](#permissions)
-* [Frequently Asked Questions (FAQ)](#frequently-asked-questions)
-* [License](#license)
-* [Acknowledgements](#acknowledgements)
-* [Compiling AFWall+](#compiling-the-apk)
-* [Compile Native Binaries](#compiling-native-binaries)
-* [Contributing](#contributing)
-* [Translating](#translating)
-* [Donations](https://github.com/ukanth/afwall/wiki#making-donations)
+This approach is **far more powerful** than app-level solutions because it works regardless of how apps try to connect to the internet.
 
+---
 
-Availability
-------------
-AFWall can be downloaded via [Google Play Store](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall), [GitHub](https://github.com/ukanth/afwall/releases) or via [F-Droid](https://f-droid.org/repository/browse/?fdid=dev.ukanth.ufirewall).
+## 📥 Download
 
-The [changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md) documents changes between each new release.
+<p align="left">
+  <a href="https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80">
+  </a>
+  <a href="https://f-droid.org/packages/dev.ukanth.ufirewall/">
+    <img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">
+  </a>
+  <a href="https://github.com/ukanth/afwall/releases">
+    <img src="https://img.shields.io/badge/GitHub-Releases-blue?style=for-the-badge&logo=github" alt="GitHub Releases" height="80">
+  </a>
+</p>
 
-Supports
---------
-* Android versions 5.x to 11.x
-    for 4.x - 2.9.9 
-    for 2.x - 1.3.4.1
-* Compatible with Magisk and LineageOS su.    
-* ARM/MIPS/x86 processors
-* IPv4 & IPv6 protocols
-* WiFi, mobile data, LAN, VPN, tether, roaming and Tor
-* Multi-user (multiple profiles)
-* Many languages *(see [Translating](#translating))*
-* Tasker and Locale plugin
-* Xposed plugin
+📋 **Release Notes**: Check the [changelog](https://github.com/ukanth/afwall/blob/beta/Changelog.md) for what's new in each version.
 
-Highlights
-----------
-* Easy to install
-* Simple to use
-* Free & open source
-* No advertisements
-* Built-in IPtables/BusyBox
+---
 
-Features
---------
-* List and search for all installed applications
-* Sort installed applications by installation date, [UUID](https://developer.android.com/reference/java/util/UUID) or in alphabatical order
-* Receive notification for any newly installed application, AFwall only list app with INTERNET_PERMISSION
-* AFWall comes with it's logs service to see what's going on
-* Display notifcations for blocked packets
-* Filter blocked packet notifications per app
-* Export & import rules ("Import All Rules" requires the donate version)
-* Option to prevent data leaks during boot (requires *init.d* support or *S-OFF*)
-* Password protection
-* Option to manage iptable rules with a custom script
-* ~~Device Admin to protect AFWall+ from uninstall~~ (see [here](https://developers.google.com/android/work/device-admin-deprecation) why it was removed)
+## 🌟 Key Features
 
-Bug Reports
------------
+### 🔐 **Granular Control**
+- **Per-app network rules** - Allow/block individual apps
+- **Network type filtering** - Different rules for WiFi, mobile data, VPN, tethering
+- **IPv4 & IPv6 support** - Complete protocol coverage
+- **Custom rule scripting** - Advanced users can write custom iptables rules
 
-Please check GitHub's [issues](https://github.com/ukanth/afwall/issues) section for existing bugs and in case you like to submit a new one. Feature requests are also welcome. 
+### 🎛️ **User Experience**
+- **Clean, intuitive interface** - Easy to understand app list with clear allow/block controls
+- **Quick search & filtering** - Find apps instantly, sort by name, install date, or permissions
+- **Bulk operations** - Enable/disable rules for multiple apps at once
+- **Profile management** - Switch between different rule sets (home, work, travel)
 
-Before you report any problem/bug, take a look into the [how-to-report a bug](https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug) section.
+### 📊 **Monitoring & Logging**
+- **Real-time network monitoring** - See which apps are trying to connect
+- **Detailed connection logs** - Track blocked attempts with timestamps and destinations
+- **Notification system** - Get alerts for blocked connection attempts
+- **Export/import rules** - Backup your configuration or share with others
 
-Limitations
------------
+### 🔧 **Advanced Features**
+- **Boot protection** - Apply rules before apps start (prevents data leaks during startup)
+- **Startup delay management** - Robust boot rule application with network change handling
+- **Multi-user support** - Different profiles for different Android users
+- **Tasker/Locale integration** - Automate firewall based on conditions
+- **Password protection** - Secure your firewall settings
+- **Tor and VPN detection** - Special handling for privacy networks
 
-* A firewall cannot protect against attacks that are performed outside the operating point. For example, if there is a Point-to-Point connection to the Internet.
-* A firewall cannot prevent corporate data from being copied to a memory stick or HDD, and having these removed from the building. 
-* AFWall+ does not scan for virus/malware that may exist in the files that pass through it, because it is a firewall and not an antivirus solution.
-* AFWall+ is not an ad-blocker.
-* Some apps/script which are running under admin rights might bypassing AFWall because they overwrite the system own IPtables with their own rules. Make sure you only give trusted application superuser rights, most "su"-solutions have companion apps which showing which apps are running under which rights like MagisK, Chainfire's su etc.
+### 🌐 **Network Types Supported**
+- 📶 **Mobile Data** (3G/4G/5G) - including roaming detection
+- 📡 **WiFi** - home, work, public hotspots
+- 🔗 **VPN** - all VPN types and providers
+- 🔄 **Tethering** - WiFi hotspot, USB, Bluetooth
+- 🧅 **Tor** - onion routing support
+- 🏠 **LAN** - local network access
 
-Compatibility
--------------
+---
 
-AFWall+ has been successfully tested under Android versions 4.x - 9.x. and is reported to work with most Android variants, including stock or exotic ROMs.
+## 📋 System Requirements
 
-We do not recommend using AFWall+ in combination with any of the similar solutions (Avast, Kaspersky, NetGuard etc) because this could result in conflicts or even data leaks (e.g. IPtables could get overwritten).
+### ✅ **Compatibility**
+- **Android versions**: 5.0 (API 21) to 14+ (actively maintained)
+  - Legacy support: Android 4.x (version 2.9.9), Android 2.x (version 1.3.4.1)
+- **Root access**: Required (Magisk, SuperSU, LineageOS su)
+- **Architectures**: ARM, ARM64, x86, x86_64, MIPS
+- **Storage**: ~15MB app + ~5MB for binaries
 
-Upgrading
----------
+### 🔧 **Root Methods Supported**
+- ✅ **Magisk** (recommended)
+- ✅ **LineageOS built-in su**
+- ✅ **SuperSU** (legacy)
+- ✅ **KingRoot** (not recommended)
 
-The upgrading mechanism is really simple, basically you can just "over-install" the new version over the old one, however this is the best pratice (which we recommended):
+### 🚫 **Limitations**
+- **Requires root access** - No root = no functionality
+- **Not an antivirus** - Doesn't scan files for malware
+- **Not an ad-blocker** - Blocks network access, not ads within allowed connections
+- **VPN conflicts** - Some VPN apps may interfere with firewall rules
+- **System-level apps** - Some system processes may bypass rules if they have root access
 
-* **Make a backup of the current version** (e.g. via Titanium Backup).
-* **Do not remove the current version** (otherwise your settings might getting reset).
-* Download the latest AFWall+ version.
-* Install the new version over the previous version.
-* Done!
+---
 
-Permissions
------------
+## 🚀 Quick Start Guide
 
-AFWall+ asks for the following [Android permissions](https://developer.android.com/guide/topics/permissions/overview):
+### 1. **Pre-Installation**
+```bash
+# Verify root access
+su -c "id"
+# Should return: uid=0(root) gid=0(root)
+```
 
-* RECEIVE_BOOT_COMPLETED: Autostart (Bootup) AFWall+ after the system finishes booting.
-* ACCESS_NETWORK_STATE: Allows AFWall+ to access information about networks (iptables).
-* WRITE_EXTERNAL_STORAGE: Allows AFWall+ to write to external storage for debug log and export iptables rules.
-* INTERNET: NetworkInterface.getNetworkInterfaces() needs android.permission.INTERNET. This is just being used to get the IPv4 and IPv6 addresses/subnets for each interface, so the LAN address ranges can be determined. Nothing is actually trying to access the network. Also take a look at [Stackoverflow](https://stackoverflow.com/questions/17252018/getting-my-lan-ip-address-192-168-xxxx-ipv4).
-* ACCESS_WIFI_STATE: Used to detect the tether state.
-* DEPRECATED ~~ACCESS_SUPERUSER: Standard to support Superuser/SuperSU (by Koushik/Chainfire)~~
+### 2. **Installation**
+- Install AFWall+ from your preferred source
+- Grant root permission when prompted
+- Enable firewall in main screen
 
-Frequently Asked Questions
------------
+### 3. **Basic Configuration**
+1. **Enable the firewall** - Toggle the main switch
+2. **Configure apps** - Tap apps to allow WiFi (green) or mobile data (orange)
+3. **Apply rules** - Tap the apply button (firewall icon)
+4. **Test connectivity** - Verify apps work as expected
 
-Having some problems with AFWall+? Check out our [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) before reporting a bug or problem that may already be known or answered.
+### 4. **Essential Settings**
+- **Boot startup delay**: Prevents rule conflicts during boot
+- **Notification settings**: Control alert behavior
+- **Log settings**: Enable if you want connection monitoring
 
-License
--------
+---
 
-AFWall+ is released under the [GNU General Public License v3.0 License](https://www.gnu.org/licenses/gpl.html).
+## 🔧 Advanced Configuration
 
-Acknowledgements
-----------------
+### 📝 **Custom Rules**
+AFWall+ supports custom iptables rules for advanced users:
 
-The original codebase was derived from [DroidWall](http://code.google.com/p/droidwall) by Rodrigo Rosauro. DroidWall was sold to AVAST in December 2011, and is no longer actively maintained.
+```bash
+# Example: Allow specific IP range
+-A afwall-wifi -d 192.168.1.0/24 -j ACCEPT
 
-This project also uses some other open-source libraries such as:
+# Example: Block specific port
+-A afwall -p tcp --dport 443 -j REJECT
+```
 
-<table>
-    <tr>
-        <td><strong>Project</strong></td>
-        <td><strong>License</strong></td>
-        <td><strong>Website</strong></td>
-    </tr>
-    <tr>
-        <td>Android Color Picker</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/attenzione/android-ColorPickerPreference</td>
-    </tr>
-	<tr>
-        <td>Busybox</td>
-        <td>GNU GPLv2</td>
-        <td>http://www.busybox.net</td>
-    </tr>
-    <tr>
-        <td>DBFlow</td>
-        <td>MIT</td>
-        <td>https://github.com/Raizlabs/DBFlow</td>
-    </tr>
-	<tr>
-        <td>Prettytime</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/ocpsoft/prettytime</td>
-    </tr>
-    <tr>
-        <td>material-dialogs</td>
-        <td>MIT License</td>
-        <td>https://github.com/afollestad/material-dialogs</td>
-    </tr>
-	<tr>
-        <td>iptables</td>
-        <td>GNU GPLv2</td>
-        <td>http://netfilter.org/projects/iptables/index.html</td>
-    </tr>
-    <tr>
-        <td>Libsuperuser</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/Chainfire/libsuperuser</td>
-    </tr>
-    <tr>
-        <td>Locale Plugin</td>
-        <td>Apache License 2.0</td>
-        <td>http://www.twofortyfouram.com</td>
-    </tr>
-    <tr>
-        <td>Networklog</td>
-        <td>Mozilla Public License Version 2.0</td>
-        <td>https://github.com/pragma-/networklog</td>
-    </tr>
-	<tr>
-        <td>Root Tools</td>
-        <td>Apache License 2.0</td>
-        <td>https://github.com/Stericson/RootTools</td>
-    </tr>	
-</table>
+### 🔄 **Profiles**
+Create different rule sets for different scenarios:
+- **Home**: Relaxed rules for trusted network
+- **Work**: Restrictive rules for corporate network
+- **Public**: Maximum security for public WiFi
+- **Travel**: Balanced rules for mobile use
 
-Compiling the APK
----------------
+### 📊 **Logging Configuration**
+- **Packet logging**: Uses nflog for detailed connection tracking
+- **Log rotation**: Automatic cleanup of old logs
+- **Export options**: Save logs for external analysis
 
-Prerequisites:
+---
 
-* Android SDK in your $PATH (both platform-tools/ and tools/ directories)
-* Javac 1.7 (or higher) and a recent version of Apache ant in your $PATH
-* Git should be added in your $PATH
-* Use the Android SDK Manager to install API 19 (or higher)
+## 🌍 Language Support
 
-Quick start:
+AFWall+ is available in **40+ languages** thanks to our community translators:
 
-    git clone git://github.com/ukanth/afwall
-    cd afwall
-    ./gradlew clean assembleDebug
+🇺🇸 English • 🇪🇸 Español • 🇫🇷 Français • 🇩🇪 Deutsch • 🇮🇹 Italiano • 🇷🇺 Русский • 🇨🇳 中文 • 🇯🇵 日本語 • 🇰🇷 한국어 • 🇵🇹 Português • 🇳🇱 Nederlands • 🇵🇱 Polski • 🇹🇷 Türkçe • 🇸🇦 العربية • 🇮🇳 हिंदी • And many more!
 
-For complete instructions, please take a look at the [Wiki's How To Compile AFWAll section](https://github.com/ukanth/afwall/wiki/HOWTO-Compile-AFWall).
+**Want to help translate?** Join our [Crowdin translation project](http://crowdin.net/project/afwall).
 
-## Compiling Native Binaries
+---
 
-You can compile the external binaries like BusyBox or the IPtables yourself, on the host side, you'll need to install the following:
+## 🛠️ Development
 
-* [NDK r10](http://developer.android.com/tools/sdk/ndk/index.html), nominally under /opt/android-ndk-r10
-* Host-side gcc 4.7, make, etc. (Red Hat 'Development Tools' group or Debian build-essential)
-* autoconf, automake, and libtool
+### 🏗️ **Building from Source**
 
-This command will build the Android binaries and copy them into `res/raw/`:
+#### **Prerequisites**
+- Android SDK (API level 21+)
+- Java 17+
+- Git
+- Android NDK (for native binaries)
 
-    make -C external NDK=/opt/android-ndk-r10
+#### **Quick Build**
+```bash
+git clone https://github.com/ukanth/afwall.git
+cd afwall
+./gradlew clean assembleDebug
+```
 
-Contributing
-------------
+#### **Native Binaries**
+To compile iptables, busybox, and other native components:
+```bash
+# Requires Android NDK
+export NDK=/opt/android-ndk-r25
+make -C external NDK=$NDK
+```
 
-You can fork the repository and contribute using [pull requests](https://github.com/ukanth/afwall/pulls).
+### 📁 **Project Structure**
+```
+afwall/
+├── app/src/main/java/dev/ukanth/ufirewall/
+│   ├── Api.java                    # Core iptables interface
+│   ├── MainActivity.java           # Main UI
+│   ├── InterfaceTracker.java       # Network state monitoring
+│   ├── util/BootRuleManager.java   # Boot rule application
+│   ├── service/                    # Background services
+│   ├── broadcast/                  # System event receivers
+│   └── log/                        # Logging subsystem
+├── app/src/main/res/raw/           # Native binaries (iptables, busybox)
+├── external/                       # Native binary sources
+└── scripts/                        # Build scripts
+```
 
-All contributions no matter if large or small, major features, bug fixes, additional language translations, unit/integration tests are welcomed and appreciated. The pull requests and findings are usually getting reviewed and discussed with the developer and the community .
+### 🧪 **Testing**
+```bash
+# Run lint checks
+./gradlew lint
 
-Translating
------------
-The `res/values-*` dirs are kept up-to-date automatically via the [Crowdin Translate Extension](https://github.com/marketplace/crowdin). See [our official translation page](http://crowdin.net/project/afwall) in case you like to contribute.
+# Run unit tests
+./gradlew test
 
-AFWall+ is available in many languages but if yours is not included - or if it needs updating or improving - please create an account and use the translation system and commit your changes.
+# Install debug build
+./gradlew installDebug
+```
 
+---
 
-Donations
------------
+## 🤝 Contributing
 
-Donations are **optional** and helps the project in order to keep up the development. The official donation link is the one below which points to the official AFWall+ PayPal account. You optionally can buy the unlocker key via Google Play Store which unlocks additional features in AFWall+, the unlocker is not avbl. via F-Droid.
+We welcome contributions! Here's how you can help:
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
+### 🐛 **Bug Reports**
+- Check [existing issues](https://github.com/ukanth/afwall/issues) first
+- Follow our [bug report guide](https://github.com/ukanth/afwall/wiki/HOWTO-Report-Bug)
+- Include device info, Android version, and logs
+
+### 💡 **Feature Requests**
+- Open an issue with the "enhancement" label
+- Describe the use case and expected behavior
+- Consider if it fits AFWall+'s scope and philosophy
+
+### 👨‍💻 **Code Contributions**
+```bash
+# Standard GitHub workflow
+1. Fork the repository
+2. Create a feature branch: git checkout -b feature-name
+3. Make your changes and test thoroughly
+4. Submit a pull request with clear description
+```
+
+### 🌐 **Translations**
+- Join our [Crowdin project](http://crowdin.net/project/afwall)
+- No technical knowledge required
+- Help make AFWall+ accessible worldwide
+
+---
+
+## 📞 Community & Support
+
+### 💬 **Discussion Forums**
+- **XDA Thread**: [Official community discussion](http://forum.xda-developers.com/showthread.php?t=1957231)
+- **GitHub Issues**: Technical problems and feature requests
+- **Wiki**: [Comprehensive documentation](https://github.com/ukanth/afwall/wiki)
+
+### ❓ **Frequently Asked Questions**
+Before reporting issues, check our [FAQ](https://github.com/ukanth/afwall/wiki/FAQ) for common solutions.
+
+### 🆘 **Getting Help**
+1. Check the FAQ and wiki
+2. Search existing GitHub issues
+3. Ask on XDA forums
+4. Create a new GitHub issue (last resort)
+
+---
+
+## 📖 Technical Details
+
+### 🔧 **Architecture**
+AFWall+ uses a **layered architecture**:
+
+1. **UI Layer**: Android activities and fragments for user interaction
+2. **Service Layer**: Background services for rule application and monitoring
+3. **Core Layer**: iptables rule generation and management
+4. **System Layer**: Native binaries and root shell interface
+
+### 🏗️ **Key Components**
+- **BootRuleManager**: Robust boot-time rule application with race condition prevention
+- **InterfaceTracker**: Network interface monitoring and change detection
+- **Api.java**: Central iptables command generation and execution
+- **FirewallService**: Background service for continuous monitoring
+- **LogService**: Network packet logging and analysis
+
+### 📱 **Android Integration**
+- **Broadcast Receivers**: Monitor system events (boot, network changes, app installs)
+- **Content Providers**: Share configuration data securely
+- **Notification System**: User alerts for blocked connections
+- **Quick Settings Tile**: Fast firewall toggle (Android 7+)
+
+---
+
+## 🏆 Acknowledgements
+
+AFWall+ builds upon the work of many open-source projects and contributors:
+
+### 🌟 **Origins**
+- **Original concept**: Derived from [DroidWall](http://code.google.com/p/droidwall) by Rodrigo Rosauro
+- **Current maintainer**: [Umakanthan Chandran](https://github.com/ukanth)
+
+### 📚 **Libraries & Dependencies**
+| Component | License | Purpose |
+|-----------|---------|---------|
+| [iptables](http://netfilter.org/projects/iptables/) | GPL v2 | Linux firewall framework |
+| [BusyBox](http://www.busybox.net) | GPL v2 | Unix utilities |
+| [libsuperuser](https://github.com/Chainfire/libsuperuser) | Apache 2.0 | Root access management |
+| [libsu](https://github.com/topjohnwu/libsu) | Apache 2.0 | Modern root interface |
+| [Material Dialogs](https://github.com/afollestad/material-dialogs) | MIT | UI components |
+| [DBFlow](https://github.com/Raizlabs/DBFlow) | MIT | Database ORM |
+| [PrettyTime](https://github.com/ocpsoft/prettytime) | Apache 2.0 | Human-readable timestamps |
+
+### 👥 **Contributors**
+Thanks to all contributors who have helped improve AFWall+ over the years!
+
+---
+
+## 📄 License
+
+AFWall+ is released under the **GNU General Public License v3.0**.
+
+```
+Copyright (C) 2009-2011 Rodrigo Zechin Rosauro
+Copyright (C) 2011-2024 Umakanthan Chandran
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+```
+
+**Full license text**: [LICENSE](LICENSE) file or [gnu.org/licenses/gpl-3.0](https://www.gnu.org/licenses/gpl-3.0.html)
+
+---
+
+## 💝 Support the Project
+
+AFWall+ is developed and maintained by volunteers in their free time. If you find it useful, consider supporting the project:
+
+### 💰 **Donations**
+- **PayPal**: [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
+- **Google Play**: Purchase the [unlocker key](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall.donate) for additional features
+
+### 🌟 **Other Ways to Help**
+- ⭐ Star this repository
+- 🐛 Report bugs and test new features
+- 🌐 Contribute translations
+- 📝 Improve documentation
+- 💬 Help other users in forums
+
+---
+
+<p align="center">
+  <i>Made with ❤️ for Android privacy and security</i><br>
+  <strong>AFWall+ - Your Network, Your Rules</strong>
+</p>
