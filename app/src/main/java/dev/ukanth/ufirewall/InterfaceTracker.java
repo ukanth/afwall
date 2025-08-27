@@ -79,7 +79,7 @@ public final class InterfaceTracker {
     }
 
     private static void getWifiTetherStatus(Context context, InterfaceDetails d) {
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         Method[] wmMethods = wifi.getClass().getDeclaredMethods();
 
         d.isWifiTethered = false;
@@ -242,9 +242,11 @@ public final class InterfaceTracker {
         // REVISIT: this can be removed once we're confident that G is in sync with profile changes
         G.reloadPrefs();
 
-        if (reason.equals(InterfaceTracker.BOOT_COMPLETED)) {
+        if (reason.equals(InterfaceTracker.BOOT_COMPLETED) || reason.startsWith(InterfaceTracker.BOOT_COMPLETED)) {
+            Log.i(TAG, "Applying boot-specific rules for reason: " + reason);
             applyBootRules(reason);
         } else {
+            Log.i(TAG, "Applying regular rules for reason: " + reason);
             applyRules(reason);
         }
     }

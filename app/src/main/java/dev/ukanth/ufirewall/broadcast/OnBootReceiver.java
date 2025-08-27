@@ -16,6 +16,7 @@ import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.LogService;
+import dev.ukanth.ufirewall.util.BootRuleManager;
 import dev.ukanth.ufirewall.util.G;
 
 public class OnBootReceiver extends BroadcastReceiver {
@@ -45,7 +46,8 @@ public class OnBootReceiver extends BroadcastReceiver {
                 context.startService(new Intent(context, FirewallService.class));
             }
 
-            InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
+            // Use BootRuleManager for robust rule application
+            BootRuleManager.initializeBootRuleApplication(context);
 
             //register private DNS change listener
 
@@ -64,18 +66,5 @@ public class OnBootReceiver extends BroadcastReceiver {
 
             }
         }
-
-        //try applying the rule after few seconds if enabled
-        if (G.startupDelay()) {
-            //make sure we apply rules after 5 sec
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                // Apply the changes regards if network is up/not
-                InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.BOOT_COMPLETED);
-            }, G.getCustomDelay());
-        }
-
-        //check if startup script is copied
-        Api.checkAndCopyFixLeak(context, "afwallstart");
     }
 }

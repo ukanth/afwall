@@ -632,6 +632,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getBoolean(STARTUP_DELAY, false);
     }
 
+    public static boolean isBootProcessActive() {
+        return BootRuleManager.isBootInProgress();
+    }
+
     public static boolean enableStealthPattern() {
         return gPrefs.getBoolean(PATTERN_STEALTH, false);
     }

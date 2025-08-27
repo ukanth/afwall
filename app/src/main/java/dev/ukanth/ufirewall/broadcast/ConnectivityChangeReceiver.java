@@ -30,6 +30,7 @@ import android.content.Intent;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.BootRuleManager;
 import dev.ukanth.ufirewall.util.G;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
@@ -55,10 +56,20 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 int newState = intent.getIntExtra(EXTRA_WIFI_AP_STATE, -1);
                 int oldState = intent.getIntExtra(EXTRA_PREVIOUS_WIFI_AP_STATE, -1);
                 Log.d(TAG, "OS reported AP state change: " + oldState + " -> " + newState);
+            // Note: AP state changes are logged but don't trigger rule application during boot
             }
 
             if (Api.isEnabled(context) && G.activeRules()) {
                 String action = intent.getAction();
+                String reason = action.equals(CONNECTIVITY_ACTION) ? 
+                    InterfaceTracker.CONNECTIVITY_CHANGE : InterfaceTracker.TETHER_STATE_CHANGED;
+                
+                // Check with BootRuleManager if we should process this network change
+                if (!BootRuleManager.shouldProcessNetworkChange(context, reason)) {
+                    Log.d(TAG, "Network change ignored during boot process: " + reason);
+                    return;
+                }
+                
                 if (action.equals(CONNECTIVITY_ACTION)) {
                     Log.i(TAG, "Network change captured.");
                     InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
