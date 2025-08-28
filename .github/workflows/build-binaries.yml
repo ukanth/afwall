@@ -1,5 +1,4 @@
 name: Build AFWall+ Binaries
-
 on:
   workflow_dispatch:
     inputs:
@@ -76,7 +75,7 @@ jobs:
         make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- allnoconfig
         
         # Enable only essential features for AFWall+
-        cat >> .config << 'EOF'
+        cat >> .config << EOF
         CONFIG_STATIC=y
         CONFIG_INSTALL_NO_USR=y
         CONFIG_BUSYBOX=y
@@ -107,11 +106,10 @@ jobs:
         # Apply minimal config (use yes to answer all prompts with default)
         yes '' | make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
         
-        # Fix cross-compilation issue with off_t size detection for ARM and MIPS
+        # Fix cross-compilation issue - replace the problematic struct completely
         if [ "${{ matrix.arch }}" = "mips" ] || [ "${{ matrix.arch }}" = "arm" ]; then
-          # Replace the entire problematic union/struct block
-          sed -i '/BUG_off_t_size_is_misdetected/c\
-	/* off_t size check disabled for cross-compilation */' include/libbb.h
+          sed -i '/struct BUG_off_t_size_is_misdetected/,/};/c\
+        /* Cross-compilation fix: off_t size check disabled */' include/libbb.h
         fi
 
     - name: Build Busybox
@@ -428,11 +426,9 @@ jobs:
           # Find the function and add ARM64 support
           python3 << 'EOF'
         import re
-
         # Read the current Api.java file
         with open('app/src/main/java/dev/ukanth/ufirewall/Api.java', 'r') as f:
             content = f.read()
-
         # Define the pattern to find installBinariesArm64 function
         pattern = r'(private static boolean installBinariesArm64\(Context context\) \{[^}]*)\}'
         
@@ -465,13 +461,11 @@ jobs:
         path: binaries/
 
     - name: Create Release (optional)
-      if: github.event.inputs.create_release == 'true'
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: github.event.inputs.release_tag != ''
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: binaries-${{ github.run_number }}
-        release_name: AFWall+ Cross-compiled Binaries ${{ github.run_number }}
+        tag_name: ${{ github.event.inputs.release_tag }}
+        name: AFWall+ Cross-compiled Binaries ${{ github.event.inputs.release_tag }}
         body: |
           Cross-compiled binaries for AFWall+:
           - busybox (arm, arm64, mips, x86)
@@ -481,5 +475,8 @@ jobs:
           - run_pie (arm, arm64, mips, x86)
           
           Built from commit: ${{ github.sha }}
+        files: binaries/*
         draft: false
         prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
