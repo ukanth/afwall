@@ -58,7 +58,6 @@ jobs:
           build-essential \
           wget \
           gcc-${{ matrix.target }} \
-          libc6-dev-${{ matrix.arch }}-cross \
           file
 
     - name: Download Busybox source
