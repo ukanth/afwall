@@ -122,7 +122,11 @@ public class LogService extends Service {
                         break;
                     case "NFLOG":
                         logPath = Api.getNflogPath(getApplicationContext());
-                        logPath =  logPath + " " + QUEUE_NUM;
+                        if (logPath == null) {
+                            Log.e(TAG, "NFLOG binary not available, cannot start logging service");
+                            return;
+                        }
+                        logPath = logPath + " " + QUEUE_NUM;
                         break;
                 }
 
