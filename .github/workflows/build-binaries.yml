@@ -72,20 +72,13 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Start with default config
-        make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- defconfig
+        # Use AFWall+ provided busybox config
+        cp "$GITHUB_WORKSPACE/external/dist/busybox-config" .config
         
-        # Enable static linking and disable problematic features
-        sed -i 's/# CONFIG_STATIC is not set/CONFIG_STATIC=y/' .config
-        sed -i 's/CONFIG_INSTALL_NO_USR=n/CONFIG_INSTALL_NO_USR=y/' .config
+        # Update cross-compiler prefix in config
+        sed -i 's/CONFIG_CROSS_COMPILER_PREFIX=""/CONFIG_CROSS_COMPILER_PREFIX="${{ matrix.target }}-"/' .config
         
-        # Disable features that cause cross-compilation issues
-        echo 'CONFIG_FEATURE_SEAMLESS_XZ=n' >> .config
-        echo 'CONFIG_FEATURE_SEAMLESS_LZMA=n' >> .config
-        echo 'CONFIG_FEATURE_SEAMLESS_BZ2=n' >> .config
-        echo 'CONFIG_FEATURE_SEAMLESS_Z=n' >> .config
-        
-        # Apply config changes
+        # Apply AFWall+ config
         make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
 
     - name: Build Busybox
@@ -265,10 +258,15 @@ jobs:
           file \
           libnetfilter-log-dev
 
-    - name: Build simple nflog reader
+    - name: Build nflog from AFWall+ source
       run: |
-        # Create a simple nflog reader program
-        cat > nflog_reader.c << 'EOF'
+        cd external/nflog
+        
+        # Compile nflog using AFWall+ source code
+        ${{ matrix.cc }} -static \
+          -I. -Ilibmnl \
+          -o nflog_${{ matrix.arch }} \
+          nflog.c attr.c callback.c nlmsg.c socket.c
         #include <stdio.h>
         #include <stdlib.h>
         #include <unistd.h>
@@ -333,12 +331,65 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: nflog-${{ matrix.arch }}
-        path: nflog_${{ matrix.arch }}
+        path: external/nflog/nflog_${{ matrix.arch }}
+
+  build-run-pie:
+    name: Build run_pie (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - arch: arm
+            target: arm-linux-gnueabihf
+            cc: arm-linux-gnueabihf-gcc
+            strip: arm-linux-gnueabihf-strip
+          - arch: arm64
+            target: aarch64-linux-gnu
+            cc: aarch64-linux-gnu-gcc
+            strip: aarch64-linux-gnu-strip
+          - arch: mips
+            target: mips-linux-gnu
+            cc: mips-linux-gnu-gcc
+            strip: mips-linux-gnu-strip
+          - arch: x86
+            target: i686-linux-gnu
+            cc: i686-linux-gnu-gcc
+            strip: i686-linux-gnu-strip
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          gcc-${{ matrix.target }} \
+          file
+
+    - name: Build run_pie from AFWall+ source
+      run: |
+        cd external/run_pie
+        
+        # Compile run_pie using AFWall+ source code
+        ${{ matrix.cc }} -static -ldl -o run_pie_${{ matrix.arch }} run_pie.c
+        
+        # Verify the binary
+        file run_pie_${{ matrix.arch }}
+        ${{ matrix.strip }} run_pie_${{ matrix.arch }}
+        ls -la run_pie_${{ matrix.arch }}
+
+    - name: Upload run_pie artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: run-pie-${{ matrix.arch }}
+        path: external/run_pie/run_pie_${{ matrix.arch }}
 
   collect-binaries:
     name: Collect and Update Binaries
     runs-on: ubuntu-latest
-    needs: [build-busybox, build-iptables, build-nflog]
+    needs: [build-busybox, build-iptables, build-nflog, build-run-pie]
     
     steps:
     - name: Checkout repository
@@ -353,35 +404,43 @@ jobs:
       run: |
         mkdir -p app/src/main/res/raw
         
-        # Copy all binaries to the correct location
+        # Create binaries directory and copy all compiled binaries
+        mkdir -p binaries
+        
         for arch in arm arm64 mips x86; do
           # Busybox
           if [ -f "artifacts/busybox-${arch}/busybox_${arch}" ]; then
-            cp "artifacts/busybox-${arch}/busybox_${arch}" "app/src/main/res/raw/"
-            echo "✓ busybox_${arch}"
+            cp "artifacts/busybox-${arch}/busybox_${arch}" "binaries/"
+            echo "✓ busybox_${arch} -> binaries/"
           fi
           
           # iptables
           if [ -f "artifacts/iptables-${arch}/iptables_${arch}" ]; then
-            cp "artifacts/iptables-${arch}/iptables_${arch}" "app/src/main/res/raw/"
-            echo "✓ iptables_${arch}"
+            cp "artifacts/iptables-${arch}/iptables_${arch}" "binaries/"
+            echo "✓ iptables_${arch} -> binaries/"
           fi
           
           # ip6tables
           if [ -f "artifacts/iptables-${arch}/ip6tables_${arch}" ]; then
-            cp "artifacts/iptables-${arch}/ip6tables_${arch}" "app/src/main/res/raw/"
-            echo "✓ ip6tables_${arch}"
+            cp "artifacts/iptables-${arch}/ip6tables_${arch}" "binaries/"
+            echo "✓ ip6tables_${arch} -> binaries/"
           fi
           
           # nflog
           if [ -f "artifacts/nflog-${arch}/nflog_${arch}" ]; then
-            cp "artifacts/nflog-${arch}/nflog_${arch}" "app/src/main/res/raw/"
-            echo "✓ nflog_${arch}"
+            cp "artifacts/nflog-${arch}/nflog_${arch}" "binaries/"
+            echo "✓ nflog_${arch} -> binaries/"
+          fi
+          
+          # run_pie
+          if [ -f "artifacts/run-pie-${arch}/run_pie_${arch}" ]; then
+            cp "artifacts/run-pie-${arch}/run_pie_${arch}" "binaries/"
+            echo "✓ run_pie_${arch} -> binaries/"
           fi
         done
         
         echo "Binary inventory:"
-        ls -la app/src/main/res/raw/
+        ls -la binaries/
 
     - name: Update AFWall+ Java code for ARM64
       run: |
