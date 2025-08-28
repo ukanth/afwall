@@ -836,11 +836,15 @@ public final class Api {
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p tcp --sport=53" + action);
             }
 
-            // DNS requests to upstream servers
-            // TODO: Allow DNS upstream servers from other connection types
+            // DNS requests to upstream servers - support all connection types
             if (containsUidOrAny(ruleDataSet.dataList, SPECIAL_UID_TETHER)) {
-                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-3g-tether", "-p udp --dport=53" + action);
-                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-3g-tether", "-p tcp --dport=53" + action);
+                // Define all tethering chains that need DNS upstream access
+                String[] tetherChains = {"-3g-tether", "-wifi-tether", "-usb-tether", "-tether"};
+                
+                for (String chain : tetherChains) {
+                    addRuleForUsers(cmds, users_dns, "-A " + chainName + chain, "-p udp --dport=53" + action);
+                    addRuleForUsers(cmds, users_dns, "-A " + chainName + chain, "-p tcp --dport=53" + action);
+                }
             }
 
             // if tethered, try to match the above rules (if enabled).  no match -> fall through to the
