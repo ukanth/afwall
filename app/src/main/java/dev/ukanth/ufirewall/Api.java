@@ -267,7 +267,7 @@ public final class Api {
     private static final String charsetName = "UTF8";
     private static final String algorithm = "DES";
     private static final int base64Mode = Base64.DEFAULT;
-    private static volatile String AFWALL_CHAIN_NAME = "afwall";
+    //private static volatile String AFWALL_CHAIN_NAME = "afwall";
     private static final Object CHAIN_NAME_LOCK = new Object();
     private static Map<String, Integer> specialApps = null;
     private static volatile boolean rulesUpToDate = false;
@@ -382,7 +382,27 @@ public final class Api {
      */
     public static String getNflogPath(Context ctx) {
         String dir = ctx.getDir("bin", 0).getAbsolutePath();
-        return dir + "/nflog ";
+        String nflogPath = dir + "/nflog";
+        
+        // Check if nflog binary exists and is executable
+        File nflogFile = new File(nflogPath);
+        if (!nflogFile.exists()) {
+            Log.w(TAG, "NFLOG binary not found at: " + nflogPath);
+            return null;
+        }
+        
+        if (!nflogFile.canExecute()) {
+            Log.w(TAG, "NFLOG binary not executable at: " + nflogPath);
+            // Try to make it executable
+            try {
+                nflogFile.setExecutable(true);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to make nflog executable: " + e.getMessage());
+                return null;
+            }
+        }
+        
+        return nflogPath + " ";
     }
 
     /**
@@ -429,7 +449,7 @@ public final class Api {
     }
 
     private static void addRulesForUidlist(List<String> cmds, List<Integer> uids, String chain, boolean whitelist) {
-        String action = whitelist ? " -j RETURN" : " -j " + AFWALL_CHAIN_NAME + "-reject";
+        String action = whitelist ? " -j RETURN" : " -j " + chain + "-reject";
 
         if (uids.contains(SPECIAL_UID_ANY)) {
             if (!whitelist) {
@@ -474,16 +494,16 @@ public final class Api {
             if (whitelist) {
                 if (kernel_checked) {
                     // reject any other UIDs, but allow the kernel through
-                    cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + AFWALL_CHAIN_NAME + "-reject");
+                    cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + chain + "-reject");
                 } else {
                     // kernel is blocked so reject everything
-                    cmds.add("-A " + chain + " -j " + AFWALL_CHAIN_NAME + "-reject");
+                    cmds.add("-A " + chain + " -j " + chain + "-reject");
                 }
             } else {
                 if (kernel_checked) {
                     // allow any other UIDs, but block the kernel
                     cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
-                    cmds.add("-A " + chain + " -j " + AFWALL_CHAIN_NAME + "-reject");
+                    cmds.add("-A " + chain + " -j " + chain + "-reject");
                 }
             }
 
@@ -703,6 +723,8 @@ public final class Api {
         }
 
         assertBinaries(ctx, showErrors);
+
+        final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, !ipv6);
         
         // Use thread-safe chain name if provided, otherwise determine it safely
         final String chainName;
@@ -1233,35 +1255,36 @@ public final class Api {
      * @param callback   If non-null, use a callback instead of blocking the current thread
      * @return true if the rules were purged
      */
-    public static boolean purgeIptables(Context ctx, boolean showErrors, RootCommand callback) {
+    public static void purgeIptables(Context ctx, boolean showErrors, RootCommand callback) {
+        String chainName = getThreadSafeChainName();
 
         List<String> cmds = new ArrayList<>();
         List<String> cmdsv4 = new ArrayList<>();
         List<String> out = new ArrayList<>();
 
         for (String s : staticChains) {
-            cmds.add("-F " + AFWALL_CHAIN_NAME + s);
+            cmds.add("-F " + chainName + s);
         }
         for (String s : dynChains) {
-            cmds.add("-F " + AFWALL_CHAIN_NAME + s);
+            cmds.add("-F " + chainName + s);
         }
         if (G.enableTor()) {
             for (String s : natChains) {
-                cmdsv4.add("-t nat -F " + AFWALL_CHAIN_NAME + s);
+                cmdsv4.add("-t nat -F " + chainName + s);
             }
-            cmdsv4.add("#NOCHK# -t nat -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+            cmdsv4.add("#NOCHK# -t nat -D OUTPUT -j " + chainName);
         } else {
-            cmdsv4.add("#NOCHK# -D OUTPUT -j " + AFWALL_CHAIN_NAME);
+            cmdsv4.add("#NOCHK# -D OUTPUT -j " + chainName);
         }
 
         //make sure reset the OUTPUT chain to accept state.
         cmds.add("-P OUTPUT ACCEPT");
 
         //Delete only when the afwall chain exist !
-        //cmds.add("-D OUTPUT -j " + AFWALL_CHAIN_NAME);
+        //cmds.add("-D OUTPUT -j " + chainName);
 
         if (G.enableInbound()) {
-            cmds.add("-D INPUT -j " + AFWALL_CHAIN_NAME + "-input");
+            cmds.add("-D INPUT -j " + chainName + "-input");
         }
 
         addCustomRules(Api.PREF_CUSTOMSCRIPT2, cmds);
@@ -1281,34 +1304,6 @@ public final class Api {
                 cmds.add("-A " + chain + " -d " + dnsServer + " -p udp --dport 53 -j RETURN");
                 cmds.add("-A " + chain + " -d " + dnsServer + " -p tcp --dport 53 -j RETURN");
             }
-        }
-
-        try {
-            assertBinaries(ctx, showErrors);
-
-            // IPv4
-            iptablesCommands(cmds, out, false);
-            iptablesCommands(cmdsv4, out, false);
-
-            // IPv6
-            if (G.enableIPv6()) {
-                iptablesCommands(cmds, out, true);
-            }
-
-            if (callback != null) {
-                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
-            } else {
-                fixupLegacyCmds(out);
-                if (runScriptAsRoot(ctx, out, new StringBuilder()) == -1) {
-                    if (showErrors) toast(ctx, ctx.getString(R.string.error_purge));
-                    return false;
-                }
-            }
-
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG,e.getMessage(),e);
-            return false;
         }
     }
 
@@ -2018,12 +2013,18 @@ public final class Api {
     }
 
     private static boolean installBinariesArm64() {
-        //if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
-        //if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
-        //if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
-        if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
-        //if (!installBinary(ctx, R.raw.run_pie_arm64, "run_pie")) return false;
-        return true;
+        // ARM64 devices use system binaries for iptables/busybox, only install nflog
+        try {
+            if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) {
+                Log.e(TAG, "Failed to install ARM64 nflog binary");
+                return false;
+            }
+            Log.i(TAG, "Successfully installed ARM64 binaries");
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Error installing ARM64 binaries: " + e.getMessage());
+            return false;
+        }
     }
 
     private static boolean installBinariesArm() {
@@ -2040,10 +2041,9 @@ public final class Api {
             return installBinariesX86();
         } else if (abi.startsWith("mips")) {
             return installBinariesMips();
-        } //else if (abi.startsWith("arm64")) {
-          //  return installBinariesArm64();
-        //}
-        else {
+        } else if (abi.startsWith("arm64")) {
+            return installBinariesArm64();
+        } else {
             return installBinariesArm();
         }
     }
