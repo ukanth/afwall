@@ -72,19 +72,39 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Start with default config
-        make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- defconfig
+        # Start with minimal config to avoid cross-compilation issues
+        make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- allnoconfig
         
-        # Apply AFWall+ specific settings from the old config
-        sed -i 's/# CONFIG_STATIC is not set/CONFIG_STATIC=y/' .config
-        sed -i 's/CONFIG_INSTALL_NO_USR=n/CONFIG_INSTALL_NO_USR=y/' .config
-        sed -i 's/CONFIG_BUSYBOX_EXEC_PATH=""/CONFIG_BUSYBOX_EXEC_PATH="\/proc\/self\/exe"/' .config
+        # Enable only essential features for AFWall+
+        cat >> .config << 'EOF'
+        CONFIG_STATIC=y
+        CONFIG_INSTALL_NO_USR=y
+        CONFIG_BUSYBOX=y
+        CONFIG_BUSYBOX_EXEC_PATH="/system/xbin/busybox"
+        CONFIG_ASH=y
+        CONFIG_SH_IS_ASH=y
+        CONFIG_BASH_IS_NONE=y
+        CONFIG_CAT=y
+        CONFIG_CHMOD=y
+        CONFIG_CP=y
+        CONFIG_ECHO=y
+        CONFIG_GREP=y
+        CONFIG_KILL=y
+        CONFIG_KILLALL=y
+        CONFIG_LS=y
+        CONFIG_MKDIR=y
+        CONFIG_MV=y
+        CONFIG_PS=y
+        CONFIG_RM=y
+        CONFIG_TEST=y
+        CONFIG_WHICH=y
+        CONFIG_IPTABLES=y
+        CONFIG_IP6TABLES=y
+        CONFIG_FEATURE_PREFER_APPLETS=n
+        CONFIG_FEATURE_SH_STANDALONE=y
+        EOF
         
-        # Disable features that cause cross-compilation issues
-        sed -i 's/CONFIG_FEATURE_COMPRESS_USAGE=y/CONFIG_FEATURE_COMPRESS_USAGE=n/' .config
-        sed -i 's/CONFIG_FEATURE_VERBOSE_USAGE=y/CONFIG_FEATURE_VERBOSE_USAGE=n/' .config
-        
-        # Apply updated config
+        # Apply minimal config
         make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
 
     - name: Build Busybox
