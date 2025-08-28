@@ -1442,11 +1442,48 @@ public final class Api {
      * @param callback Callback for completion status
      */
     public static void runIfconfig(Context ctx, RootCommand callback) {
-        callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
+        // Android 16+ fallback: try system ifconfig first, then busybox
+        if (Build.VERSION.SDK_INT >= 35) { // Android 16+
+            callback.run(ctx, "ifconfig -a || " + getBusyBoxPath(ctx, true) + " ifconfig -a");
+        } else {
+            callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
+        }
     }
 
     public static void runNetworkInterface(Context ctx, RootCommand callback) {
-        callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
+        // Android 16+ fallback: try multiple methods for network interface detection
+        if (Build.VERSION.SDK_INT >= 35) { // Android 16+
+            // First try Android API method as fallback
+            try {
+                StringBuilder result = new StringBuilder();
+                java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
+                while (interfaces.hasMoreElements()) {
+                    java.net.NetworkInterface networkInterface = interfaces.nextElement();
+                    result.append(networkInterface.getName()).append("\n");
+                }
+                if (result.length() > 0) {
+                    // Create a mock RootCommand with API results
+                    RootCommand apiResult = new RootCommand();
+                    apiResult.res = result;
+                    apiResult.exitCode = 0;
+                    apiResult.done = true;
+                    if (callback.cb != null) {
+                        callback.cb.cbFunc(apiResult);
+                    }
+                    return;
+                }
+            } catch (Exception e) {
+                Log.d(TAG, "Android API network interface detection failed: " + e.getMessage());
+            }
+            
+            // Fallback to shell commands
+            String cmd = "ls /sys/class/net 2>/dev/null || " + 
+                        getBusyBoxPath(ctx, true) + " ls /sys/class/net 2>/dev/null || " +
+                        "ip link show 2>/dev/null";
+            callback.run(ctx, cmd);
+        } else {
+            callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
+        }
     }
 
 
