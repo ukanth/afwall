@@ -1,0 +1,488 @@
+name: Build AFWall+ Binaries
+
+on:
+  workflow_dispatch:
+    inputs:
+      busybox_version:
+        description: 'Busybox version to build'
+        required: true
+        default: '1.36.1'
+      iptables_version:
+        description: 'iptables version to build'
+        required: true
+        default: '1.8.10'
+      release_tag:
+        description: 'Release tag (optional - for uploading as release assets)'
+        required: false
+  push:
+    paths:
+      - '.github/workflows/build-binaries.yml'
+      - 'build-scripts/**'
+  pull_request:
+    paths:
+      - '.github/workflows/build-binaries.yml'
+
+jobs:
+  build-busybox:
+    name: Build Busybox
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [arm, arm64, mips, x86]
+        include:
+          - arch: arm
+            target: arm-linux-gnueabihf
+            cc: arm-linux-gnueabihf-gcc
+            strip: arm-linux-gnueabihf-strip
+          - arch: arm64
+            target: aarch64-linux-gnu
+            cc: aarch64-linux-gnu-gcc
+            strip: aarch64-linux-gnu-strip
+          - arch: mips
+            target: mips-linux-gnu
+            cc: mips-linux-gnu-gcc
+            strip: mips-linux-gnu-strip
+          - arch: x86
+            target: i686-linux-gnu
+            cc: i686-linux-gnu-gcc
+            strip: i686-linux-gnu-strip
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          wget \
+          gcc-${{ matrix.target }} \
+          libc6-dev-${{ matrix.arch }}-cross \
+          file
+
+    - name: Download Busybox source
+      run: |
+        BUSYBOX_VERSION="${{ github.event.inputs.busybox_version || '1.36.1' }}"
+        wget -q "https://busybox.net/downloads/busybox-${BUSYBOX_VERSION}.tar.bz2"
+        tar -xf "busybox-${BUSYBOX_VERSION}.tar.bz2"
+        cd "busybox-${BUSYBOX_VERSION}"
+        echo "BUSYBOX_DIR=$(pwd)" >> $GITHUB_ENV
+
+    - name: Configure Busybox for Android
+      run: |
+        cd "$BUSYBOX_DIR"
+        
+        # Start with default config
+        make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- defconfig
+        
+        # Enable static linking and Android-friendly options
+        cat >> .config << 'EOF'
+        CONFIG_STATIC=y
+        CONFIG_INSTALL_NO_USR=y
+        CONFIG_BUSYBOX_EXEC_PATH=""
+        CONFIG_FEATURE_PREFER_APPLETS=n
+        # Disable problematic features for Android
+        # CONFIG_SYSLOGD is not set
+        # CONFIG_KLOGD is not set
+        # CONFIG_INIT is not set
+        # CONFIG_LINUXRC is not set
+        # CONFIG_FEATURE_MOUNT_NFS is not set
+        # CONFIG_FEATURE_INETD_RPC is not set
+        EOF
+        
+        # Apply config changes
+        make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
+
+    - name: Build Busybox
+      run: |
+        cd "$BUSYBOX_DIR"
+        
+        # Build with explicit compiler settings
+        make ARCH=${{ matrix.arch }} \
+             CROSS_COMPILE=${{ matrix.target }}- \
+             CC=${{ matrix.cc }} \
+             HOSTCC=gcc \
+             HOSTCXX=g++ \
+             -j$(nproc)
+        
+        # Verify binary
+        file busybox
+        
+        # Strip and copy
+        ${{ matrix.strip }} busybox
+        cp busybox ../busybox_${{ matrix.arch }}
+
+    - name: Upload Busybox artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: busybox-${{ matrix.arch }}
+        path: busybox_${{ matrix.arch }}
+
+  build-iptables:
+    name: Build iptables
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [arm, arm64, mips, x86]
+        include:
+          - arch: arm
+            target: arm-linux-gnueabihf
+            cc: arm-linux-gnueabihf-gcc
+            strip: arm-linux-gnueabihf-strip
+            configure_host: arm-linux-gnueabihf
+          - arch: arm64
+            target: aarch64-linux-gnu
+            cc: aarch64-linux-gnu-gcc
+            strip: aarch64-linux-gnu-strip
+            configure_host: aarch64-linux-gnu
+          - arch: mips
+            target: mips-linux-gnu
+            cc: mips-linux-gnu-gcc
+            strip: mips-linux-gnu-strip
+            configure_host: mips-linux-gnu
+          - arch: x86
+            target: i686-linux-gnu
+            cc: i686-linux-gnu-gcc
+            strip: i686-linux-gnu-strip
+            configure_host: i686-linux-gnu
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          wget \
+          gcc-${{ matrix.target }} \
+          libc6-dev-${{ matrix.arch }}-cross \
+          pkg-config \
+          autoconf \
+          automake \
+          libtool \
+          file
+
+    - name: Download iptables source
+      run: |
+        IPTABLES_VERSION="${{ github.event.inputs.iptables_version || '1.8.10' }}"
+        wget -q "https://netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.xz"
+        tar -xf "iptables-${IPTABLES_VERSION}.tar.xz"
+        cd "iptables-${IPTABLES_VERSION}"
+        echo "IPTABLES_DIR=$(pwd)" >> $GITHUB_ENV
+
+    - name: Configure iptables
+      run: |
+        cd "$IPTABLES_DIR"
+        
+        # Set cross-compilation environment
+        export CC=${{ matrix.cc }}
+        export STRIP=${{ matrix.strip }}
+        export CFLAGS="-static -Os -DANDROID"
+        export LDFLAGS="-static"
+        export PKG_CONFIG_PATH=""
+        
+        # Configure for cross-compilation
+        ./configure \
+          --host=${{ matrix.configure_host }} \
+          --enable-static \
+          --disable-shared \
+          --disable-nftables \
+          --disable-bpf-compiler \
+          --disable-connlabel \
+          --disable-devel \
+          --with-kernel=/usr/include
+
+    - name: Build iptables
+      run: |
+        cd "$IPTABLES_DIR"
+        
+        export CC=${{ matrix.cc }}
+        export STRIP=${{ matrix.strip }}
+        export CFLAGS="-static -Os -DANDROID"
+        export LDFLAGS="-static"
+        
+        # Build
+        make -j$(nproc) V=1
+        
+        # Copy binaries
+        if [ -f "iptables/xtables-legacy-multi" ]; then
+          # Prefer legacy multi-tool for compatibility
+          cp "iptables/xtables-legacy-multi" "../iptables_${{ matrix.arch }}"
+          cp "iptables/xtables-legacy-multi" "../ip6tables_${{ matrix.arch }}"
+        else
+          # Fallback to regular binaries
+          cp "iptables/iptables" "../iptables_${{ matrix.arch }}"
+          cp "iptables/ip6tables" "../ip6tables_${{ matrix.arch }}"
+        fi
+        
+        # Verify and strip binaries
+        file "../iptables_${{ matrix.arch }}"
+        file "../ip6tables_${{ matrix.arch }}"
+        
+        ${{ matrix.strip }} "../iptables_${{ matrix.arch }}"
+        ${{ matrix.strip }} "../ip6tables_${{ matrix.arch }}"
+
+    - name: Upload iptables artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: iptables-${{ matrix.arch }}
+        path: |
+          iptables_${{ matrix.arch }}
+          ip6tables_${{ matrix.arch }}
+
+  build-nflog:
+    name: Build nflog
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [arm, arm64, mips, x86]
+        include:
+          - arch: arm
+            target: arm-linux-gnueabihf
+            cc: arm-linux-gnueabihf-gcc
+            strip: arm-linux-gnueabihf-strip
+          - arch: arm64
+            target: aarch64-linux-gnu
+            cc: aarch64-linux-gnu-gcc
+            strip: aarch64-linux-gnu-strip
+          - arch: mips
+            target: mips-linux-gnu
+            cc: mips-linux-gnu-gcc
+            strip: mips-linux-gnu-strip
+          - arch: x86
+            target: i686-linux-gnu
+            cc: i686-linux-gnu-gcc
+            strip: i686-linux-gnu-strip
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up build environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          wget \
+          gcc-${{ matrix.target }} \
+          libc6-dev-${{ matrix.arch }}-cross \
+          pkg-config \
+          file \
+          libnetfilter-log-dev
+
+    - name: Build simple nflog reader
+      run: |
+        # Create a simple nflog reader program
+        cat > nflog_reader.c << 'EOF'
+        #include <stdio.h>
+        #include <stdlib.h>
+        #include <unistd.h>
+        #include <string.h>
+        #include <sys/socket.h>
+        #include <linux/netlink.h>
+        #include <linux/netfilter/nfnetlink.h>
+        #include <linux/netfilter/nfnetlink_log.h>
+        
+        int main(int argc, char *argv[]) {
+            int sock;
+            struct sockaddr_nl sa;
+            char buf[4096];
+            int group = 40; // Default AFWall+ group
+            
+            if (argc > 1) {
+                group = atoi(argv[1]);
+            }
+            
+            sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
+            if (sock < 0) {
+                perror("socket");
+                return 1;
+            }
+            
+            memset(&sa, 0, sizeof(sa));
+            sa.nl_family = AF_NETLINK;
+            sa.nl_groups = 1 << (group - 1);
+            
+            if (bind(sock, (struct sockaddr*)&sa, sizeof(sa)) < 0) {
+                perror("bind");
+                return 1;
+            }
+            
+            printf("NFLOG reader started for group %d\n", group);
+            
+            while (1) {
+                ssize_t len = recv(sock, buf, sizeof(buf), 0);
+                if (len < 0) {
+                    perror("recv");
+                    break;
+                }
+                
+                // Simple packet info extraction
+                printf("Packet received, length: %zd\n", len);
+                fflush(stdout);
+            }
+            
+            close(sock);
+            return 0;
+        }
+        EOF
+        
+        # Compile statically
+        ${{ matrix.cc }} -static -o nflog_${{ matrix.arch }} nflog_reader.c
+        
+        # Verify and strip
+        file nflog_${{ matrix.arch }}
+        ${{ matrix.strip }} nflog_${{ matrix.arch }}
+
+    - name: Upload nflog artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nflog-${{ matrix.arch }}
+        path: nflog_${{ matrix.arch }}
+
+  collect-binaries:
+    name: Collect and Update Binaries
+    runs-on: ubuntu-latest
+    needs: [build-busybox, build-iptables, build-nflog]
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
+
+    - name: Organize binaries
+      run: |
+        mkdir -p app/src/main/res/raw
+        
+        # Copy all binaries to the correct location
+        for arch in arm arm64 mips x86; do
+          # Busybox
+          if [ -f "artifacts/busybox-${arch}/busybox_${arch}" ]; then
+            cp "artifacts/busybox-${arch}/busybox_${arch}" "app/src/main/res/raw/"
+            echo "✓ busybox_${arch}"
+          fi
+          
+          # iptables
+          if [ -f "artifacts/iptables-${arch}/iptables_${arch}" ]; then
+            cp "artifacts/iptables-${arch}/iptables_${arch}" "app/src/main/res/raw/"
+            echo "✓ iptables_${arch}"
+          fi
+          
+          # ip6tables
+          if [ -f "artifacts/iptables-${arch}/ip6tables_${arch}" ]; then
+            cp "artifacts/iptables-${arch}/ip6tables_${arch}" "app/src/main/res/raw/"
+            echo "✓ ip6tables_${arch}"
+          fi
+          
+          # nflog
+          if [ -f "artifacts/nflog-${arch}/nflog_${arch}" ]; then
+            cp "artifacts/nflog-${arch}/nflog_${arch}" "app/src/main/res/raw/"
+            echo "✓ nflog_${arch}"
+          fi
+        done
+        
+        echo "Binary inventory:"
+        ls -la app/src/main/res/raw/
+
+    - name: Update AFWall+ Java code for ARM64
+      run: |
+        # Update installBinariesArm64() to install all binaries
+        if ! grep -q "R.raw.busybox_arm64" app/src/main/java/dev/ukanth/ufirewall/Api.java; then
+          echo "Updating AFWall+ code for complete ARM64 binary support..."
+          
+          # Backup original
+          cp app/src/main/java/dev/ukanth/ufirewall/Api.java app/src/main/java/dev/ukanth/ufirewall/Api.java.backup
+          
+          # Update the ARM64 install function using Python for reliable replacement
+          python3 << 'EOF'
+        import re
+
+        with open('app/src/main/java/dev/ukanth/ufirewall/Api.java', 'r') as f:
+            content = f.read()
+
+        # Find and replace the installBinariesArm64 function
+        old_pattern = r'(private static boolean installBinariesArm64\(\) \{[^}]+)(\})'
+        
+        new_function = '''private static boolean installBinariesArm64() {
+            // Install all ARM64 binaries for complete compatibility
+            try {
+                if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) {
+                    Log.e(TAG, "Failed to install ARM64 busybox binary");
+                    return false;
+                }
+                if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) {
+                    Log.e(TAG, "Failed to install ARM64 iptables binary");
+                    return false;
+                }
+                if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) {
+                    Log.e(TAG, "Failed to install ARM64 ip6tables binary");
+                    return false;
+                }
+                if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) {
+                    Log.e(TAG, "Failed to install ARM64 nflog binary");
+                    return false;
+                }
+                Log.i(TAG, "Successfully installed ARM64 binaries");
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "Error installing ARM64 binaries: " + e.getMessage());
+                return false;
+            }
+        }'''
+        
+        content = re.sub(old_pattern, new_function, content, flags=re.DOTALL)
+        
+        with open('app/src/main/java/dev/ukanth/ufirewall/Api.java', 'w') as f:
+            f.write(content)
+            
+        print("✓ Updated AFWall+ Java code for ARM64 binaries")
+        EOF
+        else
+          echo "✓ AFWall+ code already supports ARM64 binaries"
+        fi
+
+    - name: Verify binary integrity
+      run: |
+        echo "Verifying binary integrity..."
+        for binary in app/src/main/res/raw/*; do
+          if [ -f "$binary" ]; then
+            echo "$(basename $binary): $(file $binary | cut -d: -f2-)"
+          fi
+        done
+
+    - name: Create commit with binaries
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        git add app/src/main/res/raw/
+        git add app/src/main/java/dev/ukanth/ufirewall/Api.java
+        
+        if ! git diff --cached --exit-code; then
+          git commit -m "Update ARM/ARM64/MIPS/x86 binaries
+
+        - Built with GitHub Actions
+        - Busybox ${{ github.event.inputs.busybox_version || '1.36.1' }}
+        - iptables ${{ github.event.inputs.iptables_version || '1.8.10' }}
+        - Updated ARM64 installation code
+        
+        🤖 Generated with GitHub Actions"
+          
+          echo "✓ Committed binary updates"
+        else
+          echo "ℹ No changes to commit"
+        fi
+
+    - name: Upload complete binary set
+      uses: actions/upload-artifact@v4
+      with:
+        name: afwall-binaries-complete
+        path: app/src/main/res/raw/
