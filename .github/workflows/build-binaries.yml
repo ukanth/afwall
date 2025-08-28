@@ -104,8 +104,8 @@ jobs:
         CONFIG_FEATURE_SH_STANDALONE=y
         EOF
         
-        # Apply minimal config
-        make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
+        # Apply minimal config (use yes to answer all prompts with default)
+        yes '' | make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
 
     - name: Build Busybox
       run: |
