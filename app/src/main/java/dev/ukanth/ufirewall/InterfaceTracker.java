@@ -132,7 +132,63 @@ public final class InterfaceTracker {
     }
 
     private static void getUsbTetherStatus(Context context, InterfaceDetails d) {
-        // TODO
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            d.isUsbTethered = false;
+            d.tetherUsbStatusKnown = false;
+            return;
+        }
+
+        d.isUsbTethered = false;
+        d.tetherUsbStatusKnown = false;
+
+        try {
+            // Use reflection to access hidden getTetheredIfaces() method
+            Method getTetheredIfaces = cm.getClass().getDeclaredMethod("getTetheredIfaces");
+            getTetheredIfaces.setAccessible(true);
+            String[] tetheredIfaces = (String[]) getTetheredIfaces.invoke(cm);
+            
+            if (tetheredIfaces != null) {
+                for (String iface : tetheredIfaces) {
+                    // USB tethering typically uses interfaces like "rndis0", "usb0", etc.
+                    if (iface != null && (iface.startsWith("rndis") || iface.startsWith("usb"))) {
+                        d.isUsbTethered = true;
+                        break;
+                    }
+                }
+            }
+            d.tetherUsbStatusKnown = true;
+            Log.d(TAG, "USB tethering status: " + d.isUsbTethered);
+            
+        } catch (Exception e) {
+            Log.e(G.TAG, "Exception in getting USB tether status");
+            Log.e(Api.TAG, android.util.Log.getStackTraceString(e));
+            
+            // Fallback: Check if USB tethering interface exists using NetworkInterface
+            try {
+                d.isUsbTethered = isUsbTetherInterfaceUp();
+                d.tetherUsbStatusKnown = true;
+                Log.d(TAG, "USB tethering status (fallback): " + d.isUsbTethered);
+            } catch (Exception fallbackException) {
+                Log.e(Api.TAG, "Fallback USB tether detection failed: " + android.util.Log.getStackTraceString(fallbackException));
+            }
+        }
+    }
+    
+    private static boolean isUsbTetherInterfaceUp() {
+        try {
+            java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                java.net.NetworkInterface networkInterface = interfaces.nextElement();
+                String name = networkInterface.getName();
+                if (name != null && (name.startsWith("rndis") || name.startsWith("usb")) && networkInterface.isUp()) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(Api.TAG, "Error checking network interfaces: " + android.util.Log.getStackTraceString(e));
+        }
+        return false;
     }
 
     private static InterfaceDetails getInterfaceDetails(Context context) {
