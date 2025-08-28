@@ -208,7 +208,7 @@ public final class Api {
     private static final int IPTABLES_TRY_AGAIN = 4;
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
-    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-tor", "-tor-reject", "-tether"};
+    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether"};
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
@@ -434,8 +434,9 @@ public final class Api {
         if (uids.contains(SPECIAL_UID_ANY)) {
             if (!whitelist) {
                 cmds.add("-A " + chain + action);
+            } else {
+                cmds.add("-A " + chain + " -j RETURN");
             }
-            // FIXME: in whitelist mode this blocks everything
         } else {
             for (Integer uid : uids) {
                 if (uid != null && uid >= 0) {
@@ -604,15 +605,22 @@ public final class Api {
                 addRuleForUsers(cmds, new String[]{"dhcp", "wifi"}, "-A " + chainName + "-wifi-postcustom", "-j RETURN");
             }
 
-            if (cfg.isWifiTethered) {
-                cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-tether");
-                cmds.add("-A " + chainName + "-3g-postcustom -j " + chainName + "-3g-tether");
+            if (cfg.isWifiTethered || cfg.isUsbTethered) {
+                if (cfg.isWifiTethered) {
+                    cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-tether");
+                } else {
+                    cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-fork");
+                }
+                
+                if (cfg.isUsbTethered) {
+                    cmds.add("-A " + chainName + "-3g-postcustom -j " + chainName + "-usb-tether");
+                } else {
+                    cmds.add("-A " + chainName + "-3g-postcustom -j " + (cfg.isWifiTethered ? chainName + "-3g-tether" : chainName + "-3g-fork"));
+                }
             } else {
                 cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-fork");
                 cmds.add("-A " + chainName + "-3g-postcustom -j " + chainName + "-3g-fork");
             }
-
-            // TODO: tether and Usb tether
 
             if (G.enableLAN() && !cfg.isWifiTethered) {
                 if (ipv6) {
@@ -810,6 +818,15 @@ public final class Api {
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p tcp --sport=53" + action);
 
+            }
+            
+            // USB tethering rules
+            if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER) || containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
+                // DHCP replies to USB tethered client
+                addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-usb-tether", "-p udp --sport=67 --dport=68" + action);
+                // DNS replies to USB tethered client  
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p udp --sport=53" + action);
+                addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p tcp --sport=53" + action);
             }
             if (containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
