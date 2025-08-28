@@ -109,7 +109,9 @@ jobs:
         
         # Fix cross-compilation issue with off_t size detection for ARM and MIPS
         if [ "${{ matrix.arch }}" = "mips" ] || [ "${{ matrix.arch }}" = "arm" ]; then
-          sed -i 's/.*BUG_off_t_size_is_misdetected.*/        int dummy_field_for_cross_compilation;/' include/libbb.h
+          # Replace the entire problematic union/struct block
+          sed -i '/BUG_off_t_size_is_misdetected/c\
+	/* off_t size check disabled for cross-compilation */' include/libbb.h
         fi
 
     - name: Build Busybox
