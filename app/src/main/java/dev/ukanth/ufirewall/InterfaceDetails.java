@@ -37,7 +37,10 @@ public class InterfaceDetails {
 
 	public String lanMaskV4 = "";
 	public String lanMaskV6 = "";
-	// TODO: identify DNS servers instead of opening up port 53/udp to all LAN hosts
+	
+	// DNS servers for targeted rules instead of opening port 53 to all LAN hosts
+	public java.util.List<String> dnsServersV4 = new java.util.ArrayList<>();
+	public java.util.List<String> dnsServersV6 = new java.util.ArrayList<>();
 
 	// supplementary info
 	String wifiName = "";
@@ -55,6 +58,8 @@ public class InterfaceDetails {
                 this.tetherUsbStatusKnown == that.tetherUsbStatusKnown &&
                 this.lanMaskV4.equals(that.lanMaskV4) &&
                 this.lanMaskV6.equals(that.lanMaskV6) &&
+                this.dnsServersV4.equals(that.dnsServersV4) &&
+                this.dnsServersV6.equals(that.dnsServersV6) &&
                 this.wifiName.equals(that.wifiName) &&
                 this.netEnabled == that.netEnabled &&
                 this.netType == that.netType &&

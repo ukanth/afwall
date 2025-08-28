@@ -230,7 +230,78 @@ public final class InterfaceTracker {
             Log.i(Api.TAG, "Exception in  getInterfaceDetails.checkTether" + e.getLocalizedMessage());
         }
         NewInterfaceScanner.populateLanMasks(ret);
+        getDnsServers(context, ret);
         return ret;
+    }
+    
+    private static void getDnsServers(Context context, InterfaceDetails d) {
+        d.dnsServersV4.clear();
+        d.dnsServersV6.clear();
+        
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return;
+            
+            // Get active network
+            android.net.Network activeNetwork = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                activeNetwork = cm.getActiveNetwork();
+            }
+            
+            if (activeNetwork != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                // Modern approach using LinkProperties (API 23+)
+                android.net.LinkProperties linkProperties = cm.getLinkProperties(activeNetwork);
+                if (linkProperties != null) {
+                    for (java.net.InetAddress dns : linkProperties.getDnsServers()) {
+                        if (dns instanceof java.net.Inet4Address) {
+                            d.dnsServersV4.add(dns.getHostAddress());
+                        } else if (dns instanceof java.net.Inet6Address) {
+                            d.dnsServersV6.add(dns.getHostAddress());
+                        }
+                    }
+                }
+            }
+            
+            // Fallback: Try system properties (older Android versions or backup method)
+            if (d.dnsServersV4.isEmpty() && d.dnsServersV6.isEmpty()) {
+                getDnsFromSystemProperties(d);
+            }
+            
+            Log.d(TAG, "DNS servers IPv4: " + d.dnsServersV4);
+            Log.d(TAG, "DNS servers IPv6: " + d.dnsServersV6);
+            
+        } catch (Exception e) {
+            Log.e(Api.TAG, "Exception getting DNS servers: " + android.util.Log.getStackTraceString(e));
+        }
+    }
+    
+    private static void getDnsFromSystemProperties(InterfaceDetails d) {
+        try {
+            // Try common system properties for DNS servers
+            String[] dnsProps = {"net.dns1", "net.dns2", "net.dns3", "net.dns4"};
+            
+            for (String prop : dnsProps) {
+                String dnsServer = System.getProperty(prop);
+                if (dnsServer != null && !dnsServer.isEmpty() && !dnsServer.equals("0.0.0.0")) {
+                    try {
+                        java.net.InetAddress addr = java.net.InetAddress.getByName(dnsServer);
+                        if (addr instanceof java.net.Inet4Address) {
+                            if (!d.dnsServersV4.contains(dnsServer)) {
+                                d.dnsServersV4.add(dnsServer);
+                            }
+                        } else if (addr instanceof java.net.Inet6Address) {
+                            if (!d.dnsServersV6.contains(dnsServer)) {
+                                d.dnsServersV6.add(dnsServer);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Invalid DNS server address: " + dnsServer);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(Api.TAG, "Exception getting DNS from system properties: " + android.util.Log.getStackTraceString(e));
+        }
     }
 
     public static boolean checkForNewCfg(Context context) {
