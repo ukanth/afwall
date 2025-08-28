@@ -75,20 +75,15 @@ jobs:
         # Start with default config
         make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- defconfig
         
-        # Enable static linking and Android-friendly options
-        cat >> .config << 'EOF'
-        CONFIG_STATIC=y
-        CONFIG_INSTALL_NO_USR=y
-        CONFIG_BUSYBOX_EXEC_PATH=""
-        CONFIG_FEATURE_PREFER_APPLETS=n
-        # Disable problematic features for Android
-        # CONFIG_SYSLOGD is not set
-        # CONFIG_KLOGD is not set
-        # CONFIG_INIT is not set
-        # CONFIG_LINUXRC is not set
-        # CONFIG_FEATURE_MOUNT_NFS is not set
-        # CONFIG_FEATURE_INETD_RPC is not set
-        EOF
+        # Enable static linking and disable problematic features
+        sed -i 's/# CONFIG_STATIC is not set/CONFIG_STATIC=y/' .config
+        sed -i 's/CONFIG_INSTALL_NO_USR=n/CONFIG_INSTALL_NO_USR=y/' .config
+        
+        # Disable features that cause cross-compilation issues
+        echo 'CONFIG_FEATURE_SEAMLESS_XZ=n' >> .config
+        echo 'CONFIG_FEATURE_SEAMLESS_LZMA=n' >> .config
+        echo 'CONFIG_FEATURE_SEAMLESS_BZ2=n' >> .config
+        echo 'CONFIG_FEATURE_SEAMLESS_Z=n' >> .config
         
         # Apply config changes
         make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
@@ -157,7 +152,6 @@ jobs:
           build-essential \
           wget \
           gcc-${{ matrix.target }} \
-          libc6-dev-${{ matrix.arch }}-cross \
           pkg-config \
           autoconf \
           automake \
@@ -267,7 +261,6 @@ jobs:
           build-essential \
           wget \
           gcc-${{ matrix.target }} \
-          libc6-dev-${{ matrix.arch }}-cross \
           pkg-config \
           file \
           libnetfilter-log-dev
