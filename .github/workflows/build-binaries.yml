@@ -107,8 +107,8 @@ jobs:
         # Apply minimal config (use yes to answer all prompts with default)
         yes '' | make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
         
-        # Fix MIPS compilation issue with off_t size detection
-        if [ "${{ matrix.arch }}" = "mips" ]; then
+        # Fix cross-compilation issue with off_t size detection for ARM and MIPS
+        if [ "${{ matrix.arch }}" = "mips" ] || [ "${{ matrix.arch }}" = "arm" ]; then
           sed -i '/BUG_off_t_size_is_misdetected/d' include/libbb.h
         fi
 
