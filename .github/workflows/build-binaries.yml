@@ -109,7 +109,7 @@ jobs:
         
         # Fix cross-compilation issue with off_t size detection for ARM and MIPS
         if [ "${{ matrix.arch }}" = "mips" ] || [ "${{ matrix.arch }}" = "arm" ]; then
-          sed -i '/BUG_off_t_size_is_misdetected/d' include/libbb.h
+          sed -i 's/.*BUG_off_t_size_is_misdetected.*/\/\* BUG_off_t_size_is_misdetected check disabled for cross-compilation \*\//' include/libbb.h
         fi
 
     - name: Build Busybox
