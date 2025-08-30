@@ -38,6 +38,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -80,6 +82,19 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     protected Menu mainMenu;
     private LogData current_selected_logData;
     private static List<LogData> logDataList;
+    private static List<LogData> fullLogDataList; // Store full dataset
+    
+    // Pagination
+    private static final int PAGE_SIZE = 100; // Load 100 items at a time
+    private int currentPage = 0;
+    private boolean isLoading = false;
+    
+    // Summary views
+    private TextView totalBlocks;
+    private TextView uniqueDestinations;
+    private TextView timePeriod;
+    private TextView mostBlockedDestination;
+    private TextView loadingMoreIndicator;
 
     protected static final int MENU_EXPORT_LOG = 100;
 
@@ -126,6 +141,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
         recyclerView = findViewById(R.id.detailrecyclerview);
         emptyView = findViewById(R.id.emptydetail_view);
+        
+        // Initialize summary views
+        totalBlocks = findViewById(R.id.total_blocks);
+        uniqueDestinations = findViewById(R.id.unique_destinations);
+        timePeriod = findViewById(R.id.time_period);
+        mostBlockedDestination = findViewById(R.id.most_blocked_destination);
+        loadingMoreIndicator = findViewById(R.id.loading_more_indicator);
 
         initializeRecyclerView(getApplicationContext());
 
@@ -149,6 +171,8 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             menu.add(0, v.getId(), 4, R.string.ping_source);
             menu.add(0, v.getId(), 5, R.string.resolve_destination);
             menu.add(0, v.getId(), 6, R.string.resolve_source);
+            menu.add(0, v.getId(), 9, "Block this destination permanently");
+            menu.add(0, v.getId(), 10, "Whitelist this destination");
             LogPreference logPreference = SQLite.select()
                     .from(LogPreference.class)
                     .where(LogPreference_Table.uid.eq(uid)).querySingle();
@@ -239,6 +263,12 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             case 8:
                 G.updateLogNotification(uid, true);
                 break;
+            case 9: // Block destination permanently
+                showBlockDestinationDialog();
+                break;
+            case 10: // Whitelist destination
+                showWhitelistDestinationDialog();
+                break;
 
         }
         return super.onContextItemSelected(item);
@@ -250,6 +280,17 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 .from(LogData.class)
                 .where(LogData_Table.uid.eq(uid))
                 .orderBy(LogData_Table.timestamp, false)
+                .queryList();
+    }
+    
+    private List<LogData> getPagedLogData(final int uid, int page, int pageSize) {
+        int offset = page * pageSize;
+        return SQLite.select()
+                .from(LogData.class)
+                .where(LogData_Table.uid.eq(uid))
+                .orderBy(LogData_Table.timestamp, false)
+                .limit(pageSize)
+                .offset(offset)
                 .queryList();
     }
 
@@ -285,8 +326,22 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            logDataList = getLogData(uid);
             try {
+                // First, get total count for statistics
+                int totalCount = getCount();
+                publishProgress(totalCount);
+                
+                if (totalCount > PAGE_SIZE) {
+                    // Large dataset - use pagination
+                    fullLogDataList = getLogData(uid); // Get full list for statistics
+                    logDataList = getPagedLogData(uid, 0, PAGE_SIZE); // Get first page
+                    currentPage = 0;
+                } else {
+                    // Small dataset - load all
+                    logDataList = getLogData(uid);
+                    fullLogDataList = logDataList;
+                }
+                
                 if (logDataList != null && logDataList.size() > 0) {
                     Collections.sort(logDataList, new DateComparator());
                     recyclerViewAdapter.updateData(logDataList);
@@ -295,10 +350,9 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                     return false;
                 }
             } catch (Exception e) {
-                Log.e(Api.TAG, "Exception while retrieving  data" + e.getLocalizedMessage());
+                Log.e(Api.TAG, "Exception while retrieving data" + e.getLocalizedMessage());
                 return null;
             }
-
         }
 
         @Override
@@ -312,7 +366,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
         }
 
         @Override
-        protected void onPostExecute(Boolean logPresent) {
+            protected void onPostExecute(Boolean logPresent) {
             super.onPostExecute(logPresent);
             doProgress(-1);
             try {
@@ -334,6 +388,17 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 mSwipeLayout.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
                 recyclerViewAdapter.notifyDataSetChanged();
+                
+                // Update title with log count
+                updateTitleWithLogCount();
+                
+                // Update summary statistics using full dataset
+                updateSummaryStatistics();
+                
+                // Setup load more functionality for large datasets
+                if (fullLogDataList != null && fullLogDataList.size() > PAGE_SIZE) {
+                    setupLoadMoreFunctionality();
+                }
             } else {
                 mSwipeLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
@@ -401,6 +466,189 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     @Override
     public void onRefresh() {
         (new CollectDetailLog()).setContext(this).execute();
+    }
+    
+    private void updateTitleWithLogCount() {
+        if (logDataList != null && logDataList.size() > 0) {
+            String appName = "";
+            if (logDataList.get(0).getAppName() != null) {
+                appName = logDataList.get(0).getAppName();
+            }
+            String title = appName + " (" + logDataList.size() + " blocked)";
+            setTitle(title);
+        }
+    }
+    
+    private void showBlockDestinationDialog() {
+        if (current_selected_logData == null) return;
+        
+        new MaterialDialog.Builder(this)
+            .title("Block Destination")
+            .content("Add a permanent rule to block all connections to " + 
+                    current_selected_logData.getDst() + ":" + current_selected_logData.getDpt() + "?")
+            .positiveText("Block")
+            .negativeText("Cancel")
+            .onPositive((dialog, which) -> {
+                // Here you would integrate with AFWall's custom rule system
+                // This is a placeholder for the actual implementation
+                Api.toast(this, "Feature requires integration with custom rules system");
+            })
+            .show();
+    }
+    
+    private void showWhitelistDestinationDialog() {
+        if (current_selected_logData == null) return;
+        
+        new MaterialDialog.Builder(this)
+            .title("Whitelist Destination")
+            .content("Add a permanent rule to allow all connections to " + 
+                    current_selected_logData.getDst() + ":" + current_selected_logData.getDpt() + "?")
+            .positiveText("Allow")
+            .negativeText("Cancel")
+            .onPositive((dialog, which) -> {
+                // Here you would integrate with AFWall's custom rule system
+                // This is a placeholder for the actual implementation
+                Api.toast(this, "Feature requires integration with custom rules system");
+            })
+            .show();
+    }
+    
+    private void updateSummaryStatistics() {
+        if (fullLogDataList == null || fullLogDataList.isEmpty()) {
+            return;
+        }
+        
+        // Show basic count immediately for better UX (full dataset count)
+        totalBlocks.setText(String.valueOf(fullLogDataList.size()));
+        
+        // Process complex statistics in background thread using full dataset
+        new Thread(() -> {
+            // Calculate unique destinations and most blocked
+            java.util.Map<String, Integer> destinationCounts = new java.util.HashMap<>();
+            java.util.Set<String> uniqueDests = new java.util.HashSet<>();
+            
+            long oldestTimestamp = Long.MAX_VALUE;
+            long newestTimestamp = Long.MIN_VALUE;
+            
+            for (LogData logData : fullLogDataList) {
+                String destination = logData.getDst() + ":" + logData.getDpt();
+                uniqueDests.add(destination);
+                destinationCounts.put(destination, destinationCounts.getOrDefault(destination, 0) + 1);
+                
+                // Track time range
+                oldestTimestamp = Math.min(oldestTimestamp, logData.getTimestamp());
+                newestTimestamp = Math.max(newestTimestamp, logData.getTimestamp());
+            }
+            
+            final int uniqueCount = uniqueDests.size();
+            final String period = (oldestTimestamp != Long.MAX_VALUE && newestTimestamp != Long.MIN_VALUE) ? 
+                    formatTimePeriod(newestTimestamp - oldestTimestamp) : "0s";
+            
+            // Find most blocked destination
+            String mostBlocked = "No data";
+            int maxCount = 0;
+            for (java.util.Map.Entry<String, Integer> entry : destinationCounts.entrySet()) {
+                if (entry.getValue() > maxCount) {
+                    maxCount = entry.getValue();
+                    mostBlocked = entry.getKey() + " (" + maxCount + "x)";
+                }
+            }
+            final String finalMostBlocked = mostBlocked;
+            
+            // Update UI on main thread
+            runOnUiThread(() -> {
+                uniqueDestinations.setText(String.valueOf(uniqueCount));
+                timePeriod.setText(period);
+                mostBlockedDestination.setText(finalMostBlocked);
+            });
+        }).start();
+    }
+    
+    private void setupLoadMoreFunctionality() {
+        // Add scroll listener to load more data when user reaches bottom
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null && !isLoading) {
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                    
+                    // Load more when we're near the bottom
+                    if ((visibleItemCount + firstVisibleItem) >= totalItemCount - 10) {
+                        loadMoreData();
+                    }
+                }
+            }
+        });
+    }
+    
+    private void loadMoreData() {
+        if (isLoading || fullLogDataList == null) return;
+        
+        int totalAvailable = fullLogDataList.size();
+        int currentLoaded = (currentPage + 1) * PAGE_SIZE;
+        
+        if (currentLoaded >= totalAvailable) {
+            return; // No more data to load
+        }
+        
+        isLoading = true;
+        currentPage++;
+        
+        // Show loading indicator
+        loadingMoreIndicator.setVisibility(View.VISIBLE);
+        
+        new Thread(() -> {
+            try {
+                List<LogData> newData = getPagedLogData(uid, currentPage, PAGE_SIZE);
+                if (newData != null && !newData.isEmpty()) {
+                    Collections.sort(newData, new DateComparator());
+                    
+                    runOnUiThread(() -> {
+                        // Add new data to existing list
+                        logDataList.addAll(newData);
+                        recyclerViewAdapter.notifyItemRangeInserted(
+                            logDataList.size() - newData.size(), 
+                            newData.size()
+                        );
+                        loadingMoreIndicator.setVisibility(View.GONE);
+                        isLoading = false;
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        loadingMoreIndicator.setVisibility(View.GONE);
+                        isLoading = false;
+                    });
+                }
+            } catch (Exception e) {
+                Log.e(Api.TAG, "Error loading more data", e);
+                runOnUiThread(() -> {
+                    loadingMoreIndicator.setVisibility(View.GONE);
+                    isLoading = false;
+                });
+            }
+        }).start();
+    }
+    
+    private String formatTimePeriod(long millis) {
+        long seconds = millis / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        
+        if (days > 0) {
+            return days + "d";
+        } else if (hours > 0) {
+            return hours + "h";
+        } else if (minutes > 0) {
+            return minutes + "m";
+        } else {
+            return seconds + "s";
+        }
     }
 
     private static class Task extends AsyncTask<Void, Void, Boolean> {

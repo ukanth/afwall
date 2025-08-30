@@ -3,73 +3,196 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="0dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginTop="5dp"
-    card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="2dp">
+    android:layout_marginBottom="2dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    card_view:cardCornerRadius="8dp"
+    card_view:cardElevation="3dp"
+    card_view:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/data_icon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center"
-            android:scaleType="fitCenter" />
+        <!-- Connection type icon with colored background -->
+        <LinearLayout
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/circle_background"
+            android:gravity="center">
+            
+            <ImageView
+                android:id="@+id/data_icon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:scaleType="fitCenter"
+                android:tint="#FFFFFF" />
+        </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <!-- Main content area -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="12dp"
             android:orientation="vertical">
 
-
-            <TextView
-                android:id="@+id/denied_time"
-                android:layout_width="wrap_content"
+            <!-- Header row with timestamp and interface -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:textColor="?attr/tint"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/data_dest"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/denied_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/tint" />
+
+                <!-- Block indicator -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BLOCKED"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="#F44336"
+                    android:background="#22F44336"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginLeft="8dp" />
+            </LinearLayout>
+
+            <!-- Network details with better formatting -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/denied_time"
-                android:layout_marginTop="6dp"
-                android:textColor="?attr/tint"/>
+                android:orientation="vertical"
+                android:layout_marginTop="8dp">
 
-            <TextView
-                android:id="@+id/data_host"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/data_dest"
-                android:layout_marginTop="6dp"
-                android:textColor="?attr/tint"/>
+                <!-- Destination info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-            <TextView
-                android:id="@+id/data_src"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/data_host"
-                android:layout_marginTop="6dp"
-                android:textColor="?attr/tint"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TO:"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/tint"
+                        android:minWidth="30dp" />
 
-            <TextView
-                android:id="@+id/data_proto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/data_src"
-                android:layout_marginTop="6dp"
-                android:textColor="?attr/tint"/>
+                    <TextView
+                        android:id="@+id/data_dest"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="13sp"
+                        android:textColor="?attr/tint"
+                        android:layout_marginLeft="8dp"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
 
-        </RelativeLayout>
+                <!-- Hostname if available -->
+                <TextView
+                    android:id="@+id/data_host"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="38dp"
+                    android:textSize="11sp"
+                    android:textStyle="italic"
+                    android:textColor="?attr/tint" />
+
+                <!-- Source info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FROM:"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/tint"
+                        android:minWidth="30dp" />
+
+                    <TextView
+                        android:id="@+id/data_src"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="13sp"
+                        android:textColor="?attr/tint"
+                        android:layout_marginLeft="8dp"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <!-- Protocol and packet details -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/data_proto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/tint"
+                        android:background="#22757575"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:layout_marginRight="8dp" />
+
+                    <TextView
+                        android:id="@+id/packet_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="11sp"
+                        android:textColor="?attr/tint"
+                        android:visibility="gone" />
+
+                    <!-- Spacer -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <!-- Count indicator for repeated blocks -->
+                    <TextView
+                        android:id="@+id/block_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        android:textColor="?attr/tint"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
