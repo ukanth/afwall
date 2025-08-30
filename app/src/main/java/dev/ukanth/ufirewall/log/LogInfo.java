@@ -43,6 +43,7 @@ import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.UidResolver;
 
 public class LogInfo {
     public String uidString;
@@ -125,13 +126,25 @@ public class LogInfo {
             for (int i = 0; i < map.size(); i++) {
                 StringBuilder address = new StringBuilder();
                 id = map.keyAt(i);
+                appName = ""; // Reset for each iteration
+                appId = -1;
+                
                 if (id != -1) {
+                    // First, try to find in cached app list
+                    boolean foundInApps = false;
                     for (PackageInfoData app : apps) {
                         if (app.uid == id) {
                             appId = id;
                             appName = app.names.get(0);
+                            foundInApps = true;
                             break;
                         }
+                    }
+                    
+                    // If not found in apps, use comprehensive UID resolver
+                    if (!foundInApps) {
+                        appId = id;
+                        appName = UidResolver.resolveUid(ctx, id);
                     }
                 } else {
                     appName = ctx.getString(R.string.unknown_item);

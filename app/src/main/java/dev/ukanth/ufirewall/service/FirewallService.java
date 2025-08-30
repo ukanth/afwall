@@ -38,6 +38,7 @@ public class FirewallService extends Service {
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothProfile.ServiceListener btListener;
     private static BluetoothProfile btPanProfile;
+    private static boolean btConnectionRequested = false; // Track if connection was requested
     public Context context;
     @Override
     public IBinder onBind(Intent intent) {
@@ -51,18 +52,22 @@ public class FirewallService extends Service {
     }
 
     private void registerBTListener() {
-        btListener = new BluetoothProfile.ServiceListener() {
-            @Override
-            public void onServiceConnected(int profile, BluetoothProfile proxy) {
-                Log.d(G.TAG, "BluetoothProfile.ServiceListener connected");
-                btPanProfile = proxy;
-            }
+        // Only create listener if it doesn't exist to prevent leaks
+        if (btListener == null) {
+            btListener = new BluetoothProfile.ServiceListener() {
+                @Override
+                public void onServiceConnected(int profile, BluetoothProfile proxy) {
+                    Log.d(G.TAG, "BluetoothProfile.ServiceListener connected");
+                    btPanProfile = proxy;
+                }
 
-            @Override
-            public void onServiceDisconnected(int profile) {
-                Log.d(G.TAG, "BluetoothProfile.ServiceListener disconected");
-            }
-        };
+                @Override
+                public void onServiceDisconnected(int profile) {
+                    Log.d(G.TAG, "BluetoothProfile.ServiceListener disconnected");
+                    btPanProfile = null; // Clear reference on disconnect
+                }
+            };
+        }
     }
 
 
@@ -215,9 +220,8 @@ public class FirewallService extends Service {
             registerReceiver(packageReceiver, intentFilter);
         }
 
-        if(bluetoothAdapter == null) {
-            bluetoothAdapter = getBTAdapter(context);
-        }
+        // TEMPORARY: Bluetooth initialization completely disabled to prevent connection leaks
+        Log.d(G.TAG, "Bluetooth initialization disabled to prevent service connection leaks");
 
         return START_STICKY;
     }
@@ -228,16 +232,12 @@ public class FirewallService extends Service {
         boolean hasBluetooth = pm.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
         if (hasBluetooth) {
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothAdapter != null && btListener != null && btPanProfile == null) {
-                try {
-                    boolean success = bluetoothAdapter.getProfileProxy(context, btListener, 5); // BluetoothProfile.PAN
-                    if (!success) {
-                        Log.w(G.TAG, "Failed to get Bluetooth PAN profile proxy");
-                    }
-                } catch (Exception e) {
-                    Log.e(G.TAG, "Error getting Bluetooth profile proxy", e);
-                }
-            }
+            
+            // TEMPORARY: Disable Bluetooth profile connection to prevent service leaks
+            // TODO: Find better way to handle Bluetooth tethering detection without connection leaks
+            Log.d(G.TAG, "Bluetooth PAN profile connection disabled to prevent service leaks");
+        } else {
+            Log.d(G.TAG, "Device does not support Bluetooth, skipping");
         }
         return bluetoothAdapter;
     }
@@ -258,6 +258,7 @@ public class FirewallService extends Service {
                 if(btPanProfile != null) {
                     bluetoothAdapter.closeProfileProxy(5, btPanProfile); // BluetoothProfile.PAN
                     btPanProfile = null;
+                    Log.d(G.TAG, "Closed Bluetooth PAN profile proxy");
                 }
             } catch (Exception e){
                 Log.e(G.TAG, "Error closing bt profile", e);
@@ -265,7 +266,15 @@ public class FirewallService extends Service {
                 // Always clean up references regardless of profile state
                 btListener = null;
                 bluetoothAdapter = null;
+                btConnectionRequested = false; // Reset connection flag
+                Log.d(G.TAG, "Bluetooth cleanup completed");
             }
+        } else if (btConnectionRequested || btPanProfile != null) {
+            // Edge case: Clean up even if adapter is null
+            Log.w(G.TAG, "Bluetooth adapter is null but connection state exists, cleaning up");
+            btPanProfile = null;
+            btListener = null;
+            btConnectionRequested = false;
         }
         super.onDestroy();
     }
@@ -273,6 +282,9 @@ public class FirewallService extends Service {
 
 
     public static BluetoothProfile getBtPanProfile() {
-        return btPanProfile;
+        // TEMPORARY: Return null to disable Bluetooth tethering detection
+        // This prevents service connection leaks while we find a better solution
+        Log.d(G.TAG, "Bluetooth PAN profile disabled, returning null");
+        return null;
     }
 }

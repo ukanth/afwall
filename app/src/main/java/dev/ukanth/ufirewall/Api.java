@@ -135,6 +135,7 @@ import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
+import dev.ukanth.ufirewall.util.UidResolver;
 import dev.ukanth.ufirewall.widget.StatusWidget;
 
 /**
@@ -789,13 +790,16 @@ public final class Api {
     }
 
     public static String getSpecialAppName(int uid) {
+        // First, try special apps (AFWall+ specific entries)
         List<PackageInfoData> packageInfoData = getSpecialData();
         for (PackageInfoData infoData : packageInfoData) {
             if (infoData.uid == uid) {
                 return infoData.names.get(0);
             }
         }
-        return ctx.getString(R.string.unknown_item);
+        
+        // If not found in special apps, use comprehensive UID resolver
+        return UidResolver.resolveUid(ctx, uid);
     }
 
 
@@ -1395,7 +1399,31 @@ public final class Api {
         }
 
         addCustomRules(Api.PREF_CUSTOMSCRIPT2, cmds);
-
+        
+        // Execute the purge commands and call the callback
+        Log.i(TAG, "Executing purge commands for IPv4");
+        cmds.addAll(cmdsv4);
+        iptablesCommands(cmds, out, false);
+        
+        if (G.enableIPv6()) {
+            Log.i(TAG, "Executing purge commands for IPv6");
+            List<String> cmdsv6 = new ArrayList<>();
+            for (String s : staticChains) {
+                cmdsv6.add("-F " + chainName + s);
+            }
+            for (String s : dynChains) {
+                cmdsv6.add("-F " + chainName + s);
+            }
+            cmdsv6.add("#NOCHK# -D OUTPUT -j " + chainName);
+            cmdsv6.add("-P OUTPUT ACCEPT");
+            if (G.enableInbound()) {
+                cmdsv6.add("-D INPUT -j " + chainName + "-input");
+            }
+            iptablesCommands(cmdsv6, out, true);
+        }
+        
+        Log.i(TAG, "Purge completed, calling callback");
+        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
     
     /**

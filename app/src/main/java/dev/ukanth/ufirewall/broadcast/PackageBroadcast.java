@@ -50,6 +50,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.UidResolver;
 
 /**
  * Broadcast receiver responsible for removing rules that affect uninstalled
@@ -91,6 +92,9 @@ public class PackageBroadcast extends BroadcastReceiver {
                                 Api.removeAllUnusedCacheLabel(context);
                                 // Force app list reload next time
                                 Api.applications = null;
+                                // Invalidate UID resolver cache for this UID
+                                UidResolver.invalidateUid(uid);
+                                Log.d(TAG, "Package removed, invalidated UID cache for: " + uid);
                             }
                         }
                     }));
@@ -105,6 +109,11 @@ public class PackageBroadcast extends BroadcastReceiver {
             } else {
                 // Force app list reload next time
                 Api.applications = null;
+                
+                // Clear UID resolver cache since new package may get a UID we've seen before
+                UidResolver.clearCache();
+                Log.d(TAG, "Package added, cleared UID resolver cache");
+                
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
                 boolean isNotify = prefs.getBoolean("notifyAppInstall", true);
                 if (isNotify && Api.isEnabled(context)) {

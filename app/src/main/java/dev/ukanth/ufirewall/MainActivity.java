@@ -2328,7 +2328,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPreExecute() {
             progress = new MaterialDialog.Builder(activityReference.get())
                     .title(R.string.working)
-                    .cancelable(false)
+                    .cancelable(true)
                     .content(R.string.purging_rules)
                     .progress(true, 0)
                     .show();
@@ -2376,6 +2376,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     progress.dismiss();
                     progress = null;
                 } catch (Exception ex) {
+                } finally {
+                    assert progress != null;
+                    progress.dismiss();
+                    progress = null;
                 }
             }
         }
