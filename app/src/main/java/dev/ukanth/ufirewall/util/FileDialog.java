@@ -60,7 +60,14 @@ public class FileDialog {
         Dialog dialog = null;
 
         //MaterialDialog.Builder
-        MaterialDialog.Builder  builder = new MaterialDialog.Builder(activity);
+        MaterialDialog.Builder  builder;
+        try {
+            builder = new MaterialDialog.Builder(activity);
+        } catch (Exception e) {
+            android.util.Log.e(TAG, "MaterialDialog.Builder failed due to Android compatibility issue", e);
+            // Return null to indicate dialog creation failed
+            return null;
+        }
 
         builder.title(currentPath.getPath());
         if (selectDirectoryOption) {
@@ -80,7 +87,12 @@ public class FileDialog {
             } else fireFileSelectedEvent(chosenFile);
         });
 
-        dialog = builder.show();
+        try {
+            dialog = builder.show();
+        } catch (Exception e) {
+            android.util.Log.e(TAG, "MaterialDialog.show() failed due to Android compatibility issue", e);
+            return null;
+        }
         return dialog;
     }
 
@@ -109,7 +121,13 @@ public class FileDialog {
      * Show file dialog
      */
     public void showDialog() {
-        createFileDialog().show();
+        Dialog dialog = createFileDialog();
+        if (dialog != null) {
+            dialog.show();
+        } else {
+            android.util.Log.e(TAG, "Cannot show file dialog due to MaterialDialog compatibility issue");
+            // Could implement alternative file picker here if needed
+        }
     }
 
     private void fireFileSelectedEvent(final File file) {

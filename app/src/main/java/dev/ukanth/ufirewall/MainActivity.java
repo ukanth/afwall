@@ -1240,9 +1240,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return true;
         } else if (selectedItem == R.id.menu_import) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Do some stuff
+                // Copy old data and show import dialog when complete
                 copyOldExportedData();
-                showImportDialog();
             } else {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -1263,14 +1262,69 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void copyOldExportedData() {
         if (!G.hasCopyOld()) {
-            //using root to copy existing data to current directory on A11
-            String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
-            String targetDir = ctx.getExternalFilesDir(null) + "/";
-            String command = "cp -R " + existingDir + " " + targetDir;
-            Log.i(TAG, "Invoking migration script " + command);
-            com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.cmd(command).exec();
-            G.hasCopyOldExports(true);
+            copyOldExportedDataAsync(() -> {
+                // On completion, show import dialog
+                runOnUiThread(() -> {
+                    showImportDialog();
+                });
+            });
+        } else {
+            // Already copied, show dialog immediately
+            showImportDialog();
         }
+    }
+
+    private void copyOldExportedDataAsync(Runnable onComplete) {
+        // Show progress dialog
+        MaterialDialog progressDialog = null;
+        try {
+            progressDialog = new MaterialDialog.Builder(this)
+                    .title("Migrating Files")
+                    .content("Copying backup files to new location...")
+                    .progress(true, 0)
+                    .cancelable(false)
+                    .show();
+        } catch (Exception e) {
+            Log.w(TAG, "Could not show progress dialog due to MaterialDialog compatibility issue", e);
+            // Fallback: Show toast notification
+            Api.toast(this, "Migrating backup files to new location...");
+        }
+        
+        final MaterialDialog finalProgressDialog = progressDialog;
+        
+        // Run file copy operation in background thread
+        new Thread(() -> {
+            try {
+                //using root to copy existing data to current directory on A11+
+                String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
+                String targetDir = ctx.getExternalFilesDir(null) + "/";
+                String command = "cp -R " + existingDir + " " + targetDir;
+                Log.i(TAG, "Invoking migration script " + command);
+                
+                com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.cmd(command).exec();
+                
+                if (result.getCode() == 0) {
+                    Log.i(TAG, "Migration script completed successfully");
+                    G.hasCopyOldExports(true);
+                } else {
+                    Log.w(TAG, "Migration script failed with code: " + result.getCode());
+                    Log.w(TAG, "Migration output: " + result.getOut());
+                }
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error during file migration", e);
+            } finally {
+                // Dismiss progress dialog and run completion callback on UI thread
+                runOnUiThread(() -> {
+                    if (finalProgressDialog != null && finalProgressDialog.isShowing()) {
+                        finalProgressDialog.dismiss();
+                    }
+                    if (onComplete != null) {
+                        onComplete.run();
+                    }
+                });
+            }
+        }).start();
     }
 
     private void search(MenuItem item) {
@@ -1302,13 +1356,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void showImportDialog() {
-        new MaterialDialog.Builder(this)
-                .title(R.string.imports)
-                .cancelable(false)
-                .items(new String[]{
-                        getString(R.string.import_rules),
-                        getString(R.string.import_all)})
-                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+        try {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.imports)
+                    .cancelable(false)
+                    .items(new String[]{
+                            getString(R.string.import_rules),
+                            getString(R.string.import_all)})
+                    .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
                             //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
@@ -1381,28 +1436,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .positiveText(R.string.imports)
                 .negativeText(R.string.Cancel)
                 .show();
+        } catch (Exception e) {
+            Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
+            // Fallback: Show a simple toast message and try alternative approach
+            Api.toast(this, "Import dialog unavailable due to Android compatibility issue. Please use file manager to manually copy backup files to AFWall directory.");
+        }
     }
 
     private void showExportDialog() {
-        new MaterialDialog.Builder(this)
-                .title(R.string.exports)
-                .cancelable(false)
-                .items(new String[]{
-                        getString(R.string.export_rules),
-                        getString(R.string.export_all)})
-                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            Api.exportRulesToFileConfirm(MainActivity.this);
-                            break;
-                        case 1:
-                            Api.exportAllPreferencesToFileConfirm(MainActivity.this);
-                            break;
-                    }
-                    return true;
-                }).positiveText(R.string.exports)
-                .negativeText(R.string.Cancel)
-                .show();
+        try {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.exports)
+                    .cancelable(false)
+                    .items(new String[]{
+                            getString(R.string.export_rules),
+                            getString(R.string.export_all)})
+                    .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+                        switch (which) {
+                            case 0:
+                                Api.exportRulesToFileConfirm(MainActivity.this);
+                                break;
+                            case 1:
+                                Api.exportAllPreferencesToFileConfirm(MainActivity.this);
+                                break;
+                        }
+                        return true;
+                    }).positiveText(R.string.exports)
+                    .negativeText(R.string.Cancel)
+                    .show();
+        } catch (Exception e) {
+            Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
+            Api.toast(this, "Export dialog unavailable due to Android compatibility issue. Please use Settings > Export to access export functionality.");
+        }
     }
 
     private void showPreferences() {
