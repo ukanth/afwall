@@ -2110,7 +2110,7 @@ public final class Api {
         if (!installBinary(ctx, R.raw.iptables_x86, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_x86, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_x86, "nflog")) return false;
-        //if (!installBinary(ctx, R.raw.run_pie_x86, "run_pie")) return false;
+        if (!installBinary(ctx, R.raw.run_pie_x86, "run_pie")) return false;
         return true;
     }
 
@@ -2119,34 +2119,17 @@ public final class Api {
         if (!installBinary(ctx, R.raw.iptables_mips, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_mips, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_mips, "nflog")) return false;
-        //if (!installBinary(ctx, R.raw.run_pie_mips, "run_pie")) return false;
+        if (!installBinary(ctx, R.raw.run_pie_mips, "run_pie")) return false;
         return true;
     }
 
     private static boolean installBinariesArm64() {
-        // ARM64 now has its own binaries available
-        // NOTE: When you add the ARM64 binaries to res/raw/, uncomment the lines below
-        // and comment out the installBinaryIfExists calls
-        
-        // Install binaries using safe approach for now (works even without binary files)
-        installBinaryIfExists(ctx, "busybox_arm64", "busybox");
-        installBinaryIfExists(ctx, "iptables_arm64", "iptables");  
-        installBinaryIfExists(ctx, "ip6tables_arm64", "ip6tables");
-        
-        // Install nflog_arm64 (this should always exist)
-        if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) {
-            Log.e(TAG, "Failed to install ARM64 nflog binary");
-            return false;
-        }
-        
-        /* 
-         * FUTURE: When ARM64 binaries are added to res/raw/, replace above with:
-         * if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
-         * if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
-         * if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
-         * if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
-         */
-        
+        if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
+        if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
+        if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
+        if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
+        if (!installBinary(ctx, R.raw.run_pie_arm64, "run_pie")) return false;
+
         return true;
     }
 
@@ -2155,7 +2138,7 @@ public final class Api {
         if (!installBinary(ctx, R.raw.iptables_arm, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_arm, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_arm, "nflog")) return false;
-        //if (!installBinary(ctx, R.raw.run_pie_arm, "run_pie")) return false;
+        if (!installBinary(ctx, R.raw.run_pie_arm, "run_pie")) return false;
         return true;
     }
 
