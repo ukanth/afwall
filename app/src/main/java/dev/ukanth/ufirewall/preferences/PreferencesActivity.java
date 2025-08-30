@@ -31,6 +31,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -334,13 +336,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
 
         if(key.equals("logTarget")) {
-            Api.updateLogRules(ctx, new RootCommand()
-                    .setReopenShell(true)
-                    .setSuccessToast(R.string.log_target_success)
-                    .setFailureToast(R.string.log_target_fail));
-            Intent intent = new Intent(ctx, LogService.class);
-            ctx.stopService(intent);
-            ctx.startService(intent);
+            // Log target changes are now handled by LogPreferenceFragment
+            // This should not be called anymore due to the OnPreferenceChangeListener
+            Log.d("PreferencesActivity", "logTarget preference changed: " + sharedPreferences.getString(key, ""));
         }
         if (key.equals("enableLogService")) {
             if(G.logTarget() !=null && !G.logTarget().trim().isEmpty()) {

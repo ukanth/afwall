@@ -160,6 +160,9 @@
     <string name="log_was_disabled">Log disabled</string>
     <string name="log_target_success">Log target change succesful</string>
     <string name="log_target_fail">Log target change failed</string>
+    <string name="log_target_change_title">Change Log Target</string>
+    <string name="log_target_change_message">You are switching from %1$s to %2$s.\n\nThis will restart the log service which may cause a brief interruption in logging. Do you want to continue?</string>
+    <string name="log_target_changed_success">Log target changed to %1$s successfully</string>
     <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>

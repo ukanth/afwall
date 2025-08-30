@@ -75,6 +75,10 @@ public class LogService extends Service {
     public static final String TAG = "AFWall";
     public static String logPath;
     public static final int QUEUE_NUM = 40;
+    
+    public static final String ACTION_GRACEFUL_SHUTDOWN = "dev.ukanth.ufirewall.GRACEFUL_SHUTDOWN";
+    public static final String ACTION_CHANGE_LOG_TARGET = "dev.ukanth.ufirewall.CHANGE_LOG_TARGET";
+    public static final String EXTRA_NEW_LOG_TARGET = "new_log_target";
 
     private String NOTIFICATION_CHANNEL_ID = "firewall.logservice";
 
@@ -84,6 +88,7 @@ public class LogService extends Service {
 
     private List<String> callbackList;
     private ExecutorService executorService;
+    private volatile boolean isShuttingDown = false;
 
     private Shell logWatcherShell; // Additional shell for long running log-watcher process
 
@@ -95,6 +100,21 @@ public class LogService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            if (ACTION_GRACEFUL_SHUTDOWN.equals(intent.getAction())) {
+                Log.i(TAG, "Received graceful shutdown request");
+                initiateGracefulShutdown();
+                return START_NOT_STICKY;
+            } else if (ACTION_CHANGE_LOG_TARGET.equals(intent.getAction())) {
+                String newLogTarget = intent.getStringExtra(EXTRA_NEW_LOG_TARGET);
+                Log.i(TAG, "Received log target change request to: " + newLogTarget);
+                changeLogTarget(newLogTarget);
+                return START_STICKY;
+            }
+        }
+        
+        // Reset shutdown flag when service starts normally
+        isShuttingDown = false;
         startLogService();
         return START_STICKY;
     }
@@ -220,9 +240,14 @@ public class LogService extends Service {
     }
 
     private void restartWatcher(String logPath) {
+        if (isShuttingDown) {
+            Log.d(TAG, "Service is shutting down, not restarting log watcher");
+            return;
+        }
+        
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
-            if (G.enableLogService()) {
+            if (G.enableLogService() && !isShuttingDown) {
                 Log.i(G.TAG, "Restarting log watcher after 5s");
                 cleanupTempFiles();
                 initiateLogWatcher(logPath);
@@ -239,6 +264,140 @@ public class LogService extends Service {
         } catch (Exception e) {
             // Ignore cleanup errors
         }
+    }
+    
+    /**
+     * Initiate graceful shutdown of the log service
+     */
+    private void initiateGracefulShutdown() {
+        Log.i(TAG, "Starting graceful shutdown process");
+        
+        // Set shutdown flag to prevent new tasks
+        isShuttingDown = true;
+        
+        // Stop in background thread to avoid blocking the main thread
+        new Thread(() -> {
+            try {
+                // Close shell first to stop generating new tasks
+                if (logWatcherShell != null) {
+                    try {
+                        logWatcherShell.close();
+                        Log.i(TAG, "Log watcher shell closed");
+                    } catch (Exception e) {
+                        Log.w(TAG, "Error closing log watcher shell during graceful shutdown: " + e.getMessage());
+                    }
+                    logWatcherShell = null;
+                }
+                
+                // Give executor service time to finish current tasks
+                if (executorService != null) {
+                    try {
+                        Log.i(TAG, "Shutting down executor service...");
+                        executorService.shutdown(); // Don't accept new tasks
+                        if (!executorService.awaitTermination(5000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                            Log.w(TAG, "Executor service didn't terminate within 5s, forcing shutdown");
+                            executorService.shutdownNow();
+                            // Wait a bit more for tasks to respond to being cancelled
+                            if (!executorService.awaitTermination(2000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                                Log.w(TAG, "Executor service still didn't terminate after force shutdown");
+                            }
+                        }
+                        Log.i(TAG, "Executor service shutdown complete");
+                    } catch (InterruptedException e) {
+                        Log.w(TAG, "Interrupted while shutting down executor service");
+                        executorService.shutdownNow();
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                
+                // Clean up and stop service
+                cleanupTempFiles();
+                Log.i(TAG, "Graceful shutdown complete, stopping service");
+                
+                // Stop the service on the main thread
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                mainHandler.post(() -> stopSelf());
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error during graceful shutdown: " + e.getMessage(), e);
+                // Fallback to immediate stop
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                mainHandler.post(() -> stopSelf());
+            }
+        }, "LogService-GracefulShutdown").start();
+    }
+    
+    /**
+     * Change the log target without restarting the service
+     */
+    private void changeLogTarget(String newLogTarget) {
+        if (newLogTarget == null || newLogTarget.trim().isEmpty()) {
+            Log.w(TAG, "Invalid log target provided, ignoring change request");
+            return;
+        }
+        
+        String currentLogTarget = G.logTarget();
+        if (newLogTarget.equals(currentLogTarget)) {
+            Log.i(TAG, "New log target is same as current, no change needed");
+            return;
+        }
+        
+        Log.i(TAG, "Changing log target from " + currentLogTarget + " to " + newLogTarget);
+        
+        // Stop current log watcher gracefully in background thread
+        new Thread(() -> {
+            try {
+                // Set shutdown flag temporarily to prevent restarts
+                isShuttingDown = true;
+                
+                // Close current shell and executor
+                if (logWatcherShell != null) {
+                    try {
+                        logWatcherShell.close();
+                        Log.i(TAG, "Closed existing log watcher shell");
+                    } catch (Exception e) {
+                        Log.w(TAG, "Error closing existing shell: " + e.getMessage());
+                    }
+                    logWatcherShell = null;
+                }
+                
+                if (executorService != null) {
+                    try {
+                        executorService.shutdown();
+                        if (!executorService.awaitTermination(3000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                            Log.w(TAG, "Executor didn't terminate gracefully, forcing shutdown");
+                            executorService.shutdownNow();
+                        }
+                        Log.i(TAG, "Executor service shut down successfully");
+                    } catch (InterruptedException e) {
+                        Log.w(TAG, "Interrupted while shutting down executor");
+                        executorService.shutdownNow();
+                        Thread.currentThread().interrupt();
+                    }
+                    executorService = null;
+                }
+                
+                // Wait a moment for cleanup
+                Thread.sleep(1000);
+                
+                // Update log target in preferences
+                G.logTarget(newLogTarget);
+                
+                // Reset shutdown flag
+                isShuttingDown = false;
+                
+                // Restart log service with new target on main thread
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                mainHandler.post(() -> {
+                    Log.i(TAG, "Restarting log service with new target: " + newLogTarget);
+                    startLogService();
+                });
+                
+            } catch (Exception e) {
+                Log.e(TAG, "Error during log target change: " + e.getMessage(), e);
+                isShuttingDown = false; // Reset flag on error
+            }
+        }, "LogService-ChangeTarget").start();
     }
 
     private void createNotification() {
@@ -276,7 +435,7 @@ public class LogService extends Service {
         }
 
         //make sure it's enabled first
-        if(G.enableLogService()) {
+        if(G.enableLogService() && !isShuttingDown) {
             if (executorService == null) {
                 executorService = Executors.newCachedThreadPool();
             }
@@ -294,6 +453,14 @@ public class LogService extends Service {
             
             Log.i(TAG, "Starting log watcher with command: " + logCommand);
             try {
+                if (executorService == null || executorService.isShutdown() || executorService.isTerminated()) {
+                    Log.w(TAG, "ExecutorService is not available, recreating...");
+                    if (executorService != null) {
+                        executorService.shutdownNow();
+                    }
+                    executorService = Executors.newCachedThreadPool();
+                }
+                
                 logWatcherShell.newJob()
                     .add(logCommand)
                     .to(callbackList)
@@ -320,6 +487,19 @@ public class LogService extends Service {
                     });
             } catch(Exception e) {
                 Log.e(TAG, "Unable to start log service: " + e.getMessage(), e);
+                if (e.getMessage() != null && (e.getMessage().contains("rejected") || e.getMessage().contains("terminated"))) {
+                    Log.w(TAG, "ExecutorService rejected task, recreating executor and retrying...");
+                    try {
+                        if (executorService != null) {
+                            executorService.shutdownNow();
+                        }
+                        executorService = Executors.newCachedThreadPool();
+                        initiateLogWatcher(logPath);
+                        return;
+                    } catch (Exception retryException) {
+                        Log.e(TAG, "Retry also failed: " + retryException.getMessage(), retryException);
+                    }
+                }
                 tryFallbackLogMethod();
             }
         }
@@ -329,12 +509,17 @@ public class LogService extends Service {
      * Try a fallback log reading method if the primary method fails
      */
     private void tryFallbackLogMethod() {
+        if (isShuttingDown) {
+            Log.d(TAG, "Service is shutting down, not trying fallback method");
+            return;
+        }
+        
         Log.i(TAG, "Attempting fallback to basic /proc/kmsg reading");
         String fallbackCommand = "cat /proc/kmsg | grep --line-buffered '{AFL}'";
         
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
-            if (G.enableLogService()) {
+            if (G.enableLogService() && !isShuttingDown) {
                 Log.i(TAG, "Starting fallback log watcher");
                 initiateLogWatcherWithCommand(fallbackCommand);
             }
@@ -345,8 +530,16 @@ public class LogService extends Service {
      * Initiate log watcher with a specific command (used for fallback)
      */
     private void initiateLogWatcherWithCommand(String logCommand) {
-        if(G.enableLogService() && logWatcherShell != null) {
+        if(G.enableLogService() && logWatcherShell != null && !isShuttingDown) {
             try {
+                if (executorService == null || executorService.isShutdown() || executorService.isTerminated()) {
+                    Log.w(TAG, "ExecutorService is not available for fallback, recreating...");
+                    if (executorService != null) {
+                        executorService.shutdownNow();
+                    }
+                    executorService = Executors.newCachedThreadPool();
+                }
+                
                 logWatcherShell.newJob()
                     .add(logCommand)
                     .to(callbackList)
@@ -358,6 +551,9 @@ public class LogService extends Service {
                     });
             } catch(Exception e) {
                 Log.e(TAG, "Fallback log service also failed: " + e.getMessage(), e);
+                if (e.getMessage() != null && (e.getMessage().contains("rejected") || e.getMessage().contains("terminated"))) {
+                    Log.w(TAG, "ExecutorService rejected fallback task, service may be shutting down");
+                }
             }
         }
     }
@@ -462,13 +658,10 @@ public class LogService extends Service {
     public void onDestroy() {
         Log.d(TAG, "Log service onDestroy");
         
-        // Shutdown executor service
-        if(executorService != null) {
-            executorService.shutdownNow();
-        }
-        executorService = null;
+        // Set shutdown flag to prevent new tasks from starting
+        isShuttingDown = true;
         
-        // Close log watcher shell
+        // Close log watcher shell first to stop generating new tasks
         if(logWatcherShell != null) {
             try {
                 logWatcherShell.close();
@@ -477,6 +670,26 @@ public class LogService extends Service {
             }
             logWatcherShell = null;
         }
+        
+        // Shutdown executor service gracefully
+        if(executorService != null) {
+            try {
+                executorService.shutdown(); // Try graceful shutdown first
+                if (!executorService.awaitTermination(2000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                    Log.w(TAG, "ExecutorService did not terminate gracefully, forcing shutdown");
+                    executorService.shutdownNow();
+                    // Wait a bit more for tasks to respond to being cancelled
+                    if (!executorService.awaitTermination(1000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                        Log.w(TAG, "ExecutorService did not terminate after force shutdown");
+                    }
+                }
+            } catch (InterruptedException e) {
+                Log.w(TAG, "Interrupted while shutting down ExecutorService");
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+        executorService = null;
         
         // Clean up temporary files
         cleanupTempFiles();
@@ -497,12 +710,7 @@ public class LogService extends Service {
             alarmManager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + 5000, pendingIntent);
         }
         
-        // Clean up resources
-        if(executorService != null) {
-            executorService.shutdownNow();
-        }
-        executorService = null;
-        
+        // Clean up resources gracefully
         if(logWatcherShell != null) {
             try {
                 logWatcherShell.close();
@@ -511,6 +719,19 @@ public class LogService extends Service {
             }
             logWatcherShell = null;
         }
+        
+        if(executorService != null) {
+            try {
+                executorService.shutdown();
+                if (!executorService.awaitTermination(1000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+        executorService = null;
         
         cleanupTempFiles();
     }
