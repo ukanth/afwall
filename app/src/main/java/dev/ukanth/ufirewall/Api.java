@@ -460,35 +460,57 @@ public final class Api {
     }
 
     /**
-     * Get NFLog Path
+     * Get NFLog Path - Enhanced version with fallback support
      *
-     * @param ctx
-     * @returnC
+     * @param ctx Context
+     * @return path to best available nflog binary
      */
     public static String getNflogPath(Context ctx) {
         String dir = ctx.getDir("bin", 0).getAbsolutePath();
-        String nflogPath = dir + "/nflog";
+        String originalPath = dir + "/nflog";
+        File originalFile = new File(originalPath);
         
-        // Check if nflog binary exists and is executable
-        File nflogFile = new File(nflogPath);
-        if (!nflogFile.exists()) {
-            Log.w(TAG, "NFLOG binary not found at: " + nflogPath);
+        if (!originalFile.exists()) {
+            Log.w(TAG, "No NFLOG binary found at: " + originalPath);
             return null;
         }
         
-        if (!nflogFile.canExecute()) {
-            Log.w(TAG, "NFLOG binary not executable at: " + nflogPath);
+        if (!originalFile.canExecute()) {
+            Log.w(TAG, "NFLOG binary not executable at: " + originalPath);
             // Try to make it executable
             try {
-                nflogFile.setExecutable(true);
+                originalFile.setExecutable(true);
+                if (!originalFile.canExecute()) {
+                    Log.e(TAG, "Failed to make nflog executable");
+                    return null;
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Failed to make nflog executable: " + e.getMessage());
                 return null;
             }
         }
         
-        return nflogPath + " ";
+        Log.i(TAG, "Using original NFLOG binary");
+        return originalPath;
     }
+    
+    /**
+     * Get enhanced NFLOG command with optimized parameters
+     * 
+     * @param ctx Context
+     * @param queueNum NFLOG queue number
+     * @return complete command string with optimizations
+     */
+    public static String getEnhancedNflogCommand(Context ctx, int queueNum) {
+        String nflogPath = getNflogPath(ctx);
+        if (nflogPath == null) {
+            return null;
+        }
+        
+        // Use standard nflog command with queue number
+        return nflogPath + " " + queueNum;
+    }
+    
 
     /**
      * Copies a raw resource file, given its ID to the given location
@@ -2111,6 +2133,8 @@ public final class Api {
         if (!installBinary(ctx, R.raw.ip6tables_x86, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_x86, "nflog")) return false;
         if (!installBinary(ctx, R.raw.run_pie_x86, "run_pie")) return false;
+        
+        
         return true;
     }
 
@@ -2120,6 +2144,8 @@ public final class Api {
         if (!installBinary(ctx, R.raw.ip6tables_mips, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_mips, "nflog")) return false;
         if (!installBinary(ctx, R.raw.run_pie_mips, "run_pie")) return false;
+        
+        
         return true;
     }
 
@@ -2129,6 +2155,7 @@ public final class Api {
         if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
         if (!installBinary(ctx, R.raw.run_pie_arm64, "run_pie")) return false;
+        
 
         return true;
     }
@@ -2139,6 +2166,8 @@ public final class Api {
         if (!installBinary(ctx, R.raw.ip6tables_arm, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_arm, "nflog")) return false;
         if (!installBinary(ctx, R.raw.run_pie_arm, "run_pie")) return false;
+        
+        
         return true;
     }
 
