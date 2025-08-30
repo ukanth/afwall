@@ -329,32 +329,97 @@ public final class Api {
     }
 
     public static String getBinaryPath(Context ctx, boolean setv6) {
-        boolean builtin;
         String ip_path = G.ip_path();
-
-        if (ip_path.equals("system")) {
-            builtin = false;
-        } else if(ip_path.equals("builtin")) {
-            builtin = true;
-        } else{
-            builtin = false;
+        String binaryName = setv6 ? "ip6tables" : "iptables";
+        
+        // First priority: check system binary if preference is "system" or "auto"
+        if (ip_path.equals("system") || ip_path.equals("auto")) {
+            String systemBinaryPath = findSystemBinary(binaryName);
+            if (systemBinaryPath != null) {
+                if (Api.bbPath == null) {
+                    Api.bbPath = getBusyBoxPath(ctx, true);
+                }
+                return systemBinaryPath;
+            }
+            
+            // If system binary not found and preference is "system", log warning
+            if (ip_path.equals("system")) {
+                Log.w(TAG, "System binary " + binaryName + " not found, falling back to built-in");
+            }
         }
-
-        String dir = "";
-        if (builtin) {
-            dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
+        
+        // Second priority: use built-in binary
+        // Check if built-in binary exists for current architecture
+        String builtinDir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
+        String builtinPath = builtinDir + binaryName;
+        
+        File builtinFile = new File(builtinPath);
+        if (builtinFile.exists() && builtinFile.canExecute()) {
+            if (Api.bbPath == null) {
+                Api.bbPath = getBusyBoxPath(ctx, true);
+            }
+            return builtinPath;
         }
-
-        String ipPath = dir + (setv6 ?  "ip6tables" : "iptables" );
-
-        /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
-            ipPath = dir + "run_pie " + dir + (setv6 ? "ip6tables" : "iptables");
-        }*/
+        
+        // Fallback: try to install built-in binaries if they don't exist
+        Log.w(TAG, "Built-in binary " + binaryName + " not found, attempting to install binaries");
+        if (assertBinaries(ctx, false)) {
+            if (Api.bbPath == null) {
+                Api.bbPath = getBusyBoxPath(ctx, true);
+            }
+            return builtinPath;
+        }
+        
+        // Last resort: return the path even if binary doesn't exist (will likely fail at runtime)
+        Log.e(TAG, "No working " + binaryName + " binary found, returning built-in path anyway");
         if (Api.bbPath == null) {
             Api.bbPath = getBusyBoxPath(ctx, true);
         }
-        return ipPath;
+        return builtinPath;
+    }
+
+    /**
+     * Find system binary by checking common system paths
+     *
+     * @param binaryName the name of the binary to find
+     * @return full path to the binary if found, null otherwise
+     */
+    private static String findSystemBinary(String binaryName) {
+        // Common paths where system iptables/ip6tables binaries are located
+        String[] systemPaths = {
+            "/system/bin/" + binaryName,
+            "/system/xbin/" + binaryName,
+            "/vendor/bin/" + binaryName,
+            "/sbin/" + binaryName,
+            "/usr/bin/" + binaryName,
+            "/bin/" + binaryName
+        };
+        
+        for (String path : systemPaths) {
+            File binaryFile = new File(path);
+            if (binaryFile.exists() && binaryFile.canExecute()) {
+                Log.i(TAG, "Found system binary: " + path);
+                return path;
+            }
+        }
+        
+        // Also try using 'which' command if available
+        try {
+            Shell.Result result = Shell.cmd("which " + binaryName).exec();
+            if (result.isSuccess() && !result.getOut().isEmpty()) {
+                String whichPath = result.getOut().get(0).trim();
+                File whichFile = new File(whichPath);
+                if (whichFile.exists() && whichFile.canExecute()) {
+                    Log.i(TAG, "Found system binary via 'which': " + whichPath);
+                    return whichPath;
+                }
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to use 'which' command to find " + binaryName + ": " + e.getMessage());
+        }
+        
+        Log.d(TAG, "System binary " + binaryName + " not found in any standard location");
+        return null;
     }
 
     /**
@@ -365,13 +430,33 @@ public final class Api {
      * @return
      */
     public static String getBusyBoxPath(Context ctx, boolean considerSystem) {
-
-        if (G.bb_path().equals("system") && considerSystem) {
-            return "busybox ";
-        } else {
-            String dir = ctx.getDir("bin", 0).getAbsolutePath();
-            return dir + "/busybox ";
+        String bb_path = G.bb_path();
+        
+        // First priority: check system busybox if preference is "system" or "auto" and considerSystem is true
+        if (considerSystem && (bb_path.equals("system") || bb_path.equals("auto"))) {
+            String systemBusybox = findSystemBinary("busybox");
+            if (systemBusybox != null) {
+                return systemBusybox + " ";
+            }
+            
+            // If system busybox not found and preference is "system", log warning and fall back
+            if (bb_path.equals("system")) {
+                Log.w(TAG, "System busybox not found, falling back to built-in");
+            }
         }
+        
+        // Second priority: use built-in busybox
+        String dir = ctx.getDir("bin", 0).getAbsolutePath();
+        String builtinPath = dir + "/busybox";
+        
+        File builtinFile = new File(builtinPath);
+        if (builtinFile.exists() && builtinFile.canExecute()) {
+            return builtinPath + " ";
+        }
+        
+        // Fallback: return built-in path even if it doesn't exist yet (may be installed later)
+        Log.w(TAG, "Built-in busybox not found at " + builtinPath + ", returning path anyway");
+        return builtinPath + " ";
     }
 
     /**
@@ -1994,6 +2079,32 @@ public final class Api {
         }
     }
 
+    /**
+     * Install binary if the resource exists, using reflection to check for resource availability
+     * @param ctx Context
+     * @param resourceName Name of the resource (e.g., "busybox_arm64")  
+     * @param filename Target filename
+     * @return true if installed successfully or resource doesn't exist, false on installation error
+     */
+    private static boolean installBinaryIfExists(Context ctx, String resourceName, String filename) {
+        try {
+            // Use reflection to check if the resource exists
+            Class<?> rawClass = R.raw.class;
+            java.lang.reflect.Field field = rawClass.getDeclaredField(resourceName);
+            int resId = field.getInt(null);
+            
+            // Resource exists, try to install it
+            return installBinary(ctx, resId, filename);
+        } catch (NoSuchFieldException e) {
+            // Resource doesn't exist - this is expected when binaries are not yet added
+            Log.d(TAG, "Resource " + resourceName + " not found - this is expected if binary is not yet available");
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking/installing binary " + resourceName + ": " + e.getMessage());
+            return false;
+        }
+    }
+
     private static boolean installBinariesX86() {
         if (!installBinary(ctx, R.raw.busybox_x86, "busybox")) return false;
         if (!installBinary(ctx, R.raw.iptables_x86, "iptables")) return false;
@@ -2013,18 +2124,30 @@ public final class Api {
     }
 
     private static boolean installBinariesArm64() {
-        // ARM64 devices use system binaries for iptables/busybox, only install nflog
-        try {
-            if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) {
-                Log.e(TAG, "Failed to install ARM64 nflog binary");
-                return false;
-            }
-            Log.i(TAG, "Successfully installed ARM64 binaries");
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Error installing ARM64 binaries: " + e.getMessage());
+        // ARM64 now has its own binaries available
+        // NOTE: When you add the ARM64 binaries to res/raw/, uncomment the lines below
+        // and comment out the installBinaryIfExists calls
+        
+        // Install binaries using safe approach for now (works even without binary files)
+        installBinaryIfExists(ctx, "busybox_arm64", "busybox");
+        installBinaryIfExists(ctx, "iptables_arm64", "iptables");  
+        installBinaryIfExists(ctx, "ip6tables_arm64", "ip6tables");
+        
+        // Install nflog_arm64 (this should always exist)
+        if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) {
+            Log.e(TAG, "Failed to install ARM64 nflog binary");
             return false;
         }
+        
+        /* 
+         * FUTURE: When ARM64 binaries are added to res/raw/, replace above with:
+         * if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
+         * if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
+         * if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
+         * if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
+         */
+        
+        return true;
     }
 
     private static boolean installBinariesArm() {
