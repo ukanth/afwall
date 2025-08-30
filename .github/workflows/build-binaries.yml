@@ -454,17 +454,17 @@ jobs:
           else
             # Create commit message
             git commit -m "Update cross-compiled binaries
-            
+
 Built from external/ source code:
 - busybox v${{ github.event.inputs.busybox_version || '1.36.1' }} (arm, arm64, mips, x86)
-- iptables v${{ github.event.inputs.iptables_version || '1.8.10' }} (arm, arm64, mips, x86)  
-- nflog utilities (arm, arm64, mips, x86)
+- iptables v${{ github.event.inputs.iptables_version || '1.8.10' }} (arm, arm64, mips, x86)
+- nflog utilities (arm, arm64, mips, x86)  
 - run_pie utilities (arm, arm64, mips, x86)
 
 These binaries are ready for testing. After validation, manually copy to app/src/main/res/raw/
 
 🤖 Generated with GitHub Actions
-            
+
 Co-Authored-By: GitHub Actions <noreply@github.com>"
             
             # Push changes back to repository
