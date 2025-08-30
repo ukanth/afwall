@@ -11,8 +11,10 @@
 
 package dev.ukanth.ufirewall.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseArray;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -622,12 +625,20 @@ public class UidResolver {
     /**
      * Clean expired entries from cache
      */
-    private static void cleanExpiredEntries() {
-        long now = System.currentTimeMillis();
-        UID_CACHE.entrySet().removeIf(entry -> entry.getValue().isExpired());
-        Log.d(TAG, "Cache cleanup completed, remaining entries: " + UID_CACHE.size());
+    public static void cleanExpiredEntries() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            UID_CACHE.entrySet().removeIf(entry -> entry.getValue().isExpired());
+        } else {
+            // Fallback for older APIs
+            Iterator<Map.Entry<Integer, CacheEntry>> iterator = UID_CACHE.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Integer, CacheEntry> entry = iterator.next();
+                if (entry.getValue().isExpired()) {
+                    iterator.remove();
+                }
+            }
+        }
     }
-    
     /**
      * Clear all caches (useful for testing or when packages change)
      */
