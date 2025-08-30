@@ -1523,7 +1523,7 @@ public final class Api {
      */
     public static void runIfconfig(Context ctx, RootCommand callback) {
         // Android 16+ fallback: try system ifconfig first, then busybox
-        if (Build.VERSION.SDK_INT >= 35) { // Android 16+
+        if (Build.VERSION.SDK_INT >= 36) { // Android 16+
             callback.run(ctx, "ifconfig -a || " + getBusyBoxPath(ctx, true) + " ifconfig -a");
         } else {
             callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
@@ -1532,7 +1532,7 @@ public final class Api {
 
     public static void runNetworkInterface(Context ctx, RootCommand callback) {
         // Android 16+ fallback: try multiple methods for network interface detection
-        if (Build.VERSION.SDK_INT >= 35) { // Android 16+
+        if (Build.VERSION.SDK_INT >= 36) { // Android 16+
             // First try Android API method as fallback
             try {
                 StringBuilder result = new StringBuilder();
@@ -2277,6 +2277,12 @@ public final class Api {
             notificationChannel.setShowBadge(false);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
+            
+            // Android 16+ specific notification channel configurations
+            if (Build.VERSION.SDK_INT >= 36) {
+                notificationChannel.setAllowBubbles(false);
+            }
+            
             manager.createNotificationChannel(notificationChannel);
         }
 
@@ -2327,6 +2333,12 @@ public final class Api {
             notificationChannel.setShowBadge(false);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
+            
+            // Android 16+ specific notification channel configurations
+            if (Build.VERSION.SDK_INT >= 36) {
+                notificationChannel.setAllowBubbles(false);
+            }
+            
             manager.createNotificationChannel(notificationChannel);
         }
 
@@ -2654,12 +2666,17 @@ public final class Api {
         boolean res = false;
         try {
             File file;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Android 11+ (API 30+): Use scoped storage
+                file = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10 (API 29): Use app-specific directory
+                file = new File(ctx.getExternalFilesDir(null), fileName);
+            } else {
+                // Android 9 and below: Use legacy external storage
                 File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "afwall");
                 dir.mkdirs();
                 file = new File(dir, fileName);
-            } else {
-                file = new File(ctx.getExternalFilesDir(null), fileName);
             }
 
             try (FileOutputStream fOut = new FileOutputStream(file);
@@ -2744,12 +2761,17 @@ public final class Api {
         boolean res = false;
 
             File file;
-            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
-                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/" );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Android 11+ (API 30+): Use scoped storage
+                file = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10 (API 29): Use app-specific directory
+                file = new File(ctx.getExternalFilesDir(null), fileName);
+            } else {
+                // Android 9 and below: Use legacy external storage
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
                 dir.mkdirs();
                 file = new File(dir, fileName);
-            } else{
-                file = new File(ctx.getExternalFilesDir(null) + "/" + fileName) ;
             }
 
             try {
@@ -3071,7 +3093,7 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = defaultLocale;
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.createConfigurationContext(conf);
             } else {
                 context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
@@ -3085,7 +3107,7 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.createConfigurationContext(conf);
             } else {
                 context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
