@@ -537,7 +537,40 @@ public final class Api {
         is.close();
         // Change the permissions
 
-        Runtime.getRuntime().exec("chmod " + mode + " " + abspath).waitFor();
+        executeSecureCommand(new String[]{"chmod", mode, abspath});
+    }
+
+    /**
+     * Execute system commands securely using ProcessBuilder to prevent command injection
+     * 
+     * @param command Array of command and arguments (prevents shell interpretation)
+     * @throws IOException if command execution fails
+     * @throws InterruptedException if command is interrupted
+     */
+    private static void executeSecureCommand(String[] command) throws IOException, InterruptedException {
+        if (command == null || command.length == 0) {
+            throw new IllegalArgumentException("Command cannot be null or empty");
+        }
+        
+        // Validate command and arguments don't contain dangerous characters
+        for (String arg : command) {
+            if (arg == null || arg.contains("\n") || arg.contains("\r") || 
+                arg.contains(";") || arg.contains("&") || arg.contains("|") || 
+                arg.contains("`") || arg.contains("$")) {
+                Log.w(TAG, "Rejecting command with potentially dangerous characters: " + java.util.Arrays.toString(command));
+                throw new SecurityException("Command contains illegal characters");
+            }
+        }
+        
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.environment().clear(); // Clear environment to prevent injection via env vars
+        Process process = pb.start();
+        int exitCode = process.waitFor();
+        
+        if (exitCode != 0) {
+            Log.w(TAG, "Command failed with exit code " + exitCode + ": " + java.util.Arrays.toString(command));
+            throw new IOException("Command execution failed with exit code: " + exitCode);
+        }
     }
 
     /**
@@ -3219,12 +3252,15 @@ public final class Api {
     }
 
     /**
-     * Encrypt the password
+     * Encrypt the password - DEPRECATED: Use SecureCrypto.encryptSecure() for new code
+     * This method is kept for backward compatibility only
      *
      * @param key
      * @param data
      * @return
+     * @deprecated Use SecureCrypto.encryptSecure() instead for better security
      */
+    @Deprecated
     public static String hideCrypt(String key, String data) {
         if (key == null || data == null)
             return null;
@@ -3245,12 +3281,15 @@ public final class Api {
     }
 
     /**
-     * Decrypt the password
+     * Decrypt the password - DEPRECATED: Use SecureCrypto.decryptSecure() for new code  
+     * This method is kept for backward compatibility only
      *
      * @param key
      * @param data
      * @return
+     * @deprecated Use SecureCrypto.decryptSecure() instead for better security
      */
+    @Deprecated
     public static String unhideCrypt(String key, String data) {
         if (key == null || data == null)
             return null;

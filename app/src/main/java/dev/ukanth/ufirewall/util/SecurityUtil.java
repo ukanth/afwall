@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -115,8 +116,7 @@ public class SecurityUtil {
     private void requestFingerprint() {
         FingerprintUtil.FingerprintDialog dialog = new FingerprintUtil.FingerprintDialog(activity);
         dialog.setOnFingerprintFailureListener(() -> {
-            activity.finish();
-            android.os.Process.killProcess(android.os.Process.myPid());
+            gracefulShutdown();
         });
         dialog.show();
     }
@@ -125,8 +125,7 @@ public class SecurityUtil {
     private void requestFingerprintQ() {
         BiometricUtil.FingerprintDialog dialog = new BiometricUtil.FingerprintDialog(activity);
         dialog.setOnFingerprintFailureListener(() -> {
-            activity.finish();
-            android.os.Process.killProcess(android.os.Process.myPid());
+            gracefulShutdown();
         });
         dialog.show();
     }
@@ -141,24 +140,18 @@ public class SecurityUtil {
                         .positiveText(R.string.submit)
                         .negativeText(R.string.Cancel)
                         .onNegative((dialog, which) -> {
-                            activity.finish();
-                            android.os.Process.killProcess(android.os.Process.myPid());
+                            gracefulShutdown();
                         })
                         .input(R.string.enterpass, R.string.password_empty, (dialog, input) -> {
-                            String pass = input.toString();
-                            boolean isAllowed = false;
-                            if (G.isEnc()) {
-                                String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
-                                if (decrypt != null) {
-                                    if (decrypt.equals(pass)) {
-                                        isAllowed = true;
-                                    }
-                                }
-                            } else {
-                                if (pass.equals(G.profile_pwd())) {
-                                    isAllowed = true;
-                                }
+                            String pass = InputValidator.sanitizeString(input.toString(), 256);
+                            if (pass == null) {
+                                Api.toast(activity, context.getString(R.string.wrong_password));
+                                return;
                             }
+                            
+                            // Use secure password manager for verification and auto-migration
+                            boolean isAllowed = SecurePasswordManager.verifyPassword(context, pass);
+                            
                             if (isAllowed) {
                                 dialog.dismiss();
                             } else {
@@ -176,5 +169,34 @@ public class SecurityUtil {
                 break;
         }
 
+    }
+
+    /**
+     * Perform graceful shutdown instead of abrupt process termination
+     * This ensures proper cleanup and prevents firewall rules from being left in inconsistent state
+     */
+    private void gracefulShutdown() {
+        try {
+            // Give some time for any pending operations to complete
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                try {
+                    // Attempt to save any pending state or cleanup
+                    activity.moveTaskToBack(true);
+                    activity.finishAndRemoveTask();
+                } catch (Exception e) {
+                    // If graceful methods fail, fall back to finish()
+                    activity.finish();
+                } finally {
+                    // Only use process kill as absolute last resort after cleanup attempt
+                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }, 500); // 500ms delay to allow cleanup
+                }
+            });
+        } catch (Exception e) {
+            Log.e("SecurityUtil", "Error during graceful shutdown", e);
+            // Emergency fallback
+            activity.finish();
+        }
     }
 }
