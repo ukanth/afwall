@@ -15,11 +15,7 @@ on:
         required: false
   push:
     paths:
-      - '.github/workflows/build-binaries.yml'
-      - 'build-scripts/**'
-  pull_request:
-    paths:
-      - '.github/workflows/build-binaries.yml'
+      - 'external/**'
 
 jobs:
   build-busybox:
@@ -62,7 +58,17 @@ jobs:
     - name: Download Busybox source
       run: |
         BUSYBOX_VERSION="${{ github.event.inputs.busybox_version || '1.36.1' }}"
-        wget -q "https://busybox.net/downloads/busybox-${BUSYBOX_VERSION}.tar.bz2"
+        
+        # Download with retries
+        for i in {1..3}; do
+          if wget -q "https://busybox.net/downloads/busybox-${BUSYBOX_VERSION}.tar.bz2"; then
+            echo "✓ Downloaded busybox-${BUSYBOX_VERSION}.tar.bz2 (attempt $i)"
+            break
+          fi
+          echo "Download attempt $i failed, retrying..."
+          sleep 5
+        done
+        
         tar -xf "busybox-${BUSYBOX_VERSION}.tar.bz2"
         cd "busybox-${BUSYBOX_VERSION}"
         echo "BUSYBOX_DIR=$(pwd)" >> $GITHUB_ENV
@@ -106,10 +112,12 @@ jobs:
         # Apply minimal config (use yes to answer all prompts with default)
         yes '' | make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
         
-        # Fix cross-compilation issue - replace the problematic struct completely
-        if [ "${{ matrix.arch }}" = "mips" ] || [ "${{ matrix.arch }}" = "arm" ]; then
+        # Fix cross-compilation issues for all architectures
+        # Replace the problematic off_t size check that fails during cross-compilation
+        if grep -q "struct BUG_off_t_size_is_misdetected" include/libbb.h; then
           sed -i '/struct BUG_off_t_size_is_misdetected/,/};/c\
-        /* Cross-compilation fix: off_t size check disabled */' include/libbb.h
+        /* Cross-compilation fix: off_t size check disabled for all architectures */' include/libbb.h
+          echo "Applied cross-compilation fix for ${{ matrix.arch }}"
         fi
 
     - name: Build Busybox
@@ -185,7 +193,17 @@ jobs:
     - name: Download iptables source
       run: |
         IPTABLES_VERSION="${{ github.event.inputs.iptables_version || '1.8.10' }}"
-        wget -q "https://netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.xz"
+        
+        # Download with retries
+        for i in {1..3}; do
+          if wget -q "https://netfilter.org/projects/iptables/files/iptables-${IPTABLES_VERSION}.tar.xz"; then
+            echo "✓ Downloaded iptables-${IPTABLES_VERSION}.tar.xz (attempt $i)"
+            break
+          fi
+          echo "Download attempt $i failed, retrying..."
+          sleep 5
+        done
+        
         tar -xf "iptables-${IPTABLES_VERSION}.tar.xz"
         cd "iptables-${IPTABLES_VERSION}"
         echo "IPTABLES_DIR=$(pwd)" >> $GITHUB_ENV
@@ -379,9 +397,7 @@ jobs:
 
     - name: Organize binaries
       run: |
-        mkdir -p app/src/main/res/raw
-        
-        # Create binaries directory and copy all compiled binaries
+        # Create binaries directory for testing (separate from res/raw)
         mkdir -p binaries
         
         for arch in arm arm64 mips x86; do
@@ -419,39 +435,47 @@ jobs:
         echo "Binary inventory:"
         ls -la binaries/
 
-    - name: Update AFWall+ Java code for ARM64
+    - name: Commit binaries to repository
       run: |
-        # Update installBinariesArm64() to install all binaries
-        if ! grep -q "installBinary.*arm64" app/src/main/java/dev/ukanth/ufirewall/Api.java; then
-          # Find the function and add ARM64 support
-          python3 << 'EOF'
-        import re
-        # Read the current Api.java file
-        with open('app/src/main/java/dev/ukanth/ufirewall/Api.java', 'r') as f:
-            content = f.read()
-        # Define the pattern to find installBinariesArm64 function
-        pattern = r'(private static boolean installBinariesArm64\(Context context\) \{[^}]*)\}'
+        # Configure git
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Actions"
         
-        replacement = r'''\1
-            // Install ARM64 binaries
-            installBinary(context, "busybox_arm64", "busybox_arm64", "755", busybox_path);
-            installBinary(context, "iptables_arm64", "iptables_arm64", "755", iptables_path);
-            installBinary(context, "ip6tables_arm64", "ip6tables_arm64", "755", ip6tables_path);
-            installBinary(context, "nflog_arm64", "nflog_arm64", "755", nflog_path);
-            return true;
-        }'''
-        
-        # Apply the replacement
-        modified_content = re.sub(pattern, replacement, content, flags=re.DOTALL)
-        
-        # Write back the modified content
-        with open('app/src/main/java/dev/ukanth/ufirewall/Api.java', 'w') as f:
-            f.write(modified_content)
-        
-        print("✓ Updated installBinariesArm64() function")
-        EOF
+        # Check if binaries directory has content
+        if [ "$(ls -A binaries/)" ]; then
+          echo "Committing newly built binaries..."
+          
+          # Stage the binaries directory
+          git add binaries/
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No new binaries to commit"
+          else
+            # Create commit message
+            git commit -m "Update cross-compiled binaries
+            
+Built from external/ source code:
+- busybox v${{ github.event.inputs.busybox_version || '1.36.1' }} (arm, arm64, mips, x86)
+- iptables v${{ github.event.inputs.iptables_version || '1.8.10' }} (arm, arm64, mips, x86)  
+- nflog utilities (arm, arm64, mips, x86)
+- run_pie utilities (arm, arm64, mips, x86)
+
+These binaries are ready for testing. After validation, manually copy to app/src/main/res/raw/
+
+🤖 Generated with GitHub Actions
+            
+Co-Authored-By: GitHub Actions <noreply@github.com>"
+            
+            # Push changes back to repository
+            git push
+            
+            echo "✅ Binaries committed and pushed to /binaries directory"
+            echo "📁 Ready for testing - manually copy to res/raw/ after validation"
+          fi
         else
-          echo "✓ AFWall+ code already supports ARM64 binaries"
+          echo "❌ No binaries were built - check build logs above"
+          exit 1
         fi
 
     - name: Upload compiled binaries
