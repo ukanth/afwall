@@ -985,7 +985,7 @@ public final class Api {
             // on the LAN - use specific DNS servers instead of opening to all LAN hosts
             if (whitelist) {
                 // Add rules for specific DNS servers instead of all LAN hosts
-                addDnsServerRules(cmds, cfg, chainName + "-wifi-lan", false);
+                addDnsServerRules(cmds, cfg, chainName + "-wifi-lan", ipv6);
                 
                 // Fallback: if no specific DNS servers found, use the old broad rule
                 if (cfg.dnsServersV4.isEmpty() && cfg.dnsServersV6.isEmpty()) {

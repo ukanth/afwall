@@ -47,6 +47,7 @@ import androidx.core.app.NotificationCompat;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.topjohnwu.superuser.CallbackList;
+import com.topjohnwu.superuser.NoShellException;
 import com.topjohnwu.superuser.Shell;
 
 import org.ocpsoft.prettytime.PrettyTime;
@@ -280,10 +281,15 @@ public class LogService extends Service {
                 executorService = Executors.newCachedThreadPool();
             }
             if (logWatcherShell == null) {
-                logWatcherShell = Shell.Builder.create()
-                    .setFlags(Shell.FLAG_REDIRECT_STDERR)
-                    .setTimeout(0) // No timeout for long-running log watcher
-                    .build();
+                try {
+                    logWatcherShell = Shell.Builder.create()
+                        .setFlags(Shell.FLAG_REDIRECT_STDERR)
+                        .setTimeout(10) // 10 second timeout for shell creation
+                        .build();
+                } catch (NoShellException e) {
+                    Log.e(TAG, "Failed to create root shell for log watcher", e);
+                    return;
+                }
             }
             
             Log.i(TAG, "Starting log watcher with command: " + logCommand);
