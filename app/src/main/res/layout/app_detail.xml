@@ -21,7 +21,9 @@
             android:id="@+id/app_icon"
             android:layout_width="38.0dip"
             android:layout_height="38.0dip"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            android:background="?android:attr/selectableItemBackground" />
 
         <LinearLayout
             android:layout_width="0.0dip"

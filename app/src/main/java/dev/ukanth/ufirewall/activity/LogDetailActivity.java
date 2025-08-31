@@ -533,7 +533,8 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             for (LogData logData : fullLogDataList) {
                 String destination = logData.getDst() + ":" + logData.getDpt();
                 uniqueDests.add(destination);
-                destinationCounts.put(destination, destinationCounts.getOrDefault(destination, 0) + 1);
+                Integer currentCount = destinationCounts.get(destination);
+                destinationCounts.put(destination, (currentCount == null ? 0 : currentCount) + 1);
                 
                 // Track time range
                 oldestTimestamp = Math.min(oldestTimestamp, logData.getTimestamp());
