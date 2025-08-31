@@ -2789,9 +2789,11 @@ public final class Api {
             exportObject.put("mode", mode);
             
             myOutWriter.write(exportObject.toString());
+            myOutWriter.flush(); // Ensure data is written
             res = true;
+            Log.i(TAG, "Successfully exported rules to: " + file.getAbsolutePath());
         } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
+            Log.e(TAG, "Error exporting rules to file: " + file.getAbsolutePath(), e);
         }
         return res;
     }
@@ -2836,11 +2838,17 @@ public final class Api {
             }
 
             exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
+            // Export profile-specific preferences (mode, custom rules, etc.)
+            if (G.pPrefs != null) {
+                exportObject.put("profilePrefs", getAllAppPreferences(ctx, G.pPrefs));
+            }
             
             myOutWriter.write(exportObject.toString());
+            myOutWriter.flush(); // Ensure data is written
             res = true;
+            Log.i(TAG, "Successfully exported all preferences to: " + file.getAbsolutePath());
         } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
+            Log.e(TAG, "Error exporting all preferences to file: " + file.getAbsolutePath(), e);
         }
         return res;
     }
@@ -2949,6 +2957,10 @@ public final class Api {
                 }
 
                 exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
+                // Export profile-specific preferences (mode, custom rules, etc.)
+                if (G.pPrefs != null) {
+                    exportObject.put("profilePrefs", getAllAppPreferences(ctx, G.pPrefs));
+                }
 
                 String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
                 exportObject.put("mode", mode);
@@ -3087,6 +3099,11 @@ public final class Api {
                 text.append(line);
             }
             String data = text.toString();
+            if (data.trim().isEmpty()) {
+                msg.append("Import file contains no data");
+                return false;
+            }
+            
             JSONObject jsonObject = new JSONObject(data);
             if (jsonObject.has("mode")) {
                 G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).apply();
@@ -3202,7 +3219,18 @@ public final class Api {
                 text.append(line);
             }
             String data = text.toString();
+            if (data.trim().isEmpty()) {
+                msg.append("Import file contains no data");
+                return false;
+            }
+            
             JSONObject object = new JSONObject(data);
+            // Basic validation of expected JSON structure
+            if (!object.has("prefs") && !object.has("profiles") && !object.has("_profiles") && !object.has("default")) {
+                msg.append("Import file does not contain valid AFWall+ data");
+                Log.w(TAG, "Invalid import file structure - missing expected keys");
+                return false;
+            }
 
             // Allow/deny rule
             if (object.has("mode")) {
@@ -3221,19 +3249,52 @@ public final class Api {
                         continue;
                     }
                     if (value.equals("true") || value.equals("false")) {
-                        G.gPrefs.edit().putBoolean(key, Boolean.parseBoolean(value));
+                        G.gPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
                     } else {
                         try {
                             if (key.equals("multiUserId")) {
-                                G.gPrefs.edit().putLong(key, Long.parseLong(value));
+                                G.gPrefs.edit().putLong(key, Long.parseLong(value)).apply();
                             } else if (isIntType(key)) {
-                                G.gPrefs.edit().putString(key, value);
+                                G.gPrefs.edit().putString(key, value).apply();
                             } else {
                                 int intValue = Integer.parseInt(value);
-                                G.gPrefs.edit().putInt(key, intValue);
+                                G.gPrefs.edit().putInt(key, intValue).apply();
                             }
                         } catch (NumberFormatException e) {
-                            G.gPrefs.edit().putString(key, value);
+                            G.gPrefs.edit().putString(key, value).apply();
+                        }
+                    }
+                }
+            }
+
+            // Import profile-specific preferences if available
+            if (object.has("profilePrefs")) {
+                JSONArray profilePrefArray = object.getJSONArray("profilePrefs");
+                for (int i = 0; i < profilePrefArray.length(); i++) {
+                    JSONObject prefObj = profilePrefArray.getJSONObject(i);
+                    Iterator<String> keys = prefObj.keys();
+
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        String value = prefObj.getString(key);
+                        if (shouldIgnoreKey(key)) {
+                            continue;
+                        }
+                        if (value.equals("true") || value.equals("false")) {
+                            G.pPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
+                        } else {
+                            try {
+                                if (key.equals("multiUserId")) {
+                                    G.pPrefs.edit().putLong(key, Long.parseLong(value)).apply();
+                                } else if (isIntType(key)) {
+                                    G.pPrefs.edit().putString(key, value).apply();
+                                } else {
+                                    int intValue = Integer.parseInt(value);
+                                    G.pPrefs.edit().putInt(key, intValue).apply();
+                                }
+                            } catch (NumberFormatException e) {
+                                G.pPrefs.edit().putString(key, value).apply();
+                            }
                         }
                     }
                 }
@@ -3267,11 +3328,27 @@ public final class Api {
         boolean res = false;
         File file = new File(fileName);
         if (file.exists()) {
+            // Basic file validation
+            if (file.length() == 0) {
+                builder.append("Import file is empty");
+                Log.w(TAG, "Import file is empty: " + fileName);
+                return false;
+            }
+            if (file.length() > 50 * 1024 * 1024) { // 50MB limit
+                builder.append("Import file is too large (>50MB)");
+                Log.w(TAG, "Import file is too large: " + fileName + " (" + file.length() + " bytes)");
+                return false;
+            }
+            
+            Log.i(TAG, "Importing from file: " + fileName + " (loadAll: " + loadAll + ")");
             if (loadAll) {
                 res = importAll(ctx, file, builder);
             } else {
                 res = importRules(ctx, file, builder);
             }
+        } else {
+            builder.append("Import file does not exist: " + fileName);
+            Log.w(TAG, "Import file does not exist: " + fileName);
         }
         return res;
     }
