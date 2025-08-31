@@ -68,6 +68,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
+import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -2701,6 +2702,126 @@ public final class Api {
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
         }
+    }
+
+    public static void exportRulesToFileWithPicker(final Context ctx) {
+        showExportFileDialog(ctx, false);
+    }
+
+    public static void exportAllPreferencesToFileWithPicker(final Context ctx) {
+        showExportFileDialog(ctx, true);
+    }
+
+    private static void showExportFileDialog(final Context ctx, final boolean exportAll) {
+        try {
+            File defaultPath;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                defaultPath = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "/");
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                defaultPath = new File(ctx.getExternalFilesDir(null), "/");
+            } else {
+                defaultPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+                defaultPath.mkdirs();
+            }
+
+            dev.ukanth.ufirewall.util.FileDialog fileDialog = new dev.ukanth.ufirewall.util.FileDialog((Activity) ctx, defaultPath, true);
+            fileDialog.setSelectDirectoryOption(true);
+            fileDialog.addDirectoryListener(directory -> {
+                String fileName = "afwall-backup" + (exportAll ? "-all" : "") + "-" + 
+                    new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
+                File fullPath = new File(directory, fileName);
+                
+                boolean success;
+                if (exportAll) {
+                    success = exportAllToFile(ctx, fullPath);
+                } else {
+                    success = exportRulesToFile(ctx, fullPath);
+                }
+                
+                if (success) {
+                    Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fullPath.getAbsolutePath());
+                } else {
+                    Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
+                }
+            });
+            fileDialog.showDialog();
+        } catch (Exception e) {
+            // Fallback to original method if file dialog fails
+            if (exportAll) {
+                exportAllPreferencesToFileConfirm(ctx);
+            } else {
+                exportRulesToFileConfirm(ctx);
+            }
+        }
+    }
+
+    private static boolean exportRulesToFile(Context ctx, File file) {
+        boolean res = false;
+        try (FileOutputStream fOut = new FileOutputStream(file);
+             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
+
+            JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+            JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
+            JSONObject exportObject = new JSONObject();
+            exportObject.put("rules", jArray);
+            String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+            exportObject.put("mode", mode);
+            
+            myOutWriter.write(exportObject.toString());
+            res = true;
+        } catch (Exception e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
+        return res;
+    }
+
+    private static boolean exportAllToFile(Context ctx, File file) {
+        boolean res = false;
+        try (FileOutputStream fOut = new FileOutputStream(file);
+             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
+
+            JSONObject exportObject = new JSONObject();
+            if (G.enableMultiProfile()) {
+                if (!G.isProfileMigrated()) {
+                    JSONObject profileObject = new JSONObject();
+                    for (String profile : G.profiles) {
+                        profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
+                    }
+                    exportObject.put("profiles", profileObject);
+
+                    JSONObject addProfileObject = new JSONObject();
+                    for (String profile : G.getAdditionalProfiles()) {
+                        addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
+                    }
+                    exportObject.put("additional_profiles", addProfileObject);
+                } else {
+                    JSONObject profileObject = new JSONObject();
+                    String profileName = "AFWallPrefs";
+                    profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
+
+                    List<ProfileData> profileDataList = ProfileHelper.getProfiles();
+                    for (ProfileData profile : profileDataList) {
+                        profileName = profile.getName();
+                        if (profile.getIdentifier().startsWith("AFWallProfile")) {
+                            profileName = profile.getIdentifier();
+                        }
+                        profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
+                    }
+                    exportObject.put("_profiles", profileObject);
+                }
+            } else {
+                JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                exportObject.put("default", obj);
+            }
+
+            exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
+            
+            myOutWriter.write(exportObject.toString());
+            res = true;
+        } catch (Exception e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
+        return res;
     }
 
     private static void updateExportPackage(Map<String, JSONObject> exportMap, String packageName, boolean isChecked, int identifier) throws JSONException {

@@ -7,6 +7,8 @@ import android.os.Environment;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.topjohnwu.superuser.Shell;
 
+import dev.ukanth.ufirewall.R;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -71,7 +73,8 @@ public class FileDialog {
 
         builder.title(currentPath.getPath());
         if (selectDirectoryOption) {
-
+            builder.positiveText(R.string.select_dir);
+            builder.negativeText(R.string.Cancel);
             builder.onPositive((dialog12, which) -> fireDirectorySelectedEvent(currentPath));
         }
 

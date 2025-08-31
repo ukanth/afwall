@@ -1362,7 +1362,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .cancelable(false)
                     .items(new String[]{
                             getString(R.string.import_rules),
-                            getString(R.string.import_all)})
+                            getString(R.string.import_all) + (G.isDoKey(getApplicationContext()) || isDonate() ? "" : " (" + getString(R.string.donate_only_short) + ")")})
                     .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
@@ -1450,14 +1450,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .cancelable(false)
                     .items(new String[]{
                             getString(R.string.export_rules),
-                            getString(R.string.export_all)})
+                            getString(R.string.export_all) + (G.isDoKey(getApplicationContext()) || isDonate() ? "" : " (" + getString(R.string.donate_only_short) + ")")})
                     .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                         switch (which) {
                             case 0:
-                                Api.exportRulesToFileConfirm(MainActivity.this);
+                                Api.exportRulesToFileWithPicker(MainActivity.this);
                                 break;
                             case 1:
-                                Api.exportAllPreferencesToFileConfirm(MainActivity.this);
+                                if (G.isDoKey(getApplicationContext()) || isDonate()) {
+                                    Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+                                } else {
+                                    showExportAllWarningDialog();
+                                }
                                 break;
                         }
                         return true;
@@ -1467,6 +1471,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } catch (Exception e) {
             Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
             Api.toast(this, "Export dialog unavailable due to Android compatibility issue. Please use Settings > Export to access export functionality.");
+        }
+    }
+
+    private void showExportAllWarningDialog() {
+        try {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.export_all)
+                    .content(R.string.export_all_warning)
+                    .positiveText(R.string.exports)
+                    .negativeText(R.string.Cancel)
+                    .onPositive((dialog, which) -> {
+                        Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+                    })
+                    .show();
+        } catch (Exception e) {
+            Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
+            // Fallback: Just show the export directly with a toast warning
+            Api.toast(this, getString(R.string.export_all_warning));
+            Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
         }
     }
 
