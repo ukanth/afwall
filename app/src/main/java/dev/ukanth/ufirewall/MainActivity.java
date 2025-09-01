@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner mSpinner;
     private TextWatcher filterTextWatcher;
     private MaterialDialog runProgress;
-    private AlertDialog dialogLegend = null;
 
     private BroadcastReceiver uiProgressReceiver4, uiProgressReceiver6, toastReceiver, themeRefreshReceiver, uiRefreshReceiver;
     private IntentFilter uiFilter4, uiFilter6;
@@ -1148,22 +1147,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         int selectedItem = item.getItemId();
-        if (selectedItem == R.id.menu_legend) {
-            LayoutInflater inflater = LayoutInflater.from(this);
-            View view = inflater.inflate(R.layout.legend, null, false);
-            dialogLegend = new AlertDialog.Builder(this)
-                    .setView(view)
-                    .setCancelable(true)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            dialogLegend = null;
-                        }
-                    })
-                    .create();
-            dialogLegend.show();
-            return true;
-        } else if (selectedItem == R.id.menu_toggle) {
+        if (selectedItem == R.id.menu_toggle) {
             disableOrEnable();
             return true;
         } else if (selectedItem == R.id.allowmode) {
@@ -2372,10 +2356,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (dialogLegend != null) {
-            dialogLegend.dismiss();
-            dialogLegend = null;
-        }
         if (getAppList != null) {
             getAppList.cancel(true);
         }

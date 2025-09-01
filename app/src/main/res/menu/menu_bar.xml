@@ -109,11 +109,6 @@
                 android:title="@string/imports"
                 app:showAsAction="always" />
             <item
-                android:id="@+id/menu_legend"
-                android:icon="@drawable/ic_legend"
-                android:title="@string/menu_legend"
-                app:showAsAction="always" />
-            <item
                 android:id="@+id/menu_help"
                 android:icon="@drawable/ic_help"
                 android:title="@string/help"
