@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="8dp">
 
             <!-- Rules Section -->
             <androidx.cardview.widget.CardView
@@ -34,23 +34,22 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp">
+                app:cardBackgroundColor="?attr/itemBackground"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="8dp">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -86,7 +85,7 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
-                        android:padding="16dp"
+                        android:padding="12dp"
                         android:scrollHorizontally="true"
                         android:text="@string/loading_iptables_rules" />
 
@@ -100,23 +99,23 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
-                android:layout_marginBottom="16dp"
-                android:layout_marginHorizontal="4dp"
+                app:cardBackgroundColor="?attr/itemBackground"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="2dp"
                 android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="8dp">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -142,7 +141,7 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
-                        android:padding="16dp"
+                        android:padding="12dp"
                         android:scrollHorizontally="true" />
 
                 </LinearLayout>
@@ -155,23 +154,23 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
-                android:layout_marginBottom="16dp"
-                android:layout_marginHorizontal="4dp"
+                app:cardBackgroundColor="?attr/itemBackground"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="2dp"
                 android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="8dp">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -197,7 +196,7 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
-                        android:padding="16dp"
+                        android:padding="12dp"
                         android:scrollHorizontally="true" />
 
                 </LinearLayout>
@@ -210,23 +209,23 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
-                android:layout_marginBottom="16dp"
-                android:layout_marginHorizontal="4dp"
+                app:cardBackgroundColor="?attr/itemBackground"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="2dp"
                 android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="8dp">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -252,7 +251,7 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
-                        android:padding="16dp"
+                        android:padding="12dp"
                         android:scrollHorizontally="true" />
 
                 </LinearLayout>
@@ -265,8 +264,8 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
-                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="?attr/itemBackground"
+                android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:visibility="gone">
@@ -275,14 +274,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
+                        android:layout_marginBottom="8dp">
 
                         <ImageView
                             android:layout_width="24dp"
@@ -308,7 +307,7 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
-                        android:padding="16dp"
+                        android:padding="12dp"
                         android:scrollHorizontally="true" />
 
                 </LinearLayout>

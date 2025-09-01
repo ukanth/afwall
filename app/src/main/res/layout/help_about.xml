@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
+                app:cardBackgroundColor="?attr/itemBackground"
                 android:layout_marginBottom="12dp">
 
                 <LinearLayout
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
+                app:cardBackgroundColor="?attr/itemBackground"
                 android:layout_marginBottom="12dp">
 
                 <LinearLayout
@@ -132,7 +132,7 @@
                             android:layout_height="32dp"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="0dp"
-                            android:background="?attr/colorBackgroundFloating">
+                            android:background="?attr/itemBackground">
 
                             <ImageView
                                 android:layout_width="16dp"
@@ -181,7 +181,7 @@
                             android:layout_height="32dp"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="0dp"
-                            android:background="?attr/colorBackgroundFloating">
+                            android:background="?attr/itemBackground">
 
                             <ImageView
                                 android:layout_width="16dp"
@@ -229,7 +229,7 @@
                             android:layout_height="32dp"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="0dp"
-                            android:background="?attr/colorBackgroundFloating">
+                            android:background="?attr/itemBackground">
 
                             <ImageView
                                 android:layout_width="16dp"
@@ -275,7 +275,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
+                app:cardBackgroundColor="?attr/itemBackground"
                 android:layout_marginBottom="12dp">
 
                 <LinearLayout
@@ -310,7 +310,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
+                app:cardBackgroundColor="?attr/itemBackground"
                 android:layout_marginBottom="12dp">
 
                 <LinearLayout
@@ -406,7 +406,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
+                app:cardBackgroundColor="?attr/itemBackground"
                 android:layout_marginBottom="12dp">
 
                 <LinearLayout
@@ -471,7 +471,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating"
+                app:cardBackgroundColor="?attr/itemBackground"
                 android:layout_marginBottom="12dp">
 
                 <LinearLayout
@@ -506,7 +506,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:cardBackgroundColor="?attr/colorBackgroundFloating">
+                app:cardBackgroundColor="?attr/itemBackground">
 
                 <LinearLayout
                     android:layout_width="match_parent"

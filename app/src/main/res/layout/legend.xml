@@ -102,7 +102,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:layout_width="20dp"
@@ -151,7 +151,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:layout_width="20dp"
@@ -200,7 +200,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:id="@+id/ivWifiOn"
@@ -250,7 +250,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:id="@+id/ivWifiOff"
@@ -300,7 +300,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:id="@+id/ivOtherOn"
@@ -350,7 +350,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:id="@+id/ivTetherOn"
@@ -400,7 +400,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:id="@+id/ivTorOn"
@@ -577,7 +577,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:id="@+id/flip"
@@ -627,7 +627,7 @@
                         android:layout_height="40dp"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="0dp"
-                                                android:background="?attr/colorBackgroundFloating">
+                                                android:background="?attr/itemBackground">
 
                         <ImageView
                             android:id="@+id/ivHostAllowed"
