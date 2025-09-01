@@ -38,6 +38,8 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.TransitionDrawable;
 
 /**
  * ON/OFF Widget implementation
@@ -63,6 +65,11 @@ public class StatusWidget extends AppWidgetProvider {
 			*/
             final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
             final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
+            final AppWidgetManager manager = AppWidgetManager.getInstance(context);
+            final int[] widgetIds = manager.getAppWidgetIds(new ComponentName(context, StatusWidget.class));
+
+            // Show immediate pending state
+            showPendingState(context, manager, widgetIds, enabled);
 
             Log.d(Api.TAG, "Protection Level: " + G.protectionLevel());
             if (!G.protectionLevel().equals("p0") || G.enableDeviceCheck()) {
@@ -78,6 +85,13 @@ public class StatusWidget extends AppWidgetProvider {
                             .setCallback(new RootCommand.Callback() {
                                 public void cbFunc(RootCommand state) {
                                     boolean status = (state.exitCode == 0);
+                                    if (state.exitCode != 0) {
+                                        // Show error state on failure
+                                        showErrorState(context, manager, widgetIds);
+                                    } else {
+                                        // Show success state briefly before final state
+                                        showSuccessState(context, manager, widgetIds, status);
+                                    }
                                     // setEnabled always sends us a STATUS_CHANGED_MSG intent to update the icon
                                     Api.setEnabled(context, status, true);
                                 }
@@ -89,6 +103,13 @@ public class StatusWidget extends AppWidgetProvider {
                             .setCallback(new RootCommand.Callback() {
                                 public void cbFunc(RootCommand state) {
                                     boolean status = (state.exitCode != 0);
+                                    if (state.exitCode != 0 && !status) {
+                                        // Show error state on failure (when status doesn't match expected)
+                                        showErrorState(context, manager, widgetIds);
+                                    } else if (state.exitCode == 0) {
+                                        // Show success state briefly before final state
+                                        showSuccessState(context, manager, widgetIds, status);
+                                    }
                                     Api.setEnabled(context, status,  true);
                                 }
                             }));
@@ -111,11 +132,76 @@ public class StatusWidget extends AppWidgetProvider {
         final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.onoff_widget);
         final int iconId = enabled ? R.drawable.widget_on : R.drawable.widget_off;
         views.setInt(R.id.widgetCanvas, "setBackgroundResource", iconId);
+        
+        // Note: Animation support removed for compatibility
+        
         final Intent msg = new Intent(context, StatusWidget.class);
         msg.setAction(Api.TOGGLE_REQUEST_MSG);
         final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, PendingIntent.FLAG_IMMUTABLE);
         views.setOnClickPendingIntent(R.id.widgetCanvas, intent);
         manager.updateAppWidget(widgetIds, views);
+    }
+
+    private void showPendingState(Context context, AppWidgetManager manager, int[] widgetIds, boolean willEnable) {
+        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.onoff_widget);
+        try {
+            final int iconId = willEnable ? R.drawable.widget_enabling : R.drawable.widget_disabling;
+            views.setInt(R.id.widgetCanvas, "setBackgroundResource", iconId);
+        } catch (Exception e) {
+            // Fallback to original icons if enhanced resources fail
+            final int iconId = willEnable ? R.drawable.widget_on : R.drawable.widget_off;
+            views.setInt(R.id.widgetCanvas, "setBackgroundResource", iconId);
+        }
+        final Intent msg = new Intent(context, StatusWidget.class);
+        msg.setAction(Api.TOGGLE_REQUEST_MSG);
+        final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, PendingIntent.FLAG_IMMUTABLE);
+        views.setOnClickPendingIntent(R.id.widgetCanvas, intent);
+        manager.updateAppWidget(widgetIds, views);
+    }
+
+    private void showErrorState(Context context, AppWidgetManager manager, int[] widgetIds) {
+        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.onoff_widget);
+        try {
+            views.setInt(R.id.widgetCanvas, "setBackgroundResource", R.drawable.widget_error);
+        } catch (Exception e) {
+            // Fallback to off icon if error resource fails
+            views.setInt(R.id.widgetCanvas, "setBackgroundResource", R.drawable.widget_off);
+        }
+        final Intent msg = new Intent(context, StatusWidget.class);
+        msg.setAction(Api.TOGGLE_REQUEST_MSG);
+        final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, PendingIntent.FLAG_IMMUTABLE);
+        views.setOnClickPendingIntent(R.id.widgetCanvas, intent);
+        manager.updateAppWidget(widgetIds, views);
+        
+        // Auto-revert to normal state after 2 seconds
+        android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
+            boolean currentEnabled = prefs.getBoolean(Api.PREF_ENABLED, true);
+            showWidget(context, manager, widgetIds, currentEnabled);
+        }, 2000);
+    }
+
+    private void showSuccessState(Context context, AppWidgetManager manager, int[] widgetIds, boolean finalState) {
+        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.onoff_widget);
+        try {
+            views.setInt(R.id.widgetCanvas, "setBackgroundResource", R.drawable.widget_success);
+        } catch (Exception e) {
+            // Fallback to final state icon if success resource fails
+            final int iconId = finalState ? R.drawable.widget_on : R.drawable.widget_off;
+            views.setInt(R.id.widgetCanvas, "setBackgroundResource", iconId);
+        }
+        final Intent msg = new Intent(context, StatusWidget.class);
+        msg.setAction(Api.TOGGLE_REQUEST_MSG);
+        final PendingIntent intent = PendingIntent.getBroadcast(context, -1, msg, PendingIntent.FLAG_IMMUTABLE);
+        views.setOnClickPendingIntent(R.id.widgetCanvas, intent);
+        manager.updateAppWidget(widgetIds, views);
+        
+        // Auto-revert to final state after 1 second
+        android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            showWidget(context, manager, widgetIds, finalState);
+        }, 1000);
     }
 
 }
