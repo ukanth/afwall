@@ -24,6 +24,7 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import java.util.concurrent.ExecutorService;
@@ -45,6 +46,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,7 +73,21 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     protected static final int MENU_ZOOM_IN = 22;
     protected static final int MENU_ZOOM_OUT = 23;
     TextView scaleGesture;
-    ScrollView mScrollView;
+    View mScrollView;  // Can be either ScrollView or NestedScrollView
+    
+    // Modern layout components
+    private TextView rulesTitle;
+    private TextView rulesStatus;
+    private TextView rulesContent;
+    private TextView interfacesContent;
+    private TextView systemContent;
+    private TextView preferencesContent;
+    private TextView logcatContent;
+    private CardView interfacesCard;
+    private CardView systemCard;
+    private CardView preferencesCard;
+    private CardView logcatCard;
+    private boolean useModernLayout = true;
 
     protected Menu mainMenu;
     protected static String dataText;
@@ -84,14 +101,183 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 
+    private void initModernViews() {
+        rulesTitle = findViewById(R.id.rules_title);
+        rulesStatus = findViewById(R.id.rules_status);
+        rulesContent = findViewById(R.id.rules_content);
+        interfacesContent = findViewById(R.id.interfaces_content);
+        systemContent = findViewById(R.id.system_content);
+        preferencesContent = findViewById(R.id.preferences_content);
+        logcatContent = findViewById(R.id.logcat_content);
+        interfacesCard = findViewById(R.id.interfaces_card);
+        systemCard = findViewById(R.id.system_card);
+        preferencesCard = findViewById(R.id.preferences_card);
+        logcatCard = findViewById(R.id.logcat_card);
+    }
+
     protected void setData(final String data) {
         dataText = data;
         Handler refresh = new Handler(Looper.getMainLooper());
         refresh.post(() -> {
-            scaleGesture = findViewById(R.id.rules);
-            scaleGesture.setText(data);
-            scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
+            if (useModernLayout) {
+                parseAndDisplayModernData(data);
+            } else {
+                scaleGesture = findViewById(R.id.rules);
+                scaleGesture.setText(data);
+                scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
+            }
         });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void parseAndDisplayModernData(String data) {
+        // Initialize all sections as empty and hide cards
+        rulesContent.setText("");
+        interfacesContent.setText("");
+        systemContent.setText("");
+        preferencesContent.setText("");
+        logcatContent.setText("");
+        
+        interfacesCard.setVisibility(View.GONE);
+        systemCard.setVisibility(View.GONE);
+        preferencesCard.setVisibility(View.GONE);
+        logcatCard.setVisibility(View.GONE);
+
+        // Parse sections more intelligently by looking for section headers
+        String[] lines = data.split("\n");
+        StringBuilder currentSection = new StringBuilder();
+        String currentSectionType = null;
+        
+        for (String line : lines) {
+            // Check if this is a section header (starts with =, contains title, ends with =)
+            if (line.matches("^=+$")) {
+                // Skip separator lines
+                continue;
+            }
+            
+            // Check if this line is a section title
+            String sectionType = detectSectionType(line.trim());
+            
+            if (sectionType != null) {
+                // Process previous section if it exists
+                if (currentSectionType != null && currentSection.length() > 0) {
+                    processSectionContent(currentSectionType, currentSection.toString());
+                }
+                
+                // Start new section
+                currentSectionType = sectionType;
+                currentSection = new StringBuilder();
+                continue;
+            }
+            
+            // Add line to current section
+            if (currentSectionType != null) {
+                currentSection.append(line).append("\n");
+            }
+        }
+        
+        // Process the last section
+        if (currentSectionType != null && currentSection.length() > 0) {
+            processSectionContent(currentSectionType, currentSection.toString());
+        }
+        
+        // Set font sizes for all content views
+        float textSize = G.ruleTextSize();
+        rulesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        interfacesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        systemContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        preferencesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        logcatContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
+        // Keep the hidden TextView updated for backward compatibility (export, copy functions)
+        TextView hiddenRules = findViewById(R.id.rules);
+        hiddenRules.setText(data);
+    }
+    
+    private String detectSectionType(String line) {
+        String trimmed = line.trim();
+        if (trimmed.equals(getString(R.string.ipv4_rules_title))) {
+            return "ipv4_rules";
+        } else if (trimmed.equals(getString(R.string.ipv6_rules_title))) {
+            return "ipv6_rules";
+        } else if (trimmed.contains("Network interfaces")) {
+            return "interfaces";
+        } else if (trimmed.contains("ifconfig")) {
+            return "ifconfig";
+        } else if (trimmed.contains("System info")) {
+            return "system";
+        } else if (trimmed.contains("Preferences")) {
+            return "preferences";
+        } else if (trimmed.contains("Logcat")) {
+            return "logcat";
+        }
+        return null;
+    }
+    
+    private void processSectionContent(String sectionType, String content) {
+        String trimmedContent = content.trim();
+        if (trimmedContent.isEmpty()) return;
+        
+        switch (sectionType) {
+            case "ipv4_rules":
+                rulesTitle.setText(getString(R.string.ipv4_rules_title));
+                rulesStatus.setText(getString(R.string.ready));
+                rulesContent.setText(trimmedContent);
+                break;
+                
+            case "ipv6_rules":
+                rulesTitle.setText(getString(R.string.ipv6_rules_title));
+                rulesStatus.setText(getString(R.string.ready));
+                rulesContent.setText(trimmedContent);
+                break;
+                
+            case "interfaces":
+            case "ifconfig":
+                interfacesCard.setVisibility(View.VISIBLE);
+                String existingInterfaces = interfacesContent.getText().toString();
+                if (!existingInterfaces.isEmpty()) {
+                    interfacesContent.setText(existingInterfaces + "\n\n" + trimmedContent);
+                } else {
+                    interfacesContent.setText(trimmedContent);
+                }
+                break;
+                
+            case "system":
+                systemCard.setVisibility(View.VISIBLE);
+                systemContent.setText(trimmedContent);
+                break;
+                
+            case "preferences":
+                preferencesCard.setVisibility(View.VISIBLE);
+                String existingPrefs = preferencesContent.getText().toString();
+                if (!existingPrefs.isEmpty()) {
+                    preferencesContent.setText(existingPrefs + "\n\n" + trimmedContent);
+                } else {
+                    preferencesContent.setText(trimmedContent);
+                }
+                break;
+                
+            case "logcat":
+                logcatCard.setVisibility(View.VISIBLE);
+                logcatContent.setText(trimmedContent);
+                break;
+        }
+    }
+
+    private void updateModernTextSize(float sizeDelta) {
+        float currentSize = G.ruleTextSize();
+        float newSize = currentSize + sizeDelta;
+        
+        if (newSize < 8.0f) newSize = 8.0f;  // Minimum size
+        if (newSize > 30.0f) newSize = 30.0f; // Maximum size
+        
+        G.ruleTextSize((int) newSize);
+        
+        if (rulesContent != null) rulesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (interfacesContent != null) interfacesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (systemContent != null) systemContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (preferencesContent != null) preferencesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (logcatContent != null) logcatContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
     }
 
     private void initTheme() {
@@ -108,7 +294,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         initTheme();
-        setContentView(R.layout.rules);
+        if (useModernLayout) {
+            setContentView(R.layout.rules_modern);
+            initModernViews();
+        } else {
+            setContentView(R.layout.rules);
+        }
 
         Toolbar toolbar = findViewById(R.id.rule_toolbar);
         //toolbar.setTitle(getString(R.string.showrules_title));
@@ -172,15 +363,23 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                 return true;
             }
             case MENU_ZOOM_IN -> {
-                newSize = scaleGesture.getTextSize() + 2.0f;
-                scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
-                G.ruleTextSize((int) newSize);
+                if (useModernLayout) {
+                    updateModernTextSize(2.0f);
+                } else {
+                    newSize = scaleGesture.getTextSize() + 2.0f;
+                    scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+                    G.ruleTextSize((int) newSize);
+                }
                 return false;
             }
             case MENU_ZOOM_OUT -> {
-                newSize = scaleGesture.getTextSize() - 2.0f;
-                scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
-                G.ruleTextSize((int) newSize);
+                if (useModernLayout) {
+                    updateModernTextSize(-2.0f);
+                } else {
+                    newSize = scaleGesture.getTextSize() - 2.0f;
+                    scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+                    G.ruleTextSize((int) newSize);
+                }
                 return false;
             }
             default -> {

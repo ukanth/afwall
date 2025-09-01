@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -216,6 +217,7 @@ public class RulesActivity extends DataDumpActivity {
             @Override
             public void onPostExecute(String suInfo) {
                 result.append(suInfo);
+                updateLoadingState(getString(R.string.finalizing));
                 appendPreferences(ctx);
             }
         }.execute();
@@ -225,6 +227,7 @@ public class RulesActivity extends DataDumpActivity {
     protected void appendIfconfig(final Context ctx) {
         // Third section: "ifconfig" (for interface info obtained through busybox)
         writeHeading(result, true, "ifconfig");
+        updateLoadingState(getString(R.string.loading_system_info));
         Api.runIfconfig(ctx, new RootCommand()
                 .setLogging(true)
                 .setCallback(new RootCommand.Callback() {
@@ -252,8 +255,11 @@ public class RulesActivity extends DataDumpActivity {
     protected void populateData(final Context ctx) {
         result = new StringBuilder();
 
+        // Update loading state for modern layout
+        updateLoadingState(getString(R.string.loading));
+
         // First section: "IPxx Rules"
-        writeHeading(result, false, showIPv6 ? "IPv6 Rules" : "IPv4 Rules");
+        writeHeading(result, false, showIPv6 ? getString(R.string.ipv6_rules_title) : getString(R.string.ipv4_rules_title));
         if (showIPv6) {
             sdDumpFile = "IPv6rules.log";
         } else {
@@ -266,9 +272,24 @@ public class RulesActivity extends DataDumpActivity {
                 .setCallback(new RootCommand.Callback() {
                     public void cbFunc(RootCommand state) {
                         result.append(state.res);
+                        updateLoadingState(getString(R.string.loading_network_info));
                         appendNetworkInterfaces(ctx);
                     }
                 }));
+    }
+
+    private void updateLoadingState(String status) {
+        runOnUiThread(() -> {
+            TextView rulesStatus = findViewById(R.id.rules_status);
+            TextView rulesTitle = findViewById(R.id.rules_title);
+            if (rulesStatus != null) {
+                rulesStatus.setText(status);
+            }
+            if (rulesTitle != null) {
+                String title = showIPv6 ? getString(R.string.ipv6_rules_title) : getString(R.string.ipv4_rules_title);
+                rulesTitle.setText(title);
+            }
+        });
     }
 
     @Override
@@ -286,10 +307,12 @@ public class RulesActivity extends DataDumpActivity {
                 return true;
             case MENU_IPV6_RULES:
                 showIPv6 = true;
+                updateLoadingState(getString(R.string.loading));
                 populateData(this);
                 return true;
             case MENU_IPV4_RULES:
                 showIPv6 = false;
+                updateLoadingState(getString(R.string.loading));
                 populateData(this);
                 return true;
             case MENU_SEND_REPORT:
@@ -338,12 +361,7 @@ public class RulesActivity extends DataDumpActivity {
                     dialog.dismiss();
                 })
 
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        dialog.dismiss();
-                    }
-                })
+                .onNegative((dialog, which) -> dialog.dismiss())
                 .show();
     }
 
