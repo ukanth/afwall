@@ -1239,15 +1239,8 @@ public final class Api {
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "Exception while applying IPv4 rules: " + e.getMessage(), e);
-            // Only apply default chains if it's a critical failure
-            // Avoid overriding user chain preferences unnecessarily
-            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
-                Log.w(TAG, "Applying default chains due to rule application failure");
-                applyDefaultChains(ctx, callback);
-            } else {
-                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
-            }
+            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+            applyDefaultChains(ctx, callback);
             return false;
         }
     }
@@ -1262,15 +1255,8 @@ public final class Api {
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "Exception while applying IPv6 rules: " + e.getMessage(), e);
-            // Only apply default chains if it's a critical failure
-            // Avoid overriding user chain preferences unnecessarily
-            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
-                Log.w(TAG, "Applying default chains due to rule application failure");
-                applyDefaultChains(ctx, callback);
-            } else {
-                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
-            }
+            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+            applyDefaultChains(ctx, callback);
             return false;
         }
     }
@@ -1296,15 +1282,8 @@ public final class Api {
                     callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Exception in fastApply: " + e.getMessage(), e);
-            // Only apply default chains if it's a critical failure
-            // Avoid overriding user chain preferences unnecessarily
-            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
-                Log.w(TAG, "Applying default chains due to fastApply failure");
-                applyDefaultChains(ctx, callback);
-            } else {
-                Log.w(TAG, "Skipping default chains application in fastApply to preserve user chain preferences");
-            }
+            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
+            applyDefaultChains(ctx, callback);
         }
         setRulesUpToDate(true);
         return true;
