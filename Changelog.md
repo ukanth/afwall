@@ -1,6 +1,90 @@
 AFWall+ Changelog
 ==================
 
+AFWall+ v4.0.0
+
+🚀 Major Features & Enhancements
+
+🎯 Rule Management & Stability
+
+- Fixed critical rule application issues - Resolved iptables command failures and cascade errors
+- Improved error handling - Smart selective error handling prevents unnecessary fallbacks
+- Enhanced chain management - Better synchronization prevents race conditions
+- Owner module compatibility - Automatic detection and fallback for devices without owner
+  iptables module
+
+🎨 Material Design Overhaul
+
+- Modernized UI - Material Design enhancements for rules, help, and custom scripts views
+- Revamped help section - Complete redesign with better organization and moved legends
+- Visual widget indicators - Added pulse animations and visual feedback for toggle widgets
+- Improved layouts - Fixed layout issues for devices with merged status bars
+
+📊 Enhanced Logging System
+
+- Better log details view - Enhanced display with allow/deny address information
+- Improved UID detection - Better handling of special UIDs (including uid -100) and bug fixes
+- Seamless log target switching - Dynamic switching between LOG and NFLOG in preferences
+- NFLOG improvements - Better NFLOG and LOG handling with updated binaries
+
+🔒 Security Enhancements
+
+- Upgraded encryption - Migrated from DES to AES for better security
+- Enhanced security utilities - New SecureCrypto and SecurityUtil classes
+- Input validation improvements - Better validation and security checks
+
+🛠 Platform & Compatibility
+
+📱 Android Support
+
+- Android 16 preparation - Updated build configuration for future Android support
+- Binary updates - Cross-compiled binaries: busybox v1.36.1, iptables v1.8.10
+- Architecture support - Added ARM64 binaries and improved architecture detection
+- GitHub Actions CI - Automated binary builds and improved CI/CD pipeline
+
+🔧 Bug Fixes & Stability
+
+- Export/Import fixes - Resolved bugs when handling large numbers of files (#1399, #1401)
+- Build error fixes - Fixed app:tint and other build-related issues
+- Service leak fixes - Improved thread safety and fixed service connection leaks
+- USB tethering support - Added auto-detection and support for USB tethering
+- DNS forwarding - Improved DNS handling for tethering scenarios
+
+🔧 Technical Improvements
+
+⚡ Performance & Threading
+
+- Thread safety - Improved synchronization and thread-safe operations
+- Better exception handling - More robust error handling and recovery
+- Optimized rule processing - Faster and more reliable rule application
+
+🛠 Developer Experience
+
+- Code cleanup - Extensive refactoring and code organization improvements
+- CI/CD enhancements - Updated GitHub Actions and automated workflows
+- Binary management - Automated cross-compilation and binary distribution
+
+📋 Specific Issue Fixes
+
+- #1386 - Default chain rules only applied when necessary (with smart revert)
+- #1410 - Fallback on default commands when needed
+- #1423, #1382 - Various stability and functionality fixes
+- #1400 - Layout fixes for merged status bar screens
+- #1399 - Export only enabled rule types
+- #1169 - Export/import rule improvements
+
+⚠️ Breaking Changes
+
+- Security upgrade - DES encryption deprecated in favor of AES
+- Removed legacy views - Old unsupported view components removed
+- Binary updates - Requires newer binaries for optimal performance
+
+🙏 Contributors
+
+- @getgo-nobugs - Syntax fixes and improvements
+- @NeroProtagonist - CI/CD updates (upload-artifact@v4)
+- @Fry-kun - Multiple fixes: typos, layout improvements, export fixes, ARM64 NFLOG binary (initial version)
+
 Version 3.6.0
 
 * Updated libraries and SDK (33)
