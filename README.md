@@ -4,6 +4,36 @@
 
 > **Your Privacy, Your Control** - AFWall+ gives you complete control over which apps can access the internet on your Android device.
 
+---
+
+## 💝 Support AFWall+ Development
+
+AFWall+ is developed and maintained by volunteers in their free time. If you find it useful, consider supporting the project:
+
+### 💰 **Making Donations**
+
+**Why Donate?** AFWall+ is completely free and open-source. Your donations help:
+- 🔧 **Continue development** - Fund new features and maintenance
+- 🐛 **Bug fixes and testing** - Keep the app stable and secure  
+- 📱 **Device compatibility** - Support more Android versions and devices
+- 🌍 **Community support** - Help users and maintain documentation
+
+**Donation Options:**
+- **PayPal**: [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
+- **Google Play**: Purchase the [unlocker key](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall.donate) for additional features
+- **Amazon Gift Cards**: `cumakt+amazon@gmail.com`
+- **Bitcoin**: `bc1q54nf3y9zmdcpasxx9sywkprd6309rfhav3mape`
+- **Ethereum**: `0x5e65649C2B26eD816fCeD25a8E507C90D4b1D697`
+
+### 🌟 **Other Ways to Help**
+- ⭐ Star this repository  
+- 🐛 Report bugs and test new features
+- 🌐 Contribute translations on [Crowdin](http://crowdin.net/project/afwall)
+- 📝 Improve documentation
+- 💬 Help other users in forums
+
+---
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/ukanth/afwall/0502e6f17ceda08069720ff2f260902690e65e9b/screenshots/Main_2.0.png" width="300" alt="AFWall+ Screenshot">
 </p>
@@ -346,23 +376,6 @@ GNU General Public License for more details.
 ```
 
 **Full license text**: [LICENSE](LICENSE) file or [gnu.org/licenses/gpl-3.0](https://www.gnu.org/licenses/gpl-3.0.html)
-
----
-
-## 💝 Support the Project
-
-AFWall+ is developed and maintained by volunteers in their free time. If you find it useful, consider supporting the project:
-
-### 💰 **Donations**
-- **PayPal**: [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
-- **Google Play**: Purchase the [unlocker key](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall.donate) for additional features
-
-### 🌟 **Other Ways to Help**
-- ⭐ Star this repository
-- 🐛 Report bugs and test new features
-- 🌐 Contribute translations
-- 📝 Improve documentation
-- 💬 Help other users in forums
 
 ---
 
