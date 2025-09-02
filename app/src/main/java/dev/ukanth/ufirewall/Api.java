@@ -2035,17 +2035,25 @@ public final class Api {
     public static HashMap<Integer, String> getPackagesForUser(List<Integer> userProfile) {
         HashMap<Integer,String> listApps = new HashMap<>();
         for(Integer integer: userProfile) {
-            Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
-            List<String> out = result.getOut();
-            Matcher matcher;
-            for (String item : out) {
-                matcher = dual_pattern.matcher(item);
-                if (matcher.find() && matcher.groupCount() > 0) {
-                    String packageName = matcher.group(1);
-                    String packageId = matcher.group(2);
-                    Log.i(TAG, packageId + " " + packageName);
-                    listApps.put(Integer.parseInt(packageId), packageName);
+            try {
+                Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
+                List<String> out = result.getOut();
+                Matcher matcher;
+                for (String item : out) {
+                    matcher = dual_pattern.matcher(item);
+                    if (matcher.find() && matcher.groupCount() > 0) {
+                        String packageName = matcher.group(1);
+                        String packageId = matcher.group(2);
+                        Log.i(TAG, packageId + " " + packageName);
+                        listApps.put(Integer.parseInt(packageId), packageName);
+                    }
                 }
+            } catch (java.util.concurrent.RejectedExecutionException e) {
+                Log.w(TAG, "Package listing rejected for user " + integer + ": " + e.getMessage());
+                break; // Stop processing other users if execution rejected
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to list packages for user " + integer + ": " + e.getMessage());
+                // Continue with next user on other errors
             }
         }
         return listApps.size() > 0 ? listApps : null;
@@ -2172,13 +2180,28 @@ public final class Api {
         }
 
         try {
-            returnCode = new RunCommand().execute(script, res, ctx).get();
+            RunCommand runCommand = new RunCommand();
+            returnCode = runCommand.execute(script, res, ctx).get();
         } catch (RejectedExecutionException r) {
-            Log.e(TAG, "runScript failed: " + r.getLocalizedMessage());
+            Log.w(TAG, "Shell execution rejected, likely due to app shutdown: " + r.getLocalizedMessage());
+            returnCode = -1;
         } catch (InterruptedException e) {
-            Log.e(TAG, "Caught InterruptedException");
+            Log.w(TAG, "Shell execution was interrupted: " + e.getLocalizedMessage());
+            Thread.currentThread().interrupt(); // Restore interrupted status
+            returnCode = -1;
+        } catch (java.util.concurrent.ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof java.io.InterruptedIOException) {
+                Log.w(TAG, "Shell execution interrupted (IO): " + cause.getMessage());
+            } else if (cause instanceof java.util.concurrent.RejectedExecutionException) {
+                Log.w(TAG, "Shell execution rejected in wrapped exception: " + cause.getMessage());
+            } else {
+                Log.e(TAG, "Shell execution failed with ExecutionException: " + e.getLocalizedMessage());
+            }
+            returnCode = -1;
         } catch (Exception e) {
-            Log.e(TAG, "runScript failed: " + e.getLocalizedMessage());
+            Log.e(TAG, "Unexpected error during shell execution: " + e.getLocalizedMessage());
+            returnCode = -1;
         }
 
         return returnCode;
@@ -3088,10 +3111,12 @@ public final class Api {
                 updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
             }
             returnVal = true;
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.w(TAG, "Import rules file read rejected: " + e.getMessage());
         } catch (JSONException e) {
-            Log.e(TAG, e.getLocalizedMessage());
+            Log.e(TAG, "JSON parsing error during import: " + e.getLocalizedMessage());
         } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
+            Log.e(TAG, "Failed to import rules from file: " + e.getLocalizedMessage());
         } finally {
             if (br != null) {
                 try {
@@ -3389,8 +3414,16 @@ public final class Api {
 
     public static boolean isNetfilterSupported() {
         boolean netfiler_exists = new File("/proc/net/netfilter").exists();
-        Shell.Result result = Shell.cmd("cat /proc/net/ip_tables_targets").exec();
-        return netfiler_exists && result.isSuccess();
+        try {
+            Shell.Result result = Shell.cmd("cat /proc/net/ip_tables_targets").exec();
+            return netfiler_exists && result.isSuccess();
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.w(TAG, "Netfilter check rejected: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to check netfilter support: " + e.getMessage());
+            return false;
+        }
     }
 
     private static void initSpecial() {
@@ -3826,6 +3859,94 @@ public final class Api {
         }
     }
 
+    /**
+     * Safe shell command execution that handles library-level crashes
+     */
+    private static List<String> executeSafeShellCommand(String command) {
+        // First try the primary libsu approach
+        try {
+            // Check if we can get a valid shell
+            if (Shell.getShell() == null || !Shell.getShell().isAlive()) {
+                Log.w(TAG, "Shell is not available or not alive, trying fallback");
+                return executeFallbackShellCommand(command);
+            }
+
+            // Execute with timeout and proper error handling
+            Shell.Result result = Shell.cmd(command).exec();
+            return result != null ? result.getOut() : null;
+            
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.w(TAG, "Shell execution rejected - trying fallback: " + e.getMessage());
+            return executeFallbackShellCommand(command);
+        } catch (RuntimeException e) {
+            // Check for wrapped ExecutionException with InterruptedIOException
+            Throwable cause = e.getCause();
+            if (cause instanceof java.util.concurrent.ExecutionException) {
+                java.util.concurrent.ExecutionException execEx = (java.util.concurrent.ExecutionException) cause;
+                if (execEx.getCause() instanceof java.io.InterruptedIOException) {
+                    Log.w(TAG, "Shell execution interrupted at library level - trying fallback: " + execEx.getCause().getMessage());
+                    return executeFallbackShellCommand(command);
+                }
+            }
+            // Re-throw if it's not a known interruption issue
+            throw e;
+        } catch (Exception e) {
+            Log.w(TAG, "Unexpected error in safe shell execution, trying fallback: " + e.getMessage());
+            return executeFallbackShellCommand(command);
+        }
+    }
+    
+    /**
+     * Fallback shell execution using the legacy RootShell library
+     * This provides an alternative when libsu fails due to interruptions
+     */
+    private static List<String> executeFallbackShellCommand(String command) {
+        try {
+            Log.d(TAG, "Using fallback shell execution for command: " + command);
+            
+            // Use the legacy RootShell library as fallback
+            final java.util.List<String> output = new java.util.ArrayList<>();
+            final boolean[] completed = {false};
+            
+            com.stericson.rootshell.execution.Command cmd = new com.stericson.rootshell.execution.Command(0, command) {
+                @Override
+                public void commandCompleted(int id, int exitcode) {
+                    super.commandCompleted(id, exitcode);
+                    completed[0] = true;
+                }
+                
+                @Override
+                public void commandOutput(int id, String line) {
+                    super.commandOutput(id, line);
+                    if (line != null) {
+                        output.add(line);
+                    }
+                }
+            };
+            
+            // Execute with timeout
+            com.stericson.roottools.RootTools.getShell(true, 0).add(cmd);
+            
+            // Wait for completion with timeout
+            long startTime = System.currentTimeMillis();
+            while (!completed[0] && (System.currentTimeMillis() - startTime) < 30000) {
+                Thread.sleep(100);
+            }
+            
+            if (completed[0]) {
+                Log.d(TAG, "Fallback shell execution completed successfully");
+                return output;
+            } else {
+                Log.w(TAG, "Fallback shell execution timed out");
+                return null;
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Fallback shell execution also failed: " + e.getMessage());
+            return null;
+        }
+    }
+
     private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
 
         private int exitCode = -1;
@@ -3843,10 +3964,23 @@ public final class Api {
             StringBuilder res = (StringBuilder) params[1];
             Log.i(TAG, "Executing root commands of" + commands.size());
             try {
+                // Check if task is cancelled before proceeding
+                if (isCancelled()) {
+                    Log.d(TAG, "RunCommand task was cancelled, aborting execution");
+                    return -1;
+                }
+                
                 if (Shell.getShell().isRoot() && !Shell.isAppGrantedRoot())
                     return -1;
                 if (commands != null && commands.size() > 0) {
-                    List<String> output = Shell.cmd(String.valueOf(commands)).exec().getOut();
+                    // Check again before executing shell command
+                    if (isCancelled()) {
+                        Log.d(TAG, "RunCommand task was cancelled before shell execution");
+                        return -1;
+                    }
+                    
+                    // Use a safe shell execution wrapper
+                    List<String> output = executeSafeShellCommand(String.valueOf(commands));
                     if (output != null) {
                         exitCode = 0;
                         if (output.size() > 0) {
@@ -3859,11 +3993,47 @@ public final class Api {
                         exitCode = 1;
                     }
                 }
-            } catch (Exception ex) {
+            } catch (java.util.concurrent.RejectedExecutionException e) {
+                Log.w(TAG, "Shell execution rejected, likely due to app shutdown: " + e.getMessage());
+                exitCode = -1;
+            } catch (RuntimeException ex) {
+                // Check if this is a wrapped ExecutionException with InterruptedIOException
+                Throwable cause = ex.getCause();
+                if (cause instanceof java.util.concurrent.ExecutionException) {
+                    java.util.concurrent.ExecutionException execEx = (java.util.concurrent.ExecutionException) cause;
+                    if (execEx.getCause() instanceof java.io.InterruptedIOException) {
+                        Log.w(TAG, "Shell command execution was interrupted: " + execEx.getCause().getMessage());
+                        exitCode = -1;
+                        return exitCode;
+                    }
+                } else if (ex.getCause() instanceof java.io.InterruptedIOException) {
+                    Log.w(TAG, "Shell command execution was interrupted: " + ex.getCause().getMessage());
+                    exitCode = -1;
+                    return exitCode;
+                }
+                Log.e(TAG, "Shell command execution failed: " + ex.getMessage());
                 if (res != null)
                     res.append("\n").append(ex);
+                exitCode = -1;
+            } catch (Exception ex) {
+                Log.e(TAG, "Shell command execution failed with unexpected exception: " + ex.getMessage());
+                if (res != null)
+                    res.append("\n").append(ex);
+                exitCode = -1;
             }
             return exitCode;
+        }
+
+        @Override
+        protected void onCancelled() {
+            Log.d(TAG, "RunCommand task was cancelled");
+            super.onCancelled();
+        }
+
+        @Override
+        protected void onCancelled(Integer result) {
+            Log.d(TAG, "RunCommand task was cancelled with result: " + result);
+            super.onCancelled(result);
         }
 
 

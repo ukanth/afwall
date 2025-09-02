@@ -46,6 +46,8 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import dev.ukanth.ufirewall.MainActivity;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,12 +75,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static boolean enabledPrivateLink = false;
 
     private static boolean isActivityVisible;
+    
+    private static Thread.UncaughtExceptionHandler defaultExceptionHandler;
 
     static {
         //TODO: Remove this line before release
         //com.topjohnwu.superuser.Shell.enableVerboseLogging = BuildConfig.DEBUG;
         com.topjohnwu.superuser.Shell.setDefaultBuilder(com.topjohnwu.superuser.Shell.Builder.create()
                 .setFlags(com.topjohnwu.superuser.Shell.FLAG_REDIRECT_STDERR)
+                .setTimeout(30) // 30 second timeout for shell operations
         );
     }
 
@@ -971,6 +976,35 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         //Shell.setFlags(Shell.ROOT_SHELL);
         //Shell.setFlags(Shell.FLAG_REDIRECT_STDERR);
         //Shell.verboseLogging(BuildConfig.DEBUG);
+        
+        // Store the default exception handler before replacing it
+        defaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
+        
+        // Set up global exception handler for uncaught library crashes
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable throwable) {
+                // Check if this is the SuperUser library crash we're trying to prevent
+                if (throwable instanceof java.util.concurrent.RejectedExecutionException &&
+                    thread.getName().startsWith("pool-")) {
+                    Log.w(TAG, "Caught SuperUser library RejectedExecutionException during app shutdown, ignoring to prevent crash");
+                    return; // Silently ignore this specific crash
+                }
+                
+                // Check for ExecutionException with InterruptedIOException
+                if (throwable instanceof java.util.concurrent.ExecutionException &&
+                    throwable.getCause() instanceof java.io.InterruptedIOException) {
+                    Log.w(TAG, "Caught SuperUser library ExecutionException with InterruptedIOException during app shutdown, ignoring to prevent crash");
+                    return; // Silently ignore this specific crash
+                }
+                
+                // For all other exceptions, use the default handler
+                if (defaultExceptionHandler != null) {
+                    defaultExceptionHandler.uncaughtException(thread, throwable);
+                }
+            }
+        });
+        
         registerActivityLifecycleCallbacks(this);
         super.onCreate();
         try {
@@ -1138,7 +1172,12 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     @Override
     public void onActivityPaused(Activity activity) {
-
+        if (activity instanceof MainActivity) {
+            isActivityVisible = false;
+            // Proactively clean up shells when main activity is paused
+            // This helps prevent crashes when app is killed from recent apps
+            cleanupShellInstances();
+        }
     }
 
     @Override
@@ -1213,5 +1252,45 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         } else{
             Log.i(TAG, "Private link has registered already");
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        // Clean up shell instances to prevent crashes during app termination
+        try {
+            com.topjohnwu.superuser.Shell.getCachedShell().close();
+            Log.d(TAG, "Shell instances cleaned up during app termination");
+        } catch (Exception e) {
+            Log.d(TAG, "Error cleaning up shells during termination: " + e.getMessage());
+        }
+        super.onTerminate();
+    }
+
+    @Override
+    public void onLowMemory() {
+        // Also clean up on low memory conditions
+        try {
+            com.topjohnwu.superuser.Shell.getCachedShell().close();
+            Log.d(TAG, "Shell instances cleaned up due to low memory");
+        } catch (Exception e) {
+            Log.d(TAG, "Error cleaning up shells during low memory: " + e.getMessage());
+        }
+        super.onLowMemory();
+    }
+
+    /**
+     * Proactively clean up shell instances to prevent crashes during app termination
+     */
+    private static void cleanupShellInstances() {
+        new Thread(() -> {
+            try {
+                Log.d(TAG, "Proactively cleaning up shell instances");
+                com.topjohnwu.superuser.Shell.getCachedShell().close();
+                // Give some time for cleanup
+                Thread.sleep(100);
+            } catch (Exception e) {
+                Log.d(TAG, "Error during proactive shell cleanup: " + e.getMessage());
+            }
+        }).start();
     }
 }

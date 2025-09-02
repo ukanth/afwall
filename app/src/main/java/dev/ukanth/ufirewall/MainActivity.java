@@ -1295,8 +1295,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Log.w(TAG, "Migration output: " + result.getOut());
                 }
                 
+            } catch (java.util.concurrent.RejectedExecutionException e) {
+                Log.w(TAG, "File migration rejected: " + e.getMessage());
             } catch (Exception e) {
-                Log.e(TAG, "Error during file migration", e);
+                // Check if the cause is an InterruptedIOException
+                if (e.getCause() instanceof java.io.InterruptedIOException) {
+                    Log.w(TAG, "File migration interrupted: " + e.getCause().getMessage());
+                } else {
+                    Log.e(TAG, "Error during file migration", e);
+                }
             } finally {
                 // Dismiss progress dialog and run completion callback on UI thread
                 runOnUiThread(() -> {
@@ -2375,6 +2382,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         if (uiRefreshReceiver != null) {
             unregisterReceiver(uiRefreshReceiver);
+        }
+        
+        // Clean up shell instances to prevent interruption crashes
+        try {
+            // Force close any existing shell instances
+            com.topjohnwu.superuser.Shell.getCachedShell().close();
+        } catch (Exception e) {
+            Log.d(TAG, "Error closing shell during cleanup: " + e.getMessage());
         }
     }
 
