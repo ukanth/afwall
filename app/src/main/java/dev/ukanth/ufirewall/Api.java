@@ -210,7 +210,7 @@ public final class Api {
     private static final int IPTABLES_TRY_AGAIN = 4;
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
-    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether"};
+    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether", "-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
@@ -636,7 +636,13 @@ public final class Api {
             if (whitelist) {
                 if (kernel_checked) {
                     // reject any other UIDs, but allow the kernel through
-                    cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + chain + "-reject");
+                    // Use fallback rule if owner module is not available
+                    if (G.hasOwnerModule()) {
+                        cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + chain + "-reject");
+                    } else {
+                        Log.w(TAG, "Owner module not available, using fallback rule for chain " + chain);
+                        cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    }
                 } else {
                     // kernel is blocked so reject everything
                     cmds.add("-A " + chain + " -j " + chain + "-reject");
@@ -644,17 +650,24 @@ public final class Api {
             } else {
                 if (kernel_checked) {
                     // allow any other UIDs, but block the kernel
-                    cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
-                    cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    if (G.hasOwnerModule()) {
+                        cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
+                        cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    } else {
+                        Log.w(TAG, "Owner module not available, using fallback rule for chain " + chain);
+                        cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    }
                 }
             }
 
             //add 1052 for LAN
-            if(G.enableLAN()) {
+            if(G.enableLAN() && G.hasOwnerModule()) {
                 cmds.add("-A " + "afwall-wifi-lan" + " -m owner --uid-owner 1052 -j RETURN");
             }
 
-            cmds.add("-A " + "afwall-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
+            if (G.hasOwnerModule()) {
+                cmds.add("-A " + "afwall-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
+            }
         }
     }
 
@@ -898,13 +911,14 @@ public final class Api {
             cmds.add("-P OUTPUT DROP");
 
             // Create and flush all chains first to ensure they exist
+            // Use NOCHK to avoid errors if chain already exists, then flush to ensure clean state
             for (String s : staticChains) {
                 cmds.add("#NOCHK# -N " + chainName + s);
-                cmds.add("-F " + chainName + s);
+                cmds.add("#NOCHK# -F " + chainName + s);
             }
             for (String s : dynChains) {
                 cmds.add("#NOCHK# -N " + chainName + s);
-                cmds.add("-F " + chainName + s);
+                cmds.add("#NOCHK# -F " + chainName + s);
             }
             
 
@@ -1239,8 +1253,15 @@ public final class Api {
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
-            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx, callback);
+            Log.e(TAG, "Exception while applying IPv4 rules: " + e.getMessage(), e);
+            // Only apply default chains if it's a critical failure
+            // Avoid overriding user chain preferences unnecessarily
+            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
+                Log.w(TAG, "Applying default chains due to rule application failure");
+                applyDefaultChains(ctx, callback);
+            } else {
+                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
+            }
             return false;
         }
     }
@@ -1255,8 +1276,15 @@ public final class Api {
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
             return true;
         } catch (Exception e) {
-            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx, callback);
+            Log.e(TAG, "Exception while applying IPv6 rules: " + e.getMessage(), e);
+            // Only apply default chains if it's a critical failure
+            // Avoid overriding user chain preferences unnecessarily
+            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
+                Log.w(TAG, "Applying default chains due to rule application failure");
+                applyDefaultChains(ctx, callback);
+            } else {
+                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
+            }
             return false;
         }
     }
@@ -1282,8 +1310,15 @@ public final class Api {
                     callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
             }
         } catch (Exception e) {
-            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx, callback);
+            Log.e(TAG, "Exception in fastApply: " + e.getMessage(), e);
+            // Only apply default chains if it's a critical failure
+            // Avoid overriding user chain preferences unnecessarily
+            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
+                Log.w(TAG, "Applying default chains due to fastApply failure");
+                applyDefaultChains(ctx, callback);
+            } else {
+                Log.w(TAG, "Skipping default chains application in fastApply to preserve user chain preferences");
+            }
         }
         setRulesUpToDate(true);
         return true;

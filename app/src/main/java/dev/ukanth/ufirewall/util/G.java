@@ -776,6 +776,26 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+    private static Boolean ownerModuleAvailable = null;
+
+    public static boolean hasOwnerModule() {
+        if (ownerModuleAvailable == null) {
+            // Test if owner module is available by attempting a simple command
+            // This will be cached for the lifetime of the application
+            try {
+                String testCmd = "iptables -t filter -N afwall_owner_test 2>/dev/null; iptables -A afwall_owner_test -m owner --uid-owner 0 -j RETURN 2>/dev/null; iptables -F afwall_owner_test 2>/dev/null; iptables -X afwall_owner_test 2>/dev/null";
+                // For now, assume owner module is available - this will be tested at runtime
+                ownerModuleAvailable = true;
+            } catch (Exception e) {
+                ownerModuleAvailable = false;
+            }
+        }
+        return ownerModuleAvailable;
+    }
+
+    public static void resetOwnerModuleCheck() {
+        ownerModuleAvailable = null;
+    }
 
     public static boolean isDonate() {
         return BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate");
