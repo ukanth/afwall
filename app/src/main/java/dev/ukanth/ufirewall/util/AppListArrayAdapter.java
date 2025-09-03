@@ -282,9 +282,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     .where(LogPreference_Table.uid.eq(holder.app.uid)).querySingle();
 
             boolean isDisabled = logPreference != null && logPreference.isDisable();
-            
-            Log.d(TAG, "Updating notification icon for UID " + holder.app.uid + ": disabled=" + isDisabled);
-            
+
             holder.actionToggleLog.setImageResource(
                 isDisabled ? R.drawable.ic_notifications_off_black_24dp 
                            : R.drawable.ic_notifications_on_black_24dp

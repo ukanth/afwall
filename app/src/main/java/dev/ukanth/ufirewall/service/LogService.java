@@ -590,7 +590,7 @@ public class LogService extends Service {
 
     @SuppressLint("RestrictedApi")
     private void showNotification(LogInfo logInfo) {
-        if(G.enableLogService() && G.canShow(logInfo.uid)) {
+        if(G.enableLogService() && G.canShow(logInfo.uid) && logInfo.uid != -100) {
             manager.notify(109, notificationBuilder.setOngoing(false)
                     .setCategory(NotificationCompat.CATEGORY_EVENT)
                     .setVisibility(NotificationCompat.VISIBILITY_SECRET)

@@ -44,6 +44,7 @@ import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.UidResolver;
+import dev.ukanth.ufirewall.util.UidCorrelator;
 
 public class LogInfo {
     public String uidString;
@@ -262,9 +263,26 @@ public class LogInfo {
                     return null;
                    //logInfo.uid = 0;
                 } else if(uid == -100) {
-                    appName = ctx.getString(R.string.unknown_item);
-                    logInfo.uid = uid;
-                } else {
+                    // Attempt enhanced UID correlation before giving up
+                    int correlatedUid = UidCorrelator.correlateUid(
+                        logInfo.src, logInfo.dst, logInfo.dpt, logInfo.spt, 
+                        logInfo.proto, System.currentTimeMillis());
+                    
+                    if (correlatedUid != -100) {
+                        // Successfully correlated! Update UID and continue with normal processing
+                        uid = correlatedUid;
+                        logInfo.uid = correlatedUid;
+                        Log.d(Api.TAG, "Enhanced correlation resolved UID " + correlatedUid + 
+                              " for connection to " + logInfo.dst + ":" + logInfo.dpt);
+                    } else {
+                        // Still unknown after correlation attempt
+                        appName = ctx.getString(R.string.unknown_item);
+                        logInfo.uid = uid;
+                    }
+                }
+                
+                // Process the UID (whether original, correlated, or unknown)
+                if (uid != -100) {
                     if (uid < 2000) {
                         appName = Api.getSpecialAppName(uid);
                         if(uid == 1000) {
