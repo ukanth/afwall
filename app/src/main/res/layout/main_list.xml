@@ -160,6 +160,18 @@
             android:text="Last blocked: -"
             android:textSize="12sp"
             android:textColor="?android:attr/textColorSecondary"
+            android:layout_marginBottom="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+
+        <!-- Data Usage Section -->
+        <TextView
+            android:id="@+id/data_usage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data usage: Loading..."
+            android:textSize="12sp"
+            android:textColor="?android:attr/textColorSecondary"
             android:layout_marginBottom="8dp"
             android:ellipsize="end"
             android:maxLines="1"/>

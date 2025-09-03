@@ -35,6 +35,7 @@ import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.DataUsageParser;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -234,6 +235,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             expandedPositions.add(position);
             holder.expandedOptions.setVisibility(View.VISIBLE);
             updateLogStatistics(holder);
+            updateDataUsageStats(holder);
         }
     }
 
@@ -245,10 +247,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         holder.blockedCount = convertView.findViewById(R.id.blocked_count);
         holder.lastActivity = convertView.findViewById(R.id.last_activity);
         holder.lastBlockedDestination = convertView.findViewById(R.id.last_blocked_destination);
+        holder.dataUsage = convertView.findViewById(R.id.data_usage);
 
         if (expandedPositions.contains(position)) {
             holder.expandedOptions.setVisibility(View.VISIBLE);
             updateLogStatistics(holder);
+            updateDataUsageStats(holder);
         } else {
             holder.expandedOptions.setVisibility(View.GONE);
         }
@@ -257,9 +261,18 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         updateLogsIconVisibility(holder);
         applyThemeColors(holder);
 
-        holder.actionToggleLog.setOnClickListener(v -> toggleLogNotification(holder));
-        holder.actionOpenApp.setOnClickListener(v -> openAppSettings(holder));
-        holder.actionViewLogs.setOnClickListener(v -> openFirewallLogs(holder));
+        holder.actionToggleLog.setOnClickListener(v -> {
+            Log.d(TAG, "Notification toggle clicked for UID: " + holder.app.uid);
+            toggleLogNotification(holder);
+        });
+        holder.actionOpenApp.setOnClickListener(v -> {
+            Log.d(TAG, "Open app settings clicked for: " + holder.app.pkgName);
+            openAppSettings(holder);
+        });
+        holder.actionViewLogs.setOnClickListener(v -> {
+            Log.d(TAG, "View logs clicked for UID: " + holder.app.uid);
+            openFirewallLogs(holder);
+        });
     }
 
     private void updateLogNotificationIcon(AppStateHolder holder) {
@@ -269,11 +282,15 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     .where(LogPreference_Table.uid.eq(holder.app.uid)).querySingle();
 
             boolean isDisabled = logPreference != null && logPreference.isDisable();
+            
+            Log.d(TAG, "Updating notification icon for UID " + holder.app.uid + ": disabled=" + isDisabled);
+            
             holder.actionToggleLog.setImageResource(
                 isDisabled ? R.drawable.ic_notifications_off_black_24dp 
                            : R.drawable.ic_notifications_on_black_24dp
             );
         } catch (Exception e) {
+            Log.e(TAG, "Error updating notification icon", e);
             holder.actionToggleLog.setImageResource(R.drawable.ic_notifications_on_black_24dp);
         }
     }
@@ -282,21 +299,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         int iconColor = G.userColor();
         int textColor = G.userColor();
 
-        // Apply color filter to icons
-        Drawable notificationIcon = holder.actionToggleLog.getDrawable();
-        if (notificationIcon != null) {
-            notificationIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-        }
-
-        Drawable openIcon = holder.actionOpenApp.getDrawable();
-        if (openIcon != null) {
-            openIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-        }
-
-        Drawable logsIcon = holder.actionViewLogs.getDrawable();
-        if (logsIcon != null) {
-            logsIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
-        }
+        // Apply color filter to icons using setColorFilter on ImageView, not the Drawable
+        // This preserves click functionality
+        holder.actionToggleLog.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        holder.actionOpenApp.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        holder.actionViewLogs.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
 
         // Apply text colors
         if (holder.blockedCount != null) {
@@ -308,6 +315,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         if (holder.lastBlockedDestination != null) {
             holder.lastBlockedDestination.setTextColor(textColor);
         }
+        if (holder.dataUsage != null) {
+            holder.dataUsage.setTextColor(textColor);
+        }
     }
 
     private void toggleLogNotification(AppStateHolder holder) {
@@ -316,10 +326,16 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     .from(LogPreference.class)
                     .where(LogPreference_Table.uid.eq(holder.app.uid)).querySingle();
 
-            boolean currentState = logPreference != null && logPreference.isDisable();
-            boolean newState = !currentState;
+            // Current state: if logPreference exists and isDisable() is true, notifications are disabled
+            boolean currentlyDisabled = logPreference != null && logPreference.isDisable();
+            
+            // Toggle: if currently disabled, enable (false); if currently enabled, disable (true)
+            boolean newDisabledState = !currentlyDisabled;
 
-            G.updateLogNotification(holder.app.uid, newState);
+            Log.d(TAG, "Toggling log notification for UID " + holder.app.uid + 
+                  ": currently disabled=" + currentlyDisabled + ", new disabled state=" + newDisabledState);
+
+            G.updateLogNotification(holder.app.uid, newDisabledState);
             updateLogNotificationIcon(holder);
             applyThemeColors(holder);
         } catch (Exception e) {
@@ -405,6 +421,34 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             holder.lastActivity.setText("Last activity: -");
             holder.lastBlockedDestination.setText("Last blocked: -");
         }
+    }
+
+    private void updateDataUsageStats(AppStateHolder holder) {
+        // Run in background thread to avoid blocking UI
+        new Thread(() -> {
+            try {
+                DataUsageParser.DataUsageStats stats = DataUsageParser.getDataUsageForUID(holder.app.uid);
+                String dataUsageText = DataUsageParser.formatWifiMobileUsage(stats);
+                
+                // Update UI on main thread
+                if (activity != null) {
+                    activity.runOnUiThread(() -> {
+                        if (holder.dataUsage != null) {
+                            holder.dataUsage.setText("Data: " + dataUsageText);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error updating data usage stats", e);
+                if (activity != null) {
+                    activity.runOnUiThread(() -> {
+                        if (holder.dataUsage != null) {
+                            holder.dataUsage.setText("Data: Not available");
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
     private void StartAppDetailActivityIntent(View v, AppStateHolder holder, Integer id) {
@@ -595,6 +639,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         private TextView blockedCount;
         private TextView lastActivity;
         private TextView lastBlockedDestination;
+        private TextView dataUsage;
     }
 
     /**
