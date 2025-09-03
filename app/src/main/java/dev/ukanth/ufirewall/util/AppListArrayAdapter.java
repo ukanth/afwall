@@ -16,8 +16,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
@@ -25,6 +30,18 @@ import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.activity.AppDetailActivity;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.log.LogPreference;
+import dev.ukanth.ufirewall.log.LogPreference_Table;
+import dev.ukanth.ufirewall.log.LogData;
+import dev.ukanth.ufirewall.log.LogData_Table;
+import dev.ukanth.ufirewall.util.G;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import androidx.core.content.ContextCompat;
 
 public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
@@ -35,6 +52,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
     private final Activity activity;
 
     private boolean useOld = false;
+    private Set<Integer> expandedPositions = new HashSet<>();
 
     //final int color = G.sysColor();
     //final int defaultColor = Color.WHITE;
@@ -140,8 +158,10 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }
 
         final int id = holder.app.uid;
-        holder.icon.setOnClickListener(v -> StartAppDetailActivityIntent(v,holder,id));
-        holder.text.setOnClickListener(v -> StartAppDetailActivityIntent(v,holder,id));
+        final View finalConvertView = convertView;
+        final int finalPosition = position;
+        holder.icon.setOnClickListener(v -> toggleExpansion(finalConvertView, finalPosition));
+        holder.text.setOnClickListener(v -> toggleExpansion(finalConvertView, finalPosition));
 
 
         ApplicationInfo info = holder.app.appinfo;
@@ -199,9 +219,192 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             holder.box_tor = addSupport(holder.box_tor, holder.app, 3);
         }
 
+        setupExpandableView(holder, convertView, position);
         addEventListenter(holder);
 
         return convertView;
+    }
+
+    private void toggleExpansion(View convertView, int position) {
+        AppStateHolder holder = (AppStateHolder) convertView.getTag();
+        if (expandedPositions.contains(position)) {
+            expandedPositions.remove(position);
+            holder.expandedOptions.setVisibility(View.GONE);
+        } else {
+            expandedPositions.add(position);
+            holder.expandedOptions.setVisibility(View.VISIBLE);
+            updateLogStatistics(holder);
+        }
+    }
+
+    private void setupExpandableView(AppStateHolder holder, View convertView, int position) {
+        holder.expandedOptions = convertView.findViewById(R.id.expanded_options);
+        holder.actionToggleLog = convertView.findViewById(R.id.action_toggle_log);
+        holder.actionOpenApp = convertView.findViewById(R.id.action_open_app);
+        holder.actionViewLogs = convertView.findViewById(R.id.action_view_logs);
+        holder.blockedCount = convertView.findViewById(R.id.blocked_count);
+        holder.lastActivity = convertView.findViewById(R.id.last_activity);
+        holder.lastBlockedDestination = convertView.findViewById(R.id.last_blocked_destination);
+
+        if (expandedPositions.contains(position)) {
+            holder.expandedOptions.setVisibility(View.VISIBLE);
+            updateLogStatistics(holder);
+        } else {
+            holder.expandedOptions.setVisibility(View.GONE);
+        }
+
+        updateLogNotificationIcon(holder);
+        updateLogsIconVisibility(holder);
+        applyThemeColors(holder);
+
+        holder.actionToggleLog.setOnClickListener(v -> toggleLogNotification(holder));
+        holder.actionOpenApp.setOnClickListener(v -> openAppSettings(holder));
+        holder.actionViewLogs.setOnClickListener(v -> openFirewallLogs(holder));
+    }
+
+    private void updateLogNotificationIcon(AppStateHolder holder) {
+        try {
+            LogPreference logPreference = SQLite.select()
+                    .from(LogPreference.class)
+                    .where(LogPreference_Table.uid.eq(holder.app.uid)).querySingle();
+
+            boolean isDisabled = logPreference != null && logPreference.isDisable();
+            holder.actionToggleLog.setImageResource(
+                isDisabled ? R.drawable.ic_notifications_off_black_24dp 
+                           : R.drawable.ic_notifications_on_black_24dp
+            );
+        } catch (Exception e) {
+            holder.actionToggleLog.setImageResource(R.drawable.ic_notifications_on_black_24dp);
+        }
+    }
+
+    private void applyThemeColors(AppStateHolder holder) {
+        int iconColor = G.userColor();
+        int textColor = G.userColor();
+
+        // Apply color filter to icons
+        Drawable notificationIcon = holder.actionToggleLog.getDrawable();
+        if (notificationIcon != null) {
+            notificationIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        }
+
+        Drawable openIcon = holder.actionOpenApp.getDrawable();
+        if (openIcon != null) {
+            openIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        }
+
+        Drawable logsIcon = holder.actionViewLogs.getDrawable();
+        if (logsIcon != null) {
+            logsIcon.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        }
+
+        // Apply text colors
+        if (holder.blockedCount != null) {
+            holder.blockedCount.setTextColor(textColor);
+        }
+        if (holder.lastActivity != null) {
+            holder.lastActivity.setTextColor(textColor);
+        }
+        if (holder.lastBlockedDestination != null) {
+            holder.lastBlockedDestination.setTextColor(textColor);
+        }
+    }
+
+    private void toggleLogNotification(AppStateHolder holder) {
+        try {
+            LogPreference logPreference = SQLite.select()
+                    .from(LogPreference.class)
+                    .where(LogPreference_Table.uid.eq(holder.app.uid)).querySingle();
+
+            boolean currentState = logPreference != null && logPreference.isDisable();
+            boolean newState = !currentState;
+
+            G.updateLogNotification(holder.app.uid, newState);
+            updateLogNotificationIcon(holder);
+            applyThemeColors(holder);
+        } catch (Exception e) {
+            Log.e(TAG, "Error toggling log notification", e);
+        }
+    }
+
+    private void openAppSettings(AppStateHolder holder) {
+        if (!holder.app.pkgName.startsWith("dev.afwall.special.")) {
+            Api.showInstalledAppDetails(context, holder.app.pkgName);
+        }
+    }
+
+    private void updateLogsIconVisibility(AppStateHolder holder) {
+        try {
+            // Check if logs exist for this app
+            long logCount = SQLite.selectCountOf()
+                    .from(LogData.class)
+                    .where(LogData_Table.uid.eq(holder.app.uid))
+                    .count();
+
+            holder.actionViewLogs.setVisibility(logCount > 0 ? View.VISIBLE : View.GONE);
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking log availability", e);
+            holder.actionViewLogs.setVisibility(View.GONE);
+        }
+    }
+
+    private void openFirewallLogs(AppStateHolder holder) {
+        try {
+            Intent intent = new Intent(context, dev.ukanth.ufirewall.activity.LogDetailActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("DATA", holder.app.uid);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "Error opening firewall logs", e);
+        }
+    }
+
+    private void updateLogStatistics(AppStateHolder holder) {
+        try {
+            int uid = holder.app.uid;
+            
+            // Get blocked count
+            long blockedCountValue = SQLite.selectCountOf()
+                    .from(LogData.class)
+                    .where(LogData_Table.uid.eq(uid))
+                    .count();
+
+            holder.blockedCount.setText("Blocked: " + blockedCountValue);
+
+            // Get most recent log entry
+            LogData lastLogEntry = SQLite.select()
+                    .from(LogData.class)
+                    .where(LogData_Table.uid.eq(uid))
+                    .orderBy(LogData_Table.timestamp, false)
+                    .querySingle();
+
+            if (lastLogEntry != null) {
+                // Format last activity time
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault());
+                String formattedTime = sdf.format(new Date(lastLogEntry.getTimestamp()));
+                holder.lastActivity.setText("Last: " + formattedTime);
+
+                // Show last blocked destination
+                String destination = lastLogEntry.getDst();
+                if (destination != null && !destination.isEmpty()) {
+                    String hostname = lastLogEntry.getHostname();
+                    String displayDestination = hostname != null && !hostname.isEmpty() ? 
+                            hostname : destination;
+                    holder.lastBlockedDestination.setText("Last blocked: " + displayDestination);
+                } else {
+                    holder.lastBlockedDestination.setText("Last blocked: -");
+                }
+            } else {
+                holder.lastActivity.setText("Last activity: -");
+                holder.lastBlockedDestination.setText("Last blocked: -");
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating log statistics", e);
+            holder.blockedCount.setText("Blocked: -");
+            holder.lastActivity.setText("Last activity: -");
+            holder.lastBlockedDestination.setText("Last blocked: -");
+        }
     }
 
     private void StartAppDetailActivityIntent(View v, AppStateHolder holder, Integer id) {
@@ -385,6 +588,13 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         private TextView text;
         private ImageView icon;
         private PackageInfoData app;
+        private LinearLayout expandedOptions;
+        private ImageView actionToggleLog;
+        private ImageView actionOpenApp;
+        private ImageView actionViewLogs;
+        private TextView blockedCount;
+        private TextView lastActivity;
+        private TextView lastBlockedDestination;
     }
 
     /**

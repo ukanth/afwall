@@ -2,79 +2,172 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:baselineAligned="true"
-    android:orientation="horizontal"
-    android:paddingBottom="5dp"
-    android:paddingTop="5dp" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/itemicon"
-        android:layout_width="32dp"
-        android:layout_height="32dp">
-    </ImageView>
-
-    <CheckBox
-        android:id="@+id/itemcheck_lan"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="0px"
-        android:visibility="gone">
-    </CheckBox>
-
-    <CheckBox
-        android:id="@+id/itemcheck_wifi"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="0px" >
-    </CheckBox>
-
-    <CheckBox
-        android:id="@+id/itemcheck_3g"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="0px" >
-    </CheckBox>
-
-    <CheckBox
-        android:id="@+id/itemcheck_roam"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="0px"
-        android:visibility="gone" >
-    </CheckBox>
-
-    <CheckBox
-        android:id="@+id/itemcheck_vpn"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="0px"
-        android:visibility="gone">
-    </CheckBox>
-
-
-    <CheckBox
-        android:id="@+id/itemcheck_tether"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="0px"
-        android:visibility="gone">
-    </CheckBox>
-
-    <CheckBox
-        android:id="@+id/itemcheck_tor"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:padding="0px"
-        android:visibility="gone">
-    </CheckBox>
-
-    <TextView
-        android:id="@+id/itemtext"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="5dp"
-        android:textIsSelectable="false"
-        >
-    </TextView>
+        android:baselineAligned="true"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
+
+        <ImageView
+            android:id="@+id/itemicon"
+            android:layout_width="32dp"
+            android:layout_height="32dp">
+        </ImageView>
+
+        <CheckBox
+            android:id="@+id/itemcheck_lan"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px"
+            android:visibility="gone">
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_wifi"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px" >
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_3g"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px" >
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_roam"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px"
+            android:visibility="gone" >
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_vpn"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px"
+            android:visibility="gone">
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_tether"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px"
+            android:visibility="gone">
+        </CheckBox>
+
+        <CheckBox
+            android:id="@+id/itemcheck_tor"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:padding="0px"
+            android:visibility="gone">
+        </CheckBox>
+
+        <TextView
+            android:id="@+id/itemtext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:textIsSelectable="false">
+        </TextView>
+    </LinearLayout>
+
+    <!-- Expandable section for additional options -->
+    <LinearLayout
+        android:id="@+id/expanded_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:visibility="gone">
+
+        <!-- Stats Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/blocked_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Blocked: -"
+                android:textSize="12sp"
+                android:textColor="?android:attr/textColorSecondary"/>
+
+            <TextView
+                android:id="@+id/last_activity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Last activity: -"
+                android:textSize="12sp"
+                android:gravity="end"/>
+
+        </LinearLayout>
+
+        <!-- Last blocked destination -->
+        <TextView
+            android:id="@+id/last_blocked_destination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Last blocked: -"
+            android:textSize="12sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+
+        <!-- Action buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start">
+
+            <ImageView
+                android:id="@+id/action_toggle_log"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_notifications_off_black_24dp"
+                android:contentDescription="Toggle log notifications"/>
+
+            <ImageView
+                android:id="@+id/action_open_app"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_open_in_new_black_24dp"
+                android:contentDescription="Open app settings"/>
+
+            <ImageView
+                android:id="@+id/action_view_logs"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_log"
+                android:contentDescription="View firewall logs"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 </LinearLayout>
