@@ -110,7 +110,6 @@ public class RootShellService2 extends Service {
             }
             if (state != null) {
                 //same as last one. ignore it
-                Log.i(TAG, "Start processing next state(6)");
                 if (enableProfiling) {
                     state.startTime = new Date();
                 }
@@ -310,7 +309,6 @@ public class RootShellService2 extends Service {
 
 
     public void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state) {
-        Log.i(TAG, "Received cmds: #" + cmds.size());
         state.setCommmands(cmds);
         state.commandIndex = 0;
         state.retryCount = 0;

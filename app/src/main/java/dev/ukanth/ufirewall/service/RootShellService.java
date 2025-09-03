@@ -110,7 +110,6 @@ public class RootShellService extends Service implements Cloneable {
             }
             if (state != null) {
                 //same as last one. ignore it
-                Log.i(TAG, "Start processing next state(4)");
                 if (enableProfiling) {
                     state.startTime = new Date();
                 }
@@ -148,6 +147,13 @@ public class RootShellService extends Service implements Cloneable {
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
                 try {
+                    // Check if shell is still valid before executing command
+                    if (rootSession == null || !rootSession.isRunning() ) {
+                        rootState = ShellState.FAIL;
+                        complete(state, -1);
+                        return;
+                    }
+                    
                     rootSession.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR)-> {
                         ListIterator<String> iter = output.listIterator();
                         while (iter.hasNext()) {
@@ -162,8 +168,14 @@ public class RootShellService extends Service implements Cloneable {
                         if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
                             //lets wait for few ms before trying ?
                             state.retryCount++;
-                            Log.d(TAG, "command '" + state.lastCommand + "' exited with status " + exitCode +
-                                    ", retrying (attempt " + state.retryCount + "/" + MAX_RETRIES + ")");
+                            
+                            // Add exponential backoff delay for retries
+                            try {
+                                Thread.sleep(100 * state.retryCount);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                            
                             processCommands(state);
                             return;
                         }
@@ -281,11 +293,15 @@ public class RootShellService extends Service implements Cloneable {
     }
 
 
-    private void startShellInBackground() {
+    private synchronized void startShellInBackground() {
         Log.d(TAG, "Starting root shell(4)...");
         setupLogging();
-        //start only rootSession is null
-        if (rootSession == null) {
+        //start only rootSession is null or closed
+        if (rootSession == null || !rootSession.isRunning()) {
+            if (rootSession != null && !rootSession.isRunning()) {
+                rootSession = null;
+            }
+            
             rootSession = new Shell.Builder().
                     useSU().
                     setWatchdogTimeout(5).
@@ -320,7 +336,6 @@ public class RootShellService extends Service implements Cloneable {
 
 
     public void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state) {
-        Log.i(TAG, "Received cmds: #" + cmds.size());
         state.setCommmands(cmds);
         state.commandIndex = 0;
         state.retryCount = 0;
@@ -329,7 +344,6 @@ public class RootShellService extends Service implements Cloneable {
         }
         //already in memory and applied
         //add it to queue
-        Log.d(TAG, "Hashing4...." + state.isv6);
 
         waitQueue.add(state);
 

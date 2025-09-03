@@ -633,11 +633,13 @@ public final class Api {
             }
 
             boolean kernel_checked = uids.contains(SPECIAL_UID_KERNEL);
+            
             if (whitelist) {
                 if (kernel_checked) {
                     // reject any other UIDs, but allow the kernel through
                     // Use fallback rule if owner module is not available
                     if (G.hasOwnerModule()) {
+                        Log.d(TAG, "Adding whitelist kernel rule with owner module for chain " + chain);
                         cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + chain + "-reject");
                     } else {
                         Log.w(TAG, "Owner module not available, using fallback rule for chain " + chain);
@@ -645,7 +647,8 @@ public final class Api {
                     }
                 } else {
                     // kernel is blocked so reject everything
-                    cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    String rejectRule = "-A " + chain + " -j " + chain + "-reject";
+                    cmds.add(rejectRule);
                 }
             } else {
                 if (kernel_checked) {
@@ -678,13 +681,35 @@ public final class Api {
         if (G.enableLogService()) {
             if (G.logTarget().trim().equals("LOG")) {
                 //cmds.add("-A " + chainName  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
-                cmds.add("-A " + chainName + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options");
+                String logRule = "-A " + chainName + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options";
+                Log.d(TAG, "Adding LOG rule to reject chain: " + logRule);
+                cmds.add(logRule);
             } else if (G.logTarget().trim().equals("NFLOG")) {
                 //cmds.add("-A " + chainName + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
-                cmds.add("-A " + chainName + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
+                String nflogRule = "-A " + chainName + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
+                Log.d(TAG, "Adding NFLOG rule to reject chain: " + nflogRule);
+                cmds.add(nflogRule);
             }
         }
-        cmds.add("-A " + chainName + "-reject" + " -j REJECT");
+        String rejectRule = "-A " + chainName + "-reject" + " -j REJECT";
+        Log.d(TAG, "Adding final REJECT rule: " + rejectRule);
+        cmds.add(rejectRule);
+        
+        // Also populate individual reject chains that are used by whitelist mode
+        String[] rejectChainSuffixes = {"-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", 
+                                       "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+        for (String suffix : rejectChainSuffixes) {
+            String individualRejectChain = chainName + suffix;
+            Log.d(TAG, "Populating individual reject chain: " + individualRejectChain);
+            if (G.enableLogService() && G.logTarget().trim().equals("NFLOG")) {
+                String nflogRule = "-A " + individualRejectChain + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
+                Log.d(TAG, "Adding NFLOG to individual reject chain: " + nflogRule);
+                cmds.add(nflogRule);
+            }
+            String individualRejectRule = "-A " + individualRejectChain + " -j REJECT";
+            Log.d(TAG, "Adding REJECT to individual reject chain: " + individualRejectRule);
+            cmds.add(individualRejectRule);
+        }
     }
 
     private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6, String chainName) {
@@ -1077,7 +1102,6 @@ public final class Api {
         }
 
         iptablesCommands(cmds, out, ipv6);
-        Log.i(TAG, "Total # of rules for " + (ipv6 ? "v6": "v4") + " " + cmds.size());
         return true;
     }
 
@@ -1102,8 +1126,9 @@ public final class Api {
         String ipPath = getBinaryPath(G.ctx, ipv6);
 
         String waitTime = "";
-        if(G.ip_path().equals("system") && G.addDelay()) {
-            waitTime = " -w 1";
+        if(G.ip_path().equals("system")) {
+            // Always use wait flag with system iptables to prevent lock contention
+            waitTime = " -w 5";
         }
         boolean firstLit = true;
         for (String s : in) {
@@ -1166,7 +1191,6 @@ public final class Api {
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         synchronized (GLOBAL_STATUS_LOCK) {
             if(!globalStatus) {
-                Log.i(TAG, "Using applySavedIptablesRules");
                 globalStatus = true;
                 
                 try {
@@ -1227,8 +1251,19 @@ public final class Api {
         final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
         final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
-        return new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
-                getListFromPref(savedPkg_3g_uid),
+
+        List<Integer> wifiList = getListFromPref(savedPkg_wifi_uid);
+        List<Integer> dataList = getListFromPref(savedPkg_3g_uid);
+        
+        
+        // Warn if no applications are configured - this means no blocking will occur
+        if (wifiList.isEmpty() && dataList.isEmpty()) {
+            Log.w(TAG, "WARNING: No applications configured for firewall rules - firewall will not block any traffic!");
+            Log.w(TAG, "Please configure applications in AFWall+ main screen and apply rules.");
+        }
+        
+        return new RuleDataSet(wifiList,
+                dataList,
                 getListFromPref(savedPkg_roam_uid),
                 getListFromPref(savedPkg_vpn_uid),
                 getListFromPref(savedPkg_tether_uid),
@@ -1249,7 +1284,6 @@ public final class Api {
             return false;
         }
         try {
-            Log.i(TAG, "Using applySaved4IptablesRules");
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
@@ -1272,7 +1306,6 @@ public final class Api {
             return false;
         }
         try {
-            Log.i(TAG, "Using applySavedIp6tablesRules");
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
             return true;
         } catch (Exception e) {

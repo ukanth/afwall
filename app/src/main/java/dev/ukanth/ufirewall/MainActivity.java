@@ -555,7 +555,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try {
                 Collections.sort(inputList, new PackageComparator());
             } catch (Exception e) {
-                Log.d(Api.TAG, "Exception in filter Sorting");
             }
             ArrayAdapter appAdapter;
             if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
@@ -568,7 +567,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // restore
             this.listview.setSelectionFromTop(index, top);
         } else {
-            Log.d(Api.TAG, "Input list is empty");
         }
     }
 
@@ -1045,7 +1043,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 this.listview.setSelectionFromTop(index, top);
             }
         } catch (Exception e) {
-            Log.d(Api.TAG, "Exception on Sorting");
         }
     }
 
@@ -2387,9 +2384,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Clean up shell instances to prevent interruption crashes
         try {
             // Force close any existing shell instances
-            com.topjohnwu.superuser.Shell.getCachedShell().close();
+            com.topjohnwu.superuser.Shell shell = com.topjohnwu.superuser.Shell.getCachedShell();
+            if (shell != null && !shell.isAlive()) {
+                shell.close();
+            }
         } catch (Exception e) {
-            Log.d(TAG, "Error closing shell during cleanup: " + e.getMessage());
         }
     }
 

@@ -79,8 +79,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static Thread.UncaughtExceptionHandler defaultExceptionHandler;
 
     static {
-        //TODO: Remove this line before release
-        //com.topjohnwu.superuser.Shell.enableVerboseLogging = BuildConfig.DEBUG;
         com.topjohnwu.superuser.Shell.setDefaultBuilder(com.topjohnwu.superuser.Shell.Builder.create()
                 .setFlags(com.topjohnwu.superuser.Shell.FLAG_REDIRECT_STDERR)
                 .setTimeout(30) // 30 second timeout for shell operations
@@ -1174,8 +1172,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public void onActivityPaused(Activity activity) {
         if (activity instanceof MainActivity) {
             isActivityVisible = false;
-            // Proactively clean up shells when main activity is paused
-            // This helps prevent crashes when app is killed from recent apps
             cleanupShellInstances();
         }
     }
@@ -1256,40 +1252,31 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     @Override
     public void onTerminate() {
-        // Clean up shell instances to prevent crashes during app termination
         try {
             com.topjohnwu.superuser.Shell.getCachedShell().close();
-            Log.d(TAG, "Shell instances cleaned up during app termination");
         } catch (Exception e) {
-            Log.d(TAG, "Error cleaning up shells during termination: " + e.getMessage());
         }
         super.onTerminate();
     }
 
     @Override
     public void onLowMemory() {
-        // Also clean up on low memory conditions
         try {
             com.topjohnwu.superuser.Shell.getCachedShell().close();
-            Log.d(TAG, "Shell instances cleaned up due to low memory");
         } catch (Exception e) {
-            Log.d(TAG, "Error cleaning up shells during low memory: " + e.getMessage());
         }
         super.onLowMemory();
     }
 
-    /**
-     * Proactively clean up shell instances to prevent crashes during app termination
-     */
     private static void cleanupShellInstances() {
         new Thread(() -> {
             try {
-                Log.d(TAG, "Proactively cleaning up shell instances");
-                com.topjohnwu.superuser.Shell.getCachedShell().close();
-                // Give some time for cleanup
+                com.topjohnwu.superuser.Shell shell = com.topjohnwu.superuser.Shell.getCachedShell();
+                if (shell != null && !shell.isAlive()) {
+                    shell.close();
+                }
                 Thread.sleep(100);
             } catch (Exception e) {
-                Log.d(TAG, "Error during proactive shell cleanup: " + e.getMessage());
             }
         }).start();
     }

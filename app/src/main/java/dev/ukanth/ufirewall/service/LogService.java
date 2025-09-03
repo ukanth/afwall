@@ -134,25 +134,21 @@ public class LogService extends Service {
     private String getBestLogCommand() {
         // Method 1: Try dmesg with follow and grep (most efficient for iptables logs)
         if (isCommandAvailable("dmesg --follow")) {
-            Log.i(TAG, "Using dmesg --follow with grep filtering");
             return "dmesg --follow | grep '{AFL}'";
         }
         
         // Method 2: Try dmesg with tail simulation (good fallback)
         if (isCommandAvailable("dmesg") && isCommandAvailable("tail")) {
-            Log.i(TAG, "Using dmesg with tail simulation");
             return "while true; do dmesg | grep '{AFL}' | tail -n +$(( $(wc -l < /tmp/afwall_lastline 2>/dev/null || echo 0) + 1 )); dmesg | wc -l > /tmp/afwall_lastline; sleep 1; done";
         }
         
         // Method 3: Try logcat kernel logs (Android 7+)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isCommandAvailable("logcat")) {
-            Log.i(TAG, "Using logcat for kernel logs");
             return "logcat -s kernel:* | grep '{AFL}'";
         }
         
         // Method 4: Try journalctl if available (some Android variants)
         if (isCommandAvailable("journalctl")) {
-            Log.i(TAG, "Using journalctl for kernel logs");  
             return "journalctl -k -f | grep '{AFL}'";
         }
         
@@ -172,7 +168,6 @@ public class LogService extends Service {
             Shell.Result result = Shell.cmd("which " + testCommand + " || command -v " + testCommand).exec();
             return result.isSuccess() && !result.getOut().isEmpty();
         } catch (Exception e) {
-            Log.d(TAG, "Failed to test command availability: " + command);
             return false;
         }
     }
@@ -211,13 +206,11 @@ public class LogService extends Service {
                     public void onAddElement(String line) {
                         // Handle device suspend/resume scenarios
                         if(line.contains("suspend exit") || line.contains("PM: suspend exit")) {
-                            Log.d(TAG, "Device resumed from suspend, restarting log watcher");
                             restartWatcher(logPath);
                         }
                         
                         // Handle log rotation or kernel ring buffer wrap
                         if(line.contains("log_buf_len") || line.contains("Buffer wrap")) {
-                            Log.d(TAG, "Kernel log buffer wrapped, restarting watcher");
                             restartWatcher(logPath);
                         }
 
@@ -241,7 +234,6 @@ public class LogService extends Service {
 
     private void restartWatcher(String logPath) {
         if (isShuttingDown) {
-            Log.d(TAG, "Service is shutting down, not restarting log watcher");
             return;
         }
         
@@ -510,7 +502,6 @@ public class LogService extends Service {
      */
     private void tryFallbackLogMethod() {
         if (isShuttingDown) {
-            Log.d(TAG, "Service is shutting down, not trying fallback method");
             return;
         }
         
@@ -656,7 +647,6 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "Log service onDestroy");
         
         // Set shutdown flag to prevent new tasks from starting
         isShuttingDown = true;
@@ -700,7 +690,6 @@ public class LogService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
-        Log.d(TAG, "Log service task removed");
 
         // Restart service if log service is still enabled
         if (G.enableLogService()) {
@@ -711,7 +700,7 @@ public class LogService extends Service {
         }
         
         // Clean up resources gracefully
-        if(logWatcherShell != null) {
+        if(logWatcherShell != null && !logWatcherShell.isAlive()) {
             try {
                 logWatcherShell.close();
             } catch (Exception e) {
