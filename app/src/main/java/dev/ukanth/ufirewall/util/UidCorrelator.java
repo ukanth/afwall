@@ -13,6 +13,7 @@ import com.topjohnwu.superuser.Shell;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -265,7 +266,12 @@ public class UidCorrelator {
     
     private static void cleanupOldRecentConnections(long now) {
         // Remove entries older than correlation window
-        recentConnections.entrySet().removeIf(entry -> 
-            now - lastRefresh > CORRELATION_WINDOW);
+        Iterator<Map.Entry<String, Integer>> iterator = recentConnections.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Integer> entry = iterator.next();
+            if (now - lastRefresh > CORRELATION_WINDOW) {
+                iterator.remove();
+            }
+        }
     }
 }
