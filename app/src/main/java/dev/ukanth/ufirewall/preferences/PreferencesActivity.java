@@ -250,13 +250,17 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     @Override
     protected boolean isValidFragment(String fragmentName) {
+        // Prevent fragment injection attacks by explicitly allowing only known safe fragments
+        if (fragmentName == null) {
+            return false;
+        }
+        
         return UIPreferenceFragment.class.getName().equals(fragmentName)
                 || ThemePreferenceFragment.class.getName().equals(fragmentName)
                 || RulesPreferenceFragment.class.getName().equals(fragmentName)
                 || LogPreferenceFragment.class.getName().equals(fragmentName)
                 || ExpPreferenceFragment.class.getName().equals(fragmentName)
-                || CustomBinaryPreferenceFragment.class.getName().equals(
-                fragmentName)
+                || CustomBinaryPreferenceFragment.class.getName().equals(fragmentName)
                 || SecPreferenceFragment.class.getName().equals(fragmentName)
                 || MultiProfilePreferenceFragment.class.getName().equals(fragmentName)
                 || WidgetPreferenceFragment.class.getName().equals(fragmentName)
