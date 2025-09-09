@@ -142,6 +142,9 @@ jobs:
         /* Cross-compilation fix: off_t size check disabled for all architectures */' include/libbb.h
           echo "Applied cross-compilation fix for ${{ matrix.arch }}"
         fi
+        
+        # Fix FAST_FUNC calling convention issue for Android/clang
+        sed -i 's/__attribute__((regparm(3),stdcall))/__attribute__((regparm(3)))/g' include/platform.h
 
     - name: Build Busybox
       run: |
@@ -370,9 +373,13 @@ jobs:
       run: |
         cd external/nflog
         
+        # Fix missing UDP header for Android
+        sed -i '1i#include <linux/udp.h>' nflog.c
+        
         # Compile nflog using Android NDK
         ${NDK_CC} -static \
           -I. -Ilibmnl \
+          -D_GNU_SOURCE \
           -o nflog_${{ matrix.arch }} \
           nflog.c attr.c callback.c nlmsg.c socket.c
         
