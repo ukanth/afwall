@@ -261,7 +261,7 @@ jobs:
         # Set Android NDK cross-compilation environment
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -DHAVE_POSIX_SPAWN=0"
         export LDFLAGS="-static"
         export PKG_CONFIG_PATH=""
         
@@ -282,7 +282,7 @@ jobs:
         
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -DHAVE_POSIX_SPAWN=0"
         export LDFLAGS="-static"
         
         # Build
