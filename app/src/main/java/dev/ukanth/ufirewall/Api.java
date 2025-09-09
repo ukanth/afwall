@@ -2253,14 +2253,44 @@ public final class Api {
 
     private static boolean installBinary(Context ctx, int resId, String filename) {
         try {
-            File f = new File(ctx.getDir("bin", 0), filename);
+            File binDir = ctx.getDir("bin", 0);
+            File f = new File(binDir, filename);
+            
+            Log.d(TAG, "Installing binary: " + filename + " to " + f.getAbsolutePath());
+            
             if (f.exists()) {
-                f.delete();
+                Log.d(TAG, "Removing existing binary: " + filename);
+                if (!f.delete()) {
+                    Log.w(TAG, "Failed to delete existing binary: " + filename);
+                }
             }
+            
             copyRawFile(ctx, resId, f, "0755");
+            
+            // Verify the binary was installed correctly
+            if (!f.exists()) {
+                Log.e(TAG, "Binary installation failed - file does not exist: " + filename);
+                return false;
+            }
+            
+            if (!f.canExecute()) {
+                Log.w(TAG, "Binary installed but not executable: " + filename);
+                // Try to fix permissions manually
+                try {
+                    f.setExecutable(true, false);
+                    Log.d(TAG, "Fixed permissions for: " + filename);
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to fix permissions for: " + filename + " - " + e.getMessage());
+                }
+            }
+            
+            Log.d(TAG, "Successfully installed binary: " + filename + 
+                  " (size: " + f.length() + " bytes, executable: " + f.canExecute() + ")");
             return true;
+            
         } catch (Exception e) {
-            Log.e(TAG, "installBinary failed: " + e.getLocalizedMessage());
+            Log.e(TAG, "installBinary failed for " + filename + ": " + e.getClass().getSimpleName() + 
+                  " - " + e.getLocalizedMessage(), e);
             return false;
         }
     }
@@ -2291,7 +2321,7 @@ public final class Api {
         }
     }
 
-    private static boolean installBinariesX86() {
+    private static boolean installBinariesX86(Context ctx) {
         if (!installBinary(ctx, R.raw.busybox_x86, "busybox")) return false;
         if (!installBinary(ctx, R.raw.iptables_x86, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_x86, "ip6tables")) return false;
@@ -2302,18 +2332,8 @@ public final class Api {
         return true;
     }
 
-    private static boolean installBinariesMips() {
-        if (!installBinary(ctx, R.raw.busybox_mips, "busybox")) return false;
-        if (!installBinary(ctx, R.raw.iptables_mips, "iptables")) return false;
-        if (!installBinary(ctx, R.raw.ip6tables_mips, "ip6tables")) return false;
-        if (!installBinary(ctx, R.raw.nflog_mips, "nflog")) return false;
-        if (!installBinary(ctx, R.raw.run_pie_mips, "run_pie")) return false;
-        
-        
-        return true;
-    }
 
-    private static boolean installBinariesArm64() {
+    private static boolean installBinariesArm64(Context ctx) {
         if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
         if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
@@ -2324,7 +2344,7 @@ public final class Api {
         return true;
     }
 
-    private static boolean installBinariesArm() {
+    private static boolean installBinariesArm(Context ctx) {
         if (!installBinary(ctx, R.raw.busybox_arm, "busybox")) return false;
         if (!installBinary(ctx, R.raw.iptables_arm, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_arm, "ip6tables")) return false;
@@ -2335,19 +2355,17 @@ public final class Api {
         return true;
     }
 
-    private static boolean installBinariesForAbi(String abi) {
+    private static boolean installBinariesForAbi(Context ctx, String abi) {
         if (abi.startsWith("x86")) {
-            return installBinariesX86();
-        } else if (abi.startsWith("mips")) {
-            return installBinariesMips();
+            return installBinariesX86(ctx);
         } else if (abi.startsWith("arm64")) {
-            return installBinariesArm64();
+            return installBinariesArm64(ctx);
         } else {
-            return installBinariesArm();
+            return installBinariesArm(ctx);
         }
     }
 
-    private static int getPackageVersion() {
+    private static int getPackageVersion(Context ctx) {
         try {
             return ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
         } catch (NameNotFoundException e) {
@@ -2373,18 +2391,22 @@ public final class Api {
      */
     public static boolean assertBinaries(Context ctx, boolean showErrors) {
 
-        int currentVer = getPackageVersion();
+        int currentVer = getPackageVersion(ctx);
 
         if (G.appVersion() == currentVer) {
-            // The version hasn't changed: Use the previously installed binaries.
-            return true;
+            // The version hasn't changed: Check if binaries are still functional
+            if (verifyBinaries(ctx)) {
+                return true;
+            } else {
+                Log.w(TAG, "Binaries verification failed, forcing reinstallation");
+            }
         }
 
         String abi = getAbi();
 
         Log.d(TAG, "Installing binaries for " + abi + "...");
 
-        if (!installBinariesForAbi(abi))
+        if (!installBinariesForAbi(ctx, abi))
         {
             Log.e(TAG, "Installation of the binaries for " + abi + " failed!");
             toast(ctx, ctx.getString(R.string.error_binary), Toast.LENGTH_LONG);
@@ -2404,6 +2426,84 @@ public final class Api {
 
         G.appVersion(currentVer); // This indicates that the installation of the binaries for this version was successful.
 
+        return true;
+    }
+
+    /**
+     * Force reinstallation of binaries regardless of version
+     *
+     * @param ctx Context
+     * @param showErrors indicates if errors should be alerted
+     * @return true if installation successful
+     */
+    public static boolean forceReinstallBinaries(Context ctx, boolean showErrors) {
+        Log.i(TAG, "Forcing binary reinstallation...");
+        
+        // Clear the version to force reinstallation
+        G.appVersion(-1);
+        
+        return assertBinaries(ctx, showErrors);
+    }
+
+    /**
+     * Verify that installed binaries are functional
+     *
+     * @param ctx Context
+     * @return true if binaries are functional, false if they need reinstallation
+     */
+    private static boolean verifyBinaries(Context ctx) {
+        String dir = ctx.getDir("bin", 0).getAbsolutePath();
+        
+        // Check if busybox exists and is executable
+        File busybox = new File(dir, "busybox");
+        if (!busybox.exists() || !busybox.canExecute()) {
+            Log.w(TAG, "Busybox binary missing or not executable");
+            return false;
+        }
+        
+        // Test busybox functionality by running a simple command
+        try {
+            ProcessBuilder pb = new ProcessBuilder(busybox.getAbsolutePath(), "echo", "test");
+            pb.environment().clear();
+            Process process = pb.start();
+            int exitCode = process.waitFor();
+            
+            if (exitCode != 0) {
+                Log.w(TAG, "Busybox test command failed with exit code: " + exitCode);
+                return false;
+            }
+            
+            // Read and verify output
+            java.util.Scanner scanner = new java.util.Scanner(process.getInputStream());
+            if (scanner.hasNextLine()) {
+                String output = scanner.nextLine().trim();
+                scanner.close();
+                if (!"test".equals(output)) {
+                    Log.w(TAG, "Busybox test output unexpected: " + output);
+                    return false;
+                }
+            } else {
+                scanner.close();
+                Log.w(TAG, "Busybox test produced no output");
+                return false;
+            }
+            
+        } catch (Exception e) {
+            Log.w(TAG, "Busybox verification failed: " + e.getMessage());
+            return false;
+        }
+        
+        // Check other critical binaries exist
+        String[] requiredBinaries = {"iptables", "ip6tables"};
+        for (String binary : requiredBinaries) {
+            File binaryFile = new File(dir, binary);
+            if (!binaryFile.exists() || !binaryFile.canExecute()) {
+                Log.w(TAG, "Required binary missing or not executable: " + binary);
+                return false;
+            }
+        }
+        
+        Log.d(TAG, "Binary verification successful");
         return true;
     }
 
