@@ -150,8 +150,8 @@ jobs:
         # Remove busybox's strchrnul declaration since Android provides it
         sed -i '/extern char \*strchrnul.*FAST_FUNC;/d' include/platform.h
         
-        # Remove strchrnul function entirely from platform.c  
-        sed -i '/^char FAST_FUNC \*strchrnul/,/return (char\*)s;/d' libbb/platform.c
+        # Remove strchrnul function entirely from platform.c using a more robust pattern
+        sed -i '/char\* FAST_FUNC strchrnul/,/^}/d' libbb/platform.c
 
     - name: Build Busybox
       run: |
@@ -382,30 +382,15 @@ jobs:
       run: |
         cd external/nflog
         
-        # Fix missing UDP header for Android - define struct udphdr if not available
-        cat > udp_fix.h << 'EOF'
-        #ifndef UDPHDR_DEFINED
-        #define UDPHDR_DEFINED
-        struct udphdr {
-            __u16 source;
-            __u16 dest;
-            __u16 len;
-            __u16 check;
-        };
-        #endif
-        EOF
-        sed -i '1i#include "udp_fix.h"' nflog.c
-        
-        # Compile nflog using Android NDK
-        ${NDK_CC} -static \
+        # Use original build method (not NDK) - this was working before
+        gcc -static \
           -I. -Ilibmnl \
-          -D_GNU_SOURCE \
           -o nflog_${{ matrix.arch }} \
           nflog.c attr.c callback.c nlmsg.c socket.c
         
-        # Verify and strip
+        # Verify the binary
         file nflog_${{ matrix.arch }}
-        ${NDK_STRIP} nflog_${{ matrix.arch }}
+        strip nflog_${{ matrix.arch }}
         ls -la nflog_${{ matrix.arch }}
 
     - name: Upload nflog artifact
