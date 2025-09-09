@@ -149,6 +149,9 @@ jobs:
         
         # Remove busybox's strchrnul declaration since Android provides it
         sed -i '/extern char \*strchrnul.*FAST_FUNC;/d' include/platform.h
+        
+        # Also remove strchrnul definition from platform.c
+        sed -i '/^char FAST_FUNC \*strchrnul/,/^}/d' libbb/platform.c
 
     - name: Build Busybox
       run: |
