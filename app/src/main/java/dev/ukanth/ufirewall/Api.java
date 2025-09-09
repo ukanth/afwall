@@ -334,6 +334,19 @@ public final class Api {
         String ip_path = G.ip_path();
         String binaryName = setv6 ? "ip6tables" : "iptables";
         
+        // If built-in binaries have previously failed with exit 126, prefer system binaries
+        if (G.isBuiltinIptablesFailed() && !ip_path.equals("builtin")) {
+            Log.i(TAG, "Built-in iptables previously failed, preferring system binary for " + binaryName);
+            String systemBinaryPath = findSystemBinary(binaryName);
+            if (systemBinaryPath != null) {
+                if (Api.bbPath == null) {
+                    Api.bbPath = getBusyBoxPath(ctx, true);
+                }
+                return systemBinaryPath;
+            }
+            Log.w(TAG, "System binary " + binaryName + " not found despite previous built-in failure");
+        }
+        
         // First priority: check system binary if preference is "system" or "auto"
         if (ip_path.equals("system") || ip_path.equals("auto")) {
             String systemBinaryPath = findSystemBinary(binaryName);
@@ -386,7 +399,7 @@ public final class Api {
      * @param binaryName the name of the binary to find
      * @return full path to the binary if found, null otherwise
      */
-    private static String findSystemBinary(String binaryName) {
+    public static String findSystemBinary(String binaryName) {
         // Common paths where system iptables/ip6tables binaries are located
         String[] systemPaths = {
             "/system/bin/" + binaryName,
@@ -457,7 +470,14 @@ public final class Api {
         }
         
         // Fallback: return built-in path even if it doesn't exist yet (may be installed later)
-        Log.w(TAG, "Built-in busybox not found at " + builtinPath + ", returning path anyway");
+        if (!builtinFile.exists()) {
+            Log.w(TAG, "Built-in busybox not found at " + builtinPath + ", returning path anyway");
+        } else {
+            Log.w(TAG, "Built-in busybox exists but not executable at " + builtinPath + ", permissions: " + 
+                  (builtinFile.canRead() ? "R" : "-") + 
+                  (builtinFile.canWrite() ? "W" : "-") + 
+                  (builtinFile.canExecute() ? "X" : "-"));
+        }
         return builtinPath + " ";
     }
 
@@ -1674,48 +1694,39 @@ public final class Api {
      * @param callback Callback for completion status
      */
     public static void runIfconfig(Context ctx, RootCommand callback) {
-        // Android 16+ fallback: try system ifconfig first, then busybox
-        if (Build.VERSION.SDK_INT >= 36) { // Android 16+
-            callback.run(ctx, "ifconfig -a || " + getBusyBoxPath(ctx, true) + " ifconfig -a");
-        } else {
-            callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
-        }
+        // Try system ifconfig first, then busybox for all versions
+        callback.run(ctx, "ifconfig -a || " + getBusyBoxPath(ctx, true) + " ifconfig -a");
     }
 
     public static void runNetworkInterface(Context ctx, RootCommand callback) {
-        // Android 16+ fallback: try multiple methods for network interface detection
-        if (Build.VERSION.SDK_INT >= 36) { // Android 16+
-            // First try Android API method as fallback
-            try {
-                StringBuilder result = new StringBuilder();
-                java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
-                while (interfaces.hasMoreElements()) {
-                    java.net.NetworkInterface networkInterface = interfaces.nextElement();
-                    result.append(networkInterface.getName()).append("\n");
-                }
-                if (result.length() > 0) {
-                    // Create a mock RootCommand with API results
-                    RootCommand apiResult = new RootCommand();
-                    apiResult.res = result;
-                    apiResult.exitCode = 0;
-                    apiResult.done = true;
-                    if (callback.cb != null) {
-                        callback.cb.cbFunc(apiResult);
-                    }
-                    return;
-                }
-            } catch (Exception e) {
-                Log.d(TAG, "Android API network interface detection failed: " + e.getMessage());
+        // Try Android API method first for all versions
+        try {
+            StringBuilder result = new StringBuilder();
+            java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                java.net.NetworkInterface networkInterface = interfaces.nextElement();
+                result.append(networkInterface.getName()).append("\n");
             }
-            
-            // Fallback to shell commands
-            String cmd = "ls /sys/class/net 2>/dev/null || " + 
-                        getBusyBoxPath(ctx, true) + " ls /sys/class/net 2>/dev/null || " +
-                        "ip link show 2>/dev/null";
-            callback.run(ctx, cmd);
-        } else {
-            callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
+            if (result.length() > 0) {
+                // Create a mock RootCommand with API results
+                RootCommand apiResult = new RootCommand();
+                apiResult.res = result;
+                apiResult.exitCode = 0;
+                apiResult.done = true;
+                if (callback.cb != null) {
+                    callback.cb.cbFunc(apiResult);
+                }
+                return;
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Android API network interface detection failed: " + e.getMessage());
         }
+        
+        // Fallback to shell commands with multiple options
+        String cmd = "ls /sys/class/net 2>/dev/null || " + 
+                    getBusyBoxPath(ctx, true) + " ls /sys/class/net 2>/dev/null || " +
+                    "ip link show 2>/dev/null";
+        callback.run(ctx, cmd);
     }
 
 

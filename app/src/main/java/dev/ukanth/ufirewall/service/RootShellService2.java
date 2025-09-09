@@ -156,6 +156,16 @@ public class RootShellService2 extends Service {
                                         state.lastCommandResult.append(line).append("\n");
                                     }
                                 }
+                                // Special handling for exit code 126 (command not executable) - fallback to system iptables
+                                if (exitCode == 126 && shouldFallbackToSystem(state)) {
+                                    Log.w(TAG, "Built-in iptables failed with exit 126, attempting fallback to system iptables");
+                                    // Remember that built-in iptables failed for future preference
+                                    G.setBuiltinIptablesFailed(true);
+                                    fallbackToSystemBinary(state);
+                                    processCommands(state);
+                                    return;
+                                }
+                                
                                 if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
                                     //lets wait for few ms before trying ?
                                     state.retryCount++;
@@ -344,6 +354,61 @@ public class RootShellService2 extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+    
+    /**
+     * Check if fallback to system binary should be attempted for exit code 126
+     * Only fallback once per command to avoid infinite loops
+     */
+    private boolean shouldFallbackToSystem(RootCommand state) {
+        if (state.lastCommand == null) {
+            return false;
+        }
+        
+        // Check if command contains built-in iptables path and hasn't been fallback attempted
+        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        return state.lastCommand.contains(builtinDir) && 
+               !state.lastCommand.contains("__FALLBACK_ATTEMPTED__");
+    }
+    
+    /**
+     * Replace built-in iptables/ip6tables paths with system paths in the current command
+     */
+    private void fallbackToSystemBinary(RootCommand state) {
+        if (state.lastCommand == null) {
+            return;
+        }
+        
+        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        String originalCommand = state.lastCommand;
+        
+        // Try to find system iptables
+        String systemIptables = Api.findSystemBinary("iptables");
+        String systemIp6tables = Api.findSystemBinary("ip6tables");
+        
+        if (systemIptables != null || systemIp6tables != null) {
+            String updatedCommand = originalCommand;
+            
+            // Replace built-in paths with system paths
+            if (systemIptables != null) {
+                updatedCommand = updatedCommand.replace(builtinDir + "/iptables", systemIptables);
+            }
+            if (systemIp6tables != null) {
+                updatedCommand = updatedCommand.replace(builtinDir + "/ip6tables", systemIp6tables);
+            }
+            
+            // Mark as fallback attempted to prevent infinite loops
+            updatedCommand += " # __FALLBACK_ATTEMPTED__";
+            
+            // Update the command in the current state
+            List<String> commands = state.getCommmands();
+            if (state.commandIndex < commands.size()) {
+                commands.set(state.commandIndex, updatedCommand);
+                Log.i(TAG, "Fallback applied: " + originalCommand + " -> " + updatedCommand);
+            }
+        } else {
+            Log.w(TAG, "No system iptables found for fallback");
+        }
     }
 
     public enum ShellState2 {
