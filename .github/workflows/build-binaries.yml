@@ -261,7 +261,7 @@ jobs:
         # Set Android NDK cross-compilation environment
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -DNO_SYSLOG"
         export LDFLAGS="-static"
         export PKG_CONFIG_PATH=""
         
@@ -274,7 +274,8 @@ jobs:
           --disable-bpf-compiler \
           --disable-connlabel \
           --disable-devel \
-          --with-kernel=/usr/include
+          --with-kernel=/usr/include \
+          --disable-libipq
 
     - name: Build iptables
       run: |
@@ -282,7 +283,7 @@ jobs:
         
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -DNO_SYSLOG"
         export LDFLAGS="-static"
         
         # Build
