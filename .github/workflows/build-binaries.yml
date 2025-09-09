@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [arm, arm64, mips, x86]
+        arch: [arm, arm64, x86]
         include:
           - arch: arm
             target: arm-linux-gnueabihf
@@ -33,10 +33,6 @@ jobs:
             target: aarch64-linux-gnu
             cc: aarch64-linux-gnu-gcc
             strip: aarch64-linux-gnu-strip
-          - arch: mips
-            target: mips-linux-gnu
-            cc: mips-linux-gnu-gcc
-            strip: mips-linux-gnu-strip
           - arch: x86
             target: i686-linux-gnu
             cc: i686-linux-gnu-gcc
@@ -79,11 +75,6 @@ jobs:
             echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=i686-linux-android" >> $GITHUB_ENV
-            ;;
-          mips)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
-            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
-            echo "NDK_TARGET=mips-linux-android" >> $GITHUB_ENV
             ;;
         esac
 
@@ -183,7 +174,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [arm, arm64, mips, x86]
+        arch: [arm, arm64, x86]
         include:
           - arch: arm
             target: arm-linux-gnueabihf
@@ -195,11 +186,6 @@ jobs:
             cc: aarch64-linux-gnu-gcc
             strip: aarch64-linux-gnu-strip
             configure_host: aarch64-linux-gnu
-          - arch: mips
-            target: mips-linux-gnu
-            cc: mips-linux-gnu-gcc
-            strip: mips-linux-gnu-strip
-            configure_host: mips-linux-gnu
           - arch: x86
             target: i686-linux-gnu
             cc: i686-linux-gnu-gcc
@@ -247,11 +233,6 @@ jobs:
             echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=i686-linux-android" >> $GITHUB_ENV
-            ;;
-          mips)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
-            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
-            echo "NDK_TARGET=mips-linux-android" >> $GITHUB_ENV
             ;;
         esac
 
@@ -338,7 +319,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [arm, arm64, mips, x86]
+        arch: [arm, arm64, x86]
 
     steps:
     - name: Checkout repository
@@ -376,10 +357,6 @@ jobs:
             echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
-          mips)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
-            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
-            ;;
         esac
 
     - name: Build nflog from AFWall+ source
@@ -408,7 +385,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [arm, arm64, mips, x86]
+        arch: [arm, arm64, x86]
 
     steps:
     - name: Checkout repository
@@ -443,10 +420,6 @@ jobs:
             ;;
           x86)
             echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
-            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
-            ;;
-          mips)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
         esac
@@ -488,7 +461,7 @@ jobs:
         # Create binaries directory for testing (separate from res/raw)
         mkdir -p binaries
         
-        for arch in arm arm64 mips x86; do
+        for arch in arm arm64 x86; do
           # Busybox
           if [ -f "artifacts/busybox-${arch}/busybox_${arch}" ]; then
             cp "artifacts/busybox-${arch}/busybox_${arch}" "binaries/"
@@ -541,7 +514,7 @@ jobs:
             echo "No new binaries to commit"
           else
             # Create commit message
-            git commit -m "Update cross-compiled binaries - busybox v${{ github.event.inputs.busybox_version || '1.36.1' }}, iptables v${{ github.event.inputs.iptables_version || '1.8.10' }} for arm/arm64/mips/x86. Ready for testing in /binaries directory."
+            git commit -m "Update cross-compiled binaries - busybox v${{ github.event.inputs.busybox_version || '1.36.1' }}, iptables v${{ github.event.inputs.iptables_version || '1.8.10' }} for arm/arm64/x86. Ready for testing in /binaries directory."
             
             # Push changes back to repository
             git push
@@ -568,11 +541,11 @@ jobs:
         name: AFWall+ Cross-compiled Binaries ${{ github.event.inputs.release_tag }}
         body: |
           Cross-compiled binaries for AFWall+:
-          - busybox (arm, arm64, mips, x86)
-          - iptables (arm, arm64, mips, x86) 
-          - ip6tables (arm, arm64, mips, x86)
-          - nflog (arm, arm64, mips, x86)
-          - run_pie (arm, arm64, mips, x86)
+          - busybox (arm, arm64, x86)
+          - iptables (arm, arm64, x86) 
+          - ip6tables (arm, arm64, x86)
+          - nflog (arm, arm64, x86)
+          - run_pie (arm, arm64, x86)
           
           Built from commit: ${{ github.sha }}
         files: binaries/*
