@@ -261,7 +261,7 @@ jobs:
         # Set Android NDK cross-compilation environment
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -DNO_SYSLOG"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option"
         export LDFLAGS="-static"
         export PKG_CONFIG_PATH=""
         
@@ -283,8 +283,11 @@ jobs:
         
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -DNO_SYSLOG"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option"
         export LDFLAGS="-static"
+        
+        # Remove problematic LOG extension before building
+        rm -f extensions/libxt_LOG.c
         
         # Build
         make -j$(nproc) V=1
