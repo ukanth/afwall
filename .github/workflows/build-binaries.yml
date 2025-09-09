@@ -130,6 +130,7 @@ jobs:
         CONFIG_IP6TABLES=y
         CONFIG_FEATURE_PREFER_APPLETS=n
         CONFIG_FEATURE_SH_STANDALONE=y
+        CONFIG_EXTRA_CFLAGS="-DHAVE_STRCHRNUL"
         EOF
         
         # Apply minimal config (use yes to answer all prompts with default)
@@ -150,12 +151,13 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Build with Android NDK
+        # Build with Android NDK (add strchrnul fix to CFLAGS and EXTRA_CFLAGS)
         make ARCH=${{ matrix.arch }} \
              CC="${NDK_CC}" \
              HOSTCC=gcc \
              HOSTCXX=g++ \
              CFLAGS="-static -DHAVE_STRCHRNUL" \
+             EXTRA_CFLAGS="-DHAVE_STRCHRNUL" \
              LDFLAGS="-static" \
              -j$(nproc)
         
