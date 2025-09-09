@@ -146,6 +146,9 @@ jobs:
         
         # Fix FAST_FUNC calling convention issue for Android/clang
         sed -i 's/__attribute__((regparm(3),stdcall))/__attribute__((regparm(3)))/g' include/platform.h
+        
+        # Remove busybox's strchrnul declaration since Android provides it
+        sed -i '/extern char \*strchrnul.*FAST_FUNC;/d' include/platform.h
 
     - name: Build Busybox
       run: |
