@@ -62,17 +62,17 @@ jobs:
         # Set up NDK toolchain paths
         case "${{ matrix.arch }}" in
           arm64)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=aarch64-linux-android" >> $GITHUB_ENV
             ;;
           arm)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=armv7a-linux-androideabi" >> $GITHUB_ENV
             ;;
           x86)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=i686-linux-android" >> $GITHUB_ENV
             ;;
@@ -220,17 +220,17 @@ jobs:
         # Set up NDK toolchain paths
         case "${{ matrix.arch }}" in
           arm64)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=aarch64-linux-android" >> $GITHUB_ENV
             ;;
           arm)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=armv7a-linux-androideabi" >> $GITHUB_ENV
             ;;
           x86)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             echo "NDK_TARGET=i686-linux-android" >> $GITHUB_ENV
             ;;
@@ -261,7 +261,7 @@ jobs:
         # Set Android NDK cross-compilation environment
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -DHAVE_POSIX_SPAWN=0"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE"
         export LDFLAGS="-static"
         export PKG_CONFIG_PATH=""
         
@@ -282,7 +282,7 @@ jobs:
         
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -DHAVE_POSIX_SPAWN=0"
+        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE"
         export LDFLAGS="-static"
         
         # Build
@@ -346,15 +346,15 @@ jobs:
         # Set up NDK toolchain paths
         case "${{ matrix.arch }}" in
           arm64)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
           arm)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
           x86)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
         esac
@@ -411,15 +411,15 @@ jobs:
         # Set up NDK toolchain paths
         case "${{ matrix.arch }}" in
           arm64)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
           arm)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
           x86)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
             ;;
         esac
