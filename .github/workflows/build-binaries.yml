@@ -381,16 +381,16 @@ jobs:
         
         # Fix missing UDP header for Android - define struct udphdr if not available
         cat > udp_fix.h << 'EOF'
-#ifndef UDPHDR_DEFINED
-#define UDPHDR_DEFINED
-struct udphdr {
-    __u16 source;
-    __u16 dest;
-    __u16 len;
-    __u16 check;
-};
-#endif
-EOF
+        #ifndef UDPHDR_DEFINED
+        #define UDPHDR_DEFINED
+        struct udphdr {
+            __u16 source;
+            __u16 dest;
+            __u16 len;
+            __u16 check;
+        };
+        #endif
+        EOF
         sed -i '1i#include "udp_fix.h"' nflog.c
         
         # Compile nflog using Android NDK
