@@ -159,6 +159,7 @@ jobs:
              CC="${NDK_CC}" \
              HOSTCC=gcc \
              HOSTCXX=g++ \
+             STRIP="${NDK_STRIP}" \
              CFLAGS="-static -DHAVE_STRCHRNUL" \
              EXTRA_CFLAGS="-DHAVE_STRCHRNUL" \
              LDFLAGS="-static" \
@@ -378,8 +379,19 @@ jobs:
       run: |
         cd external/nflog
         
-        # Fix missing UDP header for Android
-        sed -i '1i#include <linux/udp.h>' nflog.c
+        # Fix missing UDP header for Android - define struct udphdr if not available
+        cat > udp_fix.h << 'EOF'
+#ifndef UDPHDR_DEFINED
+#define UDPHDR_DEFINED
+struct udphdr {
+    __u16 source;
+    __u16 dest;
+    __u16 len;
+    __u16 check;
+};
+#endif
+EOF
+        sed -i '1i#include "udp_fix.h"' nflog.c
         
         # Compile nflog using Android NDK
         ${NDK_CC} -static \
