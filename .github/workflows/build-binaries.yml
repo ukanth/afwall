@@ -52,8 +52,40 @@ jobs:
         sudo apt-get install -y \
           build-essential \
           wget \
-          gcc-${{ matrix.target }} \
+          unzip \
           file
+
+    - name: Set up Android NDK
+      run: |
+        NDK_VERSION="26.3.11579264"
+        wget -q "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
+        unzip -q android-ndk-r26d-linux.zip
+        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-r26d"
+        echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
+        
+        # Set up NDK toolchain paths
+        case "${{ matrix.arch }}" in
+          arm64)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=aarch64-linux-android" >> $GITHUB_ENV
+            ;;
+          arm)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=armv7a-linux-androideabi" >> $GITHUB_ENV
+            ;;
+          x86)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=i686-linux-android" >> $GITHUB_ENV
+            ;;
+          mips)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=mips-linux-android" >> $GITHUB_ENV
+            ;;
+        esac
 
     - name: Download Busybox source
       run: |
@@ -77,8 +109,8 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Start with minimal config to avoid cross-compilation issues
-        make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- allnoconfig
+        # Start with minimal config for Android
+        make ARCH=${{ matrix.arch }} allnoconfig
         
         # Enable only essential features for AFWall+
         cat >> .config << EOF
@@ -110,7 +142,7 @@ jobs:
         EOF
         
         # Apply minimal config (use yes to answer all prompts with default)
-        yes '' | make ARCH=${{ matrix.arch }} CROSS_COMPILE=${{ matrix.target }}- oldconfig
+        yes '' | make ARCH=${{ matrix.arch }} oldconfig
         
         # Fix cross-compilation issues for all architectures
         # Replace the problematic off_t size check that fails during cross-compilation
@@ -124,19 +156,20 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Build with explicit compiler settings
+        # Build with Android NDK
         make ARCH=${{ matrix.arch }} \
-             CROSS_COMPILE=${{ matrix.target }}- \
-             CC=${{ matrix.cc }} \
+             CC="${NDK_CC}" \
              HOSTCC=gcc \
              HOSTCXX=g++ \
+             CFLAGS="-static" \
+             LDFLAGS="-static" \
              -j$(nproc)
         
         # Verify binary
         file busybox
         
         # Strip and copy
-        ${{ matrix.strip }} busybox
+        ${NDK_STRIP} busybox
         cp busybox ../busybox_${{ matrix.arch }}
 
     - name: Upload Busybox artifact
@@ -183,12 +216,44 @@ jobs:
         sudo apt-get install -y \
           build-essential \
           wget \
-          gcc-${{ matrix.target }} \
+          unzip \
           pkg-config \
           autoconf \
           automake \
           libtool \
           file
+
+    - name: Set up Android NDK
+      run: |
+        NDK_VERSION="26.3.11579264"
+        wget -q "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
+        unzip -q android-ndk-r26d-linux.zip
+        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-r26d"
+        echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
+        
+        # Set up NDK toolchain paths
+        case "${{ matrix.arch }}" in
+          arm64)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=aarch64-linux-android" >> $GITHUB_ENV
+            ;;
+          arm)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=armv7a-linux-androideabi" >> $GITHUB_ENV
+            ;;
+          x86)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=i686-linux-android" >> $GITHUB_ENV
+            ;;
+          mips)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_TARGET=mips-linux-android" >> $GITHUB_ENV
+            ;;
+        esac
 
     - name: Download iptables source
       run: |
@@ -212,16 +277,16 @@ jobs:
       run: |
         cd "$IPTABLES_DIR"
         
-        # Set cross-compilation environment
-        export CC=${{ matrix.cc }}
-        export STRIP=${{ matrix.strip }}
+        # Set Android NDK cross-compilation environment
+        export CC="${NDK_CC}"
+        export STRIP="${NDK_STRIP}"
         export CFLAGS="-static -Os -DANDROID"
         export LDFLAGS="-static"
         export PKG_CONFIG_PATH=""
         
-        # Configure for cross-compilation
+        # Configure for Android cross-compilation
         ./configure \
-          --host=${{ matrix.configure_host }} \
+          --host=${NDK_TARGET} \
           --enable-static \
           --disable-shared \
           --disable-nftables \
@@ -234,8 +299,8 @@ jobs:
       run: |
         cd "$IPTABLES_DIR"
         
-        export CC=${{ matrix.cc }}
-        export STRIP=${{ matrix.strip }}
+        export CC="${NDK_CC}"
+        export STRIP="${NDK_STRIP}"
         export CFLAGS="-static -Os -DANDROID"
         export LDFLAGS="-static"
         
@@ -257,8 +322,8 @@ jobs:
         file "../iptables_${{ matrix.arch }}"
         file "../ip6tables_${{ matrix.arch }}"
         
-        ${{ matrix.strip }} "../iptables_${{ matrix.arch }}"
-        ${{ matrix.strip }} "../ip6tables_${{ matrix.arch }}"
+        ${NDK_STRIP} "../iptables_${{ matrix.arch }}"
+        ${NDK_STRIP} "../ip6tables_${{ matrix.arch }}"
 
     - name: Upload iptables artifacts
       uses: actions/upload-artifact@v4
@@ -274,23 +339,6 @@ jobs:
     strategy:
       matrix:
         arch: [arm, arm64, mips, x86]
-        include:
-          - arch: arm
-            target: arm-linux-gnueabihf
-            cc: arm-linux-gnueabihf-gcc
-            strip: arm-linux-gnueabihf-strip
-          - arch: arm64
-            target: aarch64-linux-gnu
-            cc: aarch64-linux-gnu-gcc
-            strip: aarch64-linux-gnu-strip
-          - arch: mips
-            target: mips-linux-gnu
-            cc: mips-linux-gnu-gcc
-            strip: mips-linux-gnu-strip
-          - arch: x86
-            target: i686-linux-gnu
-            cc: i686-linux-gnu-gcc
-            strip: i686-linux-gnu-strip
 
     steps:
     - name: Checkout repository
@@ -302,24 +350,51 @@ jobs:
         sudo apt-get install -y \
           build-essential \
           wget \
-          gcc-${{ matrix.target }} \
+          unzip \
           pkg-config \
-          file \
-          libnetfilter-log-dev
+          file
+
+    - name: Set up Android NDK
+      run: |
+        NDK_VERSION="26.3.11579264"
+        wget -q "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
+        unzip -q android-ndk-r26d-linux.zip
+        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-r26d"
+        echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
+        
+        # Set up NDK toolchain paths
+        case "${{ matrix.arch }}" in
+          arm64)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+          arm)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+          x86)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+          mips)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+        esac
 
     - name: Build nflog from AFWall+ source
       run: |
         cd external/nflog
         
-        # Compile nflog using AFWall+ source code
-        ${{ matrix.cc }} -static \
+        # Compile nflog using Android NDK
+        ${NDK_CC} -static \
           -I. -Ilibmnl \
           -o nflog_${{ matrix.arch }} \
           nflog.c attr.c callback.c nlmsg.c socket.c
         
         # Verify and strip
         file nflog_${{ matrix.arch }}
-        ${{ matrix.strip }} nflog_${{ matrix.arch }}
+        ${NDK_STRIP} nflog_${{ matrix.arch }}
         ls -la nflog_${{ matrix.arch }}
 
     - name: Upload nflog artifact
@@ -333,23 +408,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - arch: arm
-            target: arm-linux-gnueabihf
-            cc: arm-linux-gnueabihf-gcc
-            strip: arm-linux-gnueabihf-strip
-          - arch: arm64
-            target: aarch64-linux-gnu
-            cc: aarch64-linux-gnu-gcc
-            strip: aarch64-linux-gnu-strip
-          - arch: mips
-            target: mips-linux-gnu
-            cc: mips-linux-gnu-gcc
-            strip: mips-linux-gnu-strip
-          - arch: x86
-            target: i686-linux-gnu
-            cc: i686-linux-gnu-gcc
-            strip: i686-linux-gnu-strip
+        arch: [arm, arm64, mips, x86]
 
     steps:
     - name: Checkout repository
@@ -360,19 +419,48 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y \
           build-essential \
-          gcc-${{ matrix.target }} \
+          wget \
+          unzip \
           file
+
+    - name: Set up Android NDK
+      run: |
+        NDK_VERSION="26.3.11579264"
+        wget -q "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
+        unzip -q android-ndk-r26d-linux.zip
+        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-r26d"
+        echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
+        
+        # Set up NDK toolchain paths
+        case "${{ matrix.arch }}" in
+          arm64)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+          arm)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+          x86)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+          mips)
+            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/mips-linux-android21-clang" >> $GITHUB_ENV
+            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            ;;
+        esac
 
     - name: Build run_pie from AFWall+ source
       run: |
         cd external/run_pie
         
-        # Compile run_pie using AFWall+ source code
-        ${{ matrix.cc }} -static -ldl -o run_pie_${{ matrix.arch }} run_pie.c
+        # Compile run_pie using Android NDK
+        ${NDK_CC} -static -ldl -o run_pie_${{ matrix.arch }} run_pie.c
         
         # Verify the binary
         file run_pie_${{ matrix.arch }}
-        ${{ matrix.strip }} run_pie_${{ matrix.arch }}
+        ${NDK_STRIP} run_pie_${{ matrix.arch }}
         ls -la run_pie_${{ matrix.arch }}
 
     - name: Upload run_pie artifact
