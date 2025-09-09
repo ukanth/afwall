@@ -161,7 +161,7 @@ jobs:
              CC="${NDK_CC}" \
              HOSTCC=gcc \
              HOSTCXX=g++ \
-             CFLAGS="-static" \
+             CFLAGS="-static -DHAVE_STRCHRNUL" \
              LDFLAGS="-static" \
              -j$(nproc)
         
