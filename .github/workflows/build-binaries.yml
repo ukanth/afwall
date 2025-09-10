@@ -128,6 +128,16 @@ jobs:
         CONFIG_WHICH=y
         CONFIG_IPTABLES=y
         CONFIG_IP6TABLES=y
+        CONFIG_IFCONFIG=y
+        CONFIG_ROUTE=y
+        CONFIG_NETSTAT=y
+        CONFIG_PING=y
+        CONFIG_MOUNT=y
+        CONFIG_DMESG=y
+        CONFIG_TAIL=y
+        CONFIG_WC=y
+        CONFIG_SLEEP=y
+        CONFIG_HEAD=y
         CONFIG_FEATURE_PREFER_APPLETS=n
         CONFIG_FEATURE_SH_STANDALONE=y
         CONFIG_EXTRA_CFLAGS="-DHAVE_STRCHRNUL"
@@ -366,6 +376,19 @@ jobs:
     strategy:
       matrix:
         arch: [arm, arm64, x86]
+        include:
+          - arch: arm
+            target: arm-linux-gnueabihf
+            cc: arm-linux-gnueabihf-gcc
+            strip: arm-linux-gnueabihf-strip
+          - arch: arm64
+            target: aarch64-linux-gnu
+            cc: aarch64-linux-gnu-gcc
+            strip: aarch64-linux-gnu-strip
+          - arch: x86
+            target: i686-linux-gnu
+            cc: i686-linux-gnu-gcc
+            strip: i686-linux-gnu-strip
 
     steps:
     - name: Checkout repository
@@ -379,31 +402,10 @@ jobs:
           wget \
           unzip \
           pkg-config \
-          file
-
-    - name: Set up Android NDK
-      run: |
-        NDK_VERSION="26.3.11579264"
-        wget -q "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
-        unzip -q android-ndk-r26d-linux.zip
-        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-r26d"
-        echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
-        
-        # Set up NDK toolchain paths
-        case "${{ matrix.arch }}" in
-          arm64)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang" >> $GITHUB_ENV
-            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
-            ;;
-          arm)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi28-clang" >> $GITHUB_ENV
-            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
-            ;;
-          x86)
-            echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android28-clang" >> $GITHUB_ENV
-            echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
-            ;;
-        esac
+          file \
+          gcc-arm-linux-gnueabihf \
+          gcc-aarch64-linux-gnu \
+          gcc-i686-linux-gnu
 
     - name: Build nflog from AFWall+ source
       run: |
@@ -412,29 +414,16 @@ jobs:
         # Minimal UDP header fix - just add the missing include
         sed -i '1i#include <netinet/udp.h>' nflog.c
         
-        # Use NDK for cross-compilation with architecture-specific flags
-        case "${{ matrix.arch }}" in
-          arm64)
-            # Try avoiding TLS entirely for ARM64 to fix alignment issues
-            ${NDK_CC} -static -fno-emulated-tls -fno-use-init-array -nostdlib++ \
-              -I. -Ilibmnl \
-              -D_GNU_SOURCE \
-              -o nflog_${{ matrix.arch }} \
-              nflog.c attr.c callback.c nlmsg.c socket.c \
-              -lc
-            ;;
-          *)
-            ${NDK_CC} -static \
-              -I. -Ilibmnl \
-              -D_GNU_SOURCE \
-              -o nflog_${{ matrix.arch }} \
-              nflog.c attr.c callback.c nlmsg.c socket.c
-            ;;
-        esac
+        # Use GCC cross-compilers (revert from NDK to fix TLS issues)
+        ${{ matrix.cc }} -static \
+          -I. -Ilibmnl \
+          -D_GNU_SOURCE \
+          -o nflog_${{ matrix.arch }} \
+          nflog.c attr.c callback.c nlmsg.c socket.c
         
         # Verify the binary
         file nflog_${{ matrix.arch }}
-        ${NDK_STRIP} nflog_${{ matrix.arch }}
+        ${{ matrix.strip }} nflog_${{ matrix.arch }}
         ls -la nflog_${{ matrix.arch }}
 
     - name: Upload nflog artifact
