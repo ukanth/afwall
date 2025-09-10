@@ -383,9 +383,13 @@ jobs:
       run: |
         cd external/nflog
         
-        # Use NDK for cross-compilation but keep it simple (no UDP header fixes)
+        # Minimal UDP header fix - just add the missing include
+        sed -i '1i#include <netinet/udp.h>' nflog.c
+        
+        # Use NDK for cross-compilation 
         ${NDK_CC} -static \
           -I. -Ilibmnl \
+          -D_GNU_SOURCE \
           -o nflog_${{ matrix.arch }} \
           nflog.c attr.c callback.c nlmsg.c socket.c
         
