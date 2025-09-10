@@ -100,85 +100,15 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Start with minimal config, then enable only what we need
-        make ARCH=${{ matrix.arch }} allnoconfig
+        # Use the proven Android NDK default config as recommended by osm0sis
+        cp configs/android_ndk_defconfig .config
         
-        # Enable critical features for AFWall+ multi-call busybox
-        cat > .config << EOF
-        CONFIG_STATIC=y
-        CONFIG_INSTALL_NO_USR=y
-        CONFIG_BUSYBOX=y
-        CONFIG_FEATURE_INSTALLER=y
-        CONFIG_BUSYBOX_EXEC_PATH="/proc/self/exe"
-        CONFIG_ASH=y
-        CONFIG_SH_IS_ASH=y
-        CONFIG_BASH_IS_NONE=y
-        CONFIG_CAT=y
-        CONFIG_CHMOD=y
-        CONFIG_CP=y
-        CONFIG_ECHO=y
-        CONFIG_FEATURE_ECHO_ARG0=y
-        CONFIG_GREP=y
-        CONFIG_KILL=y
-        CONFIG_KILLALL=y
-        CONFIG_LS=y
-        CONFIG_FEATURE_LS_FILETYPES=y
-        CONFIG_FEATURE_LS_FOLLOWLINKS=y
-        CONFIG_FEATURE_LS_RECURSIVE=y
-        CONFIG_FEATURE_LS_SORTFILES=y
-        CONFIG_FEATURE_LS_TIMESTAMPS=y
-        CONFIG_FEATURE_LS_USERNAME=y
-        CONFIG_FEATURE_LS_COLOR=y
-        CONFIG_MKDIR=y
-        CONFIG_MV=y
-        CONFIG_PS=y
-        CONFIG_RM=y
-        CONFIG_TEST=y
-        CONFIG_FEATURE_TEST_64=y
-        CONFIG_WHICH=y
-        CONFIG_IFCONFIG=y
-        CONFIG_FEATURE_IFCONFIG_STATUS=y
-        CONFIG_FEATURE_IFCONFIG_SLIP=y
-        CONFIG_FEATURE_IFCONFIG_HW=y
-        CONFIG_FEATURE_IFCONFIG_BROADCAST_PLUS=y
-        CONFIG_ROUTE=y
-        CONFIG_NETSTAT=y
-        CONFIG_FEATURE_NETSTAT_WIDE=y
-        CONFIG_FEATURE_NETSTAT_PRG=y
-        CONFIG_PING=y
-        CONFIG_PING6=y
-        CONFIG_FEATURE_PING_LONG_OPTIONS=y
-        CONFIG_MOUNT=y
-        CONFIG_DMESG=y
-        CONFIG_TAIL=y
-        CONFIG_WC=y
-        CONFIG_SLEEP=y
-        CONFIG_HEAD=y
-        CONFIG_FEATURE_PREFER_APPLETS=y
-        CONFIG_FEATURE_SH_STANDALONE=y
-        CONFIG_EXTRA_CFLAGS="-DHAVE_STRCHRNUL"
-        # Explicitly disable problematic features for Android
-        # CONFIG_FEATURE_UTMP is not set
-        # CONFIG_FEATURE_WTMP is not set
-        EOF
-        
-        # Apply config and explicitly disable problematic applets
+        # Process the config
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
         
-        # Explicitly disable applets that cause build issues on Android
-        sed -i 's/CONFIG_HOSTID=y/# CONFIG_HOSTID is not set/g' .config
-        sed -i 's/CONFIG_LOADFONT=y/# CONFIG_LOADFONT is not set/g' .config
-        sed -i 's/CONFIG_SETFONT=y/# CONFIG_SETFONT is not set/g' .config
-        sed -i 's/CONFIG_CONSPY=y/# CONFIG_CONSPY is not set/g' .config
-        sed -i 's/CONFIG_SETKEYCODES=y/# CONFIG_SETKEYCODES is not set/g' .config
-        sed -i 's/CONFIG_LOADKMAP=y/# CONFIG_LOADKMAP is not set/g' .config
-        sed -i 's/CONFIG_DUMPKMAP=y/# CONFIG_DUMPKMAP is not set/g' .config
-        # Disable utmp/wtmp features (updwtmpx not available in Android bionic)
-        sed -i 's/CONFIG_FEATURE_UTMP=y/# CONFIG_FEATURE_UTMP is not set/g' .config
-        sed -i 's/CONFIG_FEATURE_WTMP=y/# CONFIG_FEATURE_WTMP is not set/g' .config
-        
-        # Reprocess config after disabling problematic applets
-        yes '' | make ARCH=${{ matrix.arch }} oldconfig
+        # Show what's enabled for debugging
+        echo "=== Enabled applets that AFWall+ needs ==="
+        grep -E "CONFIG_(PING|IFCONFIG|LS|ECHO|CAT|GREP|FEATURE_INSTALLER)=" .config || true
         
         # Fix cross-compilation issues for all architectures
         # Replace the problematic off_t size check that fails during cross-compilation
