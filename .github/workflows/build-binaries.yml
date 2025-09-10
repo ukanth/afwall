@@ -103,6 +103,9 @@ jobs:
         # Use the proven Android NDK default config as recommended by osm0sis
         cp configs/android_ndk_defconfig .config
         
+        # Fix the cross-compiler prefix for NDK
+        sed -i 's/CONFIG_CROSS_COMPILER_PREFIX=.*/CONFIG_CROSS_COMPILER_PREFIX=""/' .config
+        
         # Process the config
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
         
