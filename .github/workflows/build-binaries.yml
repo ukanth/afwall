@@ -415,11 +415,13 @@ jobs:
         # Use NDK for cross-compilation with architecture-specific flags
         case "${{ matrix.arch }}" in
           arm64)
-            ${NDK_CC} -static -fno-emulated-tls -ftls-model=local-exec \
+            # Try avoiding TLS entirely for ARM64 to fix alignment issues
+            ${NDK_CC} -static -fno-emulated-tls -fno-use-init-array -nostdlib++ \
               -I. -Ilibmnl \
               -D_GNU_SOURCE \
               -o nflog_${{ matrix.arch }} \
-              nflog.c attr.c callback.c nlmsg.c socket.c
+              nflog.c attr.c callback.c nlmsg.c socket.c \
+              -lc
             ;;
           *)
             ${NDK_CC} -static \
