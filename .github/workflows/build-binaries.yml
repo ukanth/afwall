@@ -199,12 +199,32 @@ jobs:
         # Remove BusyBox's implementation of functions now available in bionic libc
         echo "Fixing duplicate symbol issues for Android NDK r26d..."
         
-        # Remove getsid, adjtimex, sethostname from missing_syscalls.c
+        # Remove problematic syscall implementations from missing_syscalls.c
         if [ -f "libbb/missing_syscalls.c" ]; then
-          sed -i '/^pid_t FAST_FUNC getsid/,/^}/d' libbb/missing_syscalls.c
-          sed -i '/^int FAST_FUNC adjtimex/,/^}/d' libbb/missing_syscalls.c  
-          sed -i '/^int FAST_FUNC sethostname/,/^}/d' libbb/missing_syscalls.c
-          echo "Removed duplicate syscall implementations from missing_syscalls.c"
+          echo "Before fix - functions in missing_syscalls.c:"
+          grep -n "FAST_FUNC.*(" libbb/missing_syscalls.c || true
+          
+          # Use more aggressive pattern matching to remove entire function definitions
+          sed -i '/pid_t.*getsid/,/^}/d' libbb/missing_syscalls.c
+          sed -i '/int.*adjtimex/,/^}/d' libbb/missing_syscalls.c  
+          sed -i '/int.*sethostname/,/^}/d' libbb/missing_syscalls.c
+          
+          # Also remove any function declarations/prototypes
+          sed -i '/getsid.*(/d' libbb/missing_syscalls.c
+          sed -i '/adjtimex.*(/d' libbb/missing_syscalls.c
+          sed -i '/sethostname.*(/d' libbb/missing_syscalls.c
+          
+          echo "After fix - remaining functions in missing_syscalls.c:"
+          grep -n "FAST_FUNC.*(" libbb/missing_syscalls.c || true
+          echo "Duplicate syscall fix applied to missing_syscalls.c"
+        fi
+        
+        # Also check and fix any header declarations
+        if [ -f "include/libbb.h" ]; then
+          sed -i '/extern.*getsid.*(/d' include/libbb.h
+          sed -i '/extern.*adjtimex.*(/d' include/libbb.h  
+          sed -i '/extern.*sethostname.*(/d' include/libbb.h
+          echo "Removed duplicate declarations from libbb.h"
         fi
 
     - name: Build Busybox
