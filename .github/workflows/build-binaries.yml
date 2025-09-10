@@ -195,12 +195,15 @@ jobs:
           sed -i 's/CONFIG_SHA256SUM=y/# CONFIG_SHA256SUM is not set/g' .config
           yes '' | make ARCH=${{ matrix.arch }} oldconfig
           
-          # Remove problematic TLS assembly file if still being compiled
-          if [ -f "networking/tls_pstm_mul_comba.c" ]; then
-            echo "Removing problematic TLS assembly file for x86"
-            rm networking/tls_pstm_mul_comba.c
-            touch networking/tls_pstm_mul_comba.c
-          fi
+          # Remove ALL problematic TLS assembly files for x86
+          echo "Removing all TLS assembly files for x86..."
+          for tls_file in networking/tls_pstm_mul_comba.c networking/tls_pstm_sqr_comba.c; do
+            if [ -f "$tls_file" ]; then
+              echo "Removing $tls_file"
+              rm "$tls_file"
+              touch "$tls_file"
+            fi
+          done
         fi
         
         # Show what's enabled for debugging
