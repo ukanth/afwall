@@ -157,6 +157,36 @@ jobs:
         CONFIG_FEATURE_PREFER_APPLETS=y
         CONFIG_FEATURE_SH_STANDALONE=y
         CONFIG_EXTRA_CFLAGS="-DHAVE_STRCHRNUL"
+        # Disable problematic applets for Android (missing headers/syscalls)
+        # Console tools requiring sys/kd.h
+        # CONFIG_LOADFONT is not set
+        # CONFIG_SETFONT is not set
+        # CONFIG_CONSPY is not set
+        # CONFIG_SETKEYCODES is not set
+        # CONFIG_LOADKMAP is not set
+        # CONFIG_DUMPKMAP is not set
+        # CONFIG_OPENVT is not set
+        # CONFIG_DEALLOCVT is not set
+        # CONFIG_FGCONSOLE is not set
+        # CONFIG_CHVT is not set
+        # CONFIG_CLEAR is not set
+        # CONFIG_RESET is not set
+        # CONFIG_SHOWKEY is not set
+        # CONFIG_KBD_MODE is not set
+        # Other problematic applets for Android
+        # CONFIG_INIT is not set
+        # CONFIG_HALT is not set
+        # CONFIG_POWEROFF is not set
+        # CONFIG_REBOOT is not set
+        # CONFIG_SWAPON is not set
+        # CONFIG_SWAPOFF is not set
+        # CONFIG_SYSLOGD is not set
+        # CONFIG_KLOGD is not set
+        # CONFIG_RDEV is not set
+        # CONFIG_FBSET is not set
+        # CONFIG_HDPARM is not set
+        # CONFIG_IPCS is not set
+        # CONFIG_IPCRM is not set
         EOF
         
         # Apply config (use yes to answer all prompts with default)
