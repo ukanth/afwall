@@ -53,10 +53,10 @@ jobs:
 
     - name: Set up Android NDK
       run: |
-        NDK_VERSION="26.3.11579264"
-        wget -q "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
-        unzip -q android-ndk-r26d-linux.zip
-        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-r26d"
+        NDK_VERSION="r26d"
+        wget -q "https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux.zip"
+        unzip -q android-ndk-${NDK_VERSION}-linux.zip
+        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-${NDK_VERSION}"
         echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
         
         # Set up NDK toolchain paths
@@ -220,10 +220,10 @@ jobs:
 
     - name: Set up Android NDK
       run: |
-        NDK_VERSION="26.3.11579264"
-        wget -q "https://dl.google.com/android/repository/android-ndk-r26d-linux.zip"
-        unzip -q android-ndk-r26d-linux.zip
-        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-r26d"
+        NDK_VERSION="r26d"
+        wget -q "https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux.zip"
+        unzip -q android-ndk-${NDK_VERSION}-linux.zip
+        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-${NDK_VERSION}"
         echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
         
         # Set up NDK toolchain paths
