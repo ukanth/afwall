@@ -100,15 +100,16 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Start with minimal config for Android
-        make ARCH=${{ matrix.arch }} allnoconfig
+        # Start with Android NDK default config (enables more applets by default)
+        make ARCH=${{ matrix.arch }} defconfig
         
-        # Enable only essential features for AFWall+
+        # Enable critical features for AFWall+ multi-call busybox
         cat >> .config << EOF
         CONFIG_STATIC=y
         CONFIG_INSTALL_NO_USR=y
         CONFIG_BUSYBOX=y
-        CONFIG_BUSYBOX_EXEC_PATH="/system/xbin/busybox"
+        CONFIG_FEATURE_INSTALLER=y
+        CONFIG_BUSYBOX_EXEC_PATH="/proc/self/exe"
         CONFIG_ASH=y
         CONFIG_SH_IS_ASH=y
         CONFIG_BASH_IS_NONE=y
@@ -116,22 +117,37 @@ jobs:
         CONFIG_CHMOD=y
         CONFIG_CP=y
         CONFIG_ECHO=y
+        CONFIG_FEATURE_ECHO_ARG0=y
         CONFIG_GREP=y
         CONFIG_KILL=y
         CONFIG_KILLALL=y
         CONFIG_LS=y
+        CONFIG_FEATURE_LS_FILETYPES=y
+        CONFIG_FEATURE_LS_FOLLOWLINKS=y
+        CONFIG_FEATURE_LS_RECURSIVE=y
+        CONFIG_FEATURE_LS_SORTFILES=y
+        CONFIG_FEATURE_LS_TIMESTAMPS=y
+        CONFIG_FEATURE_LS_USERNAME=y
+        CONFIG_FEATURE_LS_COLOR=y
         CONFIG_MKDIR=y
         CONFIG_MV=y
         CONFIG_PS=y
         CONFIG_RM=y
         CONFIG_TEST=y
+        CONFIG_FEATURE_TEST_64=y
         CONFIG_WHICH=y
-        CONFIG_IPTABLES=y
-        CONFIG_IP6TABLES=y
         CONFIG_IFCONFIG=y
+        CONFIG_FEATURE_IFCONFIG_STATUS=y
+        CONFIG_FEATURE_IFCONFIG_SLIP=y
+        CONFIG_FEATURE_IFCONFIG_HW=y
+        CONFIG_FEATURE_IFCONFIG_BROADCAST_PLUS=y
         CONFIG_ROUTE=y
         CONFIG_NETSTAT=y
+        CONFIG_FEATURE_NETSTAT_WIDE=y
+        CONFIG_FEATURE_NETSTAT_PRG=y
         CONFIG_PING=y
+        CONFIG_PING6=y
+        CONFIG_FEATURE_PING_LONG_OPTIONS=y
         CONFIG_MOUNT=y
         CONFIG_DMESG=y
         CONFIG_TAIL=y
@@ -143,7 +159,7 @@ jobs:
         CONFIG_EXTRA_CFLAGS="-DHAVE_STRCHRNUL"
         EOF
         
-        # Apply minimal config (use yes to answer all prompts with default)
+        # Apply config (use yes to answer all prompts with default)
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
         
         # Fix cross-compilation issues for all architectures
