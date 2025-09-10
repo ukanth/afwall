@@ -2326,7 +2326,6 @@ public final class Api {
         if (!installBinary(ctx, R.raw.iptables_x86, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_x86, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_x86, "nflog")) return false;
-        if (!installBinary(ctx, R.raw.run_pie_x86, "run_pie")) return false;
         
         
         return true;
@@ -2338,7 +2337,6 @@ public final class Api {
         if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
-        if (!installBinary(ctx, R.raw.run_pie_arm64, "run_pie")) return false;
         
 
         return true;
@@ -2349,7 +2347,6 @@ public final class Api {
         if (!installBinary(ctx, R.raw.iptables_arm, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_arm, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_arm, "nflog")) return false;
-        if (!installBinary(ctx, R.raw.run_pie_arm, "run_pie")) return false;
         
         
         return true;
