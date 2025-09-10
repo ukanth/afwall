@@ -86,21 +86,24 @@ jobs:
         echo "✓ NDK setup complete: ${ANDROID_NDK_ROOT}"
         echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
         
-        # Set up NDK toolchain paths
+        # Set up NDK toolchain paths (including NDK_AR for llvm-ar)
         case "${{ matrix.arch }}" in
           arm64)
             echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_AR=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar" >> $GITHUB_ENV
             echo "NDK_TARGET=aarch64-linux-android" >> $GITHUB_ENV
             ;;
           arm)
             echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_AR=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar" >> $GITHUB_ENV
             echo "NDK_TARGET=armv7a-linux-androideabi" >> $GITHUB_ENV
             ;;
           x86)
             echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android28-clang" >> $GITHUB_ENV
             echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+            echo "NDK_AR=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar" >> $GITHUB_ENV
             echo "NDK_TARGET=i686-linux-android" >> $GITHUB_ENV
             ;;
         esac
@@ -127,8 +130,8 @@ jobs:
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Use the proven Android NDK default config as recommended by osm0sis
-        cp configs/android_ndk_defconfig .config
+        # Use the basic Android default config (more stable than android_ndk_defconfig)
+        cp configs/android_defconfig .config
         
         # Fix the cross-compiler prefix for NDK
         sed -i 's/CONFIG_CROSS_COMPILER_PREFIX=.*/CONFIG_CROSS_COMPILER_PREFIX=""/' .config
@@ -137,103 +140,149 @@ jobs:
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
         
         # Disable problematic applets for Android bionic libc compatibility
-        echo "Disabling swap-related applets for Android compatibility"
+        echo "Disabling problematic applets for Android..."
         sed -i 's/CONFIG_SWAPON=y/# CONFIG_SWAPON is not set/g' .config
         sed -i 's/CONFIG_SWAPOFF=y/# CONFIG_SWAPOFF is not set/g' .config
-        # Also disable any swap-related features that might pull these in
         sed -i 's/CONFIG_FEATURE_SWAPON_DISCARD=y/# CONFIG_FEATURE_SWAPON_DISCARD is not set/g' .config
         sed -i 's/CONFIG_FEATURE_SWAPON_PRI=y/# CONFIG_FEATURE_SWAPON_PRI is not set/g' .config
         
-        # Reprocess config after disabling
+        # Disable problematic archival features
+        sed -i 's/CONFIG_TAR=y/# CONFIG_TAR is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_TAR_TO_COMMAND=y/# CONFIG_FEATURE_TAR_TO_COMMAND is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_TAR_FROM=y/# CONFIG_FEATURE_TAR_FROM is not set/g' .config  
+        sed -i 's/CONFIG_AR=y/# CONFIG_AR is not set/g' .config
+        sed -i 's/CONFIG_DPKG=y/# CONFIG_DPKG is not set/g' .config
+        sed -i 's/CONFIG_DPKG_DEB=y/# CONFIG_DPKG_DEB is not set/g' .config
+        sed -i 's/CONFIG_RPM=y/# CONFIG_RPM is not set/g' .config
+        sed -i 's/CONFIG_RPM2CPIO=y/# CONFIG_RPM2CPIO is not set/g' .config
+        
+        # Disable features that require crypt.h (not available in Android bionic)
+        sed -i 's/CONFIG_LOGIN=y/# CONFIG_LOGIN is not set/g' .config
+        sed -i 's/CONFIG_PASSWD=y/# CONFIG_PASSWD is not set/g' .config
+        sed -i 's/CONFIG_SU=y/# CONFIG_SU is not set/g' .config
+        sed -i 's/CONFIG_SULOGIN=y/# CONFIG_SULOGIN is not set/g' .config
+        sed -i 's/CONFIG_VLOCK=y/# CONFIG_VLOCK is not set/g' .config
+        sed -i 's/CONFIG_CRYPTPW=y/# CONFIG_CRYPTPW is not set/g' .config
+        sed -i 's/CONFIG_CHPASSWD=y/# CONFIG_CHPASSWD is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_SHADOWPASSWDS=y/# CONFIG_FEATURE_SHADOWPASSWDS is not set/g' .config
+        
+        # Disable other bionic-incompatible features
+        sed -i 's/CONFIG_FEATURE_UTMP=y/# CONFIG_FEATURE_UTMP is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_WTMP=y/# CONFIG_FEATURE_WTMP is not set/g' .config
+        sed -i 's/CONFIG_LAST=y/# CONFIG_LAST is not set/g' .config
+        sed -i 's/CONFIG_USERS=y/# CONFIG_USERS is not set/g' .config
+        sed -i 's/CONFIG_WHO=y/# CONFIG_WHO is not set/g' .config
+        sed -i 's/CONFIG_W=y/# CONFIG_W is not set/g' .config
+        
+        # Disable networking features that require crypt.h
+        sed -i 's/CONFIG_FTPD=y/# CONFIG_FTPD is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_FTP_AUTHENTICATION=y/# CONFIG_FEATURE_FTP_AUTHENTICATION is not set/g' .config  
+        sed -i 's/CONFIG_FEATURE_HTTPD_AUTH_MD5=y/# CONFIG_FEATURE_HTTPD_AUTH_MD5 is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_HTTPD_BASIC_AUTH=y/# CONFIG_FEATURE_HTTPD_BASIC_AUTH is not set/g' .config
+        sed -i 's/CONFIG_MKPASSWD=y/# CONFIG_MKPASSWD is not set/g' .config
+        
+        # Reprocess config
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
         
         # Fix x86 register pressure issue in TLS code
         if [ "${{ matrix.arch }}" = "x86" ]; then
           echo "Disabling TLS features for x86 due to register pressure"
-          # Disable all TLS-related features that cause inline assembly issues
           sed -i 's/CONFIG_TLS=y/# CONFIG_TLS is not set/g' .config
           sed -i 's/CONFIG_FEATURE_TLS_SHA1=y/# CONFIG_FEATURE_TLS_SHA1 is not set/g' .config
           sed -i 's/CONFIG_FEATURE_WGET_HTTPS=y/# CONFIG_FEATURE_WGET_HTTPS is not set/g' .config
           sed -i 's/CONFIG_FTPS=y/# CONFIG_FTPS is not set/g' .config
-          sed -i 's/CONFIG_FEATURE_FTPS_HTTPS=y/# CONFIG_FEATURE_FTPS_HTTPS is not set/g' .config
-          # Also disable any crypto features that might use the problematic assembly
-          sed -i 's/CONFIG_FEATURE_CRYPTSETUP_PLAIN=y/# CONFIG_FEATURE_CRYPTSETUP_PLAIN is not set/g' .config
           sed -i 's/CONFIG_SHA1SUM=y/# CONFIG_SHA1SUM is not set/g' .config
           sed -i 's/CONFIG_SHA256SUM=y/# CONFIG_SHA256SUM is not set/g' .config
-          sed -i 's/CONFIG_SHA512SUM=y/# CONFIG_SHA512SUM is not set/g' .config
           yes '' | make ARCH=${{ matrix.arch }} oldconfig
           
-          # If TLS code is still being compiled, remove the problematic source file
+          # Remove problematic TLS assembly file if still being compiled
           if [ -f "networking/tls_pstm_mul_comba.c" ]; then
             echo "Removing problematic TLS assembly file for x86"
             rm networking/tls_pstm_mul_comba.c
-            # Create empty replacement to prevent build errors
             touch networking/tls_pstm_mul_comba.c
           fi
-          
-          echo "Disabled all TLS and crypto features for x86"
         fi
         
         # Show what's enabled for debugging
-        echo "=== Enabled applets that AFWall+ needs ==="
+        echo "=== Essential applets for AFWall+ ==="
         grep -E "CONFIG_(PING|IFCONFIG|LS|ECHO|CAT|GREP|FEATURE_INSTALLER)=" .config || true
         
-        # Fix cross-compilation issues for all architectures
-        # Replace the problematic off_t size check that fails during cross-compilation
+        echo "=== Problematic features (should be disabled) ==="
+        grep -E "CONFIG_(SWAPON|TAR_TO_COMMAND|DPKG|RPM|TLS).*=" .config || true
+        
+        # Fix cross-compilation and duplicate symbol issues
+        echo "Applying Android compatibility fixes..."
+        
+        # Fix off_t size check
         if grep -q "struct BUG_off_t_size_is_misdetected" include/libbb.h; then
           sed -i '/struct BUG_off_t_size_is_misdetected/,/};/c\
-        /* Cross-compilation fix: off_t size check disabled for all architectures */' include/libbb.h
-          echo "Applied cross-compilation fix for ${{ matrix.arch }}"
+        /* Cross-compilation fix: off_t size check disabled */' include/libbb.h
         fi
         
-        # Fix FAST_FUNC calling convention issue for Android/clang
+        # Fix FAST_FUNC calling convention 
         sed -i 's/__attribute__((regparm(3),stdcall))/__attribute__((regparm(3)))/g' include/platform.h
         
-        # Remove busybox's strchrnul declaration since Android provides it
+        # Remove strchrnul conflicts
         sed -i '/extern char \*strchrnul.*FAST_FUNC;/d' include/platform.h
-        
-        # Remove strchrnul function entirely from platform.c using a more robust pattern
         sed -i '/char\* FAST_FUNC strchrnul/,/^}/d' libbb/platform.c
         
-        # Fix duplicate symbol issues with newer Android NDK
-        # Remove BusyBox's implementation of functions now available in bionic libc
-        echo "Fixing duplicate symbol issues for Android NDK r26d..."
+        # Create stub for data_extract_to_command to fix linking
+        if [ ! -f "archival/libarchive/data_extract_to_command.c.bak" ]; then
+          cp archival/libarchive/data_extract_to_command.c archival/libarchive/data_extract_to_command.c.bak
+          cat > archival/libarchive/data_extract_to_command.c << 'EOF'
+        /* Stub for data_extract_to_command when FEATURE_TAR_TO_COMMAND is disabled */
+        #include "libbb.h"
+        #include "bb_archive.h"
         
-        # Remove problematic syscall implementations from missing_syscalls.c
+        void FAST_FUNC data_extract_to_command(archive_handle_t *archive_handle)
+        {
+            bb_simple_error_msg_and_die("--to-command feature not compiled");
+        }
+        EOF
+          # Force compile the stub by enabling it in Kbuild temporarily
+          sed -i 's/lib-\$(CONFIG_FEATURE_TAR_TO_COMMAND)/lib-y/' archival/libarchive/Kbuild
+        fi
+        
+        # Create stub for pw_encrypt to fix linking issues when password features are disabled
+        if [ ! -f "libbb/pw_encrypt.c.bak" ]; then
+          cp libbb/pw_encrypt.c libbb/pw_encrypt.c.bak
+          cat > libbb/pw_encrypt.c << 'EOF'
+        /* Stub for pw_encrypt when crypt.h features are disabled */
+        #include "libbb.h"
+        
+        char* FAST_FUNC pw_encrypt(const char *clear, const char *salt, int cleanup)
+        {
+            bb_simple_error_msg_and_die("password encryption not supported");
+            return NULL;
+        }
+        EOF
+        fi
+        
+        # Fix duplicate syscall symbols
         if [ -f "libbb/missing_syscalls.c" ]; then
-          echo "Before fix - functions in missing_syscalls.c:"
-          grep -n "FAST_FUNC.*(" libbb/missing_syscalls.c || true
-          
-          # Use more aggressive pattern matching to remove entire function definitions
+          echo "Fixing duplicate syscall symbols..."
           sed -i '/pid_t.*getsid/,/^}/d' libbb/missing_syscalls.c
           sed -i '/int.*adjtimex/,/^}/d' libbb/missing_syscalls.c  
           sed -i '/int.*sethostname/,/^}/d' libbb/missing_syscalls.c
-          
-          # Also remove any function declarations/prototypes
           sed -i '/getsid.*(/d' libbb/missing_syscalls.c
           sed -i '/adjtimex.*(/d' libbb/missing_syscalls.c
           sed -i '/sethostname.*(/d' libbb/missing_syscalls.c
-          
-          echo "After fix - remaining functions in missing_syscalls.c:"
-          grep -n "FAST_FUNC.*(" libbb/missing_syscalls.c || true
-          echo "Duplicate syscall fix applied to missing_syscalls.c"
         fi
         
-        # Also check and fix any header declarations
         if [ -f "include/libbb.h" ]; then
           sed -i '/extern.*getsid.*(/d' include/libbb.h
           sed -i '/extern.*adjtimex.*(/d' include/libbb.h  
           sed -i '/extern.*sethostname.*(/d' include/libbb.h
-          echo "Removed duplicate declarations from libbb.h"
         fi
 
     - name: Build Busybox
       run: |
         cd "$BUSYBOX_DIR"
         
-        # Build with Android NDK (add strchrnul fix to CFLAGS and EXTRA_CFLAGS)
+        # Build with Android NDK
         make ARCH=${{ matrix.arch }} \
              CC="${NDK_CC}" \
+             AR="${NDK_AR}" \
              HOSTCC=gcc \
              HOSTCXX=g++ \
              STRIP="${NDK_STRIP}" \
