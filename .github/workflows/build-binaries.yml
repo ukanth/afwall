@@ -188,7 +188,7 @@ jobs:
         if [ "${{ matrix.arch }}" = "x86" ]; then
           echo "Disabling ALL TLS and crypto features for x86 due to register pressure"
           
-          # Disable all TLS-related features comprehensively
+          # Disable all TLS/SSL-related features comprehensively
           sed -i 's/CONFIG_TLS=y/# CONFIG_TLS is not set/g' .config
           sed -i 's/CONFIG_FEATURE_TLS_SHA1=y/# CONFIG_FEATURE_TLS_SHA1 is not set/g' .config
           sed -i 's/CONFIG_FEATURE_WGET_HTTPS=y/# CONFIG_FEATURE_WGET_HTTPS is not set/g' .config
@@ -197,6 +197,10 @@ jobs:
           sed -i 's/CONFIG_SHA256SUM=y/# CONFIG_SHA256SUM is not set/g' .config
           sed -i 's/CONFIG_SHA512SUM=y/# CONFIG_SHA512SUM is not set/g' .config
           sed -i 's/CONFIG_MD5SUM=y/# CONFIG_MD5SUM is not set/g' .config
+          
+          # Disable SSL client utilities that depend on TLS
+          sed -i 's/CONFIG_SSL_CLIENT=y/# CONFIG_SSL_CLIENT is not set/g' .config
+          sed -i 's/CONFIG_FEATURE_SSL_CLIENT=y/# CONFIG_FEATURE_SSL_CLIENT is not set/g' .config
           
           # Disable wget entirely if it depends on TLS (safer approach)
           sed -i 's/CONFIG_WGET=y/# CONFIG_WGET is not set/g' .config
@@ -214,14 +218,16 @@ jobs:
           yes '' | make ARCH=${{ matrix.arch }} oldconfig
           yes '' | make ARCH=${{ matrix.arch }} oldconfig
           
-          # Remove ALL TLS-related source files to prevent any compilation
-          echo "Removing all TLS source files for x86..."
-          find networking -name "tls*.c" -type f | while read tls_file; do
-            if [ -f "$tls_file" ]; then
-              echo "Removing $tls_file"
-              rm "$tls_file"
-              touch "$tls_file"
-            fi
+          # Remove ALL TLS/SSL-related source files to prevent any compilation
+          echo "Removing all TLS/SSL source files for x86..."
+          for pattern in "tls*.c" "ssl_client.c"; do
+            find networking -name "$pattern" -type f | while read tls_file; do
+              if [ -f "$tls_file" ]; then
+                echo "Removing $tls_file"
+                rm "$tls_file"
+                touch "$tls_file"
+              fi
+            done
           done
         fi
         
