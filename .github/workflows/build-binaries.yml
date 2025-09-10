@@ -159,7 +159,19 @@ jobs:
         CONFIG_EXTRA_CFLAGS="-DHAVE_STRCHRNUL"
         EOF
         
-        # Apply config (use yes to answer all prompts with default)
+        # Apply config and explicitly disable problematic applets
+        yes '' | make ARCH=${{ matrix.arch }} oldconfig
+        
+        # Explicitly disable applets that cause build issues on Android
+        sed -i 's/CONFIG_HOSTID=y/# CONFIG_HOSTID is not set/g' .config
+        sed -i 's/CONFIG_LOADFONT=y/# CONFIG_LOADFONT is not set/g' .config
+        sed -i 's/CONFIG_SETFONT=y/# CONFIG_SETFONT is not set/g' .config
+        sed -i 's/CONFIG_CONSPY=y/# CONFIG_CONSPY is not set/g' .config
+        sed -i 's/CONFIG_SETKEYCODES=y/# CONFIG_SETKEYCODES is not set/g' .config
+        sed -i 's/CONFIG_LOADKMAP=y/# CONFIG_LOADKMAP is not set/g' .config
+        sed -i 's/CONFIG_DUMPKMAP=y/# CONFIG_DUMPKMAP is not set/g' .config
+        
+        # Reprocess config after disabling problematic applets
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
         
         # Fix cross-compilation issues for all architectures
