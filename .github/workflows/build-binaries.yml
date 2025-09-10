@@ -157,6 +157,9 @@ jobs:
         CONFIG_FEATURE_PREFER_APPLETS=y
         CONFIG_FEATURE_SH_STANDALONE=y
         CONFIG_EXTRA_CFLAGS="-DHAVE_STRCHRNUL"
+        # Explicitly disable problematic features for Android
+        # CONFIG_FEATURE_UTMP is not set
+        # CONFIG_FEATURE_WTMP is not set
         EOF
         
         # Apply config and explicitly disable problematic applets
@@ -170,6 +173,9 @@ jobs:
         sed -i 's/CONFIG_SETKEYCODES=y/# CONFIG_SETKEYCODES is not set/g' .config
         sed -i 's/CONFIG_LOADKMAP=y/# CONFIG_LOADKMAP is not set/g' .config
         sed -i 's/CONFIG_DUMPKMAP=y/# CONFIG_DUMPKMAP is not set/g' .config
+        # Disable utmp/wtmp features (updwtmpx not available in Android bionic)
+        sed -i 's/CONFIG_FEATURE_UTMP=y/# CONFIG_FEATURE_UTMP is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_WTMP=y/# CONFIG_FEATURE_WTMP is not set/g' .config
         
         # Reprocess config after disabling problematic applets
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
