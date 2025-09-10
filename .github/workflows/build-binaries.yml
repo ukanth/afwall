@@ -186,18 +186,37 @@ jobs:
         
         # Fix x86 register pressure issue in TLS code
         if [ "${{ matrix.arch }}" = "x86" ]; then
-          echo "Disabling TLS features for x86 due to register pressure"
+          echo "Disabling ALL TLS and crypto features for x86 due to register pressure"
+          
+          # Disable all TLS-related features comprehensively
           sed -i 's/CONFIG_TLS=y/# CONFIG_TLS is not set/g' .config
           sed -i 's/CONFIG_FEATURE_TLS_SHA1=y/# CONFIG_FEATURE_TLS_SHA1 is not set/g' .config
           sed -i 's/CONFIG_FEATURE_WGET_HTTPS=y/# CONFIG_FEATURE_WGET_HTTPS is not set/g' .config
           sed -i 's/CONFIG_FTPS=y/# CONFIG_FTPS is not set/g' .config
           sed -i 's/CONFIG_SHA1SUM=y/# CONFIG_SHA1SUM is not set/g' .config
           sed -i 's/CONFIG_SHA256SUM=y/# CONFIG_SHA256SUM is not set/g' .config
+          sed -i 's/CONFIG_SHA512SUM=y/# CONFIG_SHA512SUM is not set/g' .config
+          sed -i 's/CONFIG_MD5SUM=y/# CONFIG_MD5SUM is not set/g' .config
+          
+          # Disable wget entirely if it depends on TLS (safer approach)
+          sed -i 's/CONFIG_WGET=y/# CONFIG_WGET is not set/g' .config
+          sed -i 's/CONFIG_FEATURE_WGET_STATUSBAR=y/# CONFIG_FEATURE_WGET_STATUSBAR is not set/g' .config
+          sed -i 's/CONFIG_FEATURE_WGET_AUTHENTICATION=y/# CONFIG_FEATURE_WGET_AUTHENTICATION is not set/g' .config
+          sed -i 's/CONFIG_FEATURE_WGET_LONG_OPTIONS=y/# CONFIG_FEATURE_WGET_LONG_OPTIONS is not set/g' .config
+          sed -i 's/CONFIG_FEATURE_WGET_TIMEOUT=y/# CONFIG_FEATURE_WGET_TIMEOUT is not set/g' .config
+          
+          # Disable any crypto/hash utilities that might link to TLS code
+          sed -i 's/CONFIG_BASE64=y/# CONFIG_BASE64 is not set/g' .config
+          sed -i 's/CONFIG_UUENCODE=y/# CONFIG_UUENCODE is not set/g' .config
+          sed -i 's/CONFIG_UUDECODE=y/# CONFIG_UUDECODE is not set/g' .config
+          
+          # Multiple reprocessing to ensure all dependencies are resolved
+          yes '' | make ARCH=${{ matrix.arch }} oldconfig
           yes '' | make ARCH=${{ matrix.arch }} oldconfig
           
-          # Remove ALL problematic TLS assembly files for x86
-          echo "Removing all TLS assembly files for x86..."
-          for tls_file in networking/tls_pstm_mul_comba.c networking/tls_pstm_sqr_comba.c; do
+          # Remove ALL TLS-related source files to prevent any compilation
+          echo "Removing all TLS source files for x86..."
+          find networking -name "tls*.c" -type f | while read tls_file; do
             if [ -f "$tls_file" ]; then
               echo "Removing $tls_file"
               rm "$tls_file"
