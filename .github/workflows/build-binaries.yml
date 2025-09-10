@@ -287,7 +287,8 @@ jobs:
           --disable-connlabel \
           --disable-devel \
           --with-kernel=/usr/include \
-          --disable-libipq
+          --disable-libipq \
+          --with-xtlockdir=/data/local/tmp
 
     - name: Build iptables
       run: |
@@ -382,15 +383,15 @@ jobs:
       run: |
         cd external/nflog
         
-        # Use original build method (not NDK) - this was working before
-        gcc -static \
+        # Use NDK for cross-compilation but keep it simple (no UDP header fixes)
+        ${NDK_CC} -static \
           -I. -Ilibmnl \
           -o nflog_${{ matrix.arch }} \
           nflog.c attr.c callback.c nlmsg.c socket.c
         
         # Verify the binary
         file nflog_${{ matrix.arch }}
-        strip nflog_${{ matrix.arch }}
+        ${NDK_STRIP} nflog_${{ matrix.arch }}
         ls -la nflog_${{ matrix.arch }}
 
     - name: Upload nflog artifact
