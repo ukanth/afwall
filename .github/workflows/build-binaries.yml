@@ -176,6 +176,18 @@ jobs:
         
         # Remove strchrnul function entirely from platform.c using a more robust pattern
         sed -i '/char\* FAST_FUNC strchrnul/,/^}/d' libbb/platform.c
+        
+        # Fix duplicate symbol issues with newer Android NDK
+        # Remove BusyBox's implementation of functions now available in bionic libc
+        echo "Fixing duplicate symbol issues for Android NDK r26d..."
+        
+        # Remove getsid, adjtimex, sethostname from missing_syscalls.c
+        if [ -f "libbb/missing_syscalls.c" ]; then
+          sed -i '/^pid_t FAST_FUNC getsid/,/^}/d' libbb/missing_syscalls.c
+          sed -i '/^int FAST_FUNC adjtimex/,/^}/d' libbb/missing_syscalls.c  
+          sed -i '/^int FAST_FUNC sethostname/,/^}/d' libbb/missing_syscalls.c
+          echo "Removed duplicate syscall implementations from missing_syscalls.c"
+        fi
 
     - name: Build Busybox
       run: |
