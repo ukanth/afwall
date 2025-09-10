@@ -3,6 +3,7 @@ package dev.ukanth.ufirewall.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Environment;
+import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.topjohnwu.superuser.Shell;
@@ -80,14 +81,20 @@ public class FileDialog {
 
         builder.items(fileList);
         builder.itemsCallback((dialog1, view, which, text) -> {
-            String fileChosen = fileList[which];
-            File chosenFile = getChosenFile(fileChosen);
-            if (chosenFile.isDirectory()) {
-                loadFileList(chosenFile,flag);
-                dialog1.cancel();
-                dialog1.dismiss();
-                showDialog();
-            } else fireFileSelectedEvent(chosenFile);
+            try {
+                String fileChosen = fileList[which];
+                File chosenFile = getChosenFile(fileChosen);
+                if (chosenFile != null && chosenFile.exists() && chosenFile.isDirectory()) {
+                    loadFileList(chosenFile,flag);
+                    dialog1.cancel();
+                    dialog1.dismiss();
+                    showDialog();
+                } else if (chosenFile != null && chosenFile.exists()) {
+                    fireFileSelectedEvent(chosenFile);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in file selection callback", e);
+            }
         });
 
         try {
@@ -234,8 +241,14 @@ public class FileDialog {
     }
 
     private File getChosenFile(String fileChosen) {
-        if (fileChosen.equals(PARENT_DIR)) return currentPath.getParentFile();
-        else return new File(currentPath, fileChosen);
+        if (currentPath == null) {
+            return null;
+        }
+        if (fileChosen.equals(PARENT_DIR)) {
+            return currentPath.getParentFile(); // Can return null if at root
+        } else {
+            return new File(currentPath, fileChosen);
+        }
     }
 
     /*public void setFileEndsWith(String[] fileEndsWith,String notContains) {

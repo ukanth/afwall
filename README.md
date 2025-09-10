@@ -122,7 +122,7 @@ This approach is **far more powerful** than app-level solutions because it works
 - **Android versions**: 5.0 (API 21) to 14+ (actively maintained)
   - Legacy support: Android 4.x (version 2.9.9), Android 2.x (version 1.3.4.1)
 - **Root access**: Required (Magisk, SuperSU, LineageOS su)
-- **Architectures**: ARM, ARM64, x86, x86_64, MIPS
+- **Architectures**: ARM, ARM64, x86, x86_64
 - **Storage**: ~15MB app + ~5MB for binaries
 
 ### 🔧 **Root Methods Supported**

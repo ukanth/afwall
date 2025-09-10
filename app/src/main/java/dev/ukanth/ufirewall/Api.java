@@ -2389,8 +2389,9 @@ public final class Api {
     public static boolean assertBinaries(Context ctx, boolean showErrors) {
 
         int currentVer = getPackageVersion(ctx);
+        boolean wasAlreadyInstalled = (G.appVersion() == currentVer);
 
-        if (G.appVersion() == currentVer) {
+        if (wasAlreadyInstalled) {
             // The version hasn't changed: Check if binaries are still functional
             if (verifyBinaries(ctx)) {
                 return true;
@@ -2401,7 +2402,8 @@ public final class Api {
 
         String abi = getAbi();
 
-        Log.d(TAG, "Installing binaries for " + abi + "...");
+        Log.d(TAG, "Installing binaries for " + abi + " (currentVer=" + currentVer + 
+                  ", storedVer=" + G.appVersion() + ", wasAlreadyInstalled=" + wasAlreadyInstalled + ")...");
 
         if (!installBinariesForAbi(ctx, abi))
         {
@@ -2419,7 +2421,13 @@ public final class Api {
         }
 
         Log.d(TAG, "Installed binaries for " + abi + ".");
-        toast(ctx, ctx.getString(R.string.toast_bin_installed), Toast.LENGTH_SHORT);
+        
+        // Only show toast for actual new installations (not verification failures)
+        if (!wasAlreadyInstalled) {
+            toast(ctx, ctx.getString(R.string.toast_bin_installed), Toast.LENGTH_SHORT);
+        } else {
+            Log.d(TAG, "Binaries reinstalled due to verification failure (no toast shown)");
+        }
 
         G.appVersion(currentVer); // This indicates that the installation of the binaries for this version was successful.
 

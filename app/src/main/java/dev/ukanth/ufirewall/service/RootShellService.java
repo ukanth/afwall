@@ -388,12 +388,12 @@ public class RootShellService extends Service implements Cloneable {
      * Only fallback once per command to avoid infinite loops
      */
     private boolean shouldFallbackToSystem(RootCommand state) {
-        if (state.lastCommand == null) {
+        if (state.lastCommand == null || mContext == null) {
             return false;
         }
         
         // Check if command contains built-in iptables path and hasn't been fallback attempted
-        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        String builtinDir = mContext.getDir("bin", 0).getAbsolutePath();
         return state.lastCommand.contains(builtinDir) && 
                !state.lastCommand.contains("__FALLBACK_ATTEMPTED__");
     }
@@ -402,11 +402,11 @@ public class RootShellService extends Service implements Cloneable {
      * Replace built-in iptables/ip6tables paths with system paths in the current command
      */
     private void fallbackToSystemBinary(RootCommand state) {
-        if (state.lastCommand == null) {
+        if (state.lastCommand == null || mContext == null) {
             return;
         }
         
-        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        String builtinDir = mContext.getDir("bin", 0).getAbsolutePath();
         String originalCommand = state.lastCommand;
         
         // Try to find system iptables
