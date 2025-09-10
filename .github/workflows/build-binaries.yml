@@ -106,8 +106,28 @@ jobs:
         # Fix the cross-compiler prefix for NDK
         sed -i 's/CONFIG_CROSS_COMPILER_PREFIX=.*/CONFIG_CROSS_COMPILER_PREFIX=""/' .config
         
-        # Process the config
+        # Process the initial config
         yes '' | make ARCH=${{ matrix.arch }} oldconfig
+        
+        # Disable problematic applets for Android bionic libc compatibility
+        echo "Disabling swap-related applets for Android compatibility"
+        sed -i 's/CONFIG_SWAPON=y/# CONFIG_SWAPON is not set/g' .config
+        sed -i 's/CONFIG_SWAPOFF=y/# CONFIG_SWAPOFF is not set/g' .config
+        # Also disable any swap-related features that might pull these in
+        sed -i 's/CONFIG_FEATURE_SWAPON_DISCARD=y/# CONFIG_FEATURE_SWAPON_DISCARD is not set/g' .config
+        sed -i 's/CONFIG_FEATURE_SWAPON_PRI=y/# CONFIG_FEATURE_SWAPON_PRI is not set/g' .config
+        
+        # Reprocess config after disabling
+        yes '' | make ARCH=${{ matrix.arch }} oldconfig
+        
+        # Fix x86 register pressure issue in TLS code
+        if [ "${{ matrix.arch }}" = "x86" ]; then
+          echo "Disabling TLS features for x86 due to register pressure"
+          sed -i 's/CONFIG_FEATURE_TLS_SHA1=y/# CONFIG_FEATURE_TLS_SHA1 is not set/g' .config
+          sed -i 's/CONFIG_TLS=y/# CONFIG_TLS is not set/g' .config
+          sed -i 's/CONFIG_FEATURE_WGET_HTTPS=y/# CONFIG_FEATURE_WGET_HTTPS is not set/g' .config
+          yes '' | make ARCH=${{ matrix.arch }} oldconfig
+        fi
         
         # Show what's enabled for debugging
         echo "=== Enabled applets that AFWall+ needs ==="
