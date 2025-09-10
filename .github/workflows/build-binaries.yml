@@ -273,7 +273,17 @@ jobs:
         # Set Android NDK cross-compilation environment
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option"
+        
+        # Set architecture-specific TLS flags and fix lock path
+        case "${{ matrix.arch }}" in
+          arm64)
+            export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -fno-emulated-tls -DXTABLES_LOCK_DIR='\"/data/local/tmp\"'"
+            ;;
+          *)
+            export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -DXTABLES_LOCK_DIR='\"/data/local/tmp\"'"
+            ;;
+        esac
+        
         export LDFLAGS="-static"
         export PKG_CONFIG_PATH=""
         
@@ -296,7 +306,17 @@ jobs:
         
         export CC="${NDK_CC}"
         export STRIP="${NDK_STRIP}"
-        export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option"
+        
+        # Set architecture-specific TLS flags and fix lock path
+        case "${{ matrix.arch }}" in
+          arm64)
+            export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -fno-emulated-tls -DXTABLES_LOCK_DIR='\"/data/local/tmp\"'"
+            ;;
+          *)
+            export CFLAGS="-static -Os -DANDROID -D_GNU_SOURCE -Wno-logical-op -Wno-unknown-warning-option -DXTABLES_LOCK_DIR='\"/data/local/tmp\"'"
+            ;;
+        esac
+        
         export LDFLAGS="-static"
         
         # Remove only the cgroup extension (has O_PATH macro conflict)
@@ -304,6 +324,12 @@ jobs:
         
         # Fix prioritynames issue in LOG extension for Android compatibility
         sed -i 's/prioritynames\[i\]\.c_name/0/g; s/prioritynames\[i\]\.c_val/0/g' extensions/libxt_LOG.c
+        
+        # Fix hardcoded lock path for Android - replace /run/xtables.lock with /data/local/tmp/xtables.lock
+        find . -name "*.c" -o -name "*.h" | xargs grep -l "/run/xtables.lock" | while read file; do
+          sed -i 's|/run/xtables\.lock|/data/local/tmp/xtables.lock|g' "$file"
+          echo "Fixed lock path in $file"
+        done
         
         # Build
         make -j$(nproc) V=1
@@ -386,12 +412,23 @@ jobs:
         # Minimal UDP header fix - just add the missing include
         sed -i '1i#include <netinet/udp.h>' nflog.c
         
-        # Use NDK for cross-compilation 
-        ${NDK_CC} -static \
-          -I. -Ilibmnl \
-          -D_GNU_SOURCE \
-          -o nflog_${{ matrix.arch }} \
-          nflog.c attr.c callback.c nlmsg.c socket.c
+        # Use NDK for cross-compilation with architecture-specific flags
+        case "${{ matrix.arch }}" in
+          arm64)
+            ${NDK_CC} -static -fno-emulated-tls \
+              -I. -Ilibmnl \
+              -D_GNU_SOURCE \
+              -o nflog_${{ matrix.arch }} \
+              nflog.c attr.c callback.c nlmsg.c socket.c
+            ;;
+          *)
+            ${NDK_CC} -static \
+              -I. -Ilibmnl \
+              -D_GNU_SOURCE \
+              -o nflog_${{ matrix.arch }} \
+              nflog.c attr.c callback.c nlmsg.c socket.c
+            ;;
+        esac
         
         # Verify the binary
         file nflog_${{ matrix.arch }}
@@ -452,8 +489,15 @@ jobs:
       run: |
         cd external/run_pie
         
-        # Compile run_pie using Android NDK
-        ${NDK_CC} -static -ldl -o run_pie_${{ matrix.arch }} run_pie.c
+        # Compile run_pie using Android NDK with architecture-specific flags
+        case "${{ matrix.arch }}" in
+          arm64)
+            ${NDK_CC} -static -fno-emulated-tls -ldl -o run_pie_${{ matrix.arch }} run_pie.c
+            ;;
+          *)
+            ${NDK_CC} -static -ldl -o run_pie_${{ matrix.arch }} run_pie.c
+            ;;
+        esac
         
         # Verify the binary
         file run_pie_${{ matrix.arch }}
