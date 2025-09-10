@@ -411,10 +411,7 @@ jobs:
       run: |
         cd external/nflog
         
-        # Minimal UDP header fix - just add the missing include
-        sed -i '1i#include <netinet/udp.h>' nflog.c
-        
-        # Use GCC cross-compilers (revert from NDK to fix TLS issues)
+        # Use GCC cross-compilers (revert from NDK to fix TLS issues) - no header fixes needed
         ${{ matrix.cc }} -static \
           -I. -Ilibmnl \
           -D_GNU_SOURCE \
