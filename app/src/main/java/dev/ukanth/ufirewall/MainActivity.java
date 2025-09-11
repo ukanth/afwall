@@ -234,6 +234,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
+            // Ensure FirewallService is started if firewall is enabled
+            if (Api.isEnabled(this)) {
+                Api.setEnabled(this, true, false);
+            }
         }
         registerUIbroadcast4();
         registerUIbroadcast6();
@@ -386,10 +390,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void registerNetworkObserver() {
-        startService(new Intent(getBaseContext(), FirewallService.class));
         //start log service
         if (G.enableLogService()) {
-            startService(new Intent(getBaseContext(), LogService.class));
+            Intent logIntent = new Intent(getBaseContext(), LogService.class);
+            startService(logIntent);
         }
     }
 
@@ -2694,6 +2698,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startRootShell();
                 new SecurityUtil(MainActivity.this).passCheck();
                 registerNetworkObserver();
+                // Ensure FirewallService is started if firewall is enabled
+                if (Api.isEnabled(MainActivity.this)) {
+                    Api.setEnabled(MainActivity.this, true, false);
+                }
             }
         }
     }

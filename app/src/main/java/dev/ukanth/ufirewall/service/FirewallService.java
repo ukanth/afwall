@@ -80,14 +80,16 @@ public class FirewallService extends Service {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
-            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
             assert manager != null;
             if(G.getNotificationPriority() == 0) {
                 notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
+            } else {
+                notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
             }
             notificationChannel.setSound(null, null);
             notificationChannel.enableLights(false);
-            notificationChannel.setShowBadge(false);
+            notificationChannel.setShowBadge(true);
             notificationChannel.enableVibration(false);
             manager.createNotificationChannel(notificationChannel);
         }
@@ -150,19 +152,20 @@ public class FirewallService extends Service {
                 .setChannelId(NOTIFICATION_CHANNEL_ID)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setContentText(notificationText)
                 .setSmallIcon(icon)
                 .setOngoing(true)
                 .build();
 
-        //if(G.activeNotification()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(NOTIFICATION_ID, notification, FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
         } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
             startForeground(NOTIFICATION_ID, notification);
         } else {
-            manager.notify(NOTIFICATION_ID, notification);
+            if(G.activeNotification()) {
+                manager.notify(NOTIFICATION_ID, notification);
+            }
         }
         /*} else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

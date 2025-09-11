@@ -420,6 +420,7 @@ public class LogService extends Service {
         notificationBuilder.setContentIntent(notifyPendingIntent);
     }
 
+
     private void initiateLogWatcher(String logCommand) {
         // Clear/remove existing tasks
         if(executorService != null) {
@@ -457,24 +458,38 @@ public class LogService extends Service {
                     .add(logCommand)
                     .to(callbackList)
                     .submit(executorService, out -> {
-                        Log.i(TAG, "Log watcher finished with code: " + out.getCode());
-                        
-                        // Handle different exit scenarios
-                        if (out.getCode() == 0) {
-                            // Normal termination, try restart after delay
-                            Log.w(TAG, "Log watcher terminated normally, restarting...");
-                            restartWatcher(logPath);
-                        } else if (out.getCode() == 130) {
-                            // SIGINT - likely manual termination
-                            Log.i(TAG, "Log watcher interrupted (SIGINT)");
-                        } else if (out.getCode() == 137) {
-                            // SIGKILL - system killed the process
-                            Log.w(TAG, "Log watcher killed by system, restarting...");
-                            restartWatcher(logPath);
-                        } else {
-                            // Other error codes, try fallback method
-                            Log.w(TAG, "Log watcher failed with code " + out.getCode() + ", trying fallback");
-                            tryFallbackLogMethod();
+                        try {
+                            Log.i(TAG, "Log watcher finished with code: " + out.getCode());
+                            
+                            // Don't restart if service is shutting down
+                            if (isShuttingDown) {
+                                Log.i(TAG, "Service is shutting down, not restarting log watcher");
+                                return;
+                            }
+                            
+                            // Handle different exit scenarios
+                            if (out.getCode() == 0) {
+                                // Normal termination, try restart after delay
+                                Log.w(TAG, "Log watcher terminated normally, restarting...");
+                                restartWatcher(logPath);
+                            } else if (out.getCode() == 130) {
+                                // SIGINT - likely manual termination
+                                Log.i(TAG, "Log watcher interrupted (SIGINT)");
+                            } else if (out.getCode() == 137) {
+                                // SIGKILL - system killed the process
+                                Log.w(TAG, "Log watcher killed by system, restarting...");
+                                restartWatcher(logPath);
+                            } else {
+                                // Other error codes, try fallback method
+                                Log.w(TAG, "Log watcher failed with code " + out.getCode() + ", trying fallback");
+                                tryFallbackLogMethod();
+                            }
+                        } catch (Exception e) {
+                            if (e.getMessage() != null && e.getMessage().contains("RejectedExecutionException")) {
+                                Log.w(TAG, "Caught SuperUser library RejectedExecutionException during app shutdown, ignoring to prevent crash");
+                            } else {
+                                Log.e(TAG, "Error in log watcher completion callback: " + e.getMessage(), e);
+                            }
                         }
                     });
             } catch(Exception e) {

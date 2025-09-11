@@ -137,7 +137,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String ACTIVE_RULES = "activeRules";
     private static final String ADD_DELAY = "addDelay";
 
-    //private static final String ACTIVE_NOTIFICATION = "activeNotification";
+    private static final String ACTIVE_NOTIFICATION = "activeNotification";
     private static final String PROFILE_SWITCH = "applyOnSwitchProfiles";
     private static final String LOG_TARGET = "logTarget";
     private static final String LOG_TARGETS = "logTargets";
@@ -190,7 +190,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String INITPATH = "initPath";
 
     private static final String AFWALL_PROFILE = "AFWallProfile";
-    //private static final String SHOW_LOG_TOAST = "showLogToasts";
     public static String[] profiles = {"AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3};
     public static String[] default_profiles = {"AFWallProfile1", "AFWallProfile2", "AFWallProfile3"};
     public static Context ctx;
@@ -393,7 +392,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-   /* public static boolean activeNotification() {
+    public static boolean activeNotification() {
         return gPrefs.getBoolean(ACTIVE_NOTIFICATION, true);
     }
 
@@ -402,14 +401,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static boolean showLogToasts() {
-        return gPrefs.getBoolean(SHOW_LOG_TOAST, false);
-    }
-
-    public static boolean showLogToasts(boolean val) {
-        gPrefs.edit().putBoolean(SHOW_LOG_TOAST, val).commit();
-        return val;
-    }*/
 
     public static boolean fixLeak() {
         return gPrefs.getBoolean(FIX_START_LEAK, false);
