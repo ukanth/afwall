@@ -8,8 +8,8 @@ android {
         applicationId "dev.ukanth.ufirewall"
         //applicationId "dev.ukanth.ufirewall.donate"
         minSdkVersion 21
-        versionCode 20250903
-        versionName "4.0.0-BETA-1"
+        versionCode 20251001
+        versionName "4.0.0"
         buildConfigField 'boolean', 'DONATE', 'false'
         vectorDrawables.useSupportLibrary = true
         ndk {
