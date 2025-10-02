@@ -461,54 +461,72 @@ public class SecPreferenceFragment extends PreferenceFragment implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        globalContext = null;
+        enableAdminPref = null;
+        enableDeviceCheckPref = null;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (!isAdded()) return;
         setupEnableAdmin(findPreference("enableAdmin"));
         switch (requestCode) {
-
             case REQ_CREATE_PATTERN: {
-                ListPreference itemList = (ListPreference) findPreference("passSetting");
-                if (resultCode == getActivity().RESULT_OK) {
-                    char[] pattern = data.getCharArrayExtra(
-                            EXTRA_PATTERN);
-                    final SharedPreferences.Editor editor = G.sPrefs.edit();
-                    editor.putString("LockPassword", new String(pattern));
-                    editor.commit();
-                    G.enableDeviceCheck(false);
-                    //enable
-                    if (itemList != null) {
-                        final ListPreference patternMaxTry = (ListPreference) findPreference("patternMax");
-                        final CheckBoxPreference stealthMode = (CheckBoxPreference) findPreference("stealthMode");
-                        if (stealthMode != null) stealthMode.setEnabled(true);
-                        if (patternMaxTry != null) patternMaxTry.setEnabled(true);
-                    }
-
-                } else {
-                    itemList = (ListPreference) findPreference("passSetting");
-                    if (itemList != null) {
-                        itemList.setValueIndex(0);
-                    }
-                }
+                handleCreatePatternResult(resultCode, data);
                 break;
             }
-
             case REQ_ENTER_PATTERN: {
-                ListPreference itemList = (ListPreference) findPreference("passSetting");
-                if (resultCode == getActivity().RESULT_OK) {
-                    final SharedPreferences.Editor editor = G.sPrefs.edit();
-                    editor.putString("LockPassword", "");
-                    editor.commit();
-                    itemList = (ListPreference) findPreference("passSetting");
-                    if (itemList != null) {
-                        itemList.setValueIndex(0);
-                    }
-                } else {
-                    if (itemList != null) {
-                        itemList.setValueIndex(2);
-                        G.enableDeviceCheck(false);
-                    }
-                }
+                handleEnterPatternResult(resultCode);
             }
+        }
+    }
+
+    private void handleCreatePatternResult(int resultCode, Intent data) {
+        ListPreference itemList = (ListPreference) findPreference("passSetting");
+        if (resultCode == getActivity().RESULT_OK && data != null) {
+            char[] pattern = data.getCharArrayExtra(EXTRA_PATTERN);
+            if (pattern != null) {
+                savePattern(new String(pattern));
+                enablePatternFeatures();
+            }
+        } else {
+            resetPatternSelection(itemList);
+        }
+    }
+
+    private void handleEnterPatternResult(int resultCode) {
+        ListPreference itemList = (ListPreference) findPreference("passSetting");
+        if (resultCode == getActivity().RESULT_OK) {
+            G.sPrefs.edit().putString("LockPassword", "").apply();
+            if (itemList != null) {
+                itemList.setValueIndex(0);
+            }
+        } else {
+            if (itemList != null) {
+                itemList.setValueIndex(2);
+                G.enableDeviceCheck(false);
+            }
+        }
+    }
+
+    private void savePattern(String pattern) {
+        G.sPrefs.edit().putString("LockPassword", pattern).apply();
+        G.enableDeviceCheck(false);
+    }
+
+    private void enablePatternFeatures() {
+        final ListPreference patternMaxTry = (ListPreference) findPreference("patternMax");
+        final CheckBoxPreference stealthMode = (CheckBoxPreference) findPreference("stealthMode");
+        if (stealthMode != null) stealthMode.setEnabled(true);
+        if (patternMaxTry != null) patternMaxTry.setEnabled(true);
+    }
+
+    private void resetPatternSelection(ListPreference itemList) {
+        if (itemList != null) {
+            itemList.setValueIndex(0);
         }
     }
 }
