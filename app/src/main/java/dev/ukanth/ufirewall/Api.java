@@ -770,25 +770,60 @@ public final class Api {
     }
 
     private static String sanitizeRule(String rule) {
-        // Remove potentially dangerous characters and commands
-        if (rule.contains("&&") || rule.contains("||") || rule.contains(";") ||
-                rule.contains("|") || rule.contains("`") || rule.contains("$") ||
-                rule.contains("rm ") || rule.contains("dd ") || rule.contains("chmod ") ||
-                rule.contains("chown ") || rule.contains("su ") || rule.contains("sudo ")) {
-            Log.w(TAG, "Rejecting potentially dangerous custom rule: " + rule);
+        String trimmed = rule.trim();
+
+        // Check for dangerous command chaining/substitution
+        if (trimmed.contains("&&") || trimmed.contains("||") || trimmed.contains(";") ||
+                trimmed.contains("|") || trimmed.contains("`")) {
+            Log.w(TAG, "Rejecting potentially dangerous custom rule (command chaining): " + rule);
             return null;
         }
 
-        // Only allow basic iptables/ip6tables commands
-        if (!rule.startsWith("iptables ") && !rule.startsWith("ip6tables ") &&
-                !rule.startsWith("-A ") && !rule.startsWith("-I ") &&
-                !rule.startsWith("-D ") && !rule.startsWith("-F ") &&
-                !rule.startsWith("-P ") && !rule.startsWith("-N ")) {
+        // Check for dangerous commands
+        if (trimmed.contains("rm ") || trimmed.contains("dd ") ||
+                trimmed.contains("chmod ") || trimmed.contains("chown ") ||
+                trimmed.contains("su ") || trimmed.contains("sudo ")) {
+            Log.w(TAG, "Rejecting potentially dangerous custom rule (system modification): " + rule);
+            return null;
+        }
+
+        // Allow $ only for whitelisted variables
+        if (trimmed.contains("$")) {
+            // Check if it's using allowed variables
+            String tempRule = trimmed;
+            tempRule = tempRule.replace("$IPTABLES", "");
+            tempRule = tempRule.replace("$IP6TABLES", "");
+            tempRule = tempRule.replace("$BUSYBOX", "");
+            tempRule = tempRule.replace("$IPV6", "");
+
+            if (tempRule.contains("$")) {
+                Log.w(TAG, "Rejecting custom rule with non-whitelisted variables: " + rule);
+                return null;
+            }
+        }
+
+        // Allow file sourcing with validation
+        if (trimmed.startsWith(". ")) {
+            String filePath = trimmed.substring(2).trim();
+            // Basic path validation - prevent directory traversal
+            if (filePath.contains("..") || filePath.contains(";") || filePath.contains("|")) {
+                Log.w(TAG, "Rejecting potentially dangerous file path: " + rule);
+                return null;
+            }
+            return trimmed; // Allow file sourcing
+        }
+
+        // Allow basic iptables commands (keep existing check)
+        if (!trimmed.startsWith("iptables ") && !trimmed.startsWith("ip6tables ") &&
+                !trimmed.startsWith("$IPTABLES ") && !trimmed.startsWith("$IP6TABLES ") &&
+                !trimmed.startsWith("-A ") && !trimmed.startsWith("-I ") &&
+                !trimmed.startsWith("-D ") && !trimmed.startsWith("-F ") &&
+                !trimmed.startsWith("-P ") && !trimmed.startsWith("-N ")) {
             Log.w(TAG, "Rejecting non-iptables rule: " + rule);
             return null;
         }
 
-        return rule;
+        return trimmed;
     }
 
     private static void addCustomRules(String prefName, List<String> cmds) {
