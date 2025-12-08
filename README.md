@@ -21,9 +21,11 @@ AFWall+ is developed and maintained by volunteers in their free time. If you fin
 **Donation Options:**
 - **PayPal**: [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6E4VZTULRB8GU)
 - **Google Play**: Purchase the [unlocker key](https://play.google.com/store/apps/details?id=dev.ukanth.ufirewall.donate) for additional features
-- **Amazon Gift Cards**: `cumakt+amazon@gmail.com`
+- **Amazon Gift Cards**: `cumakt+amazon at gmail.com` (not preferred)
 - **Bitcoin**: `bc1q54nf3y9zmdcpasxx9sywkprd6309rfhav3mape`
 - **Ethereum**: `0x5e65649C2B26eD816fCeD25a8E507C90D4b1D697`
+  
+Once donated please send a copy of receipt to contact@portgenix.com to get a unlocker. Kindly expect 1-2 days for the response. 
 
 ### 🌟 **Other Ways to Help**
 - ⭐ Star this repository  
