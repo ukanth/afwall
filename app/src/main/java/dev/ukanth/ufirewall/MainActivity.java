@@ -1031,6 +1031,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             apps2 = apps;
         } else if (isResultsFound || searchApp.size() > 0) {
             apps2 = searchApp;
+        } else {
+            apps2 = new ArrayList<>();
         }
         // Sort applications - selected first, then alphabetically
         try {
