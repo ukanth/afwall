@@ -322,7 +322,7 @@ public class LogInfo {
                 address.append(":");
                 address.append(logInfo.dpt);
                 logInfo.type = type;
-                if (G.showHost()) {
+                if (G.showHost() && (G.isDoKey(ctx) || G.isDonate())) {
                     try {
                         String add  = InetAddress.getByName(logInfo.dst).getHostName();
                         if (add != null) {

@@ -239,13 +239,13 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             if (logPresent != null && logPresent) {
                 recyclerViewAdapter.notifyDataSetChanged();
                 recyclerView.setVisibility(View.VISIBLE);
-                mSwipeLayout.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
             } else {
-                mSwipeLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
+            // Keep SwipeRefreshLayout visible to allow pull-to-refresh even when log is empty
+            mSwipeLayout.setVisibility(View.VISIBLE);
 
             recyclerView.getRecycledViewPool().clear();
             recyclerView.setRecycledViewPool(new RecyclerView.RecycledViewPool());
@@ -376,7 +376,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        (new CollectLog()).setContext(this).run();
+        (new CollectLog()).setContext(this).execute();
     }
 
 	/*@Override
