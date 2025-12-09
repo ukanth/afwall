@@ -1909,7 +1909,22 @@ public final class Api {
                 if (app == null) {
                     app = new PackageInfoData();
                     app.uid = apinfo.uid;
-                    app.installTime = new File(apinfo.sourceDir).lastModified();
+
+                    // Handle null sourceDir to prevent NullPointerException
+                    if (apinfo.sourceDir != null) {
+                        app.installTime = new File(apinfo.sourceDir).lastModified();
+                    } else {
+                        // Try to get install time from PackageInfo as fallback
+                        try {
+                            PackageInfo pkgInfo = pkgmanager.getPackageInfo(apinfo.packageName, 0);
+                            app.installTime = pkgInfo.firstInstallTime;
+                        } catch (PackageManager.NameNotFoundException e) {
+                            // Skip this app if we can't get package info
+                            Log.w(TAG, "Skipping app with null sourceDir and no package info: " + apinfo.packageName);
+                            continue;
+                        }
+                    }
+
                     app.names = new ArrayList<String>();
                     app.names.add(name);
                     app.appinfo = apinfo;
