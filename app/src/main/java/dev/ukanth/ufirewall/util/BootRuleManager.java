@@ -94,7 +94,9 @@ public class BootRuleManager {
      */
     private static void applyInitialBootRules(Context context) {
         Log.i(TAG, "Applying initial boot rules");
-        
+
+        InterfaceTracker.getCurrentCfg(context, true);
+
         InterfaceTracker.applyBootRules(InterfaceTracker.BOOT_COMPLETED + "_INITIAL");
         initialBootRulesApplied.set(true);
         
@@ -178,7 +180,7 @@ public class BootRuleManager {
             Log.d(TAG, "Network change during boot delay period (" + reason + ") - allowing limited processing");
             // Allow processing but don't trigger a full rule reapplication
             // The delayed boot rules will handle the final state
-            return false;
+            return true;
         }
         
         // Boot rules applied but no delay configured, allow network change processing
