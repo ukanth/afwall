@@ -205,6 +205,7 @@ public class RulesActivity extends DataDumpActivity {
                 ret.append(getFileInfo("/system/bin/su"));
                 ret.append(getFileInfo("/system/xbin/su"));
                 ret.append(getFileInfo("/data/magisk/magisk"));
+                ret.append(getFileInfo("/data/adb/magisk"));
                 ret.append(getFileInfo("/system/app/Superuser.apk"));
 
                 PackageManager pm = ctx.getPackageManager();
