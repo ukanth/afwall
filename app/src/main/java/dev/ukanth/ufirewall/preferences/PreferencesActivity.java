@@ -31,8 +31,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -70,9 +68,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     private RxEvent rxEvent;
     private Disposable disposable;
-
-
-
 
     private void initTheme() {
         switch(G.getSelectedTheme()) {
@@ -113,11 +108,14 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         // set language
         Api.updateLanguage(getApplicationContext(), G.locale());
         initTheme();
-
         super.onCreate(savedInstanceState);
+
         prepareLayout();
         subscribe();
+        handleIntentExtras();
+    }
 
+    private void handleIntentExtras() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             Object data = bundle.get("validate");
@@ -179,6 +177,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
         mToolBar = toolbarContainer.findViewById(R.id.toolbar);
         mToolBar.setTitle(getTitle() + " " + getString(R.string.preferences));
+        mToolBar.setNavigationIcon(androidx.appcompat.content.res.AppCompatResources.getDrawable(this,
+                androidx.appcompat.R.drawable.abc_ic_ab_back_material));
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,7 +186,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             }
         });
     }
-
 
     @Override
     protected void onApplyThemeResource(Resources.Theme theme, int resid, boolean first) {
@@ -319,34 +318,43 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             rxEvent.publish(new RulesEvent("", ctx));
         }
 
+        handleNotificationChanges(sharedPreferences, key, ctx);
+        handleLogServiceChanges(sharedPreferences, key, ctx);
+        handleProfileAndThemeChanges(key, ctx, isRefreshRequired);
+
         /*if (key.equals("logDmesg")) {
             rxEvent.publish(new LogChangeEvent("", ctx));
         }*/
+    }
 
+    private void handleNotificationChanges(SharedPreferences prefs, String key, Context ctx) {
         if (key.equals("notification_priority")) {
             NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
             Api.updateNotification(Api.isEnabled(ctx), ctx);
         }
 
-        if(key.equals("activeNotification")) {
-            boolean enabled = sharedPreferences.getBoolean(key, false);
-            if(!enabled) {
-                NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.cancelAll();
+        if (key.equals("activeNotification")) {
+            boolean enabled = prefs.getBoolean(key, false);
+            if (!enabled) {
+                NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+                nm.cancelAll();
             } else {
                 Api.updateNotification(Api.isEnabled(ctx), ctx);
             }
         }
+    }
 
+    private void handleLogServiceChanges(SharedPreferences prefs, String key, Context ctx) {
         if(key.equals("logTarget")) {
             // Log target changes are now handled by LogPreferenceFragment
             // This should not be called anymore due to the OnPreferenceChangeListener
-            Log.d("PreferencesActivity", "logTarget preference changed: " + sharedPreferences.getString(key, ""));
+            Log.d("PreferencesActivity", "logTarget preference changed: " + prefs.getString(key, ""));
         }
+
         if (key.equals("enableLogService")) {
             if(G.logTarget() !=null && !G.logTarget().trim().isEmpty()) {
-                boolean enabled = sharedPreferences.getBoolean(key, false);
+                boolean enabled = prefs.getBoolean(key, false);
                 if (enabled) {
                     Toast.makeText(getApplicationContext(), getString(R.string.log_service_start), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(ctx, LogService.class);
@@ -361,9 +369,13 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 Toast.makeText(getApplicationContext(), getString(R.string.log_service_select), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void handleProfileAndThemeChanges(String key, Context ctx, boolean isRefreshRequired) {
         if (key.equals("enableMultiProfile")) {
             G.reloadProfile();
         }
+
         if (key.equals("theme")) {
             initTheme();
             recreate();
@@ -379,7 +391,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
     }
 
-
     @Override
     public void onDestroy() {
         if (rxEvent != null && disposable != null) {
@@ -392,6 +403,5 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(Api.updateBaseContextLocale(base));
     }
-
 
 }
