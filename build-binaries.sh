@@ -471,6 +471,7 @@ build_iptables() {
     export PKG_CONFIG_PATH=""
 
     # Configure
+    ./autogen.sh
     ./configure \
         --host="${NDK_TARGET}" \
         --enable-static \
