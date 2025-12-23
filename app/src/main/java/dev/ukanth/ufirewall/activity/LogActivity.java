@@ -191,6 +191,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                 onPreExecute();
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 executor.execute(this);
+                executor.shutdown();
             });
         }
 

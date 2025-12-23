@@ -451,6 +451,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             // Do some stuff
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(new Task(this));
+            executor.shutdown();
         } else {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
