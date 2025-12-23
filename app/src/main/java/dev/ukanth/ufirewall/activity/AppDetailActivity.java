@@ -146,6 +146,9 @@ public class AppDetailActivity extends AppCompatActivity {
                 setTheme(R.style.AppLightTheme);
                 //set other colors
                 break;
+            case "LHC":
+                setTheme(R.style.AppLightHighContrastTheme);
+                break;
             case "B":
                 setTheme(R.style.AppBlackTheme);
                 break;

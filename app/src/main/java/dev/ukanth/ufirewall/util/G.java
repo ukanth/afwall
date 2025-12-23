@@ -596,7 +596,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static int userColor() {
-        if (G.getSelectedTheme().equals("L")) {
+        if (G.getSelectedTheme().equals("L") || G.getSelectedTheme().equals("LHC")) {
             return Color.parseColor("#000000");
         } else {
             return Color.parseColor("#FFFFFF");
@@ -606,6 +606,9 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public static int sysColor() {
         if (G.getSelectedTheme().equals("L")) {
             return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#000000"));
+        } else if (G.getSelectedTheme().equals("LHC")) {
+            // High contrast: always black, no custom colors
+            return Color.parseColor("#000000");
         } else {
             return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58"));
         }

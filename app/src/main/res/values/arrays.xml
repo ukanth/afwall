@@ -208,12 +208,14 @@
     <string-array name="themeOptions">
         <item>Dark</item>
         <item>Light (Donate)</item>
+        <item>Light High Contrast (Donate)</item>
         <item>Black (Donate)</item>
     </string-array>
 
     <string-array name="themeValues">
         <item>D</item>
         <item>L</item>
+        <item>LHC</item>
         <item>B</item>
     </string-array>
 

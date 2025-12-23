@@ -66,6 +66,14 @@ public class ThemePreferenceFragment extends PreferenceFragment implements
                             G.getSelectedTheme("D");
                         }
                         break;
+                    case "LHC":
+                        if ((G.isDoKey(ctx) || isDonate())) {
+                            G.getInstance().setTheme(R.style.AppLightHighContrastTheme);
+                        } else {
+                            Api.toast(ctx, ctx.getText(R.string.donate_only), Toast.LENGTH_LONG);
+                            G.getSelectedTheme("D");
+                        }
+                        break;
                     case "B":
                         if ((G.isDoKey(ctx) || isDonate())) {
                             G.getInstance().setTheme(R.style.AppBlackTheme);

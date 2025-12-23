@@ -91,6 +91,9 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
             case "L":
                 setTheme(R.style.AppLightTheme);
                 break;
+            case "LHC":
+                setTheme(R.style.AppLightHighContrastTheme);
+                break;
             case "B":
                 setTheme(R.style.AppBlackTheme);
                 break;

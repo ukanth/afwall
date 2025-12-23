@@ -53,6 +53,9 @@ public class HelpActivity extends AppCompatActivity {
             case "L":
                 setTheme(R.style.AppLightTheme);
                 break;
+            case "LHC":
+                setTheme(R.style.AppLightHighContrastTheme);
+                break;
             case "B":
                 setTheme(R.style.AppBlackTheme);
                 break;

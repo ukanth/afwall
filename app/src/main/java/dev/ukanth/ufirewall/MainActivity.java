@@ -363,6 +363,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case "L":
                 setTheme(R.style.AppLightTheme);
                 break;
+            case "LHC":
+                setTheme(R.style.AppLightHighContrastTheme);
+                break;
             case "B":
                 setTheme(R.style.AppBlackTheme);
                 break;

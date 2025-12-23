@@ -288,6 +288,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         switch (G.getSelectedTheme()) {
             case "D" -> setTheme(R.style.AppDarkTheme);
             case "L" -> setTheme(R.style.AppLightTheme);
+            case "LHC" -> setTheme(R.style.AppLightHighContrastTheme);
             case "B" -> setTheme(R.style.AppBlackTheme);
         }
     }
