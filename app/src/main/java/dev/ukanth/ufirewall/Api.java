@@ -210,7 +210,7 @@ public final class Api {
     private static final int IPTABLES_TRY_AGAIN = 4;
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
-    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether", "-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+    private static final String[] staticChains = {"", "-input", "-localhost", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether", "-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
@@ -1041,6 +1041,12 @@ public final class Api {
 
             addInterfaceRouting(ctx, cmds, ipv6, chainName);
 
+            // Route loopback traffic to localhost chain for per-app localhost blocking
+            // This is checked before other interface routing
+            if (G.enableLAN()) {
+                cmds.add("-A " + chainName + " -o lo -j " + chainName + "-localhost");
+            }
+
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
             if (G.enableVPN()) {
                 // if !enableVPN then we ignore those interfaces (pass all traffic)
@@ -1155,6 +1161,23 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.tetherList, chainName + "-tether", whitelist);
             if (G.enableTor()) {
                 addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
+            }
+
+            // Add localhost blocking rules - apps with LAN permission can access localhost,
+            // others are blocked. This prevents cross-app localhost tracking (Issue #1421)
+            if (G.enableLAN()) {
+                // Allow apps in lanList to access localhost
+                for (Integer uid : ruleDataSet.lanList) {
+                    if (uid != null && uid >= 0) {
+                        cmds.add("-A " + chainName + "-localhost -m owner --uid-owner " + uid + " -j RETURN");
+                    }
+                }
+                // Allow root for system services that need localhost
+                cmds.add("-A " + chainName + "-localhost -m owner --uid-owner 0 -j RETURN");
+                // Allow shell for adb
+                cmds.add("-A " + chainName + "-localhost -m owner --uid-owner 2000 -j RETURN");
+                // Block all other apps from accessing localhost
+                cmds.add("-A " + chainName + "-localhost -j REJECT");
             }
             cmds.add("-P OUTPUT ACCEPT");
         } catch (Exception e) {
