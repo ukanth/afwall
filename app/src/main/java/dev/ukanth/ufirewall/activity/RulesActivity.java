@@ -193,8 +193,8 @@ public class RulesActivity extends DataDumpActivity {
         result.append("Bluetooth Tether status: ").append(cfg.tetherBluetoothStatusKnown ? (cfg.isBluetoothTethered ? "yes" : "no") : "unknown").append("\n");
         result.append("Usb Tether status: ").append(cfg.tetherUsbStatusKnown ? (cfg.isUsbTethered ? "yes" : "no") : "unknown").append("\n");
         result.append("Roam status: ").append(cfg.isRoaming ? "yes" : "no").append("\n");
-        result.append("IPv4 subnet: ").append(cfg.lanMaskV4).append("\n");
-        result.append("IPv6 subnet: ").append(cfg.lanMaskV6).append("\n");
+        result.append("IPv4 subnets: ").append(cfg.lanMaskV4.isEmpty() ? "none" : String.join(", ", cfg.lanMaskV4)).append("\n");
+        result.append("IPv6 subnets: ").append(cfg.lanMaskV6.isEmpty() ? "none" : String.join(", ", cfg.lanMaskV6)).append("\n");
 
         // filesystem calls can block, so run in another thread
         new AsyncTask<Void, Void, String>() {

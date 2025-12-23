@@ -883,22 +883,32 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isWifiTethered) {
+                // Support multiple LAN subnets (Issue #1362)
+                boolean hasSubnets = false;
                 if (ipv6) {
-                    if (!cfg.lanMaskV6.equals("")) {
-                        cmds.add("-A " + chainName + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + chainName + "-wifi-lan");
-                        cmds.add("-A " + chainName + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + chainName + "-wifi-wan");
+                    if (!cfg.lanMaskV6.isEmpty()) {
+                        for (String subnet : cfg.lanMaskV6) {
+                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
+                        }
+                        hasSubnets = true;
+                        // Route everything else to WAN
+                        cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
                     } else {
                         Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
                     }
                 } else {
-                    if (!cfg.lanMaskV4.equals("")) {
-                        cmds.add("-A " + chainName + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + chainName + "-wifi-lan");
-                        cmds.add("-A " + chainName + "-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j " + chainName + "-wifi-wan");
+                    if (!cfg.lanMaskV4.isEmpty()) {
+                        for (String subnet : cfg.lanMaskV4) {
+                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
+                        }
+                        hasSubnets = true;
+                        // Route everything else to WAN
+                        cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
                     } else {
                         Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
                     }
                 }
-                if (cfg.lanMaskV4.equals("") && cfg.lanMaskV6.equals("")) {
+                if (!hasSubnets) {
                     Log.i(TAG, "No ipaddress found for LAN");
                     // lets find one more time
                     //atleast allow internet - don't block completely

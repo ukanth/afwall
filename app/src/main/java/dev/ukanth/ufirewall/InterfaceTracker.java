@@ -334,13 +334,13 @@ public final class InterfaceTracker {
                         "usb-tethered: " + (newCfg.isUsbTethered ? "yes" : "no") + ")");
             }
 
-            if (!newCfg.lanMaskV4.equals("")) {
-                Log.i(TAG, "IPv4 LAN netmask on " + newCfg.wifiName + ": " + newCfg.lanMaskV4);
+            if (!newCfg.lanMaskV4.isEmpty()) {
+                Log.i(TAG, "IPv4 LAN netmasks on " + newCfg.wifiName + ": " + String.join(", ", newCfg.lanMaskV4));
             }
-            if (!newCfg.lanMaskV6.equals("")) {
-                Log.i(TAG, "IPv6 LAN netmask on " + newCfg.wifiName + ": " + newCfg.lanMaskV6);
+            if (!newCfg.lanMaskV6.isEmpty()) {
+                Log.i(TAG, "IPv6 LAN netmasks on " + newCfg.wifiName + ": " + String.join(", ", newCfg.lanMaskV6));
             }
-            if (newCfg.lanMaskV6.equals("") && newCfg.lanMaskV4.equals("")) {
+            if (newCfg.lanMaskV6.isEmpty() && newCfg.lanMaskV4.isEmpty()) {
                 Log.i(TAG, "No ipaddress found");
             }
         }
@@ -496,6 +496,7 @@ public final class InterfaceTracker {
                         continue;
                     ret.wifiName = intf.getName();
 
+                    // Collect ALL subnets from this interface (Issue #1362)
                     Iterator<InterfaceAddress> addrList = intf.getInterfaceAddresses().iterator();
                     while (addrList.hasNext()) {
                         InterfaceAddress addr = addrList.next();
@@ -503,15 +504,18 @@ public final class InterfaceTracker {
                         String mask = truncAfter(ip.getHostAddress(), "%") + "/" +
                                 addr.getNetworkPrefixLength();
 
-                        if(ret.lanMaskV4.isEmpty() || ret.lanMaskV6.isEmpty()) {
-                            if (ip instanceof Inet4Address) {
-                                ret.lanMaskV4 = mask;
-                            } else if (ip instanceof Inet6Address) {
-                                ret.lanMaskV6 = mask;
+                        // Add all unique subnets, not just the first one
+                        if (ip instanceof Inet4Address) {
+                            if (!ret.lanMaskV4.contains(mask)) {
+                                ret.lanMaskV4.add(mask);
+                            }
+                        } else if (ip instanceof Inet6Address) {
+                            if (!ret.lanMaskV6.contains(mask)) {
+                                ret.lanMaskV6.add(mask);
                             }
                         }
                     }
-                    if (ret.lanMaskV4.equals("") && ret.lanMaskV6.equals("")) {
+                    if (ret.lanMaskV4.isEmpty() && ret.lanMaskV6.isEmpty()) {
                         ret.noIP = true;
                     }
                 }
