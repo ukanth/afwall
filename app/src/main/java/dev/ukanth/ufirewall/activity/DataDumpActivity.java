@@ -54,10 +54,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 
 
@@ -393,10 +397,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         private final Context ctx;
         private final WeakReference<DataDumpActivity> activityReference;
         private final Handler handler = new Handler(Looper.getMainLooper());
+        private final File selectedDirectory;
 
         // only retain a weak reference to the activity
-        Task(DataDumpActivity context) {
+        Task(DataDumpActivity context, File directory) {
             this.ctx = context;
+            this.selectedDirectory = directory;
             activityReference = new WeakReference<>(context);
         }
 
@@ -406,13 +412,29 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             boolean res = false;
 
             try {
+                // Generate timestamped filename
+                String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(new Date());
+                String baseFileName = sdDumpFile.replace(".log", "");
+                String timestampedFileName = baseFileName + "-" + timestamp + ".log";
+
                 File file;
-                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                if (selectedDirectory != null) {
+                    // Use user-selected directory
+                    if (!selectedDirectory.exists()) {
+                        selectedDirectory.mkdirs();
+                    }
+                    file = new File(selectedDirectory, timestampedFileName);
+                } else if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
                     File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" );
                     dir.mkdirs();
-                    file = new File(dir, sdDumpFile);
+                    file = new File(dir, timestampedFileName);
                 } else{
-                    file = new File(ctx.getExternalFilesDir(null) + "/" + sdDumpFile) ;
+                    // Use Documents/AFWall directory for user-friendly access
+                    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "AFWall");
+                    if (!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    file = new File(dir, timestampedFileName);
                 }
                 output = new FileOutputStream(file);
                 output.write(dataText.getBytes());
@@ -446,21 +468,54 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     }
 
     private void exportToSD() {
+        try {
+            // Get default path for file dialog
+            File defaultPath;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                defaultPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "AFWall");
+            } else {
+                defaultPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
+            }
+            if (!defaultPath.exists()) {
+                defaultPath.mkdirs();
+            }
 
-        if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
-            // Do some stuff
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(new Task(this));
-            executor.shutdown();
-        } else {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // permissions have not been granted.
-                ActivityCompat.requestPermissions(DataDumpActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-            } else{
-                new Task(this).run();
+            // Show directory picker dialog
+            FileDialog fileDialog = new FileDialog(this, defaultPath, true);
+            fileDialog.setSelectDirectoryOption(true);
+            fileDialog.addDirectoryListener(directory -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    executor.execute(new Task(DataDumpActivity.this, directory));
+                    executor.shutdown();
+                } else {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(DataDumpActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                    } else {
+                        new Task(DataDumpActivity.this, directory).run();
+                    }
+                }
+            });
+            fileDialog.showDialog();
+        } catch (Exception e) {
+            // Fallback to default behavior if file dialog fails
+            Log.e(TAG, "FileDialog failed, using default path", e);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(new Task(this, null));
+                executor.shutdown();
+            } else {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(DataDumpActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                } else {
+                    new Task(this, null).run();
+                }
             }
         }
     }
