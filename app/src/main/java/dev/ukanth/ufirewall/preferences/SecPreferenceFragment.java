@@ -61,8 +61,6 @@ public class SecPreferenceFragment extends PreferenceFragment implements
     private ComponentName deviceAdmin;
     private DevicePolicyManager mDPM;
 
-    private Context globalContext = null;
-
     //private String passOption = "p0";
 
     public void setupEnableAdmin(Preference pref) {
@@ -83,8 +81,6 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         deviceAdmin = new ComponentName(this.getActivity()
                 .getApplicationContext(), AdminDeviceReceiver.class);
         super.onCreate(savedInstanceState);
-
-        globalContext = this.getActivity();
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.security_preferences);
@@ -118,8 +114,9 @@ public class SecPreferenceFragment extends PreferenceFragment implements
         if (Build.VERSION.SDK_INT >= 21) {
             //only for donate version
             if ((G.isDoKey(getActivity()) || G.isDonate())) {
-                if (globalContext != null) {
-                    KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
+                Context context = getActivity();
+                if (context != null) {
+                    KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(KEYGUARD_SERVICE);
                     //enable only when keyguard has set
                     if (keyguardManager.isKeyguardSecure()) {
                         enableDeviceCheckPref.setEnabled(true);
@@ -318,11 +315,15 @@ public class SecPreferenceFragment extends PreferenceFragment implements
     @TargetApi(Build.VERSION_CODES.M)
     private boolean canUserFingerPrint() {
         try {
-            KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
-            FingerprintManager fingerprintManager = (FingerprintManager) globalContext.getSystemService(FINGERPRINT_SERVICE);
+            Context context = getActivity();
+            if (context == null) {
+                return false;
+            }
+            KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(KEYGUARD_SERVICE);
+            FingerprintManager fingerprintManager = (FingerprintManager) context.getSystemService(FINGERPRINT_SERVICE);
 
             return fingerprintManager.isHardwareDetected() &&
-                    ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_FINGERPRINT) == PackageManager.PERMISSION_GRANTED &&
                     fingerprintManager.hasEnrolledFingerprints() &&
                     keyguardManager.isKeyguardSecure();
         } catch (Exception e) {
@@ -334,28 +335,32 @@ public class SecPreferenceFragment extends PreferenceFragment implements
     @TargetApi(Build.VERSION_CODES.M)
     private void checkFingerprintDeviceSupport() {
         // Initializing both Android Keyguard Manager and Fingerprint Manager
-        KeyguardManager keyguardManager = (KeyguardManager) globalContext.getSystemService(KEYGUARD_SERVICE);
-        FingerprintManager fingerprintManager = (FingerprintManager) globalContext.getSystemService(FINGERPRINT_SERVICE);
+        Context context = getActivity();
+        if (context == null) {
+            return;
+        }
+        KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(KEYGUARD_SERVICE);
+        FingerprintManager fingerprintManager = (FingerprintManager) context.getSystemService(FINGERPRINT_SERVICE);
         ListPreference itemList = (ListPreference) findPreference("passSetting");
 
         // Check whether the device has a Fingerprint sensor.
         if (!fingerprintManager.isHardwareDetected()) {
-            Api.toast(globalContext, getString(R.string.device_with_no_fingerprint_sensor));
+            Api.toast(context, getString(R.string.device_with_no_fingerprint_sensor));
             itemList.setValueIndex(0);
         } else {
             // Checks whether fingerprint permission is set on manifest
-            if (ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                Api.toast(globalContext, getString(R.string.fingerprint_permission_manifest_missing));
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                Api.toast(context, getString(R.string.fingerprint_permission_manifest_missing));
                 itemList.setValueIndex(0);
             } else {
                 // Check whether at least one fingerprint is registered
                 if (!fingerprintManager.hasEnrolledFingerprints()) {
-                    Api.toast(globalContext, getString(R.string.register_at_least_one_fingerprint));
+                    Api.toast(context, getString(R.string.register_at_least_one_fingerprint));
                     itemList.setValueIndex(0);
                 } else {
                     // Checks whether lock screen security is enabled or not
                     if (!keyguardManager.isKeyguardSecure()) {
-                        Api.toast(globalContext, getString(R.string.lock_screen_not_enabled));
+                        Api.toast(context, getString(R.string.lock_screen_not_enabled));
                         itemList.setValueIndex(0);
                     } else {
                         // Anything is ok
@@ -363,7 +368,7 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                             G.isFingerprintEnabled(true);
                             //make sure we set the index
                             itemList.setValueIndex(3);
-                            Api.toast(globalContext, getString(R.string.fingerprint_enabled_successfully));
+                            Api.toast(context, getString(R.string.fingerprint_enabled_successfully));
                         }
                         return;
                     }
@@ -430,16 +435,19 @@ public class SecPreferenceFragment extends PreferenceFragment implements
 
             final FingerprintUtil.FingerprintDialog dialog;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                dialog = new FingerprintUtil.FingerprintDialog(globalContext);
-                dialog.setOnFingerprintFailureListener(() -> {
-                    itemList.setValueIndex(3);
-                    dialog.dismiss();
-                });
-                dialog.setOnFingerprintSuccess(() -> {
-                    G.isFingerprintEnabled(false);
-                    Api.toast(globalContext, getString(R.string.fingerprint_disabled_successfully));
-                });
-                dialog.show();
+                Context context = getActivity();
+                if (context != null) {
+                    dialog = new FingerprintUtil.FingerprintDialog(context);
+                    dialog.setOnFingerprintFailureListener(() -> {
+                        itemList.setValueIndex(3);
+                        dialog.dismiss();
+                    });
+                    dialog.setOnFingerprintSuccess(() -> {
+                        G.isFingerprintEnabled(false);
+                        Api.toast(context, getString(R.string.fingerprint_disabled_successfully));
+                    });
+                    dialog.show();
+                }
             }
 
         }
@@ -463,7 +471,6 @@ public class SecPreferenceFragment extends PreferenceFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        globalContext = null;
         enableAdminPref = null;
         enableDeviceCheckPref = null;
     }
