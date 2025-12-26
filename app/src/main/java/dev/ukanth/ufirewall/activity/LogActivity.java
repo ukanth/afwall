@@ -176,12 +176,18 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     private class CollectLog implements Runnable {
         private Context context = null;
         MaterialDialog loadDialog = null;
+        private boolean fromSwipeRefresh = false;
 
         public CollectLog() {
         }
 
         public CollectLog setContext(Context context) {
             this.context = context;
+            return this;
+        }
+
+        public CollectLog setFromSwipeRefresh(boolean fromSwipe) {
+            this.fromSwipeRefresh = fromSwipe;
             return this;
         }
 
@@ -196,6 +202,10 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         }
 
         protected void onPreExecute() {
+            // Skip modal dialog if triggered by swipe refresh (animation already showing)
+            if (fromSwipeRefresh) {
+                return;
+            }
             loadDialog = new MaterialDialog.Builder(context).cancelable(false)
                     .title(getString(R.string.working))
                     .cancelable(false)
@@ -377,7 +387,8 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        (new CollectLog()).setContext(this).execute();
+        mSwipeLayout.setRefreshing(true);
+        (new CollectLog()).setContext(this).setFromSwipeRefresh(true).execute();
     }
 
 	/*@Override
