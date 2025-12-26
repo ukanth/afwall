@@ -1,6 +1,17 @@
 AFWall+ Changelog
 ==================
 
+AFWall+ v4.0.1
+
+    Fixed boot rules not being applied (#1438)
+    Fixed app search not working (#1445)
+    Fixed pull to refresh when list is empty (#1439)
+    Updated Magisk binary location (#1437)
+    Relaxed sanitize rule to allow existing custom rules
+    Added back button to PreferencesActivity
+    Optimized pattern handling and memory management
+    Added build scripts for F-Droid (#1441)
+
 AFWall+ v4.0.0
 
 🚀 Major Features & Enhancements
