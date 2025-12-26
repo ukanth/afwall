@@ -49,8 +49,22 @@
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textColorSecondary">@color/black</item>
 
+        <!-- Checkbox colors - pure black for maximum contrast -->
         <item name="colorControlNormal">@color/black</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/black</item>
+        <item name="android:colorControlNormal">@color/black</item>
+        <item name="android:colorControlActivated">@color/black</item>
         <item name="tint">@color/black</item>
+
+        <!-- Explicit checkbox style -->
+        <item name="checkboxStyle">@style/HighContrastCheckBox</item>
+    </style>
+
+    <!-- High contrast checkbox style for e-paper displays -->
+    <style name="HighContrastCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:buttonTint">@color/black</item>
+        <item name="buttonTint">@color/black</item>
     </style>
 
     <!-- Dark style for all standard Locale and Locale plug-in Activity instances -->

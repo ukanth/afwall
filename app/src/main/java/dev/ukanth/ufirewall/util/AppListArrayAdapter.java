@@ -40,9 +40,12 @@ import dev.ukanth.ufirewall.util.DataUsageParser;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.CompoundButtonCompat;
 
 public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
@@ -219,6 +222,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         if (G.enableTor()) {
             holder.box_tor = addSupport(holder.box_tor, holder.app, 3);
         }
+
+        // Apply high contrast checkbox tinting for e-paper displays
+        applyHighContrastCheckboxTint(holder);
 
         setupExpandableView(holder, convertView, position);
         addEventListenter(holder);
@@ -616,6 +622,40 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         CheckBox check = convertView.findViewById(id);
         check.setVisibility(View.GONE);
         return check;
+    }
+
+    /**
+     * Apply high contrast checkbox tinting for e-paper displays
+     */
+    private void applyHighContrastCheckboxTint(AppStateHolder holder) {
+        if (!"LHC".equals(G.getSelectedTheme())) {
+            return;
+        }
+
+        // Pure black color for maximum contrast on e-paper
+        ColorStateList colorStateList = ColorStateList.valueOf(Color.BLACK);
+
+        if (holder.box_wifi != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_wifi, colorStateList);
+        }
+        if (holder.box_3g != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_3g, colorStateList);
+        }
+        if (holder.box_roam != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_roam, colorStateList);
+        }
+        if (holder.box_vpn != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_vpn, colorStateList);
+        }
+        if (holder.box_tether != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_tether, colorStateList);
+        }
+        if (holder.box_lan != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_lan, colorStateList);
+        }
+        if (holder.box_tor != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_tor, colorStateList);
+        }
     }
 
 
