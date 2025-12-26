@@ -220,7 +220,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
         AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 
-        Api.assertBinaries(this, true);
+        // Move binary assertion to background thread to avoid blocking main thread
+        // This includes file I/O and process execution (waitFor) which can cause ANR
+        final Context appContext = getApplicationContext();
+        AsyncTask.execute(() -> Api.assertBinaries(appContext, true));
 
         initDone = 0;
         mSwipeLayout = findViewById(R.id.swipe_container);
@@ -737,7 +740,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             setupMultiProfile();
         }
 
-        selectFilterGroup();
+        // Use async loading to avoid blocking the main thread
+        // If the app list is already cached, filterApps will use the cache (fast path)
+        // If not cached, showOrLoadApplications will load asynchronously with a progress dialog
+        if (Api.applications != null && Api.applications.size() > 0) {
+            // Cache is warm - use it directly (fast, non-blocking)
+            selectFilterGroup();
+        } else {
+            // Cache is cold - load asynchronously to avoid ANR
+            showOrLoadApplications();
+        }
     }
 
     private void clearNotification() {
@@ -911,7 +923,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             changed = true;
         }
         if (changed)
-            editor.commit();
+            editor.apply(); // Use apply() instead of commit() to avoid blocking main thread
     }
 
     /**
@@ -1160,14 +1172,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             item.setChecked(true);
             Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
             editor.putString(Api.PREF_MODE, Api.MODE_WHITELIST);
-            editor.commit();
+            editor.apply();
             refreshHeader();
             return true;
         } else if (selectedItem == R.id.blockmode) {
             item.setChecked(true);
             Editor editor2 = getSharedPreferences(Api.PREFS_NAME, 0).edit();
             editor2.putString(Api.PREF_MODE, Api.MODE_BLACKLIST);
-            editor2.commit();
+            editor2.apply();
             refreshHeader();
             return true;
         } else if (selectedItem == R.id.sort_default) {
