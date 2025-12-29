@@ -68,6 +68,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
+import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.util.G;
 
 public class LogService extends Service {
@@ -417,7 +418,37 @@ public class LogService extends Service {
 
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
         notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
-        notificationBuilder.setContentIntent(notifyPendingIntent);
+        notificationBuilder.setContentIntent(notifyPendingIntent)
+                .setSmallIcon(R.drawable.notification)
+                .setContentTitle(ctx.getString(R.string.firewall_log_notify))
+                .setContentText(ctx.getString(R.string.log_service_running))
+                .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE);
+        
+        // On Android 8+, try to share notification with FirewallService
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (FirewallService.isInstanceRunning()) {
+                // FirewallService is running, update its notification instead
+                FirewallService.setLogServiceActive(true);
+                Log.i(TAG, "LogService piggybacking on FirewallService notification");
+            } else {
+                // FirewallService not running, show our own notification
+                Notification notification = notificationBuilder.build();
+                startForeground(1, notification);
+                Log.i(TAG, "LogService started as foreground service with own notification");
+            }
+        } else {
+            // Pre-Android 8: respect user preference for showing notifications
+            if (G.activeNotification()) {
+                Notification notification = notificationBuilder.build();
+                assert manager != null;
+                manager.notify(1, notification);
+                Log.i(TAG, "LogService notification shown (user preference enabled)");
+            } else {
+                Log.i(TAG, "LogService notification hidden (user preference disabled)");
+            }
+        }
     }
 
 
@@ -695,6 +726,20 @@ public class LogService extends Service {
             }
         }
         executorService = null;
+        
+        // Update FirewallService notification if it's running
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && FirewallService.isInstanceRunning()) {
+            FirewallService.setLogServiceActive(false);
+            Log.i(TAG, "Notified FirewallService that log monitoring stopped");
+        } else {
+            // Stop our own foreground service
+            try {
+                stopForeground(true);
+                Log.i(TAG, "Stopped foreground service");
+            } catch (Exception e) {
+                Log.w(TAG, "Error stopping foreground service: " + e.getMessage());
+            }
+        }
         
         // Clean up temporary files
         cleanupTempFiles();

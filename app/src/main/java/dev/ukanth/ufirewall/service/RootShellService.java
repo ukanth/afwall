@@ -60,7 +60,7 @@ import eu.chainfire.libsuperuser.Shell;
 public class RootShellService extends Service implements Cloneable {
 
     public static final String TAG = "AFWall";
-    public static final int NOTIFICATION_ID = 33347;
+    public static final int NOTIFICATION_ID = 1;
     public static final int EXIT_NO_ROOT_ACCESS = -1;
     public static final int NO_TOAST = -1;
     /* write command completion times to logcat */
@@ -92,6 +92,11 @@ public class RootShellService extends Service implements Cloneable {
 
         if (notificationManager != null) {
             notificationManager.cancel(NOTIFICATION_ID);
+        }
+        
+        // Trigger FirewallService to update its notification
+        if (FirewallService.isInstanceRunning()) {
+            FirewallService.refreshNotification();
         }
     }
 
@@ -259,7 +264,7 @@ public class RootShellService extends Service implements Cloneable {
 
         int notifyType = G.getNotificationPriority();
 
-        Notification notification = builder.setSmallIcon(R.drawable.ic_apply)
+        Notification notification = builder.setSmallIcon(R.drawable.notification)
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
                 .setTicker(context.getString(R.string.app_name))

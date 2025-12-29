@@ -32,6 +32,8 @@ import dev.ukanth.ufirewall.util.G;
 public class FirewallService extends Service {
 
     private static final int NOTIFICATION_ID = 1;
+    private static boolean logServiceActive = false; // Track if LogService is running
+    private static FirewallService instance = null; // Track service instance
     BroadcastReceiver connectivityReciver;
     BroadcastReceiver packageReceiver;
     IntentFilter filter;
@@ -49,6 +51,7 @@ public class FirewallService extends Service {
     public void onCreate() {
         super.onCreate();
         context = this;
+        instance = this;
     }
 
     private void registerBTListener() {
@@ -132,6 +135,10 @@ public class FirewallService extends Service {
             } else {
                 notificationText = getString(R.string.active);
             }
+            // Append log service status if active
+            if (logServiceActive) {
+                notificationText += " • " + getString(R.string.log_monitoring);
+            }
             //notificationText = context.getString(R.string.active);
             icon = R.drawable.notification;
         } else {
@@ -177,6 +184,32 @@ public class FirewallService extends Service {
         }*/
 
 
+    }
+
+    /**
+     * Update notification when LogService status changes
+     */
+    public static void setLogServiceActive(boolean active) {
+        logServiceActive = active;
+        if (instance != null) {
+            instance.addNotification();
+        }
+    }
+
+    /**
+     * Check if FirewallService is running
+     */
+    public static boolean isInstanceRunning() {
+        return instance != null;
+    }
+    
+    /**
+     * Refresh the notification
+     */
+    public static void refreshNotification() {
+        if (instance != null) {
+            instance.addNotification();
+        }
     }
 
     @Override

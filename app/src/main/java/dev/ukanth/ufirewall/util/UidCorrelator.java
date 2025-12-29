@@ -68,6 +68,10 @@ public class UidCorrelator {
         
         refreshConnectionCache();
         
+        if (activeConnections.isEmpty()) {
+            Log.w(TAG, "No active connections in cache - /proc/net parsing may have failed");
+        }
+        
         // Try exact match first (outbound connection)
         String connectionKey = protocol.toUpperCase() + ":" + dstIp + ":" + dstPort;
         ConnectionInfo conn = activeConnections.get(connectionKey);
@@ -127,7 +131,11 @@ public class UidCorrelator {
             parseNetworkConnections("/proc/net/udp6", "UDP");
             
             lastRefresh = now;
-            Log.d(TAG, "Refreshed connection cache: " + activeConnections.size() + " active connections");
+            if (activeConnections.isEmpty()) {
+                Log.w(TAG, "Connection cache refresh completed but no connections found - check root access");
+            } else {
+                Log.d(TAG, "Refreshed connection cache: " + activeConnections.size() + " active connections");
+            }
             
         } catch (Exception e) {
             Log.e(TAG, "Error refreshing connection cache", e);
@@ -136,11 +144,14 @@ public class UidCorrelator {
     
     /**
      * Parse network connection files from /proc/net
+     * Uses root shell to ensure access on modern Android versions
      */
     private static void parseNetworkConnections(String filePath, String protocol) {
         try {
+            // Use getSU() to ensure root shell is used for /proc/net access
             Shell.Result result = Shell.cmd("cat " + filePath).exec();
             if (!result.isSuccess()) {
+                Log.w(TAG, "Failed to read " + filePath + " - exit code: " + result.getCode());
                 return;
             }
             
@@ -158,6 +169,9 @@ public class UidCorrelator {
                 ConnectionInfo conn = parseConnectionLine(line, protocol);
                 if (conn != null && conn.uid > 0) {
                     activeConnections.put(conn.getConnectionKey(), conn);
+                    // Also cache by local port for better matching
+                    String localKey = protocol + ":" + conn.localAddress + ":" + conn.localPort;
+                    activeConnections.put(localKey, conn);
                 }
             }
             
@@ -187,8 +201,14 @@ public class UidCorrelator {
             String remoteIp = hexToIp(remoteAddr[0]);
             int remotePort = Integer.parseInt(remoteAddr[1], 16);
             
-            // Get UID (column 7)
-            int uid = Integer.parseInt(parts[7]);
+            // Get UID (column 7) - handle potential parsing errors
+            int uid;
+            try {
+                uid = Integer.parseInt(parts[7]);
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "Failed to parse UID from: " + parts[7]);
+                return null;
+            }
             
             // Only interested in established connections or UDP sockets
             // TCP state 01 = ESTABLISHED, for UDP we take all
