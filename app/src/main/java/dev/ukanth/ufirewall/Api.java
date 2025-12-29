@@ -214,6 +214,14 @@ public final class Api {
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
+    
+    /**
+     * Check if rules are currently being applied
+     * @return true if rules application is in progress
+     */
+    public static boolean isRulesBeingApplied() {
+        return globalStatus;
+    }
 
     public static List<Integer> getListOfUids() {
         return listOfUids;

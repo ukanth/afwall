@@ -32,6 +32,7 @@ import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.BootRuleManager;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.NetworkChangeDebouncer;
 
 public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
@@ -72,10 +73,10 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
                 
                 if (action.equals(CONNECTIVITY_ACTION)) {
                     Log.i(TAG, "Network change captured.");
-                    InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
+                    NetworkChangeDebouncer.scheduleNetworkChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
                 } else if (action.equals(TETHER_STATE_CHANGED_ACTION)) {
                     Log.i(TAG, "Tether change captured.");
-                    InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.TETHER_STATE_CHANGED);
+                    NetworkChangeDebouncer.scheduleNetworkChange(context, InterfaceTracker.TETHER_STATE_CHANGED);
                 }
             }
         }

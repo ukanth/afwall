@@ -31,6 +31,7 @@ import dev.ukanth.ufirewall.util.G;
 
 public class FirewallService extends Service {
 
+    private static final String TAG = "AFWall";
     private static final int NOTIFICATION_ID = 1;
     private static boolean logServiceActive = false; // Track if LogService is running
     private static FirewallService instance = null; // Track service instance
@@ -52,6 +53,9 @@ public class FirewallService extends Service {
         super.onCreate();
         context = this;
         instance = this;
+        // Reset log service status on create
+        logServiceActive = false;
+        Log.d(TAG, "FirewallService created, logServiceActive reset to false");
     }
 
     private void registerBTListener() {
@@ -141,9 +145,11 @@ public class FirewallService extends Service {
             }
             //notificationText = context.getString(R.string.active);
             icon = R.drawable.notification;
+            Log.d(TAG, "Firewall ENABLED - notification text: " + notificationText);
         } else {
             notificationText = getString(R.string.inactive);
             icon = R.drawable.notification_error;
+            Log.d(TAG, "Firewall DISABLED - notification text: " + notificationText);
         }
 
 
@@ -167,11 +173,14 @@ public class FirewallService extends Service {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(NOTIFICATION_ID, notification, FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            Log.d(TAG, "Updated notification via startForeground (Android 14+): " + notificationText);
         } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
             startForeground(NOTIFICATION_ID, notification);
+            Log.d(TAG, "Updated notification via startForeground (Android 8+): " + notificationText);
         } else {
             if(G.activeNotification()) {
                 manager.notify(NOTIFICATION_ID, notification);
+                Log.d(TAG, "Updated notification via notify: " + notificationText);
             }
         }
         /*} else {
@@ -208,7 +217,16 @@ public class FirewallService extends Service {
      */
     public static void refreshNotification() {
         if (instance != null) {
-            instance.addNotification();
+            Log.d(TAG, "Refreshing FirewallService notification");
+            // Ensure we run on the main thread
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+                if (instance != null) {
+                    instance.addNotification();
+                    Log.d(TAG, "FirewallService notification refreshed");
+                }
+            });
+        } else {
+            Log.w(TAG, "Cannot refresh notification - FirewallService instance is null");
         }
     }
 

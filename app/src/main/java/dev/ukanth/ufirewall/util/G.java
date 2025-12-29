@@ -842,6 +842,10 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getInt(CUSTOM_DELAY_SECONDS, 5) * 1000;
     }
 
+    public static int getNetworkDebounceDelay() {
+        return gPrefs.getInt("networkDebounceDelay", 2);
+    }
+
     public static int getWidgetY(Context ctx) {
         DisplayMetrics dm = new DisplayMetrics();
         WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);

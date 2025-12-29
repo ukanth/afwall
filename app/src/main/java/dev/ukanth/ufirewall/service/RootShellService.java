@@ -90,12 +90,9 @@ public class RootShellService extends Service implements Cloneable {
             Api.sendToastBroadcast(mContext, mContext.getString(state.failureToast));
         }
 
-        if (notificationManager != null) {
-            notificationManager.cancel(NOTIFICATION_ID);
-        }
-        
-        // Trigger FirewallService to update its notification
+        // Refresh FirewallService notification after rules complete
         if (FirewallService.isInstanceRunning()) {
+            Log.d(TAG, "Rules completed, refreshing FirewallService notification");
             FirewallService.refreshNotification();
         }
     }
@@ -124,9 +121,10 @@ public class RootShellService extends Service implements Cloneable {
                     //continue;
                 } else if (rootState == ShellState.READY) {
                     rootState = ShellState.BUSY;
-                    if (G.isRun()) {
-                        createNotification(mContext);
-                    }
+                    // Don't create notification - let FirewallService handle it
+                    // if (G.isRun()) {
+                    //     createNotification(mContext);
+                    // }
                     processCommands(state);
                 }
             }
@@ -237,7 +235,7 @@ public class RootShellService extends Service implements Cloneable {
 
     private void createNotification(Context context) {
 
-        String CHANNEL_ID = "firewall.apply";
+        String CHANNEL_ID = "firewall.service";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
@@ -245,7 +243,7 @@ public class RootShellService extends Service implements Cloneable {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             /* Create or update. */
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.runNotification),
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.firewall_service),
                     NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("");
             channel.setShowBadge(false);

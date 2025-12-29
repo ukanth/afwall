@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- <PreferenceCategory android:title="@string/log_prefs_title" >
          <CheckBoxPreference
@@ -48,13 +49,14 @@
             android:key="toast_pos"
             android:title="@string/position"></ListPreference> -->
 
-        <EditTextPreference
+        <dev.ukanth.ufirewall.preferences.SeekBarPreference
             android:dependency="enableLogService"
-            android:dialogMessage="Default - 10s"
-            android:dialogTitle="Ping timeout (seconds)"
-            android:inputType="number"
+            android:defaultValue="10"
+            android:max="60"
             android:key="logPingTime"
-            android:title="@string/pingDelayTitle" />
+            android:title="@string/pingDelayTitle"
+            app:min="5"
+            app:suffix=" s" />
 
         <!--<Preference
             android:key="block_filter"

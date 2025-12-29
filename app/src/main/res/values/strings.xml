@@ -652,6 +652,8 @@
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>
+    <string name="network_debounce_title">Network change delay</string>
+    <string name="network_debounce_summary">Delay rule application when network changes frequently (seconds)</string>
     <string name="ready">Ready</string>
     <string name="loading_iptables_rules">Loading iptables rules…</string>
     <string name="network_interfaces">Network Interfaces</string>
