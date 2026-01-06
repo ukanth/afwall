@@ -892,15 +892,18 @@ public final class Api {
 
             if (G.enableLAN() && !cfg.isWifiTethered) {
                 // Support multiple LAN subnets (Issue #1362)
-                boolean hasSubnets = false;
                 if (ipv6) {
                     if (!cfg.lanMaskV6.isEmpty()) {
                         for (String subnet : cfg.lanMaskV6) {
                             cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
                         }
-                        hasSubnets = true;
-                        // Route everything else to WAN
-                        cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
+                        // Add negation rule to route non-LAN traffic to WAN
+                        // Build negation string for all v6 subnets
+                        StringBuilder negation = new StringBuilder();
+                        for (String subnet : cfg.lanMaskV6) {
+                            negation.append("'!' -d ").append(subnet).append(" ");
+                        }
+                        cmds.add("-A " + chainName + "-wifi-fork " + negation.toString().trim() + " -j " + chainName + "-wifi-wan");
                     } else {
                         Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
                     }
@@ -909,14 +912,18 @@ public final class Api {
                         for (String subnet : cfg.lanMaskV4) {
                             cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
                         }
-                        hasSubnets = true;
-                        // Route everything else to WAN
-                        cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
+                        // Add negation rule to route non-LAN traffic to WAN
+                        // Build negation string for all v4 subnets
+                        StringBuilder negation = new StringBuilder();
+                        for (String subnet : cfg.lanMaskV4) {
+                            negation.append("'!' -d ").append(subnet).append(" ");
+                        }
+                        cmds.add("-A " + chainName + "-wifi-fork " + negation.toString().trim() + " -j " + chainName + "-wifi-wan");
                     } else {
                         Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
                     }
                 }
-                if (!hasSubnets) {
+                if (cfg.lanMaskV4.isEmpty() && cfg.lanMaskV6.isEmpty()) {
                     Log.i(TAG, "No ipaddress found for LAN");
                     // lets find one more time
                     //atleast allow internet - don't block completely
