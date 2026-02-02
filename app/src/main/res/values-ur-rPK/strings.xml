@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Apply rules on profile switch</string>
     <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
     <string name="multi_user_title">Enable multi-user support</string>
-    <string name="multi_user_summary">Support Android multi-user (only works in mode where selected items are blocked)</string>
+    <string name="multi_user_summary">Support Android multi-user</string>
     <!--  -->
     <string name="device_admin_desc">Additional Security - Prevent uninstalling AFWall+</string>
     <string name="traffic_detail_title">Traffic details</string>

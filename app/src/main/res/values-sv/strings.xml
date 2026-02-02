@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Tillämpa regler vid profilbyte</string>
     <string name="multi_apply_rules_info">Läs in och tillämpa regler vid byte av profil</string>
     <string name="multi_user_title">Aktivera stöd för flera användare</string>
-    <string name="multi_user_summary">Android fleranvändarstöd (fungerar bara i läge där markerade objekt blockeras)</string>
+    <string name="multi_user_summary">Android fleranvändarstöd</string>
     <!--  -->
     <string name="device_admin_desc">Extra säkerhet - förhindra att AFWall+ avinstalleras</string>
     <string name="traffic_detail_title">Detaljerad trafikinformation</string>

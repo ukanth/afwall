@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Anvende regler på profil switch</string>
     <string name="multi_apply_rules_info">Indlæse og anvende regler, når du skifter profiler</string>
     <string name="multi_user_title">Aktivere understøttelse af flere brugere</string>
-    <string name="multi_user_summary">Understøtter Android multi bruger (virker kun i tilstanden hvor markerede elementer er blokeret)</string>
+    <string name="multi_user_summary">Understøtter Android multi bruger</string>
     <!--  -->
     <string name="device_admin_desc">Ekstra sikkerhed - undgå afinstallere AFWall +</string>
     <string name="traffic_detail_title">Trafik detaljer</string>

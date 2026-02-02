@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Zastosuj reguły przy zmianie profilu</string>
     <string name="multi_apply_rules_info">Załaduj i zastosuj reguły podczas przełączania profili</string>
     <string name="multi_user_title">Włącz obsługę wielu użytkowników</string>
-    <string name="multi_user_summary">Wsparcie dla wielu użytkowników (działa tylko w trybie, w którym wybrane elementy są blokowane)</string>
+    <string name="multi_user_summary">Wsparcie dla wielu użytkowników</string>
     <!--  -->
     <string name="device_admin_desc">Dodatkowe zabezpieczenie - Zapobiegaj odinstalowaniu AFWall+</string>
     <string name="traffic_detail_title">Szczegóły ruchu</string>

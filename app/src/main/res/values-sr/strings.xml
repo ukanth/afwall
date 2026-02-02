@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Примени правила при промени профила</string>
     <string name="multi_apply_rules_info">Учитај и примени правила када се мења профил</string>
     <string name="multi_user_title">Укључи вишекорисничку подршку</string>
-    <string name="multi_user_summary">Подршка за више корисника (ради само када се блокирају изабране ставке)</string>
+    <string name="multi_user_summary">Подршка за више корисника</string>
     <!--  -->
     <string name="device_admin_desc">Додатна сигурност — Заштити AFWall+ од деинсталације</string>
     <string name="traffic_detail_title">Детаљи саобраћаја</string>

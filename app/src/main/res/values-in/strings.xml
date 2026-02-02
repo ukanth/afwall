@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">terapkan aturan pd pergantian profil</string>
     <string name="multi_apply_rules_info">Muat dan terapkan aturan saat berganti profil</string>
     <string name="multi_user_title">Akfitkan multi-pengguna</string>
-    <string name="multi_user_summary">Dukungan multi-pengguna Android (hanya bekerja pada mode dimana item terpilih diblokir)</string>
+    <string name="multi_user_summary">Dukungan multi-pengguna Android</string>
     <!--  -->
     <string name="device_admin_desc">Pengamanan Tambahan - Cegah uninstall AFWall+</string>
     <string name="traffic_detail_title">Detail trafik</string>

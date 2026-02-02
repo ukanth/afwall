@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Aktifkan arahan pertukaran profil</string>
     <string name="multi_apply_rules_info">Memuatkan dan mengaktifkan arahan apabila menukar profil</string>
     <string name="multi_user_title">Aktifkan sokongan multi pengguna</string>
-    <string name="multi_user_summary">Sokong pengguna multi Android (hanya berfungsi di mod terpilih yang telah disekat)</string>
+    <string name="multi_user_summary">Sokong pengguna multi Android</string>
     <!--  -->
     <string name="device_admin_desc">Keselamatan Tambahan - Mengelakkan AFWall+ dinyahpasang</string>
     <string name="traffic_detail_title">Maklumat trafik</string>

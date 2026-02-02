@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Appliquer les règles lors du changement de profil</string>
     <string name="multi_apply_rules_info">Chargement et application des règles lors du changement de profil</string>
     <string name="multi_user_title">Activer le mode multi-utilisateur</string>
-    <string name="multi_user_summary">Mode multi-utilisateur Android (fonctionne uniquement si les éléments sélectionnés sont bloqués)</string>
+    <string name="multi_user_summary">Mode multi-utilisateur Android</string>
     <!--  -->
     <string name="device_admin_desc">Sécurité supplémentaire - Empêcher la désinstallation de AFWall+</string>
     <string name="traffic_detail_title">Détails du trafic</string>

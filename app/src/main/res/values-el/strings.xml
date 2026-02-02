@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">Εφαρμογή κανόνων κατά την αλλαγή προφίλ</string>
     <string name="multi_apply_rules_info">Φόρτωση και εφαρμογή κανόνων κατά την εναλλαγή προφίλ</string>
     <string name="multi_user_title">Ενεργοποίηση υποστήριξης πολλαπλών χρηστών</string>
-    <string name="multi_user_summary">Υποστήριξη πολλαπλών χρηστών Android (μόνο στην λειτουργία όπου τα επιλεγμένα αντικείμενα είναι αποκλεισμένα)</string>
+    <string name="multi_user_summary">Υποστήριξη πολλαπλών χρηστών Android</string>
     <!--  -->
     <string name="device_admin_desc">Πρόσθετη Ασφάλεια - Αποτροπή απεγκατάστασης του AFWall+</string>
     <string name="traffic_detail_title">Στατιστικά κίνησης δεδομένων</string>

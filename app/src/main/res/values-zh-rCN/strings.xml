@@ -294,7 +294,7 @@
     <string name="multi_apply_rules">切换配置时应用规则</string>
     <string name="multi_apply_rules_info">切换配置文件时加载和应用规则</string>
     <string name="multi_user_title">启用多用户支持</string>
-    <string name="multi_user_summary">支持 Android 多用户 (仅适用于黑名单模式)</string>
+    <string name="multi_user_summary">支持 Android 多用户</string>
     <!--  -->
     <string name="device_admin_desc">额外安全措施 - 防止卸载 AFWall+</string>
     <string name="traffic_detail_title">流量详情</string>

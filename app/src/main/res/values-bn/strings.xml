@@ -293,7 +293,7 @@
     <string name="multi_apply_rules">নিয়ম প্রয়োগ করুন প্রোফাইল পরিবর্তনের সময়</string>
     <string name="multi_apply_rules_info">এটি লোড এবং প্রয়োগ করবে প্রোফাইল পরিবর্তনের সময়</string>
     <string name="multi_user_title">একাধিক-ব্যবহারকারী সমর্থন সক্রিয় করুন</string>
-    <string name="multi_user_summary">অ্যান্ড্রয়েড মাল্টি-ইউজার (শুধুমাত্র কাজ যেখানে নির্বাচিত বিষয়োপকরণসমূহ আবদ্ধ পরিমণ্ডলে) সমর্থন</string>
+    <string name="multi_user_summary">অ্যান্ড্রয়েড মাল্টি-ইউজার সমর্থন</string>
     <!--  -->
     <string name="device_admin_desc">বাড়তি নিরাপত্তা - AFWall + আনইনস্টল প্রতিরোধ</string>
     <string name="traffic_detail_title">বিস্তারিত ট্রাফিক</string>
