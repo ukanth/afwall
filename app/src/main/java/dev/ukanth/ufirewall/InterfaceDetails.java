@@ -44,9 +44,9 @@ public class InterfaceDetails {
 	public java.util.List<String> dnsServersV6 = new java.util.ArrayList<>();
 
 	// supplementary info
-	String wifiName = "";
-	boolean netEnabled = false;
-	boolean noIP = false;
+	public String wifiName = "";
+	public boolean netEnabled = false;
+	public boolean noIP = false;
 	public int netType = -1;
 
 	public boolean equals(InterfaceDetails that) {

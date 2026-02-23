@@ -33,6 +33,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -61,6 +62,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.InterfaceDetails;
+import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.activity.LogActivity;
@@ -645,11 +648,81 @@ public class LogService extends Service {
     }
 
 
+
+    /**
+     * Determine if a log entry should be suppressed because the app is allowed
+     * on the currently active network interface.
+     * 
+     * When an app is allowed on WiFi (the active connection), it can still generate
+     * spurious block logs from:
+     *   - Cross-interface probes (trying 3G while on WiFi)
+     *   - VPN interface blocks (tun+, ppp+)
+     *   - Tethering chains
+     *   - INPUT chain (empty OUT= field)
+     * 
+     * All of these are noise because the app IS working on the active interface.
+     * If the app is in the allowed list for the currently active network type,
+     * suppress the log entry entirely.
+     */
+    private boolean shouldSuppressLog(LogInfo info, Context ctx) {
+        // Only suppress regular app traffic, not kernel or special IDs
+        if (info.uid < 0) return false;
+
+        // Get current active network state
+        InterfaceDetails details = InterfaceTracker.getCurrentCfg(ctx, false);
+        if (details == null || !details.netEnabled) {
+            return false;
+        }
+
+        int netType = details.netType;
+        if (netType != ConnectivityManager.TYPE_WIFI && netType != ConnectivityManager.TYPE_MOBILE) {
+            return false; // Unknown network state, don't suppress
+        }
+        
+        // Check if the app is allowed on the currently active interface
+        // Rules are stored in G.pPrefs as pipe-separated UIDs: "|1000|1005|..."
+        String uidStr = "|" + info.uid + "|";
+        String allowedUids;
+        
+        if (netType == ConnectivityManager.TYPE_WIFI) {
+            allowedUids = G.pPrefs.getString(Api.PREF_WIFI_PKG_UIDS, "");
+        } else {
+            allowedUids = G.pPrefs.getString(Api.PREF_3G_PKG_UIDS, "");
+        }
+        
+        // If the app IS allowed on the active interface, suppress this block log.
+        // The block must be from an inactive/secondary interface (3G probe, VPN, tether, etc.)
+        if ((allowedUids + "|").contains(uidStr)) {
+            return true;
+        }
+        
+        return false;
+    }
+
     private void storeLogInfo(String line, Context context) {
         try {
 
             LogEvent event = new LogEvent(LogInfo.parseLogs(line, context, "{AFL}", 0), context);
             if(event.logInfo != null) {
+                // Filter multicast/broadcast traffic to reduce log noise
+                // IPv4 Multicast: 224.0.0.0/4 (224.0.0.0 - 239.255.255.255)
+                // Broadcast: 255.255.255.255
+                // IPv6 Multicast: ff00::/8
+                String dst = event.logInfo.dst;
+                if (dst != null) {
+                    if (dst.equals("255.255.255.255") || 
+                        dst.startsWith("224.") || dst.startsWith("239.") || 
+                        dst.toLowerCase().startsWith("ff")) {
+                        // Skip notification and storage for multicast/broadcast garbage
+                        return;
+                    }
+                }
+                
+                // Smart Filter: Suppress logs for apps allowed on active interface but blocked on inactive one
+                if (shouldSuppressLog(event.logInfo, context)) {
+                    return;
+                }
+
                 store(event.logInfo, event.ctx);
                 showNotification(event.logInfo);
             }
