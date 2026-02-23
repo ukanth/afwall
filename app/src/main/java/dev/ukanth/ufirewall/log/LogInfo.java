@@ -322,16 +322,8 @@ public class LogInfo {
                 address.append(":");
                 address.append(logInfo.dpt);
                 logInfo.type = type;
-                if (G.showHost() && (G.isDoKey(ctx) || G.isDonate())) {
-                    try {
-                        String add  = InetAddress.getByName(logInfo.dst).getHostName();
-                        if (add != null) {
-                            logInfo.host = add;
-                            address.append("(").append(add).append(") ");
-                        }
-                    } catch (Exception e) {
-                    }
-                }
+                // Hostname resolution is handled asynchronously in LogService.store()
+                // to avoid blocking the log parsing callback thread
                 address.append("\n");
                 logInfo.timestamp = System.currentTimeMillis();
                 logInfo.uidString = address.toString();

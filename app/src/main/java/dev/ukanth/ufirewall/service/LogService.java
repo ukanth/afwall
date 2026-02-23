@@ -801,13 +801,26 @@ public class LogService extends Service {
                 data.setUid(logInfo.uid);
                 data.setAppName(logInfo.appName);
                 data.setType(logInfo.type);
-                if (G.isDoKey(context) || G.isDonate()) {
-                    try {
-                        data.setHostname(logInfo.host != null ? logInfo.host : "");
-                    } catch (Exception e) {
-                    }
-                }
                 data.setType(0);
+                
+                // Resolve hostname asynchronously if enabled
+                if (G.showHost() && logInfo.dst != null && !logInfo.dst.isEmpty()) {
+                    final String dstIp = logInfo.dst;
+                    final LogData dataRef = data;
+                    new Thread(() -> {
+                        try {
+                            String hostname = java.net.InetAddress.getByName(dstIp).getHostName();
+                            if (hostname != null && !hostname.equals(dstIp)) {
+                                dataRef.setHostname(hostname);
+                                FlowManager.getDatabase(LogDatabase.class)
+                                    .beginTransactionAsync(dw -> dataRef.save(dw))
+                                    .build().execute();
+                            }
+                        } catch (Exception e) {
+                            // DNS resolution failed, hostname will remain empty
+                        }
+                    }, "LogService-DNS-" + dstIp.hashCode()).start();
+                }
                 FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(databaseWrapper ->
                         data.save(databaseWrapper)).build().execute();
             }

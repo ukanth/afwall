@@ -174,8 +174,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             menu.add(0, v.getId(), 4, R.string.ping_source);
             menu.add(0, v.getId(), 5, R.string.resolve_destination);
             menu.add(0, v.getId(), 6, R.string.resolve_source);
-            menu.add(0, v.getId(), 9, "Block this destination permanently");
-            menu.add(0, v.getId(), 10, "Whitelist this destination");
+            // Only show Copy Domain if a hostname was resolved
+            String hostname = current_selected_logData.getHostname();
+            if (hostname != null && !hostname.trim().isEmpty() && !hostname.equals(current_selected_logData.getDst())) {
+                menu.add(0, v.getId(), 9, R.string.copy_domain);
+            }
+            menu.add(0, v.getId(), 10, "Block this destination permanently");
+            menu.add(0, v.getId(), 11, "Whitelist this destination");
             LogPreference logPreference = SQLite.select()
                     .from(LogPreference.class)
                     .where(LogPreference_Table.uid.eq(uid)).querySingle();
@@ -266,10 +271,19 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             case 8:
                 G.updateLogNotification(uid, true);
                 break;
-            case 9: // Block destination permanently
+            case 9: // Copy Domain
+                String domain = current_selected_logData.getHostname();
+                if (domain != null && !domain.trim().isEmpty() && !domain.equals(current_selected_logData.getDst())) {
+                    Api.copyToClipboard(LogDetailActivity.this, domain);
+                    Api.toast(LogDetailActivity.this, getString(R.string.domain_copied));
+                } else {
+                    Api.toast(LogDetailActivity.this, getString(R.string.no_domain_resolved));
+                }
+                break;
+            case 10: // Block destination permanently
                 showBlockDestinationDialog();
                 break;
-            case 10: // Whitelist destination
+            case 11: // Whitelist destination
                 showWhitelistDestinationDialog();
                 break;
 

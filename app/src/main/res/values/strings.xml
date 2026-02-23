@@ -520,6 +520,9 @@
     <string name="copy_text">Copy text</string>
     <string name="destination_copied">Destination copied</string>
     <string name="source_copied">Source copied</string>
+    <string name="copy_domain">Copy Domain</string>
+    <string name="domain_copied">Domain copied</string>
+    <string name="no_domain_resolved">No domain resolved for this entry</string>
     <string name="select_the_action">Select The Action</string>
     <string name="result_copied_to_clipboard">Result copied to clipboard</string>
     <string name="result">Result</string>
