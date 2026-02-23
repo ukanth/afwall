@@ -97,7 +97,7 @@ public class BootRuleManager {
 
         InterfaceTracker.getCurrentCfg(context, true);
 
-        InterfaceTracker.applyBootRules(InterfaceTracker.BOOT_COMPLETED + "_INITIAL");
+        InterfaceTracker.applyBootRules(context, InterfaceTracker.BOOT_COMPLETED + "_INITIAL");
         initialBootRulesApplied.set(true);
         
         Log.i(TAG, "Initial boot rules applied");
@@ -118,7 +118,7 @@ public class BootRuleManager {
                         try {
                             // Force interface configuration refresh for delayed rules
                             InterfaceTracker.getCurrentCfg(context, true);
-                            InterfaceTracker.applyBootRules(InterfaceTracker.BOOT_COMPLETED + "_DELAYED");
+                            InterfaceTracker.applyBootRules(context, InterfaceTracker.BOOT_COMPLETED + "_DELAYED");
                             Log.i(TAG, "Delayed boot rules applied successfully");
                         } catch (Exception e) {
                             Log.e(TAG, "Error applying delayed boot rules: " + e.getMessage());

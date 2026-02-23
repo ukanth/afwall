@@ -370,13 +370,13 @@ public class RootShellService extends Service implements Cloneable {
                 public void run() {
                     Log.i(TAG, "State of rootShell(4): " + rootState);
                     if (rootState == ShellState.BUSY) {
-                        //try resetting state to READY forcefully
-                        Log.i(TAG, "Forcefully changing the state " + rootState);
+                        //try resetting state to READY forcefully after extended wait
+                        Log.w(TAG, "Forcefully changing the state after 5s timeout: " + rootState);
                         rootState = ShellState.READY;
                     }
                     runNextSubmission();
                 }
-            }, 1000);
+            }, 5000);
         }
     }
 

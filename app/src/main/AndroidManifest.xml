@@ -197,8 +197,7 @@
         <service
             android:name=".service.FirewallService"
             android:foregroundServiceType="specialUse"
-            android:exported="true"
-            android:launchMode="singleTop" >
+            android:exported="false" >
 
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Firewall service"/>
@@ -349,7 +348,7 @@
         <provider
             android:name=".preferences.ShareProfilePreference"
             android:authorities="${applicationId}"
-            android:exported="true"></provider>
+            android:exported="false"></provider>
 
         <service
             android:name=".service.RulesApplyService"

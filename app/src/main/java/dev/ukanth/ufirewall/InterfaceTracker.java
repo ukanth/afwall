@@ -371,34 +371,39 @@ public final class InterfaceTracker {
 
         if (reason.equals(InterfaceTracker.BOOT_COMPLETED) || reason.startsWith(InterfaceTracker.BOOT_COMPLETED)) {
             Log.i(TAG, "Applying boot-specific rules for reason: " + reason);
-            applyBootRules(reason);
+            applyBootRules(ctx, reason);
         } else {
             Log.i(TAG, "Applying regular rules for reason: " + reason);
-            applyRules(reason);
+            applyRules(ctx, reason);
         }
     }
 
-    public static void applyRules(final String reason) {
-        Api.fastApply(ctx, new RootCommand()
+    public static void applyRules(final Context appCtx, final String reason) {
+        final Context safeCtx = appCtx != null ? appCtx : ctx;
+        if (safeCtx == null) {
+            Log.e(TAG, "Cannot apply rules: no context available");
+            return;
+        }
+        Api.fastApply(safeCtx, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
                     @Override
                     public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
                             Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
-                            Api.applyDefaultChains(ctx, new RootCommand()
+                            Api.applyDefaultChains(safeCtx, new RootCommand()
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
                                             if (state.exitCode != 0) {
-                                                Api.errorNotification(ctx);
+                                                Api.errorNotification(safeCtx);
                                             }
                                         }
                                     }));
                         } else {
                             //lets try applying all rules
                             Api.setRulesUpToDate(false);
-                            Api.fastApply(ctx, new RootCommand()
+                            Api.fastApply(safeCtx, new RootCommand()
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
@@ -406,15 +411,15 @@ public final class InterfaceTracker {
                                                 Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
                                             } else {
                                                 Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
-                                                Api.errorNotification(ctx);
+                                                Api.errorNotification(safeCtx);
                                             }
-                                            Api.applyDefaultChains(ctx, new RootCommand()
+                                            Api.applyDefaultChains(safeCtx, new RootCommand()
                                                     .setFailureToast(R.string.error_apply)
                                                     .setCallback(new RootCommand.Callback() {
                                                         @Override
                                                         public void cbFunc(RootCommand state) {
                                                             if (state.exitCode != 0) {
-                                                                Api.errorNotification(ctx);
+                                                                Api.errorNotification(safeCtx);
                                                             }
                                                         }
                                                     }));
@@ -425,27 +430,32 @@ public final class InterfaceTracker {
                 }));
     }
 
-    public static void applyBootRules(final String reason) {
-        Api.applySavedIptablesRules(ctx, true, new RootCommand()
+    public static void applyBootRules(final Context appCtx, final String reason) {
+        final Context safeCtx = appCtx != null ? appCtx : ctx;
+        if (safeCtx == null) {
+            Log.e(TAG, "Cannot apply boot rules: no context available");
+            return;
+        }
+        Api.applySavedIptablesRules(safeCtx, true, new RootCommand()
                 .setFailureToast(R.string.error_apply)
                 .setCallback(new RootCommand.Callback() {
                     @Override
                     public void cbFunc(RootCommand state) {
                         if (state.exitCode == 0) {
                             Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
-                            Api.applyDefaultChains(ctx, new RootCommand()
+                            Api.applyDefaultChains(safeCtx, new RootCommand()
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
                                             if (state.exitCode != 0) {
-                                                Api.errorNotification(ctx);
+                                                Api.errorNotification(safeCtx);
                                             }
                                         }
                                     }));
                         } else {
                             //lets try applying all rules
                             Api.setRulesUpToDate(false);
-                            Api.applySavedIptablesRules(ctx, true, new RootCommand()
+                            Api.applySavedIptablesRules(safeCtx, true, new RootCommand()
                                     .setCallback(new RootCommand.Callback() {
                                         @Override
                                         public void cbFunc(RootCommand state) {
@@ -453,15 +463,15 @@ public final class InterfaceTracker {
                                                 Log.i(TAG, reason + ": applied rules at " + System.currentTimeMillis());
                                             } else {
                                                 Log.e(TAG, reason + ": applySavedIptablesRules() returned an error");
-                                                Api.errorNotification(ctx);
+                                                Api.errorNotification(safeCtx);
                                             }
-                                            Api.applyDefaultChains(ctx, new RootCommand()
+                                            Api.applyDefaultChains(safeCtx, new RootCommand()
                                                     .setFailureToast(R.string.error_apply)
                                                     .setCallback(new RootCommand.Callback() {
                                                         @Override
                                                         public void cbFunc(RootCommand state) {
                                                             if (state.exitCode != 0) {
-                                                                Api.errorNotification(ctx);
+                                                                Api.errorNotification(safeCtx);
                                                             }
                                                         }
                                                     }));

@@ -810,15 +810,10 @@ public final class Api {
             }
         }
 
-        // Allow file sourcing with validation
-        if (trimmed.startsWith(". ")) {
-            String filePath = trimmed.substring(2).trim();
-            // Basic path validation - prevent directory traversal
-            if (filePath.contains("..") || filePath.contains(";") || filePath.contains("|")) {
-                Log.w(TAG, "Rejecting potentially dangerous file path: " + rule);
-                return null;
-            }
-            return trimmed; // Allow file sourcing
+        // Reject file sourcing (dot-source) - potential command injection vector
+        if (trimmed.startsWith(". ") || trimmed.startsWith("source ")) {
+            Log.w(TAG, "Rejecting file sourcing in custom rule (security risk): " + rule);
+            return null;
         }
 
         // Allow basic iptables commands (keep existing check)
@@ -1821,12 +1816,12 @@ public final class Api {
     public static void fixFolderPermissionsAsync(Context mContext) {
         AsyncTask.execute(() -> {
             try {
-                mContext.getFilesDir().setExecutable(true, false);
-                mContext.getFilesDir().setReadable(true, false);
+                mContext.getFilesDir().setExecutable(true, true);
+                mContext.getFilesDir().setReadable(true, true);
                 File sharedPrefsFolder = new File(mContext.getFilesDir().getAbsolutePath()
                         + "/../shared_prefs");
-                sharedPrefsFolder.setExecutable(true, false);
-                sharedPrefsFolder.setReadable(true, false);
+                sharedPrefsFolder.setExecutable(true, true);
+                sharedPrefsFolder.setReadable(true, true);
             } catch (Exception e) {
                 Log.e(Api.TAG, e.getMessage(), e);
             }
@@ -3379,7 +3374,9 @@ public final class Api {
         boolean returnVal = false;
         BufferedReader br = null;
         try {
-            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("cat " + file.getAbsolutePath()).exec();
+            // Use shell-safe quoting to prevent path injection
+            String safePath = "'" + file.getAbsolutePath().replace("'", "'\\''" ) + "'";
+            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("cat " + safePath).exec();
             List<String> out = result.getOut();
             String data = TextUtils.join("", out);
 

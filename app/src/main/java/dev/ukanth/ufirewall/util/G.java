@@ -352,7 +352,11 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static int getNotificationPriority() {
-        return Integer.parseInt(gPrefs.getString(NOTIFICATION_PRIORITY, "0"));
+        try {
+            return Integer.parseInt(gPrefs.getString(NOTIFICATION_PRIORITY, "0"));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
 
@@ -448,7 +452,11 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static int logPingTimeout() {
-        return Integer.valueOf(gPrefs.getString(LOG_PING_TIMEOUT, "10"));
+        try {
+            return Integer.valueOf(gPrefs.getString(LOG_PING_TIMEOUT, "10"));
+        } catch (NumberFormatException e) {
+            return 10;
+        }
     }
 
     /*public static void logPingTimeout(int logPingTimeout) {
@@ -647,7 +655,11 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static int getMaxPatternTry() {
-        return Integer.parseInt(gPrefs.getString(PATTERN_MAX_TRY, "3"));
+        try {
+            return Integer.parseInt(gPrefs.getString(PATTERN_MAX_TRY, "3"));
+        } catch (NumberFormatException e) {
+            return 3;
+        }
     }
 
     public static boolean isMultiUser() {
@@ -1244,7 +1256,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
                             if(linkProperties.isPrivateDnsActive() != privateDns) {
                                 Log.i(Api.TAG, "Private DNS status changed: " + privateDns);
                                 privateDns = linkProperties.isPrivateDnsActive();
-                                InterfaceTracker.applyRules("Private DNS changed.. reapplying rules");
+                                InterfaceTracker.applyRules(getContext(), "Private DNS changed.. reapplying rules");
                             }
                         }
                     }

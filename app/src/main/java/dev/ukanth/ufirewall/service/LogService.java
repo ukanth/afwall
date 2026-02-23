@@ -127,7 +127,8 @@ public class LogService extends Service {
 
     @Override
     public void onCreate() {
-        startLogService();
+        // startLogService() is called from onStartCommand(), no need to call here
+        super.onCreate();
     }
 
 
@@ -786,6 +787,10 @@ public class LogService extends Service {
 
 
     private static void store(final LogInfo logInfo, Context context) {
+        store(logInfo, context, false);
+    }
+
+    private static void store(final LogInfo logInfo, Context context, boolean isRetry) {
         try {
             if (logInfo != null) {
                 LogData data = new LogData();
@@ -825,13 +830,13 @@ public class LogService extends Service {
                         data.save(databaseWrapper)).build().execute();
             }
         } catch (IllegalStateException e) {
-            if (e.getMessage().contains("connection pool has been closed")) {
-                //reconnect logic
+            if (!isRetry && e.getMessage() != null && e.getMessage().contains("connection pool has been closed")) {
+                //reconnect logic - single retry only
                 try {
                     FlowManager.init(new FlowConfig.Builder(context).build());
-                    store(logInfo,context);
+                    store(logInfo, context, true);
                 } catch (Exception de) {
-                    Log.e(TAG, "Exception while saving log data:" + e.getLocalizedMessage(), de);
+                    Log.e(TAG, "Exception while saving log data (retry):" + de.getLocalizedMessage(), de);
                 }
             }
             Log.e(TAG, "Exception while saving log data:" + e.getLocalizedMessage(), e);
