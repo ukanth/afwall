@@ -32,10 +32,6 @@
 #include <linux/in.h>
 #include <linux/if.h>
 #include <linux/ipv6.h>
-#include <linux/tcp.h>
-#include <linux/udp.h>
-#include <linux/icmp.h>
-#include <linux/icmpv6.h>
 #include <linux/if_ether.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -46,6 +42,56 @@
 #endif
 
 #include <linux/netfilter/nfnetlink_log.h>
+
+/*
+ * Portable protocol header definitions.
+ * The Android NDK (bionic) does not provide struct tcphdr / udphdr / icmphdr /
+ * icmp6hdr via <linux/tcp.h> etc. in a way that is compatible with static
+ * linking.  Define minimal versions here so the code builds with both GNU
+ * cross-compilers and the NDK clang toolchain.
+ */
+#ifndef AFWALL_PROTO_HDRS
+#define AFWALL_PROTO_HDRS
+
+struct tcphdr {
+    uint16_t source;
+    uint16_t dest;
+    uint32_t seq;
+    uint32_t ack_seq;
+    uint16_t res1:4, doff:4, fin:1, syn:1, rst:1, psh:1, ack:1, urg:1, ece:1, cwr:1;
+    uint16_t window;
+    uint16_t check;
+    uint16_t urg_ptr;
+};
+
+struct udphdr {
+    uint16_t source;
+    uint16_t dest;
+    uint16_t len;
+    uint16_t check;
+};
+
+struct icmphdr {
+    uint8_t  type;
+    uint8_t  code;
+    uint16_t checksum;
+    union {
+        struct { uint16_t id; uint16_t sequence; } echo;
+        uint32_t gateway;
+    } un;
+};
+
+struct icmp6hdr {
+    uint8_t  icmp6_type;
+    uint8_t  icmp6_code;
+    uint16_t icmp6_cksum;
+    union {
+        struct { uint16_t id; uint16_t sequence; } echo;
+        uint32_t data32[1];
+    } icmp6_dataun;
+};
+
+#endif /* AFWALL_PROTO_HDRS */
 
 // Enhanced configuration constants
 #define MAX_NETDEVICES 64  // Increased from 32 for better device support
