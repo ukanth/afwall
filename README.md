@@ -2,6 +2,8 @@
 
 [![Android CI](https://github.com/ukanth/afwall/workflows/Android%20CI/badge.svg?branch=beta)](https://github.com/ukanth/afwall/actions) [![Crowdin](https://d322cqt584bo4o.cloudfront.net/afwall/localized.png)](https://crowdin.net/project/afwall) ![License](https://img.shields.io/github/license/ukanth/afwall) ![F-Droid](https://img.shields.io/f-droid/v/dev.ukanth.ufirewall) ![Downloads](https://img.shields.io/github/downloads/ukanth/afwall/total) ![Repo Size](https://img.shields.io/github/repo-size/ukanth/afwall)
 
+[![Build AFWall+ Binaries](https://github.com/ukanth/afwall/actions/workflows/build-binaries.yml/badge.svg)](https://github.com/ukanth/afwall/actions/workflows/build-binaries.yml)
+
 > **Your Privacy, Your Control** - AFWall+ gives you complete control over which apps can access the internet on your Android device.
 
 ---
