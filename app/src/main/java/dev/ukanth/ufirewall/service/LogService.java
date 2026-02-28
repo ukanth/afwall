@@ -22,6 +22,7 @@
 
 package dev.ukanth.ufirewall.service;
 
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
 import static dev.ukanth.ufirewall.util.G.ctx;
 
 import android.annotation.SuppressLint;
@@ -448,7 +449,11 @@ public class LogService extends Service {
                     .setCategory(NotificationCompat.CATEGORY_SERVICE);
             
             Notification notification = builder.build();
-            startForeground(1, notification);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(1, notification, FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            } else {
+                startForeground(1, notification);
+            }
             Log.i(TAG, "LogService started as foreground with shared notification ID 1");
             
             if (FirewallService.isInstanceRunning()) {

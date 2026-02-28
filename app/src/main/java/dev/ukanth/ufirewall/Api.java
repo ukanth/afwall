@@ -1906,6 +1906,36 @@ public final class Api {
             }
             PackageManager pkgmanager = ctx.getPackageManager();
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
+
+            // On Android 11+ (API 30+), PackageManager may not return all apps without
+            // QUERY_ALL_PACKAGES. Supplement using root shell "pm list packages" to discover
+            // any packages not visible to PackageManager.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Set<String> visiblePackages = new HashSet<>();
+                for (ApplicationInfo ai : installed) {
+                    visiblePackages.add(ai.packageName);
+                }
+                try {
+                    Shell.Result result = Shell.cmd("pm list packages").exec();
+                    List<String> out = result.getOut();
+                    for (String line : out) {
+                        if (line.startsWith("package:")) {
+                            String pkg = line.substring(8).trim();
+                            if (!visiblePackages.contains(pkg)) {
+                                try {
+                                    ApplicationInfo ai = pkgmanager.getApplicationInfo(pkg, pkgManagerFlags);
+                                    installed.add(ai);
+                                    visiblePackages.add(pkg);
+                                } catch (NameNotFoundException ignored) {
+                                    // Package may have been uninstalled between listing and lookup
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "Shell-based package discovery failed: " + e.getMessage());
+                }
+            }
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
@@ -2925,7 +2955,34 @@ public final class Api {
     public static Drawable getApplicationIcon(Context context, int appUid) {
         if (uidToApplicationInfoMap == null) {
             PackageManager packageManager = context.getPackageManager();
-            List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+            List<ApplicationInfo> installedApplications = new ArrayList<>(packageManager.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES));
+
+            // On Android 11+, supplement with shell-based discovery
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Set<String> visiblePackages = new HashSet<>();
+                for (ApplicationInfo ai : installedApplications) {
+                    visiblePackages.add(ai.packageName);
+                }
+                try {
+                    Shell.Result result = Shell.cmd("pm list packages").exec();
+                    List<String> out = result.getOut();
+                    for (String line : out) {
+                        if (line.startsWith("package:")) {
+                            String pkg = line.substring(8).trim();
+                            if (!visiblePackages.contains(pkg)) {
+                                try {
+                                    ApplicationInfo ai = packageManager.getApplicationInfo(pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
+                                    installedApplications.add(ai);
+                                } catch (NameNotFoundException ignored) {
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "Shell-based icon lookup supplement failed: " + e.getMessage());
+                }
+            }
+
             uidToApplicationInfoMap = new HashMap<>();
             for (ApplicationInfo applicationInfo : installedApplications) {
                 if (!uidToApplicationInfoMap.containsKey(applicationInfo.uid)) {
