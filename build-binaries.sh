@@ -539,28 +539,18 @@ build_nflog() {
 
     cd "$nflog_src"
 
-    # Determine cross-compiler
-    local cc
-    local strip_tool
-    case "$arch" in
-        arm)
-            cc="arm-linux-gnueabihf-gcc"
-            strip_tool="arm-linux-gnueabihf-strip"
-            ;;
-        arm64)
-            cc="aarch64-linux-gnu-gcc"
-            strip_tool="aarch64-linux-gnu-strip"
-            ;;
-        x86)
-            cc="i686-linux-gnu-gcc"
-            strip_tool="i686-linux-gnu-strip"
-            ;;
-    esac
+    # Use Android NDK toolchain (produces Android-native binaries that
+    # avoid AV false-positive heuristics triggered by GNU cross-compiled ELFs)
+    eval $(get_ndk_toolchain "$arch")
 
-    # Build
+    local cc="${NDK_CC}"
+    local strip_tool="${NDK_STRIP}"
+
+    # Build with NDK clang — static link for self-contained binary
     $cc -static \
         -I. -Ilibmnl \
-        -D_GNU_SOURCE \
+        -D_GNU_SOURCE -DANDROID \
+        -Os \
         -o "nflog_${arch}" \
         nflog.c attr.c callback.c nlmsg.c socket.c
 

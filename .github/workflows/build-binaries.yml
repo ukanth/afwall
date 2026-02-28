@@ -546,17 +546,11 @@ jobs:
         arch: [arm, arm64, x86]
         include:
           - arch: arm
-            target: arm-linux-gnueabihf
-            cc: arm-linux-gnueabihf-gcc
-            strip: arm-linux-gnueabihf-strip
+            ndk_cc_suffix: armv7a-linux-androideabi28-clang
           - arch: arm64
-            target: aarch64-linux-gnu
-            cc: aarch64-linux-gnu-gcc
-            strip: aarch64-linux-gnu-strip
+            ndk_cc_suffix: aarch64-linux-android28-clang
           - arch: x86
-            target: i686-linux-gnu
-            cc: i686-linux-gnu-gcc
-            strip: i686-linux-gnu-strip
+            ndk_cc_suffix: i686-linux-android28-clang
 
     steps:
     - name: Checkout repository
@@ -569,26 +563,52 @@ jobs:
           build-essential \
           wget \
           unzip \
-          pkg-config \
-          file \
-          gcc-arm-linux-gnueabihf \
-          gcc-aarch64-linux-gnu \
-          gcc-i686-linux-gnu
+          file
+
+    - name: Set up Android NDK
+      run: |
+        NDK_VERSION="r26d"
+        echo "Downloading Android NDK ${NDK_VERSION}..."
+        
+        for i in {1..3}; do
+          if wget -q "https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux.zip"; then
+            echo "✓ Downloaded android-ndk-${NDK_VERSION}-linux.zip (attempt $i)"
+            break
+          fi
+          echo "Download attempt $i failed, retrying..."
+          sleep 5
+        done
+        
+        if [ ! -f "android-ndk-${NDK_VERSION}-linux.zip" ]; then
+          echo "❌ Failed to download NDK after 3 attempts"
+          exit 1
+        fi
+        
+        echo "Extracting NDK..."
+        unzip -q android-ndk-${NDK_VERSION}-linux.zip
+        
+        export ANDROID_NDK_ROOT="$(pwd)/android-ndk-${NDK_VERSION}"
+        echo "ANDROID_NDK_ROOT=${ANDROID_NDK_ROOT}" >> $GITHUB_ENV
+        echo "NDK_CC=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.ndk_cc_suffix }}" >> $GITHUB_ENV
+        echo "NDK_STRIP=${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip" >> $GITHUB_ENV
+        echo "✓ NDK setup complete"
 
     - name: Build nflog from AFWall+ source
       run: |
         cd external/nflog
         
-        # Use GCC cross-compilers (revert from NDK to fix TLS issues) - no header fixes needed
-        ${{ matrix.cc }} -static \
+        # Use Android NDK clang — produces Android-native binaries that avoid
+        # AV false-positive heuristics triggered by GNU cross-compiled ELFs
+        ${NDK_CC} -static \
           -I. -Ilibmnl \
-          -D_GNU_SOURCE \
+          -D_GNU_SOURCE -DANDROID \
+          -Os \
           -o nflog_${{ matrix.arch }} \
           nflog.c attr.c callback.c nlmsg.c socket.c
         
         # Verify the binary
         file nflog_${{ matrix.arch }}
-        ${{ matrix.strip }} nflog_${{ matrix.arch }}
+        ${NDK_STRIP} nflog_${{ matrix.arch }}
         ls -la nflog_${{ matrix.arch }}
 
     - name: Upload nflog artifact
