@@ -3082,7 +3082,13 @@ public final class Api {
         try {
             File defaultPath;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                defaultPath = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "/");
+                File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                if (extDir != null) {
+                    extDir.mkdirs();
+                    defaultPath = extDir;
+                } else {
+                    defaultPath = new File(ctx.getExternalFilesDir(null), "/");
+                }
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 defaultPath = new File(ctx.getExternalFilesDir(null), "/");
             } else {

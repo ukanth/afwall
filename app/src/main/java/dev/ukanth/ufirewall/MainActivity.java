@@ -1299,7 +1299,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try {
                 //using root to copy existing data to current directory on A11+
                 String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
-                String targetDir = ctx.getExternalFilesDir(null) + "/";
+                File targetFile = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R 
+                    ? ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) 
+                    : ctx.getExternalFilesDir(null);
+                String targetDir = (targetFile != null ? targetFile.getAbsolutePath() : ctx.getExternalFilesDir(null).getAbsolutePath()) + "/";
                 String command = "cp -R " + existingDir + " " + targetDir;
                 Log.i(TAG, "Invoking migration script " + command);
                 
@@ -1378,10 +1381,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
                             //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
                             File mPath = null;
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                                mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                            } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                                if (extDir != null) {
+                                    extDir.mkdirs();
+                                    mPath = extDir;
+                                } else {
+                                    mPath = new File(ctx.getExternalFilesDir(null), "/");
+                                }
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 mPath = new File(ctx.getExternalFilesDir(null) + "/");
+                            } else {
+                                mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                             }
                             FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
 
@@ -1410,10 +1421,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             if (G.isDoKey(getApplicationContext()) || isDonate()) {
 
                                 File mPath2 = null;
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                                    mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                                } else {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                    File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                                    if (extDir != null) {
+                                        extDir.mkdirs();
+                                        mPath2 = extDir;
+                                    } else {
+                                        mPath2 = new File(ctx.getExternalFilesDir(null), "/");
+                                    }
+                                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     mPath2 = new File(ctx.getExternalFilesDir(null), "/");
+                                } else {
+                                    mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                                 }
                                 FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
                                 fileDialog2.addFileListener(file -> {

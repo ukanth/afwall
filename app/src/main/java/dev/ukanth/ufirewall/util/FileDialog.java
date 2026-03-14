@@ -2,6 +2,7 @@ package dev.ukanth.ufirewall.util;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -15,7 +16,6 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -23,6 +23,9 @@ import java.util.regex.Pattern;
  */
 public class FileDialog {
     private static final String PARENT_DIR = "..";
+    // Matches all AFWall+ backup filenames (rules-only and all-prefs, plus legacy formats)
+    private static final Pattern BACKUP_FILE_PATTERN = Pattern.compile(
+            "afwall-backup(-[a-z]+)?-\\d{4}-\\S+\\.json|[a-z]+[_\\.][a-z]+\\.json");
     private final String TAG = getClass().getName();
     public void setFlag(boolean flag) {
         this.flag = flag;
@@ -51,7 +54,15 @@ public class FileDialog {
      */
     public FileDialog(Activity activity, File path, boolean flag) {
         this.activity = activity;
-        if (!path.exists()) path = Environment.getExternalStorageDirectory();
+        if (!path.exists()) {
+            // On Android 11+, external storage root is not accessible due to scoped storage
+            File fallback = activity.getExternalFilesDir(null);
+            if (fallback != null && fallback.exists()) {
+                path = fallback;
+            } else {
+                path = Environment.getExternalStorageDirectory();
+            }
+        }
         setFlag(flag);
         loadFileList(path,flag);
     }
@@ -157,26 +168,7 @@ public class FileDialog {
                 File sel = new File(dir, filename);
                 if (!sel.canRead()) return false;
                 if (selectDirectoryOption) return sel.isDirectory();
-                    //backup.json - [a-z]+.json
-                else {
-                    boolean endsWith;
-                    if(flag) {
-                        Pattern p1 = Pattern.compile("[a-z]+.json");
-                        Matcher m1 = p1.matcher(filename);
-
-                        Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
-                        Matcher m2 = p2.matcher(filename);
-                        endsWith = m2.matches() || m1.matches();
-                    } else {
-                        Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
-                        Matcher m1 = p1.matcher(filename);
-
-                        Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
-                        Matcher m2 = p2.matcher(filename);
-                        endsWith = m2.matches() || m1.matches();
-                    }
-                    return endsWith || sel.isDirectory();
-                }
+                return BACKUP_FILE_PATTERN.matcher(filename).matches() || sel.isDirectory();
             };
             String[] fileList1 = path.list(filter);
             if(fileList1 != null) {
@@ -184,28 +176,14 @@ public class FileDialog {
             }
         }
         //copied ones from old afwall
-        File[] listFilesInDir = currentPath.listFiles();
-        if(listFilesInDir !=null && listFilesInDir.length > 0){
-            for(File files: listFilesInDir) {
-                String name = files.getName();
-                boolean endsWith;
-                if(flag) {
-                    Pattern p1 = Pattern.compile("[a-z]+.json");
-                    Matcher m1 = p1.matcher(name);
-
-                    Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-\\d+-\\S*");
-                    Matcher m2 = p2.matcher(name);
-                    endsWith = m2.matches() || m1.matches();
-                } else {
-                    Pattern p1 = Pattern.compile("[a-z]+_[a-z]+.json");
-                    Matcher m1 = p1.matcher(name);
-
-                    Pattern p2 = Pattern.compile("[a-z]+-[a-z]+-[a-z]+-\\d+-\\S*");
-                    Matcher m2 = p2.matcher(name);
-                    endsWith = m2.matches() || m1.matches();
-                }
-                if (!r.contains(files) && endsWith) {
-                    r.add(name);
+        if (!selectDirectoryOption) {
+            File[] listFilesInDir = currentPath.listFiles();
+            if(listFilesInDir !=null && listFilesInDir.length > 0){
+                for(File files: listFilesInDir) {
+                    String name = files.getName();
+                    if (!r.contains(name) && BACKUP_FILE_PATTERN.matcher(name).matches()) {
+                        r.add(name);
+                    }
                 }
             }
         }
