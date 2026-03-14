@@ -1877,27 +1877,49 @@ public final class Api {
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
 
             // On Android 11+ (API 30+), PackageManager may not return all apps without
-            // QUERY_ALL_PACKAGES. Supplement using root shell "pm list packages" to discover
-            // any packages not visible to PackageManager.
+            // QUERY_ALL_PACKAGES. Supplement using root shell "pm list packages -U" to discover
+            // any packages not visible to PackageManager, including headless system services
+            // like Captive Portal Login, OsuLogin, WebView, Remote Provisioner, etc.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 Set<String> visiblePackages = new HashSet<>();
                 for (ApplicationInfo ai : installed) {
                     visiblePackages.add(ai.packageName);
                 }
+
                 try {
-                    Shell.Result result = Shell.cmd("pm list packages").exec();
+                    Shell.Result result = Shell.cmd("pm list packages -U").exec();
                     List<String> out = result.getOut();
                     for (String line : out) {
+                        // Format: "package:<pkgname> uid:<uid>"
                         if (line.startsWith("package:")) {
-                            String pkg = line.substring(8).trim();
+                            String rest = line.substring(8).trim();
+                            String pkg;
+                            int uid = -1;
+                            int uidIdx = rest.indexOf(" uid:");
+                            if (uidIdx > 0) {
+                                pkg = rest.substring(0, uidIdx);
+                                try {
+                                    uid = Integer.parseInt(rest.substring(uidIdx + 5));
+                                } catch (NumberFormatException ignored) {}
+                            } else {
+                                pkg = rest;
+                            }
                             if (!visiblePackages.contains(pkg)) {
                                 try {
                                     ApplicationInfo ai = pkgmanager.getApplicationInfo(pkg, pkgManagerFlags);
                                     installed.add(ai);
-                                    visiblePackages.add(pkg);
-                                } catch (NameNotFoundException ignored) {
-                                    // Package may have been uninstalled between listing and lookup
+                                } catch (NameNotFoundException e) {
+                                    // PackageManager can't see this app (no QUERY_ALL_PACKAGES).
+                                    // Check INTERNET permission via shell before adding.
+                                    if (uid >= 0 && hasInternetPermissionViaShell(pkg)) {
+                                        ApplicationInfo ai = new ApplicationInfo();
+                                        ai.packageName = pkg;
+                                        ai.uid = uid;
+                                        ai.flags = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_INSTALLED;
+                                        installed.add(ai);
+                                    }
                                 }
+                                visiblePackages.add(pkg);
                             }
                         }
                     }
@@ -1936,14 +1958,24 @@ public final class Api {
                 app = syncMap.get(apinfo.uid);
                 // filter applications which are not allowed to access the Internet
                 if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName) && !showAllApps()) {
-                    continue;
+                    // For shell-discovered apps, checkPermission may return DENIED since
+                    // PackageManager can't see them — they were already filtered by
+                    // hasInternetPermissionViaShell() during discovery, so let them through.
+                    if (apinfo.sourceDir != null) {
+                        continue;
+                    }
                 }
                 // try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
                 cachekey = cacheLabel + apinfo.packageName;
                 name = prefs.getString(cachekey, "");
                 if (name.length() == 0 || isRecentlyInstalled(apinfo.packageName)) {
                     // get label and put on cache
-                    name = pkgmanager.getApplicationLabel(apinfo).toString();
+                    try {
+                        name = pkgmanager.getApplicationLabel(apinfo).toString();
+                    } catch (Exception e) {
+                        // For apps invisible to PackageManager, use package name as label
+                        name = apinfo.packageName;
+                    }
                     edit.putString(cachekey, name);
                     changed = true;
                     firstseen = true;
@@ -1961,9 +1993,8 @@ public final class Api {
                             PackageInfo pkgInfo = pkgmanager.getPackageInfo(apinfo.packageName, 0);
                             app.installTime = pkgInfo.firstInstallTime;
                         } catch (PackageManager.NameNotFoundException e) {
-                            // Skip this app if we can't get package info
-                            Log.w(TAG, "Skipping app with null sourceDir and no package info: " + apinfo.packageName);
-                            continue;
+                            // Shell-discovered apps invisible to PackageManager — use 0
+                            app.installTime = 0;
                         }
                     }
 
@@ -3740,6 +3771,25 @@ public final class Api {
             Log.e(TAG, "Failed to check netfilter support: " + e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Check if a package has android.permission.INTERNET via shell.
+     * Used for packages invisible to PackageManager due to package visibility restrictions.
+     */
+    private static boolean hasInternetPermissionViaShell(String packageName) {
+        try {
+            Shell.Result result = Shell.cmd("dumpsys package " + packageName + " | grep android.permission.INTERNET").exec();
+            List<String> out = result.getOut();
+            for (String line : out) {
+                if (line.contains("android.permission.INTERNET")) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to check INTERNET permission for " + packageName + ": " + e.getMessage());
+        }
+        return false;
     }
 
     private static void initSpecial() {
