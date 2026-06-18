@@ -351,7 +351,6 @@ public final class InterfaceTracker {
     }
 
     public static InterfaceDetails getCurrentCfg(Context context, boolean force) {
-        Log.i(TAG, "Forcing configuration: " + force);
         if (currentCfg == null || force) {
             currentCfg = getInterfaceDetails(context);
         }

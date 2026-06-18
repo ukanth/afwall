@@ -30,8 +30,7 @@ public class RulesApplyService extends IntentService {
             }
             final Intent logIntent = new Intent(context, LogService.class);
             if (G.enableLogService()) {
-                context.stopService(logIntent);
-                context.startService(logIntent);
+                LogService.ensureRunning(context);
             } else {
                 context.stopService(logIntent);
                 //Api.cleanupUid();
