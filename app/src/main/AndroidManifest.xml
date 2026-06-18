@@ -160,6 +160,18 @@
             android:name=".activity.LogActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity
+            android:name=".activity.LogHubActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.ApplicationErrorsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.ApplicationLogActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+        <activity
+            android:name=".activity.DiagnosticsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+        <activity
             android:name=".activity.OldLogActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity

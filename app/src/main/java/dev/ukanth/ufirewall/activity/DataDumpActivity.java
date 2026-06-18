@@ -88,6 +88,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     private TextView preferencesContent;
     private TextView applicationErrorsContent;
     private TextView logcatContent;
+    private CardView rulesCard;
     private CardView interfacesCard;
     private CardView systemCard;
     private CardView preferencesCard;
@@ -116,6 +117,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         preferencesContent = findViewById(R.id.preferences_content);
         applicationErrorsContent = findViewById(R.id.application_errors_content);
         logcatContent = findViewById(R.id.logcat_content);
+        rulesCard = findViewById(R.id.rules_card);
         interfacesCard = findViewById(R.id.interfaces_card);
         systemCard = findViewById(R.id.system_card);
         preferencesCard = findViewById(R.id.preferences_card);
@@ -147,6 +149,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         applicationErrorsContent.setText("");
         logcatContent.setText("");
         
+        rulesCard.setVisibility(View.GONE);
         interfacesCard.setVisibility(View.GONE);
         systemCard.setVisibility(View.GONE);
         preferencesCard.setVisibility(View.GONE);
@@ -233,12 +236,14 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         
         switch (sectionType) {
             case "ipv4_rules":
+                rulesCard.setVisibility(View.VISIBLE);
                 rulesTitle.setText(getString(R.string.ipv4_rules_title));
                 rulesStatus.setText(getString(R.string.ready));
                 rulesContent.setText(trimmedContent);
                 break;
                 
             case "ipv6_rules":
+                rulesCard.setVisibility(View.VISIBLE);
                 rulesTitle.setText(getString(R.string.ipv6_rules_title));
                 rulesStatus.setText(getString(R.string.ready));
                 rulesContent.setText(trimmedContent);
