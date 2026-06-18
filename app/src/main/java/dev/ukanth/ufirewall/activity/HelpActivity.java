@@ -2,10 +2,12 @@ package dev.ukanth.ufirewall.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
@@ -41,6 +43,15 @@ public class HelpActivity extends AppCompatActivity {
             versionText = versionText + " (Donate) " + getString(R.string.donate_thanks) + " :)";
         }
         titleText.setText(versionText);
+
+        View wipeAppliedRules = findViewById(R.id.help_wipe_applied_rules);
+        if (wipeAppliedRules != null) {
+            wipeAppliedRules.setOnClickListener(v -> confirmWipeAppliedRules());
+        }
+    }
+
+    private void confirmWipeAppliedRules() {
+        FirewallRuleActions.confirmFlushAllRules(this, null);
     }
 
 

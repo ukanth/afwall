@@ -23,6 +23,7 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 		SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private Context ctx;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

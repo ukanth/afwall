@@ -29,6 +29,7 @@ import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.activity.AppDetailActivity;
+import dev.ukanth.ufirewall.activity.AppRulesActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
@@ -57,6 +58,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
     private boolean useOld = false;
     private Set<Integer> expandedPositions = new HashSet<>();
+    private final Set<Integer> customRuleUids;
+    private final Set<Integer> activeCustomRuleUids;
 
     //final int color = G.sysColor();
     //final int defaultColor = Color.WHITE;
@@ -67,12 +70,16 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         this.activity = activity;
         this.context = context;
         this.listApps = apps;
+        this.customRuleUids = G.enableCustomRules() ? AppRuleHelper.getRuleUidsForCurrentProfile(false) : new HashSet<>();
+        this.activeCustomRuleUids = G.enableCustomRules() ? AppRuleHelper.getRuleUidsForCurrentProfile(true) : new HashSet<>();
     }
     public AppListArrayAdapter(MainActivity activity, Context context, List<PackageInfoData> apps) {
         super(context, R.layout.main_list, apps);
         this.activity = activity;
         this.context = context;
         this.listApps = apps;
+        this.customRuleUids = G.enableCustomRules() ? AppRuleHelper.getRuleUidsForCurrentProfile(false) : new HashSet<>();
+        this.activeCustomRuleUids = G.enableCustomRules() ? AppRuleHelper.getRuleUidsForCurrentProfile(true) : new HashSet<>();
     }
 
     @Override
@@ -88,6 +95,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             }
             holder = new AppStateHolder();
             holder.box_wifi = convertView.findViewById(R.id.itemcheck_wifi);
+            if (G.enableCustomRules()) {
+                holder.box_custom = addSupport(convertView, true, R.id.itemcheck_custom);
+            } else {
+                removeSupport(convertView, R.id.itemcheck_custom);
+            }
 
             if (Api.isMobileNetworkSupported(context)) {
                 holder.box_3g = addSupport(convertView, true, R.id.itemcheck_3g);
@@ -123,6 +135,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             // Convert an existing view
             holder = (AppStateHolder) convertView.getTag();
             holder.box_wifi = convertView.findViewById(R.id.itemcheck_wifi);
+            if (G.enableCustomRules()) {
+                holder.box_custom = addSupport(convertView, false, R.id.itemcheck_custom);
+            } else {
+                holder.box_custom = removeSupport(convertView, R.id.itemcheck_custom);
+            }
             if (Api.isMobileNetworkSupported(context)) {
                 holder.box_3g = addSupport(convertView, true, R.id.itemcheck_3g);
             } else {
@@ -222,6 +239,10 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         if (G.enableTor()) {
             holder.box_tor = addSupport(holder.box_tor, holder.app, 3);
         }
+        if (G.enableCustomRules() && holder.box_custom != null) {
+            holder.box_custom.setTag(holder.app);
+            holder.box_custom.setChecked(activeCustomRuleUids.contains(holder.app.uid));
+        }
 
         // Apply high contrast checkbox tinting for e-paper displays
         applyHighContrastCheckboxTint(holder);
@@ -249,6 +270,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         holder.expandedOptions = convertView.findViewById(R.id.expanded_options);
         holder.actionToggleLog = convertView.findViewById(R.id.action_toggle_log);
         holder.actionOpenApp = convertView.findViewById(R.id.action_open_app);
+        holder.actionDirectRules = convertView.findViewById(R.id.action_direct_rules);
         holder.actionViewLogs = convertView.findViewById(R.id.action_view_logs);
         holder.blockedCount = convertView.findViewById(R.id.blocked_count);
         holder.lastActivity = convertView.findViewById(R.id.last_activity);
@@ -274,6 +296,10 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         holder.actionOpenApp.setOnClickListener(v -> {
             Log.d(TAG, "Open app settings clicked for: " + holder.app.pkgName);
             openAppSettings(holder);
+        });
+        holder.actionDirectRules.setOnClickListener(v -> {
+            Log.d(TAG, "Direct rules clicked for UID: " + holder.app.uid);
+            openDirectRules(holder);
         });
         holder.actionViewLogs.setOnClickListener(v -> {
             Log.d(TAG, "View logs clicked for UID: " + holder.app.uid);
@@ -307,6 +333,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         // This preserves click functionality
         holder.actionToggleLog.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         holder.actionOpenApp.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        holder.actionDirectRules.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         holder.actionViewLogs.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
 
         // Apply text colors
@@ -351,6 +378,15 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         if (!holder.app.pkgName.startsWith("dev.afwall.special.")) {
             Api.showInstalledAppDetails(context, holder.app.pkgName);
         }
+    }
+
+    private void openDirectRules(AppStateHolder holder) {
+        Intent intent = new Intent(context, AppRulesActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(AppRulesActivity.EXTRA_UID, holder.app.uid);
+        intent.putExtra(AppRulesActivity.EXTRA_PACKAGE, holder.app.pkgName);
+        intent.putExtra(AppRulesActivity.EXTRA_LABEL, holder.app.toString().trim());
+        context.startActivity(intent);
     }
 
     private void updateLogsIconVisibility(AppStateHolder holder) {
@@ -469,13 +505,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_lan != isChecked) {
-                            holder.app.selected_lan = isChecked;
-                            MainActivity.dirty = true;
-                            notifyDataSetChanged();
-                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            //MainActivity.addToQueue(holder.app);
-                        }
+	                        if (holder.app.selected_lan != isChecked) {
+	                            holder.app.selected_lan = isChecked;
+	                            MainActivity.addToQueue(holder.app);
+	                            notifyDataSetChanged();
+	                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+	                        }
                     }
 
                 }
@@ -487,13 +522,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_wifi != isChecked) {
-                            holder.app.selected_wifi = isChecked;
-                            MainActivity.dirty = true;
-                            notifyDataSetChanged();
-                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            //MainActivity.addToQueue(holder.app);
-                        }
+	                        if (holder.app.selected_wifi != isChecked) {
+	                            holder.app.selected_wifi = isChecked;
+	                            MainActivity.addToQueue(holder.app);
+	                            notifyDataSetChanged();
+	                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+	                        }
                     }
                 }
             });
@@ -504,13 +538,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_3g != isChecked) {
-                            holder.app.selected_3g = isChecked;
-                            MainActivity.dirty = true;
-                            notifyDataSetChanged();
-                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            //MainActivity.addToQueue(holder.app);
-                        }
+	                        if (holder.app.selected_3g != isChecked) {
+	                            holder.app.selected_3g = isChecked;
+	                            MainActivity.addToQueue(holder.app);
+	                            notifyDataSetChanged();
+	                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+	                        }
                     }
                 }
             });
@@ -521,13 +554,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_roam != isChecked) {
-                            holder.app.selected_roam = isChecked;
-                            MainActivity.dirty = true;
-                            notifyDataSetChanged();
-                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            //MainActivity.addToQueue(holder.app);
-                        }
+	                        if (holder.app.selected_roam != isChecked) {
+	                            holder.app.selected_roam = isChecked;
+	                            MainActivity.addToQueue(holder.app);
+	                            notifyDataSetChanged();
+	                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+	                        }
                     }
                 }
             });
@@ -538,13 +570,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_vpn != isChecked) {
-                            holder.app.selected_vpn = isChecked;
-                            MainActivity.dirty = true;
-                            notifyDataSetChanged();
-                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                           //MainActivity.addToQueue(holder.app);
-                        }
+	                        if (holder.app.selected_vpn != isChecked) {
+	                            holder.app.selected_vpn = isChecked;
+	                            MainActivity.addToQueue(holder.app);
+	                            notifyDataSetChanged();
+	                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+	                        }
                     }
                 }
             });
@@ -555,13 +586,12 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_tether != isChecked) {
-                            holder.app.selected_tether = isChecked;
-                            MainActivity.dirty = true;
-                            notifyDataSetChanged();
-                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                            //MainActivity.addToQueue(holder.app);
-                        }
+	                        if (holder.app.selected_tether != isChecked) {
+	                            holder.app.selected_tether = isChecked;
+	                            MainActivity.addToQueue(holder.app);
+	                            notifyDataSetChanged();
+	                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+	                        }
                     }
                 }
             });
@@ -572,13 +602,35 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                     if(compoundButton.isPressed()) {
-                        if (holder.app.selected_tor != isChecked) {
-                            holder.app.selected_tor = isChecked;
-                            MainActivity.dirty = true;
-                            notifyDataSetChanged();
-                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
-                           //MainActivity.addToQueue(holder.app);
+	                        if (holder.app.selected_tor != isChecked) {
+	                            holder.app.selected_tor = isChecked;
+	                            MainActivity.addToQueue(holder.app);
+	                            notifyDataSetChanged();
+	                            //Log.i(TAG, "Application state changed: " + holder.app.pkgName);
+	                        }
+                    }
+                }
+            });
+        }
+
+        if (holder.box_custom != null) {
+            holder.box_custom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    if (compoundButton.isPressed()) {
+                        if (!customRuleUids.contains(holder.app.uid)) {
+                            compoundButton.setChecked(false);
+                            openDirectRules(holder);
+                            return;
                         }
+	                        AppRuleHelper.setRulesActiveForUid(holder.app.uid, isChecked);
+                            if (isChecked) {
+                                activeCustomRuleUids.add(holder.app.uid);
+                            } else {
+                                activeCustomRuleUids.remove(holder.app.uid);
+                            }
+	                        MainActivity.requireFullApply();
+	                        notifyDataSetChanged();
                     }
                 }
             });
@@ -656,6 +708,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         if (holder.box_tor != null) {
             CompoundButtonCompat.setButtonTintList(holder.box_tor, colorStateList);
         }
+        if (holder.box_custom != null) {
+            CompoundButtonCompat.setButtonTintList(holder.box_custom, colorStateList);
+        }
     }
 
 
@@ -667,12 +722,14 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         private CheckBox box_vpn;
         private CheckBox box_tether;
         private CheckBox box_tor;
+        private CheckBox box_custom;
         private TextView text;
         private ImageView icon;
         private PackageInfoData app;
         private LinearLayout expandedOptions;
         private ImageView actionToggleLog;
         private ImageView actionOpenApp;
+        private ImageView actionDirectRules;
         private ImageView actionViewLogs;
         private TextView blockedCount;
         private TextView lastActivity;

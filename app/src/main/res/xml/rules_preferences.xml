@@ -60,6 +60,13 @@
             android:key="enableTor"
             android:summary="@string/torSummary"
             android:title="@string/tor_profile" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="activeRules"
+            android:icon="@drawable/ic_custom_rules"
+            android:key="enableCustomRules"
+            android:summary="@string/direct_rules_visibility_summary"
+            android:title="@string/direct_rules_visibility_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/ui_chains_title">

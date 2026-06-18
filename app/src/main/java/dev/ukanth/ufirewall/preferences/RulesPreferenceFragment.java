@@ -172,12 +172,15 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
                 enableTether.setChecked(false);
                 CheckBoxPreference enableTor = (CheckBoxPreference) findPreference("enableTor");
                 enableTor.setChecked(false);
+                CheckBoxPreference enableCustomRules = (CheckBoxPreference) findPreference("enableCustomRules");
+                enableCustomRules.setChecked(false);
 
                 G.enableRoam(false);
                 G.enableLAN(false);
                 G.enableVPN(false);
                 G.enableTether(false);
                 G.enableTor(false);
+                G.enableCustomRules(false);
 
             }
         }

@@ -104,6 +104,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String ENABLE_TETHER = "enableTether";
     private static final String ENABLE_LAN = "enableLAN";
     private static final String ENABLE_TOR = "enableTor";
+    private static final String ENABLE_CUSTOM_RULES = "enableCustomRules";
     private static final String ENABLE_IPV6 = "enableIPv6";
     private static final String CONTROL_IPV6 = "controlIPv6";
     private static final String SELECTED_FILTER = "selectedFilter";
@@ -794,6 +795,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+    public static boolean enableCustomRules() {
+        return gPrefs.getBoolean(ENABLE_CUSTOM_RULES, true);
+    }
+
+    public static boolean enableCustomRules(boolean val) {
+        gPrefs.edit().putBoolean(ENABLE_CUSTOM_RULES, val).commit();
+        return val;
+    }
+
     private static Boolean ownerModuleAvailable = null;
 
     public static boolean hasOwnerModule() {
@@ -816,24 +826,11 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean isDonate() {
-        return BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate");
+        return true;
     }
 
     public static boolean isDoKey(Context ctx) {
-        if (!gPrefs.getBoolean(REG_DO, false)) {
-            try {
-                ApplicationInfo app = ctx.getPackageManager().getApplicationInfo("dev.ukanth.ufirewall.donatekey", 0);
-                if (app != null) {
-                    gPrefs.edit().putBoolean(REG_DO, true).commit();
-                }
-            } catch (PackageManager.NameNotFoundException | NullPointerException e) {
-                gPrefs.edit().putBoolean(REG_DO, false).commit();
-            }
-            /*if(BuildConfig.DONATE){
-                gPrefs.edit().putBoolean(REG_DO, true).commit();
-            }*/
-        }
-        return gPrefs.getBoolean(REG_DO, false);
+        return true;
     }
 
 

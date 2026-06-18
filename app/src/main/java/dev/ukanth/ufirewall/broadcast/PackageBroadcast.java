@@ -59,6 +59,8 @@ import dev.ukanth.ufirewall.util.UidResolver;
 public class PackageBroadcast extends BroadcastReceiver {
 
     public static final String TAG = "AFWall";
+    private static String lastEventKey = "";
+    private static long lastEventTime = 0;
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
@@ -68,6 +70,16 @@ public class PackageBroadcast extends BroadcastReceiver {
         if (!inputUri.getScheme().equals("package")) {
             Log.d(TAG, "Intent scheme was not 'package'");
             return;
+        }
+        String eventKey = intent.getAction() + ":" + inputUri.getSchemeSpecificPart() + ":" + intent.getIntExtra(Intent.EXTRA_UID, -1);
+        synchronized (PackageBroadcast.class) {
+            long now = System.currentTimeMillis();
+            if (eventKey.equals(lastEventKey) && now - lastEventTime < 2000) {
+                Log.d(TAG, "Ignoring duplicate package event: " + eventKey);
+                return;
+            }
+            lastEventKey = eventKey;
+            lastEventTime = now;
         }
 
         if (Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) {

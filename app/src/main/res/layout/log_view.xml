@@ -18,7 +18,8 @@
     <TextView
         android:id="@+id/empty_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
         android:text="@string/no_data_available"
         android:visibility="gone" />
@@ -26,7 +27,8 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"

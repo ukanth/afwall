@@ -86,10 +86,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     private TextView interfacesContent;
     private TextView systemContent;
     private TextView preferencesContent;
+    private TextView applicationErrorsContent;
     private TextView logcatContent;
     private CardView interfacesCard;
     private CardView systemCard;
     private CardView preferencesCard;
+    private CardView applicationErrorsCard;
     private CardView logcatCard;
     private boolean useModernLayout = true;
 
@@ -112,10 +114,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         interfacesContent = findViewById(R.id.interfaces_content);
         systemContent = findViewById(R.id.system_content);
         preferencesContent = findViewById(R.id.preferences_content);
+        applicationErrorsContent = findViewById(R.id.application_errors_content);
         logcatContent = findViewById(R.id.logcat_content);
         interfacesCard = findViewById(R.id.interfaces_card);
         systemCard = findViewById(R.id.system_card);
         preferencesCard = findViewById(R.id.preferences_card);
+        applicationErrorsCard = findViewById(R.id.application_errors_card);
         logcatCard = findViewById(R.id.logcat_card);
     }
 
@@ -140,11 +144,13 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         interfacesContent.setText("");
         systemContent.setText("");
         preferencesContent.setText("");
+        applicationErrorsContent.setText("");
         logcatContent.setText("");
         
         interfacesCard.setVisibility(View.GONE);
         systemCard.setVisibility(View.GONE);
         preferencesCard.setVisibility(View.GONE);
+        applicationErrorsCard.setVisibility(View.GONE);
         logcatCard.setVisibility(View.GONE);
 
         // Parse sections more intelligently by looking for section headers
@@ -191,6 +197,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         interfacesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         systemContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         preferencesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        applicationErrorsContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         logcatContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
         // Keep the hidden TextView updated for backward compatibility (export, copy functions)
@@ -212,6 +219,8 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             return "system";
         } else if (trimmed.contains("Preferences")) {
             return "preferences";
+        } else if (trimmed.equals(getString(R.string.application_errors_title))) {
+            return "application_errors";
         } else if (trimmed.contains("Logcat")) {
             return "logcat";
         }
@@ -260,6 +269,11 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                     preferencesContent.setText(trimmedContent);
                 }
                 break;
+
+            case "application_errors":
+                applicationErrorsCard.setVisibility(View.VISIBLE);
+                applicationErrorsContent.setText(trimmedContent);
+                break;
                 
             case "logcat":
                 logcatCard.setVisibility(View.VISIBLE);
@@ -281,6 +295,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         if (interfacesContent != null) interfacesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
         if (systemContent != null) systemContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
         if (preferencesContent != null) preferencesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (applicationErrorsContent != null) applicationErrorsContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
         if (logcatContent != null) logcatContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
     }
 

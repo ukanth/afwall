@@ -163,6 +163,14 @@
                 android:visibility="gone"></ImageView>
 
             <ImageView
+                android:id="@+id/img_custom"
+                android:layout_width="32dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/direct_rules_visibility_title"
+                android:src="@drawable/ic_custom_rules"
+                android:visibility="gone"></ImageView>
+
+            <ImageView
                 android:id="@+id/img_action"
                 android:layout_width="32dp"
                 android:layout_height="24dp"

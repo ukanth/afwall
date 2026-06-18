@@ -185,9 +185,24 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
+    }
+
+    private boolean handlePreferenceBackNavigation() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+            return true;
+        }
+        if (getIntent() != null && getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) != null) {
+            Intent intent = new Intent(this, PreferencesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -248,6 +263,13 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!handlePreferenceBackNavigation()) {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -312,6 +334,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
                 || key.equals("enableTether")
                 || key.equals("enableLAN") || key.equals("enableRoam")
+                || key.equals("enableCustomRules")
                 || key.equals("locale") || key.equals("showFilter")) {
             G.reloadProfile();
             isRefreshRequired = true;

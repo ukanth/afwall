@@ -101,6 +101,15 @@
                 android:scaleX="1.2"
                 android:scaleY="1.2"
                 android:visibility="gone"></CheckBox>
+
+            <CheckBox
+                android:id="@+id/itemcheck_custom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/direct_rules_toggle"
+                android:padding="0px"
+                android:scaleX="1.2"
+                android:scaleY="1.2"></CheckBox>
         </LinearLayout>
 
         <TextView
@@ -204,6 +213,16 @@
                 android:contentDescription="Open app settings"/>
 
             <ImageView
+                android:id="@+id/action_direct_rules"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="16dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_custom_rules"
+                android:contentDescription="@string/direct_rules"/>
+
+            <ImageView
                 android:id="@+id/action_view_logs"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -216,4 +235,3 @@
 
     </LinearLayout>
 </LinearLayout>
-

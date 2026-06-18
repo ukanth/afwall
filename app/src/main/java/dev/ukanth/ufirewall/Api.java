@@ -125,6 +125,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
 import dev.ukanth.ufirewall.MainActivity.GetAppList;
+import dev.ukanth.ufirewall.customrules.CustomRule;
+import dev.ukanth.ufirewall.customrules.CustomRule_Table;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
@@ -707,6 +709,45 @@ public final class Api {
         }
     }
 
+    private static void addUidDeltaForChain(List<String> cmds, String chain, int uid, boolean selected, boolean whitelist) {
+        cmds.add("#NOCHK# -D " + chain + " -m owner --uid-owner " + uid + " -j RETURN");
+        cmds.add("#NOCHK# -D " + chain + " -m owner --uid-owner " + uid + " -j " + chain + "-reject");
+        if (selected) {
+            String action = whitelist ? "RETURN" : chain + "-reject";
+            cmds.add("-I " + chain + " 1 -m owner --uid-owner " + uid + " -j " + action);
+        }
+    }
+
+    private static void addChangedUidRules(List<String> cmds, PackageInfoData app, boolean ipv6, String chainName, boolean whitelist) {
+        int uid = app.uid;
+        addUidDeltaForChain(cmds, chainName + "-3g-home", uid, app.selected_3g, whitelist);
+        if (G.enableRoam()) {
+            addUidDeltaForChain(cmds, chainName + "-3g-roam", uid, app.selected_roam, whitelist);
+        }
+        addUidDeltaForChain(cmds, chainName + "-wifi-wan", uid, app.selected_wifi, whitelist);
+        if (G.enableLAN()) {
+            addUidDeltaForChain(cmds, chainName + "-wifi-lan", uid, app.selected_lan, whitelist);
+        }
+        if (G.enableVPN()) {
+            addUidDeltaForChain(cmds, chainName + "-vpn", uid, app.selected_vpn, whitelist);
+        }
+        if (G.enableTether()) {
+            addUidDeltaForChain(cmds, chainName + "-tether", uid, app.selected_tether, whitelist);
+        }
+        if (G.enableTor()) {
+            cmds.add("#NOCHK# -D " + chainName + "-tor-reject -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
+            if (app.selected_tor && (G.enableInbound() || ipv6)) {
+                cmds.add("-I " + chainName + "-tor-reject 1 -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
+            }
+            if (!ipv6) {
+                cmds.add("#NOCHK# -t nat -D " + chainName + "-tor-check -m owner --uid-owner " + uid + " -j " + chainName + "-tor-filter");
+                if (app.selected_tor) {
+                    cmds.add("-t nat -I " + chainName + "-tor-check 1 -m owner --uid-owner " + uid + " -j " + chainName + "-tor-filter");
+                }
+            }
+        }
+    }
+
     private static void addRejectRules(List<String> cmds, String chainName) {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
@@ -829,19 +870,58 @@ public final class Api {
         return trimmed;
     }
 
-    private static void addCustomRules(String prefName, List<String> cmds) {
-        String customRulesStr = G.pPrefs.getString(prefName, "");
-        if (customRulesStr.isEmpty()) return;
+    public static String validateCustomRuleForStorage(String rule) {
+        if (rule == null) {
+            return null;
+        }
+        return sanitizeRule(rule);
+    }
 
-        String[] customRules = customRulesStr.split("[\\r\\n]+");
-        for (String rule : customRules) {
-            if (rule.matches(".*\\S.*")) {
-                // Sanitize the rule to prevent command injection
-                String sanitizedRule = sanitizeRule(rule.trim());
-                if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
-                    cmds.add("#LITERAL# " + sanitizedRule);
+    private static void addCustomRules(String prefName, List<String> cmds) {
+        addCustomRules(prefName, cmds, false);
+    }
+
+    private static void addCustomRules(String prefName, List<String> cmds, boolean ipv6) {
+        String customRulesStr = G.pPrefs.getString(prefName, "");
+        if (!customRulesStr.isEmpty()) {
+            String[] customRules = customRulesStr.split("[\\r\\n]+");
+            for (String rule : customRules) {
+                if (rule.matches(".*\\S.*")) {
+                    // Sanitize the rule to prevent command injection
+                    String sanitizedRule = sanitizeRule(rule.trim());
+                    if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
+                        cmds.add("#LITERAL# " + sanitizedRule);
+                    }
                 }
             }
+        }
+
+        if (PREF_CUSTOMSCRIPT.equals(prefName) && !ipv6) {
+            addDatabaseCustomRules(cmds);
+        }
+    }
+
+    private static void addDatabaseCustomRules(List<String> cmds) {
+        try {
+            List<CustomRule> customRules = SQLite.select()
+                    .from(CustomRule.class)
+                    .where(CustomRule_Table.active.eq(true))
+                    .queryList();
+
+            for (CustomRule customRule : customRules) {
+                if (!dev.ukanth.ufirewall.util.AppRuleHelper.belongsToCurrentProfile(customRule)) {
+                    continue;
+                }
+                String rule = customRule.getRule();
+                if (rule != null && rule.matches(".*\\S.*")) {
+                    String sanitizedRule = sanitizeRule(rule.trim());
+                    if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
+                        cmds.add(sanitizedRule);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to load database custom rules", e);
         }
     }
 
@@ -944,7 +1024,7 @@ public final class Api {
         cmds.add("-P OUTPUT DROP");
         /*FIXME: Adding custom rules might increase the time */
         Log.i(TAG, "Applying custom rules");
-        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
         String chainName = getThreadSafeChainName();
         addInterfaceRouting(ctx, cmds, ipv6, chainName);
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
@@ -1030,7 +1110,7 @@ public final class Api {
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
-            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
 
             cmds.add("-A " + chainName + "-3g -j " + chainName + "-3g-postcustom");
             cmds.add("-A " + chainName + "-wifi -j " + chainName + "-wifi-postcustom");
@@ -1307,6 +1387,56 @@ public final class Api {
                 }
             } else {
                 Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
+            }
+        }
+    }
+
+    public static boolean applyChangedUidRules(Context ctx, List<PackageInfoData> changedApps, boolean showErrors, RootCommand callback) {
+        if (ctx == null || changedApps == null || changedApps.isEmpty()) {
+            return false;
+        }
+        synchronized (GLOBAL_STATUS_LOCK) {
+            if (globalStatus) {
+                Log.i(TAG, "ignore applyChangedUidRules as existing thread running");
+                return false;
+            }
+            globalStatus = true;
+            try {
+                assertBinaries(ctx, showErrors);
+                final String chainName = getThreadSafeChainName();
+                final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
+                List<String> out = new ArrayList<>();
+                List<String> cmds = new ArrayList<>();
+
+                for (PackageInfoData app : changedApps) {
+                    if (app != null && app.uid > 0) {
+                        addChangedUidRules(cmds, app, false, chainName, whitelist);
+                    }
+                }
+                iptablesCommands(cmds, out, false);
+
+                if (G.enableIPv6()) {
+                    cmds = new ArrayList<>();
+                    for (PackageInfoData app : changedApps) {
+                        if (app != null && app.uid > 0) {
+                            addChangedUidRules(cmds, app, true, chainName, whitelist);
+                        }
+                    }
+                    iptablesCommands(cmds, out, true);
+                }
+
+                if (callback == null) {
+                    callback = new RootCommand();
+                }
+                setRulesUpToDate(false);
+                callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+                setRulesUpToDate(true);
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "Error applying changed UID rules", e);
+                return false;
+            } finally {
+                globalStatus = false;
             }
         }
     }
@@ -1819,32 +1949,32 @@ public final class Api {
         String savedPkg_lan_uid = prefs.getString(PREF_LAN_PKG_UIDS, "");
         String savedPkg_tor_uid = prefs.getString(PREF_TOR_PKG_UIDS, "");
 
-        List<Integer> selected_wifi;
-        List<Integer> selected_3g;
-        List<Integer> selected_roam = new ArrayList<>();
-        List<Integer> selected_vpn = new ArrayList<>();
-        List<Integer> selected_tether = new ArrayList<>();
-        List<Integer> selected_lan = new ArrayList<>();
-        List<Integer> selected_tor = new ArrayList<>();
+        Set<Integer> selected_wifi;
+        Set<Integer> selected_3g;
+        Set<Integer> selected_roam = new HashSet<>();
+        Set<Integer> selected_vpn = new HashSet<>();
+        Set<Integer> selected_tether = new HashSet<>();
+        Set<Integer> selected_lan = new HashSet<>();
+        Set<Integer> selected_tor = new HashSet<>();
 
 
-        selected_wifi = getListFromPref(savedPkg_wifi_uid);
-        selected_3g = getListFromPref(savedPkg_3g_uid);
+        selected_wifi = new HashSet<>(getListFromPref(savedPkg_wifi_uid));
+        selected_3g = new HashSet<>(getListFromPref(savedPkg_3g_uid));
 
         if (G.enableRoam()) {
-            selected_roam = getListFromPref(savedPkg_roam_uid);
+            selected_roam = new HashSet<>(getListFromPref(savedPkg_roam_uid));
         }
         if (G.enableVPN()) {
-            selected_vpn = getListFromPref(savedPkg_vpn_uid);
+            selected_vpn = new HashSet<>(getListFromPref(savedPkg_vpn_uid));
         }
         if (G.enableTether()) {
-            selected_tether = getListFromPref(savedPkg_tether_uid);
+            selected_tether = new HashSet<>(getListFromPref(savedPkg_tether_uid));
         }
         if (G.enableLAN()) {
-            selected_lan = getListFromPref(savedPkg_lan_uid);
+            selected_lan = new HashSet<>(getListFromPref(savedPkg_lan_uid));
         }
         if (G.enableTor()) {
-            selected_tor = getListFromPref(savedPkg_tor_uid);
+            selected_tor = new HashSet<>(getListFromPref(savedPkg_tor_uid));
         }
         //revert back to old approach
 
@@ -1945,6 +2075,10 @@ public final class Api {
                 packagesForUser  = getPackagesForUser(listOfUids);
             }
 
+            if (appList != null) {
+                appList.doMaxProgress(installed.size());
+            }
+
             for (int i = 0; i < installed.size(); i++) {
                 //for (ApplicationInfo apinfo : installed) {
                 count = count + 1;
@@ -1967,7 +2101,7 @@ public final class Api {
                 }
                 // try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
                 cachekey = cacheLabel + apinfo.packageName;
-                name = prefs.getString(cachekey, "");
+                name = cachePrefs.getString(cachekey, "");
                 if (name.length() == 0 || isRecentlyInstalled(apinfo.packageName)) {
                     // get label and put on cache
                     try {
@@ -2016,28 +2150,8 @@ public final class Api {
                 }
 
                 app.firstseen = firstseen;
-                // check if this application is selected
-                if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
-                    app.selected_wifi = true;
-                }
-                if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
-                    app.selected_3g = true;
-                }
-                if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
-                    app.selected_roam = true;
-                }
-                if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
-                    app.selected_vpn = true;
-                }
-                if (G.enableTether() && !app.selected_tether && Collections.binarySearch(selected_tether, app.uid) >= 0) {
-                    app.selected_tether = true;
-                }
-                if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
-                    app.selected_lan = true;
-                }
-                if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
-                    app.selected_tor = true;
-                }
+                applySelectedStates(app, selected_wifi, selected_3g, selected_roam, selected_vpn,
+                        selected_tether, selected_lan, selected_tor);
                 if (G.supportDual()) {
                     checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, multiUserAppsMap);
                 }
@@ -2047,27 +2161,8 @@ public final class Api {
                 //run through multi user map
                 for (int i = 0; i < multiUserAppsMap.size(); i++) {
                     app = multiUserAppsMap.valueAt(i);
-                    if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
-                        app.selected_wifi = true;
-                    }
-                    if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
-                        app.selected_3g = true;
-                    }
-                    if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
-                        app.selected_roam = true;
-                    }
-                    if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
-                        app.selected_vpn = true;
-                    }
-                    if (G.enableTether() && !app.selected_tether && Collections.binarySearch(selected_tether, app.uid) >= 0) {
-                        app.selected_tether = true;
-                    }
-                    if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
-                        app.selected_lan = true;
-                    }
-                    if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
-                        app.selected_tor = true;
-                    }
+                    applySelectedStates(app, selected_wifi, selected_3g, selected_roam, selected_vpn,
+                            selected_tether, selected_lan, selected_tor);
                     syncMap.put(app.uid, app);
                 }
             }
@@ -2085,27 +2180,8 @@ public final class Api {
                 //default DNS/NTP
                 if (app.uid != -1 && syncMap.get(app.uid) == null) {
                     // check if this application is allowed
-                    if (!app.selected_wifi && Collections.binarySearch(selected_wifi, app.uid) >= 0) {
-                        app.selected_wifi = true;
-                    }
-                    if (!app.selected_3g && Collections.binarySearch(selected_3g, app.uid) >= 0) {
-                        app.selected_3g = true;
-                    }
-                    if (G.enableRoam() && !app.selected_roam && Collections.binarySearch(selected_roam, app.uid) >= 0) {
-                        app.selected_roam = true;
-                    }
-                    if (G.enableVPN() && !app.selected_vpn && Collections.binarySearch(selected_vpn, app.uid) >= 0) {
-                        app.selected_vpn = true;
-                    }
-                    if (G.enableTether() && !app.selected_tether && Collections.binarySearch(selected_tether, app.uid) >= 0) {
-                        app.selected_tether = true;
-                    }
-                    if (G.enableLAN() && !app.selected_lan && Collections.binarySearch(selected_lan, app.uid) >= 0) {
-                        app.selected_lan = true;
-                    }
-                    if (G.enableTor() && !app.selected_tor && Collections.binarySearch(selected_tor, app.uid) >= 0) {
-                        app.selected_tor = true;
-                    }
+                    applySelectedStates(app, selected_wifi, selected_3g, selected_roam, selected_vpn,
+                            selected_tether, selected_lan, selected_tor);
                     syncMap.put(app.uid, app);
                 }
             }
@@ -2202,6 +2278,24 @@ public final class Api {
             return true;
         }
         return false;
+    }
+
+    private static void applySelectedStates(PackageInfoData app,
+                                            Set<Integer> selectedWifi,
+                                            Set<Integer> selected3g,
+                                            Set<Integer> selectedRoam,
+                                            Set<Integer> selectedVpn,
+                                            Set<Integer> selectedTether,
+                                            Set<Integer> selectedLan,
+                                            Set<Integer> selectedTor) {
+        int uid = app.uid;
+        app.selected_wifi = app.selected_wifi || selectedWifi.contains(uid);
+        app.selected_3g = app.selected_3g || selected3g.contains(uid);
+        app.selected_roam = app.selected_roam || (G.enableRoam() && selectedRoam.contains(uid));
+        app.selected_vpn = app.selected_vpn || (G.enableVPN() && selectedVpn.contains(uid));
+        app.selected_tether = app.selected_tether || (G.enableTether() && selectedTether.contains(uid));
+        app.selected_lan = app.selected_lan || (G.enableLAN() && selectedLan.contains(uid));
+        app.selected_tor = app.selected_tor || (G.enableTor() && selectedTor.contains(uid));
     }
 
     public static HashMap<Integer, String> getPackagesForUser(List<Integer> userProfile) {

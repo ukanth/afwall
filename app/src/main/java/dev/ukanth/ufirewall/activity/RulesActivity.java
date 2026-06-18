@@ -36,9 +36,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import java.io.File;
 import java.util.Map;
 import java.util.TreeSet;
@@ -49,6 +46,7 @@ import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
+import dev.ukanth.ufirewall.util.ApplicationErrorLog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
 
@@ -119,6 +117,14 @@ public class RulesActivity extends DataDumpActivity {
             result.append("Status : ").append(Api.isEnabled(ctx) ? "Enabled" : "Disabled").append("\n");
         } catch (NullPointerException e) {
             result.append("Error retrieving preferences\n");
+        }
+
+        writeHeading(result, true, getString(R.string.application_errors_title));
+        String applicationErrors = ApplicationErrorLog.get(ctx);
+        if (applicationErrors.trim().isEmpty()) {
+            result.append(getString(R.string.application_errors_empty)).append("\n");
+        } else {
+            result.append(applicationErrors);
         }
 
         // Sixth section: "Logcat"
@@ -304,7 +310,7 @@ public class RulesActivity extends DataDumpActivity {
                 return true;
             }
             case MENU_FLUSH_RULES:
-                flushAllRules(ctx);
+                flushAllRules();
                 return true;
             case MENU_IPV6_RULES:
                 showIPv6 = true;
@@ -342,28 +348,8 @@ public class RulesActivity extends DataDumpActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void flushAllRules(final Context ctx) {
-
-        new MaterialDialog.Builder(this)
-                .title(R.string.confirmation)
-                .content(R.string.flushRulesConfirm)
-                .positiveText(R.string.Yes)
-                .negativeText(R.string.No)
-                .onPositive((dialog, which) -> {
-                    Api.flushAllRules(ctx, new RootCommand()
-                            .setReopenShell(true)
-                            .setSuccessToast(R.string.flushed)
-                            .setFailureToast(R.string.error_purge)
-                            .setCallback(new RootCommand.Callback() {
-                                public void cbFunc(RootCommand state) {
-                                    populateData(ctx);
-                                }
-                            }));
-                    dialog.dismiss();
-                })
-
-                .onNegative((dialog, which) -> dialog.dismiss())
-                .show();
+    private void flushAllRules() {
+        FirewallRuleActions.confirmFlushAllRules(this, () -> populateData(RulesActivity.this));
     }
 
 

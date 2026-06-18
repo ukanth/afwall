@@ -58,13 +58,16 @@ import java.util.Collections;
 import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
+import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.customrules.CustomRule;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
+import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.LogNetUtil;
@@ -515,19 +518,63 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     
     private void showWhitelistDestinationDialog() {
         if (current_selected_logData == null) return;
-        
+
+        if (!hasEnoughDataForDestinationRule(current_selected_logData)) {
+            Api.toast(this, getString(R.string.direct_rules_log_missing_data));
+            return;
+        }
+
+        String destination = current_selected_logData.getDst().trim();
+        String protocol = AppRuleHelper.normalizeProtocol(current_selected_logData.getProto());
+        String selectedPort = "";
+        if (("tcp".equals(protocol) || "udp".equals(protocol)) && current_selected_logData.getDpt() > 0) {
+            selectedPort = String.valueOf(current_selected_logData.getDpt());
+        }
+        final String port = selectedPort;
+
         new MaterialDialog.Builder(this)
             .title("Whitelist Destination")
-            .content("Add a permanent rule to allow all connections to " + 
-                    current_selected_logData.getDst() + ":" + current_selected_logData.getDpt() + "?")
+            .content("Add an app-specific allow rule for " + destination + destinationPortLabel(port) + "?")
             .positiveText("Allow")
             .negativeText("Cancel")
             .onPositive((dialog, which) -> {
-                // Here you would integrate with AFWall's custom rule system
-                // This is a placeholder for the actual implementation
-                Api.toast(this, "Feature requires integration with custom rules system");
+                addWhitelistRuleForLogDestination(current_selected_logData, destination, protocol, port);
             })
             .show();
+    }
+
+    private boolean hasEnoughDataForDestinationRule(LogData logData) {
+        if (logData == null || logData.getUid() <= 0) {
+            return false;
+        }
+        String destination = logData.getDst();
+        return destination != null
+                && !destination.trim().isEmpty()
+                && AppRuleHelper.isValidDestination(destination.trim());
+    }
+
+    private void addWhitelistRuleForLogDestination(LogData logData, String destination, String protocol, String port) {
+        if (!hasEnoughDataForDestinationRule(logData)) {
+            Api.toast(this, getString(R.string.direct_rules_log_missing_data));
+            return;
+        }
+        int ruleUid = logData.getUid();
+        String rule = Api.validateCustomRuleForStorage(AppRuleHelper.buildAllowRule(ruleUid, destination, protocol, port));
+        if (rule == null) {
+            Api.toast(this, getString(R.string.direct_rules_invalid_rule));
+            return;
+        }
+
+        CustomRule customRule = new CustomRule(AppRuleHelper.buildAllowRuleName(ruleUid, destination, protocol, port), rule);
+        customRule.setActive(true);
+        customRule.save();
+        MainActivity.requireFullApply();
+        Api.setRulesUpToDate(false);
+        Api.toast(this, getString(R.string.direct_rules_added));
+    }
+
+    private String destinationPortLabel(String port) {
+        return port == null || port.isEmpty() ? "" : ":" + port;
     }
     
     private void updateSummaryStatistics() {

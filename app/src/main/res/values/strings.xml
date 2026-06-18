@@ -13,6 +13,7 @@
     <string name="whitelist_array_item">Allow selected</string>
     <string name="blacklist_array_item">Block selected</string>
     <string name="showrules">Show rules</string>
+    <string name="rescan_apps">Rescan apps</string>
     <string name="applyrules">Apply</string>
     <string name="saverules">Save</string>
     <string name="setpwd">Set password</string>
@@ -55,6 +56,8 @@
     <string name="rules_applied">Rules applied with success</string>
     <string name="rules_saved">Rules saved</string>
     <string name="rules_deleted">Rules deleted</string>
+    <string name="wipe_applied_rules">Wipe applied rules</string>
+    <string name="wipe_applied_rules_summary">Flush currently applied firewall rules without changing saved rules.</string>
     <string name="pass_titleset">Set password lock</string>
     <string name="pass_titleget">Password required</string>
     <string name="enterpass">Enter password</string>
@@ -503,6 +506,28 @@
     <string name="reapply_rules">Please reapply the rules due to preference change</string>
 
     <string name="custom_rules">Custom Rules</string>
+    <string name="direct_rules">Direct rules</string>
+    <string name="direct_rules_title">Direct rules</string>
+    <string name="direct_rules_empty">No direct rules for this app.</string>
+    <string name="direct_rules_destination">Destination IP/CIDR</string>
+    <string name="direct_rules_destination_hint">Example: 192.168.1.10 or 10.0.0.0/8</string>
+    <string name="direct_rules_port">Destination port</string>
+    <string name="direct_rules_port_hint">Example: 443 or 8000:8100</string>
+    <string name="direct_rules_protocol">Protocol</string>
+    <string name="direct_rules_add">Add allow rule</string>
+    <string name="direct_rules_toggle">Enable direct rules</string>
+    <string name="direct_rules_visibility_title">Direct rules control</string>
+    <string name="direct_rules_visibility_summary">Show the direct rules checkbox in the app list.</string>
+    <string name="direct_rules_apply_hint">Apply firewall rules for changes to take effect.</string>
+    <string name="direct_rules_invalid_destination">Enter a valid IPv4 address or CIDR range.</string>
+    <string name="direct_rules_invalid_port">Enter a valid port or port range.</string>
+    <string name="direct_rules_invalid_rule">Direct rule failed validation.</string>
+    <string name="direct_rules_need_match">Enter a destination, a port, or both.</string>
+    <string name="direct_rules_port_needs_protocol">Choose TCP or UDP when using a port.</string>
+    <string name="direct_rules_added">Direct rule added.</string>
+    <string name="direct_rules_removed">Direct rule removed.</string>
+    <string name="direct_rules_remove">Remove</string>
+    <string name="direct_rules_log_missing_data">Selected log item does not include enough app and destination data.</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
@@ -669,6 +694,8 @@
     <string name="ipv4_rules_title">IPv4 Rules</string>
     <string name="ipv6_rules_title">IPv6 Rules</string>
     <string name="logcat_title">Application Log</string>
+    <string name="application_errors_title">Application Errors</string>
+    <string name="application_errors_empty">No application errors recorded.</string>
     <string name="custom_startup_script">Custom Startup Script</string>
     <string name="custom_shutdown_script">Custom Shutdown Script</string>
     <string name="enter_custom_script_hint">Enter iptables commands to execute on firewall startup</string>

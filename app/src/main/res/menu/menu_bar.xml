@@ -80,6 +80,11 @@
                 android:icon="@drawable/ic_rules"
                 android:title="@string/showrules"
                 app:showAsAction="always" />
+            <item
+                android:id="@+id/menu_rescan_apps"
+                android:icon="@drawable/ic_refresh"
+                android:title="@string/rescan_apps"
+                app:showAsAction="always" />
 
             <item
                 android:id="@+id/menu_setcustom"

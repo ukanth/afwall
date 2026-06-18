@@ -87,6 +87,7 @@
                         android:background="@drawable/text_background_rounded"
                         android:padding="12dp"
                         android:scrollHorizontally="true"
+                        android:textIsSelectable="true"
                         android:text="@string/loading_iptables_rules" />
 
                 </LinearLayout>
@@ -142,7 +143,8 @@
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
                         android:padding="12dp"
-                        android:scrollHorizontally="true" />
+                        android:scrollHorizontally="true"
+                        android:textIsSelectable="true" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -197,7 +199,8 @@
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
                         android:padding="12dp"
-                        android:scrollHorizontally="true" />
+                        android:scrollHorizontally="true"
+                        android:textIsSelectable="true" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -252,7 +255,65 @@
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
                         android:padding="12dp"
-                        android:scrollHorizontally="true" />
+                        android:scrollHorizontally="true"
+                        android:textIsSelectable="true" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Application Errors Section -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/application_errors_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="?attr/itemBackground"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_dialog_alert"
+                            app:tint="?android:attr/textColorSecondary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/application_errors_title"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textStyle="bold"
+                            android:textColor="?android:attr/textColorSecondary"
+                            android:layout_marginStart="12dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/application_errors_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:typeface="monospace"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:background="@drawable/text_background_rounded"
+                        android:padding="12dp"
+                        android:scrollHorizontally="true"
+                        android:textIsSelectable="true" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -308,7 +369,8 @@
                         android:textColor="?android:attr/textColorPrimary"
                         android:background="@drawable/text_background_rounded"
                         android:padding="12dp"
-                        android:scrollHorizontally="true" />
+                        android:scrollHorizontally="true"
+                        android:textIsSelectable="true" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

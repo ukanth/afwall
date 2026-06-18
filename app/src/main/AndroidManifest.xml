@@ -150,6 +150,13 @@
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         <activity
+            android:name=".activity.AppRulesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="dev.ukanth.ufirewall.MainActivity" />
+        </activity>
+        <activity
             android:name=".activity.LogActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
         <activity
@@ -203,6 +210,15 @@
                 <action android:name="android.intent.action.MEDIA_MOUNTED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".broadcast.PackageBroadcast"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
         <!--<service android:name=".service.ApplyOnBootService" />-->

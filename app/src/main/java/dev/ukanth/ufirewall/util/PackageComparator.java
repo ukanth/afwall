@@ -26,7 +26,7 @@ public class PackageComparator implements Comparator<Api.PackageInfoData> {
                 case "s1":
                     return (o1.installTime > o2.installTime) ? -1: (o1.installTime < o2.installTime) ? 1 : 0;
                 case "s2":
-                    return (o2.uid > o1.uid) ? -1: (o2.uid < o1.uid) ? 0 : 1;
+                    return Integer.compare(o2.uid, o1.uid);
             }
         }
         if (o1_selected)
