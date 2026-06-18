@@ -1359,6 +1359,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Log.i(TAG, "Migration script completed successfully");
                     G.hasCopyOldExports(true);
                 } else {
+                    ApplicationErrorLog.add(ctx, "Migration script failed with code " + result.getCode()
+                            + (result.getOut().isEmpty() ? "" : ". Output: " + result.getOut()));
                     Log.w(TAG, "Migration script failed with code: " + result.getCode());
                     Log.w(TAG, "Migration output: " + result.getOut());
                 }

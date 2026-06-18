@@ -132,7 +132,7 @@ public class RulesActivity extends DataDumpActivity {
         if (includeApplicationLog()) {
             // Sixth section: "Logcat"
             writeHeading(result, true, "Logcat");
-            result.append(Log.getLog());
+            result.append(Log.getApplicationLog());
         }
 
         // finished: post result to the user

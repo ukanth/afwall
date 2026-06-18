@@ -208,7 +208,7 @@ public class LogHubActivity extends AppCompatActivity {
                             fetchIptablesExport(true));
                     break;
                 case EXPORT_APPLICATION_LOG:
-                    appendExportSection(builder, getString(R.string.application_log_title), Log.getLog());
+                    appendExportSection(builder, getString(R.string.application_log_title), Log.getApplicationLog());
                     break;
                 case EXPORT_APPLICATION_ERRORS:
                     String errors = ApplicationErrorLog.get(this);
