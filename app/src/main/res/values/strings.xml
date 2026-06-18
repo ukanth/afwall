@@ -700,7 +700,9 @@
     <string name="log_hub_blocked_requests">Blocked Requests</string>
     <string name="log_hub_blocked_requests_summary">Review captured firewall blocks by app and destination.</string>
     <string name="log_hub_iptables">IP Tables</string>
-    <string name="log_hub_iptables_summary">Inspect active IPv4 and IPv6 firewall rules.</string>
+    <string name="log_hub_iptables_summary">Inspect active IPv4 and IPv6 firewall rules only.</string>
+    <string name="log_hub_diagnostics">Diagnostics</string>
+    <string name="log_hub_diagnostics_summary">View interfaces, device info, preferences, and logcat.</string>
     <string name="log_hub_application_errors_summary">Review quick-rule failures and other application-level errors.</string>
     <string name="custom_startup_script">Custom Startup Script</string>
     <string name="custom_shutdown_script">Custom Shutdown Script</string>

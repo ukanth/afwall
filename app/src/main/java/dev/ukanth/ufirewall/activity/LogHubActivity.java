@@ -30,6 +30,7 @@ public class LogHubActivity extends AppCompatActivity {
 
         findViewById(R.id.log_hub_blocked_requests).setOnClickListener(v -> openBlockedRequests());
         findViewById(R.id.log_hub_iptables).setOnClickListener(v -> startActivity(new Intent(this, RulesActivity.class)));
+        findViewById(R.id.log_hub_diagnostics).setOnClickListener(v -> startActivity(new Intent(this, DiagnosticsActivity.class)));
         findViewById(R.id.log_hub_application_errors).setOnClickListener(v -> startActivity(new Intent(this, ApplicationErrorsActivity.class)));
     }
 

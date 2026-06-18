@@ -99,7 +99,6 @@ import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
 import dev.ukanth.ufirewall.activity.LogHubActivity;
-import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
@@ -1263,9 +1262,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else if (selectedItem == R.id.menu_log) {
             showLog();
             return true;
-        } else if (selectedItem == R.id.menu_rules) {
-            showRules();
-            return true;
         } else if (selectedItem == R.id.menu_setcustom) {
             setCustomScript();
             return true;
@@ -1733,14 +1729,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // If the firewall is enabled, re-apply the rules
             applyOrSaveRules();
         }
-    }
-
-    /**
-     * Show iptables rules on a dialog
-     */
-    private void showRules() {
-        Intent i = new Intent(this, RulesActivity.class);
-        startActivityForResult(i, SHOW_RULES_ACTIVITY);
     }
 
     /**
