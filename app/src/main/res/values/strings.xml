@@ -508,6 +508,10 @@
     <string name="export_logs_title">Export logs</string>
     <string name="export_logs_summary">Select log sections and export them to one file.</string>
     <string name="export_logs_select_one">Select at least one log section to export.</string>
+    <string name="export_logs_iptables_ipv4">IP Tables IPv4 rules</string>
+    <string name="export_logs_iptables_ipv6">IP Tables IPv6 rules</string>
+    <string name="export_logs_iptables_timeout">Timed out while fetching IP Tables rules.</string>
+    <string name="export_logs_iptables_interrupted">Interrupted while fetching IP Tables rules.</string>
     <string name="reapply_rules">Please reapply the rules due to preference change</string>
 
     <string name="custom_rules">Custom Rules</string>

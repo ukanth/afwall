@@ -1818,9 +1818,10 @@ public final class Api {
         List<String> cmds = new ArrayList<>();
         List<String> out = new ArrayList<>();
         cmds.add("-n -v -L");
-        iptablesCommands(cmds, out, false);
         if (useIPV6) {
             iptablesCommands(cmds, out, true);
+        } else {
+            iptablesCommands(cmds, out, false);
         }
         callback.run(ctx, out);
     }
