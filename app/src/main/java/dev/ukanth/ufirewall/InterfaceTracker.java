@@ -29,8 +29,11 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
 import android.net.NetworkInfo;
+import android.net.RouteInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 
 import java.lang.reflect.Method;
 import java.net.Inet4Address;
@@ -229,7 +232,7 @@ public final class InterfaceTracker {
         } catch (Exception e) {
             Log.i(Api.TAG, "Exception in  getInterfaceDetails.checkTether" + e.getLocalizedMessage());
         }
-        NewInterfaceScanner.populateLanMasks(ret);
+        NewInterfaceScanner.populateLanMasks(context, ret);
         getDnsServers(context, ret);
         return ret;
     }
@@ -484,7 +487,74 @@ public final class InterfaceTracker {
 
     private static class NewInterfaceScanner {
 
-        public static void populateLanMasks(InterfaceDetails ret) {
+        private static boolean isWifiLikeInterface(String name) {
+            if (name == null) {
+                return false;
+            }
+            for (String pattern : ITFS_WIFI) {
+                if (name.startsWith(truncAfter(pattern, "\\+"))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static void addMask(InterfaceDetails ret, InetAddress ip, int prefixLength) {
+            if (ip == null) {
+                return;
+            }
+            String mask = truncAfter(ip.getHostAddress(), "%") + "/" + prefixLength;
+            if (ip instanceof Inet4Address) {
+                if (!ret.lanMaskV4.contains(mask)) {
+                    ret.lanMaskV4.add(mask);
+                }
+            } else if (ip instanceof Inet6Address) {
+                if (!ret.lanMaskV6.contains(mask)) {
+                    ret.lanMaskV6.add(mask);
+                }
+            }
+        }
+
+        private static void populateLanMasksFromRoutes(Context context, InterfaceDetails ret) {
+            if (context == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                return;
+            }
+            try {
+                ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (cm == null) {
+                    return;
+                }
+                for (android.net.Network network : cm.getAllNetworks()) {
+                    LinkProperties linkProperties = cm.getLinkProperties(network);
+                    if (linkProperties == null) {
+                        continue;
+                    }
+                    if (!isWifiLikeInterface(linkProperties.getInterfaceName())) {
+                        continue;
+                    }
+                    for (RouteInfo route : linkProperties.getRoutes()) {
+                        if (route == null || route.isDefaultRoute() || route.getDestination() == null) {
+                            continue;
+                        }
+                        String mask = route.getDestination().toString();
+                        InetAddress addr = route.getDestination().getAddress();
+                        if (addr instanceof Inet4Address) {
+                            if (!ret.lanMaskV4.contains(mask)) {
+                                ret.lanMaskV4.add(mask);
+                            }
+                        } else if (addr instanceof Inet6Address) {
+                            if (!ret.lanMaskV6.contains(mask)) {
+                                ret.lanMaskV6.add(mask);
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.i(TAG, "Error fetching LAN routes: " + android.util.Log.getStackTraceString(e));
+            }
+        }
+
+        public static void populateLanMasks(Context context, InterfaceDetails ret) {
             try {
                 Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
 
@@ -496,12 +566,7 @@ public final class InterfaceTracker {
                         continue;
                     }
 
-                    for (String pattern : ITFS_WIFI) {
-                        if (intf.getName().startsWith(truncAfter(pattern, "\\+"))) {
-                            match = true;
-                            break;
-                        }
-                    }
+                    match = isWifiLikeInterface(intf.getName());
                     if (!match)
                         continue;
                     ret.wifiName = intf.getName();
@@ -511,24 +576,13 @@ public final class InterfaceTracker {
                     while (addrList.hasNext()) {
                         InterfaceAddress addr = addrList.next();
                         InetAddress ip = addr.getAddress();
-                        String mask = truncAfter(ip.getHostAddress(), "%") + "/" +
-                                addr.getNetworkPrefixLength();
-
-                        // Add all unique subnets, not just the first one
-                        if (ip instanceof Inet4Address) {
-                            if (!ret.lanMaskV4.contains(mask)) {
-                                ret.lanMaskV4.add(mask);
-                            }
-                        } else if (ip instanceof Inet6Address) {
-                            if (!ret.lanMaskV6.contains(mask)) {
-                                ret.lanMaskV6.add(mask);
-                            }
-                        }
+                        addMask(ret, ip, addr.getNetworkPrefixLength());
                     }
                     if (ret.lanMaskV4.isEmpty() && ret.lanMaskV6.isEmpty()) {
                         ret.noIP = true;
                     }
                 }
+                populateLanMasksFromRoutes(context, ret);
             } catch (Exception e) {
                 Log.i(TAG, "Error fetching network interface list: " + android.util.Log.getStackTraceString(e));
             }
