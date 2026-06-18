@@ -89,7 +89,7 @@ public class RulesActivity extends DataDumpActivity {
         sub.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_mail);
     }
 
-    private void writeHeading(StringBuilder res, boolean initialNewline, String title) {
+    protected void writeHeading(StringBuilder res, boolean initialNewline, String title) {
         StringBuilder eq = new StringBuilder();
 
         for (int i = 0; i < title.length(); i++) {
@@ -129,9 +129,11 @@ public class RulesActivity extends DataDumpActivity {
             }
         }
 
-        // Sixth section: "Logcat"
-        writeHeading(result, true, "Logcat");
-        result.append(Log.getLog());
+        if (includeApplicationLog()) {
+            // Sixth section: "Logcat"
+            writeHeading(result, true, "Logcat");
+            result.append(Log.getLog());
+        }
 
         // finished: post result to the user
         setData(result.toString());
@@ -139,6 +141,10 @@ public class RulesActivity extends DataDumpActivity {
 
     protected boolean includeApplicationErrors() {
         return false;
+    }
+
+    protected boolean includeApplicationLog() {
+        return true;
     }
 
     protected String getFileInfo(String filename) {
