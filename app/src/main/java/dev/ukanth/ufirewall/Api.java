@@ -730,6 +730,7 @@ public final class Api {
         addUidDeltaForChain(cmds, chainName + "-wifi-wan", uid, app.selected_wifi, whitelist);
         if (G.enableLAN()) {
             addUidDeltaForChain(cmds, chainName + "-wifi-lan", uid, app.selected_lan, whitelist);
+            addLanReservedUidDelta(cmds, uid, app.selected_lan, chainName, whitelist, ipv6);
         }
         if (G.enableVPN()) {
             addUidDeltaForChain(cmds, chainName + "-vpn", uid, app.selected_vpn, whitelist);
@@ -944,6 +945,49 @@ public final class Api {
         return ranges;
     }
 
+    private static List<String> getLocalReservedRanges(boolean ipv6) {
+        return Arrays.asList(ipv6 ? LOCAL_RESERVED_IPV6_RANGES : LOCAL_RESERVED_IPV4_RANGES);
+    }
+
+    private static void addLanReservedAllowRulesForUidlist(List<String> cmds, List<Integer> uids, String chainName,
+                                                          boolean whitelist, boolean ipv6) {
+        if (!whitelist || uids == null || uids.isEmpty()) {
+            return;
+        }
+
+        String chain = chainName + "-wifi-fork";
+        List<String> ranges = getLocalReservedRanges(ipv6);
+        if (uids.contains(SPECIAL_UID_ANY)) {
+            for (String range : ranges) {
+                cmds.add("-A " + chain + " -d " + range + " -j RETURN");
+            }
+            return;
+        }
+
+        for (Integer uid : uids) {
+            if (uid != null && uid >= 0) {
+                for (String range : ranges) {
+                    cmds.add("-A " + chain + " -d " + range + " -m owner --uid-owner " + uid + " -j RETURN");
+                }
+            }
+        }
+    }
+
+    private static void addLanReservedUidDelta(List<String> cmds, int uid, boolean selected, String chainName,
+                                               boolean whitelist, boolean ipv6) {
+        if (!whitelist) {
+            return;
+        }
+
+        String chain = chainName + "-wifi-fork";
+        for (String range : getLocalReservedRanges(ipv6)) {
+            cmds.add("#NOCHK# -D " + chain + " -d " + range + " -m owner --uid-owner " + uid + " -j RETURN");
+            if (selected) {
+                cmds.add("-I " + chain + " 1 -d " + range + " -m owner --uid-owner " + uid + " -j RETURN");
+            }
+        }
+    }
+
     /**
      * Reconfigure the firewall rules based on interface changes seen at runtime: tethering
      * enabled/disabled, IP address changes, etc.  This should only affect a small number of
@@ -954,6 +998,10 @@ public final class Api {
      * @param cmds command list
      */
     private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6, String chainName) {
+        addInterfaceRouting(ctx, cmds, ipv6, chainName, null);
+    }
+
+    private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6, String chainName, RuleDataSet ruleDataSet) {
         try {
             //force only for v4
             final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, !ipv6);
@@ -988,6 +1036,9 @@ public final class Api {
                 // Support multiple LAN subnets (Issue #1362)
                 // Subnet-specific rules are added first, then a catch-all routes remaining traffic to WAN.
                 // iptables evaluates rules top-to-bottom, so LAN subnets are matched before the catch-all.
+                if (ruleDataSet != null) {
+                    addLanReservedAllowRulesForUidlist(cmds, ruleDataSet.lanList, chainName, whitelist, ipv6);
+                }
                 Set<String> lanRanges = getLanDestinationRanges(cfg, ipv6);
                 if (lanRanges.isEmpty()) {
                     Log.i(TAG, "no LAN ranges found: " + G.enableIPv6() + "," + (ipv6 ? cfg.lanMaskV6 : cfg.lanMaskV4));
@@ -1132,7 +1183,7 @@ public final class Api {
                 cmds.add("-A " + chainName + "-input -m state --state ESTABLISHED -j RETURN");
             }
 
-            addInterfaceRouting(ctx, cmds, ipv6, chainName);
+            addInterfaceRouting(ctx, cmds, ipv6, chainName, ruleDataSet);
 
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
             if (G.enableVPN()) {
