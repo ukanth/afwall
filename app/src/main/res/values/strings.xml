@@ -524,6 +524,10 @@
     <string name="direct_rules_port_hint">Example: 443 or 8000:8100</string>
     <string name="direct_rules_protocol">Protocol</string>
     <string name="direct_rules_add">Add allow rule</string>
+    <string name="direct_rules_add_allow">Add allow rule</string>
+    <string name="direct_rules_add_block">Add block rule</string>
+    <string name="direct_rules_action_allow">Allow matching traffic</string>
+    <string name="direct_rules_action_block">Block matching traffic</string>
     <string name="direct_rules_toggle">Enable direct rules</string>
     <string name="direct_rules_visibility_title">Direct rules control</string>
     <string name="direct_rules_visibility_summary">Enable per-app destination rules for specific IPs, CIDR ranges, ports, and protocols.</string>

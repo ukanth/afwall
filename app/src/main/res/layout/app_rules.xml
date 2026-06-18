@@ -37,10 +37,19 @@
                 android:text="@string/direct_rules_apply_hint"
                 android:textSize="12sp" />
 
-            <TextView
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/direct_rule_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
+                android:text="@string/direct_rules_action_allow"
+                android:textOff="@string/direct_rules_action_allow"
+                android:textOn="@string/direct_rules_action_block" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:text="@string/direct_rules_destination"
                 android:textStyle="bold" />
 
