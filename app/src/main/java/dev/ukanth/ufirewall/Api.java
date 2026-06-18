@@ -106,6 +106,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -213,6 +214,8 @@ public final class Api {
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
     private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether", "-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+    private static final String[] LOCAL_RESERVED_IPV4_RANGES = {"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16"};
+    private static final String[] LOCAL_RESERVED_IPV6_RANGES = {"fc00::/7", "fe80::/10"};
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
@@ -925,6 +928,22 @@ public final class Api {
         }
     }
 
+    private static Set<String> getLanDestinationRanges(InterfaceDetails cfg, boolean ipv6) {
+        LinkedHashSet<String> ranges = new LinkedHashSet<>();
+        if (ipv6) {
+            if (cfg != null) {
+                ranges.addAll(cfg.lanMaskV6);
+            }
+            ranges.addAll(Arrays.asList(LOCAL_RESERVED_IPV6_RANGES));
+        } else {
+            if (cfg != null) {
+                ranges.addAll(cfg.lanMaskV4);
+            }
+            ranges.addAll(Arrays.asList(LOCAL_RESERVED_IPV4_RANGES));
+        }
+        return ranges;
+    }
+
     /**
      * Reconfigure the firewall rules based on interface changes seen at runtime: tethering
      * enabled/disabled, IP address changes, etc.  This should only affect a small number of
@@ -969,22 +988,12 @@ public final class Api {
                 // Support multiple LAN subnets (Issue #1362)
                 // Subnet-specific rules are added first, then a catch-all routes remaining traffic to WAN.
                 // iptables evaluates rules top-to-bottom, so LAN subnets are matched before the catch-all.
-                if (ipv6) {
-                    if (!cfg.lanMaskV6.isEmpty()) {
-                        for (String subnet : cfg.lanMaskV6) {
-                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
-                        }
-                    } else {
-                        Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
-                    }
-                } else {
-                    if (!cfg.lanMaskV4.isEmpty()) {
-                        for (String subnet : cfg.lanMaskV4) {
-                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
-                        }
-                    } else {
-                        Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
-                    }
+                Set<String> lanRanges = getLanDestinationRanges(cfg, ipv6);
+                if (lanRanges.isEmpty()) {
+                    Log.i(TAG, "no LAN ranges found: " + G.enableIPv6() + "," + (ipv6 ? cfg.lanMaskV6 : cfg.lanMaskV4));
+                }
+                for (String subnet : lanRanges) {
+                    cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
                 }
                 // Catch-all: route everything not matching a LAN subnet to WAN
                 cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
@@ -2004,6 +2013,9 @@ public final class Api {
                 pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
             }
             PackageManager pkgmanager = ctx.getPackageManager();
+            if (appList != null) {
+                appList.doStageProgress(1);
+            }
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
 
             // On Android 11+ (API 30+), PackageManager may not return all apps without
@@ -2011,6 +2023,9 @@ public final class Api {
             // any packages not visible to PackageManager, including headless system services
             // like Captive Portal Login, OsuLogin, WebView, Remote Provisioner, etc.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (appList != null) {
+                    appList.doStageProgress(2);
+                }
                 Set<String> visiblePackages = new HashSet<>();
                 for (ApplicationInfo ai : installed) {
                     visiblePackages.add(ai.packageName);
@@ -2072,10 +2087,14 @@ public final class Api {
             SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
             HashMap<Integer, String> packagesForUser = new HashMap<>();
             if(G.supportDual()) {
+                if (appList != null) {
+                    appList.doStageProgress(3);
+                }
                 packagesForUser  = getPackagesForUser(listOfUids);
             }
 
             if (appList != null) {
+                appList.doStageProgress(4);
                 appList.doMaxProgress(installed.size());
             }
 

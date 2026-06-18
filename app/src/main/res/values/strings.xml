@@ -48,7 +48,7 @@
     <string name="fw_enabled">Enable firewall</string>
     <string name="fw_disabled">Disable firewall</string>
     <string name="flushed">Rules flushed</string>
-    <string name="show_log">View log</string>
+    <string name="show_log">View logs</string>
     <string name="clear_log">Clear log</string>
     <string name="applying_rules">Applying iptables rules</string>
     <string name="applying">Applying</string>
@@ -517,7 +517,7 @@
     <string name="direct_rules_add">Add allow rule</string>
     <string name="direct_rules_toggle">Enable direct rules</string>
     <string name="direct_rules_visibility_title">Direct rules control</string>
-    <string name="direct_rules_visibility_summary">Show the direct rules checkbox in the app list.</string>
+    <string name="direct_rules_visibility_summary">Enable per-app destination rules for specific IPs, CIDR ranges, ports, and protocols.</string>
     <string name="direct_rules_apply_hint">Apply firewall rules for changes to take effect.</string>
     <string name="direct_rules_invalid_destination">Enter a valid IPv4 address or CIDR range.</string>
     <string name="direct_rules_invalid_port">Enter a valid port or port range.</string>
@@ -690,6 +690,10 @@
     <string name="loading">Loading…</string>
     <string name="loading_system_info">Loading system info…</string>
     <string name="loading_network_info">Loading network info…</string>
+    <string name="app_scan_discovering">Discovering installed apps…</string>
+    <string name="app_scan_checking_hidden">Checking hidden and system packages…</string>
+    <string name="app_scan_preparing_profiles">Preparing profile and work profile entries…</string>
+    <string name="app_scan_reading_details">Reading app labels and permissions…</string>
     <string name="finalizing">Finalizing…</string>
     <string name="ipv4_rules_title">IPv4 Rules</string>
     <string name="ipv6_rules_title">IPv6 Rules</string>
