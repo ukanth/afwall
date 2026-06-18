@@ -39,4 +39,15 @@ public final class ApplicationErrorLog {
                 .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
                 .getString(KEY_LOG, "");
     }
+
+    public static synchronized void clear(Context context) {
+        if (context == null) {
+            return;
+        }
+        context.getApplicationContext()
+                .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .remove(KEY_LOG)
+                .apply();
+    }
 }

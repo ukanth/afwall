@@ -98,8 +98,7 @@ import java.util.Set;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
-import dev.ukanth.ufirewall.activity.LogActivity;
-import dev.ukanth.ufirewall.activity.OldLogActivity;
+import dev.ukanth.ufirewall.activity.LogHubActivity;
 import dev.ukanth.ufirewall.activity.RulesActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
@@ -1748,13 +1747,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * Show logs on a dialog
      */
     private void showLog() {
-        if (G.oldLogView()) {
-            Intent i = new Intent(this, OldLogActivity.class);
-            startActivityForResult(i, SHOW_LOGS_ACTIVITY);
-        } else {
-            Intent i = new Intent(this, LogActivity.class);
-            startActivityForResult(i, SHOW_LOGS_ACTIVITY);
-        }
+        Intent i = new Intent(this, LogHubActivity.class);
+        startActivityForResult(i, SHOW_LOGS_ACTIVITY);
     }
 
     /**

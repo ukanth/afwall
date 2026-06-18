@@ -696,6 +696,12 @@
     <string name="logcat_title">Application Log</string>
     <string name="application_errors_title">Application Errors</string>
     <string name="application_errors_empty">No application errors recorded.</string>
+    <string name="log_hub_title">Logs and Rules</string>
+    <string name="log_hub_blocked_requests">Blocked Requests</string>
+    <string name="log_hub_blocked_requests_summary">Review captured firewall blocks by app and destination.</string>
+    <string name="log_hub_iptables">IP Tables</string>
+    <string name="log_hub_iptables_summary">Inspect active IPv4 and IPv6 firewall rules.</string>
+    <string name="log_hub_application_errors_summary">Review quick-rule failures and other application-level errors.</string>
     <string name="custom_startup_script">Custom Startup Script</string>
     <string name="custom_shutdown_script">Custom Shutdown Script</string>
     <string name="enter_custom_script_hint">Enter iptables commands to execute on firewall startup</string>
