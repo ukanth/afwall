@@ -20,16 +20,16 @@
             android:key="logDmesg"
             android:title="@string/log_dmesg"></ListPreference>-->
 
-        <ListPreference
-            android:defaultValue="LOG"
-            android:summary="%s"
-            android:key="logTarget"
-            android:title="@string/log_target"></ListPreference>
-
-
         <CheckBoxPreference
             android:key="enableLogService"
             android:title="@string/enable_firewall_log_service" />
+
+        <ListPreference
+            android:defaultValue="LOG"
+            android:dependency="enableLogService"
+            android:summary="%s"
+            android:key="logTarget"
+            android:title="@string/log_target"></ListPreference>
 
         <CheckBoxPreference
             android:defaultValue="false"
