@@ -4844,6 +4844,25 @@ public final class Api {
             return tostr;
         }
 
+        public String toStringForList(boolean includeUid, boolean includePackageName) {
+            StringBuilder s = new StringBuilder();
+            if (includeUid) {
+                s.append("[ ");
+                s.append(uid);
+                s.append(" ] ");
+            }
+            for (int i = 0; i < names.size(); i++) {
+                if (i != 0) s.append(", ");
+                s.append(names.get(i));
+            }
+            if (includePackageName && pkgName != null && !pkgName.startsWith("dev.afwall.special.")) {
+                s.append("\n");
+                s.append(pkgName);
+            }
+            s.append("\n");
+            return s.toString();
+        }
+
     }
 
     public static void copySharedPreferences(SharedPreferences fromPreferences, SharedPreferences.Editor toEditor) {

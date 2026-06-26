@@ -80,6 +80,11 @@
             android:summaryOff="@string/showuid_summary_off"
             android:summaryOn="@string/showuid_summary_on"
             android:title="@string/showUid" />
+        <CheckBoxPreference
+            android:key="showPackageName"
+            android:summaryOff="@string/show_package_name_summary_off"
+            android:summaryOn="@string/show_package_name_summary_on"
+            android:title="@string/show_package_name" />
 
         <CheckBoxPreference
             android:key="enableConfirm"

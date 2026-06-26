@@ -341,7 +341,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         Context ctx = getApplicationContext();
         boolean isRefreshRequired = false;
 
-        if (key.equals("showUid") || key.equals("disableIcons") || key.equals("enableVPN")
+        if (key.equals("showUid") || key.equals("showPackageName") || key.equals("disableIcons") || key.equals("enableVPN")
                 || key.equals("enableTether")
                 || key.equals("enableLAN") || key.equals("enableRoam")
                 || key.equals("enableCustomRules")
