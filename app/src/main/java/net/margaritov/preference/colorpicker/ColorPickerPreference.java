@@ -135,16 +135,16 @@ public class ColorPickerPreference
 
     @Override
     public void onColorChanged(int color) {
+        // Donor-gated color settings must be able to reject a picked color before
+        // it is persisted; the old flow saved first and notified listeners later.
+        if (!callChangeListener(color)) {
+            return;
+        }
         if (isPersistent()) {
             persistInt(color);
         }
         mValue = color;
         setPreviewColor();
-        try {
-            getOnPreferenceChangeListener().onPreferenceChange(this, color);
-        } catch (NullPointerException e) {
-
-        }
     }
 
     public boolean onPreferenceClick(Preference preference) {

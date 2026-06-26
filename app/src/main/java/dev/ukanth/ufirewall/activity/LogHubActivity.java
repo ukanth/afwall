@@ -47,6 +47,7 @@ import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.ApplicationErrorLog;
 import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 public class LogHubActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
@@ -66,6 +67,7 @@ public class LogHubActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle(getString(R.string.log_hub_title));
         toolbar.setNavigationOnClickListener(v -> finish());
+        ThemeHelper.apply(this);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -383,19 +385,6 @@ public class LogHubActivity extends AppCompatActivity {
     }
 
     private void initTheme() {
-        switch (G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        setTheme(G.getSelectedThemeStyle(this));
     }
 }

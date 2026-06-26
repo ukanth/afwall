@@ -115,6 +115,7 @@ import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 import haibison.android.lockpattern.utils.AlpSettings;
 import kotlin.Suppress;
 
@@ -138,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int PERMISSION_BLUETOOTH = 4;
 
     private static final int PERMISSION_NOTIFICATION = 5;
+    private static final String EXTRA_SKIP_SECURITY_CHECK_ON_RECREATE =
+            "dev.ukanth.ufirewall.extra.SKIP_SECURITY_CHECK_ON_RECREATE";
 
     public static boolean dirty = false;
     private static final Set<Integer> changedUidQueue = new HashSet<>();
@@ -253,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         setSupportActionBar(toolbar);
+        ThemeHelper.apply(this);
 
 
         this.findViewById(R.id.img_wifi).setOnClickListener(this);
@@ -281,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             //might not have rootshell
             startRootShell();
-            new SecurityUtil(MainActivity.this).passCheck();
+            runLaunchSecurityCheck();
             registerNetworkObserver();
             // Ensure FirewallService is started if firewall is enabled
             if (Api.isEnabled(this)) {
@@ -341,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateSelectedColumns();
+                markInternalRecreate();
                 if (selectedColumns <= DEFAULT_VIEW_LIMIT && currentUI == 1) {
                     recreate();
                 } else if (selectedColumns > DEFAULT_VIEW_LIMIT && currentUI == 0) {
@@ -364,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         themeRefreshReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                markInternalRecreate();
                 initTheme();
                 recreate();
             }
@@ -405,20 +411,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initTheme() {
-        switch (G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        setTheme(G.getSelectedThemeStyle(this));
     }
 
     private void initTextWatcher() {
@@ -3084,7 +3077,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             } else {
                 G.hasRoot(true);
                 startRootShell();
-                new SecurityUtil(MainActivity.this).passCheck();
+                runLaunchSecurityCheck();
                 registerNetworkObserver();
                 // Ensure FirewallService is started if firewall is enabled
                 if (Api.isEnabled(MainActivity.this)) {
@@ -3092,6 +3085,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
             }
         }
+    }
+
+    private void markInternalRecreate() {
+        // Theme/UI preference changes already happen inside the unlocked app.
+        // Recreating for visual refresh must not replay fingerprint/device checks.
+        getIntent().putExtra(EXTRA_SKIP_SECURITY_CHECK_ON_RECREATE, true);
+    }
+
+    private void runLaunchSecurityCheck() {
+        Intent intent = getIntent();
+        if (intent != null && intent.getBooleanExtra(EXTRA_SKIP_SECURITY_CHECK_ON_RECREATE, false)) {
+            intent.removeExtra(EXTRA_SKIP_SECURITY_CHECK_ON_RECREATE);
+            Log.i(Api.TAG, "Skipping security check for internal UI/theme refresh");
+            return;
+        }
+        new SecurityUtil(MainActivity.this).passCheck();
     }
 
     @RequiresApi(28)

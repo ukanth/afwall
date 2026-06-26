@@ -45,6 +45,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 /**
  * Custom scripts activity.
@@ -60,6 +61,7 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
 
         initTheme();
         setContentView(R.layout.customscript);
+        ThemeHelper.apply(this);
 
         findViewById(R.id.customscript_ok).setOnClickListener(this);
         findViewById(R.id.customscript_cancel).setOnClickListener(this);
@@ -84,20 +86,7 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
 
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        setTheme(G.getSelectedThemeStyle(this));
     }
 
     @Override

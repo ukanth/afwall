@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="customThemeColors"
+        android:summaryOff="@string/custom_theme_colors_summary_off"
+        android:summaryOn="@string/custom_theme_colors_summary"
+        android:title="@string/custom_theme_colors_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/primary"
+        android:key="primaryColor"
+        android:title="@string/primary_pref_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/primary_dark"
+        android:key="primaryDarkColor"
+        android:title="@string/status_pref_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/accent_dark"
+        android:key="accentColor"
+        android:title="@string/accent_pref_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/dark_bg"
+        android:key="backgroundColor"
+        android:title="@string/background_pref_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/textPrimary"
+        android:key="textPrimaryColor"
+        android:title="@string/text_primary_pref_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/textPrimaryDark"
+        android:key="textSecondaryColor"
+        android:title="@string/text_secondary_pref_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/white"
+        android:key="userColor"
+        android:title="@string/user_app_color_pref_title" />
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
+        alphaSlider="true"
+        android:defaultValue="@color/primary"
+        android:key="defaultIconColor"
+        android:title="@string/default_icon_color_pref_title" />
+
+</PreferenceScreen>

@@ -677,7 +677,9 @@ public class ColorPickerView extends View {
 
     private int chooseWidth(int mode, int size) {
         if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY) {
-            return size;
+            // Dialog windows often pass the full display as the maximum size.
+            // Cap to the picker preference so the color control stays dialog-sized.
+            return Math.min(size, getPrefferedWidth());
         } else { // (mode == MeasureSpec.UNSPECIFIED)
             return getPrefferedWidth();
         }
@@ -685,7 +687,7 @@ public class ColorPickerView extends View {
 
     private int chooseHeight(int mode, int size) {
         if (mode == MeasureSpec.AT_MOST || mode == MeasureSpec.EXACTLY) {
-            return size;
+            return Math.min(size, getPrefferedHeight());
         } else { // (mode == MeasureSpec.UNSPECIFIED)
             return getPrefferedHeight();
         }
