@@ -554,18 +554,20 @@ public class ToggleWidgetActivity extends Activity {
                             break;
                     }
                     if (actionType > 2) {
-                        final Message msg = new Message();
                         Api.applySavedIptablesRules(context, true, new RootCommand()
                                 .setSuccessToast(R.string.rules_applied)
                                 .setFailureToast(R.string.error_apply)
                                 .setCallback(new RootCommand.Callback() {
                                     @Override
                                     public void cbFunc(RootCommand state) {
+                                        final Message msg = new Message();
                                         if (state.exitCode == 0) {
                                             msg.arg1 = R.string.rules_applied;
+                                            Log.i(Api.TAG, "Widget profile rules applied");
                                         } else {
                                             // error details are already in logcat
                                             msg.arg1 = R.string.error_apply;
+                                            Log.e(Api.TAG, "Widget profile rule apply failed");
                                         }
                                         toaster.sendMessage(msg);
                                     }
