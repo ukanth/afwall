@@ -59,31 +59,21 @@ import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
+    public static final String EXTRA_TOOLBAR_TITLE = "dev.ukanth.ufirewall.extra.TOOLBAR_TITLE";
+    public static final String EXTRA_FINISH_ON_BACK = "dev.ukanth.ufirewall.extra.FINISH_ON_BACK";
     private Toolbar mToolBar;
 
     private RxEvent rxEvent;
     private Disposable disposable;
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        setTheme(G.getSelectedThemeStyle(this));
     }
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -126,6 +116,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 String check = (String) data;
                 if (check.equals("yes")) {
                     new SecurityUtil(PreferencesActivity.this).passCheck();
+                    // Validation extras are one-shot. Theme changes recreate this
+                    // activity, and replaying the extra would incorrectly prompt again.
+                    getIntent().removeExtra("validate");
                 }
             }
         }
@@ -179,7 +172,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         root.addView(toolbarContainer);
 
         mToolBar = toolbarContainer.findViewById(R.id.toolbar);
-        mToolBar.setTitle(getTitle() + " " + getString(R.string.preferences));
+        mToolBar.setTitle(getToolbarTitle());
         mToolBar.setNavigationIcon(androidx.appcompat.content.res.AppCompatResources.getDrawable(this,
                 androidx.appcompat.R.drawable.abc_ic_ab_back_material));
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -188,11 +181,27 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 onBackPressed();
             }
         });
+        ThemeHelper.apply(this);
+    }
+
+    private CharSequence getToolbarTitle() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String toolbarTitle = intent.getStringExtra(EXTRA_TOOLBAR_TITLE);
+            if (toolbarTitle != null && toolbarTitle.length() > 0) {
+                return toolbarTitle;
+            }
+        }
+        return getTitle() + " " + getString(R.string.preferences);
     }
 
     private boolean handlePreferenceBackNavigation() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
+            return true;
+        }
+        if (getIntent() != null && getIntent().getBooleanExtra(EXTRA_FINISH_ON_BACK, false)) {
+            finish();
             return true;
         }
         if (getIntent() != null && getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT) != null) {
@@ -281,6 +290,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         
         return UIPreferenceFragment.class.getName().equals(fragmentName)
                 || ThemePreferenceFragment.class.getName().equals(fragmentName)
+                || CustomThemePreferenceFragment.class.getName().equals(fragmentName)
                 || RulesPreferenceFragment.class.getName().equals(fragmentName)
                 || LogPreferenceFragment.class.getName().equals(fragmentName)
                 || ExpPreferenceFragment.class.getName().equals(fragmentName)
@@ -335,7 +345,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 || key.equals("enableTether")
                 || key.equals("enableLAN") || key.equals("enableRoam")
                 || key.equals("enableCustomRules")
-                || key.equals("locale") || key.equals("showFilter")) {
+                || key.equals("locale") || key.equals("showFilter")
+                || isThemeColorKey(key)) {
             G.reloadProfile();
             isRefreshRequired = true;
         }
@@ -408,7 +419,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             G.reloadProfile();
         }
 
-        if (key.equals("theme")) {
+        if (key.equals("theme") || key.equals("customThemeColors")
+                || key.equals("donorModeEnabled") || isThemeColorKey(key)) {
             initTheme();
             recreate();
             Intent broadcastIntent = new Intent();
@@ -421,6 +433,18 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             broadcastIntent.setAction("dev.ukanth.ufirewall.ui.CHECKREFRESH");
             ctx.sendBroadcast(broadcastIntent);
         }
+    }
+
+    private boolean isThemeColorKey(String key) {
+        return key.equals("sysColor")
+                || key.equals("primaryColor")
+                || key.equals("primaryDarkColor")
+                || key.equals("accentColor")
+                || key.equals("backgroundColor")
+                || key.equals("textPrimaryColor")
+                || key.equals("textSecondaryColor")
+                || key.equals("userColor")
+                || key.equals("defaultIconColor");
     }
 
     @Override

@@ -210,6 +210,11 @@
         <item>Light (Donate)</item>
         <item>Light High Contrast (Donate)</item>
         <item>Black (Donate)</item>
+        <item>Amber (Donate)</item>
+        <item>Ocean (Donate)</item>
+        <item>Forest (Donate)</item>
+        <item>Slate (Donate)</item>
+        <item>Plum (Donate)</item>
     </string-array>
 
     <string-array name="themeValues">
@@ -217,6 +222,11 @@
         <item>L</item>
         <item>LHC</item>
         <item>B</item>
+        <item>A</item>
+        <item>O</item>
+        <item>F</item>
+        <item>S</item>
+        <item>P</item>
     </string-array>
 
 </resources>

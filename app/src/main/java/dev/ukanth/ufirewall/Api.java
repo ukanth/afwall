@@ -141,6 +141,7 @@ import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.util.ApplicationErrorLog;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.UidResolver;
 import dev.ukanth.ufirewall.widget.StatusWidget;
@@ -3207,9 +3208,12 @@ public final class Api {
         ApplicationInfo applicationInfo = uidToApplicationInfoMap.get(appUid);
         if (applicationInfo != null) {
             PackageManager packageManager = context.getPackageManager();
+            if (applicationInfo.icon == 0) {
+                return ThemeHelper.defaultAndroidIcon(context);
+            }
             return applicationInfo.loadIcon(packageManager);        // The application icon.
         } else {
-            return context.getDrawable(R.drawable.ic_unknown);      // The default icon.
+            return ThemeHelper.defaultAndroidIcon(context);         // The default icon.
         }
     }
 

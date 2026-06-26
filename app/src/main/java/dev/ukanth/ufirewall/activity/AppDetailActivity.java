@@ -30,6 +30,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 public class AppDetailActivity extends AppCompatActivity {
     public static final String TAG = "AFWall";
@@ -67,6 +68,7 @@ public class AppDetailActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(toolbar);
+        ThemeHelper.apply(this);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -103,16 +105,16 @@ public class AppDetailActivity extends AppCompatActivity {
             assert packageName != null;
             if (!packageName.startsWith("dev.afwall.special.")) {
                 applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-                try {
-                    image.setImageDrawable(applicationInfo.loadIcon(packageManager));
-                } catch (Exception e){
+                if (applicationInfo.icon == 0) {
+                    image.setImageDrawable(ThemeHelper.defaultAndroidIcon(this));
+                } else {
                     image.setImageDrawable(applicationInfo.loadIcon(packageManager));
                 }
                 String name = packageManager.getApplicationLabel(applicationInfo).toString();
                 textView.setText(name);
                 setTotalBytesManual(down, up, applicationInfo.uid);
             } else {
-                image.setImageDrawable(getApplicationContext().getDrawable(R.drawable.ic_unknown));
+                image.setImageDrawable(ThemeHelper.defaultAndroidIcon(this));
                 if(appid >= 0) {
                     textView.setText(Api.getSpecialDescription(getApplicationContext(), packageName.replace("dev.afwall.special.", "")));
                 } else {
@@ -138,21 +140,7 @@ public class AppDetailActivity extends AppCompatActivity {
     }
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                //set other colors
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        setTheme(G.getSelectedThemeStyle(this));
     }
 
     private void setTotalBytesManual(TextView down, TextView up, int localUid) {

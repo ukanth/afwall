@@ -27,6 +27,8 @@ import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -60,7 +62,7 @@ public class ColorPickerDialog
     }
 
     public ColorPickerDialog(Context context, int initialColor) {
-        super(context);
+        super(context, R.style.ColorPickerDialogTheme);
 
         init(initialColor);
     }
@@ -68,9 +70,33 @@ public class ColorPickerDialog
     private void init(int color) {
         // To fight color banding.
         getWindow().setFormat(PixelFormat.RGBA_8888);
+        setCanceledOnTouchOutside(true);
 
         setUp(color);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Window window = getWindow();
+        if (window == null) {
+            return;
+        }
+        // This dialog is launched from no-action-bar preference screens. Without
+        // an explicit floating window, Android can measure it as a full screen
+        // panel and draw content behind the status bar.
+        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                | WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        View decor = window.getDecorView();
+        decor.setSystemUiVisibility(decor.getSystemUiVisibility()
+                & ~View.SYSTEM_UI_FLAG_FULLSCREEN
+                & ~View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                & ~View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                & ~View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     private void setUp(int color) {
