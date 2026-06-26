@@ -158,6 +158,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
     private static final String RUN_NOTIFICATION = "runNotification";
     private static final String COPIED_OLD_EXPORTS = "copyOldExports";
+    private static final String SYSTEM_FILE_PICKER = "useSystemFilePicker";
+    private static final String ZIP_LOG_REPORTS = "zipLogReports";
 
     private static final String SHOW_ALL_APPS = "showAllApps";
 
@@ -233,6 +235,14 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     public static boolean isRun(boolean val) {
         gPrefs.edit().putBoolean(RUN_NOTIFICATION, val).commit();
         return val;
+    }
+
+    public static boolean useSystemFilePicker() {
+        return gPrefs.getBoolean(SYSTEM_FILE_PICKER, true);
+    }
+
+    public static boolean zipLogReports() {
+        return gPrefs.getBoolean(ZIP_LOG_REPORTS, false);
     }
 
 
