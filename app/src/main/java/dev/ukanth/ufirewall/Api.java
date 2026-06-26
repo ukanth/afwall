@@ -760,19 +760,7 @@ public final class Api {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
 
-        if (G.enableLogService()) {
-            if (G.logTarget().trim().equals("LOG")) {
-                //cmds.add("-A " + chainName  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
-                String logRule = "-A " + chainName + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options";
-                Log.d(TAG, "Adding LOG rule to reject chain: " + logRule);
-                cmds.add(logRule);
-            } else if (G.logTarget().trim().equals("NFLOG")) {
-                //cmds.add("-A " + chainName + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
-                String nflogRule = "-A " + chainName + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
-                Log.d(TAG, "Adding NFLOG rule to reject chain: " + nflogRule);
-                cmds.add(nflogRule);
-            }
-        }
+        addLogRuleForRejectChain(cmds, chainName + "-reject");
         String rejectRule = "-A " + chainName + "-reject" + " -j REJECT";
         Log.d(TAG, "Adding final REJECT rule: " + rejectRule);
         cmds.add(rejectRule);
@@ -783,14 +771,28 @@ public final class Api {
         for (String suffix : rejectChainSuffixes) {
             String individualRejectChain = chainName + suffix;
             Log.d(TAG, "Populating individual reject chain: " + individualRejectChain);
-            if (G.enableLogService() && G.logTarget().trim().equals("NFLOG")) {
-                String nflogRule = "-A " + individualRejectChain + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
-                Log.d(TAG, "Adding NFLOG to individual reject chain: " + nflogRule);
-                cmds.add(nflogRule);
-            }
+            addLogRuleForRejectChain(cmds, individualRejectChain);
             String individualRejectRule = "-A " + individualRejectChain + " -j REJECT";
             Log.d(TAG, "Adding REJECT to individual reject chain: " + individualRejectRule);
             cmds.add(individualRejectRule);
+        }
+    }
+
+    private static void addLogRuleForRejectChain(List<String> cmds, String rejectChain) {
+        if (!G.enableLogService()) {
+            return;
+        }
+        String logTarget = G.logTarget().trim();
+        if (logTarget.equals("LOG")) {
+            // Whitelist mode uses per-interface reject chains, so LOG must be
+            // added anywhere packets can be rejected, not only the shared chain.
+            String logRule = "-A " + rejectChain + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options";
+            Log.d(TAG, "Adding LOG rule to reject chain: " + logRule);
+            cmds.add(logRule);
+        } else if (logTarget.equals("NFLOG")) {
+            String nflogRule = "-A " + rejectChain + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
+            Log.d(TAG, "Adding NFLOG rule to reject chain: " + nflogRule);
+            cmds.add(nflogRule);
         }
     }
 
