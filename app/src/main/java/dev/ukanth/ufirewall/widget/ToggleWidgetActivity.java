@@ -21,6 +21,7 @@ import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
@@ -524,18 +525,20 @@ public class ToggleWidgetActivity extends Activity {
                             break;
                     }
                     if (actionType > 2) {
-                        final Message msg = new Message();
                         Api.applySavedIptablesRules(context, true, new RootCommand()
                                 .setSuccessToast(R.string.rules_applied)
                                 .setFailureToast(R.string.error_apply)
                                 .setCallback(new RootCommand.Callback() {
                                     @Override
                                     public void cbFunc(RootCommand state) {
+                                        final Message msg = new Message();
                                         if (state.exitCode == 0) {
                                             msg.arg1 = R.string.rules_applied;
+                                            Log.i(Api.TAG, "Widget profile rules applied");
                                         } else {
                                             // error details are already in logcat
                                             msg.arg1 = R.string.error_apply;
+                                            Log.e(Api.TAG, "Widget profile rule apply failed");
                                         }
                                         toaster.sendMessage(msg);
                                     }
