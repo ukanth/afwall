@@ -29,6 +29,7 @@ public class RootCommand {
     public boolean done = false;
     public int hash = -1;
     public boolean isv6 = false;
+    public boolean retriedRootShell = false;
 
     private List<String> commmands;
 

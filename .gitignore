@@ -33,6 +33,9 @@ gradle/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# Local release signing material
+release-signing/
+
 # Eclipse project files
 .classpath
 .project

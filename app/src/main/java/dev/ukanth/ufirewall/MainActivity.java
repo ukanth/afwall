@@ -689,6 +689,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    private void dismissRunProgress() {
+        try {
+            if (runProgress != null && runProgress.isShowing()) {
+                runProgress.dismiss();
+            }
+        } catch (Exception ignored) {
+        } finally {
+            runProgress = null;
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -1359,6 +1370,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Log.i(TAG, "Migration script completed successfully");
                     G.hasCopyOldExports(true);
                 } else {
+                    ApplicationErrorLog.add(ctx, "Migration script failed with code " + result.getCode()
+                            + (result.getOut().isEmpty() ? "" : ". Output: " + result.getOut()));
                     Log.w(TAG, "Migration script failed with code: " + result.getCode());
                     Log.w(TAG, "Migration output: " + result.getOut());
                 }
@@ -2696,7 +2709,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPreExecute() {
-            runProgress = new MaterialDialog.Builder(activityReference.get())
+            MainActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                cancel(true);
+                return;
+            }
+
+            Log.i(TAG, "Manual apply requested"
+                    + (changedApps != null && !changedApps.isEmpty()
+                    ? " for " + changedApps.size() + " changed UID(s)"
+                    : " for all saved rules"));
+            runProgress = new MaterialDialog.Builder(activity)
                     .title(R.string.su_check_title)
                     .cancelable(true)
                     .customView(R.layout.apply_view, false)
@@ -2712,39 +2735,54 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Boolean doInBackground(Void... params) {
             //set the progress
-            if (G.hasRoot()) {
+            MainActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return false;
+            }
+
+            if (ensureRootAccessForApply()) {
                 Api.setRulesUpToDate(false);
                 RootCommand rootCommand = new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
                         .setFailureToast(R.string.error_apply)
+                        .setReopenShell(true)
                         .setCallback(new RootCommand.Callback() {
                             public void cbFunc(RootCommand state) {
-                                try {
-                                    if (runProgress != null) {
-                                        runProgress.dismiss();
-                                    }
-                                } catch (Exception ex) {
+                                MainActivity activity = activityReference.get();
+                                if (activity == null || activity.isFinishing()) {
+                                    return;
                                 }
-                                if (state.exitCode == 0) {
-                                    setDirty(false);
-                                }
-                                //queue.clear();
-                                runOnUiThread(() -> {
-                                    setDirty(false);
+                                activity.runOnUiThread(() -> {
+                                    activity.dismissRunProgress();
                                     if (state.exitCode != 0) {
-                                        Api.errorNotification(activityReference.get());
-                                        menuSetApplyOrSave(activityReference.get().mainMenu, false);
-                                        Api.setEnabled(activityReference.get(), false, true);
+                                        String command = state.lastCommand != null ? state.lastCommand : "unknown command";
+                                        String result = state.lastCommandResult != null ? state.lastCommandResult.toString().trim() : "";
+                                        String message = "Manual apply failed with exit " + state.exitCode
+                                                + " on '" + command + "'"
+                                                + (result.isEmpty() ? "" : ". Output: " + result);
+                                        Log.e(TAG, message);
+                                        ApplicationErrorLog.add(activity, message);
+                                        Api.errorNotification(activity);
+                                        menuSetApplyOrSave(activity.mainMenu, false);
+                                        Api.setEnabled(activity, false, true);
+                                        if (state.exitCode == dev.ukanth.ufirewall.service.RootShellService.EXIT_NO_ROOT_ACCESS) {
+                                            G.hasRoot(false);
+                                            activity.showRootNotFoundMessage();
+                                        }
                                     } else {
-                                        menuSetApplyOrSave(activityReference.get().mainMenu, enabled);
-                                        Api.setEnabled(activityReference.get(), enabled, true);
+                                        Log.i(TAG, "Manual apply completed successfully");
+                                        activity.setDirty(false);
+                                        menuSetApplyOrSave(activity.mainMenu, enabled);
+                                        Api.setEnabled(activity, enabled, true);
+                                        LogService.ensureRunning(activity);
                                     }
-                                    refreshHeader();
+                                    activity.refreshHeader();
                                 });
                             }
                         });
                 if (changedApps != null && !changedApps.isEmpty()) {
                     RootCommand partialRootCommand = new RootCommand()
+                            .setReopenShell(true)
                             .setCallback(new RootCommand.Callback() {
                                 public void cbFunc(RootCommand state) {
                                     if (state.exitCode == 0) {
@@ -2755,6 +2793,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     if (activity == null) {
                                         return;
                                     }
+                                    if (state.exitCode == dev.ukanth.ufirewall.service.RootShellService.EXIT_NO_ROOT_ACCESS) {
+                                        rootCommand.cb.cbFunc(state);
+                                        return;
+                                    }
                                     String command = state.lastCommand != null ? state.lastCommand : "unknown command";
                                     String result = state.lastCommandResult != null ? state.lastCommandResult.toString().trim() : "";
                                     ApplicationErrorLog.add(activity,
@@ -2762,42 +2804,74 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                                     + ". Falling back to full apply."
                                                     + (result.isEmpty() ? "" : " Output: " + result));
                                     Log.w(TAG, "Fast UID apply failed, falling back to full rule apply: " + command);
+                                    Log.i(TAG, "Starting full apply fallback after changed UID apply failure");
                                     Api.applySavedIptablesRules(activity, true, rootCommand);
                                 }
                             });
-                    boolean partialStarted = Api.applyChangedUidRules(activityReference.get(), changedApps, true, partialRootCommand);
+                    boolean partialStarted = Api.applyChangedUidRules(activity, changedApps, true, partialRootCommand);
                     if (!partialStarted) {
                         Log.w(TAG, "Changed UID apply did not start, falling back to full apply");
-                        ApplicationErrorLog.add(activityReference.get(), "Changed UID apply did not start. Falling back to full apply.");
-                        Api.applySavedIptablesRules(activityReference.get(), true, rootCommand);
+                        ApplicationErrorLog.add(activity, "Changed UID apply did not start. Falling back to full apply.");
+                        Log.i(TAG, "Starting full apply fallback because changed UID apply did not start");
+                        Api.applySavedIptablesRules(activity, true, rootCommand);
                     }
                 } else {
-                    Api.applySavedIptablesRules(activityReference.get(), true, rootCommand);
+                    Log.i(TAG, "Starting full apply for saved rules");
+                    Api.applySavedIptablesRules(activity, true, rootCommand);
                 }
                 return true;
             } else {
                 runOnUiThread(() -> {
-                    setDirty(false);
-                    try {
-                        runProgress.dismiss();
-                    } catch (Exception ex) {
-                    }
+                    Log.e(TAG, "Manual apply aborted because root access is unavailable");
+                    ApplicationErrorLog.add(activity, "Manual apply aborted because root access is unavailable");
+                    dismissRunProgress();
+                    disableFirewall();
+                    showRootNotFoundMessage();
+                    refreshHeader();
                 });
                 return false;
             }
 
         }
 
+        private boolean ensureRootAccessForApply() {
+            boolean cachedRoot = G.hasRoot();
+            try {
+                Log.i(TAG, cachedRoot
+                        ? "Validating cached root grant before manual apply"
+                        : "Requesting root access before manual apply");
+                Shell.getShell().isRoot();
+                boolean granted = Shell.isAppGrantedRoot();
+                G.hasRoot(granted);
+                if (granted) {
+                    Log.i(TAG, "Root access granted for manual apply");
+                } else {
+                    String message = cachedRoot
+                            ? "Cached root grant was revoked before manual apply"
+                            : "Root access was not granted for manual apply";
+                    Log.e(TAG, message);
+                    ApplicationErrorLog.add(activityReference.get(), message);
+                }
+                return granted;
+            } catch (Exception e) {
+                String message = cachedRoot
+                        ? "Cached root grant failed validation before applying rules: " + e.getMessage()
+                        : "Unable to request root access before applying rules: " + e.getMessage();
+                Log.e(TAG, message, e);
+                ApplicationErrorLog.add(activityReference.get(), message);
+                G.hasRoot(false);
+                return false;
+            }
+        }
+
         @Override
         protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
             if (!aVoid) {
-                Toast.makeText(activityReference.get(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
-                disableFirewall();
-                refreshHeader();
-                try {
-                    runProgress.dismiss();
-                } catch (Exception ex) {
+                MainActivity activity = activityReference.get();
+                if (activity != null && !activity.isFinishing()) {
+                    Toast.makeText(activity, activity.getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                    activity.dismissRunProgress();
                 }
             }
         }

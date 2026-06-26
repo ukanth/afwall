@@ -60,10 +60,21 @@ public class Log {
 	}
 
 	public static synchronized String getLog() {
+		return getLog(LOG_WTF);
+	}
+
+	public static synchronized String getApplicationLog() {
+		return getLog(LOG_INFO);
+	}
+
+	private static String getLog(int maxLevel) {
 		StringBuilder ret = new StringBuilder();
 
 		for (int i = 0; i < circ.size(); i++) {
 			LogEntry e = circ.get(i);
+			if (e.level > maxLevel) {
+				continue;
+			}
 			String timestamp = new SimpleDateFormat("HH:mm:ss").format(e.timestamp);
 			ret.append(timestamp).append(" ").append(e.msg).append("\n");
 		}

@@ -30,6 +30,14 @@ public final class AppRuleHelper {
     }
 
     public static String buildAllowRule(int uid, String destinationValue, String protocolValue, String portValue) {
+        return buildRule(uid, destinationValue, protocolValue, portValue, true);
+    }
+
+    public static String buildBlockRule(int uid, String destinationValue, String protocolValue, String portValue) {
+        return buildRule(uid, destinationValue, protocolValue, portValue, false);
+    }
+
+    private static String buildRule(int uid, String destinationValue, String protocolValue, String portValue, boolean allow) {
         String destination = normalize(destinationValue);
         String protocol = normalize(protocolValue).toLowerCase(Locale.US);
         String port = normalize(portValue);
@@ -47,17 +55,25 @@ public final class AppRuleHelper {
         if (!port.isEmpty()) {
             rule.append(" --dport ").append(port);
         }
-        rule.append(" -j RETURN");
+        rule.append(allow ? " -j RETURN" : " -j afwall-reject");
         return rule.toString();
     }
 
     public static String buildAllowRuleName(int uid, String destinationValue, String protocolValue, String portValue) {
+        return buildRuleName(uid, destinationValue, protocolValue, portValue, true);
+    }
+
+    public static String buildBlockRuleName(int uid, String destinationValue, String protocolValue, String portValue) {
+        return buildRuleName(uid, destinationValue, protocolValue, portValue, false);
+    }
+
+    private static String buildRuleName(int uid, String destinationValue, String protocolValue, String portValue, boolean allow) {
         String destination = normalize(destinationValue);
         String protocol = normalize(protocolValue).toLowerCase(Locale.US);
         String port = normalize(portValue);
 
         StringBuilder name = new StringBuilder(rulePrefixForUid(uid));
-        name.append(" allow");
+        name.append(allow ? " allow" : " block");
         if (!destination.isEmpty()) {
             name.append(" dst=").append(destination);
         }

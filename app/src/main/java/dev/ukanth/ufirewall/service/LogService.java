@@ -56,6 +56,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
 import org.ocpsoft.prettytime.units.JustNow;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -85,6 +86,10 @@ public class LogService extends Service {
     public static final String ACTION_GRACEFUL_SHUTDOWN = "dev.ukanth.ufirewall.GRACEFUL_SHUTDOWN";
     public static final String ACTION_CHANGE_LOG_TARGET = "dev.ukanth.ufirewall.CHANGE_LOG_TARGET";
     public static final String EXTRA_NEW_LOG_TARGET = "new_log_target";
+    private static final long HEALTH_CHECK_INTERVAL_MS = 60000L;
+    private static final long LOG_FLUSH_INTERVAL_MS = 5000L;
+    private static final int LOG_FLUSH_BATCH_SIZE = 50;
+    private static final int LOG_QUEUE_HARD_LIMIT = 500;
 
     private String NOTIFICATION_CHANNEL_ID = "firewall.logservice";
 
@@ -95,8 +100,48 @@ public class LogService extends Service {
     private List<String> callbackList;
     private ExecutorService executorService;
     private volatile boolean isShuttingDown = false;
+    private Handler healthHandler;
+    private Handler logFlushHandler;
+    private final Object pendingLogLock = new Object();
+    private final ArrayList<LogData> pendingLogs = new ArrayList<>();
+    private final Runnable flushLogsRunnable = () -> flushPendingLogs(false);
+    private final Runnable healthCheck = new Runnable() {
+        @Override
+        public void run() {
+            if (isShuttingDown || !G.enableLogService()) {
+                return;
+            }
+            if (!isWatcherHealthy()) {
+                Log.w(TAG, "Log watcher is not healthy, restarting");
+                cleanupTempFiles();
+                closeLogWatcher();
+                if (logPath != null && !logPath.trim().isEmpty()) {
+                    initiateLogWatcher(logPath);
+                } else {
+                    startLogService();
+                }
+            }
+            scheduleHealthCheck();
+        }
+    };
 
     private Shell logWatcherShell; // Additional shell for long running log-watcher process
+
+    public static void ensureRunning(Context context) {
+        if (context == null || !G.enableLogService()) {
+            return;
+        }
+        String target = G.logTarget();
+        if (target == null || target.trim().isEmpty()) {
+            return;
+        }
+        Intent intent = new Intent(context.getApplicationContext(), LogService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.getApplicationContext().startForegroundService(intent);
+        } else {
+            context.getApplicationContext().startService(intent);
+        }
+    }
 
     @Nullable
     @Override
@@ -190,22 +235,29 @@ public class LogService extends Service {
                     Toast.makeText(getApplicationContext(), "Please select log target first", Toast.LENGTH_LONG).show();
                     return;
                 }
+                String nextLogPath = null;
                 switch (log) {
                     case "LOG":
-                        logPath = getBestLogCommand();
-                        if (logPath == null) {
+                        nextLogPath = getBestLogCommand();
+                        if (nextLogPath == null) {
                             Log.e(TAG, "No suitable log reading method available");
                             return;
                         }
                         break;
                     case "NFLOG":
-                        logPath = Api.getEnhancedNflogCommand(getApplicationContext(), QUEUE_NUM);
-                        if (logPath == null) {
+                        nextLogPath = Api.getEnhancedNflogCommand(getApplicationContext(), QUEUE_NUM);
+                        if (nextLogPath == null) {
                             Log.e(TAG, "NFLOG binary not available, cannot start logging service");
                             return;
                         }
                         break;
                 }
+
+                if (nextLogPath != null && nextLogPath.equals(logPath) && isWatcherHealthy()) {
+                    scheduleHealthCheck();
+                    return;
+                }
+                logPath = nextLogPath;
 
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
                 callbackList = new CallbackList<String>() {
@@ -228,6 +280,7 @@ public class LogService extends Service {
                     }
                 };
                 initiateLogWatcher(logPath);
+                scheduleHealthCheck();
                 createNotification();
 
             } else {
@@ -253,6 +306,33 @@ public class LogService extends Service {
             }
         }, 5000);
     }
+
+    private void scheduleHealthCheck() {
+        if (healthHandler == null) {
+            healthHandler = new Handler(Looper.getMainLooper());
+        }
+        healthHandler.removeCallbacks(healthCheck);
+        healthHandler.postDelayed(healthCheck, HEALTH_CHECK_INTERVAL_MS);
+    }
+
+    private boolean isWatcherHealthy() {
+        return logWatcherShell != null
+                && logWatcherShell.isAlive()
+                && executorService != null
+                && !executorService.isShutdown()
+                && !executorService.isTerminated();
+    }
+
+    private void closeLogWatcher() {
+        if (logWatcherShell != null) {
+            try {
+                logWatcherShell.close();
+            } catch (Exception e) {
+                Log.w(TAG, "Error closing log watcher shell: " + e.getMessage());
+            }
+            logWatcherShell = null;
+        }
+    }
     
     /**
      * Clean up temporary files used by log watchers
@@ -273,20 +353,15 @@ public class LogService extends Service {
         
         // Set shutdown flag to prevent new tasks
         isShuttingDown = true;
+        if (healthHandler != null) {
+            healthHandler.removeCallbacks(healthCheck);
+        }
         
         // Stop in background thread to avoid blocking the main thread
         new Thread(() -> {
             try {
                 // Close shell first to stop generating new tasks
-                if (logWatcherShell != null) {
-                    try {
-                        logWatcherShell.close();
-                        Log.i(TAG, "Log watcher shell closed");
-                    } catch (Exception e) {
-                        Log.w(TAG, "Error closing log watcher shell during graceful shutdown: " + e.getMessage());
-                    }
-                    logWatcherShell = null;
-                }
+                closeLogWatcher();
                 
                 // Give executor service time to finish current tasks
                 if (executorService != null) {
@@ -310,6 +385,7 @@ public class LogService extends Service {
                 }
                 
                 // Clean up and stop service
+                flushPendingLogs(true);
                 cleanupTempFiles();
                 Log.i(TAG, "Graceful shutdown complete, stopping service");
                 
@@ -348,17 +424,12 @@ public class LogService extends Service {
             try {
                 // Set shutdown flag temporarily to prevent restarts
                 isShuttingDown = true;
+                if (healthHandler != null) {
+                    healthHandler.removeCallbacks(healthCheck);
+                }
                 
                 // Close current shell and executor
-                if (logWatcherShell != null) {
-                    try {
-                        logWatcherShell.close();
-                        Log.i(TAG, "Closed existing log watcher shell");
-                    } catch (Exception e) {
-                        Log.w(TAG, "Error closing existing shell: " + e.getMessage());
-                    }
-                    logWatcherShell = null;
-                }
+                closeLogWatcher();
                 
                 if (executorService != null) {
                     try {
@@ -515,6 +586,7 @@ public class LogService extends Service {
         if(executorService != null) {
             executorService.shutdownNow();
         }
+        closeLogWatcher();
 
         //make sure it's enabled first
         if(G.enableLogService() && !isShuttingDown) {
@@ -729,7 +801,7 @@ public class LogService extends Service {
                     return;
                 }
 
-                store(event.logInfo, event.ctx);
+                enqueueLog(event.logInfo, event.ctx);
                 showNotification(event.logInfo);
             }
         } catch (Exception e) {
@@ -791,27 +863,10 @@ public class LogService extends Service {
 
 
 
-    private static void store(final LogInfo logInfo, Context context) {
-        store(logInfo, context, false);
-    }
-
-    private static void store(final LogInfo logInfo, Context context, boolean isRetry) {
+    private void enqueueLog(final LogInfo logInfo, Context context) {
         try {
             if (logInfo != null) {
-                LogData data = new LogData();
-                data.setDst(logInfo.dst);
-                data.setOut(logInfo.out);
-                data.setSrc(logInfo.src);
-                data.setDpt(logInfo.dpt);
-                data.setIn(logInfo.in);
-                data.setLen(logInfo.len);
-                data.setProto(logInfo.proto);
-                data.setTimestamp(System.currentTimeMillis());
-                data.setSpt(logInfo.spt);
-                data.setUid(logInfo.uid);
-                data.setAppName(logInfo.appName);
-                data.setType(logInfo.type);
-                data.setType(0);
+                LogData data = buildLogData(logInfo);
                 
                 // Resolve hostname asynchronously if enabled
                 if (G.showHost() && logInfo.dst != null && !logInfo.dst.isEmpty()) {
@@ -822,31 +877,95 @@ public class LogService extends Service {
                             String hostname = java.net.InetAddress.getByName(dstIp).getHostName();
                             if (hostname != null && !hostname.equals(dstIp)) {
                                 dataRef.setHostname(hostname);
-                                FlowManager.getDatabase(LogDatabase.class)
-                                    .beginTransactionAsync(dw -> dataRef.save(dw))
-                                    .build().execute();
                             }
                         } catch (Exception e) {
                             // DNS resolution failed, hostname will remain empty
                         }
                     }, "LogService-DNS-" + dstIp.hashCode()).start();
                 }
-                FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(databaseWrapper ->
-                        data.save(databaseWrapper)).build().execute();
-            }
-        } catch (IllegalStateException e) {
-            if (!isRetry && e.getMessage() != null && e.getMessage().contains("connection pool has been closed")) {
-                //reconnect logic - single retry only
-                try {
-                    FlowManager.init(new FlowConfig.Builder(context).build());
-                    store(logInfo, context, true);
-                } catch (Exception de) {
-                    Log.e(TAG, "Exception while saving log data (retry):" + de.getLocalizedMessage(), de);
+
+                synchronized (pendingLogLock) {
+                    if (pendingLogs.size() >= LOG_QUEUE_HARD_LIMIT) {
+                        pendingLogs.remove(0);
+                    }
+                    pendingLogs.add(data);
+                    if (pendingLogs.size() >= LOG_FLUSH_BATCH_SIZE) {
+                        scheduleLogFlush(0);
+                    } else {
+                        scheduleLogFlush(LOG_FLUSH_INTERVAL_MS);
+                    }
                 }
             }
-            Log.e(TAG, "Exception while saving log data:" + e.getLocalizedMessage(), e);
         } catch (Exception e) {
-            Log.e(TAG, "Exception while saving log data:" + e.getLocalizedMessage(),e);
+            Log.e(TAG, "Exception while queueing log data:" + e.getLocalizedMessage(), e);
+        }
+    }
+
+    private LogData buildLogData(final LogInfo logInfo) {
+        LogData data = new LogData();
+        data.setDst(logInfo.dst);
+        data.setOut(logInfo.out);
+        data.setSrc(logInfo.src);
+        data.setDpt(logInfo.dpt);
+        data.setIn(logInfo.in);
+        data.setLen(logInfo.len);
+        data.setProto(logInfo.proto);
+        data.setTimestamp(System.currentTimeMillis());
+        data.setSpt(logInfo.spt);
+        data.setUid(logInfo.uid);
+        data.setAppName(logInfo.appName);
+        data.setType(0);
+        return data;
+    }
+
+    private void scheduleLogFlush(long delayMs) {
+        if (logFlushHandler == null) {
+            logFlushHandler = new Handler(Looper.getMainLooper());
+        }
+        logFlushHandler.removeCallbacks(flushLogsRunnable);
+        logFlushHandler.postDelayed(flushLogsRunnable, delayMs);
+    }
+
+    private void flushPendingLogs(boolean immediate) {
+        final ArrayList<LogData> batch;
+        synchronized (pendingLogLock) {
+            if (pendingLogs.isEmpty()) {
+                return;
+            }
+            batch = new ArrayList<>(pendingLogs);
+            pendingLogs.clear();
+        }
+
+        try {
+            if (immediate) {
+                for (LogData data : batch) {
+                    data.save();
+                }
+            } else {
+                FlowManager.getDatabase(LogDatabase.class)
+                        .beginTransactionAsync(databaseWrapper -> {
+                            for (LogData data : batch) {
+                                data.save(databaseWrapper);
+                            }
+                        })
+                        .build()
+                        .execute();
+            }
+        } catch (IllegalStateException e) {
+            if (e.getMessage() != null && e.getMessage().contains("connection pool has been closed")) {
+                try {
+                    FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
+                    for (LogData data : batch) {
+                        data.save();
+                    }
+                } catch (Exception retryException) {
+                    Log.e(TAG, "Exception while flushing queued log data (retry):" + retryException.getLocalizedMessage(), retryException);
+                }
+            } else {
+                Log.e(TAG, "Exception while flushing queued log data:" + e.getLocalizedMessage(), e);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while flushing queued log data:" + e.getLocalizedMessage(), e);
         }
     }
 
@@ -855,16 +974,15 @@ public class LogService extends Service {
         
         // Set shutdown flag to prevent new tasks from starting
         isShuttingDown = true;
+        if (healthHandler != null) {
+            healthHandler.removeCallbacks(healthCheck);
+        }
+        if (logFlushHandler != null) {
+            logFlushHandler.removeCallbacks(flushLogsRunnable);
+        }
         
         // Close log watcher shell first to stop generating new tasks
-        if(logWatcherShell != null) {
-            try {
-                logWatcherShell.close();
-            } catch (Exception e) {
-                Log.w(TAG, "Error closing log watcher shell: " + e.getMessage());
-            }
-            logWatcherShell = null;
-        }
+        closeLogWatcher();
         
         // Shutdown executor service gracefully
         if(executorService != null) {
@@ -885,6 +1003,7 @@ public class LogService extends Service {
             }
         }
         executorService = null;
+        flushPendingLogs(true);
         
         // Update FirewallService notification if it's running
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && FirewallService.isInstanceRunning()) {
@@ -909,6 +1028,10 @@ public class LogService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
+        if (logFlushHandler != null) {
+            logFlushHandler.removeCallbacks(flushLogsRunnable);
+        }
+        flushPendingLogs(true);
 
         // Restart service if log service is still enabled
         if (G.enableLogService()) {

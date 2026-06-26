@@ -26,7 +26,7 @@ public class ApplicationLogActivity extends RulesActivity {
         result = new StringBuilder();
         updateLoadingState(getString(R.string.loading));
         writeHeading(result, false, "Logcat");
-        result.append(Log.getLog());
+        result.append(Log.getApplicationLog());
         updateLoadingState(getString(R.string.ready));
         setData(result.toString());
     }

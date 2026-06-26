@@ -383,9 +383,15 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 boolean enabled = prefs.getBoolean(key, false);
                 if (enabled) {
                     Toast.makeText(getApplicationContext(), getString(R.string.log_service_start), Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(ctx, LogService.class);
-                    ctx.stopService(intent);
-                    ctx.startService(intent);
+                    Api.updateLogRules(ctx, new RootCommand()
+                            .setReopenShell(true)
+                            .setFailureToast(R.string.error_apply)
+                            .setCallback(new RootCommand.Callback() {
+                                @Override
+                                public void cbFunc(RootCommand state) {
+                                    LogService.ensureRunning(ctx);
+                                }
+                            }));
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.log_service_stop), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(ctx, LogService.class);

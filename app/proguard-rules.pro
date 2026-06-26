@@ -1,10 +1,8 @@
--keepattributes
+-keepattributes Signature,*Annotation*,InnerClasses,EnclosingMethod
 -keep class org.ocpsoft.prettytime.i18n.**
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -dontpreverify
--dontoptimize
--dontobfuscate
--keep class dev.ukanth.ufirewall.** { *; }
+-keep,allowoptimization class dev.ukanth.ufirewall.** { *; }
 -optimizations !code/allocation/variable
 
 # Android 16 specific proguard rules
@@ -19,3 +17,7 @@
 
 # Notification channel compatibility
 -keep class androidx.core.app.NotificationChannelCompat** { *; }
+
+# dnsjava advertises optional JVM service providers that are not available on Android.
+-dontwarn org.xbill.DNS.spi.DnsjavaInetAddressResolverProvider
+-dontwarn sun.net.spi.nameservice.NameServiceDescriptor

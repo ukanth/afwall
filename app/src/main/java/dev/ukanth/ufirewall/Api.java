@@ -137,6 +137,8 @@ import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
+import dev.ukanth.ufirewall.service.RootShellService;
+import dev.ukanth.ufirewall.util.ApplicationErrorLog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.UidResolver;
@@ -1400,12 +1402,41 @@ public final class Api {
         }
     }
 
+    private static void completeRootCommandFailure(Context ctx, RootCommand callback, String command, Throwable throwable) {
+        String message = command + " failed";
+        if (throwable != null && throwable.getMessage() != null) {
+            message += ": " + throwable.getMessage();
+        }
+        if (throwable instanceof Exception) {
+            Log.e(TAG, message, (Exception) throwable);
+        } else {
+            Log.e(TAG, message);
+        }
+        ApplicationErrorLog.add(ctx, message);
+        if (callback == null || callback.done) {
+            return;
+        }
+        callback.lastCommand = command;
+        if (throwable != null && throwable.getMessage() != null) {
+            callback.lastCommandResult = new StringBuilder(throwable.getMessage());
+        }
+        callback.exitCode = 1;
+        callback.done = true;
+        if (ctx != null && callback.failureToast != RootShellService.NO_TOAST) {
+            sendToastBroadcast(ctx.getApplicationContext(), ctx.getString(callback.failureToast));
+        }
+        if (callback.cb != null) {
+            callback.cb.cbFunc(callback);
+        }
+    }
+
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         synchronized (GLOBAL_STATUS_LOCK) {
             if(!globalStatus) {
                 globalStatus = true;
                 
                 try {
+                    Log.i(TAG, "Starting full firewall rules apply");
                     RuleDataSet dataSet = getDataSet();
                     List<String> ipv4cmds = new ArrayList<>();
                     List<String> ipv6cmds = new ArrayList<>();
@@ -1418,7 +1449,7 @@ public final class Api {
                         Log.i(TAG, "Applying IPv4 rules");
                         applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false, chainName);
                         applySavedIp4tablesRules(ctx, ipv4cmds, callback);
-                        Log.i(TAG, "Successfully applied IPv4 rules");
+                        Log.i(TAG, "Submitted IPv4 rule commands");
                     } catch (Exception e) {
                         Log.e(TAG, "Error applying IPv4 rules", e);
                         throw new RuntimeException(e);
@@ -1430,38 +1461,41 @@ public final class Api {
                             Log.i(TAG, "Applying IPv6 rules");
                             applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true, chainName);
                             applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
-                            Log.i(TAG, "Successfully applied IPv6 rules");
+                            Log.i(TAG, "Submitted IPv6 rule commands");
                         } catch (Exception e) {
                             Log.e(TAG, "Error applying IPv6 rules", e);
                             throw new RuntimeException(e);
                         }
                     }
                     
-                    Log.i(TAG, "Successfully applied all firewall rules");
+                    Log.i(TAG, "Submitted all firewall rule commands");
 
                 } catch (Exception e) {
-                    Log.e(TAG, "Error applying rules", e);
+                    completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", e);
                 } finally {
                     globalStatus = false;
                     setRulesUpToDate(true);
                 }
             } else {
-                Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
+                Log.w(TAG, "Full apply ignored because another apply is already running");
+                completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", null);
             }
         }
     }
 
     public static boolean applyChangedUidRules(Context ctx, List<PackageInfoData> changedApps, boolean showErrors, RootCommand callback) {
         if (ctx == null || changedApps == null || changedApps.isEmpty()) {
+            Log.w(TAG, "Changed UID apply skipped because context or changed app list is missing");
             return false;
         }
         synchronized (GLOBAL_STATUS_LOCK) {
             if (globalStatus) {
-                Log.i(TAG, "ignore applyChangedUidRules as existing thread running");
+                Log.w(TAG, "Changed UID apply ignored because another apply is already running");
                 return false;
             }
             globalStatus = true;
             try {
+                Log.i(TAG, "Starting changed UID apply for " + changedApps.size() + " app(s)");
                 assertBinaries(ctx, showErrors);
                 final String chainName = getThreadSafeChainName();
                 final boolean whitelist = G.pPrefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
@@ -1491,9 +1525,12 @@ public final class Api {
                 setRulesUpToDate(false);
                 callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
                 setRulesUpToDate(true);
+                Log.i(TAG, "Submitted changed UID rule commands for " + changedApps.size() + " app(s)");
                 return true;
             } catch (Exception e) {
-                Log.e(TAG, "Error applying changed UID rules", e);
+                String message = "Error applying changed UID rules: " + e.getMessage();
+                Log.e(TAG, message, e);
+                ApplicationErrorLog.add(ctx, message);
                 return false;
             } finally {
                 globalStatus = false;
@@ -1543,13 +1580,17 @@ public final class Api {
      */
     public static boolean applySavedIp4tablesRules(Context ctx, List<String> cmds, RootCommand callback) {
         if (ctx == null) {
+            Log.w(TAG, "IPv4 rule apply skipped because context is null");
             return false;
         }
         try {
+            Log.i(TAG, "Submitting " + cmds.size() + " IPv4 rule command(s)");
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "Exception while applying IPv4 rules: " + e.getMessage(), e);
+            String message = "Exception while applying IPv4 rules: " + e.getMessage();
+            Log.e(TAG, message, e);
+            ApplicationErrorLog.add(ctx, message);
             // Only apply default chains if it's a critical failure
             // Avoid overriding user chain preferences unnecessarily
             if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
@@ -1565,13 +1606,17 @@ public final class Api {
 
     public static boolean applySavedIp6tablesRules(Context ctx, List<String> cmds, RootCommand callback) {
         if (ctx == null) {
+            Log.w(TAG, "IPv6 rule apply skipped because context is null");
             return false;
         }
         try {
+            Log.i(TAG, "Submitting " + cmds.size() + " IPv6 rule command(s)");
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "Exception while applying IPv6 rules: " + e.getMessage(), e);
+            String message = "Exception while applying IPv6 rules: " + e.getMessage();
+            Log.e(TAG, message, e);
+            ApplicationErrorLog.add(ctx, message);
             // Only apply default chains if it's a critical failure
             // Avoid overriding user chain preferences unnecessarily
             if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
@@ -1605,7 +1650,9 @@ public final class Api {
                     callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Exception in fastApply: " + e.getMessage(), e);
+            String message = "Exception in fastApply: " + e.getMessage();
+            Log.e(TAG, message, e);
+            ApplicationErrorLog.add(ctx, message);
             // Only apply default chains if it's a critical failure
             // Avoid overriding user chain preferences unnecessarily
             if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {

@@ -52,6 +52,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.ApplicationErrorLog;
 import dev.ukanth.ufirewall.util.G;
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
@@ -97,6 +98,39 @@ public class RootShellService extends Service implements Cloneable {
         }
     }
 
+    private void failRootCommand(final RootCommand state, final int exitCode, final Exception exception) {
+        String command = state.lastCommand != null ? state.lastCommand : "root shell command";
+        String message = "Root access failed while running " + command + " (exit " + exitCode + ")";
+        if (exception != null) {
+            Log.e(TAG, message, exception);
+            message += ": " + exception.getMessage();
+        } else {
+            Log.e(TAG, message);
+        }
+        ApplicationErrorLog.add(mContext, message);
+        if (exitCode == EXIT_NO_ROOT_ACCESS) {
+            G.hasRoot(false);
+        }
+        rootState = ShellState.FAIL;
+        complete(state, exitCode);
+        runNextSubmission();
+    }
+
+    private boolean retryWithReopenedShell(final RootCommand state) {
+        if (!state.reopenShell || state.retriedRootShell) {
+            return false;
+        }
+
+        state.retriedRootShell = true;
+        rootSession = null;
+        rootState = ShellState.BUSY;
+        waitQueue.addFirst(state);
+        Log.w(TAG, "Cached root shell is unavailable; reopening before command retry");
+        ApplicationErrorLog.add(mContext, "Cached root shell was unavailable; requesting root again before retry");
+        startShellInBackground();
+        return true;
+    }
+
     private void runNextSubmission() {
 
         do {
@@ -118,7 +152,7 @@ public class RootShellService extends Service implements Cloneable {
                 if (rootState == ShellState.FAIL) {
                     // if we don't have root, abort all queued commands
                     complete(state, EXIT_NO_ROOT_ACCESS);
-                    //continue;
+                    runNextSubmission();
                 } else if (rootState == ShellState.READY) {
                     rootState = ShellState.BUSY;
                     // Don't create notification - let FirewallService handle it
@@ -152,8 +186,10 @@ public class RootShellService extends Service implements Cloneable {
                 try {
                     // Check if shell is still valid before executing command
                     if (rootSession == null || !rootSession.isRunning() ) {
-                        rootState = ShellState.FAIL;
-                        complete(state, -1);
+                        if (retryWithReopenedShell(state)) {
+                            return;
+                        }
+                        failRootCommand(state, EXIT_NO_ROOT_ACCESS, null);
                         return;
                     }
                     
@@ -214,12 +250,14 @@ public class RootShellService extends Service implements Cloneable {
                             processCommands(state);
                         }
                     });
-                } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                } catch (RuntimeException e) {
+                    failRootCommand(state, EXIT_NO_ROOT_ACCESS, e);
                 }
             }
         } else {
             complete(state, 0);
+            rootState = ShellState.READY;
+            runNextSubmission();
         }
     }
 
@@ -315,19 +353,36 @@ public class RootShellService extends Service implements Cloneable {
                 rootSession = null;
             }
             
-            rootSession = new Shell.Builder().
-                    useSU().
-                    setWatchdogTimeout(5).
-                    open((success, reason) -> {
-                        if (reason < 0) {
-                            Log.e(TAG, "Can't open root shell: exitCode " + reason);
-                            rootState = ShellState.FAIL;
-                        } else {
-                            Log.d(TAG, "Root shell(4) is open");
-                            rootState = ShellState.READY;
-                        }
-                        runNextSubmission();
-                    });
+            try {
+                    rootSession = new Shell.Builder().
+                        useSU().
+                        setWatchdogTimeout(5).
+                        open((success, reason) -> {
+                            if (!success || reason < 0) {
+                                String message = "Can't open root shell: exitCode " + reason;
+                                Log.e(TAG, message);
+                                ApplicationErrorLog.add(mContext, message);
+                                G.hasRoot(false);
+                                rootState = ShellState.FAIL;
+                            } else {
+                                Log.d(TAG, "Root shell(4) is open");
+                                Log.i(TAG, "Root shell opened for IPv4 commands");
+                                G.hasRoot(true);
+                                rootState = ShellState.READY;
+                            }
+                            runNextSubmission();
+                        });
+            } catch (RuntimeException e) {
+                String message = "Can't open root shell: " + e.getMessage();
+                Log.e(TAG, message, e);
+                ApplicationErrorLog.add(mContext, message);
+                G.hasRoot(false);
+                rootState = ShellState.FAIL;
+                runNextSubmission();
+            }
+        } else {
+            rootState = ShellState.READY;
+            runNextSubmission();
         }
     }
 

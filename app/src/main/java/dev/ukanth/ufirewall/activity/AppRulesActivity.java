@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.List;
@@ -38,8 +39,10 @@ public class AppRulesActivity extends AppCompatActivity {
     private EditText destination;
     private EditText port;
     private Spinner protocol;
+    private SwitchCompat actionToggle;
     private LinearLayout rulesList;
     private TextView emptyView;
+    private Button addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +72,10 @@ public class AppRulesActivity extends AppCompatActivity {
         port = findViewById(R.id.direct_rule_port);
         port.setKeyListener(DigitsKeyListener.getInstance("0123456789:"));
         protocol = findViewById(R.id.direct_rule_protocol);
+        actionToggle = findViewById(R.id.direct_rule_action);
         rulesList = findViewById(R.id.direct_rules_list);
         emptyView = findViewById(R.id.direct_rules_empty);
-        Button add = findViewById(R.id.direct_rule_add);
+        addButton = findViewById(R.id.direct_rule_add);
         Button portSeparator = findViewById(R.id.direct_rule_port_separator);
 
         ArrayAdapter<String> protocolAdapter = new ArrayAdapter<>(
@@ -81,7 +85,10 @@ public class AppRulesActivity extends AppCompatActivity {
         protocolAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         protocol.setAdapter(protocolAdapter);
 
-        add.setOnClickListener(v -> addRule());
+        updateActionText();
+        actionToggle.setOnCheckedChangeListener((buttonView, isChecked) -> updateActionText());
+
+        addButton.setOnClickListener(v -> addRule());
         portSeparator.setOnClickListener(v -> insertPortSeparator());
         refreshRules();
     }
@@ -107,6 +114,7 @@ public class AppRulesActivity extends AppCompatActivity {
         String destinationValue = destination.getText().toString().trim();
         String portValue = port.getText().toString().trim();
         String protocolValue = protocol.getSelectedItem().toString().toLowerCase(Locale.US);
+        boolean allow = !actionToggle.isChecked();
 
         if (destinationValue.isEmpty() && portValue.isEmpty()) {
             Toast.makeText(this, R.string.direct_rules_need_match, Toast.LENGTH_SHORT).show();
@@ -129,13 +137,19 @@ public class AppRulesActivity extends AppCompatActivity {
             }
         }
 
-        String rule = Api.validateCustomRuleForStorage(AppRuleHelper.buildAllowRule(uid, destinationValue, protocolValue, portValue));
+        String rawRule = allow
+                ? AppRuleHelper.buildAllowRule(uid, destinationValue, protocolValue, portValue)
+                : AppRuleHelper.buildBlockRule(uid, destinationValue, protocolValue, portValue);
+        String rule = Api.validateCustomRuleForStorage(rawRule);
         if (rule == null) {
             Toast.makeText(this, R.string.direct_rules_invalid_rule, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        CustomRule customRule = new CustomRule(AppRuleHelper.buildAllowRuleName(uid, destinationValue, protocolValue, portValue), rule);
+        String ruleName = allow
+                ? AppRuleHelper.buildAllowRuleName(uid, destinationValue, protocolValue, portValue)
+                : AppRuleHelper.buildBlockRuleName(uid, destinationValue, protocolValue, portValue);
+        CustomRule customRule = new CustomRule(ruleName, rule);
         customRule.setActive(true);
         customRule.save();
         MainActivity.requireFullApply();
@@ -146,6 +160,16 @@ public class AppRulesActivity extends AppCompatActivity {
         protocol.setSelection(0);
         Toast.makeText(this, R.string.direct_rules_added, Toast.LENGTH_SHORT).show();
         refreshRules();
+    }
+
+    private void updateActionText() {
+        if (actionToggle.isChecked()) {
+            actionToggle.setText(R.string.direct_rules_action_block);
+            addButton.setText(R.string.direct_rules_add_block);
+        } else {
+            actionToggle.setText(R.string.direct_rules_action_allow);
+            addButton.setText(R.string.direct_rules_add_allow);
+        }
     }
 
     private void insertPortSeparator() {
