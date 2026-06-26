@@ -1176,6 +1176,14 @@ public final class Api {
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
             addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
 
+            // Loopback is self-device traffic, not LAN or WAN. Keep it out of
+            // the LAN split chains so local app services continue to work when
+            // LAN control is enabled in either firewall mode.
+            cmds.add("-A " + chainName + " -o lo -j RETURN");
+            if (G.enableInbound()) {
+                cmds.add("-A " + chainName + "-input -i lo -j RETURN");
+            }
+
             cmds.add("-A " + chainName + "-3g -j " + chainName + "-3g-postcustom");
             cmds.add("-A " + chainName + "-wifi -j " + chainName + "-wifi-postcustom");
             addRejectRules(cmds, chainName);
