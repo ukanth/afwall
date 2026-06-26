@@ -1324,6 +1324,12 @@ public final class Api {
         return true;
     }
 
+    private static void addTetherDhcpReplyRule(List<String> cmds, String chain, String action) {
+        // dnsmasq can run under device-specific app UIDs, so the special tethering entry
+        // must allow DHCP replies by port instead of relying only on a fixed UID list.
+        cmds.add("-A " + chain + " -p udp --sport=67 --dport=68" + action);
+    }
+
     /**
      * Checks if a collection contains specified uid or {@code SPECIAL_UID_ANY}
      *
@@ -1845,12 +1851,6 @@ public final class Api {
     /**
      * Add DNS-specific iptables rules for identified DNS servers instead of broad LAN access
      */
-    private static void addTetherDhcpReplyRule(List<String> cmds, String chain, String action) {
-        // dnsmasq can run under device-specific app UIDs, so the special tethering entry
-        // must allow DHCP replies by port instead of relying only on a fixed UID list.
-        cmds.add("-A " + chain + " -p udp --sport=67 --dport=68" + action);
-    }
-
     private static void addDnsServerRules(List<String> cmds, InterfaceDetails cfg, String chain, boolean ipv6) {
         String protocol = ipv6 ? "ip6tables" : "iptables";
         java.util.List<String> dnsServers = ipv6 ? cfg.dnsServersV6 : cfg.dnsServersV4;
