@@ -1679,14 +1679,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (uri == null) {
             return;
         }
-        int flags = data.getFlags() & permissionFlag;
-        if (flags == 0) {
-            return;
+        int grantedFlags = data.getFlags();
+        if ((permissionFlag & Intent.FLAG_GRANT_READ_URI_PERMISSION) != 0
+                && (grantedFlags & Intent.FLAG_GRANT_READ_URI_PERMISSION) != 0) {
+            try {
+                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } catch (SecurityException e) {
+                Log.w(TAG, "Unable to persist picker read URI permission", e);
+            }
         }
-        try {
-            getContentResolver().takePersistableUriPermission(uri, flags);
-        } catch (SecurityException e) {
-            Log.w(TAG, "Unable to persist picker URI permission", e);
+        if ((permissionFlag & Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0
+                && (grantedFlags & Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0) {
+            try {
+                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            } catch (SecurityException e) {
+                Log.w(TAG, "Unable to persist picker write URI permission", e);
+            }
         }
     }
 
