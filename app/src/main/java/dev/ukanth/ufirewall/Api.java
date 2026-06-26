@@ -795,6 +795,13 @@ public final class Api {
     }
 
     private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6, String chainName) {
+        Integer socks_port = 9050;
+        Integer http_port = 8118;
+        Integer dns_port = 5400;
+        Integer tcp_port = 9040;
+
+        Log.i(TAG, "Adding Tor redirect rules before interface filters");
+
         for (Integer uid : uids) {
             if (uid != null && uid >= 0) {
                 if (G.enableInbound() || ipv6) {
@@ -802,16 +809,17 @@ public final class Api {
                 }
                 if (!ipv6) {
                     cmds.add("-t nat -A " + chainName + "-tor-check -m owner --uid-owner " + uid + " -j " + chainName + "-tor-filter");
+                    // Tor rules run before interface chains so redirected traffic is not rejected as plain Wi-Fi/mobile.
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + socks_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + http_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + tcp_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p udp --dport " + dns_port + " -j ACCEPT");
                 }
             }
         }
         if (ipv6) {
             cmds.add("-A " + chainName + " -j " + chainName + "-tor-reject");
         } else {
-            Integer socks_port = 9050;
-            Integer http_port = 8118;
-            Integer dns_port = 5400;
-            Integer tcp_port = 9040;
             cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
             cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
             cmds.add("-t nat -A " + chainName + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
@@ -1187,6 +1195,10 @@ public final class Api {
                 cmds.add("-A " + chainName + "-input -m state --state ESTABLISHED -j RETURN");
             }
 
+            if (G.enableTor()) {
+                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
+            }
+
             addInterfaceRouting(ctx, cmds, ipv6, chainName, ruleDataSet);
 
             // send wifi, 3G, VPN packets to the appropriate dynamic chain based on interface
@@ -1308,9 +1320,6 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.lanList, chainName + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, chainName + "-vpn", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.tetherList, chainName + "-tether", whitelist);
-            if (G.enableTor()) {
-                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
-            }
 
             cmds.add("-P OUTPUT ACCEPT");
         } catch (Exception e) {
