@@ -98,9 +98,7 @@ import java.util.Set;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
-import dev.ukanth.ufirewall.activity.LogActivity;
-import dev.ukanth.ufirewall.activity.OldLogActivity;
-import dev.ukanth.ufirewall.activity.RulesActivity;
+import dev.ukanth.ufirewall.activity.LogHubActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.preferences.PreferencesActivity;
 import dev.ukanth.ufirewall.profiles.ProfileData;
@@ -1264,9 +1262,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else if (selectedItem == R.id.menu_log) {
             showLog();
             return true;
-        } else if (selectedItem == R.id.menu_rules) {
-            showRules();
-            return true;
         } else if (selectedItem == R.id.menu_setcustom) {
             setCustomScript();
             return true;
@@ -1737,24 +1732,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * Show iptables rules on a dialog
-     */
-    private void showRules() {
-        Intent i = new Intent(this, RulesActivity.class);
-        startActivityForResult(i, SHOW_RULES_ACTIVITY);
-    }
-
-    /**
      * Show logs on a dialog
      */
     private void showLog() {
-        if (G.oldLogView()) {
-            Intent i = new Intent(this, OldLogActivity.class);
-            startActivityForResult(i, SHOW_LOGS_ACTIVITY);
-        } else {
-            Intent i = new Intent(this, LogActivity.class);
-            startActivityForResult(i, SHOW_LOGS_ACTIVITY);
-        }
+        Intent i = new Intent(this, LogHubActivity.class);
+        startActivityForResult(i, SHOW_LOGS_ACTIVITY);
     }
 
     /**
@@ -2567,6 +2549,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public class GetAppList extends AsyncTask<Void, Integer, Void> {
 
+        private static final int PROGRESS_SET_MAX = Integer.MIN_VALUE;
+        private static final int PROGRESS_STAGE = Integer.MIN_VALUE + 1;
+        private static final int STAGE_DISCOVERING_APPS = 1;
+        private static final int STAGE_CHECKING_HIDDEN_APPS = 2;
+        private static final int STAGE_PREPARING_PROFILES = 3;
+        private static final int STAGE_READING_APP_DETAILS = 4;
+
         private final WeakReference<MainActivity> activityReference;
         private int appScanMax = 0;
 
@@ -2581,9 +2570,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 cancel(true);
                 return;
             }
-            appScanMax = Math.max(1, activity.getPackageManager().getInstalledApplications(0).size());
+            appScanMax = 1;
             plsWait = new MaterialDialog.Builder(activity).cancelable(false).
-                    title(getString(R.string.reading_apps)).progress(false, appScanMax, true).show();
+                    title(getString(R.string.reading_apps))
+                    .content(getString(R.string.app_scan_discovering))
+                    .progress(false, appScanMax, true).show();
             doProgress(0);
         }
 
@@ -2592,7 +2583,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         public void doMaxProgress(int value) {
-            publishProgress(Integer.MIN_VALUE, Math.max(1, value));
+            publishProgress(PROGRESS_SET_MAX, Math.max(1, value));
+        }
+
+        public void doStageProgress(int stage) {
+            publishProgress(PROGRESS_STAGE, stage);
         }
 
         @Override
@@ -2643,11 +2638,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected void onProgressUpdate(Integer... progress) {
 
-            if (progress[0] == Integer.MIN_VALUE && progress.length > 1) {
+            if (progress[0] == PROGRESS_SET_MAX && progress.length > 1) {
                 appScanMax = Math.max(1, progress[1]);
                 if (plsWait != null && plsWait.isShowing()) {
                     plsWait.setMaxProgress(appScanMax);
                 }
+            } else if (progress[0] == PROGRESS_STAGE && progress.length > 1) {
+                updateAppScanStage(progress[1]);
             } else if (progress[0] == 0 || progress[0] == -1) {
                 //do nothing
             } else {
@@ -2655,6 +2652,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     plsWait.setProgress(Math.min(progress[0], appScanMax));
                 }
             }
+        }
+
+        private void updateAppScanStage(int stage) {
+            MainActivity activity = activityReference.get();
+            if (activity == null || plsWait == null || !plsWait.isShowing()) {
+                return;
+            }
+            int messageId;
+            switch (stage) {
+                case STAGE_CHECKING_HIDDEN_APPS:
+                    messageId = R.string.app_scan_checking_hidden;
+                    break;
+                case STAGE_PREPARING_PROFILES:
+                    messageId = R.string.app_scan_preparing_profiles;
+                    break;
+                case STAGE_READING_APP_DETAILS:
+                    messageId = R.string.app_scan_reading_details;
+                    break;
+                case STAGE_DISCOVERING_APPS:
+                default:
+                    messageId = R.string.app_scan_discovering;
+                    break;
+            }
+            plsWait.setContent(activity.getString(messageId));
         }
     }
 

@@ -89,7 +89,7 @@ public class RulesActivity extends DataDumpActivity {
         sub.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_mail);
     }
 
-    private void writeHeading(StringBuilder res, boolean initialNewline, String title) {
+    protected void writeHeading(StringBuilder res, boolean initialNewline, String title) {
         StringBuilder eq = new StringBuilder();
 
         for (int i = 0; i < title.length(); i++) {
@@ -119,20 +119,32 @@ public class RulesActivity extends DataDumpActivity {
             result.append("Error retrieving preferences\n");
         }
 
-        writeHeading(result, true, getString(R.string.application_errors_title));
-        String applicationErrors = ApplicationErrorLog.get(ctx);
-        if (applicationErrors.trim().isEmpty()) {
-            result.append(getString(R.string.application_errors_empty)).append("\n");
-        } else {
-            result.append(applicationErrors);
+        if (includeApplicationErrors()) {
+            writeHeading(result, true, getString(R.string.application_errors_title));
+            String applicationErrors = ApplicationErrorLog.get(ctx);
+            if (applicationErrors.trim().isEmpty()) {
+                result.append(getString(R.string.application_errors_empty)).append("\n");
+            } else {
+                result.append(applicationErrors);
+            }
         }
 
-        // Sixth section: "Logcat"
-        writeHeading(result, true, "Logcat");
-        result.append(Log.getLog());
+        if (includeApplicationLog()) {
+            // Sixth section: "Logcat"
+            writeHeading(result, true, "Logcat");
+            result.append(Log.getLog());
+        }
 
         // finished: post result to the user
         setData(result.toString());
+    }
+
+    protected boolean includeApplicationErrors() {
+        return false;
+    }
+
+    protected boolean includeApplicationLog() {
+        return true;
     }
 
     protected String getFileInfo(String filename) {
@@ -279,13 +291,13 @@ public class RulesActivity extends DataDumpActivity {
                 .setCallback(new RootCommand.Callback() {
                     public void cbFunc(RootCommand state) {
                         result.append(state.res);
-                        updateLoadingState(getString(R.string.loading_network_info));
-                        appendNetworkInterfaces(ctx);
+                        updateLoadingState(getString(R.string.ready));
+                        setData(result.toString());
                     }
                 }));
     }
 
-    private void updateLoadingState(String status) {
+    protected void updateLoadingState(String status) {
         runOnUiThread(() -> {
             TextView rulesStatus = findViewById(R.id.rules_status);
             TextView rulesTitle = findViewById(R.id.rules_title);
