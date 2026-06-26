@@ -2715,6 +2715,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return;
             }
 
+            Log.i(TAG, "Manual apply requested"
+                    + (changedApps != null && !changedApps.isEmpty()
+                    ? " for " + changedApps.size() + " changed UID(s)"
+                    : " for all saved rules"));
             runProgress = new MaterialDialog.Builder(activity)
                     .title(R.string.su_check_title)
                     .cancelable(true)
@@ -2751,6 +2755,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 activity.runOnUiThread(() -> {
                                     activity.dismissRunProgress();
                                     if (state.exitCode != 0) {
+                                        String command = state.lastCommand != null ? state.lastCommand : "unknown command";
+                                        String result = state.lastCommandResult != null ? state.lastCommandResult.toString().trim() : "";
+                                        String message = "Manual apply failed with exit " + state.exitCode
+                                                + " on '" + command + "'"
+                                                + (result.isEmpty() ? "" : ". Output: " + result);
+                                        Log.e(TAG, message);
+                                        ApplicationErrorLog.add(activity, message);
                                         Api.errorNotification(activity);
                                         menuSetApplyOrSave(activity.mainMenu, false);
                                         Api.setEnabled(activity, false, true);
@@ -2759,6 +2770,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                             activity.showRootNotFoundMessage();
                                         }
                                     } else {
+                                        Log.i(TAG, "Manual apply completed successfully");
                                         activity.setDirty(false);
                                         menuSetApplyOrSave(activity.mainMenu, enabled);
                                         Api.setEnabled(activity, enabled, true);
@@ -2792,6 +2804,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                                     + ". Falling back to full apply."
                                                     + (result.isEmpty() ? "" : " Output: " + result));
                                     Log.w(TAG, "Fast UID apply failed, falling back to full rule apply: " + command);
+                                    Log.i(TAG, "Starting full apply fallback after changed UID apply failure");
                                     Api.applySavedIptablesRules(activity, true, rootCommand);
                                 }
                             });
@@ -2799,14 +2812,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     if (!partialStarted) {
                         Log.w(TAG, "Changed UID apply did not start, falling back to full apply");
                         ApplicationErrorLog.add(activity, "Changed UID apply did not start. Falling back to full apply.");
+                        Log.i(TAG, "Starting full apply fallback because changed UID apply did not start");
                         Api.applySavedIptablesRules(activity, true, rootCommand);
                     }
                 } else {
+                    Log.i(TAG, "Starting full apply for saved rules");
                     Api.applySavedIptablesRules(activity, true, rootCommand);
                 }
                 return true;
             } else {
                 runOnUiThread(() -> {
+                    Log.e(TAG, "Manual apply aborted because root access is unavailable");
+                    ApplicationErrorLog.add(activity, "Manual apply aborted because root access is unavailable");
                     dismissRunProgress();
                     disableFirewall();
                     showRootNotFoundMessage();
@@ -2818,16 +2835,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         private boolean ensureRootAccessForApply() {
-            if (G.hasRoot()) {
-                return true;
-            }
+            boolean cachedRoot = G.hasRoot();
             try {
+                Log.i(TAG, cachedRoot
+                        ? "Validating cached root grant before manual apply"
+                        : "Requesting root access before manual apply");
                 Shell.getShell().isRoot();
                 boolean granted = Shell.isAppGrantedRoot();
                 G.hasRoot(granted);
+                if (granted) {
+                    Log.i(TAG, "Root access granted for manual apply");
+                } else {
+                    String message = cachedRoot
+                            ? "Cached root grant was revoked before manual apply"
+                            : "Root access was not granted for manual apply";
+                    Log.e(TAG, message);
+                    ApplicationErrorLog.add(activityReference.get(), message);
+                }
                 return granted;
             } catch (Exception e) {
-                Log.e(TAG, "Unable to request root access before applying rules", e);
+                String message = cachedRoot
+                        ? "Cached root grant failed validation before applying rules: " + e.getMessage()
+                        : "Unable to request root access before applying rules: " + e.getMessage();
+                Log.e(TAG, message, e);
+                ApplicationErrorLog.add(activityReference.get(), message);
                 G.hasRoot(false);
                 return false;
             }
