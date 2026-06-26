@@ -2118,6 +2118,7 @@ public final class Api {
                 appList.doStageProgress(1);
             }
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
+            HashMap<String, Boolean> internetPermissionCache = new HashMap<>();
 
             // On Android 11+ (API 30+), PackageManager may not return all apps without
             // QUERY_ALL_PACKAGES. Supplement using root shell "pm list packages -U" to discover
@@ -2157,7 +2158,7 @@ public final class Api {
                                 } catch (NameNotFoundException e) {
                                     // PackageManager can't see this app (no QUERY_ALL_PACKAGES).
                                     // Check INTERNET permission via shell before adding.
-                                    if (uid >= 0 && hasInternetPermissionViaShell(pkg)) {
+                                    if (uid >= 0 && hasInternetPermissionViaShell(pkg, internetPermissionCache)) {
                                         ApplicationInfo ai = new ApplicationInfo();
                                         ai.packageName = pkg;
                                         ai.uid = uid;
@@ -2282,7 +2283,7 @@ public final class Api {
             if (G.supportDual()) {
                 addProfileOnlyPackages(pkgmanager, packagesForUser, profileMarkers, syncMap,
                         selected_wifi, selected_3g, selected_roam, selected_vpn,
-                        selected_tether, selected_lan, selected_tor);
+                        selected_tether, selected_lan, selected_tor, internetPermissionCache);
                 //run through multi user map
                 for (int i = 0; i < multiUserAppsMap.size(); i++) {
                     app = multiUserAppsMap.valueAt(i);
@@ -2415,17 +2416,19 @@ public final class Api {
                                                Set<Integer> selectedVpn,
                                                Set<Integer> selectedTether,
                                                Set<Integer> selectedLan,
-                                               Set<Integer> selectedTor) {
+                                               Set<Integer> selectedTor,
+                                               HashMap<String, Boolean> internetPermissionCache) {
         if (packagesForUser == null || packagesForUser.isEmpty()) {
             return;
         }
+        int addedPackages = 0;
         for (Map.Entry<Integer, String> entry : packagesForUser.entrySet()) {
             int uid = entry.getKey();
             String packageName = entry.getValue();
             if (syncMap.get(uid) != null || packageName == null || packageName.trim().length() == 0) {
                 continue;
             }
-            if (!showAllApps() && !hasInternetPermission(pkgmanager, packageName)) {
+            if (!showAllApps() && !hasInternetPermission(pkgmanager, packageName, internetPermissionCache)) {
                 continue;
             }
 
@@ -2442,7 +2445,10 @@ public final class Api {
             applySelectedStates(app, selectedWifi, selected3g, selectedRoam, selectedVpn,
                     selectedTether, selectedLan, selectedTor);
             syncMap.put(uid, app);
-            Log.i(TAG, "Added profile-only package to app list: " + packageName + " uid=" + uid);
+            addedPackages++;
+        }
+        if (addedPackages > 0) {
+            Log.i(TAG, "Added " + addedPackages + " profile-only package(s) to app list");
         }
     }
 
@@ -2465,15 +2471,20 @@ public final class Api {
         }
     }
 
-    private static boolean hasInternetPermission(PackageManager pkgmanager, String packageName) {
+    private static boolean hasInternetPermission(PackageManager pkgmanager,
+                                                 String packageName,
+                                                 HashMap<String, Boolean> internetPermissionCache) {
         try {
             if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(Manifest.permission.INTERNET, packageName)) {
+                if (internetPermissionCache != null) {
+                    internetPermissionCache.put(packageName, true);
+                }
                 return true;
             }
         } catch (Exception e) {
             Log.w(TAG, "PackageManager permission check failed for " + packageName + ": " + e.getMessage());
         }
-        return hasInternetPermissionViaShell(packageName);
+        return hasInternetPermissionViaShell(packageName, internetPermissionCache);
     }
 
     private static String getApplicationLabel(PackageManager pkgmanager,
@@ -2565,15 +2576,17 @@ public final class Api {
                 Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
                 List<String> out = result.getOut();
                 Matcher matcher;
+                int userPackageCount = 0;
                 for (String item : out) {
                     matcher = dual_pattern.matcher(item);
                     if (matcher.find() && matcher.groupCount() > 0) {
                         String packageName = matcher.group(1);
                         String packageId = matcher.group(2);
-                        Log.i(TAG, packageId + " " + packageName);
                         listApps.put(Integer.parseInt(packageId), packageName);
+                        userPackageCount++;
                     }
                 }
+                Log.i(TAG, "Discovered " + userPackageCount + " package(s) for user " + integer);
             } catch (java.util.concurrent.RejectedExecutionException e) {
                 Log.w(TAG, "Package listing rejected for user " + integer + ": " + e.getMessage());
                 break; // Stop processing other users if execution rejected
@@ -4136,16 +4149,40 @@ public final class Api {
      * Used for packages invisible to PackageManager due to package visibility restrictions.
      */
     private static boolean hasInternetPermissionViaShell(String packageName) {
+        return hasInternetPermissionViaShell(packageName, null);
+    }
+
+    private static boolean hasInternetPermissionViaShell(String packageName,
+                                                         HashMap<String, Boolean> internetPermissionCache) {
+        if (internetPermissionCache != null && internetPermissionCache.containsKey(packageName)) {
+            return internetPermissionCache.get(packageName);
+        }
         try {
-            Shell.Result result = Shell.cmd("dumpsys package " + packageName + " | grep android.permission.INTERNET").exec();
+            Shell.Result result = Shell.cmd("dumpsys package " + packageName).exec();
+            if (!result.isSuccess()) {
+                Log.w(TAG, "dumpsys package failed while checking INTERNET permission for " + packageName);
+                if (internetPermissionCache != null) {
+                    internetPermissionCache.put(packageName, false);
+                }
+                return false;
+            }
             List<String> out = result.getOut();
+            boolean hasPermission = false;
             for (String line : out) {
                 if (line.contains("android.permission.INTERNET")) {
-                    return true;
+                    hasPermission = true;
+                    break;
                 }
             }
+            if (internetPermissionCache != null) {
+                internetPermissionCache.put(packageName, hasPermission);
+            }
+            return hasPermission;
         } catch (Exception e) {
             Log.w(TAG, "Failed to check INTERNET permission for " + packageName + ": " + e.getMessage());
+        }
+        if (internetPermissionCache != null) {
+            internetPermissionCache.put(packageName, false);
         }
         return false;
     }
