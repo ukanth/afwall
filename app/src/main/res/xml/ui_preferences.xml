@@ -49,6 +49,12 @@
             android:summaryOff="@string/zip_log_reports_summary_off"
             android:summaryOn="@string/zip_log_reports_summary_on"
             android:title="@string/zip_log_reports_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="donorModeEnabled"
+            android:summaryOff="@string/donor_mode_summary_off"
+            android:summaryOn="@string/donor_mode_summary_on"
+            android:title="@string/donor_mode_title" />
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/notification_type"

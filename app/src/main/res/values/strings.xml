@@ -402,6 +402,7 @@
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features.</string>
     <string name="donate_thanks">Thanks for your support.</string>
+    <string name="consider_donating">Please consider donating!</string>
 
     <string name="activeNotification">Show notification icon</string>
     <string name="activeNotification_summary">Display permanent icon in notification bar</string>
@@ -651,6 +652,9 @@
     <string name="zip_log_reports_title">Compress log reports</string>
     <string name="zip_log_reports_summary_on">Send selected logs as a zipped email attachment</string>
     <string name="zip_log_reports_summary_off">Send selected logs as raw email text</string>
+    <string name="donor_mode_title">Supporter mode</string>
+    <string name="donor_mode_summary_on">Supporter features are enabled</string>
+    <string name="donor_mode_summary_off">Supporter features are disabled</string>
 
     <string name="displayBlockNotification">Disable log notification</string>
     <string name="displayBlockNotification_enable">Enable log notification</string>

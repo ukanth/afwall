@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
@@ -33,6 +34,28 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 			populatePreference(findPreference("default_behavior_allow_mode"), getString(R.string.connection_default_allow), 0);
 			populatePreference(findPreference("default_behavior_block_mode"), getString(R.string.connection_default_allow), 1);
 		}
+		setupDonorModePreference();
+	}
+
+	private void setupDonorModePreference() {
+		CheckBoxPreference donorMode = (CheckBoxPreference) findPreference("donorModeEnabled");
+		if (donorMode == null) {
+			return;
+		}
+		donorMode.setChecked(G.isDoKey(ctx) || isDonate());
+		donorMode.setOnPreferenceChangeListener((preference, newValue) -> {
+			boolean requested = (Boolean) newValue;
+			if (!requested) {
+				G.donorModeEnabled(false);
+				return true;
+			}
+			if (G.hasDonateBuild() || G.hasDonateKey(ctx)) {
+				G.donorModeEnabled(true);
+				return true;
+			}
+			Api.donateDialog(getActivity(), true);
+			return false;
+		});
 	}
 
 	@Override

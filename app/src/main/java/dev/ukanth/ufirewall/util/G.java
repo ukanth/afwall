@@ -99,6 +99,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String FIX_START_LEAK = "fixLeak";
     private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
     private static final String REG_DO = "ipurchaseddonatekey";
+    private static final String DONOR_MODE_ENABLED = "donorModeEnabled";
     private static final String ENABLE_ROAM = "enableRoam";
     private static final String ENABLE_VPN = "enableVPN";
     private static final String ENABLE_TETHER = "enableTether";
@@ -760,6 +761,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+    public static boolean donorModeEnabled(boolean val) {
+        gPrefs.edit().putBoolean(DONOR_MODE_ENABLED, val).commit();
+        return val;
+    }
+
+    public static boolean donorModeEnabled() {
+        return gPrefs.getBoolean(DONOR_MODE_ENABLED, true);
+    }
+
     public static boolean enableRoam() {
         return gPrefs.getBoolean(ENABLE_ROAM, false);
     }
@@ -836,11 +846,25 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean isDonate() {
-        return true;
+        return donorModeEnabled() && hasDonateBuild();
+    }
+
+    public static boolean hasDonateBuild() {
+        return BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate");
+    }
+
+    public static boolean hasDonateKey(Context ctx) {
+        try {
+            ApplicationInfo app = ctx.getPackageManager().getApplicationInfo("dev.ukanth.ufirewall.donatekey", 0);
+            return app != null;
+        } catch (PackageManager.NameNotFoundException | NullPointerException e) {
+            return false;
+        }
     }
 
     public static boolean isDoKey(Context ctx) {
-        return true;
+        return donorModeEnabled()
+                && (gPrefs.getBoolean(REG_DO, false) || hasDonateKey(ctx));
     }
 
 
