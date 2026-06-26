@@ -34,6 +34,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
@@ -1569,12 +1570,28 @@ public class G extends Application implements Application.ActivityLifecycleCallb
                     public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
                         super.onLinkPropertiesChanged(network, linkProperties);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            if(linkProperties.isPrivateDnsActive() != privateDns) {
-                                Log.i(Api.TAG, "Private DNS status changed: " + privateDns);
-                                privateDns = linkProperties.isPrivateDnsActive();
-                                InterfaceTracker.applyRules(getContext(), "Private DNS changed.. reapplying rules");
+                            boolean privateDnsActive = linkProperties.isPrivateDnsActive();
+                            if(privateDnsActive != privateDns) {
+                                Log.i(Api.TAG, "Private DNS status changed: " + privateDnsActive);
+                                privateDns = privateDnsActive;
+                                scheduleNetworkCallbackApply("Private DNS changed", true);
                             }
                         }
+                    }
+
+                    @Override
+                    public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                        super.onCapabilitiesChanged(network, networkCapabilities);
+                        if (networkCapabilities != null
+                                && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                            scheduleNetworkCallbackApply("VPN network capabilities changed", false);
+                        }
+                    }
+
+                    @Override
+                    public void onLost(Network network) {
+                        super.onLost(network);
+                        scheduleNetworkCallbackApply("Network lost", false);
                     }
                 };
             }
@@ -1583,6 +1600,21 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         } else{
             Log.i(TAG, "Private link has registered already");
         }
+    }
+
+    private static void scheduleNetworkCallbackApply(String reason, boolean force) {
+        Context context = getContext();
+        if (context == null || !Api.isEnabled(context) || !activeRules()) {
+            Log.d(TAG, reason + ": firewall inactive, not scheduling rule apply");
+            return;
+        }
+        if (!force && !enableVPN()) {
+            Log.d(TAG, reason + ": VPN control is disabled, not scheduling rule apply");
+            return;
+        }
+        Log.i(Api.TAG, reason + ", scheduling network rule refresh");
+        // VPN connect/disconnect is not delivered through the legacy connectivity broadcast on all devices.
+        NetworkChangeDebouncer.scheduleNetworkChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
     }
 
     @Override
