@@ -19,8 +19,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
@@ -445,6 +448,33 @@ public class ToggleWidgetActivity extends Activity {
 
     private void startAction(final int i) {
         actionType = i;
+        if (i == 2 && G.enableConfirm()) {
+            confirmDisableFromWidget();
+            return;
+        }
+        continueActionAfterConfirmation();
+    }
+
+    private void confirmDisableFromWidget() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.confirmMsg)
+                .cancelable(false)
+                .positiveText(R.string.Yes)
+                .negativeText(R.string.No)
+                .onPositive((dialog, which) -> {
+                    Log.i(Api.TAG, "Widget firewall disable confirmed");
+                    dialog.dismiss();
+                    continueActionAfterConfirmation();
+                })
+                .onNegative((dialog, which) -> {
+                    Log.i(Api.TAG, "Widget firewall disable canceled");
+                    dialog.dismiss();
+                    finish();
+                })
+                .show();
+    }
+
+    private void continueActionAfterConfirmation() {
         SecurityUtil util = new SecurityUtil(ToggleWidgetActivity.this);
         boolean isProtected = util.isPasswordProtected();
         if (!isProtected) {
