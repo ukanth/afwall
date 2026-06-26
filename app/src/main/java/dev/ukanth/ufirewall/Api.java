@@ -2191,6 +2191,7 @@ public final class Api {
                 appList.doStageProgress(1);
             }
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
+            HashMap<String, Boolean> internetPermissionCache = new HashMap<>();
 
             // On Android 11+ (API 30+), PackageManager may not return all apps without
             // QUERY_ALL_PACKAGES. Supplement using root shell "pm list packages -U" to discover
@@ -2230,7 +2231,7 @@ public final class Api {
                                 } catch (NameNotFoundException e) {
                                     // PackageManager can't see this app (no QUERY_ALL_PACKAGES).
                                     // Check INTERNET permission via shell before adding.
-                                    if (uid >= 0 && hasInternetPermissionViaShell(pkg)) {
+                                    if (uid >= 0 && hasInternetPermissionViaShell(pkg, internetPermissionCache)) {
                                         ApplicationInfo ai = new ApplicationInfo();
                                         ai.packageName = pkg;
                                         ai.uid = uid;
@@ -2260,11 +2261,13 @@ public final class Api {
 
             SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
             HashMap<Integer, String> packagesForUser = new HashMap<>();
+            HashMap<Integer, String> profileMarkers = new HashMap<>();
             if(G.supportDual()) {
                 if (appList != null) {
                     appList.doStageProgress(3);
                 }
                 packagesForUser  = getPackagesForUser(listOfUids);
+                profileMarkers = getUserProfileMarkers(listOfUids);
             }
 
             if (appList != null) {
@@ -2346,11 +2349,14 @@ public final class Api {
                 applySelectedStates(app, selected_wifi, selected_3g, selected_roam, selected_vpn,
                         selected_tether, selected_lan, selected_tor);
                 if (G.supportDual()) {
-                    checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, multiUserAppsMap);
+                    checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, profileMarkers, multiUserAppsMap);
                 }
             }
 
             if (G.supportDual()) {
+                addProfileOnlyPackages(pkgmanager, packagesForUser, profileMarkers, syncMap,
+                        selected_wifi, selected_3g, selected_roam, selected_vpn,
+                        selected_tether, selected_lan, selected_tor, internetPermissionCache);
                 //run through multi user map
                 for (int i = 0; i < multiUserAppsMap.size(); i++) {
                     app = multiUserAppsMap.valueAt(i);
@@ -2434,18 +2440,21 @@ public final class Api {
         return specialData;
     }
 
-    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, HashMap<Integer,String> pkgs, SparseArray<PackageInfoData> syncMap) {
+    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1,
+                                             HashMap<Integer,String> pkgs,
+                                             HashMap<Integer, String> profileMarkers,
+                                             SparseArray<PackageInfoData> syncMap) {
         try {
             for (Integer integer : uid1) {
-                int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
+                int appUid = UidResolver.createMultiUserUid(integer, UidResolver.getAppId(apinfo.uid));
                 try{
                     //String[] pkgs = pkgmanager.getPackagesForUid(appUid);
                     if (packagesExistForUserUid(pkgs, appUid)) {
                         PackageInfoData app = new PackageInfoData();
                         app.uid = appUid;
-                        app.installTime = new File(apinfo.sourceDir).lastModified();
+                        app.installTime = getInstallTime(null, apinfo, apinfo.packageName);
                         app.names = new ArrayList<String>();
-                        app.names.add(name + "(M)");
+                        app.names.add(name + getProfileMarker(profileMarkers, integer));
                         app.appinfo = apinfo;
                         if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                             //user app
@@ -2467,10 +2476,152 @@ public final class Api {
     }
 
     private static boolean packagesExistForUserUid(HashMap<Integer,String> pkgs, int appUid) {
-        if(pkgs.containsKey(appUid)){
-            return true;
+        return pkgs != null && pkgs.containsKey(appUid);
+    }
+
+    private static void addProfileOnlyPackages(PackageManager pkgmanager,
+                                               HashMap<Integer, String> packagesForUser,
+                                               HashMap<Integer, String> profileMarkers,
+                                               SparseArray<PackageInfoData> syncMap,
+                                               Set<Integer> selectedWifi,
+                                               Set<Integer> selected3g,
+                                               Set<Integer> selectedRoam,
+                                               Set<Integer> selectedVpn,
+                                               Set<Integer> selectedTether,
+                                               Set<Integer> selectedLan,
+                                               Set<Integer> selectedTor,
+                                               HashMap<String, Boolean> internetPermissionCache) {
+        if (packagesForUser == null || packagesForUser.isEmpty()) {
+            return;
         }
-        return false;
+        int addedPackages = 0;
+        for (Map.Entry<Integer, String> entry : packagesForUser.entrySet()) {
+            int uid = entry.getKey();
+            String packageName = entry.getValue();
+            if (syncMap.get(uid) != null || packageName == null || packageName.trim().length() == 0) {
+                continue;
+            }
+            if (!showAllApps() && !hasInternetPermission(pkgmanager, packageName, internetPermissionCache)) {
+                continue;
+            }
+
+            ApplicationInfo apinfo = getApplicationInfoForPackage(pkgmanager, packageName, uid);
+            PackageInfoData app = new PackageInfoData();
+            app.uid = uid;
+            app.installTime = getInstallTime(pkgmanager, apinfo, packageName);
+            app.names = new ArrayList<String>();
+            app.names.add(getApplicationLabel(pkgmanager, apinfo, packageName)
+                    + getProfileMarker(profileMarkers, UidResolver.getUserId(uid)));
+            app.appinfo = apinfo;
+            app.appType = (apinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0 ? 1 : 0;
+            app.pkgName = packageName;
+            applySelectedStates(app, selectedWifi, selected3g, selectedRoam, selectedVpn,
+                    selectedTether, selectedLan, selectedTor);
+            syncMap.put(uid, app);
+            addedPackages++;
+        }
+        if (addedPackages > 0) {
+            Log.i(TAG, "Added " + addedPackages + " profile-only package(s) to app list");
+        }
+    }
+
+    private static ApplicationInfo getApplicationInfoForPackage(PackageManager pkgmanager,
+                                                                String packageName,
+                                                                int uid) {
+        try {
+            ApplicationInfo apinfo = pkgmanager.getApplicationInfo(packageName,
+                    PackageManager.GET_META_DATA | PackageManager.GET_UNINSTALLED_PACKAGES);
+            apinfo.uid = uid;
+            return apinfo;
+        } catch (Exception ignored) {
+            ApplicationInfo apinfo = new ApplicationInfo();
+            apinfo.packageName = packageName;
+            apinfo.uid = uid;
+            // Profile-only packages can be invisible to PackageManager. Keep a
+            // minimal installed entry so rules can still target the pm-reported UID.
+            apinfo.flags = ApplicationInfo.FLAG_INSTALLED;
+            return apinfo;
+        }
+    }
+
+    private static boolean hasInternetPermission(PackageManager pkgmanager,
+                                                 String packageName,
+                                                 HashMap<String, Boolean> internetPermissionCache) {
+        try {
+            if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(Manifest.permission.INTERNET, packageName)) {
+                if (internetPermissionCache != null) {
+                    internetPermissionCache.put(packageName, true);
+                }
+                return true;
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "PackageManager permission check failed for " + packageName + ": " + e.getMessage());
+        }
+        return hasInternetPermissionViaShell(packageName, internetPermissionCache);
+    }
+
+    private static String getApplicationLabel(PackageManager pkgmanager,
+                                              ApplicationInfo apinfo,
+                                              String packageName) {
+        try {
+            return pkgmanager.getApplicationLabel(apinfo).toString();
+        } catch (Exception ignored) {
+            return packageName;
+        }
+    }
+
+    private static long getInstallTime(PackageManager pkgmanager, ApplicationInfo apinfo, String packageName) {
+        if (apinfo != null && apinfo.sourceDir != null) {
+            return new File(apinfo.sourceDir).lastModified();
+        }
+        if (pkgmanager != null) {
+            try {
+                return pkgmanager.getPackageInfo(packageName, 0).firstInstallTime;
+            } catch (Exception ignored) {
+            }
+        }
+        return 0;
+    }
+
+    private static HashMap<Integer, String> getUserProfileMarkers(List<Integer> userProfile) {
+        HashMap<Integer, String> profileMarkers = new HashMap<>();
+        for (Integer userId : userProfile) {
+            profileMarkers.put(userId, "(M)");
+        }
+        try {
+            Shell.Result result = Shell.cmd("pm list users").exec();
+            Pattern userInfoPattern = Pattern.compile("UserInfo\\{(\\d+):([^:}]*)");
+            for (String line : result.getOut()) {
+                Matcher matcher = userInfoPattern.matcher(line);
+                if (matcher.find()) {
+                    int userId = Integer.parseInt(matcher.group(1));
+                    if (profileMarkers.containsKey(userId)) {
+                        profileMarkers.put(userId, markerForProfileName(matcher.group(2)));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to label user profiles: " + e.getMessage());
+        }
+        return profileMarkers;
+    }
+
+    private static String markerForProfileName(String profileName) {
+        String name = profileName == null ? "" : profileName.toLowerCase(Locale.US);
+        if (name.contains("work")) {
+            return "(W)";
+        }
+        if (name.contains("private")) {
+            return "(P)";
+        }
+        return "(M)";
+    }
+
+    private static String getProfileMarker(HashMap<Integer, String> profileMarkers, int userId) {
+        if (profileMarkers != null && profileMarkers.containsKey(userId)) {
+            return profileMarkers.get(userId);
+        }
+        return "(M)";
     }
 
     private static void applySelectedStates(PackageInfoData app,
@@ -2498,15 +2649,17 @@ public final class Api {
                 Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
                 List<String> out = result.getOut();
                 Matcher matcher;
+                int userPackageCount = 0;
                 for (String item : out) {
                     matcher = dual_pattern.matcher(item);
                     if (matcher.find() && matcher.groupCount() > 0) {
                         String packageName = matcher.group(1);
                         String packageId = matcher.group(2);
-                        Log.i(TAG, packageId + " " + packageName);
                         listApps.put(Integer.parseInt(packageId), packageName);
+                        userPackageCount++;
                     }
                 }
+                Log.i(TAG, "Discovered " + userPackageCount + " package(s) for user " + integer);
             } catch (java.util.concurrent.RejectedExecutionException e) {
                 Log.w(TAG, "Package listing rejected for user " + integer + ": " + e.getMessage());
                 break; // Stop processing other users if execution rejected
@@ -2515,7 +2668,7 @@ public final class Api {
                 // Continue with next user on other errors
             }
         }
-        return listApps.size() > 0 ? listApps : null;
+        return listApps;
     }
 
     private static boolean isRecentlyInstalled(String packageName) {
@@ -4069,16 +4222,40 @@ public final class Api {
      * Used for packages invisible to PackageManager due to package visibility restrictions.
      */
     private static boolean hasInternetPermissionViaShell(String packageName) {
+        return hasInternetPermissionViaShell(packageName, null);
+    }
+
+    private static boolean hasInternetPermissionViaShell(String packageName,
+                                                         HashMap<String, Boolean> internetPermissionCache) {
+        if (internetPermissionCache != null && internetPermissionCache.containsKey(packageName)) {
+            return internetPermissionCache.get(packageName);
+        }
         try {
-            Shell.Result result = Shell.cmd("dumpsys package " + packageName + " | grep android.permission.INTERNET").exec();
+            Shell.Result result = Shell.cmd("dumpsys package " + packageName).exec();
+            if (!result.isSuccess()) {
+                Log.w(TAG, "dumpsys package failed while checking INTERNET permission for " + packageName);
+                if (internetPermissionCache != null) {
+                    internetPermissionCache.put(packageName, false);
+                }
+                return false;
+            }
             List<String> out = result.getOut();
+            boolean hasPermission = false;
             for (String line : out) {
                 if (line.contains("android.permission.INTERNET")) {
-                    return true;
+                    hasPermission = true;
+                    break;
                 }
             }
+            if (internetPermissionCache != null) {
+                internetPermissionCache.put(packageName, hasPermission);
+            }
+            return hasPermission;
         } catch (Exception e) {
             Log.w(TAG, "Failed to check INTERNET permission for " + packageName + ": " + e.getMessage());
+        }
+        if (internetPermissionCache != null) {
+            internetPermissionCache.put(packageName, false);
         }
         return false;
     }
