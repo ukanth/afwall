@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextWatcher filterTextWatcher;
     private MaterialDialog runProgress;
     private String currentSearchQuery = "";
+    private boolean launchSecurityPassed = false;
 
     private BroadcastReceiver uiProgressReceiver4, uiProgressReceiver6, toastReceiver, themeRefreshReceiver, uiRefreshReceiver;
     private IntentFilter uiFilter4, uiFilter6;
@@ -804,6 +805,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (G.enableMultiProfile()) {
             setupMultiProfile();
         }
+
+        if (isLaunchSecurityLocked()) {
+            concealProtectedContent();
+            return;
+        }
+        revealProtectedContent();
 
         // Use async loading to avoid blocking the main thread
         // If the app list is already cached, filterApps will use the cache (fast path)
@@ -1794,7 +1801,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case REQ_ENTER_PATTERN: {
                 switch (resultCode) {
                     case RESULT_OK:
-                        showOrLoadApplications();
+                        onLaunchSecurityPassed();
                         break;
                     default:
                         MainActivity.this.finish();
@@ -3105,10 +3112,61 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent intent = getIntent();
         if (intent != null && intent.getBooleanExtra(EXTRA_SKIP_SECURITY_CHECK_ON_RECREATE, false)) {
             intent.removeExtra(EXTRA_SKIP_SECURITY_CHECK_ON_RECREATE);
+            launchSecurityPassed = true;
             Log.i(Api.TAG, "Skipping security check for internal UI/theme refresh");
             return;
         }
-        new SecurityUtil(MainActivity.this).passCheck();
+        SecurityUtil securityUtil = new SecurityUtil(MainActivity.this, this::onLaunchSecurityPassed);
+        if (!securityUtil.isPasswordProtected()) {
+            onLaunchSecurityPassed();
+            return;
+        }
+        concealProtectedContent();
+        if (!securityUtil.passCheck()) {
+            onLaunchSecurityPassed();
+        }
+    }
+
+    private boolean isLaunchSecurityLocked() {
+        Intent intent = getIntent();
+        if (intent != null && intent.getBooleanExtra(EXTRA_SKIP_SECURITY_CHECK_ON_RECREATE, false)) {
+            return false;
+        }
+        return !launchSecurityPassed && new SecurityUtil(MainActivity.this).isPasswordProtected();
+    }
+
+    private void onLaunchSecurityPassed() {
+        launchSecurityPassed = true;
+        reloadPreferences();
+    }
+
+    private void concealProtectedContent() {
+        // Launch security must hide cached app rows until auth succeeds.
+        if (listview != null) {
+            listview.setAdapter(null);
+            listview.setVisibility(View.INVISIBLE);
+        }
+        if (mSwipeLayout != null) {
+            mSwipeLayout.setEnabled(false);
+        }
+        setOptionalViewVisibility(R.id.filerOption, View.INVISIBLE);
+        setOptionalViewVisibility(R.id.profileOption, View.INVISIBLE);
+    }
+
+    private void revealProtectedContent() {
+        if (listview != null) {
+            listview.setVisibility(View.VISIBLE);
+        }
+        if (mSwipeLayout != null) {
+            mSwipeLayout.setEnabled(true);
+        }
+    }
+
+    private void setOptionalViewVisibility(int id, int visibility) {
+        View view = findViewById(id);
+        if (view != null) {
+            view.setVisibility(visibility);
+        }
     }
 
     @RequiresApi(28)

@@ -34,10 +34,16 @@ public class SecurityUtil {
     public static final int LOCK_VERIFICATION = 1212;
 
     private final Activity activity;
+    private final Runnable successCallback;
 
     public SecurityUtil(Activity activity) {
+        this(activity, null);
+    }
+
+    public SecurityUtil(Activity activity, Runnable successCallback) {
         this.activity = activity;
         this.context = activity.getApplicationContext();
+        this.successCallback = successCallback;
     }
 
     private void deviceCheck() {
@@ -54,9 +60,11 @@ public class SecurityUtil {
                     }
                 } else {
                     Toast.makeText(activity, context.getText(R.string.android_version), Toast.LENGTH_SHORT).show();
+                    notifyAuthSuccess();
                 }
             } else {
                 Api.donateDialog(activity, true);
+                notifyAuthSuccess();
             }
         }
     }
@@ -72,6 +80,7 @@ public class SecurityUtil {
                 case "p1":
                     final String oldpwd = G.profile_pwd();
                     if (oldpwd.length() == 0) {
+                        notifyAuthSuccess();
                         return true;
                     } else {
                         // Check the password
@@ -81,6 +90,7 @@ public class SecurityUtil {
                 case "p2":
                     final String pwd = G.sPrefs.getString("LockPassword", "");
                     if (pwd.length() == 0) {
+                        notifyAuthSuccess();
                         return true;
                     } else {
                         requestPassword();
@@ -118,6 +128,7 @@ public class SecurityUtil {
         dialog.setOnFingerprintFailureListener(() -> {
             gracefulShutdown();
         });
+        dialog.setOnFingerprintSuccess(this::notifyAuthSuccess);
         dialog.show();
     }
 
@@ -127,6 +138,7 @@ public class SecurityUtil {
         dialog.setOnFingerprintFailureListener(() -> {
             gracefulShutdown();
         });
+        dialog.setOnFingerprintSuccess(this::notifyAuthSuccess);
         dialog.show();
     }
 
@@ -154,6 +166,7 @@ public class SecurityUtil {
                             
                             if (isAllowed) {
                                 dialog.dismiss();
+                                notifyAuthSuccess();
                             } else {
                                 Api.toast(activity, context.getString(R.string.wrong_password));
                             }
@@ -197,6 +210,12 @@ public class SecurityUtil {
             Log.e("SecurityUtil", "Error during graceful shutdown", e);
             // Emergency fallback
             activity.finish();
+        }
+    }
+
+    private void notifyAuthSuccess() {
+        if (successCallback != null) {
+            activity.runOnUiThread(successCallback);
         }
     }
 }
