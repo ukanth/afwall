@@ -23,7 +23,6 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -55,7 +54,6 @@ public class RulesActivity extends DataDumpActivity {
     protected static final int MENU_FLUSH_RULES = 12;
     protected static final int MENU_IPV6_RULES = 19;
     protected static final int MENU_IPV4_RULES = 20;
-    protected static final int MENU_SEND_REPORT = 25;
 
     protected boolean showIPv6 = false;
     protected static StringBuilder result;
@@ -86,7 +84,6 @@ public class RulesActivity extends DataDumpActivity {
             sub.add(0, MENU_IPV4_RULES, 0, R.string.switch_ipv4).setIcon(R.drawable.ic_rules);
         }
         sub.add(0, MENU_FLUSH_RULES, 0, R.string.flush).setIcon(R.drawable.ic_clearlog);
-        sub.add(0, MENU_SEND_REPORT, 0, R.string.send_report).setIcon(R.drawable.ic_mail);
     }
 
     protected void writeHeading(StringBuilder res, boolean initialNewline, String title) {
@@ -313,8 +310,6 @@ public class RulesActivity extends DataDumpActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final Context ctx = this;
-
         switch (item.getItemId()) {
 
             case android.R.id.home: {
@@ -333,28 +328,6 @@ public class RulesActivity extends DataDumpActivity {
                 showIPv6 = false;
                 updateLoadingState(getString(R.string.loading));
                 populateData(this);
-                return true;
-            case MENU_SEND_REPORT:
-                String ver;
-                try {
-                    ver = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionName;
-                } catch (NameNotFoundException e) {
-                    ver = "???";
-                }
-                String body = dataText + "\n\n" + getString(R.string.enter_problem) + "\n\n";
-                final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-
-                emailIntent.setType("plain/text");
-                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"afwall-report@googlegroups.com"});
-                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "AFWall+ problem report - v" + ver);
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
-                startActivity(Intent.createChooser(emailIntent, getString(R.string.send_mail)));
-
-                // this shouldn't be necessary, but the default Android email client overrides
-                // "body=" from the URI.  See MessageCompose.initFromIntent()
-                //email.putExtra(Intent.EXTRA_TEXT, body);
-
-                //startActivity(Intent.createChooser(email, getString(R.string.send_mail)));
                 return true;
         }
         return super.onOptionsItemSelected(item);

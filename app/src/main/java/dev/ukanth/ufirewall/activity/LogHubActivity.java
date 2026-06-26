@@ -1,8 +1,11 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,12 +17,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -29,7 +35,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.log.Log;
@@ -101,7 +110,7 @@ public class LogHubActivity extends AppCompatActivity {
                         Api.toast(this, getString(R.string.export_logs_select_one));
                         return false;
                     }
-                    selectExportDirectory(resolveExportSections(which, itemValues));
+                    showExportDestinationChoice(resolveExportSections(which, itemValues));
                     return true;
                 })
                 .positiveText(R.string.exports)
@@ -123,6 +132,24 @@ public class LogHubActivity extends AppCompatActivity {
             sections[i] = itemValues.get(selectedIndexes[i]);
         }
         return sections;
+    }
+
+    private void showExportDestinationChoice(Integer[] selectedSections) {
+        new MaterialDialog.Builder(this)
+                .title(R.string.export_logs_title)
+                .items(new CharSequence[]{
+                        getString(R.string.send_report),
+                        getString(R.string.export_logs_save_to_disk)
+                })
+                .itemsCallback((dialog, view, which, text) -> {
+                    if (which == 0) {
+                        sendSelectedLogs(selectedSections);
+                    } else {
+                        selectExportDirectory(selectedSections);
+                    }
+                })
+                .negativeText(R.string.Cancel)
+                .show();
     }
 
     private void selectExportDirectory(Integer[] selectedSections) {
@@ -156,6 +183,102 @@ public class LogHubActivity extends AppCompatActivity {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> writeSelectedLogs(directory, selectedSections));
         executor.shutdown();
+    }
+
+    private void sendSelectedLogs(Integer[] selectedSections) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            String content = buildExportContent(selectedSections);
+            File attachment = null;
+            if (G.zipLogReports()) {
+                attachment = createLogReportZip(content);
+            }
+            File finalAttachment = attachment;
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (G.zipLogReports() && finalAttachment != null) {
+                    sendZippedLogReport(finalAttachment);
+                } else {
+                    sendRawLogReport(content);
+                }
+            });
+        });
+        executor.shutdown();
+    }
+
+    private void sendRawLogReport(String content) {
+        String ver;
+        try {
+            ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            ver = "???";
+        }
+
+        String body = content + "\n\n" + getString(R.string.enter_problem) + "\n\n";
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"afwall-report@googlegroups.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "AFWall+ problem report - v" + ver);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+        try {
+            startActivity(Intent.createChooser(emailIntent, getString(R.string.send_mail)));
+        } catch (ActivityNotFoundException e) {
+            Api.toast(this, getString(R.string.no_email_clients), Toast.LENGTH_LONG);
+        }
+    }
+
+    private void sendZippedLogReport(File attachment) {
+        String ver;
+        try {
+            ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            ver = "???";
+        }
+
+        Uri attachmentUri;
+        try {
+            attachmentUri = FileProvider.getUriForFile(
+                    this,
+                    BuildConfig.APPLICATION_ID + ".fileprovider",
+                    attachment);
+        } catch (IllegalArgumentException e) {
+            dev.ukanth.ufirewall.log.Log.e(Api.TAG, "Unable to attach zipped log report", e);
+            Api.toast(this, getString(R.string.export_logs_fail), Toast.LENGTH_LONG);
+            return;
+        }
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("application/zip");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"afwall-report@googlegroups.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "AFWall+ problem report - v" + ver);
+        emailIntent.putExtra(Intent.EXTRA_TEXT,
+                getString(R.string.log_report_attachment_note) + "\n\n" + getString(R.string.enter_problem) + "\n\n");
+        emailIntent.putExtra(Intent.EXTRA_STREAM, attachmentUri);
+        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(Intent.createChooser(emailIntent, getString(R.string.send_mail)));
+        } catch (ActivityNotFoundException e) {
+            Api.toast(this, getString(R.string.no_email_clients), Toast.LENGTH_LONG);
+        }
+    }
+
+    private File createLogReportZip(String content) {
+        try {
+            File reportDir = new File(getCacheDir(), "log-reports");
+            if (!reportDir.exists()) {
+                reportDir.mkdirs();
+            }
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(new Date());
+            File zipFile = new File(reportDir, "afwall-logs-" + timestamp + ".zip");
+            try (ZipOutputStream zipOutput = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                ZipEntry entry = new ZipEntry("afwall-logs-" + timestamp + ".log");
+                zipOutput.putNextEntry(entry);
+                zipOutput.write(content.getBytes(StandardCharsets.UTF_8));
+                zipOutput.closeEntry();
+            }
+            return zipFile;
+        } catch (IOException e) {
+            dev.ukanth.ufirewall.log.Log.e(Api.TAG, "Unable to create zipped log report", e);
+        }
+        return null;
     }
 
     private void writeSelectedLogs(File directory, Integer[] selectedSections) {

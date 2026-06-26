@@ -39,7 +39,7 @@ public class AboutFragment extends Fragment {
 
 		TextView titleText = view.findViewById(R.id.afwall_title);
 		String versionText = getString(R.string.app_name) + " (v" + version + ")";
-		if(G.isDoKey(requireContext()) || BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate")) {
+		if(G.isDoKey(requireContext()) || G.isDonate()) {
 			versionText = versionText + " (Donate) " + getString(R.string.donate_thanks) + " :)";
 		}
 		titleText.setText(versionText);

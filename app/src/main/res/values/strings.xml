@@ -402,6 +402,7 @@
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features.</string>
     <string name="donate_thanks">Thanks for your support.</string>
+    <string name="consider_donating">Please consider donating!</string>
 
     <string name="activeNotification">Show notification icon</string>
     <string name="activeNotification_summary">Display permanent icon in notification bar</string>
@@ -510,8 +511,11 @@
     <string name="export_logs_select_one">Select at least one log section to export.</string>
     <string name="export_logs_iptables_ipv4">IP Tables IPv4 rules</string>
     <string name="export_logs_iptables_ipv6">IP Tables IPv6 rules</string>
+    <string name="export_logs_save_to_disk">Save to disk</string>
     <string name="export_logs_iptables_timeout">Timed out while fetching IP Tables rules.</string>
     <string name="export_logs_iptables_interrupted">Interrupted while fetching IP Tables rules.</string>
+    <string name="log_report_attachment_note">Compressed logs are attached.</string>
+    <string name="no_email_clients">No email app is available.</string>
     <string name="reapply_rules">Please reapply the rules due to preference change</string>
 
     <string name="custom_rules">Custom Rules</string>
@@ -642,6 +646,15 @@
     <string name="delete_initd_error">Unable to delete the startup script</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>
     <string name="runNotification">Rules Progress</string>
+    <string name="system_file_picker_title">Use system file picker</string>
+    <string name="system_file_picker_summary_on">Use Android picker for settings import and export</string>
+    <string name="system_file_picker_summary_off">Use AFWall+ legacy file dialog for settings import and export</string>
+    <string name="zip_log_reports_title">Compress log reports</string>
+    <string name="zip_log_reports_summary_on">Send selected logs as a zipped email attachment</string>
+    <string name="zip_log_reports_summary_off">Send selected logs as raw email text</string>
+    <string name="donor_mode_title">Supporter mode</string>
+    <string name="donor_mode_summary_on">Supporter features are enabled</string>
+    <string name="donor_mode_summary_off">Supporter features are disabled</string>
 
     <string name="displayBlockNotification">Disable log notification</string>
     <string name="displayBlockNotification_enable">Enable log notification</string>
