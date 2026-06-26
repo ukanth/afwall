@@ -218,8 +218,9 @@ public final class Api {
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
     private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether", "-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
-    private static final String[] LOCAL_RESERVED_IPV4_RANGES = {"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16"};
-    private static final String[] LOCAL_RESERVED_IPV6_RANGES = {"fc00::/7", "fe80::/10"};
+    // LAN-selected apps also need discovery destinations such as mDNS, SSDP, and broadcast.
+    private static final String[] LOCAL_RESERVED_IPV4_RANGES = {"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16", "224.0.0.0/4", "255.255.255.255/32"};
+    private static final String[] LOCAL_RESERVED_IPV6_RANGES = {"fc00::/7", "fe80::/10", "ff00::/8"};
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
