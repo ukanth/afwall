@@ -157,6 +157,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String MULTI_USER = "multiUser";
     private static final String MULTI_USER_ID = "multiUserId";
     private static final String IS_MIGRATED = "isMigrated";
+    private static final String SHOW_PACKAGE_NAME = "showPackageName";
     private static final String SHOW_FILTER = "showFilter";
     private static final String PATTERN_MAX_TRY = "patternMax";
     private static final String PATTERN_STEALTH = "stealthMode";
@@ -625,6 +626,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     public static boolean showUid(boolean val) {
         gPrefs.edit().putBoolean(SHOW_UID, val).commit();
+        return val;
+    }
+
+    public static boolean showPackageName() {
+        return gPrefs.getBoolean(SHOW_PACKAGE_NAME, false);
+    }
+
+    public static boolean showPackageName(boolean val) {
+        gPrefs.edit().putBoolean(SHOW_PACKAGE_NAME, val).commit();
         return val;
     }
 

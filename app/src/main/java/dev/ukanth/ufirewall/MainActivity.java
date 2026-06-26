@@ -1118,6 +1118,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
                 }
             }
+            // Package names are stored separately from labels, so include them in search.
+            if (!matches && app.pkgName != null && app.pkgName.toLowerCase().contains(normalizedSearch)) {
+                matches = true;
+            }
             if (!matches && G.showUid()) {
                 matches = String.valueOf(app.uid).contains(normalizedSearch);
             }
