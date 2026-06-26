@@ -89,6 +89,7 @@ public class FingerprintUtil {
         // callbacks
         OnFingerprintFailure failureCallback;
         OnFingerprintSuccess successCallback;
+        OnFingerprintUnavailable unavailableCallback;
 
         @RequiresApi(api = Build.VERSION_CODES.M)
         public FingerprintDialog(Context context) {
@@ -186,6 +187,10 @@ public class FingerprintUtil {
             successCallback = doSomething;
         }
 
+        public void setOnFingerprintUnavailable(OnFingerprintUnavailable mayHappen){
+            unavailableCallback = mayHappen;
+        }
+
         /**
          * Created by whit3hawks on 11/16/16.
          * Modified by vzool on 1/14/17.
@@ -200,19 +205,23 @@ public class FingerprintUtil {
                  * because we already checked if device support fingerprint before enable it.
                  * We just leave it as-is for the days, who knows! :)
                  */
-                errorText.setText(R.string.device_with_no_fingerprint_sensor);
+                handleUnavailableFingerprint(R.string.device_with_no_fingerprint_sensor,
+                        "Fingerprint hardware is not available");
             }else {
                 // Checks whether fingerprint permission is set on manifest
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                    errorText.setText(R.string.fingerprint_permission_manifest_missing);
+                    handleUnavailableFingerprint(R.string.fingerprint_permission_manifest_missing,
+                            "Fingerprint permission is missing");
                 }else{
                     // Check whether at least one fingerprint is registered
                     if (!fingerprintManager.hasEnrolledFingerprints()) {
-                        errorText.setText(R.string.register_at_least_one_fingerprint);
+                        handleUnavailableFingerprint(R.string.register_at_least_one_fingerprint,
+                                "No enrolled fingerprints are available");
                     }else{
                         // Checks whether lock screen security is enabled or not
                         if (!keyguardManager.isKeyguardSecure()) {
-                            errorText.setText(R.string.lock_screen_not_enabled);
+                            handleUnavailableFingerprint(R.string.lock_screen_not_enabled,
+                                    "Lock screen security is not enabled");
                         }else{
 
                             generateKey();
@@ -227,6 +236,9 @@ public class FingerprintUtil {
                                 }
 
                                 helper.startAuth(fingerprintManager, cryptoObject);
+                            } else {
+                                handleUnavailableFingerprint(R.string.fingerprint_security_changed,
+                                        "Fingerprint keystore key was invalidated");
                             }
                         }
                     }
@@ -249,6 +261,24 @@ public class FingerprintUtil {
             }
             if(isShowing()) {
                 dismiss();
+            }
+        }
+
+        private void handleUnavailableFingerprint(int messageResId, String reason) {
+            // Fingerprint enrollment or lock-screen changes invalidate the saved keystore key.
+            Log.e(TAG, reason);
+            G.isFingerprintEnabled(false);
+            if (errorText != null) {
+                errorText.setText(messageResId);
+            }
+            Api.toast(getContext(), getContext().getString(R.string.fingerprint_security_changed));
+            if(isShowing()) {
+                dismiss();
+            }
+            if(unavailableCallback != null){
+                unavailableCallback.then();
+            } else if(failureCallback != null){
+                failureCallback.then();
             }
         }
 
@@ -304,6 +334,7 @@ public class FingerprintUtil {
                 cipher.init(Cipher.ENCRYPT_MODE, key);
                 return true;
             } catch (KeyPermanentlyInvalidatedException e) {
+                Log.e(TAG, "Fingerprint keystore key permanently invalidated", e);
                 return false;
             } catch (KeyStoreException | CertificateException | UnrecoverableKeyException | IOException | NoSuchAlgorithmException | InvalidKeyException e) {
                 throw new RuntimeException("Failed to init Cipher", e);
@@ -392,6 +423,11 @@ public class FingerprintUtil {
 
     // interface for callback on Success
     public interface OnFingerprintSuccess{
+        void then();
+    }
+
+    // interface for callback when fingerprint setup is no longer usable
+    public interface OnFingerprintUnavailable{
         void then();
     }
 }
