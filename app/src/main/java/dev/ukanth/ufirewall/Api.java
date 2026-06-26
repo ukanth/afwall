@@ -1179,6 +1179,9 @@ public final class Api {
             cmds.add("-A " + chainName + "-3g -j " + chainName + "-3g-postcustom");
             cmds.add("-A " + chainName + "-wifi -j " + chainName + "-wifi-postcustom");
             addRejectRules(cmds, chainName);
+            if (ipv6) {
+                addIpv6ControlTrafficRules(cmds, chainName);
+            }
 
             if (G.enableInbound()) {
                 // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
@@ -1842,6 +1845,17 @@ public final class Api {
     /**
      * Add DNS-specific iptables rules for identified DNS servers instead of broad LAN access
      */
+    private static void addIpv6ControlTrafficRules(List<String> cmds, String chainName) {
+        // IPv6 connectivity depends on router and neighbor discovery before app UID rules match.
+        String[] icmpv6Types = {"133", "134", "135", "136"};
+        for (String type : icmpv6Types) {
+            cmds.add("-A " + chainName + " -p ipv6-icmp --icmpv6-type " + type + " -j RETURN");
+            if (G.enableInbound()) {
+                cmds.add("-A " + chainName + "-input -p ipv6-icmp --icmpv6-type " + type + " -j RETURN");
+            }
+        }
+    }
+
     private static void addDnsServerRules(List<String> cmds, InterfaceDetails cfg, String chain, boolean ipv6) {
         String protocol = ipv6 ? "ip6tables" : "iptables";
         java.util.List<String> dnsServers = ipv6 ? cfg.dnsServersV6 : cfg.dnsServersV4;
