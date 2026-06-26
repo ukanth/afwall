@@ -744,7 +744,7 @@ public final class Api {
         }
         if (G.enableTor()) {
             cmds.add("#NOCHK# -D " + chainName + "-tor-reject -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
-            if (app.selected_tor && (G.enableInbound() || ipv6)) {
+            if (app.selected_tor && ipv6) {
                 cmds.add("-I " + chainName + "-tor-reject 1 -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
             }
             if (!ipv6) {
@@ -801,10 +801,11 @@ public final class Api {
         Integer tcp_port = 9040;
 
         Log.i(TAG, "Adding Tor redirect rules before interface filters");
+        // Tor selection is an outbound owner match; jumping from INPUT breaks on several iptables backends.
 
         for (Integer uid : uids) {
             if (uid != null && uid >= 0) {
-                if (G.enableInbound() || ipv6) {
+                if (ipv6) {
                     cmds.add("-A " + chainName + "-tor-reject -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
                 }
                 if (!ipv6) {
@@ -828,9 +829,6 @@ public final class Api {
             cmds.add("-t nat -A " + chainName + " -j " + chainName + "-tor-check");
             cmds.add("-A " + chainName + "-tor -m mark --mark 0x500 -j " + chainName + "-reject");
             cmds.add("-A " + chainName + " -j " + chainName + "-tor");
-        }
-        if (G.enableInbound()) {
-            cmds.add("-A " + chainName + "-input -j " + chainName + "-tor-reject");
         }
     }
 
