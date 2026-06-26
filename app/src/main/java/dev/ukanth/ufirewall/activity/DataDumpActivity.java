@@ -102,7 +102,8 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     // to be filled in by subclasses
     protected static String sdDumpFile =  "iptables.log";
 
-    protected abstract void populateMenu(SubMenu sub);
+    protected void populateMenu(SubMenu sub) {
+    }
 
     protected abstract void populateData(final Context ctx);
 

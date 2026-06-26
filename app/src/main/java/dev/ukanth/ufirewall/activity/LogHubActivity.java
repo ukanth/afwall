@@ -1,8 +1,10 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -101,7 +103,7 @@ public class LogHubActivity extends AppCompatActivity {
                         Api.toast(this, getString(R.string.export_logs_select_one));
                         return false;
                     }
-                    selectExportDirectory(resolveExportSections(which, itemValues));
+                    showExportDestinationChoice(resolveExportSections(which, itemValues));
                     return true;
                 })
                 .positiveText(R.string.exports)
@@ -123,6 +125,24 @@ public class LogHubActivity extends AppCompatActivity {
             sections[i] = itemValues.get(selectedIndexes[i]);
         }
         return sections;
+    }
+
+    private void showExportDestinationChoice(Integer[] selectedSections) {
+        new MaterialDialog.Builder(this)
+                .title(R.string.export_logs_title)
+                .items(new CharSequence[]{
+                        getString(R.string.send_report),
+                        getString(R.string.export_logs_save_to_disk)
+                })
+                .itemsCallback((dialog, view, which, text) -> {
+                    if (which == 0) {
+                        sendSelectedLogs(selectedSections);
+                    } else {
+                        selectExportDirectory(selectedSections);
+                    }
+                })
+                .negativeText(R.string.Cancel)
+                .show();
     }
 
     private void selectExportDirectory(Integer[] selectedSections) {
@@ -156,6 +176,36 @@ public class LogHubActivity extends AppCompatActivity {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> writeSelectedLogs(directory, selectedSections));
         executor.shutdown();
+    }
+
+    private void sendSelectedLogs(Integer[] selectedSections) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            String content = buildExportContent(selectedSections);
+            new Handler(Looper.getMainLooper()).post(() -> sendLogReport(content));
+        });
+        executor.shutdown();
+    }
+
+    private void sendLogReport(String content) {
+        String ver;
+        try {
+            ver = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (NameNotFoundException e) {
+            ver = "???";
+        }
+
+        String body = content + "\n\n" + getString(R.string.enter_problem) + "\n\n";
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"afwall-report@googlegroups.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "AFWall+ problem report - v" + ver);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+        try {
+            startActivity(Intent.createChooser(emailIntent, getString(R.string.send_mail)));
+        } catch (ActivityNotFoundException e) {
+            Api.toast(this, getString(R.string.no_email_clients), Toast.LENGTH_LONG);
+        }
     }
 
     private void writeSelectedLogs(File directory, Integer[] selectedSections) {
