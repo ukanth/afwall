@@ -34,6 +34,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +52,7 @@ import dev.ukanth.ufirewall.MainActivity;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -1569,6 +1571,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     private static ConnectivityManager.NetworkCallback callback = null;
+    private static final Object VPN_NETWORK_LOCK = new Object();
+    private static final Set<Network> vpnNetworks = new HashSet<>();
 
     public static  void registerPrivateLink() {
         if(!enabledPrivateLink) {
@@ -1579,11 +1583,35 @@ public class G extends Application implements Application.ActivityLifecycleCallb
                     public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
                         super.onLinkPropertiesChanged(network, linkProperties);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            if(linkProperties.isPrivateDnsActive() != privateDns) {
-                                Log.i(Api.TAG, "Private DNS status changed: " + privateDns);
-                                privateDns = linkProperties.isPrivateDnsActive();
-                                InterfaceTracker.applyRules(getContext(), "Private DNS changed.. reapplying rules");
+                            boolean privateDnsActive = linkProperties.isPrivateDnsActive();
+                            if(privateDnsActive != privateDns) {
+                                Log.i(Api.TAG, "Private DNS status changed: " + privateDnsActive);
+                                privateDns = privateDnsActive;
+                                scheduleNetworkCallbackApply("Private DNS changed", true);
                             }
+                        }
+                    }
+
+                    @Override
+                    public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                        super.onCapabilitiesChanged(network, networkCapabilities);
+                        boolean isVpn = networkCapabilities != null
+                                && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
+                        boolean wasVpn = updateTrackedVpnNetwork(network, isVpn);
+                        if (isVpn || wasVpn) {
+                            scheduleNetworkCallbackApply(isVpn
+                                    ? "VPN network capabilities changed"
+                                    : "VPN network capabilities removed", false);
+                        }
+                    }
+
+                    @Override
+                    public void onLost(Network network) {
+                        super.onLost(network);
+                        if (removeTrackedVpnNetwork(network)) {
+                            scheduleNetworkCallbackApply("VPN network lost", false);
+                        } else {
+                            Log.d(Api.TAG, "Non-VPN network lost; no VPN rule refresh needed");
                         }
                     }
                 };
@@ -1593,6 +1621,45 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         } else{
             Log.i(TAG, "Private link has registered already");
         }
+    }
+
+    private static boolean updateTrackedVpnNetwork(Network network, boolean isVpn) {
+        if (network == null) {
+            return false;
+        }
+        synchronized (VPN_NETWORK_LOCK) {
+            boolean wasVpn = vpnNetworks.contains(network);
+            if (isVpn) {
+                vpnNetworks.add(network);
+            } else {
+                vpnNetworks.remove(network);
+            }
+            return wasVpn;
+        }
+    }
+
+    private static boolean removeTrackedVpnNetwork(Network network) {
+        if (network == null) {
+            return false;
+        }
+        synchronized (VPN_NETWORK_LOCK) {
+            return vpnNetworks.remove(network);
+        }
+    }
+
+    private static void scheduleNetworkCallbackApply(String reason, boolean force) {
+        Context context = getContext();
+        if (context == null || !Api.isEnabled(context) || !activeRules()) {
+            Log.d(TAG, reason + ": firewall inactive, not scheduling rule apply");
+            return;
+        }
+        if (!force && !enableVPN()) {
+            Log.d(TAG, reason + ": VPN control is disabled, not scheduling rule apply");
+            return;
+        }
+        Log.i(Api.TAG, reason + ", scheduling network rule refresh");
+        // VPN connect/disconnect is not delivered through the legacy connectivity broadcast on all devices.
+        NetworkChangeDebouncer.scheduleNetworkChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
     }
 
     @Override
