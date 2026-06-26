@@ -1432,10 +1432,38 @@ public final class Api {
         }
     }
 
+    private static RootCommand wrapApplyCompletionCallback(RootCommand callback) {
+        final RootCommand completionCallback = callback == null ? new RootCommand() : callback;
+        final RootCommand.Callback originalCallback = completionCallback.cb;
+        completionCallback.setCallback(new RootCommand.Callback() {
+            @Override
+            public void cbFunc(RootCommand state) {
+                try {
+                    if (originalCallback != null) {
+                        originalCallback.cbFunc(state);
+                    }
+                } finally {
+                    synchronized (GLOBAL_STATUS_LOCK) {
+                        globalStatus = false;
+                        setRulesUpToDate(state.exitCode == 0);
+                    }
+                }
+            }
+        });
+        return completionCallback;
+    }
+
+    private static RootCommand newIntermediateApplyCommand(RootCommand finalCallback) {
+        return new RootCommand()
+                .setFailureToast(finalCallback.failureToast)
+                .setReopenShell(finalCallback.reopenShell);
+    }
+
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         synchronized (GLOBAL_STATUS_LOCK) {
             if(!globalStatus) {
                 globalStatus = true;
+                final RootCommand completionCallback = wrapApplyCompletionCallback(callback);
                 
                 try {
                     Log.i(TAG, "Starting full firewall rules apply");
@@ -1446,37 +1474,57 @@ public final class Api {
                     // Create thread-safe chain name for this execution
                     final String chainName = getThreadSafeChainName();
                     
-                    // Apply IPv4 rules first (sequentially)
+                    // Apply IPv4 rules first. When IPv6 is enabled, wait for IPv4
+                    // completion before starting IPv6 so the apply dialog and final
+                    // callback represent the entire ruleset, not only IPv4.
                     try {
                         Log.i(TAG, "Applying IPv4 rules");
                         applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false, chainName);
-                        applySavedIp4tablesRules(ctx, ipv4cmds, callback);
-                        Log.i(TAG, "Submitted IPv4 rule commands");
+                        if (G.enableIPv6()) {
+                            final List<String> finalIpv6cmds = ipv6cmds;
+                            RootCommand ipv4Callback = newIntermediateApplyCommand(completionCallback)
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode != 0) {
+                                                completionCallback.cb.cbFunc(state);
+                                                return;
+                                            }
+                                            try {
+                                                Log.i(TAG, "Applying IPv6 rules");
+                                                applyIptablesRulesImpl(ctx, dataSet, showErrors, finalIpv6cmds, true, chainName);
+                                                if (applySavedIp6tablesRules(ctx, finalIpv6cmds, completionCallback)) {
+                                                    Log.i(TAG, "Submitted IPv6 rule commands");
+                                                } else {
+                                                    completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", null);
+                                                }
+                                            } catch (Exception e) {
+                                                Log.e(TAG, "Error applying IPv6 rules", e);
+                                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", e);
+                                            }
+                                        }
+                                    });
+                            if (applySavedIp4tablesRules(ctx, ipv4cmds, ipv4Callback)) {
+                                Log.i(TAG, "Submitted IPv4 rule commands");
+                            } else {
+                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
+                            }
+                        } else {
+                            if (applySavedIp4tablesRules(ctx, ipv4cmds, completionCallback)) {
+                                Log.i(TAG, "Submitted IPv4 rule commands");
+                            } else {
+                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
+                            }
+                        }
                     } catch (Exception e) {
                         Log.e(TAG, "Error applying IPv4 rules", e);
                         throw new RuntimeException(e);
                     }
-
-                    // Apply IPv6 rules second (sequentially after IPv4)
-                    if (G.enableIPv6()) {
-                        try {
-                            Log.i(TAG, "Applying IPv6 rules");
-                            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true, chainName);
-                            applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
-                            Log.i(TAG, "Submitted IPv6 rule commands");
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error applying IPv6 rules", e);
-                            throw new RuntimeException(e);
-                        }
-                    }
                     
-                    Log.i(TAG, "Submitted all firewall rule commands");
+                    Log.i(TAG, "Submitted firewall rule command sequence");
 
                 } catch (Exception e) {
-                    completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", e);
-                } finally {
-                    globalStatus = false;
-                    setRulesUpToDate(true);
+                    completeRootCommandFailure(ctx, completionCallback, "applySavedIptablesRules", e);
                 }
             } else {
                 Log.w(TAG, "Full apply ignored because another apply is already running");
