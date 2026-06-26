@@ -137,6 +137,7 @@ import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
+import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.UidResolver;
@@ -1400,6 +1401,24 @@ public final class Api {
         }
     }
 
+    private static void completeRootCommandFailure(Context ctx, RootCommand callback, String command, Throwable throwable) {
+        if (callback == null || callback.done) {
+            return;
+        }
+        callback.lastCommand = command;
+        if (throwable != null && throwable.getMessage() != null) {
+            callback.lastCommandResult = new StringBuilder(throwable.getMessage());
+        }
+        callback.exitCode = 1;
+        callback.done = true;
+        if (ctx != null && callback.failureToast != RootShellService.NO_TOAST) {
+            sendToastBroadcast(ctx.getApplicationContext(), ctx.getString(callback.failureToast));
+        }
+        if (callback.cb != null) {
+            callback.cb.cbFunc(callback);
+        }
+    }
+
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         synchronized (GLOBAL_STATUS_LOCK) {
             if(!globalStatus) {
@@ -1441,12 +1460,14 @@ public final class Api {
 
                 } catch (Exception e) {
                     Log.e(TAG, "Error applying rules", e);
+                    completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", e);
                 } finally {
                     globalStatus = false;
                     setRulesUpToDate(true);
                 }
             } else {
                 Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
+                completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", null);
             }
         }
     }

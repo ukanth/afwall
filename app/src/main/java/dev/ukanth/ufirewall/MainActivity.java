@@ -689,6 +689,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    private void dismissRunProgress() {
+        try {
+            if (runProgress != null && runProgress.isShowing()) {
+                runProgress.dismiss();
+            }
+        } catch (Exception ignored) {
+        } finally {
+            runProgress = null;
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -2698,7 +2709,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPreExecute() {
-            runProgress = new MaterialDialog.Builder(activityReference.get())
+            MainActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                cancel(true);
+                return;
+            }
+
+            runProgress = new MaterialDialog.Builder(activity)
                     .title(R.string.su_check_title)
                     .cancelable(true)
                     .customView(R.layout.apply_view, false)
@@ -2714,40 +2731,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected Boolean doInBackground(Void... params) {
             //set the progress
-            if (G.hasRoot()) {
+            MainActivity activity = activityReference.get();
+            if (activity == null || activity.isFinishing()) {
+                return false;
+            }
+
+            if (ensureRootAccessForApply()) {
                 Api.setRulesUpToDate(false);
                 RootCommand rootCommand = new RootCommand()
                         .setSuccessToast(R.string.rules_applied)
                         .setFailureToast(R.string.error_apply)
+                        .setReopenShell(true)
                         .setCallback(new RootCommand.Callback() {
                             public void cbFunc(RootCommand state) {
-                                try {
-                                    if (runProgress != null) {
-                                        runProgress.dismiss();
-                                    }
-                                } catch (Exception ex) {
+                                MainActivity activity = activityReference.get();
+                                if (activity == null || activity.isFinishing()) {
+                                    return;
                                 }
-                                if (state.exitCode == 0) {
-                                    setDirty(false);
-                                }
-                                //queue.clear();
-                                runOnUiThread(() -> {
-                                    setDirty(false);
+                                activity.runOnUiThread(() -> {
+                                    activity.dismissRunProgress();
                                     if (state.exitCode != 0) {
-                                        Api.errorNotification(activityReference.get());
-                                        menuSetApplyOrSave(activityReference.get().mainMenu, false);
-                                        Api.setEnabled(activityReference.get(), false, true);
+                                        Api.errorNotification(activity);
+                                        menuSetApplyOrSave(activity.mainMenu, false);
+                                        Api.setEnabled(activity, false, true);
+                                        if (state.exitCode == dev.ukanth.ufirewall.service.RootShellService.EXIT_NO_ROOT_ACCESS) {
+                                            G.hasRoot(false);
+                                            activity.showRootNotFoundMessage();
+                                        }
                                     } else {
-                                        menuSetApplyOrSave(activityReference.get().mainMenu, enabled);
-                                        Api.setEnabled(activityReference.get(), enabled, true);
-                                        LogService.ensureRunning(activityReference.get());
+                                        activity.setDirty(false);
+                                        menuSetApplyOrSave(activity.mainMenu, enabled);
+                                        Api.setEnabled(activity, enabled, true);
+                                        LogService.ensureRunning(activity);
                                     }
-                                    refreshHeader();
+                                    activity.refreshHeader();
                                 });
                             }
                         });
                 if (changedApps != null && !changedApps.isEmpty()) {
                     RootCommand partialRootCommand = new RootCommand()
+                            .setReopenShell(true)
                             .setCallback(new RootCommand.Callback() {
                                 public void cbFunc(RootCommand state) {
                                     if (state.exitCode == 0) {
@@ -2756,6 +2779,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     }
                                     MainActivity activity = activityReference.get();
                                     if (activity == null) {
+                                        return;
+                                    }
+                                    if (state.exitCode == dev.ukanth.ufirewall.service.RootShellService.EXIT_NO_ROOT_ACCESS) {
+                                        rootCommand.cb.cbFunc(state);
                                         return;
                                     }
                                     String command = state.lastCommand != null ? state.lastCommand : "unknown command";
@@ -2768,39 +2795,52 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     Api.applySavedIptablesRules(activity, true, rootCommand);
                                 }
                             });
-                    boolean partialStarted = Api.applyChangedUidRules(activityReference.get(), changedApps, true, partialRootCommand);
+                    boolean partialStarted = Api.applyChangedUidRules(activity, changedApps, true, partialRootCommand);
                     if (!partialStarted) {
                         Log.w(TAG, "Changed UID apply did not start, falling back to full apply");
-                        ApplicationErrorLog.add(activityReference.get(), "Changed UID apply did not start. Falling back to full apply.");
-                        Api.applySavedIptablesRules(activityReference.get(), true, rootCommand);
+                        ApplicationErrorLog.add(activity, "Changed UID apply did not start. Falling back to full apply.");
+                        Api.applySavedIptablesRules(activity, true, rootCommand);
                     }
                 } else {
-                    Api.applySavedIptablesRules(activityReference.get(), true, rootCommand);
+                    Api.applySavedIptablesRules(activity, true, rootCommand);
                 }
                 return true;
             } else {
                 runOnUiThread(() -> {
-                    setDirty(false);
-                    try {
-                        runProgress.dismiss();
-                    } catch (Exception ex) {
-                    }
+                    dismissRunProgress();
+                    disableFirewall();
+                    showRootNotFoundMessage();
+                    refreshHeader();
                 });
                 return false;
             }
 
         }
 
+        private boolean ensureRootAccessForApply() {
+            if (G.hasRoot()) {
+                return true;
+            }
+            try {
+                Shell.getShell().isRoot();
+                boolean granted = Shell.isAppGrantedRoot();
+                G.hasRoot(granted);
+                return granted;
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to request root access before applying rules", e);
+                G.hasRoot(false);
+                return false;
+            }
+        }
+
         @Override
         protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
             if (!aVoid) {
-                Toast.makeText(activityReference.get(), getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
-                disableFirewall();
-                refreshHeader();
-                try {
-                    runProgress.dismiss();
-                } catch (Exception ex) {
+                MainActivity activity = activityReference.get();
+                if (activity != null && !activity.isFinishing()) {
+                    Toast.makeText(activity, activity.getString(R.string.error_su_toast), Toast.LENGTH_SHORT).show();
+                    activity.dismissRunProgress();
                 }
             }
         }

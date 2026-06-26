@@ -97,6 +97,18 @@ public class RootShellService2 extends Service {
         }
     }
 
+    private void failRootCommand(final RootCommand state, final int exitCode, final Exception exception) {
+        if (exception != null) {
+            Log.e(TAG, "Root command failed before completion", exception);
+        }
+        if (exitCode == EXIT_NO_ROOT_ACCESS) {
+            G.hasRoot(false);
+        }
+        rootState = ShellState2.FAIL;
+        complete(state, exitCode);
+        runNextSubmission();
+    }
+
     private void runNextSubmission() {
 
         do {
@@ -118,7 +130,7 @@ public class RootShellService2 extends Service {
                 if (rootState == ShellState2.FAIL) {
                     // if we don't have root, abort all queued commands
                     complete(state, EXIT_NO_ROOT_ACCESS);
-                    //continue;
+                    runNextSubmission();
                 } else if (rootState == ShellState2.READY) {
                     rootState = ShellState2.BUSY;
                     // Don't create notification - let FirewallService handle it
@@ -148,7 +160,12 @@ public class RootShellService2 extends Service {
                 state.lastCommand = command;
                 state.lastCommandResult = new StringBuilder();
                 try {
-                   rootSession2.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR) -> {
+                    if (rootSession2 == null || !rootSession2.isRunning()) {
+                        failRootCommand(state, EXIT_NO_ROOT_ACCESS, null);
+                        return;
+                    }
+
+                    rootSession2.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, STDERR) -> {
                                 ListIterator<String> iter = output.listIterator();
                                 while (iter.hasNext()) {
                                     String line = iter.next();
@@ -199,12 +216,14 @@ public class RootShellService2 extends Service {
                                     processCommands(state);
                                 }
                             });
-                } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                } catch (RuntimeException e) {
+                    failRootCommand(state, EXIT_NO_ROOT_ACCESS, e);
                 }
             }
         } else {
             complete(state, 0);
+            rootState = ShellState2.READY;
+            runNextSubmission();
         }
     }
 
@@ -286,24 +305,39 @@ public class RootShellService2 extends Service {
     }
 
 
-    private void startShellInBackground() {
+    private synchronized void startShellInBackground() {
         Log.d(TAG, "Starting root shell(6)...");
         setupLogging();
-        //start only rootSession is null
-        if (rootSession2 == null) {
-            rootSession2 = new Shell.Builder().
-                useSU().
-                setWatchdogTimeout(5).
-                open((success, reason) -> {
-                    if (reason < 0) {
-                        Log.e(TAG, "Can't open root shell: exitCode " + reason);
-                        rootState = ShellState2.FAIL;
-                    } else {
-                        Log.d(TAG, "Root shell(6) is open");
-                        rootState = ShellState2.READY;
-                    }
-                    runNextSubmission();
-                });
+        //start only rootSession is null or closed
+        if (rootSession2 == null || !rootSession2.isRunning()) {
+            if (rootSession2 != null && !rootSession2.isRunning()) {
+                rootSession2 = null;
+            }
+            try {
+                rootSession2 = new Shell.Builder().
+                    useSU().
+                    setWatchdogTimeout(5).
+                    open((success, reason) -> {
+                        if (!success || reason < 0) {
+                            Log.e(TAG, "Can't open root shell: exitCode " + reason);
+                            G.hasRoot(false);
+                            rootState = ShellState2.FAIL;
+                        } else {
+                            Log.d(TAG, "Root shell(6) is open");
+                            G.hasRoot(true);
+                            rootState = ShellState2.READY;
+                        }
+                        runNextSubmission();
+                    });
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Can't open root shell", e);
+                G.hasRoot(false);
+                rootState = ShellState2.FAIL;
+                runNextSubmission();
+            }
+        } else {
+            rootState = ShellState2.READY;
+            runNextSubmission();
         }
 
     }
@@ -369,7 +403,11 @@ public class RootShellService2 extends Service {
         }
         
         // Check if command contains built-in iptables path and hasn't been fallback attempted
-        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        if (mContext == null) {
+            return false;
+        }
+
+        String builtinDir = mContext.getDir("bin", 0).getAbsolutePath();
         return state.lastCommand.contains(builtinDir) && 
                !state.lastCommand.contains("__FALLBACK_ATTEMPTED__");
     }
@@ -382,7 +420,11 @@ public class RootShellService2 extends Service {
             return;
         }
         
-        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        if (mContext == null) {
+            return;
+        }
+
+        String builtinDir = mContext.getDir("bin", 0).getAbsolutePath();
         String originalCommand = state.lastCommand;
         
         // Try to find system iptables

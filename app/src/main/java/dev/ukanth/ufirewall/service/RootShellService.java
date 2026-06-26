@@ -97,6 +97,18 @@ public class RootShellService extends Service implements Cloneable {
         }
     }
 
+    private void failRootCommand(final RootCommand state, final int exitCode, final Exception exception) {
+        if (exception != null) {
+            Log.e(TAG, "Root command failed before completion", exception);
+        }
+        if (exitCode == EXIT_NO_ROOT_ACCESS) {
+            G.hasRoot(false);
+        }
+        rootState = ShellState.FAIL;
+        complete(state, exitCode);
+        runNextSubmission();
+    }
+
     private void runNextSubmission() {
 
         do {
@@ -118,7 +130,7 @@ public class RootShellService extends Service implements Cloneable {
                 if (rootState == ShellState.FAIL) {
                     // if we don't have root, abort all queued commands
                     complete(state, EXIT_NO_ROOT_ACCESS);
-                    //continue;
+                    runNextSubmission();
                 } else if (rootState == ShellState.READY) {
                     rootState = ShellState.BUSY;
                     // Don't create notification - let FirewallService handle it
@@ -152,8 +164,7 @@ public class RootShellService extends Service implements Cloneable {
                 try {
                     // Check if shell is still valid before executing command
                     if (rootSession == null || !rootSession.isRunning() ) {
-                        rootState = ShellState.FAIL;
-                        complete(state, -1);
+                        failRootCommand(state, EXIT_NO_ROOT_ACCESS, null);
                         return;
                     }
                     
@@ -214,12 +225,14 @@ public class RootShellService extends Service implements Cloneable {
                             processCommands(state);
                         }
                     });
-                } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                } catch (RuntimeException e) {
+                    failRootCommand(state, EXIT_NO_ROOT_ACCESS, e);
                 }
             }
         } else {
             complete(state, 0);
+            rootState = ShellState.READY;
+            runNextSubmission();
         }
     }
 
@@ -315,19 +328,31 @@ public class RootShellService extends Service implements Cloneable {
                 rootSession = null;
             }
             
-            rootSession = new Shell.Builder().
-                    useSU().
-                    setWatchdogTimeout(5).
-                    open((success, reason) -> {
-                        if (reason < 0) {
-                            Log.e(TAG, "Can't open root shell: exitCode " + reason);
-                            rootState = ShellState.FAIL;
-                        } else {
-                            Log.d(TAG, "Root shell(4) is open");
-                            rootState = ShellState.READY;
-                        }
-                        runNextSubmission();
-                    });
+            try {
+                rootSession = new Shell.Builder().
+                        useSU().
+                        setWatchdogTimeout(5).
+                        open((success, reason) -> {
+                            if (!success || reason < 0) {
+                                Log.e(TAG, "Can't open root shell: exitCode " + reason);
+                                G.hasRoot(false);
+                                rootState = ShellState.FAIL;
+                            } else {
+                                Log.d(TAG, "Root shell(4) is open");
+                                G.hasRoot(true);
+                                rootState = ShellState.READY;
+                            }
+                            runNextSubmission();
+                        });
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Can't open root shell", e);
+                G.hasRoot(false);
+                rootState = ShellState.FAIL;
+                runNextSubmission();
+            }
+        } else {
+            rootState = ShellState.READY;
+            runNextSubmission();
         }
     }
 
