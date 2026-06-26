@@ -52,6 +52,7 @@ import dev.ukanth.ufirewall.MainActivity;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -1560,6 +1561,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     private static ConnectivityManager.NetworkCallback callback = null;
+    private static final Object VPN_NETWORK_LOCK = new Object();
+    private static final Set<Network> vpnNetworks = new HashSet<>();
 
     public static  void registerPrivateLink() {
         if(!enabledPrivateLink) {
@@ -1582,16 +1585,24 @@ public class G extends Application implements Application.ActivityLifecycleCallb
                     @Override
                     public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
                         super.onCapabilitiesChanged(network, networkCapabilities);
-                        if (networkCapabilities != null
-                                && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-                            scheduleNetworkCallbackApply("VPN network capabilities changed", false);
+                        boolean isVpn = networkCapabilities != null
+                                && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
+                        boolean wasVpn = updateTrackedVpnNetwork(network, isVpn);
+                        if (isVpn || wasVpn) {
+                            scheduleNetworkCallbackApply(isVpn
+                                    ? "VPN network capabilities changed"
+                                    : "VPN network capabilities removed", false);
                         }
                     }
 
                     @Override
                     public void onLost(Network network) {
                         super.onLost(network);
-                        scheduleNetworkCallbackApply("Network lost", false);
+                        if (removeTrackedVpnNetwork(network)) {
+                            scheduleNetworkCallbackApply("VPN network lost", false);
+                        } else {
+                            Log.d(Api.TAG, "Non-VPN network lost; no VPN rule refresh needed");
+                        }
                     }
                 };
             }
@@ -1599,6 +1610,30 @@ public class G extends Application implements Application.ActivityLifecycleCallb
             enabledPrivateLink = true;
         } else{
             Log.i(TAG, "Private link has registered already");
+        }
+    }
+
+    private static boolean updateTrackedVpnNetwork(Network network, boolean isVpn) {
+        if (network == null) {
+            return false;
+        }
+        synchronized (VPN_NETWORK_LOCK) {
+            boolean wasVpn = vpnNetworks.contains(network);
+            if (isVpn) {
+                vpnNetworks.add(network);
+            } else {
+                vpnNetworks.remove(network);
+            }
+            return wasVpn;
+        }
+    }
+
+    private static boolean removeTrackedVpnNetwork(Network network) {
+        if (network == null) {
+            return false;
+        }
+        synchronized (VPN_NETWORK_LOCK) {
+            return vpnNetworks.remove(network);
         }
     }
 
