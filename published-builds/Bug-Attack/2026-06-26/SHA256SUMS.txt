@@ -1,0 +1,2 @@
+11306ad0c9c7760c273f635abd228ea8f84bb0045523aa47d9a80e8d36bbe20c  published-builds/Bug-Attack/2026-06-26/afwall-beta-4.0.4-Bug-Attack-debug.apk
+5fb23355a0d56280d142a5ae9e8c299ffc4ae8c484f06c692e50adb3aa93710b  published-builds/Bug-Attack/2026-06-26/afwall-beta-4.0.4-Bug-Attack-release-signed.apk
