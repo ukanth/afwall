@@ -1249,6 +1249,7 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+                addTetherDhcpReplyRule(cmds, chainName + "-wifi-tether", action);
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p tcp --sport=53" + action);
@@ -1259,6 +1260,7 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER) || containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to USB tethered client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-usb-tether", "-p udp --sport=67 --dport=68" + action);
+                addTetherDhcpReplyRule(cmds, chainName + "-usb-tether", action);
                 // DNS replies to USB tethered client  
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p tcp --sport=53" + action);
@@ -1266,6 +1268,7 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-tether", "-p udp --sport=67 --dport=68" + action);
+                addTetherDhcpReplyRule(cmds, chainName + "-tether", action);
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p tcp --sport=53" + action);
@@ -1333,6 +1336,12 @@ public final class Api {
 
         iptablesCommands(cmds, out, ipv6);
         return true;
+    }
+
+    private static void addTetherDhcpReplyRule(List<String> cmds, String chain, String action) {
+        // dnsmasq can run under device-specific app UIDs, so the special tethering entry
+        // must allow DHCP replies by port instead of relying only on a fixed UID list.
+        cmds.add("-A " + chain + " -p udp --sport=67 --dport=68" + action);
     }
 
     /**
