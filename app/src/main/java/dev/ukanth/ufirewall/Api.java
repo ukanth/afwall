@@ -134,6 +134,7 @@ import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
+import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.UidResolver;
@@ -711,19 +712,7 @@ public final class Api {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
 
-        if (G.enableLogService()) {
-            if (G.logTarget().trim().equals("LOG")) {
-                //cmds.add("-A " + chainName  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
-                String logRule = "-A " + chainName + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options";
-                Log.d(TAG, "Adding LOG rule to reject chain: " + logRule);
-                cmds.add(logRule);
-            } else if (G.logTarget().trim().equals("NFLOG")) {
-                //cmds.add("-A " + chainName + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
-                String nflogRule = "-A " + chainName + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
-                Log.d(TAG, "Adding NFLOG rule to reject chain: " + nflogRule);
-                cmds.add(nflogRule);
-            }
-        }
+        addLogRuleForRejectChain(cmds, chainName + "-reject");
         String rejectRule = "-A " + chainName + "-reject" + " -j REJECT";
         Log.d(TAG, "Adding final REJECT rule: " + rejectRule);
         cmds.add(rejectRule);
@@ -734,35 +723,58 @@ public final class Api {
         for (String suffix : rejectChainSuffixes) {
             String individualRejectChain = chainName + suffix;
             Log.d(TAG, "Populating individual reject chain: " + individualRejectChain);
-            if (G.enableLogService() && G.logTarget().trim().equals("NFLOG")) {
-                String nflogRule = "-A " + individualRejectChain + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
-                Log.d(TAG, "Adding NFLOG to individual reject chain: " + nflogRule);
-                cmds.add(nflogRule);
-            }
+            addLogRuleForRejectChain(cmds, individualRejectChain);
             String individualRejectRule = "-A " + individualRejectChain + " -j REJECT";
             Log.d(TAG, "Adding REJECT to individual reject chain: " + individualRejectRule);
             cmds.add(individualRejectRule);
         }
     }
 
+    private static void addLogRuleForRejectChain(List<String> cmds, String rejectChain) {
+        if (!G.enableLogService()) {
+            return;
+        }
+        String logTarget = G.logTarget().trim();
+        if (logTarget.equals("LOG")) {
+            // Whitelist mode uses per-interface reject chains, so LOG must be
+            // added anywhere packets can be rejected, not only the shared chain.
+            String logRule = "-A " + rejectChain + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options";
+            Log.d(TAG, "Adding LOG rule to reject chain: " + logRule);
+            cmds.add(logRule);
+        } else if (logTarget.equals("NFLOG")) {
+            String nflogRule = "-A " + rejectChain + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
+            Log.d(TAG, "Adding NFLOG rule to reject chain: " + nflogRule);
+            cmds.add(nflogRule);
+        }
+    }
+
     private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6, String chainName) {
+        Integer socks_port = 9050;
+        Integer http_port = 8118;
+        Integer dns_port = 5400;
+        Integer tcp_port = 9040;
+
+        Log.i(TAG, "Adding Tor redirect rules before interface filters");
+        // Tor selection is an outbound owner match; jumping from INPUT breaks on several iptables backends.
+
         for (Integer uid : uids) {
             if (uid != null && uid >= 0) {
-                if (G.enableInbound() || ipv6) {
+                if (ipv6) {
                     cmds.add("-A " + chainName + "-tor-reject -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
                 }
                 if (!ipv6) {
                     cmds.add("-t nat -A " + chainName + "-tor-check -m owner --uid-owner " + uid + " -j " + chainName + "-tor-filter");
+                    // Tor rules run before interface chains so redirected traffic is not rejected as plain Wi-Fi/mobile.
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + socks_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + http_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + tcp_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p udp --dport " + dns_port + " -j ACCEPT");
                 }
             }
         }
         if (ipv6) {
             cmds.add("-A " + chainName + " -j " + chainName + "-tor-reject");
         } else {
-            Integer socks_port = 9050;
-            Integer http_port = 8118;
-            Integer dns_port = 5400;
-            Integer tcp_port = 9040;
             cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
             cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
             cmds.add("-t nat -A " + chainName + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
@@ -771,9 +783,6 @@ public final class Api {
             cmds.add("-t nat -A " + chainName + " -j " + chainName + "-tor-check");
             cmds.add("-A " + chainName + "-tor -m mark --mark 0x500 -j " + chainName + "-reject");
             cmds.add("-A " + chainName + " -j " + chainName + "-tor");
-        }
-        if (G.enableInbound()) {
-            cmds.add("-A " + chainName + "-input -j " + chainName + "-tor-reject");
         }
     }
 
@@ -886,13 +895,10 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isWifiTethered) {
-                // Support multiple LAN subnets (Issue #1362)
-                // Subnet-specific rules are added first, then a catch-all routes remaining traffic to WAN.
-                // iptables evaluates rules top-to-bottom, so LAN subnets are matched before the catch-all.
                 if (ipv6) {
                     if (!cfg.lanMaskV6.isEmpty()) {
                         for (String subnet : cfg.lanMaskV6) {
-                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
+                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -g " + chainName + "-wifi-lan");
                         }
                     } else {
                         Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
@@ -900,7 +906,7 @@ public final class Api {
                 } else {
                     if (!cfg.lanMaskV4.isEmpty()) {
                         for (String subnet : cfg.lanMaskV4) {
-                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -j " + chainName + "-wifi-lan");
+                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -g " + chainName + "-wifi-lan");
                         }
                     } else {
                         Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
@@ -1032,15 +1038,32 @@ public final class Api {
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
             addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
 
+            // Loopback is self-device traffic, not LAN or WAN. Keep it out of
+            // the LAN split chains so local app services continue to work when
+            // LAN control is enabled in either firewall mode.
+            cmds.add("-A " + chainName + " -o lo -j RETURN");
+            if (G.enableInbound()) {
+                cmds.add("-A " + chainName + "-input -i lo -j RETURN");
+            }
+
             cmds.add("-A " + chainName + "-3g -j " + chainName + "-3g-postcustom");
             cmds.add("-A " + chainName + "-wifi -j " + chainName + "-wifi-postcustom");
             addRejectRules(cmds, chainName);
+            if (ipv6) {
+                addIpv6ControlTrafficRules(cmds, chainName);
+            }
 
             if (G.enableInbound()) {
                 // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
                 // local processes can't reply to half-open connections without this rule
                 cmds.add("-A " + chainName + " -m state --state ESTABLISHED -j RETURN");
                 cmds.add("-A " + chainName + "-input -m state --state ESTABLISHED -j RETURN");
+            }
+
+            // Tor must redirect before interface chains so redirected traffic is not
+            // rejected as plain Wi-Fi/mobile before reaching the local Orbot ports.
+            if (G.enableTor()) {
+                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
             }
 
             addInterfaceRouting(ctx, cmds, ipv6, chainName);
@@ -1091,6 +1114,7 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+                addTetherDhcpReplyRule(cmds, chainName + "-wifi-tether", action);
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p tcp --sport=53" + action);
@@ -1101,13 +1125,15 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER) || containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to USB tethered client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-usb-tether", "-p udp --sport=67 --dport=68" + action);
-                // DNS replies to USB tethered client  
+                addTetherDhcpReplyRule(cmds, chainName + "-usb-tether", action);
+                // DNS replies to USB tethered client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p tcp --sport=53" + action);
             }
             if (containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-tether", "-p udp --sport=67 --dport=68" + action);
+                addTetherDhcpReplyRule(cmds, chainName + "-tether", action);
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p tcp --sport=53" + action);
@@ -1164,9 +1190,6 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.lanList, chainName + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, chainName + "-vpn", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.tetherList, chainName + "-tether", whitelist);
-            if (G.enableTor()) {
-                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
-            }
 
             cmds.add("-P OUTPUT ACCEPT");
         } catch (Exception e) {
@@ -1260,53 +1283,126 @@ public final class Api {
         }
     }
 
+    private static void completeRootCommandFailure(Context ctx, RootCommand callback, String command, Throwable throwable) {
+        if (callback == null || callback.done) {
+            return;
+        }
+        callback.lastCommand = command;
+        if (throwable != null && throwable.getMessage() != null) {
+            callback.lastCommandResult = new StringBuilder(throwable.getMessage());
+        }
+        callback.exitCode = 1;
+        callback.done = true;
+        if (ctx != null && callback.failureToast != RootShellService.NO_TOAST) {
+            sendToastBroadcast(ctx.getApplicationContext(), ctx.getString(callback.failureToast));
+        }
+        if (callback.cb != null) {
+            callback.cb.cbFunc(callback);
+        }
+    }
+
+    // Wrap the caller-supplied callback so that globalStatus and the up-to-date flag are only
+    // reset once the entire (IPv4 + IPv6) command sequence has actually finished. Without this,
+    // the synchronous apply path used to clear globalStatus immediately after submission while
+    // the async root batches were still running.
+    private static RootCommand wrapApplyCompletionCallback(RootCommand callback) {
+        final RootCommand completionCallback = callback == null ? new RootCommand() : callback;
+        final RootCommand.Callback originalCallback = completionCallback.cb;
+        completionCallback.setCallback(new RootCommand.Callback() {
+            @Override
+            public void cbFunc(RootCommand state) {
+                try {
+                    if (originalCallback != null) {
+                        originalCallback.cbFunc(state);
+                    }
+                } finally {
+                    synchronized (GLOBAL_STATUS_LOCK) {
+                        globalStatus = false;
+                        setRulesUpToDate(state.exitCode == 0);
+                    }
+                }
+            }
+        });
+        return completionCallback;
+    }
+
+    private static RootCommand newIntermediateApplyCommand(RootCommand finalCallback) {
+        return new RootCommand()
+                .setFailureToast(finalCallback.failureToast)
+                .setReopenShell(finalCallback.reopenShell);
+    }
+
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         synchronized (GLOBAL_STATUS_LOCK) {
             if(!globalStatus) {
                 globalStatus = true;
-                
+                final RootCommand completionCallback = wrapApplyCompletionCallback(callback);
+
                 try {
+                    Log.i(TAG, "Starting full firewall rules apply");
                     RuleDataSet dataSet = getDataSet();
                     List<String> ipv4cmds = new ArrayList<>();
                     List<String> ipv6cmds = new ArrayList<>();
-                    
+
                     // Create thread-safe chain name for this execution
                     final String chainName = getThreadSafeChainName();
-                    
-                    // Apply IPv4 rules first (sequentially)
+
+                    // Apply IPv4 rules first. When IPv6 is enabled, wait for IPv4
+                    // completion before starting IPv6 so the apply dialog and final
+                    // callback represent the entire ruleset, not only IPv4.
                     try {
                         Log.i(TAG, "Applying IPv4 rules");
                         applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false, chainName);
-                        applySavedIp4tablesRules(ctx, ipv4cmds, callback);
-                        Log.i(TAG, "Successfully applied IPv4 rules");
+                        if (G.enableIPv6()) {
+                            final List<String> finalIpv6cmds = ipv6cmds;
+                            RootCommand ipv4Callback = newIntermediateApplyCommand(completionCallback)
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode != 0) {
+                                                completionCallback.cb.cbFunc(state);
+                                                return;
+                                            }
+                                            try {
+                                                Log.i(TAG, "Applying IPv6 rules");
+                                                applyIptablesRulesImpl(ctx, dataSet, showErrors, finalIpv6cmds, true, chainName);
+                                                if (applySavedIp6tablesRules(ctx, finalIpv6cmds, completionCallback)) {
+                                                    Log.i(TAG, "Submitted IPv6 rule commands");
+                                                } else {
+                                                    completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", null);
+                                                }
+                                            } catch (Exception e) {
+                                                Log.e(TAG, "Error applying IPv6 rules", e);
+                                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", e);
+                                            }
+                                        }
+                                    });
+                            if (applySavedIp4tablesRules(ctx, ipv4cmds, ipv4Callback)) {
+                                Log.i(TAG, "Submitted IPv4 rule commands");
+                            } else {
+                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
+                            }
+                        } else {
+                            if (applySavedIp4tablesRules(ctx, ipv4cmds, completionCallback)) {
+                                Log.i(TAG, "Submitted IPv4 rule commands");
+                            } else {
+                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
+                            }
+                        }
                     } catch (Exception e) {
                         Log.e(TAG, "Error applying IPv4 rules", e);
                         throw new RuntimeException(e);
                     }
 
-                    // Apply IPv6 rules second (sequentially after IPv4)
-                    if (G.enableIPv6()) {
-                        try {
-                            Log.i(TAG, "Applying IPv6 rules");
-                            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true, chainName);
-                            applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
-                            Log.i(TAG, "Successfully applied IPv6 rules");
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error applying IPv6 rules", e);
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    
-                    Log.i(TAG, "Successfully applied all firewall rules");
+                    Log.i(TAG, "Submitted firewall rule command sequence");
 
                 } catch (Exception e) {
                     Log.e(TAG, "Error applying rules", e);
-                } finally {
-                    globalStatus = false;
-                    setRulesUpToDate(true);
+                    completeRootCommandFailure(ctx, completionCallback, "applySavedIptablesRules", e);
                 }
             } else {
                 Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
+                completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", null);
             }
         }
     }
@@ -1600,6 +1696,23 @@ public final class Api {
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
     
+    private static void addTetherDhcpReplyRule(List<String> cmds, String chain, String action) {
+        // dnsmasq can run under device-specific app UIDs, so the special tethering entry
+        // must allow DHCP replies by port instead of relying only on a fixed UID list.
+        cmds.add("-A " + chain + " -p udp --sport=67 --dport=68" + action);
+    }
+
+    private static void addIpv6ControlTrafficRules(List<String> cmds, String chainName) {
+        // IPv6 connectivity depends on router and neighbor discovery before app UID rules match.
+        String[] icmpv6Types = {"133", "134", "135", "136"};
+        for (String type : icmpv6Types) {
+            cmds.add("-A " + chainName + " -p ipv6-icmp --icmpv6-type " + type + " -j RETURN");
+            if (G.enableInbound()) {
+                cmds.add("-A " + chainName + "-input -p ipv6-icmp --icmpv6-type " + type + " -j RETURN");
+            }
+        }
+    }
+
     /**
      * Add DNS-specific iptables rules for identified DNS servers instead of broad LAN access
      */

@@ -198,7 +198,7 @@ public class RootShellService extends Service implements Cloneable {
 
                         boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
                         if (state.commandIndex >= state.getCommmands().size() || errorExit) {
-                            complete(state, exitCode);
+                            complete(state, errorExit ? exitCode : 0);
                             if (exitCode < 0) {
                                 rootState = ShellState.FAIL;
                                 Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
