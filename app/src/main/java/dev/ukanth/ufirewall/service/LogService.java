@@ -94,6 +94,11 @@ public class LogService extends Service {
 
     private List<String> callbackList;
     private ExecutorService executorService;
+    // Dedicated single-thread executor so log-line parsing/storage runs OFF the main
+    // (UI) thread. dmesg --follow dumps the whole kernel ring-buffer backlog at once;
+    // processing each line on the main thread froze MainActivity for tens of seconds.
+    // Single-threaded => entries are still processed serially and in order.
+    private ExecutorService logProcessExecutor;
     private volatile boolean isShuttingDown = false;
 
     private Shell logWatcherShell; // Additional shell for long running log-watcher process
@@ -208,7 +213,11 @@ public class LogService extends Service {
                 }
 
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
-                callbackList = new CallbackList<String>() {
+                if (logProcessExecutor == null || logProcessExecutor.isShutdown() || logProcessExecutor.isTerminated()) {
+                    logProcessExecutor = Executors.newSingleThreadExecutor();
+                }
+                // Pass an Executor so libsu delivers onAddElement off the main thread.
+                callbackList = new CallbackList<String>(logProcessExecutor) {
                     @Override
                     public void onAddElement(String line) {
                         // Handle device suspend/resume scenarios
@@ -425,7 +434,20 @@ public class LogService extends Service {
             notificationChannel.setShowBadge(true);
             notificationChannel.enableVibration(false);
             manager.createNotificationChannel(notificationChannel);
-            
+
+            // Also create the channel used by the per-event log notifications (id 109,
+            // see showNotification()). Without this, Android 8+ drops those notifications
+            // with "No Channel found for ... channelId=firewall.logservice".
+            NotificationChannel logEventChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
+                    ctx.getString(R.string.firewall_log_notify),
+                    G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_DEFAULT : NotificationManager.IMPORTANCE_LOW);
+            logEventChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            logEventChannel.setSound(null, null);
+            logEventChannel.setShowBadge(false);
+            logEventChannel.enableLights(false);
+            logEventChannel.enableVibration(false);
+            manager.createNotificationChannel(logEventChannel);
+
             // Build notification in FirewallService style (opens MainActivity, not LogActivity)
             Intent appIntent = new Intent(ctx, MainActivity.class);
             appIntent.setAction(Intent.ACTION_MAIN);
@@ -885,7 +907,13 @@ public class LogService extends Service {
             }
         }
         executorService = null;
-        
+
+        // Shutdown the log-processing executor
+        if (logProcessExecutor != null) {
+            logProcessExecutor.shutdownNow();
+            logProcessExecutor = null;
+        }
+
         // Update FirewallService notification if it's running
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && FirewallService.isInstanceRunning()) {
             FirewallService.setLogServiceActive(false);

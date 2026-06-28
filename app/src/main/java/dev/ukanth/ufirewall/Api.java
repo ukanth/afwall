@@ -106,6 +106,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -212,6 +213,9 @@ public final class Api {
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
     private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether", "-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+    // LAN-selected apps also need discovery destinations such as mDNS, SSDP, and broadcast.
+    private static final String[] LOCAL_RESERVED_IPV4_RANGES = {"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16", "224.0.0.0/4", "255.255.255.255/32"};
+    private static final String[] LOCAL_RESERVED_IPV6_RANGES = {"fc00::/7", "fe80::/10", "ff00::/8"};
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
@@ -854,6 +858,22 @@ public final class Api {
         }
     }
 
+    private static Set<String> getLanDestinationRanges(InterfaceDetails cfg, boolean ipv6) {
+        LinkedHashSet<String> ranges = new LinkedHashSet<>();
+        if (ipv6) {
+            if (cfg != null) {
+                ranges.addAll(cfg.lanMaskV6);
+            }
+            ranges.addAll(Arrays.asList(LOCAL_RESERVED_IPV6_RANGES));
+        } else {
+            if (cfg != null) {
+                ranges.addAll(cfg.lanMaskV4);
+            }
+            ranges.addAll(Arrays.asList(LOCAL_RESERVED_IPV4_RANGES));
+        }
+        return ranges;
+    }
+
     /**
      * Reconfigure the firewall rules based on interface changes seen at runtime: tethering
      * enabled/disabled, IP address changes, etc.  This should only affect a small number of
@@ -895,22 +915,14 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isWifiTethered) {
-                if (ipv6) {
-                    if (!cfg.lanMaskV6.isEmpty()) {
-                        for (String subnet : cfg.lanMaskV6) {
-                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -g " + chainName + "-wifi-lan");
-                        }
-                    } else {
-                        Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
-                    }
-                } else {
-                    if (!cfg.lanMaskV4.isEmpty()) {
-                        for (String subnet : cfg.lanMaskV4) {
-                            cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -g " + chainName + "-wifi-lan");
-                        }
-                    } else {
-                        Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
-                    }
+                // Support multiple LAN subnets (Issue #1362) plus reserved local/discovery ranges.
+                // Subnet-specific rules are added first, then a catch-all routes remaining traffic to WAN.
+                Set<String> lanRanges = getLanDestinationRanges(cfg, ipv6);
+                if (lanRanges.isEmpty()) {
+                    Log.i(TAG, "no LAN ranges found: " + G.enableIPv6() + "," + (ipv6 ? cfg.lanMaskV6 : cfg.lanMaskV4));
+                }
+                for (String subnet : lanRanges) {
+                    cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -g " + chainName + "-wifi-lan");
                 }
                 // Catch-all: route everything not matching a LAN subnet to WAN
                 cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
@@ -1987,59 +1999,14 @@ public final class Api {
                 pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
             }
             PackageManager pkgmanager = ctx.getPackageManager();
+            // Load the app list purely through PackageManager. The previous root-shell
+            // supplementation ("pm list packages -U" + per-package dumpsys INTERNET checks)
+            // made every scan run dozens of shell round-trips, which dominated load time.
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
-
-            // On Android 11+ (API 30+), PackageManager may not return all apps without
-            // QUERY_ALL_PACKAGES. Supplement using root shell "pm list packages -U" to discover
-            // any packages not visible to PackageManager, including headless system services
-            // like Captive Portal Login, OsuLogin, WebView, Remote Provisioner, etc.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Set<String> visiblePackages = new HashSet<>();
-                for (ApplicationInfo ai : installed) {
-                    visiblePackages.add(ai.packageName);
-                }
-
-                try {
-                    Shell.Result result = Shell.cmd("pm list packages -U").exec();
-                    List<String> out = result.getOut();
-                    for (String line : out) {
-                        // Format: "package:<pkgname> uid:<uid>"
-                        if (line.startsWith("package:")) {
-                            String rest = line.substring(8).trim();
-                            String pkg;
-                            int uid = -1;
-                            int uidIdx = rest.indexOf(" uid:");
-                            if (uidIdx > 0) {
-                                pkg = rest.substring(0, uidIdx);
-                                try {
-                                    uid = Integer.parseInt(rest.substring(uidIdx + 5));
-                                } catch (NumberFormatException ignored) {}
-                            } else {
-                                pkg = rest;
-                            }
-                            if (!visiblePackages.contains(pkg)) {
-                                try {
-                                    ApplicationInfo ai = pkgmanager.getApplicationInfo(pkg, pkgManagerFlags);
-                                    installed.add(ai);
-                                } catch (NameNotFoundException e) {
-                                    // PackageManager can't see this app (no QUERY_ALL_PACKAGES).
-                                    // Check INTERNET permission via shell before adding.
-                                    if (uid >= 0 && hasInternetPermissionViaShell(pkg)) {
-                                        ApplicationInfo ai = new ApplicationInfo();
-                                        ai.packageName = pkg;
-                                        ai.uid = uid;
-                                        ai.flags = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_INSTALLED;
-                                        installed.add(ai);
-                                    }
-                                }
-                                visiblePackages.add(pkg);
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.w(TAG, "Shell-based package discovery failed: " + e.getMessage());
-                }
+            if (appList != null) {
+                appList.doMaxProgress(installed.size());
             }
+
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
@@ -2071,12 +2038,7 @@ public final class Api {
                 app = syncMap.get(apinfo.uid);
                 // filter applications which are not allowed to access the Internet
                 if (app == null && PackageManager.PERMISSION_GRANTED != pkgmanager.checkPermission(Manifest.permission.INTERNET, apinfo.packageName) && !showAllApps()) {
-                    // For shell-discovered apps, checkPermission may return DENIED since
-                    // PackageManager can't see them — they were already filtered by
-                    // hasInternetPermissionViaShell() during discovery, so let them through.
-                    if (apinfo.sourceDir != null) {
-                        continue;
-                    }
+                    continue;
                 }
                 // try to get the application label from our cache - getApplicationLabel() is horribly slow!!!!
                 cachekey = cacheLabel + apinfo.packageName;
@@ -2235,7 +2197,12 @@ public final class Api {
         } catch (Exception e) {
             Log.i(TAG, "Exception in getting app list", e);
         }
-        return new ArrayList<>();
+        // Never leave the cache null after a run, otherwise UI callers that route a
+        // cold cache to the async loader could loop on a persistent scan failure.
+        if (applications == null) {
+            applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
+        }
+        return applications;
     }
 
    /* public boolean isSuPackage(PackageManager pm, String suPackage) {
@@ -4664,6 +4631,25 @@ public final class Api {
                 tostr = s.toString();
             }
             return tostr;
+        }
+
+        public String toStringForList(boolean includeUid, boolean includePackageName) {
+            StringBuilder s = new StringBuilder();
+            if (includeUid) {
+                s.append("[ ");
+                s.append(uid);
+                s.append(" ] ");
+            }
+            for (int i = 0; i < names.size(); i++) {
+                if (i != 0) s.append(", ");
+                s.append(names.get(i));
+            }
+            if (includePackageName && pkgName != null && !pkgName.startsWith("dev.afwall.special.")) {
+                s.append("\n");
+                s.append(pkgName);
+            }
+            s.append("\n");
+            return s.toString();
         }
 
     }

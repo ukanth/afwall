@@ -442,6 +442,9 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                         itemList.setValueIndex(3);
                         dialog.dismiss();
                     });
+                    dialog.setOnFingerprintUnavailable(() -> {
+                        itemList.setValueIndex(0);
+                    });
                     dialog.setOnFingerprintSuccess(() -> {
                         G.isFingerprintEnabled(false);
                         Api.toast(context, getString(R.string.fingerprint_disabled_successfully));

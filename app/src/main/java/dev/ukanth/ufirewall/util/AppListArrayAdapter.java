@@ -155,11 +155,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
         holder.app = listApps.get(position);
 
-        if (G.showUid()) {
-            holder.text.setText(holder.app.toStringWithUID());
-        } else {
-            holder.text.setText(holder.app.toString());
-        }
+        holder.text.setText(holder.app.toStringForList(G.showUid(), G.showPackageName()));
 
         final int id = holder.app.uid;
         final View finalConvertView = convertView;

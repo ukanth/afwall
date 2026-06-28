@@ -48,7 +48,13 @@ public class BootRuleManager {
     public static void initializeBootRuleApplication(Context context) {
         synchronized (ruleApplicationLock) {
             Log.i(TAG, "Initializing boot rule application");
-            
+
+            if (!shouldApplyBootRules(context)) {
+                Log.i(TAG, "Firewall disabled or inactive at boot; skipping boot rule application");
+                markBootComplete();
+                return;
+            }
+
             // Mark boot as in progress
             isBootInProgress.set(true);
             initialBootRulesApplied.set(false);
@@ -114,6 +120,11 @@ public class BootRuleManager {
             Runnable delayedRules = () -> {
                 synchronized (ruleApplicationLock) {
                     if (isBootInProgress.get()) {
+                        if (!shouldApplyBootRules(context)) {
+                            Log.i(TAG, "Firewall disabled before delayed boot apply; skipping delayed rules");
+                            markBootComplete();
+                            return;
+                        }
                         Log.i(TAG, "Applying delayed boot rules");
                         try {
                             // Force interface configuration refresh for delayed rules
@@ -148,6 +159,12 @@ public class BootRuleManager {
         delayedBootRulesScheduled.set(false);
     }
     
+    private static boolean shouldApplyBootRules(Context context) {
+        // BootRuleManager calls applyBootRules directly, so keep the same enabled checks
+        // that protect normal connectivity-change rule application.
+        return Api.isEnabled(context) && G.activeRules();
+    }
+
     /**
      * Mark boot process as complete
      */

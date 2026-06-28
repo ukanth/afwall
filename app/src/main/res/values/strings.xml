@@ -312,6 +312,9 @@
     <string name="showUid">Show UID for apps</string>
     <string name="showuid_summary_on">Show app UID\'s in the main view</string>
     <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
+    <string name="show_package_name">Show package names for apps</string>
+    <string name="show_package_name_summary_on">Show app package names in the main view.</string>
+    <string name="show_package_name_summary_off">Hide app package names in the main view. Package names are still searchable.</string>
     <string name="languages">Languages</string>
     <string name="change_languages">Change Language</string>
 
@@ -561,6 +564,7 @@
     <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
     <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
     <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
+    <string name="fingerprint_security_changed">Fingerprint setup changed. Re-enable fingerprint protection in settings.</string>
 
 
     <string name="label_zoomin">Zoom In</string>

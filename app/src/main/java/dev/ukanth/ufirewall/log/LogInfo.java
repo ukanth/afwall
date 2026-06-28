@@ -292,12 +292,17 @@ public class LogInfo {
                         //system level packages
                         try {
                             if (!appNameMap.containsKey(uid)) {
-                                appName = ctx.getPackageManager().getNameForUid(uid);
+                                appName = null;
                                 for (PackageInfoData app : apps) {
                                     if (app.uid == uid) {
                                         appName = app.names.get(0);
                                         break;
                                     }
+                                }
+                                // Android package visibility can hide packages from PackageManager.
+                                // Fall back to shell-backed UID resolution before showing "Deleted App".
+                                if (appName == null || appName.length() == 0) {
+                                    appName = UidResolver.resolveUid(ctx, uid);
                                 }
                             } else {
                                 appName = appNameMap.get(uid);

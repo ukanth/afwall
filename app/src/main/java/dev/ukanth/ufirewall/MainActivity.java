@@ -542,9 +542,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param i
      */
     private void filterApps(int i) {
+        // Never run the (slow) app scan on the UI thread. If the cache was never
+        // built, load it asynchronously and let onPostExecute re-trigger the filter.
+        // (A non-null but empty cache means a scan already ran - show it, don't re-loop.)
+        if (Api.applications == null) {
+            showOrLoadApplications();
+            return;
+        }
         Set<PackageInfoData> returnList = new HashSet<>();
         List<PackageInfoData> inputList;
-        List<PackageInfoData> allApps = Api.getApps(getApplicationContext(), null);
+        List<PackageInfoData> allApps = Api.applications;
         if (i >= 0) {
             for (PackageInfoData infoData : allApps) {
                 if (infoData != null) {
@@ -1037,6 +1044,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             isResultsFound = true;
                         }
                     }
+                }
+                // Package names are stored separately from labels, so include them in search.
+                if (!unique.contains(app.uid) && app.pkgName != null
+                        && app.pkgName.toLowerCase().contains(searchStr.toLowerCase())) {
+                    searchApp.add(app);
+                    unique.add(app.uid);
+                    isResultsFound = true;
                 }
             }
         }
@@ -2517,14 +2531,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPreExecute() {
+            // Don't enumerate packages here - getInstalledApplications() on the UI thread
+            // blocks the main thread before the dialog even shows. Start with a placeholder
+            // max and update it from the background scan via doMaxProgress().
             plsWait = new MaterialDialog.Builder(activityReference.get()).cancelable(false).
-                    title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
-                            .size(), true).show();
+                    title(getString(R.string.reading_apps)).progress(false, 1, true).show();
             doProgress(0);
         }
 
         public void doProgress(int value) {
             publishProgress(value);
+        }
+
+        public void doMaxProgress(int value) {
+            publishProgress(Integer.MIN_VALUE, Math.max(1, value));
         }
 
         @Override
@@ -2566,7 +2586,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected void onProgressUpdate(Integer... progress) {
 
-            if (progress[0] == 0 || progress[0] == -1) {
+            if (progress[0] == Integer.MIN_VALUE && progress.length > 1) {
+                if (plsWait != null && plsWait.isShowing()) {
+                    plsWait.setMaxProgress(Math.max(1, progress[1]));
+                }
+            } else if (progress[0] == 0 || progress[0] == -1) {
                 //do nothing
             } else {
                 if (plsWait != null) {
