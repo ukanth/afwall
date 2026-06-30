@@ -56,11 +56,14 @@ import org.ocpsoft.prettytime.PrettyTime;
 import org.ocpsoft.prettytime.TimeUnit;
 import org.ocpsoft.prettytime.units.JustNow;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceDetails;
@@ -81,27 +84,39 @@ public class LogService extends Service {
     public static final String TAG = "AFWall";
     public static String logPath;
     public static final int QUEUE_NUM = 40;
-    
+
     public static final String ACTION_GRACEFUL_SHUTDOWN = "dev.ukanth.ufirewall.GRACEFUL_SHUTDOWN";
     public static final String ACTION_CHANGE_LOG_TARGET = "dev.ukanth.ufirewall.CHANGE_LOG_TARGET";
     public static final String EXTRA_NEW_LOG_TARGET = "new_log_target";
 
+    private static final int LOG_FLUSH_BATCH_SIZE = 50;
+    private static final long LOG_FLUSH_INTERVAL_MS = 5000L;
+    private static final long HEALTH_CHECK_INTERVAL_MS = 60_000L;
+
     private String NOTIFICATION_CHANNEL_ID = "firewall.logservice";
 
+    private static LogService instance;
 
     private  NotificationManager manager;
     private  NotificationCompat.Builder notificationBuilder;
 
     private List<String> callbackList;
     private ExecutorService executorService;
-    // Dedicated single-thread executor so log-line parsing/storage runs OFF the main
-    // (UI) thread. dmesg --follow dumps the whole kernel ring-buffer backlog at once;
-    // processing each line on the main thread froze MainActivity for tens of seconds.
-    // Single-threaded => entries are still processed serially and in order.
-    private ExecutorService logProcessExecutor;
+    // Dedicated single-thread scheduled executor so log-line parsing/storage runs OFF the
+    // main (UI) thread. Scheduled so it can also handle timed batch flushes.
+    private ScheduledExecutorService logProcessExecutor;
     private volatile boolean isShuttingDown = false;
 
-    private Shell logWatcherShell; // Additional shell for long running log-watcher process
+    private Shell logWatcherShell;
+
+    // Batching: accumulated entries flushed periodically or when the batch is full.
+    // Only touched on logProcessExecutor — no lock needed.
+    private final List<LogData> pendingLogs = new ArrayList<>();
+    private ScheduledFuture<?> scheduledFlush;
+
+    // Periodic health check handler (runs on main looper; does no DB work).
+    private Handler healthHandler;
+    private Runnable healthCheck;
 
     @Nullable
     @Override
@@ -133,8 +148,58 @@ public class LogService extends Service {
 
     @Override
     public void onCreate() {
-        // startLogService() is called from onStartCommand(), no need to call here
         super.onCreate();
+        instance = this;
+    }
+
+    public static boolean isInstanceRunning() {
+        return instance != null;
+    }
+
+    public static void ensureRunning(Context ctx) {
+        if (!G.enableLogService()) return;
+        if (!isInstanceRunning()) {
+            ctx.startService(new Intent(ctx, LogService.class));
+        }
+    }
+
+    private boolean isWatcherHealthy() {
+        return logWatcherShell != null && logWatcherShell.isAlive()
+                && executorService != null && !executorService.isShutdown()
+                && logProcessExecutor != null && !logProcessExecutor.isShutdown();
+    }
+
+    private void closeLogWatcher() {
+        if (logWatcherShell != null) {
+            try {
+                logWatcherShell.close();
+            } catch (Exception e) {
+                Log.w(TAG, "Error closing log watcher shell: " + e.getMessage());
+            }
+            logWatcherShell = null;
+        }
+    }
+
+    private void scheduleHealthCheck() {
+        if (healthHandler == null) {
+            healthHandler = new Handler(Looper.getMainLooper());
+        }
+        if (healthCheck == null) {
+            healthCheck = new Runnable() {
+                @Override
+                public void run() {
+                    if (!isShuttingDown && !isWatcherHealthy()) {
+                        Log.w(TAG, "Health check: watcher unhealthy, restarting");
+                        initiateLogWatcher(logPath);
+                    }
+                    if (healthHandler != null) {
+                        healthHandler.postDelayed(this, HEALTH_CHECK_INTERVAL_MS);
+                    }
+                }
+            };
+        }
+        healthHandler.removeCallbacks(healthCheck);
+        healthHandler.postDelayed(healthCheck, HEALTH_CHECK_INTERVAL_MS);
     }
 
 
@@ -186,8 +251,6 @@ public class LogService extends Service {
 
     private void startLogService() {
         if (G.enableLogService()) {
-            // this method is executed in a background thread
-            // no problem calling su here
             String log = G.logTarget();
             if (log != null) {
                 log = log.trim();
@@ -195,26 +258,37 @@ public class LogService extends Service {
                     Toast.makeText(getApplicationContext(), "Please select log target first", Toast.LENGTH_LONG).show();
                     return;
                 }
+                String nextLogPath;
                 switch (log) {
                     case "LOG":
-                        logPath = getBestLogCommand();
-                        if (logPath == null) {
+                        nextLogPath = getBestLogCommand();
+                        if (nextLogPath == null) {
                             Log.e(TAG, "No suitable log reading method available");
                             return;
                         }
                         break;
                     case "NFLOG":
-                        logPath = Api.getEnhancedNflogCommand(getApplicationContext(), QUEUE_NUM);
-                        if (logPath == null) {
+                        nextLogPath = Api.getEnhancedNflogCommand(getApplicationContext(), QUEUE_NUM);
+                        if (nextLogPath == null) {
                             Log.e(TAG, "NFLOG binary not available, cannot start logging service");
                             return;
                         }
                         break;
+                    default:
+                        nextLogPath = null;
+                }
+                if (nextLogPath == null) return;
+
+                // Skip re-init if already watching the same path and shell is healthy.
+                if (isWatcherHealthy() && nextLogPath.equals(logPath)) {
+                    Log.i(TAG, "Log watcher already running for: " + logPath);
+                    return;
                 }
 
+                logPath = nextLogPath;
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
                 if (logProcessExecutor == null || logProcessExecutor.isShutdown() || logProcessExecutor.isTerminated()) {
-                    logProcessExecutor = Executors.newSingleThreadExecutor();
+                    logProcessExecutor = Executors.newSingleThreadScheduledExecutor();
                 }
                 // Pass an Executor so libsu delivers onAddElement off the main thread.
                 callbackList = new CallbackList<String>(logProcessExecutor) {
@@ -237,6 +311,7 @@ public class LogService extends Service {
                     }
                 };
                 initiateLogWatcher(logPath);
+                scheduleHealthCheck();
                 createNotification();
 
             } else {
@@ -813,11 +888,48 @@ public class LogService extends Service {
 
 
 
-    private static void store(final LogInfo logInfo, Context context) {
+    // --- Batching ---
+
+    // Called on logProcessExecutor — no lock needed (single-threaded executor).
+    private void enqueueLog(LogData data) {
+        pendingLogs.add(data);
+        if (pendingLogs.size() >= LOG_FLUSH_BATCH_SIZE) {
+            flushPendingLogs();
+        } else {
+            scheduleLogFlush();
+        }
+    }
+
+    private void scheduleLogFlush() {
+        if (scheduledFlush != null) {
+            scheduledFlush.cancel(false);
+        }
+        if (logProcessExecutor != null && !logProcessExecutor.isShutdown()) {
+            scheduledFlush = logProcessExecutor.schedule(this::flushPendingLogs,
+                    LOG_FLUSH_INTERVAL_MS, java.util.concurrent.TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private void flushPendingLogs() {
+        if (pendingLogs.isEmpty()) return;
+        final List<LogData> batch = new ArrayList<>(pendingLogs);
+        pendingLogs.clear();
+        if (scheduledFlush != null) {
+            scheduledFlush.cancel(false);
+            scheduledFlush = null;
+        }
+        FlowManager.getDatabase(LogDatabase.class)
+                .beginTransactionAsync(dw -> { for (LogData d : batch) d.save(dw); })
+                .build().execute();
+    }
+
+    // --- Store ---
+
+    private void store(final LogInfo logInfo, Context context) {
         store(logInfo, context, false);
     }
 
-    private static void store(final LogInfo logInfo, Context context, boolean isRetry) {
+    private void store(final LogInfo logInfo, Context context, boolean isRetry) {
         try {
             if (logInfo != null) {
                 LogData data = new LogData();
@@ -832,10 +944,11 @@ public class LogService extends Service {
                 data.setSpt(logInfo.spt);
                 data.setUid(logInfo.uid);
                 data.setAppName(logInfo.appName);
-                data.setType(logInfo.type);
                 data.setType(0);
-                
-                // Resolve hostname asynchronously if enabled
+
+                // Resolve hostname asynchronously. If DNS returns before the batch flushes,
+                // hostname is included for free. If it returns after, the async save below
+                // updates the already-saved record via its primary key.
                 if (G.showHost() && logInfo.dst != null && !logInfo.dst.isEmpty()) {
                     final String dstIp = logInfo.dst;
                     final LogData dataRef = data;
@@ -849,16 +962,15 @@ public class LogService extends Service {
                                     .build().execute();
                             }
                         } catch (Exception e) {
-                            // DNS resolution failed, hostname will remain empty
+                            // DNS resolution failed; hostname stays empty
                         }
                     }, "LogService-DNS-" + dstIp.hashCode()).start();
                 }
-                FlowManager.getDatabase(LogDatabase.class).beginTransactionAsync(databaseWrapper ->
-                        data.save(databaseWrapper)).build().execute();
+
+                enqueueLog(data);
             }
         } catch (IllegalStateException e) {
             if (!isRetry && e.getMessage() != null && e.getMessage().contains("connection pool has been closed")) {
-                //reconnect logic - single retry only
                 try {
                     FlowManager.init(new FlowConfig.Builder(context).build());
                     store(logInfo, context, true);
@@ -874,28 +986,34 @@ public class LogService extends Service {
 
     @Override
     public void onDestroy() {
-        
-        // Set shutdown flag to prevent new tasks from starting
-        isShuttingDown = true;
-        
-        // Close log watcher shell first to stop generating new tasks
-        if(logWatcherShell != null) {
-            try {
-                logWatcherShell.close();
-            } catch (Exception e) {
-                Log.w(TAG, "Error closing log watcher shell: " + e.getMessage());
-            }
-            logWatcherShell = null;
+        instance = null;
+
+        // Stop health checks first so they don't restart the watcher mid-shutdown.
+        if (healthHandler != null) {
+            healthHandler.removeCallbacks(healthCheck);
+            healthHandler = null;
         }
-        
-        // Shutdown executor service gracefully
+
+        // Set shutdown flag to prevent new tasks from starting.
+        isShuttingDown = true;
+
+        // Close log watcher shell first to stop generating new tasks.
+        closeLogWatcher();
+
+        // Flush any pending log entries, then drain the executor.
+        if (logProcessExecutor != null && !logProcessExecutor.isShutdown()) {
+            logProcessExecutor.execute(this::flushPendingLogs);
+            logProcessExecutor.shutdown();
+        }
+        logProcessExecutor = null;
+
+        // Shutdown the shell-submission executor.
         if(executorService != null) {
             try {
-                executorService.shutdown(); // Try graceful shutdown first
+                executorService.shutdown();
                 if (!executorService.awaitTermination(2000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
                     Log.w(TAG, "ExecutorService did not terminate gracefully, forcing shutdown");
                     executorService.shutdownNow();
-                    // Wait a bit more for tasks to respond to being cancelled
                     if (!executorService.awaitTermination(1000, java.util.concurrent.TimeUnit.MILLISECONDS)) {
                         Log.w(TAG, "ExecutorService did not terminate after force shutdown");
                     }
@@ -908,18 +1026,11 @@ public class LogService extends Service {
         }
         executorService = null;
 
-        // Shutdown the log-processing executor
-        if (logProcessExecutor != null) {
-            logProcessExecutor.shutdownNow();
-            logProcessExecutor = null;
-        }
-
-        // Update FirewallService notification if it's running
+        // Update FirewallService notification if it's running.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && FirewallService.isInstanceRunning()) {
             FirewallService.setLogServiceActive(false);
             Log.i(TAG, "Notified FirewallService that log monitoring stopped");
         } else {
-            // Stop our own foreground service
             try {
                 stopForeground(true);
                 Log.i(TAG, "Stopped foreground service");
@@ -927,10 +1038,9 @@ public class LogService extends Service {
                 Log.w(TAG, "Error stopping foreground service: " + e.getMessage());
             }
         }
-        
-        // Clean up temporary files
+
         cleanupTempFiles();
-        
+
         super.onDestroy();
     }
 

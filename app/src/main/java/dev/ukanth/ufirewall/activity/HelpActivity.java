@@ -3,6 +3,7 @@ package dev.ukanth.ufirewall.activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,7 +23,7 @@ public class HelpActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.help_toolbar);
         setSupportActionBar(toolbar);
-        
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.help);
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -33,11 +34,10 @@ public class HelpActivity extends AppCompatActivity {
     }
 
     private void setupContent() {
-        // Setup app title with version
         String version = BuildConfig.VERSION_NAME;
         TextView titleText = findViewById(R.id.afwall_title);
         String versionText = getString(R.string.app_name) + " (v" + version + ")";
-        if(G.isDoKey(this) || BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate")) {
+        if (G.isDonate() || G.isDoKey(this)) {
             versionText = versionText + " (Donate) " + getString(R.string.donate_thanks) + " :)";
         }
         titleText.setText(versionText);

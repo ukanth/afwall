@@ -677,4 +677,7 @@
     <string name="custom_shutdown_script">Custom Shutdown Script</string>
     <string name="enter_custom_script_hint">Enter iptables commands to execute on firewall startup</string>
     <string name="enter_shutdown_script_hint">Enter iptables commands to execute on firewall shutdown</string>
+    <string name="consider_donating">Thank you for your support! Supporter mode enabled.</string>
+    <string name="supporter_mode_title">Supporter mode</string>
+    <string name="supporter_mode_summary">Unlock donate features (or install the donate key app)</string>
 </resources>

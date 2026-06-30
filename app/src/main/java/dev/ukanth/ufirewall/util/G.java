@@ -827,8 +827,21 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         ownerModuleAvailable = null;
     }
 
-    public static boolean isDonate() {
+    public static boolean hasDonateBuild() {
         return BuildConfig.APPLICATION_ID.equals("dev.ukanth.ufirewall.donate");
+    }
+
+    public static boolean hasDonateKey(Context ctx) {
+        try {
+            ctx.getPackageManager().getApplicationInfo("dev.ukanth.ufirewall.donatekey", 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException | NullPointerException e) {
+            return false;
+        }
+    }
+
+    public static boolean isDonate() {
+        return hasDonateBuild();
     }
 
     public static boolean isDoKey(Context ctx) {
@@ -841,9 +854,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
             } catch (PackageManager.NameNotFoundException | NullPointerException e) {
                 gPrefs.edit().putBoolean(REG_DO, false).commit();
             }
-            /*if(BuildConfig.DONATE){
-                gPrefs.edit().putBoolean(REG_DO, true).commit();
-            }*/
         }
         return gPrefs.getBoolean(REG_DO, false);
     }

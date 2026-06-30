@@ -2653,6 +2653,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     } else {
                                         menuSetApplyOrSave(activityReference.get().mainMenu, enabled);
                                         Api.setEnabled(activityReference.get(), enabled, true);
+                                        if (enabled && G.enableLogService()) {
+                                            LogService.ensureRunning(activityReference.get());
+                                        }
                                     }
                                     refreshHeader();
                                 });

@@ -884,6 +884,11 @@ public final class Api {
      * @param cmds command list
      */
     private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6, String chainName) {
+        addInterfaceRouting(ctx, cmds, ipv6, chainName, null);
+    }
+
+    private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6, String chainName,
+                                            List<Integer> lanList) {
         try {
             //force only for v4
             final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, !ipv6);
@@ -903,7 +908,7 @@ public final class Api {
                 } else {
                     cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-fork");
                 }
-                
+
                 if (cfg.isUsbTethered) {
                     cmds.add("-A " + chainName + "-3g-postcustom -j " + chainName + "-usb-tether");
                 } else {
@@ -926,6 +931,14 @@ public final class Api {
                 }
                 // Catch-all: route everything not matching a LAN subnet to WAN
                 cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
+
+                // Rebuild the LAN chain's per-UID rules so fastApply is self-healing.
+                // If lanList is null this path is skipped (e.g., during a full apply that already
+                // rebuilds staticChains separately).
+                if (lanList != null) {
+                    cmds.add("#NOCHK# -F " + chainName + "-wifi-lan");
+                    addRulesForUidlist(cmds, lanList, chainName + "-wifi-lan", whitelist);
+                }
             } else {
                 cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
             }
@@ -936,11 +949,21 @@ public final class Api {
                 cmds.add("-A " + chainName + "-3g-fork -j " + chainName + "-3g-home");
             }
 
-
         } catch (Exception e) {
             Log.i(TAG, "Exception while applying shortRules " + e.getMessage());
         }
+    }
 
+    /**
+     * Add or update the LAN chain rule for a single UID. Used for incremental per-uid updates
+     * so LAN-selected apps retain RFC1918/multicast access without a full rule rebuild.
+     */
+    static void addLanReservedUidDelta(List<String> cmds, int uid, String chainName, boolean whitelist) {
+        if (uid < 0) return;
+        String action = whitelist ? " -j RETURN" : " -j " + chainName + "-wifi-lan-reject";
+        // Remove any existing rule for this UID before re-adding (idempotent).
+        cmds.add("#NOCHK# -D " + chainName + "-wifi-lan -m owner --uid-owner " + uid + action);
+        cmds.add("-A " + chainName + "-wifi-lan -m owner --uid-owner " + uid + action);
     }
 
     public static String getSpecialAppName(int uid) {
@@ -960,11 +983,13 @@ public final class Api {
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
-        /*FIXME: Adding custom rules might increase the time */
         Log.i(TAG, "Applying custom rules");
         addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
         String chainName = getThreadSafeChainName();
-        addInterfaceRouting(ctx, cmds, ipv6, chainName);
+        // Pass the current LAN UID list so fastApply also rebuilds the -wifi-lan chain,
+        // keeping LAN access self-healing across network-change routing refreshes.
+        List<Integer> lanList = getDataSet().lanList;
+        addInterfaceRouting(ctx, cmds, ipv6, chainName, lanList);
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
         cmds.add("-P OUTPUT ACCEPT");
     }
