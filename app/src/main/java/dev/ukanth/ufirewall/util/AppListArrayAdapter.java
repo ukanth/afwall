@@ -36,6 +36,7 @@ import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.DataUsageParser;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -167,15 +168,15 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         ApplicationInfo info = holder.app.appinfo;
         if (info != null && (info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
             //user app
-            holder.text.setTextColor(G.userColor());
+            holder.text.setTextColor(G.userColor(context));
         } else {
             //system app
-            holder.text.setTextColor(G.sysColor());
+            holder.text.setTextColor(G.sysColor(context));
         }
 
         if (!G.disableIcons()) {
-            if(holder.app.pkgName.startsWith("dev.afwall.special.")) {
-                holder.icon.setImageDrawable(context.getDrawable(R.drawable.ic_unknown));
+            if (usesDefaultAndroidIcon(holder.app)) {
+                holder.icon.setImageDrawable(ThemeHelper.defaultAndroidIcon(context));
             } else {
                 holder.icon.setImageDrawable(holder.app.cached_icon);
                 if (!holder.app.icon_loaded && info != null) {
@@ -295,9 +296,14 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }
     }
 
+    private boolean usesDefaultAndroidIcon(Api.PackageInfoData app) {
+        return app.pkgName.startsWith("dev.afwall.special.")
+                || (app.appinfo != null && app.appinfo.icon == 0);
+    }
+
     private void applyThemeColors(AppStateHolder holder) {
-        int iconColor = G.userColor();
-        int textColor = G.userColor();
+        int iconColor = G.userColor(context);
+        int textColor = G.userColor(context);
 
         // Apply color filter to icons using setColorFilter on ImageView, not the Drawable
         // This preserves click functionality

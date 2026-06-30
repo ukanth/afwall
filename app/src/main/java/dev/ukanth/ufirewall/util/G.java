@@ -63,6 +63,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.MainActivity;
+import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
@@ -134,7 +135,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String SYSTEM_APP_COLOR = "sysColor";
 
     private static final String PRIMARY_COLOR = "primaryColor";
-    private static final String PRIMARY_DARK_COLOR = "primaryColor";
+    private static final String PRIMARY_DARK_COLOR = "primaryDarkColor";
+    private static final String ACCENT_COLOR = "accentColor";
+    private static final String BACKGROUND_COLOR = "backgroundColor";
+    private static final String TEXT_PRIMARY_COLOR = "textPrimaryColor";
+    private static final String TEXT_SECONDARY_COLOR = "textSecondaryColor";
+    private static final String USER_APP_COLOR = "userColor";
+    private static final String DEFAULT_ICON_COLOR = "defaultIconColor";
+    private static final String CUSTOM_THEME_COLORS = "customThemeColors";
+    private static final String CUSTOM_THEME_SEED_THEME = "customThemeSeedTheme";
 
     private static final String ACTIVE_RULES = "activeRules";
     private static final String ADD_DELAY = "addDelay";
@@ -341,8 +350,86 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static String getSelectedTheme(String val) {
-        gPrefs.edit().putString(THEME, val).commit();
+        String theme = normalizeTheme(val);
+        SharedPreferences.Editor editor = gPrefs.edit().putString(THEME, theme);
+        seedCustomThemeColors(editor, theme);
+        editor.commit();
+        return theme;
+    }
+
+    private static void seedCustomThemeColors(SharedPreferences.Editor editor, String theme) {
+        editor.putInt(SYSTEM_APP_COLOR, defaultSystemAppColor(theme))
+                .putInt(PRIMARY_COLOR, defaultPrimaryColor(theme))
+                .putInt(PRIMARY_DARK_COLOR, defaultPrimaryDarkColor(theme))
+                .putInt(ACCENT_COLOR, defaultAccentColor(theme))
+                .putInt(BACKGROUND_COLOR, defaultBackgroundColor(theme))
+                .putInt(TEXT_PRIMARY_COLOR, defaultTextPrimaryColor(theme))
+                .putInt(TEXT_SECONDARY_COLOR, defaultTextSecondaryColor(theme))
+                .putInt(USER_APP_COLOR, defaultUserAppColor(theme))
+                .putInt(DEFAULT_ICON_COLOR, defaultAndroidIconColor(theme))
+                .putString(CUSTOM_THEME_SEED_THEME, normalizeTheme(theme));
+    }
+
+    public static void seedCustomThemeColorsFromSelectedThemeIfNeeded() {
+        String theme = normalizeTheme(getSelectedTheme());
+        if (!theme.equals(gPrefs.getString(CUSTOM_THEME_SEED_THEME, ""))) {
+            SharedPreferences.Editor editor = gPrefs.edit();
+            seedCustomThemeColors(editor, theme);
+            editor.commit();
+        }
+    }
+
+    public static String normalizeTheme(String val) {
+        if ("L".equals(val) || "LHC".equals(val) || "B".equals(val) || "A".equals(val)
+                || "O".equals(val) || "F".equals(val) || "S".equals(val) || "P".equals(val)) {
+            return val;
+        }
+        return "D";
+    }
+
+    public static boolean isThemeDonorRequired(String val) {
+        return !"D".equals(normalizeTheme(val));
+    }
+
+    public static boolean canUseDonorFeatures(Context context) {
+        return isDonate() || (context != null && isDoKey(context));
+    }
+
+    public static boolean isThemeAvailable(String val, Context context) {
+        return !isThemeDonorRequired(val) || canUseDonorFeatures(context);
+    }
+
+    public static String getEffectiveSelectedTheme(Context context) {
+        String theme = normalizeTheme(getSelectedTheme());
+        return isThemeAvailable(theme, context) ? theme : "D";
+    }
+
+    public static boolean customThemeColorsEnabled(boolean val) {
+        gPrefs.edit().putBoolean(CUSTOM_THEME_COLORS, val).commit();
         return val;
+    }
+
+    public static boolean customThemeColorsEnabled() {
+        return gPrefs.getBoolean(CUSTOM_THEME_COLORS, false);
+    }
+
+    public static boolean isCustomThemeActive(Context context) {
+        return customThemeColorsEnabled() && canUseDonorFeatures(context);
+    }
+
+    public static int getSelectedThemeStyle(Context context) {
+        switch (getEffectiveSelectedTheme(context)) {
+            case "L":   return R.style.AppLightTheme;
+            case "LHC": return R.style.AppLightHighContrastTheme;
+            case "B":   return R.style.AppBlackTheme;
+            case "A":   return R.style.AppAmberTheme;
+            case "O":   return R.style.AppOceanTheme;
+            case "F":   return R.style.AppForestTheme;
+            case "S":   return R.style.AppSlateTheme;
+            case "P":   return R.style.AppPlumTheme;
+            case "D":
+            default:    return R.style.AppDarkTheme;
+        }
     }
 
     public static String profile_pwd() {
@@ -616,31 +703,167 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static int userColor() {
-        if (G.getSelectedTheme().equals("L") || G.getSelectedTheme().equals("LHC")) {
-            return Color.parseColor("#000000");
-        } else {
-            return Color.parseColor("#FFFFFF");
+        return userColor(ctx);
+    }
+
+    public static int userColor(Context context) {
+        if (isCustomThemeActive(context)) {
+            return gPrefs.getInt(USER_APP_COLOR, defaultUserAppColor(getEffectiveSelectedTheme(context)));
         }
+        return defaultUserAppColor(getEffectiveSelectedTheme(context));
     }
 
     public static int sysColor() {
-        if (G.getSelectedTheme().equals("L")) {
-            return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#000000"));
-        } else if (G.getSelectedTheme().equals("LHC")) {
-            // High contrast: always black, no custom colors
-            return Color.parseColor("#000000");
-        } else {
-            return gPrefs.getInt(SYSTEM_APP_COLOR, Color.parseColor("#0F9D58"));
+        return sysColor(ctx);
+    }
+
+    public static int sysColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return gPrefs.getInt(SYSTEM_APP_COLOR, defaultSystemAppColor(theme));
+    }
+
+    public static int primaryColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return isCustomThemeActive(context)
+                ? gPrefs.getInt(PRIMARY_COLOR, defaultPrimaryColor(theme))
+                : defaultPrimaryColor(theme);
+    }
+
+    public static int primaryDarkColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return isCustomThemeActive(context)
+                ? gPrefs.getInt(PRIMARY_DARK_COLOR, defaultPrimaryDarkColor(theme))
+                : defaultPrimaryDarkColor(theme);
+    }
+
+    public static int accentColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return isCustomThemeActive(context)
+                ? gPrefs.getInt(ACCENT_COLOR, defaultAccentColor(theme))
+                : defaultAccentColor(theme);
+    }
+
+    public static int backgroundColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return isCustomThemeActive(context)
+                ? gPrefs.getInt(BACKGROUND_COLOR, defaultBackgroundColor(theme))
+                : defaultBackgroundColor(theme);
+    }
+
+    public static int textPrimaryColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return isCustomThemeActive(context)
+                ? gPrefs.getInt(TEXT_PRIMARY_COLOR, defaultTextPrimaryColor(theme))
+                : defaultTextPrimaryColor(theme);
+    }
+
+    public static int textSecondaryColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return isCustomThemeActive(context)
+                ? gPrefs.getInt(TEXT_SECONDARY_COLOR, defaultTextSecondaryColor(theme))
+                : defaultTextSecondaryColor(theme);
+    }
+
+    public static int defaultIconColor() {
+        return defaultIconColor(ctx);
+    }
+
+    public static int defaultIconColor(Context context) {
+        String theme = getEffectiveSelectedTheme(context);
+        return isCustomThemeActive(context)
+                ? gPrefs.getInt(DEFAULT_ICON_COLOR, defaultAndroidIconColor(theme))
+                : defaultAndroidIconColor(theme);
+    }
+
+    private static int defaultUserAppColor(String theme) {
+        return isLightTheme(theme) ? Color.parseColor("#000000") : Color.parseColor("#FFFFFF");
+    }
+
+    private static int defaultSystemAppColor(String theme) {
+        switch (normalizeTheme(theme)) {
+            case "L":
+            case "LHC": return Color.parseColor("#000000");
+            case "B":   return Color.parseColor("#FDDF6C");
+            case "A":   return Color.parseColor("#FFCA28");
+            case "O":   return Color.parseColor("#4FC3F7");
+            case "F":   return Color.parseColor("#81C784");
+            case "S":   return Color.parseColor("#90A4AE");
+            case "P":   return Color.parseColor("#CE93D8");
+            case "D":
+            default:    return Color.parseColor("#0F9D58");
         }
     }
 
-    /*public static int primaryColor() {
-            return gPrefs.getInt(PRIMARY_COLOR, Color.parseColor("#259b24"));
+    private static int defaultPrimaryColor(String theme) {
+        switch (normalizeTheme(theme)) {
+            case "A":   return Color.parseColor("#FFB300");
+            case "O":   return Color.parseColor("#0277BD");
+            case "F":   return Color.parseColor("#2E7D32");
+            case "S":   return Color.parseColor("#455A64");
+            case "P":   return Color.parseColor("#6A1B9A");
+            case "LHC": return Color.parseColor("#FFFFFF");
+            default:    return Color.parseColor("#259B24");
+        }
     }
 
-    public static int primaryDarkColor() {
-        return gPrefs.getInt(PRIMARY_DARK_COLOR, Color.parseColor("#0a7e07"));
-    }*/
+    private static int defaultPrimaryDarkColor(String theme) {
+        switch (normalizeTheme(theme)) {
+            case "A":   return Color.parseColor("#FF8F00");
+            case "O":   return Color.parseColor("#01579B");
+            case "F":   return Color.parseColor("#1B5E20");
+            case "S":   return Color.parseColor("#263238");
+            case "P":   return Color.parseColor("#4A148C");
+            case "LHC": return Color.parseColor("#FFFFFF");
+            default:    return Color.parseColor("#0A7E07");
+        }
+    }
+
+    private static int defaultAccentColor(String theme) {
+        switch (normalizeTheme(theme)) {
+            case "L":
+            case "LHC": return Color.parseColor("#000000");
+            case "B":   return Color.parseColor("#FDDF6C");
+            case "A":
+            case "O":   return Color.parseColor("#00ACC1");
+            case "F":   return Color.parseColor("#C0CA33");
+            case "S":   return Color.parseColor("#FFB300");
+            case "P":   return Color.parseColor("#FF7043");
+            case "D":
+            default:    return Color.parseColor("#FFD740");
+        }
+    }
+
+    private static int defaultBackgroundColor(String theme) {
+        switch (normalizeTheme(theme)) {
+            case "L":
+            case "LHC": return Color.parseColor("#FFFFFF");
+            case "B":   return Color.parseColor("#000000");
+            case "A":   return Color.parseColor("#2B2415");
+            case "O":   return Color.parseColor("#102A43");
+            case "F":   return Color.parseColor("#17251B");
+            case "S":   return Color.parseColor("#1F2428");
+            case "P":   return Color.parseColor("#241B2F");
+            case "D":
+            default:    return Color.parseColor("#313131");
+        }
+    }
+
+    private static int defaultTextPrimaryColor(String theme) {
+        return isLightTheme(theme) ? Color.parseColor("#000000") : Color.parseColor("#FFFFFF");
+    }
+
+    private static int defaultTextSecondaryColor(String theme) {
+        return isLightTheme(theme) ? Color.parseColor("#000000") : Color.parseColor("#FFFFFF");
+    }
+
+    private static int defaultAndroidIconColor(String theme) {
+        return defaultSystemAppColor(theme);
+    }
+
+    private static boolean isLightTheme(String theme) {
+        String t = normalizeTheme(theme);
+        return "L".equals(t) || "LHC".equals(t);
+    }
 
     public static boolean activeRules() {
         return gPrefs.getBoolean(ACTIVE_RULES, true);

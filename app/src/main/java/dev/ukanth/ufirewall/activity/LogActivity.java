@@ -63,6 +63,7 @@ import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 import android.os.Handler;
 import android.os.Looper;
 import java.util.concurrent.ExecutorService;
@@ -128,17 +129,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     }
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
     private void initializeRecyclerView(final Context ctx) {
         recyclerView.setHasFixedSize(true);

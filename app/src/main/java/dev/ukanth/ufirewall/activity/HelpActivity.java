@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 public class HelpActivity extends AppCompatActivity {
 
@@ -46,20 +47,7 @@ public class HelpActivity extends AppCompatActivity {
 
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
 
      @Override

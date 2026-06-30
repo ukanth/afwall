@@ -305,6 +305,15 @@
     <string name="primary_pref_title">Primary Color</string>
     <string name="status_pref_title">Statusbar Color</string>
     <string name="accent_pref_title">Accent Color</string>
+    <string name="background_pref_title">Background Color</string>
+    <string name="text_primary_pref_title">Primary Text Color</string>
+    <string name="text_secondary_pref_title">Secondary Text Color</string>
+    <string name="user_app_color_pref_title">User applications</string>
+    <string name="default_icon_color_pref_title">Default Android icon</string>
+    <string name="custom_theme_colors_title">Custom theme colors</string>
+    <string name="custom_theme_colors_summary">Use saved colors instead of a preset theme</string>
+    <string name="custom_theme_colors_summary_off">Use the selected preset theme colors</string>
+    <string name="theme_apply_error">Unable to apply custom theme colors.</string>
 
     <string name="syscolor_pref_summary_on">Color for all system apps</string>
     <string name="enableConfirmTitle">Confirm AFWall+ disable</string>

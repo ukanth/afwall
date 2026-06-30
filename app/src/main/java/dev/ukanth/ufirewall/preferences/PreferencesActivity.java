@@ -59,31 +59,21 @@ import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
+    public static final String EXTRA_TOOLBAR_TITLE = "dev.ukanth.ufirewall.extra.TOOLBAR_TITLE";
+    public static final String EXTRA_FINISH_ON_BACK = "dev.ukanth.ufirewall.extra.FINISH_ON_BACK";
     private Toolbar mToolBar;
 
     private RxEvent rxEvent;
     private Disposable disposable;
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -179,7 +169,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         root.addView(toolbarContainer);
 
         mToolBar = toolbarContainer.findViewById(R.id.toolbar);
-        mToolBar.setTitle(getTitle() + " " + getString(R.string.preferences));
+        mToolBar.setTitle(getToolbarTitle());
         mToolBar.setNavigationIcon(androidx.appcompat.content.res.AppCompatResources.getDrawable(this,
                 androidx.appcompat.R.drawable.abc_ic_ab_back_material));
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -188,6 +178,18 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 finish();
             }
         });
+        ThemeHelper.apply(this);
+    }
+
+    private CharSequence getToolbarTitle() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String toolbarTitle = intent.getStringExtra(EXTRA_TOOLBAR_TITLE);
+            if (toolbarTitle != null && toolbarTitle.length() > 0) {
+                return toolbarTitle;
+            }
+        }
+        return getTitle() + " " + getString(R.string.preferences);
     }
 
     @Override
@@ -259,6 +261,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         
         return UIPreferenceFragment.class.getName().equals(fragmentName)
                 || ThemePreferenceFragment.class.getName().equals(fragmentName)
+                || CustomThemePreferenceFragment.class.getName().equals(fragmentName)
                 || RulesPreferenceFragment.class.getName().equals(fragmentName)
                 || LogPreferenceFragment.class.getName().equals(fragmentName)
                 || ExpPreferenceFragment.class.getName().equals(fragmentName)
@@ -312,7 +315,8 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         if (key.equals("showUid") || key.equals("showPackageName") || key.equals("disableIcons") || key.equals("enableVPN")
                 || key.equals("enableTether")
                 || key.equals("enableLAN") || key.equals("enableRoam")
-                || key.equals("locale") || key.equals("showFilter")) {
+                || key.equals("locale") || key.equals("showFilter")
+                || isThemeColorKey(key)) {
             G.reloadProfile();
             isRefreshRequired = true;
         }
@@ -376,12 +380,24 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         }
     }
 
+    private boolean isThemeColorKey(String key) {
+        return key.equals("sysColor")
+                || key.equals("primaryColor")
+                || key.equals("primaryDarkColor")
+                || key.equals("accentColor")
+                || key.equals("backgroundColor")
+                || key.equals("textPrimaryColor")
+                || key.equals("textSecondaryColor")
+                || key.equals("userColor")
+                || key.equals("defaultIconColor");
+    }
+
     private void handleProfileAndThemeChanges(String key, Context ctx, boolean isRefreshRequired) {
         if (key.equals("enableMultiProfile")) {
             G.reloadProfile();
         }
 
-        if (key.equals("theme")) {
+        if (key.equals("theme") || key.equals("customThemeColors") || isThemeColorKey(key)) {
             initTheme();
             recreate();
             Intent broadcastIntent = new Intent();

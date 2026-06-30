@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:defaultValue="G"
+        android:defaultValue="D"
         android:entries="@array/themeOptions"
         android:entryValues="@array/themeValues"
         android:key="theme"
@@ -15,23 +15,9 @@
         android:key="sysColor"
         android:title="@string/syscolor_pref_title" />
 
-  <!-- <net.margaritov.preference.colorpicker.ColorPickerPreference
-        alphaSlider="true"
-        android:defaultValue="@color/primary"
-        android:key="primaryColor"
-        android:title="@string/primary_pref_title" />-->
-
-    <!-- <net.margaritov.preference.colorpicker.ColorPickerPreference
-        alphaSlider="true"
-        android:defaultValue="@color/primary_dark"
-        android:key="primaryDarkColor"
-        android:title="@string/status_pref_title" />
-
-
-    <net.margaritov.preference.colorpicker.ColorPickerPreference
-        alphaSlider="true"
-        android:defaultValue="@color/accent"
-        android:key="accentColor"
-        android:title="@string/accent_pref_title" /> -->
+    <Preference
+        android:key="customThemeColorsScreen"
+        android:summary="@string/custom_theme_colors_summary"
+        android:title="@string/custom_theme_colors_title" />
 
 </PreferenceScreen>

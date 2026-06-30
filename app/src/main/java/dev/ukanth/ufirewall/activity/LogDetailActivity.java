@@ -68,6 +68,7 @@ import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.LogNetUtil;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 public class LogDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -105,20 +106,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     final String TAG = "AFWall";
 
     private void initTheme() {
-        switch (G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "LHC":
-                setTheme(R.style.AppLightHighContrastTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
 
     @Override

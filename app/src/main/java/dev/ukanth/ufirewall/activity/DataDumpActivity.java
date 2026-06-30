@@ -63,6 +63,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 
 public abstract class DataDumpActivity extends AppCompatActivity {
@@ -285,12 +286,7 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     }
 
     private void initTheme() {
-        switch (G.getSelectedTheme()) {
-            case "D" -> setTheme(R.style.AppDarkTheme);
-            case "L" -> setTheme(R.style.AppLightTheme);
-            case "LHC" -> setTheme(R.style.AppLightHighContrastTheme);
-            case "B" -> setTheme(R.style.AppBlackTheme);
-        }
+        ThemeHelper.applyTheme(this);
     }
 
     @Override
