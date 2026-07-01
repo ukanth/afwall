@@ -29,11 +29,13 @@ import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.activity.AppDetailActivity;
+import dev.ukanth.ufirewall.activity.AppRulesActivity;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
+import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.DataUsageParser;
 import dev.ukanth.ufirewall.util.ThemeHelper;
@@ -69,6 +71,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         this.context = context;
         this.listApps = apps;
     }
+
     public AppListArrayAdapter(MainActivity activity, Context context, List<PackageInfoData> apps) {
         super(context, R.layout.main_list, apps);
         this.activity = activity;
@@ -247,6 +250,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         holder.actionToggleLog = convertView.findViewById(R.id.action_toggle_log);
         holder.actionOpenApp = convertView.findViewById(R.id.action_open_app);
         holder.actionViewLogs = convertView.findViewById(R.id.action_view_logs);
+        holder.actionDirectRules = convertView.findViewById(R.id.action_direct_rules);
         holder.blockedCount = convertView.findViewById(R.id.blocked_count);
         holder.lastActivity = convertView.findViewById(R.id.last_activity);
         holder.lastBlockedDestination = convertView.findViewById(R.id.last_blocked_destination);
@@ -276,6 +280,13 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             Log.d(TAG, "View logs clicked for UID: " + holder.app.uid);
             openFirewallLogs(holder);
         });
+        if (holder.actionDirectRules != null) {
+            holder.actionDirectRules.setVisibility(G.enableCustomRules() ? View.VISIBLE : View.GONE);
+            holder.actionDirectRules.setOnClickListener(v -> {
+                Log.d(TAG, "Direct rules clicked for UID: " + holder.app.uid);
+                openDirectRules(holder);
+            });
+        }
     }
 
     private void updateLogNotificationIcon(AppStateHolder holder) {
@@ -310,6 +321,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         holder.actionToggleLog.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         holder.actionOpenApp.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         holder.actionViewLogs.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        if (holder.actionDirectRules != null) {
+            holder.actionDirectRules.setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        }
 
         // Apply text colors
         if (holder.blockedCount != null) {
@@ -457,6 +471,15 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         }).start();
     }
 
+    private void openDirectRules(AppStateHolder holder) {
+        Intent intent = new Intent(context, AppRulesActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(AppRulesActivity.EXTRA_UID, holder.app.uid);
+        intent.putExtra(AppRulesActivity.EXTRA_PACKAGE, holder.app.pkgName);
+        intent.putExtra(AppRulesActivity.EXTRA_LABEL, holder.app.toString().trim());
+        context.startActivity(intent);
+    }
+
     private void StartAppDetailActivityIntent(View v, AppStateHolder holder, Integer id) {
         Intent intent = new Intent(context, AppDetailActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -585,6 +608,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 }
             });
         }
+
     }
 
     private CheckBox addSupport(CheckBox check, PackageInfoData app, int flag) {
@@ -669,6 +693,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         private CheckBox box_vpn;
         private CheckBox box_tether;
         private CheckBox box_tor;
+        private ImageView actionDirectRules;
         private TextView text;
         private ImageView icon;
         private PackageInfoData app;

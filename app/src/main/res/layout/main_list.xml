@@ -101,6 +101,8 @@
                 android:scaleX="1.2"
                 android:scaleY="1.2"
                 android:visibility="gone"></CheckBox>
+
+
         </LinearLayout>
 
         <TextView
@@ -211,6 +213,16 @@
                 android:padding="6dp"
                 android:src="@drawable/ic_log"
                 android:contentDescription="View firewall logs"/>
+
+            <ImageView
+                android:id="@+id/action_direct_rules"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_custom_rules"
+                android:contentDescription="@string/direct_rules"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

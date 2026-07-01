@@ -136,6 +136,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public static boolean dirty = false;
 
+    public static void requireFullApply() {
+        dirty = true;
+    }
+
+    public static void addToQueue(@NonNull Api.PackageInfoData data) {
+        dirty = true;
+    }
+
 
     private Menu mainMenu;
     private ListView listview = null;
@@ -723,8 +731,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             hideColumns(R.id.img_tor);
         }
-
-
         updateRadioFilter();
 
         if (G.enableMultiProfile()) {

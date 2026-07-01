@@ -316,6 +316,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
                 || key.equals("enableTether")
                 || key.equals("enableLAN") || key.equals("enableRoam")
                 || key.equals("locale") || key.equals("showFilter")
+                || key.equals("enableCustomRules")
                 || isThemeColorKey(key)) {
             G.reloadProfile();
             isRefreshRequired = true;

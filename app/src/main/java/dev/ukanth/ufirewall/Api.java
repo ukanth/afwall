@@ -136,6 +136,9 @@ import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.service.RootShellService;
+import dev.ukanth.ufirewall.customrules.CustomRule;
+import dev.ukanth.ufirewall.customrules.CustomRule_Table;
+import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.UidResolver;
@@ -842,19 +845,58 @@ public final class Api {
         return trimmed;
     }
 
-    private static void addCustomRules(String prefName, List<String> cmds) {
-        String customRulesStr = G.pPrefs.getString(prefName, "");
-        if (customRulesStr.isEmpty()) return;
+    public static String validateCustomRuleForStorage(String rule) {
+        if (rule == null) {
+            return null;
+        }
+        return sanitizeRule(rule);
+    }
 
-        String[] customRules = customRulesStr.split("[\\r\\n]+");
-        for (String rule : customRules) {
-            if (rule.matches(".*\\S.*")) {
-                // Sanitize the rule to prevent command injection
-                String sanitizedRule = sanitizeRule(rule.trim());
-                if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
-                    cmds.add("#LITERAL# " + sanitizedRule);
+    private static void addCustomRules(String prefName, List<String> cmds) {
+        addCustomRules(prefName, cmds, false);
+    }
+
+    private static void addCustomRules(String prefName, List<String> cmds, boolean ipv6) {
+        String customRulesStr = G.pPrefs.getString(prefName, "");
+        if (!customRulesStr.isEmpty()) {
+            String[] customRules = customRulesStr.split("[\\r\\n]+");
+            for (String rule : customRules) {
+                if (rule.matches(".*\\S.*")) {
+                    // Sanitize the rule to prevent command injection
+                    String sanitizedRule = sanitizeRule(rule.trim());
+                    if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
+                        cmds.add("#LITERAL# " + sanitizedRule);
+                    }
                 }
             }
+        }
+
+        if (PREF_CUSTOMSCRIPT.equals(prefName) && !ipv6) {
+            addDatabaseCustomRules(cmds);
+        }
+    }
+
+    private static void addDatabaseCustomRules(List<String> cmds) {
+        try {
+            List<CustomRule> customRules = SQLite.select()
+                    .from(CustomRule.class)
+                    .where(CustomRule_Table.active.eq(true))
+                    .queryList();
+
+            for (CustomRule customRule : customRules) {
+                if (!AppRuleHelper.belongsToCurrentProfile(customRule)) {
+                    continue;
+                }
+                String rule = customRule.getRule();
+                if (rule != null && rule.matches(".*\\S.*")) {
+                    String sanitizedRule = sanitizeRule(rule.trim());
+                    if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
+                        cmds.add(sanitizedRule);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to load database custom rules", e);
         }
     }
 
@@ -984,7 +1026,7 @@ public final class Api {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
         Log.i(TAG, "Applying custom rules");
-        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
         String chainName = getThreadSafeChainName();
         // Pass the current LAN UID list so fastApply also rebuilds the -wifi-lan chain,
         // keeping LAN access self-healing across network-change routing refreshes.
@@ -1073,7 +1115,7 @@ public final class Api {
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
-            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
 
             // Loopback is self-device traffic, not LAN or WAN. Keep it out of
             // the LAN split chains so local app services continue to work when

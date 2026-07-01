@@ -145,6 +145,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String CUSTOM_THEME_COLORS = "customThemeColors";
     private static final String CUSTOM_THEME_SEED_THEME = "customThemeSeedTheme";
 
+    private static final String ENABLE_CUSTOM_RULES = "enableCustomRules";
+
     private static final String ACTIVE_RULES = "activeRules";
     private static final String ADD_DELAY = "addDelay";
 
@@ -981,6 +983,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     public static boolean isDo(boolean val) {
         gPrefs.edit().putBoolean(REG_DO, val).commit();
+        return val;
+    }
+
+    public static boolean enableCustomRules() {
+        return gPrefs.getBoolean(ENABLE_CUSTOM_RULES, true);
+    }
+
+    public static boolean enableCustomRules(boolean val) {
+        gPrefs.edit().putBoolean(ENABLE_CUSTOM_RULES, val).commit();
         return val;
     }
 

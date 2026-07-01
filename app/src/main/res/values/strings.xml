@@ -689,4 +689,26 @@
     <string name="consider_donating">Thank you for your support! Supporter mode enabled.</string>
     <string name="supporter_mode_title">Supporter mode</string>
     <string name="supporter_mode_summary">Unlock donate features (or install the donate key app)</string>
+    <string name="direct_rules">Direct rules</string>
+    <string name="direct_rules_title">Direct rules</string>
+    <string name="direct_rules_empty">No direct rules for this app.</string>
+    <string name="direct_rules_destination">Destination IP/CIDR</string>
+    <string name="direct_rules_destination_hint">Example: 192.168.1.10 or 10.0.0.0/8</string>
+    <string name="direct_rules_port">Destination port</string>
+    <string name="direct_rules_port_hint">Example: 443 or 8000:8100</string>
+    <string name="direct_rules_protocol">Protocol</string>
+    <string name="direct_rules_add">Add allow rule</string>
+    <string name="direct_rules_toggle">Enable direct rules</string>
+    <string name="direct_rules_visibility_title">Direct rules control</string>
+    <string name="direct_rules_visibility_summary">Show the direct rules checkbox in the app list.</string>
+    <string name="direct_rules_apply_hint">Apply firewall rules for changes to take effect.</string>
+    <string name="direct_rules_invalid_destination">Enter a valid IPv4 address or CIDR range.</string>
+    <string name="direct_rules_invalid_port">Enter a valid port or port range.</string>
+    <string name="direct_rules_invalid_rule">Direct rule failed validation.</string>
+    <string name="direct_rules_need_match">Enter a destination, a port, or both.</string>
+    <string name="direct_rules_port_needs_protocol">Choose TCP or UDP when using a port.</string>
+    <string name="direct_rules_added">Direct rule added.</string>
+    <string name="direct_rules_removed">Direct rule removed.</string>
+    <string name="direct_rules_remove">Remove</string>
+    <string name="direct_rules_log_missing_data">Selected log item does not include enough app and destination data.</string>
 </resources>
