@@ -17,6 +17,10 @@ on:
     paths:
       - 'external/**'
 
+permissions:
+  contents: write    # Required to git push compiled binaries and create GitHub Releases
+  actions: read
+
 jobs:
   build-busybox:
     name: Build Busybox
