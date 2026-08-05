@@ -3,7 +3,6 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        //jcenter()
         maven { url 'https://haibison.bitbucket.io/maven-repos' }
         maven { url 'https://jitpack.io' }
         maven { url "https://maven.google.com" }
@@ -11,7 +10,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.2'
+        classpath 'com.android.tools.build:gradle:8.7.3'
     }
 }
 
@@ -19,7 +18,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        //jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://maven.google.com" }
         maven { url "https://plugins.gradle.org/m2/" }

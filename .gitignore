@@ -17,15 +17,8 @@ out/
 build/
 build.xml
 
-# Gradle wrapper
-gradlew
-gradlew.bat
-gradle-wrapper.jar
-gradle-wrapper.properties
-
 # Gradle
 .gradle/
-gradle/
 
 # Log Files
 *.log
